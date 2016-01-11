@@ -55,7 +55,7 @@
 static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KERNEL_HASHTABLE_SIZE ];
 
 /* mutex for locking the CUPTI environment */
-SCOREP_Mutex scorep_cupti_mutex = NULL;
+SCOREP_Mutex scorep_cupti_mutex = SCOREP_INVALID_MUTEX;
 
 /* attribute handles for CUDA references */
 scorep_cupti_attribute_handles scorep_cupti_attributes;

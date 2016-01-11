@@ -111,7 +111,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     }
     CALL_PTHREAD_REAL_FUNC( pthread_mutex_destroy )( *lock );
     free( *lock );
-    *lock = NULL;
+    *lock = SCOREP_INVALID_MUTEX;
 
     return SCOREP_SUCCESS;
 }

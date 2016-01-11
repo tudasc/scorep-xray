@@ -116,7 +116,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
                   "Trying to destroy an locked mutex." );
 
     free( *mutex );
-    *mutex = NULL;
+    *mutex = SCOREP_INVALID_MUTEX;
 #endif
 
     return SCOREP_SUCCESS;

@@ -106,7 +106,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 /**
    Mutex to avoid parallel assignments to the same user metric.
  */
-SCOREP_Mutex scorep_user_metric_mutex;
+SCOREP_Mutex scorep_user_metric_mutex = SCOREP_INVALID_MUTEX;
 
 
 void
@@ -125,13 +125,13 @@ scorep_user_finalize_metrics( void )
 /**
    Mutex for @ref scorep_user_file_table.
  */
-SCOREP_Mutex scorep_user_file_table_mutex;
+SCOREP_Mutex scorep_user_file_table_mutex = SCOREP_INVALID_MUTEX;
 
 /**
    Mutex to avoid parallel assignement of region handles to the same region.
  */
-SCOREP_Mutex scorep_user_region_mutex;
-SCOREP_Mutex scorep_user_region_by_name_mutex;
+SCOREP_Mutex scorep_user_region_mutex         = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_user_region_by_name_mutex = SCOREP_INVALID_MUTEX;
 
 /**
     @internal

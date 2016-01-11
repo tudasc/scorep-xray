@@ -113,7 +113,7 @@ static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
 # define SCOREP_OPENCL_UNLOCK() SCOREP_MutexUnlock( opencl_mutex )
 
 /** Score-P mutex for access to global variables in the OpenCL adapter */
-static SCOREP_Mutex opencl_mutex = NULL;
+static SCOREP_Mutex opencl_mutex = SCOREP_INVALID_MUTEX;
 
 /**
  * Internal location mapping for unification (needed for OpenCL communication)

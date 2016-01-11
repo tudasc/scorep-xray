@@ -125,7 +125,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 #endif
 
     free( *omp_lock );
-    *omp_lock = NULL;
+    *omp_lock = SCOREP_INVALID_MUTEX;
 
     return SCOREP_SUCCESS;
 }

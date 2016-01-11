@@ -92,7 +92,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     }
     pthread_spin_destroy( *lock );
     free( ( void* )*lock );
-    *lock = NULL;
+    *lock = SCOREP_INVALID_MUTEX;
 
     return SCOREP_SUCCESS;
 }

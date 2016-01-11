@@ -46,7 +46,7 @@
 
 #include "scorep_compiler_confvars.inc.c"
 
-SCOREP_Mutex scorep_compiler_region_mutex;
+SCOREP_Mutex scorep_compiler_region_mutex = SCOREP_INVALID_MUTEX;
 
 /**
    The adapter initialize function is compiler specific. Thus it is contained in each

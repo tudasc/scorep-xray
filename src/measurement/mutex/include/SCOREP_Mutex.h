@@ -42,7 +42,7 @@
  *
  * Usage:
  * @code
- *     SCOREP_Mutex lock;
+ *     SCOREP_Mutex lock = SCOREP_INVALID_MUTEX;
  *     SCOREP_MutexCreate( &lock );
  *     :
  *     SCOREP_MutexLock( lock );
@@ -61,6 +61,11 @@
  * We use an opaque pointer type for the lock object.
  */
 typedef void* SCOREP_Mutex;
+
+/**
+ * Initialize an mutex variable to an invalid value.
+ */
+#define SCOREP_INVALID_MUTEX NULL
 
 SCOREP_ErrorCode
 SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex );
