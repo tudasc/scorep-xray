@@ -68,7 +68,7 @@ scorep_opari2_openmp_lock_initialize( void )
 }
 
 void
-scorep_opari2_openmp_lock_close( void )
+scorep_opari2_openmp_lock_finalize( void )
 {
     struct lock_block* block;
 

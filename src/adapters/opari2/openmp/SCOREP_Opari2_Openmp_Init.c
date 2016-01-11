@@ -134,6 +134,8 @@ opari2_openmp_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
+    scorep_opari2_openmp_lock_finalize();
+
     free( scorep_opari2_openmp_regions );
     SCOREP_MutexDestroy( &scorep_opari2_openmp_assign_lock );
 

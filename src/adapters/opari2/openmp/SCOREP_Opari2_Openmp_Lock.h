@@ -117,12 +117,12 @@ SCOREP_Opari2_Openmp_GetLock( const void* lock );
 void
 scorep_opari2_openmp_lock_destroy( const void* lock );
 
-/** Clean up of the locking management. Frees all memory for locking managment. */
-void
-scorep_opari2_openmp_lock_close( void );
-
 /** Registers omp lock regions ot the measurement system */
 void
 scorep_opari2_openmp_lock_initialize( void );
+
+/** Clean up of the locking management. Frees all memory for locking managment. */
+void
+scorep_opari2_openmp_lock_finalize( void );
 
 #endif // SCOREP_OPARI2_OPENMP_LOCK_H
