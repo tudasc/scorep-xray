@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -438,17 +438,21 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_init )( pthread_mutex_t*           pthre
     int result = __real_pthread_mutex_init( pthreadMutex, pthreadAttr );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    if ( !scorep_mutex )
+    if ( 0 == result )
     {
-        scorep_mutex = scorep_pthread_mutex_hash_put( pthreadMutex );
-
-        if ( process_shared == PTHREAD_PROCESS_SHARED )
+        scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
+        if ( !scorep_mutex )
         {
-            issue_process_shared_mutex_warning();
-            scorep_mutex->process_shared = true;
+            scorep_mutex = scorep_pthread_mutex_hash_put( pthreadMutex );
+
+            if ( process_shared == PTHREAD_PROCESS_SHARED )
+            {
+                issue_process_shared_mutex_warning();
+                scorep_mutex->process_shared = true;
+            }
         }
     }
+
     SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_MUTEX_INIT ] );
 
     UTILS_DEBUG_EXIT();
@@ -480,8 +484,12 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_destroy )( pthread_mutex_t* pthreadMutex
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_MUTEX_DESTROY ],
                                ( intptr_t )__real_pthread_mutex_destroy );
+
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    scorep_pthread_mutex_hash_remove( pthreadMutex );
+    if ( scorep_mutex )
+    {
+        scorep_pthread_mutex_hash_remove( pthreadMutex );
+    }
 
     SCOREP_ENTER_WRAPPED_REGION();
     int result = __real_pthread_mutex_destroy( pthreadMutex );
