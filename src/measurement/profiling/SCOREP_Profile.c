@@ -77,6 +77,8 @@ static SCOREP_Mutex scorep_profile_location_mutex;
 
 static SCOREP_RegionHandle thread_create_wait_regions;
 
+SCOREP_ParameterHandle scorep_profile_param_instance = SCOREP_INVALID_PARAMETER;
+
 /****************************************************************************************
    internal helper functions
  *****************************************************************************************/

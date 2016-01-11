@@ -35,10 +35,10 @@
 #include <UTILS_Debug.h>
 
 
-SCOREP_Opari2_User_Region* scorep_opari2_user_regions;
+SCOREP_Opari2_User_Region* scorep_opari2_user_regions = NULL;
 
 /** Lock to protect on-the-fly assignments.*/
-SCOREP_Mutex scorep_opari2_user_assign_lock;
+SCOREP_Mutex scorep_opari2_user_assign_lock = SCOREP_INVALID_MUTEX;
 
 
 /* *****************************************************************************

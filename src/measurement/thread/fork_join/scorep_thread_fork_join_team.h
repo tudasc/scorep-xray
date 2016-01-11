@@ -45,7 +45,7 @@
 
 struct SCOREP_Location;
 
-size_t scorep_thread_fork_join_subsystem_id;
+extern size_t scorep_thread_fork_join_subsystem_id;
 
 struct scorep_thread_team_data
 {

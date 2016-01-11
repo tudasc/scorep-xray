@@ -68,7 +68,7 @@
 /**
    Lock to protect on-the-fly assignments.
  */
-SCOREP_Mutex scorep_opari2_openmp_assign_lock;
+SCOREP_Mutex scorep_opari2_openmp_assign_lock = SCOREP_INVALID_MUTEX;
 
 /** Contains the data for one region type */
 typedef struct

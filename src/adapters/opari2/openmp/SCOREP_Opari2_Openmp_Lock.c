@@ -59,7 +59,7 @@ static int                               last_index      = SCOREP_OPARI2_OPENMP_
 
 static SCOREP_Opari2_Openmp_Lock_HandleType current_lock_handle = 0;
 
-SCOREP_Mutex scorep_opari2_openmp_lock;
+SCOREP_Mutex scorep_opari2_openmp_lock = SCOREP_INVALID_MUTEX;
 
 void
 scorep_opari2_openmp_lock_initialize( void )

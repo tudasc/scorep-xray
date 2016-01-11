@@ -52,6 +52,9 @@
 #include <UTILS_Debug.h>
 
 
+size_t scorep_thread_fork_join_subsystem_id;
+
+
 static uint32_t
 define_fork_join_locations( uint32_t* local_to_thread_id )
 {

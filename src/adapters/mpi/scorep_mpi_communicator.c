@@ -178,7 +178,7 @@ extern int scorep_mpi_comm_finalized;
  *  @internal
  *  Mutex for communicator definition.
  */
-SCOREP_Mutex scorep_mpi_communicator_mutex;
+extern SCOREP_Mutex scorep_mpi_communicator_mutex;
 
 /**
    MPI datatype for ID-ROOT exchange

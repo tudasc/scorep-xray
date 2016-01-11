@@ -83,7 +83,7 @@ MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
  *  @internal
  *  Mutex for communicator definition.
  */
-SCOREP_Mutex scorep_mpi_communicator_mutex;
+SCOREP_Mutex scorep_mpi_communicator_mutex = SCOREP_INVALID_MUTEX;
 
 /**
  *  @internal
