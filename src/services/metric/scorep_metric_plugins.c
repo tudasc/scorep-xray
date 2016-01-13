@@ -42,7 +42,6 @@
 
 #include <scorep/SCOREP_MetricPlugins.h>
 #include <SCOREP_Timer_Ticks.h>
-#include <SCOREP_Memory.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
@@ -51,74 +50,65 @@
 #include <string.h>
 #include <dlfcn.h>
 
+#define SCOREP_METRIC_PLUGIN_MAX_PER_THREAD 16
 
 #define BUFFER_SIZE 512
 
-typedef struct meta_data_struct
+typedef struct scorep_metric_plugin_meta_data_management_struct
 {
     /** Meta data about metrics (e.g. metric name, units) */
     SCOREP_Metric_Plugin_MetricProperties* properties;
     /** Flag to indicate whether to call free() for this memory address or not */
     bool                                   free_memory;
-} meta_data;
+} scorep_metric_plugin_meta_data_management;
 
 /** Per plugin library information */
-typedef struct metric_plugin_struct
+typedef struct scorep_metric_plugin_struct
 {
     /** Info from get_info() */
-    SCOREP_Metric_Plugin_Info info;
+    SCOREP_Metric_Plugin_Info                  info;
     /** Handle (should be closed when finalize) */
-    void*                     dlfcn_handle;
+    void*                                      dlfcn_handle;
     /** Plugin name */
-    char*                     plugin_name;
+    char*                                      plugin_name;
     /** Index of additional environment variable in @ additional_environment_variables array */
-    uint32_t                  additional_event_environment_variable_index;
+    uint32_t                                   additional_event_environment_variable_index;
     /** Number of selected event_names */
-    uint32_t                  num_selected_events;
+    uint32_t                                   num_selected_events;
     /** Selected event_names */
-    char**                    selected_events;
+    char**                                     selected_events;
     /** Meta data management */
-    meta_data*                metrics_meta_data;
-} metric_plugin;
+    scorep_metric_plugin_meta_data_management* metrics_meta_data;
+} scorep_metric_plugin;
 
-/** Data structure to handle an individual metric provided by a plugin */
-typedef struct individual_metric_struct
+/** Data structure which a location uses to handle a single metric provided by a plugin */
+typedef struct scorep_metric_plugin_individual_metric_struct
 {
     /** ID, which was produced by the plugin */
-    int32_t                                plugin_metric_id;
-    /** Meta data about this metric (e.g. metric name, units) */
-    SCOREP_Metric_Plugin_MetricProperties* meta_data;
-    /** Time between calls to plugin */
-    uint64_t                               delta_t;
-    /** Last timestamp when the metric was recorded */
-    uint64_t                               last_timestamp;
-
+    int32_t plugin_metric_id;
     /** Functions for getting a metric value */
     uint64_t ( * getValue )( int32_t );
     /** Functions for getting an optional metric value */
     bool ( * getOptionalValue )( int32_t,
                                  uint64_t* );
-    /** Functions for getting multiple metric values */
+    /** Functions for getting a multiple metric values */
     uint64_t ( * getAllValues )( int32_t,
                                  SCOREP_MetricTimeValuePair** );
-} individual_metric;
+    /** Meta data about this metric (e.g. metric name, units) */
+    SCOREP_Metric_Plugin_MetricProperties* meta_data;
+    /** Time between calls to plugin */
+    uint64_t                               delta_t;
+} scorep_metric_plugin_individual_metric_struct;
 
-/** Item in the list of metric data structure */
-typedef struct metric_list_item_struct
-{
-    /** Array of individual metric specifications */
-    individual_metric               metric;
-    /** Next item in the list */
-    struct metric_list_item_struct* next;
-} metric_list_item;
-
-/** Data structure of a metric event set */
+/** Metric data structure */
 struct SCOREP_Metric_EventSet
 {
     /** Overall number of metrics within this event set */
-    uint32_t          number_of_metrics;
+    uint32_t                                      number_of_metrics;
     /** Array of individual metric specifications */
-    metric_list_item* metrics_list;
+    scorep_metric_plugin_individual_metric_struct metrics[ SCOREP_METRIC_PLUGIN_MAX_PER_THREAD ];
+    /** Array of last timestamps where each metric was recorded */
+    uint64_t                                      last_timestamps[ SCOREP_METRIC_PLUGIN_MAX_PER_THREAD ];
 };
 
 
@@ -128,14 +118,14 @@ struct SCOREP_Metric_EventSet
 
 /** Static variable to control initialize status of the metric plugins source.
  *  If it is 0 it is initialized. */
-static int metric_plugins_initialized = 1;
+static int scorep_metric_plugins_initialize = 1;
 
 /** Static variable to check whether plugins are used.
  *  If it is true plugins are used. */
-static bool are_metric_plugins_used = false;
+static bool is_scorep_metric_plugin_used = false;
 
 /** A number of plugin libraries, [sync_type][library_nr] */
-static metric_plugin* metric_plugin_handles[ SCOREP_METRIC_SYNC_TYPE_MAX ];
+static scorep_metric_plugin* scorep_metric_plugin_handles[ SCOREP_METRIC_SYNC_TYPE_MAX ];
 
 /** Number of used plugins per sync type*/
 static uint32_t num_plugins[ SCOREP_METRIC_SYNC_TYPE_MAX ];
@@ -151,7 +141,7 @@ static uint32_t num_additional_environment_variables;
  **********************************************************************/
 
 static SCOREP_Metric_EventSet*
-create_event_set( void );
+create_metric_plugin_defines( void );
 
 
 /* *********************************************************************
@@ -164,7 +154,7 @@ create_event_set( void );
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-register_source( void )
+scorep_metric_plugins_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric plugins source!" );
 
@@ -183,7 +173,7 @@ register_source( void )
 /** @brief Called on deregistration of the metric source.
  */
 static void
-deregister_source( void )
+scorep_metric_plugins_deregister( void )
 {
     /* Free environment variables for plugin specification */
 
@@ -218,12 +208,12 @@ deregister_source( void )
  *  @return Returns the number of used 'strictly synchronous' metrics.
  */
 static uint32_t
-initialize_source( void )
+scorep_metric_plugins_initialize_source( void )
 {
     /* Number of used 'strictly synchronous' metrics */
     uint32_t metric_counts = 0;
 
-    if ( metric_plugins_initialized )
+    if ( scorep_metric_plugins_initialize )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize plugins metric source." );
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " list of plugins = %s\n", scorep_metric_plugins );
@@ -252,7 +242,7 @@ initialize_source( void )
             SCOREP_Metric_Plugin_Info ( * function )( void );
         } get_info;
 
-        metric_plugin* current_plugin;
+        scorep_metric_plugin* current_plugin;
 
         /* Number of selected plugins */
         uint32_t num_selected_plugins = 0;
@@ -443,14 +433,14 @@ initialize_source( void )
             }
             num_plugins[ info.sync ]++;
 
-            metric_plugin_handles[ info.sync ] =
-                realloc( metric_plugin_handles[ info.sync ],
-                         num_plugins[ info.sync ] * sizeof( metric_plugin ) );
-            UTILS_BUG_ON( metric_plugin_handles[ info.sync ] == NULL, "Out of memory" );
-            current_plugin = &metric_plugin_handles[ info.sync ][ num_plugins[ info.sync ] - 1 ];
+            scorep_metric_plugin_handles[ info.sync ] =
+                realloc( scorep_metric_plugin_handles[ info.sync ],
+                         num_plugins[ info.sync ] * sizeof( scorep_metric_plugin ) );
+            UTILS_BUG_ON( scorep_metric_plugin_handles[ info.sync ] == NULL, "Out of memory" );
+            current_plugin = &scorep_metric_plugin_handles[ info.sync ][ num_plugins[ info.sync ] - 1 ];
 
             /* Clear out current plugin */
-            memset( current_plugin, 0, sizeof( metric_plugin ) );
+            memset( current_plugin, 0, sizeof( scorep_metric_plugin ) );
 
             UTILS_BUG_ON( num_additional_environment_variables >= PLUGINS_MAX,
                           "Maximum number of additional environment variables for metric plugins reached." );
@@ -553,7 +543,7 @@ initialize_source( void )
 
                     /* Handle metric meta data */
                     current_plugin->metrics_meta_data =
-                        realloc( current_plugin->metrics_meta_data, current_plugin->num_selected_events * sizeof( meta_data ) );
+                        realloc( current_plugin->metrics_meta_data, current_plugin->num_selected_events * sizeof( scorep_metric_plugin_meta_data_management ) );
                     UTILS_BUG_ON( current_plugin->metrics_meta_data == NULL, "Out of memory" );
 
                     /* Set reference to meta data of current metric */
@@ -572,7 +562,7 @@ initialize_source( void )
                     }
 
                     /* Metric plugins are in use */
-                    are_metric_plugins_used = true;
+                    is_scorep_metric_plugin_used = true;
 
                     is_first_info_item = false;
                 } /* End of: for all metrics related to the metric string */
@@ -597,7 +587,7 @@ initialize_source( void )
 
         /* ************************************************************** */
 
-        metric_plugins_initialized = 0;
+        scorep_metric_plugins_initialize = 0;
     }
 
     return metric_counts;
@@ -606,43 +596,43 @@ initialize_source( void )
 /** @brief Metric source finalization.
  */
 static void
-finalize_source( void )
+scorep_metric_plugins_finalize_source( void )
 {
     /* Call only, if previously initialized */
-    if ( !metric_plugins_initialized )
+    if ( !scorep_metric_plugins_initialize )
     {
         for ( uint32_t i = 0; i < SCOREP_METRIC_SYNC_TYPE_MAX; i++ )
         {
             for ( uint32_t j = 0; j < num_plugins[ i ]; j++ )
             {
                 /* Call finalization function of plugin */
-                metric_plugin_handles[ i ][ j ].info.finalize();
+                scorep_metric_plugin_handles[ i ][ j ].info.finalize();
 
                 /* Free resources */
-                for ( uint32_t event = 0; event < metric_plugin_handles[ i ][ j ].num_selected_events; event++ )
+                for ( uint32_t event = 0; event < scorep_metric_plugin_handles[ i ][ j ].num_selected_events; event++ )
                 {
-                    free( metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties->name );
-                    if ( metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].free_memory )
+                    free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties->name );
+                    if ( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].free_memory )
                     {
-                        free( metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties );
+                        free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties );
                     }
                 }
-                free( metric_plugin_handles[ i ][ j ].metrics_meta_data );
-                free( metric_plugin_handles[ i ][ j ].selected_events );
-                free( metric_plugin_handles[ i ][ j ].plugin_name );
+                free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data );
+                free( scorep_metric_plugin_handles[ i ][ j ].selected_events );
+                free( scorep_metric_plugin_handles[ i ][ j ].plugin_name );
 
-                dlclose( metric_plugin_handles[ i ][ j ].dlfcn_handle );
+                dlclose( scorep_metric_plugin_handles[ i ][ j ].dlfcn_handle );
             }
-            free( metric_plugin_handles[ i ] );
-            metric_plugin_handles[ i ] = NULL;
-            num_plugins[ i ]           = 0;
+            free( scorep_metric_plugin_handles[ i ] );
+            scorep_metric_plugin_handles[ i ] = NULL;
+            num_plugins[ i ]                  = 0;
         }
 
         /* Set metric plugin usage flag */
-        are_metric_plugins_used = false;
+        is_scorep_metric_plugin_used = false;
 
         /* Set initialization flag */
-        metric_plugins_initialized = 1;
+        scorep_metric_plugins_initialize = 1;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize metric plugins source." );
     }
 }
@@ -651,117 +641,102 @@ finalize_source( void )
  *
  *  @param location             Location data.
  *  @param event_sets           Event sets of all metrics.
- *  @param syncType             Current synchronicity type, e.g.
- *                              SCOREP_METRIC_STRICTLY_SYNC,
- *                              SCOREP_METRIC_SYNC,
- *                              SCOREP_METRIC_ASYNC, or
- *                              SCOREP_METRIC_ASYNC_EVENT.
- *  @param metricType           Current metric type, e.g.
- *                              SCOREP_METRIC_PER_THREAD,
- *                              SCOREP_METRIC_PER_PROCESS,
- *                              SCOREP_METRIC_PER_HOST, or
- *                              SCOREP_METRIC_ONCE.
- *
- *  @return Event set
  */
 static SCOREP_Metric_EventSet*
-initialize_location( struct SCOREP_Location*    location,
-                     SCOREP_MetricSynchronicity syncType,
-                     SCOREP_MetricPer           metricType )
+scorep_metric_plugins_initialize_location( struct SCOREP_Location*    location,
+                                           SCOREP_MetricSynchronicity sync_type,
+                                           SCOREP_MetricPer           metric_type )
 {
-    if ( !are_metric_plugins_used )
+    if ( !is_scorep_metric_plugin_used )
     {
         return NULL;
     }
 
-    SCOREP_Metric_EventSet* event_set = NULL;
-    metric_list_item*       new_item  = NULL;
+    SCOREP_Metric_EventSet*                        plugin_metric_defines = NULL;
+    scorep_metric_plugin_individual_metric_struct* current;
 
     /* For all plugins of currently selected type */
-    for ( uint32_t plugin_index = 0; plugin_index < num_plugins[ syncType ]; plugin_index++ )
+    for ( uint32_t plugin = 0; plugin < num_plugins[ sync_type ]; plugin++ )
     {
         /* Check whether this location is responsible to record metrics of requested sync type */
-        metric_plugin* current_plugin = &metric_plugin_handles[ syncType ][ plugin_index ];
+        scorep_metric_plugin* current_plugin = &scorep_metric_plugin_handles[ sync_type ][ plugin ];
 
-        if ( current_plugin->info.run_per != metricType )
+        if ( current_plugin->info.run_per != metric_type )
         {
             continue;
         }
 
-        if ( event_set == NULL )
+        if ( plugin_metric_defines == NULL )
         {
-            event_set = create_event_set();
+            plugin_metric_defines = create_metric_plugin_defines();
         }
 
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Score-P location (%p) adds own plugin metrics for plugin %s:",
                             location,
                             current_plugin->plugin_name );
 
+        /* Get the current metrics for this location and sync type */
+        current = plugin_metric_defines->metrics;
+
+        /* Get the number of metrics for this location and sync type */
+        uint32_t* current_size = &( plugin_metric_defines->number_of_metrics );
+
         /* For all selected events */
         for ( uint32_t event = 0; event < current_plugin->num_selected_events; event++ )
         {
-            /* Add select metric */
-            if ( new_item == NULL )
+            if ( *current_size >= SCOREP_METRIC_PLUGIN_MAX_PER_THREAD )
             {
-                new_item = SCOREP_Memory_AllocForMisc( sizeof( metric_list_item ) );
+                UTILS_WARNING( "You're about to add more then %i plugin counters,"
+                               "which is impossible\n", SCOREP_METRIC_PLUGIN_MAX_PER_THREAD );
+                continue;
             }
 
-            new_item->next                    = NULL;
-            new_item->metric.meta_data        = current_plugin->metrics_meta_data[ event ].properties;
-            new_item->metric.delta_t          = current_plugin->info.delta_t;
-            new_item->metric.plugin_metric_id = current_plugin->info.add_counter( current_plugin->selected_events[ event ] );
+            /* Add metric */
+            current[ *current_size ].meta_data        = current_plugin->metrics_meta_data[ event ].properties;
+            current[ *current_size ].plugin_metric_id =
+                current_plugin->info.add_counter( current_plugin->selected_events[ event ] );
             /* Check whether adding metric finished successfully */
-            if ( new_item->metric.plugin_metric_id < 0 )
+            if ( current[ *current_size ].plugin_metric_id < 0 )
             {
-                /*
-                 * Adding this metric failed.
-                 * Continue with the next metric.
-                 * Reuse the new_item object.
-                 */
                 UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                              "Error while adding plugin metric \"%s\"\n",
                              current_plugin->selected_events[ event ] );
                 continue;
             }
 
-            /* Set function pointers corresponding to current synchronicity type */
+            current[ *current_size ].delta_t = current_plugin->info.delta_t;
+
+            /* Set 'per type' stuff */
             switch ( current_plugin->info.sync )
             {
                 case SCOREP_METRIC_STRICTLY_SYNC:
                     /* Strictly synchronous plugins have to implement 'getValue' function */
-                    new_item->metric.getValue = current_plugin->info.get_current_value;
+                    current[ *current_size ].getValue = current_plugin->info.get_current_value;
                     break;
 
                 case SCOREP_METRIC_SYNC:
                     /* Synchronous plugins have to implement 'getOptionalValue' function */
-                    new_item->metric.getOptionalValue = current_plugin->info.get_optional_value;
+                    current[ *current_size ].getOptionalValue = current_plugin->info.get_optional_value;
                     break;
 
                 case SCOREP_METRIC_ASYNC:
                 case SCOREP_METRIC_ASYNC_EVENT:
                     /* Asynchronous plugins have to implement 'getAllValues' function */
-                    new_item->metric.getAllValues = current_plugin->info.get_all_values;
+                    current[ *current_size ].getAllValues = current_plugin->info.get_all_values;
                     break;
 
                 default:
                     UTILS_WARNING( "Unknown metric synchronicity type." );
             }
 
-            /* Add new_item to the list of all metrics */
-            new_item->next          = event_set->metrics_list;
-            event_set->metrics_list = new_item;
-
-            /* Increment metric counter */
-            event_set->number_of_metrics++;
-
-            /* Reset new_item */
-            new_item = NULL;
+            /* Next metric */
+            ( *current_size )++;
         } /* END for all selected events */
-    }     /* END for all plugins of currently selected type */
+    }     /* END for all plugins by this type */
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source initialized location!" );
 
-    return event_set;
+    return plugin_metric_defines;
 }
 
 /** @brief Location specific finalization function for metric sources.
@@ -769,7 +744,7 @@ initialize_location( struct SCOREP_Location*    location,
  *  @param eventSet  Reference to active set of metrics.
  */
 static void
-finalize_location( SCOREP_Metric_EventSet* eventSet )
+scorep_metric_plugins_finalize_location( SCOREP_Metric_EventSet* eventSet )
 {
     free( eventSet );
 
@@ -781,7 +756,7 @@ finalize_location( SCOREP_Metric_EventSet* eventSet )
  *  @param eventSet  Reference to active set of metrics.
  */
 static void
-free_event_set( SCOREP_Metric_EventSet* eventSet )
+scorep_metric_plugins_free_event_set( SCOREP_Metric_EventSet* eventSet )
 {
     free( eventSet );
 
@@ -794,68 +769,62 @@ free_event_set( SCOREP_Metric_EventSet* eventSet )
  *  @param values    Reference to array that will be filled with values from active metrics.
  */
 static void
-strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet,
-                           uint64_t*               values )
+scorep_metric_plugins_strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet,
+                                                 uint64_t*               values )
 {
     UTILS_ASSERT( eventSet );
     UTILS_ASSERT( values );
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    for ( uint32_t i = 0; i  < eventSet->number_of_metrics; i++ )
     {
         /* RonnyT @ todo move getValue function pointer from single metric to event set */
-        UTILS_ASSERT( item->metric.getValue );
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
+        UTILS_ASSERT( eventSet->metrics[ i ].getValue );
 
-        values[ i ] = item->metric.getValue( item->metric.plugin_metric_id );
-        i++;
+        values[ i ] = eventSet->metrics[ i ].getValue( eventSet->metrics[ i ].plugin_metric_id );
     }
 }
 
 /** @brief Synchronous call to reads values of metrics in the active event set.
- *         The array @ isUpdated indicates whether a new value for corresponding
+ *         The array @ is_updated indicates whether a new value for corresponding
  *         metric was written or not.
  *
  *  @param      eventSet     An event set, that contains the definition of the counters
  *                           that should be measured.
  *  @param[out] values       Reference to array that will be filled with values from
  *                           active metrics.
- *  @param[out] isUpdated    An array which indicates whether a new value of a specfic
- *                           metric was written (@ isUpdated[i] == true ) or not
- *                           (@ isUpdated[i] == false ).
- *  @param      forceUpdate  Update of all metric value in this event set is enforced.
+ *  @param[out] is_updated   An array which indicates whether a new value of a specfic
+ *                           metric was written (@ is_updated[i] == true ) or not
+ *                           (@ is_updated[i] == false ).
+ *  @param      force_update Update of all metric value in this event set is enforced.
  */
 static void
-synchronous_read( SCOREP_Metric_EventSet* eventSet,
-                  uint64_t*               values,
-                  bool*                   isUpdated,
-                  bool                    forceUpdate )
+scorep_metric_plugins_synchronous_read( SCOREP_Metric_EventSet* eventSet,
+                                        uint64_t*               values,
+                                        bool*                   is_updated,
+                                        bool                    force_update )
 {
     UTILS_ASSERT( eventSet );
     UTILS_ASSERT( values );
-    UTILS_ASSERT( isUpdated );
+    UTILS_ASSERT( is_updated );
 
     uint64_t recent_timestamp = SCOREP_Timer_GetClockTicks();
-    uint32_t i                = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
-    {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
 
-        if ( ( recent_timestamp - item->metric.last_timestamp > item->metric.delta_t )
-             || forceUpdate )
+    for ( uint32_t i = 0; i  < eventSet->number_of_metrics; i++ )
+    {
+        if ( ( recent_timestamp - eventSet->last_timestamps[ i ] > eventSet->metrics[ i ].delta_t )
+             || force_update )
         {
             /* RonnyT @ todo move getOptionalValue function pointer from single metric to event set */
-            UTILS_ASSERT( item->metric.getOptionalValue );
+            UTILS_ASSERT( eventSet->metrics[ i ].getOptionalValue );
 
-            isUpdated[ i ] = item->metric.getOptionalValue( item->metric.plugin_metric_id,
-                                                            &( values[ i ] ) );
-            item->metric.last_timestamp = recent_timestamp;
+            is_updated[ i ] = eventSet->metrics[ i ].getOptionalValue( eventSet->metrics[ i ].plugin_metric_id,
+                                                                       &( values[ i ] ) );
+            eventSet->last_timestamps[ i ] = recent_timestamp;
         }
         else
         {
-            isUpdated[ i ] = false;
+            is_updated[ i ] = false;
         }
-        i++;
     }
 }
 
@@ -863,47 +832,43 @@ synchronous_read( SCOREP_Metric_EventSet* eventSet,
  *
  *  @param      eventSet            An event set, that contains the definition of the counters
  *                                  that should be measured.
- *  @param[out] timeValuePairs      An array, to which the counter values are written.
- *  @param[out] numPairs            Number of pairs (timestamp + value) written for each
+ *  @param[out] timevalue_pointer   An array, to which the counter values are written.
+ *  @param[out] num_pairs           Number of pairs (timestamp + value) written for each
  *                                  individual metric.
- *  @param      forceUpdate         If true an update of all metric values in this event set is enforced.
+ *  @param      force_update        Update of all metric value in this event set is enforced.
  */
 static void
-asynchronous_read( SCOREP_Metric_EventSet*      eventSet,
-                   SCOREP_MetricTimeValuePair** timeValuePairs,
-                   uint64_t**                   numPairs,
-                   bool                         forceUpdate )
+scorep_metric_plugins_asynchronous_read( SCOREP_Metric_EventSet*      eventSet,
+                                         SCOREP_MetricTimeValuePair** timevalue_pointer,
+                                         uint64_t**                   num_pairs,
+                                         bool                         force_update )
 {
     UTILS_ASSERT( eventSet );
-    UTILS_ASSERT( timeValuePairs );
+    UTILS_ASSERT( timevalue_pointer );
 
     uint64_t recent_timestamp = SCOREP_Timer_GetClockTicks();
 
-    *numPairs = malloc( eventSet->number_of_metrics * sizeof( uint64_t ) );
-    UTILS_ASSERT( *numPairs );
+    *num_pairs = malloc( eventSet->number_of_metrics * sizeof( uint64_t ) );
+    UTILS_ASSERT( *num_pairs );
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    for ( uint32_t i = 0; i  < eventSet->number_of_metrics; i++ )
     {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
+        timevalue_pointer[ i ] = NULL;
 
-        timeValuePairs[ i ] = NULL;
-
-        if ( ( recent_timestamp - item->metric.last_timestamp > item->metric.delta_t )
-             || forceUpdate )
+        if ( ( recent_timestamp - eventSet->last_timestamps[ i ] > eventSet->metrics[ i ].delta_t )
+             || force_update )
         {
             /* RonnyT @ todo move getAllValues function pointer from single metric to event set */
-            UTILS_ASSERT( item->metric.getAllValues );
+            UTILS_ASSERT( eventSet->metrics[ i ].getAllValues );
 
-            ( *numPairs )[ i ] = item->metric.getAllValues( item->metric.plugin_metric_id,
-                                                            &( timeValuePairs[ i ] ) );
-            item->metric.last_timestamp = recent_timestamp;
+            ( *num_pairs )[ i ] = eventSet->metrics[ i ].getAllValues( eventSet->metrics[ i ].plugin_metric_id,
+                                                                       &( timevalue_pointer[ i ] ) );
+            eventSet->last_timestamps[ i ] = recent_timestamp;
         }
         else
         {
-            ( *numPairs )[ i ] = 0;
+            ( *num_pairs )[ i ] = 0;
         }
-        i++;
     }
 }
 
@@ -914,7 +879,7 @@ asynchronous_read( SCOREP_Metric_EventSet*      eventSet,
  *  @return Returns number of active metrics.
  */
 static uint32_t
-get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
+scorep_metric_plugins_get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
 {
     if ( eventSet == NULL )
     {
@@ -932,24 +897,19 @@ get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
  *  @return Returns name of requested metric.
  */
 static const char*
-get_metric_name( SCOREP_Metric_EventSet* eventSet,
-                 uint32_t                metricIndex )
+scorep_metric_plugins_get_metric_name( SCOREP_Metric_EventSet* eventSet,
+                                       uint32_t                metricIndex )
 {
     UTILS_ASSERT( eventSet );
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    if ( metricIndex < eventSet->number_of_metrics )
     {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
-
-        if ( i == metricIndex )
-        {
-            return item->metric.meta_data->name;
-        }
-        i++;
+        return eventSet->metrics[ metricIndex ].meta_data->name;
     }
-
-    return "";
+    else
+    {
+        return "";
+    }
 }
 
 /** @brief  Gets description of requested metric.
@@ -960,24 +920,19 @@ get_metric_name( SCOREP_Metric_EventSet* eventSet,
  *  @return Returns description of requested metric.
  */
 static const char*
-get_metric_description( SCOREP_Metric_EventSet* eventSet,
-                        uint32_t                metricIndex )
+scorep_metric_plugins_get_metric_description( SCOREP_Metric_EventSet* eventSet,
+                                              uint32_t                metricIndex )
 {
     UTILS_ASSERT( eventSet );
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    if ( metricIndex < eventSet->number_of_metrics )
     {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
-
-        if ( i == metricIndex )
-        {
-            return item->metric.meta_data->description;
-        }
-        i++;
+        return eventSet->metrics[ metricIndex ].meta_data->description;
     }
-
-    return "";
+    else
+    {
+        return "";
+    }
 }
 
 /** @brief  Gets unit of requested metric.
@@ -988,24 +943,19 @@ get_metric_description( SCOREP_Metric_EventSet* eventSet,
  *  @return Returns unit of requested metric.
  */
 static const char*
-get_metric_unit( SCOREP_Metric_EventSet* eventSet,
-                 uint32_t                metricIndex )
+scorep_metric_plugins_get_metric_unit( SCOREP_Metric_EventSet* eventSet,
+                                       uint32_t                metricIndex )
 {
     UTILS_ASSERT( eventSet );
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    if ( metricIndex < eventSet->number_of_metrics )
     {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
-
-        if ( i == metricIndex )
-        {
-            return item->metric.meta_data->unit;
-        }
-        i++;
+        return eventSet->metrics[ metricIndex ].meta_data->unit;
     }
-
-    return "";
+    else
+    {
+        return "";
+    }
 }
 
 /** @brief  Gets properties of requested metric.
@@ -1016,44 +966,39 @@ get_metric_unit( SCOREP_Metric_EventSet* eventSet,
  *  @return Returns properties of requested metric.
  */
 static SCOREP_Metric_Properties
-get_metric_properties( SCOREP_Metric_EventSet* eventSet,
-                       uint32_t                metricIndex )
+scorep_metric_plugins_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
+                                             uint32_t                metricIndex )
 {
     UTILS_ASSERT( eventSet );
 
     SCOREP_Metric_Properties props;
 
-    uint32_t i = 0;
-    for ( metric_list_item* item  = eventSet->metrics_list; item != NULL; item = item->next )
+    if ( metricIndex < eventSet->number_of_metrics )
     {
-        UTILS_ASSERT( i < eventSet->number_of_metrics );
+        props.name        = eventSet->metrics[ metricIndex ].meta_data->name;
+        props.description = eventSet->metrics[ metricIndex ].meta_data->description;
+        props.unit        = eventSet->metrics[ metricIndex ].meta_data->unit;
+        props.mode        = eventSet->metrics[ metricIndex ].meta_data->mode;
+        props.value_type  = eventSet->metrics[ metricIndex ].meta_data->value_type;
+        props.base        = eventSet->metrics[ metricIndex ].meta_data->base;
+        props.exponent    = eventSet->metrics[ metricIndex ].meta_data->exponent;
 
-        if ( i == metricIndex )
-        {
-            props.name           = item->metric.meta_data->name;
-            props.description    = item->metric.meta_data->description;
-            props.unit           = item->metric.meta_data->unit;
-            props.mode           = item->metric.meta_data->mode;
-            props.value_type     = item->metric.meta_data->value_type;
-            props.base           = item->metric.meta_data->base;
-            props.exponent       = item->metric.meta_data->exponent;
-            props.source_type    = SCOREP_METRIC_SOURCE_TYPE_PLUGIN;
-            props.profiling_type = SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE;
-
-            return props;
-        }
-        i++;
+        props.source_type    = SCOREP_METRIC_SOURCE_TYPE_PLUGIN;
+        props.profiling_type = SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE;
     }
+    else
+    {
+        props.name        = "";
+        props.description = "";
+        props.unit        = "";
+        props.mode        = SCOREP_INVALID_METRIC_MODE;
+        props.value_type  = SCOREP_INVALID_METRIC_VALUE_TYPE;
+        props.base        = SCOREP_INVALID_METRIC_BASE;
+        props.exponent    = 0;
 
-    props.name           = "";
-    props.description    = "";
-    props.unit           = "";
-    props.mode           = SCOREP_INVALID_METRIC_MODE;
-    props.value_type     = SCOREP_INVALID_METRIC_VALUE_TYPE;
-    props.base           = SCOREP_INVALID_METRIC_BASE;
-    props.exponent       = 0;
-    props.source_type    = SCOREP_INVALID_METRIC_SOURCE_TYPE;
-    props.profiling_type = SCOREP_INVALID_METRIC_PROFILING_TYPE;
+        props.source_type    = SCOREP_INVALID_METRIC_SOURCE_TYPE;
+        props.profiling_type = SCOREP_INVALID_METRIC_PROFILING_TYPE;
+    }
 
     return props;
 }
@@ -1062,21 +1007,21 @@ get_metric_properties( SCOREP_Metric_EventSet* eventSet,
 const SCOREP_MetricSource SCOREP_Metric_Plugins =
 {
     SCOREP_METRIC_SOURCE_TYPE_PLUGIN,
-    &register_source,
-    &initialize_source,
-    &initialize_location,
-    &free_event_set,
-    &finalize_location,
-    &finalize_source,
-    &deregister_source,
-    &strictly_synchronous_read,
-    &synchronous_read,
-    &asynchronous_read,
-    &get_number_of_metrics,
-    &get_metric_name,
-    &get_metric_description,
-    &get_metric_unit,
-    &get_metric_properties
+    &scorep_metric_plugins_register,
+    &scorep_metric_plugins_initialize_source,
+    &scorep_metric_plugins_initialize_location,
+    &scorep_metric_plugins_free_event_set,
+    &scorep_metric_plugins_finalize_location,
+    &scorep_metric_plugins_finalize_source,
+    &scorep_metric_plugins_deregister,
+    &scorep_metric_plugins_strictly_synchronous_read,
+    &scorep_metric_plugins_synchronous_read,
+    &scorep_metric_plugins_asynchronous_read,
+    &scorep_metric_plugins_get_number_of_metrics,
+    &scorep_metric_plugins_get_metric_name,
+    &scorep_metric_plugins_get_metric_description,
+    &scorep_metric_plugins_get_metric_unit,
+    &scorep_metric_plugins_get_metric_properties
 };
 
 
@@ -1089,10 +1034,10 @@ const SCOREP_MetricSource SCOREP_Metric_Plugins =
  *  @return Returns Score-P event set initialized with default values.
  */
 static SCOREP_Metric_EventSet*
-create_event_set( void )
+create_metric_plugin_defines( void )
 {
-    SCOREP_Metric_EventSet* event_set = calloc( 1, sizeof( SCOREP_Metric_EventSet ) );
-    UTILS_ASSERT( event_set );
+    SCOREP_Metric_EventSet* metric_plugin_defines = calloc( 1, sizeof( SCOREP_Metric_EventSet ) );
+    UTILS_ASSERT( metric_plugin_defines );
 
-    return event_set;
+    return metric_plugin_defines;
 }
