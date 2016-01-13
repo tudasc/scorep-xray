@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -41,11 +41,8 @@
  */
 
 #include <config.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-
 #include <SCOREP_Hashtab.h>
+
 
 size_t
 SCOREP_Hashtab_HashString( const void* key )

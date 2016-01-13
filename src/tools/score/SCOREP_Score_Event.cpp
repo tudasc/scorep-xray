@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015,
@@ -21,7 +21,9 @@
 
 #include <config.h>
 #include "SCOREP_Score_Event.hpp"
-#include "SCOREP_Score_Profile.hpp"
+
+#include <sstream>
+#include <utility>
 
 using namespace std;
 

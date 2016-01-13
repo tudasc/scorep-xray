@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -38,10 +38,12 @@
 #ifndef SCOREP_SCORE_ESTIMATOR_H
 #define SCOREP_SCORE_ESTIMATOR_H
 
-#include "SCOREP_Score_Profile.hpp"
 #include "SCOREP_Score_Group.hpp"
-#include "SCOREP_Score_Event.hpp"
-#include <deque>
+
+#include <stdint.h>
+#include <string>
+
+class SCOREP_Score_Profile;
 
 /**
  * This class implements the estimation logic.

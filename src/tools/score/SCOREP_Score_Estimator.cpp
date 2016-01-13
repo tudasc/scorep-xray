@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -37,12 +37,15 @@
 
 #include <config.h>
 #include "SCOREP_Score_Estimator.hpp"
+#include "SCOREP_Score_Event.hpp"
+#include "SCOREP_Score_Profile.hpp"
 #include "SCOREP_Score_EventList.hpp"
 #include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
 #include <math.h>
 #include <fstream>
 #include <iomanip>
+#include <deque>
 
 using namespace std;
 

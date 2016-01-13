@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,11 +38,10 @@
 #include <config.h>
 #include <SCOREP_Vector.h>
 
+#include <UTILS_Error.h>
+
 #include <stdlib.h>
 #include <string.h>
-
-#include <UTILS_Error.h>
-#include <UTILS_Debug.h>
 
 
 /*

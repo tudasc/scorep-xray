@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,15 +38,14 @@
 
 #include <config.h>
 
+#include <SCOREP_ErrorCodes.h>
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
-
-
-#include <UTILS_Error.h>
+#include <stdarg.h>
+#include <stddef.h>
 
 
 SCOREP_ErrorCode

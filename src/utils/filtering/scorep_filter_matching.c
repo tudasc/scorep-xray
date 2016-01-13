@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,16 +43,14 @@
 #include <config.h>
 #include <scorep_filter_matching.h>
 
-#include <fnmatch.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 #include <SCOREP_Filter.h>
+
+#include <fnmatch.h>
+#include <stdlib.h>
+#include <assert.h>
 
 
 /* **************************************************************************************
