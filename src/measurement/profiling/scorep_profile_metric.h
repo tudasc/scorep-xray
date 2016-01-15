@@ -240,7 +240,7 @@ scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location
  */
 void
 scorep_profile_update_sparse_double( scorep_profile_sparse_metric_double* metric,
-                                     uint64_t                             value );
+                                     double                               value );
 
 /**
  *  Merges the statistics of a metric to another metric. Adds the statistics from
