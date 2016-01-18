@@ -1638,7 +1638,15 @@ dump_bitset( FILE*                       out,
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
-            char* quoted_string = single_quote_string( acceptedValues->name );
+            /* extract first name of alias list */
+            const char* curr = acceptedValues->name;
+            const char* next = strchr( curr, '/' );
+            if ( !next )
+            {
+                next = curr + strlen( curr );
+            }
+
+            char* quoted_string = single_quote_stringn( curr, next - curr );
             if ( !quoted_string )
             {
                 break;
