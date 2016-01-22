@@ -93,23 +93,51 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     ()
 {
     /** - Collective class macros */
-    comm_kind[ "MPI_Allgather" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Allgatherv" ]           = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Allreduce" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Alltoall" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Alltoallv" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Barrier" ]              = "BARRIER";
-    comm_kind[ "MPI_Bcast" ]                = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Gather" ]               = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Gatherv" ]              = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Reduce" ]               = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Reduce_scatter" ]       = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Reduce_scatter_block" ] = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Scan" ]                 = "COLL_OTHER";
-    comm_kind[ "MPI_Scatter" ]              = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Scatterv" ]             = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Alltoallw" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Exscan" ]               = "COLL_OTHER";
+    comm_kind[ "MPI_Allgather" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Allgatherv" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Allreduce" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Alltoall" ]              = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Alltoallv" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Barrier" ]               = "BARRIER";
+    comm_kind[ "MPI_Bcast" ]                 = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Gather" ]                = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Gatherv" ]               = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Reduce" ]                = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Reduce_scatter" ]        = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Reduce_scatter_block" ]  = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Scan" ]                  = "COLL_OTHER";
+    comm_kind[ "MPI_Scatter" ]               = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Scatterv" ]              = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Alltoallw" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Exscan" ]                = "COLL_OTHER";
+    comm_kind[ "MPI_Iallgather" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Iallgatherv" ]           = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Iallreduce" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ialltoall" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ialltoallv" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ibarrier" ]              = "BARRIER";
+    comm_kind[ "MPI_Ibcast" ]                = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Igather" ]               = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Igatherv" ]              = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Ireduce" ]               = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Ireduce_scatter" ]       = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ireduce_scatter_block" ] = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Iscan" ]                 = "COLL_OTHER";
+    comm_kind[ "MPI_Iscatter" ]              = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Iscatterv" ]             = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Ialltoallw" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Iexscan" ]               = "COLL_OTHER";
+    comm_kind[ "MPI_Neighbor_allgather" ]    = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Neighbor_allgatherv" ]   = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Neighbor_alltoall" ]     = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Neighbor_alltoallv" ]    = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Neighbor_alltoallw" ]    = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ineighbor_allgather" ]   = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ineighbor_allgatherv" ]  = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ineighbor_alltoall" ]    = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ineighbor_alltoallv" ]   = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Ineighbor_alltoallw" ]   = "COLL_ALL2ALL";
+
 
     /** - Point to Point class macros */
     comm_kind[ "MPI_Bsend" ]            = "POINT2POINT";
@@ -141,6 +169,8 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     comm_kind[ "MPI_Waitall" ]          = "POINT2POINT";
     comm_kind[ "MPI_Waitany" ]          = "POINT2POINT";
     comm_kind[ "MPI_Waitsome" ]         = "POINT2POINT";
+    comm_kind[ "MPI_Improbe" ]          = "POINT2POINT";
+    comm_kind[ "MPI_Imrecv" ]           = "POINT2POINT";
 
 
     /** - Func-object template handlers */
