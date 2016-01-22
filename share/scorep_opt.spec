@@ -53,7 +53,6 @@
 
                 // OpenMP-specific masks
                 global(omp_flush);
-                global(omp_management);
                 global(omp_ebarrier);
                 global(omp_ibarrier);
                 global(omp_taskwait);
@@ -241,20 +240,6 @@
                         if ( ${role} eq "flush" )
                         {
                             ${omp_flush}[${i}] = 1;
-                        };
-
-                        //--- Management
-                        // assign OMP Management time for "!$omp parallel" nodes
-                        // when they have an "!$omp do" or "!$omp for" node as first child
-
-                        if ( ( ${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]] != -1 )
-                             and
-                             ( ${role} eq "loop" )
-                             and
-                             ( ${cube::region::role}[${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]]] eq "parallel" )
-                           )
-                        {
-                            ${omp_management}[${cube::callpath::parent::id}[${i}]] = 1;
                         };
 
                         if ( ${role} eq "barrier" )
@@ -659,7 +644,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_time</url>
                 <descr>Time spent in the OpenMP run-time system and API</descr>
                 <cubepl>
-                    metric::omp_flush() + metric::omp_management() + metric::omp_synchronization()
+                    metric::omp_flush() + metric::omp_synchronization()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Flush</disp_name>
@@ -670,17 +655,6 @@
                     <descr>Time spent in the OpenMP flush directives</descr>
                     <cubepl>
                         ${omp_flush}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
-                    </cubepl>
-                </metric>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Management</disp_name>
-                    <uniq_name>omp_management</uniq_name>
-                    <dtype>FLOAT</dtype>
-                    <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_management</url>
-                    <descr>Time needed to start up and shut down team of threads</descr>
-                    <cubepl>
-                        ${omp_management}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="POSTDERIVED">

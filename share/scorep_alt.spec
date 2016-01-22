@@ -48,7 +48,6 @@
                 global(omp_sync_lock_api);
                 global(omp_sync_flush);
                 global(omp_sync_ordered);
-                global(omp_mgmt);
 
                 // Pthread-specific masks
                 global(pthread_sync_mutex_api);
@@ -197,20 +196,6 @@
                         if ( ${role} eq "ordered" )
                         {
                             ${omp_sync_ordered}[${i}] = 1;
-                        };
-
-                        //--- Management
-                        // assign OMP Management time for "!$omp parallel" nodes
-                        // when they have an "!$omp do" or "!$omp for" node as first child
-
-                        if ( ( ${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]] != -1 )
-                             and
-                             ( ${role} eq "loop" )
-                              and
-                             ( ${cube::region::role}[${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]]] eq "parallel" )
-                           )
-                        {
-                            ${omp_mgmt}[${cube::callpath::parent::id}[${i}]] = 1;
                         };
                     }
                     elseif ( ${paradigm} eq "pthread" )
@@ -378,7 +363,6 @@
                 if ( ${includesOpenMP} == 0 )
                 {
                     cube::metric::set::omp_sync("value", "VOID");
-                    cube::metric::set::omp_mgmt("value", "VOID");
                 };
                 if ( ${includesPthread} == 0 )
                 {
@@ -718,7 +702,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mgmt</url>
                 <descr>Total time spent on management</descr>
                 <cubepl>
-                    metric::mpi_mgmt() + metric::omp_mgmt() + metric::pthread_mgmt() + metric::ocl_mgmt() + metric::cuda_mgmt()
+                    metric::mpi_mgmt() + metric::pthread_mgmt() + metric::ocl_mgmt() + metric::cuda_mgmt()
                 </cubepl>
                 <metric type="POSTDERIVED">
                     <disp_name>MPI</disp_name>
@@ -752,17 +736,6 @@
                             ${mpi_mgmt_comm}[${calculation::callpath::id}] * metric::time(e)
                         </cubepl>
                     </metric>
-                </metric>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>OpenMP</disp_name>
-                    <uniq_name>omp_mgmt</uniq_name>
-                    <dtype>FLOAT</dtype>
-                    <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_mgmt</url>
-                    <descr>Time spent on management of OpenMP</descr>
-                    <cubepl>
-                        ${omp_mgmt}[${calculation::callpath::id}] * metric::time(e)
-                    </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>POSIX thread</disp_name>
