@@ -243,9 +243,18 @@
                             ${omp_flush}[${i}] = 1;
                         };
 
-                        if ( ${role} eq "parallel" )
+                        //--- Management
+                        // assign OMP Management time for "!$omp parallel" nodes
+                        // when they have an "!$omp do" or "!$omp for" node as first child
+
+                        if ( ( ${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]] != -1 )
+                             and
+                             ( ${role} eq "loop" )
+                             and
+                             ( ${cube::region::role}[${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]]] eq "parallel" )
+                           )
                         {
-                            ${omp_management}[${i}] = 1;
+                            ${omp_management}[${cube::callpath::parent::id}[${i}]] = 1;
                         };
 
                         if ( ${role} eq "barrier" )

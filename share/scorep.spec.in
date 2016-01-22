@@ -219,9 +219,14 @@
                             ${omp_flush}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "parallel" )
+                        if ( ( ${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]] != -1 )
+                             and
+                             ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "loop" )
+                             and
+                             ( ${cube::region::role}[${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]]] eq "parallel" )
+                           )
                         {
-                            ${omp_management}[${i}] = 1;
+                            ${omp_management}[${cube::callpath::parent::id}[${i}]] = 1;
                         };
 
                         if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )

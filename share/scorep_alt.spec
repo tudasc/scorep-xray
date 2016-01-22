@@ -200,10 +200,17 @@
                         };
 
                         //--- Management
+                        // assign OMP Management time for "!$omp parallel" nodes
+                        // when they have an "!$omp do" or "!$omp for" node as first child
 
-                        if ( ${role} eq "parallel" )
+                        if ( ( ${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]] != -1 )
+                             and
+                             ( ${role} eq "loop" )
+                              and
+                             ( ${cube::region::role}[${cube::callpath::calleeid}[${cube::callpath::parent::id}[${i}]]] eq "parallel" )
+                           )
                         {
-                            ${omp_mgmt}[${i}] = 1;
+                            ${omp_mgmt}[${cube::callpath::parent::id}[${i}]] = 1;
                         };
                     }
                     elseif ( ${paradigm} eq "pthread" )
