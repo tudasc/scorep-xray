@@ -160,8 +160,6 @@ SCOREP_InitMeasurement( void )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    UTILS_DEBUG_ENTRY();
-
     SCOREP_InitErrorCallback();
 
     if ( SCOREP_IN_SIGNAL_CONTEXT() )
@@ -179,6 +177,8 @@ SCOREP_InitMeasurement( void )
     // calls e.g. during the subsystem initialization.
     scorep_initialized = true;
     scorep_initialization_sanity_checks();
+
+    UTILS_DEBUG_ENTRY();
 
     /* == Initialize the configuration variables and read them from the environment == */
 
