@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -202,6 +202,7 @@ is_fortran_file( const std::string& filename )
     SCOREP_CHECK_EXT( ".F90" );
     SCOREP_CHECK_EXT( ".fpp" );
     SCOREP_CHECK_EXT( ".FPP" );
+    SCOREP_CHECK_EXT( ".for" );
     SCOREP_CHECK_EXT( ".For" );
     SCOREP_CHECK_EXT( ".FOR" );
     SCOREP_CHECK_EXT( ".Ftn" );
