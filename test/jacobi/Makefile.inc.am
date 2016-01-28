@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -189,11 +189,9 @@ jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.mod.F90         \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90.opari.inc
 jacobi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) @OPARI2_CPPFLAGS@
+jacobi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/OpenMP/Fortran
 jacobi_omp_f90_LDADD    = $(omp_libadd) libjacobi_pomp_f90.la
-jacobi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
-jacobi_omp_f90_LDFLAGS += $(omp_ldflags)
+jacobi_omp_f90_LDFLAGS  = $(omp_ldflags)
 
 check_PROGRAMS                        += jacobi_omp_f90_uninstrumented
 jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 \
@@ -201,7 +199,6 @@ jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/V
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
 jacobi_omp_f90_uninstrumented_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_omp_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_omp_f90_uninstrumented_CPPFLAGS = $(OPENMP_CXXFLAGS)
 jacobi_omp_f90_uninstrumented_LDADD    = -lm
 
 TESTS_OMP += jacobi_omp_f90
