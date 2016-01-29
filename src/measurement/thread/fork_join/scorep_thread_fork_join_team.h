@@ -1,5 +1,5 @@
 /*
- * This file is part of the SCOREP project (http://www.scorep.de)
+ * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
  * RWTH Aachen University, Germany
