@@ -86,8 +86,6 @@ process to be analyzed and the number of cores to be used.
 <dt>Accelerator-based paradigms:</dt>
 <dd><ul>
   <li>@emph{CUDA}</li>
-</ul></dd>
-<dd><ul>
   <li>@emph{OpenCL}</li>
 </ul></dd>
 </dl>
