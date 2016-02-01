@@ -81,7 +81,7 @@
                 ${includesOpenMP}  = 0;
                 ${includesPthread} = 0;
                 ${includesOpenCL}  = 0;
-                ${includesCUDA}  = 0;
+                ${includesCUDA}    = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -95,7 +95,7 @@
 
                         if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "PARALLEL" ) )
                         {
-                            ${mpi}[${i}]   = 1;
+                            ${mpi}[${i}] = 1;
                         };
 
                         if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
@@ -295,7 +295,7 @@
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "WAIT FOR COMMAND QUEUE" )
                         {
-                            ${opencl_sync}[${i}] = 1; 
+                            ${opencl_sync}[${i}] = 1;
                         };
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask)$/ )
@@ -310,12 +310,12 @@
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
                         {
-                            ${opencl}[${i}] = 0;
+                            ${opencl}[${i}]    = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
                     };
-                    
+
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "cuda" )
                     {
                         ${includesCUDA} = 1;
@@ -377,24 +377,19 @@
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
                         {
-                            ${cuda}[${i}] = 0;
+                            ${cuda}[${i}]      = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
                     };
 
-                    if (
-                        ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
-                        or
-                        ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
-                        or 
-                        ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MEASUREMENT OFF" )
-                        or
-                        ( ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "thread-fork-join" ) and ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "TASKS" ) )
-                       )
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
                     {
-                        ${execution}[${i}] = 0;
-                        ${overhead}[${i}]  = 1;
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "TRACE BUFFER FLUSH" )
+                        {
+                            ${execution}[${i}] = 0;
+                            ${overhead}[${i}]  = 1;
+                        };
                     };
 
                     ${i} = ${i} + 1;
@@ -428,10 +423,10 @@
             </cubeplinit>
             <metric type="POSTDERIVED">
                 <disp_name>Computation</disp_name>
-                <uniq_name>comp</uniq_name>
+                <uniq_name>computation</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#computation</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
                     metric::execution() - metric::mpi() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
@@ -442,7 +437,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_executions</url>
-                    <descr>Time spend in execution of OpenCL kernels</descr>
+                    <descr>Time spent executing OpenCL kernels</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -460,7 +455,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_executions</url>
-                    <descr>Time spend in execution of CUDA kernels</descr>
+                    <descr>Time spent executing CUDA kernels</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -694,7 +689,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_time</url>
                 <descr>Time spent in the OpenMP run-time system and API</descr>
                 <cubepl>
-                    metric::omp_flush() +  metric::omp_synchronization()
+                    metric::omp_flush() + metric::omp_synchronization()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Flush</disp_name>
@@ -936,7 +931,7 @@
                         ${tmp} = metric::time(e) - metric::opencl_kernel_executions(e) - metric::omp_idle_threads(e);
                     };
                     return ${tmp};
-                } 
+                }
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Initialization and finalization</disp_name>

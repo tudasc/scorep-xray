@@ -90,7 +90,7 @@
                 ${includesOpenMP}  = 0;
                 ${includesPthread} = 0;
                 ${includesOpenCL}  = 0;
-                ${includesCUDA}  = 0;
+                ${includesCUDA}    = 0;
 
 
                 //--- Callpath categorization -------------------------------
@@ -120,7 +120,7 @@
                         // filtered out from MPI 
                         if ( not ( ${name} =~ /^PARALLEL/ ) )
                         {
-                            ${mpi}[${i}]   = 1;
+                            ${mpi}[${i}] = 1;
                         };
 
                         if ( ${role} eq "barrier" )
@@ -332,7 +332,7 @@
 
                         if ( ${name} eq "BUFFER FLUSH" )
                         {
-                            ${opencl}[${i}] = 0;
+                            ${opencl}[${i}]    = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
@@ -409,23 +409,18 @@
 
                         if ( ${name} eq "BUFFER FLUSH" )
                         {
-                            ${cuda}[${i}] = 0;
+                            ${cuda}[${i}]      = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
                     }
-                    elseif (
-                        ( ${paradigm} eq "measurement" )
-                        or
-                        ( ${name} eq "BUFFER FLUSH" )
-                        or 
-                        ( ${name} eq "MEASUREMENT OFF" )
-                        or
-                        ( ( ${paradigm} eq "thread-fork-join" ) and ( ${name} eq "TASKS" ) )
-                       )
+                    elseif ( ${paradigm} eq "measurement" )
                     {
-                        ${execution}[${i}] = 0;
-                        ${overhead}[${i}]  = 1;
+                        if ( ${name} eq "TRACE BUFFER FLUSH" )
+                        {
+                            ${execution}[${i}] = 0;
+                            ${overhead}[${i}]  = 1;
+                        };
                     };
 
                     ${i} = ${i} + 1;
@@ -462,10 +457,10 @@
             </cubeplinit>
             <metric type="POSTDERIVED">
                 <disp_name>Computation</disp_name>
-                <uniq_name>comp</uniq_name>
+                <uniq_name>computation</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#computation</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
                     metric::execution() - metric::mpi() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
@@ -476,7 +471,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_executions</url>
-                    <descr>Time spend in execution of OpenCL kernels</descr>
+                    <descr>Time spent executing OpenCL kernels</descr>
                     <cubepl>
                         ${opencl_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
@@ -487,7 +482,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_executions</url>
-                    <descr>Time spend in execution of CUDA kernels</descr>
+                    <descr>Time spent executing CUDA kernels</descr>
                     <cubepl>
                         ${cuda_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
@@ -519,7 +514,7 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_sync_collective</url>
-                        <descr>Time spent on MPI barriers</descr>
+                        <descr>Time spent in MPI barriers</descr>
                         <cubepl>
                             ${mpi_sync_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
@@ -665,7 +660,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_synchronization</url>
                     <descr>Time spent on OpenMP synchronization</descr>
                     <cubepl>
-                        metric::omp_barrier() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered()
+                        metric::omp_barrier() + metric::omp_taskwait() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered()
                     </cubepl>
                     <metric type="POSTDERIVED">
                         <disp_name>Barrier</disp_name>
@@ -969,7 +964,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_rma</url>
             <descr>Number of Remote Memory Access synchronizations</descr>
             <cubepl>
-                metric::syncs_fence() + metric::syncs_gats()  + metric::syncs_locks()
+                metric::syncs_fence() + metric::syncs_gats() + metric::syncs_locks()
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Fences</disp_name>
