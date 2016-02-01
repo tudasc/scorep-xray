@@ -52,13 +52,13 @@
                 global(comms_rma_gets);
 
                 // OpenMP-specific masks
+                global(omp_sync_ebarrier);
+                global(omp_sync_ibarrier);
+                global(omp_sync_critical);
+                global(omp_sync_lock_api);
+                global(omp_sync_ordered);
+                global(omp_sync_taskwait);
                 global(omp_flush);
-                global(omp_ebarrier);
-                global(omp_ibarrier);
-                global(omp_taskwait);
-                global(omp_critical);
-                global(omp_lock_api);
-                global(omp_ordered);
 
                 // Pthread-specific masks
                 global(pthread_management);
@@ -233,43 +233,45 @@
                             ${mpi_init_exit}[${i}] = 1;
                         };
                     }
+
+                    //--- OpenMP-specific categorization ---
                     elseif ( ${paradigm} eq "openmp" )
                     {
                         ${includesOpenMP} = 1;
 
-                        if ( ${role} eq "flush" )
-                        {
-                            ${omp_flush}[${i}] = 1;
-                        };
-
                         if ( ${role} eq "barrier" )
                         {
-                            ${omp_ebarrier}[${i}] = 1;
+                            ${omp_sync_ebarrier}[${i}] = 1;
                         };
 
                         if ( ${role} eq "implicit barrier" )
                         {
-                            ${omp_ibarrier}[${i}] = 1;
+                            ${omp_sync_ibarrier}[${i}] = 1;
                         };
 
-                        if ( ${role} eq "task wait" )
+                        if ( ${role} =~ /^(atomic|critical)$/ )
                         {
-                            ${omp_taskwait}[${i}] = 1;
-                        };
-
-                        if ( ( ${role} eq "atomic" ) or ( ${role} eq "critical" ) )
-                        {
-                            ${omp_critical}[${i}] = 1;
+                            ${omp_sync_critical}[${i}] = 1;
                         };
 
                         if ( ${name} =~ /^omp_(destroy|init|set|test|unset)(_nest){0,1}_lock$/ )
                         {
-                            ${omp_lock_api}[${i}] = 1;
+                            ${omp_sync_lock_api}[${i}] = 1;
                         };
 
                         if ( ${role} eq "ordered" )
                         {
-                            ${omp_ordered}[${i}] = 1;
+                            ${omp_sync_ordered}[${i}] = 1;
+                        };
+
+                        if ( ${role} eq "taskwait" )
+                        {
+                            ${omp_sync_taskwait}[${i}] = 1;
+                        };
+
+                        if ( ${role} eq "flush" )
+                        {
+                            ${omp_flush}[${i}] = 1;
                         };
                     }
                     elseif ( ${paradigm} eq "pthread" )
@@ -436,6 +438,7 @@
                 if ( ${includesOpenMP} == 0 )
                 {
                     cube::metric::set::omp_time("value", "VOID");
+                    cube::metric::set::omp_idle_threads("value", "VOID");
                 };
                 if ( ${includesPthread} == 0 )
                 {
@@ -632,26 +635,15 @@
                 </metric>
             </metric>
             <metric type="POSTDERIVED">
-                <disp_name>OMP</disp_name>
+                <disp_name>OpenMP</disp_name>
                 <uniq_name>omp_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_time</url>
                 <descr>Time spent in the OpenMP run-time system and API</descr>
                 <cubepl>
-                    metric::omp_flush() + metric::omp_synchronization()
+                    metric::omp_synchronization() + metric::omp_flush()
                 </cubepl>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Flush</disp_name>
-                    <uniq_name>omp_flush</uniq_name>
-                    <dtype>FLOAT</dtype>
-                    <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_flush</url>
-                    <descr>Time spent in the OpenMP flush directives</descr>
-                    <cubepl>
-                        ${omp_flush}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
-                    </cubepl>
-                </metric>
                 <metric type="POSTDERIVED">
                     <disp_name>Synchronization</disp_name>
                     <uniq_name>omp_synchronization</uniq_name>
@@ -660,7 +652,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_synchronization</url>
                     <descr>Time spent on OpenMP synchronization</descr>
                     <cubepl>
-                        metric::omp_barrier() + metric::omp_taskwait() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered()
+                        metric::omp_barrier() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered() + metric::omp_taskwait()
                     </cubepl>
                     <metric type="POSTDERIVED">
                         <disp_name>Barrier</disp_name>
@@ -668,7 +660,7 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_barrier</url>
-                        <descr>OpenMP barrier synchronization</descr>
+                        <descr>Time spent in OpenMP barrier synchronization</descr>
                         <cubepl>
                             metric::omp_ebarrier() + metric::omp_ibarrier()
                         </cubepl>
@@ -678,9 +670,9 @@
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ebarrier</url>
-                            <descr>Time spent in explicit OpenMP barriers</descr>
+                            <descr>Time spent in explicit OpenMP barrier synchronization</descr>
                             <cubepl>
-                                ${omp_ebarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                                ${omp_sync_ebarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -689,22 +681,11 @@
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ibarrier</url>
-                            <descr>Time spent in implicit OpenMP barriers</descr>
+                            <descr>Time spent in implicit OpenMP barrier synchronization</descr>
                             <cubepl>
-                                ${omp_ibarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                                ${omp_sync_ibarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
-                    </metric>
-                    <metric type="PREDERIVED_EXCLUSIVE">
-                        <disp_name>Task Wait</disp_name>
-                        <uniq_name>omp_taskwait</uniq_name>
-                        <dtype>FLOAT</dtype>
-                        <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#omp_taskwait</url>
-                        <descr>Time spent waiting for child tasks to finish</descr>
-                        <cubepl>
-                            ${omp_taskwait}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
-                        </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Critical</disp_name>
@@ -712,9 +693,9 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_critical</url>
-                        <descr>Time spent in front of a critical section</descr>
+                        <descr>Time spent waiting at OpenMP critical sections</descr>
                         <cubepl>
-                            ${omp_critical}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${omp_sync_critical}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -723,9 +704,9 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_lock_api</url>
-                        <descr>Time spent in OpenMP API calls dealing with locks</descr>
+                        <descr>Time spent in OpenMP lock API calls</descr>
                         <cubepl>
-                            ${omp_lock_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${omp_sync_lock_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -734,11 +715,33 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ordered</url>
-                        <descr>Time spent in front of an ordered region</descr>
+                        <descr>Time spent waiting at OpenMP ordered regions</descr>
                         <cubepl>
-                            ${omp_ordered}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${omp_sync_ordered}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Task Wait</disp_name>
+                        <uniq_name>omp_taskwait</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#omp_taskwait</url>
+                        <descr>Time spent waiting in OpenMP taskwait directives</descr>
+                        <cubepl>
+                            ${omp_sync_taskwait}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Flush</disp_name>
+                    <uniq_name>omp_flush</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_flush</url>
+                    <descr>Time spent in OpenMP flush directives</descr>
+                    <cubepl>
+                        ${omp_flush}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                    </cubepl>
                 </metric>
             </metric>
             <metric type="POSTDERIVED">
