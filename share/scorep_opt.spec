@@ -61,9 +61,9 @@
                 global(omp_flush);
 
                 // Pthread-specific masks
-                global(pthread_management);
-                global(pthread_mutex_api);
-                global(pthread_cond_api);
+                global(pthread_mgmt);
+                global(pthread_sync_mutex);
+                global(pthread_sync_condition);
 
                 // OpenCL-specific masks
                 global(opencl);
@@ -274,23 +274,25 @@
                             ${omp_flush}[${i}] = 1;
                         };
                     }
+
+                    //--- Pthread-specific categorization ---
                     elseif ( ${paradigm} eq "pthread" )
                     {
                         ${includesPthread} = 1;
 
-                        if ( ${name} =~ /^pthread_(create|join|exit|abort|cancel|detach)$/ )
+                        if ( ${name} =~ /^pthread_(cancel|create|detach|exit|join)$/ )
                         {
-                            ${pthread_management}[${i}] = 1;
+                            ${pthread_mgmt}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^pthread_mutex_*/ )
+                        if ( ${name} =~ /^pthread_mutex_(destroy|init|lock|trylock|unlock)$/ )
                         {
-                            ${pthread_mutex_api}[${i}] = 1;
+                            ${pthread_sync_mutex}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^pthread_cond_*/ )
+                        if ( ${name} =~ /^pthread_cond_(broadcast|destroy|init|signal|timedwait|wait)$/ )
                         {
-                            ${pthread_cond_api}[${i}] = 1;
+                            ${pthread_sync_condition}[${i}] = 1;
                         };
                     }
                     elseif ( ${paradigm} eq "opencl" )
@@ -745,12 +747,12 @@
                 </metric>
             </metric>
             <metric type="POSTDERIVED">
-                <disp_name>Pthread</disp_name>
+                <disp_name>POSIX threads</disp_name>
                 <uniq_name>pthread_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_time</url>
-                <descr>Time spent in the Pthread run-time system and API</descr>
+                <descr>Time spent in the POSIX threads API</descr>
                 <cubepl>
                     metric::pthread_management() + metric::pthread_synchronization()
                 </cubepl>
@@ -760,9 +762,9 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_management</url>
-                    <descr>Time needed to start up and shut down POSIX threads</descr>
+                    <descr>Time spent in POSIX threads management</descr>
                     <cubepl>
-                        ${pthread_management}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        ${pthread_mgmt}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="POSTDERIVED">
@@ -773,28 +775,28 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_synchronization</url>
                     <descr>Time spent on Pthread synchronization</descr>
                     <cubepl>
-                        metric::pthread_mutex_api() + metric::pthread_cond_api()
+                        metric::pthread_lock_api() + metric::pthread_conditional()
                     </cubepl>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Mutex</disp_name>
-                        <uniq_name>pthread_mutex_api</uniq_name>
+                        <uniq_name>pthread_lock_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_mutex_api</url>
-                        <descr>Time spent in Pthread API calls dealing with mutexes</descr>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_lock_api</url>
+                        <descr>Time spent in POSIX threads mutex API calls</descr>
                         <cubepl>
-                            ${pthread_mutex_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${pthread_sync_mutex}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
-                        <disp_name>Conditional</disp_name>
-                        <uniq_name>pthread_cond_api</uniq_name>
+                        <disp_name>Condition</disp_name>
+                        <uniq_name>pthread_conditional</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_cond_api</url>
-                        <descr>Time spent in Pthread API calls dealing with conditional operations</descr>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_conditional</url>
+                        <descr>Time spent in POSIX threads condition API calls</descr>
                         <cubepl>
-                            ${pthread_cond_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${pthread_sync_condition}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
