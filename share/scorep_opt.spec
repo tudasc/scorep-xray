@@ -30,20 +30,22 @@
 
                 // MPI-specific masks
                 global(mpi);
+                global(mpi_mgmt_startup);
+                global(mpi_mgmt_file);
                 global(mpi_sync_collective);
                 global(mpi_rma_sync_active);
                 global(mpi_rma_sync_passive);
                 global(mpi_point2point);
                 global(mpi_collective);
                 global(mpi_rma_communication);
-                global(mpi_io);
-                global(mpi_io_individual);
+                global(mpi_file_individual);
+                global(mpi_file_collective);
+                global(mpi_file_iops);
                 global(mpi_file_irops);
                 global(mpi_file_iwops);
-                global(mpi_io_collective);
+                global(mpi_file_cops);
                 global(mpi_file_crops);
                 global(mpi_file_cwops);
-                global(mpi_init_exit);
                 global(syncs_fence);
                 global(syncs_gats_access);
                 global(syncs_gats_exposure);
@@ -112,15 +114,34 @@
                     //--- MPI-specific categorization ---
                     if ( ${paradigm} eq "mpi" )
                     {
-
                         ${includesMPI} = 1;
-                        
-                        // Without compiler instrumentation artificial PARALLEL region
-                        // created with MPI paradigm which should be
-                        // filtered out from MPI 
-                        if ( not ( ${name} =~ /^PARALLEL/ ) )
+
+                        // Without compiler instrumentation, an artificial PARALLEL region with
+                        // paradigm MPI is created by the adapter.  As it covers the application
+                        // execution time between MPI_Init and MPI_Finalize, it is classified as
+                        // Execution rather than MPI.
+                        if ( not ( ${name} eq "PARALLEL" ) )
                         {
                             ${mpi}[${i}] = 1;
+                        };
+
+                        if ( ${name} =~ /^MPI_(Init|Init_thread|Finalize)$/ )
+                        {
+                            ${mpi_mgmt_startup}[${i}] = 1;
+                        };
+
+                        if ( ${name} =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
+                        {
+                            ${mpi_mgmt_file}[${i}] = 1;
+
+                            if ( ${name} =~ /(delete|get|seek)/ )
+                            {
+                                ${mpi_file_iops}[${i}] = 1;
+                            }
+                            else
+                            {
+                                ${mpi_file_cops}[${i}] = 1;
+                            };
                         };
 
                         if ( ${role} eq "barrier" )
@@ -186,51 +207,34 @@
                             };
                         };
 
-                        if ( ${name} =~ /^MPI_File/ )
+                        if ( ${name} =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
                         {
-                            ${mpi_io}[${i}] = 1;
+                            ${mpi_file_individual}[${i}] = 1;
+                            ${mpi_file_iops}[${i}]       = 1;
 
-                            if (
-                                not ( ${name} =~ /^MPI_File_set_err/ )
-                                and
-                                (
-                                    ( ${name} =~ /^MPI_File_(open|close|preallocate|seek_shared|sync)$/ )
-                                    or
-                                    ( ${name} =~ /^MPI_File.*_(all|ordered|set)/ )
-                                )
-                               )
+                            if ( ${name} =~ /read/ )
                             {
-                                ${mpi_io_collective}[${i}] = 1;
-
-                                if ( ${name} =~ /^MPI_File_read.*_(all|ordered)$/ )
-                                {
-                                    ${mpi_file_crops}[${i}] = 1;
-                                };
-
-                                if ( ${name} =~ /^MPI_File_write.*_(all|ordered)$/ )
-                                {
-                                    ${mpi_file_cwops}[${i}] = 1;
-                                };
+                                ${mpi_file_irops}[${i}] = 1;
                             }
                             else
                             {
-                                ${mpi_io_individual}[${i}] = 1;
-
-                                if ( ${name} =~ /^MPI_File.*read(_at|_shared)?$/ )
-                                {
-                                    ${mpi_file_irops}[${i}] = 1;
-                                };
-
-                                if ( ${name} =~ /^MPI_File.*write(_at|_shared)?$/ )
-                                {
-                                    ${mpi_file_iwops}[${i}] = 1;
-                                };
+                                ${mpi_file_iwops}[${i}] = 1;
                             };
                         };
 
-                        if ( ${name} =~ /^MPI_(Init|Init_thread|Finalize)$/ )
+                        if ( ${name} =~ /^MPI_File_(read|write)_(all|at_all|ordered)(_begin|_end){0,1}$/ )
                         {
-                            ${mpi_init_exit}[${i}] = 1;
+                            ${mpi_file_collective}[${i}] = 1;
+                            ${mpi_file_cops}[${i}]       = 1;
+
+                            if ( ${name} =~ /read/ )
+                            {
+                                ${mpi_file_crops}[${i}] = 1;
+                            }
+                            else
+                            {
+                                ${mpi_file_cwops}[${i}] = 1;
+                            };
                         };
                     }
 
@@ -436,6 +440,7 @@
                 if ( ${includesMPI} == 0 )
                 {
                     cube::metric::set::mpi("value", "VOID");
+                    cube::metric::set::mpi_file_ops("value", "VOID");
                 };
                 if ( ${includesOpenMP} == 0 )
                 {
@@ -503,6 +508,39 @@
                 <cubepl>
                     ${mpi}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                 </cubepl>
+                <metric type="POSTDERIVED">
+                    <disp_name>Management</disp_name>
+                    <uniq_name>mpi_management</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_management</url>
+                    <descr>Time spent in MPI management operations</descr>
+                    <cubepl>
+                        metric::mpi_init_exit() + metric::mpi_mgmt_file()
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Init/Finalize</disp_name>
+                        <uniq_name>mpi_init_exit</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_init_exit</url>
+                        <descr>Time spent in MPI initialization/finalization calls</descr>
+                        <cubepl>
+                            ${mpi_mgmt_startup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>File</disp_name>
+                        <uniq_name>mpi_mgmt_file</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_file</url>
+                        <descr>Time spent in MPI file management calls</descr>
+                        <cubepl>
+                            ${mpi_mgmt_file}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
+                </metric>
                 <metric type="POSTDERIVED">
                     <disp_name>Synchronization</disp_name>
                     <uniq_name>mpi_synchronization</uniq_name>
@@ -602,7 +640,7 @@
                         </cubepl>
                     </metric>
                 </metric>
-                <metric type="PREDERIVED_EXCLUSIVE">
+                <metric type="POSTDERIVED">
                     <disp_name>File I/O</disp_name>
                     <uniq_name>mpi_io</uniq_name>
                     <dtype>FLOAT</dtype>
@@ -610,8 +648,19 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io</url>
                     <descr>Time spent in MPI file I/O calls</descr>
                     <cubepl>
-                        ${mpi_io}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        metric::mpi_io_individual() + metric::mpi_io_collective()
                     </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Individual</disp_name>
+                        <uniq_name>mpi_io_individual</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_individual</url>
+                        <descr>Time spent in individual MPI file I/O calls</descr>
+                        <cubepl>
+                            ${mpi_file_individual}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Collective</disp_name>
                         <uniq_name>mpi_io_collective</uniq_name>
@@ -620,20 +669,9 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_collective</url>
                         <descr>Time spent in collective MPI file I/O calls</descr>
                         <cubepl>
-                            ${mpi_io_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${mpi_file_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
-                </metric>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Init/Exit</disp_name>
-                    <uniq_name>mpi_init_exit</uniq_name>
-                    <dtype>FLOAT</dtype>
-                    <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_init_exit</url>
-                    <descr>Time spent in MPI initialization calls</descr>
-                    <cubepl>
-                        ${mpi_init_exit}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
-                    </cubepl>
                 </metric>
             </metric>
             <metric type="POSTDERIVED">
@@ -1178,7 +1216,7 @@
             </metric>
         </metric>
     </metric>
-    <metric type="PREDERIVED_EXCLUSIVE">
+    <metric type="POSTDERIVED">
         <disp_name>MPI file operations</disp_name>
         <uniq_name>mpi_file_ops</uniq_name>
         <dtype>INTEGER</dtype>
@@ -1186,7 +1224,7 @@
         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_ops</url>
         <descr>Number of MPI file operations</descr>
         <cubepl>
-            ${mpi_io}[${calculation::callpath::id}] * metric::visits(e)
+            metric::mpi_file_iops() + metric::mpi_file_cops()
         </cubepl>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Individual</disp_name>
@@ -1196,7 +1234,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iops</url>
             <descr>Number of individual MPI file operations</descr>
             <cubepl>
-                ${mpi_io_individual}[${calculation::callpath::id}] * metric::visits(e)
+                ${mpi_file_iops}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
@@ -1229,7 +1267,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cops</url>
             <descr>Number of collective MPI file operations</descr>
             <cubepl>
-                ${mpi_io_collective}[${calculation::callpath::id}] * metric::visits(e)
+                ${mpi_file_cops}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
