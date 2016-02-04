@@ -35,9 +35,9 @@
                 global(mpi_sync_collective);
                 global(mpi_sync_rma_active);
                 global(mpi_sync_rma_passive);
-                global(mpi_point2point);
-                global(mpi_collective);
-                global(mpi_rma_communication);
+                global(mpi_comm_p2p);
+                global(mpi_comm_collective);
+                global(mpi_comm_rma);
                 global(mpi_file_individual);
                 global(mpi_file_collective);
                 global(mpi_file_iops);
@@ -153,23 +153,24 @@
                             ${mpi_sync_rma_passive}[${i}] = 1;
                         };
 
+                        // *FIXME:* Correctly classify test/wait calls
                         if (
                             ( ${role} eq "point2point" )
                             or
-                            ( ${name} =~ /^MPI_.*(buffer|cancel|get_count|request)/ )
+                            ( ${name} =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
                            )
                         {
-                            ${mpi_point2point}[${i}] = 1;
+                            ${mpi_comm_p2p}[${i}] = 1;
                         };
 
                         if ( ${role} =~ /^(one2all|all2one|all2all|other collective)$/ )
                         {
-                            ${mpi_collective}[${i}] = 1;
+                            ${mpi_comm_collective}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_(Put|Get|Accumulate)$/ )
+                        if ( ${name} =~ /^MPI_(Accumulate|Compare_and_swap|Fetch_and_op|Get|Get_accumulate|Put|Raccumulate|Rget|Rget_accumulate|Rput)$/ )
                         {
-                            ${mpi_rma_communication}[${i}] = 1;
+                            ${mpi_comm_rma}[${i}] = 1;
                         };
 
                         if ( ${name} =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
@@ -577,9 +578,9 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_point2point</url>
-                        <descr>MPI point-to-point communication</descr>
+                        <descr>Time spent in MPI point-to-point communication</descr>
                         <cubepl>
-                            ${mpi_point2point}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${mpi_comm_p2p}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -588,20 +589,20 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_collective</url>
-                        <descr>MPI collective communication</descr>
+                        <descr>Time spent in MPI collective communication</descr>
                         <cubepl>
-                            ${mpi_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${mpi_comm_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
-                        <disp_name>Remote Memory Access</disp_name>
+                        <disp_name>One-sided</disp_name>
                         <uniq_name>mpi_rma_communication</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_communication</url>
-                        <descr>MPI remote memory access communication</descr>
+                        <descr>Tiome spent in MPI one-sided communication</descr>
                         <cubepl>
-                            ${mpi_rma_communication}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                            ${mpi_comm_rma}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>

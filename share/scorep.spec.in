@@ -35,9 +35,9 @@
                 global(mpi_sync_collective);
                 global(mpi_sync_rma_active);
                 global(mpi_sync_rma_passive);
-                global(mpi_point2point);
-                global(mpi_collective);
-                global(mpi_rma_communication);
+                global(mpi_comm_p2p);
+                global(mpi_comm_collective);
+                global(mpi_comm_rma);
                 global(mpi_file_individual);
                 global(mpi_file_collective);
                 global(mpi_file_iops);
@@ -130,20 +130,20 @@
                         if (
                             ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "point2point" )
                             or
-                            ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_.*(buffer|cancel|get_count|request)/ )
+                            ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
                            )
                         {
-                            ${mpi_point2point}[${i}] = 1;
+                            ${mpi_comm_p2p}[${i}] = 1;
                         };
 
                         if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
                         {
-                            ${mpi_collective}[${i}] = 1;
+                            ${mpi_comm_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Put|Get|Accumulate)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Accumulate|Compare_and_swap|Fetch_and_op|Get|Get_accumulate|Put|Raccumulate|Rget|Rget_accumulate|Rput)$/ )
                         {
-                            ${mpi_rma_communication}[${i}] = 1;
+                            ${mpi_comm_rma}[${i}] = 1;
                         };
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
@@ -375,6 +375,9 @@
                     cube::metric::set::mpi_rma_sync_active("value", "VOID");
                     cube::metric::set::mpi_rma_sync_passive("value", "VOID");
                     cube::metric::set::mpi_communication("value", "VOID");
+                    cube::metric::set::mpi_point2point("value", "VOID");
+                    cube::metric::set::mpi_collective("value", "VOID");
+                    cube::metric::set::mpi_rma_communication("value", "VOID");
                     cube::metric::set::mpi_io("value", "VOID");
                     cube::metric::set::mpi_io_individual("value", "VOID");
                     cube::metric::set::mpi_io_collective("value", "VOID");
@@ -626,11 +629,11 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_point2point</url>
-                        <descr>MPI point-to-point communication</descr>
+                        <descr>Time spent in MPI point-to-point communication</descr>
                         <cubepl>
                         {
                             ${tmp} = 0;
-                            if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
+                            if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
                             {
                                 ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
                             };
@@ -644,11 +647,11 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_collective</url>
-                        <descr>MPI collective communication</descr>
+                        <descr>Time spent in MPI collective communication</descr>
                         <cubepl>
                         {
                             ${tmp} = 0;
-                            if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
+                            if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
                             {
                                 ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
                             };
@@ -657,16 +660,16 @@
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
-                        <disp_name>Remote Memory Access</disp_name>
+                        <disp_name>One-sided</disp_name>
                         <uniq_name>mpi_rma_communication</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_communication</url>
-                        <descr>MPI remote memory access communication</descr>
+                        <descr>Time spent in MPI one-sided communication</descr>
                         <cubepl>
                         {
                             ${tmp} = 0;
-                            if ( ${mpi_rma_communication}[${calculation::callpath::id}] == 1 )
+                            if ( ${mpi_comm_rma}[${calculation::callpath::id}] == 1 )
                             {
                                 ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
                             };

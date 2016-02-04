@@ -376,7 +376,7 @@ various Score-P components.
     information. Depending on the compiler this may turn off
     optimization unless optimization flags are explicitly specified.
 
-  - For autotools or CMake based buildsystmes, please consult the usage
+  - For autotools or CMake based build systems, please consult the usage
     of `scorep-wrapper` to learn about the recommended way to apply
     instrumentation.
 
@@ -419,6 +419,13 @@ various Score-P components.
     the link line which may cause 'undefined reference' errors. This
     may happen for other libraries that were requested at configure time
     as well.
+
+  - The Cube metric hierarchy remapping specification file shipped with
+    Score-P currently classifies all MPI request finalization calls (i.e.,
+    MPI_Test[all|any|some] and MPI_Wait[all|any|some]) as point-to-point,
+    regardless of whether they actually finalize a point-to-point request,
+    a file I/O request, or a non-blocking collective operation. This will
+    be addressed in a future release.
 
 --------------------------------------------------------------------------------
 
