@@ -33,8 +33,8 @@
                 global(mpi_mgmt_startup);
                 global(mpi_mgmt_file);
                 global(mpi_sync_collective);
-                global(mpi_rma_sync_active);
-                global(mpi_rma_sync_passive);
+                global(mpi_sync_rma_active);
+                global(mpi_sync_rma_passive);
                 global(mpi_point2point);
                 global(mpi_collective);
                 global(mpi_rma_communication);
@@ -46,12 +46,6 @@
                 global(mpi_file_cops);
                 global(mpi_file_crops);
                 global(mpi_file_cwops);
-                global(syncs_fence);
-                global(syncs_gats_access);
-                global(syncs_gats_exposure);
-                global(syncs_locks);
-                global(comms_rma_puts);
-                global(comms_rma_gets);
 
                 // OpenMP-specific masks
                 global(omp_sync_ebarrier);
@@ -149,34 +143,14 @@
                             ${mpi_sync_collective}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_Win_(post|wait|start|complete|fence)$/ )
+                        if ( ${name} =~ /^MPI_Win_(complete|fence|post|start|test|wait)$/ )
                         {
-                            ${mpi_rma_sync_active}[${i}] = 1;
-
-                            if ( ${name} eq "MPI_Win_fence" )
-                            {
-                                ${syncs_fence}[${i}] = 1;
-                            };
-
-                            if ( ${name} eq "MPI_Win_start" )
-                            {
-                                ${syncs_gats_access}[${i}] = 1;
-                            };
-
-                            if ( ${name} eq "MPI_Win_post" )
-                            {
-                                ${syncs_gats_exposure}[${i}] = 1;
-                            };
+                            ${mpi_sync_rma_active}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_Win_(lock|unlock)$/ )
+                        if ( ${name} =~ /^MPI_Win_((flush(_local){0,1}|lock|unlock)(_all){0,1}|sync)$/ )
                         {
-                            ${mpi_rma_sync_passive}[${i}] = 1;
-
-                            if ( ${name} eq "MPI_Win_lock" )
-                            {
-                                ${syncs_locks}[${i}] = 1;
-                            };
+                            ${mpi_sync_rma_passive}[${i}] = 1;
                         };
 
                         if (
@@ -196,15 +170,6 @@
                         if ( ${name} =~ /^MPI_(Put|Get|Accumulate)$/ )
                         {
                             ${mpi_rma_communication}[${i}] = 1;
-
-                            if ( ${name} eq "MPI_Get" )
-                            {
-                                ${comms_rma_gets}[${i}] = 1;
-                            }
-                            else
-                            {
-                                ${comms_rma_puts}[${i}] = 1;
-                            };
                         };
 
                         if ( ${name} =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
@@ -222,7 +187,7 @@
                             };
                         };
 
-                        if ( ${name} =~ /^MPI_File_(read|write)_(all|at_all|ordered)(_begin|_end){0,1}$/ )
+                        if ( ${name} =~ /^MPI_File_((iread|iwrite)_(all|at_all)|(read|write)_(all|at_all|ordered)(_begin|_end){0,1})$/ )
                         {
                             ${mpi_file_collective}[${i}] = 1;
                             ${mpi_file_cops}[${i}]       = 1;
@@ -563,12 +528,12 @@
                         </cubepl>
                     </metric>
                     <metric type="POSTDERIVED">
-                        <disp_name>Remote Memory Access</disp_name>
+                        <disp_name>One-sided</disp_name>
                         <uniq_name>mpi_rma_synchronization</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_synchronization</url>
-                        <descr>Time spent in MPI RMA synchronization calls</descr>
+                        <descr>Time spent in MPI one-sided synchronization calls</descr>
                         <cubepl>
                             metric::mpi_rma_sync_active() + metric::mpi_rma_sync_passive()
                         </cubepl>
@@ -578,9 +543,9 @@
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_active</url>
-                            <descr>Time spent in MPI RMA active target synchronization calls</descr>
+                            <descr>Time spent in MPI one-sided active target synchronization calls</descr>
                             <cubepl>
-                                ${mpi_rma_sync_active}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                                ${mpi_sync_rma_active}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -589,9 +554,9 @@
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_passive</url>
-                            <descr>Time spent in MPI RMA passive target synchronization calls</descr>
+                            <descr>Time spent in MPI one-sided passive target synchronization calls</descr>
                             <cubepl>
-                                ${mpi_rma_sync_passive}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                                ${mpi_sync_rma_passive}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                     </metric>
@@ -988,127 +953,6 @@
         <uom>occ</uom>
         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#visits</url>
         <descr>Number of visits</descr>
-    </metric>
-    <metric type="POSTDERIVED">
-        <disp_name>Synchronizations</disp_name>
-        <uniq_name>syncs</uniq_name>
-        <dtype>INTEGER</dtype>
-        <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs</url>
-        <descr>Number of synchronization operations</descr>
-        <cubepl>
-            metric::syncs_rma()
-        </cubepl>
-        <metric type="POSTDERIVED">
-            <disp_name>Remote Memory Access</disp_name>
-            <uniq_name>syncs_rma</uniq_name>
-            <dtype>INTEGER</dtype>
-            <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_rma</url>
-            <descr>Number of Remote Memory Access synchronizations</descr>
-            <cubepl>
-                metric::syncs_fence() + metric::syncs_gats() + metric::syncs_locks()
-            </cubepl>
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Fences</disp_name>
-                <uniq_name>syncs_fence</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_fence</url>
-                <descr>Number of fence synchronizations</descr>
-                <cubepl>
-                    ${syncs_fence}[${calculation::callpath::id}] * metric::visits(e)
-                </cubepl>
-            </metric>
-            <metric type="POSTDERIVED">
-                <disp_name>GATS Epochs</disp_name>
-                <uniq_name>syncs_gats</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_gats</url>
-                <descr>Number of GATS epochs</descr>
-                <cubepl>
-                    metric::syncs_gats_access() + metric::syncs_gats_exposure()
-                </cubepl>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Access Epochs</disp_name>
-                    <uniq_name>syncs_gats_access</uniq_name>
-                    <dtype>INTEGER</dtype>
-                    <uom>occ</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_gats_access</url>
-                    <descr>Number of access epochs</descr>
-                    <cubepl>
-                        ${syncs_gats_access}[${calculation::callpath::id}] * metric::visits(e)
-                    </cubepl>
-                </metric>
-                <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Exposure Epochs</disp_name>
-                    <uniq_name>syncs_gats_exposure</uniq_name>
-                    <dtype>INTEGER</dtype>
-                    <uom>occ</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_gats_exposure</url>
-                    <descr>Number of exposure epochs</descr>
-                    <cubepl>
-                        ${syncs_gats_exposure}[${calculation::callpath::id}] * metric::visits(e)
-                    </cubepl>
-                </metric>
-            </metric>
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Lock Epochs</disp_name>
-                <uniq_name>syncs_locks</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_locks</url>
-                <descr>Number of lock epochs</descr>
-                <cubepl>
-                    ${syncs_locks}[${calculation::callpath::id}] * metric::visits(e)
-                </cubepl>
-            </metric>
-        </metric>
-    </metric>
-    <metric type="POSTDERIVED">
-        <disp_name>Communications</disp_name>
-        <uniq_name>comms</uniq_name>
-        <dtype>INTEGER</dtype>
-        <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms</url>
-        <descr>Number of communication operations</descr>
-        <cubepl>
-            metric::comms_rma()
-        </cubepl>
-        <metric type="POSTDERIVED">
-            <disp_name>Remote Memory Access</disp_name>
-            <uniq_name>comms_rma</uniq_name>
-            <dtype>INTEGER</dtype>
-            <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms_rma</url>
-            <descr>Number of remote memory access operations</descr>
-            <cubepl>
-                metric::comms_rma_gets() + metric::comms_rma_puts()
-            </cubepl>
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Puts</disp_name>
-                <uniq_name>comms_rma_puts</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms_rma_puts</url>
-                <descr>Number of RMA put and accumulate operations</descr>
-                <cubepl>
-                    ${comms_rma_puts}[${calculation::callpath::id}] * metric::visits(e)
-                </cubepl>
-            </metric>
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Gets</disp_name>
-                <uniq_name>comms_rma_gets</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms_rma_gets</url>
-                <descr>Number of RMA get operations</descr>
-                <cubepl>
-                    ${comms_rma_gets}[${calculation::callpath::id}] * metric::visits(e)
-                </cubepl>
-            </metric>
-        </metric>
     </metric>
     <metric type="POSTDERIVED">
         <disp_name>Bytes transferred</disp_name>
