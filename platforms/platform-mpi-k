@@ -1,5 +1,5 @@
 MPICC=mpifccpx
-MPICXX=mpiFCCpx
+MPICXX=mpiFCCpx -Xg
 MPIF77=mpifrtpx
 MPIFC=mpifrtpx
 

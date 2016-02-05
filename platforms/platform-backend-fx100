@@ -1,5 +1,5 @@
 CC=fccpx
-CXX=FCCpx
+CXX=FCCpx -Xg
 F77=frtpx
 FC=frtpx
 
