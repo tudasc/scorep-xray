@@ -31,7 +31,9 @@
                 // MPI-specific masks
                 global(mpi);
                 global(mpi_mgmt_startup);
+                global(mpi_mgmt_comm);
                 global(mpi_mgmt_file);
+                global(mpi_mgmt_win);
                 global(mpi_sync_collective);
                 global(mpi_sync_rma_active);
                 global(mpi_sync_rma_passive);
@@ -119,9 +121,14 @@
                             ${mpi}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_(Init|Init_thread|Finalize)$/ )
+                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
                         {
                             ${mpi_mgmt_startup}[${i}] = 1;
+                        };
+
+                        if ( ${name} =~ /^MPI_(Cart_(coords|create|get|map|rank|shift|sub)|Cartdim_get|Comm_(accept|compare|connect|create(_group|_keyval){0,1}|delete_attr|disconnect|dup(_with_info){0,1}|free(_keyval){0,1}|get_(attr|info|name|parent)|group|idup|join|rank|remote_(group|size)|set_(attr|info|name)|size|spawn(_multiple){0,1}|split(_type){0,1}|test_inter)|Dims_create|Dist_graph_(create(_adjacent){0,1}|neighbors(_count){0,1})|Graph_(create|get|map|neighbors(_count){0,1})|Graphdims_get|Intercomm_(create|merge)|Topo_test|(Close|Open)_port|(Lookup|Publish|Unpublish)_name)$/ )
+                        {
+                            ${mpi_mgmt_comm}[${i}] = 1;
                         };
 
                         if ( ${name} =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
@@ -136,6 +143,11 @@
                             {
                                 ${mpi_file_cops}[${i}] = 1;
                             };
+                        };
+
+                        if ( ${name} =~ /^MPI_Win_(allocate(_shared){0,1}|attach|create(_dynamic|_keyval){0,1}|delete_attr|detach|free(_keyval){0,1}|get_(attr|group|info|name)|set_(attr|info|name)|shared_query)$/ )
+                        {
+                            ${mpi_mgmt_win}[${i}] = 1;
                         };
 
                         if ( ${role} eq "barrier" )
@@ -482,7 +494,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_management</url>
                     <descr>Time spent in MPI management operations</descr>
                     <cubepl>
-                        metric::mpi_init_exit() + metric::mpi_mgmt_file()
+                        metric::mpi_init_exit() + metric::mpi_mgmt_comm() + metric::mpi_mgmt_file() + metric::mpi_mgmt_win()
                     </cubepl>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Init/Finalize</disp_name>
@@ -496,6 +508,17 @@
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Communicator</disp_name>
+                        <uniq_name>mpi_mgmt_comm</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_comm</url>
+                        <descr>Time spent in MPI communicator management calls</descr>
+                        <cubepl>
+                            ${mpi_mgmt_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>File</disp_name>
                         <uniq_name>mpi_mgmt_file</uniq_name>
                         <dtype>FLOAT</dtype>
@@ -504,6 +527,17 @@
                         <descr>Time spent in MPI file management calls</descr>
                         <cubepl>
                             ${mpi_mgmt_file}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Window</disp_name>
+                        <uniq_name>mpi_mgmt_win</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_win</url>
+                        <descr>Time spent in MPI window management calls</descr>
+                        <cubepl>
+                            ${mpi_mgmt_win}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
