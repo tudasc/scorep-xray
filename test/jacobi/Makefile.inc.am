@@ -189,7 +189,8 @@ jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.mod.F90         \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90.opari.inc
 jacobi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/OpenMP/Fortran
+# Do not compile Fortran files with AM_CPPFLAGS, it fails with XL compilers.
+jacobi_omp_f90_CPPFLAGS = @OPARI2_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/OpenMP/Fortran
 jacobi_omp_f90_LDADD    = $(omp_libadd) libjacobi_pomp_f90.la
 jacobi_omp_f90_LDFLAGS  = $(omp_ldflags)
 
@@ -199,6 +200,8 @@ jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/V
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
 jacobi_omp_f90_uninstrumented_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_omp_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+# Do not compile Fortran files with AM_CPPFLAGS, it fails with XL compilers.
+jacobi_omp_f90_uninstrumented_CPPFLAGS =
 jacobi_omp_f90_uninstrumented_LDADD    = -lm
 
 TESTS_OMP += jacobi_omp_f90
