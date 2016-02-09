@@ -585,7 +585,7 @@ open_image( struct addr_range* range )
     }
 
     if ( !bfd_check_format( range->image, bfd_object )
-         || !bfd_get_file_flags( range->image ) & HAS_SYMS )
+         || !( bfd_get_file_flags( range->image ) & HAS_SYMS ) )
     {
         goto out;
     }
