@@ -331,9 +331,11 @@ is_interposition_library( const std::string& library_name )
 bool
 check_lib_name(  const std::string& library_name, const std::string& value )
 {
-    std::string value_with_dot = value + ".";
+    std::string value_with_dot        = value + ".";
+    std::string value_with_underscore = value + "_";
     return ( ( library_name.length() == value.length() ) && ( library_name.substr( 0, value.length() ) == value ) ) ||
-           ( ( library_name.length() > value.length() ) && ( library_name.substr( 0, value.length() + 1 ) == value_with_dot ) );
+           ( ( library_name.length() > value.length() ) && ( library_name.substr( 0, value.length() + 1 ) == value_with_dot ) ) ||
+           ( ( library_name.length() > value.length() ) && ( library_name.substr( 0, value.length() + 1 ) == value_with_underscore ) );
 }
 
 bool
@@ -341,7 +343,10 @@ is_mpi_library( const std::string& library_name )
 {
     return check_lib_name( library_name, "mpi" ) ||
            check_lib_name( library_name, "mpich" ) ||
-           check_lib_name( library_name, "mpigf" );
+           check_lib_name( library_name, "mpigf" ) ||
+           check_lib_name( library_name, "mpigi" ) ||
+           check_lib_name( library_name, "mpifort" ) ||
+           check_lib_name( library_name, "mpicxx" );
 }
 
 bool

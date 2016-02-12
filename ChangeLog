@@ -89,6 +89,8 @@ Bugfixes:
   user is `MAIN__`.
 - Names assigned to MPI communicators by calls to MPI_Comm_set_name are
   now also tracked, even if the corresponding API calls wont be recorded.
+- Fixed MPI library interposition if the link command lists explicitly
+  libmpifort or libmpigi.
 
 ------------------- Released version 1.4.2 ---------------------------
 
