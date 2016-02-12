@@ -39,7 +39,8 @@ export LANG=C
 # should the given path in $1 be ignored by the beautifier
 is_ignored()
 {
-    test -n "$($SVN propget --strict "silc:ignore:beautifier" "$1")"
+    # we redirect stderr because svn complains about missing properties
+    test -n "$($SVN propget --strict "silc:ignore:beautifier" "$1" 2> /dev/null)"
 }
 
 ################################################################################
