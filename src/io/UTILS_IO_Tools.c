@@ -297,7 +297,6 @@ UTILS_IO_JoinPath( int nPaths, ... )
     size_t      total_length  = 0;
     const char* sep           = "";
     int         last_absolute = 0;
-    int         i;
 
     va_list paths;
 

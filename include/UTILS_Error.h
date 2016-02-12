@@ -255,7 +255,8 @@ UTILS_Error_Abort( const char* srcdir,
                    uint64_t    line,
                    const char* functionName,
                    const char* messageFormatString,
-                   ... );
+                   ... ) __attribute__( ( noreturn ) );
+
 
 
 UTILS_END_C_DECLS
