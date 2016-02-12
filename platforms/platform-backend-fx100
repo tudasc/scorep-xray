@@ -1,12 +1,26 @@
 CC=fccpx
-CXX=FCCpx -Xg
+CXX=FCCpx
 F77=frtpx
 FC=frtpx
 
 #CPPFLAGS=
-CFLAGS=-Xg -noansi -Ntl_notrt -mt
-CXXFLAGS=-Ntl_notrt -mt
-FFLAGS=-Ntl_notrt -mt
-FCFLAGS=-Ntl_notrt -mt
+CFLAGS=-Xcompiler -Xg -Xcompiler -Ntl_notrt -mt -noansi
+CXXFLAGS=-Xcompiler -Xg -Xcompiler -Ntl_notrt -mt
+# Neither '-Xcompiler -Ntl_notrt' nor '-Wc,-Ntl_notrt' works for
+#    Fortran, it gets placed in front of the compiler:
+#    libtool: compile:  -Ntl_notrt frtpx -mt -c
+# '-Wl,-Ntl_notrt' works for link mode, but is a noop for compile mode;
+#    fails to detect correct verbose flag (-###) in _AC_PROG_FC_V, instead
+#    uses '-verbose' and sets FLIBS to -l_notrt, sigh
+# '-Xlinker -Ntl_notrt' works for link mode, is a noop for compile mode
+#    but issues warnings in compile mode:
+#    [mpi]frtpx: warning: Invalid suboption specified for -X. Works with
+#    minimal example but puts '-Wl,-Ntl_notrt' on the command line that
+#    fails with '-l_notrt'. Seems to be a comnpiler bug.
+# '-XCClinker -Ntl_notrt' works for link mode, is a noop for compile
+#    mode and issues warnings in compile mode:
+#    frtpx: warning: Invalid suboption specified for -X.
+FFLAGS=-Ntl_notrt -XCClinker -Ntl_notrt -mt
+FCFLAGS=-Ntl_notrt -XCClinker -Ntl_notrt -mt
 #LDFLAGS=
 #LIBS=
