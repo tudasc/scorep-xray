@@ -153,7 +153,7 @@
                             ${mpi_comm_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Accumulate|Compare_and_swap|Fetch_and_op|Get|Get_accumulate|Put|Raccumulate|Rget|Rget_accumulate|Rput)$/ )
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(rma|atomic)$/ )
                         {
                             ${mpi_comm_rma}[${i}] = 1;
                         };

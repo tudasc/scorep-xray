@@ -180,7 +180,7 @@
                             ${mpi_comm_collective}[${i}] = 1;
                         };
 
-                        if ( ${name} =~ /^MPI_(Accumulate|Compare_and_swap|Fetch_and_op|Get|Get_accumulate|Put|Raccumulate|Rget|Rget_accumulate|Rput)$/ )
+                        if ( ${role} =~ /^(rma|atomic)$/ )
                         {
                             ${mpi_comm_rma}[${i}] = 1;
                         };
