@@ -255,4 +255,4 @@ scorep_profile_merge_sparse_metric_double( scorep_profile_sparse_metric_double* 
                                            scorep_profile_sparse_metric_double* source );
 
 
-#endif // SCOREP_PROFILE_METRIC_H
+#endif /* SCOREP_PROFILE_METRIC_H */

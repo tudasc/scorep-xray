@@ -131,4 +131,4 @@ scorep_cupti_callbacks_finalize( void );
 void
 scorep_cupti_callbacks_enable( bool enable );
 
-#endif  /* SCOREP_CUPTI_CALLBACKS_H */
+#endif /* SCOREP_CUPTI_CALLBACKS_H */

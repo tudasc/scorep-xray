@@ -64,4 +64,4 @@ scorep_profile_task_initialize( void );
 void
 scorep_profile_update_task_metrics( SCOREP_Profile_LocationData* location );
 
-#endif // SCOREP_PROFILE_TASK_INIT_H
+#endif /* SCOREP_PROFILE_TASK_INIT_H */

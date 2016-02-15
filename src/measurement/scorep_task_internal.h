@@ -90,4 +90,4 @@ void
 scorep_task_switch( struct SCOREP_Location* location,
                     SCOREP_TaskHandle       newTask );
 
-#endif
+#endif /* SCOREP_TASK_INTERNAL_H */

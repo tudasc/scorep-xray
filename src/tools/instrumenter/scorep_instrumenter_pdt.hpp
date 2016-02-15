@@ -66,4 +66,4 @@ private:
     std::string m_pdt_config_file;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_PDT_HPP

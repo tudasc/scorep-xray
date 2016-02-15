@@ -1407,4 +1407,4 @@
 
 /** @} */
 
-#endif // SCOREP_USER_H
+#endif /* SCOREP_USER_H */

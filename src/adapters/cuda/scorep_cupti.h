@@ -383,4 +383,4 @@ scorep_cupti_kernel_hash_put( const char*         name,
 void*
 scorep_cupti_kernel_hash_get( const char* name );
 
-#endif  /* SCOREP_CUPTI_H */
+#endif /* SCOREP_CUPTI_H */

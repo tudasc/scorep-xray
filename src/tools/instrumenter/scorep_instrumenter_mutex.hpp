@@ -88,4 +88,4 @@ public:
     SCOREP_Instrumenter_Mutex();
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_MUTEX_HPP

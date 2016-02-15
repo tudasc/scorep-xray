@@ -468,4 +468,4 @@ private:
 #endif
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_COMMAND_LINE_HPP

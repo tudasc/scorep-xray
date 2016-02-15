@@ -56,4 +56,4 @@ SCOREP_Filter_Register( void );
 void
 SCOREP_Filter_Finalize( void );
 
-#endif
+#endif /* SCOREP_FILTER_INIT_H */

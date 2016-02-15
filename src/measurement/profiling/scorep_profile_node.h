@@ -664,4 +664,4 @@ scorep_profile_copy_type_data( scorep_profile_type_data_t* destination,
                                scorep_profile_node_type    type );
 
 
-#endif // SCOREP_PROFILE_NODE_H
+#endif /* SCOREP_PROFILE_NODE_H */

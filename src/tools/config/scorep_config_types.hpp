@@ -26,4 +26,4 @@ typedef enum
     SCOREP_CONFIG_LANGUAGE_FORTRAN
 } SCOREP_Config_Language;
 
-#endif
+#endif // SCOREP_CONFIG_TYPES_HPP

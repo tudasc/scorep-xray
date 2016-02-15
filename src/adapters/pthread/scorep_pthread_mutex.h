@@ -58,4 +58,4 @@ scorep_pthread_mutex_hash_get( pthread_mutex_t* pthreadMutex );
 void
 scorep_pthread_mutex_hash_remove( pthread_mutex_t* pthreadMutex );
 
-#endif // SCOREP_PTHREAD_MUTEX_H
+#endif /* SCOREP_PTHREAD_MUTEX_H */

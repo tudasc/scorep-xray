@@ -272,4 +272,4 @@ public:
 };
 
 
-#endif
+#endif // SCOREP_CONFIG_MUTEX_HPP

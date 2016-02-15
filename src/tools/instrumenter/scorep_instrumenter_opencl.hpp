@@ -43,4 +43,4 @@ public:
                   const std::string& next );
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_OPENCL_HPP

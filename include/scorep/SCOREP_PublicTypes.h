@@ -108,4 +108,4 @@ typedef SCOREP_AnyHandle SCOREP_RegionHandle;
 
 /**@}*/
 
-#endif // SCOREP_PUBLICTYPES_H
+#endif /* SCOREP_PUBLICTYPES_H */

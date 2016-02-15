@@ -125,4 +125,4 @@ scorep_opari2_openmp_lock_initialize( void );
 void
 scorep_opari2_openmp_lock_finalize( void );
 
-#endif // SCOREP_OPARI2_OPENMP_LOCK_H
+#endif /* SCOREP_OPARI2_OPENMP_LOCK_H */

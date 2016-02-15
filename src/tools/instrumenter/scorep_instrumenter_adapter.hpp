@@ -516,4 +516,4 @@ private:
     static SCOREP_Instrumenter_AdapterList m_adapter_list;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_ADAPTER_HPP

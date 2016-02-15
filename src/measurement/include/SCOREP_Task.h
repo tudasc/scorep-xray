@@ -126,4 +126,4 @@ SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
                               size_t            substrateId,
                               void*             data );
 
-#endif
+#endif /* SCOREP_TASK_H */

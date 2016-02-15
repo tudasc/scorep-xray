@@ -207,4 +207,4 @@ scorep_profile_get_number_of_threads( void );
 
 extern SCOREP_ParameterHandle scorep_profile_param_instance;
 
-#endif // SCOREP_PROFILE_DEFINITION_H
+#endif /* SCOREP_PROFILE_DEFINITION_H */

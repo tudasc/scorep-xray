@@ -19,8 +19,8 @@
  * time of the OpenCL adapter.
  */
 
-#ifndef _SCOREP_OPENCLWRAP_REG_H
-#define _SCOREP_OPENCLWRAP_REG_H
+#ifndef SCOREP_OPENCLWRAP_REG_H
+#define SCOREP_OPENCLWRAP_REG_H
 
 #ifdef __APPLE__
     #include "OpenCL/opencl.h"
@@ -66,4 +66,4 @@
 void
 scorep_opencl_register_regions( void );
 
-#endif
+#endif /* SCOREP_OPENCLWRAP_REG_H */

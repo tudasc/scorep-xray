@@ -98,7 +98,7 @@ typedef struct scorep_hashtab_iter_struct SCOREP_Hashtab_Iterator;
  *
  * @return entry Computed hash table index
  */
-typedef size_t ( *SCOREP_Hashtab_HashFunction )( const void* key );
+typedef size_t ( * SCOREP_Hashtab_HashFunction )( const void* key );
 
 /**
  * Pointer-to-function type describing key comparison functions. It has to
@@ -111,7 +111,8 @@ typedef size_t ( *SCOREP_Hashtab_HashFunction )( const void* key );
  * return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-typedef int32_t ( *SCOREP_Hashtab_CompareFunction )( const void* key, const void* item_key );
+typedef int32_t ( * SCOREP_Hashtab_CompareFunction )( const void* key,
+                                                      const void* item_key );
 
 /**
  * Pointer-to-function type describing unary processing functions that can
@@ -120,7 +121,7 @@ typedef int32_t ( *SCOREP_Hashtab_CompareFunction )( const void* key, const void
  *
  * @param Hash table entry
  */
-typedef void ( *SCOREP_Hashtab_ProcessFunction )( SCOREP_Hashtab_Entry* entry );
+typedef void ( * SCOREP_Hashtab_ProcessFunction )( SCOREP_Hashtab_Entry* entry );
 
 /**
  * Pointer-to-functions type which frees the memory for data item. It is
@@ -128,7 +129,7 @@ typedef void ( *SCOREP_Hashtab_ProcessFunction )( SCOREP_Hashtab_Entry* entry );
  *
  * @param item The data item which should be deleted.
  */
-typedef void ( *SCOREP_Hashtab_DeleteFunction )( void* item );
+typedef void ( * SCOREP_Hashtab_DeleteFunction )( void* item );
 
 /*
  * --------------------------------------------------------------------------
@@ -551,4 +552,4 @@ SCOREP_Hashtab_DeletePointer( void* item );
 
 UTILS_END_C_DECLS
 
-#endif   /* !SCOREP_HASHTAB_H */
+#endif /* SCOREP_HASHTAB_H */

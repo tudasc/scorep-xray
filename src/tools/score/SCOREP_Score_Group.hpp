@@ -225,4 +225,4 @@ private:
     SCOREP_Score_FilterState m_filter;
 };
 
-#endif
+#endif // SCOREP_SCORE_GROUP_HPP

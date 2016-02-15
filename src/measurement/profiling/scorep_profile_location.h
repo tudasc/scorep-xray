@@ -244,4 +244,4 @@ scorep_profile_get_profile_data( struct SCOREP_Location* location )
                                              scorep_profile_substrate_id );
 }
 
-#endif // SCOREP_PROFILE_LOCATION_H
+#endif /* SCOREP_PROFILE_LOCATION_H */

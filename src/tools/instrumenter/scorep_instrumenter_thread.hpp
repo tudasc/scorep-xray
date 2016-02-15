@@ -129,4 +129,4 @@ public:
     SCOREP_Instrumenter_Thread();
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_THREAD_HPP

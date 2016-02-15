@@ -42,4 +42,4 @@ scorep_register_attributes( void* event_data,
 }
 #endif
 
-#endif // SCOREP_PLUGIN_H
+#endif /* SCOREP_PLUGIN_H */

@@ -153,4 +153,4 @@ struct scorep_mpi_request_block
 };
 
 
-#endif // SCOREP_MPI_REQUEST_H
+#endif /* SCOREP_MPI_REQUEST_H */

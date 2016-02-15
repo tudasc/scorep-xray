@@ -64,4 +64,4 @@ void
 scorep_compiler_parse_nm_file( const char*                       nmFilename,
                                scorep_compiler_process_symbol_cb processSymbol );
 
-#endif // SCOREP_COMPILER_SYMBOL_TABLE_H
+#endif /* SCOREP_COMPILER_SYMBOL_TABLE_H */

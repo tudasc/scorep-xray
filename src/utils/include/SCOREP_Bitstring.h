@@ -89,4 +89,4 @@ SCOREP_Bitstring_SetAll( uint8_t* bitstring,
 uint32_t
 SCOREP_Bitstring_GetByteSize( uint32_t length );
 
-#endif // SCOREP_BITSTRING_H
+#endif /* SCOREP_BITSTRING_H */

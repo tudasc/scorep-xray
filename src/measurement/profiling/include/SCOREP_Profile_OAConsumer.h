@@ -136,4 +136,4 @@ uint32_t
 SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes dataType );
 
 
-#endif // SCOREP_PROFILE_OACONSUMER_H
+#endif /* SCOREP_PROFILE_OACONSUMER_H */

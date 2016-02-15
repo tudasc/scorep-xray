@@ -166,4 +166,4 @@ private:
     std::map< std::string, la_object> m_backend_objects;
 };
 
-#endif
+#endif // SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP

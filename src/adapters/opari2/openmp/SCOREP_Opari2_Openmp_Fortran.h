@@ -180,4 +180,4 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define omp_unset_nest_lock_L   omp_unset_nest_lock
 #define omp_test_nest_lock_L    omp_test_nest_lock
 
-#endif // SCOREP_POMP2_OPENMP_FORTRAN_H
+#endif /* SCOREP_POMP2_OPENMP_FORTRAN_H */

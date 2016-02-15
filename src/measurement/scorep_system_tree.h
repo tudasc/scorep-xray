@@ -59,4 +59,4 @@ SCOREP_GetSystemTreeNodeHandleForSharedMemory( void );
 void
 SCOREP_FinalizeLocationGroup( void );
 
-#endif // SCOREP_SYSTEM_TREE_H
+#endif /* SCOREP_SYSTEM_TREE_H */

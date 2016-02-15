@@ -89,4 +89,4 @@ void
 scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
                                     scorep_cupti_context* context );
 
-#endif  /* SCOREP_CUPTI_ACTIVITY_INTERNAL_H */
+#endif /* SCOREP_CUPTI_ACTIVITY_INTERNAL_H */

@@ -232,4 +232,4 @@ protected:
     SCOREP_Instrumenter_Selector* m_selector;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_PARADIGM_HPP

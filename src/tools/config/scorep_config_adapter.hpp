@@ -408,4 +408,5 @@ public:
 private:
     std::set<std::string> m_categories;
 };
-#endif
+
+#endif // SCOREP_CONFIG_ADAPTER_HPP

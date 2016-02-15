@@ -105,4 +105,4 @@ extern void* scorep_mpi_fortran_unweighted;
 #define PMPI_Status_c2f( c, f ) memcpy( ( f ), ( c ), scorep_mpi_status_size )
 #endif /* !HAVE( DECL_PMPI_STATUS_C2F ) */
 
-#endif   /* SCOREP_FMPI_H */
+#endif /* SCOREP_FMPI_H */

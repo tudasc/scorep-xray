@@ -109,4 +109,4 @@ scorep_profile_process_tasks( void );
 void
 scorep_profile_inclusify_visits( void );
 
-#endif // SCOREP_PROFILE_PROCESS_H
+#endif /* SCOREP_PROFILE_PROCESS_H */

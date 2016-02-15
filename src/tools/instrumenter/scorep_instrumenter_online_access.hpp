@@ -38,4 +38,4 @@ public:
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_ONLINE_ACCESS_HPP

@@ -70,4 +70,4 @@ typedef struct
                                                            threads on all ranks */
 } scorep_cube_writing_data;
 
-#endif // SCOREP_PROFILE_CUBE4_WRITER_H
+#endif /* SCOREP_PROFILE_CUBE4_WRITER_H */

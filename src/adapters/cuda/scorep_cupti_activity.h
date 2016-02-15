@@ -139,4 +139,4 @@ scorep_cupti_activity_is_buffer_empty( scorep_cupti_context* context );
 void
 scorep_cupti_activity_context_flush( scorep_cupti_context* context );
 
-#endif  /* SCOREP_CUPTI_ACTIVITY_H */
+#endif /* SCOREP_CUPTI_ACTIVITY_H */

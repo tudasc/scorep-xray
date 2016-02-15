@@ -204,4 +204,4 @@ scorep_mpi_comm_set_name( MPI_Comm    comm,
  */
 #define SCOREP_MPI_COMM_HANDLE( c ) ( ( c ) == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) )
 
-#endif // SCOREP_MPI_COMMUNICATOR_H
+#endif /* SCOREP_MPI_COMMUNICATOR_H */

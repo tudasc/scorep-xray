@@ -52,4 +52,4 @@ public:
              SCOREP_Instrumenter_CmdLine& cmdLine );
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_COMPILER_HPP

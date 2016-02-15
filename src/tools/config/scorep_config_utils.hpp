@@ -125,4 +125,4 @@ std::deque<std::string>
 string_to_deque( const std::string& input,
                  const std::string& delimiter );
 
-#endif
+#endif // SCOREP_CONFIG_UTILS_HPP

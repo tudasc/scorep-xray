@@ -58,4 +58,4 @@ scorep_profile_get_bytes_recv_metric_handle( void );
 SCOREP_MetricHandle
 scorep_profile_get_bytes_send_metric_handle( void );
 
-#endif // SCOREP_PROFILE_MPI_EVENTS_H
+#endif /* SCOREP_PROFILE_MPI_EVENTS_H */

@@ -286,4 +286,4 @@ scorep_opencl_define_locations( void );
 void
 scorep_opencl_define_group( void );
 
-#endif  /* SCOREP_OPENCL_H */
+#endif /* SCOREP_OPENCL_H */

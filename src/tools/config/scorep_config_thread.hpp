@@ -331,4 +331,4 @@ public:
     getInitStructName( std::deque<std::string>& init_structs );
 };
 
-#endif
+#endif // SCOREP_CONFIG_THREAD_HPP

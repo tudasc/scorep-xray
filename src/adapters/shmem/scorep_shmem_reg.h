@@ -19,8 +19,8 @@
  * time of the SHMEM adapter.
  */
 
-#ifndef _SCOREP_SHMEMWRAP_REG_H
-#define _SCOREP_SHMEMWRAP_REG_H
+#ifndef SCOREP_SHMEMWRAP_REG_H
+#define SCOREP_SHMEMWRAP_REG_H
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Shmem.h>
@@ -97,4 +97,4 @@ extern SCOREP_RegionHandle scorep_shmem_region__SHMEM;
 void
 scorep_shmem_register_regions();
 
-#endif
+#endif /* SCOREP_SHMEMWRAP_REG_H */

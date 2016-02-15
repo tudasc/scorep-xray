@@ -501,4 +501,4 @@ static const PSC_MetricType PSC_MetricList[] =
     { GROUP_UNDEFINED,           "UNDEFINED",                          PSC_UNDEFINED_METRIC                           }
 };
 
-#endif /*SCOREP_OA_PERISCOPEMETRICS_H*/
+#endif /* SCOREP_OA_PERISCOPEMETRICS_H */

@@ -47,4 +47,4 @@ public:
                 const std::string&           source_file );
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_PREPROCESS_HPP

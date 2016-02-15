@@ -183,4 +183,4 @@ typedef uint64_t SCOREP_User_ParameterHandle;
    @}
  */
 
-#endif // SCOREP_USER_TYPES_H
+#endif /* SCOREP_USER_TYPES_H */

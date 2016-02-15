@@ -48,4 +48,4 @@ private:
     std::set<std::string> m_categories;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_MEMORY_HPP

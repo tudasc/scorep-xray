@@ -94,4 +94,4 @@ scorep_opencl_set_features( void );
 void
 scorep_opencl_disable( void );
 
-#endif  /* SCOREP_OPENCL_CONFIG_H */
+#endif /* SCOREP_OPENCL_CONFIG_H */

@@ -45,4 +45,4 @@ private:
     bool m_nvcc_compiler;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_CUDA_HPP

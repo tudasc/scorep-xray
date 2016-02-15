@@ -169,4 +169,4 @@ scorep_cuda_define_cuda_locations( void );
 void
 scorep_cuda_define_cuda_group( void );
 
-#endif  /* SCOREP_CUDA_H */
+#endif /* SCOREP_CUDA_H */

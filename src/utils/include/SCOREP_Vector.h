@@ -84,8 +84,8 @@ typedef struct SCOREP_Vector_Struct SCOREP_Vector;
  * @return Zero if @a value is equal to @a item, a negative value if @a value
  *         @< @a item, and a positive value if @a value @> @a item.
  */
-typedef int8_t ( *SCOREP_Vector_CompareFunc )( const void* value,
-                                               const void* item );
+typedef int8_t ( * SCOREP_Vector_CompareFunc )( const void* value,
+                                                const void* item );
 
 /**
  * Pointer-to-function type describing unary processing functions that can
@@ -94,7 +94,7 @@ typedef int8_t ( *SCOREP_Vector_CompareFunc )( const void* value,
  *
  * @param item Current array element
  */
-typedef void ( *SCOREP_Vector_ProcessingFunc )( void* item );
+typedef void ( * SCOREP_Vector_ProcessingFunc )( void* item );
 
 
 /*
@@ -453,4 +453,4 @@ SCOREP_Vector_Foreach( const SCOREP_Vector*         instance,
 
 UTILS_END_C_DECLS
 
-#endif   /* !SCOREP_VECTOR_H */
+#endif /* SCOREP_VECTOR_H */

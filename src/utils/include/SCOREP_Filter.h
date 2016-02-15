@@ -138,4 +138,4 @@ SCOREP_Filter_AddFunctionRule( const char* rule,
 
 UTILS_END_C_DECLS
 
-#endif // SCOREP_FILTER_H
+#endif /* SCOREP_FILTER_H */

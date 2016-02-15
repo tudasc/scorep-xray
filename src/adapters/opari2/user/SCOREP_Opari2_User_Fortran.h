@@ -68,4 +68,4 @@ typedef uint64_t POMP2_Region_handle_fortran;
 #define POMP2_End_L              pomp2_end
 #define POMP2_USER_Assign_handle_L    pomp2_user_assign_handle
 
-#endif // SCOREP_POMP2_USER_FORTRAN_H
+#endif /* SCOREP_POMP2_USER_FORTRAN_H */

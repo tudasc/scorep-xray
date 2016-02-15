@@ -61,4 +61,4 @@ private:
     std::string m_cobi_config_dir;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_COBI_HPP

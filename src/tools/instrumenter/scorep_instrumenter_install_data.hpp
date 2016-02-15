@@ -227,4 +227,4 @@ private:
     std::string m_fortran_compiler;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_INSTALL_CONFIG_HPP

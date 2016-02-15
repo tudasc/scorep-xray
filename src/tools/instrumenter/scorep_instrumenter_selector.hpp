@@ -303,4 +303,4 @@ private:
     static SCOREP_Instrumenter_SelectorList m_selector_list;
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_SELECTOR_HPP

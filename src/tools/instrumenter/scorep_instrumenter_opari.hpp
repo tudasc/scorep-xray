@@ -186,4 +186,4 @@ private:
 #endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_OPARI_HPP

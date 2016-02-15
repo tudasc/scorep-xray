@@ -85,4 +85,4 @@ public:
     SCOREP_Instrumenter_Mpp();
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_MPP_HPP

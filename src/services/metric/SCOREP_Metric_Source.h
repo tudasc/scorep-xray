@@ -273,4 +273,4 @@ typedef struct SCOREP_MetricSource
                                                         uint32_t                i );
 } SCOREP_MetricSource;
 
-#endif // SCOREP_METRIC_SOURCE_H
+#endif /* SCOREP_METRIC_SOURCE_H */

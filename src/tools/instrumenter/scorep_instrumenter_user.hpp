@@ -34,4 +34,4 @@ public:
     SCOREP_Instrumenter_UserAdapter( void );
 };
 
-#endif
+#endif // SCOREP_INSTRUMENTER_USER_HPP

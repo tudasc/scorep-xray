@@ -234,4 +234,4 @@ const SCOREP_Substrates_Callback*
 SCOREP_Profile_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode );
 
 
-#endif // SCOREP_PROFILE_H
+#endif /* SCOREP_PROFILE_H */

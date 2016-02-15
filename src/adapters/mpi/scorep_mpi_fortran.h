@@ -51,4 +51,4 @@ scorep_f2c_string( const char* f_string,
                    uint32_t    length );
 
 
-#endif
+#endif /* SCOERP_FORTRAN_H */
