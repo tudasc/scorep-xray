@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SCOREP_THREAD_MGMT_H_
-#define SCOREP_THREAD_MGMT_H_
+#ifndef SCOREP_THREAD_MGMT_H
+#define SCOREP_THREAD_MGMT_H
 
 /**
  * @file
@@ -64,4 +64,4 @@ bool
 SCOREP_Thread_InParallel( void );
 
 
-#endif /* SCOREP_THREAD_MGMT_H_ */
+#endif /* SCOREP_THREAD_MGMT_H */

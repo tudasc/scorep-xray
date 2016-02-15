@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SCOREP_THREAD_FORK_JOIN_EVENT_H_
-#define SCOREP_THREAD_FORK_JOIN_EVENT_H_
+#ifndef SCOREP_THREAD_FORK_JOIN_EVENT_H
+#define SCOREP_THREAD_FORK_JOIN_EVENT_H
 
 /**
  * @file
@@ -175,4 +175,4 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                SCOREP_TaskHandle   task );
 
 
-#endif /* SCOREP_THREAD_FORK_JOIN_EVENT_H_ */
+#endif /* SCOREP_THREAD_FORK_JOIN_EVENT_H */

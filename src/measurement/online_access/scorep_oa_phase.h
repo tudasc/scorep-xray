@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_OA_PHASE_H_
-#define SCOREP_OA_PHASE_H_
+#ifndef SCOREP_OA_PHASE_H
+#define SCOREP_OA_PHASE_H
 
 /**
  * @file
@@ -46,4 +46,4 @@ scorep_oa_phase_enter( const SCOREP_RegionHandle handle );
 void
 scorep_oa_phase_exit( const SCOREP_RegionHandle handle );
 
-#endif /* SCOREP_OA_PHASE_H_ */
+#endif /* SCOREP_OA_PHASE_H */

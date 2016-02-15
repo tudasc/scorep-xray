@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SCOREP_SCORE_EVENT_H
-#define SCOREP_SCORE_EVENT_H
+#ifndef SCOREP_SCORE_EVENT_HPP
+#define SCOREP_SCORE_EVENT_HPP
 
 /**
  * @file
@@ -249,4 +249,4 @@ protected:
 };
 
 
-#endif /* SCOREP_SCORE_EVENT_H */
+#endif /* SCOREP_SCORE_EVENT_HPP */

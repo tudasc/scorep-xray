@@ -9,8 +9,8 @@
  * directory for details.
  */
 
-#ifndef SCOREP_TIMER_AVAIL
-#define SCOREP_TIMER_AVAIL
+#ifndef SCOREP_TIMER_AVAIL_H
+#define SCOREP_TIMER_AVAIL_H
 
 /**
  * @file
@@ -69,4 +69,4 @@ enum timer_type
 };
 
 
-#endif /* SCOREP_TIMER_AVAIL */
+#endif /* SCOREP_TIMER_AVAIL_H */

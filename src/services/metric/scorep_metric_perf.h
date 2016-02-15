@@ -11,8 +11,8 @@
  */
 
 
-#ifndef SCOREP_METRIC_PERF_H_
-#define SCOREP_METRIC_PERF_H_
+#ifndef SCOREP_METRIC_PERF_H
+#define SCOREP_METRIC_PERF_H
 
 
 /**
@@ -30,4 +30,4 @@
 extern const SCOREP_MetricSource SCOREP_Metric_Perf;
 
 
-#endif /* SCOREP_METRIC_PERF_H_ */
+#endif /* SCOREP_METRIC_PERF_H */

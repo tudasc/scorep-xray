@@ -35,8 +35,8 @@
  */
 
 
-#ifndef SCOREP_METRIC_PLUGINS_H_
-#define SCOREP_METRIC_PLUGINS_H_
+#ifndef SCOREP_METRIC_PLUGINS_H
+#define SCOREP_METRIC_PLUGINS_H
 
 /**
  * The developer of a metric plugin should provide a README file which
@@ -346,4 +346,4 @@ typedef struct SCOREP_Metric_Plugin_Info
 } SCOREP_Metric_Plugin_Info;
 
 
-#endif /* SCOREP_METRIC_PLUGINS_H_ */
+#endif /* SCOREP_METRIC_PLUGINS_H */

@@ -35,8 +35,8 @@
  */
 
 
-#ifndef SCOREP_METRIC_TYPES_H_
-#define SCOREP_METRIC_TYPES_H_
+#ifndef SCOREP_METRIC_TYPES_H
+#define SCOREP_METRIC_TYPES_H
 
 #include <stdint.h>
 
@@ -227,4 +227,4 @@ typedef struct SCOREP_MetricTimeValuePair
 } SCOREP_MetricTimeValuePair;
 
 
-#endif /* SCOREP_METRIC_TYPES_H_ */
+#endif /* SCOREP_METRIC_TYPES_H */

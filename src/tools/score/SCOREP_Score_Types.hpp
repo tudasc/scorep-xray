@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_SCORE_TYPES_H
-#define SCOREP_SCORE_TYPES_H
+#ifndef SCOREP_SCORE_TYPES_HPP
+#define SCOREP_SCORE_TYPES_HPP
 
 /**
  * @file
@@ -99,4 +99,4 @@ SCOREP_Score_getFilterState( uint64_t type );
 char
 SCOREP_Score_getFilterSymbol( SCOREP_Score_FilterState state );
 
-#endif // SCOREP_SCORE_TYPES_H
+#endif // SCOREP_SCORE_TYPES_HPP

@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_OA_CONSUMER_PROCESS_H_
-#define SCOREP_OA_CONSUMER_PROCESS_H_
+#ifndef SCOREP_OA_CONSUMER_PROCESS_H
+#define SCOREP_OA_CONSUMER_PROCESS_H
 
 /**
  * @file
@@ -286,4 +286,4 @@ SCOREP_Hashtab_CompareOAKeys( const void* key,
 size_t
 SCOREP_Hashtab_HashOAKeys( const void* key );
 
-#endif /* SCOREP_OA_CONSUMER_PROCESS_H_ */
+#endif /* SCOREP_OA_CONSUMER_PROCESS_H */

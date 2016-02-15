@@ -34,8 +34,8 @@
  * This file contains protocol definitions of communication with Periscope registry service
  */
 
-#ifndef SCOREP_OA_REGISTRY_PROTOCOL_H_INCLUDED
-#define SCOREP_OA_REGISTRY_PROTOCOL_H_INCLUDED
+#ifndef SCOREP_OA_REGISTRY_PROTOCOL_H
+#define SCOREP_OA_REGISTRY_PROTOCOL_H
 
 /* server version and build date */
 
@@ -230,4 +230,4 @@
 #define MSG_COUNTSTR_SUCCESS           SUCCESS( STR_COUNTSTR_OK )
 
 
-#endif /* SCOREP_OA_REGISTRY_PROTOCOL_H_INCLUDED */
+#endif /* SCOREP_OA_REGISTRY_PROTOCOL_H */

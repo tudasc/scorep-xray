@@ -37,8 +37,8 @@
  */
 
 
-#ifndef SCOREP_COMPILER_SUN_DATA_
-#define SCOREP_COMPILER_SUN_DATA_
+#ifndef SCOREP_COMPILER_SUN_DATA_H
+#define SCOREP_COMPILER_SUN_DATA_H
 
 #include <SCOREP_Types.h>
 
@@ -51,4 +51,4 @@ extern SCOREP_RegionHandle
 scorep_compiler_register_region( char* region_name );
 
 
-#endif /* SCOREP_COMPILER_SUN_DATA_ */
+#endif /* SCOREP_COMPILER_SUN_DATA_H */

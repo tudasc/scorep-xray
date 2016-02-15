@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_TAU_H_
-#define SCOREP_TAU_H_
+#ifndef SCOREP_TAU_H
+#define SCOREP_TAU_H
 
 
 
@@ -355,4 +355,4 @@ SCOREP_Tau_AddLocationProperty( const char* name,
 } /* extern C */
 #endif
 
-#endif /* SCOREP_TAU_H_ */
+#endif /* SCOREP_TAU_H */

@@ -29,8 +29,8 @@
  */
 
 
-#ifndef SCOREP_METRIC_H_
-#define SCOREP_METRIC_H_
+#ifndef SCOREP_METRIC_H
+#define SCOREP_METRIC_H
 
 
 /**
@@ -47,4 +47,4 @@
  *  metric adapter. */
 extern const struct SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 
-#endif /* SCOREP_METRIC_H_ */
+#endif /* SCOREP_METRIC_H */

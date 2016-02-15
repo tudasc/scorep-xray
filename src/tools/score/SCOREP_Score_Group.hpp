@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_SCORE_GROUP_H
-#define SCOREP_SCORE_GROUP_H
+#ifndef SCOREP_SCORE_GROUP_HPP
+#define SCOREP_SCORE_GROUP_HPP
 
 /**
  * @file

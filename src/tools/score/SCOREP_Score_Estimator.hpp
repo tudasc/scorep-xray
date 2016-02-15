@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_SCORE_ESTIMATOR_H
-#define SCOREP_SCORE_ESTIMATOR_H
+#ifndef SCOREP_SCORE_ESTIMATOR_HPP
+#define SCOREP_SCORE_ESTIMATOR_HPP
 
 /**
  * @file
@@ -182,4 +182,4 @@ private:
 };
 
 
-#endif // SCOREP_SCORE_ESTIMATOR_H
+#endif // SCOREP_SCORE_ESTIMATOR_HPP

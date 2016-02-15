@@ -37,8 +37,8 @@
 
 
 
-#ifndef SCOREP_COMPILER_DATA_H_
-#define SCOREP_COMPILER_DATA_H_
+#ifndef SCOREP_COMPILER_DATA_H
+#define SCOREP_COMPILER_DATA_H
 
 #include <stdint.h>
 
@@ -134,4 +134,4 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node );
 extern void
 scorep_compiler_get_hash_statistics( void );
 
-#endif /* SCOREP_COMPILER_DATA_H_ */
+#endif /* SCOREP_COMPILER_DATA_H */

@@ -28,8 +28,8 @@
  */
 
 
-#ifndef SCOREP_COMPILER_INIT_H_
-#define SCOREP_COMPILER_INIT_H_
+#ifndef SCOREP_COMPILER_INIT_H
+#define SCOREP_COMPILER_INIT_H
 
 
 /**
@@ -56,4 +56,4 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern SCOREP_Mutex scorep_compiler_region_mutex;
 
 
-#endif /* SCOREP_COMPILER_INIT_H_ */
+#endif /* SCOREP_COMPILER_INIT_H */

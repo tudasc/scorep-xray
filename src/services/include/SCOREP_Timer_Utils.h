@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_TIMER_UTILS
-#define SCOREP_TIMER_UTILS
+#ifndef SCOREP_TIMER_UTILS_H
+#define SCOREP_TIMER_UTILS_H
 
 /**
  * @file
@@ -81,4 +81,4 @@ bool
 SCOREP_Timer_ClockIsGlobal( void );
 
 
-#endif /* SCOREP_TIMER_UTILS */
+#endif /* SCOREP_TIMER_UTILS_H */

@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_PROFILING_TASKING
-#define SCOREP_PROFILING_TASKING
+#ifndef SCOREP_PROFILING_TASKING_H
+#define SCOREP_PROFILING_TASKING_H
 
 /**
  * @file
@@ -130,4 +130,4 @@ void
 SCOREP_Profile_FreeTaskData( SCOREP_Location*  location,
                              SCOREP_TaskHandle taskHandle );
 
-#endif /* SCOREP_PROFILING_TASKING */
+#endif /* SCOREP_PROFILING_TASKING_H */

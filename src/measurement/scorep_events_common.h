@@ -33,8 +33,8 @@
  *
  */
 
-#ifndef SCOREP_EVENTS_COMMON_H_
-#define SCOREP_EVENTS_COMMON_H_
+#ifndef SCOREP_EVENTS_COMMON_H
+#define SCOREP_EVENTS_COMMON_H
 
 
 #include <stdbool.h>
@@ -60,4 +60,4 @@ scorep_get_timestamp( SCOREP_Location* location )
 }
 
 
-#endif /* SCOREP_EVENTS_COMMON_H_ */
+#endif /* SCOREP_EVENTS_COMMON_H */

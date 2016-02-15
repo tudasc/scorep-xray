@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_OA_PERISCOPEMETRICS_H_
-#define SCOREP_OA_PERISCOPEMETRICS_H_
+#ifndef SCOREP_OA_PERISCOPEMETRICS_H
+#define SCOREP_OA_PERISCOPEMETRICS_H
 
 /**
  * @file
@@ -501,4 +501,4 @@ static const PSC_MetricType PSC_MetricList[] =
     { GROUP_UNDEFINED,           "UNDEFINED",                          PSC_UNDEFINED_METRIC                           }
 };
 
-#endif /*SCOREP_OA_PERISCOPEMETRICS_H_*/
+#endif /*SCOREP_OA_PERISCOPEMETRICS_H*/

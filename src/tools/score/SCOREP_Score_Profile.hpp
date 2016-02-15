@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_SCORE_PROFILE_H
-#define SCOREP_SCORE_PROFILE_H
+#ifndef SCOREP_SCORE_PROFILE_HPP
+#define SCOREP_SCORE_PROFILE_HPP
 
 /**
  * @file
@@ -269,4 +269,4 @@ private:
 };
 
 
-#endif // SCOREP_SCORE_PROFILE_H
+#endif // SCOREP_SCORE_PROFILE_HPP

@@ -9,8 +9,8 @@
  * directory for details.
  */
 
-#ifndef SCOREP_TIMER_TICKS
-#define SCOREP_TIMER_TICKS
+#ifndef SCOREP_TIMER_TICKS_H
+#define SCOREP_TIMER_TICKS_H
 
 /**
  * @file
@@ -157,4 +157,4 @@ SCOREP_Timer_GetClockTicks( void )
 }
 
 
-#endif /* SCOREP_TIMER_TICKS */
+#endif /* SCOREP_TIMER_TICKS_H */

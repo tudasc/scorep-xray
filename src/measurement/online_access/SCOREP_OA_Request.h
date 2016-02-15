@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_OA_REQUEST_H_
-#define SCOREP_OA_REQUEST_H_
+#ifndef SCOREP_OA_REQUEST_H
+#define SCOREP_OA_REQUEST_H
 
 /**
  * @file
@@ -122,4 +122,4 @@ SCOREP_OA_GetNumberOfRequests( void );
 void
 SCOREP_OA_RequestsDismiss( void );
 
-#endif /* SCOREP_OA_REQUEST_H_ */
+#endif /* SCOREP_OA_REQUEST_H */

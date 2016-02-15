@@ -34,8 +34,8 @@
  * @brief      Class to steer the instrumentation of the user code.
  */
 
-#ifndef SCOREP_INSTRUMENTER_H_
-#define SCOREP_INSTRUMENTER_H_
+#ifndef SCOREP_INSTRUMENTER_H
+#define SCOREP_INSTRUMENTER_H
 
 #include "scorep_instrumenter_cmd_line.hpp"
 
@@ -255,4 +255,4 @@ private:
     std::deque<SCOREP_Instrumenter_Adapter*> m_prelink_adapters;
     std::deque<SCOREP_Instrumenter_Adapter*> m_postlink_adapters;
 };
-#endif /*SCOREP_INSTRUMENTER_H_*/
+#endif /*SCOREP_INSTRUMENTER_H*/
