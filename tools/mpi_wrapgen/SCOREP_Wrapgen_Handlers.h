@@ -69,15 +69,24 @@ namespace Wrapgen
 namespace handler
 {
 /** handler callback type for Func objects */
-typedef std::string ( *func_handler_t )( const Func& );
+typedef std::string ( * func_handler_t )( const Func& );
 
 /** Callback map for func handlers */
 typedef std::map<std::string, func_handler_t> func_handlers_t;
+
+/** handler callback type for Func with arg objects */
+typedef std::string ( * funcarg_handler_t )( const Func&,
+                                             const std::string& );
+
+/** Callback map for func with arg handlers */
+typedef std::map<std::string, funcarg_handler_t> funcarg_handlers_t;
 
 /** Key-value type */
 typedef std::map<std::string, std::string> info_t;
 
 extern func_handlers_t func_handlers;
+
+extern funcarg_handlers_t funcarg_handlers;
 
 std::string
 dispatch

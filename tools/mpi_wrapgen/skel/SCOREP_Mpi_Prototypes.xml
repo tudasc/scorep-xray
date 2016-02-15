@@ -67,6 +67,7 @@
 </prototype>
 
 <prototype name="MPI_Allgather" rtype="int" group="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -143,6 +144,7 @@
 </prototype>
 
 <prototype name="MPI_Allgatherv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -237,6 +239,7 @@
 </prototype>
 
 <prototype name="MPI_Allreduce" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -308,6 +311,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoall" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -377,6 +381,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoallv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
@@ -464,6 +469,7 @@
 </prototype>
 
 <prototype name="MPI_Alltoallw" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sdispls" suffix="[]" />
@@ -578,12 +584,14 @@
 </prototype>
 
 <prototype name="MPI_Barrier" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">BARRIER</attribute>
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <decl>SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
 </prototype>
 
 <prototype name="MPI_Bcast" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="b" type_modifier="" type="void*" name="buffer" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -626,6 +634,7 @@
 </prototype>
 
 <prototype name="MPI_Bsend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -652,6 +661,7 @@
 </prototype>
 
 <prototype name="MPI_Bsend_init" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -1202,6 +1212,7 @@
 </prototype>
 
 <prototype name="MPI_Exscan" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_OTHER</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -2535,6 +2546,7 @@
 </prototype>
 
 <prototype name="MPI_Gather" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -2614,6 +2626,7 @@
 </prototype>
 
 <prototype name="MPI_Gatherv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -2946,6 +2959,7 @@
 </prototype>
 
 <prototype name="MPI_Iallgather" rtype="int" group="coll"  guard="coll">
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -2998,6 +3012,7 @@
 </prototype>
 
 <prototype name="MPI_Iallgatherv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3051,6 +3066,7 @@
 </prototype>
 
 <prototype name="MPI_Iallreduce" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -3102,6 +3118,7 @@
 </prototype>
 
 <prototype name="MPI_Ialltoall" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3154,6 +3171,7 @@
 </prototype>
 
 <prototype name="MPI_Ialltoallv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
@@ -3208,6 +3226,7 @@
 </prototype>
 
 <prototype name="MPI_Ialltoallw" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sdispls" suffix="[]" />
@@ -3262,6 +3281,7 @@
 </prototype>
 
 <prototype name="MPI_Ibarrier" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">BARRIER</attribute>
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
@@ -3269,6 +3289,7 @@
 </prototype>
 
 <prototype name="MPI_Ibcast" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="b" type_modifier="" type="void*" name="buffer" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -3296,6 +3317,7 @@
 
 
 <prototype name="MPI_Ibsend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -3323,6 +3345,7 @@
 </prototype>
 
  <prototype name="MPI_Iexscan" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_OTHER</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -3374,6 +3397,7 @@
 </prototype>
 
 <prototype name="MPI_Igather" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3427,6 +3451,7 @@
 </prototype>
 
 <prototype name="MPI_Igatherv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3481,6 +3506,7 @@
 </prototype>
 
 <prototype name="MPI_Improbe" rtype="int" group="p2p" guard="extra,p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="" type="int" name="source" />
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -3508,6 +3534,7 @@
 </prototype>
 
 <prototype name="MPI_Imrecv" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -3533,6 +3560,7 @@
 </prototype>
 
 <prototype name="MPI_Ineighbor_allgather" rtype="int" group="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3573,6 +3601,7 @@
 </prototype>
 
 <prototype name="MPI_Ineighbor_allgatherv" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3620,6 +3649,7 @@
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoall" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -3672,6 +3702,7 @@
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoallv" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
@@ -3726,6 +3757,7 @@
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoallw" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="sdispls" suffix="[]" />
@@ -3885,6 +3917,7 @@
 </prototype>
 
 <prototype name="MPI_Iprobe" rtype="int" group="p2p" guard="extra,p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="" type="int" name="source" />
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -3911,6 +3944,7 @@
 </prototype>
 
 <prototype name="MPI_Irecv" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -3938,6 +3972,7 @@
 </prototype>
 
 <prototype name="MPI_Ireduce" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -3991,6 +4026,7 @@
 
 
 <prototype name="MPI_Ireduce_scatter" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
@@ -4042,6 +4078,7 @@
 </prototype>
 
 <prototype name="MPI_Ireduce_scatter_block" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="recvcount" />
@@ -4093,6 +4130,7 @@
 </prototype>
 
 <prototype name="MPI_Irsend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4125,6 +4163,7 @@
 </prototype>
 
 <prototype name="MPI_Iscan" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_OTHER</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -4176,6 +4215,7 @@
 </prototype>
 
 <prototype name="MPI_Iscatter" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -4229,6 +4269,7 @@
 </prototype>
 
 <prototype name="MPI_Iscatterv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
@@ -4283,6 +4324,7 @@
 </prototype>
 
 <prototype name="MPI_Isend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4310,6 +4352,7 @@
 </prototype>
 
 <prototype name="MPI_Issend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4357,6 +4400,7 @@
 </prototype>
 
 <prototype name="MPI_Mprobe" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="" type="int" name="source" />
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -4383,6 +4427,7 @@
 </prototype>
 
 <prototype name="MPI_Mrecv" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4421,6 +4466,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_allgather" rtype="int" group="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -4472,6 +4518,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_allgatherv" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -4524,6 +4571,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoall" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -4575,6 +4623,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallv" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
@@ -4628,6 +4677,7 @@
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallw" rtype="int" group="topo" guard="topo" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="sdispls" suffix="[]" />
@@ -4791,6 +4841,7 @@
 </prototype>
 
 <prototype name="MPI_Probe" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="" type="int" name="source" />
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -4893,6 +4944,7 @@
 </prototype>
 
 <prototype name="MPI_Recv" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4933,6 +4985,7 @@
 </prototype>
 
 <prototype name="MPI_Recv_init" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -4960,6 +5013,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -5048,6 +5102,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce_scatter" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
@@ -5124,6 +5179,7 @@
 </prototype>
 
 <prototype name="MPI_Reduce_scatter_block" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="recvcount" />
@@ -5315,6 +5371,7 @@
 </prototype>
 
 <prototype name="MPI_Rsend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5341,6 +5398,7 @@
 </prototype>
 
 <prototype name="MPI_Rsend_init" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5368,6 +5426,7 @@
 </prototype>
 
 <prototype name="MPI_Scan" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_OTHER</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="o" type_modifier="" type="void*" name="recvbuf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -5442,6 +5501,7 @@
 </prototype>
 
 <prototype name="MPI_Scatter" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -5527,6 +5587,7 @@
 </prototype>
 
 <prototype name="MPI_Scatterv" rtype="int" group="coll" guard="coll" >
+    <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
@@ -5611,6 +5672,7 @@
 </prototype>
 
 <prototype name="MPI_Send" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5637,6 +5699,7 @@
 </prototype>
 
 <prototype name="MPI_Send_init" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5664,6 +5727,7 @@
 </prototype>
 
 <prototype name="MPI_Sendrecv" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
     <param access="i" type_modifier="" type="int" name="sendcount" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
@@ -5722,6 +5786,7 @@
 </prototype>
 
 <prototype name="MPI_Sendrecv_replace" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="b" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5773,6 +5838,7 @@
 </prototype>
 
 <prototype name="MPI_Ssend" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5799,6 +5865,7 @@
 </prototype>
 
 <prototype name="MPI_Ssend_init" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -5826,11 +5893,13 @@
 </prototype>
 
 <prototype name="MPI_Start" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Startall" rtype="int" group="p2p" guard="p2p" >
+    <attribute id="kind">POINT2POINT</attribute>
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <version id="1.0" />

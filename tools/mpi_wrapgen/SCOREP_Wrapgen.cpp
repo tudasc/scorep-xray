@@ -292,7 +292,7 @@ SCOREP::Wrapgen::read_xml_prototypes
                 {
                     string              name, rtype, group;
                     string              version, send = "0", recv = "0";
-                    map<string, string> decl, xblock, cleanup;
+                    map<string, string> decl, xblock, cleanup, attributes;
                     string              guard;
                     paramlist_t         params;
 
@@ -374,6 +374,21 @@ SCOREP::Wrapgen::read_xml_prototypes
                                     xmlFree( content );
                                 }
                             }
+
+                            if ( xmlStrcmp( el->name, ( const xmlChar* )
+                                            "attribute" ) == 0 )
+                            {
+                                xmlChar* content = NULL;
+                                content = xmlNodeGetContent( el );
+                                if ( content )
+                                {
+                                    string id;
+                                    XML_GET_STR_ATTR( el, "id", id );
+                                    attributes[ id ] = string( ( const char* )content );
+                                    xmlFree( content );
+                                }
+                            }
+
                             if ( family == "mpi" )
                             {
                                 if ( xmlStrcmp( el->name, ( const xmlChar* )
@@ -399,6 +414,12 @@ SCOREP::Wrapgen::read_xml_prototypes
                         // and register it in map
                         MPIFunc f = MPIFunc( rtype, name, group, guard,
                                              version, params );
+                        for ( map<string, string>::const_iterator it = attributes.begin();
+                              it != attributes.end();
+                              ++it )
+                        {
+                            f.set_attribute( it->first, it->second );
+                        }
                         for ( map<string, string>::const_iterator it = decl.begin();
                               it != decl.end();
                               ++it )
@@ -439,11 +460,7 @@ SCOREP::Wrapgen::write_xml_prototypes
 )
 {
     map<string, MPIFunc>::iterator it;
-    ofstream
-    pconf
-    (
-        filename
-    );
+    ofstream                       pconf( filename );
 
     pconf << "<prototypes count=\"" << funcs.size() << "\" family=\"mpi\" >\n";
 
@@ -465,11 +482,7 @@ SCOREP::Wrapgen::handle_textfile
     const char* filename
 )
 {
-    ifstream
-    textfile
-    (
-        filename
-    );
+    ifstream textfile( filename );
 
     string text;
     while ( getline( textfile, text ) )
@@ -520,12 +533,8 @@ SCOREP::Wrapgen::handle_file_template
         lineno++;
         if ( string::size_type pos = src_line.find( "#pragma wrapgen" ) != string::npos )
         {
-            string scope, cmd, wrapper_tmpl;
-            istringstream
-            line_stream
-            (
-                src_line.substr( pos + 15 )
-            );
+            string        scope, cmd, wrapper_tmpl;
+            istringstream line_stream( src_line.substr( pos + 15 ) );
 
             line_stream >> scope >> cmd >> wrapper_tmpl;
 
@@ -560,11 +569,7 @@ SCOREP::Wrapgen::handle_file_template
                     map<string, MPIFunc>::iterator it;
                     for ( it = mpiFuncs.begin(); it != mpiFuncs.end(); ++it )
                     {
-                        string
-                        rule
-                        (
-                            cmd.substr( pos + 8, cmd.length() - pos - 9 )
-                        );
+                        string rule( cmd.substr( pos + 8, cmd.length() - pos - 9 ) );
 
                         generateOutput( it->second, wrapper_tmpl.c_str(),
                                         rule );
@@ -852,11 +857,7 @@ main
     for ( int n = 1; optind < argc; optind++ )
     {
         n = optind;
-        string
-        aname
-        (
-            argv[ n ]
-        );
+        string aname( argv[ n ] );
 
         if ( aname.rfind( ".txt" ) == ( aname.size() - 4 ) )
         {

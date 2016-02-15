@@ -68,6 +68,7 @@ SCOREP::Wrapgen::MPIFunc::MPIFunc( const string&      rtype,
     m_version( string2int( version ) )
 {
     set_family( "mpi" );
+    set_attribute( "kind", "NONE" );
 };
 
 string
@@ -76,16 +77,16 @@ SCOREP::Wrapgen::MPIFunc::write_conf
 {
     ostringstream conf;
 
-    conf << "<prototype name=\"" << get_name() << "\" rtype=\"" <<
-    get_rtype() << "\" group=\"" << get_group() << "\" >\n";
+    conf << "<prototype name=\"" << get_name() << "\" rtype=\""
+         << get_rtype() << "\" group=\"" << get_group() << "\" >\n";
     for ( size_t i = 0; i < get_param_count(); ++i )
     {
         Funcparam param = get_param( i );
 
-        conf << "    <param access=\"" << param.get_atype() <<
-        "\" type=\"" << param.get_type() << "\" name=\"" <<
-        param.get_name() << "\" suffix=\"" << param.get_suffix() <<
-        "\" />\n";
+        conf << "    <param access=\"" << param.get_atype()
+             << "\" type=\"" << param.get_type() << "\" name=\""
+             << param.get_name() << "\" suffix=\"" << param.get_suffix()
+             << "\" />\n";
     }
     conf << "    <version id=\"" << m_version << "\" />\n";
     conf << "    <countrules send=\"" << m_scnt << "\" recv=\""

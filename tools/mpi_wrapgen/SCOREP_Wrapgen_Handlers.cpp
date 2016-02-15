@@ -74,6 +74,9 @@ using namespace SCOREP::Wrapgen::handler;
 /** Map of all registered func handlers */
 SCOREP::Wrapgen::handler::func_handlers_t SCOREP::Wrapgen::handler::func_handlers;
 
+/** Map of all registered func-with-arg handlers */
+SCOREP::Wrapgen::handler::funcarg_handlers_t SCOREP::Wrapgen::handler::funcarg_handlers;
+
 string
 SCOREP::Wrapgen::handler::apply_modifiers
 (
@@ -81,11 +84,7 @@ SCOREP::Wrapgen::handler::apply_modifiers
     stack<string>& modifier_stack
 )
 {
-    string
-    str
-    (
-        instr
-    );
+    string str( instr );
 
     // apply any modifiers parsed earlier
     while ( !modifier_stack.empty() )
@@ -137,11 +136,7 @@ SCOREP::Wrapgen::handler::dispatch
 )
 {
     string str;
-    string
-    internal_key
-    (
-        key
-    );
+    string internal_key( key );
 
     stack<string>     modifier_stack;
     string::size_type pos = string::npos;
@@ -153,11 +148,27 @@ SCOREP::Wrapgen::handler::dispatch
         internal_key = internal_key.substr( 0, pos );
     }
 
-    handler::func_handlers_t::const_iterator it =
-        func_handlers.find( internal_key );
-    if ( it != func_handlers.end() )
+    if ( internal_key.find_last_of( "(" ) < internal_key.find_last_of( ")" ) )
     {
-        str = ( it->second )( func );
+        string::size_type open  = internal_key.find_last_of( "(" );
+        string::size_type close = internal_key.find_last_of( ")" );
+        string            arg   = trim( internal_key.substr( open + 1, close - open - 1 ) );
+        internal_key = internal_key.substr( 0, open );
+        handler::funcarg_handlers_t::const_iterator it =
+            funcarg_handlers.find( internal_key );
+        if ( it != funcarg_handlers.end() )
+        {
+            str = ( it->second )( func, arg );
+        }
+    }
+    else
+    {
+        handler::func_handlers_t::const_iterator it =
+            func_handlers.find( internal_key );
+        if ( it != func_handlers.end() )
+        {
+            str = ( it->second )( func );
+        }
     }
 
     str = apply_modifiers( str, modifier_stack );

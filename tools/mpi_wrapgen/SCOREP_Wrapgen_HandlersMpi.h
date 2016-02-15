@@ -116,6 +116,13 @@ declare_hooks
 
 
 std::string
+attribute
+(
+    const SCOREP::Wrapgen::Func& func,
+    const std::string&           attribute
+);
+
+std::string
 call_f2c_c2f
 (
     const SCOREP::Wrapgen::Func& func
@@ -360,14 +367,6 @@ send_rule
  */
 std::string
 recv_rule
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-/** Returns the kind of communication in capital letters.
- */
-std::string
-kind
 (
     const SCOREP::Wrapgen::Func& func
 );

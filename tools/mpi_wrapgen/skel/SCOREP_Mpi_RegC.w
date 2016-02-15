@@ -8,6 +8,6 @@ ${guard:start}
                           SCOREP_INVALID_LINE_NO,
                           SCOREP_INVALID_LINE_NO,
                           SCOREP_PARADIGM_MPI,
-                          SCOREP_REGION_${mpi:kind});
+                          SCOREP_REGION_${attribute(kind)});
   }
 ${guard:end}

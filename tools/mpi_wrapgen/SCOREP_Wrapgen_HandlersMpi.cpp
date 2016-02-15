@@ -78,12 +78,6 @@ using namespace SCOREP::Wrapgen::handler::mpi;
  */
 static handler::info_t f2c_types;
 
-/** @internal
- * Map to enable the 'class' template variable
- */
-static handler::info_t comm_kind;
-
-
 /**
  * Initialize and assign handlers for MPI family.
  * These include:
@@ -92,82 +86,9 @@ void
 SCOREP::Wrapgen::handler::mpi::_initialize
     ()
 {
-    /** - Collective class macros */
-    comm_kind[ "MPI_Allgather" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Allgatherv" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Allreduce" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Alltoall" ]              = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Alltoallv" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Alltoallw" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Barrier" ]               = "BARRIER";
-    comm_kind[ "MPI_Bcast" ]                 = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Exscan" ]                = "COLL_OTHER";
-    comm_kind[ "MPI_Gather" ]                = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Gatherv" ]               = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Iallgather" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Iallgatherv" ]           = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Iallreduce" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ialltoall" ]             = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ialltoallv" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ialltoallw" ]            = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ibarrier" ]              = "BARRIER";
-    comm_kind[ "MPI_Ibcast" ]                = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Iexscan" ]               = "COLL_OTHER";
-    comm_kind[ "MPI_Igather" ]               = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Igatherv" ]              = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Ineighbor_allgather" ]   = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ineighbor_allgatherv" ]  = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ineighbor_alltoall" ]    = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ineighbor_alltoallv" ]   = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ineighbor_alltoallw" ]   = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ireduce" ]               = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Ireduce_scatter" ]       = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Ireduce_scatter_block" ] = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Iscan" ]                 = "COLL_OTHER";
-    comm_kind[ "MPI_Iscatter" ]              = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Iscatterv" ]             = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Neighbor_allgather" ]    = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Neighbor_allgatherv" ]   = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Neighbor_alltoall" ]     = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Neighbor_alltoallv" ]    = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Neighbor_alltoallw" ]    = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Reduce" ]                = "COLL_ALL2ONE";
-    comm_kind[ "MPI_Reduce_scatter" ]        = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Reduce_scatter_block" ]  = "COLL_ALL2ALL";
-    comm_kind[ "MPI_Scan" ]                  = "COLL_OTHER";
-    comm_kind[ "MPI_Scatter" ]               = "COLL_ONE2ALL";
-    comm_kind[ "MPI_Scatterv" ]              = "COLL_ONE2ALL";
-
-
-    /** - Point to Point class macros */
-    comm_kind[ "MPI_Bsend" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Bsend_init" ]       = "POINT2POINT";
-    comm_kind[ "MPI_Ibsend" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Improbe" ]          = "POINT2POINT";
-    comm_kind[ "MPI_Imrecv" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Iprobe" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Irsend" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Isend" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Issend" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Irecv" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Mprobe" ]           = "POINT2POINT";
-    comm_kind[ "MPI_Mrecv" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Probe" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Recv" ]             = "POINT2POINT";
-    comm_kind[ "MPI_Recv_init" ]        = "POINT2POINT";
-    comm_kind[ "MPI_Rsend" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Rsend_init" ]       = "POINT2POINT";
-    comm_kind[ "MPI_Send" ]             = "POINT2POINT";
-    comm_kind[ "MPI_Send_init" ]        = "POINT2POINT";
-    comm_kind[ "MPI_Sendrecv" ]         = "POINT2POINT";
-    comm_kind[ "MPI_Sendrecv_replace" ] = "POINT2POINT";
-    comm_kind[ "MPI_Ssend" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Ssend_init" ]       = "POINT2POINT";
-    comm_kind[ "MPI_Start" ]            = "POINT2POINT";
-    comm_kind[ "MPI_Startall" ]         = "POINT2POINT";
-
-
     /** - Func-object template handlers */
+    funcarg_handlers[ "attribute" ] = handler::mpi::attribute;
+
     func_handlers[ "call:f2c_c2f" ]    = handler::mpi::call_f2c_c2f;
     func_handlers[ "call:fortran" ]    = handler::mpi::call_fortran;
     func_handlers[ "call:pmpi" ]       = handler::mpi::call_pmpi;
@@ -185,7 +106,6 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "init" ]            = handler::mpi::init;
     func_handlers[ "init:f2c_c2f" ]    = handler::mpi::init_f2c_c2f;
     func_handlers[ "init:fortran" ]    = handler::mpi::init_fortran;
-    func_handlers[ "mpi:kind" ]        = handler::mpi::kind;
     func_handlers[ "mpi:sendcount" ]   = handler::mpi::send_rule;
     func_handlers[ "mpi:recvcount" ]   = handler::mpi::recv_rule;
     func_handlers[ "mpi:version" ]     = handler::mpi::version;
@@ -215,6 +135,16 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     f2c_types[ "MPI_Datatype" ] = "PMPI_Type";
     f2c_types[ "MPI_Info" ]     = "PMPI_Info";
     f2c_types[ "MPI_Message" ]  = "PMPI_Message";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::attribute
+(
+    const Func&   func,
+    const string& attribute
+)
+{
+    return func.get_attribute( attribute );
 }
 
 string
@@ -1232,24 +1162,6 @@ SCOREP::Wrapgen::handler::mpi::rtype
 )
 {
     return func.get_rtype();
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::kind
-(
-    const Func& func
-)
-{
-    info_t::const_iterator it = comm_kind.find( func.get_name() );
-
-    if ( it != comm_kind.end() )
-    {
-        return it->second;
-    }
-    else
-    {
-        return "NONE";
-    }
 }
 
 string

@@ -137,6 +137,31 @@ public:
         return m_family;
     };
 
+    /** return value of attribute
+     * @param attribute
+     * @return attribute value
+     */
+    std::string
+    get_attribute
+        ( const std::string& attribute ) const
+    {
+        return m_attributes.find( attribute )->second;
+    };
+
+    /** set the extended attribute
+     * @param attribute extended attribute
+     * @param value extended attribute value
+     */
+    void
+    set_attribute
+    (
+        const std::string& attribute,
+        const std::string& value
+    )
+    {
+        m_attributes[ attribute ] = value;
+    }
+
     /** return group of prototype
      * @return group of prototype
      */
@@ -534,6 +559,8 @@ private:
     std::string m_group;
     /** guard name that is used to decide whether this wrapper is built */
     std::string m_guard;
+    /** special attributes */
+    std::map<std::string, std::string> m_attributes;
     /** family of prototype */
     std::string m_family;
     /** special declaration block */
