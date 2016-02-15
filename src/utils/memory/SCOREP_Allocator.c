@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -404,7 +404,7 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
     already_used_pages++;
     size_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "0: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "0: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
                         totalMemory, page_shift, n_pages,
                         maint_memory_needed,
                         free_memory_in_last_page,
@@ -422,7 +422,7 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
         return 0;
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "1: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "1: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
                         totalMemory, page_shift, n_pages,
                         maint_memory_needed,
                         free_memory_in_last_page,

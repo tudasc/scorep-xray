@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -91,4 +91,9 @@ EXTRA_DIST += \
     $(INSTALLCHECK_DIR)/create_wait/pthread/pi_mutex-pthread-cc.c \
     $(INSTALLCHECK_DIR)/create_wait/pthread/pi-pthread-cc.c \
     $(INSTALLCHECK_DIR)/create_wait/pthread/producer_consumer-pthread-cc.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/synchronization_routines-pthread-cc.c
+    $(INSTALLCHECK_DIR)/create_wait/pthread/synchronization_routines-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/memory/malloc-cc.c \
+    $(INSTALLCHECK_DIR)/memory/calloc-cc.c \
+    $(INSTALLCHECK_DIR)/memory/realloc-cc.c \
+    $(INSTALLCHECK_DIR)/memory/new-cxx.cpp \
+    $(INSTALLCHECK_DIR)/memory/new_array-cxx.cpp

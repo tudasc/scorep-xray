@@ -6,7 +6,7 @@
 ## Copyright (c) 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -58,7 +58,9 @@ common_mgmt_libadd = \
     libscorep_measurement.la
 
 if HAVE_CUDA_SUPPORT
-common_mgmt_libadd += libscorep_adapter_cuda_mgmt.la
+common_mgmt_libadd += \
+    libscorep_adapter_cuda_mgmt.la \
+    libscorep_alloc_metric.la
 endif HAVE_CUDA_SUPPORT
 
 common_cppflags = \
@@ -98,6 +100,7 @@ libscorep_mpi_mgmt_la_CPPFLAGS = $(common_cppflags)
 libscorep_mpi_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                   \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
+    libscorep_alloc_metric.la                               \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     $(external_libadd)                                      \
@@ -134,6 +137,7 @@ libscorep_shmem_mgmt_la_CPPFLAGS = $(common_cppflags)
 libscorep_shmem_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                  \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
+    libscorep_alloc_metric.la                              \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
     $(external_libadd)                                     \
@@ -205,6 +209,7 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                   \
     $(external_libadd)                                      \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
+    libscorep_alloc_metric.la                               \
     libscorep_adapter_opari2_openmp_mgmt.la                 \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
@@ -226,8 +231,8 @@ libscorep_shmem_omp_event_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS
 libscorep_shmem_omp_event_la_CPPFLAGS             = $(common_cppflags)
 libscorep_shmem_omp_event_la_LIBADD               = \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
-    libscorep_adapter_opari2_openmp_event.la                     \
-    libscorep_adapter_opari2_user_event.la                    \
+    libscorep_adapter_opari2_openmp_event.la                \
+    libscorep_adapter_opari2_user_event.la                  \
     $(common_event_libadd)
 
 check_LTLIBRARIES                   += libscorep_shmem_omp_mgmt.la
@@ -238,8 +243,9 @@ libscorep_shmem_omp_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                  \
     $(external_libadd)                                     \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
-    libscorep_adapter_opari2_openmp_mgmt.la                     \
-    libscorep_adapter_opari2_user_mgmt.la                    \
+    libscorep_alloc_metric.la                              \
+    libscorep_adapter_opari2_openmp_mgmt.la                \
+    libscorep_adapter_opari2_user_mgmt.la                  \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
     libscorep_thread_fork_join_omp_tpd.la                  \

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,6 +44,7 @@
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_AllocMetric.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request.h"
@@ -132,6 +133,10 @@ void* scorep_mpi_fortran_statuses_ignore = NULL;
  */
 void* scorep_mpi_fortran_unweighted = NULL;
 
+
+SCOREP_AllocMetric*    scorep_mpi_allocations_metric            = NULL;
+SCOREP_AttributeHandle scorep_mpi_memory_alloc_size_attribute   = SCOREP_INVALID_ATTRIBUTE;
+SCOREP_AttributeHandle scorep_mpi_memory_dealloc_size_attribute = SCOREP_INVALID_ATTRIBUTE;
 
 /**
    External fortran function to retrieve the constant value
@@ -236,6 +241,18 @@ mpi_subsystem_init( void )
 
     scorep_mpi_win_init();
     scorep_mpi_register_regions();
+
+    if ( scorep_mpi_memory_recording )
+    {
+        SCOREP_AllocMetric_New( "Process memory usage (MPI)",
+                                &scorep_mpi_allocations_metric );
+
+        scorep_mpi_memory_alloc_size_attribute =
+            SCOREP_AllocMetric_GetAllocationSizeAttribute();
+        scorep_mpi_memory_dealloc_size_attribute =
+            SCOREP_AllocMetric_GetDeallocationSizeAttribute();
+    }
+
     return SCOREP_SUCCESS;
 }
 
@@ -251,6 +268,11 @@ mpi_subsystem_end( void )
 {
     /* Prevent all further events */
     SCOREP_MPI_EVENT_GEN_OFF();
+
+    if ( scorep_mpi_memory_recording )
+    {
+        SCOREP_AllocMetric_ReportLeaked( scorep_mpi_allocations_metric );
+    }
 }
 
 /**
@@ -270,6 +292,11 @@ mpi_subsystem_finalize( void )
     scorep_mpi_win_finalize();
     scorep_mpi_request_finalize();
     scorep_mpi_comm_finalize();
+
+    if ( scorep_mpi_memory_recording )
+    {
+        SCOREP_AllocMetric_Destroy( scorep_mpi_allocations_metric );
+    }
 
     UTILS_DEBUG_EXIT();
 }

@@ -389,7 +389,9 @@ exists_file( const std::string& filename )
 
 std::string
 find_library( std::string                     library,
-              const std::vector<std::string>& path_list )
+              const std::vector<std::string>& path_list,
+              bool                            allow_dynamic,
+              bool                            allow_static )
 {
     if ( library.substr( 0, 2 ) == "-l" )
     {
@@ -404,11 +406,11 @@ find_library( std::string                     library,
           current_libdir++ )
     {
         std::string current_path = *current_libdir + "/" + library;
-        if ( exists_file( current_path + ".so" ) )
+        if ( allow_dynamic && exists_file( current_path + ".so" ) )
         {
             return current_path + ".so";
         }
-        if ( exists_file( current_path + ".a" ) )
+        if ( allow_static && exists_file( current_path + ".a" ) )
         {
             return current_path + ".a";
         }

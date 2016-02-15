@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -178,6 +178,7 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
+    deps.addDependency( "libscorep_adapter_mpi_mgmt", "libscorep_alloc_metric" );
 }
 
 void
@@ -215,6 +216,7 @@ SCOREP_Config_ShmemMppSystem::addLibs( std::deque<std::string>&           libs,
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_shmem_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_shmem" );
     deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
+    deps.addDependency( "libscorep_adapter_shmem_mgmt", "libscorep_alloc_metric" );
 }
 
 void

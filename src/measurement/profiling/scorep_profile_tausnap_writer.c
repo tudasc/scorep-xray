@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -562,7 +562,7 @@ write_atomicdata_tau( scorep_profile_node*      node,
 
         while ( curr != NULL )
         {
-            if ( curr->val == ( int )metric->metric )
+            if ( curr->val == ( int )metric->handle )
             {
                 eventID = curr->index;
             }
@@ -607,7 +607,7 @@ write_userevent_data_metric_tau( scorep_profile_node*      node,
         int eventID = -1;
         while ( curr != NULL )
         {
-            if ( ( int )metric->metric == curr->val )
+            if ( ( int )metric->handle == curr->val )
             {
                 eventID = curr->index;
                 curr    = NULL;
@@ -628,7 +628,7 @@ write_userevent_data_metric_tau( scorep_profile_node*      node,
                 eventID = tail->index + 1;
             }
             item* new = ( item* )malloc( sizeof( item ) );
-            new->val   = metric->metric;
+            new->val   = metric->handle;
             new->index = eventID;
             new->next  = NULL;
 
@@ -646,7 +646,7 @@ write_userevent_data_metric_tau( scorep_profile_node*      node,
 
             SCOREP_MetricDef* metric_definition;
             char*             metric_name;
-            metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->metric, Metric );
+            metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->handle, Metric );
             metric_name       = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
                                                              String )->string_data;
             metric_name = xmlize_string( metric_name );

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -47,7 +47,7 @@
  */
 #ifdef SCOREP_LIBWRAP_STATIC
 
-#define SCOREP_SHMEM_PROCESS_FUNC( return_type, func, func_args )   \
+#define SCOREP_SHMEM_PROCESS_FUNC( type, return_type, func, func_args )   \
     extern SCOREP_RegionHandle scorep_shmem_region__ ## func;       \
     return_type func func_args; \
     return_type      __real_ ## func func_args;
@@ -60,7 +60,7 @@
  */
 #elif SCOREP_LIBWRAP_SHARED
 
-#define SCOREP_SHMEM_PROCESS_FUNC( return_type, func, func_args )   \
+#define SCOREP_SHMEM_PROCESS_FUNC( type, return_type, func, func_args )   \
     extern SCOREP_RegionHandle scorep_shmem_region__ ## func;
 
 #error scorep_shmem_func_ptr_##name
@@ -71,7 +71,7 @@
  */
 #elif SCOREP_LIBWRAP_WEAK
 
-#define SCOREP_SHMEM_PROCESS_FUNC( return_type, func, func_args )   \
+#define SCOREP_SHMEM_PROCESS_FUNC( type, return_type, func, func_args )   \
     extern SCOREP_RegionHandle scorep_shmem_region__ ## func;       \
     return_type func func_args;                                     \
     return_type      p ## func func_args;

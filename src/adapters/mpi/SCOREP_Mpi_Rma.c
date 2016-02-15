@@ -1686,12 +1686,27 @@ MPI_Win_allocate( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, vo
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
+
+        if ( scorep_mpi_memory_recording )
+        {
+            uint64_t size_as_uint64 = size;
+            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                 &size_as_uint64 );
+        }
+
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ],
                                    ( intptr_t )PMPI_Win_allocate );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Win_allocate( size, disp_unit, info, comm, baseptr, win );
         SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        {
+            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                            ( uint64_t )( *( void** )baseptr ),
+                                            size );
+        }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1725,12 +1740,27 @@ MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm c
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
+
+        if ( scorep_mpi_memory_recording )
+        {
+            uint64_t size_as_uint64 = size;
+            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                 &size_as_uint64 );
+        }
+
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ],
                                    ( intptr_t )PMPI_Win_allocate_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Win_allocate_shared( size, disp_unit, info, comm, baseptr, win );
         SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        {
+            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                            ( uint64_t )( *( void** )baseptr ),
+                                            size );
+        }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();

@@ -1,0 +1,228 @@
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2016,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/adapters/memory/Makefile.inc.am
+
+# runtime management library for the memory adapter
+
+if HAVE_MEMORY_SUPPORT
+
+lib_LTLIBRARIES += libscorep_adapter_memory_mgmt.la
+
+libscorep_adapter_memory_mgmt_la_SOURCES  = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_mgmt.c  \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_mgmt.h \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_attributes.h \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_attributes.c \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_functions.h
+
+libscorep_adapter_memory_mgmt_la_CFLAGS = \
+    $(AM_CFLAGS)
+
+libscorep_adapter_memory_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                           \
+    -I$(PUBLIC_INC_DIR)                      \
+    -I$(INC_ROOT)src/measurement/include     \
+    -I$(INC_DIR_COMMON_HASH)                 \
+    $(UTILS_CPPFLAGS)                        \
+    -I$(INC_DIR_MUTEX)                       \
+    -I$(INC_DIR_DEFINITIONS)                 \
+    -I$(INC_DIR_SUBSTRATES)
+
+libscorep_adapter_memory_mgmt_la_LIBADD =
+
+libscorep_adapter_memory_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+# event library for libc allocation routines
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_libc.la
+
+libscorep_adapter_memory_event_libc_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_libc.c
+
+libscorep_adapter_memory_event_libc_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_libc_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_libc_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,malloc,-wrap,realloc,-wrap,calloc,-wrap,free,-wrap,memalign,-wrap,posix_memalign,-wrap,valloc
+
+# event library for C11 allocation routines
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_libc11.la
+
+libscorep_adapter_memory_event_libc11_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_libc11.c
+
+libscorep_adapter_memory_event_libc11_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_libc11_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_libc11_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,aligned_alloc
+
+# event library for common C++ de-allocation routines
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx.la
+
+libscorep_adapter_memory_event_cxx_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx.c
+
+libscorep_adapter_memory_event_cxx_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_cxx_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_cxx_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,_ZdlPv,-wrap,_ZdaPv
+
+# event library for C++ allocation routines in L32 mode
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx_L32.la
+
+libscorep_adapter_memory_event_cxx_L32_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx_L32.c
+
+libscorep_adapter_memory_event_cxx_L32_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_cxx_L32_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_cxx_L32_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,_Znwj,-wrap,_Znaj
+
+# event library for C++ allocation routines in L64 mode
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx_L64.la
+
+libscorep_adapter_memory_event_cxx_L64_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx_L64.c
+
+libscorep_adapter_memory_event_cxx_L64_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_cxx_L64_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_cxx_L64_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,_Znwm,-wrap,_Znam
+
+# event library for common C++ de-allocation routines (old PGI C++ ABI)
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC.la
+
+libscorep_adapter_memory_event_pgCC_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC.c
+
+libscorep_adapter_memory_event_pgCC_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_pgCC_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_pgCC_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,__dl__FPv,-wrap,__dla__FPv
+
+# event library for C++ allocation routines in L32 mode (old PGI C++ ABI)
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC_L32.la
+
+libscorep_adapter_memory_event_pgCC_L32_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC_L32.c
+
+libscorep_adapter_memory_event_pgCC_L32_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_pgCC_L32_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_pgCC_L32_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,__nw__FUi,-wrap,__nwa__FUi
+
+# event library for C++ allocation routines in L64 mode (old PGI C++ ABI)
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC_L64.la
+
+libscorep_adapter_memory_event_pgCC_L64_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC_L64.c
+
+libscorep_adapter_memory_event_pgCC_L64_la_CPPFLAGS =  \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    $(UTILS_CPPFLAGS)                         \
+    -DSCOREP_LIBWRAP_STATIC                   \
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_pgCC_L64_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_pgCC_L64_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,__nw__FUl,-wrap,__nwa__FUl
+
+endif HAVE_MEMORY_SUPPORT

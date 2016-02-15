@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -1328,7 +1328,6 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
         }
     }
 
-    /************* CUDA kernel launches *************/
     if ( scorep_cuda_record_gpumemusage )
     {
         switch ( callbackId )
@@ -1702,7 +1701,7 @@ scorep_cupticb_create_default_stream( scorep_cupti_context* context )
 {
     uint32_t cuStrmID = SCOREP_CUPTI_NO_STREAM_ID;
 
-    /* create a Score-P CUPTI stream */
+    // create a Score-P CUPTI stream
     if ( context->activity == NULL )
     {
         SCOREP_CUPTI_CALL( cuptiGetStreamId( context->cuda_context, NULL, &cuStrmID ) );
@@ -2381,13 +2380,6 @@ scorep_cupti_callbacks_init( void )
             scorep_cupti_activity_init();
         }     /* scorep_cuda_record_kernels || scorep_cuda_record_memcpy || scorep_cuda_record_gpumemusage */
               /*}  scorep_gpu_get_config() != 0 */
-
-        /* register the finalize function of Score-P CUPTI to be called before
-         * the program exits */
-        /* If this has ever an effect, after Score-P itself is finalized, than
-         * it will crash anyway, because this function tries to write events.
-         */
-        atexit( scorep_cupti_callbacks_finalize );
 
         scorep_cupti_callbacks_initialized = true;
 

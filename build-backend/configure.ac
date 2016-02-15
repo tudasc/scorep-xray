@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2015,
+dnl Copyright (c) 2009-2016,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -300,6 +300,8 @@ SCOREP_CHECK_PREINCLUDES
 
 AC_SCOREP_ONLINE_ACCESS
 
+SCOREP_MEMORY_SUPPORT
+
 ## trunc and ceil needed by the cube4 writer
 AC_SEARCH_LIBS([trunc], [m])
 AC_SEARCH_LIBS([ceil], [m])
@@ -407,6 +409,8 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../te
 AM_COND_IF([HAVE_GNU_LINKER],
     [AM_COND_IF([HAVE_PTHREAD],
          [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])])
+AM_COND_IF([HAVE_MEMORY_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/memory/Makefile:../test/instrumenter_checks/memory/Makefile.in])])
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
@@ -457,6 +461,7 @@ AC_CONFIG_FILES([../installcheck/constructor_checks/bin/run_constructor_checks.s
                 [chmod +x ../installcheck/constructor_checks/bin/run_constructor_checks.sh])
 AC_CONFIG_FILES([../installcheck/constructor_checks/generate_makefile.sh:../test/constructor_checks/generate_makefile.sh.in],
                 [chmod +x ../installcheck/constructor_checks/generate_makefile.sh])
+
 AC_CONFIG_FILES([run_cct_tests.sh:../test/services/unwinding/run_cct_tests.sh.in],
                 [chmod +x run_cct_tests.sh])
 AC_CONFIG_FILES([../test/tools/wrapper/run_wrapper_checks.sh],

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -174,13 +174,13 @@ make_metric_mapping( uint32_t metric_number )
 /**
    Creates a mapping from global sequence numbers to unified metric definitions. The
    global sequence numbers define the order in which the metrics are written.
+   @param metric_number Number of unified definitions.
  */
 static SCOREP_MetricHandle*
-make_unified_mapping( void )
+make_unified_metrics_mapping( uint32_t metric_number )
 {
-    uint32_t             i             = 0;
-    uint32_t             metric_number = SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions();
-    SCOREP_MetricHandle* map           = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
+    uint32_t             i   = 0;
+    SCOREP_MetricHandle* map = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
     if ( map == NULL )
     {
         return NULL;
@@ -338,7 +338,7 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
 
     while ( current != NULL )
     {
-        if ( current->metric == metric )
+        if ( current->handle == metric )
         {
             switch ( SCOREP_MetricHandle_GetProfilingType( metric ) )
             {
@@ -377,7 +377,7 @@ get_sparse_tuple_value_from_double( scorep_profile_node* node, void* data )
 
     while ( current != NULL )
     {
-        if ( current->metric == metric )
+        if ( current->handle == metric )
         {
             value.N    = current->count;
             value.Min  = current->min;
@@ -653,8 +653,8 @@ delete_cube_writing_data( scorep_cube_writing_data* write_set )
     free( write_set->offsets_per_rank );
     free( write_set->items_per_rank );
     free( write_set->metric_map );
+    free( write_set->unified_metric_map );
     free( write_set->bit_vector );
-    free( write_set->unified_map );
     if ( write_set->cube_writer )
     {
         cubew_finalize( write_set->cube_writer );
@@ -664,15 +664,15 @@ delete_cube_writing_data( scorep_cube_writing_data* write_set )
         scorep_cube4_delete_definitions_map( write_set->map );
     }
 
-    write_set->my_cube          = NULL;
-    write_set->cube_writer      = NULL;
-    write_set->id_2_node        = NULL;
-    write_set->map              = NULL;
-    write_set->items_per_rank   = NULL;
-    write_set->offsets_per_rank = NULL;
-    write_set->metric_map       = NULL;
-    write_set->unified_map      = NULL;
-    write_set->bit_vector       = NULL;
+    write_set->my_cube            = NULL;
+    write_set->cube_writer        = NULL;
+    write_set->id_2_node          = NULL;
+    write_set->map                = NULL;
+    write_set->items_per_rank     = NULL;
+    write_set->offsets_per_rank   = NULL;
+    write_set->metric_map         = NULL;
+    write_set->unified_metric_map = NULL;
+    write_set->bit_vector         = NULL;
 }
 
 static bool
@@ -680,15 +680,15 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
 {
     /* Set all pointers to zero.
        If an malloc fails, we know how many can bee freed */
-    write_set->my_cube          = NULL;
-    write_set->cube_writer      = NULL;
-    write_set->id_2_node        = NULL;
-    write_set->map              = NULL;
-    write_set->items_per_rank   = NULL;
-    write_set->offsets_per_rank = NULL;
-    write_set->metric_map       = NULL;
-    write_set->bit_vector       = NULL;
-    write_set->unified_map      = NULL;
+    write_set->my_cube            = NULL;
+    write_set->cube_writer        = NULL;
+    write_set->id_2_node          = NULL;
+    write_set->map                = NULL;
+    write_set->items_per_rank     = NULL;
+    write_set->offsets_per_rank   = NULL;
+    write_set->metric_map         = NULL;
+    write_set->unified_metric_map = NULL;
+    write_set->bit_vector         = NULL;
 
     /* ------------------------------------ Start initializing */
 
@@ -749,9 +749,9 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     /* Get number of unified metrics to every rank */
     if ( write_set->my_rank == 0 )
     {
-        write_set->num_unified = SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions();
+        write_set->num_unified_metrics = scorep_unified_definition_manager->metric.counter;
     }
-    SCOREP_Ipc_Bcast( &write_set->num_unified, 1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_Ipc_Bcast( &write_set->num_unified_metrics, 1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Create the mappings from cube to Score-P handles and vice versa */
     write_set->map = scorep_cube4_create_definitions_map();
@@ -834,11 +834,11 @@ add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
 
     /* Mapping from global sequence number to local metric handle. Defines
        order of writing metrics */
-    write_set->metric_map = make_metric_mapping( write_set->num_unified );
+    write_set->metric_map = make_metric_mapping( write_set->num_unified_metrics );
 
     if ( write_set->my_rank == 0 )
     {
-        write_set->unified_map = make_unified_mapping();
+        write_set->unified_metric_map = make_unified_metrics_mapping( write_set->num_unified_metrics );
     }
 }
 
@@ -972,7 +972,7 @@ scorep_profile_write_cube4( bool write_tuples )
     {
         cube_metric* metric = NULL; /* Only used on rank 0 */
 
-        for ( uint32_t i = 0; i < write_set.num_unified; i++ )
+        for ( uint32_t i = 0; i < write_set.num_unified_metrics; i++ )
         {
             if ( !check_if_metric_shall_be_written( &write_set,
                                                     write_set.metric_map[ i ] ) )
@@ -983,7 +983,7 @@ scorep_profile_write_cube4( bool write_tuples )
             if ( write_set.my_rank == 0 )
             {
                 metric = scorep_get_cube4_metric( write_set.map,
-                                                  write_set.unified_map[ i ] );
+                                                  write_set.unified_metric_map[ i ] );
             }
 
             if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )

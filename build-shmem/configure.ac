@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2015,
+dnl Copyright (c) 2013-2016,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015,
@@ -242,6 +242,8 @@ SCOREP_SHMEM
 AC_SCOREP_COMPILER_INSTRUMENTATION
 
 #AC_SCOREP_ONLINE_ACCESS
+
+SCOREP_MEMORY_SUPPORT
 
 #AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION

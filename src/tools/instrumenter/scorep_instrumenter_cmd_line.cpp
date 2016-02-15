@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -293,7 +293,8 @@ SCOREP_Instrumenter_CmdLine::isTargetSharedLib( void )
 }
 
 std::string
-SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
+SCOREP_Instrumenter_CmdLine::getLibraryFiles( bool allow_dynamic,
+                                              bool allow_static )
 {
     std::string lib_files = "";
 
@@ -301,7 +302,7 @@ SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
           current_lib != m_libraries.end();
           current_lib++ )
     {
-        lib_files += " " + backslash_special_chars( find_library( *current_lib, m_libdirs ) );
+        lib_files += " " + backslash_special_chars( find_library( *current_lib, m_libdirs, allow_dynamic, allow_static ) );
     }
     return lib_files;
 }

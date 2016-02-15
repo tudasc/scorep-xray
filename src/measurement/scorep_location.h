@@ -60,6 +60,10 @@ SCOREP_Location_Finalize( void );
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( const char* name );
 
+/* Called from InitMeasurement to initialize all locations created at init time. */
+void
+SCOREP_Location_ActivateInitLocations( void );
+
 /**
  * Returns the current number of locations.
  */

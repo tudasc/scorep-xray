@@ -8,7 +8,7 @@
 ## Copyright (c) 2013-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -31,6 +31,8 @@ LDD="ldd"
 # Unset some environment variables to avoid surprises...
 unset GREP_OPTIONS
 
+CHECK="$0 $@"
+
 
 #--- Main program -----------------------------------------------------------
 
@@ -45,6 +47,7 @@ if test $# -lt 2; then
     echo "   mpi_omp   -  Hybrid MPI + OpenMP" >&2
     echo "   shmem     -  Pure SHMEM" >&2
     echo "   shmem_omp -  Hybrid SHMEM + OpenMP" >&2
+    echo "   pthread   -  Pthreads" >&2
     echo >&2
     echo "Valid <options> are instrumenter command-line arguments affecting" >&2
     echo "instrumentation." >&2
@@ -73,7 +76,7 @@ valid_mpp()
 valid_thread()
 {
     case $1 in
-        omp)
+        omp|pthread)
             return 0
             ;;
     esac
@@ -86,6 +89,8 @@ COMP=yes
 unset MPP
 unset THREAD
 unset OPARI2_USER
+@HAVE_MEMORY_SUPPORT_TRUE@MEMORY=yes
+@HAVE_MEMORY_SUPPORT_FALSE@unset MEMORY
 unset USER
 unset VERBOSE
 case ${PARADIGM} in
@@ -159,18 +164,18 @@ while test $# -ne 0; do
         --thread=*)
             THREAD=${1#--thread=}
             case ${THREAD} in
-                omp|omp:pomp_tpd|omp:ancestry)
+                *:*)
                     VARIANT=${THREAD#*:}
                     THREAD=${THREAD%:*}
-                    ;;
-                *)
-                    echo "ERROR: Unknown thread paradigm in $1!" >&2
-                    exit 1
-                    ;;
+                ;;
             esac
+            if ! valid_thread ${THREAD}; then
+                echo "ERROR: Unknown thread paradigm in $1!" >&2
+                exit 1
+            fi
             ;;
 
-        --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock)
+        --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock|--mutex=pthread:wrap)
             THREAD=opari2_openmp
             ;;
 
@@ -179,6 +184,13 @@ while test $# -ne 0; do
             ;;
         --nouser)
             unset USER
+            ;;
+
+        --memory)
+            MEMORY=yes
+            ;;
+        --nomemory)
+            unset MEMORY
             ;;
 
         --verbose)
@@ -196,10 +208,14 @@ while test $# -ne 0; do
     shift
 done
 
+# Ugly, but "omp" is called "opari2_openmp" nowadays
+if test "${THREAD}" = "omp"; then
+    THREAD=opari2_openmp
+fi
 
 # --- Determine which kind of instrumentation is expected ---
 unset INST_EXPECTED
-if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}"; then
+if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}${MEMORY}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
 fi
 if test -n "${COMP}"; then
@@ -209,7 +225,7 @@ if test -n "${MPP}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${MPP}"
 fi
 if test -n "${THREAD}"; then
-    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }opari2_openmp"
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${THREAD}"
 fi
 if test -n "${OPARI2_USER}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }opari2_user"
@@ -217,10 +233,14 @@ fi
 if test -n "${USER}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }user"
 fi
+if test -n "${MEMORY}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }memory"
+fi
 
 
 # --- Control output ---
 if test -n "${VERBOSE}"; then
+    echo "$CHECK"
     set -x
 else
     echo "  CHECK   ${EXE}"
@@ -269,6 +289,13 @@ if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }opari2_openmp"
 fi
 
+# Pthread instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_pthread_regions`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pthread_mgmt.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }pthread"
+fi
+
 # POMP user instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Begin`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_user_mgmt.so`
@@ -281,6 +308,13 @@ STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_user_region_mutex`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }user"
+fi
+
+# Memory instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_memory_regions`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_memory_mgmt.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }memory"
 fi
 
 

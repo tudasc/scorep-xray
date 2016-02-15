@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -88,7 +88,7 @@ typedef struct scorep_profile_sparse_metric_int_struct
  */
 typedef struct scorep_profile_sparse_metric_double_struct
 {
-    SCOREP_MetricHandle                                metric;
+    SCOREP_AnyHandle                                   handle;
     uint64_t                                           count;
     double                                             sum;
     double                                             min;
@@ -218,7 +218,7 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
  */
 scorep_profile_sparse_metric_double*
 scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
-                                     SCOREP_MetricHandle          metric,
+                                     SCOREP_AnyHandle             handle,
                                      double                       value );
 
 /**

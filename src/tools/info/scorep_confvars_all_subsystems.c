@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -57,6 +57,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
+extern const SCOREP_Subsystem SCOREP_Subsystem_MemoryAdapter;
 
 /**
  * List of subsystems.
@@ -77,6 +78,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_PthreadAdapter,
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_OpenclAdapter,
+    &SCOREP_Subsystem_MemoryAdapter,
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

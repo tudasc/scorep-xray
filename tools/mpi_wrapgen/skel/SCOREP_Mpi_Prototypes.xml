@@ -233,6 +233,7 @@
 </prototype>
 
 <prototype name="MPI_Alloc_mem" rtype="int" group="misc" guard="extra,misc" >
+    <attribute id="kind">ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="o" type_modifier="" type="void*" name="baseptr" />
@@ -2544,6 +2545,7 @@
 </prototype>
 
 <prototype name="MPI_Free_mem" rtype="int" group="misc" guard="extra,misc" >
+    <attribute id="kind">DEALLOCATE</attribute>
     <param access="i" type_modifier="" type="void*" name="base" />
     <version id="2.0" />
 </prototype>
@@ -6532,6 +6534,7 @@
 </prototype>
 
 <prototype name="MPI_Win_allocate" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="int" name="disp_unit" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
@@ -6542,6 +6545,7 @@
 </prototype>
 
 <prototype name="MPI_Win_allocate_shared" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="int" name="disp_unit" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />

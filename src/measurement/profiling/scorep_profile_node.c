@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -80,7 +80,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     node->first_double_sparse = NULL;
     node->first_int_sparse    = NULL;
     node->flags               = 0;
-    node->count               = 0; /* Is increased to one during SCOREP_Profile_Enter() */
+    node->count               = 0;    /* Is increased to one during SCOREP_Profile_Enter() */
     node->hits                = 0;
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
@@ -697,7 +697,7 @@ scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
     {
         dest_sparse_double = destination->first_double_sparse;
         while ( ( dest_sparse_double != NULL ) &&
-                ( dest_sparse_double->metric != source_sparse_double->metric ) )
+                ( dest_sparse_double->handle != source_sparse_double->handle ) )
         {
             dest_sparse_double = dest_sparse_double->next_metric;
         }

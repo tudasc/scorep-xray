@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -23,6 +23,8 @@
 
 #include <stdbool.h>
 #include <shmem.h>
+
+#include <SCOREP_AllocMetric.h>
 
 #include "scorep_shmem_communicator_mgmt.h"
 
@@ -145,6 +147,24 @@ scorep_shmem_define_shmem_locations( void );
  */
 void
 scorep_shmem_define_shmem_group( void );
+
+/**
+ * Record memory usage.
+ */
+extern bool scorep_shmem_memory_recording;
+
+/**
+ * Metric to record memory usage.
+ */
+extern SCOREP_AllocMetric* scorep_shmem_allocations_metric;
+
+
+/**
+ * Attribute for allocation size.
+ */
+extern SCOREP_AttributeHandle scorep_shmem_memory_alloc_size_attribute;
+extern SCOREP_AttributeHandle scorep_shmem_memory_dealloc_size_attribute;
+
 
 /** @} */
 

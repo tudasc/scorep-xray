@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -125,7 +125,8 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 #endif
 
     free( *omp_lock );
-    *omp_lock = SCOREP_INVALID_MUTEX;
+
+    *scorepMutex = SCOREP_INVALID_MUTEX;
 
     return SCOREP_SUCCESS;
 }

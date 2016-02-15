@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -230,17 +230,14 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
 static scorep_profile_sparse_metric_double*
 scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
 {
-    scorep_profile_sparse_metric_double* new_sparse = NULL;
-
-    if ( location->free_double_metrics != NULL )
+    scorep_profile_sparse_metric_double* new_sparse = location->free_double_metrics;
+    if ( new_sparse )
     {
-        new_sparse                    = location->free_double_metrics;
         location->free_double_metrics = new_sparse->next_metric;
     }
     else
     {
-        new_sparse = ( scorep_profile_sparse_metric_double* )
-                     SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_sparse_metric_double ) );
+        new_sparse = SCOREP_Location_AllocForProfile( location->location_data, sizeof( *new_sparse ) );
     }
     return new_sparse;
 }
@@ -248,17 +245,13 @@ scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
 /* Creates a new sparse metric struct instance for double values */
 scorep_profile_sparse_metric_double*
 scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
-                                     SCOREP_MetricHandle          metric,
+                                     SCOREP_AnyHandle             handle,
                                      double                       value )
 {
     scorep_profile_sparse_metric_double* new_sparse =
         scorep_profile_alloc_sparse_double( location );
-    if ( new_sparse == NULL )
-    {
-        return NULL;
-    }
 
-    new_sparse->metric      = metric;
+    new_sparse->handle      = handle;
     new_sparse->count       = 1;
     new_sparse->sum         = value;
     new_sparse->min         = value;
@@ -280,7 +273,7 @@ scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location
         return NULL;
     }
 
-    new_sparse->metric      = source->metric;
+    new_sparse->handle      = source->handle;
     new_sparse->count       = source->count;
     new_sparse->sum         = source->sum;
     new_sparse->min         = source->min;

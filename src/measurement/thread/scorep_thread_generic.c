@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -99,15 +99,11 @@ SCOREP_Thread_Initialize( void )
 
 
 void
-SCOREP_Thread_ActivateMaster( void )
+SCOREP_Thread_ActivateLocation( struct SCOREP_Location* location,
+                                struct SCOREP_Location* parent )
 {
-    UTILS_BUG_ON( initial_tpd == NULL,
-                  "Master location not created yet." );
-
-    scorep_subsystems_initialize_location( initial_tpd->location,
-                                           NULL /* parent_location */ );
-    scorep_subsystems_activate_cpu_location( initial_tpd->location,
-                                             NULL /* parent_location */,
+    scorep_subsystems_activate_cpu_location( location,
+                                             parent,
                                              scorep_thread_get_next_sequence_count(),
                                              SCOREP_CPU_LOCATION_PHASE_MGMT );
 }

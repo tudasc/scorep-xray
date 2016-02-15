@@ -317,7 +317,7 @@ SCOREP_InitMeasurement( void )
      * @dependsOn Metric
      * @dependsOn Epoch
      */
-    SCOREP_TIME( SCOREP_Thread_ActivateMaster, ( ) );
+    SCOREP_TIME( SCOREP_Location_ActivateInitLocations, ( ) );
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );

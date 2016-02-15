@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,8 @@
  */
 
 #include "SCOREP_Mpi_Reg.h"
+
+#include <SCOREP_AllocMetric.h>
 
 #include <mpi.h>
 #include <stdbool.h>
@@ -102,6 +104,10 @@
 
    @{
  */
+
+/** Flag to indicate whether tracking allocations is trned on or off.
+ */
+extern bool scorep_mpi_memory_recording;
 
 /** Flag to indicate whether MPI Profiling hooks are turned on or off.
  */
@@ -173,6 +179,14 @@ extern bool scorep_mpi_generate_events;
  */
 #define SCOREP_MPI_HOOKS_OFF scorep_mpi_hooks_on = false
 
+/**
+ *  Metric which tracks allocations done by calls to the MPI API, i.e.,
+ *  MPI_ALLOC_MEM/MPI_FREE_MEM.
+ */
+extern SCOREP_AllocMetric* scorep_mpi_allocations_metric;
+
+extern SCOREP_AttributeHandle scorep_mpi_memory_alloc_size_attribute;
+extern SCOREP_AttributeHandle scorep_mpi_memory_dealloc_size_attribute;
 
 /** @} */
 

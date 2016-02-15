@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -185,7 +185,8 @@ public:
        Returns the list of full file names for all libraries specified via -l flags.
      */
     std::string
-    getLibraryFiles( void );
+    getLibraryFiles( bool allow_dynamic = true,
+                     bool allow_static = true );
 
     const std::vector<std::string>&
     getInstrumentFilterFiles( void ) const;

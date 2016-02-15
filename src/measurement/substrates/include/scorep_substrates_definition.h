@@ -4,7 +4,7 @@
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015,
@@ -158,6 +158,10 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN,
     SCOREP_EVENT_THREAD_CREATE_WAIT_END,
     SCOREP_EVENT_ADD_ATTRIBUTE,
+    SCOREP_EVENT_TRACK_ALLOC,
+    SCOREP_EVENT_TRACK_REALLOC,
+    SCOREP_EVENT_TRACK_FREE,
+    SCOREP_EVENT_LEAKED_MEMORY,
 
     SCOREP_SUBSTRATES_NUM_EVENTS
 } SCOREP_Substrates_EventType;
@@ -627,5 +631,37 @@ typedef void ( * SCOREP_Substrates_AddAttributeCb )(
     struct SCOREP_Location* location,
     SCOREP_AttributeHandle  attributeHandle,
     void*                   value );
+
+typedef void ( * SCOREP_Substrates_TrackAllocCb )(
+    struct SCOREP_Location* location,
+    uint64_t                addrAllocated,
+    size_t                  bytesAllocated,
+    void*                   substrateData[],
+    size_t                  bytesAllocatedMetric,
+    size_t                  bytesAllocatedProcess );
+
+typedef void ( * SCOREP_Substrates_TrackReallocCb )(
+    struct SCOREP_Location* location,
+    uint64_t                oldAddr,
+    size_t                  oldBytesAllocated,
+    void*                   oldSubstrateData[],
+    uint64_t                newAddr,
+    size_t                  newBytesAllocated,
+    void*                   newSubstrateData[],
+    size_t                  bytesAllocatedMetric,
+    size_t                  bytesAllocatedProcess );
+
+typedef void ( * SCOREP_Substrates_TrackFreeCb )(
+    struct SCOREP_Location* location,
+    uint64_t                addrFreed,
+    size_t                  bytesFreed,
+    void*                   substrateData[],
+    size_t                  bytesAllocatedMetric,
+    size_t                  bytesAllocatedProcess );
+
+typedef void ( * SCOREP_Substrates_LeakedMemoryCb )(
+    uint64_t addrLeaked,
+    size_t   bytesLeaked,
+    void*    substrateData[] );
 
 #endif /* SCOREP_SUBSTRATES_DEFINITION_H */

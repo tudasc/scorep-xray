@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -24,7 +27,7 @@
 #include <pthread.h>
 
 static long            NUM_ITER        = 10;
-static double          buffer          = 0;
+static double*         buffer          = 0;
 static int             buffer_is_empty = 1;
 static pthread_mutex_t mutex           = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  cond_producer   = PTHREAD_COND_INITIALIZER;
@@ -46,9 +49,10 @@ func_producer( void* input )
             pthread_cond_wait( &cond_producer, &mutex );
         }
 
-        buffer = ( double )rand_r( &rand_seed ) / ( double )RAND_MAX;
+        buffer  = malloc( sizeof( *buffer ) );
+        *buffer = ( double )rand_r( &rand_seed ) / ( double )RAND_MAX;
 //#ifdef DEBUG
-        printf( "Iteration: %ld Producer produced: %g ", i, buffer );
+        printf( "Iteration: %ld Producer produced: %g ", i, *buffer );
 //#endif
         buffer_is_empty = 0;
         pthread_cond_signal( &cond_consumer );
@@ -73,9 +77,10 @@ func_consumer( void* input )
         }
 
 //#ifdef DEBUG
-        printf( "Iteration: %ld Consumer received: %g\n", i, buffer );
+        printf( "Iteration: %ld Consumer received: %g\n", i, *buffer );
 //#endif
-        buffer          = 0;
+        *buffer = 0.0;
+        free( buffer );
         buffer_is_empty = 1;
         pthread_cond_signal( &cond_producer );
         pthread_mutex_unlock( &mutex );

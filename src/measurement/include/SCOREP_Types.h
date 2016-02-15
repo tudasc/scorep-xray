@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -277,6 +277,7 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( USER,               "user",               USER ) \
     SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
     SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING ) \
+    SCOREP_PARADIGM( MEMORY,             "memory",             NONE ) \
     SCOREP_PARADIGM( MPI,                "mpi",                MPI ) \
     SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
@@ -287,7 +288,7 @@ typedef enum SCOREP_ParadigmClass
 
 typedef enum SCOREP_ParadigmType
 {
-#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME )   \
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME ) \
     SCOREP_PARADIGM_ ## NAME,
     SCOREP_PARADIGMS
 
@@ -480,7 +481,10 @@ typedef enum SCOREP_GroupType
     SCOREP_REGION_TYPE( ARTIFICIAL,   "artificial" ) \
     SCOREP_REGION_TYPE( RMA,          "rma" ) \
     SCOREP_REGION_TYPE( THREAD_CREATE, "thread create" ) \
-    SCOREP_REGION_TYPE( THREAD_WAIT,  "thread wait" )
+    SCOREP_REGION_TYPE( THREAD_WAIT,  "thread wait" ) \
+    SCOREP_REGION_TYPE( ALLOCATE,     "allocate" ) \
+    SCOREP_REGION_TYPE( DEALLOCATE,   "deallocate" ) \
+    SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" )
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \

@@ -1,0 +1,32 @@
+## -*- mode: makefile-automake -*-
+
+# This file is part of the Score-P software (http://www.score-p.org)
+#
+# Copyright (c) 2016,
+# Technische Universitaet Dresden, Germany
+#
+# Copyright (c) 2016,
+# Forschungszentrum Juelich GmbH, Germany
+#
+# This software may be modified and distributed under the terms of
+# a BSD-style license.  See the COPYING file in the package base
+# directory for details.
+
+
+lib_LTLIBRARIES += libscorep_alloc_metric.la
+libscorep_alloc_metric_la_SOURCES = \
+    $(SRC_ROOT)src/utils/include/SCOREP_AllocMetric.h \
+    $(SRC_ROOT)src/utils/alloc_metric/SCOREP_AllocMetric.c
+libscorep_alloc_metric_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_DIR_SUBSTRATES) \
+    @SCOREP_TIMER_CPPFLAGS@
+libscorep_alloc_metric_la_LDFLAGS = \
+    $(library_api_version_ldflags)

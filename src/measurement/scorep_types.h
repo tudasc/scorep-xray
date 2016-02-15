@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -117,7 +117,7 @@ scorep_config_type_to_string( SCOREP_ConfigType configType );
 /**
  * Converts a SCOREP_LocationType into a string.
  *
- * @param locationType    The config type which should be expressed as a string.
+ * @param locationType    The location type which should be expressed as a string.
  *
  * @return                A string representation of @a locationType.
  */

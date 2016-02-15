@@ -21,6 +21,7 @@ include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am
 include ../src/adapters/opencl/Makefile.inc.am
 include ../src/adapters/pthread/Makefile.inc.am
+include ../src/adapters/memory/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
 include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am
@@ -35,6 +36,7 @@ include ../src/tools/wrapper/Makefile.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
 include ../src/utils/memory/Makefile.inc.am
+include ../src/utils/alloc_metric/Makefile.inc.am
 
 ## include tests
 include ../test/Makefile.inc.am

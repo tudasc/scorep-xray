@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -248,7 +248,7 @@ scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
     do
     {
         current = next;
-        if ( current->metric == metric )
+        if ( current->handle == metric )
         {
             scorep_profile_update_sparse_double( current, value );
             return;

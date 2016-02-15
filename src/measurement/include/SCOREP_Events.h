@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1023,6 +1023,39 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value );
+
+
+void
+SCOREP_TrackAlloc( uint64_t addrAllocated,
+                   size_t   bytesAllocated,
+                   void*    substrateData[],
+                   size_t   bytesAllocatedMetric,
+                   size_t   bytesAllocatedProcess );
+
+
+void
+SCOREP_TrackRealloc( uint64_t oldAddr,
+                     size_t   oldBytesAllocated,
+                     void*    oldSubstrateData[],
+                     uint64_t newAddr,
+                     size_t   newBytesAllocated,
+                     void*    newSubstrateData[],
+                     size_t   bytesAllocatedMetric,
+                     size_t   bytesAllocatedProcess );
+
+
+void
+SCOREP_TrackFree( uint64_t addrFreed,
+                  size_t   bytesFreed,
+                  void*    substrateData[],
+                  size_t   bytesAllocatedMetric,
+                  size_t   bytesAllocatedProcess );
+
+
+void
+SCOREP_LeakedMemory( uint64_t addrLeaked,
+                     size_t   bytesLeaked,
+                     void*    substrateData[] );
 
 
 /**

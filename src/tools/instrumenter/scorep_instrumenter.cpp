@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,6 +60,7 @@
 #include "scorep_instrumenter_thread.hpp"
 #include "scorep_instrumenter_user.hpp"
 #include "scorep_instrumenter_opencl.hpp"
+#include "scorep_instrumenter_memory.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_mutex.hpp"
 
@@ -86,6 +87,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
     m_pthread_adapter    = new SCOREP_Instrumenter_PthreadAdapter();
     m_opencl_adapter     = new SCOREP_Instrumenter_OpenCLAdapter();
+    m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     new SCOREP_Instrumenter_OnlineAccess();
 
     /* pre-compile adapter order */
@@ -240,6 +242,7 @@ SCOREP_Instrumenter::Run( void )
 
     if ( m_command_line.isLinking() )
     {
+        SCOREP_Instrumenter_Adapter::checkAllObjects( *this );
         SCOREP_Instrumenter_Selector::checkAllObjects( *this );
 
         // Create the config tool calls for linking

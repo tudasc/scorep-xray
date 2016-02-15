@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -85,6 +85,7 @@ struct SCOREP_Location
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
     void*                         substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
 
+    SCOREP_Location*              parent;
     SCOREP_Location*              next;    // store location objects in list for easy cleanup
 
     /** Flexible array member with length scorep_subsystems_get_number() */
@@ -93,12 +94,19 @@ struct SCOREP_Location
 static struct SCOREP_Location*  location_list_head;
 static struct SCOREP_Location** location_list_tail = &location_list_head;
 
-static SCOREP_Mutex scorep_location_list_mutex;
+/* We defer all new locations until the SCOREP_Location_ActivateInitLocations() call */
+static bool defer_init_locations = true;
+
+static SCOREP_Mutex     scorep_location_list_mutex;
+static SCOREP_Mutex     per_process_metrics_location_mutex;
+static SCOREP_Location* per_process_metrics_location;
 
 void
 SCOREP_Location_Initialize( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
+    result = SCOREP_MutexCreate( &per_process_metrics_location_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 }
 
@@ -149,7 +157,11 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
     SCOREP_Location* new_location = scorep_location_create_location( type, name );
-    scorep_subsystems_initialize_location( new_location, parent );
+    new_location->parent = parent;
+    if ( !defer_init_locations )
+    {
+        scorep_subsystems_initialize_location( new_location, parent );
+    }
 
     return new_location;
 }
@@ -160,6 +172,66 @@ SCOREP_Location_CreateCPULocation( const char* name )
 {
     return scorep_location_create_location( SCOREP_LOCATION_TYPE_CPU_THREAD,
                                             name );
+}
+
+char scorep_per_process_metrics_location_name[] = "Per process metrics";
+
+SCOREP_Location*
+SCOREP_Location_AcquirePerProcessMetricsLocation( void )
+{
+    SCOREP_ErrorCode result = SCOREP_MutexLock( per_process_metrics_location_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot lock per_process_metrics_location_mutex" );
+
+    if ( !per_process_metrics_location )
+    {
+        per_process_metrics_location = SCOREP_Location_CreateNonCPULocation(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_LOCATION_TYPE_METRIC,
+            scorep_per_process_metrics_location_name );
+    }
+
+    return per_process_metrics_location;
+}
+
+
+void
+SCOREP_Location_ReleasePerProcessMetricsLocation( void )
+{
+    SCOREP_ErrorCode result = SCOREP_MutexUnlock( per_process_metrics_location_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot unlock per_process_metrics_location_mutex" );
+}
+
+
+void
+SCOREP_Location_ActivateInitLocations( void )
+{
+    UTILS_ASSERT( defer_init_locations );
+
+    /* Note: all new locations created in any of the init-location callbacks
+     *       are appended to the location list and the calls to there
+     *       init-location are also postponed. thats why defer_init_locations is
+     *       set to false at the end.
+     */
+
+    SCOREP_Location* location = location_list_head;
+    while ( location )
+    {
+        scorep_subsystems_initialize_location( location, location->parent );
+
+        if ( location->type == SCOREP_LOCATION_TYPE_CPU_THREAD )
+        {
+            SCOREP_Thread_ActivateLocation( location,
+                                            location->parent );
+        }
+
+        /* We need to take the next pointer after the initialization of the
+         * current location, as it may have created a new one, which alters the
+         * ->next pointer of the current one.
+         */
+        location = location->next;
+    }
+
+    defer_init_locations = false;
 }
 
 
@@ -242,7 +314,9 @@ SCOREP_Location_Finalize( void )
 
     SCOREP_ErrorCode result = SCOREP_MutexDestroy( &scorep_location_list_mutex );
     UTILS_ASSERT( result == SCOREP_SUCCESS );
-    scorep_location_list_mutex = 0;
+
+    result = SCOREP_MutexDestroy( &per_process_metrics_location_mutex );
+    UTILS_ASSERT( result == SCOREP_SUCCESS );
 }
 
 

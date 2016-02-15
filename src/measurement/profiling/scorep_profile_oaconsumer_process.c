@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -487,7 +487,7 @@ scorep_oaconsumer_count_index( scorep_profile_node* node,
         {
             /** Translate metric handle to OA metric definition index*/
             uint32_t metric_index;
-            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_double->metric, &metric_index ) )
+            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_double->handle, &metric_index ) )
             {
                 /** Generate static measurement key for metric and this region*/
                 static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
@@ -746,7 +746,7 @@ scorep_oaconsumer_copy_static_measurement( scorep_profile_node* node,
             /** Translate metric handle to OA metric definition index*/
             uint32_t metric_index;
 
-            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_double->metric, &metric_index ) )
+            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_double->handle, &metric_index ) )
             {
                 /** Generate static measurement key for metric and this region*/
                 static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,

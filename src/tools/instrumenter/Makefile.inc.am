@@ -48,7 +48,10 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.cpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.hpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.cpp        \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.hpp
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.hpp        \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_memory.cpp       \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_memory.hpp
+
 
 scorep_CPPFLAGS = \
     $(AM_CPPFLAGS) \

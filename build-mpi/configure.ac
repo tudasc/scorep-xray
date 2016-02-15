@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2015,
+dnl Copyright (c) 2009-2016,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -262,6 +262,8 @@ SCOREP_TIMER
 AC_SCOREP_COMPILER_INSTRUMENTATION
 
 AC_SCOREP_ONLINE_ACCESS
+
+SCOREP_MEMORY_SUPPORT
 
 AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION

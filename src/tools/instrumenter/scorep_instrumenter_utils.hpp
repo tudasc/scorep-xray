@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -214,7 +214,9 @@ exists_file( const std::string& filename );
  */
 std::string
 find_library( std::string                     library,
-              const std::vector<std::string>& path_list );
+              const std::vector<std::string>& path_list,
+              bool                            allow_dynamic,
+              bool                            allow_static );
 
 /**
    Converts a string to lower case

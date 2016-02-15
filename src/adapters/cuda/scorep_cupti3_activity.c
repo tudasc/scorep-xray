@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -20,6 +20,7 @@
  */
 
 #include <config.h>
+#include <SCOREP_InMeasurement.h>
 
 #include <SCOREP_Timer_Ticks.h>
 #include "scorep_cuda.h"

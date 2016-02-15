@@ -11,7 +11,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -43,6 +43,9 @@ BINDIR          = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
 INCDIR          = @abs_top_builddir@/../installcheck/instrumenter_checks
 PARADIGM_SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/$(PARADIGM)/src
 PREPS_FILE      = @abs_top_builddir@/../installcheck/instrumenter_checks/configurations_$(PARADIGM)
+# we build these checks always without memory instrumentation
+SCOREP_ARGS     = --nomemory
+
 
 @SCOREP_COMPILER_SUN_TRUE@SKIP_DEFAULT = yes
 @SCOREP_COMPILER_SUN_FALSE@SKIP_DEFAULT = no
@@ -76,19 +79,20 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
             for language in $(LANGUAGES); do \
                 if test -e $(PARADIGM_SRCDIR)/$$code/$$language/Makefile; then \
                     if test "x$(SKIP_DEFAULT)" = "xno"; then \
-                        unset options; \
+                        options="$(SCOREP_ARGS)"; \
+                        prep="@BINDIR@/scorep $$options"; \
                         suffix="_default"; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
                         if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
                             set -x; \
-                            options="--verbose"; \
+                            options="$$options --verbose"; \
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
-                            PREP="@BINDIR@/scorep" \
+                            PREP="$$prep" \
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
@@ -111,7 +115,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \
                     fi; \
                     while read line; do \
-                        options=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`; \
+                        options="$(SCOREP_ARGS) `echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`"; \
                         prep="@BINDIR@/scorep $$options"; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); gsub(":", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \

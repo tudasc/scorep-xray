@@ -48,6 +48,18 @@ scorep-config <command> [<options>]
    --preprocess|--nopreprocess
             Specifies whether preprocess instrumentation is used.
             On default preprocess instrumentation is disabled.
+   --memory=<memory-api-list>|--nomemory
+            Specifies whether memory usage recording is used.
+            On default memory usage recording is enabled.
+            The following memory interfaces may be recorded:
+             libc:
+              malloc,realloc,calloc,free,memalign,posix_memalign,valloc
+             libc11:
+              aligned_alloc
+             c++L32|c++L64:
+              new,new[],delete,delete[] (IA-64 C++ ABI)
+             pgCCL32|pgCCL64:
+              new,new[],delete,delete[] (old PGI/EDG C++ ABI)
    --thread=<threading system>[:<variant>]
             Available threading systems are:
          none	This is the default.

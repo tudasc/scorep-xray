@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014-2015,
@@ -34,6 +34,9 @@
 #include <SCOREP_Events.h>
 
 
+#include "scorep_shmem_confvars.inc.c"
+
+
 /**
  * SHMEM subsystem ID
  */
@@ -62,6 +65,12 @@ bool scorep_shmem_write_rma_op_complete_record = false;
  */
 bool scorep_shmem_parallel_needed = false;
 
+
+SCOREP_AllocMetric* scorep_shmem_allocations_metric = 0;
+
+SCOREP_AttributeHandle scorep_shmem_memory_alloc_size_attribute   = SCOREP_INVALID_ATTRIBUTE;
+SCOREP_AttributeHandle scorep_shmem_memory_dealloc_size_attribute = SCOREP_INVALID_ATTRIBUTE;
+
 /**
  * Implementation of the adapter_register function of the @ref
  * SCOREP_Subsystem struct for the initialization process of the SHMEM
@@ -74,7 +83,9 @@ shmem_subsystem_register( size_t subsystemId )
 
     subsystem_id = subsystemId;
 
-    return SCOREP_SUCCESS;
+
+    return SCOREP_ConfigRegister( "shmem",
+                                  scorep_shmem_confvars );
 }
 
 /**
@@ -98,6 +109,18 @@ shmem_subsystem_init( void )
 
     scorep_shmem_register_regions();
 
+    if ( scorep_shmem_memory_recording )
+    {
+        SCOREP_AllocMetric_New( "Process memory usage (SHMEM)",
+                                &scorep_shmem_allocations_metric );
+
+        scorep_shmem_memory_alloc_size_attribute =
+            SCOREP_AllocMetric_GetAllocationSizeAttribute();
+        scorep_shmem_memory_dealloc_size_attribute =
+            SCOREP_AllocMetric_GetDeallocationSizeAttribute();
+    }
+
+
     return SCOREP_SUCCESS;
 }
 
@@ -113,6 +136,7 @@ shmem_subsystem_begin( void )
     }
 
     SCOREP_SHMEM_EVENT_GEN_ON();
+
     return SCOREP_SUCCESS;
 }
 
@@ -122,6 +146,11 @@ shmem_subsystem_end( void )
     UTILS_DEBUG_ENTRY();
 
     SCOREP_SHMEM_EVENT_GEN_OFF();
+
+    if ( scorep_shmem_memory_recording )
+    {
+        SCOREP_AllocMetric_ReportLeaked( scorep_shmem_allocations_metric );
+    }
 
     /* Exit the extra global SHMEM region in case it was */
     /* entered */
@@ -145,6 +174,11 @@ shmem_subsystem_finalize( void )
     UTILS_DEBUG_ENTRY();
 
     scorep_shmem_teardown_comm_world();
+
+    if ( scorep_shmem_memory_recording )
+    {
+        SCOREP_AllocMetric_Destroy( scorep_shmem_allocations_metric );
+    }
 
     UTILS_DEBUG_EXIT();
 }
@@ -224,11 +258,11 @@ const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =
     .subsystem_register          = &shmem_subsystem_register,
     .subsystem_begin             = &shmem_subsystem_begin,
     .subsystem_end               = &shmem_subsystem_end,
+    .subsystem_finalize          = &shmem_subsystem_finalize,
     .subsystem_init              = &shmem_subsystem_init,
     .subsystem_init_location     = &shmem_subsystem_init_location,
     .subsystem_finalize_location = &shmem_subsystem_finalize_location,
     .subsystem_pre_unify         = &shmem_subsystem_pre_unify,
     .subsystem_post_unify        = &shmem_subsystem_post_unify,
-    .subsystem_finalize          = &shmem_subsystem_finalize,
     .subsystem_deregister        = &shmem_subsystem_deregister
 };

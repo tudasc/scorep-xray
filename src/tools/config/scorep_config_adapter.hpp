@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -27,6 +27,7 @@
 
 #include <string>
 #include <deque>
+#include <set>
 #include <stdint.h>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
@@ -375,5 +376,36 @@ public:
 
     virtual void
     appendInitStructName( std::deque<std::string>& init_structs );
+};
+
+/* **************************************************************************************
+ * class SCOREP_MemoryAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the memory adapter.
+ */
+class SCOREP_Config_MemoryAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_MemoryAdapter();
+
+    virtual void
+    printHelp( void );
+
+    virtual bool
+    checkArgument( const std::string& arg );
+
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
+
+private:
+    std::set<std::string> m_categories;
 };
 #endif

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013-2015,
+## Copyright (c) 2009-2011, 2013-2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -173,12 +173,26 @@ if HAVE_PTHREAD
 if HAVE_GNU_LINKER
 
 INSTALLCHECK_LOCAL += instrumenter-checks-pthread
-instrumenter-checks-pthread:
-	$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
+instrumenter-checks-pthread: ../installcheck/instrumenter_checks/create_wait/pthread/Makefile \
+                             ../installcheck/instrumenter_checks/check-instrumentation.sh
+	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
 
 CLEAN_LOCAL += clean-local-instrumenter-checks-pthread
-clean-local-instrumenter-checks-pthread:
+clean-local-instrumenter-checks-pthread: ../installcheck/instrumenter_checks/create_wait/pthread/Makefile
 	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean
 
 endif HAVE_GNU_LINKER
 endif HAVE_PTHREAD
+
+if HAVE_MEMORY_SUPPORT
+
+INSTALLCHECK_LOCAL += instrumenter-checks-memory
+instrumenter-checks-memory: ../installcheck/instrumenter_checks/memory/Makefile \
+                            ../installcheck/instrumenter_checks/check-instrumentation.sh
+	@$(MAKE) -C ../installcheck/instrumenter_checks/memory
+
+CLEAN_LOCAL += clean-local-instrumenter-checks-memory
+clean-local-instrumenter-checks-memory: ../installcheck/instrumenter_checks/memory/Makefile
+	@$(MAKE) -C ../installcheck/instrumenter_checks/memory clean
+
+endif HAVE_MEMORY_SUPPORT

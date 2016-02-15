@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -261,6 +261,11 @@ SCOREP_Instrumenter_Adapter::checkCompilerName( const std::string& compiler )
 {
 }
 
+void
+SCOREP_Instrumenter_Adapter::checkObjects( SCOREP_Instrumenter& instrumenter )
+{
+}
+
 /* ------------------------------------------------------------------------- protected */
 
 void
@@ -433,6 +438,16 @@ SCOREP_Instrumenter_Adapter::checkAllCompilerName( const std::string& compiler )
 }
 
 void
+SCOREP_Instrumenter_Adapter::checkAllObjects( SCOREP_Instrumenter& instrumenter )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+    for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
+    {
+        adapter->second->checkObjects( instrumenter );
+    }
+}
+
+void
 SCOREP_Instrumenter_Adapter::require( std::string                   caller,
                                       SCOREP_Instrumenter_AdapterId id )
 {
@@ -442,7 +457,7 @@ SCOREP_Instrumenter_Adapter::require( std::string                   caller,
     if ( adapter == m_adapter_list.end() )
     {
         std::cerr << "ERROR: Required adapter for " << caller <<
-        " is not available. Abort." << std::endl;
+            " is not available. Abort." << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( adapter->second->m_usage == disabled )

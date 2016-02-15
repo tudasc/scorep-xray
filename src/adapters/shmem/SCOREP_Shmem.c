@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -203,10 +203,11 @@ INIT_THREAD_SHMEM_ONE_ARG( shmem_init_thread )
 INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
 #endif
 
+/* *INDENT-OFF* */
 
 #define FINALIZE_SHMEM( FUNCNAME )                                      \
     void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void )                       \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME )( void )                        \
     {                                                                   \
         SCOREP_IN_MEASUREMENT_INCREMENT();                              \
         UTILS_DEBUG_ENTRY();                                            \
@@ -246,7 +247,7 @@ INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
 
 #define FINALIZE_SHMEM_WITH_RETURN_CODE( FUNCNAME, RETVAL )             \
     int                                                                 \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void )                       \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME )( void )                        \
     {                                                                   \
         SCOREP_IN_MEASUREMENT_INCREMENT();                              \
         UTILS_DEBUG_ENTRY();                                            \
@@ -284,6 +285,8 @@ INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
         SCOREP_IN_MEASUREMENT_DECREMENT();                              \
         return RETVAL;                                                  \
     }
+
+/* *INDENT-ON* */
 
 /*
  * Please note that 'shmem_finalize' is not part of the OpenSHMEM standard 1.0.

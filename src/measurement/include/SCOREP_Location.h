@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014-2015,
+ * Copyright (c) 2009-2012, 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -64,6 +64,19 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
                                       SCOREP_LocationType type,
                                       const char*         name );
 
+
+/**
+ * Returns a metric location. Into this location all asynchronous
+ * metrics of a process will be recorded. As this location is shared among
+ * adapters, this function acquires a mutex that need to be released by a call
+ * to SCOREP_Location_ReleasePerProcessMetricsLocation(). The location is
+ * created during the first call to this function.
+ */
+SCOREP_Location*
+SCOREP_Location_AcquirePerProcessMetricsLocation( void );
+
+void
+SCOREP_Location_ReleasePerProcessMetricsLocation( void );
 
 /**
  *

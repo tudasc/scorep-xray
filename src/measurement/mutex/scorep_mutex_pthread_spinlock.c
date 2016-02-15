@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -92,7 +95,8 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     }
     pthread_spin_destroy( *lock );
     free( ( void* )*lock );
-    *lock = SCOREP_INVALID_MUTEX;
+
+    *scorepMutex = SCOREP_INVALID_MUTEX;
 
     return SCOREP_SUCCESS;
 }

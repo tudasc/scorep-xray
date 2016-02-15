@@ -18,7 +18,7 @@
 
 ## file build-config/m4/scorep_types.m4
 
-# AC_SCOREP_CHECK_SIZEOF(TYPE, [INCLUDES = DEFAULT-INCLUDES])
+# AC_SCOREP_CHECK_SIZEOF(TYPE, [unused], [INCLUDES = DEFAULT-INCLUDES])
 # -----------------------------------------------------------
 # Wraps AC_CHECK_SIZEOF, but always execute them in cross_compiling mode.
 AC_DEFUN([AC_SCOREP_CHECK_SIZEOF],

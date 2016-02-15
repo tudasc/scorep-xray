@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,6 +49,7 @@
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Unwinding.h>
 #include <scorep_location.h>
+#include <scorep_types.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
@@ -66,6 +67,8 @@
 #include "scorep_profile_task_init.h"
 #include <SCOREP_Profile_MpiEvents.h>
 
+#include <string.h>
+
 /* ***************************************************************************************
    Type definitions and variables
 *****************************************************************************************/
@@ -76,6 +79,11 @@
 static SCOREP_Mutex scorep_profile_location_mutex;
 
 static SCOREP_RegionHandle thread_create_wait_regions;
+
+static SCOREP_MetricHandle bytes_allocated_metric           = SCOREP_INVALID_METRIC;
+static SCOREP_MetricHandle bytes_freed_metric               = SCOREP_INVALID_METRIC;
+static SCOREP_MetricHandle bytes_leaked_metric              = SCOREP_INVALID_METRIC;
+static SCOREP_MetricHandle max_heap_memory_allocated_metric = SCOREP_INVALID_METRIC;
 
 SCOREP_ParameterHandle scorep_profile_param_instance = SCOREP_INVALID_PARAMETER;
 
@@ -180,6 +188,50 @@ SCOREP_Profile_Initialize( size_t substrateId )
         SCOREP_INVALID_LINE_NO,
         SCOREP_PARADIGM_MEASUREMENT,
         SCOREP_REGION_ARTIFICIAL /* SCOREP_REGION_PARALLEL ? */ );
+
+    bytes_allocated_metric =
+        SCOREP_Definitions_NewMetric( "ALLOCATION_SIZE",
+                                      "Size of allocated heap memory",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "bytes",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
+    bytes_freed_metric =
+        SCOREP_Definitions_NewMetric( "DEALLOCATION_SIZE",
+                                      "Size of released heap memory",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "bytes",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
+    bytes_leaked_metric =
+        SCOREP_Definitions_NewMetric( "bytes_leaked",
+                                      "Size of allocated heap memory that was not released",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "bytes",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
+    max_heap_memory_allocated_metric =
+        SCOREP_Definitions_NewMetric( "maximum_heap_memory_allocated",
+                                      "Maximum amount of heap memory allocated at a time",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "bytes",
+                                      SCOREP_METRIC_PROFILING_TYPE_MAX );
 }
 
 
@@ -365,6 +417,42 @@ on_location_creation( SCOREP_Location* locationData,
        It allows to use the location without an activation, e.g.,
        for non-CPU-locations. */
     scorep_profile_set_current_node( thread_data, node );
+
+    /* Hack: To display MIN/MAX Cube metrics from the unique per-process-metrics
+     * location (see SCOREP_Location_AcquirePerProcessMetricsLocation()) we need
+     * to enter an artificial region. Identify the location by comparing type
+     * and name. */
+    if ( SCOREP_Location_GetType( locationData ) == SCOREP_LOCATION_TYPE_METRIC )
+    {
+        extern char scorep_per_process_metrics_location_name[];
+        const char* name = SCOREP_Location_GetName( locationData );
+        if ( strncmp( name, scorep_per_process_metrics_location_name,
+                      strlen( scorep_per_process_metrics_location_name ) ) == 0 )
+        {
+            static SCOREP_RegionHandle per_process_metrics;
+            static bool                first_visit = true;
+            if ( first_visit )
+            {
+                /* Define the artificial region only once */
+                first_visit = false;
+                SCOREP_SourceFileHandle file = SCOREP_Definitions_NewSourceFile( "PER PROCESS METRICS" );
+                per_process_metrics = SCOREP_Definitions_NewRegion(
+                    "PER PROCESS METRICS",
+                    NULL,
+                    file,
+                    SCOREP_INVALID_LINE_NO,
+                    SCOREP_INVALID_LINE_NO,
+                    SCOREP_PARADIGM_MEASUREMENT,
+                    SCOREP_REGION_ARTIFICIAL );
+            }
+
+            /* Enter the artificial metric region */
+            SCOREP_Profile_Enter( locationData,
+                                  0, /* timestamp */
+                                  per_process_metrics,
+                                  NULL /* metrics */ );
+        }
+    }
 }
 
 
@@ -708,7 +796,6 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     scorep_profile_set_current_node( location, parent );
 }
 
-
 /**
    Called on enter events to update the profile accordingly.
    @param location     A pointer to the thread location data of the thread that executed
@@ -886,12 +973,22 @@ trigger_counter_int64( SCOREP_Location*         location,
 {
     SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+        UTILS_BUG_ON( scoped_sampling_set->recorder_handle
+                      != SCOREP_Location_GetLocationHandle( location ),
+                      "Writing scoped metric by the wrong recorder." );
+    }
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
 
     SCOREP_Profile_TriggerInteger( location,
                                    sampling_set->metric_handles[ 0 ],
-                                   ( uint64_t )value ); //Losses precision
+                                   ( uint64_t )value ); //Looses precision
 }
 
 
@@ -939,6 +1036,16 @@ trigger_counter_uint64( SCOREP_Location*         location,
 {
     SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+        UTILS_BUG_ON( scoped_sampling_set->recorder_handle
+                      != SCOREP_Location_GetLocationHandle( location ),
+                      "Writing scoped metric by the wrong recorder." );
+    }
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
 
@@ -964,6 +1071,16 @@ trigger_counter_double( SCOREP_Location*         location,
 {
     SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+        UTILS_BUG_ON( scoped_sampling_set->recorder_handle
+                      != SCOREP_Location_GetLocationHandle( location ),
+                      "Writing scoped metric by the wrong recorder." );
+    }
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
 
@@ -1250,6 +1367,110 @@ thread_end( SCOREP_Location*                 location,
 }
 
 
+typedef struct leaked_memory_memento leaked_memory_memento;
+struct leaked_memory_memento
+{
+    scorep_profile_node*         node;
+    SCOREP_Profile_LocationData* location;
+    leaked_memory_memento*       next;
+};
+
+
+static leaked_memory_memento* leaked_memory_memento_free_list;
+
+static void
+track_alloc( struct SCOREP_Location* threadData,
+             uint64_t                addrAllocated,
+             size_t                  bytesAllocated,
+             void*                   substrateData[],
+             size_t                  bytesAllocatedMetric,
+             size_t                  bytesAllocatedProcess )
+{
+    UTILS_ASSERT( substrateData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+    SCOREP_Profile_TriggerInteger( threadData, bytes_allocated_metric, bytesAllocated );
+    SCOREP_Profile_TriggerInteger( threadData, max_heap_memory_allocated_metric, bytesAllocatedProcess );
+
+    leaked_memory_memento* memento = leaked_memory_memento_free_list;
+    if ( memento )
+    {
+        leaked_memory_memento_free_list = leaked_memory_memento_free_list->next;
+    }
+    else
+    {
+        memento = SCOREP_Location_AllocForProfile( threadData, sizeof( leaked_memory_memento ) );
+    }
+    memento->node                                = scorep_profile_get_current_node( location );
+    memento->location                            = location;
+    memento->next                                = NULL;
+    substrateData[ scorep_profile_substrate_id ] = memento;
+}
+
+
+static void
+track_realloc( struct SCOREP_Location* threadData,
+               uint64_t                oldAddr,
+               size_t                  oldBytesAllocated,
+               void*                   oldSubstrateData[],
+               uint64_t                newAddr,
+               size_t                  newBytesAllocated,
+               void*                   newSubstrateData[],
+               size_t                  bytesAllocatedMetric,
+               size_t                  bytesAllocatedProcess )
+{
+    UTILS_ASSERT( oldSubstrateData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+
+    SCOREP_Profile_TriggerInteger( threadData, bytes_freed_metric, oldBytesAllocated );
+    SCOREP_Profile_TriggerInteger( threadData, bytes_allocated_metric, newBytesAllocated );
+    SCOREP_Profile_TriggerInteger( threadData, max_heap_memory_allocated_metric, bytesAllocatedProcess );
+
+    leaked_memory_memento* memento = oldSubstrateData[ scorep_profile_substrate_id ];
+    memento->node     = scorep_profile_get_current_node( location );
+    memento->location = location;
+    UTILS_BUG_ON( memento->next != NULL );
+
+    if ( oldAddr != newAddr )
+    {
+        newSubstrateData[ scorep_profile_substrate_id ] = memento;
+    }
+}
+
+
+static void
+track_free( struct SCOREP_Location* threadData,
+            uint64_t                addrFreed,
+            size_t                  bytesFreed,
+            void*                   substrateData[],
+            size_t                  bytesAllocatedMetric,
+            size_t                  bytesAllocatedProcess )
+{
+    UTILS_ASSERT( substrateData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+    SCOREP_Profile_TriggerInteger( threadData, bytes_freed_metric, bytesFreed );
+
+    leaked_memory_memento* free_me = substrateData[ scorep_profile_substrate_id ];
+    if ( !free_me )
+    {
+        UTILS_WARNING( "Address %p freed but provides no substrate data.", ( void* )addrFreed );
+        return;
+    }
+    free_me->next                                = leaked_memory_memento_free_list;
+    leaked_memory_memento_free_list              = free_me;
+    substrateData[ scorep_profile_substrate_id ] = NULL;
+}
+
+
+static void
+leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
+{
+    UTILS_ASSERT( substrateData );
+    leaked_memory_memento* leak = substrateData[ scorep_profile_substrate_id ];
+    UTILS_ASSERT( leak );
+    scorep_profile_trigger_int64( leak->location, bytes_leaked_metric, bytesLeaked, leak->node );
+}
+
+
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
@@ -1295,7 +1516,11 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,   THREAD_FORK_JOIN_TASK_BEGIN,   SCOREP_Profile_TaskBegin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,     THREAD_FORK_JOIN_TASK_END,     SCOREP_Profile_TaskEnd ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackAlloc,                TRACK_ALLOC,                   track_alloc ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackRealloc,              TRACK_REALLOC,                 track_realloc ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackFree,                 TRACK_FREE,                    track_free ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                 leaked_memory )
     },
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),

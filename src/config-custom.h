@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -56,7 +56,7 @@
     UTILS_DEFINE_DEBUG_MODULE( FILTERING,          11 ), \
     UTILS_DEFINE_DEBUG_MODULE( METRIC,             12 ), \
     UTILS_DEFINE_DEBUG_MODULE( TRACING,            13 ), \
-    UTILS_DEFINE_DEBUG_MODULE( MEMORY,             14 ), \
+    UTILS_DEFINE_DEBUG_MODULE( ALLOCATOR,          14 ), \
     UTILS_DEFINE_DEBUG_MODULE( CUDA,               15 ), \
     UTILS_DEFINE_DEBUG_MODULE( UNIFY,              16 ), \
     UTILS_DEFINE_DEBUG_MODULE( THREAD_FORK_JOIN,   17 ), \
@@ -67,6 +67,7 @@
     UTILS_DEFINE_DEBUG_MODULE( OPENCL,             22 ), \
     UTILS_DEFINE_DEBUG_MODULE( SUBSTRATE,          23 ), \
     UTILS_DEFINE_DEBUG_MODULE( UNWINDING,          24 ), \
-    UTILS_DEFINE_DEBUG_MODULE( SAMPLING,           25 )
+    UTILS_DEFINE_DEBUG_MODULE( SAMPLING,           25 ), \
+    UTILS_DEFINE_DEBUG_MODULE( MEMORY,             26 )
 
 #endif /* CONFIG_CUSTOM_H */

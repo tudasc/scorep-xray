@@ -1,0 +1,66 @@
+## -*- mode: makefile -*-
+
+## @configure_input@ from test/instrumenter_checks/create_wait/pthread/Makefile.in
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2016,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+
+CC       = @CC@
+CFLAGS   =
+
+CXX      = @CXX@
+CXXFLAGS =
+
+BINDIR = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
+SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/memory
+INCDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
+TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config $(INCDIR)/check-instrumentation.sh
+PREP   = "@BINDIR@/scorep"
+
+SCOREP_INSTRUMENTING_VERBOSE_CC = $(scorep_instrumenting_verbose_cc_$(V))
+scorep_instrumenting_verbose_cc_ = $(scorep_instrumenting_verbose_cc_0)
+scorep_instrumenting_verbose_cc_0 = @echo "  SCOREP CC " $@;
+
+SCOREP_INSTRUMENTING_VERBOSE_CXX = $(scorep_instrumenting_verbose_cxx_$(V))
+scorep_instrumenting_verbose_cxx_ = $(scorep_instrumenting_verbose_cxx_0)
+scorep_instrumenting_verbose_cxx_0 = @echo "  SCOREP CXX " $@;
+
+SCOREP_INSTRUMENTING_VERBOSE2 = $(scorep_instrumenting_verbose2_$(V))
+scorep_instrumenting_verbose2_ =
+scorep_instrumenting_verbose2_1 = --verbose
+
+
+TESTS = \
+    $(BINDIR)/malloc-cc \
+    $(BINDIR)/calloc-cc \
+    $(BINDIR)/realloc-cc \
+    $(BINDIR)/new-cxx \
+    $(BINDIR)/new_array-cxx
+
+all: $(TESTS)
+
+
+$(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
+	@mkdir -p $(BINDIR)
+	$(SCOREP_INSTRUMENTING_VERBOSE_CC)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ $<
+	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_INSTRUMENTING_VERBOSE2)
+
+$(BINDIR)/%: $(SRCDIR)/%.cpp $(TOOLS)
+	@mkdir -p $(BINDIR)
+	$(SCOREP_INSTRUMENTING_VERBOSE_CXX)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CXX) $(CXXFLAGS) -o $@ $<
+	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_INSTRUMENTING_VERBOSE2)
+
+clean:
+	@rm -f $(TESTS)

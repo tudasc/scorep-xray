@@ -7,7 +7,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -23,6 +23,9 @@
 
 
 #include <stdbool.h>
+
+
+struct SCOREP_Location;
 
 
 /**
@@ -42,7 +45,8 @@ SCOREP_Thread_Initialize( void );
  * Will call OnNewLocation and OnActivation now.
  */
 void
-SCOREP_Thread_ActivateMaster( void );
+SCOREP_Thread_ActivateLocation( struct SCOREP_Location* location,
+                                struct SCOREP_Location* parent );
 
 
 /**

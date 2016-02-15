@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -172,6 +172,9 @@ uint64_t scorep_mpi_max_access_epochs;
 uint64_t scorep_mpi_enabled = 0;
 
 
+bool scorep_mpi_memory_recording = false;
+
+
 bool scorep_mpi_hooks_on = false;
 
 
@@ -230,6 +233,16 @@ static const SCOREP_ConfigVariable scorep_mpi_confvars[] = {
         "Other functions are not measured.\n"
         "\n"
         "Possible groups are:"
+    },
+    {
+        "memory_recording",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_mpi_memory_recording,
+        NULL,
+        "false",
+        "Enable tracking of memory allocations done by calls to MPI_ALLOC_MEM "
+        "and MPI_FREE_MEM",
+        "Requires that the MISC group is also recorded."
     },
     #if !defined( SCOREP_MPI_NO_HOOKS )
     {

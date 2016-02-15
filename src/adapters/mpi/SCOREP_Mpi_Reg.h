@@ -956,6 +956,6 @@ extern SCOREP_RegionHandle scorep_mpi_regions[ SCOREP_MPI_NUM_REGIONS ];
  * Register MPI functions and initialize data structures
  */
 void
-scorep_mpi_register_regions();
+scorep_mpi_register_regions( void );
 
 #endif

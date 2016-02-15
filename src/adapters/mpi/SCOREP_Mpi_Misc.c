@@ -124,12 +124,26 @@ MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_MISC ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
+
+        if ( scorep_mpi_memory_recording )
+        {
+            uint64_t size_as_uint64 = size;
+            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                 &size_as_uint64 );
+        }
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ],
                                    ( intptr_t )PMPI_Alloc_mem );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Alloc_mem( size, info, baseptr );
         SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        {
+            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                            ( uint64_t )( *( void** )baseptr ),
+                                            size );
+        }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -169,6 +183,15 @@ MPI_Free_mem( void* base )
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Free_mem( base );
         SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( scorep_mpi_memory_recording && base && MPI_SUCCESS == return_val )
+        {
+            uint64_t dealloc_size;
+            SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
+                                           ( uint64_t )base, &dealloc_size );
+            SCOREP_AddAttribute( scorep_mpi_memory_dealloc_size_attribute,
+                                 &dealloc_size );
+        }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
         SCOREP_MPI_EVENT_GEN_ON();

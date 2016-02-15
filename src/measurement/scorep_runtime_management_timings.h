@@ -10,7 +10,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,7 +63,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_ActivateMaster )          \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_Initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \

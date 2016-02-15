@@ -427,6 +427,14 @@ various Score-P components.
     a file I/O request, or a non-blocking collective operation. This will
     be addressed in a future release.
 
+  - When instrumenting memory API calls with the Cray CCE, Score-P uses
+    the '-h system_alloc' flag and therefore not the default tcmalloc
+    library.
+
+  - Tracking memory allocations in Fortran programs may only work, if the
+    compiler generate calls to malloc/free. This is only known for the
+    GNU compiler.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
