@@ -107,7 +107,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                     SCOREP_INVALID_LINE_NO,
                                                     SCOREP_INVALID_LINE_NO,
                                                     SCOREP_PARADIGM_MEASUREMENT,
-                                                    SCOREP_REGION_TASK );
+                                                    SCOREP_REGION_ARTIFICIAL );
     }
 
     /* Create root node for each new location */
