@@ -1,6 +1,3 @@
-#ifndef SCOREP_CLOCK_SYNCHRONIZATION_H
-#define SCOREP_CLOCK_SYNCHRONIZATION_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -17,6 +14,9 @@
  *
  */
 
+
+#ifndef SCOREP_CLOCK_SYNCHRONIZATION_H
+#define SCOREP_CLOCK_SYNCHRONIZATION_H
 
 /**
  * @file

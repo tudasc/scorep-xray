@@ -1,6 +1,3 @@
-#ifndef SCOREP_MEMORY_EVENT_FUNCTIONS_H
-#define SCOREP_MEMORY_EVENT_FUNCTIONS_H
-
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -14,6 +11,9 @@
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  */
+
+#ifndef SCOREP_MEMORY_EVENT_FUNCTIONS_H
+#define SCOREP_MEMORY_EVENT_FUNCTIONS_H
 
 /**
  * Declaration of all __real_* functions used by the memory library wrapper

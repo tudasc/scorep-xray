@@ -1,6 +1,3 @@
-#ifndef SCOREP_MEMORY_MGMT_H
-#define SCOREP_MEMORY_MGMT_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -13,6 +10,9 @@
  *
  */
 
+
+#ifndef SCOREP_MEMORY_MGMT_H
+#define SCOREP_MEMORY_MGMT_H
 
 /**
  * @file

@@ -1,6 +1,3 @@
-#ifndef SCOREP_PTHREAD_EVENT_FUNCTIONS_H
-#define SCOREP_PTHREAD_EVENT_FUNCTIONS_H
-
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -12,14 +9,17 @@
  * directory for details.
  */
 
+#ifndef SCOREP_PTHREAD_EVENT_FUNCTIONS_H
+#define SCOREP_PTHREAD_EVENT_FUNCTIONS_H
+
 /**
  * Declaration of all __real_* functions used by the pthread library wrapper
  */
 
 #include <pthread.h>
 
-int __real_pthread_create( pthread_t *,
-                           const pthread_attr_t *,
+int __real_pthread_create( pthread_t*,
+                           const pthread_attr_t*,
                            void* ( * )( void* ),
                            void* );
 

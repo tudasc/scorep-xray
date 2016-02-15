@@ -28,14 +28,14 @@
  *
  */
 
+#ifndef SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP
+#define SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP
+
 /**
  * @file SCOREP_Config_LibraryDependecies.hpp
  *
  * Declares classes for the representation and analysis of library dependencies
  */
-
-#ifndef SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP
-#define SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP
 
 #include <map>
 #include <deque>

@@ -1,6 +1,3 @@
-#ifndef SCOREP_THREAD_GENERIC_H_
-#define SCOREP_THREAD_GENERIC_H_
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -16,6 +13,8 @@
  *
  */
 
+#ifndef SCOREP_THREAD_GENERIC_H_
+#define SCOREP_THREAD_GENERIC_H_
 
 /**
  * @file

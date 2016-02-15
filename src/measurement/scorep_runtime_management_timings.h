@@ -1,6 +1,3 @@
-#ifndef SCOREP_TIMING_INTERNAL_H
-#define SCOREP_TIMING_INTERNAL_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -31,6 +28,8 @@
  *
  */
 
+#ifndef SCOREP_TIMING_INTERNAL_H
+#define SCOREP_TIMING_INTERNAL_H
 
 /**
  * @file

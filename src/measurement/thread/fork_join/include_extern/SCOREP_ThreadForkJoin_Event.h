@@ -1,6 +1,3 @@
-#ifndef SCOREP_THREAD_FORK_JOIN_EVENT_H_
-#define SCOREP_THREAD_FORK_JOIN_EVENT_H_
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -16,6 +13,8 @@
  *
  */
 
+#ifndef SCOREP_THREAD_FORK_JOIN_EVENT_H_
+#define SCOREP_THREAD_FORK_JOIN_EVENT_H_
 
 /**
  * @file

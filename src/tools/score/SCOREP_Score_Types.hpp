@@ -28,14 +28,14 @@
  *
  */
 
+#ifndef SCOREP_SCORE_TYPES_H
+#define SCOREP_SCORE_TYPES_H
+
 /**
  * @file
  *
  * @brief      Defines types for the score tool.
  */
-
-#ifndef SCOREP_SCORE_TYPES_H
-#define SCOREP_SCORE_TYPES_H
 
 #include <string>
 #include <stdint.h>

@@ -1,6 +1,3 @@
-#ifndef SCOREP_THREAD_CREATE_WAIT_MODEL_SPECIFIC_H
-#define SCOREP_THREAD_CREATE_WAIT_MODEL_SPECIFIC_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -16,6 +13,8 @@
  *
  */
 
+#ifndef SCOREP_THREAD_CREATE_WAIT_MODEL_SPECIFIC_H
+#define SCOREP_THREAD_CREATE_WAIT_MODEL_SPECIFIC_H
 
 /**
  * @file

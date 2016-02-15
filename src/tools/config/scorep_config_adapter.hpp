@@ -16,14 +16,14 @@
  *
  */
 
+#ifndef SCOREP_CONFIG_ADAPTER_HPP
+#define SCOREP_CONFIG_ADAPTER_HPP
+
 /**
  * @file
  *
  * Collects information about available libraries
  */
-
-#ifndef SCOREP_CONFIG_ADAPTER_HPP
-#define SCOREP_CONFIG_ADAPTER_HPP
 
 #include <string>
 #include <deque>

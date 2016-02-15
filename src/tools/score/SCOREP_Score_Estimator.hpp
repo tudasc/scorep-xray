@@ -28,15 +28,15 @@
  *
  */
 
+#ifndef SCOREP_SCORE_ESTIMATOR_H
+#define SCOREP_SCORE_ESTIMATOR_H
+
 /**
  * @file
  *
  * @brief      Defines a class which performs calculations for trace
  *             size estimation.
  */
-
-#ifndef SCOREP_SCORE_ESTIMATOR_H
-#define SCOREP_SCORE_ESTIMATOR_H
 
 #include "SCOREP_Score_Group.hpp"
 

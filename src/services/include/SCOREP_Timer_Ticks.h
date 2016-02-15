@@ -1,6 +1,3 @@
-#ifndef SCOREP_TIMER_TICKS
-#define SCOREP_TIMER_TICKS
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -11,6 +8,9 @@
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  */
+
+#ifndef SCOREP_TIMER_TICKS
+#define SCOREP_TIMER_TICKS
 
 /**
  * @file

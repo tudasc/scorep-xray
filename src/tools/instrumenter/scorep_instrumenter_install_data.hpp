@@ -28,15 +28,15 @@
  *
  */
 
+#ifndef SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
+#define SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
+
 /**
  * @file
  *
  * @brief      Declares a class which represent the install configuration of
  *             this Score-P installation.
  */
-
-#ifndef SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
-#define SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
 
 #include <SCOREP_ErrorCodes.h>
 #include <string>

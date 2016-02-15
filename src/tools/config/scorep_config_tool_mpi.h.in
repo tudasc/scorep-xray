@@ -1,6 +1,3 @@
-#ifndef SCOREP_CONFIG_TOOL_MPI_H
-#define SCOREP_CONFIG_TOOL_MPI_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -15,6 +12,9 @@
  * directory for details.
  *
  */
+
+#ifndef SCOREP_CONFIG_TOOL_MPI_H
+#define SCOREP_CONFIG_TOOL_MPI_H
 
 /* @configure_input@ */
 

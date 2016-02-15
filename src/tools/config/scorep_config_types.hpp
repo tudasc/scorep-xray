@@ -10,14 +10,14 @@
  *
  */
 
+#ifndef SCOREP_CONFIG_TYPES_HPP
+#define SCOREP_CONFIG_TYPES_HPP
+
 /**
  * @file
  *
  * Defines types that are used in multiple classes in the config tool.
  */
-
-#ifndef SCOREP_CONFIG_TYPES_HPP
-#define SCOREP_CONFIG_TYPES_HPP
 
 typedef enum
 {

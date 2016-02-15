@@ -13,15 +13,15 @@
  *
  */
 
+#ifndef SCOREP_SCORE_EVENT_H
+#define SCOREP_SCORE_EVENT_H
+
 /**
  * @file
  *
  * @brief      Defines a class which contains the base class for
  *             different event representations.
  */
-
-#ifndef SCOREP_SCORE_EVENT_H
-#define SCOREP_SCORE_EVENT_H
 
 #include <string>
 #include <deque>

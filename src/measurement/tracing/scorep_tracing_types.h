@@ -28,16 +28,14 @@
  *
  */
 
+#ifndef SCOREP_TRACING_INTERNAL_TYPES_H
+#define SCOREP_TRACING_INTERNAL_TYPES_H
 
 /**
  * @file
  *
  * @brief Holds functions for converting Score-P types to OTF2.
  */
-
-#ifndef SCOREP_TRACING_INTERNAL_TYPES_H
-#define SCOREP_TRACING_INTERNAL_TYPES_H
-
 
 static inline OTF2_LocationType
 scorep_tracing_location_type_to_otf2( SCOREP_LocationType scorepType )

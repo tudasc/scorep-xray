@@ -10,14 +10,13 @@
  *
  */
 
+#ifndef SCOREP_SAMPLING_H_
+#define SCOREP_SAMPLING_H_
+
 /**
  * @file
  *
  */
-
-
-#ifndef SCOREP_SAMPLING_H_
-#define SCOREP_SAMPLING_H_
 
 #include <signal.h>
 #include <stdbool.h>

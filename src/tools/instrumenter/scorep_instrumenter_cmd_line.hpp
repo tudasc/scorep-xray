@@ -28,16 +28,15 @@
  *
  */
 
+#ifndef SCOREP_INSTRUMENTER_COMMAND_LINE_H_
+#define SCOREP_INSTRUMENTER_COMMAND_LINE_H_
+
 /**
  * @file
  *
  * @brief      Declares a class for parsing and evaluating a the command line
  *             and makes the results accessible.
  */
-
-#ifndef SCOREP_INSTRUMENTER_COMMAND_LINE_H_
-#define SCOREP_INSTRUMENTER_COMMAND_LINE_H_
-
 
 #include <string>
 #include <vector>
