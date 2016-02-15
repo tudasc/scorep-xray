@@ -85,7 +85,7 @@ SCOREP_Tau_InitMeasurement( void );
 
 typedef uint32_t SCOREP_Tau_LineNo;
 
-typedef int ( *SCOREP_Tau_ExitCallback )( void );
+typedef int ( * SCOREP_Tau_ExitCallback )( void );
 
 
 /**
@@ -186,6 +186,7 @@ typedef enum
     SCOREP_TAU_REGION_THREAD_CREATE,
     SCOREP_TAU_REGION_THREAD_WAIT,
     SCOREP_TAU_REGION_TASK_UNTIED,
+    SCOREP_TAU_REGION_RMA,
 
     SCOREP_TAU_INVALID_REGION_TYPE /**< For internal use only. */
 } SCOREP_Tau_RegionType;
@@ -288,7 +289,7 @@ SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle );
  * Tau_profile_exit_all_threads.
  */
 void
-SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback );
+    SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback );
 
 #define SCOREP_Tau_MetricHandle            SCOREP_SamplingSetHandle
 #define SCOREP_TAU_INIT_METRIC_HANDLE   SCOREP_INVALID_SAMPLING_SET

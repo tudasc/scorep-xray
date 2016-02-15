@@ -478,6 +478,7 @@ typedef enum SCOREP_GroupType
     SCOREP_REGION_TYPE( ORDERED,      "ordered" ) \
     SCOREP_REGION_TYPE( ORDERED_SBLOCK, "ordered sblock" ) \
     SCOREP_REGION_TYPE( ARTIFICIAL,   "artificial" ) \
+    SCOREP_REGION_TYPE( RMA,          "rma" ) \
     SCOREP_REGION_TYPE( THREAD_CREATE, "thread create" ) \
     SCOREP_REGION_TYPE( THREAD_WAIT,  "thread wait" )
 

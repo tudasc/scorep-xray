@@ -8,6 +8,7 @@
 </prototype>
 
 <prototype name="MPI_Accumulate" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -1012,6 +1013,7 @@
 </prototype>
 
 <prototype name="MPI_Compare_and_swap" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="compare_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
@@ -1277,6 +1279,7 @@
 </prototype>
 
 <prototype name="MPI_Fetch_and_op" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -2710,6 +2713,7 @@
 </prototype>
 
 <prototype name="MPI_Get" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">RMA</attribute>
     <param access="o" type_modifier="" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -2738,6 +2742,7 @@
 </prototype>
 
 <prototype name="MPI_Get_accumulate" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -4874,6 +4879,7 @@
 </prototype>
 
 <prototype name="MPI_Put" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">RMA</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -4914,6 +4920,7 @@
 </prototype>
 
 <prototype name="MPI_Raccumulate" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5296,6 +5303,7 @@
 </prototype>
 
 <prototype name="MPI_Rget" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">RMA</attribute>
     <param access="o" type_modifier="" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5325,6 +5333,7 @@
 </prototype>
 
 <prototype name="MPI_Rget_accumulate" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">ATOMIC</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5342,6 +5351,7 @@
 </prototype>
 
 <prototype name="MPI_Rput" rtype="int" group="rma" guard="rma" >
+    <attribute id="kind">RMA</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
