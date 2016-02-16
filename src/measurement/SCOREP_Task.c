@@ -202,7 +202,7 @@ scorep_task_create( SCOREP_Location* location,
 
     /* Ignore return value 'substrate_id', only needed for re-initialization in OA. */
     SCOREP_CALL_SUBSTRATE( CoreTaskCreate, CORE_TASK_CREATE,
-                           ( location, new_task ) )
+                           ( location, new_task ) );
 
     return new_task;
 }
@@ -212,7 +212,7 @@ scorep_task_complete( SCOREP_Location*  location,
                       SCOREP_TaskHandle task )
 {
     SCOREP_CALL_SUBSTRATE( CoreTaskComplete, CORE_TASK_COMPLETE,
-                           ( location, task ) )
+                           ( location, task ) );
     recycle_task( location, task );
 }
 

@@ -387,7 +387,7 @@ SCOREP_Location_EnsureGlobalId( SCOREP_Location* location )
         location_definition->global_location_id =
             SCOREP_Location_GetGlobalId( location );
 
-        SCOREP_CALL_SUBSTRATE( EnsureGlobalId, ENSURE_GLOBAL_ID, ( location ) )
+        SCOREP_CALL_SUBSTRATE( EnsureGlobalId, ENSURE_GLOBAL_ID, ( location ) );
     }
 }
 

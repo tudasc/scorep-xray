@@ -111,7 +111,7 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinFork, THREAD_FORK_JOIN_FORK,
                            ( location, timestamp, paradigm,
-                             nRequestedThreads, sequence_count ) )
+                             nRequestedThreads, sequence_count ) );
 
     /* We transit the master thread into the PAUSE phase, so that no
      * events are allowed until we enter the thread team */
@@ -143,7 +143,7 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinJoin, THREAD_FORK_JOIN_JOIN,
-                           ( location, timestamp, paradigm ) )
+                           ( location, timestamp, paradigm ) );
 
     /* The master thread was in the PAUSE phase, so that no events are
      * allowed since we left the thread team */
@@ -218,7 +218,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     }
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
-                           ( current_location, timestamp, paradigm, team ) )
+                           ( current_location, timestamp, paradigm, team ) );
 
     /* Call subsystems on location activation, the master thread transits from
      * the PAUSE phase */
@@ -257,7 +257,7 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
 
     uint64_t timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,
-                           ( location, timestamp, paradigm, team ) )
+                           ( location, timestamp, paradigm, team ) );
 
     if ( thread_id != 0 )
     {
@@ -280,7 +280,7 @@ SCOREP_ThreadForkJoin_TaskCreate( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskCreate, THREAD_FORK_JOIN_TASK_CREATE,
                            ( location, timestamp, paradigm,
-                             team, threadId, generationNumber ) )
+                             team, threadId, generationNumber ) );
 }
 
 
@@ -301,7 +301,7 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskSwitch, THREAD_FORK_JOIN_TASK_SWITCH,
                            ( location, timestamp, metric_values, paradigm,
-                             team, thread_id, generation_no, task ) )
+                             team, thread_id, generation_no, task ) );
 }
 
 
@@ -335,7 +335,7 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskBegin, THREAD_FORK_JOIN_TASK_BEGIN,
                            ( location, timestamp, regionHandle, metric_values,
-                             paradigm, team, threadId, generationNumber, new_task ) )
+                             paradigm, team, threadId, generationNumber, new_task ) );
 
     return new_task;
 }
@@ -357,7 +357,7 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
     /*void*                      task_substrate_data = scorep_task_get_substrate_data( task );*/
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskEnd, THREAD_FORK_JOIN_TASK_END,
                            ( location, timestamp, regionHandle, metric_values,
-                             paradigm, team, thread_id, generation_no, task ) )
+                             paradigm, team, thread_id, generation_no, task ) );
 
     scorep_task_complete( location, task );
 }

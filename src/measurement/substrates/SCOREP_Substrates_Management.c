@@ -123,7 +123,7 @@ substrates_subsystem_init( void )
 
     substrate_id = 0;
 
-    SCOREP_CALL_SUBSTRATE( InitSubstrate, INIT_SUBSTRATE, ( substrate_id++ ) )
+    SCOREP_CALL_SUBSTRATE( InitSubstrate, INIT_SUBSTRATE, ( substrate_id++ ) );
 
     return SCOREP_SUCCESS;
 }
@@ -178,7 +178,7 @@ substrates_subsystem_init_location( struct SCOREP_Location* location,
     // in on_location_creation, SCOREP_Tracing_OnLocationCreation.
     // The alternative would be to lock this entire function.
     SCOREP_CALL_SUBSTRATE( OnLocationCreation, ON_LOCATION_CREATION,
-                           ( location, parent ) )
+                           ( location, parent ) );
 
     return SCOREP_SUCCESS;
 }
@@ -195,7 +195,7 @@ substrates_subsystem_activate_cpu_location( struct SCOREP_Location* current,
         return SCOREP_SUCCESS;
     }
     SCOREP_CALL_SUBSTRATE( OnLocationActivation, ON_LOCATION_ACTIVATION,
-                           ( current, parent, forkSequenceCount ) )
+                           ( current, parent, forkSequenceCount ) );
 
     return SCOREP_SUCCESS;
 }
@@ -211,7 +211,7 @@ substrates_subsystem_deactivate_cpu_location( struct SCOREP_Location* current,
         return;
     }
     SCOREP_CALL_SUBSTRATE( OnLocationDeactivation, ON_LOCATION_DEACTIVATION,
-                           ( current, parent ) )
+                           ( current, parent ) );
 }
 
 
@@ -220,7 +220,7 @@ substrates_subsystem_finalize_location( struct SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
     SCOREP_CALL_SUBSTRATE( OnLocationDeletion, ON_LOCATION_DELETION,
-                           ( location ) )
+                           ( location ) );
 }
 
 
@@ -231,7 +231,7 @@ substrates_subsystem_pre_unify( void )
 
     /* finalize and close all event writers, release used memory pages. */
 
-    SCOREP_CALL_SUBSTRATE( PreUnifySubstrate, PRE_UNIFY_SUBSTRATE, ( ) )
+    SCOREP_CALL_SUBSTRATE( PreUnifySubstrate, PRE_UNIFY_SUBSTRATE, ( ) );
 
     return SCOREP_SUCCESS;
 }
@@ -252,7 +252,7 @@ substrates_subsystem_finalize( void )
     UTILS_DEBUG_ENTRY();
 
     /* Ignore return value 'substrate_id', only needed for re-initialization in OA. */
-    SCOREP_CALL_SUBSTRATE( FinalizeSubstrate, FINALIZE_SUBSTRATE, ( ) )
+    SCOREP_CALL_SUBSTRATE( FinalizeSubstrate, FINALIZE_SUBSTRATE, ( ) );
 
     /* One more substrate to be finalized here. */
 
@@ -265,7 +265,7 @@ SCOREP_Substrates_WriteData( void )
 {
     UTILS_BUG_ON( !SCOREP_Definitions_Initialized(), "We need valid definitions here." );
 
-    SCOREP_CALL_SUBSTRATE( WriteData, WRITE_DATA, ( ) )
+    SCOREP_CALL_SUBSTRATE( WriteData, WRITE_DATA, ( ) );
 }
 
 
@@ -312,7 +312,7 @@ SCOREP_Substrates_DisableRecording( void )
 void
 SCOREP_Substrates_InitializeMpp( void )
 {
-    SCOREP_CALL_SUBSTRATE( InitializeMpp, INITIALIZE_MPP, ( ) )
+    SCOREP_CALL_SUBSTRATE( InitializeMpp, INITIALIZE_MPP, ( ) );
 }
 
 size_t

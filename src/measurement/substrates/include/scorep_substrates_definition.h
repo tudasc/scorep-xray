@@ -43,7 +43,7 @@
             ( *substrate_cb )ARGS; \
             ++substrate_cb; \
         } \
-    } while ( 0 );
+    } while ( 0 )
 
 /**
  * Macro initializing substrate callback

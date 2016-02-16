@@ -475,7 +475,7 @@ SCOREP_EnableRecording( void )
 
         SCOREP_CALL_SUBSTRATE( EnableRecording, ENABLE_RECORDING,
                                ( location, timestamp,
-                                 scorep_record_off_region, metric_values ) )
+                                 scorep_record_off_region, metric_values ) );
     }
     else
     {
@@ -503,7 +503,7 @@ SCOREP_DisableRecording( void )
     {
         SCOREP_CALL_SUBSTRATE( DisableRecording, DISABLE_RECORDING,
                                ( location, timestamp,
-                                 scorep_record_off_region, metric_values ) )
+                                 scorep_record_off_region, metric_values ) );
 
         SCOREP_Substrates_DisableRecording();
         scorep_recording_enabled = false;
@@ -560,7 +560,7 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
          */
         SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN,
                                ( location, timestamp,
-                                 scorep_buffer_flush_region, metric_values ) )
+                                 scorep_buffer_flush_region, metric_values ) );
     }
 }
 
@@ -584,7 +584,7 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
      */
     SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushEnd, ON_TRACING_BUFFER_FLUSH_END,
                            ( location, timestamp,
-                             scorep_buffer_flush_region, metric_values ) )
+                             scorep_buffer_flush_region, metric_values ) );
 }
 
 static void

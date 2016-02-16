@@ -99,7 +99,7 @@ SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle )
                              previous_calling_context,
                              unwind_distance,
                              interruptGeneratorHandle,
-                             metric_values ) )
+                             metric_values ) );
 }
 
 
@@ -122,7 +122,7 @@ SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
                              previousCallingContext,
                              1,
                              SCOREP_INVALID_INTERRUPT_GENERATOR,
-                             metric_values ) )
+                             metric_values ) );
 }
 
 
@@ -141,7 +141,7 @@ enter_region( SCOREP_Location*    location,
     SCOREP_Task_Enter( location, regionHandle );
 
     SCOREP_CALL_SUBSTRATE( EnterRegion, ENTER_REGION,
-                           ( location, timestamp, regionHandle, metricValues ) )
+                           ( location, timestamp, regionHandle, metricValues ) );
 }
 
 
@@ -173,7 +173,7 @@ calling_context_enter( SCOREP_Location*    location,
                              current_calling_context,
                              previous_calling_context,
                              unwind_distance,
-                             metricValues ) )
+                             metricValues ) );
 }
 
 
@@ -274,7 +274,7 @@ exit_region( SCOREP_Location*    location,
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
     SCOREP_CALL_SUBSTRATE( ExitRegion, EXIT_REGION,
-                           ( location, timestamp, regionHandle, metricValues ) )
+                           ( location, timestamp, regionHandle, metricValues ) );
 
     SCOREP_Task_Exit( location );
 }
@@ -304,7 +304,7 @@ calling_context_exit( SCOREP_Location*    location,
                              current_calling_context,
                              previous_calling_context,
                              unwind_distance,
-                             metricValues ) )
+                             metricValues ) );
 }
 
 
@@ -367,7 +367,7 @@ SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
     SCOREP_CALL_SUBSTRATE( EnterRewindRegion, ENTER_REWIND_REGION,
-                           ( location, timestamp, regionHandle ) )
+                           ( location, timestamp, regionHandle ) );
 }
 
 
@@ -384,7 +384,7 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
     SCOREP_CALL_SUBSTRATE( ExitRewindRegion, EXIT_REWIND_REGION,
-                           ( location, leavetimestamp, regionHandle, do_rewind ) )
+                           ( location, leavetimestamp, regionHandle, do_rewind ) );
 }
 
 
@@ -397,7 +397,7 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location, attributeHandle, value ) )
+                           ( location, attributeHandle, value ) );
 }
 
 
@@ -410,7 +410,7 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
                               void*                  value )
 {
     SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location, attributeHandle, value ) )
+                           ( location, attributeHandle, value ) );
 }
 
 
@@ -425,7 +425,7 @@ add_source_code_location( SCOREP_Location* location,
     SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
                            ( location,
                              scorep_source_code_location_attribute,
-                             &value ) )
+                             &value ) );
 }
 
 
@@ -514,7 +514,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
 
     SCOREP_CALL_SUBSTRATE( MpiSend, MPI_SEND,
                            ( location, timestamp, destinationRank,
-                             communicatorHandle, tag, bytesSent ) )
+                             communicatorHandle, tag, bytesSent ) );
 }
 
 
@@ -541,7 +541,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
 
     SCOREP_CALL_SUBSTRATE( MpiRecv, MPI_RECV,
                            ( location, timestamp, sourceRank,
-                             communicatorHandle, tag, bytesReceived ) )
+                             communicatorHandle, tag, bytesReceived ) );
 }
 
 /**
@@ -557,7 +557,7 @@ SCOREP_MpiCollectiveBegin( void )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( MpiCollectiveBegin, MPI_COLLECTIVE_BEGIN,
-                           ( location, timestamp ) )
+                           ( location, timestamp ) );
 }
 
 /**
@@ -581,7 +581,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
 
     SCOREP_CALL_SUBSTRATE( MpiCollectiveEnd, MPI_COLLECTIVE_END,
                            ( location, timestamp, communicatorHandle, rootRank,
-                             collectiveType, bytesSent, bytesReceived ) )
+                             collectiveType, bytesSent, bytesReceived ) );
 }
 
 void
@@ -593,7 +593,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( MpiIsendComplete, MPI_ISEND_COMPLETE,
-                           ( location, timestamp, requestId ) )
+                           ( location, timestamp, requestId ) );
 }
 
 void
@@ -605,7 +605,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( MpiIrecvRequest, MPI_IRECV_REQUEST,
-                           ( location, timestamp, requestId ) )
+                           ( location, timestamp, requestId ) );
 }
 
 void
@@ -617,7 +617,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( MpiRequestTested, MPI_REQUEST_TESTED,
-                           ( location, timestamp, requestId ) )
+                           ( location, timestamp, requestId ) );
 }
 
 void
@@ -629,7 +629,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( MpiRequestCancelled, MPI_REQUEST_CANCELLED,
-                           ( location, timestamp, requestId ) )
+                           ( location, timestamp, requestId ) );
 }
 
 void
@@ -649,7 +649,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                   destinationRank,
 
     SCOREP_CALL_SUBSTRATE( MpiIsend, MPI_ISEND,
                            ( location, timestamp, destinationRank,
-                             communicatorHandle, tag, bytesSent, requestId ) )
+                             communicatorHandle, tag, bytesSent, requestId ) );
 }
 
 void
@@ -669,7 +669,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
 
     SCOREP_CALL_SUBSTRATE( MpiIrecv, MPI_IRECV,
                            ( location, timestamp, sourceRank,
-                             communicatorHandle, tag, bytesReceived, requestId ) )
+                             communicatorHandle, tag, bytesReceived, requestId ) );
 }
 
 
@@ -680,7 +680,7 @@ SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle )
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaWinCreate, RMA_WIN_CREATE,
-                           ( location, timestamp, windowHandle ) )
+                           ( location, timestamp, windowHandle ) );
 }
 
 
@@ -690,7 +690,7 @@ SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
                               SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_CALL_SUBSTRATE( RmaWinCreate, RMA_WIN_CREATE,
-                           ( location, timestamp, windowHandle ) )
+                           ( location, timestamp, windowHandle ) );
 }
 
 
@@ -701,7 +701,7 @@ SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle )
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaWinDestroy, RMA_WIN_DESTROY,
-                           ( location, timestamp, windowHandle ) )
+                           ( location, timestamp, windowHandle ) );
 }
 
 
@@ -711,7 +711,7 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
                                SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_CALL_SUBSTRATE( RmaWinDestroy, RMA_WIN_DESTROY,
-                           ( location, timestamp, windowHandle ) )
+                           ( location, timestamp, windowHandle ) );
 }
 
 
@@ -722,7 +722,7 @@ SCOREP_RmaCollectiveBegin( void )
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaCollectiveBegin, RMA_COLLECTIVE_BEGIN,
-                           ( location, timestamp ) )
+                           ( location, timestamp ) );
 }
 
 
@@ -739,7 +739,7 @@ SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType         collectiveOp,
 
     SCOREP_CALL_SUBSTRATE( RmaCollectiveEnd, RMA_COLLECTIVE_END,
                            ( location, timestamp, collectiveOp, syncLevel,
-                             windowHandle, root, bytesSent, bytesReceived ) )
+                             windowHandle, root, bytesSent, bytesReceived ) );
 }
 
 
@@ -754,7 +754,7 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
 
     SCOREP_CALL_SUBSTRATE( RmaGroupSync, RMA_GROUP_SYNC,
                            ( location, timestamp, syncLevel,
-                             windowHandle, groupHandle ) )
+                             windowHandle, groupHandle ) );
 }
 
 
@@ -770,7 +770,7 @@ SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaRequestLock, RMA_REQUEST_LOCK,
                            ( location, timestamp, windowHandle,
-                             remote, lockId, lockType ) )
+                             remote, lockId, lockType ) );
 }
 
 
@@ -786,7 +786,7 @@ SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaAcquireLock, RMA_ACQUIRE_LOCK,
                            ( location, timestamp, windowHandle,
-                             remote, lockId, lockType ) )
+                             remote, lockId, lockType ) );
 }
 
 
@@ -802,7 +802,7 @@ SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaTryLock, RMA_TRY_LOCK,
                            ( location, timestamp, windowHandle,
-                             remote, lockId, lockType ) )
+                             remote, lockId, lockType ) );
 }
 
 
@@ -816,7 +816,7 @@ SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaReleaseLock, RMA_RELEASE_LOCK,
-                           ( location, timestamp, windowHandle, remote, lockId ) )
+                           ( location, timestamp, windowHandle, remote, lockId ) );
 }
 
 
@@ -830,7 +830,7 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaSync, RMA_SYNC,
-                           ( location, timestamp, windowHandle, remote, syncType ) )
+                           ( location, timestamp, windowHandle, remote, syncType ) );
 }
 
 
@@ -843,7 +843,7 @@ SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RMA window:%x", windowHandle );
 
     SCOREP_CALL_SUBSTRATE( RmaWaitChange, RMA_WAIT_CHANGE,
-                           ( location, timestamp, windowHandle ) )
+                           ( location, timestamp, windowHandle ) );
 }
 
 
@@ -858,7 +858,7 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaPut, RMA_PUT,
                            ( location, timestamp, windowHandle,
-                             remote, bytes, matchingId ) )
+                             remote, bytes, matchingId ) );
 }
 
 
@@ -872,7 +872,7 @@ SCOREP_Location_RmaPut( SCOREP_Location*              location,
 {
     SCOREP_CALL_SUBSTRATE( RmaPut, RMA_PUT,
                            ( location, timestamp, windowHandle,
-                             remote, bytes, matchingId ) )
+                             remote, bytes, matchingId ) );
 }
 
 
@@ -887,7 +887,7 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaGet, RMA_GET,
                            ( location, timestamp, windowHandle,
-                             remote, bytes, matchingId ) )
+                             remote, bytes, matchingId ) );
 }
 
 
@@ -902,7 +902,7 @@ SCOREP_Location_RmaGet( SCOREP_Location*              location,
 {
     SCOREP_CALL_SUBSTRATE( RmaGet, RMA_GET,
                            ( location, timestamp, windowHandle,
-                             remote, bytes, matchingId ) )
+                             remote, bytes, matchingId ) );
 }
 
 
@@ -920,7 +920,7 @@ SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
 
     SCOREP_CALL_SUBSTRATE( RmaAtomic, RMA_ATOMIC,
                            ( location, timestamp, windowHandle, remote,
-                             type, bytesSent, bytesReceived, matchingId ) )
+                             type, bytesSent, bytesReceived, matchingId ) );
 }
 
 
@@ -932,7 +932,7 @@ SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaOpCompleteBlocking, RMA_OP_COMPLETE_BLOCKING,
-                           ( location, timestamp, windowHandle, matchingId ) )
+                           ( location, timestamp, windowHandle, matchingId ) );
 }
 
 
@@ -943,7 +943,7 @@ SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
                                        uint64_t                      matchingId )
 {
     SCOREP_CALL_SUBSTRATE( RmaOpCompleteBlocking, RMA_OP_COMPLETE_BLOCKING,
-                           ( location, timestamp, windowHandle, matchingId ) )
+                           ( location, timestamp, windowHandle, matchingId ) );
 }
 
 
@@ -955,7 +955,7 @@ SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaOpCompleteNonBlocking, RMA_OP_COMPLETE_NON_BLOCKING,
-                           ( location, timestamp, windowHandle, matchingId ) )
+                           ( location, timestamp, windowHandle, matchingId ) );
 }
 
 
@@ -967,7 +967,7 @@ SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaOpTest, RMA_OP_TEST,
-                           ( location, timestamp, windowHandle, matchingId ) )
+                           ( location, timestamp, windowHandle, matchingId ) );
 }
 
 
@@ -979,7 +979,7 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaOpCompleteRemote, RMA_OP_COMPLETE_REMOTE,
-                           ( location, timestamp, windowHandle, matchingId ) )
+                           ( location, timestamp, windowHandle, matchingId ) );
 }
 
 
@@ -995,7 +995,7 @@ SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadAcquireLock, THREAD_ACQUIRE_LOCK,
                            ( location, timestamp, paradigm,
-                             lockId, acquisitionOrder ) )
+                             lockId, acquisitionOrder ) );
 }
 
 
@@ -1011,7 +1011,7 @@ SCOREP_ThreadReleaseLock( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadReleaseLock, THREAD_RELEASE_LOCK,
                            ( location, timestamp, paradigm,
-                             lockId, acquisitionOrder ) )
+                             lockId, acquisitionOrder ) );
 }
 
 
@@ -1028,7 +1028,7 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( TriggerCounterInt64, TRIGGER_COUNTER_INT64,
-                           ( location, timestamp, counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) );
 }
 
 
@@ -1041,7 +1041,7 @@ trigger_counter_uint64( SCOREP_Location*         location,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( TriggerCounterUint64, TRIGGER_COUNTER_UINT64,
-                           ( location, timestamp, counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) );
 }
 
 
@@ -1085,7 +1085,7 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( TriggerCounterDouble, TRIGGER_COUNTER_DOUBLE,
-                           ( location, timestamp, counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) );
 }
 
 
@@ -1115,7 +1115,7 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( TriggerParameterInt64, TRIGGER_PARAMETER_INT64,
-                           ( location, timestamp, parameterHandle, value ) )
+                           ( location, timestamp, parameterHandle, value ) );
 }
 
 
@@ -1132,7 +1132,7 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_CALL_SUBSTRATE( TriggerParameterUint64, TRIGGER_PARAMETER_UINT64,
-                           ( location, timestamp, parameterHandle, value ) )
+                           ( location, timestamp, parameterHandle, value ) );
 }
 
 
@@ -1152,7 +1152,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_CALL_SUBSTRATE( TriggerParameterString, TRIGGER_PARAMETER_STRING,
                            ( location, timestamp,
-                             parameterHandle, string_handle ) )
+                             parameterHandle, string_handle ) );
 }
 
 
@@ -1170,7 +1170,7 @@ SCOREP_TrackAlloc( uint64_t addrAllocated,
                              bytesAllocated,
                              substrateData,
                              bytesAllocatedMetric,
-                             bytesAllocatedProcess ) )
+                             bytesAllocatedProcess ) );
 }
 
 
@@ -1194,7 +1194,7 @@ SCOREP_TrackRealloc( uint64_t oldAddr,
                              newBytesAllocated,
                              newSubstrateData,
                              bytesAllocatedMetric,
-                             bytesAllocatedProcess ) )
+                             bytesAllocatedProcess ) );
 }
 
 
@@ -1212,7 +1212,7 @@ SCOREP_TrackFree( uint64_t addrFreed,
                              bytesFreed,
                              substrateData,
                              bytesAllocatedMetric,
-                             bytesAllocatedProcess ) )
+                             bytesAllocatedProcess ) );
 }
 
 
@@ -1222,7 +1222,7 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
                      void*    substrateData[] )
 {
     SCOREP_CALL_SUBSTRATE( LeakedMemory, LEAKED_MEMORY,
-                           ( addrLeaked, bytesLeaked, substrateData ) )
+                           ( addrLeaked, bytesLeaked, substrateData ) );
 }
 
 

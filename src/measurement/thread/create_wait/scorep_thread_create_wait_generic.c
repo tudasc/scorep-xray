@@ -254,7 +254,7 @@ SCOREP_ThreadCreateWait_Create( SCOREP_ParadigmType                 paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitCreate, THREAD_CREATE_WAIT_CREATE,
                            ( location, timestamp, paradigm,
-                             thread_team, *sequenceCount ) )
+                             thread_team, *sequenceCount ) );
 }
 
 
@@ -277,7 +277,7 @@ SCOREP_ThreadCreateWait_Wait( SCOREP_ParadigmType paradigm,
 
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitWait, THREAD_CREATE_WAIT_WAIT,
                            ( location, timestamp, paradigm,
-                             thread_team, sequenceCount ) )
+                             thread_team, sequenceCount ) );
 }
 
 
@@ -331,7 +331,7 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
     /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
                            ( *location, timestamp, paradigm,
-                             thread_team, sequenceCount ) )
+                             thread_team, sequenceCount ) );
 
     /* lastly notify the subsystems that the location can create events */
     scorep_subsystems_activate_cpu_location( *location, NULL, 0,
@@ -363,7 +363,7 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
     uint64_t timestamp = scorep_get_timestamp( current_location );
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitEnd, THREAD_CREATE_WAIT_END,
                            ( current_location, timestamp, paradigm,
-                             thread_team, sequenceCount ) )
+                             thread_team, sequenceCount ) );
 
     /* Third deactivate the location. */
     scorep_subsystems_deactivate_cpu_location( current_location,
