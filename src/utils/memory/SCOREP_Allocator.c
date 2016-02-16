@@ -360,8 +360,8 @@ SCOREP_Allocator_RoundupToAlignment( size_t size )
 
 
 SCOREP_Allocator_Allocator*
-SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
-                                  size_t                       pageSize,
+SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
+                                  uint32_t                     pageSize,
                                   SCOREP_Allocator_Guard       lockFunction,
                                   SCOREP_Allocator_Guard       unlockFunction,
                                   SCOREP_Allocator_GuardObject lockObject )
@@ -384,11 +384,11 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
         page_shift++;
     }
 
-    size_t n_pages = totalMemory / pageSize;
+    uint32_t n_pages = totalMemory / pageSize;
     /* round the total memory down to a multiple of pageSize */
     totalMemory = n_pages * pageSize;
 
-    size_t maint_memory_needed = union_size() + bitset_size( n_pages );
+    uint32_t maint_memory_needed = union_size() + bitset_size( n_pages );
     maint_memory_needed = roundupto( maint_memory_needed, 64 );
     if ( totalMemory <= maint_memory_needed )
     {
@@ -399,10 +399,10 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
     /* mark the pages used we need for our own maintanance
      * (i.e. this object and the page_map)
      */
-    size_t already_used_pages = maint_memory_needed >> page_shift;
+    uint32_t already_used_pages = maint_memory_needed >> page_shift;
     /* always use one more page for the allocator union object */
     already_used_pages++;
-    size_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
+    uint32_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "0: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
                         totalMemory, page_shift, n_pages,

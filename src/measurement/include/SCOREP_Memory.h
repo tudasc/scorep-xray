@@ -78,8 +78,8 @@ typedef enum SCOREP_MemoryType
  * @param pageSize size of a single page in bytes, needs to be <= @a totalMemory
  */
 void
-SCOREP_Memory_Initialize( size_t totalMemory,
-                          size_t pageSize );
+SCOREP_Memory_Initialize( uint64_t totalMemory,
+                          uint64_t pageSize );
 
 
 /**

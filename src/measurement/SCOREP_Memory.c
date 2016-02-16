@@ -68,11 +68,9 @@ static bool is_initialized;
 static SCOREP_Allocator_PageManager* definitions_page_manager;
 
 void
-SCOREP_Memory_Initialize( size_t totalMemory,
-                          size_t pageSize )
+SCOREP_Memory_Initialize( uint64_t totalMemory,
+                          uint64_t pageSize )
 {
-    assert( totalMemory >= pageSize );
-
     if ( is_initialized )
     {
         return;
@@ -81,7 +79,20 @@ SCOREP_Memory_Initialize( size_t totalMemory,
 
     SCOREP_MutexCreate( &memory_lock );
 
-    assert( allocator == 0 );
+    if ( totalMemory > ( uint64_t )UINT32_MAX )
+    {
+        UTILS_WARNING( "Too many memory requested. "
+                       "Score-P supports only up to, but not including, 4 GiB of "
+                       "total memory per process. Reducing to its maximum value." );
+        totalMemory = UINT32_MAX;
+    }
+
+    UTILS_BUG_ON( totalMemory < pageSize,
+                  "Requested page size must fit into the total memory "
+                  "(SCOREP_TOTAL_MEMORY=%" PRIu64 ", SCOREP_PAGE_SIZE=%" PRIu64 ")",
+                  totalMemory, pageSize );
+
+
     allocator = SCOREP_Allocator_CreateAllocator(
         totalMemory,
         pageSize,
@@ -89,21 +100,15 @@ SCOREP_Memory_Initialize( size_t totalMemory,
         ( SCOREP_Allocator_Guard )SCOREP_MutexUnlock,
         ( SCOREP_Allocator_GuardObject )memory_lock );
 
-    if ( !allocator )
-    {
-        SCOREP_MutexDestroy( &memory_lock );
-        is_initialized = false;
-        assert( false );
-    }
+    UTILS_BUG_ON( !allocator,
+                  "Cannot create memory manager for "
+                  "SCOREP_TOTAL_MEMORY=%" PRIu64 " and SCOREP_PAGE_SIZE=%" PRIu64,
+                  totalMemory, pageSize );
 
     assert( definitions_page_manager == 0 );
     definitions_page_manager = SCOREP_Allocator_CreatePageManager( allocator );
-    if ( !definitions_page_manager )
-    {
-        SCOREP_MutexDestroy( &memory_lock );
-        is_initialized = false;
-        SCOREP_Memory_HandleOutOfMemory();
-    }
+    UTILS_BUG_ON( !definitions_page_manager,
+                  "Cannot create definitions manager." );
 
     total_memory = totalMemory;
 }

@@ -75,7 +75,7 @@ typedef struct SCOREP_Allocator_ObjectManager SCOREP_Allocator_ObjectManager;
 
 
 typedef void* SCOREP_Allocator_GuardObject;
-typedef void ( *SCOREP_Allocator_Guard )( SCOREP_Allocator_GuardObject );
+typedef void ( * SCOREP_Allocator_Guard )( SCOREP_Allocator_GuardObject );
 
 
 UTILS_BEGIN_C_DECLS
@@ -109,8 +109,8 @@ SCOREP_Allocator_RoundupToAlignment( size_t size );
  * @return A valid allocator object or a null pointer if the creation fails.
  */
 SCOREP_Allocator_Allocator*
-SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
-                                  size_t                       pageSize,
+SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
+                                  uint32_t                     pageSize,
                                   SCOREP_Allocator_Guard       lockFunction,
                                   SCOREP_Allocator_Guard       unlockFunction,
                                   SCOREP_Allocator_GuardObject lockObject );
