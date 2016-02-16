@@ -51,22 +51,16 @@
 #include "scorep_ipc.h"
 
 #define SCOREP_TIMING_FUNCTIONS                                         \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigInit )                     \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_RegisterAllConfigVariables )     \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigApplyEnv )                 \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_CreateExperimentDir )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Paradigms_Initialize )           \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_otf2_initialize )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_Initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_profile_initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
