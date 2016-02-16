@@ -303,7 +303,7 @@ SCOREP_InitMeasurement( void )
     /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */
-    atexit( scorep_finalize );
+    SCOREP_RegisterExitHandler();
 
     /* == begin epoch, events are only allowed to happen inside the epoch == */
 
@@ -426,7 +426,7 @@ SCOREP_InitMppMeasurement( void )
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */
-    atexit( scorep_finalize );
+    SCOREP_RegisterExitHandler();
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMppMeasurement );
 }
