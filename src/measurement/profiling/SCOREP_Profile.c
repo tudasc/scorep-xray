@@ -1476,6 +1476,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
@@ -1525,7 +1526,6 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
