@@ -14,7 +14,7 @@
 # Copyright (c) 2009-2011,
 # University of Oregon, Eugene, USA
 #
-# Copyright (c) 2009-2011, 2015,
+# Copyright (c) 2009-2011, 2015-2016,
 # Forschungszentrum Juelich GmbH, Germany
 #
 # Copyright (c) 2009-2011,
@@ -44,3 +44,7 @@ libscorep_timer_la_CPPFLAGS = \
     @SCOREP_TIMER_CPPFLAGS@
 libscorep_timer_la_LDFLAGS = @SCOREP_TIMER_LDFLAGS@
 libscorep_timer_la_LIBADD = @SCOREP_TIMER_LIBS@
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/services/timer/scorep_timer_tsc.h \
+    $(SRC_ROOT)src/services/timer/scorep_timer_tsc.inc.c
