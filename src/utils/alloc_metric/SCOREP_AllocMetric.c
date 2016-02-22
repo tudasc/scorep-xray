@@ -536,6 +536,12 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
     {
         UTILS_WARNING( "Could not find previous allocation %p, ignoring event.",
                        ( void* )addr );
+
+        if ( size )
+        {
+            *size = 0;
+        }
+
         SCOREP_MutexUnlock( allocMetric->mutex );
         return;
     }
