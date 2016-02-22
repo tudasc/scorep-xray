@@ -214,10 +214,10 @@ SCOREP_LIBWRAP_FUNC_NAME( posix_memalign )( void** ptr,
     int result = __real_posix_memalign( ptr, alignment, size );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( result )
+    if ( result == 0 && *ptr )
     {
         SCOREP_AllocMetric_HandleAlloc( scorep_memory_metric,
-                                        ( uint64_t )result,
+                                        ( uint64_t )*ptr,
                                         size );
     }
 
