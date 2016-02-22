@@ -406,11 +406,9 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
 
     UTILS_BUG_ON( prevAddr == 0 );
 
-    uint64_t freed_memory = 0;
-
     SCOREP_MutexLock( allocMetric->mutex );
 
-    uint64_t total_allocated_memory = allocMetric->total_allocated_memory;
+    uint64_t total_allocated_memory_save = allocMetric->total_allocated_memory;
     uint64_t process_allocated_memory_save;
 
     /* get the handle of the previously allocated memory */
@@ -433,11 +431,14 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
             process_allocated_memory_save = process_allocated_memory;
             SCOREP_MutexUnlock( process_allocated_memory_mutex );
 
-            total_allocated_memory += ( size - allocation->size );
+            allocMetric->total_allocated_memory += ( size - allocation->size );
+            total_allocated_memory_save          = allocMetric->total_allocated_memory;
+
             SCOREP_TrackRealloc( prevAddr, allocation->size, allocation->substrate_data,
                                  resultAddr, size, allocation->substrate_data,
-                                 total_allocated_memory,
+                                 total_allocated_memory_save,
                                  process_allocated_memory_save );
+
             allocation->size = size;
         }
         /* System allocates size before freeing allocation->size (actually,
@@ -449,10 +450,16 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
             SCOREP_MutexLock( process_allocated_memory_mutex );
             process_allocated_memory     += size;
             process_allocated_memory_save = process_allocated_memory;
+            process_allocated_memory     -= allocation->size;
             SCOREP_MutexUnlock( process_allocated_memory_mutex );
 
-            total_allocated_memory += size;
-            freed_memory            = allocation->size;
+            allocMetric->total_allocated_memory += size;
+            total_allocated_memory_save          = allocMetric->total_allocated_memory;
+            allocMetric->total_allocated_memory -= allocation->size;
+
+            /* save the size of the previous allocation, before deleting it */
+            uint64_t dealloc_size_save = allocation->size;
+
             void* substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
             memcpy( &( substrate_data[ 0 ] ), &( allocation->substrate_data[ 0 ] ),
                     SCOREP_SUBSTRATES_NUM_SUBSTRATES * sizeof( void* ) );
@@ -460,9 +467,9 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
 
             allocation_item* new_allocation =
                 add_memory_allocation( allocMetric, resultAddr, size );
-            SCOREP_TrackRealloc( prevAddr, freed_memory, substrate_data,
+            SCOREP_TrackRealloc( prevAddr, dealloc_size_save, substrate_data,
                                  resultAddr, size, new_allocation->substrate_data,
-                                 total_allocated_memory,
+                                 total_allocated_memory_save,
                                  process_allocated_memory_save );
         }
     }
@@ -479,14 +486,8 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
     SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
                                           SCOREP_Timer_GetClockTicks(),
                                           allocMetric->sampling_set,
-                                          total_allocated_memory );
+                                          total_allocated_memory_save );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
-
-    allocMetric->total_allocated_memory = total_allocated_memory - freed_memory;
-
-    SCOREP_MutexLock( process_allocated_memory_mutex );
-    process_allocated_memory -= freed_memory;
-    SCOREP_MutexUnlock( process_allocated_memory_mutex );
 
     SCOREP_MutexUnlock( allocMetric->mutex );
 
