@@ -408,7 +408,7 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
 
     SCOREP_MutexLock( allocMetric->mutex );
 
-    uint64_t total_allocated_memory_save = allocMetric->total_allocated_memory;
+    uint64_t total_allocated_memory_save;
     uint64_t process_allocated_memory_save;
 
     /* get the handle of the previously allocated memory */
@@ -477,6 +477,25 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
     {
         UTILS_WARNING( "Could not find previous allocation %p.",
                        ( void* )prevAddr );
+
+        if ( prevSize )
+        {
+            *prevSize = 0;
+        }
+
+        SCOREP_MutexLock( process_allocated_memory_mutex );
+        process_allocated_memory     += size;
+        process_allocated_memory_save = process_allocated_memory;
+        SCOREP_MutexUnlock( process_allocated_memory_mutex );
+
+        allocMetric->total_allocated_memory += size;
+        total_allocated_memory_save          = allocMetric->total_allocated_memory;
+
+        allocation_item* new_allocation =
+            add_memory_allocation( allocMetric, resultAddr, size );
+        SCOREP_TrackAlloc( resultAddr, size, new_allocation->substrate_data,
+                           total_allocated_memory_save,
+                           process_allocated_memory_save );
     }
 
     /* We need to ensure, that we take the timestamp  *after* we acquired
