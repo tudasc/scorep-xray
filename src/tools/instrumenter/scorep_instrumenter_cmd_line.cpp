@@ -523,12 +523,16 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         m_verbosity = 1;
         return scorep_parse_mode_param;
     }
-#if defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--no-as-needed" )
     {
+#if defined( SCOREP_SHARED_BUILD )
         m_no_as_needed = true;
-    }
+#else
+        std::cerr << "Option --no-as-needed makes no sense for static-only Score-P "
+                  << "builds and will be ignored."
+                  << std::endl;
 #endif
+    }
     else
     {
         std::cerr << "ERROR: Unknown parameter: "
