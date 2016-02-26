@@ -30,6 +30,7 @@
 #include <jenkins_hash.h>
 
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 
 
@@ -80,6 +81,7 @@ scorep_pthread_mutex_hash_put( pthread_mutex_t* pthreadMutex )
         {
             new_mutex = SCOREP_Memory_AllocForMisc( sizeof( scorep_pthread_mutex ) );
         }
+        memset( new_mutex, 0, sizeof( *new_mutex ) );
         UTILS_BUG_ON( !new_mutex, "Failed to allocate memory for scorep_pthread_mutex object." );
         new_mutex->key               = get_key( pthreadMutex );
         new_mutex->id                = mutex_id++;

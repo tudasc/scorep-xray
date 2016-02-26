@@ -215,6 +215,7 @@ add_memory_allocation( SCOREP_AllocMetric* allocMetric,
     {
         new_item = SCOREP_Memory_AllocForMisc( sizeof( *new_item ) );
     }
+    memset( new_item, 0, sizeof( *new_item ) );
     new_item->address = addr;
     new_item->size    = size;
 

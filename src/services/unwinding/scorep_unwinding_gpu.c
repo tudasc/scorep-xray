@@ -103,6 +103,7 @@ push_instrumented_region( scorep_unwinding_instrumented_region** instrumentedReg
     {
         instrumented_region = SCOREP_Memory_AllocForMisc( sizeof( *instrumented_region ) );
     }
+    memset( instrumented_region, 0, sizeof( *instrumented_region ) );
 
     instrumented_region->region_handle = regionHandle;
 

@@ -725,6 +725,7 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
             {
                 frame = SCOREP_Memory_AllocForMisc( sizeof( *frame ) );
             }
+            memset( frame, 0, sizeof( *frame ) );
 
             if ( unwind_data->augmented_stack == NULL )
             {
@@ -765,6 +766,7 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
         {
             surrogate = SCOREP_Memory_AllocForMisc( sizeof( *surrogate ) );
         }
+        memset( surrogate, 0, sizeof( *surrogate ) );
 
         surrogate->prev = unwind_data->augmented_stack->surrogates;
         if ( wrappedRegion )
