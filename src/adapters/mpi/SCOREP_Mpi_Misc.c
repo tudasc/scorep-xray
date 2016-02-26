@@ -184,11 +184,14 @@ MPI_Free_mem( void* base )
         return_val = PMPI_Free_mem( base );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        if ( scorep_mpi_memory_recording && base && MPI_SUCCESS == return_val )
+        if ( scorep_mpi_memory_recording )
         {
-            uint64_t dealloc_size;
-            SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
-                                           ( uint64_t )base, &dealloc_size );
+            uint64_t dealloc_size = 0;
+            if ( base && MPI_SUCCESS == return_val )
+            {
+                SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
+                                               ( uint64_t )base, &dealloc_size );
+            }
             SCOREP_AddAttribute( scorep_mpi_memory_dealloc_size_attribute,
                                  &dealloc_size );
         }

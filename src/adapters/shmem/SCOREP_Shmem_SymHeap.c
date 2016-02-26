@@ -219,41 +219,45 @@ SHMEM_REALLOC( shrealloc )
 
 /* *INDENT-OFF* */
 
-#define SHMEM_FREE( FUNCNAME )                                                      \
-    void                                                                            \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void * ptr )                             \
-    {                                                                               \
-        SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
-                                                                                    \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
-        {                                                                           \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
-                                                                                    \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
-                                                                                    \
-            SCOREP_ENTER_WRAPPED_REGION();                                          \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                      \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
-            if ( scorep_shmem_memory_recording && ptr )                             \
-            {                                                                       \
-                uint64_t dealloc_size = 0;                                          \
-                SCOREP_AllocMetric_HandleFree( scorep_shmem_allocations_metric,     \
-                                               ( uint64_t )ptr, &dealloc_size );    \
-                SCOREP_AddAttribute( scorep_shmem_memory_dealloc_size_attribute,    \
-                                     &dealloc_size );                               \
-            }                                                                       \
-                                                                                    \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
-                                                                                    \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                      \
-        }                                                                           \
-                                                                                    \
-        SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
+#define SHMEM_FREE( FUNCNAME )                                                          \
+    void                                                                                \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void * ptr )                                 \
+    {                                                                                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                              \
+                                                                                        \
+        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                             \
+        {                                                                               \
+            SCOREP_SHMEM_EVENT_GEN_OFF();                                               \
+                                                                                        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
+                                                                                        \
+            SCOREP_ENTER_WRAPPED_REGION();                                              \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                          \
+            SCOREP_EXIT_WRAPPED_REGION();                                               \
+                                                                                        \
+            if ( scorep_shmem_memory_recording )                                        \
+            {                                                                           \
+                uint64_t dealloc_size = 0;                                              \
+                if ( ptr )                                                              \
+                {                                                                       \
+                    SCOREP_AllocMetric_HandleFree( scorep_shmem_allocations_metric,     \
+                                                   ( uint64_t )ptr, &dealloc_size );    \
+                }                                                                       \
+                SCOREP_AddAttribute( scorep_shmem_memory_dealloc_size_attribute,        \
+                                     &dealloc_size );                                   \
+            }                                                                           \
+                                                                                        \
+            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                     \
+                                                                                        \
+            SCOREP_SHMEM_EVENT_GEN_ON();                                                \
+        }                                                                               \
+        else                                                                            \
+        {                                                                               \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                          \
+        }                                                                               \
+                                                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                              \
     }
 
 /* *INDENT-OFF* */
