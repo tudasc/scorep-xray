@@ -46,6 +46,22 @@ SCOREP_AllocMetric_Destroy( SCOREP_AllocMetric* allocMetric );
 
 
 /**
+ *  Acquires a previous allocation.
+ *
+ *  Locates a previous allocation of address @p addr and removes it from the
+ *  the tracking. The alloation must than be passed to @a SCOREP_AllocMetric_HandleFree
+ *  or @a SCOREP_AllocMetric_HandleRealloc to finalize the handling.
+ *
+ *  @param allocMetric      Object handle.
+ *  @param addr             The address of the allocation.
+ *  @param[out] allocation  The allocation.
+ */
+void
+SCOREP_AllocMetric_AcquireAlloc( SCOREP_AllocMetric* allocMetric,
+                                 uint64_t            addr,
+                                 void**              allocation );
+
+/**
  *  Handles an allocation in this metric.
  *
  *  @param allocMetric   Object handle.
@@ -60,18 +76,19 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
 /**
  *  Handles an reallocation in this metric.
  *
- *  @param allocMetric   Object handle.
- *  @param resultAddr    The resulting address of the allocation.
- *  @param size          The size of the allocation.
- *  @param prevAddr      In case of an re-allocation the previous pointer.
- *  @param[out] prevSize The size of the previous allocation if @a prevAddr is
- *                       not @p NULL, or 0. May be a NULL pointer.
+ *  @param allocMetric     Object handle.
+ *  @param resultAddr      The resulting address of the allocation.
+ *  @param size            The size of the allocation.
+ *  @param prevAllocation  In case of an re-allocation the previous allocation
+ *                         returned by @a SCOREP_AllocMetric_AcquireAlloc.
+ *  @param[out] prevSize   The size of the previous allocation if @a prevAddr is
+ *                         not @p NULL, or 0. May be a NULL pointer.
  */
 void
 SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
                                   uint64_t            resultAddr,
                                   size_t              size,
-                                  uint64_t            prevAddr,
+                                  void*               prevAllocation,
                                   uint64_t*           prevSize );
 
 
@@ -79,12 +96,13 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
  *  Handles an deallocation in this metric.
  *
  *  @param allocMetric   Object handle.
- *  @param addr          The of the allocation to be freed.
+ *  @param allocation    The allocation to be freed. Returned from
+ *                       @a SCOREP_AllocMetric_AcquireAlloc.
  *  @param[out] size     The size of this allocation. May be a NULL pointer.
  */
 void
 SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
-                               uint64_t            addr,
+                               void*               allocation,
                                uint64_t*           size );
 
 

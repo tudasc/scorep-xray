@@ -171,6 +171,13 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
     SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ], \
                                ( intptr_t )__real_##FUNCTION ); \
  \
+    void* allocation = NULL; \
+    if ( ptr ) \
+    { \
+        SCOREP_AllocMetric_AcquireAlloc( scorep_memory_metric, \
+                                         ( uint64_t )ptr, &allocation ); \
+    } \
+ \
     SCOREP_ENTER_WRAPPED_REGION(); \
     __real_##FUNCTION( ptr ); \
     SCOREP_EXIT_WRAPPED_REGION(); \
@@ -179,7 +186,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
     if ( ptr ) \
     { \
         SCOREP_AllocMetric_HandleFree( scorep_memory_metric, \
-                                       ( uint64_t )ptr, &dealloc_size ); \
+                                       allocation, &dealloc_size ); \
     } \
  \
     scorep_memory_attributes_add_exit_dealloc_size( dealloc_size ); \

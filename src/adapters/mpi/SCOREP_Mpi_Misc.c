@@ -180,6 +180,13 @@ MPI_Free_mem( void* base )
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ],
                                    ( intptr_t )PMPI_Free_mem );
 
+        void* allocation = NULL;
+        if ( scorep_mpi_memory_recording && base )
+        {
+            SCOREP_AllocMetric_AcquireAlloc( scorep_mpi_allocations_metric,
+                                             ( uint64_t )base, &allocation );
+        }
+
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Free_mem( base );
         SCOREP_EXIT_WRAPPED_REGION();
@@ -190,7 +197,7 @@ MPI_Free_mem( void* base )
             if ( base && MPI_SUCCESS == return_val )
             {
                 SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
-                                               ( uint64_t )base, &dealloc_size );
+                                               allocation, &dealloc_size );
             }
             SCOREP_AddAttribute( scorep_mpi_memory_dealloc_size_attribute,
                                  &dealloc_size );

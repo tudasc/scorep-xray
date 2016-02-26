@@ -94,11 +94,16 @@ SCOREP_LIBWRAP_FUNC_NAME( realloc )( void*  ptr,
     SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_REALLOC ],
                                ( intptr_t )__real_realloc );
 
+    void* allocation = NULL;
+    if ( ptr )
+    {
+        SCOREP_AllocMetric_AcquireAlloc( scorep_memory_metric,
+                                         ( uint64_t )ptr, &allocation );
+    }
+
     SCOREP_ENTER_WRAPPED_REGION();
     void* result = __real_realloc( ptr, size );
     SCOREP_EXIT_WRAPPED_REGION();
-
-    uint64_t dealloc_size = 0;
 
     /*
      * If ptr is a null pointer, than it is like malloc.
@@ -115,17 +120,19 @@ SCOREP_LIBWRAP_FUNC_NAME( realloc )( void*  ptr,
      */
     else if ( ptr != NULL && size == 0 )
     {
+        uint64_t dealloc_size = 0;
         SCOREP_AllocMetric_HandleFree( scorep_memory_metric,
-                                       ( uint64_t )ptr, &dealloc_size );
+                                       allocation, &dealloc_size );
         scorep_memory_attributes_add_exit_dealloc_size( dealloc_size );
     }
     /* Otherwise it is a realloc, treat as realloc on success, ... */
     else if ( result )
     {
+        uint64_t dealloc_size = 0;
         SCOREP_AllocMetric_HandleRealloc( scorep_memory_metric,
                                           ( uint64_t )result,
                                           size,
-                                          ( uint64_t )ptr,
+                                          allocation,
                                           &dealloc_size );
         scorep_memory_attributes_add_exit_dealloc_size( dealloc_size );
         scorep_memory_attributes_add_exit_return_address( ( uint64_t )result );
