@@ -363,9 +363,9 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
                                 uint64_t            resultAddr,
                                 size_t              size )
 {
-    UTILS_DEBUG_ENTRY( "%p , %zu", ( void* )resultAddr, size );
-
     SCOREP_MutexLock( allocMetric->mutex );
+
+    UTILS_DEBUG_ENTRY( "%p , %zu", ( void* )resultAddr, size );
 
     SCOREP_MutexLock( process_allocated_memory_mutex );
     process_allocated_memory += size;
@@ -390,9 +390,9 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
                        allocMetric->total_allocated_memory,
                        process_allocated_memory_save );
 
-    SCOREP_MutexUnlock( allocMetric->mutex );
-
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
+
+    SCOREP_MutexUnlock( allocMetric->mutex );
 }
 
 
@@ -403,11 +403,11 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
                                   uint64_t            prevAddr,
                                   uint64_t*           prevSize )
 {
-    UTILS_DEBUG_ENTRY( "%p , %zu, %p", ( void* )resultAddr, size, ( void* )prevAddr );
-
     UTILS_BUG_ON( prevAddr == 0 );
 
     SCOREP_MutexLock( allocMetric->mutex );
+
+    UTILS_DEBUG_ENTRY( "%p , %zu, %p", ( void* )resultAddr, size, ( void* )prevAddr );
 
     uint64_t total_allocated_memory_save;
     uint64_t process_allocated_memory_save;
@@ -509,9 +509,9 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
                                           total_allocated_memory_save );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
 
-    SCOREP_MutexUnlock( allocMetric->mutex );
-
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
+
+    SCOREP_MutexUnlock( allocMetric->mutex );
 }
 
 
@@ -520,9 +520,9 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
                                uint64_t            addr,
                                uint64_t*           size )
 {
-    UTILS_DEBUG_ENTRY( "%p", ( void* )addr );
-
     SCOREP_MutexLock( allocMetric->mutex );
+
+    UTILS_DEBUG_ENTRY( "%p", ( void* )addr );
 
     /* get value of memory to be freed */
     allocation_item* allocation = find_memory_allocation( allocMetric, addr );
@@ -587,8 +587,8 @@ SCOREP_AllocMetric_ReportLeaked( SCOREP_AllocMetric* allocMetric )
     {
         allocation_item* node = allocMetric->allocations;
 
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "[leaked] ptr %p, size %zu",
-                            ( void* )( node->address ), node->size );
+        UTILS_DEBUG( "[leaked] ptr %p, size %zu",
+                     ( void* )( node->address ), node->size );
 
         SCOREP_LeakedMemory( node->address,
                              node->size,
