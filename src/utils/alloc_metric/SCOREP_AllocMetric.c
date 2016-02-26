@@ -524,36 +524,9 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
 
     SCOREP_MutexLock( allocMetric->mutex );
 
-    uint64_t deallocation_size = 0;
-    uint64_t process_allocated_memory_save;
-    void*    substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
     /* get value of memory to be freed */
     allocation_item* allocation = find_memory_allocation( allocMetric, addr );
-    if ( allocation )
-    {
-        deallocation_size = allocation->size;
-
-        SCOREP_MutexLock( process_allocated_memory_mutex );
-        process_allocated_memory     -= deallocation_size;
-        process_allocated_memory_save = process_allocated_memory;
-        SCOREP_MutexUnlock( process_allocated_memory_mutex );
-
-        allocMetric->total_allocated_memory -= deallocation_size;
-        memcpy( &( substrate_data[ 0 ] ), &( allocation->substrate_data[ 0 ] ),
-                SCOREP_SUBSTRATES_NUM_SUBSTRATES * sizeof( void* ) );
-        delete_memory_allocation( allocMetric, allocation );
-
-        /* We need to ensure, that we take the timestamp  *after* we acquired
-           the metric location, else we may end up with an invalid timestamp order */
-        SCOREP_Location* per_process_metric_location =
-            SCOREP_Location_AcquirePerProcessMetricsLocation();
-        SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
-                                              SCOREP_Timer_GetClockTicks(),
-                                              allocMetric->sampling_set,
-                                              allocMetric->total_allocated_memory );
-        SCOREP_Location_ReleasePerProcessMetricsLocation();
-    }
-    else
+    if ( !allocation )
     {
         UTILS_WARNING( "Could not find previous allocation %p, ignoring event.",
                        ( void* )addr );
@@ -566,6 +539,31 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
         SCOREP_MutexUnlock( allocMetric->mutex );
         return;
     }
+
+    uint64_t deallocation_size = allocation->size;
+    uint64_t process_allocated_memory_save;
+    void*    substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
+
+    SCOREP_MutexLock( process_allocated_memory_mutex );
+    process_allocated_memory     -= deallocation_size;
+    process_allocated_memory_save = process_allocated_memory;
+    SCOREP_MutexUnlock( process_allocated_memory_mutex );
+
+    allocMetric->total_allocated_memory -= deallocation_size;
+    memcpy( &( substrate_data[ 0 ] ), &( allocation->substrate_data[ 0 ] ),
+            SCOREP_SUBSTRATES_NUM_SUBSTRATES * sizeof( void* ) );
+    delete_memory_allocation( allocMetric, allocation );
+
+    /* We need to ensure, that we take the timestamp  *after* we acquired
+       the metric location, else we may end up with an invalid timestamp order */
+    SCOREP_Location* per_process_metric_location =
+        SCOREP_Location_AcquirePerProcessMetricsLocation();
+    SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
+                                          SCOREP_Timer_GetClockTicks(),
+                                          allocMetric->sampling_set,
+                                          allocMetric->total_allocated_memory );
+    SCOREP_Location_ReleasePerProcessMetricsLocation();
+
     if ( size )
     {
         *size = deallocation_size;
