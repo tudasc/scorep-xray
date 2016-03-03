@@ -135,6 +135,44 @@ scorep_subsystems_begin( void )
 
 
 void
+scorep_subsystems_initialize_mpp( void )
+{
+    /* call MPP initialization functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_init_mpp )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init_mpp();
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "Can't mpp-initialize %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+}
+
+
+void
+scorep_subsystems_synchronize( SCOREP_SynchronizationMode syncMode )
+{
+    /* always called in forward order */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_synchronize )
+        {
+            continue;
+        }
+
+        scorep_subsystems[ i ]->subsystem_synchronize( syncMode );
+    }
+}
+
+
+void
 scorep_subsystems_end( void )
 {
     /* call end functions for all subsystems */

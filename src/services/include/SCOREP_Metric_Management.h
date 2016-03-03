@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,12 +45,6 @@
  **********************************************************************/
 
 /* General metric handling */
-
-/** @brief Runs initialization task which has to be executed after multi
- *         process paradigm was initialized.
- */
-void
-SCOREP_Metric_InitializeMpp( void );
 
 /** @brief  Get recent values of all metrics.
  *
@@ -110,5 +104,7 @@ SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void );
  */
 SCOREP_MetricHandle
 SCOREP_Metric_GetStrictlySynchronousMetricHandle( uint32_t index );
+
+/* Functions especially for synchronization of metric plugins */
 
 #endif /* SCOREP_METRIC_MANAGEMENT_H */

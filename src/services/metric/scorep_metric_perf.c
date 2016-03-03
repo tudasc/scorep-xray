@@ -1170,22 +1170,21 @@ get_metric_properties( SCOREP_Metric_EventSet* eventSet,
 }
 
 
-/**
- * Implementation of the metric source initialization/finalization data structure
- */
+/** Implementation of the metric source initialization/finalization data structure */
 const SCOREP_MetricSource SCOREP_Metric_Perf =
 {
     SCOREP_METRIC_SOURCE_TYPE_PERF,
     &register_source,
     &initialize_source,
     &initialize_location,
+    NULL,                                           // no synchronization function needed
     &free_event_set,
     &finalize_location,
     &finalize_source,
     &deregister_source,
     &strictly_synchronous_read,
     &synchronous_read,
-    NULL,                          // no asynchronous read function needed
+    NULL,                                           // no asynchronous read function needed
     &get_number_of_metrics,
     &get_metric_name,
     &get_metric_description,

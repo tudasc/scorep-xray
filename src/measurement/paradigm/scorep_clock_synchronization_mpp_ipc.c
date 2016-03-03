@@ -40,6 +40,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
+#include <SCOREP_Metric_Management.h>
 #include <scorep_ipc.h>
 
 #include <stddef.h>

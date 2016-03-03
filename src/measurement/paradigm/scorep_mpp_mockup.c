@@ -74,13 +74,6 @@ SCOREP_Mpp_GetLocationGroupName( void )
     return name;
 }
 
-bool
-scorep_create_experiment_dir( void ( * createDir )( void ) )
-{
-    createDir();
-    return true;
-}
-
 void
 scorep_timing_reduce_runtime_management_timings( void )
 {

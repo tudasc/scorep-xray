@@ -71,3 +71,14 @@ region_types_consistency_check_LDFLAGS = $(serial_ldflags)
 
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_region_types_consistency_check.sh
 TESTS_SERIAL += $(srcdir)/../test/serial/run_region_types_consistency_check.sh
+
+check_PROGRAMS    += test_link
+test_link_SOURCES  = $(SRC_ROOT)test/serial/test_link.c
+test_link_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_DEFINITIONS)
+test_link_LDADD    = $(serial_libadd)
+test_link_LDFLAGS  = $(serial_ldflags)

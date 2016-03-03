@@ -67,14 +67,6 @@ bool
 SCOREP_Status_HasOtf2Flushed( void );
 
 
-bool
-SCOREP_Status_IsExperimentDirCreated( void );
-
-
-void
-SCOREP_OnExperimentDirCreation( void );
-
-
 /**
  * Indicates whether we are a MPP application or not.
  * This eases the initialization process.

@@ -43,11 +43,6 @@
 #include "SCOREP_Metric.h"
 
 
-void
-SCOREP_Metric_InitializeMpp( void )
-{
-}
-
 uint64_t*
 SCOREP_Metric_Read( SCOREP_Location* location )
 {

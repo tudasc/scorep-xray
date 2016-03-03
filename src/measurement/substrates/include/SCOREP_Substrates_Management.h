@@ -46,9 +46,6 @@ SCOREP_Substrates_EnableRecording( void );
 void
 SCOREP_Substrates_DisableRecording( void );
 
-void
-SCOREP_Substrates_InitializeMpp( void );
-
 size_t
 SCOREP_Substrates_NumberOfRegisteredSubstrates( void );
 

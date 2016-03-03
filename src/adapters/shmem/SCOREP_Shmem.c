@@ -31,19 +31,6 @@
 #include <SCOREP_Events.h>
 
 
-static void
-init( void )
-{
-    /* Determine SHMEM rank and number of PEs */
-    scorep_shmem_rank_and_size();
-
-    SCOREP_InitMppMeasurement();
-
-    /* Define communicator and RMA window for the group of all PEs */
-    scorep_shmem_setup_comm_world();
-}
-
-
 /* *INDENT-OFF* */
 
 #define INIT_SHMEM( FUNCNAME )                                              \
@@ -68,7 +55,7 @@ init( void )
         SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ) );                      \
         SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
-        init();                                                             \
+        SCOREP_InitMppMeasurement();                                        \
                                                                             \
         /* Enable SHMEM event generation */                                 \
         SCOREP_SHMEM_EVENT_GEN_ON();                                        \
@@ -109,7 +96,7 @@ INIT_SHMEM( shmem_init )
         SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( npes ) );                 \
         SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
-        init();                                                             \
+        SCOREP_InitMppMeasurement();                                        \
                                                                             \
         /* Enable SHMEM event generation */                                 \
         SCOREP_SHMEM_EVENT_GEN_ON();                                        \
@@ -151,7 +138,7 @@ INIT_SHMEM_WITH_ARGUMENT( start_pes )
                                             ( required ) );                 \
         SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
-        init();                                                             \
+        SCOREP_InitMppMeasurement();                                        \
                                                                             \
         /* Enable SHMEM event generation */                                 \
         SCOREP_SHMEM_EVENT_GEN_ON();                                        \
@@ -185,7 +172,7 @@ INIT_SHMEM_WITH_ARGUMENT( start_pes )
         SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( required, provided ) );   \
         SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
-        init();                                                             \
+        SCOREP_InitMppMeasurement();                                        \
                                                                             \
         /* Enable SHMEM event generation */                                 \
         SCOREP_SHMEM_EVENT_GEN_ON();                                        \

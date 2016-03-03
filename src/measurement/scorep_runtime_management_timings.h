@@ -52,7 +52,6 @@
 
 #define SCOREP_TIMING_FUNCTIONS                                         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_CreateExperimentDir )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Paradigms_Initialize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
@@ -64,11 +63,11 @@
     SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
+    SCOREP_TIMING_TRANSFORM_OP( scorep_synchronize )                    \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
     SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration  )                  \
     SCOREP_TIMING_TRANSFORM_OP( scorep_trigger_exit_callbacks )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Task_ExitAllRegions )            \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_SynchronizeClocks )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Finalize )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeDefinitions )   \

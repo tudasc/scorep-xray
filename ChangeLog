@@ -51,6 +51,14 @@ Features and improvements:
   system automatically before triggering any event. This also ensures
   that the interrupt sources for sampling are registered as early as
   possible and in the case when no compiler instrumention is available.
+- A synchronization callback was added to metric plugin API. A metric
+  plugin can register a synchronization callback which is called every
+  time Score-P starts clock synchronization. The synchronization callback
+  contains one argument specifying the point in time in more detail. At
+  the moment we distinguish synchronization at initialization, during
+  measurement run, and at finalization. As a result the synchronization
+  callback allows metric plugins to detect start and end points of
+  measurement intervals.
 
 User tools and API improvements and changes:
 

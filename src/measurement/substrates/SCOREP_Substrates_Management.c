@@ -45,6 +45,7 @@
 /* *INDENT-OFF* */
 static SCOREP_ErrorCode substrates_subsystem_register(size_t);
 static SCOREP_ErrorCode substrates_subsystem_init(void);
+static SCOREP_ErrorCode substrates_subsystem_init_mpp(void);
 static SCOREP_ErrorCode substrates_subsystem_init_location(struct SCOREP_Location*, struct SCOREP_Location*);
 static void substrates_subsystem_finalize_location(struct SCOREP_Location*);
 static SCOREP_ErrorCode substrates_subsystem_activate_cpu_location(struct SCOREP_Location*, struct SCOREP_Location*, uint32_t, SCOREP_CPULocationPhase);
@@ -66,6 +67,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_Substrates =
     .subsystem_name                    = "SUBSTRATES",
     .subsystem_register                = &substrates_subsystem_register,
     .subsystem_init                    = &substrates_subsystem_init,
+    .subsystem_init_mpp                = &substrates_subsystem_init_mpp,
     .subsystem_init_location           = &substrates_subsystem_init_location,
     .subsystem_activate_cpu_location   = &substrates_subsystem_activate_cpu_location,
     .subsystem_deactivate_cpu_location = &substrates_subsystem_deactivate_cpu_location,
@@ -128,6 +130,14 @@ substrates_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
+
+static SCOREP_ErrorCode
+substrates_subsystem_init_mpp( void )
+{
+    SCOREP_CALL_SUBSTRATE( InitializeMpp, INITIALIZE_MPP, ( ) );
+
+    return SCOREP_SUCCESS;
+}
 
 /**
  * Clears the the global substrates array scorep_substrates.
@@ -308,12 +318,6 @@ SCOREP_Substrates_DisableRecording( void )
     /* One more substrate to be appended here. */
 }
 
-
-void
-SCOREP_Substrates_InitializeMpp( void )
-{
-    SCOREP_CALL_SUBSTRATE( InitializeMpp, INITIALIZE_MPP, ( ) );
-}
 
 size_t
 SCOREP_Substrates_NumberOfRegisteredSubstrates( void )

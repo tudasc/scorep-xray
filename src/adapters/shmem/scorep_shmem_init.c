@@ -140,6 +140,19 @@ shmem_subsystem_begin( void )
     return SCOREP_SUCCESS;
 }
 
+static SCOREP_ErrorCode
+shmem_subsystem_init_mpp( void )
+{
+    /* Determine SHMEM rank and number of PEs */
+    scorep_shmem_rank_and_size();
+
+    /* Define communicator and RMA window for the group of all PEs */
+    scorep_shmem_setup_comm_world();
+
+    return SCOREP_SUCCESS;
+}
+
+
 static void
 shmem_subsystem_end( void )
 {
@@ -257,6 +270,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =
     .subsystem_name              = "SHMEM",
     .subsystem_register          = &shmem_subsystem_register,
     .subsystem_begin             = &shmem_subsystem_begin,
+    .subsystem_init_mpp          = &shmem_subsystem_init_mpp,
     .subsystem_end               = &shmem_subsystem_end,
     .subsystem_finalize          = &shmem_subsystem_finalize,
     .subsystem_init              = &shmem_subsystem_init,

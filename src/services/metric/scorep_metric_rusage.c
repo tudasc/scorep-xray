@@ -832,6 +832,7 @@ const SCOREP_MetricSource SCOREP_Metric_Rusage =
     &scorep_metric_rusage_register,
     &scorep_metric_rusage_initialize_source,
     &scorep_metric_rusage_initialize_location,
+    NULL,                                           // no synchronization function needed
     &scorep_metric_rusage_free_event_set,
     &scorep_metric_rusage_finalize_location,
     &scorep_metric_rusage_finalize_source,

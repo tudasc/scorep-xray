@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -31,7 +31,8 @@
 /**
  * @file       SCOREP_MetricPlugins.h
  *
- * @brief Metric plugin definitions.
+ * @brief Description of the metric plugin header.
+ *        For information on how to use metric plugins, please refer to @secref{metric_plugins}.
  */
 
 
@@ -41,147 +42,105 @@
 /**
  * The developer of a metric plugin should provide a README file which
  * explains how to compile, install and use the plugin. In particular,
- * all supported metrics should be described in the README file.
+ * the supported metrics should be described in the README file.
  *
- * Each metric plugin has to include <tt>SCOREP_MetricPlugin.h</tt>
- * and implement 'get_info' function. Therefore, use the
- * SCOREP_METRIC_PLUGIN_ENTRY macro and provide the name of the plugin
- * library as the argument. For example, the metric plugin libexample.so
- * should use SCOREP_METRIC_PLUGIN_ENTRY( example ). The 'get_info'
- * function returns a SCOREP_Metric_Plugin_Info data structure which
- * contains information about the plugin and its metrics.
+ * Each metric plugin has to include <tt>SCOREP_MetricPlugins.h</tt>
+ * and implement a 'get_info' function. Therefore, use the
+ * #SCOREP_METRIC_PLUGIN_ENTRY macro and provide the name of the plugin
+ * library as the argument.
+ * For example, the metric plugin libexample_plugin.so should use
+ * #SCOREP_METRIC_PLUGIN_ENTRY( example_plugin ).
  *
- * Mandatory functions
+ * It is encouraged to use the "_plugin" suffix on the name to avoid
+ * conflicts with existing libraries, e.g., libsensors_plugin.so using
+ * the existing libsensors.so.
  *
- * @ initialize
- * This function is called once per process event on those where no
- * metric values of the plugin will be recorded. It should check that
- * all requirements are met (e.g., are special libraries needed and
- * available, has the user appropriate rights to count implemented
- * metrics). If all requirements are met, data structures used by the
- * plugin can be initialized within this function.
+ * @section mandatoryF Mandatory functions
+ * See each function for details.
  *
- * @ get_event_info
- * This function is called once per process. It is called after
- * initialization of the metric plugin and even on processes where none
- * of the requested metrics will be recorded. The function maps the
- * requested event string to specific metrics. For example, the metric
- * plugin can provide the functionality of wildcards and return multiple
- * metrics for a single event string. The returned list of metrics
- * should end with an element whose name is <tt>NULL</tt>. For each
- * metric the fields name, mode, value type, base, and exponent has to
- * be specified. The unit of a metric is optional and might be
- * <tt>NULL</tt>.
+ * @ref SCOREP_Metric_Plugin_Info::initialize "initialize"
  *
- * @ add_counter
- * Depending on @ run_per this function is called per thread, per
- * process, per host, or only once. The function sets up the requested
- * metric and returns an ID which is used to address this metric later
- * on.
+ * Check requirements and initialize the plugin.
  *
- * @ finalize
- * This function is called once per process event on those where no
- * metric values of the plugin will be recorded. It finalizes the
- * internal infrastructure of a metric plugin (e.g., free allocated
- * resources).
+ * @ref SCOREP_Metric_Plugin_Info::get_event_info "get_event_info"
  *
- * Mandatory variables
+ * A user specifies a SCOREP_METRIC_EXAMPLE_PLUGIN=token1,token2,...
+ * This function provides information about the metric(s) corresponding
+ * to this token. The total list of metrics returned for all tokens will
+ * then be recorded by the plugin.
  *
- * @ run_per
- * Defines how often a metric should be measured.
- * Valid value are:
+ * @ref SCOREP_Metric_Plugin_Info::add_counter "add_counter"
+ *
+ * The function is called for and sets each of the metrics to be recorded
+ * by the plugin. It provides a unique ID for each metric.
+ *
+ * @ref SCOREP_Metric_Plugin_Info::finalize "finalize"
+ *
+ * Clean up the resources used by the metric plugin.
+ *
+ * @section mandatoryV Mandatory variables
+ *
+ * @ref SCOREP_Metric_Plugin_Info::run_per "run_per"
+ *
+ * Defines how many threads should record the metrics of a plugin.
+ *
+ * @ref SCOREP_Metric_Plugin_Info::sync "sync"
+ *
+ * Defines synchronicity type of a metric plugin. A metric plugin can
  * <ul>
- *  <li>
- *      <b>SCOREP_METRIC_PER_THREAD</b>:<br>
- *      Metric values are recorded for all threads of all processes
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_PER_PROCESS</b>:<br>
- *      If processes are parallelized with multiple threads, the metric
- *      is recorded for processes, but only for the main thread of each
- *      process
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_PER_HOST</b>:<br>
- *      Metric values are recorded for all nodes, but only on the first
- *      process, first thread of each node (not implemented yet)
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_ONCE</b>:<br>
- *      Metric values are recorded on the first node, first process,
- *      first thread of a program (not implemented yet)
- *  </li>
+ * <li> provide a metric value for each event
+ * (#SCOREP_METRIC_STRICTLY_SYNC) </li>
+ * <li> optionally provide a metric value for each Score-P event
+ * (#SCOREP_METRIC_SYNC) </li>
+ * <li> measure metric values independently of Score-P events,
+ * but collect them in Score-p during a Score-P event
+ * (#SCOREP_METRIC_ASYNC_EVENT) </li>
+ * <li> measure all metric values independently of events and collect them
+ * once at the very end of execution (#SCOREP_METRIC_ASYNC) </li>
  * </ul>
  *
- * @ sync
- * Defines synchronicity type of a metric.
- * Valid value are:
- * <ul>
- *  <li>
- *      <b>SCOREP_METRIC_STRICTLY_SYNC</b>:<br>
- *      Values must be recorded at every enter/leave event. Current
- *      value of this metric is queried by @scorep whenever an
- *      enter/leave event occurs.
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_SYNC</b>:<br>
- *      Values are recorded at enter/leave events only. However, it is
- *      NOT absolutely necessary to record such metrics at every
- *      enter/leave event. Current value of this metric is queried by
- *      @scorep whenever an enter/leave event occurs. The metric may
- *      deliver a new value or not.
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_ASYNC_EVENT</b>:<br>
- *      Metric values can be recorded at arbitrary points in time, but
- *      are written at enter/leave events. Whenever an enter/leave event
- *      occurs, @scorep queries the metric. The metric returns an
- *      arbitrary number of timestamp-value-pairs.
- *  </li>
- *  <li>
- *      <b>SCOREP_METRIC_ASYNC</b>:<br>
- *      This type of metrics is similar to SCOREP_METRIC_ASYNC_EVENT.
- *      It differs in that SCOREP_METRIC_ASYNC metrics are queried at
- *      specific intervals independent of the occurrence of enter/leave
- *      events.
- *  </li>
- * </ul>
+ * @ref SCOREP_Metric_Plugin_Info::plugin_version "plugin_version"
  *
- * @ plugin_version
- * Should be set to SCOREP_METRIC_PLUGIN_VERSION
+ * Should be set to #SCOREP_METRIC_PLUGIN_VERSION
  *
  *
  * Depending on the plugin's synchronicity type there are some optional
  * functions and variables.
  *
- * Optional functions
+ * @section optionalF Optional functions
  *
- * @ get_current_value
+ * @ref SCOREP_Metric_Plugin_Info::get_current_value "get_current_value"
+ *
  * Used by strictly synchronous metric plugins only. Returns value of
  * requested metric.
  *
- * @ get_optional_value
+ * @ref SCOREP_Metric_Plugin_Info::get_optional_value "get_optional_value"
+ *
  * Used by synchronous metric plugins, but not by strictly synchronous
  * ones. This function requests current value of a metric, but it is
  * valid that no value is returned (read: no update for this metric
  * available).
  *
- * @ get_all_values
+ * @ref SCOREP_Metric_Plugin_Info::get_all_values "get_all_values"
+ *
  * Used by asynchronous metric plugins. This function is used to request
  * values of a asynchronous metric. The metric will return an arbitrary
  * number of timestamp-value-pairs.
  *
- * @ set_clock_function
+ * @ref SCOREP_Metric_Plugin_Info::set_clock_function "set_clock_function"
+ *
  * Used by asynchronous metric plugins. This function passes a function
  * to the plugin, which can be used by the plugin to get a Score-P valid
  * timestamp.
  *
- * Optional variables
+ * @section optionalV Optional variables
  *
- * @ delta_t
+ * @ref SCOREP_Metric_Plugin_Info::delta_t "delta_t"
+ *
  * Defines interval between two calls to update metric value.
  * Ignored for strictly synchronous plugins.
  */
+
 
 #include <stdbool.h>
 
@@ -189,7 +148,7 @@
 
 
 /** Current version of Score-P metric plugin interface */
-#define SCOREP_METRIC_PLUGIN_VERSION 0
+#define SCOREP_METRIC_PLUGIN_VERSION 1
 
 #ifdef __cplusplus
 #   define EXTERN extern "C"
@@ -208,31 +167,32 @@
  **********************************************************************/
 
 /**
- * Properties desribing a metric.
- * Used by @ add_counter function.
- *
+ * @brief Properties describing a metric.
+ * Provided by the @ref get_event_info function.
  */
 typedef struct SCOREP_Metric_Plugin_MetricProperties
 {
     /** Plugin name */
-    char*                  name;
+    char* name;
     /** Additional information about the metric */
-    char*                  description;
-    /** Metric mode: valid combination of ACCUMULATED|ABSOLUTE|RELATIVE + POINT|START|LAST|NEXT */
+    char* description;
+    /** Metric mode: valid combination of ACCUMULATED|ABSOLUTE|RELATIVE + POINT|START|LAST|NEXT
+     *  @see SCOREP_MetricMode
+     * */
     SCOREP_MetricMode      mode;
     /** Value type: signed 64 bit integer, unsigned 64 bit integer, double */
     SCOREP_MetricValueType value_type;
     /** Base of metric: decimal, binary */
     SCOREP_MetricBase      base;
-    /** Exponent to scale metric: e.g. 3 for kilo */
+    /** Exponent to scale metric: e.g., 3 for kilo */
     int64_t                exponent;
     /** Unit string of recorded metric */
     char*                  unit;
 } SCOREP_Metric_Plugin_MetricProperties;
 
 /**
- * Information describing the plugin.
- *
+ * Information on that defines the plugin.
+ * All values that are not explicitly defined should be set to 0
  */
 typedef struct SCOREP_Metric_Plugin_Info
 {
@@ -240,109 +200,201 @@ typedef struct SCOREP_Metric_Plugin_Info
      * For all plugins
      */
 
-    /** Should be set to SCOREP_PLUGIN_VERSION
-     *  (needed for back- and forward compatibility)
+    /**
+     * Should be set to SCOREP_PLUGIN_VERSION
+     * (needed for back- and forward compatibility)
      */
     uint32_t plugin_version;
 
-    /** Runs per thread / per process / ... */
+    /**
+     * Defines how many threads should record the metrics of a plugin.
+     * For the available options see @ref SCOREP_MetricPer.
+     */
     SCOREP_MetricPer run_per;
 
-    /** Runs synchronously/asynchronously */
+    /**
+     * Defines how metrics are measured over time and how they are collected
+     * by @scorep. This setting influences when and which callback functions
+     * are called by @scorep. For the available options see
+     * @ref SCOREP_MetricSynchronicity.
+     */
     SCOREP_MetricSynchronicity sync;
 
-    /** Adjust frequency of reading metric values. Score-P will reuqest
-     *  metric values of a plugin, at the earliest, after @ delta_t
-     *  ticks after last read. Used by plugins of synchronicity type
-     *  SCOREP_METRIC_PLUGIN_SYNC, SCOREP_METRIC_PLUGIN_ASYNC_EVENT, and
-     *  SCOREP_METRIC_PLUGIN_ASYNC. This value will be ignored for
-     *  SCOREP_METRIC_PLUGIN_STRICTLY_SYNC metrics. Metrics of this kind
-     *  will be read at every enter/leave event.
+    /**
+     * Set a specific interval for reading metric values. @scorep will request
+     * metric values of a plugin, at the earliest, after #delta_t ticks after
+     * it was last read.
+     * NOTE: This is only a lower limit for the time between two reads
+     * - there is no upper limit.
+     * This setting is used by plugins of synchronicity type
+     * #SCOREP_METRIC_SYNC, #SCOREP_METRIC_ASYNC_EVENT, and
+     * #SCOREP_METRIC_ASYNC.
+     * In combination with #SCOREP_METRIC_SYNC, it can be used for metrics that
+     * update at known intervals and therefore reduce the over head of reading
+     * unchanged values.
+     * In combination with #SCOREP_METRIC_ASYNC_EVENT it can be used similarly.
+     * This value is ignored for #SCOREP_METRIC_STRICTLY_SYNC metrics.
      */
     uint64_t delta_t;
 
-    /** This functions is called once per process to initialize
-     *  metric plugin. It should return 0 if successful.
+    /**
+     * This function is called once per process. It should check that
+     * all requirements are met (e.g., are special libraries needed and
+     * available, has the user appropriate rights to access implemented
+     * metrics).
+     * If all requirements are met, data structures used by the
+     * plugin can be initialized within this function.
      *
-     *  @return 0 if successful.
+     *  @return 0 if successful, error code if failure
      */
     int32_t ( * initialize )( void );
 
-    /** This functions is called once per process to finalize
-     *  metric plugin.
+    /**
+     * This functions is called once per process to clean up all resources
+     * used by the metric plugin.
      */
     void ( * finalize )( void );
 
-    /** This is called once per process and
-     *  returns meta data about a metric plugin.
+    /**
+     * A user specifies a SCOREP_METRIC_EXAMPLE_PLUGIN=token1,token2,...
+     * This function is called once per process and token. Each token can
+     * result in any number of metrics (wildcards). The function shall provide
+     * the properties of the metrics for this token.
      *
-     *  @param plugin_name      Name of an individual metric plugin.
+     * The total list of metrics returned by the calls for all tokens
+     * comprises the metrics that will be recorded by the plugin.
      *
-     *  @return Meta data (called properties) about this metric plugin.
+     * Note: The properties-array must contain an additional end entry
+     *       with @ref SCOREP_Metric_Properties::name "name" = <tt>NULL</tt>.
+     *
+     * Note: The properties-array memory and all indirect pointers are managed
+     *       by Score-P now. Make sure the memory remains valid and unmodified.
+     *       All memory may be released with <tt>free</tt> by Score-P. Make
+     *       sure that all provided pointers are created by malloc/strdup/....
+     *
+     *  @param token      String that describes one or multiple metrics.
+     *
+     *  @return properties Meta data about the metrics available for this token.
      */
-    SCOREP_Metric_Plugin_MetricProperties* ( *get_event_info )( char* plugin_name );
+    SCOREP_Metric_Plugin_MetricProperties* ( *get_event_info )( char* token );
 
-    /** Add a counter and returns its ID. The ID is generated by the
-     *  plugin itself. In addition, the plugin is responsible for ID
-     *  management (e.g. generate unique IDs if necessary, locking ID
-     *  generation in multi thread environments). This function is
-     *  called PER THREAD.
+    /**
+     * Depending on #run_per, this function is called per thread, per
+     * process, per host, or only on a single thread. Further it is called for
+     * each metric as returned by the calls to #get_event_info.
      *
-     *  @param event_name       Name of an individual event handled by
-     *                          this metric plugin.
+     * The function sets up the measurement for the requested metric and
+     * returns a non-negative unique ID which is from now on used to refer
+     * to this metric.
      *
-     *  @return ID of requested event.
+     *  @param metric_name       Name of an individual metric
+     *
+     *  @return non-negative ID of requested metric
+     *          or negative value in cased of failure
      */
-    int32_t ( * add_counter )( char* event_name );
+    int32_t ( * add_counter )( char* metric_name );
 
-    /*
-     * For strictly synchronous plugins
-     */
-    /** This function must be implemented by strictly synchronous metric
-     *  plugins.
+    /**
+     * This function shall provide the current value of a metric.
+     * It must be implemented by strictly synchronous metric plugins.
+     * It is called according to the #run_per specification.
      *
-     *  @param id               Counter id (see @ add_counter).
+     *  @param id               Metric id (see #add_counter).
      *
-     *  @return Current value of requested counter.
+     *  @return Current value of requested metric. For metrics of
+     *          @ref SCOREP_Metric_Plugin_MetricProperties::value_type "value_type"
+     *          other than UINT64, the data should be reinterpreted to a
+     *          UINT64 using a union.
+     *
      */
     uint64_t ( * get_current_value )( int32_t id );
 
-    /*
-     * For synchronous plugins
-     */
-    /** This function must be implemented by synchronous metric plugins.
+    /**
+     * This function provides the current value of a metric if available.
+     * It must be implemented by synchronous metric plugins.
+     * It is called according to the #run_per specification.
      *
-     *  @param      id          Counter id (see @ add_counter).
-     *  @param[out] value       Value of requested counter.
+     *  @param      id          Metric id (see #add_counter).
+     *  @param[out] value       Current value of requested metric.
+     *          For metrics of
+     *          @ref SCOREP_Metric_Plugin_MetricProperties::value_type "value_type"
+     *          other than UINT64, the data should be reinterpreted to a
+     *          UINT64 using a union.
      *
-     *  @return True if value of requested counter was written,
+     *  @return True if value of requested metric was written,
      *          otherwise false.
      */
     bool ( * get_optional_value )( int32_t   id,
                                    uint64_t* value );
 
-    /*
-     * For asynchronous plugins
-     */
-    /** This function must be implemented by asynchronous metric
-     *  plugins. It sets the function to get timestamps in Score-P time.
+    /**
+     * When this callback is implemented, Score-P calls it once to provide
+     * a clock function that allows the plugin to read the current time in
+     * Score-P ticks. This should be used by asynchronous metric plugins.
+     *
+     * Note: This function is called before #initialize.
+     *
+     * @param clock_time Function pointer to Score-P's clock function.
      */
     void ( * set_clock_function )( uint64_t ( * clock_time )( void ) );
 
-    /** This function must be implemented by asynchronous metric
-     *  plugins. It is used to get values of asynchronous metrics.
+    /**
+     * This function provides the recorded value of the selected metric.
+     * It must be implemented by asynchronous metric plugins.
+     * The timestamps in the returned list should correspond to the clock
+     * provided by #set_clock_function. Further, all values (timestamps)
+     * should lie within within the following interval:
+     * #synchronize(#SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN|#SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN_MPP),
+     * #synchronize(#SCOREP_METRIC_SYNCHRONIZATION_MODE_END).
+     * Score-P takes ownership of the <tt>*time_value_list</tt> memory.
+     * Make sure the memory remains valid and is never modified by the plugin.
+     * Score-P will release the memory using <tt>free</tt>.
+     * The pointer must be created directly by malloc/calloc etc. directly.
+     * Do not use a memory pool / pointer with offset into a larger memory etc.
      *
-     *  @param      id               Counter id (see @ add_counter).
+     *  @param      id               Metric id (see #add_counter).
      *  @param[out] time_value_list  Pointer to list with return values
      *                               (pairs of timestamp and value).
      *
-     *  @return Length of list with return values
+     *  @see SCOREP_MetricSynchronizationMode
+     *
+     *  @return Number of elements within <tt>*time_value_list</tt>
      */
     uint64_t ( * get_all_values )( int32_t                      id,
                                    SCOREP_MetricTimeValuePair** time_value_list );
 
-    /** Some space for future stuff, should be zeroed */
-    uint64_t reserved[ 100 ];
+    /* Since of Score-P metric plugin interface version 1 */
+
+    /**
+     * This callback is used for stating and stopping the measurement of
+     * asynchronous metrics and can also be used for time synchronization
+     * purposes. This function is called for all threads in the application,
+     * but the threads that handle the metric plugin according to #run_per
+     * will be marked as is_responsible.
+     * The function will be called approximately at the same time for all
+     * threads:
+     * <ul>
+     * <li> Once the beginning with #SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN
+     * or #SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN_MPP for (non-)MPI
+     *   programs respectively. </li>
+     * <li> Once at the end with #SCOREP_METRIC_SYNCHRONIZATION_MODE_END
+     * For asynchronous metrics, starting and stopping a measurement should
+     * be done in this function, not in #add_counter.
+     *
+     * @param is_responsible   Flag to mark responsibility as per #run_per
+     * @param sync_mode        Mode of synchronization point, e.g.
+     *                         #SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN,
+     *                         #SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN_MPP,
+     *                         #SCOREP_METRIC_SYNCHRONIZATION_MODE_END
+     *
+     * @see SCOREP_MetricSynchronizationMode
+     */
+    void ( * synchronize )( bool                             is_responsible,
+                            SCOREP_MetricSynchronizationMode sync_mode );
+
+
+    /** Reserved space for future features, should be zeroed */
+    uint64_t reserved[ 92 ];
 } SCOREP_Metric_Plugin_Info;
 
 

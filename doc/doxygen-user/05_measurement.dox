@@ -783,28 +783,28 @@ The libraries are loaded when tracing or profiling your application.
 So there is no need to recompile your application or instrument it manually.
 
 A simple example of a synchronous metric plugin can be found in Appendix @secref{metricpluginexample}.
+Every plugin needs to include SCOREP_MetricPlugins.h.
 The commands to build the corresponding library of this plugin might look like:
 
 @code
 gcc -c -fPIC hello_world.c   \
-    -o libHelloWorld.so.o `scorep-config --cppflags`
-gcc -shared -Wl,-soname,libHelloWorld.so  \
-    -o libHelloWorld.so libHelloWorld.so.o
+    -o libHelloWorld_plugin.so.o `scorep-config --cppflags`
+gcc -shared -Wl,-soname,libHelloWorld_plugin.so  \
+    -o libHelloWorld.so libHelloWorld_plugin.so.o
 @endcode
 
-To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGINS}.
-In the following example we want to use a plugin named <tt>HelloWorld</tt>.
-The corresponding library was built as <tt>libHelloWorld.so</tt>.
-Furthermore, we select two counters <tt>metric1</tt> and <tt>metric2</tt> from the plugin.
+To enable a metric plugin, add the plugin <PLUGINNAME> to the environment variable \confvar{SCOREP_METRIC_PLUGINS} and configure the used metrics through the environment variable SCOREP_METRIC_PLUGINNAME.
+In the following example we want to use the above <tt>HelloWorld</tt> plugin.
+We select two counters <tt>metric1</tt> and <tt>metric2</tt> from the plugin.
 Make sure that the metric plugin library is placed in a directory which is part of <tt>LD_LIBRARY_PATH</tt>.
 
 <pre>
-SCOREP_METRIC_PLUGINS=HelloWorld
-SCOREP_METRIC_HELLOWORLD=metric1,metric2
+SCOREP_METRIC_PLUGINS=HelloWorld_plugin
+SCOREP_METRIC_HELLOWORLD_PLUGIN=metric1,metric2
 </pre>
 
 @note Plugins are not supposed to trigger events (e.g. via @mpi, @openmp, Pthreads or user instrumentation) during initialization and finalization of the plugin.
-
+@note A set of open source metric plugins is available at <a href="https://github.com/score-p">GitHub</a>.
 
 @section cuda_adapter CUDA Performance Measurement
 @seclabel{cuda_adapter}

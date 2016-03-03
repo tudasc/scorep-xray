@@ -441,6 +441,54 @@ metric_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
+/** @brief Runs initialization task which has to be executed after multi
+ *         program paradigm was initialized.
+ */
+static SCOREP_ErrorCode
+metric_subsystem_init_mpp( void )
+{
+    /* Reinitialize each location */
+    SCOREP_Location_ForAll( initialize_location_metric_after_mpp_init_cb, NULL );
+
+    return SCOREP_SUCCESS;
+}
+
+static inline SCOREP_MetricSynchronizationMode
+convert_synchronization_mode( SCOREP_SynchronizationMode scorepSyncMode )
+{
+    switch ( scorepSyncMode )
+    {
+#define case_return( SCOREP_SYNC_MODE, METRIC_SYNC_MODE ) \
+    case SCOREP_SYNCHRONIZATION_MODE_ ## SCOREP_SYNC_MODE: \
+        return SCOREP_METRIC_SYNCHRONIZATION_MODE_ ## METRIC_SYNC_MODE
+
+        case_return( BEGIN, BEGIN );
+        case_return( BEGIN_MPP, BEGIN_MPP );
+        case_return( END, END );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid synchronization mode: %u", scorepSyncMode );
+    }
+
+    return SCOREP_METRIC_SYNCHRONIZATION_MODE_MAX;
+}
+
+static void
+metric_subsystem_synchronize( SCOREP_SynchronizationMode syncMode )
+{
+    SCOREP_MetricSynchronizationMode mode = convert_synchronization_mode( syncMode );
+    /* For each metric source (e.g. PAPI or Resource Usage) */
+    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+    {
+        if ( !scorep_metric_sources[ source_index ]->metric_source_synchronize )
+        {
+            continue;
+        }
+        scorep_metric_sources[ source_index ]->metric_source_synchronize( mode );
+    }
+}
+
 /** @brief Service finalization.
  */
 static void
@@ -537,7 +585,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                 }
                 /*
                  * Location's responsibility to record PER_HOST and/or ONCE metrics can be decided yet.
-                 * These metric types are handled in SCOREP_Metric_InitializeMpp().
+                 * These metric types are handled in metric_subsystem_init_mpp().
                  */
             }
 
@@ -970,11 +1018,6 @@ metric_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* pare
     /* All initialization is done in separate function that is re-used
      * by SCOREP_Metric_Reinitialize() */
     initialize_location_metric_cb( location, NULL );
-
-    if ( !SCOREP_Status_IsMpp() )
-    {
-        initialize_location_metric_after_mpp_init_cb( location, NULL );
-    }
 
     return SCOREP_SUCCESS;
 }
@@ -1649,16 +1692,6 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
  * Functions called directly by measurement environment
  **********************************************************************/
 
-/** @brief Runs initialization task which has to be executed after multi
- *         program paradigm was initialized.
- */
-void
-SCOREP_Metric_InitializeMpp( void )
-{
-    /* Reinitialize each location */
-    SCOREP_Location_ForAll( initialize_location_metric_after_mpp_init_cb, NULL );
-}
-
 /** @brief  Get recent values of all metrics.
  *
  *  @param location             Location data.
@@ -1922,12 +1955,16 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
  */
 const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
-    .subsystem_name              = "METRIC",
-    .subsystem_register          = &metric_subsystem_register,
-    .subsystem_init              = &metric_subsystem_init,
-    .subsystem_end               = &metric_subsystem_end,
+    .subsystem_name     = "METRIC",
+    .subsystem_register = &metric_subsystem_register,
+
+    .subsystem_init        = &metric_subsystem_init,
+    .subsystem_init_mpp    = &metric_subsystem_init_mpp,
+    .subsystem_synchronize = &metric_subsystem_synchronize,
+    .subsystem_end         = &metric_subsystem_end,
+    .subsystem_finalize    = &metric_subsystem_finalize,
+    .subsystem_deregister  = &metric_subsystem_deregister,
+
     .subsystem_init_location     = &metric_subsystem_init_location,
     .subsystem_finalize_location = &metric_subsystem_finalize_location,
-    .subsystem_finalize          = &metric_subsystem_finalize,
-    .subsystem_deregister        = &metric_subsystem_deregister,
 };

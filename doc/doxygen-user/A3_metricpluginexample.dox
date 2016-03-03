@@ -6,4 +6,6 @@ Simple example of a @scorep metric plugin
 
 @include hello_world.c
 
+@see SCOREP_MetricPlugins.h
+
 */

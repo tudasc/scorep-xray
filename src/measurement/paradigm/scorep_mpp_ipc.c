@@ -54,24 +54,6 @@ SCOREP_Status_IsMpp( void )
 }
 
 
-bool
-scorep_create_experiment_dir( void ( * createDir )( void ) )
-{
-    if ( !SCOREP_Status_IsMppInitialized() )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "MPI not initialized, experiment directory creation deferred." );
-        return false;
-    }
-
-    if ( SCOREP_Status_GetRank() == 0 )
-    {
-        createDir();
-    }
-
-    return true;
-}
-
-
 void
 scorep_timing_reduce_runtime_management_timings( void )
 {

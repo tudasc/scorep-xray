@@ -57,6 +57,12 @@ void
 scorep_subsystems_begin( void );
 
 void
+scorep_subsystems_initialize_mpp( void );
+
+void
+scorep_subsystems_synchronize( SCOREP_SynchronizationMode syncMode );
+
+void
 scorep_subsystems_end( void );
 
 void

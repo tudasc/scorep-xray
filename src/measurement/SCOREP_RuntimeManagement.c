@@ -139,6 +139,8 @@ static void scorep_initialization_sanity_checks( void );
 static void scorep_trigger_exit_callbacks( void );
 static void scorep_define_measurement_regions( void );
 static void scorep_define_measurement_attributes( void );
+static void scorep_init_mpp( SCOREP_SynchronizationMode syncMode );
+static void scorep_synchronize( SCOREP_SynchronizationMode syncMode );
 /* *INDENT-ON* */
 
 /**
@@ -218,11 +220,6 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( SCOREP_Status_Initialize, ( ) );
 
-    /*
-     * @dependsOn Status for MPP or not
-     */
-    SCOREP_TIME( SCOREP_CreateExperimentDir, ( ) );
-
     SCOREP_TIME( SCOREP_Memory_Initialize,
                  ( SCOREP_Env_GetTotalMemory(), SCOREP_Env_GetPageSize() ) );
 
@@ -295,23 +292,10 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
 
-    if ( !SCOREP_Status_IsMpp() )
-    {
-        SCOREP_Substrates_InitializeMpp();
-    }
-
     /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */
     SCOREP_RegisterExitHandler();
-
-    /* == begin epoch, events are only allowed to happen inside the epoch == */
-
-    SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
-    if ( !SCOREP_Status_IsMpp() )
-    {
-        SCOREP_SynchronizeClocks();
-    }
 
     /*
      * @dependsOn Metric
@@ -319,8 +303,11 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( SCOREP_Location_ActivateInitLocations, ( ) );
 
+    /* == begin epoch, events are only allowed to happen inside the epoch == */
+
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );
+    SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
 
     scorep_default_recoding_mode_changes_allowed = false;
     if ( !scorep_enable_recording_by_default )
@@ -333,22 +320,30 @@ SCOREP_InitMeasurement( void )
     }
 
     /*
+     * Notify all interesting subsystems that the party started.
+     */
+    scorep_subsystems_begin();
+
+    /*
      * Now it is time to fully activate the master thread and allow events from
      * all subsystems. parent and fork-seq needs only be provided for the MGMT call.
      */
     scorep_subsystems_activate_cpu_location( SCOREP_Location_GetCurrentCPULocation(),
                                              NULL, 0,
                                              SCOREP_CPU_LOCATION_PHASE_EVENTS );
-
-    /*
-     * Notify all interesting subsystems that the party started.
-     */
-    scorep_subsystems_begin();
-
     /*
      * And now we allow also events from outside the measurement system.
      */
     scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_WITHIN;
+
+    if ( !SCOREP_Status_IsMpp() )
+    {
+        SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
+
+        scorep_init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN );
+
+        SCOREP_TIME_STOP_TIMING( SCOREP_InitMppMeasurement );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -413,15 +408,7 @@ SCOREP_InitMppMeasurement( void )
         _Exit( EXIT_FAILURE );
     }
 
-    SCOREP_Status_OnMppInit();
-
-    /* RonnyT: move this function call to SCOREP_Status_OnMppInit ?? */
-    SCOREP_Metric_InitializeMpp();
-
-    SCOREP_CreateExperimentDir();
-    SCOREP_SynchronizeClocks();
-
-    SCOREP_Substrates_InitializeMpp();
+    scorep_init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN_MPP );
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
@@ -587,6 +574,19 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
                              scorep_buffer_flush_region, metric_values ) );
 }
 
+void
+scorep_init_mpp( SCOREP_SynchronizationMode syncMode )
+{
+    SCOREP_Status_OnMppInit();
+
+    SCOREP_CreateExperimentDir();
+
+    scorep_subsystems_initialize_mpp();
+
+    scorep_synchronize( syncMode );
+}
+
+
 static void
 scorep_finalize( void )
 {
@@ -610,24 +610,14 @@ scorep_finalize( void )
 
     SCOREP_OA_Finalize();
 
+    SCOREP_TIME( scorep_synchronize,
+                 ( SCOREP_SYNCHRONIZATION_MODE_END ) );
+
     /*
      * This barrier should prevent entering events from "outside".
      * Writing events from within is still allowed.
      */
     scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_POST;
-    /* Clock resolution might be calculated once. Do it at the beginning
-     * of finalization. */
-    SCOREP_Timer_GetClockResolution();
-
-    if ( !scorep_enable_recording_by_default )
-    {
-        SCOREP_EnableRecording();
-    }
-
-    /*
-     * We are now leaving the measurement.
-     */
-    scorep_subsystems_end();
 
     /*
      * @todo Move to task subsystems deactivate_cpu_location.
@@ -645,12 +635,27 @@ scorep_finalize( void )
     SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
 
     /*
+     * We are now leaving the measurement.
+     */
+    scorep_subsystems_end();
+
+    if ( !scorep_enable_recording_by_default )
+    {
+        SCOREP_EnableRecording();
+    }
+
+    SCOREP_TIME( SCOREP_EndEpoch, ( ) );
+    SCOREP_TIME_STOP_TIMING( MeasurementDuration );
+    SCOREP_TIME_START_TIMING( scorep_finalize );
+
+    /* Clock resolution might be calculated once. Do it at the beginning
+     * of finalization. */
+    SCOREP_Timer_GetClockResolution();
+
+    /*
      * Second, call into the substrates to deactivate the master.
      */
     scorep_subsystems_deactivate_cpu_location( location, NULL, SCOREP_CPU_LOCATION_PHASE_MGMT );
-
-    SCOREP_TIME_STOP_TIMING( MeasurementDuration );
-    SCOREP_TIME_START_TIMING( scorep_finalize );
 
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
@@ -665,8 +670,6 @@ scorep_finalize( void )
         return;
     }
 
-    SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
-    SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Location_FinalizeDefinitions, ( ) );
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
@@ -756,4 +759,11 @@ scorep_define_measurement_attributes( void )
         SCOREP_Definitions_NewAttribute( "SOURCE_CODE_LOCATION",
                                          "Source code location",
                                          SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION );
+}
+
+void
+scorep_synchronize( SCOREP_SynchronizationMode syncMode )
+{
+    scorep_subsystems_synchronize( syncMode );
+    SCOREP_SynchronizeClocks();
 }

@@ -1253,6 +1253,7 @@ const SCOREP_MetricSource SCOREP_Metric_Papi =
     &scorep_metric_papi_register,
     &scorep_metric_papi_initialize_source,
     &scorep_metric_papi_initialize_location,
+    NULL,                                         // no synchronization function needed
     &scorep_metric_papi_free,
     &scorep_metric_papi_finalize_location,
     &scorep_metric_papi_finalize_source,

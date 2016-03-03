@@ -899,6 +899,23 @@ typedef enum SCOREP_AttributeType
 } SCOREP_AttributeType;
 
 /**
+ * Possible modes of a synchronization point.
+ * Express the time when a synchronization happens.
+ *
+ */
+typedef enum SCOREP_SynchronizationMode
+{
+    /** Synchronization at the beginning of the measurement */
+    SCOREP_SYNCHRONIZATION_MODE_BEGIN,
+    /** Synchronization at the initialization of a multi-process paradigm */
+    SCOREP_SYNCHRONIZATION_MODE_BEGIN_MPP,
+    /** Synchronization at the end of the measurement */
+    SCOREP_SYNCHRONIZATION_MODE_END,
+
+    SCOREP_SYNCHRONIZATION_MODE_MAX /**< NON-ABI, for internal use only. */
+} SCOREP_SynchronizationMode;
+
+/**
  * Interrupt generator modes.
  */
 typedef enum SCOREP_InterruptGeneratorMode

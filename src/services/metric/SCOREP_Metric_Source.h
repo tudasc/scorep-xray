@@ -110,9 +110,14 @@ typedef struct SCOREP_MetricSource
     /**
      * Callback to register a location to the metric source.
      */
-    SCOREP_Metric_EventSet* ( *metric_source_initialize_location )( struct SCOREP_Location*           location,
-                                                                    SCOREP_MetricSynchronicity metric_synchronicity,
-                                                                    SCOREP_MetricPer metric_type );
+    SCOREP_Metric_EventSet* ( *metric_source_initialize_location )( struct SCOREP_Location*    location,
+                                                                    SCOREP_MetricSynchronicity metricSynchronicity,
+                                                                    SCOREP_MetricPer metricType );
+
+    /**
+     * Optional synchronization callback.
+     */
+    void ( * metric_source_synchronize )( SCOREP_MetricSynchronizationMode syncMode );
 
     /**
      * Frees memory associated to requested metric event set.
@@ -193,30 +198,30 @@ typedef struct SCOREP_MetricSource
      *                           that should be measured.
      *  @param[out] values       Reference to array that will be filled with values from
      *                           active metrics.
-     *  @param[out] is_updated   An array which indicates whether a new value of a specfic
+     *  @param[out] isUpdated    An array which indicates whether a new value of a specfic
      *                           metric was written (@ is_updated[i] == true ) or not
      *                           (@ is_updated[i] == false ).
-     *  @param      force_update Update of all metric value in this event set is enforced.
+     *  @param      forceUpdate  Update of all metric value in this event set is enforced.
      */
     void ( * metric_source_synchronous_read )( SCOREP_Metric_EventSet* eventSet,
                                                uint64_t*               values,
-                                               bool*                   is_updated,
-                                               bool                    force_update );
+                                               bool*                   isUpdated,
+                                               bool                    forceUpdate );
 
     /**
      * Read values of counters relative to the time of @ref metric_source_register() asynchronously.
      *
      *  @param      eventSet            An event set, that contains the definition of the counters
      *                                  that should be measured.
-     *  @param[out] timevalue_pointer   An array, to which the counter values are written.
-     *  @param[out] num_pairs           Number of pairs (timestamp + value) written for each
+     *  @param[out] timevaluePointer    An array, to which the counter values are written.
+     *  @param[out] numPairs            Number of pairs (timestamp + value) written for each
      *                                  individual metric.
-     *  @param      force_update        Update of all metric value in this event set is enforced.
+     *  @param      forceUpdate         Update of all metric value in this event set is enforced.
      */
     void ( * metric_source_asynchronous_read )( SCOREP_Metric_EventSet*      eventSet,
-                                                SCOREP_MetricTimeValuePair** timevalue_pointer,
-                                                uint64_t**                   num_pairs,
-                                                bool                         force_update );
+                                                SCOREP_MetricTimeValuePair** timevaluePointer,
+                                                uint64_t**                   numPairs,
+                                                bool                         forceUpdate );
 
     /**
      * Returns number of metrics.

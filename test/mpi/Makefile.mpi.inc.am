@@ -34,22 +34,9 @@
 if HAVE_MPI_SUPPORT
 
 check_PROGRAMS += mpitest
-mpitest_SOURCES =  $(SRC_ROOT)test/mpi/mpitest.c
-
-mpitest_LDADD = $(mpi_libadd)
+mpitest_SOURCES = $(SRC_ROOT)test/mpi/mpitest.c
+mpitest_LDADD   = $(mpi_libadd)
 mpitest_LDFLAGS = $(mpi_ldflags)
-
-
-check_PROGRAMS += test_link
-test_link_SOURCES =  $(SRC_ROOT)test/mpi/test_link.c
-test_link_CPPFLAGS = $(AM_CPPFLAGS)         \
-    -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_ROOT)src/measurement/include    \
-    $(UTILS_CPPFLAGS)                       \
-    -I$(INC_DIR_DEFINITIONS)
-test_link_LDADD = $(mpi_libadd) \
-	$(LIB_DIR_SCOREP)libscorep_measurement.la
-test_link_LDFLAGS = $(mpi_ldflags)
 
 
 check_PROGRAMS += mpi_hello_world

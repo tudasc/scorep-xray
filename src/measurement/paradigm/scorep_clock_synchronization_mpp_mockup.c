@@ -39,6 +39,7 @@
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Metric_Management.h>
 
 /* *INDENT-OFF* */
 extern void scorep_interpolate_epoch(uint64_t* epochBegin, uint64_t* epochEnd);

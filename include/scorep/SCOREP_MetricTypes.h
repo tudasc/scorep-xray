@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -67,7 +67,7 @@ typedef enum SCOREP_MetricSourceType
     /** Linux perf metrics */
     SCOREP_METRIC_SOURCE_TYPE_PERF   = 6,
 
-    SCOREP_INVALID_METRIC_SOURCE_TYPE /**< For internal use only. */
+    SCOREP_INVALID_METRIC_SOURCE_TYPE /**< \internal For internal use only. */
 } SCOREP_MetricSourceType;
 
 /**
@@ -86,25 +86,49 @@ typedef enum SCOREP_MetricProfilingType
     /** Minimum values */
     SCOREP_METRIC_PROFILING_TYPE_MIN       = 4,
 
-    SCOREP_INVALID_METRIC_PROFILING_TYPE /**< For internal use only. */
+    SCOREP_INVALID_METRIC_PROFILING_TYPE /**< \internal For internal use only. */
 } SCOREP_MetricProfilingType;
 
 /**
  * Types to be used in defining type of metric values (SCOREP_Definitions_NewMetric()).
- *
+ * The interface uses UINT64 for all values, the other types should be
+ * reinterpreted using a union.
  */
 typedef enum SCOREP_MetricValueType
 {
+    /** 64 bit integer */
     SCOREP_METRIC_VALUE_INT64,
+    /** 64 bit unsigned integer */
     SCOREP_METRIC_VALUE_UINT64,
+    /** double precision floating point */
     SCOREP_METRIC_VALUE_DOUBLE,
 
-    SCOREP_INVALID_METRIC_VALUE_TYPE /**< For internal use only. */
+    SCOREP_INVALID_METRIC_VALUE_TYPE /**< \internal For internal use only. */
 } SCOREP_MetricValueType;
 
 /**
  * Types to be used in defining metric mode (SCOREP_Definitions_NewMetric()).
- *
+ * The mode consists of a timing and a value semantic.
+ * The possible value semantics are:
+ * <ul>
+ * <li>Accumulated for classic counters, e.g. number of floating point
+ * operations. While they are stored monotonically increasing in the trace,
+ * they are often differentiated as rate over time.</li>
+ * <li>Absolute values, e.g. temperature. They are stored as is in the trace
+ * and typically also displayed as is.</li>
+ * <li>Relative values.</li>
+ * </ul>
+ * The possible timing semantics are:
+ * <ul>
+ * <li>Start: The value is valid for the interval from the beginning of the
+ * trace to the associated timestamp.</li>
+ * <li>Point: The value is only valid for the point in time given by the
+ * timestamp.</li>
+ * <li>Last: The value is valid for the interval from the previous to the
+ * current timestamp.</li>
+ * <li>Next: The value is valid for the interval from the current to the
+ * next timestamp.</li>
+ * </ul>
  */
 typedef enum SCOREP_MetricMode
 {
@@ -131,7 +155,7 @@ typedef enum SCOREP_MetricMode
     /** Relative metric, 'NEXT' timing. */
     SCOREP_METRIC_MODE_RELATIVE_NEXT     = 9,
 
-    SCOREP_INVALID_METRIC_MODE /**< For internal use only. */
+    SCOREP_INVALID_METRIC_MODE /**< \internal For internal use only. */
 } SCOREP_MetricMode;
 
 /**
@@ -145,7 +169,7 @@ typedef enum SCOREP_MetricBase
     /** Decimal base. */
     SCOREP_METRIC_BASE_DECIMAL = 1,
 
-    SCOREP_INVALID_METRIC_BASE /**< For internal use only. */
+    SCOREP_INVALID_METRIC_BASE /**< For \internal use only. */
 } SCOREP_MetricBase;
 
 /**
@@ -175,42 +199,82 @@ typedef struct SCOREP_Metric_Properties
 } SCOREP_Metric_Properties;
 
 /**
- * Enumeration to define how often a metric should be measured.
- *
+ * Enumeration to define how many threads should record the metrics of a
+ * plugin. Used by @ref SCOREP_Metric_Plugin_Info::run_per.
  */
 typedef enum SCOREP_MetricPer
 {
-    /** Metric values recorded per thread */
+    /** Metric values are recorded on all threads of all processes */
     SCOREP_METRIC_PER_THREAD = 0,
-    /** Metric values recorded per process */
+    /**
+     * If processes use multiple threads, the metric is recorded on
+     * the main thread of each process.
+     */
     SCOREP_METRIC_PER_PROCESS,
-    /** Metric values recorded per host */
+    /**
+     * Metric values are recorded on a single thread of each node
+     * in a parallel program running on multiple nodes (hosts).
+     * Nodes are determined by the platform-specific @scorep node
+     * identifier.
+     */
     SCOREP_METRIC_PER_HOST,
-    /** Metric values recorded once for the program */
+    /**
+     * Metric values recorded once within the parallel program.
+     * They are recorded on the first node, first process, first thread.
+     */
     SCOREP_METRIC_ONCE,
 
-    SCOREP_METRIC_PER_MAX /**< NON-ABI, for internal use only. */
+    SCOREP_METRIC_PER_MAX /**< \internal NON-ABI, for internal use only. */
 } SCOREP_MetricPer;
 
 /**
  * Enumeration to define the synchronicity type of a metric.
- *
+ * Used by @ref SCOREP_Metric_Plugin_Info::sync.
  */
 typedef enum SCOREP_MetricSynchronicity
 {
-    /** Values recorded at every enter/leave event */
+    /**
+     * The current value of each metric is queried by @scorep whenever an
+     * enter/leave event occurs via @ref get_current_value. The plugin
+     * must always be able to provide a current value. The plugin provides
+     * the value itself, the timestamp is provided by @scorep.
+     * This setting is used for metrics that can be measured with minimal
+     * runtime costs and updated very frequently.
+     */
     SCOREP_METRIC_STRICTLY_SYNC = 0,
-    /** Values recorded at enter/leave events, but no need
-     *  to be recorded at every  */
+    /**
+     * The current value of each metric is queried by @scorep whenever an
+     * enter/leave event occurs via @ref get_optional_value. Providing a
+     * value is optional in case no new value is available in the plugin.
+     * The plugin provides the value itself, the timestamp is provided by
+     * @scorep.
+     * This setting is used for metrics that can be measured with minimal
+     * runtime costs but do not necessarily always change.
+     */
     SCOREP_METRIC_SYNC,
-    /** Values recorded at arbitrary points in time, but written
-     *  at enter/leave events in the trace */
+    /**
+     * Metric values are be measured at arbitrary points in time, but
+     * are collected at enter/leave events. Whenever an enter/leave event
+     * occurs, @scorep queries the plugin via @ref get_all_values for a
+     * list of timestamp-value-pairs.
+     * This setting can be used for some special cases,
+     * #SCOREP_METRIC_ASYNC is usually easier to implement.
+     */
     SCOREP_METRIC_ASYNC_EVENT,
-    /** Values recorded at arbitrary points in time and written
-     *  at any position in event stream of trace */
+    /**
+     * Metric values are be measured at arbitrary points in time. All
+     * values are collected once at the very end of the execution.
+     * @scorep collects the values and associated timestamps via
+     * @ref get_all_values.
+     * This setting is used for metrics that are recorded on external
+     * systems or within a separate thread. While it does require
+     * additional memory buffers to store the measurement, it usually
+     * reduces the overhead by decoupling the measurement from collection.
+     * It is also called post-mortem processing.
+     */
     SCOREP_METRIC_ASYNC,
 
-    SCOREP_METRIC_SYNC_TYPE_MAX /**< NON-ABI, for internal use only. */
+    SCOREP_METRIC_SYNC_TYPE_MAX /**< \internal NON-ABI, for internal use only. */
 } SCOREP_MetricSynchronicity;
 
 /**
@@ -225,6 +289,22 @@ typedef struct SCOREP_MetricTimeValuePair
     /** Current metric value */
     uint64_t value;
 } SCOREP_MetricTimeValuePair;
+
+/**
+ * Possible modes of a synchronization point.
+ * Express the time when a synchronization happens.
+ */
+typedef enum SCOREP_MetricSynchronizationMode
+{
+    /** Synchronization at the beginning of the measurement */
+    SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN,
+    /** Synchronization at the initialization of a multi-process paradigm (e.g., MPI) */
+    SCOREP_METRIC_SYNCHRONIZATION_MODE_BEGIN_MPP,
+    /** Synchronization at the end of the measurement */
+    SCOREP_METRIC_SYNCHRONIZATION_MODE_END,
+
+    SCOREP_METRIC_SYNCHRONIZATION_MODE_MAX /**< \internal NON-ABI, for internal use only. */
+} SCOREP_MetricSynchronizationMode;
 
 
 #endif /* SCOREP_METRIC_TYPES_H */

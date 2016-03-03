@@ -78,7 +78,6 @@
 
 
 /* *INDENT-OFF* */
-extern bool scorep_create_experiment_dir(void (*createDir) (void) );
 static void scorep_create_directory( void );
 static void scorep_create_experiment_dir_name( void );
 static bool scorep_dir_name_is_created( void );
@@ -89,6 +88,7 @@ static void scorep_dump_config( void );
 static char scorep_working_directory[ WORK_DIR_SIZE ];
 static char* scorep_experiment_dir_name;
 static bool  scorep_experiment_dir_needs_rename;
+static bool  scorep_experiment_dir_created;
 
 
 const char*
@@ -102,20 +102,20 @@ SCOREP_GetExperimentDirName( void )
 void
 SCOREP_CreateExperimentDir( void )
 {
-    if ( SCOREP_Status_IsExperimentDirCreated() )
-    {
-        return;
-    }
+    UTILS_BUG_ON( scorep_experiment_dir_created,
+                  "SCOREP_CreateExperimentDir called multiple times." );
     scorep_create_experiment_dir_name();
 
-    if ( scorep_create_experiment_dir( scorep_create_directory ) )
+    if ( SCOREP_Status_GetRank() == 0 )
     {
-        SCOREP_OnExperimentDirCreation();
+        scorep_create_directory();
 
         /* dump the measurement configuration early, so that it is also
            available in case of failure */
         scorep_dump_config();
     }
+
+    scorep_experiment_dir_created = true;
 }
 
 
@@ -306,13 +306,12 @@ scorep_create_directory( void )
 void
 SCOREP_RenameExperimentDir( void )
 {
-    SCOREP_Ipc_Barrier();
-    if ( SCOREP_Status_GetRank() > 0 )
-    {
-        return;
-    }
+    UTILS_BUG_ON( !scorep_experiment_dir_created,
+                  "SCOREP_CreateExperimentDir not yet called." );
 
-    if ( !SCOREP_Status_IsExperimentDirCreated() )
+    SCOREP_Ipc_Barrier();
+
+    if ( SCOREP_Status_GetRank() > 0 )
     {
         return;
     }
@@ -351,7 +350,7 @@ SCOREP_RenameExperimentDir( void )
 static void
 scorep_dump_config( void )
 {
-    if ( SCOREP_Status_IsMpp() && SCOREP_Status_GetRank() != 0 )
+    if ( SCOREP_Status_GetRank() != 0 )
     {
         return;
     }

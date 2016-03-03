@@ -66,7 +66,6 @@ struct scorep_status
     bool mpp_is_finalized;
     int  mpp_comm_world_size;
     bool is_process_master_on_node;
-    bool is_experiment_dir_created;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
     bool is_oa_enabled;
@@ -81,7 +80,6 @@ static scorep_status scorep_process_local_status = {
     .mpp_is_finalized          = false,
     .mpp_comm_world_size       = 0,
     .is_process_master_on_node = false,
-    .is_experiment_dir_created = false,
     .is_profiling_enabled      = true,
     .is_tracing_enabled        = true,
     .is_oa_enabled             = true,
@@ -96,17 +94,6 @@ SCOREP_Status_Initialize( void )
     scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
     scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
     scorep_is_unwinding_enabled                      = SCOREP_Env_DoCallingContext();
-
-    // Lets see if we have an IPC, ie multi program paradigm
-    if ( !SCOREP_Status_IsMpp() )
-    {
-        scorep_process_local_status.mpp_rank                  = 0;
-        scorep_process_local_status.mpp_rank_is_set           = true;
-        scorep_process_local_status.mpp_is_initialized        = true;
-        scorep_process_local_status.mpp_is_finalized          = true;
-        scorep_process_local_status.mpp_comm_world_size       = 1;
-        scorep_process_local_status.is_process_master_on_node = true;
-    }
 }
 
 
@@ -248,19 +235,4 @@ bool
 SCOREP_Status_HasOtf2Flushed( void )
 {
     return scorep_process_local_status.otf2_has_flushed;
-}
-
-
-bool
-SCOREP_Status_IsExperimentDirCreated( void )
-{
-    return scorep_process_local_status.is_experiment_dir_created;
-}
-
-
-void
-SCOREP_OnExperimentDirCreation( void )
-{
-    assert( !scorep_process_local_status.is_experiment_dir_created );
-    scorep_process_local_status.is_experiment_dir_created = true;
 }
