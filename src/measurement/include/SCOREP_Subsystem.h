@@ -139,7 +139,7 @@ typedef struct SCOREP_Subsystem
      * It is NOT ok to trigger a subsystem_init_location callback from a
      * subsystem_init one. For locations created during initialization the
      * subsystem_init_location step will be performed at the end of
-     * SCOREP_InitMeasurement() (currently SCOREP_Thread_ActivateMaster()).
+     * SCOREP_InitMeasurement() (currently SCOREP_Location_ActivateInitLocations()).
      * It is ok to use malloc. If you need to realloc during measurement,
      * please consider not to use malloc.
      */
