@@ -122,7 +122,7 @@ typedef struct SCOREP_Subsystem
      *  1. init
      *  2. begin
      *  3. init_mpp
-     *  4. synchronize(BEGIN) or synchronize(END_MPP)
+     *  4. synchronize(BEGIN) or synchronize(BEGIN_MPP)
      *  5. synchronize(END)
      *  6. end
      *  7. finalize

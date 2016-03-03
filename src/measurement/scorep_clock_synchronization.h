@@ -41,8 +41,6 @@
 
 #include <stdint.h>
 
-#include <SCOREP_Types.h>
-
 void
 SCOREP_SynchronizeClocks( void );
 

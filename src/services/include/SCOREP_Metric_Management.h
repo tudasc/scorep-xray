@@ -105,6 +105,4 @@ SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void );
 SCOREP_MetricHandle
 SCOREP_Metric_GetStrictlySynchronousMetricHandle( uint32_t index );
 
-/* Functions especially for synchronization of metric plugins */
-
 #endif /* SCOREP_METRIC_MANAGEMENT_H */
