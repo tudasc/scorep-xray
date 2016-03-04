@@ -564,7 +564,7 @@ finalize_region_definitions( SCOREP_Location* location,
         SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
 
     /* we clear the known regions and apply the post processing while at it */
-    scorep_unwinding_region_clear( unwind_data, finalize_region, data );
+    scorep_unwinding_region_clear( unwind_data, finalize_region, addr_ranges );
 
     return false;
 }

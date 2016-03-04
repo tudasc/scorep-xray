@@ -249,27 +249,18 @@ scorep_unwinding_gpu_handle_exit( SCOREP_Location*             location,
 
     UTILS_DEBUG_ENTRY( "%p", location );
 
-    scorep_unwinding_instrumented_region*       instrumented_region = unwind_data->instrumented_regions;
-    scorep_unwinding_calling_context_tree_node* current;
+    scorep_unwinding_instrumented_region* instrumented_region = unwind_data->instrumented_regions;
+
+    /* Update calling context tree */
+    *unwindDistance = 1;
+    *callingContext = *previousCallingContext;
 
     if ( instrumented_region->prev == NULL )
     {
-        /* Instrumented region on first stack level, it has no predecessor */
-        current = &unwind_data->calling_context_root;
-
-        /* Update calling context tree */
-        *unwindDistance                       = 1;
-        *callingContext                       = *previousCallingContext;
         unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
     }
     else
     {
-        /* Get instrumented region of the stack level above to search in its children array */
-        current = instrumented_region->prev->cct_node;
-
-        /* Update calling context tree */
-        *unwindDistance                       = 1;
-        *callingContext                       = *previousCallingContext;
         unwind_data->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
     }
 
