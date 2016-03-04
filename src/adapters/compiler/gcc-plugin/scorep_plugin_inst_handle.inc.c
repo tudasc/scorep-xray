@@ -17,7 +17,6 @@
  *
  */
 
-#include "gcc-plugin.h"
 #include "tree.h"
 
 #include <stdarg.h>

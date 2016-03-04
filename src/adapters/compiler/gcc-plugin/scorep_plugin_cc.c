@@ -17,16 +17,10 @@
  *
  */
 
-#include "gcc-plugin.h"
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
+#include "scorep_plugin_interface.h"
 
 #include <config.h>
 
-#include "gcc-plugin.h"
 #include "plugin.h"
 #include "coretypes.h"
 #include "tree-pass.h"

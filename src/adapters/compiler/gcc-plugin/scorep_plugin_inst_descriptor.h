@@ -13,7 +13,7 @@
 /**
  * @file
  *
- * @brief  The definition for insterting the GCC plugin instrumentation descriptors.
+ * @brief  The definition for inserting the GCC plugin instrumentation descriptors.
  *
  */
 

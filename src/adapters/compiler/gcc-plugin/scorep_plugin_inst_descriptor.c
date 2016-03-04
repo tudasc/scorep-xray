@@ -13,16 +13,11 @@
 /**
  * @file
  *
- * @brief  The definition for insterting the GCC plugin instrumentation descriptors.
+ * @brief  The definition for inserting the GCC plugin instrumentation descriptors.
  *
  */
 
-#include "gcc-plugin.h"
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
+#include "scorep_plugin_interface.h"
 
 #include <config.h>
 

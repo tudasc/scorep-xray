@@ -17,7 +17,7 @@
  *
  */
 
-#include "gcc-plugin.h"
+#include "scorep_plugin_interface.h"
 #include "tree.h"
 #include "plugin.h"
 
