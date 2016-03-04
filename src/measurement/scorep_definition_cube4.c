@@ -91,13 +91,12 @@ convert_to_cube_location_type( SCOREP_LocationType location_type )
             return CUBE_LOCATION_TYPE_GPU;
         case SCOREP_LOCATION_TYPE_METRIC:
             return CUBE_LOCATION_TYPE_METRIC;
+        case SCOREP_INVALID_LOCATION_TYPE:
+            break;
+            // By not having a default, we get a warning from the compiler if we add and forget to convert a type.
     }
-
     UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
                  "Can not convert location type to CUBE type." );
-
-    /* To make XL compiler happy */
-    return CUBE_LOCATION_TYPE_CPU_THREAD;
 }
 
 /**
@@ -110,13 +109,12 @@ convert_to_cube_location_group_type( SCOREP_LocationGroupType type )
     {
         case SCOREP_LOCATION_GROUP_TYPE_PROCESS:
             return CUBE_LOCATION_GROUP_TYPE_PROCESS;
+        case SCOREP_INVALID_LOCATION_GROUP_TYPE:
+            break;
     }
 
     UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
                  "Can not convert location group type to CUBE type." );
-
-    /* To make XL compiler happy */
-    return CUBE_LOCATION_TYPE_CPU_THREAD;
 }
 
 /* ****************************************************************************
