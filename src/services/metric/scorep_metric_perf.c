@@ -335,7 +335,6 @@ metric_perf_create_event_code( char* name )
 
     /* cache events */
     char  buffer[ 128 ];
-    int   num_chars    = 0;
     char* caches[ 7 ]  = { "L1-dcache-", "L1-icache-", "LLC-", "dTLB-", "iTLB-", "branch-", "node-" };
     int   num_caches   = 7;
     char* actions[ 3 ] = { "load", "store", "prefetch" };
@@ -350,8 +349,8 @@ metric_perf_create_event_code( char* name )
             {
                 for ( k = 0; k < num_results; k++ )
                 {
-                    num_chars = snprintf( buffer, 127, "%s%s%s", caches[ i ], actions[ j ], results[ k ] );
-                    /* TODO assert that num_chars is < 127 */
+                    int num_chars = snprintf( buffer, sizeof( buffer ), "%s%s%s", caches[ i ], actions[ j ], results[ k ] );
+                    UTILS_BUG_ON( num_chars < 0 || num_chars >= sizeof( buffer ), "Failed to format event name." );
                     if ( strstr( name, buffer ) == name )
                     {
                         return_metric.type   = PERF_TYPE_HW_CACHE;
@@ -1008,9 +1007,6 @@ synchronous_read( SCOREP_Metric_EventSet* eventSet,
 static void
 free_event_set( SCOREP_Metric_EventSet* eventSet )
 {
-    int      retval;
-    uint64_t perf_vals[ SCOREP_METRIC_MAXNUM ];
-
     /*
      * Check for ( eventSet == NULL) can be skipped here, because all functions
      * that call this one should have already checked eventSet.
@@ -1021,7 +1017,7 @@ free_event_set( SCOREP_Metric_EventSet* eventSet )
     /* For each used event map */
     for ( uint32_t i = 0; i < SCOREP_METRIC_MAXNUM && eventSet->event_map[ i ] != NULL; i++ )
     {
-        retval = ioctl( eventSet->event_map[ i ]->event_fd, PERF_EVENT_IOC_DISABLE );
+        int retval = ioctl( eventSet->event_map[ i ]->event_fd, PERF_EVENT_IOC_DISABLE );
         if ( retval )
         {
             metric_perf_warning( retval, "PERF ioctl( fd, PERF_EVENT_IOC_DISABLE)" );
