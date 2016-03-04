@@ -128,7 +128,10 @@ count_total_thread_teams( SCOREP_Location* location,
 {
     void**    args               = arg;
     uint32_t* total_thread_teams = args[ 0 ];
+
+#if HAVE( UTILS_DEBUG )
     uint32_t* local_to_thread_id = args[ 1 ];
+#endif
 
     if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
@@ -161,6 +164,8 @@ count_total_thread_teams( SCOREP_Location* location,
             continue;
         }
 
+#if HAVE( UTILS_DEBUG )
+        /* There should usually be no side effects, except possibly some memory management. */
         struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
@@ -170,6 +175,7 @@ count_total_thread_teams( SCOREP_Location* location,
                      SCOREP_Definitions_HandleToId( definition->parent_handle ),
                      payload->num_threads,
                      payload->thread_num );
+#endif
     }
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 
