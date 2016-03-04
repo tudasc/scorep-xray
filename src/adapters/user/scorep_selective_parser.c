@@ -215,8 +215,7 @@ scorep_selective_add( const char* name,
                         "Add recorded region %s %d:%d\n", name, first, last );
     assert( scorep_selected_regions != NULL );
 
-    size_t                  index      = 0;
-    scorep_selected_region* new_region = NULL;
+    size_t index = 0;
 
     /* Region does already exist */
     if ( SCOREP_Vector_Find( scorep_selected_regions,
@@ -276,7 +275,6 @@ scorep_selective_parse_file( FILE* file )
         }
 
         /* Process line */
-        size_t length      = strlen( buffer );
         size_t pos         = 0;
         char*  region_name = strtok( buffer, " \t\n" );
         char*  interval    = strtok( NULL, " \t\n," );
