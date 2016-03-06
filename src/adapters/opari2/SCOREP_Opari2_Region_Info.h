@@ -72,12 +72,6 @@ typedef struct SCOREP_Opari2_Region_struct
     int32_t endLine2;                      /* Last line of the closing statement                 */
 } SCOREP_Opari2_Region;
 
-/** Initializes a SCOREP_Opari2_Region instance @region  with NULL values.
-    @param region the SCOREP_Opari2_Region instance which get initialized.
- */
-void
-scorep_opari2_init_region( SCOREP_Opari2_Region* region );
-
 /* Allocate and assign generic region info */
 void
 scorep_opari2_assign_generic_region_info( SCOREP_Opari2_Region* region,

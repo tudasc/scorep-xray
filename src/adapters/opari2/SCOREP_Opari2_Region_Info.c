@@ -117,7 +117,7 @@ static file_list_node* file_list_top = NULL;
 /** Initializes a SCOREP_Opari2_Region instance @region  with NULL values.
     @param region the SCOREP_Opari2_Region instance which get initialized.
  */
-void
+static void
 scorep_opari2_init_region( SCOREP_Opari2_Region* region )
 {
     region->startFileName = 0;

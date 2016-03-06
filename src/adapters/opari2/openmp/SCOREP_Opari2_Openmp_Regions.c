@@ -134,7 +134,6 @@ scorep_opari2_init_openmp_region( SCOREP_Opari2_Openmp_Region* region )
     region->outerBlock    = SCOREP_INVALID_REGION;
     region->innerBlock    = SCOREP_INVALID_REGION;
     region->barrier       = SCOREP_INVALID_REGION;
-    scorep_opari2_init_region( &region->genericInfo );
 }
 
 /** Registers the opari2_openmp regions to scorep and sets the SCOREP region handle fields in

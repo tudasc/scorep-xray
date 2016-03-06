@@ -75,7 +75,6 @@ static void
 scorep_opari2_user_init_region( SCOREP_Opari2_User_Region* region )
 {
     region->name = 0;
-    scorep_opari2_init_region( &region->genericInfo );
 }
 
 /** Registers the pomp regions to scorep and sets the SCOREP region handle fields in
