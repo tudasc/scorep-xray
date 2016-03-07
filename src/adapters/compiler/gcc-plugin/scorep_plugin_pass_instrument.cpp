@@ -17,7 +17,7 @@
  *
  */
 
-#include "scorep_plugin_interface.h"
+#include "scorep_plugin_gcc-plugin.h"
 
 #include <config.h>
 
