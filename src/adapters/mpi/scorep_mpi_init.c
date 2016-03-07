@@ -46,6 +46,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_AllocMetric.h>
 #include "SCOREP_Mpi.h"
+#include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request.h"
 
