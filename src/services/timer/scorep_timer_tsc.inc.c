@@ -73,6 +73,12 @@
     return mach_absolute_time();
 #endif
 
+#if HAVE( SCOREP_X86_32_TSC )
+    unsigned long long ticks;
+    __asm__ __volatile__("rdtsc": "=A" (ticks));
+    return ( uint64_t )ticks;
+#endif
+
 #if HAVE( SCOREP_X86_64_TSC )
     unsigned a, d;
     asm volatile ( "rdtsc" : "=a" ( a ), "=d" ( d ) );

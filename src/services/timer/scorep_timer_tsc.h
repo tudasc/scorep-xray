@@ -86,6 +86,13 @@ _compile_time_assert( void )
 #define HAVE_SCOREP_DARWIN_TSC 1
 #endif
 
+/* Pentium cycle counter */
+/* cycle.h claims it to be unreliable, but why? We check for constant_tsc and nonstop_tsc elsewhere. */
+#if ( defined( __GNUC__ ) || defined( __ICC ) ) && defined( __i386__ )  && !defined( HAVE_TICK_COUNTER )
+#define HAVE_TICK_COUNTER
+#define HAVE_SCOREP_X86_32_TSC 1
+#endif
+
 /* X86-64 cycle counter */
 #if ( defined( __GNUC__ ) || defined( __ICC ) || defined( __SUNPRO_C ) ) && defined( __x86_64__ )  && !defined( HAVE_TICK_COUNTER )
 #define HAVE_TICK_COUNTER
@@ -209,6 +216,9 @@ _compile_time_assert( void )
 
 #if HAVE( SCOREP_DARWIN_TSC )
 # include <mach/mach_time.h>
+#endif
+
+#if HAVE( SCOREP_X86_32_TSC )
 #endif
 
 #if HAVE( SCOREP_X86_64_TSC )

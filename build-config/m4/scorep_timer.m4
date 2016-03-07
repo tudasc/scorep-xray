@@ -372,7 +372,8 @@ AC_LINK_IFELSE(
     ],
     [have_timer=yes
     # assign name
-    for tsc in X86_64 \
+    for tsc in X86_32 \
+        X86_64 \
         X86_64_PGI \
         SPARC \
         CRAY \
