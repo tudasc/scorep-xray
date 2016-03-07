@@ -1,7 +1,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2012-2014,
+## Copyright (c) 2012-2014, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -23,6 +23,7 @@ scorep_plugin_cppflags = \
 scorep_instrument_function_la_SOURCES = \
     $(SRC_ROOT)src/measurement/scorep_error_callback.c \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_gcc-plugin.h \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.h \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.h \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.h \
