@@ -165,7 +165,6 @@ count_total_thread_teams( SCOREP_Location* location,
         }
 
 #if HAVE( UTILS_DEBUG )
-        /* There should usually be no side effects, except possibly some memory management. */
         struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
