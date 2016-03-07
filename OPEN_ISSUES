@@ -227,29 +227,29 @@ various Score-P components.
     broken if an OpenMP parallel pragma is used in combination with
     an if clause.
 
- - OPARI2-instrumented Fortran OpenMP codes that use compiler options
-   to change the default name-mangling (XL compilers: -qextname, GNU:
-   -fno-underscoring' and '-fsecond-underscore') will likely crash.
-   This is because a variable name used in the Score-P libraries does
-   not match the one instrumented by OPARI2. On AIX, a workaround is
-   to use scorep's commandline option --thread=omp:ancestry or to
-   manually rename it at link time (-brename:pomp_tpd_,pomp_tpd).
+  - OPARI2-instrumented Fortran OpenMP codes that use compiler options
+    to change the default name-mangling (XL compilers: -qextname, GNU:
+    -fno-underscoring' and '-fsecond-underscore') will likely crash.
+    This is because a variable name used in the Score-P libraries does
+    not match the one instrumented by OPARI2. On AIX, a workaround is
+    to use scorep's commandline option --thread=omp:ancestry or to
+    manually rename it at link time (-brename:pomp_tpd_,pomp_tpd).
 
- - With PGI C++ v13.10 compiler, preprocessing of OpenMP codes using
-   OPARI2 is not possible any longer as the compiler itself adds a
-   '--preinclude omp.h' option to the call of pgcpp1. This leads to
-   'invalid redeclaration' errors. As a workaround, use the
-   '--nopreprocess' instrumenter option.
+  - With PGI C++ v13.10 compiler, preprocessing of OpenMP codes using
+    OPARI2 is not possible any longer as the compiler itself adds a
+    '--preinclude omp.h' option to the call of pgcpp1. This leads to
+    'invalid redeclaration' errors. As a workaround, use the
+    '--nopreprocess' instrumenter option.
 
- - The OPARI2 instrumentation and the preprocessing for OPARI2
-   instrumentation prepend some headers to source files which
-   include stdint.h in C/C++ files. The behavior of this header changes
-   whether macros the __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS are
-   defined. If these macros are defined in a header file or source file,
-   the instrumentation will prepend the include directive before the macro
-   definition. Thus, macros like UINT32_C are left undefined. As workaround,
-   pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the
-   command line. See also the Open Issues of OPARI2.
+  - The OPARI2 instrumentation and the preprocessing for OPARI2
+    instrumentation prepend some headers to source files which
+    include stdint.h in C/C++ files. The behavior of this header changes
+    whether macros the __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS are
+    defined. If these macros are defined in a header file or source file,
+    the instrumentation will prepend the include directive before the macro
+    definition. Thus, macros like UINT32_C are left undefined. As workaround,
+    pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the
+    command line. See also the Open Issues of OPARI2.
 
 --------------------------------------------------------------------------------
 
@@ -290,13 +290,19 @@ various Score-P components.
     static variables as symmetric objects.  Please allocate these
     objects with shmalloc() to ensure that they are in the symmetric
     heap.
+
   - Currently tested SHMEM implementations:
     + OpenSHMEM reference implementation 1.0f
     + Open MPI implementation 1.8.2a
     + SGI SHMEM
     + Cray SHMEM
+
   - The online access interface is currently not available in SHMEM
     applications.
+
+  - When using the Cray SHMEM versions 7.2.2 or 7.2.3, than Score-P fails
+    to detect a number of SHMEM functions.  Please use a newer version of
+    the module to circumvent this problem.
 
 --------------------------------------------------------------------------------
 
