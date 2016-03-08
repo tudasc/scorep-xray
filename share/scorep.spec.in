@@ -442,10 +442,10 @@
             </cubeplinit>
             <metric type="POSTDERIVED">
                 <disp_name>Computation</disp_name>
-                <uniq_name>computation</uniq_name>
+                <uniq_name>comp</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#computation</url>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
                     metric::execution() - metric::mpi() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
