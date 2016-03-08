@@ -121,7 +121,7 @@ various Score-P components.
 
   - Due to constant changes in the plug-in API of the GNU compiler
     infrastructure, it is unlikely that the Score-P instrumentation
-    plug-in builds with GCC versions newer than this release.
+    plug-in builds with versions newer than GCC 6.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiple defined symbols if the

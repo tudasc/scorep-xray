@@ -30,8 +30,8 @@ typedef struct scorep_plugin_inst_hook
     scorep_gcc_plugin_hook_type hook_type;
 
     tree                        fn_decl;
-    gimple                      fn_call;
-    gimple                      condition;
+    GIMPLE                      fn_call;
+    GIMPLE                      condition;
     gimple_seq                  stmt_sequence;
 } scorep_plugin_inst_hook;
 

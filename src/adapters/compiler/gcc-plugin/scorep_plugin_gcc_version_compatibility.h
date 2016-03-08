@@ -33,3 +33,9 @@
 #define cgraph_function_body_availability( node ) ( node )->get_availability()
 #define TODO_verify_ssa TODO_verify_il
 #endif
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 6000
+#define GIMPLE gimple
+#else
+#define GIMPLE gimple *
+#endif

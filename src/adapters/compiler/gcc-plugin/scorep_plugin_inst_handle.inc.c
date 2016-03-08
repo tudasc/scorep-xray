@@ -77,7 +77,7 @@ var_build( scorep_plugin_inst_handle* handle )
     handle->var = handle_var;
 }
 
-gimple
+GIMPLE
 scorep_plugin_inst_handle_build_tmp_assignment( scorep_plugin_inst_handle* handle )
 {
     if ( !handle )
@@ -87,7 +87,7 @@ scorep_plugin_inst_handle_build_tmp_assignment( scorep_plugin_inst_handle* handl
 
     tree handle_tmp_var = create_tmp_var( handle->type,
                                           NULL );
-    gimple stmt = gimple_build_assign( handle_tmp_var,
+    GIMPLE stmt = gimple_build_assign( handle_tmp_var,
                                        handle->var );
     gimple_assign_set_lhs( stmt,
                            make_ssa_name( handle_tmp_var,

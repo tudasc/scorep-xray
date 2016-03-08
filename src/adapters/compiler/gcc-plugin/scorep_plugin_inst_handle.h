@@ -26,5 +26,5 @@ typedef struct scorep_plugin_inst_handle
 void
 scorep_plugin_inst_handle_build( scorep_plugin_inst_handle* handle );
 
-gimple
+GIMPLE
 scorep_plugin_inst_handle_build_tmp_assignment( scorep_plugin_inst_handle* handle );
