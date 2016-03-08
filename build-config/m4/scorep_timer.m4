@@ -372,12 +372,13 @@ AC_LINK_IFELSE(
     ],
     [have_timer=yes
     # assign name
-    for tsc in X86_32 \
-        X86_64 \
+    for tsc in X86_64 \
         SPARC \
         CRAY \
         POWERPC64 \
+        ARMV8 \
         POWERPC32 \
+        X86_32 \
         DARWIN \
         X86_64_MSVC \
         IA64_INTEL \

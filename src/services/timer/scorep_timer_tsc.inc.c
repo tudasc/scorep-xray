@@ -121,3 +121,9 @@
 #if HAVE( SCOREP_CRAY_TSC )
     return ( uint64_t )_rtc();
 #endif
+
+#if HAVE( SCOREP_ARMV8_TSC )
+    uint64_t ticks;
+    asm ( "mrs %[result], CNTVCT_EL0\n\t" :[ result ] "=r" ( ticks ) );
+    return ticks;
+#endif

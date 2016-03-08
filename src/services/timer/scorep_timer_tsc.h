@@ -176,6 +176,11 @@ _compile_time_assert( void )
 #define HAVE_SCOREP_CRAY_TSC 1
 #endif
 
+#if defined( __aarch64__ ) && !defined( HAVE_TICK_COUNTER )
+#define HAVE_TICK_COUNTER
+#define HAVE_SCOREP_ARMV8_TSC 1
+#endif
+
 
 #undef COMPILE_TIME_ASSERT
 
@@ -236,4 +241,7 @@ _compile_time_assert( void )
 # ifdef HAVE_INTRINSICS_H
 #  include <intrinsics.h>
 # endif
+#endif
+
+#if HAVE( SCOREP_ARMV8_TSC )
 #endif

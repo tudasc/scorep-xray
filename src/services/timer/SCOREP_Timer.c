@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -23,14 +23,14 @@
 
 #include <SCOREP_InMeasurement.h>
 
-#if HAVE( BACKEND_SCOREP_TIMER_TSC )
+#if HAVE( BACKEND_SCOREP_TIMER_TSC ) && !HAVE( SCOREP_ARMV8_TSC )
 #include <scorep_ipc.h>
 #include <UTILS_IO.h>
 #include <string.h>
 #include <stdlib.h>
 #include <inttypes.h>
 #include <math.h>
-#endif  /* BACKEND_SCOREP_TIMER_TSC */
+#endif  /* HAVE( BACKEND_SCOREP_TIMER_TSC ) && ! HAVE( SCOREP_ARMV8_TSC ) */
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -57,11 +57,11 @@ static uint64_t ticks_per_sec_bgp;
 static uint64_t ticks_per_sec_mingw;
 #endif /* BACKEND_SCOREP_TIMER_MINGW */
 
-#if HAVE( BACKEND_SCOREP_TIMER_TSC )
+#if HAVE( BACKEND_SCOREP_TIMER_TSC ) && !HAVE( SCOREP_ARMV8_TSC )
 static uint64_t timer_tsc_t0;
 static uint64_t timer_cmp_t0;
 static uint64_t timer_cmp_freq;
-#endif  /* BACKEND_SCOREP_TIMER_TSC */
+#endif  /* HAVE( BACKEND_SCOREP_TIMER_TSC ) && ! HAVE( SCOREP_ARMV8_TSC ) */
 
 
 #include "scorep_timer_confvars.inc.c"
@@ -126,8 +126,12 @@ SCOREP_Timer_Initialize( void )
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:
         {
-# if !( defined( __FUJITSU ) ) /* For Fujitsu we 1. know that the tsc is nonstop and constant
-                                * and 2. /proc/cpuinfo doesn't contain this data. */
+# if HAVE( SCOREP_ARMV8_TSC )
+            /* Nothing to do here for ARMV8, frequency can be accessed directly,
+             * see SCOREP_Timer_GetClockResolution(). */
+# else                          /* ! HAVE( SCOREP_ARMV8_TSC ) */
+#  if !( defined( __FUJITSU ) ) /* For Fujitsu we 1. know that the tsc is nonstop and constant
+                                 * and 2. /proc/cpuinfo doesn't contain this data. */
             FILE*            fp;
             char*            line           = NULL;
             size_t           length         = 0;
@@ -166,7 +170,7 @@ SCOREP_Timer_Initialize( void )
                 }
                 free( line );
             }
-# endif     /* !(defined(__FUJITSU)) */
+#  endif     /* !(defined(__FUJITSU)) */
 
             /* TODO: assert that all processes use TIMER_TSC running at the
              * same frequency. For this we need to MPP communicate but MPP might
@@ -178,18 +182,19 @@ SCOREP_Timer_Initialize( void )
             /* Either BACKEND_SCOREP_TIMER_CLOCK_GETTIME or
              * BACKEND_SCOREP_TIMER_GETTIMEOFDAY are available, see check in
              * scorep_timer_tsc.h */
-# if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+#  if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
             struct timespec time;
             int             result = clock_gettime( SCOREP_TIMER_CLOCK_GETTIME_CLK_ID, &time );
             UTILS_ASSERT( result == 0 );
             timer_cmp_t0   = ( uint64_t )time.tv_sec * UINT64_C( 1000000000 ) + ( uint64_t )time.tv_nsec;
             timer_cmp_freq = UINT64_C( 1000000000 );
-# else      /* HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY ) */
+#  else      /* HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY ) */
             struct timeval tp;
             gettimeofday( &tp, 0 );
             timer_cmp_t0   =  ( uint64_t )tp.tv_sec * UINT64_C( 1000000 ) + ( uint64_t )tp.tv_usec;
             timer_cmp_freq = UINT64_C( 1000000 );
-# endif
+#  endif
+# endif     /* ! HAVE( SCOREP_ARMV8_TSC ) */
         }
         break;
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
@@ -247,20 +252,25 @@ SCOREP_Timer_GetClockResolution( void )
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:
         {
+# if HAVE( SCOREP_ARMV8_TSC )
+            uint32_t timer_tsc_freq;
+            asm ( "mrs %[result], CNTFRQ_EL0\n\t" :[ result ] "=r" ( timer_tsc_freq ) );
+            return ( uint64_t )timer_tsc_freq;
+# else      /* ! HAVE( SCOREP_ARMV8_TSC ) */
             uint64_t timer_tsc_t1 = SCOREP_Timer_GetClockTicks();
             /* Either BACKEND_SCOREP_TIMER_CLOCK_GETTIME or
              * BACKEND_SCOREP_TIMER_GETTIMEOFDAY are available, see check in
              * scorep_timer_tsc.h */
-# if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+#  if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
             struct timespec time;
             int             result = clock_gettime( SCOREP_TIMER_CLOCK_GETTIME_CLK_ID, &time );
             UTILS_ASSERT( result == 0 );
             uint64_t timer_cmp_t1 = ( uint64_t )time.tv_sec * UINT64_C( 1000000000 ) + ( uint64_t )time.tv_nsec;
-# else      /* HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY ) */
+#  else      /* HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY ) */
             struct timeval tp;
             gettimeofday( &tp, 0 );
             uint64_t timer_cmp_t1 =  ( uint64_t )tp.tv_sec * UINT64_C( 1000000 ) + ( uint64_t )tp.tv_usec;
-# endif
+#  endif
             /* Use interpolation to determine frequency.
              * Interpolate and check consistency only once during finalization. */
             static bool     first_visit = true;
@@ -315,6 +325,7 @@ SCOREP_Timer_GetClockResolution( void )
                 }
             }
             return timer_tsc_freq;
+# endif /* ! HAVE( SCOREP_ARMV8_TSC ) */
         }
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
