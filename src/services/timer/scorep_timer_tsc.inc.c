@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -83,14 +83,6 @@
     unsigned a, d;
     asm volatile ( "rdtsc" : "=a" ( a ), "=d" ( d ) );
     return ( ( uint64_t )a ) | ( ( ( uint64_t )d ) << 32 );
-#endif
-
-#if HAVE( SCOREP_X86_64_PGI_TSC )
-    asm ( " rdtsc; shl    $0x20,%rdx; mov    %eax,%eax; or     %rdx,%rax;    " );
-    /* 'rdtsc' returns its value in %eax/%edx pair, which just
-     * happens to be the register pair used for returning long long
-     * function return values. */
-    return;
 #endif
 
 #if HAVE( SCOREP_X86_64_MSVC_TSC )

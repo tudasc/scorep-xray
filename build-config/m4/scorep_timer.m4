@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -374,7 +374,6 @@ AC_LINK_IFELSE(
     # assign name
     for tsc in X86_32 \
         X86_64 \
-        X86_64_PGI \
         SPARC \
         CRAY \
         POWERPC64 \

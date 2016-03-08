@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -94,22 +94,9 @@ _compile_time_assert( void )
 #endif
 
 /* X86-64 cycle counter */
-#if ( defined( __GNUC__ ) || defined( __ICC ) || defined( __SUNPRO_C ) ) && defined( __x86_64__ )  && !defined( HAVE_TICK_COUNTER )
+#if ( defined( __GNUC__ ) || defined( __ICC ) || defined( __SUNPRO_C ) || defined( __PGI ) ) && defined( __x86_64__ )  && !defined( HAVE_TICK_COUNTER )
 #define HAVE_TICK_COUNTER
 #define HAVE_SCOREP_X86_64_TSC 1
-#endif
-
-/* X86-64 cycle counter, PGI compiler, courtesy Cristiano Calonaci,
- * Andrea Tarsi, & Roberto Gori. NOTE: if this code fails to link,
- * try the -Masmkeyword compiler option. */
-#if defined( __PGI ) && defined( __x86_64__ ) && !defined( HAVE_TICK_COUNTER )
-static void
-_compile_time_assert( void )
-{
-    COMPILE_TIME_ASSERT( sizeof( uint64_t ) == sizeof( unsigned long long ) );
-}
-#define HAVE_TICK_COUNTER
-#define HAVE_SCOREP_X86_64_PGI_TSC 1
 #endif
 
 /* X86-64 cycle counter, Visual C++, courtesy of Dirk Michaelis */
@@ -222,9 +209,6 @@ _compile_time_assert( void )
 #endif
 
 #if HAVE( SCOREP_X86_64_TSC )
-#endif
-
-#if HAVE( SCOREP_X86_64_PGI_TSC )
 #endif
 
 #if HAVE( SCOREP_X86_64_MSVC_TSC )
