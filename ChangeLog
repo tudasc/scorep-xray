@@ -51,6 +51,11 @@ Features and improvements:
   system automatically before triggering any event. This also ensures
   that the interrupt sources for sampling are registered as early as
   possible and in the case when no compiler instrumention is available.
+- For PGI compiler instrumentation, Score-P uses now Minstrument=functions
+  instead of Mprof=func, because Mprof=func is not supported by PGI compiler
+  version 16. To our knowledge, Minstrument=functions is available at least
+  since PGI compiler version 11. However, older PGI compiler versions may
+  not support Minstrument=functions and are not supported by Score-P anymore.
 - A synchronization callback was added to metric plugin API. A metric
   plugin can register a synchronization callback which is called every
   time Score-P starts clock synchronization. The synchronization callback

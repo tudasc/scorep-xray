@@ -55,7 +55,8 @@ various Score-P components.
   - GNU    : tested with GCC 4 and higher
   - PGI    : tested with version 10.1 and higher
              Note that PGI 13.8 is currently not supported as it is not
-             recognized as an PGI compiler anymore
+             recognized as an PGI compiler anymore. PGI 16 supports
+             only 64-bit platforms.
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on BlueGene systems

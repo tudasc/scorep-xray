@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -69,7 +72,7 @@
  * and region handles.
  */
 
-#if __i386__
+//#if __i386__
 
 /*
  * .LENT1:
@@ -107,7 +110,7 @@ struct PGI_PROFENT_32
     char*               fcnm;
 };
 
-#elif __x86_64__
+//#elif __x86_64__
 
 /*
  * .LENT1:
@@ -165,11 +168,11 @@ struct PGI_PROFENT_64
     char*               fcnm;
 };
 
-#else
+//#else
 
-#error "unsupported architecture"
+//#error "unsupported architecture"
 
-#endif
+//#endif
 
 
 /* **************************************************************************************
@@ -243,7 +246,133 @@ check_region( SCOREP_RegionHandle* region,
     }
 }
 
+#pragma save_all_gp_regs
+void
+___instent( struct PGI_PROFENT_32* profent )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    check_region( &profent->handle,
+                  profent->fcnm,
+                  profent->flnm,
+                  profent->lineno );
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+#pragma save_all_gp_regs
+void
+___instret( struct PGI_PROFENT_32* profent )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+/**
+ * Called at the beginning of each instrumented routine
+ *
+ * The profent is in register %r9, which is by the amd64 calling convention
+ * the 6th argument
+ */
+#pragma save_all_gp_regs
+void
+___instent64( void*                  arg0,
+              void*                  arg1,
+              void*                  arg2,
+              void*                  arg3,
+              void*                  arg4,
+              struct PGI_PROFENT_64* profent )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    check_region( &profent->handle,
+                  profent->fcnm,
+                  profent->flnm,
+                  profent->lineno );
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( profent->handle );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+/**
+ * called at the end of each instrumented routine
+ */
+#pragma save_all_gp_regs
+void
+___instret64( void*                  arg0,
+              void*                  arg1,
+              void*                  arg2,
+              void*                  arg3,
+              void*                  arg4,
+              struct PGI_PROFENT_64* profent )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 #if __i386__
+
+#pragma seva_all_gp_regs
+void
+___instentavx( struct PGI_PROFEMT_32* profent )
+{
+    ___instent( profent );
+}
+
+#pragma save_all_gp_regs
+void
+___instretavx( struct PGI_PROFEMT_32* profent )
+{
+    ___instret( profent );
+}
 
 #pragma save_all_gp_regs
 void
@@ -309,7 +438,33 @@ ___rouent2( struct PGI_PROFENT_32* profent )
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+
 #elif __x86_64__
+
+#pragma save_all_gp_regs
+void
+___instentavx( void*                  arg0,
+               void*                  arg1,
+               void*                  arg2,
+               void*                  arg3,
+               void*                  arg4,
+               struct PGI_PROFENT_64* profent )
+{
+    ___instent64( arg0, arg1, arg2, arg3, arg4, profent );
+}
+
+
+#pragma save_all_gp_regs
+void
+___instretavx( void*                  arg0,
+               void*                  arg1,
+               void*                  arg2,
+               void*                  arg3,
+               void*                  arg4,
+               struct PGI_PROFENT_64* profent )
+{
+    ___instret64( arg0, arg1, arg2, arg3, arg4, profent );
+}
 
 /**
  * Called at the beginning of each instrumented routine

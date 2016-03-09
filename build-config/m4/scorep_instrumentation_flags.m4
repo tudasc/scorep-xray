@@ -9,12 +9,37 @@ dnl
 dnl Copyright (c) 2013-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
+dnl Copyright (c) 2016,
+dnl Technische Universitaet Darmstadt, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
 dnl
 
 dnl file build-config/m4/scorep_instrumentation_flags.m4
+
+AC_DEFUN([SCOREP_CC_FLAG_TEST],[
+    AC_LANG_PUSH(C)
+    save_CFLAGS=$CFLAGS
+    CFLAGS="$CFLAGS $1"
+
+    AC_MSG_CHECKING([whether compiler understands $1])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            int main()
+            {
+                return 0;
+            }
+            ])],
+	[AC_MSG_RESULT(yes)
+	 scorep_compiler_instrumentation_cppflags="$1"],
+        [AC_MSG_RESULT(no)])
+
+   CFLAGS="$save_CFLAGS"
+   AC_LANG_POP(C)
+])
+    
 
 AC_DEFUN([SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
 AC_REQUIRE([AX_COMPILER_VENDOR])dnl
@@ -37,7 +62,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
     [ibm],      [scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
-    [portland], [scorep_compiler_instrumentation_cppflags="-Mprof=func"],
+    [portland], [SCOREP_CC_FLAG_TEST(["-Minstrument=functions"])
+                 SCOREP_CC_FLAG_TEST(["-Mprof=func"])],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
                        [scorep_compiler_instrumentation_cppflags=""],
                        [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"
