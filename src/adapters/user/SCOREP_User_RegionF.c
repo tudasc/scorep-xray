@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -224,15 +227,20 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        /* Make sure the handle is initialized */
-        FSUB( SCOREP_F_Init )( regionHandle,
-                               regionNameF,
-                               regionType,
-                               fileNameF,
-                               lineNo,
-                               regionNameLen,
-                               fileNameLen );
-
+#ifndef __PGI
+        printf( "region handle %lld\n", *regionHandle );
+        if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
+#endif
+        {
+            /* Make sure the handle is initialized */
+            FSUB( SCOREP_F_Init )( regionHandle,
+                                   regionNameF,
+                                   regionType,
+                                   fileNameF,
+                                   lineNo,
+                                   regionNameLen,
+                                   fileNameLen );
+        }
         /* Generate region event */
         SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *regionHandle ) );
     }
