@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2012-2014,
+dnl Copyright (c) 2012-2016,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -17,7 +17,7 @@ AC_REQUIRE([LT_OUTPUT])
 AC_LANG_PUSH($1)
 
 save_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS -I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"
+CPPFLAGS="$CPPFLAGS -I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"
 
 AC_CHECK_HEADERS([gcc-plugin.h],
     [AC_CHECK_HEADERS([tree.h],
@@ -155,7 +155,7 @@ AC_LANG_POP($1)
 AC_MSG_CHECKING([for working GCC $1 plug-in support])
 AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
     [AC_MSG_RESULT([yes])
-    scorep_gcc_plugin_support_reason="yes, using the $1 compiler and -I${scorep_gcc_plugin_cppflags}"
+    scorep_gcc_plugin_support_reason="yes, using the $1 compiler and -I${scorep_gcc_plugin_includedir}"
     $2
     :],
     [AC_MSG_RESULT([no])
@@ -196,7 +196,7 @@ AC_REQUIRE([_SCOREP_GCC_PLUGIN_TARGET_VERSION])dnl
 rm -f gcc_plugin_supported
 
 # we need the include directory from the target CC
-scorep_gcc_plugin_cppflags=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
+scorep_gcc_plugin_includedir=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
 
 AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
     [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is too old, no plug-in support"],
@@ -228,7 +228,7 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
         [test ${scorep_gcc_plugin_target_version} -ge 4009], [false])
     AM_COND_IF([SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49],
         [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
-    AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
+    AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
     AM_COND_IF([GCC_COMPILED_WITH_CXX],
         [AC_LANG_PUSH([C++])
         save_CXX="$CXX"
@@ -243,6 +243,6 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
 
 
 
-AS_UNSET([scorep_gcc_plugin_cppflags])
+AS_UNSET([scorep_gcc_plugin_includedir])
 AS_UNSET([scorep_gcc_plugin_support_reason])
 ])
