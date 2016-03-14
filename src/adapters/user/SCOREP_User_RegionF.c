@@ -228,7 +228,6 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
 #ifndef __PGI
-        printf( "region handle %lld\n", *regionHandle );
         if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
 #endif
         {
