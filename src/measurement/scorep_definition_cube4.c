@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -95,8 +95,7 @@ convert_to_cube_location_type( SCOREP_LocationType location_type )
             break;
             // By not having a default, we get a warning from the compiler if we add and forget to convert a type.
     }
-    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                 "Can not convert location type to CUBE type." );
+    UTILS_BUG( "Can not convert location type to CUBE type." );
 }
 
 /**
@@ -113,8 +112,7 @@ convert_to_cube_location_group_type( SCOREP_LocationGroupType type )
             break;
     }
 
-    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                 "Can not convert location group type to CUBE type." );
+    UTILS_BUG( "Can not convert location group type to CUBE type." );
 }
 
 /* ****************************************************************************
