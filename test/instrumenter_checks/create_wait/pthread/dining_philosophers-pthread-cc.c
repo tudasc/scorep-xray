@@ -1,8 +1,9 @@
 /*
 ** This file is part of the Score-P software (http://www.score-p.org)
 **
-** Copyright (c) 2014,
+** Copyright (c) 2014,2016
 ** Forschungszentrum Juelich GmbH, Germany
+** Technische Universitaet Dresden, Germany
 **
 ** This software may be modified and distributed under the terms of
 ** a BSD-style license.  See the COPYING file in the package base
@@ -15,10 +16,10 @@
 ** @file
 **/
 
-// IT is necessary to support rand_r()
-// and usleep()
-#define _XOPEN_SOURCE
-#define _BSD_SOURCE
+/* usleep and rand_r are non-portable and removed / marked obsolete in recent
+ * POSIX versions. Both are defined by BSD, but _BSD_SOURCE is deprecated
+ * Fortunately, both are specified by SUSv2 */
+#define _XOPEN_SOURCE 500
 
 #include <math.h>
 #include <time.h>
