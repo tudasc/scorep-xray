@@ -71,7 +71,8 @@ libscorep_adapter_opencl_mgmt_static_la_LIBADD = \
     $(libscorep_adapter_opencl_mgmt_common_libadd)
 
 libscorep_adapter_opencl_mgmt_static_la_LDFLAGS = \
-    $(libscorep_adapter_opencl_mgmt_common_ldflags)
+    $(libscorep_adapter_opencl_mgmt_common_ldflags) \
+    -Wl,@../share/opencl.wrap
 
 # event library for the OpenCL adapter
 
