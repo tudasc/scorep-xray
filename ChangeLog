@@ -4,86 +4,89 @@ Major features:
 
 - Score-P supports a new data collecting mode based on sampling.
   Sampling can be used in conjunction with the usual instrumentation
-  of parallel paradigms. Therefore it combines the lower overhead of
-  statistical sampling and the accuracy of instrumentation. Both
-  call-path profiling and event tracing are supported. As this is
-  rather a major change in the Score-P internals and also for the
-  user experience we appreciate any feedback but need to declare
-  the sampling support as experimental in this first release.
-- Support for OPARI2 2.0 was integrated. OPARI2 is now more
-  flexible to enable support for other pragma/directive based
-  paradigms.
-- Support for MPI-3.1 functions (except MPI_Comm_idup). Most new
+  of parallel paradigms.  Therefore it combines the lower overhead of
+  statistical sampling and the accuracy of instrumentation.  Both
+  call-path profiling and event tracing are supported.  As this is
+  rather a major change in the Score-P internals and also for the user
+  experience we appreciate any feedback but need to declare the
+  sampling support as experimental in this first release.
+- Support for OPARI2 2.0 was integrated.  OPARI2 is now more flexible
+  to enable support for other pragma/directive based paradigms.
+- Support for MPI-3.1 functions (except 'MPI_Comm_idup').  Most new
   functions currently provide plain enter/exit wrappers.
 - Support for tracking memory allocations was added to Score-P.  This
-  includes C/C++, MPI, and SHMEM API calls.  The instrumentation is done
-  by default, though must be enabled at measurement time explicitly.
+  includes C/C++, MPI, and SHMEM API calls.  The instrumentation is
+  done by default, though must be enabled at measurement time
+  explicitly.
 
 Features and improvements:
 
 - When using compiler instrumentation with GNU (not the gcc-plugin but
-  the -finstrument-functions variant), Cray, or Fujitsu compilers, one
-  can provide a file containing symbols that will trigger measurement
-  events when the corresponding function is called. These symbols are
-  subject to filtering. Providing symbols this way is useful when
-  obtaining symbols during measurement via 'nm' or 'libbfd' is not an
-  option, e.g, on Blue Gene systems. The symbol file needs to be
-  specified in the environment variable SCOREP_NM_SYMBOLS. The
-  accepted format is as in 'nm -l <executable>'.
-- Transparent changes to the event-dispatching. Currently events are
+  the '-finstrument-functions' variant), Cray, or Fujitsu compilers,
+  one can provide a file containing symbols that will trigger
+  measurement events when the corresponding function is called.  These
+  symbols are subject to filtering.  Providing symbols this way is
+  useful when obtaining symbols during measurement via 'nm' or
+  'libbfd' is not an option, e.g, on Blue Gene systems.  The symbol
+  file needs to be specified in the environment variable
+  'SCOREP_NM_SYMBOLS'.  The accepted format is as in
+  'nm -l <executable>'.
+- Transparent changes to the event-dispatching.  Currently events are
   consumed by either the profiling or tracing substrate (or both).
 - The timer selection was moved from configure time to measurement
-  time. During configure we detect all available timers and provide
-  the environment variable SCOREP_TIMER to select one. The timer
-  defaults to a low-overhead time stamp counter, if available. Note
+  time.  During configure we detect all available timers and provide
+  the environment variable 'SCOREP_TIMER' to select one.  The timer
+  defaults to a low-overhead time stamp counter, if available.  Note
   that we assume all processes to use the same timer and time stamp
   counter timers to run at the same frequency.
 - Building the entire Score-P package on Blue Gene/Q systems using GNU
-  compilers is now supported. The installation currently needs some
-  extra steps, please see share/bg-gnu/README for details. The
+  compilers is now supported.  The installation currently needs some
+  extra steps, please see 'share/bg-gnu/README' for details.  The
   installation on older Blue Gene systems, though not tested, might
   work as well.
 - Source-to-source instrumentation via PDT on Blue Gene systems was
-  reenabled for PDT versions newer than 3.18.
+  re-enabled for PDT versions newer than 3.18.
 - Score-P takes advantage from compilers to initialize the measurement
-  system automatically before triggering any event. This also ensures
+  system automatically before triggering any event.  This also ensures
   that the interrupt sources for sampling are registered as early as
-  possible and in the case when no compiler instrumention is available.
-- For PGI compiler instrumentation, Score-P uses now Minstrument=functions
-  instead of Mprof=func, because Mprof=func is not supported by PGI compiler
-  version 16. To our knowledge, Minstrument=functions is available at least
-  since PGI compiler version 11. However, older PGI compiler versions may
-  not support Minstrument=functions and are not supported by Score-P anymore.
-- A synchronization callback was added to metric plugin API. A metric
+  possible and in the case when no compiler instrumentation is
+  available.
+- Score-P uses now the '-Minstrument=functions' flag for PGI compiler
+  instrumentation (64-bit targets only).  The '-Mprof=func' flag is no
+  longer supported by PGI compiler version 16.  To our knowledge,
+  '-Minstrument=functions' is available at least since PGI compiler
+  version 11.  However, older PGI compiler versions may not support
+  '-Minstrument=functions' and are not supported by Score-P anymore.
+- A synchronization callback was added to metric plugin API.  A metric
   plugin can register a synchronization callback which is called every
-  time Score-P starts clock synchronization. The synchronization callback
-  contains one argument specifying the point in time in more detail. At
-  the moment we distinguish synchronization at initialization, during
-  measurement run, and at finalization. As a result the synchronization
-  callback allows metric plugins to detect start and end points of
-  measurement intervals.
+  time Score-P starts clock synchronization.  The synchronization
+  callback contains one argument specifying the point in time in more
+  detail.  At the moment we distinguish synchronization at
+  initialization, during measurement run, and at finalization.  As a
+  result the synchronization callback allows metric plugins to detect
+  start and end points of measurement intervals.
 - The manual user instrumentation for Fortran 90 performs region
-  initialization checks based on handle values instead of comparing names.
-  This does not apply when using PGI compilers.
+  initialization checks based on handle values instead of comparing
+  names.  This does not apply when using PGI compilers.
 
 User tools and API improvements and changes:
 
 - A Score-P installation provides new instrumentation wrappers which
-  simplify the application instrumentation of autotools and CMake based
-  projects.  Please consult the usage instruction of the 'scorep-wrapper'
-  command.
-- The option --pomp does not take any options any more.
+  simplify the application instrumentation of autotools and CMake
+  based projects.  Please consult the usage instruction of the
+  'scorep-wrapper' command.
+- The option '--pomp' does not take any options any more.
 - Specific options for OPARI2 are passed via the
-  --opari=<parameter-list> option.
+  '--opari=<parameter-list>' option.
 - To enable or disable instrumentation of OpenMP the options
-  --openmp and --noopenmp have been added. Note that for compile
-  units with enabled OpenMP compilerflag, instrumentation is
-  enabled by default. However, when manually disabling, some
-  instrumentation must still be carried out to ensure a
-  thread-safe execution of the measurement system.
+  '--openmp' and '--noopenmp' have been added.  Note that for compile
+  units with enabled OpenMP compiler-flag, instrumentation is enabled
+  by default.  However, when manually disabling, some instrumentation
+  must still be carried out to ensure a thread-safe execution of the
+  measurement system.
 - POMP user instrumentation is no longer automatically activated
-  together with OpenMP instrumentation. The --pomp flag has to be
-  explicitly specified with the scorep command.
+  together with OpenMP instrumentation.  The '--pomp' flag has to be
+  explicitly specified with the 'scorep' command.
 - On Cray systems, compiler instrumentation does not add '-G2' option
   anymore, which disables some optimizations.
 - The instrumenter now warns the user if the provided instrumentation
@@ -91,23 +94,22 @@ User tools and API improvements and changes:
 
 Bugfixes:
 
-- Fixed a possible segementation fault in the user adapter.
-- Fixed an unitialized variable in the instrumenter.
 - Fixed possible mistreatment of a profile node as being in an untied
   task.
 - Fixed bug in obtaining executable names longer than 512 characters
   when using the GNU compiler adapter (applies also to Cray and
   Fujitsu compilers).
-- The GCC compiler instrumentation plug-in was non-functional for GCC 5
-  because of an unnoticed API change. Additionally, the custom
+- The GCC compiler instrumentation plug-in was non-functional for
+  GCC 5 because of an unnoticed API change.  Additionally, the custom
   demangling of Fortran module functions is working again.
 - The GCC instrumentation plug-in does not instrument the `main`
   function in Fortran programs anymore as the main entry point for the
   user is `MAIN__`.
-- Names assigned to MPI communicators by calls to MPI_Comm_set_name are
-  now also tracked, even if the corresponding API calls wont be recorded.
+- Names assigned to MPI communicators by calls to 'MPI_Comm_set_name'
+  are now also tracked, even if the corresponding API calls wont be
+  recorded.
 - Fixed MPI library interposition if the link command lists explicitly
-  libmpifort or libmpigi.
+  'libmpifort' or 'libmpigi'.
 
 ------------------- Released version 1.4.2 ---------------------------
 
