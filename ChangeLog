@@ -15,9 +15,9 @@ Major features:
   paradigms.
 - Support for MPI-3.1 functions (except MPI_Comm_idup). Most new
   functions currently provide plain enter/exit wrappers.
-- Support for tracking memory allocations was added to Score-P. This includes
-  C/C++, MPI, and SHMEM API calls. The instrumentation is done by default,
-  though must be enabled at measurement time explicitly.
+- Support for tracking memory allocations was added to Score-P.  This
+  includes C/C++, MPI, and SHMEM API calls.  The instrumentation is done
+  by default, though must be enabled at measurement time explicitly.
 
 Features and improvements:
 
@@ -31,9 +31,7 @@ Features and improvements:
   specified in the environment variable SCOREP_NM_SYMBOLS. The
   accepted format is as in 'nm -l <executable>'.
 - Transparent changes to the event-dispatching. Currently events are
-  consumed by either the profiling or tracing substrate (or both). A
-  future release will allow for additional event-consumption via
-  plug-in.
+  consumed by either the profiling or tracing substrate (or both).
 - The timer selection was moved from configure time to measurement
   time. During configure we detect all available timers and provide
   the environment variable SCOREP_TIMER to select one. The timer
