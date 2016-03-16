@@ -84,9 +84,8 @@ DESCRIPTION
     prevented at this stage (the configuration step compiles and runs lots of
     small test programs; instrumenting these would in almost all cases result in
     failure of the configuration).  To do so, one needs to set the variable
-    'SCOREP_WRAPPER_OFF' to an non-empty value when invoking the configuration
-    command.  The wrapper command from above will than expand to the
-    original compile command:
+    'SCOREP_WRAPPER' to 'off' when invoking the configuration command.  The
+    wrapper command from above will than expand to the original compile command:
 
     $ gcc COMPILER_FLAGS...
 
@@ -118,11 +117,11 @@ EXAMPLES
     instrumentation.  These goals can be achieved by invoking 'cmake' like
     follows:
 
-    $ SCOREP_WRAPPER_OFF=1 cmake .. \\
+    $ SCOREP_WRAPPER=off cmake .. \\
           -DCMAKE_C_COMPILER=scorep-gcc \\
           -DCMAKE_CXX_COMPILER=scorep-g++
 
-    The 'SCOREP_WRAPPER_OFF=1' disables the instrumentation only in the
+    The 'SCOREP_WRAPPER=off' disables the instrumentation only in the
     environment of the 'cmake' command.  Subsequent calls to 'make' are not
     affected and will instrument the application as expected.
 
@@ -131,7 +130,7 @@ EXAMPLES
   * For autotools based build systems it is recommended to configure in the
     following way:
 
-    $ SCOREP_WRAPPER_OFF=1 ../configure \\
+    $ SCOREP_WRAPPER=off ../configure \\
           CC=scorep-gcc \\
           CXX=scorep-g++ \\
           --disable-dependency-tracking
@@ -247,7 +246,7 @@ esac
 # extract compiler name
 compiler=${argv0##*scorep-}
 
-if test "${SCOREP_WRAPPER_OFF:+set}" = set
+if test "x${SCOREP_WRAPPER}" = xoff
 then
     exec $compiler "$@"
 else

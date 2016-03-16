@@ -88,9 +88,9 @@ test_expect_success 'The wrapper works' '
     test_compare expect result
 '
 
-test_expect_success 'SCOREP_WRAPPER_OFF works' '
+test_expect_success 'SCOREP_WRAPPER=off works' '
     echo "$CC -c foo.c" >expect &&
-    SCOREP_WRAPPER_OFF=1 scorep-$CC -c foo.c >result &&
+    SCOREP_WRAPPER=off scorep-$CC -c foo.c >result &&
     test_compare expect result
 '
 
@@ -106,9 +106,9 @@ test_expect_success 'Passing flags via SCOREP_WRAPPER_COMPILER_FLAGS works' '
     test_compare expect result
 '
 
-test_expect_success 'SCOREP_WRAPPER_OFF disables SCOREP_WRAPPER_COMPILER_FLAGS' '
+test_expect_success 'SCOREP_WRAPPER=off disables SCOREP_WRAPPER_COMPILER_FLAGS' '
     echo "$CC -c foo.c" >expect &&
-    SCOREP_WRAPPER_OFF=1 SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
+    SCOREP_WRAPPER=off SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
     test_compare expect result
 '
 
