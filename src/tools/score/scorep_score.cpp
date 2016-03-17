@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -95,7 +95,7 @@ main( int argc, char** argv )
                 }
                 else
                 {
-                    cerr << "ERROR: No filter file specified." << endl;
+                    cerr << "ERROR: No filter file specified" << endl;
                     print_help();
                     exit( EXIT_FAILURE );
                 }
@@ -109,7 +109,7 @@ main( int argc, char** argv )
                 }
                 else
                 {
-                    cerr << "ERROR: No filter file specified." << endl;
+                    cerr << "ERROR: Missing number of hardware counters" << endl;
                     print_help();
                     exit( EXIT_FAILURE );
                 }
@@ -120,7 +120,7 @@ main( int argc, char** argv )
             }
             else
             {
-                cerr << "ERROR: Unknown argment " << arg << "." << endl;
+                cerr << "ERROR: Unknown argment: '" << arg << "'" << endl;
                 print_help();
                 exit( EXIT_FAILURE );
             }
@@ -135,7 +135,7 @@ main( int argc, char** argv )
 
     if ( file_name == "" )
     {
-        cerr << "ERROR: No input profile." << endl;
+        cerr << "ERROR: No input profile" << endl;
         print_help();
         exit( EXIT_FAILURE );
     }
@@ -143,7 +143,8 @@ main( int argc, char** argv )
     //-------------------------------------- Sanity checks
     if ( dense_num < 0 )
     {
-        cerr << "ERROR: The number of hardware counters cannot be less than zero." << endl;
+        cerr << "ERROR: The number of hardware counters cannot be less than zero: "
+             << "'" << dense_num << "'" << endl;
         print_help();
         exit( EXIT_FAILURE );
     }

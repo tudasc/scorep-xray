@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -217,7 +217,7 @@ get_temp_filename( void )
             return filename.str();
         }
 
-        cerr << "ERROR: Failed to find writable directory for temporary files." << endl;
+        cerr << "ERROR: Failed to find writable directory for temporary files" << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -469,7 +469,7 @@ SCOREP_Score_Estimator::initializeFilter( string filterFile )
 
     if ( err != SCOREP_SUCCESS )
     {
-        cerr << "ERROR: Failed to open '" << filterFile << "'." << endl;
+        cerr << "ERROR: Failed to open '" << filterFile << "'" << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -711,8 +711,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     fstream estimator_in( in_filename.c_str(), ios_base::out );
     if ( !estimator_in )
     {
-        cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
-             << endl;
+        cerr << "ERROR: Failed to open temorary file for 'otf2-estimator' input" << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -735,7 +734,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
                      out_filename + "\" < \"" + in_filename + "\"";
     if ( system( command.c_str() ) != EXIT_SUCCESS )
     {
-        cerr << "ERROR: Failed to call otf2-estimator." << endl;
+        cerr << "ERROR: Failed to call 'otf2-estimator'" << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -743,8 +742,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     fstream estimator_out( out_filename.c_str(), ios_base::in );
     if ( !estimator_out )
     {
-        cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
-             << endl;
+        cerr << "ERROR: Failed to open temorary file for 'otf2-estimator' output" << endl;
         exit( EXIT_FAILURE );
     }
 

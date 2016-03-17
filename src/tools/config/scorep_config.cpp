@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -300,7 +300,7 @@ main( int    argc,
         {
             if ( path_to_binary == "" )
             {
-                std::cerr << "ERROR: Using --build-check requires calling scorep-config not via $PATH." << std::endl;
+                std::cerr << "ERROR: Using '--build-check' requires calling scorep-config not via $PATH" << std::endl;
                 exit( EXIT_FAILURE );
             }
             install = false;
@@ -341,8 +341,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_ThreadSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown threading system " << arg
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Unknown threading system: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -353,8 +352,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_MppSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown multi-process paradigm " << arg
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Unknown multi-process paradigm: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -365,8 +363,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_Mutex::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown locking sytem " << arg
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Unknown locking system: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -384,8 +381,7 @@ main( int    argc,
             }
             if ( !target_name )
             {
-                std::cerr << "Missing argument for --target"
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Missing argument for '--target'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -396,8 +392,7 @@ main( int    argc,
             }
             else
             {
-                std::cerr << "\nUnknown target: " << target_name
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Unknown target: '" << target_name << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -408,8 +403,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_Adapter::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown option " << arg
-                          << ". Abort.\n" << std::endl;
+                std::cerr << "ERROR: Unknown option: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -422,8 +416,7 @@ main( int    argc,
         delegate( argc, argv, "mic" );
 #else
 #if !HAVE( PLATFORM_MIC )
-        std::cerr << "\nUnsupported target: " << target_name
-                  << ". Abort.\n" << std::endl;
+        std::cerr << "ERROR: Unsupported target: '" << target_name << "'" << std::endl;
         clean_up();
         exit( EXIT_FAILURE );
 #endif  /* !HAVE( PLATFORM_MIC ) */

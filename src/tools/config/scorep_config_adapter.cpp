@@ -601,7 +601,7 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         int return_value = system( opari_config.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "Error executing: " << opari_config.c_str() << std::endl;
+            std::cerr << "ERROR: Execution failed: " << opari_config.c_str() << std::endl;
             exit( EXIT_FAILURE );
         }
         std::cout << " ";

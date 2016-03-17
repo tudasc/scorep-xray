@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -47,13 +47,13 @@ scorep_get_ibm_compiler_version( std::string compiler, int& major, int& minor )
     console = popen( command.c_str(), "r" );
     if ( console == NULL )
     {
-        std::cerr << "Error: Failed to query the compiler version number" << std::endl;
+        std::cerr << "ERROR: Failed to query the compiler version number" << std::endl;
         exit( EXIT_FAILURE );
     }
     int bytes_read = fread( version_string, 1, 64, console );
     if ( bytes_read == 0 )
     {
-        std::cerr << "Error: Failed to read the compiler version number" << std::endl;
+        std::cerr << "ERROR: Failed to read the compiler version number" << std::endl;
         exit( EXIT_FAILURE );
     }
     pclose( console );
@@ -152,11 +152,10 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
         {
             if ( !is_fortran_file( *current_file ) )
             {
-                std::cerr << "Compiler instrumentation with the Sun compiler is "
-                          << "only possible for Fortran files. If you want to "
-                          << "switch off compiler instrumentation, please use the "
-                          << "--nocompiler option."
-                          << std::endl;
+                std::cerr << "ERROR: Compiler instrumentation with the Sun compiler is "
+                          << "only possible for Fortran files\n"
+                          << "       Use the '--nocompiler' option to disable compiler "
+                          << "instrumentation" << std::endl;
                 exit( EXIT_FAILURE );
             }
         }
@@ -178,10 +177,10 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
         if ( app_version <= 1100 ||
              ( is_fortran_file( input_file ) && app_version <= 1300 ) )
         {
-            std::cerr << "Error: This compiler version is too old to be used with this "
-                      << "Score-P installation.\n"
+            std::cerr << "ERROR: This compiler version is too old to be used with this "
+                      << "Score-P installation\n"
                       << "       You need to use a Score-P installation that was compiled"
-                      << " with XLC 11.0 or earlier." << std::endl;
+                      << " with XLC 11.0 or earlier" << std::endl;
             exit( EXIT_FAILURE );
         }
     }
@@ -190,10 +189,10 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
         if ( app_version > 1300 ||
              ( !is_fortran_file( input_file ) && app_version > 1100 ) )
         {
-            std::cerr << "Error: This compiler version is too new to be used with this "
-                      << "Score-P installation.\n"
+            std::cerr << "ERROR: This compiler version is too new to be used with this "
+                      << "Score-P installation\n"
                       << "       You need to use a Score-P installation that was compiled"
-                      << " with XLC 11.1 or higher." << std::endl;
+                      << " with XLC 11.1 or higher" << std::endl;
             exit( EXIT_FAILURE );
         }
     }

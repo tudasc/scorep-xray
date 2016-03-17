@@ -117,8 +117,8 @@ main( int   argc,
     {
         if ( args.size() > 1 )
         {
-            std::cerr << "Invalid number of options for info command "
-                      << info_command << std::endl;
+            std::cerr << "ERROR: Invalid number of options for info command "
+                      << "'" << info_command << "'" << std::endl;
             print_short_usage( std::cerr );
             return EXIT_FAILURE;
         }
@@ -146,8 +146,8 @@ main( int   argc,
         }
         else if ( mode != "" )
         {
-            std::cerr << "Invalid option for info command "
-                      << info_command << ": " << mode << std::endl;
+            std::cerr << "ERROR: Invalid option for info command "
+                      << "'" << info_command << "': '" << mode << "'" << std::endl;
             print_short_usage( std::cerr );
             SCOREP_ConfigFini();
             return EXIT_FAILURE;
@@ -174,8 +174,8 @@ main( int   argc,
     {
         if ( args.size() != 0 )
         {
-            std::cerr << "Invalid number of options for info command "
-                      << info_command << std::endl;
+            std::cerr << "ERROR: Invalid number of options for info command "
+                      << "'" << info_command << "'" << std::endl;
             print_short_usage( std::cerr );
             return EXIT_FAILURE;
         }
@@ -184,7 +184,7 @@ main( int   argc,
         int         return_value = system( summary_command.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "Error executing: " << summary_command << std::endl;
+            std::cerr << "ERROR: Execution failed: " << summary_command << std::endl;
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
@@ -195,8 +195,8 @@ main( int   argc,
     {
         if ( args.size() != 0 )
         {
-            std::cerr << "Invalid number of options for info command "
-                      << info_command << std::endl;
+            std::cerr << "ERROR: Invalid number of options for info command "
+                      << "'" << info_command << "'" << std::endl;
             print_short_usage( std::cerr );
             return EXIT_FAILURE;
         }
@@ -205,14 +205,13 @@ main( int   argc,
         int         return_value = system( command.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "Error executing: " << command << std::endl;
+            std::cerr << "ERROR: Execution failed: " << command << std::endl;
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }
 
-
-    std::cerr << "Invalid info command: " << info_command << std::endl;
+    std::cerr << "ERROR: Invalid info command: '" << info_command << "'" << std::endl;
     print_short_usage( std::cerr );
     return EXIT_FAILURE;
 }

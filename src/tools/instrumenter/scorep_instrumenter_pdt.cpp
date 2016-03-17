@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -178,7 +178,7 @@ SCOREP_Instrumenter_PdtAdapter::set_pdt_path( const std::string& pdt )
         }
         else
         {
-            std::cout << "ERROR: Unable to find PDT binaries.\n";
+            std::cerr << "ERROR: Unable to find PDT binaries" << std::endl;
             exit( EXIT_FAILURE );
         }
     }

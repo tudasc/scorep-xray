@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -121,10 +121,8 @@ SCOREP_Instrumenter_Selector::checkOption( std::string arg )
             return true;
         }
     }
-    std::cerr << "ERROR: Unknown paradigm '" << arg << "' specified for --" << m_name
-              << ".\n"
-              << "       Type 'scorep --help' to get a list of supported paradigms."
-              << std::endl;
+    std::cerr << "ERROR: Unknown paradigm '" << arg << "' specified for '--" << m_name << "'\n"
+              << "       Type 'scorep --help' to get a list of supported paradigms" << std::endl;
     exit( EXIT_FAILURE );
 
     /* To please IBM compiler */
@@ -204,26 +202,26 @@ SCOREP_Instrumenter_Selector::checkAllOption( std::string arg )
     /* Check for old arguments for backward compatibility */
     if ( arg == "--mpi" )
     {
-        std::cerr << "[Score-P] Warning: You are using the deprecated option --mpi.\n"
-                  << "          Please use --mpp=mpi instead." << std::endl;
+        std::cerr << "WARNING: You are using the deprecated option '--mpi'\n"
+                  << "         Please use '--mpp=mpi' instead" << std::endl;
         arg = "--mpp=mpi";
     }
     else if ( arg == "--nompi" )
     {
-        std::cerr << "[Score-P] Warning: You are using the deprecated option --nompi.\n"
-                  << "          Please use --mpp=none instead." << std::endl;
+        std::cerr << "WARNING: You are using the deprecated option '--nompi'\n"
+                  << "         Please use '--mpp=none' instead" << std::endl;
         arg = "--mpp=none";
     }
     else if ( arg == "--openmp" )
     {
-        std::cerr << "[Score-P] Warning: You are using the deprecated option --openmp.\n"
-                  << "          Please use --thread=omp instead." << std::endl;
+        std::cerr << "WARNING: You are using the deprecated option '--openmp'\n"
+                  << "         Please use '--thread=omp' instead" << std::endl;
         arg = "--thread=omp";
     }
     else if ( arg == "--noopenmp" )
     {
-        std::cerr << "[Score-P] Warning: You are using the deprecated option --noopenmp.\n"
-                  << "          Please use --thread=none instead." << std::endl;
+        std::cerr << "WARNING: You are using the deprecated option '--noopenmp'\n"
+                  << "         Please use '--thread=none' instead" << std::endl;
         arg = "--thread=none";
     }
 
@@ -317,15 +315,14 @@ SCOREP_Instrumenter_Selector::checkAllSupported( void )
         if ( !( *selector )->m_current_selection->isSupported() )
         {
             std::string name = ( *selector )->m_current_selection->getConfigName();
-            std::cerr << "ERROR: This Score-P installation does not support "
-                      << name << ".\n"
-                      << "       To analyze an application with " << name << ",\n"
+            std::cerr << "ERROR: This Score-P installation does not support '" << name << "'\n"
+                      << "       To analyze an application with '" << name << "',\n"
                       << "       you need a Score-P installation with support for "
-                      << name << ".\n"
-                      << "       However, you can override a wrong auto-detection with --"
-                      << ( *selector )->m_name << "=<paradigm>.\n"
+                      << "'" << name << "'\n"
+                      << "       However, you can override a wrong auto-detection with "
+                      << "'--" << ( *selector )->m_name << "=<paradigm>'\n"
                       << "       You can see a list of supported paradigms with "
-                      << "'scorep --help'." << std::endl;
+                      << "'scorep --help'" << std::endl;
             exit( EXIT_FAILURE );
         }
     }
@@ -338,7 +335,7 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
     if ( !selection->isSupported() )
     {
         std::cerr << "ERROR: Selection of an unsupported paradigm implementation: "
-                  << selection->getConfigName() << "." << std::endl;
+                  << "'" << selection->getConfigName() << "'" << std::endl;
         exit( EXIT_FAILURE );
     }
 
@@ -358,9 +355,8 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
     {
         if ( priority == user_selection )
         {
-            std::cerr << "ERROR: You can use '--" << m_name << "' only once.\n       "
-                      << "It is not possible to select two paradigms from the same group"
-                      << std::endl;
+            std::cerr << "ERROR: You can use '--" << m_name << "' only once\n"
+                      << "       It is not possible to select two paradigms from the same group" << std::endl;
             exit( EXIT_FAILURE );
         }
         /* If we have multiple paradigms that can be applied, use the first one.

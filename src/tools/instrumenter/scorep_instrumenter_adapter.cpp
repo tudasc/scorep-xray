@@ -82,8 +82,8 @@ SCOREP_Instrumenter_Adapter::checkDependencies( void )
     if ( !prereqs )
     {
         m_usage = disabled;
-        std::cerr << "WARNING: Disabled " << m_name << " because none of its "
-                  << "prerequisites are enabled." << std::endl;
+        std::cerr << "WARNING: Disabled '" << m_name << "' because none of its "
+                  << "prerequisites are enabled" << std::endl;
     }
 
     for ( i = m_conflicts.begin(); i != m_conflicts.end(); i++ )
@@ -278,8 +278,8 @@ SCOREP_Instrumenter_Adapter::unsupported( void )
 void
 SCOREP_Instrumenter_Adapter::error_unsupported( void )
 {
-    std::cerr << "ERROR: This installation does not support " << m_name
-              << " instrumentation.\n       Abort." << std::endl;
+    std::cerr << "ERROR: This installation does not support '" << m_name << "' "
+              << "instrumentation" << std::endl;
     exit( EXIT_FAILURE );
 }
 
@@ -456,14 +456,14 @@ SCOREP_Instrumenter_Adapter::require( std::string                   caller,
     adapter = m_adapter_list.find( id );
     if ( adapter == m_adapter_list.end() )
     {
-        std::cerr << "ERROR: Required adapter for " << caller <<
-            " is not available. Abort." << std::endl;
+        std::cerr << "ERROR: Required adapter for '" << caller << "' adapter "
+                  << "is not available" << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( adapter->second->m_usage == disabled )
     {
-        std::cerr << "ERROR: " << adapter->second->m_name << " is required by "
-                  << caller << " and must not be disabled. Abort." << std::endl;
+        std::cerr << "ERROR: Cannot disable '" << adapter->second->m_name << "' adapter\n"
+                  << "       Is required by " << caller << " adapter" << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( adapter->second->m_usage == detect )
@@ -486,8 +486,8 @@ SCOREP_Instrumenter_Adapter::conflict( std::string                   caller,
     }
     if ( adapter->second->m_usage == enabled )
     {
-        std::cerr << "ERROR: " << adapter->second->m_name << " conflicts with "
-                  << caller << " and must not be enabled. Abort." << std::endl;
+        std::cerr << "ERROR: Cannot enable '" << adapter->second->m_name << "' adapter\n"
+                  << "       Conflicts with '" << caller << "' adapter" << std::endl;
         exit( EXIT_FAILURE );
     }
     adapter->second->m_usage = disabled;

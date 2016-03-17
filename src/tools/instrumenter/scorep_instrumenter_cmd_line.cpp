@@ -137,17 +137,15 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
 #if SCOREP_BACKEND_COMPILER_INTEL && HAVE( PLATFORM_MIC )
     if ( !m_mmic_set )
     {
-        std::cerr << "Could not detect '-mmic' flag. Host compilation not supported "
-                  << "by this installation."
-                  << std::endl;
+        std::cerr << "ERROR: Could not detect '-mmic' flag\n"
+                  << "       Host compilation not supported by this installation" << std::endl;
         exit( EXIT_FAILURE );
     }
 #endif /* SCOREP_BACKEND_COMPILER_INTEL */
 #if SCOREP_BACKEND_COMPILER_INTEL && !HAVE( PLATFORM_MIC ) && !HAVE( MIC_SUPPORT )
     if ( m_mmic_set )
     {
-        std::cerr << "MIC compilation not supported by this installation."
-                  << std::endl;
+        std::cerr << "ERROR: MIC compilation not supported by this installation" << std::endl;
         exit( EXIT_FAILURE );
     }
 #endif
@@ -387,7 +385,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     {
         if ( m_path_to_binary == "" )
         {
-            std::cerr << "ERROR: Using --build-check requires calling scorep not via $PATH." << std::endl;
+            std::cerr << "ERROR: Using '--build-check' requires calling scorep not via $PATH" << std::endl;
             exit( EXIT_FAILURE );
         }
         m_is_build_check = true;
@@ -414,13 +412,14 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 
         if ( filter_file_name == "" )
         {
-            std::cerr << "ERROR: No filter file specified." << std::endl;
+            std::cerr << "ERROR: No filter file specified" << std::endl;
             exit( EXIT_FAILURE );
         }
 
         if ( !exists_file( filter_file_name ) )
         {
-            std::cerr << "ERROR: filter file does not exists." << std::endl;
+            std::cerr << "ERROR: Filter file does not exists: "
+                      << "'" << filter_file_name << "'" << std::endl;
             exit( EXIT_FAILURE );
         }
 
@@ -458,17 +457,15 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     }
     else if ( arg == "--dynamic" )
     {
-        std::cerr << "Dynamic linking is not possible. This installation contains "
-                  << "no shared Score-P libraries."
-                  << std::endl;
+        std::cerr << "ERROR: Dynamic linking is not possible\n"
+                  << "       This installation contains no shared Score-P libraries" << std::endl;
         exit( EXIT_FAILURE );
     }
 #elif defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--static" )
     {
-        std::cerr << "Static linking is not possible. This installation contains "
-                  << "no static Score-P libraries."
-                  << std::endl;
+        std::cerr << "ERROR: Static linking is not possible\n"
+                  << "       This installation contains no static Score-P libraries" << std::endl;
         exit( EXIT_FAILURE );
     }
     else if ( arg == "--dynamic" )
@@ -487,13 +484,14 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     {
         if ( arg.length() < 10 )
         {
-            std::cerr << "ERROR: No config file specified." << std::endl;
+            std::cerr << "ERROR: No config file specified" << std::endl;
             exit( EXIT_FAILURE );
         }
         std::string config_file = arg.substr( 9 );
         if ( m_install_data.readConfigFile( config_file ) != SCOREP_SUCCESS )
         {
-            std::cerr << "ERROR: Failed to read config file." << std::endl;
+            std::cerr << "ERROR: Failed to read config file "
+                      << "'" << config_file << "'" << std::endl;
             exit( EXIT_FAILURE );
         }
         return scorep_parse_mode_param;
@@ -507,13 +505,13 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     {
         if ( arg.length() < 11 )
         {
-            std::cerr << "ERROR: No verbosity value specified." << std::endl;
+            std::cerr << "ERROR: No verbosity value specified" << std::endl;
             exit( EXIT_FAILURE );
         }
         m_verbosity = atol( arg.substr( 10 ).c_str() );
         if ( m_verbosity < 0 )
         {
-            std::cerr << "ERROR: Invalid verbosity value: " << m_verbosity << std::endl;
+            std::cerr << "ERROR: Invalid verbosity value: '" << m_verbosity << "'" << std::endl;
             exit( EXIT_FAILURE );
         }
         return scorep_parse_mode_param;
@@ -528,17 +526,13 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 #if defined( SCOREP_SHARED_BUILD )
         m_no_as_needed = true;
 #else
-        std::cerr << "Option --no-as-needed makes no sense for static-only Score-P "
-                  << "builds and will be ignored."
-                  << std::endl;
+        std::cerr << "WARNING: Option '--no-as-needed' makes no sense for static-only Score-P "
+                  << "builds and will be ignored" << std::endl;
 #endif
     }
     else
     {
-        std::cerr << "ERROR: Unknown parameter: "
-                  << arg
-                  << ". Abort."
-                  << std::endl;
+        std::cerr << "ERROR: Unknown parameter: '" << arg << "'" << std::endl;
         exit( EXIT_FAILURE );
     }
 
@@ -677,10 +671,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     else if (  m_install_data.isArgForShared( current ) )
     {
 #ifndef SCOREP_SHARED_BUILD
-        std::cerr << "[Score-P] It is not possible to build instrumented shared "
-                  << "libraries with a statically build Score-P. "
-                  << "You need an Score-P installation that has "
-                  << "shared libraries." << std::endl;
+        std::cerr << "ERROR: It is not possible to build instrumented shared "
+                  << "libraries with a statically build Score-P\n"
+                  << "       You need a Score-P installation that was build with "
+                  << "shared libraries" << std::endl;
         exit( EXIT_FAILURE );
 #endif
         m_target_is_shared_lib = true;
@@ -795,7 +789,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
          && ( !SCOREP_Instrumenter_Selector::supportInstrumentFilters()
               && !SCOREP_Instrumenter_Adapter::supportAnyInstrumentFilters() ) )
     {
-        std::cerr << "WARNING: Instrument filter(s) will be ignored." << std::endl;
+        std::cerr << "WARNING: Instrument filter(s) will be ignored" << std::endl;
     }
 
     /* If this is a dry run, enable printing out commands, if it is not already */
@@ -806,13 +800,13 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 
     if ( m_compiler_name == "" )
     {
-        std::cerr << "ERROR: Could not identify compiler name." << std::endl;
+        std::cerr << "ERROR: Could not identify compiler name" << std::endl;
         exit( EXIT_FAILURE );
     }
 
     if ( getInputFileNumber() < 1 )
     {
-        std::cerr << "WARNING: Found no input files." << std::endl;
+        std::cerr << "WARNING: Found no input files" << std::endl;
     }
 }
 

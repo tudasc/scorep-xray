@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -134,10 +134,10 @@ SCOREP_Instrumenter_Paradigm::checkOption( std::string arg )
     }
     else if ( arg == getConfigName() )
     {
-        // If the user specified this particular variant we can saz it is not supported.
+        // If the user specified this particular variant we can say it is not supported.
         // Otherwise another variant exists that support the paradigm.
-        std::cerr << "ERROR: " << getConfigName()
-                  << " is not supported by this Score-P installation." << std::endl;
+        std::cerr << "ERROR: '" << getConfigName() << "' is not supported by "
+                  << "this Score-P installation" << std::endl;
         exit( EXIT_FAILURE );
     }
     return false;

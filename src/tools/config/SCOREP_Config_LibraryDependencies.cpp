@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -198,7 +198,7 @@ SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs )
     {
         if ( m_backend_objects.find( deps[ i ] ) == m_backend_objects.end() )
         {
-            cerr << "ERROR: Cannot resolve dependency \"" << deps[ i ] << "\"" << endl;
+            cerr << "ERROR: Cannot resolve dependency '" << deps[ i ] << "'" << endl;
             exit( EXIT_FAILURE );
         }
         la_object obj = m_backend_objects[ deps[ i ] ];
@@ -216,12 +216,12 @@ SCOREP_Config_LibraryDependencies::addDependency( const std::string& dependent_l
 {
     if ( m_backend_objects.find( dependent_lib ) == m_backend_objects.end() )
     {
-        cerr << "ERROR: Cannot add dependency to \"" << dependent_lib << "\"" << endl;
+        cerr << "ERROR: Cannot add dependency to '" << dependent_lib << "'" << endl;
         exit( EXIT_FAILURE );
     }
     if ( m_backend_objects.find( dependency ) == m_backend_objects.end() )
     {
-        cerr << "ERROR: Cannot add dependency \"" << dependency << "\"" << endl;
+        cerr << "ERROR: Cannot add dependency '" << dependency << "'" << endl;
         exit( EXIT_FAILURE );
     }
 

@@ -545,7 +545,7 @@ SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
     int return_value = system( command.c_str() );
     if ( return_value != 0 )
     {
-        std::cerr << "Error executing: " << orig_command << std::endl;
+        std::cerr << "ERROR: Execution failed: " << orig_command << std::endl;
         exit( EXIT_FAILURE );
     }
 }

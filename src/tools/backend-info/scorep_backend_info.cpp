@@ -107,8 +107,8 @@ main( int   argc,
     {
         if ( args.size() != 0 )
         {
-            std::cerr << "Invalid number of options for info command "
-                      << info_command << std::endl;
+            std::cerr << "ERROR: Invalid number of options for info command "
+                      << "'" << info_command << "'" << std::endl;
             print_short_usage( std::cerr );
             return EXIT_FAILURE;
         }
@@ -124,7 +124,7 @@ main( int   argc,
                                                  SCOREP_PLATFORM_NAME );
         if ( SCOREP_SUCCESS != err )
         {
-            std::cerr << "Can't get system tree information." << std::endl;
+            std::cerr << "ERROR: Cannot get system tree information" << std::endl;
             return EXIT_FAILURE;
         }
         SCOREP_Platform_SystemTreePathElement* node;
@@ -142,8 +142,8 @@ main( int   argc,
     {
         if ( args.size() != 0 )
         {
-            std::cerr << "Invalid number of options for info command "
-                      << info_command << std::endl;
+            std::cerr << "ERROR: Invalid number of options for info command "
+                      << "'" << info_command << "'" << std::endl;
             print_short_usage( std::cerr );
             return EXIT_FAILURE;
         }
@@ -157,7 +157,7 @@ main( int   argc,
     }
 
 
-    std::cerr << "Invalid info command: " << info_command << std::endl;
+    std::cerr << "ERROR: Invalid info command: '" << info_command << "'" << std::endl;
     print_short_usage( std::cerr );
     return EXIT_FAILURE;
 }
