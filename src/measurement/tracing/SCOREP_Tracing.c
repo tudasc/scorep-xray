@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 #include "SCOREP_Tracing.h"
 
 #include <otf2/otf2.h>
+#include <otf2/OTF2_EventSizeEstimator.h>
 
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
@@ -68,11 +69,7 @@ size_t scorep_tracing_substrate_id;
 
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
-    chunk-size and a definition chunk size. the chnunk size need to be
-    larger than the largest item that is written. events are relatively
-    small whereas some definition record grow with the number of
-    processes. We nee two environment variable here. does the event chunk
-    size equal the memory page size (scorep_env_page_size)? */
+    chunk size and a definition chunk size. */
 #define SCOREP_TRACING_CHUNK_SIZE ( 1024 * 1024 )
 
 
@@ -317,15 +314,11 @@ SCOREP_Tracing_Initialize( size_t substrateId )
             scorep_tracing_max_procs_per_sion_file );
     }
 
-    /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
-     * when overflow checking for definitions is implemented.
-     * step2: provide environment variables to adjust the chunck sizes.
-     */
     scorep_otf2_archive = OTF2_Archive_Open( SCOREP_GetExperimentDirName(),
                                              "traces",
                                              OTF2_FILEMODE_WRITE,
                                              SCOREP_TRACING_CHUNK_SIZE,
-                                             4 * SCOREP_TRACING_CHUNK_SIZE,
+                                             OTF2_UNDEFINED_UINT64,
                                              scorep_tracing_get_file_substrate(),
                                              scorep_tracing_get_compression() );
     UTILS_BUG_ON( !scorep_otf2_archive, "Couldn't create OTF2 archive." );
@@ -456,6 +449,29 @@ write_definitions( void )
     UTILS_ASSERT( scorep_otf2_archive );
 
     OTF2_ErrorCode ret;
+
+    uint64_t definition_chunk_size = OTF2_UNDEFINED_UINT64;
+    if ( SCOREP_Status_GetRank() == 0 )
+    {
+        OTF2_EventSizeEstimator* estimator = OTF2_EventSizeEstimator_New();
+        /* We do not write metric or region groups, thus we set only the number of locations */
+        OTF2_EventSizeEstimator_SetNumberOfLocationDefinitions(
+            estimator,
+            scorep_unified_definition_manager->location.counter );
+        definition_chunk_size = OTF2_EventSizeEstimator_GetDefChunkSize( estimator );
+        OTF2_EventSizeEstimator_Delete( estimator );
+    }
+
+    /* OTF2 does the broadcast for us */
+    ret = OTF2_Archive_SetDefChunkSize( scorep_otf2_archive,
+                                        definition_chunk_size );
+    if ( OTF2_SUCCESS != ret && SCOREP_Status_GetRank() == 0 )
+    {
+        UTILS_FATAL( "Could not set OTF2 definition chunks size to %" PRIu64 ": %s",
+                     definition_chunk_size,
+                     OTF2_Error_GetDescription( ret ) );
+        /* lets assume, that the other ranks also abort, if the root aborts */
+    }
 
     /* Write for all local locations the same local definition file */
     ret = OTF2_Archive_OpenDefFiles( scorep_otf2_archive );

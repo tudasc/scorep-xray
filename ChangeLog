@@ -68,6 +68,7 @@ Features and improvements:
 - The manual user instrumentation for Fortran 90 performs region
   initialization checks based on handle values instead of comparing
   names.  This does not apply when using PGI compilers.
+- Support tracing of applications with more than 500000 tasks.
 
 User tools and API improvements and changes:
 
