@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -87,79 +87,77 @@ int
 main( int   argc,
       char* argv[] )
 {
-    if ( argc > 1 )
-    {
-        std::string info_command( argv[ 1 ] );
-        if ( info_command == "--help" || info_command == "-h" )
-        {
-            print_help();
-            return EXIT_SUCCESS;
-        }
-
-        std::vector< char* > args( argv + 2,  argv + argc );
-
-
-        if ( info_command == "system-tree" )
-        {
-            if ( args.size() != 0 )
-            {
-                std::cerr << "Invalid number of options for info command "
-                          << info_command << std::endl;
-                print_short_usage( std::cerr );
-                return EXIT_FAILURE;
-            }
-
-            SCOREP_ConfigInit();
-            SCOREP_RegisterAllConfigVariables();
-            SCOREP_ConfigApplyEnv();
-
-            SCOREP_Platform_SystemTreePathElement* path = NULL;
-            SCOREP_ErrorCode                       err  =
-                SCOREP_Platform_GetPathInSystemTree( &path,
-                                                     SCOREP_Env_GetMachineName(),
-                                                     SCOREP_PLATFORM_NAME );
-            if ( SCOREP_SUCCESS != err )
-            {
-                std::cerr << "Can't get system tree information." << std::endl;
-                return EXIT_FAILURE;
-            }
-            SCOREP_Platform_SystemTreePathElement* node;
-            SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
-            {
-                std::cout << node->node_class << std::endl;
-            }
-            SCOREP_Platform_FreePath( path );
-            SCOREP_ConfigFini();
-            return EXIT_SUCCESS;
-        }
-
-
-        if ( info_command == "config-vars" )
-        {
-            if ( args.size() != 0 )
-            {
-                std::cerr << "Invalid number of options for info command "
-                          << info_command << std::endl;
-                print_short_usage( std::cerr );
-                return EXIT_FAILURE;
-            }
-
-            SCOREP_ConfigInit();
-            SCOREP_RegisterAllConfigVariables();
-            SCOREP_ConfigApplyEnv();
-            SCOREP_ConfigDump( stdout );
-            SCOREP_ConfigFini();
-            return EXIT_SUCCESS;
-        }
-
-
-        std::cerr << "Invalid info command: " << info_command << std::endl;
-        print_short_usage( std::cerr );
-        return EXIT_FAILURE;
-    }
-    else
+    if ( argc == 1 )
     {
         print_short_usage( std::cout );
+        return EXIT_SUCCESS;
     }
-    return EXIT_SUCCESS;
+
+    std::string info_command( argv[ 1 ] );
+    if ( info_command == "--help" || info_command == "-h" )
+    {
+        print_help();
+        return EXIT_SUCCESS;
+    }
+
+    std::vector< char* > args( argv + 2,  argv + argc );
+
+
+    if ( info_command == "system-tree" )
+    {
+        if ( args.size() != 0 )
+        {
+            std::cerr << "Invalid number of options for info command "
+                      << info_command << std::endl;
+            print_short_usage( std::cerr );
+            return EXIT_FAILURE;
+        }
+
+        SCOREP_ConfigInit();
+        SCOREP_RegisterAllConfigVariables();
+        SCOREP_ConfigApplyEnv();
+
+        SCOREP_Platform_SystemTreePathElement* path = NULL;
+        SCOREP_ErrorCode                       err  =
+            SCOREP_Platform_GetPathInSystemTree( &path,
+                                                 SCOREP_Env_GetMachineName(),
+                                                 SCOREP_PLATFORM_NAME );
+        if ( SCOREP_SUCCESS != err )
+        {
+            std::cerr << "Can't get system tree information." << std::endl;
+            return EXIT_FAILURE;
+        }
+        SCOREP_Platform_SystemTreePathElement* node;
+        SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
+        {
+            std::cout << node->node_class << std::endl;
+        }
+        SCOREP_Platform_FreePath( path );
+        SCOREP_ConfigFini();
+        return EXIT_SUCCESS;
+    }
+
+
+    if ( info_command == "config-vars" )
+    {
+        if ( args.size() != 0 )
+        {
+            std::cerr << "Invalid number of options for info command "
+                      << info_command << std::endl;
+            print_short_usage( std::cerr );
+            return EXIT_FAILURE;
+        }
+
+        SCOREP_ConfigInit();
+        SCOREP_RegisterAllConfigVariables();
+        SCOREP_ConfigApplyEnv();
+        SCOREP_ConfigDump( stdout );
+        SCOREP_ConfigFini();
+        return EXIT_SUCCESS;
+    }
+
+
+    std::cerr << "Invalid info command: " << info_command << std::endl;
+    print_short_usage( std::cerr );
+    return EXIT_FAILURE;
 }

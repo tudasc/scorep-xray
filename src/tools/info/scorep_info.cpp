@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -98,123 +98,121 @@ int
 main( int   argc,
       char* argv[] )
 {
-    if ( argc > 1 )
-    {
-        std::string info_command( argv[ 1 ] );
-        if ( info_command == "--help" || info_command == "-h" )
-        {
-            print_help();
-            return EXIT_SUCCESS;
-        }
-
-        std::vector< char* > args( argv + 2,  argv + argc );
-
-        if ( info_command == "config-vars" )
-        {
-            if ( args.size() > 1 )
-            {
-                std::cerr << "Invalid number of options for info command "
-                          << info_command << std::endl;
-                print_short_usage( std::cerr );
-                return EXIT_FAILURE;
-            }
-
-            SCOREP_ConfigInit();
-
-            std::string mode( args.size() == 1 ? args[ 0 ] : "" );
-            bool        values = false;
-            bool        full   = false;
-            bool        html   = false;
-            if ( mode == "--values" )
-            {
-                // @todo print warning again
-                values = true;
-            }
-            else if ( mode == "--full" )
-            {
-                full = true;
-            }
-            else if ( mode == "--doxygen" )
-            {
-                full = true;
-                html = true;
-                SCOREP_ConfigForceConditionalRegister();
-            }
-            else if ( mode != "" )
-            {
-                std::cerr << "Invalid option for info command "
-                          << info_command << ": " << mode << std::endl;
-                print_short_usage( std::cerr );
-                SCOREP_ConfigFini();
-                return EXIT_FAILURE;
-            }
-
-            SCOREP_RegisterAllConfigVariables();
-
-            if ( values )
-            {
-                SCOREP_ConfigApplyEnv();
-                SCOREP_ConfigDump( stdout );
-            }
-            else
-            {
-                SCOREP_ConfigHelp( full, html );
-            }
-
-            SCOREP_ConfigFini();
-            return EXIT_SUCCESS;
-        }
-
-
-        if ( info_command == "config-summary" )
-        {
-            if ( args.size() != 0 )
-            {
-                std::cerr << "Invalid number of options for info command "
-                          << info_command << std::endl;
-                print_short_usage( std::cerr );
-                return EXIT_FAILURE;
-            }
-
-            std::string summary_command( "cat " SCOREP_DATADIR "/scorep.summary" );
-            int         return_value = system( summary_command.c_str() );
-            if ( return_value != 0 )
-            {
-                std::cerr << "Error executing: " << summary_command << std::endl;
-                return EXIT_FAILURE;
-            }
-            return EXIT_SUCCESS;
-        }
-
-
-        if ( info_command == "open-issues" )
-        {
-            if ( args.size() != 0 )
-            {
-                std::cerr << "Invalid number of options for info command "
-                          << info_command << std::endl;
-                print_short_usage( std::cerr );
-                return EXIT_FAILURE;
-            }
-
-            std::string command( "cat " SCOREP_DOCDIR "/OPEN_ISSUES" );
-            int         return_value = system( command.c_str() );
-            if ( return_value != 0 )
-            {
-                std::cerr << "Error executing: " << command << std::endl;
-                return EXIT_FAILURE;
-            }
-            return EXIT_SUCCESS;
-        }
-
-
-        std::cerr << "Invalid info command: " << info_command << std::endl;
-        print_short_usage( std::cerr );
-        return EXIT_FAILURE;
-    }
-    else
+    if ( argc == 1 )
     {
         print_short_usage( std::cout );
+        return EXIT_SUCCESS;
     }
-    return EXIT_SUCCESS;
+
+    std::string info_command( argv[ 1 ] );
+    if ( info_command == "--help" || info_command == "-h" )
+    {
+        print_help();
+        return EXIT_SUCCESS;
+    }
+
+    std::vector< char* > args( argv + 2,  argv + argc );
+
+    if ( info_command == "config-vars" )
+    {
+        if ( args.size() > 1 )
+        {
+            std::cerr << "Invalid number of options for info command "
+                      << info_command << std::endl;
+            print_short_usage( std::cerr );
+            return EXIT_FAILURE;
+        }
+
+        SCOREP_ConfigInit();
+
+        std::string mode( args.size() == 1 ? args[ 0 ] : "" );
+        bool        values = false;
+        bool        full   = false;
+        bool        html   = false;
+        if ( mode == "--values" )
+        {
+            // @todo print warning again
+            values = true;
+        }
+        else if ( mode == "--full" )
+        {
+            full = true;
+        }
+        else if ( mode == "--doxygen" )
+        {
+            full = true;
+            html = true;
+            SCOREP_ConfigForceConditionalRegister();
+        }
+        else if ( mode != "" )
+        {
+            std::cerr << "Invalid option for info command "
+                      << info_command << ": " << mode << std::endl;
+            print_short_usage( std::cerr );
+            SCOREP_ConfigFini();
+            return EXIT_FAILURE;
+        }
+
+        SCOREP_RegisterAllConfigVariables();
+
+        if ( values )
+        {
+            SCOREP_ConfigApplyEnv();
+            SCOREP_ConfigDump( stdout );
+        }
+        else
+        {
+            SCOREP_ConfigHelp( full, html );
+        }
+
+        SCOREP_ConfigFini();
+        return EXIT_SUCCESS;
+    }
+
+
+    if ( info_command == "config-summary" )
+    {
+        if ( args.size() != 0 )
+        {
+            std::cerr << "Invalid number of options for info command "
+                      << info_command << std::endl;
+            print_short_usage( std::cerr );
+            return EXIT_FAILURE;
+        }
+
+        std::string summary_command( "cat " SCOREP_DATADIR "/scorep.summary" );
+        int         return_value = system( summary_command.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Error executing: " << summary_command << std::endl;
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
+    }
+
+
+    if ( info_command == "open-issues" )
+    {
+        if ( args.size() != 0 )
+        {
+            std::cerr << "Invalid number of options for info command "
+                      << info_command << std::endl;
+            print_short_usage( std::cerr );
+            return EXIT_FAILURE;
+        }
+
+        std::string command( "cat " SCOREP_DOCDIR "/OPEN_ISSUES" );
+        int         return_value = system( command.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Error executing: " << command << std::endl;
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
+    }
+
+
+    std::cerr << "Invalid info command: " << info_command << std::endl;
+    print_short_usage( std::cerr );
+    return EXIT_FAILURE;
 }
