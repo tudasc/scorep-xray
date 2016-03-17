@@ -89,8 +89,9 @@ main( int   argc,
 {
     if ( argc == 1 )
     {
-        print_short_usage( std::cout );
-        return EXIT_SUCCESS;
+        std::cerr << "ERROR: Missing info command" << std::endl;
+        print_help();
+        return EXIT_FAILURE;
     }
 
     std::string info_command( argv[ 1 ] );

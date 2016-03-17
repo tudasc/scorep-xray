@@ -70,27 +70,34 @@ print_short_usage( std::ostream& out )
    Prints the long help text.
  */
 static void
-print_help( void )
+print_help( bool withOptions )
 {
     print_short_usage( std::cout );
     std::cout << std::endl;
     std::cout << "Available info commands:" << std::endl;
+
     std::cout << std::endl;
     std::cout << "  config-vars:" << std::endl;
     std::cout << "    Shows the list of all measurement config variables with a short description." << std::endl;
-    std::cout << std::endl;
-    std::cout << "    Info command options:" << std::endl;
-    std::cout << "      --full        Displays a detailed description for each config variable." << std::endl;
-    std::cout << "      --values      Displays the current values for each config variable." << std::endl;
-    std::cout << "                    Warning: These values may be wrong, please consult the\n";
-    std::cout << "                             manual of the batch system how to pass the values\n";
-    std::cout << "                             to the measurement job." << std::endl;
+    if ( withOptions )
+    {
+        std::cout << std::endl;
+        std::cout << "    Info command options:" << std::endl;
+        std::cout << "      --full        Displays a detailed description for each config variable." << std::endl;
+        std::cout << "      --values      Displays the current values for each config variable." << std::endl;
+        std::cout << "                    Warning: These values may be wrong, please consult the\n";
+        std::cout << "                             manual of the batch system how to pass the values\n";
+        std::cout << "                             to the measurement job." << std::endl;
+    }
+
     std::cout << std::endl;
     std::cout << "  config-summary:" << std::endl;
     std::cout << "    Shows the configure summary of the Score-P package." << std::endl;
+
     std::cout << std::endl;
     std::cout << "  open-issues:" << std::endl;
     std::cout << "    Shows open and known issues of the Score-P package." << std::endl;
+
     std::cout << std::endl;
 }
 
@@ -100,14 +107,15 @@ main( int   argc,
 {
     if ( argc == 1 )
     {
-        print_short_usage( std::cout );
-        return EXIT_SUCCESS;
+        std::cerr << "ERROR: Missing info command" << std::endl;
+        print_help( false );
+        return EXIT_FAILURE;
     }
 
     std::string info_command( argv[ 1 ] );
     if ( info_command == "--help" || info_command == "-h" )
     {
-        print_help();
+        print_help( true );
         return EXIT_SUCCESS;
     }
 
