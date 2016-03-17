@@ -246,7 +246,7 @@ esac
 # extract compiler name
 compiler=${argv0##*scorep-}
 
-if test "x${SCOREP_WRAPPER}" = xoff
+if test "x${SCOREP_WRAPPER}" = xoff || test "x${SCOREP_WRAPPER}" = xOFF
 then
     exec $compiler "$@"
 else
