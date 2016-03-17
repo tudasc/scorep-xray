@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -204,8 +204,9 @@ SCOREP_ConfigDump( FILE* dumpFile );
  * @param html Use an html descripion list for the output.
  */
 void
-SCOREP_ConfigHelp( bool full,
-                   bool html );
+SCOREP_ConfigHelp( bool  full,
+                   bool  html,
+                   FILE* out );
 
 
 /**

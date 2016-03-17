@@ -101,6 +101,16 @@ print_help( bool withOptions )
     std::cout << std::endl;
 }
 
+/* *INDENT-OFF* */
+#define PAGER_COMMAND \
+    "if test -t 1; " \
+    "then " \
+        "${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}; " \
+    "else " \
+        "cat; " \
+    "fi"
+/* *INDENT-ON* */
+
 int
 main( int   argc,
       char* argv[] )
@@ -163,17 +173,33 @@ main( int   argc,
 
         SCOREP_RegisterAllConfigVariables();
 
+        FILE* out = stdout;
+#if HAVE( POPEN )
+        if ( !html )
+        {
+            out = popen( PAGER_COMMAND, "w" );
+        }
+#endif
+
         if ( values )
         {
             SCOREP_ConfigApplyEnv();
-            SCOREP_ConfigDump( stdout );
+            SCOREP_ConfigDump( out );
         }
         else
         {
-            SCOREP_ConfigHelp( full, html );
+            SCOREP_ConfigHelp( full, html, out );
         }
 
         SCOREP_ConfigFini();
+
+#if HAVE( POPEN )
+        if ( !html )
+        {
+            pclose( out );
+        }
+#endif
+
         return EXIT_SUCCESS;
     }
 
@@ -188,7 +214,7 @@ main( int   argc,
             return EXIT_FAILURE;
         }
 
-        std::string summary_command( "cat " SCOREP_DATADIR "/scorep.summary" );
+        std::string summary_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep.summary"  );
         int         return_value = system( summary_command.c_str() );
         if ( return_value != 0 )
         {
@@ -209,7 +235,7 @@ main( int   argc,
             return EXIT_FAILURE;
         }
 
-        std::string command( "cat " SCOREP_DOCDIR "/OPEN_ISSUES" );
+        std::string command( PAGER_COMMAND " <" SCOREP_DOCDIR "/OPEN_ISSUES" );
         int         return_value = system( command.c_str() );
         if ( return_value != 0 )
         {

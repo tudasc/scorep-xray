@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -593,18 +593,19 @@ config_type_need_quotes( SCOREP_ConfigType type )
 static void
 dump_line( const char* line,
            int         length,
-           bool        html )
+           bool        html,
+           FILE*       out )
 {
     const char* nbsp_repl = html ? "&nbsp;" : " ";
     while ( length-- )
     {
         if ( *line == '\240' )
         {
-            printf( "%s", nbsp_repl );
+            fprintf( out, "%s", nbsp_repl );
         }
         else
         {
-            putchar( *line );
+            putc( *line, out );
         }
         line++;
     }
@@ -615,7 +616,8 @@ wrap_lines( const char* message,
             int         width,
             int         indent,
             int         firstIndent,
-            bool        html )
+            bool        html,
+            FILE*       out )
 {
     int         column_width = width - indent;
     int         reminder     = column_width;
@@ -637,23 +639,23 @@ wrap_lines( const char* message,
         switch ( nl )
         {
             case 0:
-                printf( "%*s%s",
-                        firstIndent, "",
-                        html ? "<p>" : "" );
+                fprintf( out, "%*s%s",
+                         firstIndent, "",
+                         html ? "<p>" : "" );
                 sep = "";
                 break;
 
             case 4:
                 /* a paragraph, empty line and fall thru to linebreak */
-                printf( "%s\n%s",
-                        html ? "</p>" : "",
-                        html ? "<p>" : "" );
+                fprintf( out, "%s\n%s",
+                         html ? "</p>" : "",
+                         html ? "<p>" : "" );
 
             case 3:
-                printf( "%s", html ? "<br/>" : "" );
+                fprintf( out, "%s", html ? "<br/>" : "" );
 
             case 2:
-                printf( "\n%*s", indent, "" );
+                fprintf( out, "\n%*s", indent, "" );
                 reminder = column_width;
                 sep      = "";
                 break;
@@ -673,8 +675,8 @@ wrap_lines( const char* message,
 
         if ( length < reminder || reminder == column_width )
         {
-            printf( "%s", sep );
-            dump_line( curr, length, html );
+            fprintf( out, "%s", sep );
+            dump_line( curr, length, html, out );
             curr     += length;
             reminder -= length + strlen( sep );
         }
@@ -686,14 +688,16 @@ wrap_lines( const char* message,
         sep = " ";
     }
 
-    printf( "%s\n",
-            html ? "</p>" : "" );
+    fprintf( out, "%s\n",
+             html ? "</p>" : "" );
 }
 
 
 #define WRAP_MARGIN 80
 void
-SCOREP_ConfigHelp( bool full, bool html )
+SCOREP_ConfigHelp( bool  full,
+                   bool  html,
+                   FILE* out )
 {
     const char* sep = html ? "<dl>\n" : "";
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
@@ -704,38 +708,38 @@ SCOREP_ConfigHelp( bool full, bool html )
               variable;
               variable = variable->next )
         {
-            printf( "%s%s%s%s%s%s%s\n",
-                    sep,
-                    html ? " <dt>" : "",
-                    html ? "@anchor " : "",
-                    html ? variable->env_var_name : "",
-                    html ? "<tt>" : "",
-                    variable->env_var_name,
-                    html ? "</tt></dt>" : "" );
+            fprintf( out, "%s%s%s%s%s%s%s\n",
+                     sep,
+                     html ? " <dt>" : "",
+                     html ? "@anchor " : "",
+                     html ? variable->env_var_name : "",
+                     html ? "<tt>" : "",
+                     variable->env_var_name,
+                     html ? "</tt></dt>" : "" );
 
-            printf( "%s",
-                    html ? " <dd>\n  " : "  Description: " );
-            wrap_lines( variable->data.shortHelp, WRAP_MARGIN, 15, 0, html );
+            fprintf( out, "%s",
+                     html ? " <dd>\n  " : "  Description: " );
+            wrap_lines( variable->data.shortHelp, WRAP_MARGIN, 15, 0, html, out );
 
-            printf( "%sType:%s%s%s\n",
-                    html ? "  <br/>\n  <dl>\n   <dt>" : "         ",
-                    html ? "</dt><dd>" : " ",
-                    config_type_as_string( variable->data.type ),
-                    html ? "</dd>" : "" );
-            printf( "%sDefault:%s%s%s%s%s\n",
-                    html ? "   <dt>" : "      ",
-                    html ? "</dt><dd>" : " ",
-                    config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
-                    variable->data.defaultValue,
-                    config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
-                    html ? "</dd>\n  </dl>" : "" );
+            fprintf( out, "%sType:%s%s%s\n",
+                     html ? "  <br/>\n  <dl>\n   <dt>" : "         ",
+                     html ? "</dt><dd>" : " ",
+                     config_type_as_string( variable->data.type ),
+                     html ? "</dd>" : "" );
+            fprintf( out, "%sDefault:%s%s%s%s%s\n",
+                     html ? "   <dt>" : "      ",
+                     html ? "</dt><dd>" : " ",
+                     config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
+                     variable->data.defaultValue,
+                     config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
+                     html ? "</dd>\n  </dl>" : "" );
 
             if ( full )
             {
                 if ( strlen( variable->data.longHelp ) )
                 {
-                    printf( "%s\n", html ? "  " : "\n  Full description:" );
-                    wrap_lines( variable->data.longHelp, WRAP_MARGIN, 2, 2, html );
+                    fprintf( out, "%s\n", html ? "  " : "\n  Full description:" );
+                    wrap_lines( variable->data.longHelp, WRAP_MARGIN, 2, 2, html, out );
                 }
 
                 if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type
@@ -746,7 +750,7 @@ SCOREP_ConfigHelp( bool full, bool html )
                     int column_width = 0;
                     if ( html )
                     {
-                        printf( "  <dl>\n" );
+                        fprintf( out, "  <dl>\n" );
                     }
                     else
                     {
@@ -768,20 +772,20 @@ SCOREP_ConfigHelp( bool full, bool html )
                     acceptedValues = variable->data.variableContext;
                     while ( acceptedValues->name )
                     {
-                        printf( "    %s%s%s",
-                                html ? "<dt>" : "",
-                                acceptedValues->name,
-                                html ? "</dt>\n    <dd>\n" : ": " );
+                        fprintf( out, "    %s%s%s",
+                                 html ? "<dt>" : "",
+                                 acceptedValues->name,
+                                 html ? "</dt>\n    <dd>\n" : ": " );
 
                         wrap_lines( acceptedValues->description,
                                     WRAP_MARGIN,
                                     column_width + 6,
                                     column_width - strlen( acceptedValues->name ),
-                                    html );
+                                    html, out );
 
                         if ( html )
                         {
-                            printf( "    </dd>\n" );
+                            fprintf( out, "    </dd>\n" );
                         }
 
                         acceptedValues++;
@@ -789,28 +793,28 @@ SCOREP_ConfigHelp( bool full, bool html )
 
                     if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type )
                     {
-                        printf( "    %snone/no%s%*s%s%s\n",
-                                html ? "<dt>" : "",
-                                html ? "</dt>\n    <dd>" : ": ",
-                                html ? 0 : ( column_width - ( int )strlen( "none/no" ) ), "",
-                                "Disable feature",
-                                html ? "</dd>" : "" );
+                        fprintf( out, "    %snone/no%s%*s%s%s\n",
+                                 html ? "<dt>" : "",
+                                 html ? "</dt>\n    <dd>" : ": ",
+                                 html ? 0 : ( column_width - ( int )strlen( "none/no" ) ), "",
+                                 "Disable feature",
+                                 html ? "</dd>" : "" );
                     }
 
                     if ( html )
                     {
-                        printf( "  </dl>\n" );
+                        fprintf( out, "  </dl>\n" );
                     }
                 }
             }
 
-            printf( "%s", html ? " </dd>" : "" );
+            fprintf( out, "%s", html ? " </dd>" : "" );
             sep = html ? "\n <br/>\n" : "\n";
         }
     }
     if ( html )
     {
-        printf( "%s</dl>\n", sep );
+        fprintf( out, "%s</dl>\n", sep );
     }
 }
 
