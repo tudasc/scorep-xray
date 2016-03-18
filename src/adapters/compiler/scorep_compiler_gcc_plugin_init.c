@@ -46,9 +46,13 @@ extern const scorep_compiler_region_description scorep_region_descriptions_end;
 void
 scorep_compiler_register_region( const scorep_compiler_region_description* regionDescr )
 {
-    if ( SCOREP_Filter_Match( regionDescr->file,
-                              regionDescr->name,
-                              regionDescr->canonical_name ) )
+    /*
+     * If unwinding is enabled, we filter out all regions.
+     */
+    if ( SCOREP_IsUnwindingEnabled()
+         || SCOREP_Filter_Match( regionDescr->file,
+                                 regionDescr->name,
+                                 regionDescr->canonical_name ) )
     {
         *regionDescr->handle = SCOREP_FILTERED_REGION;
         return;
@@ -81,15 +85,13 @@ scorep_compiler_subsystem_init( void )
     /* Initialize region mutex */
     SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
-    if ( !SCOREP_IsUnwindingEnabled() )
+    /* Initialize plugin instrumentation */
+    for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
+          region_descr < &scorep_region_descriptions_end;
+          region_descr++ )
     {
-        /* Initialize plugin instrumentation */
-        for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
-              region_descr < &scorep_region_descriptions_end;
-              region_descr++ )
-        {
-            scorep_compiler_register_region( region_descr );
-        }
+        /* This handles SCOREP_IsUnwindingEnabled() and sets all regions handles to `FILTERED`. */
+        scorep_compiler_register_region( region_descr );
     }
 
     return SCOREP_SUCCESS;

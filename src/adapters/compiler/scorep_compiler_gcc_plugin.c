@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013, 2015,
+ * Copyright (c) 2012-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -36,7 +36,11 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
     {
         SCOREP_InitMeasurement();
     }
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    /*
+     * Do not handle SCOREP_IsUnwindingEnabled() here, will be done in
+     * scorep_compiler_register_region
+     */
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -58,7 +62,12 @@ void
 scorep_plugin_enter_region( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && !SCOREP_IsUnwindingEnabled() )
+
+    /*
+     * If SCOREP_IsUnwindingEnabled() is true, than this function will never be
+     * called, because we than have filtered out all regions.
+     */
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_EnterRegion( regionHandle );
     }
@@ -69,7 +78,12 @@ void
 scorep_plugin_exit_region( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && !SCOREP_IsUnwindingEnabled() )
+
+    /*
+     * If SCOREP_IsUnwindingEnabled() is true, than this function will never be
+     * called, because we than have filtered out all regions.
+     */
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_ExitRegion( regionHandle );
     }
