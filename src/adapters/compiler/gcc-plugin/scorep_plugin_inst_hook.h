@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -26,7 +26,6 @@ typedef enum
 
 typedef struct scorep_plugin_inst_hook
 {
-    int                         exclude_condition;
     scorep_gcc_plugin_hook_type hook_type;
 
     tree                        fn_decl;
@@ -39,8 +38,7 @@ void
 scorep_plugin_inst_hook_build( scorep_plugin_inst_hook*    hook,
                                scorep_plugin_inst_handle*  handle,
                                tree                        region_descr_var,
-                               scorep_gcc_plugin_hook_type hook_type,
-                               int                         exclude_condition );
+                               scorep_gcc_plugin_hook_type hook_type );
 
 basic_block
 scorep_plugin_inst_hook_finalize_condition( scorep_plugin_inst_hook* hook,

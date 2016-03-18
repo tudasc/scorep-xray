@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,7 +27,6 @@ extern "C"
 
 extern int scorep_plugin_verbosity;
 extern int scorep_plugin_symbol_verbosity;
-extern int scorep_plugin_disable_runtime_filter;
 
 extern unsigned int
 scorep_plugin_pass_instrument_function( void );

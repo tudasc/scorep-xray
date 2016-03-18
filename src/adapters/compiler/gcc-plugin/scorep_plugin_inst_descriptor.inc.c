@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -141,8 +141,7 @@ build_region_descr_value( tree        handle,
 
     ADD_STRUCT_MEMBER( "flags",
                        unsigned_type_node,
-                       build_int_cst( unsigned_type_node,
-                                      ( !!scorep_plugin_disable_runtime_filter ) << 0 ) )
+                       build_int_cst( unsigned_type_node, 0 ) )
 
     finish_builtin_struct( type,
                            struct_region_descr_var_name,
@@ -180,7 +179,7 @@ scorep_plugin_region_description_build( const char* function_name,
      *     .file           = __FILE__,
      *     .begin_lno      = input_line,
      *     .end_lno        = end_lno,
-     *     .flags          = (!!scorep_plugin_disable_runtime_filter) << 0
+     *     .flags          = 0
      * };
      */
     tree region_descr_value = build_region_descr_value( handle_var,

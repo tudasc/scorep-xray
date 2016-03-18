@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -255,8 +255,7 @@ scorep_plugin_pass_instrument_function( void )
     scorep_plugin_inst_hook_build( &entry_hook,
                                    &handle,
                                    region_descr_var,
-                                   ENTRY,
-                                   scorep_plugin_disable_runtime_filter );
+                                   ENTRY );
 
     basic_block          bb_start  = split_block_after_labels( ENTRY_BLOCK_PTR )->dest;
     gimple_stmt_iterator gsi_start = gsi_start_bb( bb_start );
@@ -270,8 +269,7 @@ scorep_plugin_pass_instrument_function( void )
     scorep_plugin_inst_hook_build( &register_hook,
                                    &handle,
                                    region_descr_var,
-                                   REGISTER,
-                                   0 );
+                                   REGISTER );
 
     bb_start  = split_block_after_labels( ENTRY_BLOCK_PTR )->dest;
     gsi_start = gsi_start_bb( bb_start );
@@ -296,8 +294,7 @@ scorep_plugin_pass_instrument_function( void )
                 scorep_plugin_inst_hook_build( &exit_hook,
                                                &handle,
                                                region_descr_var,
-                                               EXIT,
-                                               scorep_plugin_disable_runtime_filter );
+                                               EXIT );
 
                 gsi_insert_seq_before( &gsi_end, exit_hook.stmt_sequence, GSI_SAME_STMT );
                 bb_end = scorep_plugin_inst_hook_finalize_condition( &exit_hook,

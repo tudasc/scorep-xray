@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013, 2015,
+ * Copyright (c) 2012-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -22,9 +22,6 @@
 
 #include <stdint.h>
 
-/* avaiable flags */
-#define SCOREP_COMPILER_REGION_FLAG_NO_CONDITION ( 1 << 0 )
-
 typedef struct
 {
     uint32_t*   handle;
@@ -33,7 +30,7 @@ typedef struct
     const char* file;
     int         begin_lno;
     int         end_lno;
-    unsigned    flags;
+    unsigned    flags; /* unused */
 }
 __attribute__( ( aligned( 64 ) ) )
 scorep_compiler_region_description;

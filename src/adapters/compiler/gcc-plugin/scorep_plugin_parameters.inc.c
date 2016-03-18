@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014,
+ * Copyright (c) 2012-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -17,9 +17,8 @@
  *
  */
 
-int scorep_plugin_verbosity              = 0;
-int scorep_plugin_symbol_verbosity       = 2;
-int scorep_plugin_disable_runtime_filter = 0;
+int scorep_plugin_verbosity        = 0;
+int scorep_plugin_symbol_verbosity = 2;
 
 static int
 scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
@@ -86,30 +85,6 @@ scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
             }
 
             scorep_plugin_symbol_verbosity = value;
-        }
-        else if ( strcmp( arg->key, "disable-runtime-filter" ) == 0 )
-        {
-            /* -fplugin-arg-<plugin>-disable-runtime-filter will be handled as true */
-            if ( !arg->value
-                 || strcmp( arg->value, "true" ) == 0
-                 || strcmp( arg->value, "yes" ) == 0 )
-            {
-                scorep_plugin_disable_runtime_filter = 1;
-            }
-            else
-            {
-                char* endptr;
-                long  value = strtol( arg->value, &endptr, 0 );
-                if ( endptr == arg->value || *endptr || value < 0 )
-                {
-                    UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                                 "Invalid value for disable-runtime-filter: '%s'.",
-                                 arg->value );
-                    return 1;
-                }
-
-                scorep_plugin_disable_runtime_filter = !!value;
-            }
         }
         else
         {
