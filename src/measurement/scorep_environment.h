@@ -98,7 +98,7 @@ SCOREP_Env_DoProfiling( void );
  */
 
 bool
-SCOREP_Env_DoCallingContext( void );
+SCOREP_Env_DoUnwinding( void );
 
 
 UTILS_END_C_DECLS

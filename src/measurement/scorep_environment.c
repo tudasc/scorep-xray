@@ -84,7 +84,7 @@ static bool env_profiling;
 /*
  * Calling context setup
  */
-static bool env_calling_context;
+static bool env_unwinding;
 
 
 /** @brief Measurement system configure variables */
@@ -114,7 +114,7 @@ static const SCOREP_ConfigVariable core_enable_unwinding_confvars[] = {
     {
         "enable_unwinding",
         SCOREP_CONFIG_TYPE_BOOL,
-        &env_calling_context,
+        &env_unwinding,
         NULL,
         "false",
         "Enables recording calling context information for every event",
@@ -238,10 +238,10 @@ SCOREP_Env_DoProfiling( void )
 
 
 bool
-SCOREP_Env_DoCallingContext( void )
+SCOREP_Env_DoUnwinding( void )
 {
     assert( env_variables_initialized );
-    return env_calling_context;
+    return env_unwinding;
 }
 
 

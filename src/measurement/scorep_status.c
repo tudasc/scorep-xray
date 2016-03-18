@@ -93,7 +93,7 @@ SCOREP_Status_Initialize( void )
 {
     scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
     scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
-    scorep_is_unwinding_enabled                      = SCOREP_Env_DoCallingContext();
+    scorep_is_unwinding_enabled                      = SCOREP_Env_DoUnwinding();
 }
 
 
