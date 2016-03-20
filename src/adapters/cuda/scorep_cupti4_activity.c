@@ -420,25 +420,25 @@ handle_buffer( uint8_t*              buffer,
     CUptiResult     status = CUPTI_SUCCESS;
     CUpti_Activity* record = NULL;
 
-    if ( context->cuda_context == 0 )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI Activity] Handle activities from global queue" );
-    }
-    else
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI Activity] Handle activities from context %p, stream %d",
-                            context->cuda_context, streamId );
-    }
-
     if ( validSize > 0 )
     {
         /* check for Score-P CUPTI context */
         if ( context == NULL || context->activity == NULL )
         {
-            UTILS_WARNING( "[CUPTI Activity] Context not found! Cannot handle buffer ..." );
+            UTILS_WARNING( "[CUPTI Activity] Context not found! Cannot handle activity buffer ..." );
             return;
+        }
+
+        if ( context->cuda_context == 0 )
+        {
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Activity] Handle activities from global queue" );
+        }
+        else
+        {
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Activity] Handle activities from context %p, stream %d",
+                                context->cuda_context, streamId );
         }
 
         do
