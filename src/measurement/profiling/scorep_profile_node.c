@@ -592,13 +592,15 @@ scorep_profile_get_number_of_child_calls( scorep_profile_node* node )
 uint64_t
 scorep_profile_get_exclusive_time( scorep_profile_node* node )
 {
-    uint64_t             exclusive_time = node->inclusive_time.sum;
-    scorep_profile_node* child          = NULL;
+    uint64_t             exclusive_time;
+    scorep_profile_node* child;
 
     if ( node == NULL )
     {
         return 0;
     }
+
+    exclusive_time = node->inclusive_time.sum;
 
     child = node->first_child;
     while ( child != NULL )
