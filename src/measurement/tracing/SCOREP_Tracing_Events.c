@@ -1556,6 +1556,11 @@ exit_rewind_point( SCOREP_Location*    location,
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
         }
+        /* Did it affect thread-create-wait events? */
+        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_THREAD_CREATE_WAIT ] )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+        }
     }
 
     /* And remove the rewind point from otf2 internal memory. */
