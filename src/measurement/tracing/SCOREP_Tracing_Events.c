@@ -1244,7 +1244,7 @@ thread_acquire_lock( SCOREP_Location*    location,
                                       lockId,
                                       acquisitionOrder );
 
-    set_rewind_affected_thread_paradigm( location, paradigm );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_THREAD_LOCKING );
 }
 
 
@@ -1264,7 +1264,7 @@ thread_release_lock( SCOREP_Location*    location,
                                       lockId,
                                       acquisitionOrder );
 
-    set_rewind_affected_thread_paradigm( location, paradigm );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_THREAD_LOCKING );
 }
 
 
@@ -1561,6 +1561,11 @@ exit_rewind_point( SCOREP_Location*    location,
         if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_THREAD_CREATE_WAIT ] )
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+        }
+        /* Did it affect thread-locking events? */
+        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_THREAD_LOCKING ] )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
         }
     }
 
