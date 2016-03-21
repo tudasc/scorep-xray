@@ -315,10 +315,10 @@ typedef enum SCOREP_ParadigmFlags
      *  measurement data reader that the additional communicator definitions
      *  are not used.
      */
-    SCOREP_PARADIGM_FLAG_RMA_ONLY = 1 << 0,
+    SCOREP_PARADIGM_FLAG_RMA_ONLY = ( 1 << 0 ),
 
-        /** Value for empty flags. */
-        SCOREP_PARADIGM_FLAG_NONE = 0
+    /** Value for empty flags. */
+    SCOREP_PARADIGM_FLAG_NONE     = 0
 } SCOREP_ParadigmFlags;
 
 
@@ -771,15 +771,15 @@ typedef enum SCOREP_SamplingSetClass
  */
 typedef enum SCOREP_SystemTreeDomain
 {
-    SCOREP_SYSTEM_TREE_DOMAIN_NONE              = 0,
+    SCOREP_SYSTEM_TREE_DOMAIN_NONE    = 0,
 
-    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE           = 1 << 0,
-        SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY = 1 << 1,
-        SCOREP_SYSTEM_TREE_DOMAIN_NUMA          = 1 << 2,
-        SCOREP_SYSTEM_TREE_DOMAIN_SOCKET        = 1 << 3,
-        SCOREP_SYSTEM_TREE_DOMAIN_CACHE         = 1 << 4,
-        SCOREP_SYSTEM_TREE_DOMAIN_CORE          = 1 << 5,
-        SCOREP_SYSTEM_TREE_DOMAIN_PU            = 1 << 6
+    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE = ( 1 << 0 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_SHARED  = ( 1 << 1 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_NUMA    = ( 1 << 2 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_SOCKET  = ( 1 << 3 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_CACHE   = ( 1 << 4 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_CORE    = ( 1 << 5 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_PU      = ( 1 << 6 )
 } SCOREP_SystemTreeDomain;
 
 
