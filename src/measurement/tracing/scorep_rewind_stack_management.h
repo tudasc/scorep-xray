@@ -106,17 +106,18 @@ scorep_rewind_stack_push( SCOREP_Location* location,
  * timestamp of the original enter event for the rewind region.
  * The function manipulates the stack_head pointer.
  *
- * @param  location         Location where to pop the id.
- * @param  id               Address to store the removed id as a return value
- *                          of this function.
- * @param  entertimestamp   Address to store the removed time stamp as a return
- *                          value of this function.
+ * @param  location              Location where to pop the id.
+ * @param  id                    Address to store the removed id as a return
+ *                               value of this function.
+ * @param  entertimestamp        Address to store the removed time stamp as a
+ *                               return value of this function.
+ * @param[out] paradigmAffected  The affected paradigms of the top level entry.
  */
 void
-scorep_rewind_stack_pop( SCOREP_Location * location,
-                         uint32_t *       id,
-                         uint64_t *       entertimestamp,
-                         bool paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] );
+scorep_rewind_stack_pop( SCOREP_Location* location,
+                         uint32_t*        id,
+                         uint64_t*        entertimestamp,
+                         bool*            paradigmAffected /* [ SCOREP_REWIND_PARADIGM_MAX ] */ );
 
 
 /**

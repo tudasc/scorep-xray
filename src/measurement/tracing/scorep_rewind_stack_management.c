@@ -146,7 +146,7 @@ void
 scorep_rewind_stack_pop( SCOREP_Location* location,
                          uint32_t*        id,
                          uint64_t*        entertimestamp,
-                         bool             paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] )
+                         bool*            paradigmAffected /* [ SCOREP_REWIND_PARADIGM_MAX ] */ )
 {
     SCOREP_TracingData*  tracing_data = scorep_tracing_get_trace_data( location );
     scorep_rewind_stack* stack_head   = tracing_data->rewind_stack;
@@ -156,7 +156,7 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
     {
         *id             = stack_head->id;
         *entertimestamp = stack_head->entertimestamp;
-        memcpy( paradigm_affected, stack_head->paradigm_affected,
+        memcpy( paradigmAffected, stack_head->paradigm_affected,
                 sizeof( bool ) * SCOREP_REWIND_PARADIGM_MAX );
 
         stack_item = stack_head;
