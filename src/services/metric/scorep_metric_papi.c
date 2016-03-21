@@ -786,7 +786,7 @@ scorep_metric_papi_test( scorep_metric_definition_data* metricDefinition )
 
         /* Search for the eventset that matches the counter */
         j = 0;
-        while ( j < SCOREP_METRIC_MAXNUM && event_set[ j ] != NULL && j < SCOREP_METRIC_MAXNUM && event_set[ j ]->component_id != component )
+        while ( j < SCOREP_METRIC_MAXNUM && event_set[ j ] != NULL && event_set[ j ]->component_id != component )
         {
             j++;
         }
