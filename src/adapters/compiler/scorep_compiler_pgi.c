@@ -338,6 +338,41 @@ check_region( SCOREP_RegionHandle* region,
     }
 }
 
+#if __i386__
+
+#pragma save_all_gp_regs
+void
+___rouent( struct PGI_PROFENT_32* profent )
+{
+    SCOREP_COMPILER_ENTER_MPROF();
+}
+
+#pragma save_all_gp_regs
+void
+___rouent2( struct PGI_PROFENT_32* profent )
+{
+    SCOREP_COMPILER_ENTER_MPROF();
+}
+
+/**
+ * called at the end of each instrumented routine
+ */
+#pragma save_all_gp_regs
+void
+___rouret( void )
+{
+    SCOREP_COMPILER_EXIT_MPROF();
+}
+
+#pragma save_all_gp_regs
+void
+___rouret2( void )
+{
+    SCOREP_COMPILER_EXIT_MPROF();
+}
+
+#elif __x86_64__
+
 /**
  * Called at the beginning of each instrumented routine
  *
@@ -370,25 +405,6 @@ ___instret64( void*                  arg0,
 {
     SCOREP_COMPILER_EXIT_MINST();
 }
-
-#if __i386__
-
-#pragma save_all_gp_regs
-void
-___rouent( struct PGI_PROFENT_32* profent )
-{
-    SCOREP_COMPILER_ENTER_MPROF();
-}
-
-#pragma save_all_gp_regs
-void
-___rouent2( struct PGI_PROFENT_32* profent )
-{
-    SCOREP_COMPILER_ENTER_MPROF();
-}
-
-
-#elif __x86_64__
 
 #pragma save_all_gp_regs
 void
@@ -433,31 +449,14 @@ ___rouent64( void*                  arg0,
     SCOREP_COMPILER_ENTER_MINST();
 }
 
-#endif
-
-/**
- * called at the end of each instrumented routine
- */
-#pragma save_all_gp_regs
-void
-___rouret( void )
-{
-    SCOREP_COMPILER_EXIT_MPROF();
-}
-
-#pragma save_all_gp_regs
-void
-___rouret2( void )
-{
-    SCOREP_COMPILER_EXIT_MPROF();
-}
-
 #pragma save_all_gp_regs
 void
 ___rouret64( void )
 {
     SCOREP_COMPILER_EXIT_MPROF();
 }
+
+#endif
 
 #pragma save_all_gp_regs
 void
