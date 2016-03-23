@@ -258,6 +258,6 @@ equal_group( const SCOREP_GroupDef* existingDefinition,
            && existingDefinition->number_of_members == newDefinition->number_of_members
            && 0 == memcmp( existingDefinition->members,
                            newDefinition->members,
-                           sizeof( existingDefinition->members[ 0 ]
-                                   * existingDefinition->number_of_members ) );
+                           sizeof( existingDefinition->members[ 0 ] )
+                           * existingDefinition->number_of_members );
 }
