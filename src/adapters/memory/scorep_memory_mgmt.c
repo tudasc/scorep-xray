@@ -68,10 +68,13 @@ memory_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    register_memory_regions();
+    if ( scorep_memory_recording )
+    {
+        register_memory_regions();
 
-    SCOREP_AllocMetric_New( "Process memory usage", &scorep_memory_metric );
-    scorep_memory_attributes_init();
+        SCOREP_AllocMetric_New( "Process memory usage", &scorep_memory_metric );
+        scorep_memory_attributes_init();
+    }
 
     UTILS_DEBUG_EXIT();
     return SCOREP_SUCCESS;
@@ -83,7 +86,10 @@ memory_subsystem_end( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_AllocMetric_ReportLeaked( scorep_memory_metric );
+    if ( scorep_memory_recording )
+    {
+        SCOREP_AllocMetric_ReportLeaked( scorep_memory_metric );
+    }
 
     UTILS_DEBUG_EXIT();
 }
@@ -93,7 +99,10 @@ memory_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_AllocMetric_Destroy( scorep_memory_metric );
+    if ( scorep_memory_recording )
+    {
+        SCOREP_AllocMetric_Destroy( scorep_memory_metric );
+    }
 
     UTILS_DEBUG_EXIT();
 }
