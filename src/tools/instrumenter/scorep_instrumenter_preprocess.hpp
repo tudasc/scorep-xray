@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -42,7 +45,7 @@ public:
      * @returns Filename for the preprocessed source file.
      */
     virtual std::string
-    precompile( SCOREP_Instrumenter&         instrumenter,
+    preprocess( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
                 const std::string&           source_file );
 };

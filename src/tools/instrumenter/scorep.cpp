@@ -79,7 +79,6 @@ print_help( void )
               << "                  1 = Executed commands are displayed (default if no\n"
               << "                      value is specified)\n"
               << "                  2 = Detailed information is displayed\n"
-
               << "  --dry-run       Only displays the executed commands. It does not\n"
               << "                  execute any command.\n"
               << "  --keep-files    Do not delete temporarily created files after successfull\n"
@@ -91,15 +90,18 @@ print_help( void )
               << "                  It applies the same syntax, as the one used by Score-P during\n"
               << "                  run-time.\n"
               << "  --version       Prints the Score-P version and exits.\n"
+              << "  --disable-preprocessing\n"
+              << "                  Tells scorep to skip all preprocessing related steps,\n"
+              << "                  the input files are already preprocessed.\n"
 #if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
-              << "  --static        Enforce static linking of the Score-P libraries.\n"
-              << "  --dynamic       Enforce dynamic linking of the Score-P libraries.\n"
+        << "  --static        Enforce static linking of the Score-P libraries.\n"
+        << "  --dynamic       Enforce dynamic linking of the Score-P libraries.\n"
 #endif
 #if defined( SCOREP_SHARED_BUILD )
-    << "  --no-as-needed  Adds a GNU ld linker flag to fix undefined references\n"
-    "                  when using shared Score-P libraries. This happens on\n"
-    "                  systems using --as-needed as linker default. It will\n"
-    "                  be handled transparently in future releases of Score-P.\n"
+        << "  --no-as-needed  Adds a GNU ld linker flag to fix undefined references\n"
+        "                  when using shared Score-P libraries. This happens on\n"
+        "                  systems using --as-needed as linker default. It will\n"
+        "                  be handled transparently in future releases of Score-P.\n"
 #endif
     ;
     SCOREP_Instrumenter_Selector::printAll();

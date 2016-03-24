@@ -163,7 +163,28 @@ public:
     isEnabled( void ) const;
 
     /**
+     * This function performs pre-preprocessing instrumentation activities. In
+     * case only a preproceessor is invoked.
+     * The default does nothing.
+     * Overwrite this function if your adapter should perform any pre-preprocessing
+     * activities. Do not forget to add the adapter to the pre-preprocess adapter list
+     * in the instrumenter.
+     * This function is not meant to set compiler flags. If you need to add some
+     * compiler flags, please add them to the scorep-config output.
+     * @param instrumenter  The instrumenter object.
+     * @param cmdLine       The command line object.
+     * @param source_file   The file name of the file that is going to be compiled.
+     * @returns the name of the processed source file that should be used for
+     *          further processing.
+     */
+    virtual std::string
+    preprocess( SCOREP_Instrumenter&         instrumenter,
+                SCOREP_Instrumenter_CmdLine& cmdLine,
+                const std::string&           source_file );
+
+    /**
      * This function performs pre-compiling instrumentation activities.
+     * This operations may be applied to already preprocessed files.
      * The default does nothing.
      * Overwrite this function if your adapter should perform any pre-compiling
      * activities. Do not forget to add the adapter to the pre-compile adapter list

@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -90,9 +93,11 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     new SCOREP_Instrumenter_OnlineAccess();
 
+    /* pre-preprocess adapter order */
+    m_preprocess_adapters.push_back( m_preprocess_adapter );
+
     /* pre-compile adapter order */
     m_precompile_adapters.push_back( m_compiler_adapter );
-    m_precompile_adapters.push_back( m_preprocess_adapter );
     m_precompile_adapters.push_back( m_opari_adapter );
     m_precompile_adapters.push_back( m_pdt_adapter );
 
@@ -122,9 +127,9 @@ SCOREP_Instrumenter::Run( void )
 {
     m_input_files = *m_command_line.getInputFiles();
 
-    /* If no compiling or linking happens, e.g., because the command does only
-       perform preprocessing or dependency generation, execute the unmodified command */
-    if ( m_command_line.noCompileLink() )
+    /* If no compiling or linking happens, e.g., because the command performs only
+       dependency generation, execute the unmodified command */
+    if ( m_command_line.doNothing() )
     {
         /* Construct command */
         std::string command = m_command_line.getCompilerName()
@@ -143,7 +148,8 @@ SCOREP_Instrumenter::Run( void )
         return EXIT_SUCCESS;
     }
 
-    if ( m_command_line.isCompiling() )
+    if ( m_command_line.isCompiling() ||
+         m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::DISABLE )
     {
         /* Because Opari and PDT perform source code modifications, and store
            the modified source file with a different name, we get object files
@@ -211,22 +217,44 @@ SCOREP_Instrumenter::Run( void )
                     addTempFile( object_file );
                 }
 
-                // Perform instrumentation
-                *current_file = precompile( *current_file );
 
-                    #if SCOREP_BACKEND_COMPILER_CRAY
-                if ( m_opari_adapter->isEnabled() &&
-                     m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
+                // Perform preprocessing steps
+                if ( m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::DISABLE )
                 {
-                    m_compiler_flags += " -I.";
+                    std::string orig_extension = get_extension( *current_file );
+                    *current_file = preprocess( *current_file );
+                    if ( m_command_line.getPreprocessMode() == SCOREP_Instrumenter_CmdLine::EXPLICIT_STEP )
+                    {
+                        std::string prep_file = m_command_line.getOutputName();
+                        if ( m_command_line.isCompiling() )
+                        {
+                            prep_file = remove_extension( remove_path( *current_file ) )
+                                        + ".prep"
+                                        + orig_extension;
+                            addTempFile( prep_file );
+                        }
+                        preprocess_source_file( *current_file, prep_file );
+                    }
                 }
-                    #endif
 
-                // Compile instrumented file
-                compile_source_file( *current_file, object_file );
+                // Perform compile step
+                if ( m_command_line.isCompiling() )
+                {
+                    *current_file = precompile( *current_file );
 
-                // Add object file to the input file list for the link command
-                object_files.push_back( object_file );
+                  #if SCOREP_BACKEND_COMPILER_CRAY
+                    if ( m_opari_adapter->isEnabled() &&
+                         m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
+                    {
+                        m_compiler_flags += " -I.";
+                    }
+                  #endif
+
+                    compile_source_file( *current_file, object_file );
+
+                    // Add object file to the input file list for the link command
+                    object_files.push_back( object_file );
+                }
             }
             // If it is no source file, leave the file in the input list
             else
@@ -413,6 +441,74 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     command << " -c " << input_file;
     command << " -o " << output_file;
     executeCommand( command.str() );
+}
+
+void
+SCOREP_Instrumenter::preprocess_source_file( const std::string& source_file,
+                                             const std::string& output_file )
+{
+    std::string command;
+
+    // Determine language
+    std::string language = "c";
+    if ( is_fortran_file( source_file ) )
+    {
+        language = "f";
+    }
+    else if ( is_cpp_file( source_file ) )
+    {
+        language = "cxx";
+    }
+
+    // Preprocess file
+    command = SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars()
+              + m_command_line.getCompilerName()
+              + " " + m_command_line.getFlagsBeforeInterpositionLib()
+              + " `" + getConfigBaseCall() + " --" + language + "flags`"
+              + " " + getCompilerFlags()
+              + " " + m_command_line.getFlagsAfterInterpositionLib()
+              + " " + source_file;
+
+    if ( is_c_file( source_file ) )
+    {
+        command += " " + SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( source_file,
+                                                                                  output_file );
+    }
+    else if ( is_cpp_file( source_file ) )
+    {
+        command += " " +  SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( source_file,
+                                                                                     output_file );
+    }
+
+    else if ( is_fortran_file( source_file ) )
+    {
+        command += " " +  SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( source_file,
+                                                                                         output_file );
+    }
+    else if ( is_cuda_file( source_file ) )
+    {
+        command += " -E > " + output_file;
+    }
+
+    executeCommand( command );
+}
+
+std::string
+SCOREP_Instrumenter::preprocess( std::string current_file )
+{
+    std::deque<SCOREP_Instrumenter_Adapter*>::iterator adapter;
+    for ( adapter = m_preprocess_adapters.begin();
+          adapter != m_preprocess_adapters.end();
+          adapter++ )
+    {
+        if ( ( *adapter )->isEnabled() )
+        {
+            current_file = ( *adapter )->preprocess( *this,
+                                                     m_command_line,
+                                                     current_file );
+        }
+    }
+    return current_file;
 }
 
 std::string

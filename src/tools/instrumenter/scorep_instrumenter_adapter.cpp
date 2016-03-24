@@ -209,6 +209,14 @@ SCOREP_Instrumenter_Adapter::checkOption( std::string arg )
 }
 
 std::string
+SCOREP_Instrumenter_Adapter::preprocess( SCOREP_Instrumenter&         instrumenter,
+                                         SCOREP_Instrumenter_CmdLine& cmdLine,
+                                         const std::string&           input_file )
+{
+    return input_file;
+}
+
+std::string
 SCOREP_Instrumenter_Adapter::precompile( SCOREP_Instrumenter&         instrumenter,
                                          SCOREP_Instrumenter_CmdLine& cmdLine,
                                          const std::string&           input_file )

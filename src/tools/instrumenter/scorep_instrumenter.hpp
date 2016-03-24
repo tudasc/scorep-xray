@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -142,6 +145,15 @@ private:
     prepare_config_tool_calls( const std::string& input_file );
 
     /**
+       Invokes the preprocessor on a source file.
+       @param input_file  Source file which is compiled.
+       @param output_file Filename for the object file.
+     */
+    void
+    preprocess_source_file( const std::string& input_file,
+                            const std::string& output_file );
+
+    /**
        Compiles a users source file. If the original command compile and
        link in one step, we need to split compilation and linking, because
        we need to run the script on the object files. Thus, we do already
@@ -159,6 +171,14 @@ private:
      */
     void
     clean_temp_files( void );
+
+    /**
+       Invokes the adapters' pre-preprocess step on the current file.
+       @param current_file The currently processed file.
+       @returns The filename of the source file that should be compiled.
+     */
+    std::string
+    preprocess( std::string current_file );
 
     /**
        Invokes the adapters' precompile step on the current file.
@@ -251,6 +271,7 @@ private:
 
     SCOREP_Instrumenter_Mutex* m_mutex;
 
+    std::deque<SCOREP_Instrumenter_Adapter*> m_preprocess_adapters;
     std::deque<SCOREP_Instrumenter_Adapter*> m_precompile_adapters;
     std::deque<SCOREP_Instrumenter_Adapter*> m_prelink_adapters;
     std::deque<SCOREP_Instrumenter_Adapter*> m_postlink_adapters;

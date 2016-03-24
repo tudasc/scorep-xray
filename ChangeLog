@@ -92,6 +92,9 @@ User tools and API improvements and changes:
   anymore, which disables some optimizations.
 - The instrumenter now warns the user if the provided instrumentation
   filter wont be used by the active instrumentations.
+- Added the option --disable-preprocessing to the instrumenter. It
+  tells the instrumenter to skip all preprocessing related activities,
+  because the input files are already preprocessed.
 
 Bugfixes:
 

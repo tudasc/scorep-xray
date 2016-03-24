@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -58,9 +61,10 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
 
     /* Execution modes */
     m_target_is_shared_lib = false;
+    m_preprocess_mode      = IN_COMPILE_STEP;
     m_is_compiling         = true; // Opposite recognized if no source files in input
     m_is_linking           = true; // Opposite recognized on existence of -c or -E flag
-    m_no_compile_link      = false;
+    m_do_nothing           = false;
     m_link_static          = detect;
 
     /* Input command elements */
@@ -157,6 +161,12 @@ SCOREP_Instrumenter_CmdLine::getPathToBinary( void )
     return m_path_to_binary;
 }
 
+void
+SCOREP_Instrumenter_CmdLine::enableSeparatePreprocessingStep( void )
+{
+    m_preprocess_mode = EXPLICIT_STEP;
+}
+
 std::string
 SCOREP_Instrumenter_CmdLine::getPathToSrc( void ) const
 {
@@ -167,6 +177,11 @@ SCOREP_Instrumenter_CmdLine::getPathToSrc( void ) const
     return path_to_src;
 }
 
+SCOREP_Instrumenter_CmdLine::scorep_preprocess_mode_t
+SCOREP_Instrumenter_CmdLine::getPreprocessMode( void )
+{
+    return m_preprocess_mode;
+}
 
 bool
 SCOREP_Instrumenter_CmdLine::isCompiling( void )
@@ -181,9 +196,9 @@ SCOREP_Instrumenter_CmdLine::isLinking( void )
 }
 
 bool
-SCOREP_Instrumenter_CmdLine::noCompileLink( void )
+SCOREP_Instrumenter_CmdLine::doNothing( void )
 {
-    return m_no_compile_link;
+    return m_do_nothing;
 }
 
 std::string
@@ -406,6 +421,12 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         exit( EXIT_SUCCESS );
     }
 
+    else if ( arg == "--disable-preprocessing" )
+    {
+        m_preprocess_mode = DISABLE;
+        return scorep_parse_mode_param;
+    }
+
     else if ( arg.substr( 0, 20 ) == "--instrument-filter=" )
     {
         std::string filter_file_name = arg.substr( 20 );
@@ -602,13 +623,14 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( m_install_data.isPreprocessFlag( current ) )
     {
-        m_no_compile_link = true;
+        m_preprocess_mode = EXPLICIT_STEP;
         m_is_linking      = false;
         m_is_compiling    = false;
     }
     else if ( current == "-M" ) /* Generate dependencies */
     {
-        m_no_compile_link = true;
+        m_do_nothing      = true;
+        m_preprocess_mode = DISABLE;
         m_is_linking      = false;
         m_is_compiling    = false;
     }

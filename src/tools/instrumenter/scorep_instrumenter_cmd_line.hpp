@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -90,6 +93,30 @@ private:
         scorep_parse_mode_wrapper_option
     } scorep_parse_mode_t;
 
+public:
+    /**
+       Type to define the state of the preprocessing.
+
+       DISABLE means that any preprocessing is disabled, e.g.,
+               because we are working on aleady preprocessed files.
+
+       IN_COMPILE_STEP means that the compile step will also
+               do preprocessing and we apply our preprocessing
+               instrumentation, but do not need a separate preprocessing
+               inokation of the compiler.
+
+       EXPLICIT_STEP means that we perform an explicit preprocessing step.
+               Either because the user command is only a preprocessing
+               command, or because we need to preprocess files, e.g. before
+               OAPRI2 instrumentation.
+     */
+    typedef enum
+    {
+        DISABLE,
+        IN_COMPILE_STEP,
+        EXPLICIT_STEP
+    } scorep_preprocess_mode_t;
+
     /* ****************************************************** Public methods */
 public:
 
@@ -127,12 +154,16 @@ public:
     std::string
     getPathToSrc( void ) const;
 
+    void
+    enableSeparatePreprocessingStep( void );
+    scorep_preprocess_mode_t
+    getPreprocessMode( void );
     bool
     isCompiling( void );
     bool
     isLinking( void );
     bool
-    noCompileLink( void );
+    doNothing( void );
     std::string
     getCompilerName( void );
     std::string
@@ -215,12 +246,6 @@ public:
 
     /* ***************************************************** Private methods */
 private:
-
-    /**
-       Path to this binary. Extracted from argv[0] and includes the final slash.
-       Empty string if the binary was called via $PATH.
-     */
-    std::string m_path_to_binary;
 
     /**
        Prints the results from parsing the command line and parsing the
@@ -313,6 +338,12 @@ private:
     /* ***************************************************** Private members */
 private:
     /**
+       Path to this binary. Extracted from argv[0] and includes the final slash.
+       Empty string if the binary was called via $PATH.
+     */
+    std::string m_path_to_binary;
+
+    /**
        Reference to the associated installation configuration data
      */
     SCOREP_Instrumenter_InstallData& m_install_data;
@@ -326,6 +357,11 @@ private:
     bool m_target_is_shared_lib;
 
     /**
+       True, if we need to perform an explicit preprocessing step
+     */
+    scorep_preprocess_mode_t m_preprocess_mode;
+
+    /**
        True if compiling
      */
     bool m_is_compiling;
@@ -337,9 +373,9 @@ private:
 
     /**
        True if the command should not be modified, e.g., because the command
-       does only preprocessing or dependency generation
+       does only dependency generation
      */
-    bool m_no_compile_link;
+    bool m_do_nothing;
 
     /**
        Specification of static or dynamic linking of Score-P libraries into the
