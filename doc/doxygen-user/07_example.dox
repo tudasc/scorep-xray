@@ -80,7 +80,7 @@ cd ../sys; cc  -o setparams setparams.c -lm
 scorep mpif77 -c  -O3 -fopenmp bt.f
 [...]
 cd ../common;  scorep --user mpif77 -c  -O3 -fopenmp timers.f
-scorep mpif77 –O3 -fopenmp -o ../bin.scorep/bt-mz_W.4 \
+scorep mpif77 -O3 -fopenmp -o ../bin.scorep/bt-mz_W.4 \
 bt.o initialize.o exact_solution.o exact_rhs.o set_constants.o \
 adi.o rhs.o zone_setup.o x_solve.o y_solve.o exch_qbc.o \
 solve_subs.o z_solve.o add.o error.o verify.o mpi_setup.o \
@@ -368,17 +368,17 @@ region:
 
 @code
 #include "scorep/SCOREP_User.inc"
-subroutine foo(…)
+subroutine foo(...)
   ! Declarations
   SCOREP_USER_REGION_DEFINE( solve )
-  ! Some code…
-  SCOREP_USER_REGION_BEGIN( solve, “<solver>", \
+  ! Some code...
+  SCOREP_USER_REGION_BEGIN( solve, "<solver>", \
                             SCOREP_USER_REGION_TYPE_LOOP )
   do i=1,100
     [...]
   end do
   SCOREP_USER_REGION_END( solve )
-  ! Some more code…
+  ! Some more code...
 end subroutine
 @endcode
 
