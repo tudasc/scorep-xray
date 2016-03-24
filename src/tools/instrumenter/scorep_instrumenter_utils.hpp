@@ -270,7 +270,7 @@ undo_backslashing( std::string str );
  *  Locates a substring in a string list.
  *  @param haystackList A list of strings joined by @a separator.
  *  @param needleString The string to search for.
- *  @patam separator    The separator character which splits the lists into
+ *  @param separator    The separator character which splits the lists into
  *                      individual tokens.
  */
 std::string::size_type
@@ -282,7 +282,7 @@ find_string_in_list( const std::string& haystackList,
  *  Removes all occurrences of a substring in a string list.
  *  @param haystackList A list of strings joined by @a separator.
  *  @param needleString The string to remove.
- *  @patam separator    The separator character which splits the lists into
+ *  @param separator    The separator character which splits the lists into
  *                      individual tokens.
  */
 std::string
