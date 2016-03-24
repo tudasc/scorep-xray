@@ -72,6 +72,8 @@
  * and region handles.
  */
 
+#if __i386__
+
 /*
  * .LENT1:
  *      .4byte	0,0,0,0,0,0,0,0
@@ -107,6 +109,8 @@ struct PGI_PROFENT_32
     char*               flnm;
     char*               fcnm;
 };
+
+#elif __x86_64__
 
 /*
  * .LENT1:
@@ -164,6 +168,11 @@ struct PGI_PROFENT_64
     char*               fcnm;
 };
 
+#else
+
+#error "unsupported architecture"
+
+#endif
 
 /* **************************************************************************************
  * Implementation of complier inserted functions
