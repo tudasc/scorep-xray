@@ -154,8 +154,8 @@ doc/doxygen-user/scorep_score_usage.dox.in: scorep-score-command
 scorep-wrapper-command:
 	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) scorep-wrapper
 
-CLEANFILES += doc/doxygen-user/scorep_wrapper.dox.in
-doc/doxygen-user/scorep_wrapper.dox.in: scorep-wrapper-command
+CLEANFILES += doc/doxygen-user/scorep_wrapper_usage.md
+doc/doxygen-user/scorep_wrapper_usage.md: scorep-wrapper-command
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	./build-backend/scorep-wrapper --help | \
             sed '$$d' >$@.raw && \
@@ -185,7 +185,7 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     $(srcdir)/doc/doxygen-user/main_6.dox.in \
     doc/doxygen-user/confvars.dox.in \
     $(srcdir)/doc/doxygen-user/main_7.dox.in \
-    doc/doxygen-user/scorep_wrapper.dox.in \
+    doc/doxygen-user/scorep_wrapper_usage.md \
     $(srcdir)/doc/doxygen-user/main_8.dox.in
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	cat $^ >$@
