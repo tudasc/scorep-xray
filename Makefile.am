@@ -157,16 +157,18 @@ scorep-wrapper-command:
 CLEANFILES += doc/doxygen-user/scorep_wrapper.dox.in
 doc/doxygen-user/scorep_wrapper.dox.in: scorep-wrapper-command
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
-	./build-backend/scorep-wrapper --help >$@.raw && \
-	( \
-            sed -e '/^WRAPPER INSTANCES$$/q' $@.raw; \
+	./build-backend/scorep-wrapper --help | \
+            sed '$$d' >$@.raw && \
+        ( \
+            sed -e '/^Wrapper Instances$$/q' $@.raw; \
+            echo "================="; \
             echo ""; \
-            echo "    The installation provides wrapper instances based on the compilers used to"; \
-            echo "    build Score-P.  This section than provides a listing of all these instances."; \
+            echo "The installation provides wrapper instances based on the compilers used to"; \
+            echo "build Score-P.  This section than provides a listing of all these instances."; \
             echo ""; \
-            echo "    Additional wrapper instances can be created with 'scorep-wrapper --create'."; \
+            echo "Additional wrapper instances can be created with \`scorep-wrapper --create\`."; \
             echo ""; \
-            sed -n -e '/^EXAMPLES$$/,$$p' $@.raw; \
+            sed -n -e '/^Examples$$/,$$p' $@.raw; \
         ) >$@ && \
         rm $@.raw
 
