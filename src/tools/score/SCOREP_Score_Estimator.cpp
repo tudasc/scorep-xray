@@ -46,6 +46,7 @@
 #include <fstream>
 #include <iomanip>
 #include <deque>
+#include <limits>
 
 using namespace std;
 
@@ -517,7 +518,7 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
         uint64_t      group           = m_profile->getGroup( region );
         uint64_t      bytes_per_visit = 0;
 
-        /* Calculate bytes per visit, though visists into sampling regions wont
+        /* Calculate bytes per visit, though visits into sampling regions wont
            be recorded in the trace */
         if ( m_profile->getRegionParadigm( region ) != "sampling" )
         {
@@ -637,10 +638,20 @@ SCOREP_Score_Estimator::printGroups( void )
          << get_user_readable_byte_no( max_buf ) << endl;
     cout << "Estimated memory requirements (SCOREP_TOTAL_MEMORY):       "
          << get_user_readable_byte_no( memory_req ) << endl;
-    cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY="
-         << get_user_readable_byte_no( memory_req ) << " to avoid intermediate flushes\n"
-         << " or reduce requirements using USR regions filters.)"
-         << endl << endl;
+    if ( memory_req > numeric_limits<uint32_t>::max() )
+    {
+        cout << "(warning: The memory requirements can not be satisfied by Score-P to avoid\n"
+             << " intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the\n"
+             << " maximum supported memory or reduce requirements using USR regions filters.)"
+             << endl << endl;
+    }
+    else
+    {
+        cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY="
+             << get_user_readable_byte_no( memory_req ) << " to avoid intermediate flushes\n"
+             << " or reduce requirements using USR regions filters.)"
+             << endl << endl;
+    }
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
