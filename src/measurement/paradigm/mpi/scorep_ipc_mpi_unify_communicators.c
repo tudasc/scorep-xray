@@ -554,10 +554,14 @@ define_self_likes( uint32_t rank )
 
         for ( uint32_t i = 0; i < max_number_of_self_ids; i++ )
         {
+            /*
+             * We can give the very first self-like comm a name, its "MPI_COMM_SELF",
+             * as this comm existed in all rank.
+             */
             SCOREP_CommunicatorHandle handle =
                 SCOREP_Definitions_NewUnifiedCommunicator(
                     self,
-                    "",
+                    i == 0 ? "MPI_COMM_SELF" : "",
                     SCOREP_INVALID_COMMUNICATOR );
             UTILS_BUG_ON(
                 SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator )
