@@ -135,7 +135,7 @@ define_property( SCOREP_DefinitionManager* definition_manager,
     UTILS_ASSERT( definition_manager );
 
     SCOREP_PropertyDef*   new_definition = NULL;
-    SCOREP_PropertyHandle new_handle     = SCOREP_INVALID_PARAMETER;
+    SCOREP_PropertyHandle new_handle     = SCOREP_INVALID_PROPERTY;
 
     SCOREP_DEFINITION_ALLOC( Property );
     new_definition->property = property;
@@ -148,16 +148,13 @@ define_property( SCOREP_DefinitionManager* definition_manager,
     // no hashing, can be modified
 
     // modified SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION macro:
-
-    SCOREP_PropertyHandle* hash_table_bucket = 0;
-
     if ( definition_manager->property.hash_table )
     {
-        hash_table_bucket = &definition_manager->property.hash_table[
+        SCOREP_PropertyHandle* hash_table_bucket = &definition_manager->property.hash_table[
             new_definition->hash_value & definition_manager->property.hash_table_mask ];
         SCOREP_PropertyHandle hash_list_iterator = *hash_table_bucket;
 
-        while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
+        while ( hash_list_iterator != SCOREP_INVALID_PROPERTY )
         {
             SCOREP_PropertyDef* existing_definition = SCOREP_LOCAL_HANDLE_DEREF(
                 hash_list_iterator, Property );

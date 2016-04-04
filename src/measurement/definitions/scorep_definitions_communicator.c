@@ -201,7 +201,7 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
     {
         /*
          * Use the memory pool from the given location.
-         * The caller needs to be care of the locking, if the
+         * The caller needs to take care of the locking, if the
          * manager entry is shared.
          */
         page_manager = SCOREP_Location_GetMemoryPageManager(
@@ -295,7 +295,7 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
         SCOREP_InterimCommunicatorHandle* hash_table_bucket = &managerEntry->hash_table[
             new_definition->hash_value & managerEntry->hash_table_mask ];
         SCOREP_InterimCommunicatorHandle hash_list_iterator = *hash_table_bucket;
-        while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
+        while ( hash_list_iterator != SCOREP_INVALID_INTERIM_COMMUNICATOR )
         {
             SCOREP_InterimCommunicatorDef* existing_definition =
                 SCOREP_Allocator_GetAddressFromMovableMemory(
@@ -399,7 +399,7 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
             definition->parent_handle,
             Communicator,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_COMMUNICATOR,
                       "Invalid unification order of communicator definition: parent not yet unified" );
     }
 

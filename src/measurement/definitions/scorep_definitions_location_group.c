@@ -112,7 +112,7 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
             definition->parent,
             SystemTreeNode,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_SYSTEM_TREE_NODE,
                       "Invalid unification order of location group definition: system tree parent not yet unified" );
     }
 

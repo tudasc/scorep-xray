@@ -178,7 +178,7 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
             definition->parent_callpath_handle,
             Callpath,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_callpath_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_parent_callpath_handle == SCOREP_INVALID_CALLPATH,
                       "Invalid unification order of callpath definition: parent not yet unified" );
     }
 
@@ -195,7 +195,7 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                 definition->callpath_argument.region_handle,
                 Callpath,
                 handlesPageManager );
-            UTILS_BUG_ON( unified_region_handle == SCOREP_MOVABLE_NULL,
+            UTILS_BUG_ON( unified_region_handle == SCOREP_INVALID_REGION,
                           "Invalid unification order of callpath definition: region not yet unified" );
         }
     }
@@ -210,7 +210,7 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                 handlesPageManager );
 
             unified_parameter_handle = parameter->unified;
-            UTILS_BUG_ON( unified_parameter_handle == SCOREP_MOVABLE_NULL,
+            UTILS_BUG_ON( unified_parameter_handle == SCOREP_INVALID_PARAMETER,
                           "Invalid unification order of callpath definition: parameter not yet unified" );
 
             if ( ( parameter->parameter_type == SCOREP_PARAMETER_INT64 ) ||
@@ -226,7 +226,7 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                         definition->parameter_value.string_handle,
                         String,
                         handlesPageManager );
-                    UTILS_BUG_ON( unified_string_handle == SCOREP_MOVABLE_NULL,
+                    UTILS_BUG_ON( unified_string_handle == SCOREP_INVALID_STRING,
                                   "Invalid unification order of callpath definition: string parameter not yet unified" );
                 }
             }

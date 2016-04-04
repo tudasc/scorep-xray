@@ -121,7 +121,7 @@ scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*     definit
             definition->parent_handle,
             SystemTreeNode,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_SYSTEM_TREE_NODE,
                       "Invalid unification order of system tree definition: parent not yet unified" );
     }
 

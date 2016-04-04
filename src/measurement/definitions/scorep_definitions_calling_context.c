@@ -119,7 +119,7 @@ scorep_definitions_unify_calling_context( SCOREP_CallingContextDef*     definiti
             definition->file_handle,
             String,
             handlesPageManager );
-        UTILS_BUG_ON( unified_file_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_file_handle == SCOREP_INVALID_STRING,
                       "Invalid unification order of calling context definition: file not yet unified" );
     }
 
@@ -130,7 +130,7 @@ scorep_definitions_unify_calling_context( SCOREP_CallingContextDef*     definiti
             definition->scl_handle,
             SourceCodeLocation,
             handlesPageManager );
-        UTILS_BUG_ON( unified_scl_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_scl_handle == SCOREP_INVALID_SOURCE_CODE_LOCATION,
                       "Invalid unification order of calling context definition: scl not yet unified" );
     }
 
@@ -141,7 +141,7 @@ scorep_definitions_unify_calling_context( SCOREP_CallingContextDef*     definiti
             definition->parent_handle,
             CallingContext,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_CALLING_CONTEXT,
                       "Invalid unification order of calling context definition: parent not yet unified" );
     }
 

@@ -766,15 +766,11 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                                      SCOREP_SAMPLING_SET_ABSTRACT );
 
                             /* Get handle of current location as recorder */
-                            SCOREP_LocationHandle current_location_handle = SCOREP_Location_GetLocationHandle( location );
-                            SCOREP_MetricScope    scope                   = SCOREP_METRIC_SCOPE_LOCATION_GROUP;
-                            SCOREP_AnyHandle      scope_handle            = SCOREP_GetLocationGroup();
-                            if ( scope_handle == SCOREP_INVALID_LOCATION_GROUP )
-                            {
-                                UTILS_WARNING( "Cannot get handle for location group." );
-                            }
-
-                            UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
+                            SCOREP_LocationHandle      current_location_handle = SCOREP_Location_GetLocationHandle( location );
+                            SCOREP_MetricScope         scope                   = SCOREP_METRIC_SCOPE_LOCATION_GROUP;
+                            SCOREP_LocationGroupHandle scope_handle            = SCOREP_GetLocationGroup();
+                            UTILS_BUG_ON( scope_handle == SCOREP_INVALID_LOCATION_GROUP,
+                                          "Cannot get handle for location group." );
                             current_location_metric_set->sampling_sets[ recent_sampling_set_index++ ]
                                 = SCOREP_Definitions_NewScopedSamplingSet( current_sampling_set_handle,
                                                                            current_location_handle,

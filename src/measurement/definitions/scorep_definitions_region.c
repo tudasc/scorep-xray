@@ -157,7 +157,7 @@ scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
             definition->file_name_handle,
             String,
             handlesPageManager );
-        UTILS_BUG_ON( unified_file_name_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( unified_file_name_handle == SCOREP_INVALID_STRING,
                       "Invalid unification order of region definition: file name not yet unified" );
     }
 

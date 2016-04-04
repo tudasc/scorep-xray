@@ -216,22 +216,23 @@ find_next_thread_team( SCOREP_Location* location,
         struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
-        /* Skip non-team-lader teams */
+        /* Skip non-team-leader teams */
         if ( payload->thread_num != 0 )
         {
             continue;
         }
 
-        if ( definition->unified != SCOREP_MOVABLE_NULL )
+        /* Skip already processed teams */
+        if ( definition->unified != SCOREP_INVALID_COMMUNICATOR )
         {
             continue;
         }
 
         /*
          * topological sorting, either no parent at all,
-         * or parent is already 'unified', ie. the Communicator definition
+         * or parent is already 'unified', i.e. the Communicator definition
          * was triggered, we re-use the 'unified' field for this,
-         * but skip already handled teams without an parent
+         * but skip already handled teams without a parent
          */
         if ( definition->parent_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
         {
@@ -291,10 +292,10 @@ find_thread_team_members( SCOREP_Location* location,
     struct scorep_thread_team_data* data =
         SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
 
-    SCOREP_AnyHandle* hash_table_bucket =
+    SCOREP_InterimCommunicatorHandle* hash_table_bucket =
         &data->thread_team.hash_table[ team_leader->hash_value & data->thread_team.hash_table_mask ];
-    SCOREP_AnyHandle thread_team_handle = *hash_table_bucket;
-    while ( thread_team_handle != SCOREP_MOVABLE_NULL )
+    SCOREP_InterimCommunicatorHandle thread_team_handle = *hash_table_bucket;
+    while ( thread_team_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
     {
         SCOREP_InterimCommunicatorDef* thread_team =
             SCOREP_Allocator_GetAddressFromMovableMemory(
@@ -421,9 +422,10 @@ fork_join_subsystem_pre_unify( void )
     uint32_t i = 0;
     while ( i < total_thread_teams )
     {
-        SCOREP_InterimCommunicatorHandle current_team_leader_handle = SCOREP_MOVABLE_NULL;
+        SCOREP_InterimCommunicatorHandle current_team_leader_handle =
+            SCOREP_INVALID_INTERIM_COMMUNICATOR;
         SCOREP_Location_ForAll( find_next_thread_team, &current_team_leader_handle );
-        UTILS_BUG_ON( current_team_leader_handle == SCOREP_MOVABLE_NULL,
+        UTILS_BUG_ON( current_team_leader_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR,
                       "There should be %u more thread teams!", total_thread_teams - i );
 
         SCOREP_InterimCommunicatorDef* current_team_leader =
