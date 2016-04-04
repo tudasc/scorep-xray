@@ -63,8 +63,6 @@ SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeN
                                          const char*                 propertyValue  );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_system_tree_node_property( SCOREP_SystemTreeNodePropertyDef*    definition,
                                                     struct SCOREP_Allocator_PageManager* handlesPageManager );

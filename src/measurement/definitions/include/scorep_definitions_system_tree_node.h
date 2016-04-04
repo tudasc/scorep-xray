@@ -80,8 +80,6 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                                       const char*                 name );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*            definition,
                                            struct SCOREP_Allocator_PageManager* handlesPageManager );

@@ -69,8 +69,6 @@ const char*
 SCOREP_SourceFileHandle_GetName( SCOREP_SourceFileHandle handle );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_source_file( SCOREP_SourceFileDef*                definition,
                                       struct SCOREP_Allocator_PageManager* handlesPageManager );

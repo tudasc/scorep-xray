@@ -41,8 +41,6 @@ SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
                                         const char*           value );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_location_property( SCOREP_LocationPropertyDef*          definition,
                                             struct SCOREP_Allocator_PageManager* handlesPageManager );

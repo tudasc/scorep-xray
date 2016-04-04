@@ -60,8 +60,6 @@ SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*             definition,
                                          struct SCOREP_Allocator_PageManager* handlesPageManager );

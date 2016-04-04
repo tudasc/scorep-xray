@@ -88,8 +88,6 @@ SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
                                         SCOREP_CommunicatorHandle communicatorHandle );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*                 definition,
                                      struct SCOREP_Allocator_PageManager* handlesPageManager );

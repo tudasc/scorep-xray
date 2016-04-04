@@ -64,8 +64,6 @@ SCOREP_Definitions_NewProperty( SCOREP_Property          property,
                                 bool                     initialValue );
 
 
-struct SCOREP_Allocator_PageManager;
-
 void
 scorep_definitions_unify_property( SCOREP_PropertyDef*                  definition,
                                    struct SCOREP_Allocator_PageManager* handlesPageManager );
