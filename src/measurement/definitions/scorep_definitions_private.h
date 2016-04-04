@@ -148,30 +148,6 @@
 
 
 /**
- * Declares a definition manager entry of type @a type.
- */
-#define SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( type ) \
-    scorep_definitions_manager_entry type
-
-
-/**
- * Initializes a manager entry named @a type in the definition manager @a
- * definition_manager.
- */
-#define SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( definition_manager, type ) \
-    scorep_definitions_manager_init_entry( &( definition_manager )->type )
-
-
-/**
- * Allocates the hash table for type @a type in the given definition manager
- * with the default hash table size of @a SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER.
- */
-#define SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( definition_manager, type ) \
-    scorep_definitions_manager_entry_alloc_hash_table( &( definition_manager )->type, \
-                                                       SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER )
-
-
-/**
  * Search for the definition @a new_definition in the definition manager @a
  * definition_manager, if the manager has a hash table allocated.
  *
