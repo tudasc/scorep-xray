@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2015,
+dnl Copyright (c) 2009-2016,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -284,11 +284,22 @@ AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
 #AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],
     [AS_CASE([${ac_scorep_platform}],
-         [bgq|crayx*|k|fx10*], 
+         [bgq|crayx*|k|fx10*],
               [AC_CONFIG_COMMANDS([libtool-fix-linker-preference],
                    [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
                     libtool > libtool.fix && mv libtool.fix libtool])
               ])
     ])
+
+# On Cray, libunwind.la's dependecy_libs contain -lc which leads to a
+# "multiple definition of `__lll_unlock_wake_private'" error. The patch
+# below works around this issue. A better solution would be to fix the
+# .la file or to provide a libunwind together with scorep as the
+# side effects of this patch aren't investigated.
+AS_CASE([${ac_scorep_platform}],
+    [crayx*],
+         [AC_CONFIG_COMMANDS([libtool-fix-cray-libunwind],
+              [sed -i -e 's/for search_ext in \.la /for search_ext in /' libtool])
+         ])
 
 AC_OUTPUT
