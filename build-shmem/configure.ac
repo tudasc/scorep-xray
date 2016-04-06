@@ -266,12 +266,14 @@ AM_COND_IF([HAVE_SHMEM_PROFILING_INTERFACE],
                             [printf '\x2dwrap %s\n' $scorep_shmem_wrap_symbols >../share/shmem.wrap],
                             [scorep_shmem_wrap_symbols='$scorep_shmem_wrap_symbols'])])
 
+#AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],
     [AS_CASE([${ac_scorep_platform}],
-         [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],
-                        [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
-                         libtool > libtool.fix && mv libtool.fix libtool])
-                   ])
+         [bgq|crayx*|k|fx10*], 
+              [AC_CONFIG_COMMANDS([libtool-fix-linker-preference],
+                   [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
+                    libtool > libtool.fix && mv libtool.fix libtool])
+              ])
     ])
 
 AC_OUTPUT

@@ -467,12 +467,14 @@ AC_CONFIG_FILES([run_cct_tests.sh:../test/services/unwinding/run_cct_tests.sh.in
 AC_CONFIG_FILES([../test/tools/wrapper/run_wrapper_checks.sh],
                 [chmod +x ../test/tools/wrapper/run_wrapper_checks.sh])
 
+#AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],
     [AS_CASE([${ac_scorep_platform}],
-         [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],
-                        [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
-                         libtool > libtool.fix && mv libtool.fix libtool])
-                   ])
+         [bgq|crayx*|k|fx10*], 
+              [AC_CONFIG_COMMANDS([libtool-fix-linker-preference],
+                   [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
+                    libtool > libtool.fix && mv libtool.fix libtool])
+              ])
     ])
 
 AC_CONFIG_FILES([../share/opencl.wrap:../share/opencl.wrap.in],
