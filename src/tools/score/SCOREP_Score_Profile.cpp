@@ -85,7 +85,7 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
         catch ( ... )
         {
             cerr << "WARNING: Cannot parse '" << key << "' value as number: "
-                 << "'" << value_as_string << "'" << endl;
+                 << "'" << it->second << "'" << endl;
             continue;
         }
 
