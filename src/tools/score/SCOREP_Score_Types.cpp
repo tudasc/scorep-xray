@@ -46,8 +46,6 @@ static string scorep_score_type_names[] =
     #undef SCOREP_SCORE_TYPE
 };
 
-const uint64_t SCOREP_SCORE_TYPE_NUM = sizeof( scorep_score_type_names ) / sizeof( string );
-
 string
 SCOREP_Score_getTypeName( uint64_t type )
 {

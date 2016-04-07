@@ -144,7 +144,7 @@ private:
     SCOREP_Score_Profile* m_profile;
 
     /**
-     * Array of pointers to the main groups (ALL, USR, MPI, COM, OMP).
+     * Array of pointers to the main groups (ALL, USR, MPI, COM, OMP, ...).
      */
     SCOREP_Score_Group** m_groups;
 

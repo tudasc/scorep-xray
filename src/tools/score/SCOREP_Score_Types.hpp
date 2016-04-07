@@ -40,15 +40,19 @@
 #include <string>
 #include <stdint.h>
 
+/* All types after COM, have call-paths to them marked as in COM */
 #define SCOREP_SCORE_TYPES \
-    SCOREP_SCORE_TYPE( ALL, POSSIBLE ) \
-    SCOREP_SCORE_TYPE( FLT, YES )      \
-    SCOREP_SCORE_TYPE( USR, POSSIBLE ) \
-    SCOREP_SCORE_TYPE( COM, POSSIBLE ) \
-    SCOREP_SCORE_TYPE( MPI, NO )       \
-    SCOREP_SCORE_TYPE( OMP, NO )       \
-    SCOREP_SCORE_TYPE( SHMEM, NO )     \
-    SCOREP_SCORE_TYPE( PTHREAD, NO )
+    SCOREP_SCORE_TYPE( ALL, POSSIBLE )  \
+    SCOREP_SCORE_TYPE( FLT, YES )       \
+    SCOREP_SCORE_TYPE( USR, POSSIBLE )  \
+    SCOREP_SCORE_TYPE( COM, POSSIBLE )  \
+    SCOREP_SCORE_TYPE( MPI, NO )        \
+    SCOREP_SCORE_TYPE( OMP, NO )        \
+    SCOREP_SCORE_TYPE( SHMEM, NO )      \
+    SCOREP_SCORE_TYPE( PTHREAD, NO )    \
+    SCOREP_SCORE_TYPE( CUDA, POSSIBLE ) \
+    SCOREP_SCORE_TYPE( OPENCL, NO )     \
+    SCOREP_SCORE_TYPE( MEMORY, NO )
 
 #define SCOREP_SCORE_FILTER_STATES \
     SCOREP_SCORE_FILTER_STATE( UNSPECIFIED, ' ' ) \
@@ -64,9 +68,9 @@ typedef enum
     #define SCOREP_SCORE_TYPE( type, flt ) SCOREP_SCORE_TYPE_ ## type,
     SCOREP_SCORE_TYPES
     #undef SCOREP_SCORE_TYPE
-} SCOREP_Score_Type;
 
-extern const uint64_t SCOREP_SCORE_TYPE_NUM;
+    SCOREP_SCORE_TYPE_NUM
+} SCOREP_Score_Type;
 
 /**
  * Defines an enumaration of the available filter states.

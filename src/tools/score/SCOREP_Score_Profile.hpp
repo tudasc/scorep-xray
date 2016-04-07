@@ -122,18 +122,18 @@ public:
     getRegionName( uint64_t regionId );
 
     /**
+     * Returns the mangled region name.
+     * @param regionId  ID of the region for which the mangled name is requested.
+     */
+    std::string
+    getMangledName( uint64_t regionId );
+
+    /**
      * Returns the paradigm name.
      * @param regionId  ID of the region for which the paradigm is requested.
      */
     std::string
     getRegionParadigm( uint64_t region );
-
-    /**
-     * Returns the mangled region name.
-     * @param regionId  ID of the region for which the mangled name id requested.
-     */
-    std::string
-    getMangledName( uint64_t regionId );
 
     /**
      * Returns the name of the source file where a region was implemented.
@@ -209,6 +209,16 @@ private:
      */
     SCOREP_Score_Type
     get_definition_type( uint64_t region );
+
+    /**
+     * Checks whether the given string @p str has the prefix @p prefix followed
+     * by an upper case letter.
+     * @param str     The string to check.
+     * @param prefix  The prefix which @p string must have.
+     */
+    bool
+    has_prefix_than_upper( const std::string& str,
+                           const std::string& prefix );
 
 private:
     /**

@@ -71,14 +71,17 @@ average time per visit in microseconds.
 
 The following groups exist:
 <ul>
- <li> ALL:   Includes all functions of the application </li>
- <li> OMP:   This group contains all regions that represent an OpenMP construct </li>
- <li> MPI:   This group contains all MPI functions </li>
- <li> SHMEM: This group contains all SHMEM functions </li>
- <li> COM:   This group contains all functions, implemented by the user that appear on
-             a call-path to an OpenMP construct, or MPI/SHMEM function.</li>
- <li> USR:   This group contains all user functions that do not appear on a call-path to
-             an OpenMP construct, or MPI/SHMEM function. </li>
+ <li> ALL:     Includes all functions of the application </li>
+ <li> OMP:     This group contains all regions that represent an OpenMP construct </li>
+ <li> MPI:     This group contains all MPI functions </li>
+ <li> SHMEM:   This group contains all SHMEM functions </li>
+ <li> PTHREAD: This group contains all Pthread functions </li>
+ <li> CUDA:    This group contains all CUDA API functions and kernels </li>
+ <li> OPENCL:  This group contains all OpenCL API functions and kernels </li>
+ <li> MEMORY:  This group contains all libc and C++ memory (de)allocation funcitons </li>
+ <li> COM:     This group contains all functions, implemented by the user that appear on
+               a call-path to any functions from the above groups, except ALL.</li>
+ <li> USR:     This group contains all user functions except those in the COM group. </li>
 </ul>
 
 @section score_region_output Additional per-region information
