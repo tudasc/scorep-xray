@@ -26,6 +26,8 @@
 #include "scorep_config_adapter.hpp"
 #include <iostream>
 
+static SCOREP_Config_MutexUndefined undefined_mutex;
+
 /* **************************************************************************************
  * class SCOREP_Config_Mutex
  * *************************************************************************************/
@@ -46,7 +48,7 @@ SCOREP_Config_Mutex::init( void )
     #if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
     all.push_back( new SCOREP_Config_MutexPthreadSpinlock() );
     #endif
-    current = all.front();
+    current = &undefined_mutex;
 }
 
 void
@@ -112,9 +114,9 @@ SCOREP_Config_Mutex::SCOREP_Config_Mutex( std::string           name,
                                           std::string           library,
                                           SCOREP_Config_MutexId id )
     : m_name( name ),
-      m_variant( variant ),
-      m_library( library ),
-      m_id( id )
+    m_variant( variant ),
+    m_library( library ),
+    m_id( id )
 {
 }
 
@@ -169,6 +171,15 @@ SCOREP_Config_MutexId
 SCOREP_Config_Mutex::getId( void )
 {
     return m_id;
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_MutexUndefined
+ * *************************************************************************************/
+
+SCOREP_Config_MutexUndefined::SCOREP_Config_MutexUndefined()
+    : SCOREP_Config_Mutex( "", "", "", SCOREP_CONFIG_MUTEX_ID_UNDEFINED )
+{
 }
 
 /* **************************************************************************************

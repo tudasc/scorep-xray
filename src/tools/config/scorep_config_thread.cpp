@@ -128,10 +128,10 @@ SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( const std::string&      
                                                         SCOREP_Config_MutexId        mutexId,
                                                         SCOREP_Config_ThreadSystemId id )
     : m_name( name ),
-      m_variant( variant ),
-      m_library( library ),
-      m_mutexId( mutexId ),
-      m_id( id )
+    m_variant( variant ),
+    m_library( library ),
+    m_mutexId( mutexId ),
+    m_id( id )
 {
 }
 
@@ -179,7 +179,7 @@ SCOREP_Config_ThreadSystem::addLdFlags( std::string& ldflags,
 SCOREP_Config_MutexId
 SCOREP_Config_ThreadSystem::validateDependencies()
 {
-    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_NONE )
+    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_UNDEFINED )
     {
         return m_mutexId;
     }

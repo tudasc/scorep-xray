@@ -117,6 +117,8 @@ Bugfixes:
   recorded.
 - Fixed MPI library interposition if the link command lists explicitly
   'libmpifort' or 'libmpigi'.
+- If --mutex=none was passed to scorep-config, it had no effect, and
+  default mutex handler was chosen. Fixed.
 
 ------------------- Released version 1.4.2 ---------------------------
 
