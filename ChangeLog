@@ -57,14 +57,15 @@ Features and improvements:
   '-Minstrument=functions' is available at least since PGI compiler
   version 11.  However, older PGI compiler versions may not support
   '-Minstrument=functions' and are not supported by Score-P anymore.
-- A synchronization callback was added to the metric plugin API. A metric
-  plugin can register a synchronization callback which is called every
-  time Score-P starts clock synchronization.  The synchronization
-  callback contains one argument specifying the point in time in more
-  detail.  At the moment we distinguish synchronization at
-  initialization, during measurement run, and at finalization.  As a
-  result, the synchronization callback allows metric plugins to detect
-  start and end points of measurement intervals.
+- A synchronization callback was added to the metric plugin API.  A
+  metric plugin can register a synchronization callback which is
+  called every time Score-P starts clock synchronization.  The
+  synchronization callback contains one argument specifying the point
+  in time in more detail.  At the moment we distinguish
+  synchronization at initialization, during measurement run, and at
+  finalization.  As a result, the synchronization callback allows
+  metric plugins to detect start and end points of measurement
+  intervals.
 - The manual user instrumentation for Fortran 90 now performs region
   initialization checks based on handle values instead of comparing
   names.  This reduces overhead.  It does not apply when using PGI
@@ -93,9 +94,10 @@ User tools and API improvements and changes:
   anymore because '-G2' disables some optimizations.
 - The instrumenter now warns the user if the provided instrumentation
   filter wont be used by the active instrumentations.
-- The option '--disable-preprocessing' was added to the instrumenter. It
-  tells the instrumenter to skip all preprocessing related activities.
-  Useful e.g, if the input files are already preprocessed.
+- The option '--disable-preprocessing' was added to the instrumenter.
+  It tells the instrumenter to skip all preprocessing related
+  activities.  Useful e.g, if the input files are already
+  preprocessed.
 
 Bugfixes:
 
