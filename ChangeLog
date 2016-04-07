@@ -57,17 +57,18 @@ Features and improvements:
   '-Minstrument=functions' is available at least since PGI compiler
   version 11.  However, older PGI compiler versions may not support
   '-Minstrument=functions' and are not supported by Score-P anymore.
-- A synchronization callback was added to metric plugin API.  A metric
+- A synchronization callback was added to the metric plugin API. A metric
   plugin can register a synchronization callback which is called every
   time Score-P starts clock synchronization.  The synchronization
   callback contains one argument specifying the point in time in more
   detail.  At the moment we distinguish synchronization at
   initialization, during measurement run, and at finalization.  As a
-  result the synchronization callback allows metric plugins to detect
+  result, the synchronization callback allows metric plugins to detect
   start and end points of measurement intervals.
-- The manual user instrumentation for Fortran 90 performs region
+- The manual user instrumentation for Fortran 90 now performs region
   initialization checks based on handle values instead of comparing
-  names.  This does not apply when using PGI compilers.
+  names.  This reduces overhead.  It does not apply when using PGI
+  compilers though.
 - Support tracing of applications with more than 500000 tasks.
 
 User tools and API improvements and changes:
@@ -79,22 +80,22 @@ User tools and API improvements and changes:
 - The option '--pomp' does not take any options any more.
 - Specific options for OPARI2 are passed via the
   '--opari=<parameter-list>' option.
-- To enable or disable instrumentation of OpenMP the options
-  '--openmp' and '--noopenmp' have been added.  Note that for compile
-  units with enabled OpenMP compiler-flag, instrumentation is enabled
-  by default.  However, when manually disabling, some instrumentation
-  must still be carried out to ensure a thread-safe execution of the
-  measurement system.
+- To control instrumentation of OpenMP the options '--openmp' and
+  '--noopenmp' have been added. Note that for compilations using the
+  OpenMP compiler-flag, instrumentation is enabled by default.
+  However, when manually disabling instrumentation via
+  '--noopenmp', some instrumentation must still be carried out to
+  ensure a thread-safe execution of the measurement system.
 - POMP user instrumentation is no longer automatically activated
   together with OpenMP instrumentation.  The '--pomp' flag has to be
   explicitly specified with the 'scorep' command.
 - On Cray systems, compiler instrumentation does not add '-G2' option
-  anymore, which disables some optimizations.
+  anymore because '-G2' disables some optimizations.
 - The instrumenter now warns the user if the provided instrumentation
   filter wont be used by the active instrumentations.
-- Added the option '--disable-preprocessing' to the instrumenter.  It
-  tells the instrumenter to skip all preprocessing related activities,
-  because the input files are already preprocessed.
+- The option '--disable-preprocessing' was added to the instrumenter. It
+  tells the instrumenter to skip all preprocessing related activities.
+  Useful e.g, if the input files are already preprocessed.
 
 Bugfixes:
 
