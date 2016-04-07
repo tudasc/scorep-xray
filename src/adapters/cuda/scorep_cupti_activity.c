@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -359,6 +359,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
 
         if ( knName == NULL || *knName == '\0' )
         {
+            // kernel->name is probably already demangled
             knName = ( char* )kernel->name;
 
             if ( knName == NULL )
@@ -367,7 +368,8 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
             }
         }
 
-        regionHandle = SCOREP_Definitions_NewRegion( knName, NULL,
+        // create a new region definition for this kernel
+        regionHandle = SCOREP_Definitions_NewRegion( knName, kernel->name,
                                                      scorep_cupti_kernel_file_handle, 0, 0,
                                                      SCOREP_PARADIGM_CUDA, SCOREP_REGION_FUNCTION );
 

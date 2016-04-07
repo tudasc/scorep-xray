@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -96,6 +96,12 @@ cplus_demangle( const char* mangled,
 extern SCOREP_Mutex scorep_cupti_mutex;
 # define SCOREP_CUPTI_LOCK() SCOREP_MutexLock( scorep_cupti_mutex )
 # define SCOREP_CUPTI_UNLOCK() SCOREP_MutexUnlock( scorep_cupti_mutex )
+
+typedef struct scorep_cuda_location_data
+{
+    uint8_t callbacksState;    //!< combination of SCOREP_CUPTI_CALLBACKS_STATE_*
+    bool    rma_window_active; //!< RMA window active for this location?
+} scorep_cuda_location_data;
 
 /*
  * The key of the hash node is a string, the value the corresponding region handle.

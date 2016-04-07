@@ -56,6 +56,7 @@
 
 
 #include "scorep_cuda_confvars.inc.c"
+#include "scorep_cupti.h"
 
 
 /** Registers the required configuration variables of the CUDA adapter
@@ -127,6 +128,9 @@ cuda_subsystem_init_location( SCOREP_Location* location,
         {
             loc_data->callbacksState |= SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME;
         }
+
+        // RMA window has not yet been created for this location
+        loc_data->rma_window_active = false;
 
         SCOREP_Location_SetSubsystemData( location, scorep_cuda_subsystem_id, loc_data );
     }

@@ -38,6 +38,8 @@
 #ifndef SCOREP_CUPTI_CALLBACKS_H
 #define SCOREP_CUPTI_CALLBACKS_H
 
+#include "scorep_cupti.h"
+
 /* Defines CUPTI callbacks states to monitor enable/disable state */
 #define SCOREP_CUPTI_CALLBACKS_STATE_NONE                   ( 0 )
 #define SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME                ( 1 << 0 )
@@ -49,11 +51,6 @@ extern bool scorep_record_runtime_api;
 
 /* flag: tracing of CUDA driver API enabled? */
 extern bool scorep_record_driver_api;
-
-typedef struct scorep_cuda_location_data
-{
-    uint8_t callbacksState; /* combination of SCOREP_CUPTI_CALLBACKS_STATE_* */
-} scorep_cuda_location_data;
 
 #define SCOREP_SET_CALLBACKS_STATE( _state ) \
     { \
@@ -76,20 +73,6 @@ typedef struct scorep_cuda_location_data
 #define SCOREP_IS_CALLBACK_STATE_SET( _state, _location ) \
     ( ( ( scorep_cuda_location_data* )SCOREP_Location_GetSubsystemData( _location, \
                                                                         scorep_cuda_subsystem_id ) )->callbacksState & _state )
-
-/* Resume CUDA runtime API callbacks in Score-P, if recording is enabled */
-#define SCOREP_RESUME_CUDART_CALLBACKS() \
-    if ( scorep_cupti_callbacks_state & SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME ) \
-    { \
-        SCOREP_SET_CALLBACKS_STATE( SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME ) \
-    }
-
-/* Suspend CUDA runtime API callbacks in Score-P, if recording is enabled */
-#define SCOREP_SUSPEND_CUDART_CALLBACKS() \
-    if ( scorep_cupti_callbacks_state & SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME ) \
-    { \
-        SCOREP_UNSET_CALLBACKS_STATE( SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME ) \
-    }
 
 /* Resume CUDA driver API callbacks in Score-P, if recording is enabled */
 #define SCOREP_RESUME_CUDRV_CALLBACKS() \

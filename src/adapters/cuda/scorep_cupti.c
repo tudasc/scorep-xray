@@ -521,10 +521,19 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     /* set the CUDA context */
     context->cuda_context = cudaContext;
 
-    /* create window on every location, where it is used */
+    // create window on every CPU location, where communication might occur
     if ( scorep_cuda_record_memcpy )
     {
-        SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
+        // ensure to not create the RMA window twice on the same host location
+        scorep_cuda_location_data* loc_data =
+            SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
+                                              scorep_cuda_subsystem_id );
+
+        if ( !loc_data->rma_window_active )
+        {
+            SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
+            loc_data->rma_window_active = true;
+        }
     }
 
     context->activity = NULL;
@@ -747,10 +756,19 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
         scorepMem = NULL;
     }
 
-    /* destroy the rma window on the host */
+    // destroy the RMA window on the host
     if ( scorep_cuda_record_memcpy )
     {
-        SCOREP_RmaWinDestroy( scorep_cuda_interim_window_handle );
+        // ensure to not destroy the RMA window twice on the same host location
+        scorep_cuda_location_data* loc_data =
+            SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
+                                              scorep_cuda_subsystem_id );
+
+        if ( loc_data->rma_window_active )
+        {
+            SCOREP_RmaWinDestroy( scorep_cuda_interim_window_handle );
+            loc_data->rma_window_active = false;
+        }
     }
 
     if ( context->activity != NULL )
