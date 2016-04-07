@@ -179,7 +179,7 @@ SCOREP_Config_ThreadSystem::addLdFlags( std::string& ldflags,
 SCOREP_Config_MutexId
 SCOREP_Config_ThreadSystem::validateDependencies()
 {
-    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_UNDEFINED )
+    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_NONE )
     {
         return m_mutexId;
     }

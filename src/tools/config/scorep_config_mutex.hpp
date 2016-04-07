@@ -36,7 +36,6 @@
  */
 typedef enum
 {
-    SCOREP_CONFIG_MUTEX_ID_UNDEFINED,
     SCOREP_CONFIG_MUTEX_ID_NONE,
     SCOREP_CONFIG_MUTEX_ID_OMP,
     SCOREP_CONFIG_MUTEX_ID_PTHREAD,
@@ -204,20 +203,6 @@ private:
      * List of available mutex types.
      */
     static std::deque<SCOREP_Config_Mutex*> all;
-};
-
-/* **************************************************************************************
- * class SCOREP_Config_MutexUndefined
- * *************************************************************************************/
-
-/**
- * This is a helper class to indicate that the user has not explicitly chosen
- * a mutex, but we need to use the default for the threading system.
- */
-class SCOREP_Config_MutexUndefined : public SCOREP_Config_Mutex
-{
-public:
-    SCOREP_Config_MutexUndefined();
 };
 
 /* **************************************************************************************
