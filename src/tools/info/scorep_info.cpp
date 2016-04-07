@@ -83,6 +83,7 @@ print_help( bool withOptions )
     {
         std::cout << std::endl;
         std::cout << "    Info command options:" << std::endl;
+        std::cout << "      --help        Displays a description of the Score-P measurement configuration system." << std::endl;
         std::cout << "      --full        Displays a detailed description for each config variable." << std::endl;
         std::cout << "      --values      Displays the current values for each config variable." << std::endl;
         std::cout << "                    Warning: These values may be wrong, please consult the\n";
@@ -141,12 +142,23 @@ main( int   argc,
             return EXIT_FAILURE;
         }
 
-        SCOREP_ConfigInit();
-
         std::string mode( args.size() == 1 ? args[ 0 ] : "" );
         bool        values = false;
         bool        full   = false;
         bool        html   = false;
+
+        if ( mode == "--help" )
+        {
+            std::string help_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep_info_confvars_help.md"  );
+            int         return_value = system( help_command.c_str() );
+            if ( return_value != 0 )
+            {
+                std::cerr << "ERROR: Execution failed: " << help_command << std::endl;
+                return EXIT_FAILURE;
+            }
+            return EXIT_SUCCESS;
+        }
+
         if ( mode == "--values" )
         {
             // @todo print warning again
@@ -160,18 +172,14 @@ main( int   argc,
         {
             full = true;
             html = true;
-            SCOREP_ConfigForceConditionalRegister();
         }
         else if ( mode != "" )
         {
             std::cerr << "ERROR: Invalid option for info command "
                       << "'" << info_command << "': '" << mode << "'" << std::endl;
             print_short_usage( std::cerr );
-            SCOREP_ConfigFini();
             return EXIT_FAILURE;
         }
-
-        SCOREP_RegisterAllConfigVariables();
 
         FILE* out = stdout;
 #if HAVE( POPEN )
@@ -181,6 +189,9 @@ main( int   argc,
         }
 #endif
 
+        SCOREP_ConfigInit();
+        SCOREP_RegisterAllConfigVariables();
+
         if ( values )
         {
             SCOREP_ConfigApplyEnv();
@@ -188,6 +199,10 @@ main( int   argc,
         }
         else
         {
+            if ( html )
+            {
+                SCOREP_ConfigForceConditionalRegister();
+            }
             SCOREP_ConfigHelp( full, html, out );
         }
 

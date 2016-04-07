@@ -25,18 +25,9 @@ You may start with a profiling run, because of its lower space requirements. Acc
 to profiling results, you may configure the trace buffer limits, filtering or selective
 recording for recording traces.
 
-@scorep allows to configure several parameters via environment variables. After the
-measurement run you can find a <tt>scorep.cfg</tt> file in your experiment directory
-which contains the configuration of the measurement run. If you had not set configuration
-values explicitly, the file will contain the default values. This file is safe to be used
-as input for a POSIX shell. For example if you want to reuse the same configuration from
-an previous measurement run something like this:
-
-@code
-$ set -a
-$ . scorep.cfg
-$ set +a
-@endcode
+@scorep allows to configure several parameters via environment variables.
+See Appendix @secref{scorepmeasurementconfig} for a detailed description of how
+to configure the measurement.
 
 @section profiling Profiling
 @seclabel{profiling}

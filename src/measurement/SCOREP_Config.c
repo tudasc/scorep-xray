@@ -890,7 +890,7 @@ string_to_lower( char* str )
 }
 
 /** Comapre two strings for equality for a given length.
- *  @a length must less or equal the length of the strings.
+ *  @a length must less or equal the length of both strings.
  */
 static bool
 equal_icase_stringn( const char* str1, const char* str2, size_t length )
@@ -1084,7 +1084,7 @@ parse_uint64( const char*        numberString,
 
     /*
      * Ignore leading whitespace, but also ignore this whether we have consumed
-     * real number characters. That is an whitespace only string is not
+     * real number characters. That is a whitespace only string is not
      * a valid number
      */
     while ( isspace( *numberString ) )

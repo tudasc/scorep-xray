@@ -559,7 +559,7 @@ Fortran:
 @note When using the "BY_NAME" macros in Fortran, be aware of section 12.4.1.1 of the
       F90/95/2003 standard. If you pass <i>name</i> through a dummy argument of a subroutine
       the length <i>len</i> of the character array <i>name</i> must be exactly the size of the
-      actual string passed. In the Fortran examples above this is assured by <pre>len=*</pre>.
+      actual string passed. In the Fortran examples above this is assured by `len=*`.
 
 @note To ensure correct nesting, avoid automatic compiler instrumentation for these helper
       functions.

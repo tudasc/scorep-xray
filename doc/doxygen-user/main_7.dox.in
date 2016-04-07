@@ -1,3 +1,11 @@
 
-@page scorepwrapper @scorep wrapper usage
-@seclabel{scorepwrapper}
+List of Configuration Variables
+===============================
+
+This is the list of all known configure variables to control a @scorep measurement.
+
+@note
+ Not all variables are supported by one @scorep installation. Use the
+ `scorep-info config-vars` command to list only those supported
+ by the used installation.
+

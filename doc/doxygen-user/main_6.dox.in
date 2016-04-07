@@ -1,7 +1,8 @@
 \endverbatim
 
-@page scorepconfigvariables @scorep Measurement Configuration Variables
-@seclabel{scorepconfigvariables}
+@page scorepmeasurementconfig @scorep Measurement Configuration
+@seclabel{scorepmeasurementconfig}
 
-This is the list of configure variables to control a @scorep measurement.
+Introduction
+============
 
