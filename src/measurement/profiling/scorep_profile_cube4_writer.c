@@ -897,11 +897,15 @@ scorep_profile_write_cube4( bool writeTuples )
 
         if ( SCOREP_IsUnwindingEnabled() )
         {
+            /*
+             * Record the number of sampling related definitions in the profile.
+             * The names directly correspond to the OTF2 definition names.
+             */
             char buffer[ 32 ];
             sprintf( buffer, "%u", scorep_unified_definition_manager->calling_context.counter );
-            cube_def_attr( write_set.my_cube, "SCOREP_NUMBER_OF_CALLING_CONTEXT_NODES", buffer );
+            cube_def_attr( write_set.my_cube, "Score-P::DefinitionCounters::CallingContext", buffer );
             sprintf( buffer, "%u", scorep_unified_definition_manager->interrupt_generator.counter );
-            cube_def_attr( write_set.my_cube, "SCOREP_NUMBER_OF_INTERRUPT_GENERATORS", buffer );
+            cube_def_attr( write_set.my_cube, "Score-P::DefinitionCounters::InterruptGenerator", buffer );
         }
     }
 

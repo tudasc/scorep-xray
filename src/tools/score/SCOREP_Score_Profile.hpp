@@ -167,16 +167,10 @@ public:
     getNumberOfMetrics( void );
 
     /**
-     * Returns the number of calling context nodes.
+     * Returns the counters of definitions from the profile.
      */
-    uint64_t
-    getNumberOfCallingContextNodes( void );
-
-    /**
-     * Returns the number of interrupt generators.
-     */
-    uint64_t
-    getNumberOfInterruptGenerators( void );
+    const std::map<std::string, uint64_t>&
+    getDefinitionCounters( void );
 
     /**
      * Prints some basic infos on the profile. Used for debug purposes.
@@ -258,14 +252,9 @@ private:
     uint64_t m_file_size;
 
     /**
-     * Number of calling context nodes
+     * Number definitions per definition
      */
-    uint64_t m_number_of_calling_context_nodes;
-
-    /**
-     * Number of interrupt generators
-     */
-    uint64_t m_number_of_interrupt_generators;
+    std::map<std::string, uint64_t> m_definition_counters;
 };
 
 

@@ -41,6 +41,7 @@
 #include <CubeTypes.h>
 #include <assert.h>
 #include <sys/stat.h>
+#include <sstream>
 
 using namespace std;
 using namespace cube;
@@ -61,19 +62,36 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
     {
         m_visits = m_time;
     }
-    m_hits                            = m_cube->get_met( "hits" );
-    m_number_of_calling_context_nodes = 0;
-    m_number_of_interrupt_generators  = 0;
-    std::string attribute =
-        m_cube->get_attr( "SCOREP_NUMBER_OF_CALLING_CONTEXT_NODES" );
-    if ( attribute.size() )
+    m_hits = m_cube->get_met( "hits" );
+
+    /* Collect all attributes from the definition counters */
+    const string               attr_prefix( "Score-P::DefinitionCounters::" );
+    const map<string, string>& attributes = m_cube->get_attrs();
+    for ( map<string, string>::const_iterator it = attributes.begin();
+          it != attributes.end(); ++it )
     {
-        m_number_of_calling_context_nodes = atoi( attribute.c_str() );
-    }
-    attribute = m_cube->get_attr( "SCOREP_NUMBER_OF_INTERRUPT_GENERATORS" );
-    if ( attribute.size() )
-    {
-        m_number_of_interrupt_generators = atoi( attribute.c_str() );
+        const string& key = it->first;
+        if ( key.size() <= attr_prefix.size() || 0 != key.compare( 0, attr_prefix.size(), attr_prefix ) )
+        {
+            continue;
+        }
+
+        istringstream value_as_string( it->second );
+        uint64_t      value;
+        try
+        {
+            value_as_string >> value;
+        }
+        catch ( ... )
+        {
+            cerr << "WARNING: Cannot parse '" << key << "' value as number: "
+                 << "'" << value_as_string << "'" << endl;
+            continue;
+        }
+
+        m_definition_counters.insert( map<string, uint64_t>::value_type(
+                                          key.substr( attr_prefix.size() ),
+                                          value ) );
     }
 
     m_processes = m_cube->get_procv();
@@ -295,16 +313,10 @@ SCOREP_Score_Profile::getMaxNumberOfLocationsPerProcess()
     return max;
 }
 
-uint64_t
-SCOREP_Score_Profile::getNumberOfCallingContextNodes( void )
+const map<string, uint64_t>&
+SCOREP_Score_Profile::getDefinitionCounters( void )
 {
-    return m_number_of_calling_context_nodes;
-}
-
-uint64_t
-SCOREP_Score_Profile::getNumberOfInterruptGenerators( void )
-{
-    return m_number_of_interrupt_generators;
+    return m_definition_counters;
 }
 
 void

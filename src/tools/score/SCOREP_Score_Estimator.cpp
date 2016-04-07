@@ -728,10 +728,12 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
 
     estimator_in << "set Region " << m_region_num << "\n";
     estimator_in << "set Metric " << m_profile->getNumberOfMetrics() << "\n";
-    if ( m_profile->hasHits() )
+    const map<string, uint64_t>& definition_counters =
+        m_profile->getDefinitionCounters();
+    for ( map<string, uint64_t>::const_iterator it = definition_counters.begin();
+          it != definition_counters.end(); ++it )
     {
-        estimator_in << "set CallingContext " << m_profile->getNumberOfCallingContextNodes() << "\n";
-        estimator_in << "set InterruptGenerator " << m_profile->getNumberOfInterruptGenerators() << "\n";
+        estimator_in << "set " << it->first << " " << it->second << "\n";
     }
 
     for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin(); i != SCOREP_Score_Event::m_all_events.end(); i++ )
