@@ -843,16 +843,7 @@ GPU idle time is not affected by kernel filtering.
 If @scorep has been built with OpenCL support it is capable of recording OpencCL API function calls.
 
 Setting the environment variable \confvar{SCOREP_OPENCL_ENABLE} to <b><tt>yes</tt></b> enables OpenCL measurement.
-To enable a particular composition of OpenCL measurement features the variable should contain a comma-separated list of the following OpenCL measurement options:
-
-@code
-api            = OpenCL runtime API
-kernel         = OpenCL kernels
-memcpy         = OpenCL buffer reads/writes
-memusage       = Record OpenCL memory (de)allocations as a counter
-default/yes/1  = OpenCL API and GPU activities
-no             = Disable OpenCL measurement
-@endcode
+Please refer to the description of this variable to enable a particular composition of OpenCL measurement features.
 
 OpenCL measurement uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
