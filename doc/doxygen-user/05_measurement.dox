@@ -840,7 +840,7 @@ GPU idle time is not affected by kernel filtering.
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}
 
-If @scorep has been built with OpenCL support it is capable of recording OpencCL API function calls.
+If @scorep has been built with OpenCL support it is capable of recording OpenCL API function calls.
 
 Setting the environment variable \confvar{SCOREP_OPENCL_ENABLE} to <b><tt>yes</tt></b> enables OpenCL measurement.
 Please refer to the description of this variable to enable a particular composition of OpenCL measurement features.
