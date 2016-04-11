@@ -48,10 +48,6 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( Group );
 
-    /* OTF2 groups have a uint64_t as id, we use the sequences number,
-     * until we know, that this may clash with location ids
-     */
-
     // Add SCOREP_Group stuff from here on.
     SCOREP_GroupType    group_type;
     SCOREP_StringHandle name_handle;    // currently not used
