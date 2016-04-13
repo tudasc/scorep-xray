@@ -108,10 +108,6 @@ void* \
 SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( size_t size ) \
 { \
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT(); \
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) ) \
-    { \
-        SCOREP_InitMeasurement(); \
-    } \
     if ( !trigger || \
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || \
          !scorep_memory_recording ) \
@@ -152,10 +148,6 @@ void \
 SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
 { \
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT(); \
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) ) \
-    { \
-        SCOREP_InitMeasurement(); \
-    } \
     if ( !trigger || \
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || \
          !scorep_memory_recording ) \

@@ -29,10 +29,6 @@ SCOREP_LIBWRAP_FUNC_NAME( calloc )( size_t nmemb,
                                     size_t size )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
     if ( !trigger ||
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
          !scorep_memory_recording )
@@ -71,10 +67,6 @@ SCOREP_LIBWRAP_FUNC_NAME( realloc )( void*  ptr,
                                      size_t size )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
     if ( !trigger ||
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
          !scorep_memory_recording )
@@ -156,10 +148,6 @@ SCOREP_LIBWRAP_FUNC_NAME( memalign )( size_t alignment,
                                       size_t size )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
     if ( !trigger ||
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
          !scorep_memory_recording )
@@ -199,10 +187,6 @@ SCOREP_LIBWRAP_FUNC_NAME( posix_memalign )( void** ptr,
                                             size_t size )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
     if ( !trigger ||
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
          !scorep_memory_recording )

@@ -25,10 +25,6 @@ SCOREP_LIBWRAP_FUNC_NAME( aligned_alloc )( size_t alignment,
                                            size_t size )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
     if ( !trigger ||
          !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
          !scorep_memory_recording )
