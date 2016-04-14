@@ -1,5 +1,20 @@
 ------------------- Upcoming version 2.1 -----------------------------
 
+------------------- Upcoming version 2.0.1 ---------------------------
+
+Features and improvements:
+
+Bugfixes:
+
+ - Prevent the memory adapter from initializing the measurement system
+   as this leads to program crashes if it happens too early, e.g., on
+   Blue Gene systems. If memory instrumentation is the only means of
+   instrumentation, the measurement system is initialized via the
+   feature 'compiler constructor'. If this feature isn't available
+   (search for 'compiler constructor: yes' in 'scorep-info
+   config-summary'), you need to add e.g., user instrumentation to
+   initialize the measurement system.
+
 ------------------- Released version 2.0 -----------------------------
 
 Major features:
