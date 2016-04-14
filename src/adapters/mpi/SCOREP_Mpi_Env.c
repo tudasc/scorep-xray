@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -63,13 +66,20 @@
 #include <SCOREP_Events.h>
 
 
-/** Flag set if the measurement sysem was already opened by another adapter.
-    If the measurement system is not already initilized, it is assumed that
-    the mpi adapter is the only active adapter. In this case, at first an
-    additional region is entered MPI_Init. Thus, all regions appear as
-    children of this region.
+/**
+ * Flag set if the measurement sysem was already opened by another adapter.
+ * If the measurement system is not already initilized, it is assumed that
+ * the mpi adapter is the only active adapter. In this case, at first an
+ * additional region is entered MPI_Init. Thus, all regions appear as
+ * children of this region.
  */
 static int scorep_mpi_parallel_entered = 0;
+
+/**
+ * Stores whether the application has called MPI_Finalize to
+ * return the proper value if it calls MPI_Finalized afterwards.
+ */
+static bool mpi_finalize_called = false;
 
 /**
  * @name C wrappers
@@ -297,6 +307,11 @@ MPI_Finalize( void )
         SCOREP_EXIT_WRAPPED_REGION();
     }
 
+    if ( MPI_SUCCESS == return_val )
+    {
+        mpi_finalize_called = true;
+    }
+
     if ( event_gen_active )
     {
         /* Exit MPI_Finalize region */
@@ -466,6 +481,11 @@ MPI_Finalized( int* flag )
     else
     {
         return_val = PMPI_Finalized( flag );
+    }
+
+    if ( MPI_SUCCESS == return_val && mpi_finalize_called )
+    {
+        *flag = 1;
     }
     SCOREP_IN_MEASUREMENT_DECREMENT();
 
