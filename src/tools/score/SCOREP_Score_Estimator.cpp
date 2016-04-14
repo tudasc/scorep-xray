@@ -640,7 +640,7 @@ SCOREP_Score_Estimator::printGroups( void )
          << get_user_readable_byte_no( memory_req ) << endl;
     if ( memory_req > numeric_limits<uint32_t>::max() )
     {
-        cout << "(warning: The memory requirements can not be satisfied by Score-P to avoid\n"
+        cout << "(warning: The memory requirements cannot be satisfied by Score-P to avoid\n"
              << " intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the\n"
              << " maximum supported memory or reduce requirements using USR regions filters.)"
              << endl << endl;

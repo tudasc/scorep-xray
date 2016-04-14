@@ -156,7 +156,7 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
         printDepList( &m_requires,
                       space + "It requires and, thus, automatically enables " );
         printDepList( &m_prerequisites,
-                      space + "It can not be enabled, if not at least one of the "
+                      space + "It cannot be enabled, if not at least one of the "
                       "following is enabled: " );
         printDepList( &m_conflicts,
                       space + "It conflicts and, thus, automatically disables " );

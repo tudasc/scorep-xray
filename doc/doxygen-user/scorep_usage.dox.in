@@ -96,7 +96,7 @@ Common options are:
                   By default, it disables compiler instrumentation.
   --nopdt         Disables pdt instrumentation.
   --preprocess    Enables preprocess instrumentation.
-                  It can not be enabled, if not at least one of the following is
+                  It cannot be enabled, if not at least one of the following is
                   enabled: OPARI2 instrumentation.
                   It conflicts and, thus, automatically disables pdt
                   instrumentation.

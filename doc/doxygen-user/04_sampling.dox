@@ -59,7 +59,7 @@ To enable sampling, several prerequisites have to be met.
     <ol>
       <li>
         <b>Interval timer</b>:<br>
-        Interval timers are POSIX compliant but provide a major drawback: They can not be used for multi-threaded programs, but only for single-threaded ones.
+        Interval timers are POSIX compliant but provide a major drawback: They cannot be used for multi-threaded programs, but only for single-threaded ones.
         We check for <tt>setitimer</tt> that is provided by <tt>sys/time.h</tt>.
       </li>
 
@@ -88,7 +88,7 @@ To enable sampling, several prerequisites have to be met.
 
     We recommend using <tt>PAPI</tt> or <tt>perf</tt> as interrupt sources.
     However, these also pose a specific disadvantage when power saving techniques such as DVFS or idle states are active on a system.
-    In this case, a constant sampling interval can not be guaranteed.
+    In this case, a constant sampling interval cannot be guaranteed.
     If, for example, an application calls a sleep routine, then the cycle counter might not increase as the CPU might switch to an idle state.
     This can also influence the result data.
     Such idling times can also be introduced by @openmp runtimes and can be avoided by setting the block times accordingly or setting the environment variable <tt>OMP_WAIT_POLICY</tt> to <tt>ACTIVE</tt>.

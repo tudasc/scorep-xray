@@ -355,11 +355,10 @@ User tools and API improvements and changes:
   deprecated and are no longer documented.
 - Added handling for special characters, like space, in file names and
   path names. However, there are still some limitation when using
-  special characters: The PDT parser can not deal with these
-  characters and, thus, fails if PDT instrumentation is enabled and
-  special characters appear. Furthermore, compilation fails when
-  double quotes appear in source file names and preprocessing is
-  enabled.
+  special characters: The PDT parser cannot deal with these characters
+  and, thus, fails if PDT instrumentation is enabled and special
+  characters appear. Furthermore, compilation fails when double quotes
+  appear in source file names and preprocessing is enabled.
 - Unified naming of macros in the user adapter. In C/C++ the macros to
   define global region handles (SCOREP_GLOBAL_REGION_DEFINE and
   SCOREP_GLOBAL_REGION_EXTERNAL) and in Fortran the parameter macros
