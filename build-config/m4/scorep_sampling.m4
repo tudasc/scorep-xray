@@ -106,7 +106,7 @@ AS_IF([test x"${afs_have_gnu_linker}" != x"yes"],
 
 AS_IF([test x"${build_cpu}" != x"x86_64"],
       [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }unsuported CPU architecture"])
+       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }unsupported CPU architecture"])
 
 scorep_unwinding_summary="${scorep_unwinding_support}${scorep_unwinding_summary_reason:+, }${scorep_unwinding_summary_reason}"
 AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_summary}])
