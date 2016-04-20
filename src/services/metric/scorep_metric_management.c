@@ -1093,6 +1093,7 @@ finalize_location_metric_cb( SCOREP_Location* location,
             /* Free currently handled metric set */
             free( async_tmp );
         }
+        metric_data->additional_synchronous_metrics = NULL;
 
         /* Handle strictly synchronous metrics and finalize location in metric source */
         for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
