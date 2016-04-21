@@ -277,7 +277,8 @@ SCOREP_Timer_GetClockResolution( void )
             static uint64_t timer_tsc_freq;
             if ( first_visit )
             {
-                first_visit    = false;
+                first_visit = false;
+                UTILS_BUG_ON( timer_cmp_t1 - timer_cmp_t0 == 0, "Start and stop timestamps must differ." );
                 timer_tsc_freq = ( double )( timer_tsc_t1 - timer_tsc_t0 ) / ( timer_cmp_t1 - timer_cmp_t0 ) * timer_cmp_freq;
 
                 /* Assert that all processes use roughly the same frequency.
@@ -289,7 +290,8 @@ SCOREP_Timer_GetClockResolution( void )
                 }
                 else
                 {
-                    int      size = SCOREP_Ipc_GetSize();
+                    int size = SCOREP_Ipc_GetSize();
+                    UTILS_BUG_ON( size == 0 );
                     uint64_t frequencies[ size ];
                     SCOREP_Ipc_Gather( &timer_tsc_freq,
                                        frequencies,
@@ -304,10 +306,15 @@ SCOREP_Timer_GetClockResolution( void )
                         sum            += frequencies[ i ];
                         sum_of_squares += ( double )frequencies[ i ] * frequencies[ i ];
                     }
+                    UTILS_BUG_ON( sum == 0, "Sum of process-local frequencies must not be 0." );
                     double avg_frequency = sum / size;
-                    double stddev        = sqrt( ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 ) );
-                    double percent       = stddev * 100 / avg_frequency;
-                    double threshold     = 0.00001; /* 'invented' value derived from a 4 process
+                    double stddev        = 0;
+                    if ( size > 1 )
+                    {
+                        stddev = sqrt( ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 ) );
+                    }
+                    double percent   = stddev * 100 / avg_frequency;
+                    double threshold = 0.00001;     /* 'invented' value derived from a 4 process
                                                        run that took 15 seconds. */
                     if ( percent > threshold )
                     {
