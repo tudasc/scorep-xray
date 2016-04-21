@@ -234,6 +234,7 @@ SCOREP_Instrumenter::Run( void )
                             addTempFile( prep_file );
                         }
                         preprocess_source_file( *current_file, prep_file );
+                        *current_file = prep_file;
                     }
                 }
 
