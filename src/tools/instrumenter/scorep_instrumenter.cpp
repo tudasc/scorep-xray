@@ -465,7 +465,7 @@ SCOREP_Instrumenter::preprocess_source_file( const std::string& source_file,
     command = SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars()
               + m_command_line.getCompilerName()
               + " " + m_command_line.getFlagsBeforeInterpositionLib()
-              + " `" + getConfigBaseCall() + " --" + language + "flags`"
+              + " `" + getConfigBaseCall() + " --cppflags`"
               + " " + getCompilerFlags()
               + " " + m_command_line.getFlagsAfterInterpositionLib()
               + " " + source_file;
