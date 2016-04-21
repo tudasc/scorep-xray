@@ -1,8 +1,15 @@
 ------------------- Upcoming version 2.1 -----------------------------
 
-------------------- Released version 2.0.1 ---------------------------
+Major features:
 
 Features and improvements:
+
+Bugfixes:
+
+- The preprocessing of source files before they will be instrumented
+  with OPARI2 was broken.  This is fixed.
+
+------------------- Released version 2.0.1 ---------------------------
 
 Bugfixes:
 
