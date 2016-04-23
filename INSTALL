@@ -393,7 +393,28 @@ variables:
               MPI linker flags, e.g. -L<lib dir> if you have libraries in a
               nonstandard directory <lib dir>
   MPI_LIBS    MPI libraries to pass to the linker, e.g. -l<library>
-
+  SHMEMCC     SHMEM C compiler command
+  SHMEMCXX    SHMEM C++ compiler command
+  SHMEMF77    SHMEM Fortran 77 compiler command
+  SHMEMFC     SHMEM Fortran compiler command
+  SHMEM_CPPFLAGS
+              SHMEM (Objective) C/C++ preprocessor flags, e.g. -I<include dir>
+              if you have headers in a nonstandard directory <include dir>
+  SHMEM_CFLAGS
+              SHMEM C compiler flags
+  SHMEM_CXXFLAGS
+              SHMEM C++ compiler flags
+  SHMEM_FFLAGS
+              SHMEM Fortran 77 compiler flags
+  SHMEM_FCFLAGS
+              SHMEM Fortran compiler flags
+  SHMEM_LDFLAGS
+              SHMEM linker flags, e.g. -L<lib dir> if you have libraries in a
+              nonstandard directory <lib dir>
+  SHMEM_LIBS  SHMEM libraries to pass to the linker, e.g. -l<library>
+  SHMEM_LIB_NAME
+              name of the SHMEM library
+  SHMEM_NAME  name of the implemented SHMEM specification
   YACC        The `Yet Another Compiler Compiler' implementation to use.
               Defaults to the first program found out of: `bison -y', `byacc',
               `yacc'.
