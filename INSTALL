@@ -415,6 +415,8 @@ variables:
   SHMEM_LIB_NAME
               name of the SHMEM library
   SHMEM_NAME  name of the implemented SHMEM specification
+  CXXFLAGS_FOR_BUILD_SCORE
+              C++ compiler flags for building scorep-score
   YACC        The `Yet Another Compiler Compiler' implementation to use.
               Defaults to the first program found out of: `bison -y', `byacc',
               `yacc'.

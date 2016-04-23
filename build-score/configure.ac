@@ -43,6 +43,11 @@ AS_UNSET([CXX])
 AS_UNSET([CXXFLAGS])
 AS_UNSET([CXXCPP])
 
+AC_ARG_VAR([CXXFLAGS_FOR_BUILD_SCORE],
+    [C++ compiler flags for building scorep-score])
+AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_set}" = xset],
+    [CXXFLAGS="${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_value}"])
+
 AFS_PACKAGE_BUILD_INIT([score])
 AFS_SUMMARY_INIT
 
