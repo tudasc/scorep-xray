@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -338,6 +338,8 @@ variables:
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
+  LT_SYS_LIBRARY_PATH
+              User-defined run-time library search path.
   CPP         C preprocessor
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
