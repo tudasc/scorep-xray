@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2015,
+dnl Copyright (c) 2009-2013, 2015-2016,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -29,6 +29,19 @@ dnl
 
 AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
+
+# Compilers etc. are set according to Cube installation (see below),
+# so ignore environment variables set in the environment.
+AS_UNSET([CC])
+AS_UNSET([CFLAGS])
+AS_UNSET([LDFLAGS])
+AS_UNSET([LIBS])
+AS_UNSET([CPPFLAGS])
+AS_UNSET([LT_SYS_LIBRARY_PATH])
+AS_UNSET([CPP])
+AS_UNSET([CXX])
+AS_UNSET([CXXFLAGS])
+AS_UNSET([CXXCPP])
 
 AFS_PACKAGE_BUILD_INIT([score])
 AFS_SUMMARY_INIT
