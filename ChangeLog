@@ -16,6 +16,12 @@ Bugfixes:
 - Prevent potential division by zero error during calculation of tsc
   timer frequency.
 
+- Compiler-specific CXXFLAGS might break the 'build-score' configure
+  as CXX use to build 'scorep-score' might differ from CXX used to
+  build the Score-P libraries. CXXFLAGS in build-score are now
+  ignored. To set build-score related CXXFLAGS, use
+  CXXFLAGS_FOR_BUILD_SCORE.
+
 ------------------- Released version 2.0.1 ---------------------------
 
 Bugfixes:
