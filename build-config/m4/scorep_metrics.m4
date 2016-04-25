@@ -99,6 +99,7 @@ AS_CASE([${ac_scorep_platform}],
 
 for ac_scorep_papi_lib_name in papi papi64; do
     for ac_scorep_papi_additional_libs in "" "${scorep_papi_extra_libs}"; do
+        AS_UNSET([ac_cv_lib_${ac_scorep_papi_lib_name}___PAPI_library_init])
         AC_CHECK_LIB([$ac_scorep_papi_lib_name],
             [PAPI_library_init],
             [ac_scorep_papi_library=yes],
