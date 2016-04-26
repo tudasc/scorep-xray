@@ -1017,7 +1017,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_p2p</url>
                 <descr>Number of bytes sent in point-to-point communication operations</descr>
                 <cubepl>
-                    ${mpi_point2point}[${calculation::callpath::id}] * metric::bytes_sent(e)
+                    ${mpi_comm_p2p}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1028,7 +1028,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
                 <descr>Number of bytes received in point-to-point communication operations</descr>
                 <cubepl>
-                    ${mpi_point2point}[${calculation::callpath::id}] * metric::bytes_received(e)
+                    ${mpi_comm_p2p}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1050,7 +1050,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_coll</url>
                 <descr>Number of bytes sent in collective communication operations</descr>
                 <cubepl>
-                    ${mpi_collective}[${calculation::callpath::id}] * metric::bytes_sent(e)
+                    ${mpi_comm_collective}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1061,7 +1061,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_coll</url>
                 <descr>Number of bytes received in collective communication operations</descr>
                 <cubepl>
-                    ${mpi_collective}[${calculation::callpath::id}] * metric::bytes_received(e)
+                    ${mpi_comm_collective}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>

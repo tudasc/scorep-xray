@@ -1268,7 +1268,7 @@
                 <cubepl>
                 {
                     ${tmp} = 0;
-                    if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
+                    if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
                     {
                         ${tmp} = metric::bytes_sent(e);
                     };
@@ -1286,7 +1286,7 @@
                 <cubepl>
                 {
                     ${tmp} = 0;
-                    if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
+                    if ( ${mpi_comm_p2p}[${calculation::callpath::id}] == 1 )
                     {
                         ${tmp} = metric::bytes_received(e);
                     };
@@ -1315,7 +1315,7 @@
                 <cubepl>
                 {
                     ${tmp} = 0;
-                    if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
+                    if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
                     {
                         ${tmp} = metric::bytes_sent(e);
                     };
@@ -1333,7 +1333,7 @@
                 <cubepl>
                 {
                     ${tmp} = 0;
-                    if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
+                    if ( ${mpi_comm_collective}[${calculation::callpath::id}] == 1 )
                     {
                         ${tmp} = metric::bytes_received(e);
                     };
