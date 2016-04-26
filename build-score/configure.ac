@@ -72,20 +72,26 @@ AS_IF([test -n "${scorep_cube_bindir}"],
      CXX="`GREP_OPTIONS= ${GREP} ^FRONTEND_CXX ../vendor/cube/build-backend/config.log | awk -F\' '{print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])])
 
-# With CXX given, find corresponding CC for utilities/filter.
-# Do this before calls to AC_PROG_*
-CXX_STRIPPED="`echo ${CXX} | ${AWK} '{printf $1}'`"
-AS_CASE([`basename ${CXX_STRIPPED}`],
-        [g++],         [CC=gcc],   # gnu
-        [icpc],        [CC=icc],   # intel
-        [CC],          [CC=cc],    # studio
-        [xlC*|xlc++*], [CC=xlc_r], # ibm
-        [pgCC|pgc++],  [CC=pgcc],  # pgi
-        [AC_MSG_ERROR([invalid value of CXX (${CXX_STRIPPED}), cannot determine corresponding CC])])
+AC_PROG_CXX
+AC_LANG_PUSH([C++])
+AX_COMPILER_VENDOR
+AC_LANG_POP([C++])
+
+AS_CASE([${ax_cv_cxx_compiler_vendor}],
+    [intel],    [CC=icc],
+    [ibm],      [CC=xlc_r],
+    [gnu],      [CC=gcc],
+    [sun],      [CC=cc],
+    [portland], [CC=pgcc],
+    [AC_MSG_WARN([invalid value of CXX vendor (${ax_cv_cxx_compiler_vendor}), cannot determine corresponding CC. Using gcc as fall-back.])
+     CC=gcc
+     fallback=" (fall-back)"])
+
 # Use CXX arguments like -q64 on CC as well to prevent build errors relating
-# to incompatible architectures.
+# to incompatible architectures if we are not using the fall-back.
 CXX_ARGS="`echo ${CXX} | ${AWK} '{$1 = ""; print $0}'`"
-CC="${CC} ${CXX_ARGS}"
+AS_IF([test "x${fallback}" = x],
+    [CC="${CC} ${CXX_ARGS}"])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
@@ -98,7 +104,8 @@ AC_SUBST([LIBTOOL_DEPS])
 AC_PROG_CC
 AC_SCOREP_PROG_CC_C99
 
-AC_PROG_CXX
+AFS_SUMMARY([C compiler used],   [${CC}${fallback}])
+AFS_SUMMARY([C++ compiler used], [${CXX}])
 
 AC_SCOREP_SVN_CONTROLLED
 
