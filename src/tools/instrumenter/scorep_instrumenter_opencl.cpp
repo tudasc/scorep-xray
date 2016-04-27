@@ -62,8 +62,8 @@ SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
 void
 SCOREP_Instrumenter_OpenCLAdapter::printHelp( void )
 {
-    std::cout << "  --opencl        Enables OpenCL instrumentation.\n";
-    std::cout << "  --noopencl      Disables OpenCL instrumentation.\n"
+    std::cout << "  --opencl        Enables OpenCL instrumentation.\n"
+              << "  --noopencl      Disables OpenCL instrumentation."
               << std::endl;
 }
 
