@@ -37,7 +37,7 @@ dnl The Score-P CUDA adapter is dependent on the CUDA driver as well as
 dnl the CUDA Toolkit (http://developer.nvidia.com/cuda/cuda-toolkit). From
 dnl the driver we need the library libcuda and we need to check the
 dnl drivers's API version. This version is encoded in the header cuda.h,
-dnl which is unfortunatly not installed with the driver but with the CUDA
+dnl which is unfortunately not installed with the driver but with the CUDA
 dnl Toolkit. I.e. the user needs to take care of installing compatible
 dnl versions of the driver (usually comes with the OS distribution) and
 dnl the toolkit. From the toolkit we need two things. First, the cuda

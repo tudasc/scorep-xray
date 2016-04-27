@@ -51,11 +51,11 @@
  * @defgroup SCOREP_Subsystem SCOREP Subsystem Management
 
  * Subsystem Management will be handled by callback functions, which will be
-   called at defined places from the measurement system. In the particul
+   called at defined places from the measurement system. In the particular
    callbacks the subsystem is only allowed to make specific actions.
 
  * Each subsystem exports these callbacks in a object of type @ref SCOREP_Subsystem
-   wich is describted in this module.
+   which is described in this module.
 
  * @ref SCOREP_Subsystem objects are referenced by an array inside the
    measurement system, so the measurement system does not need to know
@@ -165,7 +165,7 @@ typedef struct SCOREP_Subsystem
     void ( * subsystem_synchronize )( SCOREP_SynchronizationMode syncMode );
 
     /**
-     * Notifies the subsystems that Score-P leavs the measurement phase.
+     * Notifies the subsystems that Score-P leaves the measurement phase.
      *
      * Called in reverse order in the subsystem list.
      */
