@@ -85,6 +85,15 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
             &task, &total_tasks,
             &acoord, &bcoord, &ccoord, &dcoord, &ecoord, &tcoord,
             &rack, &midplane, &nodeboard, &nodecard );
+    /*for use in naming the rack
+       Assumed rack naming scheme: Rxy, with x the row and y the column
+       Warning: with multiple digit row numbers, e.g. Sequoia, there isn't
+        a separator between x and y, relying on user knowledge
+       Maximum size: 2+1 digits for row and column plus terminator
+     */
+    char rackBuffer[ 4 ];
+    sscanf( config.value.chararray,
+            "Task %*u of %*u (%*u,%*u,%*u,%*u,%*u,%*u)  R%[^-]-M%*u-N%*u-J%*u", rackBuffer );
 
     /* finalize the client */
     result = PAMI_Client_destroy( &client );
@@ -99,7 +108,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      SCOREP_SYSTEM_TREE_DOMAIN_NONE,
                                                      "rack",
-                                                     max_uint_digits, "%u", rack );
+                                                     strlen( rackBuffer ) + 1, "%s", rackBuffer );
     if ( !node )
     {
         goto fail;
@@ -131,7 +140,8 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
 
     /* Precalculate unique node ID
      *
-     * unsigned rack;      // [0,n] n=95 for Sequoia    8 bit
+     * unsigned rack;      // [0,n]                     8 bit
+     *    n=117 for Sequoia (based on 12x8 row/columns not sequential numbering)
      * unsigned midplane;  // [0,1]                     1 bit
      * unsigned nodeboard; // [0,15]                    4 bit
      * unsigned nodecard;  // [0,31]                    5 bit
