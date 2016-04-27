@@ -43,8 +43,8 @@ scorep-config <command> [<options>]
             Specifies whether cuda instrumentation is used.
             On default cuda instrumentation is enabled.
    --opencl|--noopencl
-            Specifies whether OpenCL instrumentation is used.
-            On default OpenCL instrumentation is enabled.
+            Specifies whether opencl instrumentation is used.
+            On default opencl instrumentation is enabled.
    --preprocess|--nopreprocess
             Specifies whether preprocess instrumentation is used.
             On default preprocess instrumentation is disabled.
