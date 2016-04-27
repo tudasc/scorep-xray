@@ -25,6 +25,7 @@ Bugfixes:
 - Fix typos in remapping specification file which caused the
   point-to-point and collective bytes transferred metrics to always
   be zero.
+- Build-system hardening.
 
 ------------------- Released version 2.0.1 ---------------------------
 
