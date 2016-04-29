@@ -961,8 +961,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     /* handle memory copies with full sync option */
     if ( scorep_cuda_record_memcpy )
     {
-        if (
-            ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL ) )
+        if ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL )
         {
             if ( !record_driver_api_location )
             {
