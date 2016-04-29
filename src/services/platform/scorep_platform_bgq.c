@@ -108,7 +108,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      SCOREP_SYSTEM_TREE_DOMAIN_NONE,
                                                      "rack",
-                                                     strlen( rackBuffer ) + 1, "%s", rackBuffer );
+                                                     0, rackBuffer );
     if ( !node )
     {
         goto fail;
