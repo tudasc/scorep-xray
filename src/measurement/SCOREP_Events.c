@@ -145,13 +145,17 @@ enter_region( SCOREP_Location*    location,
 }
 
 
+/*
+ * on call-path to GetCallingContext, keep 'scorep_' prefix, as `inline` may
+ * not work in -O0 builds
+ */
 static inline void
-calling_context_enter( SCOREP_Location*    location,
-                       uint64_t            timestamp,
-                       SCOREP_RegionHandle regionHandle,
-                       intptr_t            wrappedRegion,
-                       size_t              framesToSkip,
-                       uint64_t*           metricValues )
+scorep_calling_context_enter( SCOREP_Location*    location,
+                              uint64_t            timestamp,
+                              SCOREP_RegionHandle regionHandle,
+                              intptr_t            wrappedRegion,
+                              size_t              framesToSkip,
+                              uint64_t*           metricValues )
 {
     SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
     SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
@@ -186,12 +190,12 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        calling_context_enter( location,
-                               timestamp,
-                               regionHandle,
-                               0,
-                               0,
-                               metric_values );
+        scorep_calling_context_enter( location,
+                                      timestamp,
+                                      regionHandle,
+                                      0,
+                                      0,
+                                      metric_values );
     }
     else
     {
@@ -223,12 +227,12 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        calling_context_enter( location,
-                               timestamp,
-                               regionHandle,
-                               0,
-                               0,
-                               metric_values );
+        scorep_calling_context_enter( location,
+                                      timestamp,
+                                      regionHandle,
+                                      0,
+                                      0,
+                                      metric_values );
     }
     else
     {
@@ -247,12 +251,12 @@ SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        calling_context_enter( location,
-                               timestamp,
-                               regionHandle,
-                               wrappedRegion,
-                               SCOREP_IN_MEASUREMENT(),
-                               metric_values );
+        scorep_calling_context_enter( location,
+                                      timestamp,
+                                      regionHandle,
+                                      wrappedRegion,
+                                      SCOREP_IN_MEASUREMENT(),
+                                      metric_values );
     }
     else
     {
@@ -280,11 +284,15 @@ exit_region( SCOREP_Location*    location,
 }
 
 
+/*
+ * on call-path to GetCallingContext, keep 'scorep_' prefix, as `inline` may
+ * not work in -O0 builds
+ */
 static inline void
-calling_context_exit( SCOREP_Location*    location,
-                      uint64_t            timestamp,
-                      SCOREP_RegionHandle regionHandle,
-                      uint64_t*           metricValues )
+scorep_calling_context_exit( SCOREP_Location*    location,
+                             uint64_t            timestamp,
+                             SCOREP_RegionHandle regionHandle,
+                             uint64_t*           metricValues )
 {
     SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
     SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
@@ -317,7 +325,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        calling_context_exit( location, timestamp, regionHandle, metric_values );
+        scorep_calling_context_exit( location, timestamp, regionHandle, metric_values );
     }
     else
     {
@@ -345,7 +353,7 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        calling_context_exit( location, timestamp, regionHandle, metric_values );
+        scorep_calling_context_exit( location, timestamp, regionHandle, metric_values );
     }
     else
     {
