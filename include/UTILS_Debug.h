@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,8 +40,6 @@
  */
 
 #include <stdint.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 UTILS_BEGIN_C_DECLS
 
