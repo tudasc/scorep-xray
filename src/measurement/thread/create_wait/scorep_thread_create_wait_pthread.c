@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -38,6 +38,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 #include <pthread.h>
 
 

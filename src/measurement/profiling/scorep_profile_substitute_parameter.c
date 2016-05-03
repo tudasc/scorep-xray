@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,6 +46,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <UTILS_Error.h>
 #include <SCOREP_Memory.h>
 #include <UTILS_Debug.h>

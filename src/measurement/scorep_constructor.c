@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,6 +29,8 @@
 #include <SCOREP_InMeasurement.h>
 
 #include "scorep_environment.h"
+
+#include <stdio.h>
 
 #if SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_ATTRIBUTE
 

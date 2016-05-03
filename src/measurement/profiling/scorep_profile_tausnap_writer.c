@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,6 +43,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <sys/stat.h>
 
