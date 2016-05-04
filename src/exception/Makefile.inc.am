@@ -6,7 +6,9 @@ libutils_exception_la_SOURCES = \
     $(SRC_ROOT)vendor/common/src/utils/exception/UTILS_Error.c \
     $(SRC_ROOT)vendor/common/src/utils/exception/normalize_file.h \
     $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Debug.h \
-    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Error.h
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_DebugStream.hpp \
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Error.h \
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Portability.h
 libutils_exception_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PACKAGE_ERROR_CODES_INCDIR) \

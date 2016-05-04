@@ -41,6 +41,8 @@
 
 #include <stdint.h>
 
+#include <UTILS_Portability.h>
+
 UTILS_BEGIN_C_DECLS
 
 /**
@@ -79,7 +81,7 @@ enum
      * src/config-custom.h
      */
     #define UTILS_DEFINE_DEBUG_MODULE( name, bit ) \
-    PACKAGE_MANGLE_NAME( DEBUG_ ## name ) = 1 << bit
+    PACKAGE_MANGLE_NAME( DEBUG_ ## name ) = ( UINT64_C( 1 ) << bit )
     UTILS_DEBUG_MODULES
     #undef UTILS_DEFINE_DEBUG_MODULE
 };
@@ -118,7 +120,7 @@ enum
         AFS_PACKAGE_SRCDIR, \
         __FILE__, \
         __LINE__, \
-        __func__, \
+        UTILS_FUNCTION_NAME, \
         __VA_ARGS__ )
 
 #define HAVE_DEBUG_MODULE_NAME_( sym ) defined( sym ## _DEBUG_MODULE_NAME )
@@ -134,7 +136,7 @@ enum
         AFS_PACKAGE_SRCDIR, \
         __FILE__, \
         __LINE__, \
-        __func__, \
+        UTILS_FUNCTION_NAME, \
         "" __VA_ARGS__ )
 
 #define UTILS_DEBUG_ENTRY( ... ) \
@@ -146,7 +148,7 @@ enum
         AFS_PACKAGE_SRCDIR, \
         __FILE__, \
         __LINE__, \
-        __func__, \
+        UTILS_FUNCTION_NAME, \
         "" __VA_ARGS__ )
 
 #define UTILS_DEBUG_EXIT( ... ) \
@@ -158,7 +160,7 @@ enum
         AFS_PACKAGE_SRCDIR, \
         __FILE__, \
         __LINE__, \
-        __func__, \
+        UTILS_FUNCTION_NAME, \
         "" __VA_ARGS__ )
 
 #else
@@ -215,7 +217,7 @@ enum
         AFS_PACKAGE_SRCDIR, \
         __FILE__, \
         __LINE__, \
-        __func__ )
+        UTILS_FUNCTION_NAME )
 
 #else
 
@@ -302,5 +304,9 @@ UTILS_Debug_Prefix( uint64_t    bitMask,
 UTILS_END_C_DECLS
 
 /** @} */
+
+#if defined( __cplusplus )
+    #include <UTILS_DebugStream.hpp>
+#endif
 
 #endif /* UTILS_DEBUG_H */

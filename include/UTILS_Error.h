@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -45,6 +45,8 @@
 #endif
 #include <stdarg.h>
 
+#include <UTILS_Portability.h>
+
 /*
  * Include the package specific error codes.
  */
@@ -69,7 +71,7 @@ UTILS_BEGIN_C_DECLS
     UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
                          __FILE__, \
                          __LINE__, \
-                         __func__, \
+                         UTILS_FUNCTION_NAME, \
                          errCode, \
                          __VA_ARGS__ )
 
@@ -80,7 +82,7 @@ UTILS_BEGIN_C_DECLS
     UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
                          __FILE__, \
                          __LINE__, \
-                         __func__, \
+                         UTILS_FUNCTION_NAME, \
                          PACKAGE_MANGLE_NAME( WARNING ), \
                          __VA_ARGS__ )
 /**
@@ -114,7 +116,7 @@ UTILS_BEGIN_C_DECLS
             UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
                                  __FILE__, \
                                  __LINE__, \
-                                 __func__, \
+                                 UTILS_FUNCTION_NAME, \
                                  PACKAGE_MANGLE_NAME( DEPRECATED ), \
                                  __VA_ARGS__ ); \
         } \
@@ -184,7 +186,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
       UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
                          __FILE__, \
                          __LINE__, \
-                         __func__, \
+                         UTILS_FUNCTION_NAME, \
                          "Assertion '" UTILS_STRINGIFY( expression ) "' failed" ) )
 
 #else
@@ -203,7 +205,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
     UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
                        __FILE__, \
                        __LINE__, \
-                       __func__, \
+                       UTILS_FUNCTION_NAME, \
                        __VA_ARGS__ )
 
 
@@ -218,7 +220,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
     UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
                        __FILE__, \
                        __LINE__, \
-                       __func__, \
+                       UTILS_FUNCTION_NAME, \
                        "Bug: " __VA_ARGS__ )
 
 
@@ -233,7 +235,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
       UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
                          __FILE__,      \
                          __LINE__,      \
-                         __func__,      \
+                         UTILS_FUNCTION_NAME,      \
                          "Bug '" #expression "': " __VA_ARGS__ ) )
 
 /**
