@@ -225,7 +225,7 @@ output at all. Furthermore, the online representation of the profile structure m
 differ from the final profile structure.
 
 You can enable this additional output by setting the environment variable
-<tt>SCOREP_PROFILING_ENABLE_CORE_FILES</tt> to <tt>true</tt>. Then, if the
+\confvar{SCOREP_PROFILING_ENABLE_CORE_FILES} to <tt>true</tt>. Then, if the
 profile detects an inconsistency, it will write a core file into
 your measurement directory. If an inconstant profiles is detected on multiple
 locations, every location where an inconsistency is detected will write a
