@@ -308,8 +308,8 @@ It is also recommended to adjust the experiment directory name for the new run:
 and operating system resource usage (see Section @secref{rusage_counters}) in addition to default
 time and number of visits metrics.
 Hardware counters could be configured by setting @scorep environment variable
-<tt>SCOREP_METRIC_PAPI</tt> to the comma-separated list of PAPI events (other
-separator could be specified by setting <tt>SCOREP_METRIC_PAPI_SEP</tt>):
+\confvar{SCOREP_METRIC_PAPI} to the comma-separated list of PAPI events (other
+separator could be specified by setting \confvar{SCOREP_METRIC_PAPI_SEP}):
 
 @code
 % export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_FP_INS
@@ -329,7 +329,7 @@ variable:
 @endcode
 
 Additionally @scorep can be configured to record only a subset of the mpi functions.
-This is achieved by setting <tt>SCOREP_MPI_ENABLE_GROUPS</tt> variable with a
+This is achieved by setting \confvar{SCOREP_MPI_ENABLE_GROUPS} variable with a
 comma-separated list of sub-groups of MPI functions to be recorded (see
 Appendix @secref{wrapperannex}):
 
