@@ -29,8 +29,8 @@
 #include <deque>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
-#include "scorep_config_mutex.hpp"
 #include "scorep_config_types.hpp"
+#include "scorep_config_mutex.hpp"
 
 /* **************************************************************************************
  * enum SCOREP_Config_ThreadSystemId
@@ -143,12 +143,14 @@ public:
      * function will be called.
      * @param incflags    The compiler flags to which you may modify or add new flags.
      * @param build_check Specifies whether --build-check was set.
+     * @param language    Specifies the language of the compiler.
      * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
 
 
     /**
@@ -274,9 +276,10 @@ public:
                bool                   nvcc );
 
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };
@@ -303,9 +306,10 @@ public:
                bool                   nvcc );
 
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };

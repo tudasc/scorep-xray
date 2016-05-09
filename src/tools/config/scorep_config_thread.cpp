@@ -187,9 +187,10 @@ SCOREP_Config_ThreadSystem::validateDependencies()
 }
 
 void
-SCOREP_Config_ThreadSystem::addIncFlags( std::string& incflags,
-                                         bool         build_check,
-                                         bool         nvcc )
+SCOREP_Config_ThreadSystem::addIncFlags( std::string&           incflags,
+                                         bool                   build_check,
+                                         SCOREP_Config_Language language,
+                                         bool                   nvcc )
 {
 }
 
@@ -253,13 +254,14 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string&           cflags,
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags,
-                                                bool         build_check,
-                                                bool         nvcc )
+SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string&           incflags,
+                                                bool                   build_check,
+                                                SCOREP_Config_Language language,
+                                                bool                   nvcc )
 {
     SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
                                                    false,
-                                                   SCOREP_CONFIG_LANGUAGE_C,
+                                                   language,
                                                    nvcc );
 }
 
@@ -309,13 +311,14 @@ SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string&           cflags,
 }
 
 void
-SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags,
-                                                    bool         build_check,
-                                                    bool         nvcc )
+SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string&           incflags,
+                                                    bool                   build_check,
+                                                    SCOREP_Config_Language language,
+                                                    bool                   nvcc )
 {
     SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
                                                    false,
-                                                   SCOREP_CONFIG_LANGUAGE_C,
+                                                   language,
                                                    nvcc );
 }
 

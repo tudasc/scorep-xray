@@ -91,9 +91,10 @@ public:
      * Calls for all adapters the addIncFlags() member functions.
      */
     static void
-    addIncFlagsAll( std::string& incflags,
-                    bool         build_check,
-                    bool         nvcc );
+    addIncFlagsAll( std::string&           incflags,
+                    bool                   build_check,
+                    SCOREP_Config_Language language,
+                    bool                   nvcc );
 
     /**
      * Calls for all adapters the addLdFlags() member functions.
@@ -201,12 +202,14 @@ protected:
      *                  This flags contain only the include directories. For other
      *                  compiler flags use addCFlags.
      * @param build_check  True '--build-check' was specified.
+     * @param language     Specifies whether it is a C, C++ or Fortran compiler.
      * @param nvcc         True if compiler is nvcc.
      */
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
@@ -284,10 +287,10 @@ class SCOREP_Config_UserAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_UserAdapter();
     virtual void
-    addCFlags( std::string&           cflags,
-               bool                   build_check,
-               SCOREP_Config_Language language,
-               bool                   nvcc );
+    addIncFlags( std::string&           cflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
 };
 
 /* **************************************************************************************
@@ -338,9 +341,10 @@ class SCOREP_Config_Opari2Adapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_Opari2Adapter();
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
     virtual void
     addCFlags( std::string&           cflags,
                bool                   build_check,

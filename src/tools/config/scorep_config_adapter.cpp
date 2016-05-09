@@ -135,14 +135,15 @@ SCOREP_Config_Adapter::addCFlagsAll( std::string&           cflags,
 }
 
 void
-SCOREP_Config_Adapter::addIncFlagsAll( std::string& incflags,
-                                       bool         build_check,
-                                       bool         nvcc )
+SCOREP_Config_Adapter::addIncFlagsAll( std::string&           incflags,
+                                       bool                   build_check,
+                                       SCOREP_Config_Language language,
+                                       bool                   nvcc )
 {
     std::deque<SCOREP_Config_Adapter*>::iterator i;
     for ( i = all.begin(); i != all.end(); i++ )
     {
-        ( *i )->addIncFlags( incflags, build_check, nvcc );
+        ( *i )->addIncFlags( incflags, build_check, language, nvcc );
     }
 }
 
@@ -223,9 +224,10 @@ SCOREP_Config_Adapter::addLdFlags( std::string& /* ldflags */,
 }
 
 void
-SCOREP_Config_Adapter::addIncFlags( std::string& incflags,
-                                    bool         build_check,
-                                    bool         nvcc )
+SCOREP_Config_Adapter::addIncFlags( std::string&           incflags,
+                                    bool                   build_check,
+                                    SCOREP_Config_Language language,
+                                    bool                   nvcc )
 {
 }
 
@@ -347,20 +349,19 @@ SCOREP_Config_UserAdapter::SCOREP_Config_UserAdapter()
 }
 
 void
-SCOREP_Config_UserAdapter::addCFlags( std::string&           cflags,
-                                      bool                   build_check,
-                                      SCOREP_Config_Language language,
-                                      bool /* nvcc */ )
+SCOREP_Config_UserAdapter::addIncFlags( std::string&           cflags,
+                                        bool                   build_check,
+                                        SCOREP_Config_Language language,
+                                        bool /* nvcc */ )
 {
     if ( m_is_enabled )
     {
         if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
         {
-                #if SCOREP_BACKEND_COMPILER_IBM
-            cflags += "-WF,-DSCOREP_USER_ENABLE ";
-                #else
+#if SCOREP_BACKEND_COMPILER_IBM
+            cflags += "-WF,";
+#endif      // SCOREP_BACKEND_COMPILER_IBM
             cflags += "-DSCOREP_USER_ENABLE ";
-                #endif // SCOREP_BACKEND_COMPILER_IBM
         }
         else
         {
@@ -518,15 +519,16 @@ SCOREP_Config_Opari2Adapter::SCOREP_Config_Opari2Adapter()
 }
 
 void
-SCOREP_Config_Opari2Adapter::addIncFlags( std::string& incflags,
-                                          bool         build_check,
-                                          bool         nvcc )
+SCOREP_Config_Opari2Adapter::addIncFlags( std::string&           incflags,
+                                          bool                   build_check,
+                                          SCOREP_Config_Language language,
+                                          bool                   nvcc )
 {
     if ( m_is_enabled )
     {
         printOpariCFlags( build_check,
                           false,
-                          SCOREP_CONFIG_LANGUAGE_C,
+                          language,
                           nvcc );
     }
 }

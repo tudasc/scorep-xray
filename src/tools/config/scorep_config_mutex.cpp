@@ -153,15 +153,18 @@ SCOREP_Config_Mutex::addLibs( std::deque<std::string>&           libs,
 }
 
 void
-SCOREP_Config_Mutex::addCFlags( std::string& cflags,
-                                bool         build_check,
-                                bool         fortran,
-                                bool         nvcc )
+SCOREP_Config_Mutex::addCFlags( std::string&           cflags,
+                                bool                   build_check,
+                                SCOREP_Config_Language language,
+                                bool                   nvcc )
 {
 }
 
 void
-SCOREP_Config_Mutex::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_Mutex::addIncFlags( std::string&           incflags,
+                                  bool                   build_check,
+                                  SCOREP_Config_Language language,
+                                  bool                   nvcc )
 {
 }
 

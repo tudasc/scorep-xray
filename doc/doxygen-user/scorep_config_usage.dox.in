@@ -8,8 +8,10 @@ scorep-config <command> [<options>]
                contain the include flags.
    --fflags    prints additional compiler flags for a Fortran compiler. They already
                contain the include flags.
-   --cppflags  prints the include flags. They are already contained in the
-               output of the --cflags, --cxxflags, and --fflags commands
+   --cppflags[=language]
+               prints the include flags. They are already contained in the
+               output of the --cflags, --cxxflags, and --fflags commands.
+               language may be one of c (default), c++, or fortran
    --ldflags   prints the library path flags for the linker
    --libs      prints the required linker flags
    --cc        prints the C compiler name

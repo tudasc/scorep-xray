@@ -83,8 +83,10 @@
     "               contain the include flags.\n" \
     "   --fflags    prints additional compiler flags for a Fortran compiler. They already\n" \
     "               contain the include flags.\n" \
-    "   --cppflags  prints the include flags. They are already contained in the\n" \
-    "               output of the --cflags, --cxxflags, and --fflags commands\n" \
+    "   --cppflags[=language]\n" \
+    "               prints the include flags. They are already contained in the\n" \
+    "               output of the --cflags, --cxxflags, and --fflags commands.\n" \
+    "               language may be one of c (default), c++, or fortran\n" \
     "   --ldflags   prints the library path flags for the linker\n" \
     "   --libs      prints the required linker flags\n" \
     "   --cc        prints the C compiler name\n" \
@@ -267,6 +269,29 @@ main( int    argc,
                   ( strcmp( argv[ i ], "--cppflags" ) == 0 ) )
         {
             action = ACTION_INCDIR;
+            /* Default languange is C, which is already set. */
+        }
+        else if ( ( strncmp( argv[ i ], "--cppflags=", 11 ) == 0 ) )
+        {
+            action = ACTION_INCDIR;
+            std::string language_arg( argv[ i ] + 11 );
+            if ( language_arg == "c" )
+            {
+                language = SCOREP_CONFIG_LANGUAGE_C;
+            }
+            else if ( language_arg == "c++" )
+            {
+                language = SCOREP_CONFIG_LANGUAGE_CXX;
+            }
+            else if ( language_arg == "fortran" )
+            {
+                language = SCOREP_CONFIG_LANGUAGE_FORTRAN;
+            }
+            else
+            {
+                std::cerr << "ERROR: Invalid language for '--cppflags=': " << language_arg << std::endl;
+                exit( EXIT_FAILURE );
+            }
         }
         else if ( strcmp( argv[ i ], "--cc" ) == 0 )
         {
@@ -502,8 +527,8 @@ main( int    argc,
                 str += "-I" + path_to_src + "include " +
                        "-I" + path_to_src + "include/scorep ";
             }
-            SCOREP_Config_Adapter::addIncFlagsAll( str, !install, nvcc );
-            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, nvcc );
+            SCOREP_Config_Adapter::addIncFlagsAll( str, !install, language, nvcc );
+            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, language, nvcc );
 
             if ( nvcc )
             {

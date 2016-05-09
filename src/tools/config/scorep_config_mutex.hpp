@@ -26,6 +26,7 @@
 #include <deque>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
+#include "scorep_config_types.hpp"
 
 /* **************************************************************************************
  * enum SCOREP_Config_MutexId
@@ -142,26 +143,28 @@ public:
      *                    This flags do not contain the include directories. For the
      *                    include flags use addIncFlags.
      * @param build_check Specifies whether --build-check was set.
-     * @param fortran     True if the source file is a fortran file.
+     * @param language     Specifies whether it is a C, C++ or Fortran compiler.
      * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     /**
      * Overwrite this function if you want to do system specific modifications
      * to the include flags.
      * @param incflags    The compiler flags to which you may modify or add new flags.
      * @param build_check Specifies whether --build-check was set.
+     * @param language     Specifies whether it is a C, C++ or Fortran compiler.
      * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addIncFlags( std::string& incflags,
-                 bool         build_check,
-                 bool         nvcc );
+    addIncFlags( std::string&           incflags,
+                 bool                   build_check,
+                 SCOREP_Config_Language language,
+                 bool                   nvcc );
 
     /**
      * Returns the mutex identifier.
