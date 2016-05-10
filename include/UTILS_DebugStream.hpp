@@ -43,7 +43,6 @@
  *
  * @par Example:
  * @code
- *     #define __STDC_CONSTANT_MACROS
  *     #include <config.h>
  *
  *     #define EXAMPLE_DEBUG_MODULE_NAME CORE
@@ -68,7 +67,6 @@
  *
  * @par Example:
  * @code
- *     #define __STDC_CONSTANT_MACROS
  *     #include <config.h>
  *
  *     #include <UTILS_Debug.h>
