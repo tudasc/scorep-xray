@@ -170,7 +170,7 @@ SCOREP_LIBRARY_WRAPPING
 AS_IF([test "x$afs_have_gnu_linker" = "xyes"],
       [AC_SCOREP_BACKEND_LIB([libOpenCL], [CL/cl.h])
        AS_IF([test "x$scorep_opencl_error" = "xyes"],
-             [scorep_opencl_error="no"
+             [AS_UNSET([ac_cv_search_clGetPlatformIDs])
               AC_SCOREP_BACKEND_LIB([libOpenCL], [OpenCL/opencl.h])],
              [])],
       [scorep_opencl_error="yes"
