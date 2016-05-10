@@ -56,13 +56,13 @@ if [ x`grep -c loop trace.txt` = x16 ]; then
     exit 0;
   else
     echo "Uncorrect number of events for 'foo'."
-    echo "16 expected but `grep -c loop trace.txt` occured"
+    echo "16 expected but `grep -c loop trace.txt` occurred"
     exit 1
   fi
 fi
 
 echo "Uncorrect number of events for 'foo'."
-echo "16 expected but `grep -c loop trace.txt` occured"
+echo "16 expected but `grep -c loop trace.txt` occurred"
 exit 1
 
 

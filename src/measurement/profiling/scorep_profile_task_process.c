@@ -171,7 +171,7 @@ scorep_profile_process_tasks( void )
             node = next;
         }
 
-        /* If tasks occured, add the task tree to the thread */
+        /* If tasks occurred, add the task tree to the thread */
         if ( task_root != NULL )
         {
             scorep_profile_add_child( thread_root, task_root );

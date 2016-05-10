@@ -64,7 +64,7 @@ typedef struct
     SCOREP_MetricHandle*          metric_map;         /**< map sequence no to handle */
     SCOREP_MetricHandle*          unified_metric_map; /**< map sequence to unified handle */
     uint8_t*                      bit_vector;         /**< Indicates callpath with values */
-    int32_t                       has_tasks;          /**< Whether tasks occured */
+    int32_t                       has_tasks;          /**< Whether tasks occurred */
     uint32_t                      num_unified_metrics;
     int32_t                       same_thread_num;    /**< Non-zero if same number of
                                                            threads on all ranks */

@@ -84,7 +84,7 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
-   @param returns a pointer to the newly created instance. If an error occured,
+   @param returns a pointer to the newly created instance. If an error occurred,
    NULL is returned.
  */
 scorep_cube4_definitions_map*

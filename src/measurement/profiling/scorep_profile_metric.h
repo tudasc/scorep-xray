@@ -145,7 +145,7 @@ scorep_profile_copy_dense_metric( scorep_profile_dense_metric* destination,
 /**
  *  Merges the statistics of a dense metrics to another metric. Adds the statistics from
  *  @a source to @a destination as if all events summarized in @a source would have been
- *  also occured for @destination.
+ *  also occurred for @destination.
  *  @param destination Pointer to the instance to which vales are updated.
  *  @param source      Pointer to the instance which contains the values which are added
  *                     to @a destination.
@@ -195,7 +195,7 @@ scorep_profile_update_sparse_int( scorep_profile_sparse_metric_int* metric,
 /**
  *  Merges the statistics of a metric to another metric. Adds the statistics from
  *  @a source to @a destination as if all events summarized in @a source would have been
- *  also occured for @destination.
+ *  also occurred for @destination.
  *  @param destination Pointer to the instance to which vales are updated.
  *  @param source      Pointer to the instance which contains the values which are added
  *                     to @a destination.
@@ -245,7 +245,7 @@ scorep_profile_update_sparse_double( scorep_profile_sparse_metric_double* metric
 /**
  *  Merges the statistics of a metric to another metric. Adds the statistics from
  *  @a source to @a destination as if all events summarized in @a source would have been
- *  also occured for @destination.
+ *  also occurred for @destination.
  *  @param destination Pointer to the instance to which vales are updated.
  *  @param source      Pointer to the instance which contains the values which are added
  *                     to @a destination.

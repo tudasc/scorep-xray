@@ -33,7 +33,7 @@ $OTF2_PRINT $RESULT_DIR/traces.otf2 | grep -e foo -e MEASUREMENT_ON_OFF -e bar >
 c=`grep -c foo trace.txt`
 if [ $c != 0 ]; then
   echo "==ERROR== Uncorrect number of events for foo."
-  echo "0 expected but $c occured."
+  echo "0 expected but $c occurred."
   rm trace.txt
   exit 1
 fi
@@ -42,7 +42,7 @@ fi
 c=`grep -c bar trace.txt`
 if [ $c != 2 ]; then
   echo "==ERROR== Uncorrect number of events for bar."
-  echo "2 expected but $c occured."
+  echo "2 expected but $c occurred."
   rm trace.txt
   exit 1
 fi
@@ -51,7 +51,7 @@ fi
 c=`grep -c MEASUREMENT_ON_OFF trace.txt`
 if [ $c != 4 ]; then
   echo "==ERROR== Uncorrect number of events for MEASUREMENT_ON_OFF."
-  echo "4 expected but $c occured."
+  echo "4 expected but $c occurred."
   rm trace.txt
   exit 1
 fi
