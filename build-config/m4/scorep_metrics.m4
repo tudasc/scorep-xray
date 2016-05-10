@@ -341,10 +341,13 @@ if    test "x${has_metric_perf_headers}" = "xyes" \
 fi
 
 AC_SCOREP_COND_HAVE([METRIC_PERF],
-                    [test "x${ac_scorep_have_perf}" = "xyes"],
+                    [test "x${ac_scorep_have_perf}" = "xyes" && \
+                     test "x${ac_scorep_platform}" != "xbgq"],
                     [Defined if metric perf support is available.],
                     [metric_perf_summary="yes"],
-                    [metric_perf_summary="no"])
+                    [AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
+                           [metric_perf_summary="no, not supported on BG/Q"]
+                           [metric_perf_summary="no"])])
 
 AFS_SUMMARY([metric perf support], [${metric_perf_summary}])
 ])
