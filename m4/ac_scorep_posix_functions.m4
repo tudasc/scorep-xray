@@ -41,7 +41,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LANG_PUSH(C)
 
     ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd, read, close], [], [], [[
+    AC_CHECK_DECLS([gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
       #include <unistd.h>
       #include <stdio.h>
     ]])
@@ -92,6 +92,29 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
          AC_DEFINE(HAVE_GETHOSTNAME, 1, [Can link a gethostname function])],
         [AC_MSG_RESULT(no)
          has_gethostname_func="no"]
+    ) # AC_LINK_IF_ELSE
+
+    has_fileno_func="yes"
+    AC_MSG_CHECKING([for fileno])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdio.h>
+            #include <fcntl.h>
+
+            #if !HAVE_DECL_FILENO
+            int fileno(FILE *stream);
+            #endif
+
+            int main()
+            {
+                FILE* stream;
+                return fileno(stream);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_FILENO, 1, [Can link a fileno function])],
+        [AC_MSG_RESULT(no)
+         has_fileno_func="no"]
     ) # AC_LINK_IF_ELSE
 
     has_fseeko_func="yes"
@@ -219,6 +242,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 
     AM_CONDITIONAL([HAVE_GETHOSTID], [test "x${has_gethostid_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETHOSTNAME], [test "x${has_gethostname_func}" = "xyes"])
+    AM_CONDITIONAL([HAVE_FILENO], [test "x${has_fileno_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_FSEEKO], [test "x${has_fseeko_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_FSEEKO64], [test "x${has_fseeko64_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETCWD], [test "x${has_getcwd_func}" = "xyes"])
@@ -237,7 +261,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LANG_PUSH(C++)
 
     ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd, read, close], [], [], [[
+    AC_CHECK_DECLS([gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
       #include <stdio.h>
       #include <unistd.h>
     ]])
