@@ -64,7 +64,9 @@ using namespace std;
  * @param pos2  Position of an elemant that is swapped with the element at @a pos1.
  */
 static void
-swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
+swap( SCOREP_Score_Group** items,
+      uint64_t             pos1,
+      uint64_t             pos2 )
 {
     SCOREP_Score_Group* helper = items[ pos1 ];
     items[ pos1 ] = items[ pos2 ];
@@ -77,7 +79,8 @@ swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
  * @param size   Number of groups in @a items.
  */
 static void
-quicksort( SCOREP_Score_Group** items, uint64_t size )
+quicksort( SCOREP_Score_Group** items,
+           uint64_t             size )
 {
     if ( size < 2 )
     {
@@ -462,7 +465,7 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
 }
 
 void
-SCOREP_Score_Estimator::initializeFilter( string filterFile )
+SCOREP_Score_Estimator::initializeFilter( const string& filterFile )
 {
     /* Initialize filter component */
     SCOREP_ErrorCode err = SCOREP_SUCCESS;
@@ -500,7 +503,8 @@ SCOREP_Score_Estimator::initializeFilter( string filterFile )
 }
 
 void
-SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
+SCOREP_Score_Estimator::calculate( bool showRegions,
+                                   bool useMangled )
 {
     if ( showRegions )
     {
@@ -794,7 +798,8 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
 /* ****************************************************** private methods */
 
 void
-SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups, uint64_t num )
+SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups,
+                                       uint64_t             num )
 {
     if ( groups != NULL )
     {

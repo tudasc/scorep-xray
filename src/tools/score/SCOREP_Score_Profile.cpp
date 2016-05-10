@@ -47,7 +47,7 @@
 using namespace std;
 using namespace cube;
 
-SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
+SCOREP_Score_Profile::SCOREP_Score_Profile( const string& cubeFile )
 {
     struct stat file_stats;
     stat( cubeFile.c_str(), &file_stats );
@@ -130,7 +130,8 @@ SCOREP_Score_Profile::hasHits( void ) const
 }
 
 double
-SCOREP_Score_Profile::getTime( uint64_t region, uint64_t process )
+SCOREP_Score_Profile::getTime( uint64_t region,
+                               uint64_t process )
 {
     Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
@@ -173,7 +174,8 @@ SCOREP_Score_Profile::getTotalTime( uint64_t region )
 }
 
 uint64_t
-SCOREP_Score_Profile::getVisits( uint64_t region, uint64_t process )
+SCOREP_Score_Profile::getVisits( uint64_t region,
+                                 uint64_t process )
 {
     Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
@@ -231,7 +233,8 @@ SCOREP_Score_Profile::getMaxVisits( uint64_t region )
 }
 
 uint64_t
-SCOREP_Score_Profile::getHits( uint64_t region, uint64_t process )
+SCOREP_Score_Profile::getHits( uint64_t region,
+                               uint64_t process )
 {
     if ( !m_hits )
     {

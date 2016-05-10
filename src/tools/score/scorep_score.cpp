@@ -59,7 +59,8 @@ print_help()
 }
 
 int
-main( int argc, char** argv )
+main( int    argc,
+      char** argv )
 {
     string   file_name;
     string   filter_file;

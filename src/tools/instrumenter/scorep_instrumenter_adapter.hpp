@@ -103,7 +103,7 @@ public:
      * @param name  The name of the instrumentation method.
      */
     SCOREP_Instrumenter_Adapter( SCOREP_Instrumenter_AdapterId id,
-                                 std::string                   name );
+                                 const std::string&            name );
 
     /**
      * Deletes a SCOREP_Instrumenter_Adapter instance.
@@ -154,7 +154,7 @@ public:
      * @returns true, if this argument was known to this adapter.
      */
     virtual bool
-    checkOption( std::string arg );
+    checkOption( const std::string& arg );
 
     /**
      * Returns whether this adapter is enabled.
@@ -402,7 +402,7 @@ public:
      * @returns   true if one adapter knew this argument.
      */
     static bool
-    checkAllOption( std::string arg );
+    checkAllOption( const std::string& arg );
 
     /**
      * Check the dependencies of all adapters.
@@ -489,7 +489,7 @@ public:
      * @param  id The identifier of the adapter you require.
      */
     static void
-    require( std::string                   caller,
+    require( const std::string&            caller,
              SCOREP_Instrumenter_AdapterId id );
 
     /**
@@ -500,7 +500,7 @@ public:
      * @param  id The identifier of the adapter you require.
      */
     static void
-    conflict( std::string                   caller,
+    conflict( const std::string&            caller,
               SCOREP_Instrumenter_AdapterId id );
 
     /**
@@ -528,7 +528,7 @@ public:
      */
     static void
     printDepList( SCOREP_Instrumenter_DependencyList* list,
-                  std::string                         entry );
+                  const std::string&                  entry );
 
 private:
     /**

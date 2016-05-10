@@ -694,21 +694,22 @@ exists_file( const std::string& filename )
 }
 
 static std::string
-find_library( std::string                    library,
+find_library( const std::string&             library,
               const std::deque<std::string>& path_list,
               bool                           allow_static,
               bool                           allow_dynamic )
 {
     std::string current_path;
+    std::string lib = library;
 
-    if ( library.substr( 0, 2 ) == "-l" )
+    if ( lib.substr( 0, 2 ) == "-l" )
     {
-        library.replace( 0, 2, "lib" );
+        lib.replace( 0, 2, "lib" );
     }
     for ( std::deque<std::string>::const_iterator path = path_list.begin();
           path != path_list.end(); path++ )
     {
-        current_path = *path + "/" + library;
+        current_path = *path + "/" + lib;
         if ( allow_dynamic && exists_file( current_path + ".so" ) )
         {
             return current_path + ".so";
@@ -902,7 +903,9 @@ print_adapter_init_source( void )
 }
 
 void
-delegate( int argc, char** argv, const std::string& target )
+delegate( int                argc,
+          char**             argv,
+          const std::string& target )
 {
     // Construct command string with all original arguments
     std::string command = PKGLIBEXECDIR "/scorep-config-" + target;

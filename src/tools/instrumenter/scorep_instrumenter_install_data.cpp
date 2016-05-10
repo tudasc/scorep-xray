@@ -169,20 +169,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return ( arg == "-E" ) || ( arg == "-eP" );
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     if ( ( current == "-A" ) ||
          ( current == "-b" ) ||
@@ -254,20 +254,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     if ( current == "-x" )
     {
@@ -328,20 +328,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return ( arg == "-E" ) || ( arg == "-qnoobject" );
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     return false;
 }
@@ -395,7 +395,7 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
            ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
@@ -422,14 +422,14 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     return false;
 }
@@ -482,20 +482,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     if ( current == "-tp" )
     {
@@ -582,20 +582,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return ( arg == "-E" ) || ( arg == "-F" );
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     if ( ( current == "-h" ) ||
          ( current == "-xMF" ) )
@@ -652,20 +652,20 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
     return false;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
-                                                 std::string next )
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
 {
     if ( current == "-x" )
     {

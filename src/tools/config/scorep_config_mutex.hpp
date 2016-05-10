@@ -98,9 +98,9 @@ public:
      *                 the leading 'lib' which is prefixed automatically if needed.
      * @param id       The identifier of the mutex system.
      */
-    SCOREP_Config_Mutex( std::string           name,
-                         std::string           variant,
-                         std::string           library,
+    SCOREP_Config_Mutex( const std::string&    name,
+                         const std::string&    variant,
+                         const std::string&    library,
                          SCOREP_Config_MutexId id );
 
     /**

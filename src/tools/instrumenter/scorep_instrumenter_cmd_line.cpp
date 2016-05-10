@@ -833,31 +833,31 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 }
 
 void
-SCOREP_Instrumenter_CmdLine::add_input_file( std::string input_file )
+SCOREP_Instrumenter_CmdLine::add_input_file( const std::string& input_file )
 {
     m_input_files.push_back( backslash_special_chars( input_file ) );
 }
 
 void
-SCOREP_Instrumenter_CmdLine::set_output_file( std::string output_file )
+SCOREP_Instrumenter_CmdLine::set_output_file( const std::string& output_file )
 {
     m_output_name = backslash_special_chars( output_file );
 }
 
 void
-SCOREP_Instrumenter_CmdLine::add_include_path( std::string include_path )
+SCOREP_Instrumenter_CmdLine::add_include_path( const std::string& include_path )
 {
     m_include_flags += " -I" + backslash_special_chars( include_path );
 }
 
 void
-SCOREP_Instrumenter_CmdLine::add_library_path( std::string library_path )
+SCOREP_Instrumenter_CmdLine::add_library_path( const std::string& library_path )
 {
     m_libdirs.push_back( library_path );
 }
 
 void
-SCOREP_Instrumenter_CmdLine::add_library( std::string library )
+SCOREP_Instrumenter_CmdLine::add_library( const std::string& library )
 {
     m_libraries.push_back( library );
 }

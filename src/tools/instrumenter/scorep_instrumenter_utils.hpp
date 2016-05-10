@@ -213,7 +213,7 @@ exists_file( const std::string& filename );
            library was found. Otherwise it return an empty string.
  */
 std::string
-find_library( std::string                     library,
+find_library( const std::string&              library,
               const std::vector<std::string>& path_list,
               bool                            allow_dynamic,
               bool                            allow_static );

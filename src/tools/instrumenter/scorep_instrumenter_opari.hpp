@@ -38,7 +38,7 @@ public:
     SCOREP_Instrumenter_OpariAdapter( void );
 
     virtual bool
-    checkOption( std::string arg );
+    checkOption( const std::string& arg );
 
     virtual bool
     isEnabled( void ) const;

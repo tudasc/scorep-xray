@@ -37,7 +37,7 @@ public:
     virtual void
     printHelp( void );
     virtual bool
-    checkOption( std::string arg );
+    checkOption( const std::string& arg );
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );

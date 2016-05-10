@@ -109,9 +109,9 @@ public:
      * @param processes Specifies the number processes.
      * @param name      The name of the group or region.
      */
-    SCOREP_Score_Group( uint64_t    type,
-                        uint64_t    processes,
-                        std::string name );
+    SCOREP_Score_Group( uint64_t           type,
+                        uint64_t           processes,
+                        const std::string& name );
     /**
      * Destructor.
      */

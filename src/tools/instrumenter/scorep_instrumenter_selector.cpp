@@ -47,7 +47,7 @@
  * *************************************************************************************/
 SCOREP_Instrumenter_SelectorList SCOREP_Instrumenter_Selector::m_selector_list;
 
-SCOREP_Instrumenter_Selector::SCOREP_Instrumenter_Selector( std::string name )
+SCOREP_Instrumenter_Selector::SCOREP_Instrumenter_Selector( const std::string& name )
 {
     m_name              = name;
     m_current_selection = NULL;
@@ -108,7 +108,7 @@ SCOREP_Instrumenter_Selector::checkWrapperOption(  const std::string& current,
 }
 
 bool
-SCOREP_Instrumenter_Selector::checkOption( std::string arg )
+SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
 {
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
     for ( paradigm = m_paradigm_list.begin();
@@ -197,8 +197,10 @@ SCOREP_Instrumenter_Selector::printAll( void )
 }
 
 bool
-SCOREP_Instrumenter_Selector::checkAllOption( std::string arg )
+SCOREP_Instrumenter_Selector::checkAllOption( const std::string& origArg )
 {
+    std::string arg = origArg;
+
     /* Check for old arguments for backward compatibility */
     if ( arg == "--mpi" )
     {
@@ -444,7 +446,7 @@ SCOREP_Instrumenter_Selector::getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine
 }
 
 bool
-SCOREP_Instrumenter_Selector::isParadigmSelected( std::string name )
+SCOREP_Instrumenter_Selector::isParadigmSelected( const std::string& name )
 {
     SCOREP_Instrumenter_SelectorList::iterator selector;
     for ( selector = m_selector_list.begin();

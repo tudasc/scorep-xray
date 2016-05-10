@@ -101,7 +101,7 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
 }
 
 bool
-SCOREP_Instrumenter_OpariAdapter::checkOption( std::string arg )
+SCOREP_Instrumenter_OpariAdapter::checkOption( const std::string& arg )
 {
     if ( arg == "--openmp" )
     {
@@ -347,7 +347,9 @@ SCOREP_Instrumenter_OpariAdapter::enableOpenmpDefault( void )
 
 /* ------------------------------------------------------------------- private methods */
 static inline void
-add_param( std::string& command, std::string param, std::string prefix )
+add_param( std::string&       command,
+           const std::string& param,
+           const std::string& prefix )
 {
     if ( command.find( prefix ) == std::string::npos )
     {

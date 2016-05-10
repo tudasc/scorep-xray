@@ -309,18 +309,18 @@ SCOREP_Instrumenter::getInputFiles( void )
 }
 
 void
-SCOREP_Instrumenter::prependInputFile( std::string filename )
+SCOREP_Instrumenter::prependInputFile( const std::string& filename )
 {
     m_input_files.insert( m_input_files.begin(), filename );
 }
 
 void
-SCOREP_Instrumenter::appendInputFile( std::string filename )
+SCOREP_Instrumenter::appendInputFile( const std::string& filename )
 {
     m_input_files.insert( m_input_files.end(), filename );
 }
 
-std::string
+const std::string&
 SCOREP_Instrumenter::getConfigBaseCall( void )
 {
     return m_config_base;

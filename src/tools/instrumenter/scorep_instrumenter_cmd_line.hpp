@@ -305,35 +305,35 @@ private:
        @param input_file The file name of the input file.
      */
     void
-    add_input_file( std::string input_file );
+    add_input_file( const std::string& input_file );
 
     /**
        Sets the output file name.
        @param output_file The file name of the output file.
      */
     void
-    set_output_file( std::string output_file );
+    set_output_file( const std::string& output_file );
 
     /**
        Adds a include path to the list of include paths.
        @param include_path The new include path.
      */
     void
-    add_include_path( std::string inlcude_path );
+    add_include_path( const std::string& inlcude_path );
 
     /**
        Adds a library path to the list of library paths.
        @param library_path  The new library path.
      */
     void
-    add_library_path( std::string library_path );
+    add_library_path( const std::string& library_path );
 
     /**
        Adds a library to the list of libraries.
        @param library  The new library.
      */
     void
-    add_library( std::string library );
+    add_library( const std::string& library );
 
     /* ***************************************************** Private members */
 private:

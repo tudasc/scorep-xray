@@ -42,13 +42,10 @@
 /* **************************************************************************************
  * class SCOREP_Instrumenter_Paradigm
  * *************************************************************************************/
-SCOREP_Instrumenter_Paradigm::SCOREP_Instrumenter_Paradigm
-(
-    SCOREP_Instrumenter_Selector* selector,
-    std::string                   name,
-    std::string                   variant,
-    std::string                   description
-)
+SCOREP_Instrumenter_Paradigm::SCOREP_Instrumenter_Paradigm( SCOREP_Instrumenter_Selector* selector,
+                                                            const std::string&            name,
+                                                            const std::string&            variant,
+                                                            const std::string&            description )
 {
     m_selector    = selector;
     m_name        = name;
@@ -122,7 +119,7 @@ SCOREP_Instrumenter_Paradigm::printHelp( void )
 }
 
 bool
-SCOREP_Instrumenter_Paradigm::checkOption( std::string arg )
+SCOREP_Instrumenter_Paradigm::checkOption( const std::string& arg )
 {
     if ( isSupported() )
     {

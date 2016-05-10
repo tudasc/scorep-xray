@@ -93,7 +93,7 @@ public:
      * @param filterFile  The name of the filter file.
      */
     void
-    initializeFilter( std::string filterFile );
+    initializeFilter( const std::string& filterFile );
 
     /**
      * Dumps the event sizes to the screen, Used for debug purposes.

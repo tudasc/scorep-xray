@@ -329,7 +329,8 @@ is_interposition_library( const std::string& library_name )
 }
 
 bool
-check_lib_name(  const std::string& library_name, const std::string& value )
+check_lib_name( const std::string& library_name,
+                const std::string& value )
 {
     std::string value_with_dot        = value + ".";
     std::string value_with_underscore = value + "_";
@@ -388,24 +389,25 @@ exists_file( const std::string& filename )
 }
 
 std::string
-find_library( std::string                     library,
+find_library( const std::string&              library,
               const std::vector<std::string>& path_list,
               bool                            allow_dynamic,
               bool                            allow_static )
 {
-    if ( library.substr( 0, 2 ) == "-l" )
+    std::string lib = library;
+    if ( lib.substr( 0, 2 ) == "-l" )
     {
-        library.replace( 0, 2, "lib" );
+        lib.replace( 0, 2, "lib" );
     }
     else
     {
-        return library;
+        return lib;
     }
     for ( std::vector<std::string>::const_iterator current_libdir = path_list.begin();
           current_libdir != path_list.end();
           current_libdir++ )
     {
-        std::string current_path = *current_libdir + "/" + library;
+        std::string current_path = *current_libdir + "/" + lib;
         if ( allow_dynamic && exists_file( current_path + ".so" ) )
         {
             return current_path + ".so";

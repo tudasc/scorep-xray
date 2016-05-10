@@ -44,7 +44,7 @@ SCOREP_Instrumenter_AdapterList SCOREP_Instrumenter_Adapter::m_adapter_list;
 
 
 SCOREP_Instrumenter_Adapter::SCOREP_Instrumenter_Adapter( SCOREP_Instrumenter_AdapterId id,
-                                                          std::string                   name )
+                                                          const std::string&            name )
 {
     m_id                 = id;
     m_name               = name;
@@ -178,7 +178,7 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
 }
 
 bool
-SCOREP_Instrumenter_Adapter::checkOption( std::string arg )
+SCOREP_Instrumenter_Adapter::checkOption( const std::string& arg )
 {
     if ( arg == "--" + m_name )
     {
@@ -314,7 +314,7 @@ SCOREP_Instrumenter_Adapter::printAll( void )
 }
 
 bool
-SCOREP_Instrumenter_Adapter::checkAllOption( std::string arg )
+SCOREP_Instrumenter_Adapter::checkAllOption( const std::string& arg )
 {
     SCOREP_Instrumenter_AdapterList::iterator adapter;
     for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
@@ -456,7 +456,7 @@ SCOREP_Instrumenter_Adapter::checkAllObjects( SCOREP_Instrumenter& instrumenter 
 }
 
 void
-SCOREP_Instrumenter_Adapter::require( std::string                   caller,
+SCOREP_Instrumenter_Adapter::require( const std::string&            caller,
                                       SCOREP_Instrumenter_AdapterId id )
 {
     SCOREP_Instrumenter_AdapterList::iterator adapter;
@@ -482,7 +482,7 @@ SCOREP_Instrumenter_Adapter::require( std::string                   caller,
 }
 
 void
-SCOREP_Instrumenter_Adapter::conflict( std::string                   caller,
+SCOREP_Instrumenter_Adapter::conflict( const std::string&            caller,
                                        SCOREP_Instrumenter_AdapterId id )
 {
     SCOREP_Instrumenter_AdapterList::iterator adapter;
@@ -531,7 +531,7 @@ SCOREP_Instrumenter_Adapter::defaultOff( SCOREP_Instrumenter_AdapterId id )
 
 void
 SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* list,
-                                           std::string                         entry )
+                                           const std::string&                  entry )
 {
     std::string                                  output;
     SCOREP_Instrumenter_DependencyList::iterator i;

@@ -52,7 +52,7 @@ public:
      * Creates an instance of SCOREP_Score_Profile.
      * @param cubeFile  The file name of the CUBE report.
      */
-    SCOREP_Score_Profile( std::string cubeFile );
+    SCOREP_Score_Profile( const std::string& cubeFile );
 
     /**
      * Destructor.

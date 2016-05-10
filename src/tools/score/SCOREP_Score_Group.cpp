@@ -83,9 +83,9 @@ get_number_with_comma( uint64_t number )
     return result.str();
 }
 
-SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
-                                        uint64_t processes,
-                                        string   name )
+SCOREP_Score_Group::SCOREP_Score_Group( uint64_t      type,
+                                        uint64_t      processes,
+                                        const string& name )
 {
     m_type       = type;
     m_processes  = processes;

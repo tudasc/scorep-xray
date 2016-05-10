@@ -107,9 +107,9 @@ SCOREP_Config_Mutex::select( SCOREP_Config_MutexId mutexId )
     }
 }
 
-SCOREP_Config_Mutex::SCOREP_Config_Mutex( std::string           name,
-                                          std::string           variant,
-                                          std::string           library,
+SCOREP_Config_Mutex::SCOREP_Config_Mutex( const std::string&    name,
+                                          const std::string&    variant,
+                                          const std::string&    library,
                                           SCOREP_Config_MutexId id )
     : m_name( name ),
     m_variant( variant ),

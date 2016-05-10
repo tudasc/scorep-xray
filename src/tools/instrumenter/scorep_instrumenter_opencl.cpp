@@ -68,7 +68,7 @@ SCOREP_Instrumenter_OpenCLAdapter::printHelp( void )
 }
 
 bool
-SCOREP_Instrumenter_OpenCLAdapter::checkOption( std::string arg )
+SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
 {
     if ( arg == "--opencl" )
     {

@@ -39,7 +39,9 @@
 
 #if HAVE( POPEN )
 static void
-scorep_get_ibm_compiler_version( std::string compiler, int& major, int& minor )
+scorep_get_ibm_compiler_version( const std::string& compiler,
+                                 int&               major,
+                                 int&               minor )
 {
     FILE*       console;
     char        version_string[ 64 ];
@@ -124,12 +126,9 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 }
 
 std::string
-SCOREP_Instrumenter_CompilerAdapter::precompile
-(
-    SCOREP_Instrumenter&         instrumenter,
-    SCOREP_Instrumenter_CmdLine& cmdLine,
-    const std::string&           input_file
-)
+SCOREP_Instrumenter_CompilerAdapter::precompile( SCOREP_Instrumenter&         instrumenter,
+                                                 SCOREP_Instrumenter_CmdLine& cmdLine,
+                                                 const std::string&           input_file )
 {
     /* The sun compiler can only instrument Fortran files. Thus, any C/C++
        files are not instrumented. To avoid user confusion, the instrumenter

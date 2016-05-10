@@ -114,12 +114,12 @@ public:
     getInputFiles( void );
 
     void
-    prependInputFile( std::string filename );
+    prependInputFile( const std::string& filename );
 
     void
-    appendInputFile( std::string filename );
+    appendInputFile( const std::string& filename );
 
-    std::string
+    const std::string&
     getConfigBaseCall( void );
 
     SCOREP_Instrumenter_CmdLine&

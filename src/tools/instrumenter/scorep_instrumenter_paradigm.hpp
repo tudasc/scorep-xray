@@ -54,9 +54,9 @@ public:
      *                    output.
      */
     SCOREP_Instrumenter_Paradigm( SCOREP_Instrumenter_Selector* selector,
-                                  std::string                   name,
-                                  std::string                   variant,
-                                  std::string                   description );
+                                  const std::string&            name,
+                                  const std::string&            variant,
+                                  const std::string&            description );
 
     /**
      * Deletes a SCOREP_Instrumenter_Paradigm instance.
@@ -96,7 +96,7 @@ public:
      * @returns true, if this argument selects this paradigm.
      */
     virtual bool
-    checkOption( std::string arg );
+    checkOption( const std::string& arg );
 
     /**
      * Returns the name as used for the selection of the scorep-config tool.

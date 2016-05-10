@@ -153,13 +153,13 @@ public:
        specify an output file name.
      */
     static bool
-    isArgWithO( std::string arg );
+    isArgWithO( const std::string& arg );
 
     /**
        Checks whether an argument instructs the compiler to only preprocess.
      */
     static bool
-    isPreprocessFlag( std::string arg );
+    isPreprocessFlag( const std::string& arg );
 
     /**
        Checks whether the @a current parameter expects an argument in the next
@@ -168,8 +168,8 @@ public:
        @param next     The next parameter.
      */
     static bool
-    isCompositeArg( std::string current,
-                    std::string next );
+    isCompositeArg( const std::string& current,
+                    const std::string& next );
 
     /* ***************************************************** Private methods */
 private:

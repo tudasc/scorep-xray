@@ -65,7 +65,7 @@ public:
      * Creates a SCOREP_Instrumenter_Selector instance.
      * @param name    The name of the selection group.
      */
-    SCOREP_Instrumenter_Selector( std::string name );
+    SCOREP_Instrumenter_Selector( const std::string& name );
 
     /**
      * Deletes a SCOREP_Instrumenter_Paradigm instance.
@@ -92,7 +92,7 @@ public:
      * @returns true, if this argument was known to this adapter.
      */
     virtual bool
-    checkOption( std::string arg );
+    checkOption( const std::string& arg );
 
     /**
      * This function is called during command line parsing during parsing of the
@@ -226,7 +226,7 @@ public:
      * @returns   true if one adapter knew this argument.
      */
     static bool
-    checkAllOption( std::string arg );
+    checkAllOption( const std::string& arg );
 
     /**
      * Processes a key value pair from a config file for all selectors.
@@ -280,7 +280,7 @@ public:
      * @param name  The paradigm name as specified on the command line.
      */
     static bool
-    isParadigmSelected( std::string name );
+    isParadigmSelected( const std::string& name );
 
     /**
      * Checks whether all selected paradigms are supported.
