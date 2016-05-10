@@ -51,7 +51,7 @@ UTILS_BEGIN_C_DECLS
  * This module provides an interface for error handling and debugging output.
  *
  * For invoke error handling, two macros are provided: @ref UTILS_ERROR for generic
- * UTILS errors, and UTILS_ERROR_POSIX for handling errors occured in posix calls.
+ * UTILS errors, and UTILS_ERROR_POSIX for handling errors occurred in posix calls.
  * To handle an error, own error handlers can be registered using
  * @ref UTILS_Error_RegisterCallback. The default error handler prints the error
  * message to the standard error output.

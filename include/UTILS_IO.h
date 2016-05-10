@@ -80,7 +80,7 @@ UTILS_GetExecutablePath( const char* exe );
  *                    the buffer_size is updated.
  * @param file        A file handle of an already open file, from which a line is read.
  * @returns PACKAGE_SUCCESS, if a line was read successfully. If the end of the file
- *          was reached, PACKAGE_ERROR_END_OF_BUFFER is returned. If an error occured,
+ *          was reached, PACKAGE_ERROR_END_OF_BUFFER is returned. If an error occurred,
  *          an error code is returned. Possible error codes are:
  *          PACKAGE_ERROR_MEM_ALLOC_FAILED and PACKAGE_ERROR_FILE_INTERACTION.
  */
