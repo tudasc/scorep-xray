@@ -110,6 +110,13 @@ SCOREP_Instrumenter_Selector::checkWrapperOption(  const std::string& current,
 bool
 SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
 {
+    if ( arg == "help" )
+    {
+        printHelp();
+        std::cout << "Type 'scorep --help' to get the full list of possible options" << std::endl;
+        exit( EXIT_SUCCESS );
+    }
+
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
     for ( paradigm = m_paradigm_list.begin();
           paradigm != m_paradigm_list.end();
@@ -122,7 +129,7 @@ SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
         }
     }
     std::cerr << "ERROR: Unknown paradigm '" << arg << "' specified for '--" << m_name << "'\n"
-              << "       Type 'scorep --help' to get a list of supported paradigms" << std::endl;
+              << "       Type 'scorep --" << m_name << "=help' to get a list of supported paradigms" << std::endl;
     exit( EXIT_FAILURE );
 
     /* To please IBM compiler */
