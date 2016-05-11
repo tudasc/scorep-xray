@@ -438,6 +438,20 @@ various Score-P components.
     compiler generate calls to malloc/free. This is only known for the
     GNU compiler.
 
+  - Score-P uses an 'atexit' handler to finalize the measurement and produces
+    the output files.  In case a run-time system also uses an 'atexit' handler
+    but does not allow previous registered 'atexit' handlers to run, than one
+    can try to re-install the 'atexit' handler again, so that Score-P's will
+    run before the malicious handler.  If that still does not work one can
+    also trigger the finalization manually.  Here are the C prototypes for
+    these two functions:
+
+      void SCOREP_RegisterExitHandler( void );
+
+      void SCOREP_FinalizeMeasurement( void );
+
+    One known malicious run-time system is NetDRMS.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
