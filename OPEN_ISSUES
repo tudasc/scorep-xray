@@ -59,7 +59,7 @@ various Score-P components.
              only 64-bit platforms.
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
-             higher and corresponding bgxl compilers on BlueGene systems
+             higher and corresponding bgxl compilers on Blue Gene systems
   - Intel  : only works with Intel icc/ifort version 11 and higher compilers
   - Cray   : tested with version 8.1.8 and later, uses the GNU interface
   - Fujitsu: tested with different versions of the language
@@ -393,9 +393,9 @@ various Score-P components.
     file name (here to bt.opari.f)
 
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
-    disabled on BlueGene systems for these versions.
+    disabled on Blue Gene systems for these versions.
 
-  - Rusage-based metrics are not supported on BlueGene systems.
+  - Rusage-based metrics are not supported on Blue Gene systems.
 
   - COBI binary instrumentation is currently disabled due to changes
     in Score-P's linking process that now passes more libraries to
@@ -411,16 +411,12 @@ various Score-P components.
     'scorep'. One workaround is to run '(unset
     SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
 
-  - Currently OTF2 definitions are limited with respect to the maximum
-    number of group members (i.e., MPI_COMM_WORLD). OTF2 traces with
-    more than 512k threads are not supported yet.
-
   - In some cases the PGI 11.7 compiler fails to link C++ programs
     that use user-instrumentation macros due to an undefined reference
     to '_Unwind_Resume'. Adding -lstdc++ to the original link line
     solves this issue.
 
-  - In cases where scorep was compiled with PAPI support, the
+  - In cases where Score-P was compiled with PAPI support, the
     instrumenter option --static (only available for '--enable-shared
     --enable-static' builds) explicitly adds the static PAPI library to
     the link line which may cause 'undefined reference' errors. This
