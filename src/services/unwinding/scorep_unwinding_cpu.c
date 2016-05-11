@@ -644,6 +644,8 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
         *callingContext                       = unwind_context->handle;
         unwind_data->previous_calling_context = *callingContext;
 
+        drop_stack( unwind_data, current_stack );
+
         return SCOREP_SUCCESS;
     }
 
