@@ -464,6 +464,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     context->context_id           = contextId;
     context->gpu_memory_allocated = 0;
     context->cuda_mallocs         = NULL;
+    context->free_cuda_mallocs    = NULL;
     context->streams              = NULL;
     context->next                 = NULL;
 

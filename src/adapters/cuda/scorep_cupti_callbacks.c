@@ -1724,25 +1724,29 @@ handle_cuda_malloc( CUcontext cudaContext,
                     uint64_t  address,
                     size_t    size )
 {
-    scorep_cupti_gpumem*  gpu_memory = NULL;
-    scorep_cupti_context* context    = NULL;
-
     if ( address == ( uint64_t )NULL )
     {
         return;
     }
 
-    gpu_memory = ( scorep_cupti_gpumem* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_gpumem ) );
+    scorep_cupti_context* context = scorep_cupti_context_get_create( cudaContext );
 
+    /* lock the work on the context */
+    SCOREP_CUPTI_LOCK();
+
+    scorep_cupti_gpumem* gpu_memory = context->free_cuda_mallocs;
+    if ( gpu_memory )
+    {
+        context->free_cuda_mallocs = gpu_memory->next;
+    }
+    else
+    {
+        gpu_memory = SCOREP_Memory_AllocForMisc( sizeof( *gpu_memory ) );
+    }
 
     /* set address and size of the allocated GPU memory */
     gpu_memory->address = address;
     gpu_memory->size    = size;
-
-    context = scorep_cupti_context_get_create( cudaContext );
-
-    /* lock the work on the context */
-    SCOREP_CUPTI_LOCK();
 
     /* add malloc entry to list */
     gpu_memory->next      = context->cuda_mallocs;
@@ -1806,16 +1810,12 @@ static void
 handle_cuda_free( CUcontext cudaContext,
                   uint64_t  devicePtr )
 {
-    scorep_cupti_context* context        = NULL;
-    scorep_cupti_gpumem*  current_gpumem = NULL;
-    scorep_cupti_gpumem*  last_gpumem    = NULL;
-
     if ( devicePtr == ( uint64_t )NULL )
     {
         return;
     }
 
-    context = scorep_cupti_context_get_create( cudaContext );
+    scorep_cupti_context* context = scorep_cupti_context_get_create( cudaContext );
 
     /* synchronize context before
        (assume that the given context is the current one) */
@@ -1827,10 +1827,10 @@ handle_cuda_free( CUcontext cudaContext,
     }
 
     SCOREP_CUPTI_LOCK();
-    current_gpumem = context->cuda_mallocs;
-    last_gpumem    = context->cuda_mallocs;
-    while ( current_gpumem != NULL )
+    scorep_cupti_gpumem** gpumem_it = &context->cuda_mallocs;
+    while ( *gpumem_it != NULL )
     {
+        scorep_cupti_gpumem* current_gpumem = *gpumem_it;
         if ( devicePtr == current_gpumem->address )
         {
             uint64_t time = SCOREP_Timer_GetClockTicks();
@@ -1858,32 +1858,16 @@ handle_cuda_free( CUcontext cudaContext,
             context->gpu_memory_allocated -= current_gpumem->size;
 
             /* set pointer over current element to next one */
-            last_gpumem->next = current_gpumem->next;
+            *gpumem_it = current_gpumem->next;
 
-            /* if current element is the first list entry, set the list entry */
-            if ( current_gpumem == context->cuda_mallocs )
-            {
-                context->cuda_mallocs = current_gpumem->next;
-            }
-
-            /* free Score-P memory of CUDA malloc */
-            current_gpumem->next = NULL;
-            /* free is implicitly done by Score-P memory management */
-            /*free(curMalloc);*/
-            current_gpumem = NULL;
-
-            /* set mallocList to NULL, if last element freed */
-            if ( context->gpu_memory_allocated == 0 )
-            {
-                context->cuda_mallocs = NULL;
-            }
+            /* put to free list */
+            current_gpumem->next       = context->free_cuda_mallocs;
+            context->free_cuda_mallocs = current_gpumem;
 
             SCOREP_CUPTI_UNLOCK();
             return;
         }
-
-        last_gpumem    = current_gpumem;
-        current_gpumem = current_gpumem->next;
+        gpumem_it = &current_gpumem->next;
     }
 
     SCOREP_CUPTI_UNLOCK();

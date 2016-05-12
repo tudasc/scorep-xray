@@ -195,6 +195,7 @@ typedef struct scorep_cupti_context
     uint32_t                     location_id;          /**< internal location ID used for unification */
     scorep_cupti_stream*         streams;              /**< list of Score-P CUDA streams */
     scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
+    scorep_cupti_gpumem*         free_cuda_mallocs;    /**< free-list of allocated GPU memory fields */
     size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
     scorep_cupti_activity*       activity;
     struct scorep_cupti_context* next;
