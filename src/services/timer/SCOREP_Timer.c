@@ -165,7 +165,7 @@ SCOREP_Timer_Initialize( void )
                     }
                     UTILS_WARNING( "From %s, could not determine if tsc timer is (\'nonstop_tsc\' "
                                    "&& \'constant_tsc\'). Timings likely to be unreliable. "
-                                   "Switch to a timer different from \'tsc\' if you have "
+                                   "Switch to a timer different from SCOREP_TIMER=\'tsc\' if you have "
                                    "issues with timings.", proc_cpuinfo );
                 }
                 free( line );
