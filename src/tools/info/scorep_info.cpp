@@ -190,6 +190,10 @@ main( int   argc,
 #endif
 
         SCOREP_ConfigInit();
+        if ( html )
+        {
+            SCOREP_ConfigForceConditionalRegister();
+        }
         SCOREP_RegisterAllConfigVariables();
 
         if ( values )
@@ -199,10 +203,6 @@ main( int   argc,
         }
         else
         {
-            if ( html )
-            {
-                SCOREP_ConfigForceConditionalRegister();
-            }
             SCOREP_ConfigHelp( full, html, out );
         }
 
