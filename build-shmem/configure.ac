@@ -87,6 +87,7 @@ SCOREP_FORTRAN_DEFAULT_DOUBLE_SIZE
 
 AC_PROG_FC dnl needed for tests only
 AC_PROG_FC_C_O
+AC_FC_SRCEXT([f90])
 AC_FC_LIBRARY_LDFLAGS
 AS_CASE([${ac_scorep_platform}],
         [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])

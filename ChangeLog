@@ -19,6 +19,8 @@ Bugfixes:
   build the Score-P libraries. CXXFLAGS in build-score are now
   ignored. To set build-score related CXXFLAGS, use
   CXXFLAGS_FOR_BUILD_SCORE.
+- Fix bug in configuration of SHMEM support triggered by change in
+  shmem.fh header of Open MPI 1.10.2.
 - Fix PAPI configure check when additional libraries are needed to
   successfully link to PAPI. This was a regression introduced with
   version 2.0.
