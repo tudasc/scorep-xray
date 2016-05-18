@@ -60,7 +60,7 @@ AS_CASE([${ac_scorep_platform}],
     [bgq],   [_SCOREP_TIMER_CHECK([bgq], [_SCOREP_TIMER_BGQ], [-I/bgsys/drivers/ppcfloor])],
     [mingw], [_SCOREP_TIMER_CHECK([mingw], [_SCOREP_TIMER_MINGW])],
     [aix],   [_SCOREP_TIMER_CHECK([aix], [_SCOREP_TIMER_AIX])],
-    [mic],   [Do nothing but prevent selection of TSC.
+    [mic],   [# Do nothing but prevent selection of TSC.
              ],
     [_SCOREP_TIMER_CHECK([tsc], [_SCOREP_TIMER_TSC], [], [-lm])])
 
