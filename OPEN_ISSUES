@@ -292,9 +292,14 @@ various Score-P components.
     objects with shmalloc() to ensure that they are in the symmetric
     heap.
 
+  - Since version 1.0g the OpenSHMEM library is compiled as a statically
+    linked archive, rather than as a shared object. If you want to build
+    Score-P as a shared library, ensure that the OpenSHMEM archieve is
+    build with -fPIC.
+
   - Currently tested SHMEM implementations:
-    + OpenSHMEM reference implementation 1.0f
-    + Open MPI implementation 1.8.2a
+    + OpenSHMEM reference implementation 1.0h
+    + Open MPI implementation 1.10.2
     + SGI SHMEM
     + Cray SHMEM
 
