@@ -28,6 +28,8 @@ Bugfixes:
   point-to-point and collective bytes transferred metrics to always
   be zero.
 - Build-system hardening.
+- The configure check for libunwind now also works if libunwind
+  depends on liblzma.
 
 ------------------- Released version 2.0.1 ---------------------------
 

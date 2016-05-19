@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2015,
+## Copyright (c) 2009-2012, 2014-2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -148,11 +148,29 @@ AFS_SUMMARY([Sampling support], [${sampling_summary}])
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_AC_SCOREP_LIBUNWIND_LIB_CHECK], [
-scorep_unwind_lib_name="unwind"
+have_libunwind="no"
+LIBS="-lunwind"
 
-dnl checking for unwind library
-LIBS="-l${scorep_unwind_lib_name}"
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+_AC_SCOREP_LIBUNWIND_LINK_TEST
+AS_IF([test "x${have_libunwind}" = "xno"],
+      [LIBS="${LIBS} -llzma";
+       _AC_SCOREP_LIBUNWIND_LINK_TEST])
+
+with_$1_lib_checks_successful=${have_libunwind}
+with_$1_libs=${LIBS}
+])
+
+dnl ----------------------------------------------------------------------------
+
+AC_DEFUN([_AC_SCOREP_LIBUNWIND_LINK_TEST], [
+AC_LINK_IFELSE([_AC_SCOREP_LIBUNWIND_TEST_PROGRAM],
+               [have_libunwind="yes"])
+])
+
+dnl ----------------------------------------------------------------------------
+
+AC_DEFUN([_AC_SCOREP_LIBUNWIND_TEST_PROGRAM], [
+AC_LANG_PROGRAM([[
 /* see man libunwind */
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>]],
@@ -167,10 +185,5 @@ unw_init_local(&cursor, &uc);
 while (unw_step(&cursor) > 0) {
     unw_get_reg(&cursor, UNW_REG_IP, &ip);
     unw_get_reg(&cursor, UNW_REG_SP, &sp);
-    /* printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp); */
-}]])],
-               [with_$1_lib_checks_successful="yes"
-                with_$1_libs="-l${scorep_unwind_lib_name}"],
-               [with_$1_lib_checks_successful="no"
-                with_$1_libs=""])
+}]])
 ])
