@@ -264,8 +264,9 @@ static bool
 finalize_location_metric_cb( SCOREP_Location* location,
                              void*            data );
 
-static void
-scorep_metric_finalize( void );
+static bool
+scorep_metric_post_mortem_cb( SCOREP_Location* location,
+                              void*            data );
 
 /* *********************************************************************
  * Macros
@@ -399,7 +400,7 @@ metric_subsystem_deregister( void )
 static void
 metric_subsystem_end( void )
 {
-    scorep_metric_finalize();
+    SCOREP_Location_ForAll( scorep_metric_post_mortem_cb, NULL );
 }
 
 /** @brief Called on initialization of the metric service.
@@ -1132,16 +1133,18 @@ metric_subsystem_finalize_location( SCOREP_Location* location )
  *         function is relevant for asynchronous post mortem metrics
  *         which will be called ONLY at the end of the measurement.
  */
-static void
-scorep_metric_finalize( void )
+static bool
+scorep_metric_post_mortem_cb( SCOREP_Location* location,
+                              void*            data )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize callback" );
 
-    /* RonnyT: Callback will be triggered on CPU locations only */
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    if ( location == NULL )
+    UTILS_ASSERT( location != NULL );
+
+    if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
-        return;
+        /* Must not do this for, LOCATION_TYPE_METRIC or other non-CPU locations. */
+        return false;
     }
 
     /* Get the thread local data related to metrics */
@@ -1152,7 +1155,7 @@ scorep_metric_finalize( void )
     if ( !metric_data->has_metrics )
     {
         /* Location does not record any metrics */
-        return;
+        return false;
     }
 
     /* Just handle additional asynchronous metrics here ! */
@@ -1249,6 +1252,7 @@ scorep_metric_finalize( void )
             location_asynchronous_metric_set = location_asynchronous_metric_set->next;
         }
     }
+    return false;
 }
 
 /** @brief Continues initialization of per-location data structures
