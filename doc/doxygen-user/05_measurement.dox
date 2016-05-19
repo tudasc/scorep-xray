@@ -767,6 +767,36 @@ This indicates that counter names in the list are separated by colons.
 @note
 In addition it is possible to specify metrics that will be recorded only by the initial thread of a process. Please use \confvar{SCOREP_METRIC_RUSAGE_PER_PROCESS} for that reason.
 
+@subsection metric_perf Recording Linux Perf Metrics
+
+This metric source uses the Linux Perf Interface to access hardware performance counters.
+First it is explained how to specify PERF metrics that will be recorded by every location.
+
+You can enable the recording of PERF performance metrics by setting the environment variable \confvar{SCOREP_METRIC_PERF} to a comma-separated list of metric names.
+Metric names can be any PERF preset names or PAPI native counter names.
+
+Example:
+<pre>
+SCOREP_METRIC_PERF=cycles,page-faults,LLC-load-misses
+</pre>
+
+In this example the number of CPU cycles, the number of page faults, and Last Level Cache Load Misses will be recorded.
+If any of the requested metrics is not recognized program execution will be aborted with an error message.
+The user can leave the environment variable unset to indicate that no metrics are requested.
+Use the tool <tt>perf list</tt> to get a list of available PERF events.
+
+If you want to change the separator used in the list of PERF metrics, set the environment variable \confvar{SCOREP_METRIC_PERF_SEP} to the desired character.
+
+Example:
+<pre>
+SCOREP_METRIC_PERF_SEP=:
+</pre>
+This indicates that counter names in the list are separated by colons.
+
+@note
+In addition it is possible to specify metrics that will be recorded per-process.
+Please use \confvar{SCOREP_METRIC_PERF_PER_PROCESS} for that reason.
+
 @subsection metric_plugins Metric Plugins
 
 Metric plugins extend the functionality of @scorep by providing additional counters as external libraries.

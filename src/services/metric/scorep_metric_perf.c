@@ -66,11 +66,11 @@
  *  You can enable recording of PERF performance metrics by setting the environment variable
  *  SCOREP_METRIC_PERF to a comma-separated list of metric names. Metric names can be any
  *  PERF preset names or PAPI native counter names. For example, set
- *  @verbatim SCOREP_METRIC_PERF=hw/cycles:sw/page-faults:cache/llc-misses@endverbatim
- *  to record the number of CPU cycles, the number of page faults and Last Level Cache Misses.
+ *  @verbatim SCOREP_METRIC_PERF=cycles,page-faults,llc-load-misses@endverbatim
+ *  to record the number of CPU cycles, the number of page faults and Last Level Cache Load Misses.
  *  If any of the requested metrics is not recognized program execution
  *  will be aborted with an error message. The user can leave the environment variable unset to
- *  indicate that no metrics are requested. Use the tool \c perf_list
+ *  indicate that no metrics are requested. Use the tool 'perf list'
  *  to get a list of available PERF events. If you want to change the separator used in the
  *  list of PERF metric names set the environment variable \c SCOREP_METRIC_PERF_SEP to
  *  the needed character.
