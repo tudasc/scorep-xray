@@ -30,6 +30,8 @@ Bugfixes:
 - Build-system hardening.
 - The configure check for libunwind now also works if libunwind
   depends on liblzma.
+- Documentation improvements.
+- Fixed memory leaks in sampling and CUDA mode.
 
 ------------------- Released version 2.0.1 ---------------------------
 
