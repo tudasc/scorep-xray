@@ -129,9 +129,11 @@ SCOREP_Timer_Initialize( void )
 # if HAVE( SCOREP_ARMV8_TSC )
             /* Nothing to do here for ARMV8, frequency can be accessed directly,
              * see SCOREP_Timer_GetClockResolution(). */
-# else                          /* ! HAVE( SCOREP_ARMV8_TSC ) */
-#  if !( defined( __FUJITSU ) ) /* For Fujitsu we 1. know that the tsc is nonstop and constant
-                                 * and 2. /proc/cpuinfo doesn't contain this data. */
+# else      /* ! HAVE( SCOREP_ARMV8_TSC ) */
+#  if HAVE( SCOREP_X86_64_TSC ) || HAVE( SCOREP_X86_32_TSC )
+            /* Check for nonstop_tsc and constant_tsc in /proc/cpuinfo.
+             * This seems to be relevant for x86 CPUs only. It is known for
+             * Fujitsu and Power8 systems to not provide this info. */
             FILE*            fp;
             char*            line           = NULL;
             size_t           length         = 0;
@@ -170,7 +172,7 @@ SCOREP_Timer_Initialize( void )
                 }
                 free( line );
             }
-#  endif     /* !(defined(__FUJITSU)) */
+#  endif    /* HAVE( SCOREP_X86_64_TSC ) || HAVE( SCOREP_X86_32_TSC ) */
 
             /* TODO: assert that all processes use TIMER_TSC running at the
              * same frequency. For this we need to MPP communicate but MPP might
