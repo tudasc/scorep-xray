@@ -150,6 +150,7 @@ static inline void
 task_pop_stack( SCOREP_Location*  location,
                 SCOREP_TaskHandle task )
 {
+    UTILS_BUG_ON( NULL == task->current_frame, "Task stack underflow." );
     if ( task->current_index == 0 )
     {
         scorep_task_stack_frame* old_frame = task->current_frame;
