@@ -54,6 +54,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
@@ -78,6 +79,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_PthreadAdapter,
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_OpenclAdapter,
+    &SCOREP_Subsystem_OpenaccAdapter,
     &SCOREP_Subsystem_MemoryAdapter,
 };
 

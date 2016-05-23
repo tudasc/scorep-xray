@@ -278,6 +278,7 @@ AC_CHECK_FUNCS_ONCE([readlink])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
+SCOREP_OPENACC
 SCOREP_CRAY_PMI
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])
@@ -415,6 +416,8 @@ AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
                 [chmod +x ../test/adapters/cuda/run_cuda_test.sh])
+AC_CONFIG_FILES([../test/adapters/openacc/run_openacc_test.sh], \
+                [chmod +x ../test/adapters/openacc/run_openacc_test.sh])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
 AC_CONFIG_FILES([../test/adapters/user/C/run_selective_test.sh], \

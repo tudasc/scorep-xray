@@ -14,6 +14,7 @@ include ../src/services/unwinding/Makefile.confvars.inc.am
 include ../src/adapters/compiler/Makefile.confvars.inc.am
 include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/opencl/Makefile.confvars.inc.am
+include ../src/adapters/openacc/Makefile.confvars.inc.am
 include ../src/adapters/mpi/Makefile.confvars.inc.am
 include ../src/adapters/shmem/Makefile.confvars.inc.am
 include ../src/adapters/opari2/openmp/Makefile.confvars.inc.am

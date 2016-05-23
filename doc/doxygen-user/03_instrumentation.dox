@@ -209,6 +209,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
+      <td align="left" valign="middle"> OpenACC </td>
+      <td align="center" valign="middle"> --openacc/--noopenacc </td>
+      <td align="center" valign="middle"> enabled </td>
+      <td align="center" valign="middle"> configured by install </td>
+      <td align="center" valign="middle"> &mdash; </td>
+    </tr>
+    <tr>
       <td align="left" valign="middle"> OpenMP </td>
       <td align="center" valign="middle"> --thread=omp / --no|openmp </td>
       <td align="center" valign="middle"> (auto) </td>

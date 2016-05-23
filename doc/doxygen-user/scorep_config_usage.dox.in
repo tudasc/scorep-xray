@@ -44,6 +44,9 @@ scorep-config <command> [<options>]
    --cuda|--nocuda
             Specifies whether cuda instrumentation is used.
             On default cuda instrumentation is enabled.
+   --openacc|--noopenacc
+            Specifies whether openacc instrumentation is used.
+            On default openacc instrumentation is enabled.
    --opencl|--noopencl
             Specifies whether opencl instrumentation is used.
             On default opencl instrumentation is enabled.

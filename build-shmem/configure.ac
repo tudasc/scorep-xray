@@ -221,6 +221,7 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
+SCOREP_OPENACC
 SCOREP_CRAY_PMI
 
 # On crosscompile machines, install backend/mic stuff into

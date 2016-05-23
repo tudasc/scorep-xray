@@ -20,6 +20,7 @@ include ../src/adapters/opari2/user/Makefile.inc.am
 include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am
 include ../src/adapters/opencl/Makefile.inc.am
+include ../src/adapters/openacc/Makefile.inc.am
 include ../src/adapters/pthread/Makefile.inc.am
 include ../src/adapters/memory/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
@@ -52,6 +53,7 @@ include ../test/adapters/user/C++/Makefile.inc.am
 include ../test/adapters/user/Fortran/Makefile.inc.am
 include ../test/adapters/cuda/Makefile.inc.am
 include ../test/adapters/opencl/Makefile.inc.am
+include ../test/adapters/openacc/Makefile.inc.am
 include ../test/adapters/tau/Makefile.inc.am
 include ../test/serial/Makefile.inc.am
 include ../test/omp/Makefile.inc.am

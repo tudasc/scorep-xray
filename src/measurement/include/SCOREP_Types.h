@@ -283,7 +283,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
     SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
     SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
-    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL )
+    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
+    SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC )
 
 
 typedef enum SCOREP_ParadigmType

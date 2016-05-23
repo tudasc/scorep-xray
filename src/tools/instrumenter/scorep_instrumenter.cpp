@@ -62,6 +62,7 @@
 #include "scorep_instrumenter_pdt.hpp"
 #include "scorep_instrumenter_thread.hpp"
 #include "scorep_instrumenter_user.hpp"
+#include "scorep_instrumenter_openacc.hpp"
 #include "scorep_instrumenter_opencl.hpp"
 #include "scorep_instrumenter_memory.hpp"
 #include "scorep_instrumenter_utils.hpp"
@@ -89,6 +90,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_pdt_adapter        = new SCOREP_Instrumenter_PdtAdapter();
     m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
     m_pthread_adapter    = new SCOREP_Instrumenter_PthreadAdapter();
+    m_openacc_adapter    = new SCOREP_Instrumenter_OpenACCAdapter();
     m_opencl_adapter     = new SCOREP_Instrumenter_OpenCLAdapter();
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     new SCOREP_Instrumenter_OnlineAccess();

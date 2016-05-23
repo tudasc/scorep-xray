@@ -87,6 +87,7 @@ process to be analyzed and the number of cores to be used.
 <dd><ul>
   <li>@emph{CUDA}</li>
   <li>@emph{OpenCL}</li>
+  <li>@emph{OpenACC}</li>
 </ul></dd>
 </dl>
 And possible combinations from these including simple @emph{serial} programs.
@@ -249,8 +250,9 @@ instrumentation. These are currently:
  <li> MPI and SHMEM library interposition, </li>
  <li> source code instrumentation via the TAU instrumenter, </li>
  <li> OpenMP source code instrumentation using Opari2. </li>
- <li> Pthread instrumentation via GNU ld library wrapping. </li>
- <li> CUDA instrumentation</li>
+ <li> Pthread and OpenCL instrumentation via GNU ld library wrapping. </li>
+ <li> CUDA instrumentation via the NVIDIA CUDA Profiling Tools Interface (CUPTI)</li>
+ <li> OpenACC instrumentation using the OpenACC Profiling Interface</li>
 </ul>
 
 While the first three of these methods are based on using tools

@@ -2,6 +2,9 @@
 
 Major features:
 
+- Support for instrumentation of OpenACC codes based on the profiling
+  interface specified in OpenACC 2.5.
+
 Features and improvements:
 
 Bugfixes:

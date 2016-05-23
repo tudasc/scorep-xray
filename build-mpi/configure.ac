@@ -237,6 +237,7 @@ AM_CONDITIONAL([SCOREP_MPI_OPENMPI], [test $? -eq 0])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
+SCOREP_OPENACC
 SCOREP_CRAY_PMI
 
 # On crosscompile machines, install backend/mic stuff into

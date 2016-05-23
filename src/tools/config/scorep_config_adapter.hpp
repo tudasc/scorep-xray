@@ -312,6 +312,24 @@ public:
 };
 
 /* **************************************************************************************
+ * class SCOREP_OpenaccAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the OpenACC adapter.
+ */
+class SCOREP_Config_OpenaccAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_OpenaccAdapter();
+    virtual bool
+    checkArgument( const std::string& arg );
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+};
+
+/* **************************************************************************************
  * class SCOREP_OpenclAdapter
  * *************************************************************************************/
 

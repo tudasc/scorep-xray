@@ -1,0 +1,106 @@
+#!/bin/bash
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016,
+## Technische Universitaet Dresden, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_openacc_test.sh
+
+echo "===== OpenACC Compile and Run Test ====="
+
+rm -f openacc_test
+
+# Get SRC_ROOT
+SRC_ROOT=@abs_top_srcdir@/..
+
+# Get otf2print tool
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+
+RESULT_DIR=$PWD/scorep-openacc
+
+./scorep -v --build-check --nocompiler --openacc @CC@ @SCOREP_COMPILER_ACC_FLAGS@ $SRC_ROOT/test/adapters/openacc/openacc_test.c -o openacc_test -I.
+
+# Remove old result dir (if any)
+rm -rf $RESULT_DIR
+
+features=""
+for region in "" "regions"
+do
+  for wait in "" ",wait"
+  do
+    for enqueue in "" ",enqueue"
+    do
+      for devicealloc in "" ",device_alloc"
+      do
+        for kernelprops in "" ",kernel_properties"
+        do
+
+          # kernel properties are not recorded if enqueue is not enabled
+          if [ "$kernelprops" = ",kernel_properties" -a x"$enqueue" = "x" ]; then
+            continue
+          fi
+
+          for varnames in "" ",variable_names"
+          do
+            # variable names are not recorded if neither regions nor upload/download are enabled
+            if [ "$varnames" = ",variable_names" -a "x$region" = "x" -a x"$enqueue" = "x" ]; then
+              continue
+            fi
+
+            features=${region}
+
+            # check for leading commas
+            if [ "x$features" = "x" -a "$wait" = ",wait" ]; then
+              wait="wait"
+            fi
+            features="${features}${wait}"
+
+            if [ "x$features" = "x" -a "${enqueue}" = ",enqueue" ]; then
+              enqueue="enqueue"
+            fi
+            features="${features}${enqueue}"
+
+            if [ "x$features" = "x" -a "${devicealloc}" = ",device_alloc" ]; then
+              devicealloc="device_alloc"
+            fi
+            features="${features}${devicealloc}${kernelprops}${varnames}"
+
+            # Remove old result dir (if any)
+            rm -rf $RESULT_DIR
+
+            echo "Testing combination '${features}':"
+            SCOREP_OPENACC_ENABLE=${features} \
+            ACC_PROFLIB=$PWD/.libs/libscorep_adapter_openacc_event.so \
+            SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
+            SCOREP_ENABLE_TRACING=yes \
+            SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+            ./openacc_test > openacc_test.out 2>&1
+            res=$?
+
+            if [ $res -ne 0 ]; then
+                rm -rf scorep-measurement-tmp
+                exit $res
+            fi
+
+            num_acc_calls=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'acc_')
+
+            if [ $num_acc_calls -eq 0 -a "x$features" != "x" ]; then
+                echo "OpenACC trace file does not contain OpenACC events"
+                rm -rf scorep-measurement-tmp
+                #exit 1
+            fi
+          done #kernelprops
+        done #varnames
+      done #devicealloc
+    done #enqueue
+  done #wait
+done #region
+
+echo "====================================="
+
+exit 0

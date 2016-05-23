@@ -71,6 +71,7 @@ SCOREP_Config_Adapter::init( void )
     all.push_back( new SCOREP_Config_UserAdapter() );
     all.push_back( new SCOREP_Config_Opari2Adapter() );
     all.push_back( new SCOREP_Config_CudaAdapter() );
+    all.push_back( new SCOREP_Config_OpenaccAdapter() );
     all.push_back( new SCOREP_Config_OpenclAdapter() );
     all.push_back( new SCOREP_Config_PreprocessAdapter() );
     all.push_back( new SCOREP_Config_MemoryAdapter() );
@@ -406,6 +407,45 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
         deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
     }
 }
+
+/* **************************************************************************************
+ * OpenACC adapter
+ * *************************************************************************************/
+SCOREP_Config_OpenaccAdapter::SCOREP_Config_OpenaccAdapter()
+    : SCOREP_Config_Adapter( "openacc", "scorep_adapter_openacc", true )
+{
+}
+
+bool
+SCOREP_Config_OpenaccAdapter::checkArgument( const std::string& arg )
+{
+#if HAVE_BACKEND( OPENACC_SUPPORT )
+    if ( arg == "--" + m_name )
+    {
+        m_is_enabled = true;
+        return true;
+    }
+#endif
+    if ( arg == "--no" + m_name )
+    {
+        m_is_enabled = false;
+        return true;
+    }
+    return false;
+}
+
+void
+SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
+                                       SCOREP_Config_LibraryDependencies& deps )
+{
+    if ( HAVE_BACKEND_OPENACC_SUPPORT && m_is_enabled )
+    {
+        libs.push_back( "lib" + m_library + "_event" );
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+        deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
+    }
+}
+
 
 /* **************************************************************************************
  * OpenCL adapter

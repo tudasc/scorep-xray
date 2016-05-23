@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -385,6 +385,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     if ( paradigm == "opencl" )
     {
         return SCOREP_SCORE_TYPE_OPENCL;
+    }
+    if ( paradigm == "openacc" )
+    {
+        return SCOREP_SCORE_TYPE_OPENACC;
     }
     if ( paradigm == "memory" )
     {

@@ -1,0 +1,34 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014-2016,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/adapters/openacc/Makefile.confvars.inc.am
+
+noinst_LTLIBRARIES += libscorep_openacc_confvars.la
+
+libscorep_openacc_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/openacc/scorep_openacc_confvars.c
+
+libscorep_openacc_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/adapters/openacc \
+    -I$(INC_ROOT)src/adapters/include \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_openacc_confvars.la
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/openacc/scorep_openacc_confvars.inc.c \
+    $(SRC_ROOT)src/adapters/openacc/scorep_openacc_confvars.h

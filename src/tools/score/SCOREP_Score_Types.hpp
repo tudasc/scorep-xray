@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,6 +52,7 @@
     SCOREP_SCORE_TYPE( PTHREAD, NO )    \
     SCOREP_SCORE_TYPE( CUDA, POSSIBLE ) \
     SCOREP_SCORE_TYPE( OPENCL, NO )     \
+    SCOREP_SCORE_TYPE( OPENACC, NO )    \
     SCOREP_SCORE_TYPE( MEMORY, NO )
 
 #define SCOREP_SCORE_FILTER_STATES \
