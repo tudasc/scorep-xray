@@ -188,7 +188,7 @@ be used to build Score-P are as follows:
                Enable or disable support for CUDA. Fail if support
                can't be satisfied but was requested.
   --enable-openacc
-               Enable or disable support for OpenACC. 
+               Enable or disable support for OpenACC. (defaults to yes)
   --disable-gcc-plugin
                Disable support for the GCC plug-in
                instrumentation. Default is to determine support
@@ -211,17 +211,17 @@ be used to build Score-P are as follows:
                If libpapi.* is not installed in the default location,
                specify the dirname where it can be found.
   --with-libunwind=(yes|no|<Path to libunwind installation>)
-                          If you want to build with libunwind support but do
-                          not have a libunwind in a standard location, you
-                          need to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes];
-                          on cross-compile systems, however, you have to
-                          specify a path [no]. --with-libunwind is a shorthand
-                          for --with-libunwind-include=<Path/include> and
-                          --with-libunwind-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build with libunwind support but do
+               not have a libunwind in a standard location, you
+               need to explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-libunwind is a shorthand
+               for --with-libunwind-include=<Path/include> and
+               --with-libunwind-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the
+               explicit include and lib options directly.
   --with-libunwind-include=<Path to libunwind headers>
   --with-libunwind-lib=<Path to libunwind libraries>
   --with-libcudart=<Path to libcudart installation>
@@ -255,67 +255,67 @@ be used to build Score-P are as follows:
   --with-libcuda-include=<Path to libcuda headers>
   --with-libcuda-lib=<Path to libcuda libraries>
   --with-libcupti=(yes|no|<Path to libcupti installation>)
-                          If you want to build with libcupti support but do
-                          not have a libcupti in a standard location, you need
-                          to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes];
-                          on cross-compile systems, however, you have to
-                          specify a path [no]. --with-libcupti is a shorthand
-                          for --with-libcupti-include=<Path/include> and
-                          --with-libcupti-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build with libcupti support but do
+               not have a libcupti in a standard location, you need
+               to explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-libcupti is a shorthand
+               for --with-libcupti-include=<Path/include> and
+               --with-libcupti-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the
+               explicit include and lib options directly.
   --with-libcupti-include=<Path to libcupti headers>
   --with-libcupti-lib=<Path to libcupti libraries>
   --with-openacc-include=<path-to-openacc.h>
-                          If openacc.h is not installed in the default
-                          location, specify the directory where it can be
-                          found.
+               If openacc.h is not installed in the default
+               location, specify the directory where it can be
+               found.
   --with-openacc-prof-include=<path-to-acc_prof.h>
-                          If acc_prof.h is not installed in the default
-                          location, specify the directory where it can be
-                          found.
+               If acc_prof.h is not installed in the default
+               location, specify the directory where it can be
+               found.
   --with-libOpenCL=(yes|no|<Path to libOpenCL installation>)
-                          If you want to build with libOpenCL support but do
-                          not have a libOpenCL in a standard location, you
-                          need to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes];
-                          on cross-compile systems, however, you have to
-                          specify a path [no]. --with-libOpenCL is a shorthand
-                          for --with-libOpenCL-include=<Path/include> and
-                          --with-libOpenCL-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build with libOpenCL support but do
+               not have a libOpenCL in a standard location, you
+               need to explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-libOpenCL is a shorthand
+               for --with-libOpenCL-include=<Path/include> and
+               --with-libOpenCL-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the
+               explicit include and lib options directly.
   --with-libOpenCL-include=<Path to libOpenCL headers>
   --with-libOpenCL-lib=<Path to libOpenCL libraries>
   --with-libpmi=(yes|no|<Path to libpmi installation>)
-                          If you want to build with libpmi support but do not
-                          have a libpmi in a standard location, you need to
-                          explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes];
-                          on cross-compile systems, however, you have to
-                          specify a path [no]. --with-libpmi is a shorthand
-                          for --with-libpmi-include=<Path/include> and
-                          --with-libpmi-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build with libpmi support but do not
+               have a libpmi in a standard location, you need to
+               explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-libpmi is a shorthand
+               for --with-libpmi-include=<Path/include> and
+               --with-libpmi-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the
+               explicit include and lib options directly.
   --with-libpmi-include=<Path to libpmi headers>
   --with-libpmi-lib=<Path to libpmi libraries>
   --with-librca=(yes|no|<Path to librca installation>)
-                          If you want to build with librca support but do not
-                          have a librca in a standard location, you need to
-                          explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes];
-                          on cross-compile systems, however, you have to
-                          specify a path [no]. --with-librca is a shorthand
-                          for --with-librca-include=<Path/include> and
-                          --with-librca-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build with librca support but do not
+               have a librca in a standard location, you need to
+               explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-librca is a shorthand
+               for --with-librca-include=<Path/include> and
+               --with-librca-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the
+               explicit include and lib options directly.
   --with-librca-include=<Path to librca headers>
   --with-librca-lib=<Path to librca libraries>
   --with-libbfd=<Path to libbfd installation>

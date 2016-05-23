@@ -13,7 +13,7 @@
 
 ## file build-config/m4/scorep_openacc.m4
 
-AC_DEFUN([SCOREP_ACC_FLAG_TEST],[
+AC_DEFUN([SCOREP_OPENACC_FLAG_TEST],[
     AC_LANG_PUSH(C)
     save_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS $1"
@@ -40,19 +40,23 @@ AC_REQUIRE([AX_COMPILER_VENDOR])
 scorep_enable_openacc="yes"
 scorep_have_openacc="no"
 scorep_have_openacc_prof="no"
+scorep_compiler_acc_flags=""
 
 AC_ARG_ENABLE([openacc],
               [AS_HELP_STRING([--enable-openacc],
-                              [Enable or disable support for OpenACC.])],
+                              [Enable or disable support for OpenACC. (defaults to yes)])],
               [AS_IF([test x"$enableval" = "xyes"], [scorep_enable_openacc="yes"], [scorep_enable_openacc="no"])])
 
+# advertise the $OPENACC_INCLUDE and $OPENACC_PROFILING_INCLUDE variables in the --help output
+AC_ARG_VAR([OPENACC_INCLUDE],           [Include path to openacc.h header.])
+AC_ARG_VAR([OPENACC_PROFILING_INCLUDE], [Include path to acc_prof.h header.])
 
 dnl get path to OpenACC header
 AC_ARG_WITH([openacc-include],
             [AS_HELP_STRING([--with-openacc-include=<path-to-openacc.h>],
                             [If openacc.h is not installed in the default location, specify the directory where it can be found.])],
             [scorep_openacc_inc_dir="${withval}"],  # action-if-given.
-            [scorep_openacc_inc_dir="${OPENACC_INC}"] # action-if-not-given
+            [scorep_openacc_inc_dir="${OPENACC_INCLUDE}"] # action-if-not-given
 )
 
 dnl get path to OpenACC Profiling header
@@ -60,7 +64,7 @@ AC_ARG_WITH([openacc-prof-include],
             [AS_HELP_STRING([--with-openacc-prof-include=<path-to-acc_prof.h>],
                             [If acc_prof.h is not installed in the default location, specify the directory where it can be found.])],
             [scorep_openacc_prof_inc_dir="${withval}"],  # action-if-given.
-            [scorep_openacc_prof_inc_dir="${OPENACC_PROF_INC}"] # action-if-not-given
+            [scorep_openacc_prof_inc_dir="${OPENACC_PROFILING_INCLUDE}"] # action-if-not-given
 )
 
 AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
@@ -72,7 +76,7 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
   AS_IF([test "x$scorep_openacc_prof_inc_dir" != "x"],
         [with_openacc_cppflags="$with_openacc_cppflags -I$scorep_openacc_prof_inc_dir"])
 
-  ac_scorep_openacc_safe_CPPFLAGS="${CPPFLAGS}"
+  scorep_openacc_safe_CPPFLAGS="${CPPFLAGS}"
   CPPFLAGS="$CPPFLAGS ${with_openacc_cppflags}"
 
   AC_LANG_PUSH([C])
@@ -147,19 +151,20 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
 
   AC_LANG_POP([C])
 
-  CPPFLAGS="${ac_scorep_openacc_safe_CPPFLAGS}"
+  CPPFLAGS="${scorep_openacc_safe_CPPFLAGS}"
 ])
 
-dnl check for OpenACC compiler flags
-AS_CASE([${ax_cv_c_compiler_vendor}],
-    [portland], [SCOREP_ACC_FLAG_TEST(["-acc"])],
-    [gnu],      [],
-    [cray],     [SCOREP_ACC_FLAG_TEST(["-h pragma=acc"])],
-    [])dnl
+AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
+      [dnl check for OpenACC compiler flags
+       AS_CASE([${ax_cv_c_compiler_vendor}],
+           [portland], [SCOREP_OPENACC_FLAG_TEST(["-acc"])],
+           [gnu],      [],
+           [cray],     [SCOREP_OPENACC_FLAG_TEST(["-h pragma=acc"])],
+           [])dnl
 
-dnl print a notice on the used OpenACC compiler flags
-AS_IF([test "x${scorep_compiler_acc_flags}" != "x"],
-      [AC_MSG_NOTICE([using compiler OpenACC flags: ${scorep_compiler_acc_flags}])])
+       dnl print a notice on the used OpenACC compiler flags
+       AS_IF([test "x${scorep_compiler_acc_flags}" != "x"],
+             [AC_MSG_NOTICE([using compiler OpenACC flags: ${scorep_compiler_acc_flags}])])])
 
 AC_SCOREP_COND_HAVE([OPENACC],
                     [test "x${scorep_have_openacc}" = "xyes"],
