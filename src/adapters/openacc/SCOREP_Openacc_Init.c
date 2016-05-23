@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -18,22 +21,13 @@
  */
 
 #include <config.h>
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Events.h>
-#include "SCOREP_Config.h"
-#include "SCOREP_Types.h"
-#include "SCOREP_Openacc_Init.h"
 
-#include <UTILS_Error.h>
+#include <SCOREP_Subsystem.h>
+
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
 
-#include "scorep_openacc_confvars.h"
 #include "scorep_openacc_confvars.inc.c"
-
-
 
 /**
  * Registers the required configuration variables of the OpenACC adapter to the

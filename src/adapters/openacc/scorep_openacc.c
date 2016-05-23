@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -17,17 +20,14 @@
  */
 
 #include <config.h>
+#include "scorep_openacc_confvars.h"
+#include "scorep_openacc.h"
 
-#include <UTILS_CStr.h>
-#include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
-
-#include "scorep_openacc.h"
-#include "scorep_openacc_confvars.h"
 
 #include <string.h>
 
@@ -94,7 +94,7 @@ typedef struct scorep_openacc_device
 {
     int                           device_id;
     acc_device_t                  device_type;
-    SCOREP_AllocMetric*           allocMetric;
+    struct SCOREP_AllocMetric*    allocMetric;
     struct scorep_openacc_device* next;
 } scorep_openacc_device;
 
@@ -393,7 +393,7 @@ scorep_openacc_get_region_handle( int         lineNo,
  *
  * @return Score-P allocation metric handle
  */
-static SCOREP_AllocMetric*
+static struct SCOREP_AllocMetric*
 get_alloc_metric_handle( acc_device_t deviceType,
                          int          deviceNumber )
 {
@@ -445,7 +445,7 @@ create_device( acc_device_t deviceType,
         acc_metric_name = "acc_mem_usage";
     }
 
-    SCOREP_AllocMetric* allocMetric = NULL;
+    struct SCOREP_AllocMetric* allocMetric = NULL;
 
     SCOREP_AllocMetric_New( acc_metric_name, &allocMetric );
 
@@ -454,11 +454,11 @@ create_device( acc_device_t deviceType,
     return dev;
 }
 
-SCOREP_AllocMetric*
+struct SCOREP_AllocMetric*
 scorep_openacc_get_alloc_metric_handle( acc_device_t deviceType,
                                         int          deviceNumber )
 {
-    SCOREP_AllocMetric* allocHandle = get_alloc_metric_handle( deviceType, deviceNumber );
+    struct SCOREP_AllocMetric* allocHandle = get_alloc_metric_handle( deviceType, deviceNumber );
 
     if ( allocHandle == NULL )
     {

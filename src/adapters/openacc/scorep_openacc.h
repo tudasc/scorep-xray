@@ -4,6 +4,9 @@
  * Copyright (c) 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -20,10 +23,11 @@
 #define SCOREP_OPENACC_H
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_AllocMetric.h>
 
 #include <openacc.h>
 #include <acc_prof.h>
+
+struct SCOREP_AllocMetric;
 
 extern bool scorep_openacc_features_initialized;
 
@@ -62,7 +66,7 @@ scorep_openacc_get_region_handle( int         lineNo,
  *
  * @return Score-P allocation metric handle for OpenACC device memory
  */
-SCOREP_AllocMetric*
+struct SCOREP_AllocMetric*
 scorep_openacc_get_alloc_metric_handle( acc_device_t deviceType,
                                         int          deviceNumber );
 

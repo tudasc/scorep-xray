@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -170,7 +173,7 @@ handle_alloc( acc_prof_info*  profInfo,
         //if( apiInfo->device_api == acc_devapi_cuda )
 
         // get metric handle for this device
-        SCOREP_AllocMetric* allocMetric = scorep_openacc_get_alloc_metric_handle(
+        struct SCOREP_AllocMetric* allocMetric = scorep_openacc_get_alloc_metric_handle(
             profInfo->device_type, profInfo->device_number );
 
         switch ( profInfo->event_type )
