@@ -107,6 +107,15 @@ shmem_subsystem_init( void )
                                         SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
                                         "Active set ${id}" );
 
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        /*
+         * If unwinding is enable, do not generate the SHMEM artificial region
+         * (even if only SHMEM is recorded)
+         */
+        scorep_shmem_parallel_needed = false;
+    }
+
     scorep_shmem_register_regions();
 
     if ( scorep_shmem_memory_recording )
