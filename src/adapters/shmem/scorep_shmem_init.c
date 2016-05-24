@@ -174,12 +174,14 @@ shmem_subsystem_end( void )
         SCOREP_AllocMetric_ReportLeaked( scorep_shmem_allocations_metric );
     }
 
-    /* Exit the extra global SHMEM region in case it was */
-    /* entered */
-    if ( scorep_shmem_parallel_needed )
-    {
-        SCOREP_ExitRegion( scorep_shmem_region__SHMEM );
-    }
+//
+//    Hack: avoid exit event for artificial PARALLEL region, Score-P task stack should care about
+//
+//    /* Exit the extra global SHMEM region in case it was entered */
+//    if ( scorep_shmem_parallel_needed )
+//    {
+//        SCOREP_ExitRegion( scorep_shmem_region__SHMEM );
+//    }
 
     /* Destroy all RmaWin in the master thread. */
     scorep_shmem_close_pe_group();
