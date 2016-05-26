@@ -228,7 +228,7 @@ bitset_clear_range( void*    bitset,
     assert( offset < number_of_members );
     assert( length > 0 );
     assert( length <= number_of_members );
-    assert( offset + length < number_of_members );
+    assert( offset + length <= number_of_members );
 
     bitset_word_t* words         = bitset;
     bitset_word_t  one           = 1;
