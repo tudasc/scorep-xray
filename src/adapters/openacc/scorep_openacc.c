@@ -26,16 +26,13 @@
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 #include <string.h>
 
 /****************************** OpenACC mutex *********************************/
-// currently only needed for memusage
 #define ACC_LOCK() SCOREP_MutexLock( scorep_openacc_mutex )
 #define ACC_UNLOCK() SCOREP_MutexUnlock( scorep_openacc_mutex )
-static SCOREP_Mutex scorep_openacc_mutex = SCOREP_INVALID_MUTEX;
 /**************************** END: OpenACC mutex ******************************/
 
 /************************* Hashing of OpenACC regions *************************/
@@ -193,8 +190,6 @@ scorep_openacc_setup_features()
         // check for OpenACC device memory usage
         if ( scorep_openacc_features & SCOREP_OPENACC_FEATURE_DEVICE_ALLOC )
         {
-            SCOREP_MutexCreate( &scorep_openacc_mutex );
-
             scorep_openacc_record_device_alloc = true;
         }
 

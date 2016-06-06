@@ -23,6 +23,7 @@
 #define SCOREP_OPENACC_H
 
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
 
 #include <openacc.h>
 #include <acc_prof.h>
@@ -39,6 +40,9 @@ extern SCOREP_AttributeHandle scorep_openacc_attribute_kernel_name;
 extern SCOREP_AttributeHandle scorep_openacc_attribute_kernel_gangs;
 extern SCOREP_AttributeHandle scorep_openacc_attribute_kernel_workers;
 extern SCOREP_AttributeHandle scorep_openacc_attribute_kernel_veclen;
+
+/* OpenACC mutex */
+extern SCOREP_Mutex scorep_openacc_mutex;
 
 /**
  * Get a Score-P region handle. The function parameters uniquely identify an

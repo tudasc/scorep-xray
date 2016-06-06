@@ -27,7 +27,12 @@
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
 
+#include "scorep_openacc.h"
+
 #include "scorep_openacc_confvars.inc.c"
+
+/* OpenACC mutex */
+SCOREP_Mutex scorep_openacc_mutex = SCOREP_INVALID_MUTEX;
 
 /**
  * Registers the required configuration variables of the OpenACC adapter to the
@@ -61,12 +66,20 @@ openacc_subsystem_init( void )
         "OpenACC",
         SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
+    SCOREP_MutexCreate( &scorep_openacc_mutex );
+
     if ( scorep_openacc_features > 0 )
     {
         scorep_openacc_setup_features();
     }
 
     return SCOREP_SUCCESS;
+}
+
+static void
+openacc_subsystem_finalize( void )
+{
+    SCOREP_MutexDestroy( &scorep_openacc_mutex );
 }
 
 SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
@@ -76,6 +89,7 @@ SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
     .subsystem_end           = NULL,
     .subsystem_init          = &openacc_subsystem_init,
     .subsystem_init_location = NULL,
+    .subsystem_finalize      = &openacc_subsystem_finalize,
     .subsystem_pre_unify     = NULL,
     .subsystem_post_unify    = NULL
 };
