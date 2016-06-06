@@ -54,6 +54,7 @@ libscorep_adapter_openacc_event_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS)                    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
+    -I$(INC_DIR_MUTEX)                   \
     -I$(INC_ROOT)src/measurement/include
 
 libscorep_adapter_openacc_event_la_LDFLAGS = \
