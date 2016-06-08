@@ -168,7 +168,7 @@ doc/doxygen-user/scorep_wrapper_usage.md: scorep-wrapper-command
             echo ""; \
             echo "The installation provides wrapper instances based on the compilers used to"; \
             echo "build Score-P.  Run \`scorep-wrapper --help\` to see a listing of all"; \
-            echo "default instances of the used Score-P installtion."; \
+            echo "default instances of the used Score-P installation."; \
             echo ""; \
             echo "Additional wrapper instances can be created with \`scorep-wrapper --create\`."; \
             echo ""; \
