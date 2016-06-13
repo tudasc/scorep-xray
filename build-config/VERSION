@@ -7,8 +7,7 @@ library interface version:
     https://www.gnu.org/software/libtool/manual/libtool.html#Versioning
     http://sourceware.org/autobook/autobook/autobook_91.html#SEC91
 
-package.major=2
-package.minor=1
+package.major=3
 package.bugfix=0
 package.suffix=trunk
 

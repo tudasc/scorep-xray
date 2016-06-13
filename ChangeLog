@@ -1,4 +1,10 @@
-------------------- Upcoming version 2.1 -----------------------------
+------------------- Upcoming version 3.0 -----------------------------
+
+Note: In this version, we switch from a 'major.minor.bugfix'
+versioning scheme to a 'major.bugfix' scheme. New user-relevant
+features will be introduced by increasing the major number. Bugfix
+releases will not add new user-relevant features but might contain,
+in addition to bugfixes, Score-P-internal improvements.
 
 Major features:
 
