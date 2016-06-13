@@ -11,8 +11,11 @@ Features and improvements:
   create the system tree.  This feature is available in Slurm since
   version 2.1 (around 09/2009) and documented since 01/2014.  Please
   refer to the Slurm documentation how to enable this feature:
-
     http://slurm.schedmd.com/topology.html
+- Change PGI C++ compiler settings (selected via
+  --with-nocross-compiler-suite=pgi) from pgCC to pgc++. PGI removed
+  pgCC in version 16.1. If your installation still provides pgCC and
+  you want to use it, please add CXX=pgCC to your configure line.
 
 Bugfixes:
 
