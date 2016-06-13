@@ -488,7 +488,8 @@ AS_IF([test "x${enable_shared}" = xno],
 AS_CASE([${ac_scorep_platform}],
     [crayx*],
          [AC_CONFIG_COMMANDS([libtool-fix-cray-libunwind],
-              [sed -i -e 's/for search_ext in \.la /for search_ext in /' libtool])
+              [sed -e 's/for search_ext in \.la /for search_ext in /' \
+               libtool > libtool.fix && mv libtool.fix libtool])
          ])
 
 AC_CONFIG_FILES([../share/opencl.wrap:../share/opencl.wrap.in],
