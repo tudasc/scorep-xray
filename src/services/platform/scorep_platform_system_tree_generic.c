@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,11 +39,12 @@
 
 
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
 
 
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
+#include <UTILS_CStr.h>
 
 
 #include <SCOREP_Platform.h>
@@ -56,26 +57,111 @@ SCOREP_ErrorCode
 scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root )
 {
     /* Get hostname */
-    SCOREP_Platform_SystemTreePathElement* node = NULL;
-    node = scorep_platform_system_tree_bottom_up_add( &node,
-                                                      SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
-                                                      "node",
-                                                      256, "" );
-    if ( !node )
+    SCOREP_Platform_SystemTreePathElement** tail = &root->next;
+    SCOREP_Platform_SystemTreePathElement*  node;
+
+    /*
+     * Use the Slurm topology/tree plugin information, if available
+     * see http://slurm.schedmd.com/topology.html
+     */
+
+    /* UTILS_CStr_dup wont barf on NULL */
+    char* env_slurm_topo_addr         = UTILS_CStr_dup( getenv( "SLURM_TOPOLOGY_ADDR" ) );
+    char* env_slurm_topo_addr_pattern = UTILS_CStr_dup( getenv( "SLURM_TOPOLOGY_ADDR_PATTERN" ) );
+
+    /* The Slurm topology already includes a host, use it, or fallback to gethostname. */
+    bool need_host = true;
+    if ( env_slurm_topo_addr && env_slurm_topo_addr_pattern )
     {
-        SCOREP_Platform_FreePath( root );
-        return UTILS_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
+        /* We skip the first switch, as we already have the machine root. */
+        bool  is_first_switch = true;
+        char* addr            = env_slurm_topo_addr;
+        char* pattern         = env_slurm_topo_addr_pattern;
+
+        while ( addr && pattern )
+        {
+            char* addr_next = strchr( addr, '.' );
+            if ( addr_next )
+            {
+                *addr_next++ = '\0';
+            }
+            char* pattern_next = strchr( pattern, '.' );
+            if ( pattern_next )
+            {
+                *pattern_next++ = '\0';
+            }
+
+            SCOREP_SystemTreeDomain domain = SCOREP_SYSTEM_TREE_DOMAIN_NONE;
+            if ( 0 == strcmp( pattern, "node" ) )
+            {
+                need_host = false;
+                domain    = SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY;
+            }
+
+            if ( 0 == strcmp( pattern, "switch" ) && is_first_switch )
+            {
+                is_first_switch = false;
+
+                /*
+                 * We assume that there is only one root in the tree. As we
+                 * already have our own root (i.e., machine) node, we just
+                 * attach this first switch as property to it.
+                 */
+                SCOREP_Platform_SystemTreeProperty* property =
+                    scorep_platform_system_tree_add_property( root,
+                                                              pattern,
+                                                              0, addr );
+
+                if ( !property )
+                {
+                    goto fail;
+                }
+            }
+            else
+            {
+                node = scorep_platform_system_tree_top_down_add( &tail,
+                                                                 domain,
+                                                                 pattern,
+                                                                 0, addr );
+                if ( !node )
+                {
+                    goto fail;
+                }
+            }
+
+            addr    = addr_next;
+            pattern = pattern_next;
+        }
     }
+    free( env_slurm_topo_addr );
+    free( env_slurm_topo_addr_pattern );
 
-    /* Hook this path up to the root node */
-    root->next = node;
-
-    if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
+    if ( need_host )
     {
-        SCOREP_Platform_FreePath( root );
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "UTILS_IO_GetHostname() failed." );
+        node = scorep_platform_system_tree_top_down_add( &tail,
+                                                         SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
+                                                         "node",
+                                                         256, "" );
+        if ( !node )
+        {
+            goto fail;
+        }
+
+        if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
+        {
+            SCOREP_Platform_FreePath( root );
+            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                                "UTILS_IO_GetHostname() failed." );
+        }
     }
 
     return SCOREP_SUCCESS;
+
+fail:
+    free( env_slurm_topo_addr );
+    free( env_slurm_topo_addr_pattern );
+    SCOREP_Platform_FreePath( root );
+
+    return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                        "Failed to build system tree path" );
 }

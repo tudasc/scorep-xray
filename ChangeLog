@@ -7,6 +7,13 @@ Major features:
 
 Features and improvements:
 
+- Extract topology information from the Slurm topology/tree plugin to
+  create the system tree.  This feature is available in Slurm since
+  version 2.1 (around 09/2009) and documented since 01/2014.  Please
+  refer to the Slurm documentation how to enable this feature:
+
+    http://slurm.schedmd.com/topology.html
+
 Bugfixes:
 
 ------------------- Released version 2.0.2 ---------------------------
