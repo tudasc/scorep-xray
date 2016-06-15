@@ -25,6 +25,10 @@ Features and improvements:
 
 Bugfixes:
 
+- Prevent sampling/unwinding when Intel MPI is used. This combination,
+  even when sampling is not active, may mysteriously alter the
+  application output just by linking libunwind.
+
 ------------------- Released version 2.0.2 ---------------------------
 
 Bugfixes:

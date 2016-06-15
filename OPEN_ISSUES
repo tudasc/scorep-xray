@@ -342,6 +342,10 @@ various Score-P components.
 
   - Sampling uses libunwind as external library. Please use version
     1.1 or later as earlier versions occasionally segfaulted.
+    - libunwind used in combination with Intel MPI, even when sampling
+      is not active, may mysteriously alter the application output
+      just by linking libunwind. Thus, sampling/libunwind support is
+      disabled when Intel MPI is detected.
 
   - It is possible to activate sampling for programs that were
     instrumented with compiler instrumentation. In this case the

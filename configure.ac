@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2015,
+dnl Copyright (c) 2009-2016,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -97,6 +97,25 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
             AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
                 [ac_scorep_compilers_shmem=${afs_compiler_shmem_save}])
            ])
+
+       # temporary workaround: prevent using libunwind together with
+       # Intel MPI as application results may show erroneous behavior.
+       # bt-mz's verification fails for some configurations, cp2k does
+       # not converge. Reason so far unclear but problem vanishes when
+       # not linking with libunwind.
+       AC_REQUIRE([AC_PROG_GREP])
+       AC_REQUIRE([AC_PROG_SED])
+       AS_CASE([${ac_scorep_compilers_mpi}],
+           [*intel|*intel[[23]]],
+               [GREP_OPTIONS= ${GREP} '^--with-libunwind' user_provided_configure_args > /dev/null
+                AS_IF([test $? -eq 0],
+                   [# Remove any given --with-libunwind option
+                    ${SED} '/^--with-libunwind/d' user_provided_configure_args > user_provided_configure_args.nounw
+                    mv user_provided_configure_args.nounw user_provided_configure_args])
+                echo "--without-libunwind" >> user_provided_configure_args
+                AFS_SUMMARY([Unwinding/Sampling support], [Disabled when used with Intel MPI as this combination shows erroneous behavior])])
+       # end of workaround
+
        AS_IF([test -f ${ac_scorep_compilers_shmem}],
              [# determine arguments for subdir configures with handling SHMEM compiler
               args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
