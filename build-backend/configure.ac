@@ -267,7 +267,7 @@ AS_IF([test -n "${scorep_cube_bindir}"],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS], ['-I$(srcdir)/../vendor/cube/src/cubew -I../vendor/cube/src'])
        AC_SUBST([CUBE_WRITER_LIBS],     ['../vendor/cube/build-backend/libcube4w.la ../vendor/cube/build-backend/libcubewriter4.la'])
        AC_SUBST([CUBE_WRITER_LDFLAGS],  [])
-       AS_IF([test "${afs_cross_compiling}" = xyes],
+       AS_IF([test "${ac_scorep_cross_compiling}" = xyes],
              [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-frontend"])],
              [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-backend"])])
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])
