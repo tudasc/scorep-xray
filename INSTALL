@@ -465,6 +465,16 @@ variables:
   LIBBFD_INCLUDE
               Path to libbfd headers.
   LIBBFD_LIB  Path to libbfd libraries.
+  OPENACC_INCLUDE
+              Path to openacc.h header.
+  OPENACC_PROFILING_INCLUDE
+              Path to acc_prof.h header.
+  LIBPMI_INCLUDE
+              Path to libpmi headers.
+  LIBPMI_LIB  Path to libpmi libraries.
+  LIBRCA_INCLUDE
+              Path to librca headers.
+  LIBRCA_LIB  Path to librca libraries.
 
 Building & Installing
 =====================
