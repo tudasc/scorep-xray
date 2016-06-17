@@ -70,7 +70,7 @@ scorep_pthread_mutex_hash_put( pthread_mutex_t* pthreadMutex )
 {
     SCOREP_MutexLock( hash_table_mutex );
     scorep_pthread_mutex* new_mutex = mutex_hash_get( pthreadMutex );
-    if ( !new_mutex  )
+    if ( !new_mutex )
     {
         if ( free_list_head )
         {

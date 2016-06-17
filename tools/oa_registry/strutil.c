@@ -70,7 +70,7 @@ static size_t
 next_token( const char* str,
             size_t      pos,
             const char* delim,
-            char**      token  )
+            char**      token )
 {
     size_t len;
 

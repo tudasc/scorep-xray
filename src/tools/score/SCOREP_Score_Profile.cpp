@@ -135,7 +135,7 @@ SCOREP_Score_Profile::getTime( uint64_t region,
 {
     Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE  );
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
 
     if ( !value )
     {

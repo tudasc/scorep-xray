@@ -200,7 +200,7 @@ SCOREP_OAConsumer_DismissData( void )
         {
             if ( thread_index_pointer_array[ i ]->static_measurements_table )
             {
-                SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table, &free, &free  );
+                SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table, &free, &free );
             }
             free( thread_index_pointer_array[ i ] );
         }

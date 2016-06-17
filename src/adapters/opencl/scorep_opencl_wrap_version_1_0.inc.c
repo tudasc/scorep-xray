@@ -929,7 +929,7 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBuffer )( cl_command_queue commandQueue,
                                   size, commandQueue, event, blockingWrite,
                                   ( commandQueue, buffer, blockingWrite,
                                     offset, size, ptr, numEventsInWaitList,
-                                    eventWaitList, event );
+                                    eventWaitList, event )
                                   )
 }
 

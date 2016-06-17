@@ -156,7 +156,7 @@
 
 #define SCOREP_USER_REGION_DEFINE( handle )
 #define SCOREP_USER_REWIND_DEFINE( handle )
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  )
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )
 #define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )

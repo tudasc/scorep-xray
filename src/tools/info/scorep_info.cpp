@@ -149,7 +149,7 @@ main( int   argc,
 
         if ( mode == "--help" )
         {
-            std::string help_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep_info_confvars_help.md"  );
+            std::string help_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep_info_confvars_help.md" );
             int         return_value = system( help_command.c_str() );
             if ( return_value != 0 )
             {
@@ -229,7 +229,7 @@ main( int   argc,
             return EXIT_FAILURE;
         }
 
-        std::string summary_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep.summary"  );
+        std::string summary_command( PAGER_COMMAND " <" SCOREP_DATADIR "/scorep.summary" );
         int         return_value = system( summary_command.c_str() );
         if ( return_value != 0 )
         {

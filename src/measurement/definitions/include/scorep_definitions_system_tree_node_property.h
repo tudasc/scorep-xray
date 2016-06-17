@@ -60,7 +60,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNodeProperty )
 void
 SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeNodeHandle,
                                          const char*                 propertyName,
-                                         const char*                 propertyValue  );
+                                         const char*                 propertyValue );
 
 
 void

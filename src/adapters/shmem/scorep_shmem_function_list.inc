@@ -148,10 +148,10 @@ SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_short_put, ( short* 
 SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_int_put, ( int* , const int* , size_t , int ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_LONG_PUT )
-SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_long_put, ( long* , const long* src, size_t , int  ) )
+SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_long_put, ( long* , const long* src, size_t , int ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_FLOAT_PUT )
-SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_float_put, ( float* , const float* , size_t , int  ) )
+SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_float_put, ( float* , const float* , size_t , int ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_DOUBLE_PUT )
 SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_double_put, ( double* , const double* , size_t , int ) )
@@ -458,7 +458,7 @@ SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_short_wait_until, ( 
 SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_int_wait_until, ( int* , int , int ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait_until, ( long* , int , long  ) )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait_until, ( long* , int , long ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT_UNTIL )
 SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_longlong_wait_until, ( long long* , int , long long ) )

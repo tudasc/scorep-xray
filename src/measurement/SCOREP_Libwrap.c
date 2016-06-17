@@ -86,7 +86,7 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
         return;
     }
 
-    if ( SCOREP_Filter_Match( file, func, NULL )  )
+    if ( SCOREP_Filter_Match( file, func, NULL ) )
     {
         *region = SCOREP_LIBWRAP_FILTERED_REGION;
     }

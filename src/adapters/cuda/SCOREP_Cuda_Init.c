@@ -143,7 +143,7 @@ static SCOREP_ErrorCode
 cuda_subsystem_pre_unify( void )
 {
     /* only if CUDA communication is enabled for recording */
-    if ( scorep_cuda_record_memcpy  )
+    if ( scorep_cuda_record_memcpy )
     {
         scorep_cuda_define_cuda_locations();
     }

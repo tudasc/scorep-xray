@@ -516,7 +516,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_lock )( pthread_mutex_t* pthreadMutex )
     UTILS_DEBUG_ENTRY();
 
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    if ( !scorep_mutex  )
+    if ( !scorep_mutex )
     {
         /* Mutex initialized statically via PTHREAD_MUTEX_INITIALIZER and friends. */
         scorep_mutex = scorep_pthread_mutex_hash_put( pthreadMutex );
@@ -628,7 +628,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock )( pthread_mutex_t* pthreadMutex
     UTILS_DEBUG_ENTRY();
 
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    if ( !scorep_mutex  )
+    if ( !scorep_mutex )
     {
         /* Mutex initialized statically via PTHREAD_MUTEX_INITIALIZER and friends. */
         scorep_mutex = scorep_pthread_mutex_hash_put( pthreadMutex );

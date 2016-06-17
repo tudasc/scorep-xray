@@ -643,7 +643,7 @@
 
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  ) SCOREP_User_OaPhaseBegin( \
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) SCOREP_User_OaPhaseBegin( \
         &handle, &SCOREP_User_LastFileName, &SCOREP_User_LastFileHandle, name, \
         type, __FILE__, __LINE__ );
 
@@ -1375,7 +1375,7 @@
 #define SCOREP_USER_REGION( name, type )
 #define SCOREP_USER_REGION_DEFINE( handle )
 #define SCOREP_USER_REWIND_DEFINE( handle )
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  )
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )
 #define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )

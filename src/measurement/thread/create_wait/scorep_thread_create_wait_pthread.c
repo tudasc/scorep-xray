@@ -176,7 +176,7 @@ scorep_thread_create_wait_on_wait( SCOREP_ParadigmType     paradigm,
 {
     UTILS_DEBUG_ENTRY();
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD."  );
+                  "SCOREP_PARADIGM_PTHREAD." );
 }
 
 
@@ -190,7 +190,7 @@ scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm
 {
     UTILS_DEBUG_ENTRY();
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD."  );
+                  "SCOREP_PARADIGM_PTHREAD." );
 
     SCOREP_Location* location = NULL;
     *locationIsCreated = false;
@@ -265,7 +265,7 @@ scorep_thread_create_wait_on_end( SCOREP_ParadigmType                paradigm,
 {
     UTILS_DEBUG_ENTRY();
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD."  );
+                  "SCOREP_PARADIGM_PTHREAD." );
 
     int status = pthread_setspecific( tpd_key, NULL );
     UTILS_BUG_ON( status != 0, "Failed to reset Phread thread specific data." );

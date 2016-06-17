@@ -470,7 +470,7 @@ set_bitstring_for_metric(
             node = writeSet->id_2_node[ node_index ];
             if ( ( node != NULL ) && ( getValue( node, funcData ) != 0 ) )
             {
-                SCOREP_Bitstring_Set( bits, cp_index  );
+                SCOREP_Bitstring_Set( bits, cp_index );
             }
         }
     }

@@ -83,7 +83,7 @@ equal_system_tree_node_property( const SCOREP_SystemTreeNodePropertyDef* existin
 void
 SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeNodeHandle,
                                          const char*                 propertyName,
-                                         const char*                 propertyValue  )
+                                         const char*                 propertyValue )
 {
     UTILS_DEBUG_ENTRY( "%s=%s", propertyName, propertyValue );
 

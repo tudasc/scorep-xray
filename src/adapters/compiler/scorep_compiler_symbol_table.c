@@ -234,7 +234,7 @@ scorep_compiler_parse_nm_file( const char*                       nmFilename,
                                scorep_compiler_process_symbol_cb processSymbol )
 {
     FILE* nm_file = fopen( nmFilename, "r" );
-    if ( !nm_file  )
+    if ( !nm_file )
     {
         UTILS_ERROR_POSIX( "Could not open file \"%s\". Function enter/exit will "
                            "not be recorded.", nmFilename );

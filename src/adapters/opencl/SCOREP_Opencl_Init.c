@@ -140,7 +140,7 @@ static SCOREP_ErrorCode
 opencl_subsystem_pre_unify( void )
 {
     // only if OpenCL communication is enabled for recording
-    if ( scorep_opencl_record_memcpy  )
+    if ( scorep_opencl_record_memcpy )
     {
         scorep_opencl_define_locations();
     }

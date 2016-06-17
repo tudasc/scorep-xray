@@ -111,7 +111,7 @@ SCOREP_Ipc_Finalize( void )
     assert( !SCOREP_Status_IsMppFinalized() );
     /* Free duplicated communicator */
     PMPI_Comm_free( &scorep_ipc_group_world.comm );
-    if ( MPI_COMM_NULL != file_group.comm  )
+    if ( MPI_COMM_NULL != file_group.comm )
     {
         PMPI_Comm_free( &file_group.comm );
     }
@@ -121,7 +121,7 @@ SCOREP_Ipc_Finalize( void )
 SCOREP_Ipc_Group*
 SCOREP_Ipc_GetFileGroup( int nProcsPerFile )
 {
-    if ( MPI_COMM_NULL == file_group.comm  )
+    if ( MPI_COMM_NULL == file_group.comm )
     {
         UTILS_BUG_ON( 0 == nProcsPerFile,
                       "Invalid value for number of procs per file: %d",

@@ -611,7 +611,7 @@ SCOREP_Profile_Process( void )
                 break;
             }
 
-            if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION  )
+            if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
             {
                 SCOREP_RegionHandle region =
                     scorep_profile_type_get_region_handle( node->type_specific_data );

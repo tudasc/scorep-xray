@@ -89,7 +89,7 @@ TEAM_CREATE_STRIDED( shmem_team_create_strided )
     {                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();          \
                                                     \
-        FUNCNAME( team  );                          \
+        FUNCNAME( team );                           \
                                                     \
         SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }

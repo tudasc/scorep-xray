@@ -1276,13 +1276,13 @@ SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
                 /* Root should not send data to itself
                  * Copy data directly to buffer */
                 memcpy( recvbuf,
-                        &( ( ( char*  )sendbuf )[ receiver * count * sizeof_ipc_datatypes[ datatype ] ] ),
+                        &( ( ( char* )sendbuf )[ receiver * count * sizeof_ipc_datatypes[ datatype ] ] ),
                         count * sizeof_ipc_datatypes[ datatype ] );
                 continue;
             }
 
             CALL_SHMEM( shmem_putmem )( symmetric_buffer_b,
-                                        &( ( ( char*  )sendbuf )[ receiver * count * sizeof_ipc_datatypes[ datatype ] ] ),
+                                        &( ( ( char* )sendbuf )[ receiver * count * sizeof_ipc_datatypes[ datatype ] ] ),
                                         count * sizeof_ipc_datatypes[ datatype ],
                                         receiver );
         }
@@ -1345,13 +1345,13 @@ SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                 /* Root should not send data to itself
                  * Copy data directly to buffer */
                 memcpy( recvbuf,
-                        &( ( ( char*  )sendbuf )[ total * sizeof_ipc_datatypes[ datatype ] ] ),
+                        &( ( ( char* )sendbuf )[ total * sizeof_ipc_datatypes[ datatype ] ] ),
                         sendcounts[ i ] * sizeof_ipc_datatypes[ datatype ] );
             }
             else
             {
                 CALL_SHMEM( shmem_putmem )( symmetric_buffer_b,
-                                            &( ( ( char*  )sendbuf )[ total * sizeof_ipc_datatypes[ datatype ] ] ),
+                                            &( ( ( char* )sendbuf )[ total * sizeof_ipc_datatypes[ datatype ] ] ),
                                             sendcounts[ i ] * sizeof_ipc_datatypes[ datatype ],
                                             receiver );
             }

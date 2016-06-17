@@ -327,7 +327,7 @@ POMP2_Critical_end( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Critical_enter( POMP2_Region_handle* pomp_handle,
-                      const char           ctc_string[]  )
+                      const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -361,7 +361,7 @@ POMP2_Critical_exit( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_For_enter( POMP2_Region_handle* pomp_handle,
-                 const char           ctc_string[]  )
+                 const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -395,7 +395,7 @@ POMP2_For_exit( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Master_begin( POMP2_Region_handle* pomp_handle,
-                    const char           ctc_string[]  )
+                    const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -511,7 +511,7 @@ POMP2_Parallel_join( POMP2_Region_handle* pomp_handle,
 
 void
 POMP2_Section_begin( POMP2_Region_handle* pomp_handle,
-                     const char           ctc_string[]  )
+                     const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -545,7 +545,7 @@ POMP2_Section_end( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Sections_enter( POMP2_Region_handle* pomp_handle,
-                      const char           ctc_string[]  )
+                      const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -611,7 +611,7 @@ POMP2_Single_end( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Single_enter( POMP2_Region_handle* pomp_handle,
-                    const char           ctc_string[]  )
+                    const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
@@ -957,7 +957,7 @@ POMP2_Taskwait_end( POMP2_Region_handle* pomp_handle,
 
 void
 POMP2_Workshare_enter( POMP2_Region_handle* pomp_handle,
-                       const char           ctc_string[]  )
+                       const char           ctc_string[] )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 

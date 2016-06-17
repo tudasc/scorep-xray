@@ -167,7 +167,7 @@ main( int argc, const char* argv[] )
 
     for ( i = 0; i < NUM_PHILOSOPHERS; i++ )
     {
-        if ( ( pthread_create( &t[ i ], NULL, dining, ( void* )&ph[ i ] ) ) != 0  )
+        if ( ( pthread_create( &t[ i ], NULL, dining, ( void* )&ph[ i ] ) ) != 0 )
         {
             printf( "ERROR: pthread_create failed\n" );
         }

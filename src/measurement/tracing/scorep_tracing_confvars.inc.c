@@ -120,5 +120,5 @@ SCOREP_Tracing_Register( void )
 
     return SCOREP_ConfigRegisterCond( "tracing",
                                       scorep_tracing_calling_context_confvars,
-                                      HAVE_BACKEND_UNWINDING_SUPPORT  );
+                                      HAVE_BACKEND_UNWINDING_SUPPORT );
 }

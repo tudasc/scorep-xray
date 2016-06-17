@@ -42,4 +42,4 @@ scorep_plugin_inst_hook_build( scorep_plugin_inst_hook*    hook,
 
 basic_block
 scorep_plugin_inst_hook_finalize_condition( scorep_plugin_inst_hook* hook,
-                                            basic_block              condition_bb  );
+                                            basic_block              condition_bb );
