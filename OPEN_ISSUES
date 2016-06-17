@@ -201,6 +201,15 @@ various Score-P components.
     Score-P fails at link time due to unresolved symbols in the
     Score-P libraries.
 
+  - Since Score-P version 2.x, measurement initialization is done
+    before entering 'main' using compiler-provided constructor
+    functions, if available. As a consequence, MPI- or SHMEM-only
+    instrumented applications will lack the artificial 'PARALLEL'
+    region that was used to enclose all following regions. To return
+    to the previous behavior, adding user-instrumentation, e.g., in
+    'main', would be sufficient. We will address this issue in a
+    future release of Score-P.
+
 --------------------------------------------------------------------------------
 
 * OpenMP support
@@ -309,6 +318,15 @@ various Score-P components.
   - When using the Cray SHMEM versions 7.2.2 or 7.2.3, than Score-P fails
     to detect a number of SHMEM functions.  Please use a newer version of
     the module to circumvent this problem.
+
+  - Since Score-P version 2.x, measurement initialization is done
+    before entering 'main' using compiler-provided constructor
+    functions, if available. As a consequence, MPI- or SHMEM-only
+    instrumented applications will lack the artificial 'PARALLEL'
+    region that was used to enclose all following regions. To return
+    to the previous behavior, adding user-instrumentation, e.g., in
+    'main', would be sufficient. We will address this issue in a
+    future release of Score-P.
 
 --------------------------------------------------------------------------------
 
