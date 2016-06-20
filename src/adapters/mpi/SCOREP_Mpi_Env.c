@@ -68,8 +68,8 @@
 
 /**
  * Flag set if the measurement system was already opened by another adapter.
- * If the measurement system is not already initialized, it is assumed that
- * the MPI adapter is the only active adapter. In this case, at first an
+ * If the measurement system is not already initilized, it is assumed that
+ * the mpi adapter is the only active adapter. In this case, at first an
  * additional region is entered MPI_Init. Thus, all regions appear as
  * children of this region.
  */
@@ -147,7 +147,7 @@ MPI_Init( int* argc, char*** argv )
         SCOREP_EXIT_WRAPPED_REGION();
     }
 
-    /* XXXX should only continue if MPI initialized OK! */
+    /* XXXX should only continue if MPI initialised OK! */
 
     if ( ( PMPI_Initialized( &iflag ) == MPI_SUCCESS ) && ( iflag != 0 ) &&
          ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
@@ -229,7 +229,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         SCOREP_EXIT_WRAPPED_REGION();
     }
 
-    /* XXXX should only continue if MPI initialized OK! */
+    /* XXXX should only continue if MPI initialised OK! */
 
     if ( ( return_val == MPI_SUCCESS ) && ( required > MPI_THREAD_FUNNELED ) && ( *provided > MPI_THREAD_FUNNELED ) )
     {
@@ -281,7 +281,7 @@ MPI_Finalize( void )
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        /* @todo handle <> address mismatch, check, if we still get samples inside the barrier */
+        /* @todo handle <> adress mismatch, check, if we still get samples inside the barrier */
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ],
                                    ( intptr_t )PMPI_Barrier );
     }

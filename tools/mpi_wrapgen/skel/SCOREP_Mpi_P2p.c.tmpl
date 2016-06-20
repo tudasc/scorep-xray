@@ -437,7 +437,7 @@ int MPI_Waitany(int count,
           #endif
           scorep_mpi_check_request(orig_req, status);
         }
-        else if (orig_req)
+        else if (orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE))
           SCOREP_MpiRequestTested(orig_req->id);
       }
     }
@@ -551,7 +551,7 @@ int MPI_Waitsome(int incount,
 
                   ++cur;
                 }
-              else
+              else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE)
                 {
                   SCOREP_MpiRequestTested(orig_req->id);
                 }
@@ -722,7 +722,7 @@ int MPI_Testany(int count,
           #endif
           scorep_mpi_check_request(orig_req, status);
         }
-        else if (orig_req)
+        else if (orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
           SCOREP_MpiRequestTested(orig_req->id);
       }
     }
@@ -821,7 +821,7 @@ int MPI_Testall(int count,
       for (i = 0; i < count; i++)
         {
           orig_req = scorep_mpi_saved_request_get(i);
-          if (orig_req)
+          if (orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ))
             SCOREP_MpiRequestTested(orig_req->id);
         }
     }
@@ -925,7 +925,7 @@ int MPI_Testsome(int incount,
 
                   ++cur;
                 }
-              else
+              else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE )
                 {
                   SCOREP_MpiRequestTested(orig_req->id);
                 }

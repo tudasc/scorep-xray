@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -21,6 +21,9 @@
  *
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
+ *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -1282,7 +1285,7 @@ MPI_Waitany( int          count,
           #endif
                 scorep_mpi_check_request( orig_req, status );
             }
-            else if ( orig_req )
+            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1407,7 +1410,7 @@ MPI_Waitsome( int          incount,
 
                     ++cur;
                 }
-                else
+                else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE )
                 {
                     SCOREP_MpiRequestTested( orig_req->id );
                 }
@@ -1591,7 +1594,7 @@ MPI_Testany( int          count,
           #endif
                 scorep_mpi_check_request( orig_req, status );
             }
-            else if ( orig_req )
+            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1699,7 +1702,7 @@ MPI_Testall( int          count,
         for ( i = 0; i < count; i++ )
         {
             orig_req = scorep_mpi_saved_request_get( i );
-            if ( orig_req )
+            if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1812,7 +1815,7 @@ MPI_Testsome( int          incount,
 
                     ++cur;
                 }
-                else
+                else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE )
                 {
                     SCOREP_MpiRequestTested( orig_req->id );
                 }
