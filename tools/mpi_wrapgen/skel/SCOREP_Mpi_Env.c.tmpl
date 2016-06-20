@@ -18,8 +18,8 @@
 
 /**
  * Flag set if the measurement system was already opened by another adapter.
- * If the measurement system is not already initilized, it is assumed that
- * the mpi adapter is the only active adapter. In this case, at first an
+ * If the measurement system is not already initialized, it is assumed that
+ * the MPI adapter is the only active adapter. In this case, at first an
  * additional region is entered MPI_Init. Thus, all regions appear as
  * children of this region.
  */
@@ -96,7 +96,7 @@ int MPI_Init(int* argc, char*** argv )
     SCOREP_EXIT_WRAPPED_REGION();
   }
 
-  /* XXXX should only continue if MPI initialised OK! */
+  /* XXXX should only continue if MPI initialized OK! */
 
   if ( ( PMPI_Initialized( &iflag ) == MPI_SUCCESS ) && ( iflag != 0 ) &&
        ( PMPI_Finalized  ( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
@@ -177,7 +177,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
     SCOREP_EXIT_WRAPPED_REGION();
   }
 
-  /* XXXX should only continue if MPI initialised OK! */
+  /* XXXX should only continue if MPI initialized OK! */
 
   if ((return_val == MPI_SUCCESS) && (required > MPI_THREAD_FUNNELED) && (*provided > MPI_THREAD_FUNNELED))
   {
