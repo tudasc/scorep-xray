@@ -89,17 +89,19 @@ module load ccomp/intel/12.1 fortran/intel/12.1 \
 System administrators can build @scorep with the familiar:
 
 @code
-./configure && make && make install
+mkdir _build
+cd _build
+../configure && make && make install
 @endcode
 
 The previous sequence of commands will detect compilers, libraries and headers,
 and then build and install @scorep in the following system directories:
 
 @code
-/usr/local/bin
-/usr/local/lib
-/usr/local/include
-/usr/local/share
+/opt/scorep/bin
+/opt/scorep/lib
+/opt/scorep/include
+/opt/scorep/share
 @endcode
 
 Users that are not administrators on the target machine may need to install
@@ -107,13 +109,13 @@ the tool in an different location (due to permissions). The prefix flag
 should be specified with the target directory:
 
 @code
-./configure --prefix=<installation directory>
+../configure --prefix=<installation directory>
 @endcode
 
 For example, in the <tt>install/scorep</tt> directory on his/her home folder:
 
 @code
-./configure --prefix=$HOME/install/scorep
+../configure --prefix=$HOME/install/scorep
 @endcode
 
 In this case, the user's <tt>PATH</tt> variable needs to be updated to
@@ -125,7 +127,7 @@ Users of the SuperMUC (after loading the required modules mentioned
 previously), can issue the following command to configure @scorep:
 
 @code
-./configure --prefix=$HOME/install/scorep --enable-static     \
+../configure --prefix=$HOME/install/scorep --enable-static    \
      --disable-shared --with-nocross-compiler-suite=intel     \
      --with-mpi=openmpi --with-papi-header=$PAPI_BASE/include \
      --with-papi-lib=$PAPI_BASE/lib

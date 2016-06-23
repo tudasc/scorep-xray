@@ -46,7 +46,9 @@ Quick start
 In a nutshell, configuring, building, and installing Score-P can be as
 simple as executing the shell commands
 
-    ./configure --prefix=<installdir>
+    mkdir _build
+    cd _build
+    ../configure --prefix=<installdir>
     make
     make install
 
@@ -524,7 +526,9 @@ described below.
 
   2. Configure Score-P to use the MIC platform:
 
-       ./configure --enable-platform-mic [other options, e.g., '--prefix']
+       mkdir _build-mic
+       cd _build-mic
+       ../configure --enable-platform-mic [other options, e.g., '--prefix']
 
   3. Build and install:
 
@@ -535,15 +539,16 @@ it.  However, if the installation should also support instrumentation
 and measurement of host code, a second installation *on top* of the
 just installed one is required:
 
-  4. Remove MIC program binaries, object files, and configure-generated files
-     from the build/source-code directory:
+  4. Create a new build directory for the host build:
 
-       make distclean
+       cd ..
+       mkdir _build-host
+       cd _build-host
 
   5. Reconfigure for the host using *identical directory options* (e.g.,
      '--prefix' or '--bindir') as in step 2:
 
-       ./configure [other options as used in step 2]
+       ../configure [other options as used in step 2]
 
      This will automatically detect the already existing native MIC
      build and enable the required support in the host tools.  On

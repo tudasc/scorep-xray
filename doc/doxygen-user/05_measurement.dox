@@ -859,7 +859,7 @@ In CUDA 6.0 this issue is fixed and CUPTI does not request buffers for individua
 If not, for most systems it is sufficient to specify the CUDA toolkit directory at @scorep configuration time:
 <pre> --with-libcudart=<path-to-cuda-toolkit-directory></pre>
 Otherwise check the configure help output to specify the location of the CUDA toolkit and CUPTI libraries and include files:
-<pre> ./configure --help=recursive | grep -E "(cuda|cupti)"</pre>
+<pre> ../configure --help=recursive | grep -E "(cuda|cupti)"</pre>
 
 CUDA device and host activities can be filtered by name at runtime using the @scorep filter file (see Section @secref{filtering}).
 Filtering does not remove CUDA activities inserted by @scorep or CUDA data transfers inserted as RDMA events.

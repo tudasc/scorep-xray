@@ -7,7 +7,9 @@ online analysis of HPC applications.
 
 To build Score-P you usually just need to do
 
-  ./configure
+  mkdir _build
+  cd _build
+  ,./configure
   make
   make install
 
