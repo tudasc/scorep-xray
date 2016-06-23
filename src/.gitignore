@@ -8,6 +8,7 @@
 /config-frontend.h
 /config-backend-for-frontend.h
 /config-backend-shmem.h.in
+/config-backend-shmem.h
 /config-score.h
 /config-score.h.in
 /config-gcc-plugin.h.in

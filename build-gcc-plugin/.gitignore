@@ -5,5 +5,8 @@
 /libtool
 /config.log
 /config.status
+/config.summary
 /.deps
 /Makefile
+/config.lt
+/gcc_plugin_supported
