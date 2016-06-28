@@ -762,7 +762,7 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
     if ( m_is_enabled )
     {
 #if SCOREP_BACKEND_COMPILER_CRAY
-        ldflags += "-h system_alloc ";
+        ldflags += " -h system_alloc";
 #endif
 
         if ( m_categories.count( "libc" ) )
