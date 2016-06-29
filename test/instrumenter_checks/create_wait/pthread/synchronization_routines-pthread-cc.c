@@ -120,6 +120,8 @@ test_recursive_mutex( void* input )
 {
     int cnt = 0;
     cnt_func( &cnt );
+
+    return NULL;
 }
 
 void*

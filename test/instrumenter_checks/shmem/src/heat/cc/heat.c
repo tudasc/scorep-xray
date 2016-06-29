@@ -143,7 +143,7 @@ main (int argc, char **argv)
   my_rank = _my_pe ();
 
   /* argument processing done by everyone */
-  int c, errflg;
+  int c, errflg=0;
   extern char *optarg;
   extern int optind, optopt;
 
