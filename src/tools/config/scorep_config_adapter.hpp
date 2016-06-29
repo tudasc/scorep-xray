@@ -72,14 +72,14 @@ public:
     checkAll( const std::string& arg );
 
     /**
-     * Calls for all adapters the addLibs() member functions.
+     * Calls for all enabled adapters the addLibs() member functions.
      */
     static void
     addLibsAll( std::deque<std::string>&           libs,
                 SCOREP_Config_LibraryDependencies& deps );
 
     /**
-     * Calls for all adapters the addCFlags() member functions.
+     * Calls for all enabled adapters the addCFlags() member functions.
      */
     static void
     addCFlagsAll( std::string&           cflags,
@@ -88,7 +88,7 @@ public:
                   bool                   nvcc );
 
     /**
-     * Calls for all adapters the addIncFlags() member functions.
+     * Calls for all enabled adapters the addIncFlags() member functions.
      */
     static void
     addIncFlagsAll( std::string&           incflags,
@@ -103,6 +103,12 @@ public:
     addLdFlagsAll( std::string& ldflags,
                    bool         build_check,
                    bool         nvcc );
+
+    /**
+     * Inserts for all enabled adapters the initialization struct names into a queue.
+     */
+    static void
+    getAllInitStructNames( std::deque<std::string>& init_structs );
 
     /**
      * Constructs a SCOREP_Config_Adapter.
@@ -132,12 +138,6 @@ public:
      */
     virtual void
     appendInitStructName( std::deque<std::string>& init_structs );
-
-    /**
-     * Inserts all initialization struct names into ta queue.
-     */
-    static void
-    getAllInitStructNames( std::deque<std::string>& init_structs );
 
     /**
      * Returns true if at least one adapter is active.
@@ -246,7 +246,7 @@ private:
 };
 
 /* **************************************************************************************
- * class SCOREP_CompilerAdapter
+ * class SCOREP_Config_CompilerAdapter
  * *************************************************************************************/
 
 /**
@@ -276,7 +276,7 @@ private:
 };
 
 /* **************************************************************************************
- * class SCOREP_UserAdapter
+ * class SCOREP_Config_UserAdapter
  * *************************************************************************************/
 
 /**
@@ -294,7 +294,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_CudaAdapter
+ * class SCOREP_Config_CudaAdapter
  * *************************************************************************************/
 
 /**
@@ -312,7 +312,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_OpenaccAdapter
+ * class SCOREP_Config_OpenaccAdapter
  * *************************************************************************************/
 
 /**
@@ -330,7 +330,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_OpenclAdapter
+ * class SCOREP_Config_OpenclAdapter
  * *************************************************************************************/
 
 /**
@@ -352,7 +352,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_Opari2Adapter
+ * class SCOREP_Config_Opari2Adapter
  * *************************************************************************************/
 class SCOREP_Config_Opari2Adapter : public SCOREP_Config_Adapter
 {
@@ -380,7 +380,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_PreprocessAdapter
+ * class SCOREP_Config_PreprocessAdapter
  * *************************************************************************************/
 class SCOREP_Config_PreprocessAdapter : public SCOREP_Config_Adapter
 {
@@ -401,7 +401,7 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_MemoryAdapter
+ * class SCOREP_Config_MemoryAdapter
  * *************************************************************************************/
 
 /**
