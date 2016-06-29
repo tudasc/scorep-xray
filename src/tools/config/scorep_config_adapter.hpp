@@ -246,6 +246,32 @@ private:
 };
 
 /* **************************************************************************************
+ * class SCOREP_Config_MockupAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents a not supported adapter by this installation.
+ */
+class SCOREP_Config_MockupAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_MockupAdapter( const std::string& name );
+
+    virtual void
+    printHelp( void );
+
+    virtual bool
+    checkArgument( const std::string& arg );
+
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+
+    virtual void
+    appendInitStructName( std::deque<std::string>& init_structs );
+};
+
+/* **************************************************************************************
  * class SCOREP_Config_CompilerAdapter
  * *************************************************************************************/
 
@@ -304,8 +330,6 @@ class SCOREP_Config_CudaAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_CudaAdapter();
-    virtual bool
-    checkArgument( const std::string& arg );
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
@@ -322,8 +346,6 @@ class SCOREP_Config_OpenaccAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_OpenaccAdapter();
-    virtual bool
-    checkArgument( const std::string& arg );
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
@@ -340,8 +362,6 @@ class SCOREP_Config_OpenclAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_OpenclAdapter();
-    virtual bool
-    checkArgument( const std::string& arg );
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );

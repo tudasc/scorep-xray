@@ -70,11 +70,27 @@ SCOREP_Config_Adapter::init( void )
     all.push_back( new SCOREP_Config_CompilerAdapter() );
     all.push_back( new SCOREP_Config_UserAdapter() );
     all.push_back( new SCOREP_Config_Opari2Adapter() );
+#if HAVE_BACKEND( CUDA_SUPPORT )
     all.push_back( new SCOREP_Config_CudaAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "cuda" ) );
+#endif
+#if HAVE_BACKEND( OPENACC_SUPPORT )
     all.push_back( new SCOREP_Config_OpenaccAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "openacc" ) );
+#endif
+#if HAVE_BACKEND( OPENCL_SUPPORT )
     all.push_back( new SCOREP_Config_OpenclAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "opencl" ) );
+#endif
     all.push_back( new SCOREP_Config_PreprocessAdapter() );
+#if HAVE_BACKEND( MEMORY_SUPPORT )
     all.push_back( new SCOREP_Config_MemoryAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "memory" ) );
+#endif
 }
 
 void
@@ -263,6 +279,50 @@ SCOREP_Config_Adapter::appendInitStructName( std::deque<std::string>& init_struc
 }
 
 /* **************************************************************************************
+ * Mockup adapter
+ * *************************************************************************************/
+
+SCOREP_Config_MockupAdapter::SCOREP_Config_MockupAdapter( const std::string& name )
+    : SCOREP_Config_Adapter( name, "", false )
+{
+}
+
+void
+SCOREP_Config_MockupAdapter::printHelp( void )
+{
+}
+
+bool
+SCOREP_Config_MockupAdapter::checkArgument( const std::string& arg )
+{
+    if ( arg == "--" + m_name )
+    {
+        std::cerr << "ERROR: Unsupported feature '" << m_name << "' cannot be enabled by '" << arg << "'" << std::endl;
+        exit( EXIT_FAILURE );
+        return false;
+    }
+
+    if ( arg == "--no" + m_name )
+    {
+        m_is_enabled = false;
+        return true;
+    }
+
+    return false;
+}
+
+void
+SCOREP_Config_MockupAdapter::addLibs( std::deque<std::string>& /* libs */,
+                                      SCOREP_Config_LibraryDependencies& /* deps */ )
+{
+}
+
+void
+SCOREP_Config_MockupAdapter::appendInitStructName( std::deque<std::string>& init_structs )
+{
+}
+
+/* **************************************************************************************
  * Compiler adapter
  * *************************************************************************************/
 
@@ -379,33 +439,12 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 {
 }
 
-bool
-SCOREP_Config_CudaAdapter::checkArgument( const std::string& arg )
-{
-#if HAVE_BACKEND( CUDA_SUPPORT )
-    if ( arg == "--" + m_name )
-    {
-        m_is_enabled = true;
-        return true;
-    }
-#endif
-    if ( arg == "--no" + m_name )
-    {
-        m_is_enabled = false;
-        return true;
-    }
-    return false;
-}
-
 void
 SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    if ( HAVE_BACKEND_CUDA_SUPPORT )
-    {
-        libs.push_back( "lib" + m_library + "_event" );
-        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
-    }
+    libs.push_back( "lib" + m_library + "_event" );
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
 /* **************************************************************************************
@@ -416,34 +455,13 @@ SCOREP_Config_OpenaccAdapter::SCOREP_Config_OpenaccAdapter()
 {
 }
 
-bool
-SCOREP_Config_OpenaccAdapter::checkArgument( const std::string& arg )
-{
-#if HAVE_BACKEND( OPENACC_SUPPORT )
-    if ( arg == "--" + m_name )
-    {
-        m_is_enabled = true;
-        return true;
-    }
-#endif
-    if ( arg == "--no" + m_name )
-    {
-        m_is_enabled = false;
-        return true;
-    }
-    return false;
-}
-
 void
 SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
                                        SCOREP_Config_LibraryDependencies& deps )
 {
-    if ( HAVE_BACKEND_OPENACC_SUPPORT )
-    {
-        libs.push_back( "lib" + m_library + "_event" );
-        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
-        deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
-    }
+    libs.push_back( "lib" + m_library + "_event" );
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
 
@@ -453,24 +471,6 @@ SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
 SCOREP_Config_OpenclAdapter::SCOREP_Config_OpenclAdapter()
     : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", true )
 {
-}
-
-bool
-SCOREP_Config_OpenclAdapter::checkArgument( const std::string& arg )
-{
-#if HAVE_BACKEND( OPENCL_SUPPORT )
-    if ( arg == "--" + m_name )
-    {
-        m_is_enabled = true;
-        return true;
-    }
-#endif
-    if ( arg == "--no" + m_name )
-    {
-        m_is_enabled = false;
-        return true;
-    }
-    return false;
 }
 
 void
@@ -525,7 +525,7 @@ SCOREP_Config_PreprocessAdapter::addCFlags( std::string&           cflags,
                                             SCOREP_Config_Language language,
                                             bool                   nvcc )
 {
-    if ( m_is_enabled && ( language == SCOREP_CONFIG_LANGUAGE_CXX ) )
+    if ( language == SCOREP_CONFIG_LANGUAGE_CXX )
     {
         cflags += SCOREP_NO_PREINCLUDE_FLAG " ";
     }
@@ -643,7 +643,7 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
  * Memory adapter
  * *************************************************************************************/
 SCOREP_Config_MemoryAdapter::SCOREP_Config_MemoryAdapter()
-    : SCOREP_Config_Adapter( "memory", "scorep_adapter_memory", true )
+    : SCOREP_Config_Adapter( "memory", "scorep_adapter_memory", false )
 {
 }
 
@@ -668,7 +668,6 @@ SCOREP_Config_MemoryAdapter::printHelp( void )
 bool
 SCOREP_Config_MemoryAdapter::checkArgument( const std::string& arg )
 {
-#if HAVE_BACKEND( MEMORY_SUPPORT )
     if ( arg == "--" + m_name )
     {
         m_is_enabled = true;
@@ -682,7 +681,7 @@ SCOREP_Config_MemoryAdapter::checkArgument( const std::string& arg )
         m_categories.insert( categories.begin(), categories.end() );
         return true;
     }
-#endif
+
     if ( arg == "--no" + m_name )
     {
         m_is_enabled = false;
@@ -695,51 +694,48 @@ void
 SCOREP_Config_MemoryAdapter::addLibs( std::deque<std::string>&           libs,
                                       SCOREP_Config_LibraryDependencies& deps )
 {
-    if ( HAVE_BACKEND_MEMORY_SUPPORT )
+    if ( m_categories.count( "libc" ) )
     {
-        if ( m_categories.count( "libc" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_libc" );
-        }
-
-        if ( m_categories.count( "libc11" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_libc11" );
-        }
-
-        if ( m_categories.count( "c++L32" ) || m_categories.count( "c++L64" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_cxx" );
-        }
-
-        if ( m_categories.count( "c++L32" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_cxx_L32" );
-        }
-
-        if ( m_categories.count( "c++L64" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_cxx_L64" );
-        }
-
-        if ( m_categories.count( "pgCCL32" ) || m_categories.count( "pgCCL64" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_pgCC" );
-        }
-
-        if ( m_categories.count( "pgCCL32" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_pgCC_L32" );
-        }
-
-        if ( m_categories.count( "pgCCL64" ) )
-        {
-            libs.push_back( "lib" + m_library + "_event_pgCC_L64" );
-        }
-
-        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
-        deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
+        libs.push_back( "lib" + m_library + "_event_libc" );
     }
+
+    if ( m_categories.count( "libc11" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_libc11" );
+    }
+
+    if ( m_categories.count( "c++L32" ) || m_categories.count( "c++L64" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_cxx" );
+    }
+
+    if ( m_categories.count( "c++L32" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_cxx_L32" );
+    }
+
+    if ( m_categories.count( "c++L64" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_cxx_L64" );
+    }
+
+    if ( m_categories.count( "pgCCL32" ) || m_categories.count( "pgCCL64" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_pgCC" );
+    }
+
+    if ( m_categories.count( "pgCCL32" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_pgCC_L32" );
+    }
+
+    if ( m_categories.count( "pgCCL64" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_pgCC_L64" );
+    }
+
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
 void
