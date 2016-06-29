@@ -39,13 +39,13 @@ SCOREP_Config_MppSystem* SCOREP_Config_MppSystem::current = 0;
 void
 SCOREP_Config_MppSystem::init( void )
 {
+    all.push_back( new SCOREP_Config_MockupMppSystem() );
 #if HAVE_BACKEND( MPI_SUPPORT )
     all.push_back( new SCOREP_Config_MpiMppSystem() );
 #endif
 #if HAVE_BACKEND( SHMEM_SUPPORT )
     all.push_back( new SCOREP_Config_ShmemMppSystem() );
 #endif
-    all.push_back( new SCOREP_Config_MockupMppSystem() );
     current = all.front();
 }
 
