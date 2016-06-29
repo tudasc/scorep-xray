@@ -356,7 +356,9 @@ void
 SCOREP_Config_PthreadThreadSystem::addLdFlags( std::string& ldflags,
                                                bool         nvcc )
 {
-    ldflags += " -Wl,-wrap,pthread_create,"
+    ldflags += " -Wl,"
+               "--undefined,__wrap_pthread_create,"
+               "-wrap,pthread_create,"
                "-wrap,pthread_join,"
                "-wrap,pthread_exit,"
                "-wrap,pthread_cancel,"
@@ -371,8 +373,7 @@ SCOREP_Config_PthreadThreadSystem::addLdFlags( std::string& ldflags,
                "-wrap,pthread_cond_broadcast,"
                "-wrap,pthread_cond_wait,"
                "-wrap,pthread_cond_timedwait,"
-               "-wrap,pthread_cond_destroy "
-    ;
+               "-wrap,pthread_cond_destroy";
 }
 
 void
