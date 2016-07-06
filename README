@@ -9,7 +9,7 @@ To build Score-P you usually just need to do
 
   mkdir _build
   cd _build
-  ,./configure
+  ../configure
   make
   make install
 
