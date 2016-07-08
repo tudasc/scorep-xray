@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -139,6 +139,9 @@ static bool are_metric_plugins_used = false;
 /** A number of plugin libraries, [sync_type][library_nr] */
 static metric_plugin* metric_plugin_handles[ SCOREP_METRIC_SYNC_TYPE_MAX ];
 
+/* Number of selected plugins */
+static uint32_t num_selected_plugins = 0;
+
 /** Number of used plugins per sync type*/
 static uint32_t num_plugins[ SCOREP_METRIC_SYNC_TYPE_MAX ];
 
@@ -170,7 +173,7 @@ register_source( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric plugins source!" );
 
-    /* Register environment variables to specify ised plugins */
+    /* Register environment variables to specify used plugins */
     SCOREP_ErrorCode status;
     status = SCOREP_ConfigRegister( "metric", scorep_metric_plugins_confvars );
     if ( status != SCOREP_SUCCESS )
@@ -255,9 +258,6 @@ initialize_source( void )
         } get_info;
 
         metric_plugin* current_plugin;
-
-        /* Number of selected plugins */
-        uint32_t num_selected_plugins = 0;
 
         /* Read content of environment variable */
         env_var_content = UTILS_CStr_dup( scorep_metric_plugins );
@@ -454,41 +454,48 @@ initialize_source( void )
             /* Clear out current plugin */
             memset( current_plugin, 0, sizeof( metric_plugin ) );
 
-            UTILS_BUG_ON( num_additional_environment_variables >= PLUGINS_MAX,
-                          "Maximum number of additional environment variables for metric plugins reached." );
-            additional_environment_variables_container* additional_environment_variable
-                                                                        = &additional_environment_variables[ num_additional_environment_variables ];
-            current_plugin->additional_event_environment_variable_index = num_additional_environment_variables;
-            num_additional_environment_variables++;
+            SCOREP_ConfigVariable* variable = SCOREP_ConfigGetData( "metric", current_plugin_name );
 
-            /* Register additional per-plugin environment variables */
-            additional_environment_variable->config_variables[ 0 ].name              = current_plugin_name;
-            additional_environment_variable->config_variables[ 0 ].type              = SCOREP_CONFIG_TYPE_STRING;
-            additional_environment_variable->config_variables[ 0 ].variableReference = &( additional_environment_variable->event_variable );
-            additional_environment_variable->config_variables[ 0 ].variableContext   = NULL;
-            additional_environment_variable->config_variables[ 0 ].defaultValue      = "";
-            additional_environment_variable->config_variables[ 0 ].shortHelp         = "Specify list of used events from this plugin";
-            additional_environment_variable->config_variables[ 0 ].longHelp          = "List of requested event names from this plugin that will be used during program run.";
-
-            /* @ todo: if SCOREP_CONFIG_TERMINATOR changes we will get in trouble because it's likely to forget to adapt this code  */
-            additional_environment_variable->config_variables[ 1 ].name              = NULL;
-            additional_environment_variable->config_variables[ 1 ].type              = SCOREP_INVALID_CONFIG_TYPE;
-            additional_environment_variable->config_variables[ 1 ].variableReference = NULL;
-            additional_environment_variable->config_variables[ 1 ].variableContext   = NULL;
-            additional_environment_variable->config_variables[ 1 ].defaultValue      = NULL;
-            additional_environment_variable->config_variables[ 1 ].shortHelp         = NULL;
-            additional_environment_variable->config_variables[ 1 ].longHelp          = NULL;
-
-            SCOREP_ErrorCode status;
-            status = SCOREP_ConfigRegister( "metric", additional_environment_variable->config_variables );
-            if ( status != SCOREP_SUCCESS )
+            if ( !variable )
             {
-                UTILS_WARNING( "Registration of individual Metric Plugins configuration variables failed." );
-            }
-            status = SCOREP_ConfigApplyEnv();
-            if ( status != SCOREP_SUCCESS )
-            {
-                UTILS_WARNING( "Evaluation of individual Metric Plugins configuration variables failed." );
+                UTILS_BUG_ON( num_additional_environment_variables >= PLUGINS_MAX,
+                              "Maximum number of additional environment variables for metric plugins reached." );
+                additional_environment_variables_container* additional_environment_variable
+                                                                            = &additional_environment_variables[ num_additional_environment_variables ];
+                current_plugin->additional_event_environment_variable_index = num_additional_environment_variables;
+                num_additional_environment_variables++;
+
+                /* Register additional per-plugin environment variables */
+                additional_environment_variable->config_variables[ 0 ].name              = current_plugin_name;
+                additional_environment_variable->config_variables[ 0 ].type              = SCOREP_CONFIG_TYPE_STRING;
+                additional_environment_variable->config_variables[ 0 ].variableReference = &( additional_environment_variable->event_variable );
+                additional_environment_variable->config_variables[ 0 ].variableContext   = NULL;
+                additional_environment_variable->config_variables[ 0 ].defaultValue      = "";
+                additional_environment_variable->config_variables[ 0 ].shortHelp         = "Specify list of used events from this plugin";
+                additional_environment_variable->config_variables[ 0 ].longHelp          = "List of requested event names from this plugin that will be used during program run.";
+
+                /* @ todo: if SCOREP_CONFIG_TERMINATOR changes we will get in trouble because it's likely to forget to adapt this code  */
+                additional_environment_variable->config_variables[ 1 ].name              = NULL;
+                additional_environment_variable->config_variables[ 1 ].type              = SCOREP_INVALID_CONFIG_TYPE;
+                additional_environment_variable->config_variables[ 1 ].variableReference = NULL;
+                additional_environment_variable->config_variables[ 1 ].variableContext   = NULL;
+                additional_environment_variable->config_variables[ 1 ].defaultValue      = NULL;
+                additional_environment_variable->config_variables[ 1 ].shortHelp         = NULL;
+                additional_environment_variable->config_variables[ 1 ].longHelp          = NULL;
+
+                SCOREP_ErrorCode status;
+                status = SCOREP_ConfigRegister( "metric", additional_environment_variable->config_variables );
+                if ( status != SCOREP_SUCCESS )
+                {
+                    UTILS_WARNING( "Registration of individual Metric Plugins configuration variables failed." );
+                }
+                status = SCOREP_ConfigApplyEnv();
+                if ( status != SCOREP_SUCCESS )
+                {
+                    UTILS_WARNING( "Evaluation of individual Metric Plugins configuration variables failed." );
+                }
+
+                variable = SCOREP_ConfigGetData( "metric", current_plugin_name );
             }
 
             /* Add handle (should be closed in the end) */
@@ -519,8 +526,11 @@ initialize_source( void )
              * For example, if the user set SCOREP_METRIC_<pluginname> to token1,token2,token3
              * the next loop will iterate over the tokens token1, token2, and token3.
              */
-            env_var_content = UTILS_CStr_dup( additional_environment_variable->event_variable );
-            token           = strtok( env_var_content, scorep_metric_plugins_separator );
+            if ( *( char** )variable->variableReference )
+            {
+                env_var_content = UTILS_CStr_dup( *( char** )variable->variableReference );
+            }
+            token = strtok( env_var_content, scorep_metric_plugins_separator );
             while ( token )
             {
                 /*
@@ -646,6 +656,8 @@ finalize_source( void )
         /* Set initialization flag */
         metric_plugins_initialized = 1;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize metric plugins source." );
+
+        num_selected_plugins = 0;
     }
 }
 

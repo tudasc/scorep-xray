@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,6 +42,7 @@
 #include "scorep_oa_mri_control.h"
 
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include "scorep_oa_confvars.inc.c"
 
@@ -56,12 +57,12 @@ SCOREP_OA_Register( void )
 int8_t
 SCOREP_OA_Init( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     //printf("ENV variables: %ld %ld %s\n",scorep_oa_port,scorep_oa_registry_port,scorep_oa_registry_host);
     if ( is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
     {
-        /* Set the intialization flag to indicate that the adapter is initialized */
+        /* Set the initialization flag to indicate that the adapter is initialized */
         is_initialized = 1;
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION );
         scorep_oa_connection = scorep_oa_connection_connect();
@@ -80,11 +81,14 @@ SCOREP_OA_Initialized( void )
 void
 SCOREP_OA_Finalize( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     if ( is_initialized
          && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
         scorep_oa_connection_send_string( scorep_oa_connection, "SUSPENDEDATEND\n" );
-        //scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
+        if ( scorep_oa_connection_disconnect() != SCOREP_SUCCESS )
+        {
+            UTILS_WARNING( "Unable to disconnect from server.\n" );
+        }
     }
 }

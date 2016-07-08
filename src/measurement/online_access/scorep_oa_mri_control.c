@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -86,35 +86,42 @@ yyparse( void );
 void
 scorep_oa_mri_receive_and_process_requests( int connection )
 {
-    int  length, i;
-    char buffer[ 2000 ];
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-    buffer[ 0 ] = 0;
-    memset( buffer, '\0', 2000 );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     while ( scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_STATUS_RUNNING_TO_END
             && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING
             && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
+        char buffer[ 2000 ];
         memset( buffer, '\0', 2000 );
 
+        int length;
         while ( ( length = scorep_oa_connection_read_string( connection, buffer, 2000 ) ) == 0 )
         {
         }
 
-        for ( i = 0; i < length; i++ )
+        int skip_expressions = 0;
+        for ( int i = 0; i < length; i++ )
         {
-            buffer[ i ] = toupper( buffer[ i ] );
+            if ( buffer[ i ] == '"' )
+            {
+                skip_expressions = !skip_expressions;
+            }
+            if ( !skip_expressions )
+            {
+                buffer[ i ] = toupper( buffer[ i ] );
+            }
         }
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
+
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
 
         if ( scorep_oa_mri_parse( buffer ) != SCOREP_SUCCESS )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
         }
         if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Terminating application!" );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Terminating application!" );
             SCOREP_FinalizeMeasurement();
             _Exit( EXIT_SUCCESS );
         }
@@ -122,60 +129,42 @@ scorep_oa_mri_receive_and_process_requests( int connection )
 #ifdef WITH_MPI
     PMPI_Barrier( MPI_COMM_WORLD );
 #endif
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __func__ );
 }
 
 scorep_oa_mri_app_control_type
 scorep_oa_mri_get_appl_control( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     return appl_control;
 }
 
 void
 scorep_oa_mri_set_appl_control( scorep_oa_mri_app_control_type command )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     appl_control = command;
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
 }
 
 void
 scorep_oa_mri_set_phase( SCOREP_RegionHandle handle )
 {
     phase_handle = handle;
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Phase set to region (handle = %ld )\n", phase_handle );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Phase set to region (handle = %ld )", phase_handle );
 }
 
 void
-scorep_oa_mri_noop( void )
+scorep_oa_mri_set_num_iterations( int iterations )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-}
-
-void
-scorep_oa_mri_add_metric_by_code( int metric_code )
-{
-    SCOREP_OA_RequestsAddPeriscopeMetric( metric_code );
-}
-
-
-void
-scorep_oa_mri_begin_request( void )
-{
-    SCOREP_OA_RequestBegin();
-}
-
-void
-scorep_oa_mri_end_request( void )
-{
-    SCOREP_OA_RequestsSubmit();
+    scorep_oa_iterations_per_phase = iterations;
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Number of iterations set to: %i", iterations );
 }
 
 void
 scorep_oa_mri_return_summary_data( int connection )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     /** Initialize OA Consumer interface and index Profile data */
     SCOREP_OAConsumer_Initialize( phase_handle );

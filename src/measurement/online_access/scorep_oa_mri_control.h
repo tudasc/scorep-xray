@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -45,24 +45,25 @@
 #include "SCOREP_Types.h"
 
 /**
- * Enum specifing possible execution control statuses of the application
+ * Enum specifying possible execution control statuses of the application
  */
 typedef enum
 {
     SCOREP_OA_MRI_STATUS_UNDEFINED,
-    SCOREP_OA_MRI_STATUS_SUSPENDED_TERMINATION,
     SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING,
     SCOREP_OA_MRI_STATUS_SUSPENDED_END,
     SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION,
     SCOREP_OA_MRI_STATUS_RUNNING_TO_END,
     SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING,
     SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE,
-    SCOREP_OA_MRI_EXEC_REQUEST_RUN_TO_BEGINNING,
-    SCOREP_OA_MRI_EXEC_REQUEST_RUN_TO_END
 } scorep_oa_mri_app_control_type;
 
+/** Indicates how many iterations of the online access region constitute a 'phase'. Default value: 1 */
+
+extern int scorep_oa_iterations_per_phase;
+
 /**
- * Listens for the MRI commands from external tol on the specified connection
+ * Listens for the MRI commands from external tool on the specified connection
  *
  * @param connection a connection handler to listen for MRI commands
  */
@@ -99,14 +100,13 @@ scorep_oa_mri_set_appl_control( scorep_oa_mri_app_control_type command );
 void
 scorep_oa_mri_set_phase( SCOREP_RegionHandle handle );
 
-/*----------------------------------------------------------------------------------------
-   Configuration of measurements
-   -------------------------------------------------------------------------------------*/
 /**
- * Empty operation
+ * Sets the number of iterations per OA phase
+ *
+ * @param iterations number of iterations
  */
 void
-scorep_oa_mri_noop( void );
+scorep_oa_mri_set_num_iterations( int iterations );
 
 /**
  * Enable/Disable MPI profiling
@@ -116,40 +116,12 @@ scorep_oa_mri_noop( void );
 void
 scorep_oa_mri_set_mpiprofiling( int value );
 
-/**
- * Adds a metric specified by Periscope code to the Score-P measurement configuration requests
- *
- * @param metric_code Persicope metric code to add
- */
-void
-scorep_oa_mri_add_metric_by_code( int metric_code );
-
-/**
- * Adds a metric specified by name to the Score-P measurement configuration requests
- *
- * @param metric_code Persicope metric code to add
- */
-void
-scorep_oa_mri_add_metric_by_name( char* metric_name );
-
-/**
- * Initializes metric request handling module
- */
-void
-scorep_oa_mri_begin_request( void );
-
-/**
- * Submits metric requests to measurement core
- */
-void
-scorep_oa_mri_end_request( void );
-
 /*----------------------------------------------------------------------------------------
    Retrieval of measurements
    -------------------------------------------------------------------------------------*/
 
 /**
- * Returns requested measurements to the exeternal tool
+ * Returns requested measurements to the external tool
  *
  * @param connection a connection handle to send measurements over
  */

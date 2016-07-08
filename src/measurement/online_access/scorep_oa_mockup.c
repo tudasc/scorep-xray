@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -43,22 +43,23 @@
 void
 SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle )
 {
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }
 
 void
 SCOREP_OA_PhaseEnd( const SCOREP_RegionHandle handle )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }
 
 void
 SCOREP_OA_Register( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }
 
 void
 SCOREP_OA_Finalize( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }

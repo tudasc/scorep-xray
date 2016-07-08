@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -521,6 +521,31 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
     }
 
     return SCOREP_SUCCESS;
+}
+
+
+SCOREP_ConfigVariable*
+SCOREP_ConfigGetData( const char* nameSpaceName,
+                      const char* variableName )
+{
+    size_t                           name_space_len = strlen( nameSpaceName );
+    struct scorep_config_name_space* name_space     =
+        get_name_space( nameSpaceName, name_space_len, false );
+    if ( !name_space )
+    {
+        UTILS_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                     "Unknown name space: %s::", nameSpaceName );
+    }
+    UTILS_DEBUG( "Using name space %s", name_space->name );
+
+    struct scorep_config_variable* variable =
+        get_variable( name_space, variableName, false );
+    if ( !variable )
+    {
+        return NULL;
+    }
+
+    return &variable->data;
 }
 
 

@@ -22,7 +22,7 @@ scorep_online_access_registry_CPPFLAGS = $(AM_CPPFLAGS) \
     -D__STDC_FORMAT_MACROS
 
 if ! PLATFORM_AIX
-scorep_online_access_registry_CPPFLAGS += -D_POSIX_SOURCE
+scorep_online_access_registry_CPPFLAGS += -D_POSIX_C_SOURCE=200112L
 endif
 
 scorep_online_access_registry_LDADD = $(LIB_ROOT)libutils.la

@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -52,21 +52,21 @@ int
 scorep_oa_connection_connect( void );
 
 SCOREP_ErrorCode
-scorep_oa_connection_disconnect( int connection );
+scorep_oa_connection_disconnect( void );
 
 SCOREP_ErrorCode
 scorep_oa_connection_send_string( int         connection,
-                                  const char* message_string );
+                                  const char* messageString );
 
 SCOREP_ErrorCode
 scorep_oa_connection_send_data( int   connection,
-                                void* message_data,
+                                void* messageData,
                                 int   size,
-                                int   type_size );
+                                int   typeSize );
 
 int
 scorep_oa_connection_read_string( int   connection,
-                                  char* message_string,
-                                  int   maxlen );
+                                  char* messageString,
+                                  int   maxLen );
 
 #endif /* SCOREP_OA_CONNECTION_H */

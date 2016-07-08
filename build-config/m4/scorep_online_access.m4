@@ -43,7 +43,7 @@ AS_CASE([${build_os}],
 	                     [ac_scorep_have_online_access_getaddrinfo="yes"],
 	                     [ac_scorep_have_online_access_getaddrinfo="no"],
 	                     [[
-	    #define _POSIX_SOURCE
+            #define _POSIX_C_SOURCE 200112L
 		#include <sys/types.h>
 		#include <sys/socket.h>
 		#include <netdb.h>

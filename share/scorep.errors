@@ -50,6 +50,7 @@ error_code PAPI_INIT "Could not initialize PAPI library"
 error_code MEMORY_OUT_OF_PAGES "No free memory page available"
 error_code SWITCH_IN_PARALLEL "Switching recording on or off in a parallel region is not allowed. Please consult the manual for information, where recording can be switched on/off"
 error_code OA_PARSE_MRI "Could not parse MRI request"
+error_code OA_SERVER_DISCONNECT "Could not close socket"
 error_code ON_SYSTEM_CALL "Error in execution of system command"
 
 error_code POMP_UNKNOWN_REGION_TYPE "Unknown POMP region type specified in CTC string"

@@ -53,26 +53,25 @@ if HAVE_ONLINE_ACCESS
 
 BUILT_SOURCES += scorep_oa_scanner.h
 
-libscorep_online_access_mpp_mpi_la_SOURCES =                               \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_scanner.y           \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_parser.l            \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_functions.c         \
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_RuntimeManagement.h \
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_RuntimeManagement.c \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.h           \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.c           \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h        \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c        \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h       \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c       \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h \
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Request.c           \
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Request.h           \
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_PeriscopeMetrics.h  \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c             \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h             \
+libscorep_online_access_mpp_mpi_la_SOURCES =                                 \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_scanner.y             \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_parser.l              \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_functions.c           \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_RuntimeManagement.h   \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_RuntimeManagement.c   \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.h             \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.c             \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h          \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c          \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h         \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c         \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h   \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Request.c             \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Request.h             \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c               \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h               \
     $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile_OAConsumer.h \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c       \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.h \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c
@@ -97,7 +96,7 @@ libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
 CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
 
 if ! PLATFORM_AIX
-libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_SOURCE
+libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_C_SOURCE=200112L
 endif
 
 else #if HAVE_ONLINE_ACCESS

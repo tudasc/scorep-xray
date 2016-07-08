@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -49,79 +49,20 @@
 
 typedef struct
 {
-    int   id;
-    char* app;          // the application name
-    char* site;         // the name of the site
-    char* mach;         // the name of the machine
-    char* node;         // the name of the node
-    int   port;         // the port number
-    int   pid;          // the process id
-    char* comp;         // the component
-    char* tag;
-}       r_info;
-
-typedef struct
-{
     char* hostname_;
     int   port_;
     int   sock_;
-}       registry;
+} registry;
 
 int
-scorep_oa_sockets_server_startup_retry( uint64_t* init_port,
+scorep_oa_sockets_server_startup_retry( uint64_t* initPort,
                                         int       retries,
                                         int       step );
-
-/*
- * open connection to the registry server,
- * initialize data-structures
- */
-registry*
-scorep_oa_sockets_open_registry( const char* hostname,
-                                 int         port );
-
-
-/*
- * close the connection to the registry server
- * returns 1 on success, 0 on failure
- */
-int
-scorep_oa_sockets_close_registry( registry* reg );
-
-
-/*
- * create an entry in the registry which doesn't contain data initially,
- * returns the entry's positive ID on success 0 on failure
- */
-int
-scorep_oa_sockets_registry_create_entry( registry*   reg,
-                                         const char* app,
-                                         const char* site,
-                                         const char* mach,
-                                         const char* node,
-                                         int         port,
-                                         int         pid,
-                                         const char* comp,
-                                         const char* tag );
-
-int
-scorep_oa_sockets_client_connect_retry( char* hostname,
-                                        int   port,
-                                        int   retries );
-
-int
-scorep_oa_sockets_socket_my_read( int   fd,
-                                  char* ptr );
-
-int
-scorep_oa_sockets_blockread( int   sock,
-                             char* ptr,
-                             int   size );
 
 int
 scorep_oa_sockets_read_line( int   sock,
                              char* str,
-                             int   maxlen );
+                             int   maxLen );
 
 void
 scorep_oa_sockets_write_line( int         sock,
@@ -134,11 +75,14 @@ scorep_oa_sockets_write_data( int         sock,
 
 void
 scorep_oa_sockets_register_with_registry( uint64_t port,
-                                          uint64_t reg_port,
-                                          char*    reg_host,
-                                          char*    app_name );
+                                          uint64_t regPort,
+                                          char*    regHost,
+                                          char*    appName );
 
 int
 scorep_oa_sockets_server_accept_client( int sock );
+
+int
+scorep_oa_sockets_server_disconnect( int sock );
 
 #endif /* SCOREP_OA_SOCKETS_H */

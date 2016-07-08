@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011, 2015-2016,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license. See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -25,22 +39,22 @@
 
 /* server version and build date */
 
-#define PERISCOPE_VERSION        "1.0"
-#define PERISCOPE_BUILD_DATE     "Nov/2009"
+#define PERISCOPE_VERSION        "2.0"
+#define PERISCOPE_BUILD_DATE     "Jan/2016"
 
 
 /* command names, general */
 #define CMD_QUIT          "QUIT"
-#define CMD_HELP          "HELP"             /* give help message */
-#define CMD_CREATE        "CREATE"           /* create a new entry*/
-#define CMD_SEARCH        "SEARCH"           /* search for entries */
-#define CMD_DELETE        "DELETE"           /* delete an entry */
-#define CMD_DELETE_SHORT  "DEL"              /* short version to ease interactive usage */
-#define CMD_LIST          "LIST"             /* list entries */
-#define CMD_SHOW          "SHOW"             /* show a specific entry */
-#define CMD_CLEAN         "CLEAN"            /* delete all entries (debugging) */
-#define CMD_CHANGE        "CHANGE"           /* change an entry */
-#define CMD_TEST                  "TEST"     /* start testing of the all coneected monitoring processes */
+#define CMD_HELP          "HELP"     /* give help message */
+#define CMD_CREATE        "CREATE"   /* create a new entry*/
+#define CMD_SEARCH        "SEARCH"   /* search for entries */
+#define CMD_DELETE        "DELETE"   /* delete an entry */
+#define CMD_DELETE_SHORT  "DEL"      /* short version to ease interactive usage */
+#define CMD_LIST          "LIST"     /* list entries */
+#define CMD_SHOW          "SHOW"     /* show a specific entry */
+#define CMD_CLEAN         "CLEAN"    /* delete all entries (debugging) */
+#define CMD_CHANGE        "CHANGE"   /* change an entry */
+#define CMD_TEST          "TEST"     /* start testing of the all connected monitoring processes */
 
 
 /* command names, string handling */

@@ -19,11 +19,11 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license.  See the COPYING file in the package base
+ * a BSD-style license. See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -39,137 +39,108 @@
 #include <config.h>
 #include "scorep_oa_scanner.h"
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 #include <SCOREP_ErrorCodes.h>
+#include <UTILS_CStr.h>
+
 %}
 
 /* *INDENT-OFF* */
+/* --- Definitions --- */
 
-/******************************************************************************/
-/* lex.l:                                               Version vom 19.11.1999 */
-/* ========================================================================== */
-/******************************************************************************/
+%e 2000  /* Raise the number of nodes */
 
-/* --- Definitionen --- */
-
-%e 2000  /* Knotenanzahl erhoehen */
-
-Ziffer        [0-9]
+Digit         [0-9]
 Return        \n
 Tabulator     \t
-Leer          [ \t]
-Zahl          {Ziffer}+
-A             [Aa]
-B             [Bb]
-C             [Cc]
-D             [Dd]
-E             [Ee]
-F             [Ff]
-G             [Gg]
-H             [Hh]
-I             [Ii]
-J             [Jj]
-K             [Kk]
-L             [Ll]
-M             [Mm]
-N             [Nn]
-O             [Oo]
-P             [Pp]
-Q             [Qq]
-R             [Rr]
-S             [Ss]
-T             [Tt]
-U             [Uu]
-V             [Vv]
-W             [Ww]
-X             [Xx]
-Y             [Yy]
-Z             [Zz]
+Delimiter     [ \t]
+Number        {Digit}+
+Letter        [a-zA-Z]
+Word          {Letter}({Letter}|{Digit})+
 
 
-%StartConditions ZEILE COMMENT1 COMMENT2
+%StartConditions LINE COMMENT1 COMMENT2
 
 %%
-  BEGIN ZEILE;
+  BEGIN LINE;
 
-<ZEILE>"//"                              {BEGIN COMMENT1;}
-<ZEILE>"/*"                              {BEGIN COMMENT2;}
+<LINE>"//"                   { BEGIN COMMENT1; }
+<LINE>"/*"                   { BEGIN COMMENT2; }
 
-<COMMENT1>.                              {;}
-<COMMENT1>"\n"                       {BEGIN ZEILE;}
+<COMMENT1>.                  { ; }
+<COMMENT1>"\n"               { BEGIN LINE; }
 
-<COMMENT2>"\n"                       {}
-<COMMENT2>.                              {;}
-<COMMENT2>"*/"                           {BEGIN ZEILE;}
+<COMMENT2>"\n"               { }
+<COMMENT2>.                  { ; }
+<COMMENT2>"*/"               { BEGIN LINE; }
 
-<ZEILE>CONFIG               {return (T_CONFIG);}
-<ZEILE>INCLUDE             {return (T_INCLUDE);}
-<ZEILE>REQUEST             {return (T_REQUEST);}
+<LINE>TERMINATE              { return T_TERMINATE; }
+<LINE>RUNTOSTART             { return T_RUNTOSTART; }
+<LINE>RUNTOEND               { return T_RUNTOEND; }
+<LINE>GETSUMMARYDATA         { return T_GETSUMMARYDATA; }
+<LINE>BEGINREQUESTS          { return T_BEGINREQUESTS; }
+<LINE>ENDREQUESTS            { return T_ENDREQUESTS; }
+<LINE>SETNUMITERATIONS       { return T_SETNUMITERATIONS; }
 
-<ZEILE>SDDF_BUFFER_FLUSH_RATE {return(T_SDDF_BUFFER_FLUSH_RATE);}
+<LINE>REQUEST                { return T_REQUEST; }
 
-<ZEILE>REGION_SUMMARY {return (T_REGION_SUMMARY);}
-<ZEILE>ON                            {return (T_ON);}
-<ZEILE>ONLY                      {return (T_ONLY);}
-<ZEILE>OFF                         {return (T_OFF);}
+<LINE>GLOBAL                 { return T_GLOBAL; }
 
+<LINE>"MPI"                  { return T_MPI; }
+<LINE>METRIC                 { return T_METRIC; }
+<LINE>EXECUTION_TIME         { return T_EXECUTION_TIME; }
 
-<ZEILE>GLOBAL             {return (T_GLOBAL);}
-<ZEILE>LOCAL                 {return (T_LOCAL);}
+<LINE>PERISCOPE              { return T_PERISCOPE; }
+<LINE>PAPI                   { return T_PAPI; }
+<LINE>RUSAGE                 { return T_RUSAGE; }
+<LINE>PERF                   { return T_PERF; }
+<LINE>PLUGIN                 { return T_PLUGIN; }
+<LINE>OTHER                  { return T_OTHER; }
 
-<ZEILE>CALL                    {return (T_CALL);}
-<ZEILE>USER                    {return (T_USER);}
+<LINE>\*                     |
+<LINE>\(                     |
+<LINE>\)                     |
+<LINE>\[                     |
+<LINE>[;,=]                  |
+<LINE>\]                     { return yytext[0]; }
+<LINE>{Number}               {
+                                 yylval.Number = atoi(yytext);
+                                 return T_NUMBER;
+                             }
+<LINE>{Word}                 {
+                                 yylval.String = UTILS_CStr_dup(yytext);
+                                 return T_STRING;
+                             }
+<LINE>\"[^"]+\"              {
+                                 //yytext string size including trailing 0
+                                 int old_string_size = strlen(yytext) + 1;
+                                 //string to be returned equal to the yytext but remove ""
+                                 int new_string_size = old_string_size - 2;
+                                 yylval.String = (char *)calloc( new_string_size, sizeof( char ) );
+                                 UTILS_ASSERT( yylval.String );
+                                 int i;
+                                 for ( i = 1; i < old_string_size - 2; i++ ) {
+                                     yylval.String[ i - 1 ] = yytext[ i ];
+                                 }
+                                 yylval.String[ new_string_size - 1 ] = '\0';
+                                 return T_QSTRING;
+                             }
+<LINE>{Delimiter}*           {;}
+<LINE>{Return}               {}
 
-
-<ZEILE>EXECUTION_TIME          {return (T_EXECUTION_TIME);}
-<ZEILE>"L1_CACHE_MISS"         {return (T_L1_CACHE_MISS);}
-
-<ZEILE>TERMINATE               {return (T_TERMINATE);}
-<ZEILE>RUNTOSTART              {return (T_RUNTOSTART);}
-<ZEILE>RUNTOEND                {return (T_RUNTOEND);}
-<ZEILE>GETSUMMARYDATA          {return (T_GETSUMMARYDATA);}
-<ZEILE>BEGINREQUESTS           {return (T_BEGINREQUESTS);}
-<ZEILE>ENDREQUESTS             {return (T_ENDREQUESTS);}
-
-<ZEILE>"MPI"                	            {return (T_MPI);}
-<ZEILE>METRIC 								{return (T_METRIC);}
-<ZEILE>PERISCOPE							{return (T_PERISCOPE);}
-<ZEILE>PAPI									{return (T_PAPI);}
-<ZEILE>RUSAGE								{return (T_RUSAGE);}
-<ZEILE>OTHER								{return (T_OTHER);}
-
-<ZEILE>\*                                |
-<ZEILE>\(                                |
-<ZEILE>\)                                |
-<ZEILE>\[                                |
-<ZEILE>[;,=]                             |
-<ZEILE>\]                                {return (yytext[0]);}
-<ZEILE>[0-9]+                            {yylval.Zahl = atoi(yytext); return (T_ZAHL);}
-<ZEILE>\"[^ ";\t\n]+\"                   {
-                                           //yytext string size including trailing 0
-                                           int old_string_size= strlen(yytext) + 1;
-                                           //string to be returned equal to the yytext but remove ""
-                                           int new_string_size= old_string_size -2;
-                                           yylval.String = (char *) calloc(new_string_size ,sizeof(char));
-                                           int i;
-                                           for(i=1;i<old_string_size-2;i++)
-                                           		yylval.String[i-1]=yytext[i];
-                                           yylval.String[new_string_size-1]= '\0';
-                                           return (T_STRING);
-                                         }
-<ZEILE>[ \t]*                           {;}
-<ZEILE>{Return}                              {}
-
-{Return}                                 |
-.                                        {
-       printf ("PARSING ERROR: (%c)\n", yytext[0] ); return (yytext[0]);}
+{Return}                     |
+.                            {
+                                 UTILS_ERROR( SCOREP_ERROR_OA_PARSE_MRI, "PARSING ERROR: (%c)\n", yytext[ 0 ] );
+                                 return yytext[ 0 ];
+                             }
 
 
 %%
 
-int yywrap ()
+int
+yywrap()
 {
-
-  return 1;
+    return 1;
 }
 
 /* Prevent warnings from -Wmissing-prototypes.  */
@@ -188,14 +159,14 @@ int yyparse ();
 #endif /* ! YYPARSE_PARAM */
 
 SCOREP_ErrorCode
-scorep_oa_mri_parse( char* buffer)
+scorep_oa_mri_parse( char* buffer )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     SCOREP_ErrorCode return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE my_string_buffer;
 
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
     if ( yyparse() != 0 )
     {
@@ -205,4 +176,3 @@ scorep_oa_mri_parse( char* buffer)
 
     return return_status;
 }
-

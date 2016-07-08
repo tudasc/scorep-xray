@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,6 +41,7 @@
 #include "SCOREP_Memory.h"
 #include "SCOREP_Config.h"
 #include "SCOREP_Definitions.h"
+#include <UTILS_Debug.h>
 
 #include <UTILS_IO.h>
 #include "scorep_profile_oaconsumer_process.h"
@@ -55,10 +56,6 @@
 #include <string.h>
 #include <inttypes.h>
 #include <stdlib.h>
-#include <assert.h>
-
-/* temporary debug switch */
-static int do_print_out = 0;
 
 /* array of thread profile index pointers */
 static thread_private_index_type** thread_index_pointer_array = NULL;
@@ -66,53 +63,60 @@ static thread_private_index_type** thread_index_pointer_array = NULL;
 /* number of threads */
 static uint32_t thread_count = 0;
 
+#if HAVE( SCOREP_DEBUG )
+/**
+ * Prints registered region definitions
+ */
+static inline void
+print_region_definitions( void );
+
+/**
+ * Prints given hash table
+ */
+static void
+print_hash_table( const SCOREP_Hashtab* hashTable,
+                  char*                 tag );
+
+#endif /* HAVE( SCOREP_DEBUG ) */
+
 void
 SCOREP_OAConsumer_Initialize( SCOREP_RegionHandle phaseHandle )
 {
     int i;
 
-    assert( phaseHandle != SCOREP_INVALID_REGION );
+    UTILS_ASSERT( phaseHandle != SCOREP_INVALID_REGION );
 
-//    if ( do_print_out )
-//	{
-//		print_region_definitions();
-//	}
-
-    //   scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );
+#if HAVE( SCOREP_DEBUG )
+    print_region_definitions();
+#endif /* HAVE( SCOREP_DEBUG ) */
 
     /** Performs default profile call-tree transformation */
     SCOREP_Profile_Process();
 
     thread_count = scorep_oaconsumer_get_number_of_roots();
 
-    /** Allocate and initialize thread-shread index data structures */
-    thread_index_pointer_array = scorep_oa_consumer_initialize_index( phaseHandle );
+    /** Allocate and initialize thread-shared index data structures */
+    thread_index_pointer_array = scorep_oaconsumer_initialize_index( phaseHandle );
 
     /** Loop over threads initializing thread-private index data structures*/
     for ( i = 0; i < thread_count; i++ )
     {
-//		if ( do_print_out )
-//		{
-//			scorep_profile_dump_subtree( thread_index_pointer_array[i]->phase_node, 0 );
-//		}
-
         /** Index all nodes starting from phase node*/
         scorep_profile_for_all( thread_index_pointer_array[ i ]->phase_node, &scorep_oaconsumer_count_index,  thread_index_pointer_array[ i ] );
 
-//		if ( do_print_out )
-//		{
-//			print_hash_table( thread_index_pointer_array[i]->shared_index->merged_regions_def_table, "REGIONS" );
-//			print_hash_table( thread_index_pointer_array[i]->static_measurements_table, "STATIC" );
-//		}
+#if HAVE( SCOREP_DEBUG )
+        print_hash_table( thread_index_pointer_array[ i ]->shared_index->merged_regions_def_table, "REGIONS" );
+        print_hash_table( thread_index_pointer_array[ i ]->static_measurements_table, "STATIC" );
+#endif  /* HAVE( SCOREP_DEBUG ) */
     }
 }
 
 uint32_t
-SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes dataType )
+SCOREP_OAConsumer_GetDataSize( scorep_oaconsumer_data_types dataType )
 {
     if ( thread_index_pointer_array[ 0 ] == NULL )
     {
-        printf( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array[0] == NULL\n" );
+        UTILS_WARNING( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array[0] == NULL" );
         return -1;
     }
     switch ( dataType )
@@ -137,11 +141,11 @@ SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes dataType )
 }
 
 void*
-SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes dataType )
+SCOREP_OAConsumer_GetData( scorep_oaconsumer_data_types dataType )
 {
     if ( thread_index_pointer_array == NULL )
     {
-        printf( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array == NULL\n" );
+        UTILS_WARNING( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array == NULL" );
         return NULL;
     }
     switch ( dataType )
@@ -168,43 +172,85 @@ SCOREP_OAConsumer_DismissData( void )
 {
     if ( thread_index_pointer_array == NULL )
     {
-        printf( "SCOREP_OAConsumer_DismissData: data_index == NULL\n" );
+        UTILS_WARNING( "SCOREP_OAConsumer_DismissData: data_index == NULL" );
         return;
     }
 
-    if ( thread_index_pointer_array[ 0 ]->shared_index )
-    {
-        if ( thread_index_pointer_array[ 0 ]->shared_index->merged_region_def_buffer )
-        {
-            free( thread_index_pointer_array[ 0 ]->shared_index->merged_region_def_buffer );
-        }
-        if ( thread_index_pointer_array[ 0 ]->shared_index->static_measurement_buffer )
-        {
-            free( thread_index_pointer_array[ 0 ]->shared_index->static_measurement_buffer );
-        }
-        if ( thread_index_pointer_array[ 0 ]->shared_index->counter_definition_buffer )
-        {
-            free( thread_index_pointer_array[ 0 ]->shared_index->counter_definition_buffer );
-        }
-        if ( thread_index_pointer_array[ 0 ]->shared_index->merged_regions_def_table )
-        {
-            SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ 0 ]->shared_index->merged_regions_def_table, &free, &free );
-        }
-        free( thread_index_pointer_array[ 0 ]->shared_index );
-    }
+    free( thread_index_pointer_array[ 0 ]->shared_index->merged_region_def_buffer );
+    free( thread_index_pointer_array[ 0 ]->shared_index->static_measurement_buffer );
+    free( thread_index_pointer_array[ 0 ]->shared_index->counter_definition_buffer );
+    SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ 0 ]->shared_index->merged_regions_def_table, &free, &free );
+    free( thread_index_pointer_array[ 0 ]->shared_index );
 
     int i;
     for ( i = 0; i < thread_count; i++ )
     {
-        if ( thread_index_pointer_array[ i ] )
-        {
-            if ( thread_index_pointer_array[ i ]->static_measurements_table )
-            {
-                SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table, &free, &free );
-            }
-            free( thread_index_pointer_array[ i ] );
-        }
+        SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table, &free, &free  );
+        free( thread_index_pointer_array[ i ] );
     }
     free( thread_index_pointer_array );
     thread_count = 0;
 }
+
+#if HAVE( SCOREP_DEBUG )
+static inline void
+print_region_definitions( void )
+{
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Region, region )
+    {
+        int index = SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "region definition index=%d,", index );
+
+        if ( definition->name_handle != SCOREP_INVALID_STRING )
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, " name %s,", SCOREP_RegionHandle_GetName( handle ) );
+        }
+        if ( definition->file_name_handle != SCOREP_INVALID_STRING )
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, " file %s,", SCOREP_RegionHandle_GetFileName( handle ) );
+        }
+        uint32_t rfl           = definition->begin_line;
+        uint32_t rel           = definition->end_line;
+        uint32_t paradigm_type = ( uint32_t )definition->paradigm_type;
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, " rfl=%d, paradigm=%d\n", rfl, paradigm_type );
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+static void
+print_hash_table( const SCOREP_Hashtab* hashTable,
+                  char*                 tag )
+{
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "\n/////////////%s///////////\n", tag );
+    SCOREP_Hashtab_Iterator* iter;
+    SCOREP_Hashtab_Entry*    entry;
+
+    iter  = SCOREP_Hashtab_IteratorCreate( hashTable );
+    entry = SCOREP_Hashtab_IteratorFirst( iter );
+    while ( entry )
+    {
+        if ( entry->key )
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Item (%d,%d,%d)-",
+                                    ( *( scorep_oa_key_type* )entry->key ).parent_region_id,
+                                    ( *( scorep_oa_key_type* )entry->key ).region_id,
+                                    ( *( scorep_oa_key_type* )entry->key ).metric_id );
+        }
+        else
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Item (X,X,X)-" );
+        }
+        if ( entry->value )
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%d\n", *( uint32_t* )( entry->value ) );
+        }
+        else
+        {
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "X\n" );
+        }
+        entry = SCOREP_Hashtab_IteratorNext( iter );
+    }
+    SCOREP_Hashtab_IteratorFree( iter );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "///////////////////////////\n\n" );
+}
+#endif /* HAVE( SCOREP_DEBUG ) */

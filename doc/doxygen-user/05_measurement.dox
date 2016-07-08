@@ -924,7 +924,9 @@ application execution and wait for requests. The format of the requests is plain
                          METRIC <metric_specification>
 <metric_specification> = PERISCOPE <periscope_metric_code> |
                          PAPI "<papi_counter_name>" |
+                         PERF <perf_counter_name>" |
                          RUSAGE "<rusage_metric_name>" |
+                         PLUGIN "<metric_plugin_name>" "<plugin_metric_name>" |
                          OTHER "metric_name"
 <execution>            = TERMINATE | RUNTOSTART | RUNTOEND
 <retrieval>            = GETSUMMARYDATA
@@ -957,7 +959,13 @@ where
     <tt>PAPI <papi_counter_name></tt> requests a PAPI hardware counter metric by the counter name,
  </li>
  <li>
+    <tt>PERF <perf_counter_name></tt> requests a PERF hardware counter metric by the counter name,
+ </li>
+ <li>
     <tt>RUSAGE <rusage_counter_name></tt> requests a Resource Usage Counter metric by the counter name,
+ </li>
+ <li>
+    <tt>PLUGIN "<metric_plugin_name>" "<plugin_metric_name>"</tt> requests a metric supported by the specified metric plugin,
  </li>
  <li>
     <tt>OTHER <metric_name></tt> requests a metric, to be defined in @scorep definition system, specified by the name,

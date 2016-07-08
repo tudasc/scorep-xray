@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -137,6 +137,7 @@ SCOREP_ErrorCode
 SCOREP_ConfigRegister( const char*                  nameSpace,
                        const SCOREP_ConfigVariable* variables );
 
+
 /**
  *  Same as @a SCOREP_ConfigRegister() but is effective only if either
  *  @a isAvailable is set, or a prior call to
@@ -148,11 +149,13 @@ SCOREP_ConfigRegisterCond( const char*                  nameSpaceName,
                            const SCOREP_ConfigVariable* variables,
                            bool                         isAvailable );
 
+
 /**
  *  Force registrations made with @a SCOREP_ConfigRegisterCond.
  */
 void
 SCOREP_ConfigForceConditionalRegister( void );
+
 
 /**
  * Evaluate all corresponding environment variables and assign the values to
@@ -180,6 +183,19 @@ SCOREP_ErrorCode
 SCOREP_ConfigSetValue( const char* nameSpaceName,
                        const char* variableName,
                        const char* variableValue );
+
+
+/**
+ * Returns the config variable data if it exists.
+ *
+ * @param nameSpaceName  The name space where the variable lives in.
+ * @param variableName   The name of the variable.
+ *
+ * @return SCOREP_ConfigVariable if variable was found, otherwise NULL.
+ */
+SCOREP_ConfigVariable*
+SCOREP_ConfigGetData( const char* nameSpaceName,
+                      const char* variableName );
 
 
 /**

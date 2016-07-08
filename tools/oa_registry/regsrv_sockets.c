@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011, 2015-2016,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -28,7 +42,6 @@
 #include "regsrv_sockets.h"
 #include "scorep_oa_registry_protocol.h"
 
-#include <errno.h>
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,7 +51,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
+#include <errno.h>
 
 static int   read_cnt;
 static char* read_ptr;
@@ -46,43 +59,40 @@ static char  read_buf[ 1000 ];
 
 
 int
-scorep_oa_sockets_server_startup_retry
-(
-    int* init_port,
-    int  retries,
-    int  step
-)
+scorep_oa_sockets_server_startup_retry( int* initPort,
+                                        int  retries,
+                                        int  step )
 {
     int                sock;
-    int                yes  = 1;
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    ////UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
+    //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     /**
-     * create a new socket socket() returns positive interger on success
+     * create a new socket socket() returns positive integer on success
      */
 
-    for ( port = *init_port; port <= *init_port + retries * step && stat == -1; port = port + step )
+    for ( port = ( int )*initPort; port <= *initPort + retries * step && stat == -1; port = port + step )
     {
         stat = 0;
 
         if ( ( sock = socket( AF_INET, SOCK_STREAM, 0 ) ) < 0 )
         {
-            if ( port + step > *init_port + retries * step )
+            if ( port + step > *initPort + retries * step )
             {
-                //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()\n" );
+                //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()" );
             }
             stat = -1;
         }
         else
         {
+            int yes = 1;
             if ( setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof( int ) ) < 0 )
             {
-                if ( port + step > *init_port + retries * step )
+                if ( port + step > *initPort + retries * step )
                 {
-                    //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()\n" );
+                    //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()" );
                 }
                 stat = -1;
             }
@@ -95,9 +105,9 @@ scorep_oa_sockets_server_startup_retry
 
                 if ( bind( sock, ( struct sockaddr* )&my_addr, sizeof( struct sockaddr ) ) < 0 )
                 {
-                    if ( port + step > *init_port + retries * step )
+                    if ( port + step > *initPort + retries * step )
                     {
-                        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()\n" );
+                        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()" );
                     }
                     stat = -1;
                 }
@@ -105,9 +115,9 @@ scorep_oa_sockets_server_startup_retry
                 {
                     if ( listen( sock, 1 ) < 0 )
                     {
-                        if ( port + step > *init_port + retries * step )
+                        if ( port + step > *initPort + retries * step )
                         {
-                            //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()\n" );
+                            //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()" );
                         }
                         stat = -1;
                     }
@@ -126,19 +136,16 @@ scorep_oa_sockets_server_startup_retry
     }
     else
     {
-        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d\n", __func__, port );
-        *init_port = port;
+        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with success, port = %d", __func__, port );
+        *initPort = port;
         return sock;
     }
 }
 
 int
-scorep_oa_sockets_client_connect_retry
-(
-    const char* hostname,
-    int         port,
-    int         retries
-)
+scorep_oa_sockets_client_connect_retry( const char* hostname,
+                                        int         port,
+                                        int         retries )
 {
     struct addrinfo  hints;
     struct addrinfo* result;
@@ -147,11 +154,12 @@ scorep_oa_sockets_client_connect_retry
 
     if ( port >= 999999 )
     {
-        UTILS_WARNING( "Port number %d is too big", port );
+        UTILS_WARNING( "Port number %d is too big\n", port );
         return -1;
     }
 
     char* port_s = ( char* )malloc( 6 * sizeof( char ) );
+    UTILS_ASSERT( port_s );
     sprintf( port_s, "%d", port );
 
     success = -1;
@@ -171,9 +179,10 @@ scorep_oa_sockets_client_connect_retry
         {
             if ( i == retries - 1 )
             {
-                UTILS_WARNING( "Could not get address info for %s:%d", hostname, port );
+                UTILS_WARNING( "Could not get address info for %s:%d\n", hostname, port );
             }
             success = -1;
+            freeaddrinfo( result );
             continue;
         }
 
@@ -182,9 +191,10 @@ scorep_oa_sockets_client_connect_retry
         {
             if ( i == retries - 1 )
             {
-                UTILS_WARNING( "Could not create socket %s:%d", hostname, port );
+                UTILS_WARNING( "Could not create socket %s:%d\n", hostname, port );
             }
             success = -1;
+            freeaddrinfo( result );
             continue;
         }
 
@@ -192,12 +202,17 @@ scorep_oa_sockets_client_connect_retry
         {
             if ( i == retries - 1 )
             {
-                UTILS_WARNING( "Could not connect to %s:%d", hostname, port );
+                UTILS_WARNING( "Could not connect to %s:%d\n", hostname, port );
             }
             success = -1;
+            freeaddrinfo( result );
             continue;
         }
+        freeaddrinfo( result );
     }
+
+    free( port_s );
+
     if ( success == -1 )
     {
         sock = -1;
@@ -206,33 +221,30 @@ scorep_oa_sockets_client_connect_retry
 }
 
 
-void
-scorep_oa_sockets_write_line
-(
-    int         sock,
-    const char* str
-)
+inline void
+scorep_oa_sockets_write_line( int         sock,
+                              const char* str )
 {
-    int result = write( sock, str, strlen( str ) );
+    if ( write( sock, str, strlen( str ) ) == -1 )
+    {
+        UTILS_WARNING( "Could not write to socket!\n" );
+    }
 }
 
-void
-scorep_oa_sockets_write_data
-(
-    int         sock,
-    const void* buf,
-    int         nbyte
-)
+inline void
+scorep_oa_sockets_write_data( int         sock,
+                              const void* buf,
+                              int         nbyte )
 {
-    int result = write( sock, buf, nbyte );
+    if ( write( sock, buf, nbyte ) == -1 )
+    {
+        UTILS_WARNING( "Could not write to socket!\n" );
+    }
 }
 
-int
-scorep_oa_sockets_socket_my_read
-(
-    int   fd,
-    char* ptr
-)
+static inline int
+sockets_socket_my_read( int   fd,
+                        char* ptr )
 {
     if ( read_cnt <= 0 )
     {
@@ -260,19 +272,16 @@ again:
 
 
 int
-scorep_oa_sockets_blockread
-(
-    int   sock,
-    char* ptr,
-    int   size
-)
+scorep_oa_sockets_blockread(  int   sock,
+                              char* ptr,
+                              int   size )
 {
     int  n, rc;
     char c;
 
     for ( n = 1; n <= size; n++ )
     {
-        rc = scorep_oa_sockets_socket_my_read( sock, &c );
+        rc = sockets_socket_my_read( sock, &c );
         if ( rc == 1 )
         {
             *ptr++ = c;
@@ -293,20 +302,17 @@ scorep_oa_sockets_blockread
 
 
 int
-scorep_oa_sockets_read_line
-(
-    int   sock,
-    char* str,
-    int   maxlen
-)
+scorep_oa_sockets_read_line( int   sock,
+                             char* str,
+                             int   maxLen )
 {
     int  n, rc;
     char c, * ptr;
 
     ptr = str;
-    for ( n = 1; n < maxlen; n++ )
+    for ( n = 1; n < maxLen; n++ )
     {
-        if ( ( rc = scorep_oa_sockets_socket_my_read( sock, &c ) ) == 1 )
+        if ( ( rc = sockets_socket_my_read( sock, &c ) ) == 1 )
         {
             if ( c  == '\n' )
             {
@@ -332,20 +338,16 @@ scorep_oa_sockets_read_line
 }
 
 int
-scorep_oa_sockets_server_accept_client
-(
-    int sock
-)
+scorep_oa_sockets_server_accept_client( int sock )
 {
     int newsock;
 
     struct sockaddr_in client_addr;       /* client's address information */
 
-//size_t sin_size;
     unsigned int sin_size;
 
     sin_size = sizeof( struct sockaddr_in );
-
+    //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Waiting for client to connect..." );
     if ( ( newsock = accept( sock, ( struct sockaddr* )&client_addr, &sin_size ) ) < 0 )
     {
         //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_accept_client::accept() error" );
@@ -353,4 +355,10 @@ scorep_oa_sockets_server_accept_client
     }
 
     return newsock;
+}
+
+inline int
+scorep_oa_sockets_server_disconnect( int sock )
+{
+    return close( sock );
 }

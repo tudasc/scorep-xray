@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file
+ * @file scorep_oa_registry_protocol.h
  *
  * This file contains protocol definitions of communication with Periscope registry service
  */
@@ -39,8 +39,8 @@
 
 /* server version and build date */
 
-#define PERISCOPE_VERSION        "1.0"
-#define PERISCOPE_BUILD_DATE     "Nov/2009"
+#define PERISCOPE_VERSION        "2.0"
+#define PERISCOPE_BUILD_DATE     "Jan/2016"
 
 
 /* command names, general */
@@ -73,7 +73,7 @@
 #define DESCR_LIST        "lists all entries"
 #define DESCR_SHOW        "shows a specific entry"
 #define DESCR_STR_ADD     "adds a string to an entry"
-#define DESCR_STR_GET    PROTOCOL_H_INCLUDED "retrieves a specific string"
+#define DESCR_STR_GET     "retrieves a specific string"
 #define DESCR_STR_DEL     "deletes the specified string"
 #define DESCR_STR_LIST    "lists all string for the specified entry"
 #define DESCR_STR_COUNT   "counts the number of available strings for the specified entry"

@@ -19,7 +19,7 @@
 !  Copyright (c) 2009-2011,
 !  German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 !
-!  Copyright (c) 2009-2011,
+!  Copyright (c) 2009-2011, 2015-2016,
 !  Technische Universitaet Muenchen, Germany
 !
 !  Copyright (c) 2016,

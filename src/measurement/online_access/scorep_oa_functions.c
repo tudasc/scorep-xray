@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -49,10 +49,21 @@
 #include "scorep_oa_phase.h"
 #include <scorep_status.h>
 
+int        scorep_oa_iterations_per_phase = 1;
+static int remaining_iterations           = 0;
+static int in_oa_phase                    = 0;
+
 void
 SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    if ( in_oa_phase )
+    {
+        return;
+    }
+
+    remaining_iterations = scorep_oa_iterations_per_phase;
+    in_oa_phase          = 1;
 
     if ( !SCOREP_IsInitialized() )
     {
@@ -83,7 +94,14 @@ SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle )
 void
 SCOREP_OA_PhaseEnd( const SCOREP_RegionHandle handle )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+
+    if ( --remaining_iterations > 0 )
+    {
+        return;
+    }
+
+    in_oa_phase = 0;
 
     if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {

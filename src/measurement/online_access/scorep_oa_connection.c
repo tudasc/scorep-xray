@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -46,17 +46,16 @@
 #include <stdio.h>
 
 
-static int8_t scorep_oa_is_connected = 0;
-static int    scorep_oa_socket       = 0;
-int           scorep_oa_connection   = 0;
+static int socket               = 0;
+int        scorep_oa_connection = 0;
 
 
-
-int
+inline int
 scorep_oa_connection_connect( void )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-    if ( scorep_oa_is_connected )
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    static int8_t oa_is_connected = 0;
+    if ( oa_is_connected )
     {
         return SCOREP_SUCCESS;
     }
@@ -64,49 +63,52 @@ scorep_oa_connection_connect( void )
     {
         scorep_oa_port = scorep_oa_port + SCOREP_Status_GetRank();
     }
-    scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &scorep_oa_port, 10, 1 );
-    if ( scorep_oa_socket == -1 )
+    socket = scorep_oa_sockets_server_startup_retry( &scorep_oa_port, 10, 1 );
+    if ( socket == -1 )
     {
         _Exit( EXIT_FAILURE );
     }
-    scorep_oa_is_connected = 1;
+    oa_is_connected = 1;
     scorep_oa_sockets_register_with_registry( scorep_oa_port, scorep_oa_registry_port, scorep_oa_registry_host, scorep_oa_app_name );
-    scorep_oa_socket = scorep_oa_sockets_server_accept_client( scorep_oa_socket );
-    //receive_and_process_requests(scorep_oa_socket);
-    return scorep_oa_socket;
+    socket = scorep_oa_sockets_server_accept_client( socket );
+    return socket;
 }
 
-SCOREP_ErrorCode
-scorep_oa_connection_disconnect( int connection )
+inline SCOREP_ErrorCode
+scorep_oa_connection_disconnect( void )
 {
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    if ( scorep_oa_sockets_server_disconnect( socket ) == -1 )
+    {
+        return SCOREP_ERROR_OA_SERVER_DISCONNECT;
+    }
     return SCOREP_SUCCESS;
 }
 
-SCOREP_ErrorCode
+inline SCOREP_ErrorCode
 scorep_oa_connection_send_string( int         connection,
-                                  const char* message_string )
+                                  const char* messageString )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%s sending: %s", __func__, message_string );
-    scorep_oa_sockets_write_line( connection, message_string );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "%s sending: %s", __func__, messageString );
+    scorep_oa_sockets_write_line( connection, messageString );
     return SCOREP_SUCCESS;
 }
 
-SCOREP_ErrorCode
+inline SCOREP_ErrorCode
 scorep_oa_connection_send_data( int   connection,
-                                void* message_data,
+                                void* messageData,
                                 int   size,
-                                int   type_size )
+                                int   typeSize )
 {
     scorep_oa_sockets_write_data( connection, &size, sizeof( int ) );
-    scorep_oa_sockets_write_data( connection, message_data, size * type_size );
+    scorep_oa_sockets_write_data( connection, messageData, size * typeSize );
     return SCOREP_SUCCESS;
 }
 
-
-int
+inline int
 scorep_oa_connection_read_string( int   connection,
-                                  char* message_string,
-                                  int   maxlen )
+                                  char* messageString,
+                                  int   maxLen )
 {
-    return scorep_oa_sockets_read_line( scorep_oa_socket, message_string, maxlen );
+    return scorep_oa_sockets_read_line( socket, messageString, maxLen );
 }
