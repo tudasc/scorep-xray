@@ -100,7 +100,7 @@ if [ ! -f "$BEAUTIFY_CONFIG" ]; then
 fi
 
 # Find and beautify modified and added source files.
-RELEVANT_FILES="$($SVN status | $AWK '/^(R|M|A).*\.(c|h|cc|cpp|hpp)$/ {print substr($0, 9)}')"
+RELEVANT_FILES="$($SVN status | $AWK '/^(R|M|A).*\.(c|h|cc|cpp|hpp|java)$/ {print substr($0, 9)}')"
 if [ -n "$RELEVANT_FILES" ]; then
     printf "Beautifying modified source files using %s:\n" \
         "$($BEAUTIFY --version)"
