@@ -67,8 +67,8 @@ doxygen-user-install:
 doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision-file-to-dist
 
 update-revision:
-	svnversion -c $(srcdir) > "$(srcdir)/build-config/REVISION"
-	svnversion -c $(srcdir)/vendor/common > "$(srcdir)/build-config/REVISION_COMMON"
+	svnversion -c $(srcdir) | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION" 
+	svnversion -c $(srcdir)/vendor/common | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION_COMMON"
 
 copy-revision-file-to-dist:
 	$(MKDIR_P) "$(distdir)/build-config/"
