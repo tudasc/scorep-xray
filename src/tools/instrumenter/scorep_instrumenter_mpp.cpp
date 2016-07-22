@@ -133,18 +133,27 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
 
     std::vector<std::string>* object_list = instrumenter.getInputFiles();
 
+    std::stringstream all_objects_stream;
     for ( std::vector<std::string>::iterator current_file = object_list->begin();
           current_file != object_list->end();
           current_file++ )
     {
-        std::string command = SCOREP_NM " " + *current_file + " 2>/dev/null | "
-                              SCOREP_EGREP " -l 'U (MPI|mpi)_' >/dev/null 2>&1";
-        int return_value = system( command.c_str() );
-        if ( return_value == 0 )
+        if ( is_object_file( *current_file ) || is_library( *current_file ) )
         {
-            m_selector->select( this, false );
-            break;
+            all_objects_stream << " " << *current_file;
         }
+    }
+
+    /* Get all static libs, exclude shared, as we can't wrap them anymore */
+    all_objects_stream << instrumenter.getCommandLine().getLibraryFiles( false );
+
+    std::string command = SCOREP_NM " " + all_objects_stream.str() + " 2>/dev/null | "
+                          SCOREP_EGREP " -l 'U (MPI|mpi)_' >/dev/null 2>&1";
+    int return_value = system( command.c_str() );
+    if ( return_value == 0 )
+    {
+        m_selector->select( this, false );
+        break;
     }
 }
 
@@ -201,18 +210,27 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
 
     std::vector<std::string>* object_list = instrumenter.getInputFiles();
 
+    std::stringstream all_objects_stream;
     for ( std::vector<std::string>::iterator current_file = object_list->begin();
           current_file != object_list->end();
           current_file++ )
     {
-        std::string command = SCOREP_NM " " + *current_file + " 2>/dev/null | "
-                              SCOREP_EGREP " -l 'U (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' >/dev/null 2>&1";
-        int return_value = system( command.c_str() );
-        if ( return_value == 0 )
+        if ( is_object_file( *current_file ) || is_library( *current_file ) )
         {
-            m_selector->select( this, false );
-            break;
+            all_objects_stream << " " << *current_file;
         }
+    }
+
+    /* Get all static libs, exclude shared, as we can't wrap them anymore */
+    all_objects_stream << instrumenter.getCommandLine().getLibraryFiles( false );
+
+    std::string command = SCOREP_NM " " + all_objects_stream.str() + " 2>/dev/null | "
+                          SCOREP_EGREP " -l 'U (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' >/dev/null 2>&1";
+    int return_value = system( command.c_str() );
+    if ( return_value == 0 )
+    {
+        m_selector->select( this, false );
+        break;
     }
 }
 
