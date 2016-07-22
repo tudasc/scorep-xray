@@ -121,8 +121,19 @@ scorep_config_type_to_string( SCOREP_ConfigType configType );
  *
  * @return                A string representation of @a locationType.
  */
-extern const char*
+const char*
 scorep_location_type_to_string( SCOREP_LocationType locationType );
+
+/**
+ * Converts a SCOREP_LocationGroupType into a string.
+ *
+ * @param locationGroupType  The location group type which should be expressed
+ *                           as a string.
+ *
+ * @return                   A string representation of @a locationGroupType.
+ */
+const char*
+scorep_location_group_type_to_string( SCOREP_LocationGroupType locationGroupType );
 
 
 #endif /* SCOREP_INTERNAL_TYPES_H */

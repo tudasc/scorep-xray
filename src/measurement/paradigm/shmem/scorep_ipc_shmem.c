@@ -1394,3 +1394,18 @@ get_pwork( size_t size,
 
     return pwork;
 }
+
+SCOREP_Ipc_Group*
+SCOREP_IpcGroup_Split( SCOREP_Ipc_Group* parent,
+                       int               color,
+                       int               key )
+{
+    UTILS_BUG( "SCOREP_IpcGroup_Split for shmem is not supported." );
+}
+
+void
+SCOREP_IpcGroup_Free( SCOREP_Ipc_Group* group )
+
+{
+    UTILS_BUG( "SCOREP_IpcGroup_Free for shmem is not supported." );
+}

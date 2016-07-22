@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -44,7 +47,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 #include <otf2/otf2.h>
 
@@ -60,6 +63,8 @@
 #include <scorep_runtime_management.h>
 #include <scorep_environment.h>
 #include <scorep_status.h>
+#include <scorep_system_tree_sequence.h>
+#include <scorep_types.h>
 #include <scorep_clock_synchronization.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Definitions.h>
@@ -193,10 +198,9 @@ scorep_write_location_property_definitions(
 }
 
 static void
-scorep_write_location_group_definitions(
-    void*                     writerHandle,
-    SCOREP_DefinitionManager* definitionManager,
-    bool                      isGlobal )
+scorep_write_location_group_definitions( void*                     writerHandle,
+                                         SCOREP_DefinitionManager* definitionManager,
+                                         bool                      isGlobal )
 {
     UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( * def_location_group_pointer_t )( void*,
@@ -238,10 +242,9 @@ scorep_write_location_group_definitions(
 }
 
 static void
-scorep_write_system_tree_node_definitions(
-    void*                     writerHandle,
-    SCOREP_DefinitionManager* definitionManager,
-    bool                      isGlobal )
+scorep_write_system_tree_node_definitions( void*                     writerHandle,
+                                           SCOREP_DefinitionManager* definitionManager,
+                                           bool                      isGlobal )
 {
     UTILS_ASSERT( writerHandle );
 
@@ -347,6 +350,268 @@ scorep_write_system_tree_node_definitions(
         }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+typedef struct
+{
+    void*                        writer_handle;
+    const uint32_t*              rank_mapping;
+    const uint64_t*              location_mapping;
+    const uint64_t*              number_of_events;
+    uint32_t                     string_counter;
+    uint32_t*                    location_name_start_ids;
+
+    scorep_system_tree_seq_name* name_data;
+} sequence_writer_data;
+
+/**
+ * Writes a string definition directly to the trace.
+ * It is needed to define names during expansion of the sequence definitions.
+ *
+ * @param writerData Pointer to the writer data structure.
+ * @param string     The string that is written to the definitions.
+ */
+static uint32_t
+write_string_direct( sequence_writer_data* writerData,
+                     const char*           string )
+{
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteString( writerData->writer_handle,
+                                                              writerData->string_counter,
+                                                              string );
+    if ( status != OTF2_SUCCESS )
+    {
+        scorep_handle_definition_writing_error( status, "String" );
+    }
+    writerData->string_counter++;
+    return writerData->string_counter - 1;
+}
+
+static void
+get_number_of_location_names( scorep_system_tree_seq* root,
+                              uint32_t*               counts )
+{
+    if ( scorep_system_tree_seq_get_type( root ) == SCOREP_SYSTEM_TREE_SEQ_TYPE_LOCATION )
+    {
+        uint64_t copies   = scorep_system_tree_seq_get_number_of_copies( root );
+        uint64_t sub_type = scorep_system_tree_seq_get_sub_type( root );
+        counts[ sub_type ] = copies > counts[ sub_type ] ? copies : counts[ sub_type ];
+    }
+    else
+    {
+        for ( uint64_t i = 0;
+              i < scorep_system_tree_seq_get_number_of_children( root );
+              i++ )
+        {
+            get_number_of_location_names( scorep_system_tree_seq_get_child( root, i ),
+                                          counts );
+        }
+    }
+}
+
+static uint32_t*
+construct_location_names( sequence_writer_data* writerData )
+{
+    scorep_system_tree_seq* root      = scorep_system_tree_seq_get_root();
+    uint32_t*               start_ids = calloc( SCOREP_NUMBER_OF_LOCATION_TYPES, sizeof( uint32_t ) );
+    get_number_of_location_names( root, start_ids );
+
+    for ( uint64_t i = 0; i < SCOREP_NUMBER_OF_LOCATION_TYPES; i++ )
+    {
+        const char* class_name = scorep_location_type_to_string( i );
+        uint32_t    start_id   = writerData->string_counter;
+
+        for ( uint32_t j = 0; j < start_ids[ i ]; j++ )
+        {
+            size_t display_name_length = strlen( class_name ) + 20;
+            char*  display_name        = malloc( display_name_length );
+            UTILS_ASSERT( display_name );
+
+            snprintf( display_name, display_name_length,
+                      "%s %" PRIu32,
+                      class_name, j );
+
+            write_string_direct( writerData, display_name );
+            free( display_name );
+        }
+        start_ids[ i ] = start_id;
+    }
+
+    return start_ids;
+}
+
+static scorep_system_tree_seq_child_param
+write_location_seq( scorep_system_tree_seq*            definition,
+                    uint64_t                           copy,
+                    sequence_writer_data*              writerData,
+                    scorep_system_tree_seq_child_param forChildren )
+{
+    uint64_t        parent     = forChildren.uint64;
+    uint64_t        sub_type   = scorep_system_tree_seq_get_sub_type( definition );
+    const char*     class_name = scorep_location_type_to_string( sub_type );
+    static uint64_t counter    = 0;
+
+    uint64_t global_location_id =
+        parent + ( writerData->location_mapping[ counter ] << 32 );
+
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteLocation(
+        writerData->writer_handle,
+        global_location_id,
+        writerData->location_name_start_ids[ sub_type ] + writerData->location_mapping[ counter ],
+        scorep_tracing_location_type_to_otf2( sub_type ),
+        writerData->number_of_events[ counter ],
+        parent );
+    if ( status != OTF2_SUCCESS )
+    {
+        scorep_handle_definition_writing_error( status, "Location" );
+    }
+
+    counter++;
+
+    scorep_system_tree_seq_child_param for_children;
+    for_children.uint64 = global_location_id;
+    return for_children;
+}
+
+static scorep_system_tree_seq_child_param
+write_location_group_seq( scorep_system_tree_seq*            definition,
+                          uint64_t                           copy,
+                          sequence_writer_data*              writerData,
+                          scorep_system_tree_seq_child_param forChildren )
+{
+    uint64_t        parent   = forChildren.uint64;
+    static uint64_t counter  = 0;
+    uint64_t        sub_type = scorep_system_tree_seq_get_sub_type( definition );
+
+    uint64_t sequence_no  = writerData->rank_mapping[ counter ];
+    char*    display_name = scorep_system_tree_seq_get_name( definition, copy,
+                                                             writerData->name_data );
+    counter++;
+
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteLocationGroup(
+        writerData->writer_handle,
+        sequence_no,
+        write_string_direct( writerData, display_name ),
+        scorep_tracing_location_group_type_to_otf2( sub_type ),
+        parent );
+    if ( status != OTF2_SUCCESS )
+    {
+        scorep_handle_definition_writing_error( status, "LocationGroup" );
+    }
+    free( display_name );
+
+    scorep_system_tree_seq_child_param for_children;
+    for_children.uint64 = sequence_no;
+    return for_children;
+}
+
+static scorep_system_tree_seq_child_param
+write_system_tree_node_seq( scorep_system_tree_seq*            definition,
+                            uint64_t                           copy,
+                            sequence_writer_data*              writerData,
+                            scorep_system_tree_seq_child_param forChildren )
+{
+    uint64_t    sub_type = scorep_system_tree_seq_get_sub_type( definition );
+    const char* class    = SCOREP_StringHandle_GetById( sub_type );
+
+    static uint32_t counter     = 0;
+    uint32_t        sequence_no = counter;
+    uint64_t        parent      = forChildren.uint64;
+    counter++;
+    char* display_name = scorep_system_tree_seq_get_name( definition, copy,
+                                                          writerData->name_data );
+
+    /* Write system tree node definition */
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteSystemTreeNode(
+        writerData->writer_handle,
+        sequence_no,
+        write_string_direct( writerData, display_name ),
+        sub_type,
+        parent );
+    if ( status != OTF2_SUCCESS )
+    {
+        scorep_handle_definition_writing_error( status, "SystemTreeNode" );
+    }
+    free( display_name );
+
+    /* write domain supplement defs */
+    SCOREP_SystemTreeDomain domains = scorep_system_tree_seq_get_domains( definition );
+    while ( domains != SCOREP_SYSTEM_TREE_DOMAIN_NONE )
+    {
+        OTF2_SystemTreeDomain domain = scorep_tracing_domain_to_otf2( &domains );
+        status = OTF2_GlobalDefWriter_WriteSystemTreeNodeDomain(
+            writerData->writer_handle,
+            sequence_no,
+            domain );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SystemTreeNodeDomain" );
+        }
+    }
+
+    /* Properties are lost */
+
+    scorep_system_tree_seq_child_param for_children;
+    for_children.uint64 = sequence_no;
+    return for_children;
+}
+
+static scorep_system_tree_seq_child_param
+write_system_tree_seq( scorep_system_tree_seq*            definition,
+                       uint64_t                           copy,
+                       void*                              param,
+                       scorep_system_tree_seq_child_param forChildren )
+{
+    sequence_writer_data* writer_data = param;
+    switch ( scorep_system_tree_seq_get_type( definition ) )
+    {
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_SYSTEM_TREE_NODE:
+            return write_system_tree_node_seq( definition, copy,
+                                               writer_data,
+                                               forChildren );
+            break;
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_LOCATION_GROUP:
+            return write_location_group_seq( definition, copy,
+                                             writer_data,
+                                             forChildren );
+            break;
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_LOCATION:
+            return write_location_seq( definition, copy,
+                                       writer_data,
+                                       forChildren );
+            break;
+        default:
+            UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                         "Child system tree node of unknown type" );
+    }
+    scorep_system_tree_seq_child_param for_children;
+    for_children.uint64 = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
+    return for_children;
+}
+
+static void
+write_system_tree_sequence_definitions( void*                     writerHandle,
+                                        SCOREP_DefinitionManager* definitionManager )
+{
+    sequence_writer_data writer_data;
+    writer_data.writer_handle    = writerHandle;
+    writer_data.string_counter   = definitionManager->string.counter;
+    writer_data.rank_mapping     = scorep_system_tree_seq_get_rank_order();
+    writer_data.location_mapping = scorep_system_tree_seq_get_global_location_order();
+    writer_data.number_of_events = scorep_system_tree_seq_get_event_numbers();
+    writer_data.name_data        = scorep_system_tree_seq_create_name_data();
+
+    writer_data.location_name_start_ids = construct_location_names( &writer_data );
+
+    scorep_system_tree_seq_child_param to_root;
+    to_root.uint64 = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
+
+    scorep_system_tree_seq_traverse_all( scorep_system_tree_seq_get_root(),
+                                         &write_system_tree_seq,
+                                         &writer_data,
+                                         to_root );
+
+    free( writer_data.location_name_start_ids );
+    scorep_system_tree_seq_free_name_data( writer_data.name_data );
 }
 
 
@@ -1370,10 +1635,17 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     write_paradigms( global_definition_writer,
                      scorep_unified_definition_manager );
 
-    scorep_write_system_tree_node_definitions(     global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_group_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_definitions(             global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_property_definitions(    global_definition_writer, scorep_unified_definition_manager, true );
+    if ( SCOREP_Env_UseSystemTreeSequence() )
+    {
+        write_system_tree_sequence_definitions( global_definition_writer, scorep_unified_definition_manager );
+    }
+    else
+    {
+        scorep_write_system_tree_node_definitions(     global_definition_writer, scorep_unified_definition_manager, true );
+        scorep_write_location_group_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
+        scorep_write_location_definitions(             global_definition_writer, scorep_unified_definition_manager, true );
+        scorep_write_location_property_definitions(    global_definition_writer, scorep_unified_definition_manager, true );
+    }
     scorep_write_region_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_group_definitions(                global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(         global_definition_writer, scorep_unified_definition_manager );

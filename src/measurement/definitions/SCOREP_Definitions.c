@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -47,6 +50,7 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
+#include <scorep_system_tree_sequence.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -267,6 +271,7 @@ SCOREP_Definitions_Finalize( void )
 
     SCOREP_MutexDestroy( &definitions_lock );
     scorep_definitions_destroy_interim_communicator_counter_lock();
+    scorep_system_tree_seq_free();
 
     definitions_initialized = false;
 }

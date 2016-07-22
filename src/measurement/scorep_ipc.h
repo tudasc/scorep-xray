@@ -419,5 +419,19 @@ SCOREP_Ipc_Scatterv( const void*         sendbuf,
                                      root );
 }
 
+/**
+ * Not implemented in all IPC implementations.
+ */
+SCOREP_Ipc_Group*
+SCOREP_IpcGroup_Split( SCOREP_Ipc_Group* parent,
+                       int               color,
+                       int               key );
+
+/**
+ * Not implemented in all IPC implementations.
+ */
+void
+SCOREP_IpcGroup_Free( SCOREP_Ipc_Group* group );
+
 
 #endif /* SCOREP_INTERNAL_IPC_H */

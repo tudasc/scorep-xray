@@ -48,3 +48,7 @@ unification_test_LDADD    = $(serial_libadd) libscorep_measurement.la
 unification_test_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += unification_test
+
+TESTS_SERIAL += $(SRC_ROOT)test/unification/run_serial_sequence_definitions_test.sh
+
+EXTRA_DIST += $(SRC_ROOT)test/unification/run_serial_sequence_definition_test.sh.in

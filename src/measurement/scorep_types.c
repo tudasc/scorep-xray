@@ -207,12 +207,30 @@ scorep_location_type_to_string( SCOREP_LocationType locationType )
 {
     switch ( locationType )
     {
-        case SCOREP_LOCATION_TYPE_CPU_THREAD:
-            return "CPU thread";
-        case SCOREP_LOCATION_TYPE_GPU:
-            return "GPU";
-        case SCOREP_LOCATION_TYPE_METRIC:
-            return "metric location";
+        #define SCOREP_LOCATION_TYPE( NAME, name_string ) \
+    case SCOREP_LOCATION_TYPE_ ## NAME: \
+        return name_string;
+
+        SCOREP_LOCATION_TYPES
+        #undef SCOREP_LOCATION_TYPE
+
+        default:
+            return "unknown";
+    }
+}
+
+const char*
+scorep_location_group_type_to_string( SCOREP_LocationGroupType locationGroupType )
+{
+    switch ( locationGroupType )
+    {
+        #define SCOREP_LOCATION_GROUP_TYPE( NAME, name_string ) \
+    case SCOREP_LOCATION_GROUP_TYPE_ ## NAME: \
+        return name_string;
+
+        SCOREP_LOCATION_GROUP_TYPES
+        #undef SCOREP_LOCATION_GROUP_TYPE
+
         default:
             return "unknown";
     }

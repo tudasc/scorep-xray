@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015-2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,13 +40,14 @@
 
 #include <config.h>
 #include <inttypes.h>
-#include <assert.h>
 #include "scorep_definition_cube4.h"
+#include "scorep_system_tree_sequence.h"
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Metric_Management.h>
 
+#include "scorep_environment.h"
 #include "scorep_ipc.h"
 #include "scorep_types.h"
 #include <SCOREP_Definitions.h>
@@ -152,7 +156,7 @@ static scorep_cube_system_node*
 find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
                   SCOREP_SystemTreeNodeHandle node )
 {
-    assert( node );
+    UTILS_ASSERT( node );
     uint32_t pos = SCOREP_UNIFIED_HANDLE_DEREF( node, SystemTreeNode )->sequence_number;
     if ( pos >= size )
     {
@@ -180,8 +184,8 @@ get_cube_node(  cube_t* my_cube,
 {
     /* Lookup the cube node  */
     scorep_cube_system_node* scorep_node = find_system_node( system_tree, size, node );
-    assert( scorep_node );
-    assert( scorep_node->cube_node );
+    UTILS_ASSERT( scorep_node );
+    UTILS_ASSERT( scorep_node->cube_node );
 
     return scorep_node->cube_node;
 }
@@ -754,7 +758,7 @@ write_system_tree( cube_t*                   my_cube,
         strncpy( display_name + class_length + 1, name, name_length );
         display_name[ class_length + 1 + name_length ] = '\0';
 
-        assert( pos < nodes );
+        UTILS_ASSERT( pos < nodes );
         cube_system_tree_node* parent = NULL;
         system_tree[ pos ].scorep_node = handle;
         system_tree[ pos ].cube_node   = NULL;
@@ -781,8 +785,8 @@ write_system_tree( cube_t*                   my_cube,
    @param ranks   Number of MPI ranks. It must equal the number of array elements in
                   @a threads.
    @param offsets Array of the offsets of threads in each rank. The ith entry contains
-                  the sum of all threads of lower ranks. The number of elements must equal
-                  @a ranks.
+                  the sum of all threads of lower ranks. The number of elements must
+                  equal @a ranks.
  */
 static cube_location_group**
 write_location_group_definitions( cube_t*                   my_cube,
@@ -791,9 +795,9 @@ write_location_group_definitions( cube_t*                   my_cube,
 {
     cube_location_group** processes =
         ( cube_location_group** )calloc( ranks, sizeof( cube_location_group* ) );
-    assert( processes );
+    UTILS_ASSERT( processes );
     scorep_cube_system_node* system_tree = write_system_tree( my_cube, manager );
-    assert( system_tree );
+    UTILS_ASSERT( system_tree );
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, LocationGroup, location_group )
     {
@@ -832,7 +836,7 @@ write_location_definitions( cube_t*                   my_cube,
 {
     /* Counts the number of threads already registered for each rank */
     uint32_t* threads = calloc( ranks, sizeof( uint32_t ) );
-    assert( threads );
+    UTILS_ASSERT( threads );
 
     /* Location group (processes) mapping of global ids to cube defintions */
     cube_location_group** processes =
@@ -841,7 +845,7 @@ write_location_definitions( cube_t*                   my_cube,
     /* Location mapping of global ids to cube defintion */
     cube_location** locations = calloc( number_of_threads,
                                         sizeof( cube_location* ) );
-    assert( locations );
+    UTILS_ASSERT( locations );
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
@@ -885,6 +889,125 @@ scorep_write_cube_location_property( cube_t*                   my_cube,
 }
 
 /* ****************************************************************************
+ * System tree sequence definitions expansion.
+ *****************************************************************************/
+
+typedef struct
+{
+    cube_t*                      my_cube;
+    const uint32_t*              rank_mapping;
+    scorep_system_tree_seq_name* name_data;
+} sequence_writer_data;
+
+static scorep_system_tree_seq_child_param
+write_location_to_cube( scorep_system_tree_seq*            definition,
+                        uint64_t                           copy,
+                        sequence_writer_data*              writerData,
+                        scorep_system_tree_seq_child_param forChildren )
+{
+    cube_location_group* parent   = forChildren.ptr;
+    uint64_t             sub_type = scorep_system_tree_seq_get_sub_type( definition );
+    cube_location_type   class    = convert_to_cube_location_type(  sub_type );
+
+    char* display_name = scorep_system_tree_seq_get_name( definition, copy,
+                                                          writerData->name_data );
+
+    cube_location* current =
+        cube_def_location( writerData->my_cube, display_name, copy, class, parent );
+
+    free( display_name );
+    scorep_system_tree_seq_child_param for_children;
+    for_children.ptr = current;
+    return for_children;
+}
+
+static scorep_system_tree_seq_child_param
+write_location_group_to_cube( scorep_system_tree_seq*            definition,
+                              uint64_t                           copy,
+                              sequence_writer_data*              writerData,
+                              scorep_system_tree_seq_child_param forChildren )
+{
+    cube_system_tree_node*   parent       = forChildren.ptr;
+    static uint64_t          index        = 0;
+    uint64_t                 sub_type     = scorep_system_tree_seq_get_sub_type( definition );
+    cube_location_group_type class        = convert_to_cube_location_group_type( sub_type );
+    uint64_t                 sequence_no  = writerData->rank_mapping[ index ];
+    char*                    display_name = scorep_system_tree_seq_get_name( definition, copy,
+                                                                             writerData->name_data );
+
+    cube_location_group* current = cube_def_location_group( writerData->my_cube,
+                                                            display_name,
+                                                            sequence_no,
+                                                            class,
+                                                            parent );
+    index++;
+
+    free( display_name );
+    scorep_system_tree_seq_child_param for_children;
+    for_children.ptr = current;
+    return for_children;
+}
+
+
+static scorep_system_tree_seq_child_param
+write_system_tree_node_to_cube( scorep_system_tree_seq*            definition,
+                                uint64_t                           copy,
+                                sequence_writer_data*              writerData,
+                                scorep_system_tree_seq_child_param forChildren )
+{
+    uint64_t    sub_type = scorep_system_tree_seq_get_sub_type( definition );
+    const char* class    = scorep_system_tree_seq_get_class( definition,
+                                                             writerData->name_data );
+    char* display_name = scorep_system_tree_seq_get_name( definition, copy,
+                                                          writerData->name_data );
+
+    cube_system_tree_node* parent = forChildren.ptr;
+
+
+    cube_system_tree_node* current =
+        cube_def_system_tree_node( writerData->my_cube, display_name, "", class, parent );
+
+    free( display_name );
+    scorep_system_tree_seq_child_param for_children;
+    for_children.ptr = current;
+    return for_children;
+}
+
+static scorep_system_tree_seq_child_param
+write_system_tree_seq_to_cube( scorep_system_tree_seq*            definition,
+                               uint64_t                           copy,
+                               void*                              param,
+                               scorep_system_tree_seq_child_param forChildren )
+{
+    sequence_writer_data* writer_data = param;
+    switch ( scorep_system_tree_seq_get_type( definition ) )
+    {
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_SYSTEM_TREE_NODE:
+            return write_system_tree_node_to_cube( definition, copy,
+                                                   writer_data,
+                                                   forChildren );
+            break;
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_LOCATION_GROUP:
+            return write_location_group_to_cube( definition, copy,
+                                                 writer_data,
+                                                 forChildren );
+            break;
+        case SCOREP_SYSTEM_TREE_SEQ_TYPE_LOCATION:
+            return write_location_to_cube( definition, copy,
+                                           writer_data,
+                                           forChildren );
+            break;
+        default:
+            UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                         "Child system tree node of unknown type" );
+    }
+    scorep_system_tree_seq_child_param for_children;
+    for_children.ptr = NULL;
+    return for_children;
+}
+
+
+/* ****************************************************************************
  * Main definition writer function
  *****************************************************************************/
 void
@@ -900,17 +1023,36 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
        In non-mpi case SCOREP_Ipc_GetRank() returns always 0. Thus, we need only
        to test for the rank. */
     SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
-    if ( SCOREP_Ipc_GetRank() != 0 )
+    if ( SCOREP_Ipc_GetRank() == 0 )
     {
-        return;
-    }
-    assert( scorep_unified_definition_manager );
+        SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
+        UTILS_ASSERT( scorep_unified_definition_manager );
 
-    write_metric_definitions( myCube, manager, map, writeTaskMetrics, writeTuples );
-    write_region_definitions( myCube, manager, map );
-    write_callpath_definitions( myCube, manager, map );
-    cube_location** location_map =
-        write_location_definitions( myCube, manager, nRanks, nLocations );
-    scorep_write_cube_location_property( myCube, manager, location_map );
-    free( location_map );
+        write_metric_definitions( myCube, manager, map, writeTaskMetrics, writeTuples );
+        write_region_definitions( myCube, manager, map );
+        write_callpath_definitions( myCube, manager, map );
+
+        if ( SCOREP_Env_UseSystemTreeSequence() )
+        {
+            sequence_writer_data writer_data;
+            writer_data.my_cube      = myCube;
+            writer_data.rank_mapping = scorep_system_tree_seq_get_rank_order();
+            writer_data.name_data    = scorep_system_tree_seq_create_name_data();
+            scorep_system_tree_seq_child_param to_root;
+            to_root.ptr = NULL;
+
+            scorep_system_tree_seq_traverse_all( scorep_system_tree_seq_get_root(),
+                                                 &write_system_tree_seq_to_cube,
+                                                 &writer_data,
+                                                 to_root );
+            scorep_system_tree_seq_free_name_data( writer_data.name_data );
+        }
+        else
+        {
+            cube_location** location_map =
+                write_location_definitions( myCube, manager, nRanks, nLocations );
+            scorep_write_cube_location_property( myCube, manager, location_map );
+            free( location_map );
+        }
+    }
 }

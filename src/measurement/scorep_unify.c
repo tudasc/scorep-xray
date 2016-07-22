@@ -49,6 +49,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "scorep_subsystem.h"
+#include "scorep_system_tree_sequence.h"
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME UNIFY
@@ -72,6 +73,12 @@ SCOREP_Unify( void )
     {
         /* unify the definitions with all processes. */
         SCOREP_Unify_Mpp();
+    }
+
+    /* Scalable system tree defintions need the string mappings */
+    if ( SCOREP_Env_UseSystemTreeSequence() )
+    {
+        scorep_system_tree_seq_unify();
     }
 
     /* Let the subsystems do some stuff */
@@ -107,10 +114,14 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
 {
     UTILS_ASSERT( sourceDefinitionManager );
     UNIFY_DEFINITION( sourceDefinitionManager, String, string );
-    UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
-    UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNodeProperty, system_tree_node_property );
-    UNIFY_DEFINITION( sourceDefinitionManager, LocationGroup, location_group );
-    UNIFY_DEFINITION( sourceDefinitionManager, Location, location );
+    if ( !SCOREP_Env_UseSystemTreeSequence() )
+    {
+        UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
+        UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNodeProperty, system_tree_node_property );
+        UNIFY_DEFINITION( sourceDefinitionManager, LocationGroup, location_group );
+        UNIFY_DEFINITION( sourceDefinitionManager, Location, location );
+        UNIFY_DEFINITION( sourceDefinitionManager, LocationProperty, location_property );
+    }
     UNIFY_DEFINITION( sourceDefinitionManager, SourceFile, source_file );
     UNIFY_DEFINITION( sourceDefinitionManager, Region, region );
     UNIFY_DEFINITION( sourceDefinitionManager, Group, group );
@@ -123,7 +134,6 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
     UNIFY_DEFINITION( sourceDefinitionManager, Attribute, attribute );
-    UNIFY_DEFINITION( sourceDefinitionManager, LocationProperty, location_property );
     UNIFY_DEFINITION( sourceDefinitionManager, SourceCodeLocation, source_code_location );
     UNIFY_DEFINITION( sourceDefinitionManager, CallingContext, calling_context );
     UNIFY_DEFINITION( sourceDefinitionManager, InterruptGenerator, interrupt_generator );

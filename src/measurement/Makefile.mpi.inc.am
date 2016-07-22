@@ -58,6 +58,7 @@ libscorep_mpp_mpi_la_LDFLAGS = @MPILIB_LDFLAGS@ \
 noinst_LTLIBRARIES += libscorep_ipc_mpi.la
 libscorep_ipc_mpi_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_ipc_mpi.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_system_tree_sequence_on.c \
     $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_ipc_mpi_unify_communicators.c
 libscorep_ipc_mpi_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \

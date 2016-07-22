@@ -434,6 +434,8 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/instrumenter-configurations
                 [chmod +x ../installcheck/instrumenter_checks/instrumenter-configurations.sh])
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/check-instrumentation.sh:../test/instrumenter_checks/check-instrumentation.sh.in],
                 [chmod +x ../installcheck/instrumenter_checks/check-instrumentation.sh])
+AC_CONFIG_FILES([../test/unification/run_serial_sequence_definitions_test.sh], \
+                [chmod +x ../test/unification/run_serial_sequence_definitions_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_test.sh], \
                 [chmod +x ../test/filtering/run_filter_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \

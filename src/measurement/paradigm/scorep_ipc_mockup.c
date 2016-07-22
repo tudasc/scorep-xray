@@ -312,3 +312,16 @@ SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
 
     return 0;
 }
+
+SCOREP_Ipc_Group*
+SCOREP_IpcGroup_Split( SCOREP_Ipc_Group* parent,
+                       int               color,
+                       int               key )
+{
+    return &scorep_ipc_group_world;
+}
+
+void
+SCOREP_IpcGroup_Free( SCOREP_Ipc_Group* group )
+{
+}

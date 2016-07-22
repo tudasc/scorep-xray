@@ -13,6 +13,11 @@ Major features:
 
 Features and improvements:
 
+- Provided the option to use sequence definitions for the system tree.
+  They provide a constant sizs system tree description. The trade-off
+  is the loss of individual names and properties for locations,
+  location groups and system tree nodes. Currently supported only for
+  MPI.
 - Extract topology information from the Slurm topology/tree plugin to
   create the system tree.  This feature is available in Slurm since
   version 2.1 (around 09/2009) and documented since 01/2014.  Please

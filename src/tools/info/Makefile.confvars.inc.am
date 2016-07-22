@@ -27,7 +27,8 @@ libscorep_confvars_la_SOURCES = \
     $(SRC_ROOT)src/measurement/scorep_types.c \
     $(SRC_ROOT)src/measurement/scorep_environment.c \
     $(SRC_ROOT)src/measurement/scorep_subsystem.c \
-    $(SRC_ROOT)src/tools/info/scorep_confvars_all_subsystems.c
+    $(SRC_ROOT)src/tools/info/scorep_confvars_all_subsystems.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_system_tree_sequence_on.c
 
 libscorep_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \

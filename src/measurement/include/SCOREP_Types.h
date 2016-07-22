@@ -386,12 +386,19 @@ typedef enum SCOREP_MetricScope
  * Types to be used in defining a location (SCOREP_Definitions_NewLocation()).
  *
  */
+#define SCOREP_LOCATION_TYPES \
+    SCOREP_LOCATION_TYPE( CPU_THREAD, "CPU thread" ) \
+    SCOREP_LOCATION_TYPE( GPU,        "GPU" ) \
+    SCOREP_LOCATION_TYPE( METRIC,     "metric location" ) \
+
+
 typedef enum SCOREP_LocationType
 {
-    SCOREP_LOCATION_TYPE_CPU_THREAD = 0,
-    SCOREP_LOCATION_TYPE_GPU        = 1,
-    SCOREP_LOCATION_TYPE_METRIC     = 2,
+    #define SCOREP_LOCATION_TYPE( NAME, name_string ) SCOREP_LOCATION_TYPE_ ## NAME,
+    SCOREP_LOCATION_TYPES
+    #undef SCOREP_LOCATION_TYPE
 
+    SCOREP_NUMBER_OF_LOCATION_TYPES,
     SCOREP_INVALID_LOCATION_TYPE /**< For internal use only. */
 } SCOREP_LocationType;
 
@@ -399,9 +406,17 @@ typedef enum SCOREP_LocationType
  * Types to be used in defining a location group (SCOREP_Definitions_NewLocationGroup()).
  *
  */
+#define SCOREP_LOCATION_GROUP_TYPES \
+    SCOREP_LOCATION_GROUP_TYPE( PROCESS, "process" )
+
 typedef enum SCOREP_LocationGroupType
 {
-    SCOREP_LOCATION_GROUP_TYPE_PROCESS = 0,
+    #define SCOREP_LOCATION_GROUP_TYPE( NAME, name_string ) \
+    SCOREP_LOCATION_GROUP_TYPE_ ## NAME,
+
+    SCOREP_LOCATION_GROUP_TYPES
+
+    #undef SCOREP_LOCATION_GROUP_TYPE
 
     SCOREP_INVALID_LOCATION_GROUP_TYPE /**< For internal use only. */
 } SCOREP_LocationGroupType;

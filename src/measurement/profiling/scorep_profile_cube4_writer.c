@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -53,6 +56,8 @@
 #include <scorep_profile_location.h>
 #include <scorep_profile_task_init.h>
 #include <scorep_ipc.h>
+#include <scorep_system_tree_sequence.h>
+#include <scorep_environment.h>
 #include <scorep_runtime_management.h>
 #include <scorep_location.h>
 
@@ -450,6 +455,7 @@ has_sparse_double_value( scorep_profile_node* node, void* data )
 static void
 set_bitstring_for_metric(
     scorep_cube_writing_data*      writeSet,
+    SCOREP_Ipc_Group*              comm,
     scorep_profile_get_uint64_func getValue,
     void*                          funcData )
 {
@@ -475,9 +481,10 @@ set_bitstring_for_metric(
         }
     }
 
-    SCOREP_Ipc_Allreduce( bits, writeSet->bit_vector,
-                          ( writeSet->callpath_number + 7 ) / 8,
-                          SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
+    SCOREP_IpcGroup_Allreduce( comm,
+                               bits, writeSet->bit_vector,
+                               ( writeSet->callpath_number + 7 ) / 8,
+                               SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
     free( bits );
 }
 
@@ -487,16 +494,18 @@ set_bitstring_for_metric(
    a metric is not defined on this rank
  */
 static void
-set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet )
+set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet,
+                                  SCOREP_Ipc_Group*         comm )
 {
     /* Create empty bitstring */
     uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( writeSet->callpath_number ) );
     UTILS_ASSERT( bits );
     SCOREP_Bitstring_Clear( bits, writeSet->callpath_number );
 
-    SCOREP_Ipc_Allreduce( bits, writeSet->bit_vector,
-                          ( writeSet->callpath_number + 7 ) / 8,
-                          SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
+    SCOREP_IpcGroup_Allreduce( comm,
+                               bits, writeSet->bit_vector,
+                               ( writeSet->callpath_number + 7 ) / 8,
+                               SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
     free( bits );
 }
 
@@ -511,6 +520,7 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet )
 static void                                                                             \
 write_cube_##cube_type(                                                                 \
                         scorep_cube_writing_data*                 writeSet,             \
+                        SCOREP_Ipc_Group*                         comm,                 \
                         cube_metric*                              metric,               \
                         scorep_profile_get_ ## cube_type ## _func getValue,             \
                         void*                                     funcData)             \
@@ -519,7 +529,7 @@ write_cube_##cube_type(                                                         
     cube_cnode*          cnode         = NULL;                                          \
     type *               local_values  = NULL;                                          \
     type *               global_values = NULL;                                          \
-    int                  my_rank       = SCOREP_Ipc_GetRank();                          \
+    int                  my_rank       = SCOREP_IpcGroup_GetRank( comm );               \
     if ( writeSet->callpath_number == 0 ) return;                                       \
                                                                                         \
     local_values = ( type * )malloc( writeSet->local_threads * sizeof( type ) );        \
@@ -558,18 +568,19 @@ write_cube_##cube_type(                                                         
         }                                                                               \
                                                                                         \
         /* Collect data from all processes */                                           \
-        SCOREP_Ipc_Barrier();                                                           \
+        SCOREP_IpcGroup_Barrier( comm );                                                \
         if ( writeSet->same_thread_num )                                                \
         {                                                                               \
-            SCOREP_Ipc_Gather( local_values, global_values,                             \
-                               writeSet->local_threads * NUMBER,                        \
-                               SCOREP_IPC_ ## TYPE, 0 );                                \
+	    SCOREP_IpcGroup_Gather( comm, local_values, global_values,                  \
+                                    writeSet->local_threads * NUMBER,                   \
+                                    SCOREP_IPC_ ## TYPE, 0 );                           \
         }                                                                               \
         else                                                                            \
         {                                                                               \
-            SCOREP_Ipc_Gatherv( local_values, writeSet->local_threads * NUMBER,         \
-                                global_values, writeSet->items_per_rank,                \
-                                SCOREP_IPC_ ## TYPE, 0 );                               \
+	    SCOREP_IpcGroup_Gatherv( comm,                                              \
+                                     local_values, writeSet->local_threads * NUMBER,    \
+                                     global_values, writeSet->items_per_rank,           \
+                                     SCOREP_IPC_ ## TYPE, 0 );                          \
         }                                                                               \
                                                                                         \
         /* Write data for one callpath */                                               \
@@ -683,10 +694,13 @@ delete_cube_writing_data( scorep_cube_writing_data* writeSet )
 /**
    Initializes a scorep_cube_writing_data object.
    @param writeSet    The data structure that is initialized. Must already be allocated.
+   @param comm        Communicator of all ranks in the order
+                      they are written to CUBE.
    @returns whether initialization was successful.
  */
 static bool
-init_cube_writing_data( scorep_cube_writing_data* writeSet )
+init_cube_writing_data( scorep_cube_writing_data* writeSet,
+                        SCOREP_Ipc_Group*         comm )
 {
     /* Set all pointers to zero.
        If an malloc fails, we know how many can bee freed */
@@ -703,16 +717,16 @@ init_cube_writing_data( scorep_cube_writing_data* writeSet )
     /* ------------------------------------ Start initializing */
 
     /* Get basic MPI data */
-    writeSet->my_rank       = SCOREP_Ipc_GetRank();
+    writeSet->my_rank       = SCOREP_IpcGroup_GetRank( comm );
     writeSet->local_threads = scorep_profile_get_number_of_threads();
-    writeSet->ranks_number  = SCOREP_Ipc_GetSize();
+    writeSet->ranks_number  = SCOREP_IpcGroup_GetSize( comm );
 
     /* Get the number of unified callpath definitions to all ranks */
     if ( writeSet->my_rank == 0 )
     {
         writeSet->callpath_number = SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions();
     }
-    SCOREP_Ipc_Bcast( &writeSet->callpath_number, 1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Bcast( comm, &writeSet->callpath_number, 1, SCOREP_IPC_UINT32_T, 0 );
     if ( writeSet->callpath_number == 0 )
     {
         return false;
@@ -726,9 +740,10 @@ init_cube_writing_data( scorep_cube_writing_data* writeSet )
         writeSet->offsets_per_rank = ( int* )malloc( buffer_size );
     }
 
-    SCOREP_Ipc_Gather( &writeSet->local_threads,
-                       writeSet->items_per_rank,
-                       1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Gather( comm,
+                            &writeSet->local_threads,
+                            writeSet->items_per_rank,
+                            1, SCOREP_IPC_UINT32_T, 0 );
 
     if ( writeSet->my_rank == 0 )
     {
@@ -746,22 +761,24 @@ init_cube_writing_data( scorep_cube_writing_data* writeSet )
     }
 
     /* Distribute the global number of locations */
-    SCOREP_Ipc_Bcast( &writeSet->global_threads, 1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Bcast( comm, &writeSet->global_threads, 1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Distribute whether all ranks have the same number of locations */
-    SCOREP_Ipc_Bcast( &writeSet->same_thread_num, 1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Bcast( comm, &writeSet->same_thread_num, 1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Distribute the per-rank offsets */
-    SCOREP_Ipc_Scatter( writeSet->offsets_per_rank,
-                        &writeSet->offset,
-                        1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Scatter( comm,
+                             writeSet->offsets_per_rank,
+                             &writeSet->offset,
+                             1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Get number of unified metrics to every rank */
     if ( writeSet->my_rank == 0 )
     {
         writeSet->num_unified_metrics = scorep_unified_definition_manager->metric.counter;
     }
-    SCOREP_Ipc_Bcast( &writeSet->num_unified_metrics, 1, SCOREP_IPC_UINT32_T, 0 );
+    SCOREP_IpcGroup_Bcast( comm, &writeSet->num_unified_metrics,
+                           1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Create the mappings from cube to Score-P handles and vice versa */
     writeSet->map = scorep_cube4_create_definitions_map();
@@ -817,11 +834,12 @@ init_cube_writing_data( scorep_cube_writing_data* writeSet )
     /* Check whether tasks has been used somewhere */
     int32_t has_tasks = scorep_profile_has_tasks();
     writeSet->has_tasks = 0;
-    SCOREP_Ipc_Allreduce( &has_tasks,
-                          &writeSet->has_tasks,
-                          1,
-                          SCOREP_IPC_INT32_T,
-                          SCOREP_IPC_BOR );
+    SCOREP_IpcGroup_Allreduce( comm,
+                               &has_tasks,
+                               &writeSet->has_tasks,
+                               1,
+                               SCOREP_IPC_INT32_T,
+                               SCOREP_IPC_BOR );
 
     return true;
 }
@@ -829,6 +847,13 @@ init_cube_writing_data( scorep_cube_writing_data* writeSet )
 static void
 add_mapping_to_cube_writing_data( scorep_cube_writing_data* writeSet )
 {
+    /* Get local location map */
+    const uint64_t* thread_map = NULL;
+    if ( SCOREP_Env_UseSystemTreeSequence() )
+    {
+        thread_map = scorep_system_tree_seq_get_local_location_order();
+    }
+
     /* Map global sequence numbers to profile nodes */
     writeSet->id_2_node = calloc( writeSet->callpath_number * writeSet->local_threads,
                                   sizeof( scorep_profile_node* ) );
@@ -836,10 +861,12 @@ add_mapping_to_cube_writing_data( scorep_cube_writing_data* writeSet )
     scorep_profile_node* node = scorep_profile.first_root_node;
     for ( uint64_t i = 0; node != NULL; node = node->next_sibling )
     {
+        uint64_t thread_index = thread_map ? thread_map[ i ] : i;
+        thread_index *= writeSet->callpath_number;
         scorep_profile_for_all( node,
                                 make_callpath_mapping,
-                                &writeSet->id_2_node[ i ] );
-        i += writeSet->callpath_number;
+                                &writeSet->id_2_node[ thread_index ] );
+        i++;
     }
 
     /* Mapping from global sequence number to local metric handle. Defines
@@ -873,11 +900,16 @@ scorep_profile_write_cube4( bool writeTuples )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
 
-    if ( !init_cube_writing_data( &write_set ) )
+    SCOREP_Ipc_Group* comm = SCOREP_IPC_GROUP_WORLD;
+    if ( SCOREP_Env_UseSystemTreeSequence() )
+    {
+        comm = scorep_system_tree_seq_get_ipc_group();
+    }
+
+    if ( !init_cube_writing_data( &write_set, comm ) )
     {
         return;
     }
-
 
     if ( write_set.my_rank == 0 )
     {
@@ -885,15 +917,6 @@ scorep_profile_write_cube4( bool writeTuples )
         cube_def_attr( write_set.my_cube, "Creator", "Score-P " PACKAGE_VERSION );
         cube_def_attr( write_set.my_cube, "CUBE_CT_AGGR", "SUM" );
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
-
-        /* Write definitions to cube */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
-        scorep_write_definitions_to_cube4( write_set.my_cube,
-                                           write_set.map,
-                                           write_set.ranks_number,
-                                           write_set.global_threads,
-                                           write_set.has_tasks,
-                                           writeTuples );
 
         if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -909,6 +932,15 @@ scorep_profile_write_cube4( bool writeTuples )
         }
     }
 
+    /* Write definitions to cube */
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
+    scorep_write_definitions_to_cube4( write_set.my_cube,
+                                       write_set.map,
+                                       write_set.ranks_number,
+                                       write_set.global_threads,
+                                       write_set.has_tasks,
+                                       writeTuples );
+
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
@@ -922,21 +954,21 @@ scorep_profile_write_cube4( bool writeTuples )
     /* Write implicit time and visits */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
 
-    write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
+    write_cube_doubles( &write_set, comm, scorep_get_sum_time_handle(),
                         &get_sum_time_value, NULL );
 
-    write_cube_doubles( &write_set, scorep_get_max_time_handle(),
+    write_cube_doubles( &write_set, comm, scorep_get_max_time_handle(),
                         &get_max_time_value, NULL );
 
-    write_cube_doubles( &write_set, scorep_get_min_time_handle(),
+    write_cube_doubles( &write_set, comm, scorep_get_min_time_handle(),
                         &get_min_time_value, NULL );
 
-    write_cube_uint64( &write_set, scorep_get_visits_handle(),
+    write_cube_uint64( &write_set, comm, scorep_get_visits_handle(),
                        &get_visits_value, NULL );
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
-        write_cube_uint64( &write_set, scorep_get_hits_handle(),
+        write_cube_uint64( &write_set, comm, scorep_get_hits_handle(),
                            &get_hits_value, NULL );
     }
 
@@ -963,7 +995,7 @@ scorep_profile_write_cube4( bool writeTuples )
             write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
-        write_cube_uint64( &write_set, metric,
+        write_cube_uint64( &write_set, comm, metric,
                            &get_metrics_value_from_array, &i );
     }
 
@@ -1002,10 +1034,11 @@ scorep_profile_write_cube4( bool writeTuples )
 
             if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
             {
-                set_bitstring_for_unknown_metric( &write_set );
+                set_bitstring_for_unknown_metric( &write_set, comm );
                 if ( writeTuples )
                 {
                     write_cube_cube_type_tau_atomic( &write_set,
+                                                     comm,
                                                      metric,
                                                      &get_sparse_tuple_value_from_double,
                                                      &write_set.metric_map[ i ] );
@@ -1013,6 +1046,7 @@ scorep_profile_write_cube4( bool writeTuples )
                 else
                 {
                     write_cube_doubles( &write_set,
+                                        comm,
                                         metric,
                                         &get_sparse_double_value,
                                         &write_set.metric_map[ i ] );
@@ -1025,11 +1059,13 @@ scorep_profile_write_cube4( bool writeTuples )
                 case SCOREP_METRIC_VALUE_INT64:
                 case SCOREP_METRIC_VALUE_UINT64:
                     set_bitstring_for_metric( &write_set,
+                                              comm,
                                               &get_sparse_uint64_value,
                                               &write_set.metric_map[ i ] );
                     if ( writeTuples )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
+                                                         comm,
                                                          metric,
                                                          &get_sparse_tuple_value_from_uint64,
                                                          &write_set.metric_map[ i ] );
@@ -1037,6 +1073,7 @@ scorep_profile_write_cube4( bool writeTuples )
                     else
                     {
                         write_cube_uint64( &write_set,
+                                           comm,
                                            metric,
                                            &get_sparse_uint64_value,
                                            &write_set.metric_map[ i ] );
@@ -1045,11 +1082,13 @@ scorep_profile_write_cube4( bool writeTuples )
                     break;
                 case SCOREP_METRIC_VALUE_DOUBLE:
                     set_bitstring_for_metric( &write_set,
+                                              comm,
                                               &has_sparse_double_value,
                                               &write_set.metric_map[ i ] );
                     if ( writeTuples )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
+                                                         comm,
                                                          metric,
                                                          &get_sparse_tuple_value_from_double,
                                                          &write_set.metric_map[ i ] );
@@ -1057,6 +1096,7 @@ scorep_profile_write_cube4( bool writeTuples )
                     else
                     {
                         write_cube_doubles( &write_set,
+                                            comm,
                                             metric,
                                             &get_sparse_double_value,
                                             &write_set.metric_map[ i ] );
@@ -1074,7 +1114,10 @@ scorep_profile_write_cube4( bool writeTuples )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile writing done" );
 
     /* Clean up */
-    //cleanup:
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
     delete_cube_writing_data( &write_set );
+    if ( SCOREP_Env_UseSystemTreeSequence() )
+    {
+        scorep_system_tree_seq_free_ipc_group( comm );
+    }
 }

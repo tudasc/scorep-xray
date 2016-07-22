@@ -206,7 +206,7 @@ INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
             SCOREP_SHMEM_EVENT_GEN_OFF();                               \
             SCOREP_EnterWrappedRegion(                                  \
                 scorep_shmem_region__ ## FUNCNAME,                      \
-                ( intptr_t )CALL_SHMEM( shmem_barrier_all ) );          \
+                ( intptr_t )CALL_SHMEM( shmem_barrier_all ));           \
         }                                                               \
                                                                         \
         if ( event_gen_active )                                         \

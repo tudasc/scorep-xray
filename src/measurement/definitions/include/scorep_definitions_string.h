@@ -59,7 +59,8 @@ SCOREP_Definitions_NewString( const char* str );
 const char*
 SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
 
-
+const char*
+SCOREP_StringHandle_GetById( uint32_t id );
 
 void
 scorep_definitions_unify_string( SCOREP_StringDef*                    definition,

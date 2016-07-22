@@ -22,6 +22,9 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Technische Universitaet Muenchen, Germany
 dnl
+dnl Copyright (c) 2016,
+dnl Technische Universitaet Darmstadt, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -279,6 +282,8 @@ AC_CONFIG_FILES([run_otf2_speed_test.sh \
                  ../src/scorep_config_tool_mpi.h:../src/tools/config/scorep_config_tool_mpi.h.in])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
+AC_CONFIG_FILES([../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh], \
+                [chmod +x ../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh])
 AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
                 [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
 

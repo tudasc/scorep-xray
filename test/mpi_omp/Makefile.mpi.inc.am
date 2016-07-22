@@ -54,6 +54,25 @@ mpi_omp_hello_world_LDFLAGS  = $(mpi_omp_ldflags)
 
 TESTS_MPI_OMP += mpi_omp_hello_world
 
+
+check_PROGRAMS += sequence_definition_test
+
+sequence_definition_test_SOURCES = \
+    $(SRC_ROOT)test/mpi_omp/sequence_definition_test.opari.c     \
+    $(SRC_ROOT)test/mpi_omp/sequence_definition_test.c.opari.inc \
+    $(SRC_ROOT)test/mpi_omp/sequence_definition_test.opari2_init.c
+sequence_definition_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+sequence_definition_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ \
+    -I$(INC_ROOT)include \
+    -I$(INC_ROOT)include/scorep \
+    -DSCOREP_USER_ENABLE
+sequence_definition_test_LDADD    = $(mpi_omp_libadd)
+sequence_definition_test_LDFLAGS  = $(mpi_omp_ldflags)
+
+TESTS_MPI_OMP += sequence_definition_test
+
+EXTRA_DIST += $(SRC_ROOT)test/mpi_omp/run_mpi_omp_sequence_definition_test.sh.in
+
 endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 endif HAVE_MPI_SUPPORT

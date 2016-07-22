@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -41,7 +44,7 @@
 #include <scorep_ipc.h>
 
 #include <UTILS_Error.h>
-
+#include <SCOREP_Memory.h>
 #include <UTILS_Debug.h>
 #include <mpi.h>
 #include <assert.h>
@@ -55,8 +58,14 @@
 
 struct SCOREP_Ipc_Group
 {
-    MPI_Comm comm;
+    MPI_Comm          comm;
+    SCOREP_Ipc_Group* next;
 };
+
+/**
+ * List of unused objects from freed groups.
+ */
+SCOREP_Ipc_Group* free_ipc_groups = NULL;
 
 
 SCOREP_Ipc_Group        scorep_ipc_group_world;
@@ -172,6 +181,37 @@ SCOREP_Ipc_GetFileGroup( int nProcsPerFile )
     return &file_group;
 }
 
+SCOREP_Ipc_Group*
+SCOREP_IpcGroup_Split( SCOREP_Ipc_Group* parent,
+                       int               color,
+                       int               key )
+{
+    SCOREP_Ipc_Group* new_group;
+
+    /* Assume that IPC operations are serialized and need no locking */
+    if ( free_ipc_groups != NULL )
+    {
+        new_group       = free_ipc_groups;
+        free_ipc_groups = new_group->next;
+    }
+    else
+    {
+        new_group = SCOREP_Memory_AllocForMisc( sizeof( SCOREP_Ipc_Group ) );
+    }
+    UTILS_ASSERT( new_group );
+    PMPI_Comm_split( parent->comm, color, key, &new_group->comm );
+    return new_group;
+}
+
+void
+SCOREP_IpcGroup_Free( SCOREP_Ipc_Group* group )
+{
+    PMPI_Comm_free( &group->comm );
+
+    /* Assume that IPC operations are serialized and need no locking */
+    group->next     = free_ipc_groups;
+    free_ipc_groups = group;
+}
 
 int
 SCOREP_IpcGroup_GetSize( SCOREP_Ipc_Group* group )

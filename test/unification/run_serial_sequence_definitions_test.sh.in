@@ -1,0 +1,50 @@
+#!/bin/bash
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016,
+## Technische Universitaet Darmstadt, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       run_omp_sequence_definition_test.sh.in
+
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+SINGLE_DIR="scorep_serial_single_definitions_test_dir"
+SEQUENCE_DIR="scorep_serial_sequence_definitions_test_dir"
+
+rm -rf $SEQUENCE_DIR $SINGLE_DIR
+
+###############################################################################
+# run both versions
+###############################################################################
+
+SCOREP_ENABLE_TRACING=1 SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS=0 SCOREP_EXPERIMENT_DIRECTORY=$SINGLE_DIR OMP_NUM_THREADS=4 mpiexec -np 4 ./user_c_test
+
+SCOREP_ENABLE_TRACING=1 SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS=1 SCOREP_EXPERIMENT_DIRECTORY=$SEQUENCE_DIR OMP_NUM_THREADS=4 mpiexec -np 4 ./user_c_test
+
+###############################################################################
+# Compare events on each location
+###############################################################################
+
+locations=`$OTF2_PRINT -G $SINGLE_DIR/traces.otf2 | grep "LOCATION " | cut -c27-38`
+
+for i in $locations; do 
+    $OTF2_PRINT -L $i $SEQUENCE_DIR/traces.otf2 | cut -c50-65 --complement > sequence.trace
+    $OTF2_PRINT -L $i $SINGLE_DIR/traces.otf2 | cut -c50-65 --complement > single.trace
+    if [ `diff sequence.trace single.trace` ]; then
+	diff sequence.trace single.trace
+	exit 1
+    else
+        echo "Event comparison location $i: ok"
+    fi
+done
+
+rm single.trace sequence.trace
+
+exit 0
+

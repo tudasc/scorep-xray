@@ -155,3 +155,17 @@ SCOREP_StringHandle_Get( SCOREP_StringHandle handle )
 
     return str->string_data;
 }
+
+const char*
+SCOREP_StringHandle_GetById( uint32_t id )
+{
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, String, string )
+    {
+        if ( id == definition->sequence_number )
+        {
+            return definition->string_data;
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+    return NULL;
+}

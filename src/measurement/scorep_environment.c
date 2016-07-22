@@ -51,6 +51,7 @@
 #include <SCOREP_Filter_Init.h>
 #include <SCOREP_Timer_Utils.h>
 #include "scorep_subsystem.h"
+#include "scorep_system_tree_sequence.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -70,6 +71,7 @@ static uint64_t env_page_size;
 static char*    env_experiment_directory;
 static bool     env_overwrite_experiment_directory;
 static char*    env_machine_name;
+static bool     env_system_tree_sequence;
 
 /*
  * Tracing setup
@@ -193,6 +195,22 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "The default machine name was set at configure time (see the INSTALL "
         "file for customization options)."
     },
+    {
+        "enable_system_tree_sequence_definitions",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &env_system_tree_sequence,
+        NULL,
+        "false",
+        "Use system tree sequence definitions",
+        "Enables an internal system tree representation that specifies "
+        "a sequence of system tree nodes with one record instead of "
+        "creating one record per system tree node, location group or "
+        "location. It is more scalable and has less memory requirements "
+        "than single-node records. However, it costs inidividual names "
+        "of nodes, but simply enumerates them based on types. "
+        "Currently, system tree sequence definitions support only MPI "
+        "(and trivially single-process) applications."
+    },
     SCOREP_CONFIG_TERMINATOR
 };
 
@@ -281,6 +299,22 @@ SCOREP_Env_GetMachineName( void )
 {
     assert( env_variables_initialized );
     return env_machine_name;
+}
+
+bool
+SCOREP_Env_UseSystemTreeSequence( void )
+{
+    if ( !scorep_system_tree_seq_has_support_for() &&
+         env_system_tree_sequence )
+    {
+        UTILS_WARNING( "Cannot use the system tree sequence definitions with "
+                       "current inter-process communication paradigm. "
+                       "Currently, system tree sequence definitions are only "
+                       "supported for MPI and single-process applications. "
+                       "Disable usage of system tree sequence definitions." );
+        env_system_tree_sequence = false;
+    }
+    return env_system_tree_sequence;
 }
 
 void

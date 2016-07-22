@@ -76,6 +76,8 @@ SCOREP_Env_DoOverwriteExperimentDirectory( void );
 const char*
 SCOREP_Env_GetMachineName( void );
 
+bool
+SCOREP_Env_UseSystemTreeSequence( void );
 
 /*
  * Tracing setup
