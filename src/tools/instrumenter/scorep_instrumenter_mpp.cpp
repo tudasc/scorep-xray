@@ -153,7 +153,6 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
     if ( return_value == 0 )
     {
         m_selector->select( this, false );
-        break;
     }
 }
 
@@ -230,7 +229,6 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
     if ( return_value == 0 )
     {
         m_selector->select( this, false );
-        break;
     }
 }
 
