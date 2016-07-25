@@ -51,4 +51,4 @@ TESTS_SERIAL += unification_test
 
 TESTS_SERIAL += $(SRC_ROOT)test/unification/run_serial_sequence_definitions_test.sh
 
-EXTRA_DIST += $(SRC_ROOT)test/unification/run_serial_sequence_definition_test.sh.in
+EXTRA_DIST += $(SRC_ROOT)test/unification/run_serial_sequence_definitions_test.sh.in
