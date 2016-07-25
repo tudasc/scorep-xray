@@ -66,6 +66,11 @@ sequence_definition_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ \
     -I$(INC_ROOT)include \
     -I$(INC_ROOT)include/scorep \
     -DSCOREP_USER_ENABLE
+
+if SCOREP_COMPILER_IBM
+sequence_definition_test_CPPFLAGS += -Dpomp_tpd_=pomp_tpd
+endif
+
 sequence_definition_test_LDADD    = $(mpi_omp_libadd)
 sequence_definition_test_LDFLAGS  = $(mpi_omp_ldflags)
 
