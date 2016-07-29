@@ -1461,8 +1461,8 @@ gather_per_location_data( uint64_t* localData,
 {
     /* Calculate global number of locations and receive counts per rank */
     uint32_t all_same         = 1;
-    uint64_t global_locations = 0; // Only valid on rank 0
-    int*     recv_counts;          // Only valid on rank 0
+    uint64_t global_locations = 0;    // Only valid on rank 0
+    int*     recv_counts      = NULL; // Only valid on rank 0
     if ( SCOREP_Ipc_GetRank() == 0 )
     {
         recv_counts = malloc( sizeof( int ) * SCOREP_Ipc_GetSize() );
