@@ -1565,7 +1565,7 @@ scorep_system_tree_seq_get_ipc_group( void )
     // Create permutated communicator
     if ( depth_order_comm == NULL )
     {
-        depth_order_comm = SCOREP_IpcGroup_Split( &scorep_ipc_group_world,
+        depth_order_comm = SCOREP_IpcGroup_Split( SCOREP_IPC_GROUP_WORLD,
                                                   1,
                                                   unified_rank_index );
     }
@@ -1592,7 +1592,7 @@ scorep_system_tree_seq_unify( void )
     uint64_t levels = determine_num_levels( root );
 
     scorep_system_tree_seq* unified_root
-        = unify_level_hierarchical( &scorep_ipc_group_world, &root,
+        = unify_level_hierarchical( SCOREP_IPC_GROUP_WORLD, &root,
                                     levels - 3, &unified_rank_index );
     restore_parent( unified_root );
 
