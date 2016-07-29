@@ -933,8 +933,8 @@ merge_children( mapping_data*           mapping,
     uint64_t j = 0; /* We want to know the value of j after the loop */
     for ( uint64_t i = 0; i < destination->num_children && j < source->num_children; )
     {
-        uint64_t diff = compare_system_tree_structure( destination->children[ i ],
-                                                       source->children[ j ] );
+        int64_t diff = compare_system_tree_structure( destination->children[ i ],
+                                                      source->children[ j ] );
         if ( diff == 0 ) /* Both match */
         {
             mapping->node_id                        = destination->children[ i ]->node_id;
