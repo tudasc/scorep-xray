@@ -150,9 +150,6 @@ static uint64_t* global_event_numbers = NULL;
 static SCOREP_Ipc_Group* depth_order_comm = NULL;
 
 
-extern SCOREP_Ipc_Group scorep_ipc_group_world;
-
-
 #define INVALID_STRING_ID UINT32_MAX
 
 /**
