@@ -554,9 +554,11 @@ metric_perf_create_event_set( scorep_metric_definition_data* definitions )
         struct scorep_event_map* event_map;
         struct perf_event_attr   attr;
         memset( &attr, 0, sizeof( struct perf_event_attr ) );
-        attr.type        = definitions->active_metrics[ i ]->type;
-        attr.config      = definitions->active_metrics[ i ]->config;
-        attr.read_format = PERF_FORMAT_GROUP;
+        attr.type           = definitions->active_metrics[ i ]->type;
+        attr.config         = definitions->active_metrics[ i ]->config;
+        attr.exclude_kernel = 1;  /* don't count kernel */
+        attr.exclude_hv     = 1;  /* don't count hypervisor */
+        attr.read_format    = PERF_FORMAT_GROUP;
 
         /* Search for the event map that matches the counter */
         j = 0;
@@ -687,8 +689,9 @@ metric_perf_test( scorep_metric_definition_data* metricDefinition )
     {
         struct perf_event_attr attr;
         memset( &attr, 0, sizeof( struct perf_event_attr ) );
-        attr.type   = metricDefinition->active_metrics[ i ]->type;
-        attr.config = metricDefinition->active_metrics[ i ]->config;
+        attr.type           = metricDefinition->active_metrics[ i ]->type;
+        attr.config         = metricDefinition->active_metrics[ i ]->config;
+        attr.exclude_kernel = 1;
 
         /* Search for the eventset that matches the counter */
         j         = 0;

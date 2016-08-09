@@ -295,11 +295,13 @@ create_interrupt_generator( scorep_sampling_single_location_data*          sampl
             UTILS_WARNING( "%s is not a valid perf event\n", definition.event );
             return;
         }
-        perf_attr.sample_type   = PERF_SAMPLE_IP;
-        perf_attr.mmap          = 1;
-        perf_attr.wakeup_events = 1;
-        perf_attr.size          = sizeof( struct perf_event_attr );
-        perf_attr.sample_period = definition.period;
+        perf_attr.sample_type    = PERF_SAMPLE_IP;
+        perf_attr.mmap           = 1;
+        perf_attr.wakeup_events  = 1;
+        perf_attr.exclude_kernel = 1;   /* don't count kernel */
+        perf_attr.exclude_hv     = 1;   /* don't count hypervisor */
+        perf_attr.size           = sizeof( struct perf_event_attr );
+        perf_attr.sample_period  = definition.period;
 
         samplingData->perf_fd = syscall( __NR_perf_event_open, &perf_attr, 0, -1, -1, 0 ); /* allocate memory for mmap */
         if ( samplingData->perf_fd < 1 )
