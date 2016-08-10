@@ -545,7 +545,8 @@ SCOREP_Score_Estimator::calculate( bool showRegions,
     uint64_t bytes_per_hit = 0;
     if ( m_profile->hasHits() )
     {
-        bytes_per_hit = SCOREP_Score_Event::m_all_events[ "CallingContextSample" ]->getEventSize();
+        bytes_per_hit = SCOREP_Score_Event::GetEventSize( "CallingContextSample" ) +
+                        SCOREP_Score_Event::GetEventSize( "Timestamp" );
     }
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
