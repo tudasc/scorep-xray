@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -98,6 +101,12 @@ SCOREP_Score_Event::occursInRegion( const string& regionName,
                                     bool          hasHits )
 {
     return false;
+}
+
+bool
+SCOREP_Score_Event::hasTimestamp( void ) const
+{
+    return true;
 }
 
 /* **************************************************************************************
@@ -227,10 +236,11 @@ SCOREP_Score_TimestampEvent::occursInRegion( const string& regionName,
     return false; // Is a parameter region which has no enter/exit
 }
 
-void
-SCOREP_Score_TimestampEvent::setEventSize( uint32_t size )
+bool
+SCOREP_Score_TimestampEvent::hasTimestamp( void ) const
 {
-    m_size = 2 * size;               /* Regions have two timestamps */
+    return false; // Number of timestamps are added separately and not during
+                  // Event iteration
 }
 
 /* **************************************************************************************
@@ -260,10 +270,12 @@ SCOREP_Score_ParameterEvent::occursInRegion( const string& regionName,
  * class SCOREP_Score_NameMatchEvent
  ***************************************************************************************/
 SCOREP_Score_NameMatchEvent::SCOREP_Score_NameMatchEvent( const string&      eventName,
-                                                          const set<string>& regionNames )
+                                                          const set<string>& regionNames,
+                                                          bool               hasTimestamp )
     : SCOREP_Score_Event( eventName )
 {
-    m_region_names = regionNames;
+    m_region_names  = regionNames;
+    m_has_timestamp = hasTimestamp;
 }
 
 bool
@@ -273,14 +285,20 @@ SCOREP_Score_NameMatchEvent::occursInRegion( const string& regionName,
     return m_region_names.count( regionName ) == 1;
 }
 
+bool
+SCOREP_Score_NameMatchEvent::hasTimestamp( void ) const
+{
+    return m_has_timestamp;
+}
+
 /* **************************************************************************************
  * class SCOREP_Score_PrefixMatchEvent
  ***************************************************************************************/
-SCOREP_Score_PrefixMatchEvent::SCOREP_Score_PrefixMatchEvent
-(
+SCOREP_Score_PrefixMatchEvent::SCOREP_Score_PrefixMatchEvent(
     const string&        eventName,
-    const deque<string>& regionPrefix
-) : SCOREP_Score_Event( eventName )
+    const deque<string>& regionPrefix,
+    bool                 hasTimestamp )
+    : SCOREP_Score_Event( eventName )
 {
     m_region_prefix = regionPrefix;
 }
@@ -298,4 +316,10 @@ SCOREP_Score_PrefixMatchEvent::occursInRegion( const string& regionName,
         }
     }
     return false;
+}
+
+bool
+SCOREP_Score_PrefixMatchEvent::hasTimestamp( void ) const
+{
+    return m_has_timestamp;
 }

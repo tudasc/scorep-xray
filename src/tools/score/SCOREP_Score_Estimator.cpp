@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -306,87 +309,104 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
 #define SCOREP_SCORE_EVENT( name ) region_set.insert( name );
     set<string> region_set;
     SCOREP_SCORE_EVENT_MPI_SEND;
-    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiSend", region_set ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiSend", region_set, true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_ISEND;
-    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIsend", region_set ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIsend", region_set, true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_ISENDCOMPLETE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIsendComplete",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_IRECVREQUEST;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIrecvRequest",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_RECV;
-    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiRecv", region_set ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiRecv", region_set, true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_IRECV;
-    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIrecv", region_set ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIrecv", region_set, true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_MPI_COLLECTIVE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiCollectiveBegin",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        false ) );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiCollectiveEnd",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_THREAD_ACQUIRELOCK;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "ThreadAcquireLock",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_THREAD_RELEASELOCK;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "ThreadReleaseLock",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_OP;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaPut",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
+
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaOpCompleteBlocking",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_OP_COMPLETE_REMOTE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaOpCompleteRemote",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_ATOMIC;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaAtomic",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        false ) );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaOpCompleteBlocking",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_COLLECTIVE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaCollectiveBegin",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaCollectiveEnd",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        true ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_WAIT_CHANGE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaWaitChange",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        false ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_LOCK;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaRequestLock",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        false ) );
 
     region_set.clear();
     SCOREP_SCORE_EVENT_RMA_RELEASE_LOCK;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "RmaReleaseLock",
-                                                                        region_set ) );
+                                                                        region_set,
+                                                                        false ) );
 
 #undef SCOREP_SCORE_EVENT
 #define SCOREP_SCORE_EVENT( name ) region_list.push_back( name );
@@ -394,50 +414,61 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_FORK;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadFork",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_JOIN;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadJoin",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_TEAM;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamBegin",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamEnd",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_TASK_CREATE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskCreate",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          false ) );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskComplete",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_TASK_SWITCH;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskSwitch",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_CREATE;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadCreate",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_BEGIN;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadBegin",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_WAIT;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadWait",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_END;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadEnd",
-                                                                          region_list ) );
+                                                                          region_list,
+                                                                          true ) );
 #undef SCOREP_SCORE_EVENT
 
     calculate_event_sizes();
@@ -529,10 +560,17 @@ SCOREP_Score_Estimator::calculate( bool showRegions,
             for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
                   i != SCOREP_Score_Event::m_all_events.end(); i++ )
             {
+                uint32_t timestamp_events = 0;
                 if ( i->second->occursInRegion( region_name, m_profile->hasHits() ) )
                 {
                     bytes_per_visit += i->second->getEventSize();
+
+                    if ( i->second->hasTimestamp() )
+                    {
+                        timestamp_events++;
+                    }
                 }
+                bytes_per_visit += SCOREP_Score_Event::GetEventSize( "Timestamp" ) * timestamp_events;
             }
         }
 

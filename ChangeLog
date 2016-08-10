@@ -33,6 +33,9 @@ Bugfixes:
 - Prevent sampling/unwinding when Intel MPI is used. This combination,
   even when sampling is not active, may mysteriously alter the
   application output just by linking libunwind.
+- Fixed possible underestimation of the trace size and memory footprint
+  in scorep-score due to counting timestamps only for enter/leave
+  records.
 
 ------------------- Released version 2.0.2 ---------------------------
 

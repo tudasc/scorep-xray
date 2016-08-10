@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -94,6 +97,12 @@ public:
     virtual bool
     occursInRegion( const std::string& regionName,
                     bool               hasHits = false );
+
+    /**
+     * Return whether this event obtains a new timestamp.
+     */
+    virtual bool
+    hasTimestamp( void ) const;
 
     /*------------------------------------------------ protected members */
 protected:
@@ -200,8 +209,8 @@ public:
     occursInRegion( const std::string& regionName,
                     bool               hasHits );
 
-    virtual void
-    setEventSize( uint32_t size );
+    virtual bool
+    hasTimestamp( void ) const;
 };
 
 /* **************************************************************************************
@@ -223,13 +232,17 @@ class SCOREP_Score_NameMatchEvent : public SCOREP_Score_Event
 {
 public:
     SCOREP_Score_NameMatchEvent( const std::string&           eventName,
-                                 const std::set<std::string>& regionNames );
+                                 const std::set<std::string>& regionNames,
+                                 bool                         hasTimestamp );
     virtual bool
     occursInRegion( const std::string& regionName,
                     bool               hasHits );
+    virtual bool
+    hasTimestamp( void ) const;
 
 protected:
     std::set<std::string> m_region_names;
+    bool                  m_has_timestamp;
 };
 
 /* **************************************************************************************
@@ -239,13 +252,17 @@ class SCOREP_Score_PrefixMatchEvent : public SCOREP_Score_Event
 {
 public:
     SCOREP_Score_PrefixMatchEvent( const std::string&             eventName,
-                                   const std::deque<std::string>& regionPrefix );
+                                   const std::deque<std::string>& regionPrefix,
+                                   bool                           hasTimestamp );
     virtual bool
     occursInRegion( const std::string& regionName,
                     bool               hasHits );
+    virtual bool
+    hasTimestamp( void ) const;
 
 protected:
     std::deque<std::string> m_region_prefix;
+    bool                    m_has_timestamp;
 };
 
 
