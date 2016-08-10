@@ -560,17 +560,14 @@ SCOREP_Score_Estimator::calculate( bool showRegions,
             for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
                   i != SCOREP_Score_Event::m_all_events.end(); i++ )
             {
-                uint32_t timestamp_events = 0;
                 if ( i->second->occursInRegion( region_name, m_profile->hasHits() ) )
                 {
                     bytes_per_visit += i->second->getEventSize();
-
                     if ( i->second->hasTimestamp() )
                     {
-                        timestamp_events++;
+                        bytes_per_visit += SCOREP_Score_Event::GetEventSize( "Timestamp" );
                     }
                 }
-                bytes_per_visit += SCOREP_Score_Event::GetEventSize( "Timestamp" ) * timestamp_events;
             }
         }
 

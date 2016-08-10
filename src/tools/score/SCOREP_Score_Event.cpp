@@ -301,6 +301,7 @@ SCOREP_Score_PrefixMatchEvent::SCOREP_Score_PrefixMatchEvent(
     : SCOREP_Score_Event( eventName )
 {
     m_region_prefix = regionPrefix;
+    m_has_timestamp = hasTimestamp;
 }
 
 bool
