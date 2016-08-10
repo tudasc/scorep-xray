@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -727,7 +730,7 @@ typedef int SCOREP_MpiRank;
 /**
  * Type of a MPI Non-blocking communication request id.
  */
-typedef int32_t SCOREP_MpiRequestId;
+typedef uint64_t SCOREP_MpiRequestId;
 
 
 /**
