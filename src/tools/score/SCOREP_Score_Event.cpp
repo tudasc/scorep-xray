@@ -229,11 +229,7 @@ bool
 SCOREP_Score_TimestampEvent::occursInRegion( const string& regionName,
                                              bool          hasHits )
 {
-    if ( regionName.find( '=', 0 ) == string::npos )
-    {
-        return true;
-    }
-    return false; // Is a parameter region which has no enter/exit
+    return false; // a timestamp never matches
 }
 
 bool
