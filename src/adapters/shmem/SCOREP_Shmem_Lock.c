@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,7 +29,7 @@
 
 #define SET_LOCK( FUNCNAME )                                                    \
     void                                                                        \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                         \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) SCOREP_SHMEM_SET_LOCK_PROTO_ARGS       \
     {                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
                                                                                 \
@@ -72,7 +72,7 @@ SET_LOCK( shmem_set_lock )
 
 #define CLEAR_LOCK( FUNCNAME )                                                  \
     void                                                                        \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                         \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) SCOREP_SHMEM_CLEAR_LOCK_PROTO_ARGS     \
     {                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
                                                                                 \
@@ -114,7 +114,7 @@ CLEAR_LOCK( shmem_clear_lock )
 
 #define TEST_LOCK( FUNCNAME )                                                       \
     int                                                                             \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                             \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) SCOREP_SHMEM_TEST_LOCK_PROTO_ARGS          \
     {                                                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
                                                                                     \

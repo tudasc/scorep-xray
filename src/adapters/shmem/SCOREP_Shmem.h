@@ -24,6 +24,10 @@
 #include <stdbool.h>
 #include <shmem.h>
 
+#if HAVE( SHMEM_PROFILING_INTERFACE )
+#include <pshmem.h>
+#endif
+
 #include <SCOREP_AllocMetric.h>
 
 #include "scorep_shmem_communicator_mgmt.h"

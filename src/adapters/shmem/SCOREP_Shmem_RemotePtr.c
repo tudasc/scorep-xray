@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,8 +29,7 @@
 
 #define REMOTE_PTR( FUNCNAME )                                              \
     void*                                                                   \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void * target,                   \
-                                           int    pe )                      \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) SCOREP_SHMEM_PTR_PROTO_ARGS        \
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
@@ -44,7 +43,7 @@
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
                                                                             \
             SCOREP_ENTER_WRAPPED_REGION();                                  \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, pe ) ); \
+            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr, pe ) );    \
             SCOREP_EXIT_WRAPPED_REGION();                                   \
                                                                             \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
@@ -53,7 +52,7 @@
         }                                                                   \
         else                                                                \
         {                                                                   \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, pe ) ); \
+            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr, pe ) );    \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \

@@ -67,8 +67,8 @@ SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,         shmem_udcflush_line, ( vo
 #if SHMEM_HAVE_DECL( SHMEM_PE_ACCESSIBLE )
 SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     int,         shmem_pe_accessible, ( int pe ) )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_ADDR_ACCESSIBLE )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     int,         shmem_addr_accessible, ( void* , int ) )
+#if SHMEM_HAVE_DECL( SHMEM_ADDR_ACCESSIBLE ) && defined( SCOREP_SHMEM_ADDR_ACCESSIBLE_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     int,         shmem_addr_accessible, SCOREP_SHMEM_ADDR_ACCESSIBLE_PROTO_ARGS )
 #endif
 
 /*
@@ -103,8 +103,8 @@ SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void*,       shpclmove, ( int*, int*, l
 /*
  * Remote pointer operations
  */
-#if SHMEM_HAVE_DECL( SHMEM_PTR )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void*,       shmem_ptr, ( void* , int ) )
+#if SHMEM_HAVE_DECL( SHMEM_PTR ) && defined( SCOREP_SHMEM_PTR_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void*,       shmem_ptr, SCOREP_SHMEM_PTR_PROTO_ARGS )
 #endif
 
 /*
@@ -422,49 +422,49 @@ SCOREP_SHMEM_PROCESS_FUNC( ATOMIC,       void,        shmem_longlong_inc, ( long
 /*
  * Lock functions
  */
-#if SHMEM_HAVE_DECL( SHMEM_SET_LOCK )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_set_lock, ( long* ) )
+#if SHMEM_HAVE_DECL( SHMEM_SET_LOCK ) && defined( SCOREP_SHMEM_SET_LOCK_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_set_lock, SCOREP_SHMEM_SET_LOCK_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_CLEAR_LOCK )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_clear_lock, ( long* ) )
+#if SHMEM_HAVE_DECL( SHMEM_CLEAR_LOCK ) && defined( SCOREP_SHMEM_CLEAR_LOCK_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_clear_lock, SCOREP_SHMEM_CLEAR_LOCK_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_TEST_LOCK )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     int,         shmem_test_lock, ( long* ) )
+#if SHMEM_HAVE_DECL( SHMEM_TEST_LOCK ) && defined( SCOREP_SHMEM_TEST_LOCK_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     int,         shmem_test_lock, SCOREP_SHMEM_TEST_LOCK_PROTO_ARGS )
 #endif
 
 /*
  * P2P sync routines
  */
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_short_wait, ( short* , short ) )
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT ) && defined( SCOREP_SHMEM_SHORT_WAIT_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_short_wait, SCOREP_SHMEM_SHORT_WAIT_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_INT_WAIT )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_int_wait, ( int* , int ) )
+#if SHMEM_HAVE_DECL( SHMEM_INT_WAIT ) && defined( SCOREP_SHMEM_INT_WAIT_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_int_wait, SCOREP_SHMEM_INT_WAIT_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait, ( long* , long ) )
+#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT ) && defined( SCOREP_SHMEM_LONG_WAIT_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait, SCOREP_SHMEM_LONG_WAIT_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_longlong_wait, ( long long* , long long ) )
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT ) && defined( SCOREP_SHMEM_LONGLONG_WAIT_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_longlong_wait, SCOREP_SHMEM_LONGLONG_WAIT_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_WAIT )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_wait, ( long* , long ) )
+#if SHMEM_HAVE_DECL( SHMEM_WAIT ) && defined( SCOREP_SHMEM_WAIT_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_wait, SCOREP_SHMEM_WAIT_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_short_wait_until, ( short* , int , short ) )
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT_UNTIL ) && defined( SCOREP_SHMEM_SHORT_WAIT_UNTIL_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_short_wait_until, SCOREP_SHMEM_SHORT_WAIT_UNTIL_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_INT_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_int_wait_until, ( int* , int , int ) )
+#if SHMEM_HAVE_DECL( SHMEM_INT_WAIT_UNTIL ) && defined( SCOREP_SHMEM_INT_WAIT_UNTIL_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_int_wait_until, SCOREP_SHMEM_INT_WAIT_UNTIL_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait_until, ( long* , int , long ) )
+#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL ) && defined( SCOREP_SHMEM_LONG_WAIT_UNTIL_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_long_wait_until, SCOREP_SHMEM_LONG_WAIT_UNTIL_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_longlong_wait_until, ( long long* , int , long long ) )
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT_UNTIL ) && defined( SCOREP_SHMEM_LONGLONG_WAIT_UNTIL_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_longlong_wait_until, SCOREP_SHMEM_LONGLONG_WAIT_UNTIL_PROTO_ARGS )
 #endif
-#if SHMEM_HAVE_DECL( SHMEM_WAIT_UNTIL )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_wait_until, ( long* , int , long ) )
+#if SHMEM_HAVE_DECL( SHMEM_WAIT_UNTIL ) && defined( SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
+SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shmem_wait_until, SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 /*

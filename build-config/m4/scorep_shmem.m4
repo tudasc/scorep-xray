@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2014, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -928,6 +928,81 @@ AC_DEFUN([_SCOREP_SHMEM_COMPLIANCE], [
         [void], [return],
         [shmem_complexd_prod_to_all], [(double complex *target, double complex *source, int nreduce, int PE_start, int logPE_stride, int PE_size, double complex *pWrk, long *pSync)],
         [CONST],                      [(double complex *target, const double complex *source, size_t nreduce, int PE_start, int logPE_stride, int PE_size, double complex *pWrk, long *pSync)])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+        [int], [return 1],
+        [shmem_addr_accessible],      [(void *addr, int pe)],
+        [CONST],                      [(const void *addr, int pe)])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void*], [return NULL],
+         [shmem_ptr],                 [( void *ptr, int pe )],
+         [CONST],                     [( const void *ptr, int pe )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_set_lock],            [( long *lock )],
+         [VOLATILE],                  [( volatile long *lock )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_clear_lock],          [( long *lock )],
+         [VOLATILE],                  [( volatile long *lock )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [int], [return 0],
+         [shmem_test_lock],           [( long *lock )],
+         [VOLATILE],                  [( volatile long *lock )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_short_wait],          [( short *addr, short value )],
+         [VOLATILE],                  [( volatile short *addr, short value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_int_wait],            [( int *addr, int value )],
+         [VOLATILE],                  [( volatile int *addr, int value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_long_wait],           [( long *addr, long value )],
+         [VOLATILE],                  [( volatile long *addr, long value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_longlong_wait],       [( long long *addr, long long value )],
+         [VOLATILE],                  [( volatile long long *addr, long long value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_wait],                [( long *addr, long value )],
+         [VOLATILE],                  [( volatile long *addr, long value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_short_wait_until],    [( short *addr, int cmp, short value )],
+         [VOLATILE],                  [( volatile short *addr, int cmp, short value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_int_wait_until],      [( int *addr, int cmp, int value )],
+         [VOLATILE],                  [( volatile int *addr, int cmp, int value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_long_wait_until],     [( long *addr, int cmp, long value )],
+         [VOLATILE],                  [( volatile long *addr, int cmp, long value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_longlong_wait_until], [( long long *addr, int cmp, long long value )],
+         [VOLATILE],                  [( volatile long long *addr, int cmp, long long value )])
+
+    _SCOREP_SHMEM_CHECK_COMPLIANCE(
+         [void], [return],
+         [shmem_wait_until],          [( long *addr, int cmp, long value )],
+         [VOLATILE],                  [( volatile long *addr, int cmp, long value )])
 
     AC_LANG_POP([C])
 ])

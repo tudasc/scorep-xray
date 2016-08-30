@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,10 +33,9 @@
 
 /* *INDENT-OFF* */
 
-#define P2P_WAIT( FUNCNAME, DATATYPE )                                          \
+#define P2P_WAIT( FUNCNAME, ARGS )                                              \
     void                                                                        \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( DATATYPE * var,                      \
-                                           DATATYPE   value )                   \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ARGS                                   \
     {                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
                                                                                 \
@@ -50,7 +49,7 @@
             SCOREP_RmaWaitChange( scorep_shmem_interim_world_window_handle );   \
                                                                                 \
             SCOREP_ENTER_WRAPPED_REGION();                                      \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( var, value ) );           \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value ) );          \
             SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );             \
@@ -59,7 +58,7 @@
         }                                                                       \
         else                                                                    \
         {                                                                       \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( var, value ) );           \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value ) );          \
         }                                                                       \
                                                                                 \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
@@ -68,33 +67,31 @@
 /* *INDENT-ON* */
 
 #if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT )
-P2P_WAIT( shmem_short_wait,    short )
+P2P_WAIT( shmem_short_wait,    SCOREP_SHMEM_SHORT_WAIT_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_INT_WAIT )
-P2P_WAIT( shmem_int_wait,      int )
+P2P_WAIT( shmem_int_wait,      SCOREP_SHMEM_INT_WAIT_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT )
-P2P_WAIT( shmem_long_wait,     long )
+P2P_WAIT( shmem_long_wait,     SCOREP_SHMEM_LONG_WAIT_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT )
-P2P_WAIT( shmem_longlong_wait, long long )
+P2P_WAIT( shmem_longlong_wait, SCOREP_SHMEM_LONGLONG_WAIT_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT ) && !defined( shmem_wait )
-P2P_WAIT( shmem_wait,          long )
+P2P_WAIT( shmem_wait,          SCOREP_SHMEM_WAIT_PROTO_ARGS )
 #endif
 
 
 /* *INDENT-OFF* */
 
-#define P2P_WAIT_UNTIL( FUNCNAME, DATATYPE )                                    \
+#define P2P_WAIT_UNTIL( FUNCNAME, ARGS )                                        \
     void                                                                        \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( DATATYPE * var,                      \
-                                           int        cmp,                      \
-                                           DATATYPE   value )                   \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ARGS                                   \
     {                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
                                                                                 \
@@ -108,7 +105,7 @@ P2P_WAIT( shmem_wait,          long )
             SCOREP_RmaWaitChange( scorep_shmem_interim_world_window_handle );   \
                                                                                 \
             SCOREP_ENTER_WRAPPED_REGION();                                      \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( var, cmp, value ) );      \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, cmp, value ) );     \
             SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );             \
@@ -117,7 +114,7 @@ P2P_WAIT( shmem_wait,          long )
         }                                                                       \
         else                                                                    \
         {                                                                       \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( var, cmp, value ) );      \
+            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, cmp, value ) );     \
         }                                                                       \
                                                                                 \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
@@ -126,23 +123,23 @@ P2P_WAIT( shmem_wait,          long )
 /* *INDENT-ON* */
 
 #if SHMEM_HAVE_DECL( SHMEM_SHORT_WAIT_UNTIL )
-P2P_WAIT_UNTIL( shmem_short_wait_until,    short )
+P2P_WAIT_UNTIL( shmem_short_wait_until,    SCOREP_SHMEM_SHORT_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_INT_WAIT_UNTIL )
-P2P_WAIT_UNTIL( shmem_int_wait_until,      int )
+P2P_WAIT_UNTIL( shmem_int_wait_until,      SCOREP_SHMEM_INT_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL )
-P2P_WAIT_UNTIL( shmem_long_wait_until,     long )
+P2P_WAIT_UNTIL( shmem_long_wait_until,     SCOREP_SHMEM_LONG_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONGLONG_WAIT_UNTIL )
-P2P_WAIT_UNTIL( shmem_longlong_wait_until, long long )
+P2P_WAIT_UNTIL( shmem_longlong_wait_until, SCOREP_SHMEM_LONGLONG_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 #if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL ) && !defined( shmem_wait_until )
-P2P_WAIT_UNTIL( shmem_wait_until,          long )
+P2P_WAIT_UNTIL( shmem_wait_until,          SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
 
