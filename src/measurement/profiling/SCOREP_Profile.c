@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -656,6 +656,18 @@ SCOREP_Profile_Process( void )
     /* Register callpath and assign callpath handles to every node */
     scorep_profile_assign_callpath_to_master();
     scorep_profile_assign_callpath_to_workers();
+
+    /* Perform clustering */
+    if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_KEY_THREADS )
+    {
+        scorep_profile_cluster_key_threads();
+    }
+
+    if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_CLUSTER_THREADS )
+    {
+        scorep_profile_init_num_threads_metric();
+        scorep_profile_cluster_same_location();
+    }
 }
 
 
@@ -671,21 +683,13 @@ write( void )
     {
         return;
     }
-    else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_CUBE4 )
-    {
-        scorep_profile_write_cube4( false );
-    }
     else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
     {
         scorep_profile_write_tau_snapshot();
     }
-    else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_CUBE_TUPLE )
-    {
-        scorep_profile_write_cube4( true );
-    }
     else
     {
-        UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Unsupported profile format" );
+        scorep_profile_write_cube4( scorep_profile_output_format );
     }
 }
 

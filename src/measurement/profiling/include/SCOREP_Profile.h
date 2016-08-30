@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011, 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011, 2015,
@@ -73,10 +73,14 @@ typedef struct SCOREP_Profile_LocationData SCOREP_Profile_LocationData;
  */
 typedef enum
 {
-    SCOREP_PROFILE_OUTPUT_NONE         = 0,
-    SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT = 1,
-    SCOREP_PROFILE_OUTPUT_CUBE4        = 2,
-    SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   = 3,
+    SCOREP_PROFILE_OUTPUT_NONE            = 0,
+    SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT    = 1,
+    SCOREP_PROFILE_OUTPUT_CUBE4           = 2,
+    SCOREP_PROFILE_OUTPUT_CUBE_TUPLE      = 3,
+    SCOREP_PROFILE_OUTPUT_THREAD_SUM      = 4,
+    SCOREP_PROFILE_OUTPUT_THREAD_TUPLE    = 5,
+    SCOREP_PROFILE_OUTPUT_KEY_THREADS     = 6,
+    SCOREP_PROFILE_OUTPUT_CLUSTER_THREADS = 7
 } SCOREP_Profile_OutputFormat;
 
 #define SCOREP_PROFILE_OUTPUT_DEFAULT SCOREP_PROFILE_OUTPUT_CUBE4

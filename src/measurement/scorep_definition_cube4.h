@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015-2016,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -48,7 +51,7 @@
 #include <stdbool.h>
 
 /**
-   Contains the mapping structs for Cube 4 handles to SCOREP handles.
+ * Contains the mapping structs for Cube 4 handles to SCOREP handles.
  */
 typedef struct
 {
@@ -64,23 +67,65 @@ typedef struct
 } scorep_cube4_definitions_map;
 
 /**
+ * Contains a list of possible CUBE location layouts.
+ */
+typedef enum
+{
+    SCOREP_CUBE_LOCATION_ALL,
+    SCOREP_CUBE_LOCATION_ONE_PER_PROCESS,
+    SCOREP_CUBE_LOCATION_KEY_THREADS,
+    SCOREP_CUBE_LOCATION_CLUSTER
+} scorep_cube_location_layout;
+
+/**
+ * Contains a list of possible CUBE data types.
+ */
+typedef enum
+{
+    SCOREP_CUBE_DATA_SCALAR,
+    SCOREP_CUBE_DATA_TUPLE
+} scorep_cube_data_type;
+
+/**
+ * Contains possible constituents of additional metrics.
+ * This data types is a bit field.
+ */
+typedef enum
+{
+    SCOREP_CUBE_METRIC_NONE         = 0,
+    SCOREP_CUBE_METRIC_VISITS       = 1,
+    SCOREP_CUBE_METRIC_NUM_THREADS  = 2,
+    SCOREP_CUBE_METRIC_TASK_METRICS = 4
+} scorep_cube_metric_list;
+
+/**
+ * Defines the CUBE format for definitions.
+ */
+typedef struct
+{
+    scorep_cube_location_layout location_layout;
+    scorep_cube_metric_list     metric_list;
+    scorep_cube_data_type       dense_metric_type;
+    scorep_cube_data_type       sparse_metric_type;
+} scorep_cube_layout;
+
+/**
    Writes the definitions to the Cube 4 struct, given by @a my_cube. Fills
    the mapping table given by map.
    @param myCube      Pointer to the cube struct to which the data is written.
    @param map         Pointer to an already inititialized mapping structure.
    @param nRanks      Number of ranks.
    @param nLocations  Global number of locations.
-   @param writeTaskMetrics Indicates whether task related metric defintions are
-                      written to the Cube file.
-   @param writeTupels Indicates whether tuples are written.
+   @param locationsPerRank List of number of locations per rank.
+   @param layout      Description of teh cube layout
  */
 void
 scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      nRanks,
                                    uint64_t                      nLocations,
-                                   bool                          writeTaskMetrics,
-                                   bool                          writeTuples );
+                                   uint32_t*                     locationsPerRank,
+                                   const scorep_cube_layout*     layout );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
@@ -244,5 +289,12 @@ scorep_get_max_time_handle( void );
  */
 cube_metric*
 scorep_get_min_time_handle( void );
+
+/**
+   Returns the handle used for metric 'number of threads'.
+ */
+cube_metric*
+scorep_get_num_threads_handle( void );
+
 
 #endif /* SCOREP_DEFINITION_CUBE4_H */

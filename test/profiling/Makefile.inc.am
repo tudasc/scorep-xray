@@ -57,7 +57,6 @@ clustering_test_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += ./clustering_test
 
-
 # -------------------------------------------- task migration test
 check_PROGRAMS += task_migration_test
 
@@ -77,11 +76,11 @@ TESTS_SERIAL += ./task_migration_test
 
 
 # -------------------------------------------- test scripts
-TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
-EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
+TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_format_serial_test.sh
+EXTRA_DIST += $(SRC_ROOT)test/profiling/run_format_serial_test.sh
 
 if HAVE_OPENMP_SUPPORT
-TESTS_OMP += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
-EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
+TESTS_OMP += $(SRC_ROOT)test/profiling/run_format_omp_test.sh
+EXTRA_DIST += $(SRC_ROOT)test/profiling/run_format_omp_test.sh
 endif
 

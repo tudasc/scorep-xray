@@ -110,12 +110,32 @@ static const SCOREP_ConfigType_SetEntry profile_format_table[] = {
     {
         "cube4",
         SCOREP_PROFILE_OUTPUT_CUBE4,
-        "Stores the sum for every metric per callpath in Cube4 format."
+        "Stores the sum for every metric per callpath per location in Cube4 format."
     },
     {
         "cube_tuple",
         SCOREP_PROFILE_OUTPUT_CUBE_TUPLE,
         "Stores an extended set of statistics in Cube4 format."
+    },
+    {
+        "thread_sum",
+        SCOREP_PROFILE_OUTPUT_THREAD_SUM,
+        "Sums all locations within a location group and stores the data in Cube4 format."
+    },
+    {
+        "thread_tuple",
+        SCOREP_PROFILE_OUTPUT_THREAD_TUPLE,
+        "Sums all locations within a location group and store in addition some statistical data about the distribution among the location of a location group."
+    },
+    {
+        "key_threads",
+        SCOREP_PROFILE_OUTPUT_KEY_THREADS,
+        "Stores the initial location, the slowest location and the fastest location per process. Sums all other locations within a location group. The result is stored in Cube4 format."
+    },
+    {
+        "cluster_threads",
+        SCOREP_PROFILE_OUTPUT_CLUSTER_THREADS,
+        "Clusters locations within a location group if they have the same calltree structure. Sums locations within a cluster. Stores the result in Cube4 format."
     },
     {
         "default",

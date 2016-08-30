@@ -40,6 +40,8 @@
  * those formats are declared, which are available on the platform.
  */
 
+#include <SCOREP_Profile.h>
+
 /**
    Writes the profile in TAU snapshot format to disk. For each rank a separate
    file is created. The files are named snapshot.<rank>.0.0
@@ -50,11 +52,9 @@ scorep_profile_write_tau_snapshot( void );
 /**
    Writes the profile in Cube 4 format to disk. For each metric a separate
    file is created.
-   @param write_tuples True if it should write the whole tuple consisting of
-                       sum, min, max, number of samples, sum of squares to Cube.
-                       False if it should write only the sum.
+   @param format  Passes the profile output format information.
  */
 extern void
-scorep_profile_write_cube4( bool write_tuples );
+scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format );
 
 #endif /* SCOREP_PROFILE_WRITER_H */

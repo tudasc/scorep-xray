@@ -744,16 +744,9 @@ get_thread_start_for_fork( scorep_profile_node* root,
     return NULL;
 }
 
-/**
-   Replaces all occurences of @a old in thread start nodes by @a substitute.
-   @param old        A pointer to a fork node, that is replaced in the type specific data
-                     of all thread start nodes.
-   @param substitute A pointer to a fork node, that will replace the occurences of
-                     @a old.
- */
-static void
-substitute_thread_starts( scorep_profile_node* old,
-                          scorep_profile_node* substitute )
+void
+scorep_profile_substitute_thread_starts( scorep_profile_node* old,
+                                         scorep_profile_node* substitute )
 {
     for ( scorep_profile_node* root = scorep_profile.first_root_node;
           root != NULL;
@@ -821,7 +814,7 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
         {
             /* Set the thread start node data that points to the source tree to
                the destination tree */
-            substitute_thread_starts( source, destination );
+            scorep_profile_substitute_thread_starts( source, destination );
         }
     }
 

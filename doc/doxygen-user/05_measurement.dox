@@ -53,7 +53,7 @@ environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
 
 By default, @scorep writes the profile in @cube4 base format. Hereby, for every metric
 contains one value, usually only the sum. However, @scorep allows to store the profile
-in two other formats. To change the default format, set the environment variable
+in other formats. To change the default format, set the environment variable
 \confvar{SCOREP_PROFILING_FORMAT}. Please refer to the description of this variable for
 possible values.
 
