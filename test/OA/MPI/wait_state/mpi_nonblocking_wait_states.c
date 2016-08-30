@@ -87,7 +87,7 @@ main( int    argc,
 		// This is not guaranteed by this code.
                 // Because of the sleep before the receive it is rather unlikely that the
                 // receive is already posted.
-                //MPI_Irsend(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
+                MPI_Isend(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
                 MPI_Isend(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
 //                printf("Cancelling send 1\n");
 //                MPI_Cancel(&request);
@@ -116,7 +116,7 @@ main( int    argc,
 //                MPI_Irecv(&buffer1,1,MPI_INT,comm_partner,100,MPI_COMM_WORLD,&(requests[0]));
                 printf("Starting receives...\n");
                 MPI_Irecv(&buffer2,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[0]));
-                //MPI_Irecv(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
+                MPI_Irecv(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
                 MPI_Irecv(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
                 sleep(3);
                 printf("Starting tests...\n");
