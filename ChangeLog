@@ -42,6 +42,8 @@ Bugfixes:
 - Fixed possible underestimation of the trace size and memory footprint
   in scorep-score due to counting timestamps only for enter/leave
   records.
+- Fixed function signatures of SHMEM API functions that changed in
+  OpenMPI 2.0.
 
 ------------------- Released version 2.0.2 ---------------------------
 
