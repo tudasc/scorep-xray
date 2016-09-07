@@ -108,7 +108,7 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
 
 /**
  *  Triggers SCOREP_LeakedMemory events for allocations that weren't freed.
- *  Supposed to be used at subsystem_end time. Clears the the data structure
+ *  Supposed to be used at subsystem_end time. Clears the data structure
  *  that is used for pointer tracking.
  *
  *  @param allocMetric   Object handle.

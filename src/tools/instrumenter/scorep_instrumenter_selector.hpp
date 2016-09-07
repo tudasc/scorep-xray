@@ -127,7 +127,7 @@ public:
     /**
      * Processes a key value pair from a config file. The default implementation
      * invokes the check for all paradigms of this group.
-     * @param key   The key that is sepcified.
+     * @param key   The key that is specified.
      * @param value The value of this key.
      */
     virtual void
@@ -143,12 +143,12 @@ public:
     checkCompilerName( const std::string& compiler );
 
     /**
-     * Selections a pardigm from the group. Is is only possible to overwrite a
+     * Selections a paradigm from the group. Is is only possible to overwrite a
      * former selection if the current selection has a higher priority.
-     * If the current selection has the same piority like the fromer, it
+     * If the current selection has the same priority like the former, it
      * results in a conflict.
      * A selection of a user option has a higher priority than an automatic selection.
-     * @param selection         Pointer to the selectes paradigm.
+     * @param selection         Pointer to the selected paradigm.
      * @param is_user_selection True if the current selection was made by a user.
      */
     virtual void
@@ -230,7 +230,7 @@ public:
 
     /**
      * Processes a key value pair from a config file for all selectors.
-     * @param key   The key that is sepcified.
+     * @param key   The key that is specified.
      * @param value The value of this key.
      */
     static void

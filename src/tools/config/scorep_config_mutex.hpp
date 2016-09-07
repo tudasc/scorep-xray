@@ -197,7 +197,7 @@ private:
 
 public:
     /**
-     * Points the the currently selected mutex.
+     * Points the currently selected mutex.
      */
     static SCOREP_Config_Mutex* current;
 

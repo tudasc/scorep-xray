@@ -380,7 +380,7 @@ create_mapping( SCOREP_Location* location,
             /*
              * This was not the team leader, thus unified does not point to the
              * collated communicator definition, but to the thread team leader,
-             * hi unified field points to the the real collated definition
+             * hi unified field points to the real collated definition
              */
             SCOREP_InterimCommunicatorDef* team_leader =
                 SCOREP_LOCAL_HANDLE_DEREF(

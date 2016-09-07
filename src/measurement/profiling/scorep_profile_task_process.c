@@ -36,7 +36,7 @@
  *
  *
  *
- * Contains implmentation for post-processing operations for task structires and
+ * Contains implementation for post-processing operations for task structires and
  * task related metrics.
  * In particular, it moves the visits from the task pointer regions to a "no of switches"
  * metric

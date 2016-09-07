@@ -126,7 +126,7 @@ public:
     checkDependencies( void );
 
     /**
-     * Evaluate default relationsships to other adapters.
+     * Evaluate default relationships to other adapters.
      */
     virtual void
     checkDefaults( void );
@@ -165,7 +165,7 @@ public:
 
     /**
      * This function performs pre-preprocessing instrumentation activities. In
-     * case only a preproceessor is invoked.
+     * case only a preprocessor is invoked.
      * The default does nothing.
      * Overwrite this function if your adapter should perform any pre-preprocessing
      * activities. Do not forget to add the adapter to the pre-preprocess adapter list
@@ -256,7 +256,7 @@ public:
      * does nothing.
      * Overwrite this function if your adapter can be configured by a config
      * file that a user passes in via the '--config' option.
-     * @param key   The key that is sepcified.
+     * @param key   The key that is specified.
      * @param value The value of this key.
      */
     virtual void
@@ -284,7 +284,7 @@ public:
     /**
      * Checks the compiler name, which might affect the automatic adapter selection
      * or adapter configuration.
-     * The default implmentation does nothing. Overwrite this function, if your
+     * The default implementation does nothing. Overwrite this function, if your
      * adapter is affected by the compiler name.
      * @param compiler  The name of the compiler as it appears in the user command.
      */
@@ -368,7 +368,7 @@ protected:
 
     /**
      * Set this to true if you want to use the possibility to pass extra parameters to
-     * the the tool.
+     * the tool.
      */
     bool m_use_params;
 
@@ -443,7 +443,7 @@ public:
 
     /**
      * Let all adapters check for the @a key/@a value pair.
-     * @param key   The key that is sepcified.
+     * @param key   The key that is specified.
      * @param value The value of this key.
      */
     static void
@@ -484,7 +484,7 @@ public:
 
     /**
      * Checks whether adapter enabling violated earlier settings and
-     * enables it. If earlier settings are vialoted, it terminates with an error.
+     * enables it. If earlier settings are violated, it terminates with an error.
      * @caller name of the adapter or paradigm that requires this adapter. The name
      *         is only used in error messages.
      * @param  id The identifier of the adapter you require.
@@ -495,7 +495,7 @@ public:
 
     /**
      * Checks whether adapter enabling violated earlier settings and
-     * disables it. If earlier settings are vialoted, it terminates with an error.
+     * disables it. If earlier settings are violated, it terminates with an error.
      * @caller name of the adapter or paradigm that requires this adapter. The name
      *         is only used in error messages.
      * @param  id The identifier of the adapter you require.
@@ -533,7 +533,7 @@ public:
 
 private:
     /**
-     * List of all adapters. They can be found at theindex of their identifier.
+     * List of all adapters. They can be found at the index of their identifier.
      */
     static SCOREP_Instrumenter_AdapterList m_adapter_list;
 };

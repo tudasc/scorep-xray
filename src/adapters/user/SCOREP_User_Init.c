@@ -30,7 +30,7 @@
 /**
  *  @file
  *
- *  This file contains the implmentation of the initialization functions of the user
+ *  This file contains the implementation of the initialization functions of the user
  *  adapter.
  */
 

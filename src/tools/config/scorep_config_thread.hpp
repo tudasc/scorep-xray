@@ -225,7 +225,7 @@ private:
 
 public:
     /**
-     * Points the the currently selected threading system.
+     * Points the currently selected threading system.
      */
     static SCOREP_Config_ThreadSystem* current;
 

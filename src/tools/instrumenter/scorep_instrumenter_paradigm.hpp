@@ -72,7 +72,7 @@ public:
     checkDependencies( void );
 
     /**
-     * Evaluate default relationsships to the adapters.
+     * Evaluate default relationships to the adapters.
      */
     virtual void
     checkDefaults( void );
@@ -127,7 +127,7 @@ public:
      * does nothing.
      * Overwrite this function if your paradigm can be configured by a config
      * file that a user passes in via the '--config' option.
-     * @param key   The key that is sepcified.
+     * @param key   The key that is specified.
      * @param value The value of this key.
      */
     virtual void
@@ -137,7 +137,7 @@ public:
     /**
      * Checks the compiler name, which might affect the automatic paradigm selection
      * or paradigm configuration.
-     * The default implmentation does nothing. Overwrite this function, if your
+     * The default implementation does nothing. Overwrite this function, if your
      * paradigm is affected by the compiler name.
      * @param compiler  The name of the compiler as it appears in the user command.
      */

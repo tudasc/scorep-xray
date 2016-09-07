@@ -138,7 +138,7 @@ private:
 
 public:
     /**
-     * Points the the currently selected multi-process paradigm.
+     * Points the currently selected multi-process paradigm.
      */
     static SCOREP_Config_MppSystem* current;
 };

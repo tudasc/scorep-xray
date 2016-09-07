@@ -145,7 +145,7 @@ typedef struct scorep_cube_system_node
 } scorep_cube_system_node;
 
 /**
-   Finds the node of the system tree mapping that belongs the the Score-P system tree
+   Finds the node of the system tree mapping that belongs the Score-P system tree
    node handle.
    @param systemTree  Pointer to an array of scorep_cube_system_node nodes that contain
                       the system tree mapping structure.

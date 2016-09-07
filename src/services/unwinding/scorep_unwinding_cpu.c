@@ -650,7 +650,7 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
     }
 
     /* If we have instrumented regions on the stack, determine the unwind context
-     * and the the tail of the current unwind stack. */
+     * and the tail of the current unwind stack. */
     if ( unwind_data->augmented_stack )
     {
         uint64_t                          previous_ip = unwind_data->augmented_stack->ip;

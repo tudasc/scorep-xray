@@ -36,7 +36,7 @@
  *
  *
  *
- * Contains implmentation for post-processing operations to expand thread start nodes.
+ * Contains implementation for post-processing operations to expand thread start nodes.
  * In this first prost-processing step the nodes of type
  * @ref SCOREP_PROFILE_NODE_THREAD_START are replaced by the callpath to their creation
  * point.

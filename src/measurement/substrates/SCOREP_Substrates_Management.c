@@ -140,7 +140,7 @@ substrates_subsystem_init_mpp( void )
 }
 
 /**
- * Clears the the global substrates array scorep_substrates.
+ * Clears the global substrates array scorep_substrates.
  */
 static inline void
 clear_callbacks( void )

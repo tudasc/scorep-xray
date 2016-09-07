@@ -108,7 +108,7 @@ dnl ----------------------------------------------------------------------------
 # _FUJITSU_LIBBFD_CHECK_WORKAROUND
 # Fujitsu are cross-compile machines, i.e. we explicitly need to specify the
 # path to bfd. This path (which contains system stuff) is used in a CPPFLAGS.
-# This breaks compilation. Therefore, work around the the usual compiler
+# This breaks compilation. Therefore, work around the usual compiler
 # instrumentation's AC_SCOREP_BACKEND_LIB check.
 # -----------------------------------------------------------------------------
 m4_define([_FUJITSU_LIBBFD_CHECK_WORKAROUND], [

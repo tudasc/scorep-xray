@@ -30,7 +30,7 @@
 
 /**
  * @file
- * @brief Contains implmentation for profile location data
+ * @brief Contains implementation for profile location data
  *
  */
 

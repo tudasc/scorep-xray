@@ -1,6 +1,6 @@
 /** @mainpage Introduction and Architecture
 
-Before any application can be measured, the application need some preparation to perform the measurement. The preparation inserts calls the the measurement library using a variety of methods. This process is called instrumentation. Furthermore, the application needs to be linked together with some additional libraries, containing the implementation of the inserted calls, called the adapters, and the measurement libraries itself.
+Before any application can be measured, the application need some preparation to perform the measurement. The preparation inserts calls the measurement library using a variety of methods. This process is called instrumentation. Furthermore, the application needs to be linked together with some additional libraries, containing the implementation of the inserted calls, called the adapters, and the measurement libraries itself.
 
 This module can be split in two main parts. First, the instrumentation part, which contains all tools and methods for the application instrumentation. Second the runtime part which contains the adapters and interfaces to the measurement system. The module architecture is depicted here:
 @image html SCOREP_Adapter_Architecture.png "Architecture of the instrumentation and adapter module"
