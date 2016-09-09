@@ -185,7 +185,12 @@ done
 AS_IF([test "x${have_timer}" = xyes],
     [AC_DEFINE_UNQUOTED([SCOREP_TIMER_CLOCK_GETTIME_CLK_ID],
         [${timer_clk_id}],
-        [The clk_id used in clock_gettime calls.])])
+        [The clk_id used in clock_gettime calls.])
+     AC_DEFINE_UNQUOTED([SCOREP_TIMER_CLOCK_GETTIME_CLK_ID_NAME],
+        ["${timer_clk_id}"],
+        [The clk_id as string used in clock_gettime calls.])
+     # overwrite timer_name, so that we see which clock we use
+     timer_name="clock_gettime(${timer_clk_id})"])
 ])# _SCOREP_TIMER_CLOCK_GETTIME
 
 
