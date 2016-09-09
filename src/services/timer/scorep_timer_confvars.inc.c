@@ -86,7 +86,7 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
     {
         "clock_gettime",
         TIMER_CLOCK_GETTIME,
-        "clock_gettime timer with " SCOREP_TIMER_CLOCK_GETTIME_CLK_ID_NAME " as clock."
+        "clock_gettime timer with " HAVE_BACKEND_SCOREP_TIMER_CLOCK_GETTIME_CLK_ID_NAME " as clock."
     },
 #endif /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
