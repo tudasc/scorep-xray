@@ -82,7 +82,7 @@ P2P_WAIT( shmem_long_wait,     SCOREP_SHMEM_LONG_WAIT_PROTO_ARGS )
 P2P_WAIT( shmem_longlong_wait, SCOREP_SHMEM_LONGLONG_WAIT_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT ) && !defined( shmem_wait )
+#if SHMEM_HAVE_DECL( SHMEM_WAIT ) && !defined( shmem_wait )
 P2P_WAIT( shmem_wait,          SCOREP_SHMEM_WAIT_PROTO_ARGS )
 #endif
 
@@ -138,7 +138,7 @@ P2P_WAIT_UNTIL( shmem_long_wait_until,     SCOREP_SHMEM_LONG_WAIT_UNTIL_PROTO_AR
 P2P_WAIT_UNTIL( shmem_longlong_wait_until, SCOREP_SHMEM_LONGLONG_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_WAIT_UNTIL ) && !defined( shmem_wait_until )
+#if SHMEM_HAVE_DECL( SHMEM_WAIT_UNTIL ) && !defined( shmem_wait_until )
 P2P_WAIT_UNTIL( shmem_wait_until,          SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
 #endif
 
