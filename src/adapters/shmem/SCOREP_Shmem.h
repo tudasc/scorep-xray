@@ -24,7 +24,7 @@
 #include <stdbool.h>
 #include <shmem.h>
 
-#if HAVE( SHMEM_PROFILING_INTERFACE )
+#if HAVE( SHMEM_PROFILING_HEADER )
 #include <pshmem.h>
 #endif
 
