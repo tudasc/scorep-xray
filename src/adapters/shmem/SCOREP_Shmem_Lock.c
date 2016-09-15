@@ -63,7 +63,7 @@
 
 /* *INDENT-ON* */
 
-#if SHMEM_HAVE_DECL( SHMEM_SET_LOCK )
+#if SHMEM_HAVE_DECL( SHMEM_SET_LOCK ) && defined( SCOREP_SHMEM_SET_LOCK_PROTO_ARGS )
 SET_LOCK( shmem_set_lock )
 #endif
 
@@ -105,7 +105,7 @@ SET_LOCK( shmem_set_lock )
 
 /* *INDENT-ON* */
 
-#if SHMEM_HAVE_DECL( SHMEM_CLEAR_LOCK )
+#if SHMEM_HAVE_DECL( SHMEM_CLEAR_LOCK ) && defined( SCOREP_SHMEM_CLEAR_LOCK_PROTO_ARGS )
 CLEAR_LOCK( shmem_clear_lock )
 #endif
 
@@ -161,6 +161,6 @@ CLEAR_LOCK( shmem_clear_lock )
 
 /* *INDENT-ON* */
 
-#if SHMEM_HAVE_DECL( SHMEM_TEST_LOCK )
+#if SHMEM_HAVE_DECL( SHMEM_TEST_LOCK ) && defined( SCOREP_SHMEM_TEST_LOCK_PROTO_ARGS )
 TEST_LOCK( shmem_test_lock )
 #endif

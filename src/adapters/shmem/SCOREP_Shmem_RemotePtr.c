@@ -61,6 +61,6 @@
 
 /* *INDENT-ON* */
 
-#if SHMEM_HAVE_DECL( SHMEM_PTR )
+#if SHMEM_HAVE_DECL( SHMEM_PTR ) && defined( SCOREP_SHMEM_PTR_PROTO_ARGS )
 REMOTE_PTR( shmem_ptr )
 #endif
