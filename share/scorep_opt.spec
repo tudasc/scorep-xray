@@ -765,7 +765,7 @@
                         <uniq_name>omp_taskwait</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#omp_taskwait</url>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_taskwait</url>
                         <descr>Time spent waiting in OpenMP taskwait directives</descr>
                         <cubepl>
                             ${omp_sync_taskwait}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
@@ -1070,7 +1070,7 @@
             <uniq_name>bytes_rma</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_rma</url>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rma</url>
             <descr>Number of bytes transferred in remote memory access operations</descr>
             <cubepl>
                 metric::bytes_put() + metric::bytes_get()
@@ -1081,7 +1081,7 @@
                 <uniq_name>bytes_put</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_put</url>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_put</url>
                 <descr>Number of bytes sent in remote memory access operations</descr>
             </metric>
             <metric>
@@ -1090,7 +1090,7 @@
                 <uniq_name>bytes_get</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_get</url>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_get</url>
                 <descr>Number of bytes received in remote memory access operations</descr>
             </metric>
         </metric>
