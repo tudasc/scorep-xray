@@ -79,7 +79,7 @@ The following groups exist:
  <li> CUDA:    This group contains all CUDA API functions and kernels </li>
  <li> OPENCL:  This group contains all OpenCL API functions and kernels </li>
  <li> OPENACC: This group contains all OpenACC API functions and kernels </li>
- <li> MEMORY:  This group contains all libc and C++ memory (de)allocation funcitons </li>
+ <li> MEMORY:  This group contains all libc and C++ memory (de)allocation functions </li>
  <li> COM:     This group contains all functions, implemented by the user that appear on
                a call-path to any functions from the above groups, except ALL.</li>
  <li> USR:     This group contains all user functions except those in the COM group. </li>
