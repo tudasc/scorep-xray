@@ -1,4 +1,27 @@
-------------------- Upcoming version 3.0 -----------------------------
+------------------- Upcoming version 4.0 -----------------------------
+
+Major features:
+
+- t.b.a.
+
+Features and improvements:
+
+- Provided the option to use sequence definitions for the system tree.
+  They provide a constant sizs system tree description. The trade-off
+  is the loss of individual names and properties for locations,
+  location groups and system tree nodes. Currently supported only for
+  MPI.
+
+- Added possibilities to aggregate the locations within a thread to
+  reduce the report size. The aggregation can be enabled via the
+  SCORE_PROFILING_FORMAT environment variable. The new formats
+  THREAD_SUM, THREAD_TUPLE, KEY_THREADS, and CLUSTER_THREADS are
+  available.
+
+Bugfixes:
+- t.b.a.
+
+------------------- Released version 3.0 -----------------------------
 
 Note: In this version, we switch from a 'major.minor.bugfix'
 versioning scheme to a 'major.bugfix' scheme. New user-relevant
@@ -13,11 +36,6 @@ Major features:
 
 Features and improvements:
 
-- Provided the option to use sequence definitions for the system tree.
-  They provide a constant sizs system tree description. The trade-off
-  is the loss of individual names and properties for locations,
-  location groups and system tree nodes. Currently supported only for
-  MPI.
 - Extract topology information from the Slurm topology/tree plugin to
   create the system tree.  This feature is available in Slurm since
   version 2.1 (around 09/2009) and documented since 01/2014.  Please
@@ -27,12 +45,6 @@ Features and improvements:
   --with-nocross-compiler-suite=pgi) from pgCC to pgc++. PGI removed
   pgCC in version 16.1. If your installation still provides pgCC and
   you want to use it, please add CXX=pgCC to your configure line.
-- Added possibilities to aggregate the locations within a thread to
-  reduce the report size. The aggregation can be enabled via the
-  SCORE_PROFILING_FORMAT environment variable. The new formats
-  THREAD_SUM, THREAD_TUPLE, KEY_THREADS, and CLUSTER_THREADS are
-  available.
-
 
 Bugfixes:
 
