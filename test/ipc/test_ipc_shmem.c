@@ -51,8 +51,10 @@ CALL_SHMEM( shmem_barrier_all )( void );
 
 #if defined( SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS )
 
+/* *INDENT-OFF* */
 void
-CALL_SHMEM( shmem_int_min_to_all )SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS;
+CALL_SHMEM( shmem_int_min_to_all ) SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS;
+/* *INDENT-ON* */
 
 #else
 
@@ -63,14 +65,14 @@ CALL_SHMEM( shmem_int_min_to_all )SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS;
 
 #include "test_ipc.h"
 
-static int  pes;
+static int pes;
 static long pSync[ _SHMEM_REDUCE_SYNC_SIZE ];
 static int  pWrk[ _SHMEM_REDUCE_MIN_WRKDATA_SIZE ];
 static int  reduce_args[ 2 ];
 
 
 static void
-    reduce_results ( int* result )
+reduce_results( int* result )
 {
     reduce_args[ 0 ] = *result;
 
@@ -94,7 +96,7 @@ main( int    argc,
 {
     int me;
 
-    CALL_SHMEM ( start_pes( 0 ) );
+    CALL_SHMEM( start_pes )( 0 );
     pes = CALL_SHMEM( _num_pes )();
     me  = CALL_SHMEM( _my_pe )();
 
