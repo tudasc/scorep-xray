@@ -38,26 +38,25 @@
 #endif
 
 void
-CALL_SHMEM( start_pes ) ( int );
+CALL_SHMEM( start_pes )( int );
 
 int
-CALL_SHMEM( _my_pe ) ( void );
+CALL_SHMEM( _my_pe )( void );
 
 int
-CALL_SHMEM( _num_pes ) ( void );
+CALL_SHMEM( _num_pes )( void );
 
 void
-CALL_SHMEM( shmem_barrier_all ) ( void );
+CALL_SHMEM( shmem_barrier_all )( void );
 
-#if HAVE( SHMEM_INT_MIN_TO_ALL_COMPLIANT )
-
-void
-CALL_SHMEM( shmem_int_min_to_all ) ( int*, int*, int, int, int, int, int*, long* );
-
-#elif HAVE( SHMEM_INT_MIN_TO_ALL_CONST_VARIANT )
+#if defined( SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS )
 
 void
-CALL_SHMEM( shmem_int_min_to_all ) ( int*, const int*, size_t, int, int, int, int*, long* );
+CALL_SHMEM( shmem_int_min_to_all )SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS;
+
+#else
+
+#error No suitable reduction function available!
 
 #endif
 
@@ -71,21 +70,21 @@ static int  reduce_args[ 2 ];
 
 
 static void
-reduce_results( int* result )
+    reduce_results ( int* result )
 {
     reduce_args[ 0 ] = *result;
 
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 
-    CALL_SHMEM( shmem_int_min_to_all ) ( &reduce_args[ 1 ],
-                                         &reduce_args[ 0 ],
-                                         1,
-                                         0, 0, pes,
-                                         pWrk, pSync );
+    CALL_SHMEM( shmem_int_min_to_all )( &reduce_args[ 1 ],
+                                        &reduce_args[ 0 ],
+                                        1,
+                                        0, 0, pes,
+                                        pWrk, pSync );
 
     *result = reduce_args[ 1 ];
 
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 }
 
 
@@ -95,19 +94,19 @@ main( int    argc,
 {
     int me;
 
-    CALL_SHMEM( start_pes( 0 ) );
-    pes = CALL_SHMEM( _num_pes ) ();
-    me  = CALL_SHMEM( _my_pe ) ();
+    CALL_SHMEM ( start_pes( 0 ) );
+    pes = CALL_SHMEM( _num_pes )();
+    me  = CALL_SHMEM( _my_pe )();
 
     for ( int i = 0; i < _SHMEM_REDUCE_SYNC_SIZE; i++ )
     {
         pSync[ i ] = _SHMEM_SYNC_VALUE;
     }
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 
     int ret = test_ipc( me, reduce_results );
 
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 
     /*
      * Brutally exit the program on failure.

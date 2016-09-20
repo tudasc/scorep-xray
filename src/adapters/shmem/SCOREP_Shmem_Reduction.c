@@ -27,16 +27,9 @@
 
 /* *INDENT-OFF* */
 
-#define REDUCTION( FUNCNAME, DATATYPE, SRC_DATATYPE, SIZE_TYPE )                                                                \
+#define REDUCTION( FUNCNAME, ARGS )                                                                                             \
     void                                                                                                                        \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( DATATYPE *     target,                                                               \
-                                           SRC_DATATYPE * source,                                                               \
-                                           SIZE_TYPE      nreduce,                                                              \
-                                           int            peStart,                                                              \
-                                           int            logPeStride,                                                          \
-                                           int            peSize,                                                               \
-                                           DATATYPE *     pWork,                                                                \
-                                           long*          pSync )                                                               \
+    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ARGS                                                                                   \
     {                                                                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                                                                      \
                                                                                                                                 \
@@ -60,8 +53,8 @@
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,                              \
                                      window_handle,                                                                             \
                                      NO_PROCESSING_ELEMENT,                                                                     \
-                                     nreduce * ( peSize - 1 ) * sizeof( DATATYPE ),                                             \
-                                     nreduce * ( peSize - 1 ) * sizeof( DATATYPE ) );                                           \
+                                     nreduce * ( peSize - 1 ) * sizeof( *target ),                                              \
+                                     nreduce * ( peSize - 1 ) * sizeof( *source ) );                                            \
                                                                                                                                 \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                                                             \
                                                                                                                                 \
@@ -83,36 +76,20 @@
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_AND_TO_ALL )
-#if HAVE( SHMEM_SHORT_AND_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_and_to_all,    short, short, int )
-#elif HAVE( SHMEM_SHORT_AND_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_and_to_all,    short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_AND_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_AND_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_and_to_all, SCOREP_SHMEM_SHORT_AND_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_AND_TO_ALL )
-#if HAVE( SHMEM_INT_AND_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_and_to_all,      int, int, int )
-#elif HAVE( SHMEM_INT_AND_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_and_to_all,      int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_AND_TO_ALL ) && defined( SCOREP_SHMEM_INT_AND_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_and_to_all, SCOREP_SHMEM_INT_AND_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_AND_TO_ALL )
-#if HAVE( SHMEM_LONG_AND_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_and_to_all,     long, long, int )
-#elif HAVE( SHMEM_LONG_AND_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_and_to_all,     long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_AND_TO_ALL ) && defined( SCOREP_SHMEM_LONG_AND_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_and_to_all, SCOREP_SHMEM_LONG_AND_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_AND_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_AND_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_and_to_all, long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_AND_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_and_to_all, long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_AND_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_AND_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_and_to_all, SCOREP_SHMEM_LONGLONG_AND_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
@@ -126,36 +103,20 @@ REDUCTION( shmem_longlong_and_to_all, long long, const long long, size_t )
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_OR_TO_ALL )
-#if HAVE( SHMEM_SHORT_OR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_or_to_all,       short, short, int )
-#elif HAVE( SHMEM_SHORT_OR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_or_to_all,       short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_OR_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_OR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_or_to_all, SCOREP_SHMEM_SHORT_OR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_OR_TO_ALL )
-#if HAVE( SHMEM_INT_OR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_or_to_all,         int, int, int )
-#elif HAVE( SHMEM_INT_OR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_or_to_all,         int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_OR_TO_ALL ) && defined( SCOREP_SHMEM_INT_OR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_or_to_all, SCOREP_SHMEM_INT_OR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_OR_TO_ALL )
-#if HAVE( SHMEM_LONG_OR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_or_to_all,        long, long, int )
-#elif HAVE( SHMEM_LONG_OR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_or_to_all,        long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_OR_TO_ALL ) && defined( SCOREP_SHMEM_LONG_OR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_or_to_all, SCOREP_SHMEM_LONG_OR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_OR_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_OR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_or_to_all,    long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_OR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_or_to_all,    long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_OR_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_OR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_or_to_all, SCOREP_SHMEM_LONGLONG_OR_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
@@ -169,36 +130,20 @@ REDUCTION( shmem_longlong_or_to_all,    long long, const long long, size_t )
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_XOR_TO_ALL )
-#if HAVE( SHMEM_SHORT_XOR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_xor_to_all,      short, short, int )
-#elif HAVE( SHMEM_SHORT_XOR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_xor_to_all,      short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_XOR_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_XOR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_xor_to_all, SCOREP_SHMEM_SHORT_XOR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_XOR_TO_ALL )
-#if HAVE( SHMEM_INT_XOR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_xor_to_all,        int, int, int )
-#elif HAVE( SHMEM_INT_XOR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_xor_to_all,        int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_XOR_TO_ALL ) && defined( SCOREP_SHMEM_INT_XOR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_xor_to_all, SCOREP_SHMEM_INT_XOR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_XOR_TO_ALL )
-#if HAVE( SHMEM_LONG_XOR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_xor_to_all,       long, long, int )
-#elif HAVE( SHMEM_LONG_XOR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_xor_to_all,       long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_XOR_TO_ALL ) && defined( SCOREP_SHMEM_LONG_XOR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_xor_to_all, SCOREP_SHMEM_LONG_XOR_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_XOR_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_XOR_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_xor_to_all,   long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_XOR_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_xor_to_all,   long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_XOR_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_XOR_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_xor_to_all, SCOREP_SHMEM_LONGLONG_XOR_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
@@ -212,60 +157,32 @@ REDUCTION( shmem_longlong_xor_to_all,   long long, const long long, size_t )
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_MAX_TO_ALL )
-#if HAVE( SHMEM_SHORT_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_max_to_all,      short, short, int )
-#elif HAVE( SHMEM_SHORT_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_max_to_all,      short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_MAX_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_max_to_all, SCOREP_SHMEM_SHORT_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_MAX_TO_ALL )
-#if HAVE( SHMEM_INT_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_max_to_all,        int, int, int )
-#elif HAVE( SHMEM_INT_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_max_to_all,        int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_MAX_TO_ALL ) && defined( SCOREP_SHMEM_INT_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_max_to_all, SCOREP_SHMEM_INT_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_MAX_TO_ALL )
-#if HAVE( SHMEM_LONG_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_max_to_all,       long, long, int )
-#elif HAVE( SHMEM_LONG_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_max_to_all,       long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_MAX_TO_ALL ) && defined( SCOREP_SHMEM_LONG_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_max_to_all, SCOREP_SHMEM_LONG_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_FLOAT_MAX_TO_ALL )
-#if HAVE( SHMEM_FLOAT_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_float_max_to_all,      float, float, int )
-#elif HAVE( SHMEM_FLOAT_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_float_max_to_all,      float, const float, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_FLOAT_MAX_TO_ALL ) && defined( SCOREP_SHMEM_FLOAT_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_float_max_to_all, SCOREP_SHMEM_FLOAT_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_MAX_TO_ALL )
-#if HAVE( SHMEM_DOUBLE_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_double_max_to_all,     double, double, int )
-#elif HAVE( SHMEM_DOUBLE_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_double_max_to_all,     double, const double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_MAX_TO_ALL ) && defined( SCOREP_SHMEM_DOUBLE_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_double_max_to_all, SCOREP_SHMEM_DOUBLE_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_MAX_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_max_to_all, long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_max_to_all, long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_MAX_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_max_to_all, SCOREP_SHMEM_LONGLONG_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_MAX_TO_ALL )
-#if HAVE( SHMEM_LONGDOUBLE_MAX_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longdouble_max_to_all, long double, long double, int )
-#elif HAVE( SHMEM_LONGDOUBLE_MAX_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longdouble_max_to_all, long double, const long double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_MAX_TO_ALL ) && defined( SCOREP_SHMEM_LONGDOUBLE_MAX_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longdouble_max_to_all, SCOREP_SHMEM_LONGDOUBLE_MAX_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
@@ -279,60 +196,32 @@ REDUCTION( shmem_longdouble_max_to_all, long double, const long double, size_t )
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_MIN_TO_ALL )
-#if HAVE( SHMEM_SHORT_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_min_to_all,      short, short, int )
-#elif HAVE( SHMEM_SHORT_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_min_to_all,      short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_MIN_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_min_to_all, SCOREP_SHMEM_SHORT_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_MIN_TO_ALL )
-#if HAVE( SHMEM_INT_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_min_to_all,        int, int, int )
-#elif HAVE( SHMEM_INT_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_min_to_all,        int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_MIN_TO_ALL ) && defined( SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_min_to_all, SCOREP_SHMEM_INT_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_MIN_TO_ALL )
-#if HAVE( SHMEM_LONG_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_min_to_all,       long, long, int )
-#elif HAVE( SHMEM_LONG_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_min_to_all,       long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_MIN_TO_ALL ) && defined( SCOREP_SHMEM_LONG_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_min_to_all, SCOREP_SHMEM_LONG_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_FLOAT_MIN_TO_ALL )
-#if HAVE( SHMEM_FLOAT_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_float_min_to_all,      float, float, int )
-#elif HAVE( SHMEM_FLOAT_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_float_min_to_all,      float, const float, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_FLOAT_MIN_TO_ALL ) && defined( SCOREP_SHMEM_FLOAT_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_float_min_to_all, SCOREP_SHMEM_FLOAT_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_MIN_TO_ALL )
-#if HAVE( SHMEM_DOUBLE_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_double_min_to_all,     double, double, int )
-#elif HAVE( SHMEM_DOUBLE_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_double_min_to_all,     double, const double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_MIN_TO_ALL ) && defined( SCOREP_SHMEM_DOUBLE_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_double_min_to_all, SCOREP_SHMEM_DOUBLE_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_MIN_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_min_to_all, long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_min_to_all, long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_MIN_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_min_to_all, SCOREP_SHMEM_LONGLONG_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_MIN_TO_ALL )
-#if HAVE( SHMEM_LONGDOUBLE_MIN_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longdouble_min_to_all, long double, long double, int )
-#elif HAVE( SHMEM_LONGDOUBLE_MIN_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longdouble_min_to_all, long double, const long double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_MIN_TO_ALL ) && defined( SCOREP_SHMEM_LONGDOUBLE_MIN_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longdouble_min_to_all, SCOREP_SHMEM_LONGDOUBLE_MIN_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
@@ -346,76 +235,40 @@ REDUCTION( shmem_longdouble_min_to_all, long double, const long double, size_t )
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_SUM_TO_ALL )
-#if HAVE( SHMEM_SHORT_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_sum_to_all,      short, short, int )
-#elif HAVE( SHMEM_SHORT_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_sum_to_all,      short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_SUM_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_sum_to_all, SCOREP_SHMEM_SHORT_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_SUM_TO_ALL )
-#if HAVE( SHMEM_INT_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_sum_to_all,        int, int, int )
-#elif HAVE( SHMEM_INT_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_sum_to_all,        int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_SUM_TO_ALL ) && defined( SCOREP_SHMEM_INT_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_sum_to_all, SCOREP_SHMEM_INT_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_SUM_TO_ALL )
-#if HAVE( SHMEM_LONG_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_sum_to_all,       long, long, int )
-#elif HAVE( SHMEM_LONG_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_sum_to_all,       long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_SUM_TO_ALL ) && defined( SCOREP_SHMEM_LONG_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_sum_to_all, SCOREP_SHMEM_LONG_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_FLOAT_SUM_TO_ALL )
-#if HAVE( SHMEM_FLOAT_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_float_sum_to_all,      float, float, int )
-#elif HAVE( SHMEM_FLOAT_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_float_sum_to_all,      float, const float, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_FLOAT_SUM_TO_ALL ) && defined( SCOREP_SHMEM_FLOAT_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_float_sum_to_all, SCOREP_SHMEM_FLOAT_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_SUM_TO_ALL )
-#if HAVE( SHMEM_DOUBLE_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_double_sum_to_all,     double, double, int )
-#elif HAVE( SHMEM_DOUBLE_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_double_sum_to_all,     double, const double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_SUM_TO_ALL ) && defined( SCOREP_SHMEM_DOUBLE_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_double_sum_to_all, SCOREP_SHMEM_DOUBLE_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_SUM_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_sum_to_all, long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_sum_to_all, long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_SUM_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_sum_to_all, SCOREP_SHMEM_LONGLONG_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_SUM_TO_ALL )
-#if HAVE( SHMEM_LONGDOUBLE_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longdouble_sum_to_all, long double, long double, int )
-#elif HAVE( SHMEM_LONGDOUBLE_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longdouble_sum_to_all, long double, const long double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_SUM_TO_ALL ) && defined( SCOREP_SHMEM_LONGDOUBLE_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longdouble_sum_to_all, SCOREP_SHMEM_LONGDOUBLE_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_COMPLEXF_SUM_TO_ALL )
-#if HAVE( SHMEM_COMPLEXF_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_complexf_sum_to_all,   float complex, float complex, int )
-#elif HAVE( SHMEM_COMPLEXF_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_complexf_sum_to_all,   float complex, const float complex, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_COMPLEXF_SUM_TO_ALL ) && defined( SCOREP_SHMEM_COMPLEXF_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_complexf_sum_to_all, SCOREP_SHMEM_COMPLEXF_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_COMPLEXD_SUM_TO_ALL )
-#if HAVE( SHMEM_COMPLEXD_SUM_TO_ALL_COMPLIANT )
-REDUCTION( shmem_complexd_sum_to_all,   double complex, double complex, int )
-#elif HAVE( SHMEM_COMPLEXD_SUM_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_complexd_sum_to_all,   double complex, const double complex, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_COMPLEXD_SUM_TO_ALL ) && defined( SCOREP_SHMEM_COMPLEXD_SUM_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_complexd_sum_to_all, SCOREP_SHMEM_COMPLEXD_SUM_TO_ALL_PROTO_ARGS )
 #endif
 
 
@@ -430,76 +283,40 @@ REDUCTION( shmem_complexd_sum_to_all,   double complex, const double complex, si
  * @{
  */
 
-#if SHMEM_HAVE_DECL( SHMEM_SHORT_PROD_TO_ALL )
-#if HAVE( SHMEM_SHORT_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_short_prod_to_all,     short, short, int )
-#elif HAVE( SHMEM_SHORT_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_short_prod_to_all,     short, const short, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_SHORT_PROD_TO_ALL ) && defined( SCOREP_SHMEM_SHORT_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_short_prod_to_all, SCOREP_SHMEM_SHORT_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_INT_PROD_TO_ALL )
-#if HAVE( SHMEM_INT_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_int_prod_to_all,       int, int, int )
-#elif HAVE( SHMEM_INT_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_int_prod_to_all,       int, const int, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_INT_PROD_TO_ALL ) && defined( SCOREP_SHMEM_INT_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_int_prod_to_all, SCOREP_SHMEM_INT_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONG_PROD_TO_ALL )
-#if HAVE( SHMEM_LONG_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_long_prod_to_all,      long, long, int )
-#elif HAVE( SHMEM_LONG_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_long_prod_to_all,      long, const long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONG_PROD_TO_ALL ) && defined( SCOREP_SHMEM_LONG_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_long_prod_to_all, SCOREP_SHMEM_LONG_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_FLOAT_PROD_TO_ALL )
-#if HAVE( SHMEM_FLOAT_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_float_prod_to_all,     float, float, int )
-#elif HAVE( SHMEM_FLOAT_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_float_prod_to_all,     float, const float, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_FLOAT_PROD_TO_ALL ) && defined( SCOREP_SHMEM_FLOAT_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_float_prod_to_all, SCOREP_SHMEM_FLOAT_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_PROD_TO_ALL )
-#if HAVE( SHMEM_DOUBLE_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_double_prod_to_all,    double, double, int )
-#elif HAVE( SHMEM_DOUBLE_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_double_prod_to_all,    double, const double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_DOUBLE_PROD_TO_ALL ) && defined( SCOREP_SHMEM_DOUBLE_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_double_prod_to_all, SCOREP_SHMEM_DOUBLE_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_PROD_TO_ALL )
-#if HAVE( SHMEM_LONGLONG_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longlong_prod_to_all,  long long, long long, int )
-#elif HAVE( SHMEM_LONGLONG_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longlong_prod_to_all,  long long, const long long, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGLONG_PROD_TO_ALL ) && defined( SCOREP_SHMEM_LONGLONG_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longlong_prod_to_all, SCOREP_SHMEM_LONGLONG_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_PROD_TO_ALL )
-#if HAVE( SHMEM_LONGDOUBLE_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_longdouble_prod_to_all, long double, long double, int )
-#elif HAVE( SHMEM_LONGDOUBLE_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_longdouble_prod_to_all, long double, const long double, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_LONGDOUBLE_PROD_TO_ALL ) && defined( SCOREP_SHMEM_LONGDOUBLE_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_longdouble_prod_to_all, SCOREP_SHMEM_LONGDOUBLE_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_COMPLEXF_PROD_TO_ALL )
-#if HAVE( SHMEM_COMPLEXF_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_complexf_prod_to_all,   float complex, float complex, int )
-#elif HAVE( SHMEM_COMPLEXF_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_complexf_prod_to_all,   float complex, const float complex, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_COMPLEXF_PROD_TO_ALL ) && defined( SCOREP_SHMEM_COMPLEXF_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_complexf_prod_to_all, SCOREP_SHMEM_COMPLEXF_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
-#if SHMEM_HAVE_DECL( SHMEM_COMPLEXD_PROD_TO_ALL )
-#if HAVE( SHMEM_COMPLEXD_PROD_TO_ALL_COMPLIANT )
-REDUCTION( shmem_complexd_prod_to_all,   double complex, double complex, int )
-#elif HAVE( SHMEM_COMPLEXD_PROD_TO_ALL_CONST_VARIANT )
-REDUCTION( shmem_complexd_prod_to_all,   double complex, const double complex, size_t )
-#endif
+#if SHMEM_HAVE_DECL( SHMEM_COMPLEXD_PROD_TO_ALL ) && defined( SCOREP_SHMEM_COMPLEXD_PROD_TO_ALL_PROTO_ARGS )
+REDUCTION( shmem_complexd_prod_to_all, SCOREP_SHMEM_COMPLEXD_PROD_TO_ALL_PROTO_ARGS )
 #endif
 
 /**
