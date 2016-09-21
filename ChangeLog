@@ -19,7 +19,8 @@ Features and improvements:
   available.
 
 Bugfixes:
-- t.b.a.
+- Fix compilation error during instrumentation, if the command line
+  contains a header file.
 
 ------------------- Released version 3.0 -----------------------------
 

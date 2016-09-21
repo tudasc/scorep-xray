@@ -606,6 +606,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         add_input_file( current );
         return scorep_parse_mode_command;
     }
+    else if ( ( current[ 0 ] != '-' ) && is_header_file( current ) )
+    {
+        /* Ignore header files in command */
+        return scorep_parse_mode_command;
+    }
 #if SCOREP_BACKEND_COMPILER_INTEL
     else if ( current == "-mmic" )
     {

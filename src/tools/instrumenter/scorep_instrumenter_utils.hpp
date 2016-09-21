@@ -68,6 +68,15 @@ bool
 is_source_file( const std::string& filename );
 
 /**
+    Checks whether a file is a header file.
+    @param filename A file name.
+    @returns true if the file extension indicates a C/C++ or Fortran header
+             file.
+ */
+bool
+is_header_file( const std::string& filename );
+
+/**
     Checks whether a file is a Fortran source file.
     @param filename A file name.
     @returns true if the file extension indicates Fortran source file.

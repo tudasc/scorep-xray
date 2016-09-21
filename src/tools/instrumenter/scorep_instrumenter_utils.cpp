@@ -272,6 +272,22 @@ is_cuda_file( const std::string& filename )
 }
 
 bool
+is_header_file( const std::string& filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".h" );
+    SCOREP_CHECK_EXT( ".hpp" );
+    SCOREP_CHECK_EXT( ".inc" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
 is_source_file( const std::string& filename )
 {
     return is_c_file( filename ) ||
