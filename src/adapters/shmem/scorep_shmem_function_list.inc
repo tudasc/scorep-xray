@@ -91,13 +91,13 @@ SCOREP_SHMEM_PROCESS_FUNC( DEALLOCATE,   void,        shfree, ( void* ptr ) )
  * Symmetric heap routines (Fortran)
  */
 #if SHMEM_HAVE_DECL( SHPALLOC )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void,        shpalloc, ( void**, int*, long*, int* ) )
+SCOREP_SHMEM_PROCESS_FUNC( ALLOCATE,     void,        shpalloc, ( void**, int*, long*, int* ) )
 #endif
 #if SHMEM_HAVE_DECL( SHPDEALLC )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void*,       shpdeallc, ( void**, long*, int* ) )
+SCOREP_SHMEM_PROCESS_FUNC( DEALLOCATE,   void*,       shpdeallc, ( void**, long*, int* ) )
 #endif
 #if SHMEM_HAVE_DECL( SHPCLMOVE )
-SCOREP_SHMEM_PROCESS_FUNC( FUNCTION,     void*,       shpclmove, ( int*, int*, long*, int* ) )
+SCOREP_SHMEM_PROCESS_FUNC( REALLOCATE,   void*,       shpclmove, ( int*, int*, long*, int* ) )
 #endif
 
 /*

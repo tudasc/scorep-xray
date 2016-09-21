@@ -49,6 +49,21 @@
                 global(mpi_file_crops);
                 global(mpi_file_cwops);
 
+                global(shmem);
+                global(shmem_mgmt_initfini);
+                global(shmem_mgmt_activesets);
+                global(shmem_mgmt_query);
+                global(shmem_comm_rma);
+                global(shmem_comm_atomic);
+                global(shmem_comm_coll);
+                global(shmem_sync_rma);
+                global(shmem_sync_coll);
+                global(shmem_sync_locking);
+                global(shmem_memory_mgmt);
+                global(shmem_memory_ordering);
+                global(shmem_event);
+                global(shmem_cache);
+
                 global(omp_sync_ebarrier);
                 global(omp_sync_ibarrier);
                 global(omp_sync_critical);
@@ -76,6 +91,7 @@
                 global(cuda_kernel_executions);
 
                 ${includesMPI}     = 0;
+                ${includesSHMEM}   = 0;
                 ${includesOpenMP}  = 0;
                 ${includesPthread} = 0;
                 ${includesOpenCL}  = 0;
@@ -187,6 +203,71 @@
                                 ${mpi_file_cwops}[${i}] = 1;
                             };
                         };
+                    };
+
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "shmem" )
+                    {
+                        ${includesSHMEM} = 1;
+                        ${shmem}[${i}] = 1;
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_init(_thread){0,1}|start_pes|shmem_finalize)$/ )
+                        {
+                            ${shmem_mgmt_initfini}[${i}] = 1;
+                        };
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^((shmem_|_){0,1}(my_pe|num_pes)|shmem_team_(split|create_strided|free|npes|mype|translate_pe))$/ )
+                        {
+                            ${shmem_mgmt_activesets}[${i}] = 1;
+                        };
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_((pe|adr)_accessible|ptr))$/ )
+                        {
+                            ${shmem_mgmt_query}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "rma" )
+                        {
+                            ${shmem_comm_rma}[${i}] = 1;
+                        };
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "atomic" )
+                        {
+                            ${shmem_comm_atomic}[${i}] = 1;
+                        };
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
+                        {
+                            ${shmem_comm_coll}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem(short|int|long|longlong){0,1}_wait(_until){0,1})$/ )
+                        {
+                            ${shmem_sync_rma}[${i}] = 1;
+                        };
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        {
+                            ${shmem_sync_coll}[${i}] = 1;
+                        };
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(set|test|clear)_lock)$/ )
+                        {
+                            ${shmem_sync_locking}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^((de|re){0,1}allocate)$/ )
+                        {
+                            ${shmem_memory_mgmt}[${i}] = 1;
+                        };
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(fence|quiet))$/ )
+                        {
+                            ${shmem_memory_ordering}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(set|test|clear|wait)_event)$/ )
+                        {
+                            ${shmem_event}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_((clear|set)_cache(_line){0,1}_inv|udcflush(_line){0,1}))$/ )
+                        {
+                            ${shmem_cache}[${i}] = 1;
+                        };
+
                     };
 
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openmp" )
@@ -403,6 +484,29 @@
                     cube::metric::set::mpi_file_crops("value", "VOID");
                     cube::metric::set::mpi_file_cwops("value", "VOID");
                 };
+
+                if ( ${includesSHMEM} == 0 )
+                {
+                    cube::metric::set::shmem_time("value", "VOID");
+                    cube::metric::set::shmem_mgmt_time("value", "VOID");
+                    cube::metric::set::shmem_mgmt_initfini_time("value", "VOID");
+                    cube::metric::set::shmem_mgmt_activesets_time("value", "VOID");
+                    cube::metric::set::shmem_mgmt_query_time("value", "VOID");
+                    cube::metric::set::shmem_comm_time("value", "VOID");
+                    cube::metric::set::shmem_comm_rma_time("value", "VOID");
+                    cube::metric::set::shmem_comm_atomic_time("value", "VOID");
+                    cube::metric::set::shmem_comm_coll_time("value", "VOID");
+                    cube::metric::set::shmem_sync_time("value", "VOID");
+                    cube::metric::set::shmem_sync_rma_time("value", "VOID");
+                    cube::metric::set::shmem_sync_coll_time("value", "VOID");
+                    cube::metric::set::shmem_sync_locking_time("value", "VOID");
+                    cube::metric::set::shmem_memory_time("value", "VOID");
+                    cube::metric::set::shmem_memory_mgmt_time("value", "VOID");
+                    cube::metric::set::shmem_memory_ordering_time("value", "VOID");
+                    cube::metric::set::shmem_event_time("value", "VOID");
+                    cube::metric::set::shmem_cache_time("value", "VOID");
+                };
+
                 if ( ${includesOpenMP} == 0 )
                 {
                     cube::metric::set::omp_time("value", "VOID");
@@ -418,6 +522,7 @@
                     cube::metric::set::omp_idle_threads("value", "VOID");
                     cube::metric::set::omp_limited_parallelism("value", "VOID");
                 };
+
                 if ( ${includesPthread} == 0 )
                 {
                     cube::metric::set::pthread_time("value", "VOID");
@@ -426,11 +531,13 @@
                     cube::metric::set::pthread_lock_api("value", "VOID");
                     cube::metric::set::pthread_conditional("value", "VOID");
                 };
+
                 if ( ${includesOpenCL} == 0 )
                 {
                     cube::metric::set::opencl_time("value", "VOID");
                     cube::metric::set::opencl_kernel_executions("value", "VOID");
                 };
+
                 if ( ${includesCUDA} == 0 )
                 {
                     cube::metric::set::cuda_time("value", "VOID");
@@ -448,7 +555,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
-                    metric::execution() - metric::mpi() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
+                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>OpenCL kernels</disp_name>
@@ -487,6 +594,7 @@
                     </cubepl>
                 </metric>
             </metric>
+
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>MPI</disp_name>
                 <uniq_name>mpi</uniq_name>
@@ -776,6 +884,326 @@
                     </metric>
                 </metric>
             </metric>
+
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>SHMEM</disp_name>
+                <uniq_name>shmem_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem</url>
+                <descr>Time spent in SHMEM calls</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${shmem}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+
+                <metric type="POSTDERIVED">
+                    <disp_name>Management</disp_name>
+                    <uniq_name>shmem_mgmt_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt</url>
+                    <descr>Time spent in SHMEM management operations</descr>
+                    <cubepl>
+                        metric::shmem_mgmt_initfini_time() + metric::shmem_mgmt_activesets_time() + metric::shmem_mgmt_query_time()
+                    </cubepl>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Init/Finalize</disp_name>
+                        <uniq_name>shmem_mgmt_initfini_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_initfini</url>
+                        <descr>Time spent in SHMEM initialization/finalization calls</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_mgmt_initfini}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Active sets/Teams</disp_name>
+                        <uniq_name>shmem_mgmt_activesets_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_activesets</url>
+                        <descr>Time spent in SHMEM active sets/teams management calls</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_mgmt_activesets}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Query</disp_name>
+                        <uniq_name>shmem_mgmt_query_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_query</url>
+                        <descr>Time spent in SHMEM query calls</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_mgmt_query}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                </metric>
+
+                <metric type="POSTDERIVED">
+                    <disp_name>Communication</disp_name>
+                    <uniq_name>shmem_comm_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm</url>
+                    <descr>Time spent in SHMEM communication operations</descr>
+                    <cubepl>
+                        metric::shmem_comm_rma_time() + metric::shmem_comm_atomic_time() + metric::shmem_comm_coll_time()
+                    </cubepl>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>One-sided</disp_name>
+                        <uniq_name>shmem_comm_rma_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_rma</url>
+                        <descr>Time spent in SHMEM RMA operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_comm_rma}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Atomic</disp_name>
+                        <uniq_name>shmem_comm_atomic_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_atomic</url>
+                        <descr>Time spent in SHMEM atomic operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_comm_atomic}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Collective</disp_name>
+                        <uniq_name>shmem_comm_coll_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_coll</url>
+                        <descr>Time spent in SHMEM collective operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_comm_coll}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                </metric>
+
+                <metric type="POSTDERIVED">
+                    <disp_name>Synchronization</disp_name>
+                    <uniq_name>shmem_sync_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <descr>Time spent in SHMEM synchronization calls</descr>
+                    <cubepl>
+                        metric::shmem_sync_rma_time() + metric::shmem_sync_coll_time() + metric::shmem_sync_locking_time()
+                    </cubepl>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>One-sided</disp_name>
+                        <uniq_name>shmem_sync_rma_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_rma</url>
+                        <descr>Time spent in SHMEM RMA synchronizations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_sync_rma}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Collective</disp_name>
+                        <uniq_name>shmem_sync_coll_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_coll</url>
+                        <descr>Time spent in SHMEM collective synchronizations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_sync_coll}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Locking</disp_name>
+                        <uniq_name>shmem_sync_locking_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_locking</url>
+                        <descr>Time spent in SHMEM locking operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_sync_locking}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                </metric>
+
+                <metric type="POSTDERIVED">
+                    <disp_name>Memory</disp_name>
+                    <uniq_name>shmem_memory_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <descr>Time spent in SHMEM memory calls</descr>
+                    <cubepl>
+                        metric::shmem_memory_mgmt_time() + metric::shmem_memory_ordering_time()
+                    </cubepl>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Management</disp_name>
+                        <uniq_name>shmem_memory_mgmt_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_mgmt</url>
+                        <descr>Time spent in SHMEM memory management calls</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_memory_mgmt}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Ordering</disp_name>
+                        <uniq_name>shmem_memory_ordering_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_ordering</url>
+                        <descr>Time spent in SHMEM memory orderings</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${shmem_memory_ordering}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Event</disp_name>
+                    <uniq_name>shmem_event_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_event</url>
+                    <descr>Time spent in SHMEM event calls</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${shmem_event}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Cache</disp_name>
+                    <uniq_name>shmem_cache_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_cache</url>
+                    <descr>Time spent in SHMEM cache calls</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${shmem_cache}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+            </metric>
+
             <metric type="POSTDERIVED">
                 <disp_name>OpenMP</disp_name>
                 <uniq_name>omp_time</uniq_name>
