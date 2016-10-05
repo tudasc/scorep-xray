@@ -57,14 +57,19 @@
 #if HAVE( THREAD_LOCAL_STORAGE )
 
 /*  Declare and initialize thread local storage for in-measurement counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement = 0;
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement
+SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #if HAVE( SAMPLING_SUPPORT )
+
 /*  Declare and initialize thread local storage for in-signal-context counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context = 0;
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
+SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 /*  Declare and initialize thread local storage for in-wrapped-region counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region = 0;
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region
+SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
+
 #endif
 
 volatile sig_atomic_t*

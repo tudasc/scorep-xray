@@ -56,13 +56,14 @@ scorep_get_in_measurement( void );
 
 #else /* !__cplusplus */
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement;
+extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
 
 #if HAVE( SAMPLING_SUPPORT )
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context;
+extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region;
+extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
+
 #endif /* HAVE( SAMPLING_SUPPORT ) */
 
 #endif /* !__cplusplus */

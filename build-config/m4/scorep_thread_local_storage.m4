@@ -33,9 +33,26 @@ AS_IF([test "x${scorep_have_thread_local_storage}" = "xno"],
        AS_IF([test "x${scorep_have_thread_local_storage}" = "xyes"],
              [CC="$CC $thread_local_storage_cflags"])])
 
+need_tls_model_macro=yes
 AC_SCOREP_COND_HAVE([THREAD_LOCAL_STORAGE],
                     [test "x${scorep_have_thread_local_storage}" = "xyes"],
-                    [Defined if thread local storage support is available.])
+                    [Defined if thread local storage support is available.],
+                    [AS_IF([test "x${enable_shared}" = "xyes"], [
+                         _SCOREP_CHECK_TLS_MODEL([initial-exec], [
+                             AC_DEFINE([SCOREP_THREAD_LOCAL_STORAGE_MODEL( tls_model_arg )],
+                                       [__attribute__(( tls_model( tls_model_arg ) ))],
+                                       [Variable attribute to select a specific TLS model.])
+                             need_tls_model_macro=no
+                             thread_local_storage_summary="${thread_local_storage_summary} and the initial-exec model"
+                         ], [
+                             thread_local_storage_summary="${thread_local_storage_summary} and the default model"
+                         ])
+                     ])])
+AS_IF([test "x${need_tls_model_macro}" = "xyes"],
+    [AC_DEFINE([SCOREP_THREAD_LOCAL_STORAGE_MODEL( tls_model_arg )],
+        [/* not supported tls_model_arg */],
+        [Variable attribute to select a specific TLS model.])])
+AS_UNSET([need_tls_model_macro])
 
 AFS_SUMMARY([TLS support], [${thread_local_storage_summary}])
 ])
@@ -115,5 +132,49 @@ AC_LANG_POP([C])
 
 ])
 
+# _SCOREP_CHECK_TLS_MODEL( TLS_MODEL,
+#                          ACTION_FOUND,
+#                          ACTION_NOT_FOUND )
+# -----------------------------------
+# Performs checks whether the compiler supports '__attribute__(( tls_model( "TLS_MODEL" ) ))'.
+AC_DEFUN([_SCOREP_CHECK_TLS_MODEL], [
+AC_REQUIRE([LT_OUTPUT])
 
+AC_LANG_PUSH([C])
 
+AC_LANG_CONFTEST([
+    AC_LANG_SOURCE([[
+extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile int confvar __attribute__(( tls_model( "$1" ) ));
+
+void conffunc(void)
+{
+    confvar++;
+    --confvar;
+}
+]])])
+
+tls_model_compile='$SHELL ./libtool --mode=compile --tag=_AC_CC [$]_AC_CC $CPPFLAGS [$]_AC_LANG_PREFIX[FLAGS] -c -o conftest.lo conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+tls_model_link='$SHELL ./libtool --mode=link --tag=_AC_CC [$]_AC_CC [$]_AC_LANG_PREFIX[FLAGS] -rpath $PWD/lib -o libconftest.la conftest.lo >&AS_MESSAGE_LOG_FD'
+tls_model_clean='$SHELL ./libtool --mode=clean $RM conftest.lo libconftest.la >&AS_MESSAGE_LOG_FD'
+
+AC_MSG_CHECKING([for tls_model("$1")])
+AS_IF([_AC_DO_VAR([tls_model_compile]) &&
+       _AC_DO_VAR([tls_model_link])],
+   [AC_MSG_RESULT([yes])
+    $2
+    :],
+   [_AC_MSG_LOG_CONFTEST
+    AC_MSG_RESULT([no])
+    $3
+    :])
+
+_AC_DO_VAR([tls_model_clean])
+$RM conftest.$ac_ext
+
+AS_UNSET([tls_model_compile])
+AS_UNSET([tls_model_link])
+AS_UNSET([tls_model_compile])
+
+AC_LANG_POP([C])
+
+])

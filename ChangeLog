@@ -11,12 +11,14 @@ Features and improvements:
   is the loss of individual names and properties for locations,
   location groups and system tree nodes. Currently supported only for
   MPI.
-
 - Added possibilities to aggregate the locations within a thread to
   reduce the report size. The aggregation can be enabled via the
   SCORE_PROFILING_FORMAT environment variable. The new formats
   THREAD_SUM, THREAD_TUPLE, KEY_THREADS, and CLUSTER_THREADS are
   available.
+- The induced penalty to access thread-local storage variables was
+  considerably reduced for some compilers, notable for the Intel
+  compilers.
 
 Bugfixes:
 - Fix compilation error during instrumentation, if the command line

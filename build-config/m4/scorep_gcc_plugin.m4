@@ -50,8 +50,7 @@ scorep_gcc_have_working_plugin=no
 AS_IF([test "x${scorep_gcc_have_plugin_headers}" = "xyes"], [
 
     # minimalistic GCC plug-in
-cat confdefs.h - >conftest.$ac_ext <<\_EOF
-/* end confdefs.h.  */
+    AC_LANG_CONFTEST([AC_LANG_SOURCE([[
 #undef PACKAGE_NAME
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
@@ -75,8 +74,7 @@ plugin_init( struct plugin_name_args*   plugin_info,
 {
     body();
     return 0;
-}
-_EOF
+}]])])
 
     # build plug-in with libtool to get an shared object
     # -rpath is needed, else libool will only build an convenient library
@@ -89,8 +87,7 @@ _EOF
     AS_IF([_AC_DO_VAR([plugin_compile]) &&
         _AC_DO_VAR([plugin_link]) &&
         _AC_DO_VAR([plugin_mkdir]) &&
-        _AC_DO_VAR([plugin_install]) &&
-        _AC_DO_VAR([plugin_clean])],
+        _AC_DO_VAR([plugin_install])],
     [
         AC_MSG_RESULT([yes])
 
@@ -129,9 +126,12 @@ _EOF
         _AC_DO_VAR([plugin_uninstall])
         plugin_rmdir='rmdir lib >&AS_MESSAGE_LOG_FD'
         _AC_DO_VAR([plugin_rmdir])
-    ], [
+    ], [_AC_MSG_LOG_CONFTEST
         AC_MSG_RESULT([no])
     ])
+
+    _AC_DO_VAR([plugin_clean])
+    $RM conftest.$ac_ext
 
     AS_UNSET([plugin_compile])
     AS_UNSET([plugin_link])
@@ -140,8 +140,6 @@ _EOF
     AS_UNSET([plugin_clean])
     AS_UNSET([plugin_uninstall])
     AS_UNSET([plugin_rmdir])
-
-    $RM conftest.$ac_ext
 ], [
     scorep_gcc_plugin_support_reason="no, missing plug-in headers, please install"
 ])
