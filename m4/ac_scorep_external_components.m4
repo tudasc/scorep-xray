@@ -69,7 +69,7 @@ AS_IF([test "x${with_$1}" != "xno"],
                   [scorep_$1_config_bin="${with_$1}/bin/$1-config"])])
         ])
      AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
-         [scorep_$1_config_arg="scorep_$1_bindir=`dirname ${scorep_$1_config_bin}`"
+         [scorep_$1_config_arg="scorep_$1_bindir=`echo "$(cd "$(dirname "${scorep_$1_config_bin}")" && pwd)"`"
           # version checking, see http://www.gnu.org/software/libtool/manual/libtool.html#Versioning
           interface_version=`${scorep_$1_config_bin} --interface-version 2> /dev/null`
           AS_IF([test $? -eq 0 && test "x${interface_version}" != "x"],
