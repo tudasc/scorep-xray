@@ -101,7 +101,7 @@ scorep_system_tree_seq_free_ipc_group( SCOREP_Ipc_Group* );
 
 /**
  * Returns the mapping of the locations to their index in the
- * new defintions. The i-th value in the returned array is
+ * new definitions. The i-th value in the returned array is
  * the index of the i-th location in the original definitions.
  * Maps only locations of the current process.
  */
@@ -110,7 +110,7 @@ scorep_system_tree_seq_get_local_location_order( void );
 
 /**
  * Returns the mapping of the locations to their index in the
- * new defintions. The i-th value in the returned array is
+ * new definitions. The i-th value in the returned array is
  * the index of the i-th location in the original definitions.
  * Maps locations of all processes. Only valid on rank 0.
  * All other ranks return NULL.

@@ -12,7 +12,7 @@
 /**
  * @file
  *
- * @brief Contains defintion for
+ * @brief Contains definition for
  * region descriptor struct for GCC plugin
  */
 

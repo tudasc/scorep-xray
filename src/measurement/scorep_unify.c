@@ -75,7 +75,7 @@ SCOREP_Unify( void )
         SCOREP_Unify_Mpp();
     }
 
-    /* Scalable system tree defintions need the string mappings */
+    /* Scalable system tree definitions need the string mappings */
     if ( SCOREP_Env_UseSystemTreeSequence() )
     {
         scorep_system_tree_seq_unify();

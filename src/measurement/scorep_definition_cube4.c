@@ -834,7 +834,7 @@ write_system_tree( cube_t*                   myCube,
 }
 
 /**
-   Writes location group defintions to Cube.
+   Writes location group definitions to Cube.
    @param myCube  Pointer to Cube instance.
    @param manager Pointer to Score-P definition manager with unified definitions.
    @param ranks   Number of MPI ranks. It must equal the number of array elements in
@@ -895,7 +895,7 @@ write_all_location_definitions( cube_t*                   myCube,
     cube_location_group** processes =
         write_location_group_definitions( myCube, manager, ranks );
 
-    /* Location mapping of global ids to cube defintion */
+    /* Location mapping of global ids to cube definition */
     cube_location** locations = calloc( numberOfThreads,
                                         sizeof( cube_location* ) );
     UTILS_ASSERT( locations );

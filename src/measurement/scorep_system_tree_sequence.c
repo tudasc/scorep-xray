@@ -115,7 +115,7 @@ static uint64_t unified_rank_index = 0;
 
 /**
  * Stores the mapping of the locations to their index in the
- * new defintions. The i-th value in the returned array is
+ * new definitions. The i-th value in the returned array is
  * the index of the i-th location in the original definitions.
  * Maps only the locations of the current process.
  */
@@ -123,7 +123,7 @@ static uint64_t* local_location_map = NULL;
 
 /**
  * Stores the mapping of the locations to their index in the
- * new defintions. The i-th value in the returned array is
+ * new definitions. The i-th value in the returned array is
  * the index of the i-th location in the original definitions.
  * Maps the locations of all processes. Only valid on rank 0.
  */
@@ -131,7 +131,7 @@ static uint64_t* global_location_map = NULL;
 
 /**
  * Stores the mapping of the ranks to their index in the
- * new defintions. The i-th value in the returned array is
+ * new definitions. The i-th value in the returned array is
  * the index of the i-th location in the original definitions.
  * Maps the locations of all processes. Only valid on rank 0.
  */
