@@ -13,7 +13,7 @@ various Score-P components.
   - Score-P has been tested on the following platforms:
     + IBM Blue Gene/Q, only static libraries supported
     + IBM BladeCenter & iDataPlex clusters
-    + Cray XC, only static libraries supported
+    + Cray XC (see 'Shared libraries on Cray systems' below)
     + SGI Altix/ICE
     + K Computer, Fujitsu FX10 and FX100 systems
     + various Linux/Intel (x86/x64/Power8/ARM AArch32/AArch64) clusters
@@ -46,6 +46,12 @@ various Score-P components.
 
   - To build Score-P it is required to have Fortran compilers and
     highly recommended to have MPI compilers.
+
+  - Shared libraries on Cray systems: it is possible to build shared
+    libraries on Cray systems just by using the '--enable-shared'
+    configure option. Note that in order to link to these libraries,
+    you need to pass the '-dynamic' flag to the compiler wrapper;
+    static is the default linking mode on Cray systems.
 
 --------------------------------------------------------------------------------
 
