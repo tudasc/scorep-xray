@@ -63,7 +63,7 @@ scorep_dump_node( FILE* file, scorep_profile_node* node )
     static char* type_name_map[] =
     {
         "regular region",
-        "paramater string",
+        "parameter string",
         "parameter integer",
         "thread root",
         "thread start",

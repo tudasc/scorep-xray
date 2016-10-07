@@ -278,7 +278,7 @@ SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle );
     but use the SCOREP_USER_PARAMETER_INT64 macro instead.
     @param handle Pointer where the parameter handle is stored. If it is
                   SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
-    @param name  The unique name for the paramater.
+    @param name  The unique name for the parameter.
     @param value The value for the parameter.
  */
 void
@@ -292,7 +292,7 @@ SCOREP_User_ParameterInt64( SCOREP_User_ParameterHandle* handle,
     but use the SCOREP_USER_PARAMETER_UINT64 macro instead.
     @param handle Pointer where the parameter handle is stored. If it is
                   SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
-    @param name  The unique name for the paramater.
+    @param name  The unique name for the parameter.
     @param value The value for the parameter.
  */
 void
@@ -306,7 +306,7 @@ SCOREP_User_ParameterUint64( SCOREP_User_ParameterHandle* handle,
     but use the SCOREP_USER_PARAMETER_STRING macro instead.
     @param handle Pointer where the parameter handle is stored. If it is
                   SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
-    @param name  The unique name for the paramater.
+    @param name  The unique name for the parameter.
     @param value The value for the parameter.
  */
 void

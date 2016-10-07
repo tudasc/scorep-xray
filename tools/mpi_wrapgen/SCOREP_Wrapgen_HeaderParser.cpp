@@ -130,7 +130,7 @@ trim( string line )
     return line.substr( beg, end - beg + 1 );
 }
 
-/** Process a parameter list recursively and adds all paramaters to @a func.
+/** Process a parameter list recursively and adds all parameters to @a func.
     @param func  Pointer to a @ref Func instance to which the parameter information is
                  added.
     @param plist A string containing the parameter list.
@@ -272,8 +272,7 @@ main( int   argc,
     }
 
     // Open file
-    ifstream
-    file( argv[ 1 ] );
+    ifstream file( argv[ 1 ] );
     if ( !file.is_open() )
     {
         cout << "Could not open " << argv[ 1 ] << endl;
