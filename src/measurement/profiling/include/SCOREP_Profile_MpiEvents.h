@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -113,14 +113,14 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
  * @param bytesReceived Number of bytes received.
  */
 void
-SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
-                                 uint64_t                      timestamp,
-                                 SCOREP_CollectiveType         collectiveOp,
-                                 SCOREP_RmaSyncLevel           syncLevel,
-                                 SCOREP_InterimRmaWindowHandle windowHandle,
-                                 uint32_t                      root,
-                                 uint64_t                      bytesSent,
-                                 uint64_t                      bytesReceived );
+SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*       location,
+                                 uint64_t               timestamp,
+                                 SCOREP_CollectiveType  collectiveOp,
+                                 SCOREP_RmaSyncLevel    syncLevel,
+                                 SCOREP_RmaWindowHandle windowHandle,
+                                 uint32_t               root,
+                                 uint64_t               bytesSent,
+                                 uint64_t               bytesReceived );
 
 
 /**
@@ -174,11 +174,11 @@ SCOREP_Profile_MpiIrecv( SCOREP_Location*                 location,
  *                     SCOREP_RMA_SYNC_LEVEL_PROCESS, SCOREP_RMA_SYNC_LEVEL_MEMORY).
  */
 void
-SCOREP_Profile_RmaSync( SCOREP_Location*              location,
-                        uint64_t                      timestamp,
-                        SCOREP_InterimRmaWindowHandle windowHandle,
-                        uint32_t                      remote,
-                        SCOREP_RmaSyncType            syncType );
+SCOREP_Profile_RmaSync( SCOREP_Location*       location,
+                        uint64_t               timestamp,
+                        SCOREP_RmaWindowHandle windowHandle,
+                        uint32_t               remote,
+                        SCOREP_RmaSyncType     syncType );
 
 
 /**
@@ -193,11 +193,11 @@ SCOREP_Profile_RmaSync( SCOREP_Location*              location,
  * @param groupHandle  Unused.
  */
 void
-SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
-                             uint64_t                      timestamp,
-                             SCOREP_RmaSyncLevel           syncLevel,
-                             SCOREP_InterimRmaWindowHandle windowHandle,
-                             SCOREP_GroupHandle            groupHandle );
+SCOREP_Profile_RmaGroupSync( SCOREP_Location*       location,
+                             uint64_t               timestamp,
+                             SCOREP_RmaSyncLevel    syncLevel,
+                             SCOREP_RmaWindowHandle windowHandle,
+                             SCOREP_GroupHandle     groupHandle );
 
 /**
  * The get and put operations access remote memory addresses. The
@@ -217,12 +217,12 @@ SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
  *
  */
 void
-SCOREP_Profile_RmaPut( SCOREP_Location*              location,
-                       uint64_t                      timestamp,
-                       SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      bytes,
-                       uint64_t                      matchingId );
+SCOREP_Profile_RmaPut( SCOREP_Location*       location,
+                       uint64_t               timestamp,
+                       SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               bytes,
+                       uint64_t               matchingId );
 
 
 /**
@@ -243,12 +243,12 @@ SCOREP_Profile_RmaPut( SCOREP_Location*              location,
  *
  */
 void
-SCOREP_Profile_RmaGet( SCOREP_Location*              location,
-                       uint64_t                      timestamp,
-                       SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      bytes,
-                       uint64_t                      matchingId );
+SCOREP_Profile_RmaGet( SCOREP_Location*       location,
+                       uint64_t               timestamp,
+                       SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               bytes,
+                       uint64_t               matchingId );
 
 /**
  * The atomic RMA operations are similar to the get and put operations.
@@ -268,14 +268,14 @@ SCOREP_Profile_RmaGet( SCOREP_Location*              location,
  *
  */
 void
-SCOREP_Profile_RmaAtomic( SCOREP_Location*              location,
-                          uint64_t                      timestamp,
-                          SCOREP_InterimRmaWindowHandle windowHandle,
-                          uint32_t                      remote,
-                          SCOREP_RmaAtomicType          type,
-                          uint64_t                      bytesSent,
-                          uint64_t                      bytesReceived,
-                          uint64_t                      matchingId );
+SCOREP_Profile_RmaAtomic( SCOREP_Location*       location,
+                          uint64_t               timestamp,
+                          SCOREP_RmaWindowHandle windowHandle,
+                          uint32_t               remote,
+                          SCOREP_RmaAtomicType   type,
+                          uint64_t               bytesSent,
+                          uint64_t               bytesReceived,
+                          uint64_t               matchingId );
 
 
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -340,13 +340,15 @@ static SCOREP_CommunicatorHandle
 define_communicator( SCOREP_DefinitionManager* definition_manager,
                      SCOREP_GroupHandle        group_handle,
                      SCOREP_StringHandle       name_handle,
-                     SCOREP_CommunicatorHandle parent_handle );
+                     SCOREP_CommunicatorHandle parent_handle,
+                     uint32_t                  unifyKey );
 
 
 SCOREP_CommunicatorHandle
-SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
-                                    const char*               name,
-                                    SCOREP_CommunicatorHandle parent_handle )
+SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
+                                    SCOREP_StringHandle       name,
+                                    SCOREP_CommunicatorHandle parent,
+                                    uint32_t                  unifyKey )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -354,34 +356,14 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
 
     SCOREP_CommunicatorHandle new_handle = define_communicator(
         &scorep_local_definition_manager,
-        group_handle,
-        scorep_definitions_new_string(
-            &scorep_local_definition_manager,
-            name ? name : "<unnamed communicator>", NULL ),
-        parent_handle );
+        group,
+        name,
+        parent,
+        unifyKey );
 
     SCOREP_Definitions_Unlock();
 
     return new_handle;
-}
-
-
-SCOREP_CommunicatorHandle
-SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                           const char*               name,
-                                           SCOREP_CommunicatorHandle parent_handle )
-{
-    UTILS_DEBUG_ENTRY();
-
-    UTILS_ASSERT( scorep_unified_definition_manager );
-
-    return define_communicator(
-        scorep_unified_definition_manager,
-        group_handle,
-        scorep_definitions_new_string(
-            scorep_unified_definition_manager,
-            name ? name : "<unnamed communicator>", NULL ),
-        parent_handle );
 }
 
 
@@ -391,6 +373,17 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
 {
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
+
+    SCOREP_StringHandle unified_string_handle = SCOREP_INVALID_STRING;
+    if ( definition->name_handle != SCOREP_INVALID_STRING )
+    {
+        unified_string_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->name_handle,
+            String,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_string_handle == SCOREP_INVALID_STRING,
+                      "Invalid unification order of communicator definition: name not yet unified" );
+    }
 
     SCOREP_CommunicatorHandle unified_parent_handle = SCOREP_INVALID_COMMUNICATOR;
     if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
@@ -409,19 +402,18 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
             definition->group_handle,
             Group,
             handlesPageManager ),
-        SCOREP_HANDLE_GET_UNIFIED(
-            definition->name_handle,
-            String,
-            handlesPageManager ),
-        unified_parent_handle );
+        unified_string_handle,
+        unified_parent_handle,
+        definition->unify_key );
 }
 
 
 SCOREP_CommunicatorHandle
 define_communicator( SCOREP_DefinitionManager* definition_manager,
-                     SCOREP_GroupHandle        group_handle,
-                     SCOREP_StringHandle       name_handle,
-                     SCOREP_CommunicatorHandle parent_handle )
+                     SCOREP_GroupHandle        group,
+                     SCOREP_StringHandle       name,
+                     SCOREP_CommunicatorHandle parent,
+                     uint32_t                  unifyKey )
 {
     SCOREP_CommunicatorDef*   new_definition = NULL;
     SCOREP_CommunicatorHandle new_handle     = SCOREP_INVALID_COMMUNICATOR;
@@ -429,21 +421,59 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
     SCOREP_DEFINITION_ALLOC( Communicator );
 
     // Init new_definition
-    new_definition->group_handle  = group_handle;
-    new_definition->name_handle   = name_handle;
-    new_definition->parent_handle = parent_handle;
+    new_definition->group_handle = group;
+    HASH_ADD_HANDLE( new_definition, group_handle, Group );
 
-    /* Does return if it is a duplicate */
-    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Communicator,
-                                               communicator );
+    /* No hashing, wont be used to find duplicates */
+    new_definition->name_handle = name;
+
+    new_definition->parent_handle = parent;
+    if ( new_definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
+    {
+        HASH_ADD_HANDLE( new_definition, parent_handle, Communicator );
+    }
+
+    new_definition->unify_key = unifyKey;
+    HASH_ADD_POD( new_definition, unify_key );
+
+    /* Open coded SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION, to handle the
+     * communicator name */
+    scorep_definitions_manager_entry* comms = &definition_manager->communicator;
+    if ( comms->hash_table )
+    {
+        SCOREP_CommunicatorHandle* hash_table_bucket =
+            &comms->hash_table[
+                new_definition->hash_value & comms->hash_table_mask ];
+        SCOREP_CommunicatorHandle hash_list_iterator = *hash_table_bucket;
+        while ( hash_list_iterator != SCOREP_INVALID_COMMUNICATOR )
+        {
+            SCOREP_CommunicatorDef* existing_definition =
+                SCOREP_Allocator_GetAddressFromMovableMemory(
+                    definition_manager->page_manager,
+                    hash_list_iterator );
+            if ( existing_definition->hash_value == new_definition->hash_value
+                 && existing_definition->group_handle == new_definition->group_handle
+                 && existing_definition->parent_handle == new_definition->parent_handle
+                 && existing_definition->unify_key == new_definition->unify_key )
+            {
+                /* This is a duplicate, take the name of the new definition, if any */
+                if ( new_definition->name_handle != SCOREP_INVALID_STRING )
+                {
+                    existing_definition->name_handle = new_definition->name_handle;
+                }
+                SCOREP_Allocator_RollbackAllocMovable(
+                    definition_manager->page_manager,
+                    new_handle );
+                return hash_list_iterator;
+            }
+            hash_list_iterator = existing_definition->hash_next;
+        }
+        new_definition->hash_next = *hash_table_bucket;
+        *hash_table_bucket        = new_handle;
+    }
+    *comms->tail                    = new_handle;
+    comms->tail                     = &new_definition->next;
+    new_definition->sequence_number = comms->counter++;
 
     return new_handle;
-}
-
-
-bool
-equal_communicator( const SCOREP_CommunicatorDef* existingDefinition,
-                    const SCOREP_CommunicatorDef* newDefinition )
-{
-    return false;
 }

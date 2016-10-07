@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -179,8 +179,8 @@ extern uint64_t* scorep_opencl_global_location_ids;
 // handles for OpenCL communication unification
 /** Interim communicator */
 extern SCOREP_InterimCommunicatorHandle scorep_opencl_interim_communicator_handle;
-/** Interim RMA window */
-extern SCOREP_InterimRmaWindowHandle scorep_opencl_interim_window_handle;
+/** RMA window */
+extern SCOREP_RmaWindowHandle scorep_opencl_window_handle;
 
 /**
  * Initialize OpenCL wrapper handling.

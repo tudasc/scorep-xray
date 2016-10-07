@@ -146,27 +146,21 @@ typedef uint32_t SCOREP_LineNo;
 #define SCOREP_INVALID_GROUP SCOREP_MOVABLE_NULL
 
 /**
- * Symbolic constant representing an invalid or unknown local MPI communicator
+ * Symbolic constant representing an invalid or unknown interim communicator
  * definition.
  */
 #define SCOREP_INVALID_INTERIM_COMMUNICATOR SCOREP_MOVABLE_NULL
 
 
 /**
- * Symbolic constant representing an invalid or unknown MPI communicator
+ * Symbolic constant representing an invalid or unknown communicator
  * definition.
  */
 #define SCOREP_INVALID_COMMUNICATOR SCOREP_MOVABLE_NULL
 
 
 /**
- * Symbolic constant representing an invalid or unknown MPI window definition.
- */
-#define SCOREP_INVALID_INTERIM_RMA_WINDOW SCOREP_MOVABLE_NULL
-
-
-/**
- * Symbolic constant representing an invalid or unknown MPI window definition.
+ * Symbolic constant representing an invalid or unknown RMA window definition.
  */
 #define SCOREP_INVALID_RMA_WINDOW SCOREP_MOVABLE_NULL
 
@@ -911,7 +905,7 @@ typedef enum SCOREP_AttributeType
     SCOREP_ATTRIBUTE_TYPE_METRIC,
     SCOREP_ATTRIBUTE_TYPE_INTERIM_COMMUNICATOR,
     SCOREP_ATTRIBUTE_TYPE_PARAMETER,
-    SCOREP_ATTRIBUTE_TYPE_INTERIM_RMA_WINDOW,
+    SCOREP_ATTRIBUTE_TYPE_RMA_WINDOW,
     SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION,
     SCOREP_ATTRIBUTE_TYPE_CALLING_CONTEXT,
     SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR

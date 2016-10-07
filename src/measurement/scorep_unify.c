@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,6 +39,7 @@
 
 #include <config.h>
 #include "scorep_unify.h"
+#include "scorep_unify_helpers.h"
 
 #include <SCOREP_Config.h>
 #include "scorep_environment.h"
@@ -57,14 +58,34 @@
 #include <SCOREP_Memory.h>
 
 
+static void
+resolve_interim_definitions( void );
+
+
+static void
+assign_empty_string_to_names( SCOREP_StringHandle emptyString );
+
+
 void
 SCOREP_Unify( void )
 {
     /* This prepares the unified definition manager */
     SCOREP_Unify_CreateUnifiedDefinitionManager();
 
+    /* ensure, that the empty string gets id 0 */
+    SCOREP_StringHandle empty_string =
+        scorep_definitions_new_string( scorep_unified_definition_manager,
+                                       "", NULL );
+
     /* Let the subsystems do some stuff */
     scorep_subsystems_pre_unify();
+
+    /*
+     * Now that the interim communicator definitions are all resolved to the
+     * final communicator definition. We can now resolve references to the
+     * interim definition to the final one through the `unified` member.
+     */
+    resolve_interim_definitions();
 
     /* Unify the local definitions */
     SCOREP_Unify_Locally();
@@ -75,6 +96,10 @@ SCOREP_Unify( void )
         SCOREP_Unify_Mpp();
     }
 
+    /* Build the mapping for the InterimComms */
+    scorep_unify_helper_create_interim_comm_mapping(
+        &scorep_local_definition_manager.interim_communicator );
+
     /* Scalable system tree definitions need the string mappings */
     if ( SCOREP_Env_UseSystemTreeSequence() )
     {
@@ -83,6 +108,12 @@ SCOREP_Unify( void )
 
     /* Let the subsystems do some stuff */
     scorep_subsystems_post_unify();
+
+    /* Assign some known defs the empty string name, if they still have INVALID */
+    if ( SCOREP_Status_GetRank() == 0 )
+    {
+        assign_empty_string_to_names( empty_string );
+    }
 
     /* fool linker, so that the scorep_unify_helpers.c unit is always linked
        into the library/binary. */
@@ -225,9 +256,6 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 
     FREE_MAPPING( definitionManager,
                   interim_communicator );
-
-    FREE_MAPPING( definitionManager,
-                  interim_rma_window );
 }
 
 
@@ -241,10 +269,6 @@ SCOREP_Unify_CreateUnifiedDefinitionManager( void )
     SCOREP_Definitions_InitializeDefinitionManager( &scorep_unified_definition_manager,
                                                     SCOREP_Memory_GetLocalDefinitionPageManager(),
                                                     alloc_hash_tables );
-
-    /* ensure, that the empty string gets id 0 */
-    scorep_definitions_new_string( scorep_unified_definition_manager,
-                                   "", NULL );
 }
 
 void
@@ -283,5 +307,69 @@ SCOREP_Unify_Locally( void )
      * Allocate also mappings for the interim definitions.
      */
     ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_communicator );
-    ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_rma_window );
+}
+
+#define RESOLVE_INTERIM_COMM_REFERENCE( Type, type, commMember ) \
+    do \
+    { \
+        /* \
+         * We need to re-hash the definition after the change, but this prevents to \
+         * find the defintion in the hash table, thus disallow that the definition \
+         * has a hash table in the scorep_local_definition_manager at all. \
+         */ \
+        UTILS_BUG_ON( scorep_local_definition_manager.type.hash_table != NULL, \
+                      "%s definitions should not have a hash table for the local definitions.", \
+                      #Type ); \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, \
+                                                             Type, \
+                                                             type ) \
+        { \
+            if ( definition->commMember == SCOREP_INVALID_INTERIM_COMMUNICATOR ) \
+            { \
+                continue; \
+            } \
+             \
+            SCOREP_InterimCommunicatorDef* comm_definition = \
+                SCOREP_LOCAL_HANDLE_DEREF( definition->commMember, InterimCommunicator ); \
+            UTILS_BUG_ON( comm_definition->unified == SCOREP_INVALID_COMMUNICATOR, \
+                          "InterimCommunicator was not unified by creator %u", definition->commMember ); \
+             \
+            definition->commMember = comm_definition->unified; \
+             \
+            scorep_definitions_rehash_ ## type( definition ); \
+        } \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END(); \
+    } \
+    while ( 0 )
+
+
+void
+resolve_interim_definitions( void )
+{
+    RESOLVE_INTERIM_COMM_REFERENCE( RmaWindow, rma_window, communicator_handle );
+    /* Add here more defintions, which references interim comm definitions. */
+}
+
+#define ASSIGN_EMPTY_STRING( Type, type, nameMember ) \
+    do \
+    { \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager, \
+                                                             Type, \
+                                                             type ) \
+        { \
+            if ( definition->nameMember != SCOREP_INVALID_STRING ) \
+            { \
+                continue; \
+            } \
+            definition->nameMember = emptyString; \
+        } \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END(); \
+    } \
+    while ( 0 )
+
+void
+assign_empty_string_to_names( SCOREP_StringHandle emptyString )
+{
+    ASSIGN_EMPTY_STRING( Group, group, name_handle );
+    ASSIGN_EMPTY_STRING( Communicator, communicator, name_handle );
 }

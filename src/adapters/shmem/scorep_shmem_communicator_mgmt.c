@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -21,6 +21,8 @@
 
 
 #include <config.h>
+
+#include <stdio.h>
 
 #include <scorep_shmem_internal.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -45,24 +47,14 @@
  */
 scorep_definitions_manager_entry scorep_shmem_pe_groups;
 
-/**
- * Local communicator counters
- */
-uint32_t  scorep_shmem_number_of_self_comms = 0;
-uint32_t* scorep_shmem_number_of_root_comms = NULL;
-
-/**
- * Buffer in symmetric heap used for scalable communicator management
- */
-static uint32_t* transfer_comm_mgmt;
-
 static long* barrier_psync;
 static long* bcast_psync;
 
 /**
- *  Tracking of 'WORLD' window
+ *  Tracking of 'WORLD' and 'SELF' window
  */
-SCOREP_InterimRmaWindowHandle scorep_shmem_interim_world_window_handle = SCOREP_INVALID_INTERIM_RMA_WINDOW;
+SCOREP_RmaWindowHandle scorep_shmem_world_window_handle = SCOREP_INVALID_RMA_WINDOW;
+SCOREP_RmaWindowHandle scorep_shmem_self_window_handle  = SCOREP_INVALID_RMA_WINDOW;
 
 /* ***************************************************************************************
    Prototypes of auxiliary functions
@@ -74,27 +66,18 @@ define_comm( int                                    start,
              int                                    size,
              scorep_shmem_comm_definition_payload** payload );
 
-static uint32_t
-comm_create_id( int start,
-                int stride,
-                int size );
-
 /* ***************************************************************************************
    Define interim 'WORLD' communicator and RMA window
 *****************************************************************************************/
+
+#define WIN_WORLD_NAME "All PEs"
+#define WIN_SELF_NAME  "Self PE"
 
 void
 scorep_shmem_setup_comm_world( void )
 {
     UTILS_BUG_ON( scorep_shmem_number_of_pes == 0,
                   "Can't allocate buffers for 0 PEs." );
-
-    scorep_shmem_number_of_root_comms = CALL_SHMEM( shmalloc )( sizeof( uint32_t ) );
-    UTILS_ASSERT( scorep_shmem_number_of_root_comms );
-    *scorep_shmem_number_of_root_comms = 0;
-
-    transfer_comm_mgmt = CALL_SHMEM( shmalloc )( sizeof( uint32_t ) );
-    UTILS_ASSERT( transfer_comm_mgmt );
 
     barrier_psync = CALL_SHMEM( shmalloc )( sizeof( long ) * _SHMEM_BARRIER_SYNC_SIZE );
     UTILS_ASSERT( barrier_psync );
@@ -112,6 +95,9 @@ scorep_shmem_setup_comm_world( void )
 
     CALL_SHMEM( shmem_barrier_all )();
 
+    /* Define the group of all SHMEM locations. */
+    scorep_shmem_define_shmem_locations();
+
     scorep_definitions_manager_init_entry( &scorep_shmem_pe_groups );
     scorep_definitions_manager_entry_alloc_hash_table( &scorep_shmem_pe_groups,
                                                        5 /* 32 hash buckets */ );
@@ -121,20 +107,31 @@ scorep_shmem_setup_comm_world( void )
     SCOREP_InterimCommunicatorHandle      comm_world_handle  =
         define_comm( 0, 0, scorep_shmem_number_of_pes, &comm_world_payload );
 
-    /* Create interim 'WORLD' window handle once for a process */
-    comm_world_payload->rma_win =
-        SCOREP_Definitions_NewInterimRmaWindow( "", comm_world_handle );
-    scorep_shmem_interim_world_window_handle = comm_world_payload->rma_win;
+    /* Create 'WORLD' window handle once for a process */
+    scorep_shmem_world_window_handle =
+        SCOREP_Definitions_NewRmaWindow( WIN_WORLD_NAME, comm_world_handle );
+    comm_world_payload->rma_win = scorep_shmem_world_window_handle;
 
-    if ( scorep_shmem_my_rank == 0 )
+    SCOREP_RmaWinCreate( scorep_shmem_world_window_handle );
+
+    if ( scorep_shmem_number_of_pes > 1 )
     {
-        if ( scorep_shmem_number_of_pes > 1 )
-        {
-            ( *scorep_shmem_number_of_root_comms )++;
-        }
-    }
+        /* Create interim 'SELF' communicator once for a process */
+        scorep_shmem_comm_definition_payload* comm_self_payload = NULL;
+        SCOREP_InterimCommunicatorHandle      comm_self_handle  =
+            define_comm( scorep_shmem_my_rank, 0, 1, &comm_self_payload );
 
-    SCOREP_RmaWinCreate( scorep_shmem_interim_world_window_handle );
+        /* Create 'SELF' window handle once for a process */
+        scorep_shmem_self_window_handle =
+            SCOREP_Definitions_NewRmaWindow( WIN_SELF_NAME, comm_self_handle );
+        comm_self_payload->rma_win = scorep_shmem_self_window_handle;
+
+        SCOREP_RmaWinCreate( scorep_shmem_self_window_handle );
+    }
+    else
+    {
+        scorep_shmem_self_window_handle = scorep_shmem_world_window_handle;
+    }
 
     scorep_shmem_rma_op_matching_id = 0;
 }
@@ -142,14 +139,6 @@ scorep_shmem_setup_comm_world( void )
 void
 scorep_shmem_teardown_comm_world( void )
 {
-    UTILS_ASSERT( scorep_shmem_number_of_root_comms );
-    CALL_SHMEM( shfree )( scorep_shmem_number_of_root_comms );
-    scorep_shmem_number_of_root_comms = NULL;
-
-    UTILS_ASSERT( transfer_comm_mgmt );
-    CALL_SHMEM( shfree )( transfer_comm_mgmt );
-    transfer_comm_mgmt = NULL;
-
     UTILS_ASSERT( barrier_psync );
     CALL_SHMEM( shfree )( barrier_psync );
     barrier_psync = NULL;
@@ -199,7 +188,7 @@ scorep_shmem_close_pe_group( void )
  *
  * @return Handle of corresponding interim RMA window.
  */
-SCOREP_InterimRmaWindowHandle
+SCOREP_RmaWindowHandle
 scorep_shmem_get_pe_group( int start,
                            int stride,
                            int size )
@@ -207,7 +196,13 @@ scorep_shmem_get_pe_group( int start,
     /* Check for group of all processing elements */
     if ( start == 0 && stride == 0 && size == scorep_shmem_number_of_pes )
     {
-        return scorep_shmem_interim_world_window_handle;
+        return scorep_shmem_world_window_handle;
+    }
+
+    /* We map all self-like PE groups into one, regardless of 'stride' */
+    if ( start == scorep_shmem_my_rank && size == 1 )
+    {
+        return scorep_shmem_self_window_handle;
     }
 
     scorep_shmem_comm_definition_payload* new_payload = NULL;
@@ -216,12 +211,12 @@ scorep_shmem_get_pe_group( int start,
 
     if ( new_payload )
     {
+        char name[ 48 ];
+        snprintf( name, sizeof( name ), "Active set %d:%d:%d", start, stride, size );
+
         /* First time we encounter this PE group */
-
-        new_payload->root_id = comm_create_id( start, stride, size );
-
         new_payload->rma_win =
-            SCOREP_Definitions_NewInterimRmaWindow( "", new_handle );
+            SCOREP_Definitions_NewRmaWindow( name, new_handle );
 
         SCOREP_RmaWinCreate( new_payload->rma_win );
     }
@@ -262,8 +257,7 @@ init_payload_fn( void* payload_, uint32_t hashValue, va_list va )
         sizeof( payload->pe_size ),
         hashValue );
 
-    payload->root_id = 0;
-    payload->rma_win = SCOREP_INVALID_INTERIM_RMA_WINDOW;
+    payload->rma_win = SCOREP_INVALID_RMA_WINDOW;
 
     return hashValue;
 }
@@ -299,43 +293,4 @@ define_comm( int                                    start,
         start,
         stride,
         size );
-}
-
-/**
- * @brief Determine id and root for communicator
- *
- * @param start                 The lowest processing element (PE) number
- *                              of the active set of PEs
- * @param stride                The log (base 2) of the stride between
- *                              consecutive PE numbers in the active set
- * @param size                  The number of PEs in the active set
- * @param id                    Id returned from start PE
- */
-static uint32_t
-comm_create_id( int start,
-                int stride,
-                int size )
-{
-    if ( size == 1 )
-    {
-        return scorep_shmem_number_of_self_comms++;
-    }
-    else
-    {
-        /* root determines the id used by all processes
-         */
-        CALL_SHMEM( shmem_broadcast32 )( transfer_comm_mgmt,
-                                         scorep_shmem_number_of_root_comms,
-                                         1, start, start, stride, size, bcast_psync );
-        CALL_SHMEM( shmem_barrier )( start, stride, size, barrier_psync );
-
-        /* Increase local communicator id counter, if this
-         * processing element is root in the new communicator */
-        if ( scorep_shmem_my_rank == start )
-        {
-            ++( *scorep_shmem_number_of_root_comms );
-        }
-
-        return *transfer_comm_mgmt;
-    }
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -198,14 +198,14 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
 }
 
 void
-SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
-                                 uint64_t                      timestamp,
-                                 SCOREP_CollectiveType         collectiveOp,
-                                 SCOREP_RmaSyncLevel           syncLevel,
-                                 SCOREP_InterimRmaWindowHandle windowHandle,
-                                 uint32_t                      root,
-                                 uint64_t                      bytesSent,
-                                 uint64_t                      bytesReceived )
+SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*       location,
+                                 uint64_t               timestamp,
+                                 SCOREP_CollectiveType  collectiveOp,
+                                 SCOREP_RmaSyncLevel    syncLevel,
+                                 SCOREP_RmaWindowHandle windowHandle,
+                                 uint32_t               root,
+                                 uint64_t               bytesSent,
+                                 uint64_t               bytesReceived )
 {
     SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
                                     get_sync_level_name( syncLevel ) );
@@ -239,58 +239,58 @@ SCOREP_Profile_MpiIrecv( SCOREP_Location*                 location,
 }
 
 void
-SCOREP_Profile_RmaSync( SCOREP_Location*              location,
-                        uint64_t                      timestamp,
-                        SCOREP_InterimRmaWindowHandle windowHandle,
-                        uint32_t                      remote,
-                        SCOREP_RmaSyncType            syncType )
+SCOREP_Profile_RmaSync( SCOREP_Location*       location,
+                        uint64_t               timestamp,
+                        SCOREP_RmaWindowHandle windowHandle,
+                        uint32_t               remote,
+                        SCOREP_RmaSyncType     syncType )
 {
     SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
                                     get_sync_type_name( syncType ) );
 }
 
 void
-SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
-                             uint64_t                      timestamp,
-                             SCOREP_RmaSyncLevel           syncLevel,
-                             SCOREP_InterimRmaWindowHandle windowHandle,
-                             SCOREP_GroupHandle            groupHandle )
+SCOREP_Profile_RmaGroupSync( SCOREP_Location*       location,
+                             uint64_t               timestamp,
+                             SCOREP_RmaSyncLevel    syncLevel,
+                             SCOREP_RmaWindowHandle windowHandle,
+                             SCOREP_GroupHandle     groupHandle )
 {
     SCOREP_Profile_ParameterString( location, timestamp, scorep_sync_level_param,
                                     get_sync_level_name( syncLevel ) );
 }
 
 void
-SCOREP_Profile_RmaPut( SCOREP_Location*              location,
-                       uint64_t                      timestamp,
-                       SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      bytes,
-                       uint64_t                      matchingId )
+SCOREP_Profile_RmaPut( SCOREP_Location*       location,
+                       uint64_t               timestamp,
+                       SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               bytes,
+                       uint64_t               matchingId )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_put_metric, bytes );
 }
 
 void
-SCOREP_Profile_RmaGet( SCOREP_Location*              location,
-                       uint64_t                      timestamp,
-                       SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      bytes,
-                       uint64_t                      matchingId )
+SCOREP_Profile_RmaGet( SCOREP_Location*       location,
+                       uint64_t               timestamp,
+                       SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               bytes,
+                       uint64_t               matchingId )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_get_metric, bytes );
 }
 
 void
-SCOREP_Profile_RmaAtomic( SCOREP_Location*              location,
-                          uint64_t                      timestamp,
-                          SCOREP_InterimRmaWindowHandle windowHandle,
-                          uint32_t                      remote,
-                          SCOREP_RmaAtomicType          type,
-                          uint64_t                      bytesSent,
-                          uint64_t                      bytesReceived,
-                          uint64_t                      matchingId )
+SCOREP_Profile_RmaAtomic( SCOREP_Location*       location,
+                          uint64_t               timestamp,
+                          SCOREP_RmaWindowHandle windowHandle,
+                          uint32_t               remote,
+                          SCOREP_RmaAtomicType   type,
+                          uint64_t               bytesSent,
+                          uint64_t               bytesReceived,
+                          uint64_t               matchingId )
 {
     SCOREP_Profile_ParameterString( location, timestamp, scorep_atomic_type_param,
                                     get_atomic_type_name( type ) );

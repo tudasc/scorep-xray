@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -48,22 +48,13 @@ scorep_opencl_define_locations( void )
         scorep_opencl_global_location_number,
         scorep_opencl_global_location_ids );
 
-    SCOREP_CommunicatorHandle communicator_handle =
-        SCOREP_Definitions_NewCommunicator(
-            group_handle,
-            "",
-            SCOREP_INVALID_COMMUNICATOR );
-
-    SCOREP_RmaWindowHandle window_handle = SCOREP_Definitions_NewRmaWindow(
-        "",
-        communicator_handle );
-
     SCOREP_LOCAL_HANDLE_DEREF( scorep_opencl_interim_communicator_handle,
                                InterimCommunicator )->unified =
-        communicator_handle;
-
-    SCOREP_LOCAL_HANDLE_DEREF( scorep_opencl_interim_window_handle, InterimRmaWindow )->unified =
-        window_handle;
+        SCOREP_Definitions_NewCommunicator(
+            group_handle,
+            SCOREP_INVALID_STRING,
+            SCOREP_INVALID_COMMUNICATOR,
+            0 );
 }
 
 void
@@ -109,25 +100,5 @@ scorep_opencl_define_group( void )
                                                 total_number_of_opencl_locations,
                                                 opencl_locations );
         }
-    }
-
-    if ( scorep_opencl_record_memcpy )
-    {
-        scorep_local_definition_manager.interim_communicator.mapping[
-            SCOREP_LOCAL_HANDLE_DEREF( scorep_opencl_interim_communicator_handle,
-                                       InterimCommunicator )->sequence_number ] =
-            scorep_local_definition_manager.communicator.mapping[
-                SCOREP_LOCAL_HANDLE_DEREF( SCOREP_LOCAL_HANDLE_DEREF(
-                                               scorep_opencl_interim_communicator_handle,
-                                               InterimCommunicator )->unified,
-                                           Communicator )->sequence_number ];
-
-        scorep_local_definition_manager.interim_rma_window.mapping[
-            SCOREP_LOCAL_HANDLE_DEREF( scorep_opencl_interim_window_handle,
-                                       InterimRmaWindow )->sequence_number ] =
-            scorep_local_definition_manager.rma_window.mapping[
-                SCOREP_LOCAL_HANDLE_DEREF( SCOREP_LOCAL_HANDLE_DEREF(
-                                               scorep_opencl_interim_window_handle,
-                                               InterimRmaWindow )->unified, RmaWindow )->sequence_number ];
     }
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -455,7 +455,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
  * @param window Memory window.
  */
 void
-SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle );
+SCOREP_RmaWinCreate( SCOREP_RmaWindowHandle windowHandle );
 
 
 /**
@@ -466,7 +466,7 @@ SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle );
  * @param window Memory window.
  */
 void
-SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle );
+SCOREP_RmaWinDestroy( SCOREP_RmaWindowHandle windowHandle );
 
 
 /**
@@ -499,12 +499,12 @@ SCOREP_RmaCollectiveBegin( void );
  * @param bytesReceived Number of bytes received.
  */
 void
-SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType         collectiveOp,
-                         SCOREP_RmaSyncLevel           syncLevel,
-                         SCOREP_InterimRmaWindowHandle windowHandle,
-                         uint32_t                      root,
-                         uint64_t                      bytesSent,
-                         uint64_t                      bytesReceived );
+SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType  collectiveOp,
+                         SCOREP_RmaSyncLevel    syncLevel,
+                         SCOREP_RmaWindowHandle windowHandle,
+                         uint32_t               root,
+                         uint64_t               bytesSent,
+                         uint64_t               bytesReceived );
 
 /** @} */
 
@@ -526,10 +526,10 @@ SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType         collectiveOp,
  * @param lockType Type of lock (shared vs. exclusive).
  */
 void
-SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
-                   uint32_t                      remote,
-                   uint64_t                      lockId,
-                   SCOREP_LockType               lockType );
+SCOREP_RmaTryLock( SCOREP_RmaWindowHandle windowHandle,
+                   uint32_t               remote,
+                   uint64_t               lockId,
+                   SCOREP_LockType        lockType );
 
 
 /**
@@ -546,10 +546,10 @@ SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param lockType Type of lock (shared vs. exclusive).
  */
 void
-SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      lockId,
-                       SCOREP_LockType               lockType );
+SCOREP_RmaAcquireLock( SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               lockId,
+                       SCOREP_LockType        lockType );
 
 
 /**
@@ -567,10 +567,10 @@ SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param lockType Type of lock (shared vs. exclusive).
  */
 void
-SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      lockId,
-                       SCOREP_LockType               lockType );
+SCOREP_RmaRequestLock( SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               lockId,
+                       SCOREP_LockType        lockType );
 
 
 /**
@@ -588,9 +588,9 @@ SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param lockType Type of lock (shared vs. exclusive).
  */
 void
-SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
-                       uint32_t                      remote,
-                       uint64_t                      lockId );
+SCOREP_RmaReleaseLock( SCOREP_RmaWindowHandle windowHandle,
+                       uint32_t               remote,
+                       uint64_t               lockId );
 
 
 /**
@@ -605,9 +605,9 @@ SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * SCOREP_RMA_SYNC_TYPE_NOTIFY_OUT).
  */
 void
-SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
-                uint32_t                      remote,
-                SCOREP_RmaSyncType            syncType );
+SCOREP_RmaSync( SCOREP_RmaWindowHandle windowHandle,
+                uint32_t               remote,
+                SCOREP_RmaSyncType     syncType );
 
 
 /**
@@ -622,9 +622,9 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param group Group of participating processes or threads.
  */
 void
-SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
-                     SCOREP_InterimRmaWindowHandle windowHandle,
-                     SCOREP_GroupHandle            groupHandle );
+SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel    syncLevel,
+                     SCOREP_RmaWindowHandle windowHandle,
+                     SCOREP_GroupHandle     groupHandle );
 
 
 /**
@@ -636,7 +636,7 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
  * @param windowHandle Memory window.
  */
 void
-SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle );
+SCOREP_RmaWaitChange( SCOREP_RmaWindowHandle windowHandle );
 
 
 /**
@@ -658,10 +658,10 @@ SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle );
  *
  */
 void
-SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
-               uint32_t                      remote,
-               uint64_t                      bytes,
-               uint64_t                      matchingId );
+SCOREP_RmaPut( SCOREP_RmaWindowHandle windowHandle,
+               uint32_t               remote,
+               uint64_t               bytes,
+               uint64_t               matchingId );
 
 
 /**
@@ -683,10 +683,10 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
  *
  */
 void
-SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
-               uint32_t                      remote,
-               uint64_t                      bytes,
-               uint64_t                      matchingId );
+SCOREP_RmaGet( SCOREP_RmaWindowHandle windowHandle,
+               uint32_t               remote,
+               uint64_t               bytes,
+               uint64_t               matchingId );
 
 
 /**
@@ -710,12 +710,12 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
  *
  */
 void
-SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
-                  uint32_t                      remote,
-                  SCOREP_RmaAtomicType          type,
-                  uint64_t                      bytesSent,
-                  uint64_t                      bytesReceived,
-                  uint64_t                      matchingId );
+SCOREP_RmaAtomic( SCOREP_RmaWindowHandle windowHandle,
+                  uint32_t               remote,
+                  SCOREP_RmaAtomicType   type,
+                  uint64_t               bytesSent,
+                  uint64_t               bytesReceived,
+                  uint64_t               matchingId );
 
 
 /**
@@ -734,13 +734,13 @@ SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
  * @{
  */
 void
-SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
-                              uint64_t                      matchingId );
+SCOREP_RmaOpCompleteBlocking( SCOREP_RmaWindowHandle windowHandle,
+                              uint64_t               matchingId );
 
 
 void
-SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
-                                 uint64_t                      matchingId );
+SCOREP_RmaOpCompleteNonBlocking( SCOREP_RmaWindowHandle windowHandle,
+                                 uint64_t               matchingId );
 
 /** @} */
 
@@ -756,8 +756,8 @@ SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param matchingId Matching number.
  */
 void
-SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
-                  uint64_t                      matchingId );
+SCOREP_RmaOpTest( SCOREP_RmaWindowHandle windowHandle,
+                  uint64_t               matchingId );
 
 
 /**
@@ -773,8 +773,8 @@ SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param matchingId Matching number.
  */
 void
-SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
-                            uint64_t                      matchingId );
+SCOREP_RmaOpCompleteRemote( SCOREP_RmaWindowHandle windowHandle,
+                            uint64_t               matchingId );
 
 
 
@@ -790,9 +790,9 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
  * @param window Memory window.
  */
 void
-SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
-                              uint64_t                      timestamp,
-                              SCOREP_InterimRmaWindowHandle windowHandle );
+SCOREP_Location_RmaWinCreate( SCOREP_Location*       location,
+                              uint64_t               timestamp,
+                              SCOREP_RmaWindowHandle windowHandle );
 
 
 /**
@@ -807,9 +807,9 @@ SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
  * @param window Memory window.
  */
 void
-SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
-                               uint64_t                      timestamp,
-                               SCOREP_InterimRmaWindowHandle windowHandle );
+SCOREP_Location_RmaWinDestroy( SCOREP_Location*       location,
+                               uint64_t               timestamp,
+                               SCOREP_RmaWindowHandle windowHandle );
 
 
 /**
@@ -835,12 +835,12 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
  *
  */
 void
-SCOREP_Location_RmaPut( SCOREP_Location*              location,
-                        uint64_t                      timestamp,
-                        SCOREP_InterimRmaWindowHandle windowHandle,
-                        uint32_t                      remote,
-                        uint64_t                      bytes,
-                        uint64_t                      matchingId );
+SCOREP_Location_RmaPut( SCOREP_Location*       location,
+                        uint64_t               timestamp,
+                        SCOREP_RmaWindowHandle windowHandle,
+                        uint32_t               remote,
+                        uint64_t               bytes,
+                        uint64_t               matchingId );
 
 
 /**
@@ -866,12 +866,12 @@ SCOREP_Location_RmaPut( SCOREP_Location*              location,
  *
  */
 void
-SCOREP_Location_RmaGet( SCOREP_Location*              location,
-                        uint64_t                      timestamp,
-                        SCOREP_InterimRmaWindowHandle windowHandle,
-                        uint32_t                      remote,
-                        uint64_t                      bytes,
-                        uint64_t                      matchingId );
+SCOREP_Location_RmaGet( SCOREP_Location*       location,
+                        uint64_t               timestamp,
+                        SCOREP_RmaWindowHandle windowHandle,
+                        uint32_t               remote,
+                        uint64_t               bytes,
+                        uint64_t               matchingId );
 
 
 /**
@@ -894,10 +894,10 @@ SCOREP_Location_RmaGet( SCOREP_Location*              location,
  * @{
  */
 void
-SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
-                                       uint64_t                      timestamp,
-                                       SCOREP_InterimRmaWindowHandle windowHandle,
-                                       uint64_t                      matchingId );
+SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*       location,
+                                       uint64_t               timestamp,
+                                       SCOREP_RmaWindowHandle windowHandle,
+                                       uint64_t               matchingId );
 
 
 /**

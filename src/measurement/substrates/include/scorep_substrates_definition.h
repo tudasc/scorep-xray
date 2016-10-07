@@ -7,7 +7,7 @@
  * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -362,128 +362,128 @@ typedef void ( * SCOREP_Substrates_MpiIrecvCb )(
     SCOREP_MpiRequestId              requestId );
 
 typedef void ( * SCOREP_Substrates_RmaWinCreateCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle );
 
 typedef void ( * SCOREP_Substrates_RmaWinDestroyCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle );
 
 typedef void ( * SCOREP_Substrates_RmaCollectiveBeginCb )(
     struct SCOREP_Location* location,
     uint64_t                timestamp );
 
 typedef void ( * SCOREP_Substrates_RmaCollectiveEndCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_CollectiveType         collectiveOp,
-    SCOREP_RmaSyncLevel           syncLevel,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      root,
-    uint64_t                      bytesSent,
-    uint64_t                      bytesReceived );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_CollectiveType   collectiveOp,
+    SCOREP_RmaSyncLevel     syncLevel,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                root,
+    uint64_t                bytesSent,
+    uint64_t                bytesReceived );
 
 typedef void ( * SCOREP_Substrates_RmaTryLockCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      lockId,
-    SCOREP_LockType               lockType );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                lockId,
+    SCOREP_LockType         lockType );
 
 typedef void ( * SCOREP_Substrates_RmaAcquireLockCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      lockId,
-    SCOREP_LockType               lockType );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                lockId,
+    SCOREP_LockType         lockType );
 
 typedef void ( * SCOREP_Substrates_RmaRequestLockCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      lockId,
-    SCOREP_LockType               lockType );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                lockId,
+    SCOREP_LockType         lockType );
 
 typedef void ( * SCOREP_Substrates_RmaReleaseLockCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      lockId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                lockId );
 
 typedef void ( * SCOREP_Substrates_RmaSyncCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    SCOREP_RmaSyncType            syncType );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    SCOREP_RmaSyncType      syncType );
 
 typedef void ( * SCOREP_Substrates_RmaGroupSyncCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_RmaSyncLevel           syncLevel,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    SCOREP_GroupHandle            groupHandle );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaSyncLevel     syncLevel,
+    SCOREP_RmaWindowHandle  windowHandle,
+    SCOREP_GroupHandle      groupHandle );
 
 typedef void ( * SCOREP_Substrates_RmaPutCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      bytes,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                bytes,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaGetCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    uint64_t                      bytes,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    uint64_t                bytes,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaAtomicCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint32_t                      remote,
-    SCOREP_RmaAtomicType          type,
-    uint64_t                      bytesSent,
-    uint64_t                      bytesReceived,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint32_t                remote,
+    SCOREP_RmaAtomicType    type,
+    uint64_t                bytesSent,
+    uint64_t                bytesReceived,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaWaitChangeCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle );
 
 typedef void ( * SCOREP_Substrates_RmaOpCompleteBlockingCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaOpCompleteNonBlockingCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaOpTestCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_RmaOpCompleteRemoteCb )(
-    struct SCOREP_Location*       location,
-    uint64_t                      timestamp,
-    SCOREP_InterimRmaWindowHandle windowHandle,
-    uint64_t                      matchingId );
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_RmaWindowHandle  windowHandle,
+    uint64_t                matchingId );
 
 typedef void ( * SCOREP_Substrates_ThreadAcquireLockCb )(
     struct SCOREP_Location* location,

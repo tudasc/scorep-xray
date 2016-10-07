@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -124,6 +124,25 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
     }
 
     return offset_to_global;
+}
+
+void
+scorep_unify_helper_create_interim_comm_mapping( scorep_definitions_manager_entry* entry )
+{
+    uint32_t* interim_comm_mapping = scorep_local_definition_manager.interim_communicator.mapping;
+    uint32_t* comm_mapping         = scorep_local_definition_manager.communicator.mapping;
+    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
+        entry,
+        InterimCommunicator,
+        SCOREP_Memory_GetLocalDefinitionPageManager() )
+    {
+        UTILS_BUG_ON( definition->unified == SCOREP_INVALID_COMMUNICATOR,
+                      "InterimComm not unified" );
+        SCOREP_CommunicatorDef* comm_definition = SCOREP_LOCAL_HANDLE_DEREF( definition->unified, Communicator );
+
+        interim_comm_mapping[ definition->sequence_number ] = comm_mapping[ comm_definition->sequence_number ];
+    }
+    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 }
 
 /* fool linker, so that this unit is always linked into the library/binary. */

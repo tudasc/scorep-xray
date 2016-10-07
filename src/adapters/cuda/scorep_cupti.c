@@ -534,7 +534,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
         if ( !loc_data->rma_window_active )
         {
-            SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
+            SCOREP_RmaWinCreate( scorep_cuda_window_handle );
             loc_data->rma_window_active = true;
         }
     }
@@ -732,7 +732,7 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
                 /* destroy window on every location, where it is used */
                 SCOREP_Location_RmaWinDestroy( stream->scorep_location,
                                                SCOREP_Timer_GetClockTicks(),
-                                               scorep_cuda_interim_window_handle );
+                                               scorep_cuda_window_handle );
             }
 
             context->streams = context->streams->next;
@@ -769,7 +769,7 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
 
         if ( loc_data->rma_window_active )
         {
-            SCOREP_RmaWinDestroy( scorep_cuda_interim_window_handle );
+            SCOREP_RmaWinDestroy( scorep_cuda_window_handle );
             loc_data->rma_window_active = false;
         }
     }

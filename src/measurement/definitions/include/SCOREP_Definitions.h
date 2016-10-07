@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -381,7 +381,6 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( group );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interim_communicator );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( communicator );
-    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interim_rma_window );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( rma_window );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_topology );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_coords );

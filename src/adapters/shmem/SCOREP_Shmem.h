@@ -90,7 +90,12 @@ extern bool scorep_shmem_write_rma_op_complete_record;
 /**
  * Handle of the interim 'WORLD' window.
  */
-extern SCOREP_InterimRmaWindowHandle scorep_shmem_interim_world_window_handle;
+extern SCOREP_RmaWindowHandle scorep_shmem_world_window_handle;
+
+/**
+ * Handle of the interim 'SELF' window.
+ */
+extern SCOREP_RmaWindowHandle scorep_shmem_self_window_handle;
 
 /**
  * Number of SHMEM processing elements.
@@ -115,12 +120,6 @@ extern bool scorep_shmem_parallel_needed;
  * Matching ID of consecutive RMA operations.
  */
 extern uint64_t scorep_shmem_rma_op_matching_id;
-
-/**
- * Buffer in symmetric heap.
- */
-extern uint32_t* scorep_shmem_transfer_comm_mgmt;
-
 
 /**
  * Determine own SHMEM rank and number of all PEs.
@@ -151,6 +150,12 @@ scorep_shmem_define_shmem_locations( void );
  */
 void
 scorep_shmem_define_shmem_group( void );
+
+/**
+ * Finalization of unification.
+ */
+void
+scorep_shmem_finalize_shmem_mapping( void );
 
 /**
  * Record memory usage.

@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -65,8 +68,8 @@ typedef uint8_t SCOREP_Mpi_Color;
  */
 struct scorep_mpi_win_type
 {
-    MPI_Win                       win; /** MPI window handle */
-    SCOREP_InterimRmaWindowHandle wid; /** Internal SCOREP window handle */
+    MPI_Win                win; /** MPI window handle */
+    SCOREP_RmaWindowHandle wid; /** Internal SCOREP window handle */
 };
 
 /**
@@ -100,7 +103,7 @@ struct scorep_mpi_world_type
 
 typedef struct scorep_mpi_comm_definition_payload
 {
-    bool     is_self_like;
+    uint32_t comm_size;
     uint32_t local_rank;
     uint32_t global_root_rank;
     uint32_t root_id;
@@ -130,13 +133,6 @@ scorep_mpi_win_finalize( void );
  */
 void
 scorep_mpi_comm_finalize( void );
-
-/**
- * @internal
- * @brief  Defines the group of MPI locations.
- */
-void
-scorep_mpi_unify_define_mpi_locations( void );
 
 /**
  * @internal

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -155,31 +155,6 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
             name, NULL ),
         false /* no need to converted from uint32_t */ );
 }
-
-/**
- * Associate a MPI group with a process unique group handle.
- * Used to add groups from the communicator unifiaction after
- * group unification was done.
- */
-SCOREP_GroupHandle
-SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
-                                          const char*      name,
-                                          uint32_t         numberOfMembers,
-                                          const uint32_t*  members )
-{
-    UTILS_ASSERT( scorep_unified_definition_manager );
-
-    return define_group(
-        scorep_unified_definition_manager,
-        type,
-        numberOfMembers,
-        ( const uint64_t* )members,
-        scorep_definitions_new_string(
-            scorep_unified_definition_manager,
-            name ? name : "", NULL ),
-        true /* need to be converted from uint32_t */ );
-}
-
 
 void
 scorep_definitions_unify_group( SCOREP_GroupDef*              definition,

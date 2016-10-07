@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -158,7 +158,7 @@ extern uint64_t* scorep_cuda_global_location_ids;
 
 /* handles for CUDA communication unification */
 extern SCOREP_InterimCommunicatorHandle scorep_cuda_interim_communicator_handle;
-extern SCOREP_InterimRmaWindowHandle    scorep_cuda_interim_window_handle;
+extern SCOREP_RmaWindowHandle           scorep_cuda_window_handle;
 
 void
 scorep_cuda_set_features( void );

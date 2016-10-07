@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -138,8 +138,8 @@ SCOREP_InterimCommunicatorHandle scorep_opencl_interim_communicator_handle =
     SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
 /** handles for OpenCL RMA window unification */
-SCOREP_InterimRmaWindowHandle scorep_opencl_interim_window_handle =
-    SCOREP_INVALID_INTERIM_RMA_WINDOW;
+SCOREP_RmaWindowHandle scorep_opencl_window_handle =
+    SCOREP_INVALID_RMA_WINDOW;
 
 /** ID of the OpenCL subsystem */
 size_t scorep_opencl_subsystem_id = 0;
@@ -242,8 +242,8 @@ scorep_opencl_wrap_init( void )
                     0,
                     NULL );
 
-            scorep_opencl_interim_window_handle =
-                SCOREP_Definitions_NewInterimRmaWindow(
+            scorep_opencl_window_handle =
+                SCOREP_Definitions_NewRmaWindow(
                     "OPENCL_WINDOW",
                     scorep_opencl_interim_communicator_handle );
         }
@@ -307,7 +307,7 @@ scorep_opencl_wrap_finalize( void )
                 {
                     SCOREP_Location_RmaWinDestroy( queue->device_location,
                                                    SCOREP_Timer_GetClockTicks(),
-                                                   scorep_opencl_interim_window_handle );
+                                                   scorep_opencl_window_handle );
                 }
 
                 queue = queue->next;
@@ -321,7 +321,7 @@ scorep_opencl_wrap_finalize( void )
             {
                 SCOREP_Location_RmaWinDestroy( location->location,
                                                SCOREP_Timer_GetClockTicks(),
-                                               scorep_opencl_interim_window_handle );
+                                               scorep_opencl_window_handle );
 
                 location = location->next;
             }
@@ -509,7 +509,7 @@ opencl_set_cpu_location_id( SCOREP_Location* hostLocation )
         // create RMA window on host location
         uint64_t time = SCOREP_Timer_GetClockTicks();
         SCOREP_Location_RmaWinCreate( hostLocation, time,
-                                      scorep_opencl_interim_window_handle );
+                                      scorep_opencl_window_handle );
 
         SCOREP_Location_SetLastTimestamp( hostLocation, time );
 
@@ -638,7 +638,7 @@ scorep_opencl_retain_buffer( scorep_opencl_queue*        queue,
         // the window has been created
         SCOREP_Location_RmaWinCreate( queue->device_location,
                                       queue->scorep_last_timestamp,
-                                      scorep_opencl_interim_window_handle );
+                                      scorep_opencl_window_handle );
     }
 
     // retain OpenCL profiling event
@@ -1017,19 +1017,19 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_HOST2DEV )
             {
                 SCOREP_Location_RmaGet( queue->device_location, host_start,
-                                        scorep_opencl_interim_window_handle,
+                                        scorep_opencl_window_handle,
                                         host_location_id, mcpy_bytes, 42 );
             }
             else if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_DEV2HOST )
             {
                 SCOREP_Location_RmaPut( queue->device_location, host_start,
-                                        scorep_opencl_interim_window_handle,
+                                        scorep_opencl_window_handle,
                                         host_location_id, mcpy_bytes, 42 );
             }
             else if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_DEV2DEV )
             {
                 SCOREP_Location_RmaGet( queue->device_location, host_start,
-                                        scorep_opencl_interim_window_handle,
+                                        scorep_opencl_window_handle,
                                         queue->device_location_id, mcpy_bytes,
                                         42 );
             }
@@ -1038,7 +1038,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             {
                 SCOREP_Location_RmaOpCompleteBlocking(
                     queue->device_location, host_stop,
-                    scorep_opencl_interim_window_handle, 42 );
+                    scorep_opencl_window_handle, 42 );
             }
         }
         else

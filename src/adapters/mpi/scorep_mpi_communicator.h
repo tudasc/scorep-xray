@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -116,7 +116,7 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
  * @param  win MPI window handle.
  * @return Internal SCOREP handle for the given window.
  */
-extern SCOREP_InterimRmaWindowHandle
+extern SCOREP_RmaWindowHandle
 scorep_mpi_win_id( MPI_Win win );
 
 /**
@@ -191,6 +191,9 @@ scorep_mpi_comm_handle( MPI_Comm comm );
 extern void
 scorep_mpi_comm_set_name( MPI_Comm    comm,
                           const char* name );
+
+extern void
+scorep_mpi_comm_set_default_names( void );
 
 /**
  * @def SCOREP_MPI_COMM_WORLD_HANDLE

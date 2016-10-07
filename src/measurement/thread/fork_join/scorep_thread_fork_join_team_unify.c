@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -115,7 +115,10 @@ define_fork_join_locations( uint32_t* local_to_thread_id )
     /* shift my thread ids to the global ids by applying my offset */
     for ( uint32_t i = 0; i < scorep_local_definition_manager.location.counter; i++ )
     {
-        local_to_thread_id[ i ] += offset_to_global;
+        if ( local_to_thread_id[ i ] != UINT32_MAX )
+        {
+            local_to_thread_id[ i ] += offset_to_global;
+        }
     }
 
     return number_of_locations;
@@ -126,12 +129,7 @@ static bool
 count_total_thread_teams( SCOREP_Location* location,
                           void*            arg )
 {
-    void**    args               = arg;
-    uint32_t* total_thread_teams = args[ 0 ];
-
-#if HAVE( UTILS_DEBUG )
-    uint32_t* local_to_thread_id = args[ 1 ];
-#endif
+    uint32_t* total_thread_teams = arg;
 
     if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
@@ -140,43 +138,10 @@ count_total_thread_teams( SCOREP_Location* location,
     struct scorep_thread_team_data* data =
         SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
     *total_thread_teams += data->team_leader_counter;
-    UTILS_DEBUG( "Location %u/%u on rank %u was in %u team(s) the leader:",
+    UTILS_DEBUG( "Location %u on rank %u was in %u team(s) the leader:",
                  SCOREP_Location_GetId( location ),
-                 local_to_thread_id[ SCOREP_Location_GetId( location ) ],
                  SCOREP_Ipc_GetRank(),
                  data->team_leader_counter );
-
-    /* Search in the definitions for a thread team canditate */
-    SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
-    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
-        &data->thread_team,
-        InterimCommunicator,
-        page_manager )
-    {
-        if ( !SCOREP_PARADIGM_TEST_CLASS( definition->paradigm_type, THREAD_FORK_JOIN ) )
-        {
-            /*
-             * unlikely, but who knows, maybe we have one day a manager entry
-             * directly in the location
-             */
-            continue;
-        }
-
-#if HAVE( UTILS_DEBUG )
-        struct scorep_thread_team_comm_payload* payload =
-            SCOREP_InterimCommunicatorHandle_GetPayload( handle );
-
-        UTILS_DEBUG( " %u[%u, %u, %u, %u]",
-                     SCOREP_Definitions_HandleToId( handle ),
-                     SCOREP_Definitions_HandleToId( definition->name_handle ),
-                     SCOREP_Definitions_HandleToId( definition->parent_handle ),
-                     payload->num_threads,
-                     payload->thread_num );
-#endif
-    }
-    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 
     return false;
 }
@@ -322,9 +287,8 @@ find_thread_team_members( SCOREP_Location* location,
             thread_team_members[ thread_team_payload->thread_num ] =
                 local_to_thread_id[ SCOREP_Location_GetId( location ) ];
 
-            UTILS_DEBUG( " Location %u/%u is thread %u in team %u{%u, %u, %u}",
+            UTILS_DEBUG( " Location %u is thread %u in team %u{%u, %u, %u}",
                          SCOREP_Location_GetId( location ),
-                         local_to_thread_id[ SCOREP_Location_GetId( location ) ],
                          thread_team_payload->thread_num,
                          team_leader->sequence_number,
                          SCOREP_Definitions_HandleToId( team_leader->name_handle ),
@@ -342,8 +306,8 @@ find_thread_team_members( SCOREP_Location* location,
 
 
 static bool
-create_mapping( SCOREP_Location* location,
-                void*            arg )
+redirect_unified_to_collated( SCOREP_Location* location,
+                              void*            arg )
 {
     if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
@@ -355,8 +319,6 @@ create_mapping( SCOREP_Location* location,
     SCOREP_Allocator_PageManager* page_manager =
         SCOREP_Location_GetMemoryPageManager( location,
                                               SCOREP_MEMORY_TYPE_DEFINITIONS );
-    uint32_t* mapping               = scorep_local_definition_manager.interim_communicator.mapping;
-    uint32_t* collated_team_mapping = scorep_local_definition_manager.communicator.mapping;
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
         &data->thread_team,
         InterimCommunicator,
@@ -374,33 +336,47 @@ create_mapping( SCOREP_Location* location,
         struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
-        SCOREP_CommunicatorHandle collated_team_handle = definition->unified;
-        if ( payload->thread_num != 0 )
-        {
-            /*
-             * This was not the team leader, thus unified does not point to the
-             * collated communicator definition, but to the thread team leader,
-             * hi unified field points to the real collated definition
-             */
-            SCOREP_InterimCommunicatorDef* team_leader =
-                SCOREP_LOCAL_HANDLE_DEREF(
-                    definition->unified,
-                    InterimCommunicator );
-            collated_team_handle = team_leader->unified;
-        }
-        SCOREP_CommunicatorDef* collated_team =
-            SCOREP_LOCAL_HANDLE_DEREF(
-                collated_team_handle,
-                Communicator );
+        UTILS_BUG_ON( definition->unified == SCOREP_INVALID_COMMUNICATOR,
+                      "Thread team collation missed a thread team" );
 
-        mapping[ definition->sequence_number ] =
-            collated_team_mapping[ collated_team->sequence_number ];
+        /* For team-leader, the 'unified' already points to the collated def */
+        if ( payload->thread_num == 0 )
+        {
+            continue;
+        }
+
+        /*
+         * 'unified' points to the interim comm def of the team-leader,
+         * though his 'unified' points to the collated def.
+         */
+        SCOREP_InterimCommunicatorDef* team_leader =
+            SCOREP_LOCAL_HANDLE_DEREF(
+                definition->unified,
+                InterimCommunicator );
+        definition->unified = team_leader->unified;
     }
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 
     return false;
 }
 
+
+static bool
+create_mapping( SCOREP_Location* location,
+                void*            arg )
+{
+    uint32_t* total_thread_teams = arg;
+
+    if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        return false;
+    }
+    struct scorep_thread_team_data* data =
+        SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
+    scorep_unify_helper_create_interim_comm_mapping( &data->thread_team );
+
+    return false;
+}
 
 static SCOREP_ErrorCode
 fork_join_subsystem_pre_unify( void )
@@ -412,12 +388,7 @@ fork_join_subsystem_pre_unify( void )
     uint64_t thread_team_members[ max_number_of_threads ];
 
     uint32_t total_thread_teams = 0;
-    void*    args[ 3 ]          =
-    {
-        &total_thread_teams,
-        local_to_thread_id
-    };
-    SCOREP_Location_ForAll( count_total_thread_teams, args );
+    SCOREP_Location_ForAll( count_total_thread_teams, &total_thread_teams );
 
     uint32_t i = 0;
     while ( i < total_thread_teams )
@@ -449,9 +420,12 @@ fork_join_subsystem_pre_unify( void )
          *
          * Fill the `thread_team_members` array with the global thread ids.
          */
-        args[ 0 ] = &current_team_leader_handle;
-        args[ 1 ] = local_to_thread_id;
-        args[ 2 ] = thread_team_members;
+        void* args[ 3 ] =
+        {
+            &current_team_leader_handle,
+            local_to_thread_id,
+            thread_team_members
+        };
         SCOREP_Location_ForAll( find_thread_team_members, args );
 
         /* Now we can trigger the group definition */
@@ -471,12 +445,6 @@ fork_join_subsystem_pre_unify( void )
                 "",
                 current_team_leader_payload->num_threads,
                 thread_team_members );
-
-        const char* name = "";
-        if ( current_team_leader->name_handle != SCOREP_INVALID_STRING )
-        {
-            name = SCOREP_StringHandle_Get( current_team_leader->name_handle );
-        }
 
         /* resolve the parent thread team to the unified definition */
         SCOREP_CommunicatorHandle parent_handle = SCOREP_INVALID_COMMUNICATOR;
@@ -508,11 +476,20 @@ fork_join_subsystem_pre_unify( void )
          */
         current_team_leader->unified =
             SCOREP_Definitions_NewCommunicator( group_handle,
-                                                name,
-                                                parent_handle );
+                                                current_team_leader->name_handle,
+                                                parent_handle,
+                                                0 );
 
         i++;
     }
+
+    /*
+     * Now redirect the 'unified' member of the non-team-leader defs to the
+     * collated definition. This ensure, that all 'unified' members point to
+     * the collated def.
+     */
+    SCOREP_Location_ForAll( redirect_unified_to_collated, NULL );
+
     return SCOREP_SUCCESS;
 }
 
@@ -520,6 +497,7 @@ static SCOREP_ErrorCode
 fork_join_subsystem_post_unify( void )
 {
     SCOREP_Location_ForAll( create_mapping, NULL );
+
     return SCOREP_SUCCESS;
 }
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,15 +44,6 @@
 
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( InterimRmaWindow )
-{
-    SCOREP_DEFINE_DEFINITION_HEADER( InterimRmaWindow );
-
-    SCOREP_StringHandle              name_handle;
-    SCOREP_InterimCommunicatorHandle communicator_handle;
-};
-
-
 SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( RmaWindow );
@@ -62,35 +53,31 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
 };
 
 
-SCOREP_RmaWindowHandle
-SCOREP_Definitions_NewRmaWindow( const char*               name,
-                                 SCOREP_CommunicatorHandle communicatorHandle );
-
-
 /**
  * Associate the parameter tuple with a process unique RMA window handle.
  *
  * @param name A meaningful name for the RMA window, e.g. 'MPI window'
  * or 'Gfx Card 1'. The string will be copied.
  *
- * @param communicatorHandle Underlying communicator
+ * @param communicatorHandle Underlying communicator. At creation time, this must
+ *                           be a InterimCommunicator handle, but this will
+ *                           automatically resolved to the unified Communicator
+ *                           handle in the unification.
  *
  * @return A process unique RMA window handle to be used in calls to other
- * SCOREP_RMA* functions.
+ * SCOREP_Rma* functions.
  */
-SCOREP_InterimRmaWindowHandle
-SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
-                                        SCOREP_InterimCommunicatorHandle communicatorHandle );
-
-
 SCOREP_RmaWindowHandle
-SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
-                                        SCOREP_CommunicatorHandle communicatorHandle );
+SCOREP_Definitions_NewRmaWindow( const char*                      name,
+                                 SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
 void
 scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*                 definition,
                                      struct SCOREP_Allocator_PageManager* handlesPageManager );
+
+void
+scorep_definitions_rehash_rma_window( SCOREP_RmaWindowDef* definition );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_RMA_WINDOW_H */

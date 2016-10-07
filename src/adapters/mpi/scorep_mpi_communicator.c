@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -246,7 +246,7 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
     return global_rank;
 }
 
-SCOREP_InterimRmaWindowHandle
+SCOREP_RmaWindowHandle
 scorep_mpi_win_id( MPI_Win win )
 {
     int i = 0;
@@ -267,7 +267,7 @@ scorep_mpi_win_id( MPI_Win win )
         SCOREP_MutexUnlock( scorep_mpi_window_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW,
                      "Please tell me what you were trying to do!" );
-        return SCOREP_INVALID_INTERIM_RMA_WINDOW;
+        return SCOREP_INVALID_RMA_WINDOW;
     }
 }
 
@@ -301,6 +301,21 @@ scorep_mpi_setup_world( void )
     {
         scorep_mpi_world.ranks[ i ] = i;
     }
+
+    /*
+     * Define the list of locations which are MPI ranks.
+     *
+     * If we support MPI_THREAD_FUNNELED, this needs to be the
+     * location, which has called MPI_Init/MPI_Thread_init.
+     * For the moment, the location and rank ids match.
+     *
+     * This needs to be called early, so that the resulting definition
+     * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
+     */
+    SCOREP_Definitions_NewGroupFrom32( SCOREP_GROUP_MPI_LOCATIONS,
+                                       "",
+                                       scorep_mpi_world.size,
+                                       ( const uint32_t* )scorep_mpi_world.ranks );
 
     /* allocate translation buffers */
     scorep_mpi_ranks = calloc( scorep_mpi_world.size,
@@ -338,7 +353,7 @@ scorep_mpi_setup_world( void )
                                                    SCOREP_PARADIGM_MPI,
                                                    sizeof( *comm_payload ),
                                                    ( void** )&comm_payload );
-    comm_payload->is_self_like     = scorep_mpi_world.size == 1;
+    comm_payload->comm_size        = scorep_mpi_world.size;
     comm_payload->local_rank       = scorep_mpi_my_global_rank;
     comm_payload->global_root_rank = 0;
     comm_payload->root_id          = 0;
@@ -533,11 +548,11 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 
     /* create definition in measurement system */
     scorep_mpi_comm_definition_payload* comm_payload;
-    handle =  SCOREP_Definitions_NewInterimCommunicator( parent_handle,
-                                                         SCOREP_PARADIGM_MPI,
-                                                         sizeof( *comm_payload ),
-                                                         ( void** )&comm_payload );
-    comm_payload->is_self_like     = size == 1;
+    handle = SCOREP_Definitions_NewInterimCommunicator( parent_handle,
+                                                        SCOREP_PARADIGM_MPI,
+                                                        sizeof( *comm_payload ),
+                                                        ( void** )&comm_payload );
+    comm_payload->comm_size        = size;
     comm_payload->local_rank       = local_rank;
     comm_payload->global_root_rank = root;
     comm_payload->root_id          = id;
@@ -663,7 +678,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
      * Set the name only for the root rank in the communicator and
      * for non-SELF-like communicators
      */
-    if ( 0 == comm_payload->local_rank && !comm_payload->is_self_like )
+    if ( 0 == comm_payload->local_rank && comm_payload->comm_size != 1 )
     {
         /*
          * Does set the name only the first time
@@ -672,6 +687,20 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
     }
 
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+}
+
+void
+scorep_mpi_comm_set_default_names( void )
+{
+    scorep_mpi_comm_set_name( MPI_COMM_WORLD, "MPI_COMM_WORLD" );
+
+    /*
+     * 'scorep_mpi_comm_set_name' prevents from changing the name for self-like
+     * comms, though MPI_COMM_SELF exists in all ranks, and thus we can
+     * give him his name.
+     */
+    SCOREP_InterimCommunicatorHandle_SetName(
+        scorep_mpi_comm_handle( MPI_COMM_SELF ), "MPI_COMM_SELF" );
 }
 
 /*

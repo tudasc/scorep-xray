@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -615,7 +615,7 @@ scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
         case_return( METRIC, METRIC );
         case_return( INTERIM_COMMUNICATOR, COMM );
         case_return( PARAMETER, PARAMETER );
-        case_return( INTERIM_RMA_WINDOW, RMA_WIN );
+        case_return( RMA_WINDOW, RMA_WIN );
         case_return( SOURCE_CODE_LOCATION, SOURCE_CODE_LOCATION );
         case_return( CALLING_CONTEXT, CALLING_CONTEXT );
         case_return( INTERRUPT_GENERATOR, INTERRUPT_GENERATOR );

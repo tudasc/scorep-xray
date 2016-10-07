@@ -177,7 +177,6 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, interim_communicator );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, communicator );
-    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, interim_rma_window );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, rma_window );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, mpi_cartesian_coords );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, mpi_cartesian_topology );
@@ -205,6 +204,8 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node_property );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, group );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, communicator );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, rma_window );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_topology );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_coords );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, metric );
@@ -223,6 +224,37 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     }
 }
 
+static void
+finalize_definition_manager( SCOREP_DefinitionManager* definitionManager )
+{
+    free( definitionManager->string.hash_table );
+    free( definitionManager->system_tree_node.hash_table );
+    free( definitionManager->system_tree_node_property.hash_table );
+    free( definitionManager->source_file.hash_table );
+    free( definitionManager->region.hash_table );
+    free( definitionManager->group.hash_table );
+    free( definitionManager->interim_communicator.hash_table );
+    free( definitionManager->communicator.hash_table );
+    free( definitionManager->rma_window.hash_table );
+    free( definitionManager->mpi_cartesian_topology.hash_table );
+    free( definitionManager->mpi_cartesian_coords.hash_table );
+    free( definitionManager->metric.hash_table );
+    free( definitionManager->sampling_set.hash_table );
+    free( definitionManager->sampling_set_recorder.hash_table );
+    free( definitionManager->io_file_group.hash_table );
+    free( definitionManager->io_file.hash_table );
+    free( definitionManager->marker_group.hash_table );
+    free( definitionManager->marker.hash_table );
+    free( definitionManager->parameter.hash_table );
+    free( definitionManager->callpath.hash_table );
+    free( definitionManager->property.hash_table );
+    free( definitionManager->attribute.hash_table );
+    free( definitionManager->location_property.hash_table );
+    free( definitionManager->source_code_location.hash_table );
+    free( definitionManager->calling_context.hash_table );
+    free( definitionManager->interrupt_generator.hash_table );
+}
+
 void
 SCOREP_Definitions_Finalize( void )
 {
@@ -231,38 +263,10 @@ SCOREP_Definitions_Finalize( void )
         return;
     }
 
-    free( scorep_local_definition_manager.string.hash_table );
+    finalize_definition_manager( &scorep_local_definition_manager );
     if ( scorep_unified_definition_manager )
     {
-        free( scorep_unified_definition_manager->string.hash_table );
-        free( scorep_unified_definition_manager->location.hash_table );
-        free( scorep_unified_definition_manager->location_group.hash_table );
-        free( scorep_unified_definition_manager->system_tree_node.hash_table );
-        free( scorep_unified_definition_manager->system_tree_node_property.hash_table );
-        free( scorep_unified_definition_manager->source_file.hash_table );
-        free( scorep_unified_definition_manager->region.hash_table );
-        free( scorep_unified_definition_manager->group.hash_table );
-        free( scorep_unified_definition_manager->interim_communicator.hash_table );
-        free( scorep_unified_definition_manager->communicator.hash_table );
-        free( scorep_unified_definition_manager->interim_rma_window.hash_table );
-        free( scorep_unified_definition_manager->rma_window.hash_table );
-        free( scorep_unified_definition_manager->mpi_cartesian_topology.hash_table );
-        free( scorep_unified_definition_manager->mpi_cartesian_coords.hash_table );
-        free( scorep_unified_definition_manager->metric.hash_table );
-        free( scorep_unified_definition_manager->sampling_set.hash_table );
-        free( scorep_unified_definition_manager->sampling_set_recorder.hash_table );
-        free( scorep_unified_definition_manager->io_file_group.hash_table );
-        free( scorep_unified_definition_manager->io_file.hash_table );
-        free( scorep_unified_definition_manager->marker_group.hash_table );
-        free( scorep_unified_definition_manager->marker.hash_table );
-        free( scorep_unified_definition_manager->parameter.hash_table );
-        free( scorep_unified_definition_manager->callpath.hash_table );
-        free( scorep_unified_definition_manager->property.hash_table );
-        free( scorep_unified_definition_manager->attribute.hash_table );
-        free( scorep_unified_definition_manager->location_property.hash_table );
-        free( scorep_unified_definition_manager->source_code_location.hash_table );
-        free( scorep_unified_definition_manager->calling_context.hash_table );
-        free( scorep_unified_definition_manager->interrupt_generator.hash_table );
+        finalize_definition_manager( scorep_unified_definition_manager );
     }
     free( scorep_unified_definition_manager );
     // the contents of the definition managers is allocated using

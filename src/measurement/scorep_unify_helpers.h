@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,6 +63,16 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
                                            const char*      name,
                                            uint64_t         numberOfMembers,
                                            const uint64_t*  localMembers );
+
+
+struct scorep_definitions_manager_entry;
+
+/**
+ * Helper function to apply the mapping from the unified Communicator definition
+ * to the InterimCommunicator definitions.
+ */
+void
+scorep_unify_helper_create_interim_comm_mapping( struct scorep_definitions_manager_entry* entry );
 
 
 #endif /* SCOREP_INTERNAL_UNIFY_HELPERS_H */

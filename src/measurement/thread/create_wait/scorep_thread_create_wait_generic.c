@@ -56,7 +56,6 @@
 /* *INDENT-OFF* */
 static SCOREP_ErrorCode create_wait_subsystem_init( void );
 static SCOREP_ErrorCode create_wait_subsystem_pre_unify( void );
-static SCOREP_ErrorCode create_wait_subsystem_post_unify( void );
 static void create_wait_subsystem_finalize( void );
 /* *INDENT-ON*  */
 
@@ -71,11 +70,10 @@ static SCOREP_Mutex thread_create_mutex;
 
 const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait =
 {
-    .subsystem_name       = "THREAD CREATE WAIT",
-    .subsystem_init       = &create_wait_subsystem_init,
-    .subsystem_pre_unify  = &create_wait_subsystem_pre_unify,
-    .subsystem_post_unify = &create_wait_subsystem_post_unify,
-    .subsystem_finalize   = &create_wait_subsystem_finalize,
+    .subsystem_name      = "THREAD CREATE WAIT",
+    .subsystem_init      = &create_wait_subsystem_init,
+    .subsystem_pre_unify = &create_wait_subsystem_pre_unify,
+    .subsystem_finalize  = &create_wait_subsystem_finalize,
 };
 
 
@@ -167,34 +165,14 @@ create_wait_subsystem_pre_unify( void )
         location_ids );
 
     /* Define the final communicator over this group */
-    SCOREP_CommunicatorHandle communicator_handle =
-        SCOREP_Definitions_NewCommunicator(
-            group_handle,
-            "",
-            SCOREP_INVALID_COMMUNICATOR );
-
-    /* Remember this communicator for use in post_unify */
     SCOREP_LOCAL_HANDLE_DEREF( thread_team,
                                InterimCommunicator )->unified =
-        communicator_handle;
+        SCOREP_Definitions_NewCommunicator(
+            group_handle,
+            SCOREP_INVALID_STRING,
+            SCOREP_INVALID_COMMUNICATOR,
+            0 );
 
-    return SCOREP_SUCCESS;
-}
-
-
-static SCOREP_ErrorCode
-create_wait_subsystem_post_unify( void )
-{
-    UTILS_DEBUG_ENTRY();
-    /* Map the local interim communicator to the unified communicator */
-    scorep_local_definition_manager.interim_communicator.mapping[
-        SCOREP_LOCAL_HANDLE_DEREF( thread_team,
-                                   InterimCommunicator )->sequence_number ] =
-        scorep_local_definition_manager.communicator.mapping[
-            SCOREP_LOCAL_HANDLE_DEREF( SCOREP_LOCAL_HANDLE_DEREF(
-                                           thread_team,
-                                           InterimCommunicator )->unified,
-                                       Communicator )->sequence_number ];
     return SCOREP_SUCCESS;
 }
 

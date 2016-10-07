@@ -274,7 +274,7 @@ if test -n "${STATIC}${SHARED}"; then
 fi
 
 # SHMEM instrumentation?     (custom check)
-STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_shmem_number_of_root_comms`
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_Subsystem_ShmemAdapter`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_shmem_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }shmem"

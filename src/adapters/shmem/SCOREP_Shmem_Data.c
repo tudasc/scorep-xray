@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,7 +41,7 @@
                                                                                     \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
-            SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                \
+            SCOREP_RmaPut( scorep_shmem_world_window_handle,                        \
                            pe, sizeof( DATATYPE ),                                  \
                            scorep_shmem_rma_op_matching_id );                       \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                               \
@@ -50,7 +50,7 @@
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value, pe ) );          \
             SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle, \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,         \
                                           scorep_shmem_rma_op_matching_id );        \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
@@ -125,7 +125,7 @@ ELEMENTAL_PUT_ROUTINE( shmem_longdouble_p, long double )
                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
-            SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                    \
+            SCOREP_RmaPut( scorep_shmem_world_window_handle,                            \
                            pe, nElems * NBYTES,                                         \
                            scorep_shmem_rma_op_matching_id );                           \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                   \
@@ -134,7 +134,7 @@ ELEMENTAL_PUT_ROUTINE( shmem_longdouble_p, long double )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
             SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                         \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,     \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,             \
                                           scorep_shmem_rma_op_matching_id );            \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                     \
                                                                                         \
@@ -236,7 +236,7 @@ BLOCK_DATA_PUT_ROUTINE( shmem_putmem,         void,        1 )
                                                                                                 \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                       \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );                    \
-            SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                            \
+            SCOREP_RmaPut( scorep_shmem_world_window_handle,                                    \
                            pe, nElems * NBYTES,                                                 \
                            scorep_shmem_rma_op_matching_id );                                   \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                           \
@@ -245,7 +245,7 @@ BLOCK_DATA_PUT_ROUTINE( shmem_putmem,         void,        1 )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
             SCOREP_EXIT_WRAPPED_REGION();                                                       \
                                                                                                 \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,             \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,                     \
                                           scorep_shmem_rma_op_matching_id );                    \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                             \
                                                                                                 \
@@ -337,7 +337,7 @@ STRIDED_PUT_ROUTINE( shmem_iput128,         void,        16 )
                                                                                     \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
-            SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                \
+            SCOREP_RmaGet( scorep_shmem_world_window_handle,                        \
                            pe, sizeof( DATATYPE ),                                  \
                            scorep_shmem_rma_op_matching_id );                       \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                               \
@@ -346,7 +346,7 @@ STRIDED_PUT_ROUTINE( shmem_iput128,         void,        16 )
             ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, pe ) );           \
             SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle, \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,         \
                                           scorep_shmem_rma_op_matching_id );        \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
@@ -455,7 +455,7 @@ ELEMENTAL_GET_ROUTINE( shmem_longdouble_g, long double, const long double )
                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
-            SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                    \
+            SCOREP_RmaGet( scorep_shmem_world_window_handle,                            \
                            pe, nElems * NBYTES,                                         \
                            scorep_shmem_rma_op_matching_id );                           \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                   \
@@ -464,7 +464,7 @@ ELEMENTAL_GET_ROUTINE( shmem_longdouble_g, long double, const long double )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
             SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                         \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,     \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,             \
                                           scorep_shmem_rma_op_matching_id );            \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                     \
                                                                                         \
@@ -566,7 +566,7 @@ BLOCK_DATA_GET_ROUTINE( shmem_getmem,         void,        1 )
                                                                                                 \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                       \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );                    \
-            SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                            \
+            SCOREP_RmaGet( scorep_shmem_world_window_handle,                                    \
                            pe, nElems * NBYTES,                                                 \
                            scorep_shmem_rma_op_matching_id );                                   \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                           \
@@ -575,7 +575,7 @@ BLOCK_DATA_GET_ROUTINE( shmem_getmem,         void,        1 )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
             SCOREP_EXIT_WRAPPED_REGION();                                                       \
                                                                                                 \
-            SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,             \
+            SCOREP_RmaOpCompleteBlocking( scorep_shmem_world_window_handle,                     \
                                           scorep_shmem_rma_op_matching_id );                    \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                             \
                                                                                                 \

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2016,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -43,7 +43,7 @@
         {                                                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                                               \
                                                                                                                         \
-            SCOREP_InterimRmaWindowHandle window_handle                                                                 \
+            SCOREP_RmaWindowHandle window_handle                                                                        \
                 = scorep_shmem_get_pe_group( peStart, logPeStride, peSize );                                            \
                                                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                                               \

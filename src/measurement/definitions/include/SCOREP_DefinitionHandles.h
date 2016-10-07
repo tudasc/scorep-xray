@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -65,9 +65,6 @@ typedef SCOREP_AnyHandle SCOREP_InterimCommunicatorHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_InterimRmaWindowHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;

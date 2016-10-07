@@ -316,24 +316,10 @@ mpi_subsystem_finalize( void )
 }
 
 /**
-   Define the group of all MPI locations.
- */
-static SCOREP_ErrorCode
-mpi_subsystem_pre_unify( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    /* Define the group of all MPI locations. */
-    scorep_mpi_unify_define_mpi_locations();
-
-    return SCOREP_SUCCESS;
-}
-
-/**
    Unify the MPI communicators.
  */
 static SCOREP_ErrorCode
-mpi_subsystem_post_unify( void )
+mpi_subsystem_pre_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -384,7 +370,6 @@ const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
     .subsystem_end        = &mpi_subsystem_end,
     .subsystem_finalize   = &mpi_subsystem_finalize,
     .subsystem_pre_unify  = &mpi_subsystem_pre_unify,
-    .subsystem_post_unify = &mpi_subsystem_post_unify,
     .subsystem_deregister = &mpi_subsystem_deregister
 };
 

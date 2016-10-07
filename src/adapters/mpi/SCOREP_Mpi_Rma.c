@@ -157,7 +157,7 @@ MPI_Get( void*        origin_addr,
 /* One-sided communication not handled in first version
     int32_t              sendsz;
     SCOREP_MpiRank        dest_proc_rank;
-    SCOREP_InterimRmaWindowHandle win_handle;
+    SCOREP_RmaWindowHandle win_handle;
  */
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -334,7 +334,7 @@ MPI_Win_free( MPI_Win* win )
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA );
     int       return_val;
 /* One-sided communication not handled in first version
-   SCOREP_InterimRmaWindowHandle win_handle;
+   SCOREP_RmaWindowHandle win_handle;
  */
 
     if ( event_gen_active )

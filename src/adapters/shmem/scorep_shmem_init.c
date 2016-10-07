@@ -239,8 +239,8 @@ shmem_subsystem_pre_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    /* Define the group of all SHMEM locations. */
-    scorep_shmem_define_shmem_locations();
+    /* Unify the SHMEM communicators. */
+    scorep_shmem_define_shmem_group();
 
     return SCOREP_SUCCESS;
 }
@@ -254,7 +254,7 @@ shmem_subsystem_post_unify( void )
     UTILS_DEBUG_ENTRY();
 
     /* Unify the SHMEM communicators. */
-    scorep_shmem_define_shmem_group();
+    scorep_shmem_finalize_shmem_mapping();
 
     return SCOREP_SUCCESS;
 }

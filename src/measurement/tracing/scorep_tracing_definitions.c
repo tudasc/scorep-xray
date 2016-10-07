@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1457,7 +1457,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     WRITE_MAPPING( localDefinitionWriter, 32, region, REGION );
     WRITE_MAPPING( localDefinitionWriter, 32, group, GROUP );
     WRITE_MAPPING( localDefinitionWriter, 32, interim_communicator, COMM );
-    WRITE_MAPPING( localDefinitionWriter, 32, interim_rma_window, RMA_WIN );
+    WRITE_MAPPING( localDefinitionWriter, 32, rma_window, RMA_WIN );
     WRITE_MAPPING( localDefinitionWriter, 32, sampling_set, METRIC );
     WRITE_MAPPING( localDefinitionWriter, 32, attribute, ATTRIBUTE );
     WRITE_MAPPING( localDefinitionWriter, 32, source_code_location, SOURCE_CODE_LOCATION );

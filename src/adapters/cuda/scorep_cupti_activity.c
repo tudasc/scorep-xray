@@ -676,32 +676,32 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
         /* create window on every location, where it is used */
         SCOREP_Location_RmaWinCreate( stream->scorep_location,
                                       start,
-                                      scorep_cuda_interim_window_handle );
+                                      scorep_cuda_window_handle );
     }
 
     if ( kind == SCOREP_CUPTI_HOST2DEV )
     {
         SCOREP_Location_RmaGet( stream_location, start,
-                                scorep_cuda_interim_window_handle,
+                                scorep_cuda_window_handle,
                                 context->location_id, memcpy->bytes, 42 );
     }
     else if ( kind == SCOREP_CUPTI_DEV2HOST )
     {
         SCOREP_Location_RmaPut( stream_location, start,
-                                scorep_cuda_interim_window_handle,
+                                scorep_cuda_window_handle,
                                 context->location_id, memcpy->bytes, 42 );
     }
     else if ( kind == SCOREP_CUPTI_DEV2DEV )
     {
         SCOREP_Location_RmaGet( stream_location, start,
-                                scorep_cuda_interim_window_handle,
+                                scorep_cuda_window_handle,
                                 stream->location_id, memcpy->bytes, 42 );
     }
 
     if ( kind != SCOREP_CUPTI_HOST2HOST )
     {
         SCOREP_Location_RmaOpCompleteBlocking( stream_location, stop,
-                                               scorep_cuda_interim_window_handle, 42 );
+                                               scorep_cuda_window_handle, 42 );
     }
 }
 

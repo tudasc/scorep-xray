@@ -46,7 +46,7 @@
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,       \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );    \
                                                                                 \
-            SCOREP_RmaWaitChange( scorep_shmem_interim_world_window_handle );   \
+            SCOREP_RmaWaitChange( scorep_shmem_world_window_handle );           \
                                                                                 \
             SCOREP_ENTER_WRAPPED_REGION();                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value ) );          \
@@ -102,7 +102,7 @@ P2P_WAIT( shmem_wait,          SCOREP_SHMEM_WAIT_PROTO_ARGS )
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,       \
                                        ( intptr_t )CALL_SHMEM( FUNCNAME ) );    \
                                                                                 \
-            SCOREP_RmaWaitChange( scorep_shmem_interim_world_window_handle );   \
+            SCOREP_RmaWaitChange( scorep_shmem_world_window_handle );           \
                                                                                 \
             SCOREP_ENTER_WRAPPED_REGION();                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, cmp, value ) );     \
@@ -177,7 +177,7 @@ P2P_WAIT_UNTIL( shmem_wait_until,          SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
                                                                                                         \
             if ( SCOREP_SHMEM_IS_RMA_OP_COMPLETE_RECORD_NEEDED )                                        \
             {                                                                                           \
-                SCOREP_RmaOpCompleteRemote( scorep_shmem_interim_world_window_handle,                   \
+                SCOREP_RmaOpCompleteRemote( scorep_shmem_world_window_handle,                           \
                                             scorep_shmem_rma_op_matching_id );                          \
                 scorep_shmem_rma_op_matching_id++;                                                      \
                 /* Reset status flag which indicates need for a SCOREP_RmaOpCompleteRemote record */    \
@@ -185,7 +185,7 @@ P2P_WAIT_UNTIL( shmem_wait_until,          SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
             }                                                                                           \
             SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_BARRIER,                                         \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,      \
-                                     scorep_shmem_interim_world_window_handle,                          \
+                                     scorep_shmem_world_window_handle,                                  \
                                      NO_PROCESSING_ELEMENT,   /* root */                                \
                                      0,                       /* bytesSent */                           \
                                      0 );                     /* bytesReceived */                       \
@@ -224,7 +224,7 @@ SHMEM_BARRIER_ALL( shmem_barrier_all )
         {                                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                               \
                                                                                                         \
-            SCOREP_InterimRmaWindowHandle window_handle                                                 \
+            SCOREP_RmaWindowHandle window_handle                                                        \
                 = scorep_shmem_get_pe_group( peStart, logPeStride, peSize );                            \
                                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                               \

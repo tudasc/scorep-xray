@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,6 +60,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
     SCOREP_GroupHandle        group_handle;
     SCOREP_StringHandle       name_handle;
     SCOREP_CommunicatorHandle parent_handle;
+    uint32_t                  unify_key;
 };
 
 
@@ -71,15 +72,39 @@ void
 scorep_definitions_destroy_interim_communicator_counter_lock( void );
 
 
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ *
+ * The creator of an @a InterimCommunicator definition must convert this in a
+ * pre-unify hook to a @a Communicator definition, and assign the result
+ * to the @a unified member of the @a InterimCommunicator definition.
+ *
+ * @param parentComm    A possible parent communicator.
+ * @param paradigmType  The paradigm of the adapter which defines this
+ *                      communicator.
+ * @param sizeOfPayload The size of the payload which the adapter requests
+ *                      for this communicator.
+ * @param[out] payload  Will be set to the memory location of the payload.
+ *
+ * @return A process unique communicator handle.
+ *
+ */
+SCOREP_InterimCommunicatorHandle
+SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                           SCOREP_ParadigmType              paradigmType,
+                                           size_t                           sizeOfPayload,
+                                           void**                           payload );
+
+
 typedef uint32_t
-( *scorep_definitions_init_payload_fn )( void*,
-                                         uint32_t,
-                                         va_list );
+( * scorep_definitions_init_payload_fn )( void*,
+                                          uint32_t,
+                                          va_list );
 
 
 typedef bool
-( *scorep_definitions_equal_payloads_fn )( const void*,
-                                           const void* );
+( * scorep_definitions_equal_payloads_fn )( const void*,
+                                            const void* );
 
 struct SCOREP_Location;
 
@@ -138,27 +163,6 @@ SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle com
 
 
 /**
- * Associate a MPI communicator with a process unique communicator handle.
- *
- * @param parentComm    A possible parent communicator.
- * @param paradigmType  The paradigm of the adapter which defines this
- *                      communicator.
- * @param sizeOfPayload The size of the payload which the adapter requests
- *                      for this communicator.
- * @param[out] payload  Will be set to the memory location of the payload.
- *
- * @return A process unique communicator handle to be used in calls to other
- * SCOREP_Definitions_NewMPI* functions.
- *
- */
-SCOREP_InterimCommunicatorHandle
-SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
-                                           SCOREP_ParadigmType              paradigmType,
-                                           size_t                           sizeOfPayload,
-                                           void**                           payload );
-
-
-/**
  * Get access to the payload from a communicator definition.
  */
 void*
@@ -167,22 +171,42 @@ SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle ha
 
 /**
  * Set the name of the communicator to @a name, but only if it wasn't done before.
+ * If @a name is NULL, it is assigned the empty string.
+ *
+ *  @param commHandle  The comm in question.
+ *  @param name        The name for this communicator.
+ *
  */
 void
-SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commHandle,
                                           const char*                      name );
 
 
+/**
+ *  Creates a communicator definition.
+ *
+ *  @note  These handle cannot be used in any event functions.
+ *
+ *  @param group     The group of locations which are members of this communicator.
+ *  @param name      The name of this communicator. May be @a SCOREP_INVALID_STRING.
+ *                   In this case, the unification of will take an arbitrary
+ *                   non-SCOREP_INVALID_STRING value when merging structural
+ *                   equal communicators. If it is still @a NULL after the
+ *                   unification, it is assigned the empty string. The parameter
+ *                   is not of type 'const char*' to ease converting InterimComm
+ *                   handles to Comm handles, as the former already have a
+ *                   StringHandle member.
+ *  @param parent    The parent.
+ *  @param unifyKey  An arbitrary integer value to allow multiple definition of
+ *                   the same structural equal communicators.
+ *
+ *  @return The handle for this new communicator.
+ */
 SCOREP_CommunicatorHandle
-SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
-                                    const char*               name,
-                                    SCOREP_CommunicatorHandle parent_handle );
-
-
-SCOREP_CommunicatorHandle
-SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                           const char*               name,
-                                           SCOREP_CommunicatorHandle parent_handle );
+SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
+                                    SCOREP_StringHandle       name,
+                                    SCOREP_CommunicatorHandle parent,
+                                    uint32_t                  unifyKey );
 
 
 void

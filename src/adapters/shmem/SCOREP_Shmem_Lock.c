@@ -44,7 +44,7 @@
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
             SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
-            SCOREP_RmaAcquireLock( scorep_shmem_interim_world_window_handle,    \
+            SCOREP_RmaAcquireLock( scorep_shmem_world_window_handle,            \
                                    NO_PROCESSING_ELEMENT,                       \
                                    ( uint64_t )lock,                            \
                                    SCOREP_LOCK_EXCLUSIVE );                     \
@@ -87,7 +87,7 @@ SET_LOCK( shmem_set_lock )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
             SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
-            SCOREP_RmaReleaseLock( scorep_shmem_interim_world_window_handle,    \
+            SCOREP_RmaReleaseLock( scorep_shmem_world_window_handle,            \
                                    NO_PROCESSING_ELEMENT,                       \
                                    ( uint64_t )lock );                          \
                                                                                 \
@@ -133,14 +133,14 @@ CLEAR_LOCK( shmem_clear_lock )
                                                                                     \
             if ( ret == 0 )                                                         \
             {                                                                       \
-                SCOREP_RmaRequestLock( scorep_shmem_interim_world_window_handle,    \
+                SCOREP_RmaRequestLock( scorep_shmem_world_window_handle,            \
                                        NO_PROCESSING_ELEMENT,                       \
                                        ( uint64_t )lock,                            \
                                        SCOREP_LOCK_EXCLUSIVE );                     \
             }                                                                       \
             else                                                                    \
             {                                                                       \
-                SCOREP_RmaTryLock( scorep_shmem_interim_world_window_handle,        \
+                SCOREP_RmaTryLock( scorep_shmem_world_window_handle,                \
                                    NO_PROCESSING_ELEMENT,                           \
                                    ( uint64_t )lock,                                \
                                    SCOREP_LOCK_EXCLUSIVE );                         \
