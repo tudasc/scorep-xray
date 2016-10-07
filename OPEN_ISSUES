@@ -51,7 +51,7 @@ various Score-P components.
     compiler wrappers (e.g., MPI od SHMEM) are used. Compilers and
     compiler wrappers must be compatible.
 
-     - Note: PGI changed its default C++ compiler form 'pgCC' (which
+     - Note: PGI changed its default C++ compiler from 'pgCC' (which
        was entirely removed in 16.1) to 'pgc++'. For building Score-P
        with '--with-nocross-compiler-suite=pgi', 'CXX=pgc++' is used.
        If your MPI and SHMEM compiler wrappers still use the old
