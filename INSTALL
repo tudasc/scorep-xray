@@ -94,6 +94,12 @@ compiler suite other than GCC.
                non-cross-compiling environments. Needs to be in $PATH.
                [Default: gcc]
 
+  Note: if you select 'pgi', CXX will be set to 'pgc++', which is
+  PGI's default C++ compiler. If you have a PGI compiler installation
+  prior to 16.1, you might want to use 'pgCC' instead if your MPI and
+  SHMEM compiler wrappers use this one. To select pgCC, please add
+  'CXX=pgCC' to your configure line.
+
 In cross-compiling environments, the compiler suite used to build the
 frontend parts can be specified explicitly if desired.
 
