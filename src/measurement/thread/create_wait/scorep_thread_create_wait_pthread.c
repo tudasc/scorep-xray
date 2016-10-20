@@ -75,6 +75,7 @@ struct location_reuse_pool
 static struct location_reuse_pool  location_reuse_pool[ LOCATION_REUSE_POOL_SIZE ];
 static struct reuse_pool_location* location_reuse_pool_free_list;
 static SCOREP_Mutex                location_reuse_pool_mutex;
+static SCOREP_Mutex                pthread_location_count_mutex;
 
 struct SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation( void )
@@ -113,6 +114,9 @@ scorep_thread_on_initialize( struct scorep_thread_private_data* initialTpd )
 
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &location_reuse_pool_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for location reuse pool." );
+
+    result = SCOREP_MutexCreate( &pthread_location_count_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for pthread location count." );
 }
 
 
@@ -133,6 +137,7 @@ scorep_thread_on_finalize( struct scorep_thread_private_data* tpd )
     UTILS_BUG_ON( status != 0, "Failed to delete a pthread_key_t." );
 
     SCOREP_MutexDestroy( &location_reuse_pool_mutex );
+    SCOREP_MutexDestroy( &pthread_location_count_mutex );
 }
 
 
@@ -159,39 +164,31 @@ scorep_thread_delete_private_data( struct scorep_thread_private_data* initialTpd
 
 
 void
-scorep_thread_create_wait_on_create( SCOREP_ParadigmType     paradigm,
-                                     void*                   modelData,
+scorep_thread_create_wait_on_create( void*                   modelData,
                                      struct SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD." );
 }
 
 
 void
-scorep_thread_create_wait_on_wait( SCOREP_ParadigmType     paradigm,
-                                   void*                   modelData,
+scorep_thread_create_wait_on_wait( void*                   modelData,
                                    struct SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD." );
 }
 
 
 void
-scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm,
-                                    struct scorep_thread_private_data*  parentTpd,
+scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTpd,
                                     uint32_t                            sequenceCount,
                                     size_t                              locationReuseKey,
                                     struct scorep_thread_private_data** currentTpd,
                                     bool*                               locationIsCreated )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD." );
 
+    static unsigned  pthread_location_count;
     SCOREP_Location* location = NULL;
     *locationIsCreated = false;
 
@@ -236,8 +233,12 @@ scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm
     /* We did not reused a location, create new one */
     if ( !location )
     {
+        SCOREP_MutexLock( pthread_location_count_mutex );
+        unsigned location_count = ++pthread_location_count;
+        SCOREP_MutexUnlock( pthread_location_count_mutex );
+
         char location_name[ 80 ];
-        int  length = snprintf( location_name, 80, "Pthread thread %d", sequenceCount );
+        int  length = snprintf( location_name, 80, "Pthread thread %d", location_count );
         UTILS_ASSERT( length < 80 );
 
         location = SCOREP_Location_CreateCPULocation( location_name );
@@ -258,17 +259,14 @@ scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm
 
 
 void
-scorep_thread_create_wait_on_end( SCOREP_ParadigmType                paradigm,
-                                  struct scorep_thread_private_data* parentTpd,
+scorep_thread_create_wait_on_end( struct scorep_thread_private_data* parentTpd,
                                   struct scorep_thread_private_data* currentTpd,
                                   uint32_t                           sequenceCount )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_PTHREAD, "Passed paradigm != "
-                  "SCOREP_PARADIGM_PTHREAD." );
 
     int status = pthread_setspecific( tpd_key, NULL );
-    UTILS_BUG_ON( status != 0, "Failed to reset Phread thread specific data." );
+    UTILS_BUG_ON( status != 0, "Failed to reset Pthread thread specific data." );
 
     /* currentTpd not needed anymore, maintain for reuse in the future */
     SCOREP_Location*      location   = scorep_thread_get_location( currentTpd );

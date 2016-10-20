@@ -32,33 +32,28 @@ struct SCOREP_Location;
 /**
  *
  *
- * @param paradigm
  * @param modelData
  * @param location
  */
 void
-scorep_thread_create_wait_on_create( SCOREP_ParadigmType     paradigm,
-                                     void*                   modelData,
+scorep_thread_create_wait_on_create( void*                   modelData,
                                      struct SCOREP_Location* location );
 
 
 /**
  *
  *
- * @param paradigm
  * @param modelData
  * @param location
  */
 void
-scorep_thread_create_wait_on_wait( SCOREP_ParadigmType     paradigm,
-                                   void*                   modelData,
+scorep_thread_create_wait_on_wait( void*                   modelData,
                                    struct SCOREP_Location* location );
 
 
 /**
  *
  *
- * @param      paradigm
  * @param      parentTpd
  * @param      sequenceCount
  * @param      locationReuseKey See locationReuseKey in SCOREP_ThreadCreateWait_Begin.
@@ -66,8 +61,7 @@ scorep_thread_create_wait_on_wait( SCOREP_ParadigmType     paradigm,
  * @param[out] locationIsCreated
  */
 void
-scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm,
-                                    struct scorep_thread_private_data*  parentTpd,
+scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTpd,
                                     uint32_t                            sequenceCount,
                                     size_t                              locationReuseKey,
                                     struct scorep_thread_private_data** currentTpd,
@@ -76,15 +70,12 @@ scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm
 
 /**
  *
- *
- * @param paradigm
  * @param parentTpd
  * @param currentTpd
  * @param sequenceCount
  */
 void
-scorep_thread_create_wait_on_end( SCOREP_ParadigmType                paradigm,
-                                  struct scorep_thread_private_data* parentTpd,
+scorep_thread_create_wait_on_end( struct scorep_thread_private_data* parentTpd,
                                   struct scorep_thread_private_data* currentTpd,
                                   uint32_t                           sequenceCount );
 

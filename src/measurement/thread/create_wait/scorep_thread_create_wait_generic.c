@@ -226,8 +226,7 @@ SCOREP_ThreadCreateWait_Create( SCOREP_ParadigmType                 paradigm,
     *parent        = tpd;
     *sequenceCount = scorep_thread_get_next_sequence_count();
 
-    scorep_thread_create_wait_on_create( paradigm,
-                                         scorep_thread_get_model_data( tpd ),
+    scorep_thread_create_wait_on_create( scorep_thread_get_model_data( tpd ),
                                          location );
 
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitCreate, THREAD_CREATE_WAIT_CREATE,
@@ -249,8 +248,7 @@ SCOREP_ThreadCreateWait_Wait( SCOREP_ParadigmType paradigm,
     uint64_t                           timestamp   = scorep_get_timestamp( location );
     SCOREP_InterimCommunicatorHandle   thread_team = scorep_thread_get_team( tpd );
 
-    scorep_thread_create_wait_on_wait( paradigm,
-                                       scorep_thread_get_model_data( tpd ),
+    scorep_thread_create_wait_on_wait( scorep_thread_get_model_data( tpd ),
                                        location );
 
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitWait, THREAD_CREATE_WAIT_WAIT,
@@ -275,8 +273,7 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
     struct scorep_thread_private_data* current_tpd         = 0;
     bool                               location_is_created = false;
 
-    scorep_thread_create_wait_on_begin( paradigm,
-                                        parentTpd,
+    scorep_thread_create_wait_on_begin( parentTpd,
                                         sequenceCount,
                                         locationReuseKey,
                                         &current_tpd,
@@ -300,7 +297,7 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 
     scorep_thread_set_team( current_tpd, thread_team );
 
-    /* first notify the subsystem about the comming activation */
+    /* first notify the subsystem about the coming activation */
     scorep_subsystems_activate_cpu_location( *location,
                                              parent_location,
                                              sequenceCount,
@@ -332,7 +329,7 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
     SCOREP_Location*                   current_location = scorep_thread_get_location( current_tpd );
     SCOREP_InterimCommunicatorHandle   thread_team      = scorep_thread_get_team( current_tpd );
 
-    /* first notify the usbsystems about the deactivation of the location. */
+    /* first notify the subsystems about the deactivation of the location. */
     scorep_subsystems_deactivate_cpu_location( current_location,
                                                NULL,
                                                SCOREP_CPU_LOCATION_PHASE_EVENTS );
@@ -349,7 +346,7 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
                                                SCOREP_CPU_LOCATION_PHASE_MGMT );
 
     /* Fourth tear down the thread. */
-    scorep_thread_create_wait_on_end( paradigm, parentTpd, current_tpd, sequenceCount );
+    scorep_thread_create_wait_on_end( parentTpd, current_tpd, sequenceCount );
 
     SCOREP_MutexLock( thread_create_mutex );
     active_locations--;
