@@ -44,8 +44,8 @@
 
 /* *INDENT-OFF* */
 static void create_tpd_key( void );
-static SCOREP_Location* pop_from_location_reuse_pool( size_t locationReuseKey );
-static void push_to_location_reuse_pool( struct scorep_thread_private_data* tpd );
+static struct scorep_thread_private_data* pop_from_tpd_reuse_pool( size_t reuseKey );
+static void push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd );
 /* *INDENT-ON*  */
 
 
@@ -55,29 +55,30 @@ static pthread_once_t tpd_key_once = PTHREAD_ONCE_INIT;
 typedef struct private_data_pthread private_data_pthread;
 struct private_data_pthread
 {
-    size_t location_reuse_key;
+    size_t tpd_reuse_key;
 };
 
-struct reuse_pool_location
+struct reuse_pool_tpd
 {
-    struct reuse_pool_location* next;
-    SCOREP_Location*            location;
+    struct reuse_pool_tpd*             next;
+    struct scorep_thread_private_data* tpd;
 };
 
-struct location_reuse_pool
+struct tpd_reuse_pool
 {
-    struct location_reuse_pool* next;
-    size_t                      reuse_key;
-    struct reuse_pool_location* unused_locations;
+    struct tpd_reuse_pool* next;
+    size_t                 reuse_key;
+    struct reuse_pool_tpd* unused_tpds;
 };
 
-#define LOCATION_REUSE_POOL_SHIFT  5
-#define LOCATION_REUSE_POOL_SIZE   ( 1 << LOCATION_REUSE_POOL_SHIFT )
-#define LOCATION_REUSE_POOL_MASK   ( LOCATION_REUSE_POOL_SIZE -  1 )
-static struct location_reuse_pool  location_reuse_pool[ LOCATION_REUSE_POOL_SIZE ];
-static struct reuse_pool_location* location_reuse_pool_free_list;
-static SCOREP_Mutex                location_reuse_pool_mutex;
-static SCOREP_Mutex                pthread_location_count_mutex;
+#define TPD_REUSE_POOL_SHIFT  5
+#define TPD_REUSE_POOL_SIZE   ( 1 << TPD_REUSE_POOL_SHIFT )
+#define TPD_REUSE_POOL_MASK   ( TPD_REUSE_POOL_SIZE -  1 )
+static struct tpd_reuse_pool  tpd_reuse_pool[ TPD_REUSE_POOL_SIZE ];
+static struct reuse_pool_tpd* tpd_reuse_pool_free_list;
+static SCOREP_Mutex           tpd_reuse_pool_mutex;
+
+static SCOREP_Mutex pthread_location_count_mutex;
 
 struct SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation( void )
@@ -114,7 +115,7 @@ scorep_thread_on_initialize( struct scorep_thread_private_data* initialTpd )
     status = pthread_setspecific( tpd_key, initialTpd );
     UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
 
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &location_reuse_pool_mutex );
+    SCOREP_ErrorCode result = SCOREP_MutexCreate( &tpd_reuse_pool_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for location reuse pool." );
 
     result = SCOREP_MutexCreate( &pthread_location_count_mutex );
@@ -138,7 +139,7 @@ scorep_thread_on_finalize( struct scorep_thread_private_data* tpd )
     int status = pthread_key_delete( tpd_key );
     UTILS_BUG_ON( status != 0, "Failed to delete a pthread_key_t." );
 
-    SCOREP_MutexDestroy( &location_reuse_pool_mutex );
+    SCOREP_MutexDestroy( &tpd_reuse_pool_mutex );
     SCOREP_MutexDestroy( &pthread_location_count_mutex );
 }
 
@@ -193,11 +194,11 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     static unsigned pthread_location_count;
     *locationIsCreated = false;
 
-    SCOREP_Location* location = pop_from_location_reuse_pool( locationReuseKey );
+    *currentTpd = pop_from_tpd_reuse_pool( locationReuseKey );
 
-    /* We did not reused a location, create new one */
-    if ( !location )
+    if ( !*currentTpd )
     {
+        /* No tpd to reuse available. Create new tpd and location. */
         SCOREP_MutexLock( pthread_location_count_mutex );
         unsigned location_count = ++pthread_location_count;
         SCOREP_MutexUnlock( pthread_location_count_mutex );
@@ -206,54 +207,56 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
         int  length = snprintf( location_name, 80, "Pthread thread %d", location_count );
         UTILS_ASSERT( length < 80 );
 
-        location = SCOREP_Location_CreateCPULocation( location_name );
-
+        SCOREP_Location* location = SCOREP_Location_CreateCPULocation( location_name );
         *locationIsCreated = true;
+        *currentTpd        =  scorep_thread_create_private_data( parentTpd, location );
+        scorep_thread_set_location( *currentTpd, location );
+    }
+    else
+    {
+        /* Reuse tpd and its location, update parent. */
+        scorep_thread_set_parent( *currentTpd, parentTpd );
     }
 
-    *currentTpd =  scorep_thread_create_private_data( parentTpd,
-                                                      location );
-    scorep_thread_set_location( *currentTpd, location );
     int status = pthread_setspecific( tpd_key, *currentTpd );
     UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
 
-    /* We need the reuse key at _on_end() time. */
+    /* Set/update reuse key, used at _on_end() time. */
     private_data_pthread* model_data = scorep_thread_get_model_data( *currentTpd );
-    model_data->location_reuse_key = locationReuseKey;
+    model_data->tpd_reuse_key = locationReuseKey;
 }
 
 
-static SCOREP_Location*
-pop_from_location_reuse_pool( size_t locationReuseKey )
+static struct scorep_thread_private_data*
+pop_from_tpd_reuse_pool( size_t reuseKey )
 {
     UTILS_DEBUG_ENTRY();
-    SCOREP_Location* location = NULL;
-    if ( locationReuseKey )
+    struct scorep_thread_private_data* tpd_to_reuse = NULL;
+    if ( reuseKey )
     {
-        SCOREP_MutexLock( location_reuse_pool_mutex );
+        SCOREP_MutexLock( tpd_reuse_pool_mutex );
 
-        /* find a location to reuse */
-        size_t                      hash        = SCOREP_Hashtab_HashPointer( ( void* )locationReuseKey );
-        size_t                      hash_bucket = hash & LOCATION_REUSE_POOL_MASK;
-        struct location_reuse_pool* pool        = &location_reuse_pool[ hash_bucket ];
+        /* find a tpd to reuse */
+        size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuseKey );
+        size_t                 hash_bucket = hash & TPD_REUSE_POOL_MASK;
+        struct tpd_reuse_pool* pool        = &tpd_reuse_pool[ hash_bucket ];
         while ( pool )
         {
-            if ( pool->reuse_key == locationReuseKey )
+            if ( pool->reuse_key == reuseKey )
             {
-                /* A pool for the reuse key exists, lets see if there is an unused
-                 * location
+                /* A pool for the reuse key exists, lets see if there is an unused tpd.
                  */
-                if ( pool->unused_locations )
+                if ( pool->unused_tpds )
                 {
-                    /* Yes, take it out and put the now unused reuse_pool_location
+                    /* Yes, take it out and put the now unused reuse_pool_tpd
                      * into the free list
                      */
-                    struct reuse_pool_location* pool_location = pool->unused_locations;
-                    pool->unused_locations        = pool_location->next;
-                    location                      = pool_location->location;
-                    pool_location->location       = NULL;
-                    pool_location->next           = location_reuse_pool_free_list;
-                    location_reuse_pool_free_list = pool_location;
+                    struct reuse_pool_tpd* pool_tpd = pool->unused_tpds;
+                    pool->unused_tpds        = pool_tpd->next;
+                    tpd_to_reuse             = pool_tpd->tpd;
+                    pool_tpd->tpd            = NULL;
+                    pool_tpd->next           = tpd_reuse_pool_free_list;
+                    tpd_reuse_pool_free_list = pool_tpd;
 
                     SCOREP_InvalidateProperty( SCOREP_PROPERTY_PTHREAD_LOCATION_REUSED );
 
@@ -263,10 +266,10 @@ pop_from_location_reuse_pool( size_t locationReuseKey )
 
             pool = pool->next;
         }
-        SCOREP_MutexUnlock( location_reuse_pool_mutex );
+        SCOREP_MutexUnlock( tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
-    return location;
+    return tpd_to_reuse;
 }
 
 
@@ -280,29 +283,30 @@ scorep_thread_create_wait_on_end( struct scorep_thread_private_data* parentTpd,
     int status = pthread_setspecific( tpd_key, NULL );
     UTILS_BUG_ON( status != 0, "Failed to reset Pthread thread specific data." );
 
-    push_to_location_reuse_pool( currentTpd );
+    push_to_tpd_reuse_pool( currentTpd );
 
     UTILS_DEBUG_EXIT();
 }
 
 
 static void
-push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
+push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
 {
     UTILS_DEBUG_ENTRY();
     /* tpd not needed anymore, maintain for reuse in the future */
-    SCOREP_Location*      location   = scorep_thread_get_location( tpd );
+
     private_data_pthread* model_data = scorep_thread_get_model_data( tpd );
-    size_t                reuse_key  = model_data->location_reuse_key;
+    size_t                reuse_key  = model_data->tpd_reuse_key;
 
     if ( reuse_key )
     {
-        /* Returning the location into the thread pool identified by reuse_key */
-        SCOREP_MutexLock( location_reuse_pool_mutex );
+        /* Returning the tpd into the pool identified by reuse_key */
+        SCOREP_MutexLock( tpd_reuse_pool_mutex );
 
-        size_t                      hash        = SCOREP_Hashtab_HashPointer( ( void* )reuse_key );
-        size_t                      hash_bucket = hash & LOCATION_REUSE_POOL_MASK;
-        struct location_reuse_pool* pool        = &location_reuse_pool[ hash_bucket ];
+        size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuse_key );
+        size_t                 hash_bucket = hash & TPD_REUSE_POOL_MASK;
+        struct tpd_reuse_pool* pool        = &tpd_reuse_pool[ hash_bucket ];
+        SCOREP_Location*       location    = scorep_thread_get_location( tpd );
 
         /* Find the pool */
         while ( pool )
@@ -311,7 +315,6 @@ push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
             {
                 break;
             }
-
             pool = pool->next;
         }
         if ( !pool )
@@ -319,7 +322,7 @@ push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
             /* No pool yet, try the first one, which is marked with 0 as the
              * reuse key if it is still unused
              */
-            pool = &location_reuse_pool[ hash_bucket ];
+            pool = &tpd_reuse_pool[ hash_bucket ];
             if ( pool->reuse_key )
             {
                 /* Really no pool yet, create a new one, taking memory
@@ -327,8 +330,8 @@ push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
                  */
                 pool = SCOREP_Location_AllocForMisc( location, sizeof( *pool ) );
                 memset( pool, 0, sizeof( *pool ) );
-                pool->next                              = location_reuse_pool[ hash_bucket ].next;
-                location_reuse_pool[ hash_bucket ].next = pool;
+                pool->next                         = tpd_reuse_pool[ hash_bucket ].next;
+                tpd_reuse_pool[ hash_bucket ].next = pool;
             }
 
             /* We are occupying the pool now */
@@ -338,22 +341,21 @@ push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
         /* We now have a pool, now we hook the location in the unused
          * locations list
          */
-        struct reuse_pool_location* pool_location = location_reuse_pool_free_list;
-        if ( pool_location )
+        struct reuse_pool_tpd* pool_tpd = tpd_reuse_pool_free_list;
+        if ( pool_tpd )
         {
-            location_reuse_pool_free_list = pool_location->next;
+            tpd_reuse_pool_free_list = pool_tpd->next;
         }
         else
         {
-            pool_location =
-                SCOREP_Location_AllocForMisc( location,
-                                              sizeof( *pool_location ) );
+            pool_tpd =
+                SCOREP_Location_AllocForMisc( location, sizeof( *pool_tpd ) );
         }
-        pool_location->location = location;
-        pool_location->next     = pool->unused_locations;
-        pool->unused_locations  = pool_location;
+        pool_tpd->tpd     = tpd;
+        pool_tpd->next    = pool->unused_tpds;
+        pool->unused_tpds = pool_tpd;
 
-        SCOREP_MutexUnlock( location_reuse_pool_mutex );
+        SCOREP_MutexUnlock( tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
 }

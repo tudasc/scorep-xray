@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -95,6 +95,11 @@ scorep_thread_get_initial_tpd( void );
  */
 struct scorep_thread_private_data*
 scorep_thread_get_parent( struct scorep_thread_private_data* tpd );
+
+
+void
+scorep_thread_set_parent( struct scorep_thread_private_data* tpd,
+                          struct scorep_thread_private_data* parent );
 
 
 /**

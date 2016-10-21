@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -203,6 +203,16 @@ scorep_thread_get_parent( scorep_thread_private_data* tpd )
     UTILS_DEBUG_ENTRY();
     UTILS_ASSERT( tpd );
     return tpd->parent;
+}
+
+
+void
+scorep_thread_set_parent( scorep_thread_private_data* tpd,
+                          scorep_thread_private_data* parent )
+{
+    UTILS_DEBUG_ENTRY();
+    UTILS_ASSERT( tpd );
+    tpd->parent = parent;
 }
 
 
