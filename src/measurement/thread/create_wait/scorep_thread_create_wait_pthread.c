@@ -44,6 +44,8 @@
 
 /* *INDENT-OFF* */
 static void create_tpd_key( void );
+static SCOREP_Location* pop_from_location_reuse_pool( size_t locationReuseKey );
+static void push_to_location_reuse_pool( struct scorep_thread_private_data* tpd );
 /* *INDENT-ON*  */
 
 
@@ -188,10 +190,44 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
 {
     UTILS_DEBUG_ENTRY();
 
-    static unsigned  pthread_location_count;
-    SCOREP_Location* location = NULL;
+    static unsigned pthread_location_count;
     *locationIsCreated = false;
 
+    SCOREP_Location* location = pop_from_location_reuse_pool( locationReuseKey );
+
+    /* We did not reused a location, create new one */
+    if ( !location )
+    {
+        SCOREP_MutexLock( pthread_location_count_mutex );
+        unsigned location_count = ++pthread_location_count;
+        SCOREP_MutexUnlock( pthread_location_count_mutex );
+
+        char location_name[ 80 ];
+        int  length = snprintf( location_name, 80, "Pthread thread %d", location_count );
+        UTILS_ASSERT( length < 80 );
+
+        location = SCOREP_Location_CreateCPULocation( location_name );
+
+        *locationIsCreated = true;
+    }
+
+    *currentTpd =  scorep_thread_create_private_data( parentTpd,
+                                                      location );
+    scorep_thread_set_location( *currentTpd, location );
+    int status = pthread_setspecific( tpd_key, *currentTpd );
+    UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
+
+    /* We need the reuse key at _on_end() time. */
+    private_data_pthread* model_data = scorep_thread_get_model_data( *currentTpd );
+    model_data->location_reuse_key = locationReuseKey;
+}
+
+
+static SCOREP_Location*
+pop_from_location_reuse_pool( size_t locationReuseKey )
+{
+    UTILS_DEBUG_ENTRY();
+    SCOREP_Location* location = NULL;
     if ( locationReuseKey )
     {
         SCOREP_MutexLock( location_reuse_pool_mutex );
@@ -229,32 +265,8 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
         }
         SCOREP_MutexUnlock( location_reuse_pool_mutex );
     }
-
-    /* We did not reused a location, create new one */
-    if ( !location )
-    {
-        SCOREP_MutexLock( pthread_location_count_mutex );
-        unsigned location_count = ++pthread_location_count;
-        SCOREP_MutexUnlock( pthread_location_count_mutex );
-
-        char location_name[ 80 ];
-        int  length = snprintf( location_name, 80, "Pthread thread %d", location_count );
-        UTILS_ASSERT( length < 80 );
-
-        location = SCOREP_Location_CreateCPULocation( location_name );
-
-        *locationIsCreated = true;
-    }
-
-    *currentTpd =  scorep_thread_create_private_data( parentTpd,
-                                                      location );
-    scorep_thread_set_location( *currentTpd, location );
-    int status = pthread_setspecific( tpd_key, *currentTpd );
-    UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
-
-    /* We need the reuse key at _on_end() time. */
-    private_data_pthread* model_data = scorep_thread_get_model_data( *currentTpd );
-    model_data->location_reuse_key = locationReuseKey;
+    UTILS_DEBUG_EXIT();
+    return location;
 }
 
 
@@ -268,9 +280,19 @@ scorep_thread_create_wait_on_end( struct scorep_thread_private_data* parentTpd,
     int status = pthread_setspecific( tpd_key, NULL );
     UTILS_BUG_ON( status != 0, "Failed to reset Pthread thread specific data." );
 
-    /* currentTpd not needed anymore, maintain for reuse in the future */
-    SCOREP_Location*      location   = scorep_thread_get_location( currentTpd );
-    private_data_pthread* model_data = scorep_thread_get_model_data( currentTpd );
+    push_to_location_reuse_pool( currentTpd );
+
+    UTILS_DEBUG_EXIT();
+}
+
+
+static void
+push_to_location_reuse_pool( struct scorep_thread_private_data* tpd )
+{
+    UTILS_DEBUG_ENTRY();
+    /* tpd not needed anymore, maintain for reuse in the future */
+    SCOREP_Location*      location   = scorep_thread_get_location( tpd );
+    private_data_pthread* model_data = scorep_thread_get_model_data( tpd );
     size_t                reuse_key  = model_data->location_reuse_key;
 
     if ( reuse_key )
@@ -333,7 +355,6 @@ scorep_thread_create_wait_on_end( struct scorep_thread_private_data* parentTpd,
 
         SCOREP_MutexUnlock( location_reuse_pool_mutex );
     }
-
     UTILS_DEBUG_EXIT();
 }
 
