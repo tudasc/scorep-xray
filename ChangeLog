@@ -19,6 +19,10 @@ Features and improvements:
 - The induced penalty to access thread-local storage variables was
   considerably reduced for some compilers, notable for the Intel
   compilers.
+- If both OpenMP instrumentation options, omp:tpd and omp:ancestry,
+  are supported, use omp:ancestry as default. This works around a
+  problem found with recent Intel compilers (e.g., 17.0.0) and the
+  omp:tpd option.
 
 Bugfixes:
 - Fix compilation error during instrumentation, if the command line
