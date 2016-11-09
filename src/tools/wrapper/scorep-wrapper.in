@@ -176,7 +176,7 @@ Examples
    This will create a new wrapper instance for the \`cc\` compiler named
    \`scorep-cc\` in the same directory where \`$argv0\` resides.
 
-Please report bugs to <@PACKAGE_BUGREPORT@>
+Report bugs to <@PACKAGE_BUGREPORT@>
 EOH
 }
 

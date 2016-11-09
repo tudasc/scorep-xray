@@ -79,7 +79,6 @@ SCOREP_Instrumenter_Selector::printHelp( void )
     {
         ( *paradigm )->printHelp();
     }
-    std::cout << std::endl;
 }
 
 bool
@@ -113,6 +112,7 @@ SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
     if ( arg == "help" )
     {
         printHelp();
+        std::cout << std::endl;
         std::cout << "Type 'scorep --help' to get the full list of possible options" << std::endl;
         exit( EXIT_SUCCESS );
     }

@@ -107,6 +107,7 @@ print_help( void )
     SCOREP_Instrumenter_Selector::printAll();
     SCOREP_Instrumenter_Adapter::printAll();
     std::cout << std::endl;
+    std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 
 /**

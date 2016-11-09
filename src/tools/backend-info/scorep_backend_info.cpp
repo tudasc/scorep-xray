@@ -81,6 +81,8 @@ print_help( void )
     std::cout << std::endl;
     std::cout << "  config-vars:" << std::endl;
     std::cout << "    Shows the current values of all measurement config variables." << std::endl;
+    std::cout << std::endl;
+    std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 
 int

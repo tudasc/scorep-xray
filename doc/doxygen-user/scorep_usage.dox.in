@@ -109,3 +109,5 @@ Common options are:
   --noopenacc     Disables OpenACC instrumentation.
   --memory        Enables memory usage instrumentation. It is enabled by default.
   --nomemory      Disables memory usage instrumentation.
+
+Report bugs to <support@score-p.org>

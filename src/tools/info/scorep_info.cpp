@@ -100,6 +100,7 @@ print_help( bool withOptions )
     std::cout << "    Shows open and known issues of the Score-P package." << std::endl;
 
     std::cout << std::endl;
+    std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 
 /* *INDENT-OFF* */

@@ -87,3 +87,5 @@ scorep-config <command> [<options>]
          mpi	This is the default.
          shmem
          none
+
+Report bugs to <support@score-p.org>

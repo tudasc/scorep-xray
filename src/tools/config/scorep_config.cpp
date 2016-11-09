@@ -128,6 +128,8 @@ print_help( void )
     SCOREP_Config_ThreadSystem::printAll();
     SCOREP_Config_Mutex::printAll();
     SCOREP_Config_MppSystem::printAll();
+    std::cout << std::endl;
+    std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 
 static void
