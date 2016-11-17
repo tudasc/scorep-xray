@@ -234,7 +234,7 @@ int MPI_Finalize( void )
   }
 
   /* Be so kind and name the MPI_COMM_WORLD, if the user didn't do so already */
-  scorep_mpi_comm_set_name( MPI_COMM_WORLD, "MPI_COMM_WORLD" );
+  scorep_mpi_comm_set_default_names();
 
   /* finalize MPI event handling */
   /* We need to make sure that our exit handler is called before the MPI one. */
