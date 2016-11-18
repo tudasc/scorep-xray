@@ -637,9 +637,7 @@ write_cube_##cube_type(                                                         
         global_values = ( type * )malloc( writeSet->global_items * sizeof( type ) );    \
                                                                                         \
         /* Initialize writing of a new metric */                                        \
-        cubew_reset( writeSet->cube_writer );                                           \
-        cubew_set_array( writeSet->cube_writer, writeSet->callpath_number );            \
-        cube_set_known_cnodes_for_metric( writeSet->my_cube, metric,                    \
+	cube_set_known_cnodes_for_metric( writeSet->my_cube, metric,                    \
                                           (char*)writeSet->bit_vector );                \
     }                                                                                   \
     /* Iterate over all unified callpathes */                                           \
@@ -786,17 +784,17 @@ delete_cube_writing_data( scorep_cube_writing_data* writeSet )
     free( writeSet->metric_map );
     free( writeSet->unified_metric_map );
     free( writeSet->bit_vector );
-    if ( writeSet->cube_writer )
+    if ( writeSet->my_cube != NULL )
     {
-        cubew_finalize( writeSet->cube_writer );
+        cube_free( writeSet->my_cube );
     }
+
     if ( writeSet->map )
     {
         scorep_cube4_delete_definitions_map( writeSet->map );
     }
 
     writeSet->my_cube            = NULL;
-    writeSet->cube_writer        = NULL;
     writeSet->id_2_node          = NULL;
     writeSet->map                = NULL;
     writeSet->items_per_rank     = NULL;
@@ -821,7 +819,6 @@ init_cube_writing_data( scorep_cube_writing_data*   writeSet,
     /* Set all pointers to zero.
        If an malloc fails, we know how many can bee freed */
     writeSet->my_cube            = NULL;
-    writeSet->cube_writer        = NULL;
     writeSet->id_2_node          = NULL;
     writeSet->map                = NULL;
     writeSet->items_per_rank     = NULL;
@@ -937,15 +934,8 @@ init_cube_writing_data( scorep_cube_writing_data*   writeSet,
         sprintf( filename, "%s/%s", dirname, basename );
 
         /* Create Cube objects */
-        writeSet->cube_writer
-            = cubew_create( writeSet->my_rank,        /* rank of this node          */
-                            writeSet->global_items,   /* global sum of threads      */
-                            1,                        /* number of parallel writers */
-                            filename,                 /* base file name             */
-                            CUBE_FALSE );             /* no zlib compression        */
+        writeSet->my_cube = cube_create( filename, CUBE_MASTER, CUBE_FALSE );
         free( filename );
-
-        writeSet->my_cube = cubew_get_cube( writeSet->cube_writer );
     }
 
     /* Create bit_vector with all bits set. Used for dense metrics */

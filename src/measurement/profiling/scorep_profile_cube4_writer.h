@@ -69,10 +69,9 @@ typedef struct
     SCOREP_MetricHandle*  metric_map;               /**< map sequence no to handle */
 
     /* Use only on root process */
-    cube_t*      my_cube;                           /**< Cube object that is created */
-    cube_writer* cube_writer;                       /**< Cube writer object */
-    int*         items_per_rank;                    /**< List of data items per rank */
-    int*         offsets_per_rank;                  /**< List of offsets per rank */
+    cube_t* my_cube;                                /**< Cube object that is created */
+    int*    items_per_rank;                         /**< List of data items per rank */
+    int*    offsets_per_rank;                       /**< List of offsets per rank */
 
     /* Use only on root process after definition mapping creation */
     SCOREP_MetricHandle*          unified_metric_map; /**< map sequence to unified handle */
