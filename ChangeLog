@@ -25,9 +25,11 @@ Features and improvements:
   omp:tpd option.
 
 Bugfixes:
+
 - Fix compilation error during instrumentation, if the command line
   contains a header file.
-- Fix multiple definitions of the same parameters
+- Fix loosing parameter call-paths by avoiding multiple definitions of
+  the same parameters.
 
 ------------------- Released version 3.0 -----------------------------
 
