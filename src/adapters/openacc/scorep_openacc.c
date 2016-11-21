@@ -125,7 +125,7 @@ SCOREP_AttributeHandle scorep_openacc_attribute_kernel_veclen  = SCOREP_INVALID_
  * threads.)
  */
 void
-scorep_openacc_setup_features()
+scorep_openacc_setup_features( void )
 {
     UTILS_DEBUG( "[OpenACC] Setup features" );
 

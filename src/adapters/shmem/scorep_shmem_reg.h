@@ -95,6 +95,6 @@ extern SCOREP_RegionHandle scorep_shmem_region__SHMEM;
  * Register SHMEM functions and initialize data structures
  */
 void
-scorep_shmem_register_regions();
+scorep_shmem_register_regions( void );
 
 #endif /* SCOREP_SHMEMWRAP_REG_H */

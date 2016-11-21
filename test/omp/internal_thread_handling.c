@@ -67,10 +67,10 @@ POMP2_Init_reg_4k6lsdctlab37_1()
 
 typedef struct SCOREP_Location SCOREP_Location;
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPULocation();
+SCOREP_Location_GetCurrentCPULocation( void );
 
 void
-foo()
+foo( void )
 {
     SCOREP_Location_GetCurrentCPULocation();
     printf( "thread %d in foo.      pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );

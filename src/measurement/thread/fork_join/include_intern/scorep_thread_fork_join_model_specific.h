@@ -31,11 +31,11 @@ struct SCOREP_Location;
 struct scorep_thread_private_data;
 
 void
-scorep_thread_create_first_fork_locations_mutex();
+scorep_thread_create_first_fork_locations_mutex( void );
 
 
 void
-scorep_thread_destroy_first_fork_locations_mutex();
+scorep_thread_destroy_first_fork_locations_mutex( void );
 
 
 /**

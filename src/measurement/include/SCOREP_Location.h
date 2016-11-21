@@ -84,7 +84,7 @@ SCOREP_Location_ReleasePerProcessMetricsLocation( void );
  * @return
  */
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPULocation();
+SCOREP_Location_GetCurrentCPULocation( void );
 
 /**
  *  Returns the local id of the location (ie. thread id).

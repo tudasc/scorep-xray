@@ -1267,7 +1267,7 @@ kernel_hash_get( const char* name )
  * array.
  */
 static void
-opencl_create_comm_group()
+opencl_create_comm_group( void )
 {
     if ( scorep_opencl_global_location_number == 0 )
     {
