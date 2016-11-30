@@ -1278,7 +1278,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
                         exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, params->hEvent, funcResult,
-                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
+                                        SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
 
@@ -1290,7 +1290,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
                         exit_with_refs( &time, region_handle, cbInfo->context,
                                         NULL, params->hEvent, funcResult,
-                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
+                                        SCOREP_CUPTI_KEY_EVENT );
                         break;
                     }
 
@@ -1314,7 +1314,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
                         exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, params->hEvent, funcResult,
-                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
+                                        SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
                     default:
