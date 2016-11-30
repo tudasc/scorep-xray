@@ -287,6 +287,11 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
                 SCOREP_MpiIrecv( status->MPI_SOURCE, req->comm_handle,
                                  status->MPI_TAG, count * sz, req->id );
             }
+            else
+            {
+                SCOREP_MpiRecv( status->MPI_SOURCE, req->comm_handle,
+                                status->MPI_TAG, count * sz );
+            }
         }
         else if ( req->flags & SCOREP_MPI_REQUEST_SEND && xnb_active )
         {
