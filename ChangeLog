@@ -30,6 +30,8 @@ Bugfixes:
   contains a header file.
 - Fix loosing parameter call-paths by avoiding multiple definitions of
   the same parameters.
+- Fix that memory allocation measurements are disabled if the
+  user explicitly specifies --memory
 
 ------------------- Released version 3.0 -----------------------------
 

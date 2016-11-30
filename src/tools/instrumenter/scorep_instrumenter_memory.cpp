@@ -60,6 +60,12 @@ SCOREP_Instrumenter_MemoryAdapter::printHelp( void )
 std::string
 SCOREP_Instrumenter_MemoryAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
+    /* Explicit user arguments */
+    if ( isEnabled() && m_params != "" )
+    {
+        return " --" + m_name + "=" + m_params.substr( 1 );
+    }
+    /* Auto-detected arguments */
     if ( isEnabled() && m_categories.size() )
     {
         std::stringstream categories;
@@ -72,6 +78,7 @@ SCOREP_Instrumenter_MemoryAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
         }
         return categories.str();
     }
+    /* Disabled */
     else if ( !isEnabled() )
     {
         return " --no" + m_name;
@@ -79,11 +86,11 @@ SCOREP_Instrumenter_MemoryAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
     return "";
 }
 
-
 void
 SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
-    if ( m_usage != detect )
+    if ( m_usage != detect &&
+         !( isEnabled() && m_params == "" ) )
     {
         return;
     }
