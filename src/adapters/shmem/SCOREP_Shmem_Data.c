@@ -46,7 +46,7 @@
                            scorep_shmem_rma_op_matching_id );                       \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                               \
                                                                                     \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
+            SCOREP_ENTER_WRAPPED_REGION();                                          \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value, pe ) );          \
             SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
