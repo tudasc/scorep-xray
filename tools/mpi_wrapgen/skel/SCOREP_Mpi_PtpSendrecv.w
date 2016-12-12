@@ -18,7 +18,6 @@ ${proto:c}
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
   {
-    int sendsz, recvsz;
     MPI_Status mystatus;
 
     SCOREP_MPI_EVENT_GEN_OFF();
@@ -27,7 +26,8 @@ ${proto:c}
 
     if (dest != MPI_PROC_NULL)
     {
-      PMPI_Type_size(sendtype, &sendsz);
+      int sz;
+      PMPI_Type_size(sendtype, &sz);
       SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
                      sendtag, ${mpi:sendcount});
     }
@@ -42,7 +42,8 @@ ${proto:c}
 
     if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
-      PMPI_Type_size(recvtype, &recvsz);
+      int sz;
+      PMPI_Type_size(recvtype, &sz);
       PMPI_Get_count(status, recvtype, &recvcount);
       SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
                      status->MPI_TAG, ${mpi:recvcount});

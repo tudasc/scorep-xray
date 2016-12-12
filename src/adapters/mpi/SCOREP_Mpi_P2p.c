@@ -520,7 +520,6 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int        sendsz, recvsz;
         MPI_Status mystatus;
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -529,9 +528,10 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
 
         if ( dest != MPI_PROC_NULL )
         {
-            PMPI_Type_size( sendtype, &sendsz );
+            int sz;
+            PMPI_Type_size( sendtype, &sz );
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
-                            sendtag, sendcount * sendsz );
+                            sendtag, sendcount * sz );
         }
         if ( status == MPI_STATUS_IGNORE )
         {
@@ -544,10 +544,11 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
 
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            PMPI_Type_size( recvtype, &recvsz );
+            int sz;
+            PMPI_Type_size( recvtype, &sz );
             PMPI_Get_count( status, recvtype, &recvcount );
             SCOREP_MpiRecv( status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE( comm ),
-                            status->MPI_TAG, recvcount * recvsz );
+                            status->MPI_TAG, recvcount * sz );
         }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV ] );
@@ -579,12 +580,14 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     int          return_val;
-    int          sendcount = count, recvcount = count;
-    MPI_Datatype sendtype  = datatype, recvtype = datatype;
+    int          sendcount = count;
+    int          recvcount = count;
+    MPI_Datatype sendtype  = datatype;
+    MPI_Datatype recvtype  = datatype;
+
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int        sendsz, recvsz;
         MPI_Status mystatus;
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -593,9 +596,10 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
 
         if ( dest != MPI_PROC_NULL )
         {
-            PMPI_Type_size( sendtype, &sendsz );
+            int sz;
+            PMPI_Type_size( sendtype, &sz );
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
-                            sendtag, sendcount * sendsz );
+                            sendtag, sendcount * sz );
         }
         if ( status == MPI_STATUS_IGNORE )
         {
@@ -608,10 +612,11 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
 
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            PMPI_Type_size( recvtype, &recvsz );
+            int sz;
+            PMPI_Type_size( recvtype, &sz );
             PMPI_Get_count( status, recvtype, &recvcount );
             SCOREP_MpiRecv( status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE( comm ),
-                            status->MPI_TAG, recvcount * sendsz );
+                            status->MPI_TAG, recvcount * sz );
         }
 
         SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE ] );

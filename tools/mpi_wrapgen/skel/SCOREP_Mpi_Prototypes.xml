@@ -5753,7 +5753,7 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
-    <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
+    <countrules send="sendcount*sz" recv="recvcount*sz" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
@@ -5809,9 +5809,12 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
-    <countrules send="sendcount*sendsz" recv="recvcount*sendsz" />
-    <decl>int sendcount = count, recvcount = count;
-    MPI_Datatype sendtype = datatype, recvtype = datatype;</decl>
+    <countrules send="sendcount*sz" recv="recvcount*sz" />
+<decl><![CDATA[int sendcount = count;
+    int recvcount = count;
+    MPI_Datatype sendtype = datatype;
+    MPI_Datatype recvtype = datatype;
+]]></decl>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
