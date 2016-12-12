@@ -68,7 +68,6 @@ static const char dir_separator_str[] = { DIR_SEPARATOR, 0 };
 static int
 is_return_function( void )
 {
-    int                  return_found = 0;
     basic_block          bb;
     gimple_stmt_iterator gsi;
 
@@ -87,26 +86,49 @@ is_return_function( void )
 } /* is_return_function */
 
 
-static int
+static const char*
 is_instrumentable( const char* assemblerName )
 {
-    struct cgraph_node* node         = cgraph_get_node( current_function_decl );
-    location_t          function_loc = DECL_SOURCE_LOCATION( current_function_decl );
-
-    if ( !node
-         || in_system_header_at( function_loc )
-         || !is_return_function()
-         || node->global.inlined_to
-         || DECL_ARTIFICIAL( current_function_decl )
-         || strncmp( assemblerName, "POMP", 4 ) == 0
-         || strncmp( assemblerName, "Pomp", 4 ) == 0
-         || strncmp( assemblerName, "pomp", 4 ) == 0
-         || cgraph_function_body_availability( node ) == AVAIL_NOT_AVAILABLE )
+    struct cgraph_node* node = cgraph_get_node( current_function_decl );
+    if ( !node )
     {
-        return 0;
+        return "no call node";
     }
 
-    return 1;
+    location_t function_loc = DECL_SOURCE_LOCATION( current_function_decl );
+    if ( in_system_header_at( function_loc ) )
+    {
+        return "in system header";
+    }
+
+    if ( !is_return_function() )
+    {
+        return "no return";
+    }
+
+    if ( node->global.inlined_to )
+    {
+        return "was inlined";
+    }
+
+    if ( DECL_ARTIFICIAL( current_function_decl ) )
+    {
+        return "is artificial";
+    }
+
+    if ( strncmp( assemblerName, "POMP", 4 ) == 0
+         || strncmp( assemblerName, "Pomp", 4 ) == 0
+         || strncmp( assemblerName, "pomp", 4 ) == 0 )
+    {
+        return "is POMP";
+    }
+
+    if ( cgraph_function_body_availability( node ) == AVAIL_NOT_AVAILABLE )
+    {
+        return "no function body";
+    }
+
+    return NULL;
 } /* is_instrumentable */
 
 
@@ -183,10 +205,11 @@ scorep_plugin_pass_instrument_function( void )
     }
 
 
-    /* Don't instruemnt un-instrumentable functions */
-    if ( !is_instrumentable( assembler_name ) )
+    /* Don't    instrument un-instrumentable functions */
+    const char* reason = is_instrumentable( assembler_name );
+    if ( reason )
     {
-        VERBOSE_MSG( 0, "Function is not instrumentable: '%s'", function_name );
+        VERBOSE_MSG( 0, "Function is not instrumentable: '%s' [reason: %s]", function_name, reason );
         free( function_name );
         return 0;
     }
