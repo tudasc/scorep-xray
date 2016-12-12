@@ -860,7 +860,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* se
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -871,7 +871,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* se
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
@@ -893,7 +893,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* s
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -904,7 +904,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* s
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, request );
@@ -932,7 +932,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sen
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -943,7 +943,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sen
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
@@ -971,7 +971,7 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, M
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -982,7 +982,7 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, M
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, request );
@@ -1010,7 +1010,7 @@ FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdisp
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1021,7 +1021,7 @@ FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdisp
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, request );
@@ -1049,7 +1049,7 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sen
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1060,7 +1060,7 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sen
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
@@ -1088,7 +1088,7 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* se
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1099,7 +1099,7 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* se
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
@@ -1127,7 +1127,7 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* send
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1138,7 +1138,7 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* send
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
@@ -1166,7 +1166,7 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MP
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1177,7 +1177,7 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MP
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm );
@@ -1205,7 +1205,7 @@ FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispl
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1216,7 +1216,7 @@ FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispl
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
@@ -1840,7 +1840,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
     MPI_Request c_request;
 
 
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1851,7 +1851,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
@@ -1882,7 +1882,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* 
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1893,7 +1893,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* 
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
@@ -1924,7 +1924,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1935,7 +1935,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
@@ -1966,7 +1966,7 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* 
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -1977,7 +1977,7 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* 
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
@@ -2007,7 +2007,7 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -2018,7 +2018,7 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
@@ -2047,7 +2047,7 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -2058,7 +2058,7 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
@@ -2087,7 +2087,7 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sen
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -2098,7 +2098,7 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sen
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
@@ -2127,7 +2127,7 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* s
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE( MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
@@ -2138,7 +2138,7 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* s
     {
         recvbuf = MPI_BOTTOM;
     }
-        #endif
+    #endif
 
 
     *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );

@@ -3578,9 +3578,9 @@
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
     <xblock id="fortran"><![CDATA[
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3588,13 +3588,13 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3602,9 +3602,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Ineighbor_allgatherv" rtype="int" group="topo" guard="topo" >
@@ -3620,9 +3620,9 @@
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
     <xblock id="fortran"><![CDATA[
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3630,9 +3630,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -3640,9 +3640,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3650,9 +3650,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoall" rtype="int" group="topo" guard="topo" >
@@ -3673,9 +3673,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3683,9 +3683,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -3693,9 +3693,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3703,9 +3703,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoallv" rtype="int" group="topo" guard="topo" >
@@ -3728,9 +3728,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3738,9 +3738,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -3748,9 +3748,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3758,9 +3758,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Ineighbor_alltoallw" rtype="int" group="topo" guard="topo" >
@@ -3783,9 +3783,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3793,9 +3793,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -3803,9 +3803,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -3813,9 +3813,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Info_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
@@ -4489,9 +4489,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4499,9 +4499,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -4509,9 +4509,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4519,9 +4519,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Neighbor_allgatherv" rtype="int" group="topo" guard="topo" >
@@ -4542,9 +4542,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4552,9 +4552,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -4562,9 +4562,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4572,9 +4572,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoall" rtype="int" group="topo" guard="topo" >
@@ -4594,9 +4594,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4604,9 +4604,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -4614,9 +4614,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4624,9 +4624,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallv" rtype="int" group="topo" guard="topo" >
@@ -4648,9 +4648,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4658,9 +4658,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -4668,9 +4668,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4678,9 +4678,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallw" rtype="int" group="topo" guard="topo" >
@@ -4702,9 +4702,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4712,9 +4712,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
@@ -4722,9 +4722,9 @@
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-        #if HAVE(MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
-        {
+    {
         sendbuf = MPI_BOTTOM;
     }
     #endif
@@ -4732,9 +4732,9 @@
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
-        }
-        #endif
-    ]]></xblock>
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Op_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
