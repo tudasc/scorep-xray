@@ -65,27 +65,6 @@
 
 static const char dir_separator_str[] = { DIR_SEPARATOR, 0 };
 
-static int
-is_return_function( void )
-{
-    basic_block          bb;
-    gimple_stmt_iterator gsi;
-
-    FOR_EACH_BB( bb )
-    {
-        for ( gsi = gsi_start_bb( bb ); !gsi_end_p( gsi ); gsi_next( &gsi ) )
-        {
-            if ( gimple_code( gsi_stmt( gsi ) ) == GIMPLE_RETURN )
-            {
-                return 1;
-            }
-        }
-    }
-
-    return 0;
-} /* is_return_function */
-
-
 static const char*
 is_instrumentable( const char* assemblerName )
 {
@@ -99,11 +78,6 @@ is_instrumentable( const char* assemblerName )
     if ( in_system_header_at( function_loc ) )
     {
         return "in system header";
-    }
-
-    if ( !is_return_function() )
-    {
-        return "no return";
     }
 
     if ( node->global.inlined_to )
@@ -204,8 +178,7 @@ scorep_plugin_pass_instrument_function( void )
         }
     }
 
-
-    /* Don't    instrument un-instrumentable functions */
+    /* Don't instrument un-instrumentable functions */
     const char* reason = is_instrumentable( assembler_name );
     if ( reason )
     {
@@ -306,6 +279,7 @@ scorep_plugin_pass_instrument_function( void )
     basic_block          bb_end;
     gimple_stmt_iterator gsi_end;
 
+    bool have_exit_instrumentation = false;
     FOR_EACH_BB( bb_end )
     {
         for ( gsi_end = gsi_start_bb( bb_end ); !gsi_end_p( gsi_end ); gsi_next( &gsi_end ) )
@@ -322,8 +296,14 @@ scorep_plugin_pass_instrument_function( void )
                 gsi_insert_seq_before( &gsi_end, exit_hook.stmt_sequence, GSI_SAME_STMT );
                 bb_end = scorep_plugin_inst_hook_finalize_condition( &exit_hook,
                                                                      bb_end );
+
+                have_exit_instrumentation = true;
             }
         }
+    }
+    if ( !have_exit_instrumentation )
+    {
+        VERBOSE_MSG( 0, "warning: Function has no exit to instrument: '%s'", function_name );
     }
 
     free( full_path );
