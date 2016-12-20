@@ -90,6 +90,11 @@ is_instrumentable( const char* assemblerName )
         return "is artificial";
     }
 
+    if ( DECL_IS_BUILTIN( current_function_decl ) )
+    {
+        return "is built-in";
+    }
+
     if ( strncmp( assemblerName, "POMP", 4 ) == 0
          || strncmp( assemblerName, "Pomp", 4 ) == 0
          || strncmp( assemblerName, "pomp", 4 ) == 0 )
