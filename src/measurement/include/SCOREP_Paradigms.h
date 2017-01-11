@@ -42,11 +42,11 @@
  *  - A human readable name
  *
  * Additionally, an extensible properties framework exists too. It is split
- * between boolean types an other typed properties. See SCOREP_ParadigmFlags
+ * between boolean types and other typed properties. See SCOREP_ParadigmFlags
  * and SCOREP_ParadigmProperty respectively.
  *
  * The computer scientists now needs to call SCOREP_Paradigms_RegisterParallelParadigm
- * at measurement init time for all compiled in adapters which generates
+ * at measurement init time for all compiled-in adapters which generates
  * events for parallel paradigms. And possibly also set appropriate properties.
  *
  * And all lived happily ever after...
@@ -83,7 +83,7 @@ SCOREP_Paradigms_RegisterParallelParadigm( SCOREP_ParadigmType  paradigm,
  *  class and the current mode of measurement (i.e., in MPP mode not only by the)
  *  root process).
  *
- *  @param paradigm         The paradigm to register.
+ *  @param paradigm         The paradigm to annotate.
  *  @param paradigmProperty The property to set.
  *  @param propertyValue    The string value of the property.
  */
@@ -98,7 +98,7 @@ SCOREP_Paradigms_SetStringProperty( SCOREP_ParadigmType     paradigm,
  *
  *  Returns for non-parallel paradigm the internal hard-coded name.
  *
- *  @param paradigm The paradigm to register.
+ *  @param paradigm The paradigm to query.
  *
  *  @return The name of the paradigm.
  */
@@ -111,7 +111,7 @@ SCOREP_Paradigms_GetParadigmName( SCOREP_ParadigmType paradigm );
  *
  *  Returns for non-parallel paradigm @a SCOREP_INVALID_PARADIGM_CLASS.
  *
- *  @param paradigm The paradigm to register.
+ *  @param paradigm The paradigm to query.
  *
  *  @return The class of the paradigm.
  */
