@@ -511,7 +511,7 @@ scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
 
 
 static inline OTF2_Paradigm
-scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
+scorep_tracing_paradigm_to_otf2( SCOREP_ParadigmType paradigm )
 {
     switch ( paradigm )
     {
@@ -530,7 +530,7 @@ scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 
 
 static inline OTF2_ParadigmClass
-scorep_tracing_get_otf2_paradigm_class( SCOREP_ParadigmClass paradigmClass )
+scorep_tracing_paradigm_class_to_otf2( SCOREP_ParadigmClass paradigmClass )
 {
     switch ( paradigmClass )
     {
@@ -551,7 +551,7 @@ scorep_tracing_get_otf2_paradigm_class( SCOREP_ParadigmClass paradigmClass )
 /* Score-P paradigm flags will be converted to OTF2 paradigm properties
    of type Boolean */
 static inline OTF2_ParadigmProperty
-scorep_tracing_get_otf2_paradigm_boolean_property( SCOREP_ParadigmFlags paradigmFlag )
+scorep_tracing_paradigm_boolean_property_to_otf2( SCOREP_ParadigmFlags paradigmFlag )
 {
     switch ( paradigmFlag )
     {
@@ -567,7 +567,7 @@ scorep_tracing_get_otf2_paradigm_boolean_property( SCOREP_ParadigmFlags paradigm
 
 
 static inline OTF2_ParadigmProperty
-scorep_tracing_get_otf2_paradigm_property( SCOREP_ParadigmProperty paradigmProperty )
+scorep_tracing_paradigm_property_to_otf2( SCOREP_ParadigmProperty paradigmProperty )
 {
     switch ( paradigmProperty )
     {

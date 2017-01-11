@@ -652,7 +652,7 @@ scorep_write_region_definitions( void*                     writerHandle,
         }
 
         OTF2_Paradigm paradigm =
-            scorep_tracing_get_otf2_paradigm( definition->paradigm_type );
+            scorep_tracing_paradigm_to_otf2( definition->paradigm_type );
 
         OTF2_RegionRole region_role;
         OTF2_RegionFlag region_flags = OTF2_REGION_FLAG_NONE;
@@ -1531,7 +1531,7 @@ write_paradigm_cb( SCOREP_Paradigm* paradigm,
     SCOREP_DefinitionManager* definition_manager = args[ 1 ];
 
     OTF2_Paradigm otf2_paradigm =
-        scorep_tracing_get_otf2_paradigm( paradigm->paradigm_type );
+        scorep_tracing_paradigm_to_otf2( paradigm->paradigm_type );
 
     OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteParadigm(
         writer,
@@ -1542,7 +1542,7 @@ write_paradigm_cb( SCOREP_Paradigm* paradigm,
                 String )->unified,
             String,
             definition_manager->page_manager ),
-        scorep_tracing_get_otf2_paradigm_class( paradigm->paradigm_class ) );
+        scorep_tracing_paradigm_class_to_otf2( paradigm->paradigm_class ) );
     UTILS_ASSERT( status == OTF2_SUCCESS );
 
     /* Each set paradigm flag is a boolean property with value true in OTF2. */
@@ -1562,7 +1562,7 @@ write_paradigm_cb( SCOREP_Paradigm* paradigm,
             /* Clear flag */
             paradigm_flags &= ~flag_it;
 
-            property = scorep_tracing_get_otf2_paradigm_boolean_property( flag_it );
+            property = scorep_tracing_paradigm_boolean_property_to_otf2( flag_it );
 
             status = OTF2_GlobalDefWriter_WriteParadigmProperty( writer,
                                                                  otf2_paradigm,
@@ -1588,7 +1588,7 @@ write_paradigm_cb( SCOREP_Paradigm* paradigm,
             /* For now only String typed properties known. */
             case SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE:
             case SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE:
-                property        = scorep_tracing_get_otf2_paradigm_property( i );
+                property        = scorep_tracing_paradigm_property_to_otf2( i );
                 type            = OTF2_TYPE_STRING;
                 value.stringRef = SCOREP_HANDLE_TO_ID(
                     SCOREP_LOCAL_HANDLE_DEREF(

@@ -1091,7 +1091,7 @@ thread_fork( SCOREP_Location*    location,
     OTF2_EvtWriter_ThreadFork( evt_writer,
                                NULL,
                                timestamp,
-                               scorep_tracing_get_otf2_paradigm( paradigm ),
+                               scorep_tracing_paradigm_to_otf2( paradigm ),
                                nRequestedThreads );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
@@ -1142,7 +1142,7 @@ thread_join( SCOREP_Location*    location,
     OTF2_EvtWriter_ThreadJoin( evt_writer,
                                NULL,
                                timestamp,
-                               scorep_tracing_get_otf2_paradigm( paradigm ) );
+                               scorep_tracing_paradigm_to_otf2( paradigm ) );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }
@@ -1240,7 +1240,7 @@ thread_acquire_lock( SCOREP_Location*    location,
     OTF2_EvtWriter_ThreadAcquireLock( evt_writer,
                                       NULL,
                                       timestamp,
-                                      scorep_tracing_get_otf2_paradigm( paradigm ),
+                                      scorep_tracing_paradigm_to_otf2( paradigm ),
                                       lockId,
                                       acquisitionOrder );
 
@@ -1260,7 +1260,7 @@ thread_release_lock( SCOREP_Location*    location,
     OTF2_EvtWriter_ThreadReleaseLock( evt_writer,
                                       NULL,
                                       timestamp,
-                                      scorep_tracing_get_otf2_paradigm( paradigm ),
+                                      scorep_tracing_paradigm_to_otf2( paradigm ),
                                       lockId,
                                       acquisitionOrder );
 
