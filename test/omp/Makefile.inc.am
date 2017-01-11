@@ -87,7 +87,7 @@ if HAVE_SCOREP_OMP_TPD
 check_PROGRAMS += omp_test_nested
 
 # do not instrument the OPARI2 generated POMP code
-noinst_LTLIBRARIES          += libomp_test_nested_pomp.la
+check_LTLIBRARIES                  += libomp_test_nested_pomp.la
 libomp_test_nested_pomp_la_SOURCES  = $(SRC_ROOT)test/omp/pomp_nested.c
 libomp_test_nested_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 
