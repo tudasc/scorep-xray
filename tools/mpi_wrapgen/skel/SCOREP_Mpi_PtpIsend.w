@@ -34,10 +34,10 @@ ${proto:c}
       PMPI_Type_size(datatype, &sz);
       if (xnb_active)
          SCOREP_MpiIsend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                         tag, count * sz, reqid);
+                         tag, (uint64_t)count * sz, reqid);
       else
          SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                     tag, count * sz);
+                     tag, (uint64_t)count * sz);
 
     }
 

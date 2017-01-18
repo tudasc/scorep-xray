@@ -120,7 +120,7 @@ int MPI_Recv( void* buf,
       PMPI_Type_size(datatype, &sz);
       PMPI_Get_count(status, datatype, &count);
       SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
-                     status->MPI_TAG, count * sz);
+                     status->MPI_TAG, (uint64_t)count * sz);
     }
 
 
@@ -207,7 +207,7 @@ int MPI_Irecv(void* buf,
       SCOREP_MpiIrecvRequest(reqid);
 
     scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_RECV,
-                       tag, 0, count * sz, datatype, comm, reqid);
+                       tag, 0, (uint64_t)count * sz, datatype, comm, reqid);
 	#if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
       SCOREP_Hooks_Post_MPI_Irecv( buf, count, datatype, source, tag, comm, request, start_time_stamp, return_val );
