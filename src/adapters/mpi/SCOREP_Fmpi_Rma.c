@@ -743,7 +743,7 @@ FSUB( MPI_Win_get_group )( MPI_Win* win, MPI_Group* group, int* ierr )
 
 /**
  * @}
- * @name Fortran wrappers for synchonization functions
+ * @name Fortran wrappers for synchronization functions
  * @{
  */
 #if HAVE( DECL_PMPI_WIN_COMPLETE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_complete )
@@ -1267,7 +1267,7 @@ FSUB( MPI_Win_get_group )( MPI_Fint* win, MPI_Fint* group, MPI_Fint* ierr )
 
 /**
  * @}
- * @name Fortran wrappers for synchonization functions
+ * @name Fortran wrappers for synchronization functions
  * @{
  */
 #if HAVE( DECL_PMPI_WIN_COMPLETE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_complete )

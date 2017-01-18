@@ -100,13 +100,13 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
      #endif
         {
             PMPI_Type_size( sendtype, &sendsz );
-            sendbytes = N * sendcount * sendsz;
-            recvbytes = N * recvcount * recvsz;
+            sendbytes = ( uint64_t )N * sendcount * sendsz;
+            recvbytes = ( uint64_t )N * recvcount * recvsz;
         }
      #if HAVE( MPI_IN_PLACE )
         else
         {
-            sendbytes = recvbytes = ( N - 1 ) * recvcount * recvsz;
+            sendbytes = recvbytes = ( uint64_t )( N - 1 ) * recvcount * recvsz;
         }
      #endif
 
@@ -179,12 +179,12 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
       #endif
         {
             PMPI_Type_size( sendtype, &sendsz );
-            sendbytes = N * sendcount * sendsz;
+            sendbytes = ( uint64_t )N * sendcount * sendsz;
         }
       #if HAVE( MPI_IN_PLACE )
         else
         {
-            sendbytes = ( N - 1 ) * recvcounts[ me ] * recvsz;
+            sendbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * recvsz;
         }
       #endif
 
@@ -200,7 +200,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
             recvcount -= recvcounts[ me ];
         }
       #endif
-        recvbytes = recvcount * recvsz;
+        recvbytes = ( uint64_t )recvcount * recvsz;
 
 
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ],
@@ -268,12 +268,12 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
       #if HAVE( HAS_MPI_IN_PLACE )
         if ( sendbuf == MPI_IN_PLACE )
         {
-            sendbytes = recvbytes = ( N - 1 ) * count * sz;
+            sendbytes = recvbytes = ( uint64_t )( N - 1 ) * count * sz;
         }
         else
       #endif
         {
-            sendbytes = recvbytes = N * count * sz;
+            sendbytes = recvbytes = ( uint64_t )N * count * sz;
         }
 
 
@@ -346,7 +346,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         }
       #endif
 
-        sendbytes = N * recvcount * recvsz;
+        sendbytes = ( uint64_t )N * recvcount * recvsz;
         recvbytes = sendbytes;
 
 
@@ -419,8 +419,8 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
             PMPI_Type_size( sendtype, &sendsz );
             for ( i = 0; i < N; i++ )
             {
-                recvbytes += recvcounts[ i ] * recvsz;
-                sendbytes += sendcounts[ i ] * sendsz;
+                recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
+                sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
             }
         }
       #if HAVE( MPI_IN_PLACE )
@@ -434,7 +434,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
 
             recvcount -= recvcounts[ me ];
 
-            sendbytes = recvbytes = recvcount * recvsz;
+            sendbytes = recvbytes = ( uint64_t )recvcount * recvsz;
         }
       #endif
 
@@ -507,10 +507,10 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
             for ( i = 0; i < N; i++ )
             {
                 PMPI_Type_size( recvtypes[ i ], &recvsz );
-                recvbytes += recvcounts[ i ] * recvsz;
+                recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
 
                 PMPI_Type_size( sendtypes[ i ], &sendsz );
-                sendbytes += sendcounts[ i ] * sendsz;
+                sendbytes += ( uint64_t )sendcounts[ i ] * sendsz;
             }
         }
       #if HAVE( MPI_IN_PLACE )
@@ -521,11 +521,11 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
             for ( i = 0; i < N; i++ )
             {
                 PMPI_Type_size( recvtypes[ i ], &recvsz );
-                recvbytes += recvcounts[ i ] * recvsz;
+                recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
             }
 
             PMPI_Type_size( recvtypes[ me ], &recvsz );
-            recvbytes -= recvcounts[ me ] * recvsz;
+            recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
 
             sendbytes = recvbytes;
         }
@@ -725,8 +725,8 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         PMPI_Comm_rank( comm, &me );
         PMPI_Comm_size( comm, &N );
 
-        sendbytes = ( N - me - 1 ) * sz * count;
-        recvbytes = me * sz * count;
+        sendbytes = ( uint64_t )( N - me - 1 ) * sz * count;
+        recvbytes = ( uint64_t )me * sz * count;
 
 
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ],
@@ -793,7 +793,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
       #endif
         {
             PMPI_Type_size( sendtype, &sendsz );
-            sendbytes = sendcount * sendsz;
+            sendbytes = ( uint64_t )sendcount * sendsz;
         }
         /* MPI_IN_PLACE: sendbytes is initialized to 0 */
 
@@ -808,7 +808,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
                 --N;
             }
         #endif
-            recvbytes = recvcount * N * recvsz;
+            recvbytes = ( uint64_t )N * recvcount * recvsz;
         }
 
 
@@ -876,7 +876,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
       #endif
         {
             PMPI_Type_size( sendtype, &sendsz );
-            sendbytes = sendcount * sendsz;
+            sendbytes = ( uint64_t )sendcount * sendsz;
         }
         /* MPI_IN_PLACE: sendbytes is initialized to 0 */
 
@@ -888,13 +888,13 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
 
             for ( i = 0; i < N; ++i )
             {
-                recvbytes += recvcounts[ i ] * recvsz;
+                recvbytes += ( uint64_t )recvcounts[ i ] * recvsz;
             }
 
         #if HAVE( MPI_IN_PLACE )
             if ( sendbuf == MPI_IN_PLACE )
             {
-                recvbytes -= recvcounts[ me ] * recvsz;
+                recvbytes -= ( uint64_t )recvcounts[ me ] * recvsz;
             }
         #endif
         }
@@ -967,7 +967,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         if ( sendbuf != MPI_IN_PLACE )
       #endif
         {
-            sendbytes = count * sz;
+            sendbytes = ( uint64_t )count * sz;
         }
       #if HAVE( MPI_IN_PLACE )
         else
@@ -978,7 +978,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
 
         if ( root == me )
         {
-            recvbytes = N * count * sz;
+            recvbytes = ( uint64_t )N * count * sz;
         }
 
 
@@ -1053,14 +1053,14 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
       #if HAVE( MPI_IN_PLACE )
         if ( sendbuf == MPI_IN_PLACE )
         {
-            sendbytes = ( count - 1 ) * sz;
-            recvbytes = ( N - 1 ) * recvcounts[ me ] * sz;
+            sendbytes = ( uint64_t )( count - 1 ) * sz;
+            recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
         }
         else
       #endif
         {
-            sendbytes = count * sz;
-            recvbytes = N * recvcounts[ me ] * sz;
+            sendbytes = ( uint64_t )count * sz;
+            recvbytes = ( uint64_t )N * recvcounts[ me ] * sz;
         }
 
 
@@ -1133,7 +1133,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
         }
       #endif
 
-        sendbytes = N * recvcount * sz;
+        sendbytes = ( uint64_t )N * recvcount * sz;
         recvbytes = sendbytes;
 
 
@@ -1203,14 +1203,14 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
       #if HAVE( MPI_IN_PLACE )
         if ( sendbuf == MPI_IN_PLACE )
         {
-            sendbytes = ( N - me - 1 ) * count * sz;
-            recvbytes = me * count * sz;
+            sendbytes = ( uint64_t )( N - me - 1 ) * count * sz;
+            recvbytes = ( uint64_t )me * count * sz;
         }
         else
       #endif
         {
-            sendbytes = ( N - me ) * count * sz;
-            recvbytes = ( me + 1 ) * count * sz;
+            sendbytes = ( uint64_t )( N - me ) * count * sz;
+            recvbytes = ( uint64_t )( me + 1 ) * count * sz;
         }
 
 
@@ -1283,18 +1283,18 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
             {
                 PMPI_Comm_size( comm, &N );
                 PMPI_Type_size( sendtype, &sendsz );
-                sendbytes = N * sendcount * sendsz;
+                sendbytes = ( uint64_t )N * sendcount * sendsz;
             }
 
             PMPI_Type_size( recvtype, &recvsz );
-            recvbytes = recvcount * recvsz;
+            recvbytes = ( uint64_t )recvcount * recvsz;
         }
       #if HAVE( MPI_IN_PLACE )
         else
         {
             PMPI_Comm_size( comm, &N );
             PMPI_Type_size( sendtype, &sendsz );
-            sendbytes = ( N - 1 ) * sendcount * sendsz;
+            sendbytes = ( uint64_t )( N - 1 ) * sendcount * sendsz;
             /* recvbytes is initialized to 0 */
         }
       #endif
@@ -1365,7 +1365,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
       #endif
         {
             PMPI_Type_size( recvtype, &recvsz );
-            recvbytes = recvcount * recvsz;
+            recvbytes = ( uint64_t )recvcount * recvsz;
         }
         /* MPI_IN_PLACE: recvbytes is initialized to 0 */
 
@@ -1386,7 +1386,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
             }
         #endif
         }
-        sendbytes = sendcount * sendsz;
+        sendbytes = ( uint64_t )sendcount * sendsz;
 
 
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ],
