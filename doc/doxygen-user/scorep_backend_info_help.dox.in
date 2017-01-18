@@ -1,0 +1,8 @@
+
+Available info commands:
+
+  system-tree:
+    Shows the available system tree levels, starting with the root.
+
+  config-vars:
+    Shows the current values of all measurement config variables.

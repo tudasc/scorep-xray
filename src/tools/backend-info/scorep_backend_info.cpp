@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,9 +61,10 @@ static const std::string toolname = "scorep-backend-info";
 static void
 print_short_usage( std::ostream& out )
 {
-    out << "Usage: " << toolname << " <info command> <command options>" << std::endl;
-    out << "       " << toolname << " --help" << std::endl;
-    out << "This is the " << PACKAGE_NAME << " backend info tool." << std::endl;
+    std::string usage =
+        #include "scorep_backend_info_usage.h"
+    ;
+    out << usage.c_str() << std::endl;
 }
 
 /**
@@ -73,15 +74,10 @@ static void
 print_help( void )
 {
     print_short_usage( std::cout );
-    std::cout << std::endl;
-    std::cout << "Available info commands:" << std::endl;
-    std::cout << std::endl;
-    std::cout << "  system-tree:" << std::endl;
-    std::cout << "    Shows the available system tree levels, starting with the root." << std::endl;
-    std::cout << std::endl;
-    std::cout << "  config-vars:" << std::endl;
-    std::cout << "    Shows the current values of all measurement config variables." << std::endl;
-    std::cout << std::endl;
+    std::string help =
+        #include "scorep_backend_info_help.h"
+    ;
+    std::cout << help.c_str() << std::endl;
     std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 

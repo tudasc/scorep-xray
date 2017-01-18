@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -33,6 +33,17 @@ bin_PROGRAMS += scorep-backend-info
 
 scorep_backend_info_SOURCES = \
     $(SRC_ROOT)src/tools/backend-info/scorep_backend_info.cpp
+
+BUILT_SOURCES += \
+    scorep_backend_info_usage.h \
+    scorep_backend_info_help.h
+CLEANFILES += \
+    scorep_backend_info_usage.h \
+    scorep_backend_info_help.h
+scorep_backend_info_usage.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_help.dox.in
+	$(AM_V_GEN)$(AWK) '{print "\"" $$0 "\\n\""}' $< >$@
+scorep_backend_info_help.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_usage.dox.in
+	$(AM_V_GEN)$(AWK) '{print "\"" $$0 "\\n\""}' $< >$@
 
 scorep_backend_info_CPPFLAGS = \
     $(AM_CPPFLAGS) \

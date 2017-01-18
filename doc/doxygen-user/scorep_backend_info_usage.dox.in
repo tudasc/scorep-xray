@@ -1,0 +1,3 @@
+Usage: scorep-backend-info <info command> <command options>
+       scorep-backend-info --help
+This is the Score-P backend info tool.

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -55,6 +55,9 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/src/config-custom.h                               \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in              \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in       \
+              $(srcdir)/doc/doxygen-user/scorep_score_usage.dox.in        \
+              $(srcdir)/doc/doxygen-user/scorep_backend_info_help.dox.in  \
+              $(srcdir)/doc/doxygen-user/scorep_backend_info_usage.dox.in \
               $(srcdir)/doc/doxygen-user/main_1.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_2.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_3.dox.in                    \
@@ -138,22 +141,6 @@ doc/doxygen-user/confvars.dox.in: scorep-info-command
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	./$(INFO_TOOL_BUILD)/scorep-info config-vars --doxygen >$@
 
-scorep-backend-info-command:
-	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) scorep-backend-info
-
-CLEANFILES += doc/doxygen-user/scorep_backend_info_usage.dox.in
-doc/doxygen-user/scorep_backend_info_usage.dox.in: scorep-backend-info-command
-	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
-	./build-backend/scorep-backend-info --help >$@
-
-scorep-score-command:
-	@$(am__cd) build-score && $(MAKE) $(AM_MAKEFLAGS) scorep-score
-
-CLEANFILES += doc/doxygen-user/scorep_score_usage.dox.in
-doc/doxygen-user/scorep_score_usage.dox.in: scorep-score-command
-	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
-	./build-score/scorep-score --help >$@
-
 scorep-wrapper-command:
 	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) scorep-wrapper
 
@@ -183,9 +170,10 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     $(srcdir)/doc/doxygen-user/main_3.dox.in \
     doc/doxygen-user/scorep_info_usage.dox.in \
     $(srcdir)/doc/doxygen-user/main_4.dox.in \
-    doc/doxygen-user/scorep_score_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_score_usage.dox.in \
     $(srcdir)/doc/doxygen-user/main_5.dox.in \
-    doc/doxygen-user/scorep_backend_info_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_backend_info_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_backend_info_help.dox.in \
     $(srcdir)/doc/doxygen-user/main_6.dox.in \
     $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md \
     $(srcdir)/doc/doxygen-user/main_7.dox.in \

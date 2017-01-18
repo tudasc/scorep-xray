@@ -4,7 +4,7 @@
 ## Copyright (c) 2012-2013,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## Copyright (c) 2012-2015,
+## Copyright (c) 2012-2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2012,
@@ -32,6 +32,11 @@ scorep_score_SOURCES = \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Profile.hpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.cpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.hpp
+
+BUILT_SOURCES += scorep_score_usage.h
+CLEANFILES += scorep_score_usage.h
+scorep_score_usage.h: $(srcdir)/../doc/doxygen-user/scorep_score_usage.dox.in
+	$(AM_V_GEN)$(AWK) '{print "\"" $$0 "\\n\""}' $< >$@
 
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \

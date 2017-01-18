@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -44,18 +44,11 @@ using namespace std;
 void
 print_help()
 {
-    cout << "Usage: scorep-score <profile> [options]" << endl;
-    cout << "Options:\n"
-         << " -r          Show all regions.\n"
-         << " -h, --help  Show this help and exit.\n"
-         << " -f <filter> Shows the result with the filter applied.\n"
-         << " -c <num>    Specifes the number of hardware counters that shall be measured.\n"
-         << "             By default, this value is 0, which means that only a timestamp\n"
-         << "             is measured on each event. If you plan to record hardware counters\n"
-         << "             specify the number of hardware counters. Otherwise, scorep-score\n"
-         << "             may underestimate the required space.\n"
-         << " -m          Prints mangled region names instead of demangled names."
-         << endl;
+    string usage =
+        #include "scorep_score_usage.h"
+    ;
+    cout << usage.c_str() << endl;
+    cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << endl;
 }
 
 int
