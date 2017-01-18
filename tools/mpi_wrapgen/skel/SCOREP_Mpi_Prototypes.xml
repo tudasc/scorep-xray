@@ -92,13 +92,13 @@
      #endif
      {
        PMPI_Type_size(sendtype, &sendsz);
-       sendbytes = N * sendcount * sendsz;
-       recvbytes = N * recvcount * recvsz;
+       sendbytes = (uint64_t)N * sendcount * sendsz;
+       recvbytes = (uint64_t)N * recvcount * recvsz;
      }
      #if HAVE( MPI_IN_PLACE )
      else
      {
-       sendbytes = recvbytes = (N-1) * recvcount * recvsz;
+       sendbytes = recvbytes = (uint64_t)(N-1) * recvcount * recvsz;
      }
      #endif
 ]]></xblock>
@@ -171,12 +171,12 @@
       #endif
       {
         PMPI_Type_size(sendtype, &sendsz);
-        sendbytes = N * sendcount * sendsz;
+        sendbytes = (uint64_t)N * sendcount * sendsz;
       }
       #if HAVE( MPI_IN_PLACE )
       else
       {
-        sendbytes = (N-1) * recvcounts[me] * recvsz;
+        sendbytes = (uint64_t)(N-1) * recvcounts[me] * recvsz;
       }
       #endif
 
@@ -188,7 +188,7 @@
       if (sendbuf == MPI_IN_PLACE)
         recvcount -= recvcounts[me];
       #endif
-      recvbytes = recvcount * recvsz;
+      recvbytes = (uint64_t)recvcount * recvsz;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -262,12 +262,12 @@
       #if HAVE( HAS_MPI_IN_PLACE )
       if (sendbuf == MPI_IN_PLACE)
       {
-        sendbytes = recvbytes = (N-1) * count * sz;
+        sendbytes = recvbytes = (uint64_t)(N-1) * count * sz;
       }
       else
       #endif
       {
-        sendbytes = recvbytes = N * count * sz;
+        sendbytes = recvbytes = (uint64_t)N * count * sz;
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -337,7 +337,7 @@
           --N;
       #endif
 
-      sendbytes = N * recvcount * recvsz;
+      sendbytes = (uint64_t)N * recvcount * recvsz;
       recvbytes = sendbytes;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -411,8 +411,8 @@
         PMPI_Type_size(sendtype, &sendsz);
         for(i = 0; i<N; i++)
         {
-          recvbytes += recvcounts[i] * recvsz;
-          sendbytes += sendcounts[i] * sendsz;
+          recvbytes += (uint64_t)recvcounts[i] * recvsz;
+          sendbytes += (uint64_t)sendcounts[i] * sendsz;
         }
       }
       #if HAVE( MPI_IN_PLACE )
@@ -424,7 +424,7 @@
 
         recvcount -= recvcounts[me];
 
-        sendbytes = recvbytes = recvcount * recvsz;
+        sendbytes = recvbytes = (uint64_t)recvcount * recvsz;
       }
       #endif
 ]]></xblock>
@@ -498,10 +498,10 @@
         for(i = 0; i<N; i++)
         {
           PMPI_Type_size(recvtypes[i], &recvsz);
-          recvbytes += recvcounts[i] * recvsz;
+          recvbytes += (uint64_t)recvcounts[i] * recvsz;
 
           PMPI_Type_size(sendtypes[i], &sendsz);
-          sendbytes += sendcounts[i] * sendsz;
+          sendbytes += (uint64_t)sendcounts[i] * sendsz;
         }
       }
       #if HAVE( MPI_IN_PLACE )
@@ -512,11 +512,11 @@
         for(i = 0; i<N; i++)
         {
           PMPI_Type_size(recvtypes[i], &recvsz);
-          recvbytes += recvcounts[i] * recvsz;
+          recvbytes += (uint64_t)recvcounts[i] * recvsz;
         }
 
         PMPI_Type_size(recvtypes[me], &recvsz);
-        recvbytes -= recvcounts[me] * recvsz;
+        recvbytes -= (uint64_t)recvcounts[me] * recvsz;
 
         sendbytes = recvbytes;
       }
@@ -1234,8 +1234,8 @@
       PMPI_Comm_rank(comm, &me);
       PMPI_Comm_size(comm, &N);
 
-      sendbytes = (N-me-1) * sz * count;
-      recvbytes = me * sz * count;
+      sendbytes = (uint64_t)(N-me-1) * sz * count;
+      recvbytes = (uint64_t)me * sz * count;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -2573,7 +2573,7 @@
       #endif
       {
         PMPI_Type_size(sendtype, &sendsz);
-        sendbytes = sendcount * sendsz;
+        sendbytes = (uint64_t)sendcount * sendsz;
       }
       /* MPI_IN_PLACE: sendbytes is initialized to 0 */
 
@@ -2585,7 +2585,7 @@
         if (sendbuf == MPI_IN_PLACE)
           --N;
         #endif
-        recvbytes = recvcount * N * recvsz;
+        recvbytes = (uint64_t)N * recvcount * recvsz;
       }]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
@@ -2654,7 +2654,7 @@
       #endif
       {
         PMPI_Type_size(sendtype, &sendsz);
-        sendbytes = sendcount * sendsz;
+        sendbytes = (uint64_t)sendcount * sendsz;
       }
       /* MPI_IN_PLACE: sendbytes is initialized to 0 */
 
@@ -2664,11 +2664,11 @@
         PMPI_Type_size(recvtype, &recvsz);
 
         for(i = 0; i < N; ++i)
-          recvbytes += recvcounts[i] * recvsz;
+          recvbytes += (uint64_t)recvcounts[i] * recvsz;
 
         #if HAVE( MPI_IN_PLACE )
         if (sendbuf == MPI_IN_PLACE)
-          recvbytes -= recvcounts[me] * recvsz;
+          recvbytes -= (uint64_t)recvcounts[me] * recvsz;
         #endif
       }]]>
 </xblock>
@@ -5046,7 +5046,7 @@
       if (sendbuf != MPI_IN_PLACE)
       #endif
       {
-        sendbytes = count * sz;
+        sendbytes = (uint64_t)count * sz;
       }
       #if HAVE( MPI_IN_PLACE )
       else
@@ -5056,7 +5056,7 @@
       }
 
       if (root == me)
-        recvbytes = N * count * sz;
+        recvbytes = (uint64_t)N * count * sz;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -5135,14 +5135,14 @@
       #if HAVE( MPI_IN_PLACE )
       if (sendbuf == MPI_IN_PLACE)
       {
-        sendbytes = (count-1) * sz;
-        recvbytes = (N-1) * recvcounts[me] * sz;
+        sendbytes = (uint64_t)(count-1) * sz;
+        recvbytes = (uint64_t)(N-1) * recvcounts[me] * sz;
       }
       else
       #endif
       {
-        sendbytes = count * sz;
-        recvbytes = N * recvcounts[me] * sz;
+        sendbytes = (uint64_t)count * sz;
+        recvbytes = (uint64_t)N * recvcounts[me] * sz;
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -5211,7 +5211,7 @@
           --N;
       #endif
 
-      sendbytes = N * recvcount * sz;
+      sendbytes = (uint64_t)N * recvcount * sz;
       recvbytes = sendbytes;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -5460,14 +5460,14 @@
       #if HAVE( MPI_IN_PLACE )
       if (sendbuf == MPI_IN_PLACE)
       {
-        sendbytes = (N - me - 1) * count * sz;
-        recvbytes = me * count * sz;
+        sendbytes = (uint64_t)(N - me - 1) * count * sz;
+        recvbytes = (uint64_t)me * count * sz;
       }
       else
       #endif
       {
-        sendbytes = (N - me) * count * sz;
-        recvbytes = (me + 1) * count * sz;
+        sendbytes = (uint64_t)(N - me) * count * sz;
+        recvbytes = (uint64_t)(me + 1) * count * sz;
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -5540,18 +5540,18 @@
         {
           PMPI_Comm_size(comm, &N);
           PMPI_Type_size(sendtype, &sendsz);
-          sendbytes = N * sendcount * sendsz;
+          sendbytes = (uint64_t)N * sendcount * sendsz;
         }
 
         PMPI_Type_size(recvtype, &recvsz);
-        recvbytes = recvcount * recvsz;
+        recvbytes = (uint64_t)recvcount * recvsz;
       }
       #if HAVE( MPI_IN_PLACE )
       else
       {
         PMPI_Comm_size(comm, &N);
         PMPI_Type_size(sendtype, &sendsz);
-        sendbytes = (N-1) * sendcount * sendsz;
+        sendbytes = (uint64_t)(N-1) * sendcount * sendsz;
         /* recvbytes is initialized to 0 */
       }
       #endif
@@ -5623,7 +5623,7 @@
       #endif
       {
         PMPI_Type_size(recvtype, &recvsz);
-        recvbytes = recvcount * recvsz;
+        recvbytes = (uint64_t)recvcount * recvsz;
       }
       /* MPI_IN_PLACE: recvbytes is initialized to 0 */
 
@@ -5639,7 +5639,7 @@
           sendcount -= sendcounts[me];
         #endif
       }
-      sendbytes = sendcount * sendsz;
+      sendbytes = (uint64_t)sendcount * sendsz;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
