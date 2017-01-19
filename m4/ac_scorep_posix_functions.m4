@@ -41,14 +41,39 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LANG_PUSH(C)
 
     ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
+    AC_CHECK_DECLS([realpath, gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
       #include <unistd.h>
       #include <stdio.h>
+      #include <stdlib.h>
     ]])
 
     ##
     ## try to link
     ##
+
+    has_realpath_func="yes"
+    AC_MSG_CHECKING([for realpath])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdlib.h>
+
+            #if !HAVE_DECL_REALPATH
+            char *realpath(const char *path, char *resolved_path);
+            #endif
+
+            int main()
+            {
+                const char * path = "/tmp";
+                char * resolved_path = realpath( path, NULL );
+                free( resolved_path );
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_REALPATH, 1, [Can link a realpath function])],
+        [AC_MSG_RESULT(no)
+         has_realpath_func="no"]
+    ) # AC_LINK_IF_ELSE
 
     has_gethostid_func="yes"
     AC_MSG_CHECKING([for gethostid])
@@ -239,7 +264,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     ##
     ## result
     ##
-
+    AM_CONDITIONAL([HAVE_REALPATH], [test "x${has_realpath_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETHOSTID], [test "x${has_gethostid_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETHOSTNAME], [test "x${has_gethostname_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_FILENO], [test "x${has_fileno_func}" = "xyes"])
