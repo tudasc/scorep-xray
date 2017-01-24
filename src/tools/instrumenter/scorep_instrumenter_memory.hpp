@@ -44,6 +44,10 @@ public:
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
 
+    virtual bool
+    checkCommand( const std::string& current,
+                  const std::string& next );
+
 private:
     std::set<std::string> m_categories;
 };
