@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2017,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -75,6 +78,16 @@ is_source_file( const std::string& filename );
  */
 bool
 is_header_file( const std::string& filename );
+
+
+/**
+    Checks whether a file is an assembler file.
+    @param filename A file name.
+    @returns true if the file extension indicates a assembler source
+             file.
+ */
+bool
+is_assembler_file( const std::string& filename );
 
 /**
     Checks whether a file is a Fortran source file.

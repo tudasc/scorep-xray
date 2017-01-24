@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2017,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -288,12 +291,29 @@ is_header_file( const std::string& filename )
 }
 
 bool
+is_assembler_file( const std::string& filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".s" );
+    SCOREP_CHECK_EXT( ".S" );
+    SCOREP_CHECK_EXT( ".asm" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
 is_source_file( const std::string& filename )
 {
     return is_c_file( filename ) ||
            is_cpp_file( filename ) ||
            is_cuda_file( filename ) ||
-           is_fortran_file( filename );
+           is_fortran_file( filename ) ||
+           is_assembler_file( filename );
 }
 
 bool

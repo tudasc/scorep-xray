@@ -32,7 +32,8 @@ Bugfixes:
   the same parameters.
 - Fix that memory allocation measurements are disabled if the
   user explicitly specifies --memory
-- Fix conflict of function wrapping with IPA on BlueGene systems
+- Fix conflict of function wrapping with IPA on BlueGene systems.
+- Do not preprocess assembler files anymore.
 
 ------------------- Released version 3.0 -----------------------------
 

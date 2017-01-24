@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -221,7 +221,8 @@ SCOREP_Instrumenter::Run( void )
 
 
                 // Perform preprocessing steps
-                if ( m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::DISABLE )
+                if ( m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::DISABLE &&
+                     !is_assembler_file( *current_file ) )
                 {
                     std::string orig_extension = get_extension( *current_file );
                     *current_file = preprocess( *current_file );
