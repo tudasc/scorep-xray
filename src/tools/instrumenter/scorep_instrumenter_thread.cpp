@@ -10,6 +10,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -193,6 +196,9 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     m_pthread_cflag( SCOREP_BACKEND_PTHREAD_CFLAGS ),
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {
+#if SCOREP_BACKEND_COMPILER_IBM
+    m_has_ipa = false;
+#endif
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD );
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
 #if !SCOREP_BACKEND_HAVE_PTHREAD
@@ -226,6 +232,15 @@ SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
         m_selector->select( this, false );
         return true;
     }
+#if SCOREP_BACKEND_COMPILER_IBM
+    if ( current == "-O4" ||
+         current == "-O5" ||
+         current == "-qipa" ||
+         ( current.substr( 0, 6 ) == "-qipa=" ) )
+    {
+        m_has_ipa = true;
+    }
+#endif  /* SCOREP_BACKEND_COMPILER_IBM */
 
     return false;
 }
@@ -239,6 +254,25 @@ SCOREP_Instrumenter_Pthread::setConfigValue( const std::string& key,
         m_pthread_cflag = value;
     }
 }
+
+#if SCOREP_BACKEND_COMPILER_IBM
+void
+SCOREP_Instrumenter_Pthread::checkDependencies( void )
+{
+    SCOREP_Instrumenter_Paradigm::checkDependencies();
+
+    if ( isEnabled() && m_has_ipa )
+    {
+        std::cerr << "ERROR: Pthread support does not work in combination with\n"
+                  << "       interprocedural analysis (-qipa compiler flag).\n"
+                  << "       Disable interprocedural analysis.\n"
+                  << "       You must not disable pthread support in Score-P\n"
+                  << "       if your application uses pthreads.\n"
+                  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+}
+#endif  /* SCOREP_BACKEND_COMPILER_IBM */
 
 /* *****************************************************************************
  * class SCOREP_Instrumenter_PthreadAdapter

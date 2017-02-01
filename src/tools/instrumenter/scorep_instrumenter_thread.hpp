@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -100,6 +103,15 @@ public:
     setConfigValue( const std::string& key,
                     const std::string& value );
 
+
+#if SCOREP_BACKEND_COMPILER_IBM
+    virtual void
+    checkDependencies( void );
+
+private:
+    bool m_has_ipa;
+#endif  /* SCOREP_BACKEND_COMPILER_IBM */
+
 private:
     std::string m_pthread_cflag;
     std::string m_pthread_lib;
@@ -113,10 +125,10 @@ class SCOREP_Instrumenter_PthreadAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_PthreadAdapter( void );
 
-    void
+    virtual void
     printHelp( void );
 
-    std::string
+    virtual std::string
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 };
 

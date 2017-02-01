@@ -356,9 +356,6 @@ void
 SCOREP_Config_PthreadThreadSystem::addLdFlags( std::string& ldflags,
                                                bool         nvcc )
 {
-#if SCOREP_BACKEND_COMPILER_IBM
-    ldflags += " -qnoipa ";
-#endif /* SCOREP_BACKEND_COMPILER_IBM */
     ldflags += " -Wl,"
                "--undefined,__wrap_pthread_create,"
                "-wrap,pthread_create,"
