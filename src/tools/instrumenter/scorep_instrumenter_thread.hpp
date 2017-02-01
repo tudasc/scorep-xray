@@ -103,16 +103,11 @@ public:
     setConfigValue( const std::string& key,
                     const std::string& value );
 
-
-#if SCOREP_BACKEND_COMPILER_IBM
     virtual void
     checkDependencies( void );
 
 private:
-    bool m_has_ipa;
-#endif  /* SCOREP_BACKEND_COMPILER_IBM */
-
-private:
+    bool        m_has_ipa;
     std::string m_pthread_cflag;
     std::string m_pthread_lib;
 };
