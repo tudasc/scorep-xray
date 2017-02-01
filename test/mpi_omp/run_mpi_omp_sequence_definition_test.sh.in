@@ -76,7 +76,7 @@ locations=`$OTF2_PRINT -G $SINGLE_DIR/traces.otf2 | grep "LOCATION " | cut -c27-
 for i in $locations; do 
     $OTF2_PRINT -L $i $SEQUENCE_DIR/traces.otf2 | cut -c50-65 --complement > sequence.trace
     $OTF2_PRINT -L $i $SINGLE_DIR/traces.otf2 | cut -c50-65 --complement > single.trace
-    if [ `diff sequence.trace single.trace` ]; then
+    if [ "`diff sequence.trace single.trace`" ]; then
 	diff sequence.trace single.trace
 	exit 1
     else
