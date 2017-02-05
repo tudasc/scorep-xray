@@ -216,17 +216,6 @@ AS_IF([test "x$scorep_otf2_have_sion" = "xyes"], [
 ])
 AFS_SUMMARY([SIONlib support], [$scorep_otf2_have_sion])
 
-scorep_otf2_have_zlib=no
-for compression in `$scorep_otf2_config $scorep_otf2_config_backend_arg --features=compressions`
-do
-    AS_CASE([${compression}],
-        [zlib], [scorep_otf2_have_zlib=yes])
-done
-AS_IF([test "x$scorep_otf2_have_zlib" = "xyes"], [
-    AC_DEFINE([HAVE_OTF2_COMPRESSION_ZLIB], [1], [Define if the used OTF2 library has zlib compression support.])
-])
-AFS_SUMMARY([zlib support], [$scorep_otf2_have_zlib])
-
 AFS_SUMMARY_SECTION_END # OTF2 features
 
 opari2_fix_and_free_form_options=1

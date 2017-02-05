@@ -94,20 +94,6 @@ scorep_tracing_get_file_substrate( void )
 }
 
 
-static OTF2_Compression
-scorep_tracing_get_compression( void )
-{
-#if HAVE( OTF2_COMPRESSION_ZLIB )
-    if ( scorep_tracing_compress )
-    {
-        return OTF2_COMPRESSION_ZLIB;
-    }
-#endif
-
-    return OTF2_COMPRESSION_NONE;
-}
-
-
 static OTF2_FlushType
 scorep_on_trace_pre_flush( void*         userData,
                            OTF2_FileType fileType,
@@ -320,7 +306,7 @@ SCOREP_Tracing_Initialize( size_t substrateId )
                                              SCOREP_TRACING_CHUNK_SIZE,
                                              OTF2_UNDEFINED_UINT64,
                                              scorep_tracing_get_file_substrate(),
-                                             scorep_tracing_get_compression() );
+                                             OTF2_COMPRESSION_NONE );
     UTILS_BUG_ON( !scorep_otf2_archive, "Couldn't create OTF2 archive." );
 
     scorep_tracing_register_flush_callbacks( scorep_otf2_archive );
