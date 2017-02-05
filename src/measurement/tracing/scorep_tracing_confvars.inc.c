@@ -42,9 +42,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool        scorep_tracing_use_sion;
-uint64_t    scorep_tracing_max_procs_per_sion_file;
-static bool tracing_compress;
+bool     scorep_tracing_use_sion;
+uint64_t scorep_tracing_max_procs_per_sion_file;
 /* Need to initialize variable, as it is not guaranteed that it will be set by
  * the config system, if unwinding is not supported.
  */
@@ -72,15 +71,6 @@ static const SCOREP_ConfigVariable scorep_tracing_confvars[] = {
         "All processes are than evenly distributed over the number of needed "
         "files to fulfill this constraint. E.g., having 4 processes and setting "
         "the maximum to 3 would result in 2 files each holding 2 processes."
-    },
-    {
-        "compress",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &tracing_compress,
-        NULL,
-        "false",
-        "Whether or not to compress traces with libz",
-        ""
     },
     SCOREP_CONFIG_TERMINATOR
 };
