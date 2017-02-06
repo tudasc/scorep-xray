@@ -11,7 +11,7 @@
 ## directory for details.
 ##
 
-## file       run_sequence_definition_test.sh.in
+## file       run_mpi_omp_sequence_definition_test.sh.in
 
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SINGLE_DIR="scorep_single_definitions_test_dir"
