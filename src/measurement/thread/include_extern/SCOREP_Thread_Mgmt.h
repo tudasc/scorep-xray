@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2016,
@@ -62,6 +62,13 @@ SCOREP_Thread_Finalize( void );
  */
 bool
 SCOREP_Thread_InParallel( void );
+
+
+/**
+ * Return the initial/master thread's thread private data handle.
+ */
+struct scorep_thread_private_data*
+SCOREP_Thread_GetInitialTpd( void );
 
 
 #endif /* SCOREP_THREAD_MGMT_H */

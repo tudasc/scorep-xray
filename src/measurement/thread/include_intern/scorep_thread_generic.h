@@ -80,16 +80,6 @@ scorep_thread_is_initial_thread( struct scorep_thread_private_data* tpd );
 
 
 /**
- *
- *
- *
- * @return
- */
-struct scorep_thread_private_data*
-scorep_thread_get_initial_tpd( void );
-
-
-/**
  * Get the parent SCOREP_Thread_PrivateData object of @a tpd. Returns
  * 0 for the initial thread.
  */

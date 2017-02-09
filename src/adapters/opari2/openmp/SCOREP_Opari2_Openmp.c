@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -42,6 +42,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_ThreadForkJoin_Event.h>
+#include <SCOREP_Task.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPARI2
 #include <UTILS_Error.h>
@@ -49,6 +50,7 @@
 
 #include <opari2/pomp2_lib.h>
 
+#include "SCOREP_Opari2_Openmp_Tpd.h"
 #include "SCOREP_Opari2_Openmp_Regions.h"
 #include "SCOREP_Opari2_Openmp_Lock.h"
 
@@ -440,7 +442,48 @@ POMP2_Parallel_begin( POMP2_Region_handle* pomp_handle )
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        pomp_current_task = scorep_to_pomp2_handle( SCOREP_ThreadForkJoin_TeamBegin( SCOREP_PARADIGM_OPENMP, omp_get_thread_num() ) );
+#if HAVE( SCOREP_OMP_ANCESTRY )
+        /* Collect ancestry info into an array. */
+        int nesting_level = omp_get_level();
+        /* Inside a parallel region the nesting level is at least 1. */
+        UTILS_ASSERT( nesting_level > 0 );
+        int ancestor_info[ nesting_level - 1 ];
+        for ( int level = 1; level < nesting_level; level++ )
+        {
+            if ( omp_get_team_size( level ) > 1 )
+            {
+                ancestor_info[ level - 1 ] = omp_get_ancestor_thread_num( level );
+            }
+            else
+            {
+                ancestor_info[ level - 1 ] = -1;
+            }
+        }
+#elif HAVE( SCOREP_OMP_TPD )
+        /* Pass pomp_tpd down to be used as parent. */
+        uint32_t nesting_level = 0;
+        void*    ancestor_info = ( void* )POMP_TPD_MANGLED;
+#else
+#error "Need either SCOREP_OMP_ANCESTRY or SCOREP_OMP_TPD functionality for OpenMP."
+#endif
+
+        struct scorep_thread_private_data* new_tpd = NULL;
+        SCOREP_TaskHandle                  new_task;
+
+        int thread_num = omp_get_thread_num();
+        UTILS_ASSERT( thread_num >= 0 );
+        int num_threads = omp_get_num_threads();
+        UTILS_ASSERT( num_threads > 0 );
+        SCOREP_ThreadForkJoin_TeamBegin(
+            SCOREP_PARADIGM_OPENMP,
+            ( uint32_t )thread_num,
+            ( uint32_t )num_threads,
+            ( uint32_t )nesting_level,
+            ancestor_info,
+            &new_tpd,
+            &new_task );
+        pomp_current_task = scorep_to_pomp2_handle( new_task );
+        SCOREP_OMP_SET_POMP_TPD_TO( new_tpd );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerParallel );
     }
@@ -459,7 +502,9 @@ POMP2_Parallel_end( POMP2_Region_handle* pomp_handle )
     {
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerParallel );
-        SCOREP_ThreadForkJoin_TeamEnd( SCOREP_PARADIGM_OPENMP );
+        SCOREP_ThreadForkJoin_TeamEnd( SCOREP_PARADIGM_OPENMP,
+                                       omp_get_thread_num(),
+                                       omp_get_num_threads() );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -502,8 +547,10 @@ POMP2_Parallel_join( POMP2_Region_handle* pomp_handle,
     pomp_current_task = pomp_old_task;
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
-        SCOREP_ThreadForkJoin_Join( SCOREP_PARADIGM_OPENMP );
+        SCOREP_Opari2_Openmp_Region*       region          = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
+        struct scorep_thread_private_data* tpd_from_now_on = NULL;
+        SCOREP_ThreadForkJoin_Join( SCOREP_PARADIGM_OPENMP, &tpd_from_now_on );
+        SCOREP_OMP_SET_POMP_TPD_TO( tpd_from_now_on );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

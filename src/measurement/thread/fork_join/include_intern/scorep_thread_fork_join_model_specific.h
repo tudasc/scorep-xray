@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -31,11 +31,11 @@ struct SCOREP_Location;
 struct scorep_thread_private_data;
 
 void
-scorep_thread_create_first_fork_locations_mutex( void );
+scorep_thread_create_mutexes();
 
 
 void
-scorep_thread_destroy_first_fork_locations_mutex( void );
+scorep_thread_destroy_mutexes();
 
 
 /**
@@ -88,14 +88,15 @@ scorep_thread_on_join( struct scorep_thread_private_data*  currentTpd,
 
 
 /**
- * Return this thread's parent scorep_thread_private_data object. This
- * functions is called once from SCOREP_ThreadForkJoin_TeamBegin()
- * only. It is called before scorep_thread_on_team_begin(). Keep this
- * in mind while implementing.
+ * Retrieve this thread's @a parent either by walking the internal tree
+ * @a nestingLevel steps using @a ancestorInfo as array of indices
+ * starting from the master thread into the children arrays. If
+ * @a nestingLevel equals 0, interpret @a ancestorInfo as the parent.
  */
-struct scorep_thread_private_data*
-scorep_thread_on_team_begin_get_parent( void );
-
+void
+scorep_thread_on_team_begin_get_parent( uint32_t                            nestingLevel,
+                                        void*                               ancestorInfo,
+                                        struct scorep_thread_private_data** parent );
 
 /**
  * Perform model-specific thread-begin activities for fork-join as
@@ -109,11 +110,11 @@ scorep_thread_on_team_begin_get_parent( void );
  *
  * @param[out] currentTpd This thread's SCOREP_Thread_PrivateData object.
  *
- * @param paradigm  One of the predefined threading models. Allows for
- * consistency checks.
+ * @param paradigm One of the fork-join threading models.
  *
- * @param[out] threadId Thread Id in current team. Out of [0,..,team_size).
- * 0 is defined to be the master thread, which forked this thread team.
+ * @param threadId Thread Id in current team. Out of [0,..,teamSize).
+ *
+ * @param teamSize Number of threads that constitute the parallel region.
  *
  * @param firstForkLocations Array of pre-created locations to get a mapping
  * between thread-id and location-id for the first fork only. For subsequent
@@ -126,7 +127,8 @@ void
 scorep_thread_on_team_begin( struct scorep_thread_private_data*  parentTpd,
                              struct scorep_thread_private_data** currentTpd,
                              SCOREP_ParadigmType                 paradigm,
-                             int*                                threadId,
+                             uint32_t                            threadId,
+                             uint32_t                            teamSize,
                              struct SCOREP_Location**            firstForkLocations,
                              bool*                               locationIsCreated );
 
@@ -141,27 +143,20 @@ scorep_thread_on_team_begin( struct scorep_thread_private_data*  parentTpd,
  * @param[out] parentTpd[] Parent thread's SCOREP_Thread_PrivateData
  * object.
  *
- * @param[out] threadId Thread Id in current team. Out of [0,..,team_size).
- * 0 is defined to be the master thread, which forked this thread team.
+ * @param threadId Thread Id out of [0..teamSize) within the team of threads that
+ * constitute the parallel region. 0 is defined to be the master thread, which
+ * forked this thread team.
  *
- * @param paradigm  One of the predefined threading models. Allows for
- * consistency checks.
+ * @param teamSize Number of threads that constitute the parallel region.
+ *
+ * @param paradigm One of the fork-join threading models.
  */
 void
 scorep_thread_on_team_end( struct scorep_thread_private_data*  currentTpd,
                            struct scorep_thread_private_data** parentTpd,
-                           int*                                threadId,
+                           uint32_t                            threadId,
+                           uint32_t                            teamSize,
                            SCOREP_ParadigmType                 paradigm );
-
-
-/**
- *
- *
- *
- * @return
- */
-uint32_t
-scorep_thread_get_team_size( void );
 
 
 /**
@@ -174,8 +169,8 @@ scorep_thread_get_team_size( void );
  */
 void
 scorep_thread_create_location_name( char*                              locationName,
-                                    int                                locationNameMaxLength,
-                                    int                                threadId,
+                                    size_t                             locationNameMaxLength,
+                                    uint32_t                           threadId,
                                     struct scorep_thread_private_data* parentTpd );
 
 

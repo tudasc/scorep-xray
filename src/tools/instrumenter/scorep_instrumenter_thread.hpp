@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015,
@@ -38,14 +38,12 @@ public:
 };
 
 /* *****************************************************************************
- * class SCOREP_Instrumenter_Omp: Base class for all OpenMP variants
+ * class SCOREP_Instrumenter_Omp
  * ****************************************************************************/
 class SCOREP_Instrumenter_Omp : public SCOREP_Instrumenter_Paradigm
 {
 public:
-    SCOREP_Instrumenter_Omp( SCOREP_Instrumenter_Selector* selector,
-                             const std::string&            variant,
-                             const std::string&            description );
+    SCOREP_Instrumenter_Omp( SCOREP_Instrumenter_Selector* selector );
 
     virtual bool
     checkCommand( const std::string& current,
@@ -64,27 +62,6 @@ protected:
 private:
     bool
     checkForOpenmpOption( const std::string& current );
-};
-
-/* *****************************************************************************
- * class SCOREP_Instrumenter_OmpTpd
- * ****************************************************************************/
-class SCOREP_Instrumenter_OmpTpd : public SCOREP_Instrumenter_Omp
-{
-public:
-    SCOREP_Instrumenter_OmpTpd( SCOREP_Instrumenter_Selector* selector );
-
-    virtual void
-    checkDependencies( void );
-};
-
-/* *****************************************************************************
- * class SCOREP_Instrumenter_OmpAncestry
- * ****************************************************************************/
-class SCOREP_Instrumenter_OmpAncestry : public SCOREP_Instrumenter_Omp
-{
-public:
-    SCOREP_Instrumenter_OmpAncestry( SCOREP_Instrumenter_Selector* selector );
 };
 
 /* *****************************************************************************

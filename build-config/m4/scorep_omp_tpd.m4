@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2015,
+dnl Copyright (c) 2013-2017,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -43,16 +43,26 @@ AS_IF([test "x${ac_scorep_platform}" = xk ||
      scorep_has_alignment_attribute="no"])
 
 AS_CASE([${ac_scorep_platform}],
-    [bg*], [AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu],
-               [# On Juqueen with gfortan all OpenMP tpd installchecks fail,
-                # ancestry works though
-                scorep_has_alignment_attribute="no"])])
+    [bg*], [# Switch of tpd on BlueGene systems because:
+            # 1. On Juqueen with gfortan all OpenMP tpd installchecks fail,
+            #    ancestry works though.
+            # 2. On Juqueen with bgxlc V12.1 declaration and definition of
+            #    pomp_tpd fails with a 'Identifier pomp_tpd has already been 
+            #    defined' error. Reproducer:
+            #      extern int64_t __attribute__((aligned (16))) pomp_tpd;
+            #      _Pragma( "omp threadprivate( pomp_tpd )" )
+            #      int64_t __attribute__((aligned (16))) pomp_tpd;
+            #    Newer xlc (e.g. V13.1.4) work as expected.
+            scorep_has_alignment_attribute="no"])
 
 AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],
     [AC_DEFINE([FORTRAN_ALIGNED],
          [__attribute__((aligned (16)))],
          [Makes C variable alignment consistent with Fortran])
-     AC_SUBST([SCOREP_OMP_TPD], [1])],
+     AC_SUBST([SCOREP_OMP_TPD], [1])
+     AC_DEFINE_UNQUOTED([HAVE_SCOREP_OMP_TPD], [1],
+         [Define to 1 if OpenMP tpd functionality is available.])
+    ],
     [AC_SUBST([SCOREP_OMP_TPD], [0])])
 AFS_AM_CONDITIONAL([HAVE_SCOREP_OMP_TPD], [test "x${scorep_has_alignment_attribute}" = "xyes"], [false])
 

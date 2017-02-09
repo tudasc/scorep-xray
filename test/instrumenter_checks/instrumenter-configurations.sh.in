@@ -19,7 +19,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -58,8 +58,7 @@ omp_instrumenter_args=
 @HAVE_OPENMP_SUPPORT_TRUE@omp_instrumenter_args="openmp noopenmp "
 
 omp_backend_args=
-@HAVE_SCOREP_OMP_TPD_TRUE@omp_backend_args="${omp_backend_args} thread=omp:pomp_tpd "
-@HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_backend_args="${omp_backend_args} thread=omp:ancestry "
+@HAVE_OPENMP_SUPPORT_TRUE@omp_backend_args="${omp_backend_args} thread=omp "
 
 mutex_args=
 @HAVE_OPENMP_SUPPORT_TRUE@mutex_args="${mutex_args} mutex=omp"

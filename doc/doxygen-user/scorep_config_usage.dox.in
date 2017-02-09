@@ -65,14 +65,11 @@ scorep-config <command> [<options>]
               new,new[],delete,delete[] (IA-64 C++ ABI)
              pgCCL32|pgCCL64:
               new,new[],delete,delete[] (old PGI/EDG C++ ABI)
-   --thread=<threading system>[:<variant>]
+   --thread=<threading system>
             Available threading systems are:
          none	This is the default.
-         omp:pomp_tpd
-         omp:ancestry
+         omp
          pthread
-            If no variant is specified the first matching
-            threading system is used.
    --mutex=<locking system>[:<variant>]
             Available locking systems are:
          none

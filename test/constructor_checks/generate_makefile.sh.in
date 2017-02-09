@@ -78,8 +78,7 @@ all:
 _EOF
 
 paradigm_threads="none"
-@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp:pomp_tpd"
-@HAVE_OPENMP_SUPPORT_TRUE@@HAVE_SCOREP_OMP_ANCESTRY_TRUE@paradigm_threads="$paradigm_threads omp:ancestry"
+@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp"
 
 for thread in $paradigm_threads
 do
@@ -89,7 +88,7 @@ do
     cxxflags=
     fcflags=
     case $thread in
-        (omp:*)
+        (omp)
             cflags="$cflags $OPENMP_CFLAGS"
             cxxflags="$cxxflags $OPENMP_CXXFLAGS"
             fcflags="$fcflags $OPENMP_FCFLAGS"

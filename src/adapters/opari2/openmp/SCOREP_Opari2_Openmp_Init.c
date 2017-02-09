@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013, 2015,
@@ -23,6 +23,7 @@
 
 #include <config.h>
 
+#include "SCOREP_Opari2_Openmp_Tpd.h"
 #include "SCOREP_Opari2_Openmp_Lock.h"
 #include "SCOREP_Opari2_Openmp_Regions.h"
 
@@ -30,6 +31,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Location.h>
+#include <SCOREP_Thread_Mgmt.h>
 
 #include <opari2/pomp2_lib.h>
 
@@ -70,6 +72,16 @@ SCOREP_RegionHandle scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPEN
  ******************************************************************************/
 
 static size_t subsystem_id;
+
+#if HAVE( SCOREP_OMP_TPD )
+/* The pomp_tpd[_] variable that gets instrumented by OPARI2 to maintain
+ * parent-child relationship if the --tpd option is given. Will be used by
+ * scorep only if there is no OpenMP ancestry support. Codes that are
+ * instrumented with pomp_tpd[_] while ancestry support is available need
+ * this definition although parent-child relation is obtained via ancestry
+ * functions. */
+int64_t FORTRAN_ALIGNED POMP_TPD_MANGLED;
+#endif /* HAVE( SCOREP_OMP_TPD ) */
 
 static SCOREP_ErrorCode
 opari2_openmp_subsystem_register( size_t id )
@@ -120,6 +132,7 @@ opari2_openmp_subsystem_init( void )
                                           SCOREP_REGION_WRAPPER );
     }
 
+    SCOREP_OMP_SET_POMP_TPD_TO( SCOREP_Thread_GetInitialTpd() );
     UTILS_DEBUG_EXIT();
 
     return SCOREP_SUCCESS;

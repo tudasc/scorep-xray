@@ -6,8 +6,6 @@ Buildung Score-P on Blue Gene systems using GNU compute node compilers
 Known issues:
 -------------
  * Serial and pure OpenMP codes cannot be instrumented.
- * Score-P's --thread=omp:pomp_tpd option is not available as it
-   doesn't work with Fortran codes.
  * Score-P's default gcc compiler instrumentation via plugin cannot be
    used as jobs for unknown reasons don't start running. The 'old'
    -finstrument-functions approach is used instead. This

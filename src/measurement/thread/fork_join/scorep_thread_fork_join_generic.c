@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -52,8 +52,11 @@
 #include <scorep_location.h>
 #include <scorep_events_common.h>
 #include <scorep_task_internal.h>
+#include <SCOREP_Mutex.h>
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME THREAD_FORK_JOIN
+#include <UTILS_Debug.h>
 
 #include <string.h>
 
@@ -67,7 +70,7 @@ static SCOREP_Mutex      first_fork_locations_mutex;
 
 
 void
-scorep_thread_create_first_fork_locations_mutex( void )
+scorep_thread_create_mutexes( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &first_fork_locations_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
@@ -75,10 +78,21 @@ scorep_thread_create_first_fork_locations_mutex( void )
 
 
 void
-scorep_thread_destroy_first_fork_locations_mutex( void )
+scorep_thread_destroy_mutexes( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexDestroy( &first_fork_locations_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
+}
+
+
+bool
+SCOREP_Thread_InParallel( void )
+{
+    if ( scorep_thread_get_parent( scorep_thread_get_private_data() ) == NULL )
+    {
+        return false;
+    }
+    return true;
 }
 
 
@@ -121,25 +135,26 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
 
 
 void
-SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
+SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType                 paradigm,
+                            struct scorep_thread_private_data** tpdFromNowOn )
 {
     UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
                   "Provided paradigm not of fork/join class" );
-    struct scorep_thread_private_data* tpd             = scorep_thread_get_private_data();
-    struct scorep_thread_private_data* tpd_from_now_on = 0;
+
+    struct scorep_thread_private_data* tpd = scorep_thread_get_private_data();
 
     scorep_thread_on_join( tpd,
                            scorep_thread_get_parent( tpd ),
-                           &tpd_from_now_on,
+                           tpdFromNowOn,
                            paradigm );
-    UTILS_BUG_ON( tpd_from_now_on == 0, "" );
-    UTILS_ASSERT( tpd_from_now_on == scorep_thread_get_private_data() );
+    UTILS_BUG_ON( *tpdFromNowOn == 0, "" );
+    UTILS_ASSERT( *tpdFromNowOn == scorep_thread_get_private_data() );
 
     SCOREP_InterimCommunicatorHandle team =
         scorep_thread_get_parent_team_handle( scorep_thread_get_team( tpd ) );
-    scorep_thread_set_team( tpd_from_now_on, team );
+    scorep_thread_set_team( *tpdFromNowOn, team );
 
-    SCOREP_Location* location  = scorep_thread_get_location( tpd_from_now_on );
+    SCOREP_Location* location  = scorep_thread_get_location( *tpdFromNowOn );
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinJoin, THREAD_FORK_JOIN_JOIN,
@@ -151,21 +166,32 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
                                              SCOREP_CPU_LOCATION_PHASE_PAUSE );
 }
 
-SCOREP_TaskHandle
-SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
-                                 uint32_t            threadId )
+
+void
+SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
+                                 uint32_t                            threadId,
+                                 uint32_t                            teamSize,
+                                 uint32_t                            nestingLevel,
+                                 void*                               ancestorInfo,
+                                 struct scorep_thread_private_data** newTpd,
+                                 SCOREP_TaskHandle*                  newTask )
 {
-    struct scorep_thread_private_data* parent_tpd     = scorep_thread_on_team_begin_get_parent();
-    uint32_t                           sequence_count = scorep_thread_get_tmp_sequence_count( parent_tpd );
-    UTILS_ASSERT( sequence_count != SCOREP_THREAD_INVALID_SEQUENCE_COUNT );
-    uint32_t thread_team_size = scorep_thread_get_team_size();
-    if ( sequence_count == 1 && thread_team_size > 1 )
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
+                  "Provided paradigm not of fork/join class" );
+    struct scorep_thread_private_data* parent_tpd = NULL;
+    scorep_thread_on_team_begin_get_parent( nestingLevel, ancestorInfo, &parent_tpd );
+    UTILS_BUG_ON( parent_tpd == NULL, "Valid parent required." );
+    uint32_t sequence_count = scorep_thread_get_tmp_sequence_count( parent_tpd );
+    UTILS_BUG_ON( sequence_count == SCOREP_THREAD_INVALID_SEQUENCE_COUNT,
+                  "Valid sequence count required." );
+
+    if ( sequence_count == 1 && teamSize > 1 )
     {
         SCOREP_MutexLock( first_fork_locations_mutex );
         if ( !first_fork_locations[ 0 ] )
         {
             char location_name[ 80 ];
-            for ( int i = 0; i < thread_team_size - 1; ++i )
+            for ( int i = 0; i < teamSize - 1; ++i )
             {
                 scorep_thread_create_location_name( location_name, 80, i + 1, parent_tpd );
                 first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( location_name );
@@ -174,24 +200,21 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
         SCOREP_MutexUnlock( first_fork_locations_mutex );
     }
 
-    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
-                  "Provided paradigm not of fork/join class" );
-    struct scorep_thread_private_data* current_tpd         = 0;
-    int                                thread_id           = -1;
-    bool                               location_is_created = false;
+    *newTpd = NULL;
+    bool location_is_created = false;
 
     scorep_thread_on_team_begin( parent_tpd,
-                                 &current_tpd,
+                                 newTpd,
                                  paradigm,
-                                 &thread_id,
+                                 threadId,
+                                 teamSize,
                                  ( sequence_count == 1 ) ? first_fork_locations : 0,
                                  &location_is_created );
 
-    UTILS_ASSERT( current_tpd );
-    UTILS_ASSERT( thread_id >= 0 );
+    UTILS_ASSERT( *newTpd );
 
     SCOREP_Location* parent_location  = scorep_thread_get_location( parent_tpd );
-    SCOREP_Location* current_location = scorep_thread_get_location( current_tpd );
+    SCOREP_Location* current_location = scorep_thread_get_location( *newTpd );
     uint64_t         timestamp        = scorep_get_timestamp( current_location );
 
     if ( location_is_created )
@@ -204,12 +227,12 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     SCOREP_InterimCommunicatorHandle team = scorep_thread_get_team_handle(
         current_location,
         scorep_thread_get_team( parent_tpd ),
-        thread_team_size,
-        thread_id );
-    scorep_thread_set_team( current_tpd, team );
+        teamSize,
+        threadId );
+    scorep_thread_set_team( *newTpd, team );
 
     /* Only call into the substrate for newly activated locations. */
-    if ( thread_id != 0 )
+    if ( threadId != 0 )
     {
         scorep_subsystems_activate_cpu_location( current_location,
                                                  parent_location,
@@ -224,34 +247,35 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
      * the PAUSE phase */
     scorep_subsystems_activate_cpu_location( current_location,
                                              NULL, 0,
-                                             thread_id == 0
+                                             threadId == 0
                                              ? SCOREP_CPU_LOCATION_PHASE_PAUSE
                                              : SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
-    return SCOREP_Task_GetCurrentTask( current_location );
+    *newTask = SCOREP_Task_GetCurrentTask( current_location );
 }
 
 
 void
-SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
+SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm,
+                               int                 threadId,
+                               int                 teamSize )
 {
+    UTILS_ASSERT( threadId >= 0 && teamSize > 0 );
     UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
                   "Provided paradigm not of fork/join class" );
-    struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
-    struct scorep_thread_private_data* parent    = 0;
-    SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
-    int                                thread_id = -1;
-    SCOREP_InterimCommunicatorHandle   team      = scorep_thread_get_team( tpd );
+    struct scorep_thread_private_data* tpd      = scorep_thread_get_private_data();
+    struct scorep_thread_private_data* parent   = 0;
+    SCOREP_Location*                   location = scorep_thread_get_location( tpd );
+    SCOREP_InterimCommunicatorHandle   team     = scorep_thread_get_team( tpd );
 
-    scorep_thread_on_team_end( tpd, &parent, &thread_id, paradigm );
+    scorep_thread_on_team_end( tpd, &parent, threadId, teamSize, paradigm );
     UTILS_ASSERT( parent );
-    UTILS_ASSERT( thread_id >= 0 );
 
     /* First notify the subsystems about the deactivation of the location.
      * the master thread goes into the PAUSE phase. */
     scorep_subsystems_deactivate_cpu_location( location,
                                                NULL,
-                                               thread_id == 0
+                                               threadId == 0
                                                ? SCOREP_CPU_LOCATION_PHASE_PAUSE
                                                : SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
@@ -259,7 +283,7 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,
                            ( location, timestamp, paradigm, team ) );
 
-    if ( thread_id != 0 )
+    if ( threadId != 0 )
     {
         scorep_subsystems_deactivate_cpu_location( location,
                                                    scorep_thread_get_location( parent ),

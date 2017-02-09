@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -42,8 +42,7 @@
 typedef enum
 {
     SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE,
-    SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD,
-    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY,
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP,
     SCOREP_CONFIG_THREAD_SYSTEM_ID_PTHREAD
 } SCOREP_Config_ThreadSystemId;
 
@@ -255,47 +254,17 @@ public:
 
 
 /* **************************************************************************************
- * class SCOREP_Config_PompTpdThreadSystem
+ * class SCOREP_Config_OmpThreadSystem
  * *************************************************************************************/
 
 /**
  * This class represents the POMP2-based implementation for OpenMP threads which
  * uses the copyin structure for the TPD variable.
  */
-class SCOREP_Config_PompTpdThreadSystem : public SCOREP_Config_ThreadSystem
+class SCOREP_Config_OmpThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
-    SCOREP_Config_PompTpdThreadSystem();
-    virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
-    addCFlags( std::string&           cflags,
-               bool                   build_check,
-               SCOREP_Config_Language language,
-               bool                   nvcc );
-
-    virtual void
-    addIncFlags( std::string&           incflags,
-                 bool                   build_check,
-                 SCOREP_Config_Language language,
-                 bool                   nvcc );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
-};
-
-/* **************************************************************************************
- * class SCOREP_Config_OmpAncestryThreadSystem
- * *************************************************************************************/
-
-/**
- * This class represents the POMP2-based implementation for OpenMP threads which
- * uses OpenMP 3.0's ancestry runtime functions.
- */
-class SCOREP_Config_OmpAncestryThreadSystem : public SCOREP_Config_ThreadSystem
-{
-public:
-    SCOREP_Config_OmpAncestryThreadSystem();
+    SCOREP_Config_OmpThreadSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );

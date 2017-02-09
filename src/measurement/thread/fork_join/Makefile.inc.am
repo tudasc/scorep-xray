@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2015,
+## Copyright (c) 2013-2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2015,
@@ -24,43 +24,15 @@ INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread/fork_join/in
 
 if HAVE_OPENMP_SUPPORT
 
-if HAVE_SCOREP_OMP_TPD
-
-lib_LTLIBRARIES += libscorep_thread_fork_join_omp_tpd.la
-libscorep_thread_fork_join_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_thread_fork_join_omp_tpd_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_omp_tpd.c
-libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_DIR_THREAD_INTERN) \
-    -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/services/include \
-    -I$(INC_DIR_SUBSTRATES) \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_DIR_DEFINITIONS) \
-    @SCOREP_TIMER_CPPFLAGS@
-libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
-    libscorep_thread_fork_join_generic.la \
-    libutils.la
-libscorep_thread_fork_join_omp_tpd_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
-endif HAVE_SCOREP_OMP_TPD
-
-
-if HAVE_SCOREP_OMP_ANCESTRY
-
-lib_LTLIBRARIES += libscorep_thread_fork_join_omp_ancestry.la
-libscorep_thread_fork_join_omp_ancestry_la_CFLAGS   = \
+lib_LTLIBRARIES += libscorep_thread_fork_join_omp.la
+# OPENMP_CFLAGS needed for 'omp theradprivate TPD' only.
+libscorep_thread_fork_join_omp_la_CFLAGS   = \
     $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_thread_fork_join_omp_ancestry_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_omp_ancestry.c
-libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
+libscorep_thread_fork_join_omp_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_omp.c
+libscorep_thread_fork_join_omp_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
+    -I$(INC_DIR_THREAD) \
     -I$(INC_DIR_THREAD_INTERN) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
     -I$(INC_ROOT)src/measurement/include \
@@ -73,13 +45,11 @@ libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_DIR_DEFINITIONS) \
     @SCOREP_TIMER_CPPFLAGS@
-libscorep_thread_fork_join_omp_ancestry_la_LIBADD = \
+libscorep_thread_fork_join_omp_la_LIBADD = \
     libscorep_thread_fork_join_generic.la \
     libutils.la
-libscorep_thread_fork_join_omp_ancestry_la_LDFLAGS = \
+libscorep_thread_fork_join_omp_la_LDFLAGS = \
     $(library_api_version_ldflags)
-
-endif HAVE_SCOREP_OMP_ANCESTRY
 
 endif HAVE_OPENMP_SUPPORT
 

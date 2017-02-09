@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2016,
@@ -178,7 +178,7 @@ omp_libadd = \
     $(external_libadd)                       \
     libscorep_adapter_opari2_openmp_mgmt.la  \
     libscorep_mpp_mockup.la                  \
-    libscorep_thread_fork_join_omp_tpd.la    \
+    libscorep_thread_fork_join_omp.la        \
     libscorep_mutex_omp.la                   \
     libscorep_online_access_spp.la
 
@@ -216,7 +216,7 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     libscorep_adapter_opari2_openmp_mgmt.la                 \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
-    libscorep_thread_fork_join_omp_tpd.la                   \
+    libscorep_thread_fork_join_omp.la                       \
     libscorep_mutex_omp.la
 libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
@@ -251,7 +251,7 @@ libscorep_shmem_omp_mgmt_la_LIBADD   = \
     libscorep_adapter_opari2_user_mgmt.la                  \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
-    libscorep_thread_fork_join_omp_tpd.la                  \
+    libscorep_thread_fork_join_omp.la                      \
     libscorep_mutex_omp.la
 libscorep_shmem_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 

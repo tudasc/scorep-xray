@@ -271,6 +271,15 @@ parallel constructs and API calls are instrumented by default.
       <tt>--opari=<parameter-list></tt> option. For available parameters please
       refer to the OPARI2 manual.
 
+@note Since Score-P version 1.3 there were two variants of internal
+      OpenMP data handling, namely @verb{--thread=omp:pomp_tpd} and
+      @verb{--thread=omp:ancestry}, depending on the functionality
+      available on the target system. From Score-P version 4 on, due
+      to internal refactorings, we replace the two OpenMP threading
+      variants by only one: @verb{----thread=omp}. The possible
+      options are detected at configure time. If both are available,
+      the ancestry mechanism will be used by default.
+
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
 The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired,
@@ -283,15 +292,6 @@ generally desirable to avoid instrumentation duplication (which would
 result if all are used to instrument the same routines). Note that enabling
 PDToolkit instrumentation automatically enables @scorep user instrumentation,
 because it inserts @scorep user macros into the source code.
-
-@note There are two ways of internal data handling for measurements
-      involving the OpenMP threading model. The possible options are:
-      @n @verb{--thread=omp:pomp_tpd}
-      @n @verb{--thread=omp:ancestry}
-      @n These options should be identical in behavior. If you specify
-      @verb{--thread=omp} or OpenMP is automatically detected, the default
-      is @verb{pomp_tpd}.
-
 
 Sometimes it is desirable to explicitly direct the @scorep instrumenter to
 do nothing except execute the associated compile/link command. For such cases

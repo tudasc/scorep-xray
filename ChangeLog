@@ -19,10 +19,10 @@ Features and improvements:
 - The induced penalty to access thread-local storage variables was
   considerably reduced for some compilers, notable for the Intel
   compilers.
-- If both OpenMP instrumentation options, omp:tpd and omp:ancestry,
-  are supported, use omp:ancestry as default. This works around a
-  problem found with recent Intel compilers (e.g., 17.0.0) and the
-  omp:tpd option.
+- Replace the two threading variants --thread=omp:pomp_tpd and
+  --thread=omp:ancestry by only one: --thread=omp. The possible
+  options are detected at configure time. If both are available,
+  the ancestry variant will be used by default.
 - As compressing OTF2 traces was not supported by any OTF2 release in
   the past and probably wont be in the foreseeable future either, the
   support for this feature in Score-P was removed.

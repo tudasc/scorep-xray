@@ -28,17 +28,14 @@ Common options are:
                   when using shared Score-P libraries. This happens on
                   systems using --as-needed as linker default. It will
                   be handled transparently in future releases of Score-P.
-  --thread=<paradigm>[:<variant>]
+  --thread=<paradigm>
                   Possible paradigms and variants are:
               none
                   No thread support.
-              omp:pomp_tpd
-                  OpenMP support using OPARI2 thread tracking.
-                  It requires and, thus, automatically enables OPARI2
-                  instrumentation.
-              omp:ancestry
-                  OpenMP support using thread tracking with ancestry functions
-                  in OpenMP 3.0 and later.
+              omp
+                  OpenMP support using thread tracking via ancestry
+                  functions in OpenMP 3.0 and later or via an
+                  OPARI2-instrumented threadprivate variable.
                   It requires and, thus, automatically enables OPARI2
                   instrumentation.
               pthread

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -59,13 +59,25 @@ SCOREP_Instrumenter_SingleThreaded::SCOREP_Instrumenter_SingleThreaded
  * class SCOREP_Instrumenter_Omp
  * ****************************************************************************/
 SCOREP_Instrumenter_Omp::SCOREP_Instrumenter_Omp(
-    SCOREP_Instrumenter_Selector* selector,
-    const std::string&            variant,
-    const std::string&            description )
-    : SCOREP_Instrumenter_Paradigm( selector, "omp", variant, description )
+    SCOREP_Instrumenter_Selector* selector )
+    : SCOREP_Instrumenter_Paradigm( selector, "omp", "",
+#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
+                                    "OpenMP support using thread tracking via "
+                                    "ancestry functions\n"
+                                    "                  in OpenMP 3.0 and later."
+#elif SCOREP_BACKEND_HAVE_OMP_TPD
+                                    "OpenMP support using thread tracking via "
+                                    "OPARI2-instrumented\n"
+                                    "                  threadprivate variable."
+#endif
+                                    )
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
+
+#if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY && !SCOREP_BACKEND_HAVE_OMP_TPD
+    unsupported();
+#endif
 }
 
 bool
@@ -140,46 +152,13 @@ SCOREP_Instrumenter_Omp::checkDependencies( void )
     {
         ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->enableOpenmpDefault();
     }
-}
 
-/* **************************************************************************************
- * class SCOREP_Instrumenter_OmpTpd
- * *************************************************************************************/
-SCOREP_Instrumenter_OmpTpd::SCOREP_Instrumenter_OmpTpd
-(
-    SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Omp( selector, "pomp_tpd",
-                             "OpenMP support using OPARI2 thread tracking" )
-{
-#if !SCOREP_BACKEND_HAVE_OMP_TPD
-    unsupported();
-#endif
-}
-
-void
-SCOREP_Instrumenter_OmpTpd::checkDependencies( void )
-{
-    SCOREP_Instrumenter_Omp::checkDependencies();
-
-    SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+#if SCOREP_BACKEND_HAVE_OMP_TPD && !SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     if ( ( adapter != NULL ) )
     {
         ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->setTpdMode( true );
     }
-}
-
-/* **************************************************************************************
- * class SCOREP_Instrumenter_OmpAncestry
- * *************************************************************************************/
-SCOREP_Instrumenter_OmpAncestry::SCOREP_Instrumenter_OmpAncestry
-(
-    SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Omp( selector, "ancestry",
-                             "OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later" )
-{
-#if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY
-    unsupported();
-#endif
+#endif /* SCOREP_BACKEND_HAVE_OMP_TPD && !SCOREP_BACKEND_HAVE_OMP_ANCESTRY */
 }
 
 /* *****************************************************************************
@@ -299,8 +278,7 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
-    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
-    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_Omp( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
     m_current_selection = m_paradigm_list.front();
 }
