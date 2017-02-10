@@ -6,6 +6,9 @@
 ## Copyright (c) 2015,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2017,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -84,7 +87,7 @@ test_expect_success '"scorep-wrapper --help" works' '
 
 test_expect_success 'The wrapper works' '
     echo "scorep $CC -c foo.c" >expect &&
-    scorep-$CC -c foo.c >result &&
+    scorep_cmd=bin/scorep scorep-$CC -c foo.c >result &&
     test_compare expect result
 '
 
@@ -96,13 +99,13 @@ test_expect_success 'SCOREP_WRAPPER=off works' '
 
 test_expect_success 'Passing flags via SCOREP_WRAPPER_INSTRUMENTER_FLAGS works' '
     echo "scorep --verbose $CC -c foo.c" >expect &&
-    SCOREP_WRAPPER_INSTRUMENTER_FLAGS=--verbose scorep-$CC -c foo.c >result &&
+    scorep_cmd=bin/scorep SCOREP_WRAPPER_INSTRUMENTER_FLAGS=--verbose scorep-$CC -c foo.c >result &&
     test_compare expect result
 '
 
 test_expect_success 'Passing flags via SCOREP_WRAPPER_COMPILER_FLAGS works' '
     echo "scorep $CC -O0 -g -c foo.c" >expect &&
-    SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
+    scorep_cmd=bin/scorep SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
     test_compare expect result
 '
 
@@ -119,7 +122,7 @@ test_expect_success 'Creating new instance "foo"' '
 
 test_expect_success 'Instance "foo" works' '
     echo "scorep foo -c foo.c" >expect &&
-    scorep-foo -c foo.c >result &&
+    scorep_cmd=bin/scorep scorep-foo -c foo.c >result &&
     test_compare expect result
 '
 
@@ -130,7 +133,7 @@ test_expect_success 'Creating new instance "bar" in custom dir' '
 
 test_expect_success 'Instance "bar" works' '
     echo "scorep bar -c foo.c" >expect &&
-    ./scorep-bar -c foo.c >result &&
+    scorep_cmd=bin/scorep ./scorep-bar -c foo.c >result &&
     test_compare expect result
 '
 

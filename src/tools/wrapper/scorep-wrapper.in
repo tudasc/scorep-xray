@@ -6,7 +6,7 @@
 ## Copyright (c) 2015,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -253,9 +253,12 @@ esac
 # extract compiler name
 compiler=${argv0##*scorep-}
 
+# Default 'scorep_cmd' points to the installation, override for make installcheck
+scorep_cmd="${scorep_cmd:-@prefix@/bin/scorep}"
+
 if test "x${SCOREP_WRAPPER}" = xoff || test "x${SCOREP_WRAPPER}" = xOFF
 then
     exec $compiler "$@"
 else
-    exec @prefix@/scorep $SCOREP_WRAPPER_INSTRUMENTER_FLAGS $compiler $SCOREP_WRAPPER_COMPILER_FLAGS "$@"
+    exec $scorep_cmd $SCOREP_WRAPPER_INSTRUMENTER_FLAGS $compiler $SCOREP_WRAPPER_COMPILER_FLAGS "$@"
 fi
