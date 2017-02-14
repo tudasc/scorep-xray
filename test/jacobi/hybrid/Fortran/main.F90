@@ -245,7 +245,7 @@ subroutine InitializeMatrix (myData)
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
-    ! Initilize initial condition and RHS
+    ! Initialize initial condition and RHS
 
 !$omp parallel do private (j, i, xx, yy)
     do j = myData%iRowFirst, myData%iRowLast

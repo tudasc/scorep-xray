@@ -121,7 +121,7 @@ SCOREP_Filter_MatchFunction( const char* function_name,
 
 /**
  * Adds a filter rule to the function filter rule list. Because some adapters apply
- * filter restrictions during initilization, the rules should be added during
+ * filter restrictions during initialization, the rules should be added during
  * subsystem registration.
  * @param rule       The rule's string pattern.
  * @param is_exclude True if it is an exclude rule, false if it is an include rule.

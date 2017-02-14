@@ -133,7 +133,7 @@ subroutine InitializeMatrix (myData)
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
-    ! Initilize initial condition and RHS
+    ! Initialize initial condition and RHS
 
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1

@@ -152,7 +152,7 @@ subroutine InitializeMatrix (myData)
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
-    ! Initilize initial condition and RHS
+    ! Initialize initial condition and RHS
 
       pomp2_num_threads = pomp2_lib_get_max_threads()
       pomp2_if = .true.

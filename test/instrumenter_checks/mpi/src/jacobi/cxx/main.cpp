@@ -139,8 +139,8 @@ PrintResults( const JacobiData& data )
         cout << " Solution Error       : " << data.fError << endl;
         cout << " Elapsed Time         : " << data.fTimeStop - data.fTimeStart << endl;
         cout << " MFlops               : " << 0.000013 * data.iIterCount
-        * ( data.iCols - 2 ) * ( data.iRows - 2 )
-        / ( data.fTimeStop - data.fTimeStart ) << endl;
+            * ( data.iCols - 2 ) * ( data.iRows - 2 )
+            / ( data.fTimeStop - data.fTimeStart ) << endl;
     }
     return;
 }
@@ -150,7 +150,7 @@ PrintResults( const JacobiData& data )
 void
 InitializeMatrix( JacobiData& data )
 {
-    /* Initilize initial condition and RHS */
+    /* Initialize initial condition and RHS */
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )

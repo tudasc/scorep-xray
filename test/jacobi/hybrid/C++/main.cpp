@@ -183,7 +183,7 @@ PrintResults( const JacobiData &data )
 void
 InitializeMatrix( JacobiData &data )
 {
-    /* Initilize initial condition and RHS */
+    /* Initialize initial condition and RHS */
 #pragma omp parallel for
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {

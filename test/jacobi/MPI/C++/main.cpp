@@ -169,7 +169,7 @@ PrintResults( const JacobiData &data )
 void
 InitializeMatrix( JacobiData &data )
 {
-    /* Initilize initial condition and RHS */
+    /* Initialize initial condition and RHS */
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )

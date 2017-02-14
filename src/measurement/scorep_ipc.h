@@ -58,7 +58,7 @@ extern SCOREP_Ipc_Group scorep_ipc_group_world;
 
 
 /**
- *  Initilizes the measurements own multi-process communication layer.
+ *  Initializes the measurements own multi-process communication layer.
  *  Must be called after the multi-process paradigm was initialized.
  */
 void

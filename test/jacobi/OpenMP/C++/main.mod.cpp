@@ -128,7 +128,7 @@ PrintResults( const JacobiData &data )
 void
 InitializeMatrix( JacobiData &data )
 {
-    /* Initilize initial condition and RHS */
+    /* Initialize initial condition and RHS */
 {
   int pomp2_num_threads = omp_get_max_threads();
   int pomp2_if = 1;

@@ -36,8 +36,8 @@ using namespace std;
 
 // setting values, init mpi, omp etc
 void
-Init( JacobiData &data,
-      int &       argc,
+Init( JacobiData& data,
+      int&        argc,
       char**      argv )
 {
     int   ITERATIONS = 5;
@@ -96,7 +96,7 @@ Init( JacobiData &data,
 
 // final cleanup routines
 void
-Finish( JacobiData &data )
+Finish( JacobiData& data )
 {
     delete[] data.afU;
     delete[] data.afF;
@@ -106,7 +106,7 @@ Finish( JacobiData &data )
 
 // print result summary
 void
-PrintResults( const JacobiData &data )
+PrintResults( const JacobiData& data )
 {
     if ( data.iMyRank == 0 )
     {
@@ -115,8 +115,8 @@ PrintResults( const JacobiData &data )
         cout << " Solution Error       : " << data.fError << endl;
         cout << " Elapsed Time         : " << data.fTimeStop - data.fTimeStart << endl;
         cout << " MFlops               : " << 0.000013 * data.iIterCount
-        * ( data.iCols - 2 ) * ( data.iRows - 2 )
-        / ( data.fTimeStop - data.fTimeStart ) << endl;
+            * ( data.iCols - 2 ) * ( data.iRows - 2 )
+            / ( data.fTimeStop - data.fTimeStart ) << endl;
     }
     return;
 }
@@ -124,9 +124,9 @@ PrintResults( const JacobiData &data )
 // Initializes matrix
 // Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
 void
-InitializeMatrix( JacobiData &data )
+InitializeMatrix( JacobiData& data )
 {
-    /* Initilize initial condition and RHS */
+    /* Initialize initial condition and RHS */
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )
@@ -146,7 +146,7 @@ InitializeMatrix( JacobiData &data )
 
 // Checks error between numerical and exact solution
 void
-CheckError( JacobiData &data )
+CheckError( JacobiData& data )
 {
     double error = 0.0;
 
@@ -187,7 +187,7 @@ int
 main( int    argc,
       char** argv )
 {
-    int        retVal = 0; // return value
+    int retVal = 0;        // return value
 
     JacobiData myData;
 

@@ -137,7 +137,7 @@ main (int argc, char **argv)
                            SCOREP_USER_METRIC_TYPE_DOUBLE,
                            SCOREP_USER_METRIC_CONTEXT_GLOBAL );
 
-  /*OpenSHMEM initilization*/
+  /*OpenSHMEM initialization*/
   start_pes (0);
   p = _num_pes ();
   my_rank = _my_pe ();

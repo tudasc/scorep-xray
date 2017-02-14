@@ -158,7 +158,7 @@ subroutine InitializeMatrix (myData)
     !.. Intrinsic Functions ..
     intrinsic DBLE
 
-    ! Initilize initial condition and RHS
+    ! Initialize initial condition and RHS
 
     ! Workaround for  PDT instrumentation, PDT fails to recognize OpenMP
     ! directives as commands and thus inserts declarations at the wrong
