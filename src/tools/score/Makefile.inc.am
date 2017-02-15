@@ -41,23 +41,23 @@ scorep_score_usage.h: $(srcdir)/../doc/doxygen-user/scorep_score_usage.dox.in
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
-    @CUBE_READER_CPPFLAGS@ \
+    @CUBELIB_CPPFLAGS@ \
     -I$(INC_ROOT)src/utils/include
 
-scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
-scorep_score_LDADD = @CUBE_READER_LIBS@ \
+scorep_score_LDFLAGS = @CUBELIB_LDFLAGS@
+scorep_score_LDADD = @CUBELIB_LIBS@ \
     libscorep_filter.la \
     libutils.la
 scorep_score_DEPENDENCIES = \
     libscorep_filter.la \
     libutils.la
 
-if !HAVE_SCOREP_EXTERNAL_CUBE
+if !HAVE_SCOREP_EXTERNAL_CUBELIB
 
-scorep_score_DEPENDENCIES += @CUBE_READER_LIBS@
-@CUBE_READER_LIBS@:
+scorep_score_DEPENDENCIES += @CUBELIB_LIBS@
+@CUBELIB_LIBS@:
 	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
 
-endif !HAVE_SCOREP_EXTERNAL_CUBE
+endif !HAVE_SCOREP_EXTERNAL_CUBELIB
 
 endif HAVE_SCOREP_SCORE

@@ -41,7 +41,6 @@
 #include <scorep_definition_cube4.h>
 #include <scorep_profile_node.h>
 #include <cubew_cube.h>
-#include <cubew_cubew.h>
 #include <cubew_services.h>
 
 /**

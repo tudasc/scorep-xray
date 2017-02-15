@@ -44,7 +44,6 @@
 
 #include <SCOREP_Hashtab.h>
 
-#include <cubew_cubew.h>
 #include <cubew_cube.h>
 #include <SCOREP_Definitions.h>
 

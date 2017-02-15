@@ -63,14 +63,14 @@ AC_PROG_AWK
 AC_PROG_GREP
 
 # Get CXX that was used to build cube reader libraries.
-AS_IF([test -n "${scorep_cube_bindir}"],
+AS_IF([test -n "${scorep_cubelib_bindir}"],
     [# Get from external cube installation
-     CXX="`${scorep_cube_bindir}/cube-config --reader-cxx | ${AWK} '{print $1}'`"
-     AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 1])],
+     CXX="`${scorep_cubelib_bindir}/cubelib-config --cxx | ${AWK} '{print $1}'`"
+     AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 1])],
     [# Get from internal cube. cube's build-backend defines FRONTEND_CXX
      # in cross and non-cross mode.
-     CXX="`GREP_OPTIONS= ${GREP} ^FRONTEND_CXX ../vendor/cube/build-backend/config.log | awk -F\' '{print $2}'`"
-     AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])])
+     CXX="`GREP_OPTIONS= ${GREP} ^FRONTEND_CXX ../vendor/cubelib/build-frontend/config.log | awk -F\' '{print $2}'`"
+     AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
 AC_PROG_CXX
 AC_LANG_PUSH([C++])
@@ -109,15 +109,12 @@ AFS_SUMMARY([C++ compiler used], [${CXX}])
 
 AC_SCOREP_SVN_CONTROLLED
 
-SCOREP_CUBE_READER
+SCOREP_CUBELIB
 SCOREP_ESTIMATOR
 
-AS_IF([test -n "${scorep_cube_bindir}"],
-      [AC_SUBST([CUBE_BINDIR], [${scorep_cube_bindir}])],
-      [AS_IF([test "${afs_cross_compiling}" = xyes],
-             [AC_SUBST([CUBE_BINDIR], [../vendor/cube/build-frontend])],
-             [AC_SUBST([CUBE_BINDIR], [../vendor/cube/build-backend])
-      ])
+AS_IF([test -n "${scorep_cubelib_bindir}"],
+      [AC_SUBST([CUBELIB_BINDIR], [${scorep_cubelib_bindir}])],
+      [AC_SUBST([CUBELIB_BINDIR], [../vendor/cubelib/build-frontend])
 ])
 
 AC_SCOREP_ERROR_CODES

@@ -47,8 +47,8 @@ SRC_ROOT="@abs_srcdir@/.."
 
 # Get otf2-print tool
 OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
-CUBE_DUMP="@CUBE_BINDIR@/cube_dump"
-CUBE_INFO="@CUBE_BINDIR@/cube_info"
+CUBE_DUMP="@CUBELIB_BINDIR@/cube_dump"
+CUBE_INFO="@CUBELIB_BINDIR@/cube_info"
 
 # Set up directory that will contain experiment results
 RESULT_DIR_PREFIX=$PWD/scorep-test-cct

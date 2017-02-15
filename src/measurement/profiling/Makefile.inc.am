@@ -43,7 +43,7 @@ PROFILE_FLAGS =                                    \
     -I$(INC_ROOT)src/measurement/paradigm          \
     -I$(INC_ROOT)src/services/include              \
     -I$(INC_ROOT)src/measurement                   \
-    @CUBE_WRITER_CPPFLAGS@                         \
+    @CUBEW_CPPFLAGS@                         \
     -I$(INC_ROOT)src/measurement/online_access     \
     -I$(PUBLIC_INC_DIR)                            \
     $(UTILS_CPPFLAGS)                              \

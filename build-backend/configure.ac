@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2016,
+dnl Copyright (c) 2009-2017,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -240,26 +240,24 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OPARI2], [false])])
 AC_SUBST([HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS], [${opari2_fix_and_free_form_options}])
 
-AS_IF([test -n "${scorep_cube_bindir}"],
-      [scorep_cube_config_backend_arg=""
+AS_IF([test -n "${scorep_cubew_bindir}"],
+      [scorep_cubew_config_backend_arg=""
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-             [scorep_cube_config_backend_arg="--target=backend"
+             [scorep_cubew_config_backend_arg="--target=backend"
               AS_IF([test "x${ac_scorep_platform}" = "xmic"],
-                    [scorep_cube_config_backend_arg="--target=mic"])
+                    [scorep_cubew_config_backend_arg="--target=mic"])
              ])
-       AC_SUBST([CUBE_WRITER_CPPFLAGS], ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
-       AC_SUBST([CUBE_WRITER_LIBS],     ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
-       AC_SUBST([CUBE_WRITER_LDFLAGS],  ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
-       AC_SUBST([CUBE_BINDIR],          ["${scorep_cube_bindir}"])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 1])
+       AC_SUBST([CUBEW_CPPFLAGS],      ["`${scorep_cubew_bindir}/cubew-config --cflags`"])
+       AC_SUBST([CUBEW_LIBS],          ["`${scorep_cubew_bindir}/cubew-config --libs`"])
+       AC_SUBST([CUBEW_LDFLAGS],       ["`${scorep_cubew_bindir}/cubew-config --ldflags ${scorep_cubew_config_backend_arg}`"])
+       AC_SUBST([CUBEW_BINDIR],          ["${scorep_cubew_bindir}"])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBEW], [test 1 -eq 1])
       ],
-      [AC_SUBST([CUBE_WRITER_CPPFLAGS], ['-I$(srcdir)/../vendor/cube/src/cubew -I../vendor/cube/src'])
-       AC_SUBST([CUBE_WRITER_LIBS],     ['../vendor/cube/build-backend/libcube4w.la ../vendor/cube/build-backend/libcubewriter4.la'])
-       AC_SUBST([CUBE_WRITER_LDFLAGS],  [])
-       AS_IF([test "${ac_scorep_cross_compiling}" = xyes],
-             [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-frontend"])],
-             [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-backend"])])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])
+      [AC_SUBST([CUBEW_CPPFLAGS],      ['-I$(srcdir)/../vendor/cubew/src/cubew -I../vendor/cubew/src'])
+       AC_SUBST([CUBEW_LIBS],          ['../vendor/cubew/build-backend/libcube4w.la'])
+       AC_SUBST([CUBEW_LDFLAGS],       [])
+       AC_SUBST([CUBEW_BINDIR], ["../vendor/cubew/build-backend"])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBEW], [test 1 -eq 0])
       ])
 
 # does this work on cross-compile machines?
@@ -295,11 +293,6 @@ SCOREP_MEMORY_SUPPORT
 ## trunc and ceil needed by the cube4 writer
 AC_SEARCH_LIBS([trunc], [m])
 AC_SEARCH_LIBS([ceil], [m])
-
-# We get cube via svn:externals and build it ourselves with compression
-# support disabled. This solves difficulties with library detection on
-# cross compile systems. The following check can be omitted.
-#AC_SCOREP_CUBE4
 
 # assuming that mpi configure already ran
 AC_SCOREP_COND_HAVE([MPI_SUPPORT],

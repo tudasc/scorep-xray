@@ -101,7 +101,7 @@ libscorep_measurement_core_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_THREAD) \
-    @CUBE_WRITER_CPPFLAGS@ \
+    @CUBEW_CPPFLAGS@ \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS) \

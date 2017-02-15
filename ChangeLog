@@ -26,6 +26,13 @@ Features and improvements:
 - As compressing OTF2 traces was not supported by any OTF2 release in
   the past and probably wont be in the foreseeable future either, the
   support for this feature in Score-P was removed.
+- Score-P no longer ships with the Cube GUI. Cube was componentized
+  and Score-P just includes Cube's library components that are
+  necessary for measurements and scoring. The configure option
+  --with-cube was replace by --with-cubew and --with-cubelib. They
+  need to be provided a PATH to cubew-config and cubelib-config,
+  respectively, if not already in PATH. The Cube GUI is separately
+  available from http://www.scalasca.org.
 
 Bugfixes:
 

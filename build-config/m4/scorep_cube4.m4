@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015-2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -32,55 +32,55 @@
 ## file build-config/m4/scorep_cube4.m4
 
 
-AC_DEFUN([AC_SCOREP_CUBE_WRITER], [
+AC_DEFUN([AC_SCOREP_CUBEW], [
 # provide a link check here
 ])
 
 dnl ----------------------------------------------------------------------------
 
-AC_DEFUN([SCOREP_CUBE_READER], [
+AC_DEFUN([SCOREP_CUBELIB], [
 m4_ifndef([SCOREP_SCORE],
-    [m4_fatal([Invoke SCOREP_CUBE_READER from build-score only.])])
+    [m4_fatal([Invoke SCOREP_CUBELIB from build-score only.])])
 
-AS_IF([test -n "${scorep_cube_bindir}"],
-    [AC_SUBST([CUBE_READER_CPPFLAGS], ["`${scorep_cube_bindir}/cube-config --reader-cppflags`"])
-     AC_SUBST([CUBE_READER_LIBS],     ["`${scorep_cube_bindir}/cube-config --reader-libs`"])
-     AC_SUBST([CUBE_READER_LDFLAGS],  ["`${scorep_cube_bindir}/cube-config --reader-ldflags`"])
+AS_IF([test -n "${scorep_cubelib_bindir}"],
+    [AC_SUBST([CUBELIB_CPPFLAGS], ["`${scorep_cubelib_bindir}/cubelib-config --cppflags`"])
+     AC_SUBST([CUBELIB_LIBS],     ["`${scorep_cubelib_bindir}/cubelib-config --libs`"])
+     AC_SUBST([CUBELIB_LDFLAGS],  ["`${scorep_cubelib_bindir}/cubelib-config --ldflags`"])
+     AC_SUBST([CUBELIB_BINDIR],          ["${scorep_cubelib_bindir}"])
     ],
-    [AC_SUBST([CUBE_READER_CPPFLAGS], ['-I$(srcdir)/../vendor/cube/src/cube/include -I../vendor/cube/src -I$(srcdir)/../vendor/cube/src/cube/include/service -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric -I$(srcdir)/../vendor/cube/src/cube/include/dimensions -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/system -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/calltree -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/matrix -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/value -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/value/trafo/single_value -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/index -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/data/rows -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/strategies -I$(srcdir)/../vendor/cube/src/cube/include/service/cubelayout -I$(srcdir)/../vendor/cube/src/cube/include/service/cubelayout/readers -I$(srcdir)/../vendor/cube/src/cube/include/service/cubelayout/layout -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/data -I$(srcdir)/../vendor/cube/src/cube/include/dimensions/metric/cache -I$(srcdir)/../vendor/cube/src/cube/include/syntax/cubepl -I$(srcdir)/../vendor/cube/src/cube/include/syntax/cubepl/evaluators -I$(srcdir)/../vendor/cube/src/cube/include/topologies'])
-     AS_IF([test "x${afs_cross_compiling}" = xyes],
-         [AC_SUBST([CUBE_READER_LIBS], [../vendor/cube/build-frontend/libcube4.la])],
-         [AC_SUBST([CUBE_READER_LIBS], [../vendor/cube/build-backend/libcube4.la])])
-     AC_SUBST([CUBE_READER_LDFLAGS],  [])
+    [AC_SUBST([CUBELIB_CPPFLAGS], ['-I$(srcdir)/../vendor/cubelib/src/cube/include -I../vendor/cubelib/src -I$(srcdir)/../vendor/cubelib/src/cube/include/service -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric -I$(srcdir)/../vendor/cubelib/src/cube/include/network  -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/system -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/calltree -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/matrix -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/value -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/value/trafo/single_value -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/index -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/data/rows -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/strategies -I$(srcdir)/../vendor/cubelib/src/cube/include/service/cubelayout -I$(srcdir)/../vendor/cubelib/src/cube/include/service/cubelayout/readers -I$(srcdir)/../vendor/cubelib/src/cube/include/service/cubelayout/layout -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/data -I$(srcdir)/../vendor/cubelib/src/cube/include/dimensions/metric/cache -I$(srcdir)/../vendor/cubelib/src/cube/include/syntax/cubepl -I$(srcdir)/../vendor/cubelib/src/cube/include/syntax/cubepl/evaluators -I$(srcdir)/../vendor/cubelib/src/cube/include/topologies'])
+    AC_SUBST([CUBELIB_LIBS], [../vendor/cubelib/build-frontend/libcube4.la])
+    AC_SUBST([CUBELIB_BINDIR], ["../vendor/cubelib/build-frontend"])
+    AC_SUBST([CUBELIB_LDFLAGS],  [])
     ])
 
 ## Check for cube reader header and library only if we are using an
 ## external cube.
-AS_IF([test -n "${scorep_cube_bindir}"],
+AS_IF([test -n "${scorep_cubelib_bindir}"],
     [AC_LANG_PUSH([C++])
      scorep_save_cppflags="${CPPFLAGS}"
-     CPPFLAGS="${CUBE_READER_CPPFLAGS} ${CPPFLAGS}"
+     CPPFLAGS="${CUBELIB_CPPFLAGS} ${CPPFLAGS}"
      AC_CHECK_HEADER([Cube.h],
-         [has_cube_reader_header="yes"],
-         [has_cube_reader_header="no"])
+         [has_cubelib_header="yes"],
+         [has_cubelib_header="no"])
 
      scorep_save_libs="${LIBS}"
-     LIBS="${LIBS} ${CUBE_READER_LIBS}"
+     LIBS="${LIBS} ${CUBELIB_LIBS}"
      scorep_save_ldflags="${LDFLAGS}"
-     LDFLAGS="${CUBE_READER_LDFLAGS} ${LDFLAGS}"
+     LDFLAGS="${CUBELIB_LDFLAGS} ${LDFLAGS}"
      AC_LINK_IFELSE([AC_LANG_PROGRAM(
                          [[#include <Cube.h>]],
                          [[cube::Cube mycube;]])],
-                         [has_cube_reader_lib="yes"],
-                         [has_cube_reader_lib="no"])
+                         [has_cubelib_reader_lib="yes"],
+                         [has_cubelib_reader_lib="no"])
 
      AC_MSG_CHECKING([for cube reader library])
-     AS_IF([test "x${has_cube_reader_header}" = "xyes" && test "x${has_cube_reader_lib}" = "xyes"],
+     AS_IF([test "x${has_cubelib_header}" = "xyes" && test "x${has_cubelib_lib}" = "xyes"],
          [AC_MSG_RESULT([yes])
-          AFS_SUMMARY([cube reader support], [yes, using ${CUBE_READER_CPPFLAGS} ${CUBE_READER_LDFLAGS} ${CUBE_READER_LIBS}])
+          AFS_SUMMARY([cube c++ library support], [yes, using ${CUBELIB_CPPFLAGS} ${CUBELIB_LDFLAGS} ${CUBELIB_LIBS}])
           AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 1])],
          [AC_MSG_RESULT([no])
-          AFS_SUMMARY([cube reader support], [no])
+          AFS_SUMMARY([cube c++ library support], [no])
           AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 0])])
 
      ## Clean up
@@ -89,8 +89,8 @@ AS_IF([test -n "${scorep_cube_bindir}"],
      CPPFLAGS="${scorep_save_cppflags}"
      AC_LANG_POP([C++])
     ],
-    [# using internal cube reader, header and lib assumend to be in place
-     AFS_SUMMARY([cube reader support], [yes, using internal])
+    [# using internal cube c++ library, header and lib assumend to be in place
+     AFS_SUMMARY([cube c++ library support], [yes, using internal])
      AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 1])
     ])
 ])

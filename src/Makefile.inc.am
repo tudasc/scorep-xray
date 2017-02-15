@@ -69,7 +69,7 @@ libscorep_measurement_la_LIBADD =        \
     @SCOREP_DLFCN_LIBS@                  \
     @SCOREP_TIMER_LIBS@                  \
     @OTF2_LIBS@                          \
-    @CUBE_WRITER_LIBS@
+    @CUBEW_LIBS@
 
 if HAVE_UNWINDING_SUPPORT
 
@@ -98,15 +98,13 @@ BUILT_SOURCES += @OTF2_LIBS@
 
 endif !HAVE_SCOREP_EXTERNAL_OTF2
 
-if !HAVE_SCOREP_EXTERNAL_CUBE
+if !HAVE_SCOREP_EXTERNAL_CUBEW
 
-BUILT_SOURCES += @CUBE_WRITER_LIBS@
-../vendor/cube/build-backend/libcube4w.la:
-	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
-../vendor/cube/build-backend/libcubewriter4.la:
+BUILT_SOURCES += @CUBEW_LIBS@
+../vendor/cubew/build-backend/libcube4w.la:
 	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
 
-endif !HAVE_SCOREP_EXTERNAL_CUBE
+endif !HAVE_SCOREP_EXTERNAL_CUBEW
 
 libscorep_measurement_la_LDFLAGS = \
     $(library_api_version_ldflags) \
@@ -114,7 +112,7 @@ libscorep_measurement_la_LDFLAGS = \
     @LIBUNWIND_LDFLAGS@            \
     @LIBBFD_LDFLAGS@               \
     @SCOREP_PAPI_LDFLAGS@          \
-    @CUBE_WRITER_LDFLAGS@
+    @CUBEW_LDFLAGS@
 
 
 if HAVE_MPI_SUPPORT
