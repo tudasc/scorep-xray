@@ -115,10 +115,9 @@ endif HAVE_MPI_SUPPORT
 if HAVE_SHMEM_SUPPORT
 
 SHMEM_CHECK_TARGETS += \
-    $(LIB_DIR_SCOREP_SHMEM)libscorep_online_access_mpp_shmem.la \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
-    $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_mpi.la
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la
 
 check_LTLIBRARIES                            += libscorep_shmem_event.la
 libscorep_shmem_event_la_SOURCES              =
