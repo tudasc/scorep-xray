@@ -6,7 +6,7 @@
 ## Copyright (c) 2013-2015,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -25,6 +25,38 @@ ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 include ../vendor/common/build-config/Makefile.tests-shmem.inc.am
+
+# Build external targets - i.e., scorep targets that are built in
+# different build-* directories - at once, using just a single rule:
+# 'build_external_targets'. We do this to prevent make -j race
+# conditons.
+# In 'build_external_targets' we trigger the external Makefiles one
+# after the other. In these external Makefiles itself we have
+# parallelism. Reducing the potential of races comes at the cost of
+# triggering the external Makefiles even if the targets are still
+# up-to-date.
+# There is still the potential for race conditions if we introduce
+# circular dependencies between Makefiles, i.e., an external target
+# triggered by 'build_external_targets' triggers back the originator
+# Makefile (where there is potentially still parallelism). If this is
+# the case and the dependency could not be resolved one could add some
+# of the 'build_external_targets' to BUILT_SOURCES as there is less
+# parallelism in 'all' compared to 'all-am'.
+BACKEND_TARGETS =
+$(BACKEND_TARGETS): build_external_targets
+build_external_targets:
+	@targets=`echo $(BACKEND_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP)||g'`; \
+	if test "x$$targets" != x; then \
+		$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
+	fi
+
+BACKEND_CHECK_TARGETS =
+$(BACKEND_CHECK_TARGETS): build_external_check_targets
+build_external_check_targets:
+	@targets=`echo $(BACKEND_CHECK_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP)||g'`; \
+	if test "x$$targets" != x; then \
+		$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
+	fi
 
 AM_CPPFLAGS += -DBACKEND_BUILD_SHMEM
 

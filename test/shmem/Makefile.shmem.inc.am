@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015,
@@ -44,14 +44,10 @@ endif HAVE_GNU_LINKER
 
 if HAVE_SHMEM_SUPPORT
 
-$(LIB_DIR_SCOREP)libscorep_shmem_event.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_shmem_event.la
-
-$(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_subsystems_shmem.la
-
-$(LIB_DIR_SCOREP)libscorep_shmem_mgmt.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_shmem_mgmt.la
+BACKEND_CHECK_TARGETS += \
+    $(LIB_DIR_SCOREP)libscorep_shmem_event.la \
+    $(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo \
+    $(LIB_DIR_SCOREP)libscorep_shmem_mgmt.la
 
 shmem_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo \

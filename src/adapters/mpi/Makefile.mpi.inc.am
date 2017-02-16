@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2014, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -32,16 +32,6 @@
 ## file src/adapters/mpi/Makefile.mpi.inc.am
 
 if HAVE_MPI_SUPPORT
-
-$(LIB_DIR_SCOREP)libscorep_measurement.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_measurement.la
-
-$(LIB_DIR_SCOREP)libscorep_mpp_ipc.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_ipc.la
-
-$(LIB_DIR_SCOREP)libutils.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libutils.la
-
 
 # runtime management library for the MPI adapter
 
@@ -71,6 +61,8 @@ libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags) \
     $(SCOREP_UNWINDING_LDFLAGS)
+
+BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
@@ -149,6 +141,8 @@ libscorep_adapter_mpi_event_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags) \
     $(SCOREP_UNWINDING_LDFLAGS)
+
+BACKEND_TARGETS += $(LIB_DIR_SCOREP)libscorep_measurement.la
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi_c_event.la
 libscorep_adapter_mpi_c_event_la_SOURCES = \
@@ -245,4 +239,4 @@ libscorep_adapter_mpi_event_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
 
-endif
+endif HAVE_MPI_SUPPORT

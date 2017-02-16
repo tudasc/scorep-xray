@@ -44,6 +44,9 @@ Bugfixes:
   user explicitly specifies --memory
 - Fix conflict of function wrapping with IPA on BlueGene systems.
 - Do not preprocess assembler files anymore.
+- Fix race condition in parallel make (make -j). Note that parallel
+  'make check' still exhibits race conditions due to Fortran
+  dependency issues.
 
 ------------------- Released version 3.0 -----------------------------
 

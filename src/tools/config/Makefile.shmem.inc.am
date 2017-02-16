@@ -1,10 +1,13 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2017,
+## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license. See the COPYING file in the package base
@@ -13,6 +16,7 @@
 
 ## file       src/tools/config/Makefile.shmem.inc.am
 
+CLEANFILES += ../src/scorep_config_library_dependencies_shmem_inc.hpp
 ../src/scorep_config_library_dependencies_shmem_inc.hpp: $(lib_LTLIBRARIES)
 	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@.t && \
             if test -e $@; then \

@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015,
@@ -50,14 +50,10 @@ endif SCOREP_COMPILER_PGI
 
 if HAVE_MPI_SUPPORT
 
-$(LIB_DIR_SCOREP)libscorep_mpi_event.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_event.la
-
-$(LIB_DIR_SCOREP)libscorep_subsystems_mpi_la-scorep_monolithic_subsystems.lo:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_subsystems_mpi.la
-
-$(LIB_DIR_SCOREP)libscorep_mpi_mgmt.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_mgmt.la
+BACKEND_CHECK_TARGETS += \
+    $(LIB_DIR_SCOREP)libscorep_mpi_event.la \
+    $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_la-scorep_monolithic_subsystems.lo \
+    $(LIB_DIR_SCOREP)libscorep_mpi_mgmt.la
 
 mpi_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_la-scorep_monolithic_subsystems.lo \
@@ -70,14 +66,10 @@ mpi_ldflags = $(external_ldflags)
 if HAVE_OPENMP_SUPPORT
 if HAVE_SCOREP_OMP_TPD
 
-$(LIB_DIR_SCOREP)libscorep_mpi_omp_event.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_omp_event.la
-
-$(LIB_DIR_SCOREP)libscorep_subsystems_mpi_omp_la-scorep_monolithic_subsystems.lo:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_subsystems_mpi_omp.la
-
-$(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_omp_mgmt.la
+BACKEND_CHECK_TARGETS += \
+    $(LIB_DIR_SCOREP)libscorep_mpi_omp_event.la \
+    $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_omp_la-scorep_monolithic_subsystems.lo \
+    $(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la
 
 mpi_omp_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_omp_la-scorep_monolithic_subsystems.lo \

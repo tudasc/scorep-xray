@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2015,
+dnl Copyright (c) 2009-2015, 2017,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -131,6 +131,16 @@ AC_CHECK_FUNCS_ONCE([readlink])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
+
+# assuming that mpi configure already ran
+AC_SCOREP_COND_HAVE([MPI_SUPPORT],
+                    [test -f ../build-mpi/Makefile],
+                    [Defined if MPI support is available.])
+
+# assuming that shmem configure already ran
+AC_SCOREP_COND_HAVE([SHMEM_SUPPORT],
+                    [test -f ../build-shmem/Makefile],
+                    [Defined if SHMEM support is available.])
 
 AC_CONFIG_FILES([Makefile], [
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \

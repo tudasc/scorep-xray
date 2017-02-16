@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -31,6 +31,7 @@
 
 ## file       src/tools/config/Makefile.backend-only.inc.am
 
+CLEANFILES += ../src/scorep_config_library_dependencies_inc.hpp
 ../src/scorep_config_library_dependencies_inc.hpp: $(lib_LTLIBRARIES)
 	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@.t && \
             if test -e $@; then \

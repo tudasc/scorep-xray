@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2014, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014
@@ -49,47 +49,29 @@ scorep_config_SOURCES = \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
 
+SCOREP_CONFIG_LIBRARY_DEPS =
+scorep_config-SCOREP_Config_LibraryDependencies.$(OBJEXT): $(SCOREP_CONFIG_LIBRARY_DEPS)
+
 scorep_config_CXXFLAGS = -DPKGLIBEXECDIR=\"$(pkglibexecdir)\" \
                          -DCXX=\""$(CXX)"\"
 
 scorep_config_CPPFLAGS = $(AM_CPPFLAGS) \
                          $(UTILS_CPPFLAGS)
 
-BUILT_SOURCES += ../src/scorep_config_library_dependencies_inc.hpp
-CLEANFILES += ../src/scorep_config_library_dependencies_inc.hpp
-
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_inc.hpp
 if CROSS_BUILD
+BACKEND_TARGETS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_inc.hpp
+endif CROSS_BUILD
 
-# The library dependencies are needed for the frontend tool. However, the
-# backend information is in the backend Makefile. Thus, invoke the backend
-# Makefile.
-../src/scorep_config_library_dependencies_inc.hpp:
-	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) $@
+if HAVE_MPI_SUPPORT
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_inc.hpp
+MPI_TARGETS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_inc.hpp
+endif HAVE_MPI_SUPPORT
 
-endif
-
-BUILT_SOURCES += ../src/scorep_config_library_dependencies_mpi_inc.hpp \
-                 ../src/scorep_config_library_dependencies_shmem_inc.hpp
-CLEANFILES +=../src/scorep_config_library_dependencies_mpi_inc.hpp \
-             ../src/scorep_config_library_dependencies_shmem_inc.hpp
-
-# The library dependencies are needed for the frontend tool. However, the
-# backend information is in the MPI Makefile. Thus, invoke the MPI Makefile.
-../src/scorep_config_library_dependencies_mpi_inc.hpp:
-	@if test -f ../build-mpi/Makefile; then \
-             $(am__cd) ../build-mpi && $(MAKE) $(AM_MAKEFLAGS) $@; \
-         else \
-             touch ../src/scorep_config_library_dependencies_mpi_inc.hpp; \
-         fi
-
-# The library dependencies are needed for the frontend tool. However, the
-# backend information is in the SHMEM Makefile. Thus, invoke the SHMEM Makefile.
-../src/scorep_config_library_dependencies_shmem_inc.hpp:
-	@if test -f ../build-shmem/Makefile; then \
-             $(am__cd) ../build-shmem && $(MAKE) $(AM_MAKEFLAGS) $@; \
-         else \
-             touch ../src/scorep_config_library_dependencies_shmem_inc.hpp; \
-         fi
+if HAVE_SHMEM_SUPPORT
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_inc.hpp
+SHMEM_TARGETS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_inc.hpp
+endif HAVE_SHMEM_SUPPORT
 
 scorep_config_LDADD = libutils.la
 

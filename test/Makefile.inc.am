@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2016,
+## Copyright (c) 2014-2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2016,
@@ -80,14 +80,11 @@ common_cppflags = \
 
 if HAVE_MPI_SUPPORT
 
-$(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi_event.la
-
-$(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi_mgmt.la
-
-$(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_online_access_mpp_mpi.la
+MPI_CHECK_TARGETS += \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la \
+    $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
+    $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la
 
 check_LTLIBRARIES                          += libscorep_mpi_event.la
 libscorep_mpi_event_la_SOURCES              =
@@ -117,14 +114,11 @@ endif HAVE_MPI_SUPPORT
 
 if HAVE_SHMEM_SUPPORT
 
-$(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_shmem_event.la
-
-$(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_shmem_mgmt.la
-
-$(LIB_DIR_SCOREP_SHMEM)libscorep_online_access_mpp_shmem.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_online_access_mpp_shmem.la
+SHMEM_CHECK_TARGETS += \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_online_access_mpp_shmem.la \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_mpi.la
 
 check_LTLIBRARIES                            += libscorep_shmem_event.la
 libscorep_shmem_event_la_SOURCES              =
