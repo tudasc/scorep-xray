@@ -44,7 +44,7 @@
 #include <inttypes.h>
 
 /* *INDENT-OFF* */
-static void* wrapped_start_routine( void* wrappedArg );
+static void* scorep_pthread_wrapped_start_routine( void* wrappedArg );
 static void cleanup_handler( void* wrappedArg );
 static inline void record_acquire_lock_event( scorep_pthread_mutex* scorepMutex );
 static void issue_process_shared_mutex_warning( void );
@@ -137,7 +137,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
     SCOREP_ENTER_WRAPPED_REGION();
     int result = __real_pthread_create( thread,
                                         attr,
-                                        &wrapped_start_routine,
+                                        &scorep_pthread_wrapped_start_routine,
                                         ( void* )wrapped_arg );
     SCOREP_EXIT_WRAPPED_REGION();
     UTILS_BUG_ON( result != 0 );
@@ -149,8 +149,12 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
 }
 
 
+/*
+ * Keep the 'scorep_pthread_' prefix, so that this internal function
+ * will be ignored when unwinding the stack.
+ */
 static void*
-wrapped_start_routine( void* wrappedArg )
+scorep_pthread_wrapped_start_routine( void* wrappedArg )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     UTILS_DEBUG_ENTRY();
