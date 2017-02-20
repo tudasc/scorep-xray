@@ -166,7 +166,7 @@ SCOREP_InitMeasurement( void )
 
     if ( SCOREP_IN_SIGNAL_CONTEXT() )
     {
-        UTILS_FATAL( "Can't initialize measurement from the signal handler." );
+        UTILS_FATAL( "Cannnot initialize measurement from the signal handler." );
     }
 
     if ( scorep_initialized )
@@ -665,7 +665,7 @@ scorep_finalize( void )
         UTILS_WARN_ONCE( "If you are using MPICH1, please ignore this warning. "
                          "If not, it seems that your interprocess communication "
                          "library (e.g., MPI) hasn't been initialized. Score-P "
-                         "can't generate output." );
+                         "cannot generate output." );
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }

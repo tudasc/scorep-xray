@@ -77,7 +77,7 @@ scorep_subsystems_register( void )
         SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_register( i );
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Can't register %s subsystem",
+            UTILS_ERROR( error, "Cannot register %s subsystem",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
@@ -99,7 +99,7 @@ scorep_subsystems_initialize( void )
         SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init();
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Can't initialize %s subsystem",
+            UTILS_ERROR( error, "Cannot initialize %s subsystem",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
@@ -126,7 +126,7 @@ scorep_subsystems_begin( void )
         SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_begin();
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Subsystem %s can't begin measurement",
+            UTILS_ERROR( error, "Subsystem %s cannot begin measurement",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
@@ -148,7 +148,7 @@ scorep_subsystems_initialize_mpp( void )
         SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init_mpp();
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Can't mpp-initialize %s subsystem",
+            UTILS_ERROR( error, "Cannot mpp-initialize %s subsystem",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
@@ -207,7 +207,7 @@ scorep_subsystems_initialize_location( SCOREP_Location* newLocation,
                                                                                   parentLocation );
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Can't initialize location for %s subsystem",
+            UTILS_ERROR( error, "Cannot initialize location for %s subsystem",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
@@ -242,7 +242,7 @@ scorep_subsystems_activate_cpu_location( SCOREP_Location*        locationData,
                 phase );
         if ( SCOREP_SUCCESS != error )
         {
-            UTILS_ERROR( error, "Can't activate CPU location for %s subsystem",
+            UTILS_ERROR( error, "Cannot activate CPU location for %s subsystem",
                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }

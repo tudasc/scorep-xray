@@ -36,7 +36,7 @@ AC_DEFUN([AC_SCOREP_FRONTEND_GCC_PLUGIN], [])
 scorep_enable_gcc_plugin=detect
 AC_ARG_ENABLE([gcc-plugin],
     [AS_HELP_STRING([--disable-gcc-plugin],
-        [Disable support for the GCC plug-in instrumentation. Default is to determine support automatically. This disables it by request and fail if support cannot be satisfied but was requested.])],
+        [Disable support for the GCC plug-in instrumentation. Default is to determine support automatically. This disables it by request and fails if support cannot be satisfied but was requested.])],
     [scorep_enable_gcc_plugin=${enableval}
     AS_CASE([${scorep_enable_gcc_plugin}],
         [yes|no], [:],

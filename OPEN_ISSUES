@@ -182,7 +182,7 @@ various Score-P components.
     with the following warning: "If you are using MPICH1, please
     ignore this warning. If not, it seems that your interprocess
     communication library (e.g., MPI) hasn't been initialized. Score-P
-    can't generate output."
+    cannot generate output."
     If your MPI implements the C++ bindings in a separate library on
     top of the C bindings, the following workaround might work for
     you:
@@ -204,7 +204,7 @@ various Score-P components.
     when messages sent within different communicators overtake each
     other.
 
-  - Currently, Score-P can't handle MPI_Finalize() calls that occur
+  - Currently, Score-P cannot handle MPI_Finalize() calls that occur
     after the end of main(), e.g., via a destructor of a static C++
     object. Please call MPI_Finalize() before the end of main(). The
     issue will be resolved in a future version of Score-P.
@@ -364,7 +364,7 @@ various Score-P components.
 
   - Please note that on systems where Pthreads don't need extra flags
     (like e.g., -pthread) to be compiled and linked (e.g., Cray, Blue
-    Gene/Q), Score-P can't instrument Pthreads automatically. You need
+    Gene/Q), Score-P cannot instrument Pthreads automatically. You need
     to enable Pthread instrumentation manually via scorep's
     --thread=pthread option.
 
@@ -419,7 +419,7 @@ various Score-P components.
   - Score-P does not support MPMD style programs where the executables
     are instrumented differently. I.e., it is best to compile/link all
     sources with the same set of flags for the Score-P instrumenter, so
-    that the instrumenter itself can't automatically decides what
+    that the instrumenter itself cannot automatically decides what
     paradigms the program uses. This applies to the --mpp and --thread
     flags.
 

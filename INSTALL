@@ -197,15 +197,15 @@ be used to build Score-P are as follows:
                'skipped_tests' listing the tests are generated in the
                corresponding build directory.
   --enable-cuda
-               Enable or disable support for CUDA. Fail if support
-               can't be satisfied but was requested.
+               Enable or disable support for CUDA. Fails if support
+               cannot be satisfied but was requested.
   --enable-openacc
                Enable or disable support for OpenACC. (defaults to yes)
   --disable-gcc-plugin
                Disable support for the GCC plug-in
                instrumentation. Default is to determine support
-               automatically. This disables it by request and fail
-               if support can't be satisfied but was requested.
+               automatically. This disables it by request and fails
+               if support cannot be satisfied but was requested.
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.

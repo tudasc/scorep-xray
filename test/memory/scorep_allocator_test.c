@@ -191,7 +191,7 @@ allocator_test_9( CuTest* tc )
     CuAssertPtrNotNull( tc, page_1 );
 
     SCOREP_Allocator_Page* page_2 = SCOREP_Allocator_AcquirePage( allocator );
-    CuAssert( tc, "can't fetch initial page as there is just one",
+    CuAssert( tc, "cannot fetch initial page as there is just one",
               page_2 == 0 );
 
     SCOREP_Allocator_ReleasePage( page_1 );
