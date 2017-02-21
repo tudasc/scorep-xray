@@ -254,7 +254,7 @@ esac
 compiler=${argv0##*scorep-}
 
 # Default 'scorep_cmd' points to the installation, override for make installcheck
-scorep_cmd="${scorep_cmd:-@prefix@/bin/scorep}"
+scorep_cmd="${scorep_cmd:-@BINDIR@/scorep}"
 
 if test "x${SCOREP_WRAPPER}" = xoff || test "x${SCOREP_WRAPPER}" = xOFF
 then
