@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014, 2016,
+## Copyright (c) 2013-2014, 2016-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -717,261 +717,261 @@ AC_DEFUN([_SCOREP_SHMEM_COMPLIANCE], [
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_and_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_and_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_and_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                 [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_and_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                 [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_and_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                     [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_and_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                     [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_or_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                 [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],           [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_or_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                 [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],           [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_or_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],               [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],         [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_or_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],               [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],         [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_or_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],          [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_or_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],          [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_or_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                    [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],              [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_or_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                    [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],              [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_xor_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                  [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_xor_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                  [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_xor_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_xor_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_xor_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                 [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_xor_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                 [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_xor_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                     [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_xor_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                     [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_max_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                  [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_max_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                  [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_max_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_max_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_max_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                 [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_max_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                 [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_max_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                     [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_max_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                     [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_float_max_to_all], [(float *target, float *source,       int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST],                  [(float *target, const float *source, int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
+        [shmem_float_max_to_all], [(float *target, float *source,       int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST],                  [(float *target, const float *source, int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce, int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_double_max_to_all], [(double *target, double *source,       int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST],                   [(double *target, const double *source, int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
+        [shmem_double_max_to_all], [(double *target, double *source,       int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST],                   [(double *target, const double *source, int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce, int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longdouble_max_to_all], [(long double *target, long double *source,       int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST],                       [(long double *target, const long double *source, int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
+        [shmem_longdouble_max_to_all], [(long double *target, long double *source,       int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST],                       [(long double *target, const long double *source, int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce, int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_min_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                  [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_min_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                  [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_min_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_min_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_min_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                 [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_min_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                 [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_min_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                     [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_min_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                     [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_float_min_to_all], [(float *target, float *source,       int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST],                  [(float *target, const float *source, int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
+        [shmem_float_min_to_all], [(float *target, float *source,       int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST],                  [(float *target, const float *source, int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce, int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_double_min_to_all], [(double *target, double *source,       int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST],                   [(double *target, const double *source, int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
+        [shmem_double_min_to_all], [(double *target, double *source,       int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST],                   [(double *target, const double *source, int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce, int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longdouble_min_to_all], [(long double *target, long double *source,       int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST],                       [(long double *target, const long double *source, int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
+        [shmem_longdouble_min_to_all], [(long double *target, long double *source,       int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST],                       [(long double *target, const long double *source, int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce, int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_sum_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                  [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_sum_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                  [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],            [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_sum_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_sum_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],          [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_sum_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                 [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_sum_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                 [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],           [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_sum_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                     [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_sum_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                     [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],               [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_float_sum_to_all], [(float *target, float *source,       int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST],                  [(float *target, const float *source, int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
+        [shmem_float_sum_to_all], [(float *target, float *source,       int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST],                  [(float *target, const float *source, int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST_SIZET],            [(float *target, const float *source, size_t nreduce, int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_double_sum_to_all], [(double *target, double *source,       int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST],                   [(double *target, const double *source, int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
+        [shmem_double_sum_to_all], [(double *target, double *source,       int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST],                   [(double *target, const double *source, int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST_SIZET],             [(double *target, const double *source, size_t nreduce, int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longdouble_sum_to_all], [(long double *target, long double *source,       int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST],                       [(long double *target, const long double *source, int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
+        [shmem_longdouble_sum_to_all], [(long double *target, long double *source,       int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST],                       [(long double *target, const long double *source, int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST_SIZET],                 [(long double *target, const long double *source, size_t nreduce, int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_complexf_sum_to_all], [(float complex *target, float complex *source,       int nreduce,   int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
-        [CONST],                     [(float complex *target, const float complex *source, int nreduce,   int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
-        [CONST_SIZET],               [(float complex *target, const float complex *source, size_t nreduce int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)])
+        [shmem_complexf_sum_to_all], [(float complex *target, float complex *source,       int nreduce,    int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
+        [CONST],                     [(float complex *target, const float complex *source, int nreduce,    int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
+        [CONST_SIZET],               [(float complex *target, const float complex *source, size_t nreduce, int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_complexd_sum_to_all], [(double complex *target, double complex *source,       int nreduce,   int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
-        [CONST],                     [(double complex *target, const double complex *source, int nreduce,   int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
-        [CONST_SIZET],               [(double complex *target, const double complex *source, size_t nreduce int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)])
+        [shmem_complexd_sum_to_all], [(double complex *target, double complex *source,       int nreduce,    int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
+        [CONST],                     [(double complex *target, const double complex *source, int nreduce,    int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
+        [CONST_SIZET],               [(double complex *target, const double complex *source, size_t nreduce, int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_short_prod_to_all], [(short *target, short *source,       int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST],                   [(short *target, const short *source, int nreduce,   int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
-        [CONST_SIZET],             [(short *target, const short *source, size_t nreduce int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
+        [shmem_short_prod_to_all], [(short *target, short *source,       int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST],                   [(short *target, const short *source, int nreduce,    int peStart, int logPeStride, int peSize, short *pWork, long *pSync)],
+        [CONST_SIZET],             [(short *target, const short *source, size_t nreduce, int peStart, int logPeStride, int peSize, short *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_int_prod_to_all], [(int *target, int *source,       int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST],                 [(int *target, const int *source, int nreduce,   int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
-        [CONST_SIZET],           [(int *target, const int *source, size_t nreduce int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
+        [shmem_int_prod_to_all], [(int *target, int *source,       int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST],                 [(int *target, const int *source, int nreduce,    int peStart, int logPeStride, int peSize, int *pWork, long *pSync)],
+        [CONST_SIZET],           [(int *target, const int *source, size_t nreduce, int peStart, int logPeStride, int peSize, int *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_long_prod_to_all], [(long *target, long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST],                  [(long *target, const long *source, int nreduce,   int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
-        [CONST_SIZET],            [(long *target, const long *source, size_t nreduce int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
+        [shmem_long_prod_to_all], [(long *target, long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST],                  [(long *target, const long *source, int nreduce,    int peStart, int logPeStride, int peSize, long *pWork, long *pSync)],
+        [CONST_SIZET],            [(long *target, const long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longlong_prod_to_all], [(long long *target, long long *source,       int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST],                      [(long long *target, const long long *source, int nreduce,   int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
-        [CONST_SIZET],                [(long long *target, const long long *source, size_t nreduce int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
+        [shmem_longlong_prod_to_all], [(long long *target, long long *source,       int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST],                      [(long long *target, const long long *source, int nreduce,    int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)],
+        [CONST_SIZET],                [(long long *target, const long long *source, size_t nreduce, int peStart, int logPeStride, int peSize, long long *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_float_prod_to_all], [(float *target, float *source,       int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST],                   [(float *target, const float *source, int nreduce,   int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
-        [CONST_SIZET],             [(float *target, const float *source, size_t nreduce int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
+        [shmem_float_prod_to_all], [(float *target, float *source,       int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST],                   [(float *target, const float *source, int nreduce,    int peStart, int logPeStride, int peSize, float *pWork, long *pSync)],
+        [CONST_SIZET],             [(float *target, const float *source, size_t nreduce, int peStart, int logPeStride, int peSize, float *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_double_prod_to_all], [(double *target, double *source,       int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST],                    [(double *target, const double *source, int nreduce,   int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
-        [CONST_SIZET],              [(double *target, const double *source, size_t nreduce int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
+        [shmem_double_prod_to_all], [(double *target, double *source,       int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST],                    [(double *target, const double *source, int nreduce,    int peStart, int logPeStride, int peSize, double *pWork, long *pSync)],
+        [CONST_SIZET],              [(double *target, const double *source, size_t nreduce, int peStart, int logPeStride, int peSize, double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_longdouble_prod_to_all], [(long double *target, long double *source,       int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST],                        [(long double *target, const long double *source, int nreduce,   int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
-        [CONST_SIZET],                  [(long double *target, const long double *source, size_t nreduce int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
+        [shmem_longdouble_prod_to_all], [(long double *target, long double *source,       int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST],                        [(long double *target, const long double *source, int nreduce,    int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)],
+        [CONST_SIZET],                  [(long double *target, const long double *source, size_t nreduce, int peStart, int logPeStride, int peSize, long double *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_complexf_prod_to_all], [(float complex *target, float complex *source,       int nreduce,   int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
-        [CONST],                      [(float complex *target, const float complex *source, int nreduce,   int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
-        [CONST_SIZET],                [(float complex *target, const float complex *source, size_t nreduce int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)])
+        [shmem_complexf_prod_to_all], [(float complex *target, float complex *source,       int nreduce,    int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
+        [CONST],                      [(float complex *target, const float complex *source, int nreduce,    int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)],
+        [CONST_SIZET],                [(float complex *target, const float complex *source, size_t nreduce, int peStart, int logPeStride, int peSize, float complex *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [void], [return],
-        [shmem_complexd_prod_to_all], [(double complex *target, double complex *source,       int nreduce,   int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
-        [CONST],                      [(double complex *target, const double complex *source, int nreduce,   int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
-        [CONST_SIZET],                [(double complex *target, const double complex *source, size_t nreduce int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)])
+        [shmem_complexd_prod_to_all], [(double complex *target, double complex *source,       int nreduce,    int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
+        [CONST],                      [(double complex *target, const double complex *source, int nreduce,    int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)],
+        [CONST_SIZET],                [(double complex *target, const double complex *source, size_t nreduce, int peStart, int logPeStride, int peSize, double complex *pWork, long *pSync)])
 
     _SCOREP_SHMEM_CHECK_COMPLIANCE(
         [int], [return 1],
