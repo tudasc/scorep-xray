@@ -137,7 +137,6 @@ parse_la ()
     # generate output
     fct_counter=$(($fct_counter+1))
     fct_name="${tag}_dependency_${fct_counter}"
-    printf -v fct_calls "${fct_calls}    ${fct_name}( libs, ldflags, rpaths, dependency_las, la_objects );\n"
     echo "static"
     echo "void ${fct_name}( std::deque<std::string>& libs, std::deque<std::string>& ldflags, std::deque<std::string>& rpaths, std::deque<std::string>& dependency_las, map< std::string, la_object>* la_objects )"
     echo "{"
@@ -196,7 +195,6 @@ tag=$1
 shift
 
 fct_counter=0
-fct_calls=""
 default_ifs="${IFS}"
 colon_ifs=":"
 for i; do
@@ -206,5 +204,5 @@ done
 echo "static"
 echo "void add_library_dependencies_${tag}( std::deque<std::string>& libs, std::deque<std::string>& ldflags, std::deque<std::string>& rpaths, std::deque<std::string>& dependency_las, std::map< std::string, la_object>* la_objects )"
 echo "{"
-echo "${fct_calls}"
+printf "    ${tag}_dependency_%d( libs, ldflags, rpaths, dependency_las, la_objects );\n" $(seq ${fct_counter})
 echo "}"
