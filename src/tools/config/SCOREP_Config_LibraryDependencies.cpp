@@ -48,12 +48,12 @@ using namespace std;
  * vendor/common/build-config/generate-library-dependency.sh
  */
 
-#include <scorep_config_library_dependencies_inc.hpp>
+#include <scorep_config_library_dependencies_backend_inc.hpp>
 #if HAVE( MPI_SUPPORT )
-#include <scorep_config_library_dependencies_mpi_inc.hpp>
+#include <scorep_config_library_dependencies_mpi_backend_inc.hpp>
 #endif /* MPI_SUPPORT */
 #if HAVE( SHMEM_SUPPORT )
-#include <scorep_config_library_dependencies_shmem_inc.hpp>
+#include <scorep_config_library_dependencies_shmem_backend_inc.hpp>
 #endif /* SHMEM_SUPPORT */
 
 
@@ -70,10 +70,10 @@ SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies( void )
 
     add_library_dependencies_backend( libs, ldflags, rpaths, dependency_las, &m_la_objects );
     #if HAVE( MPI_SUPPORT )
-    add_library_dependencies_mpi( libs, ldflags, rpaths, dependency_las, &m_la_objects );
+    add_library_dependencies_mpi_backend( libs, ldflags, rpaths, dependency_las, &m_la_objects );
     #endif /* MPI_SUPPORT */
     #if HAVE( SHMEM_SUPPORT )
-    add_library_dependencies_shmem( libs, ldflags, rpaths, dependency_las, &m_la_objects );
+    add_library_dependencies_shmem_backend( libs, ldflags, rpaths, dependency_las, &m_la_objects );
     #endif /* SHMEM_SUPPORT */
 }
 

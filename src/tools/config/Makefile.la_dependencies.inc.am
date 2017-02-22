@@ -29,11 +29,11 @@
 ## directory for details.
 ##
 
-## file       src/tools/config/Makefile.backend-only.inc.am
+## file       src/tools/config/Makefile.la_dependencies.inc.am
 
-CLEANFILES += ../src/scorep_config_library_dependencies_mpi_inc.hpp
-../src/scorep_config_library_dependencies_mpi_inc.hpp: $(lib_LTLIBRARIES)
-	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh mpi $^ >$@.t && \
+CLEANFILES += ../src/scorep_config_library_dependencies_@AFS_PACKAGE_BUILD_name@_inc.hpp
+../src/scorep_config_library_dependencies_@AFS_PACKAGE_BUILD_name@_inc.hpp: $(lib_LTLIBRARIES)
+	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh @AFS_PACKAGE_BUILD_name@ $^ >$@.t && \
             if test -e $@; then \
                 if cmp --silent $@ $@.t; then \
                     $(RM) $@.t; \

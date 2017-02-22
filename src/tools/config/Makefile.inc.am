@@ -59,19 +59,19 @@ scorep_config_CPPFLAGS = $(AM_CPPFLAGS) \
                          $(UTILS_CPPFLAGS) \
                          -I$(INC_ROOT)vendor/common/build-config
 
-SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_inc.hpp
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_backend_inc.hpp
 if CROSS_BUILD
-BACKEND_TARGETS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_inc.hpp
+BACKEND_TARGETS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_backend_inc.hpp
 endif CROSS_BUILD
 
 if HAVE_MPI_SUPPORT
-SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_inc.hpp
-MPI_TARGETS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_inc.hpp
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_backend_inc.hpp
+MPI_TARGETS += $(LIB_DIR_SCOREP_MPI)../src/scorep_config_library_dependencies_mpi_backend_inc.hpp
 endif HAVE_MPI_SUPPORT
 
 if HAVE_SHMEM_SUPPORT
-SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_inc.hpp
-SHMEM_TARGETS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_inc.hpp
+SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_backend_inc.hpp
+SHMEM_TARGETS += $(LIB_DIR_SCOREP_SHMEM)../src/scorep_config_library_dependencies_shmem_backend_inc.hpp
 endif HAVE_SHMEM_SUPPORT
 
 scorep_config_LDADD = libutils.la
