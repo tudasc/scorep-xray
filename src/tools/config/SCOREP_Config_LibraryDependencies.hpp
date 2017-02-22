@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,7 @@
 #include <map>
 #include <deque>
 #include <string>
+#include <generate-library-dependencies-la-object.hpp>
 
 
 /**
@@ -49,53 +50,6 @@
  */
 class SCOREP_Config_LibraryDependencies
 {
-    // ------------------------------------- Protected types
-protected:
-
-    /**
-     * Internal class to represent teh content of one .la file.
-     */
-    class la_object
-    {
-public:
-        /**
-         * Empty contructor. Needed to allow copies of STL containers containing this
-         * class
-         */
-        la_object( void );
-
-        /**
-         * Copy constructor.
-         */
-        la_object( const la_object& source );
-
-        /**
-         * Regular constructor.
-         */
-        la_object( const std::string&             lib_name,
-                   const std::string&             build_dir,
-                   const std::string&             install_dir,
-                   const std::deque<std::string>& libs,
-                   const std::deque<std::string>& ldflags,
-                   const std::deque<std::string>& rpaths,
-                   const std::deque<std::string>& dependency_las );
-
-        /**
-         * Destructor.
-         */
-        virtual
-        ~la_object();
-public:
-        std::string             m_lib_name;
-        std::string             m_build_dir;
-        std::string             m_install_dir;
-        std::deque<std::string> m_libs;
-        std::deque<std::string> m_ldflags;
-        std::deque<std::string> m_rpath;
-        std::deque<std::string> m_dependency_las;
-    };
-
-
     // ------------------------------------- Public functions
 public:
     /**
@@ -163,7 +117,7 @@ protected:
 
     // ------------------------------------- Public members
 private:
-    std::map< std::string, la_object> m_backend_objects;
+    std::map< std::string, la_object> m_la_objects;
 };
 
 #endif // SCOREP_CONFIG_LIBRARY_DEPENDENCY_HPP

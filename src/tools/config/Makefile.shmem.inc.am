@@ -18,7 +18,7 @@
 
 CLEANFILES += ../src/scorep_config_library_dependencies_shmem_inc.hpp
 ../src/scorep_config_library_dependencies_shmem_inc.hpp: $(lib_LTLIBRARIES)
-	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@.t && \
+	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh shmem $^ >$@.t && \
             if test -e $@; then \
                 if cmp --silent $@ $@.t; then \
                     $(RM) $@.t; \
