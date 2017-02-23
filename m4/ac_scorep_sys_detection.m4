@@ -49,7 +49,7 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 # Notes about platform detection on Cray systems:
 # First, we check for x86-64 CPU type and an existing /opt/cray/pmi/default link.
 # This test should succeed for all supported Cray systems (Cray XT, XE, XK, XC).
-# In the second step we will classify the system depending on their network.
+# In the second step we will classify the systems depending on their network.
 # Therefore, we use the link /opt/cray/pmi/default. We determine the link target
 # and select the network. For example, /opt/cray/pmi/default points to
 # /opt/cray/pmi/4.0.1-1.0000.9421.73.3.gem. 'gem' signifies the Gemini network.
@@ -59,6 +59,11 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 # ari (Aries)    Cray XC
 # To distinguish Cray XE and XK systems we determine whether the system uses GPU
 # accelerators (Cray XK) or not (Cray XE).
+#
+# Newer software stacks do not encode the network name in their files, e.g.,
+# /opt/cray/pmi/5.0.11
+# Therefore, we need a fall-back solution. We will test for several directories
+# including the network name.
 AC_MSG_CHECKING([for platform])
 AC_ARG_ENABLE([platform-mic],
     [AS_HELP_STRING([--enable-platform-mic],
@@ -90,7 +95,14 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                            [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
                                [ac_scorep_platform="crayxk"],
                            [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
-                               [ac_scorep_platform="crayxc"])],
+                               [ac_scorep_platform="crayxc"],
+                           [test -d /opt/cray/ari/modulefiles],
+                               [ac_scorep_platform="crayxc"],
+                           [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                               [ac_scorep_platform="crayxk"],
+                           [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                               [ac_scorep_platform="crayxe"],
+                           [AC_MSG_ERROR([Unknown Cray platform.])])],
                   [test "x${build_cpu}" = "xarmv7l" || test "x${build_cpu}" = "xarmv7hl" || test "x${build_cpu}" = "xaarch64" ],
                       [ac_scorep_platform="arm"],
                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
