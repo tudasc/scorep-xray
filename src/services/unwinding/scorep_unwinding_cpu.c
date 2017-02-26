@@ -865,7 +865,7 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
     scorep_unwinding_augmented_frame* frame     = unwindData->augmented_stack;
     scorep_unwinding_surrogate*       surrogate = frame->surrogates;
     frame->surrogates = surrogate->prev;
-    put_unused( unwindData, frame );
+    put_unused( unwindData, surrogate );
 
     /*
      * pop also all non-surrogate frames from the augmented stack until the next
