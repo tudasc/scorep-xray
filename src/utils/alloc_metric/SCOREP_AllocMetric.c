@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -200,31 +200,27 @@ static void
 insert_memory_allocation( SCOREP_AllocMetric* allocMetric,
                           allocation_item*    allocation )
 {
-    if ( allocMetric->allocations == NULL )
+    if ( allocMetric->allocations )
     {
-        allocMetric->allocations = allocation;
-        return;
+        allocMetric->allocations = splay( allocMetric->allocations, allocation->address );
+        if ( allocation->address < allocMetric->allocations->address )
+        {
+            allocation->right       = allocMetric->allocations;
+            allocation->left        = allocation->right->left;
+            allocation->right->left = NULL;
+        }
+        else if ( allocation->address > allocMetric->allocations->address )
+        {
+            allocation->left        = allocMetric->allocations;
+            allocation->right       = allocation->left->right;
+            allocation->left->right = NULL;
+        }
+        else
+        {
+            UTILS_WARNING( "Allocation already known: %" PRIx64, allocation->address );
+        }
     }
-
-    allocMetric->allocations = splay( allocMetric->allocations, allocation->address );
-    if ( allocation->address < allocMetric->allocations->address )
-    {
-        allocation->left               = allocMetric->allocations->left;
-        allocation->right              = allocMetric->allocations;
-        allocMetric->allocations->left = NULL;
-        allocMetric->allocations       = allocation;
-    }
-    else if ( allocation->address > allocMetric->allocations->address )
-    {
-        allocation->right               = allocMetric->allocations->right;
-        allocation->left                = allocMetric->allocations;
-        allocMetric->allocations->right = NULL;
-        allocMetric->allocations        = allocation;
-    }
-    else
-    {
-        UTILS_WARNING( "Allocation already known: %" PRIx64, allocation->address );
-    }
+    allocMetric->allocations = allocation;
 }
 
 static allocation_item*

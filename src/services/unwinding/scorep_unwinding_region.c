@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -194,36 +194,32 @@ scorep_unwinding_region_insert( SCOREP_Unwinding_CpuLocationData* unwindData,
     memcpy( new->name, name, len + 1 );
     new->left = new->right = NULL;
 
-    if ( unwindData->known_regions == NULL )
+    if ( unwindData->known_regions )
     {
-        unwindData->known_regions = new;
-        return new;
+        unwindData->known_regions = splay( unwindData->known_regions, start, compare_start );
+        if ( start < unwindData->known_regions->start )
+        {
+            new->right       = unwindData->known_regions;
+            new->left        = new->right->left;
+            new->right->left = NULL;
+        }
+        else if ( start > unwindData->known_regions->start )
+        {
+            new->left        = unwindData->known_regions;
+            new->right       = new->left->right;
+            new->left->right = NULL;
+        }
+        else
+        {
+            UTILS_BUG( "Region already known: %s@[%" PRIx64 ", %" PRIx64 ") "
+                       "existing: %s@[%" PRIx64 ", %" PRIx64 ")",
+                       name, start, end,
+                       unwindData->known_regions->name,
+                       unwindData->known_regions->start,
+                       unwindData->known_regions->end );
+        }
     }
-
-    unwindData->known_regions = splay( unwindData->known_regions, start, compare_start );
-    if ( start < unwindData->known_regions->start )
-    {
-        new->left                       = unwindData->known_regions->left;
-        new->right                      = unwindData->known_regions;
-        unwindData->known_regions->left = NULL;
-        unwindData->known_regions       = new;
-    }
-    else if ( start > unwindData->known_regions->start )
-    {
-        new->right                       = unwindData->known_regions->right;
-        new->left                        = unwindData->known_regions;
-        unwindData->known_regions->right = NULL;
-        unwindData->known_regions        = new;
-    }
-    else
-    {
-        UTILS_BUG( "Region already known: %s@[%" PRIx64 ", %" PRIx64 ") "
-                   "existing: %s@[%" PRIx64 ", %" PRIx64 ")",
-                   name, start, end,
-                   unwindData->known_regions->name,
-                   unwindData->known_regions->start,
-                   unwindData->known_regions->end );
-    }
+    unwindData->known_regions = new;
 
     return new;
 }

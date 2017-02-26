@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "scorep_unwinding_region.h"
+#include "scorep_unwinding_cct.h"
 
 SCOREP_Unwinding_CpuLocationData*
 scorep_unwinding_cpu_get_location_data( SCOREP_Location* location )
@@ -45,59 +46,6 @@ scorep_unwinding_cpu_get_location_data( SCOREP_Location* location )
     cpu_unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
 
     return cpu_unwind_data;
-}
-
-/**
- * Translate current stack to a calling context tree representation.
- *
- * @param[inout] unwindContext  The unwind context where to start
- * @param instructionStack      Current stack of this location
- * @param instructionStackDepth Depth of current stack
- *
- * @return calling context tree representation of current stack
- */
-static void
-update_calling_context( SCOREP_Unwinding_CpuLocationData*            unwindData,
-                        scorep_unwinding_calling_context_tree_node** unwindContext,
-                        uint64_t                                     ip,
-                        SCOREP_RegionHandle                          region )
-{
-    /*
-     * Look in the children array of current parent for an entry
-     * which already represents a region with current IP
-     */
-    scorep_unwinding_calling_context_tree_node* child = ( *unwindContext )->children;
-    while ( child )
-    {
-        if ( child->ip == ip && child->region == region )
-        {
-            /*
-             * If found, use this child as new parent and go to
-             * next element in the instruction stack
-             */
-            *unwindContext = child;
-            return;
-        }
-        child = child->next_sibling;
-    }
-
-    /* Allocate memory for a new child */
-    child         = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *child ) );
-    child->handle =
-        SCOREP_Definitions_NewCallingContext( ip,
-                                              region,
-                                              SCOREP_INVALID_SOURCE_CODE_LOCATION,
-                                              ( *unwindContext )->handle );
-    child->ip       = ip;
-    child->region   = region;
-    child->children = NULL;
-
-    /* Enqueue new child to parent's list of children */
-    child->next_sibling          = ( *unwindContext )->children;
-    ( *unwindContext )->children = child;
-
-    /* The new allocated child is our new node now */
-    *unwindContext = child;
 }
 
 /**
@@ -640,11 +588,12 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         unwind_context                  = unwindData->augmented_stack->surrogates->unwind_context;
         unwindData->augmented_stack->ip = wrapped_region_ip;
         /* Decent into the instrumented region */
-        *unwindDistance = 1;
-        update_calling_context( unwindData,
-                                &unwind_context,
-                                wrapped_region_ip,
-                                unwindData->augmented_stack->surrogates->region_handle );
+        *unwindDistance = 0;
+        calling_context_descent( unwindData->location,
+                                 &unwind_context,
+                                 unwindDistance,
+                                 wrapped_region_ip,
+                                 unwindData->augmented_stack->surrogates->region_handle );
 
         *callingContext                      = unwind_context->handle;
         unwindData->previous_calling_context = *callingContext;
@@ -686,11 +635,11 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         unwindData->augmented_stack->ip = previous_ip;
 
         /* Decent into the instrumented region */
-        ( *unwindDistance )++;
-        update_calling_context( unwindData,
-                                &unwind_context,
-                                unwindData->augmented_stack->ip,
-                                unwindData->augmented_stack->surrogates->region_handle );
+        calling_context_descent( unwindData->location,
+                                 &unwind_context,
+                                 unwindDistance,
+                                 unwindData->augmented_stack->ip,
+                                 unwindData->augmented_stack->surrogates->region_handle );
     }
 
     /* Descent with the tail of the current stack down the unwind context
@@ -713,11 +662,11 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         }
 
         /* Decent into the calling context tree */
-        ( *unwindDistance )++;
-        update_calling_context( unwindData,
-                                &unwind_context,
-                                current_stack->ip,
-                                current_stack->region->handle );
+        calling_context_descent( unwindData->location,
+                                 &unwind_context,
+                                 unwindDistance,
+                                 current_stack->ip,
+                                 current_stack->region->handle );
 
         /* We want to enter an instrumented region, thus we need to create
            the augmented stack, thus convert the current frame to an augmented
@@ -769,11 +718,11 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         unwindData->augmented_stack->surrogates = surrogate;
 
         /* Now descent into the instrumented region */
-        ( *unwindDistance )++;
-        update_calling_context( unwindData,
-                                &unwind_context,
-                                surrogate->ip,
-                                instrumentedRegionHandle );
+        calling_context_descent( unwindData->location,
+                                 &unwind_context,
+                                 unwindDistance,
+                                 surrogate->ip,
+                                 instrumentedRegionHandle );
     }
 
     *callingContext                      = unwind_context->handle;
@@ -892,11 +841,12 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
     }
 
     /* Now create the calling context for the leave */
-    update_calling_context( unwindData,
-                            &unwind_context,
-                            ip,
-                            region_handle );
-    *unwindDistance                      = 1;
+    *unwindDistance = 0;
+    calling_context_descent( unwindData->location,
+                             &unwind_context,
+                             unwindDistance,
+                             ip,
+                             region_handle );
     *callingContext                      = unwind_context->handle;
     unwindData->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
 

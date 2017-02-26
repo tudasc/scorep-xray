@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -80,10 +80,12 @@ typedef struct scorep_unwinding_calling_context_tree_node
     uint64_t                                           ip;
     /** Region handle */
     SCOREP_RegionHandle                                region;
-    /** List of children nodes */
+    /** Splay-tree of children nodes */
     struct scorep_unwinding_calling_context_tree_node* children;
-    /** Pointer to next sibling element */
-    struct scorep_unwinding_calling_context_tree_node* next_sibling;
+    /** Pointer to left sibling element */
+    struct scorep_unwinding_calling_context_tree_node* left;
+    /** Pointer to right sibling element */
+    struct scorep_unwinding_calling_context_tree_node* right;
 } scorep_unwinding_calling_context_tree_node;
 
 
@@ -205,7 +207,7 @@ typedef struct scorep_unwinding_instrumented_region
     /** Corresponding region handle */
     SCOREP_RegionHandle                          region_handle;
     /** Pointer to corresponding node in the calling context tree */
-    scorep_unwinding_calling_context_tree_node*  cct_node;
+    scorep_unwinding_calling_context_tree_node*  unwind_context;
     /** Pointer to previous instrumented function in the stack */
     struct scorep_unwinding_instrumented_region* prev;
 } scorep_unwinding_instrumented_region;
