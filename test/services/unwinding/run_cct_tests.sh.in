@@ -44,11 +44,17 @@ GREP()
 
 # Get SRC_ROOT
 SRC_ROOT="@abs_srcdir@/.."
+test -d "$SRC_ROOT"
 
+SCOREP="./scorep"
+test -x "${SCOREP}"
 # Get otf2-print tool
 OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
+test -x "${OTF2_PRINT}"
 CUBE_DUMP="@CUBELIB_BINDIR@/cube_dump"
+test -x "${CUBE_DUMP}"
 CUBE_INFO="@CUBELIB_BINDIR@/cube_info"
+test -x "${CUBE_INFO}"
 
 # Set up directory that will contain experiment results
 RESULT_DIR_PREFIX=$PWD/scorep-test-cct
@@ -68,7 +74,7 @@ cleanup
 
 compile()
 {
-    ./scorep --build-check \
+    ${SCOREP} --build-check \
         ${_V_scorep} \
         --user \
         --thread=none \

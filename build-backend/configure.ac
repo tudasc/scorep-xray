@@ -260,6 +260,10 @@ AS_IF([test -n "${scorep_cubew_bindir}"],
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBEW], [test 1 -eq 0])
       ])
 
+AS_IF([test -n "${scorep_cubelib_bindir}"],
+      [AC_SUBST([CUBELIB_BINDIR], ["${scorep_cubelib_bindir}"])],
+      [AC_SUBST([CUBELIB_BINDIR], ["../vendor/cubelib/build-backend"])])
+
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
 

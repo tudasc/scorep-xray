@@ -219,7 +219,7 @@ scorep_score_extra_arg=
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR_EVALUATED])
 AS_IF([test "x${bindir}" = "x${BINDIR_EVALUATED}"],
     [scorep_score_extra_arg="--bindir=${BINDIR_EVALUATED}"])
-AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} ${arg} ${scorep_cubelib_config_arg}  ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
+AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} ${arg} ${scorep_cubelib_config_arg} ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AC_CONFIG_SUBDIR_CUSTOM([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
@@ -244,7 +244,7 @@ AM_COND_IF([HAVE_SCOREP_SHMEM],
      AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
     ])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cubew_config_arg}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_cubelib_config_arg}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cubew_config_arg}  ${scorep_otf2_config_arg}])
