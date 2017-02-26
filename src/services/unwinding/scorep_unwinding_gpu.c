@@ -53,8 +53,6 @@ typedef struct SCOREP_Unwinding_GpuLocationData
     /** Root calling context node for all generated nodes,
         i.e., the SCOREP_INVALID_CALLING_CONTEXT node. */
     scorep_unwinding_calling_context_tree_node calling_context_root;
-    /** Recently visited calling context leaf node. */
-    scorep_unwinding_calling_context_tree_node calling_context_current_leaf;
     /** Last known calling context */
     SCOREP_CallingContextHandle                previous_calling_context;
 } SCOREP_Unwinding_GpuLocationData;

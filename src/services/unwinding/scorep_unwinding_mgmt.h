@@ -147,8 +147,6 @@ typedef struct scorep_unwinding_augmented_frame
 /** Per-location based data related to unwinding for all CPU locations. */
 typedef struct SCOREP_Unwinding_CpuLocationData
 {
-    /** The current state of the stack, based strictly on unwind data */
-    scorep_unwinding_frame* current_stack;
     /** Unused stack frame objects */
     scorep_unwinding_frame* unused_frames;
 
