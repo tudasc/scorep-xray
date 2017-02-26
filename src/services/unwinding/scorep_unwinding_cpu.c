@@ -275,6 +275,32 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
                           unwindData->region_name_buffer );
 }
 
+static void
+put_unused( SCOREP_Unwinding_CpuLocationData* unwindData,
+            void*                             unusedObject )
+{
+    scorep_unwinding_unused_object* unused_object = unusedObject;
+    unused_object->next        = unwindData->unused_objects;
+    unwindData->unused_objects = unused_object;
+}
+
+static void*
+get_unused( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    scorep_unwinding_unused_object* used_object = unwindData->unused_objects;
+    if ( used_object )
+    {
+        unwindData->unused_objects = used_object->next;
+    }
+    else
+    {
+        used_object = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *used_object ) );
+    }
+    memset( used_object, 0, sizeof( *used_object ) );
+
+    return used_object;
+}
+
 /**
  * Push a region onto the stack.
  *
@@ -289,22 +315,11 @@ push_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
             scorep_unwinding_region*          region,
             unw_word_t                        ip )
 {
-    scorep_unwinding_frame* frame = unwindData->unused_frames;
-    if ( frame )
-    {
-        unwindData->unused_frames = frame->next;
-    }
-    else
-    {
-        frame = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *frame ) );
-    }
-    memset( frame, 0, sizeof( *frame ) );
-
+    scorep_unwinding_frame* frame = get_unused( unwindData );
     frame->ip     = ip;
     frame->region = region;
-
-    frame->next = *stack;
-    *stack      = frame;
+    frame->next   = *stack;
+    *stack        = frame;
 }
 
 /**
@@ -321,9 +336,8 @@ drop_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
     while ( stack )
     {
         scorep_unwinding_frame* top = stack;
-        stack                     = top->next;
-        top->next                 = unwindData->unused_frames;
-        unwindData->unused_frames = top;
+        stack = top->next;
+        put_unused( unwindData, top );
     }
 }
 
@@ -661,9 +675,8 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
             previous_ip = current_stack->ip;
 
             scorep_unwinding_frame* top = current_stack;
-            current_stack             = current_stack->next;
-            top->next                 = unwindData->unused_frames;
-            unwindData->unused_frames = top;
+            current_stack = current_stack->next;
+            put_unused( unwindData, top );
 
             if ( frame == unwindData->augmented_stack )
             {
@@ -717,58 +730,37 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
            one */
         if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
         {
-            scorep_unwinding_augmented_frame* frame = unwindData->unused_augmented_frames;
-            if ( frame )
-            {
-                unwindData->unused_augmented_frames = frame->next;
-            }
-            else
-            {
-                frame = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *frame ) );
-            }
-            memset( frame, 0, sizeof( *frame ) );
-
+            scorep_unwinding_augmented_frame* augmented_frame = get_unused( unwindData );
             if ( unwindData->augmented_stack == NULL )
             {
                 /* First frame */
-                frame->next = frame;
-                frame->prev = frame;
+                augmented_frame->next = augmented_frame;
+                augmented_frame->prev = augmented_frame;
             }
             else
             {
-                frame->next       = unwindData->augmented_stack;
-                frame->prev       = unwindData->augmented_stack->prev;
-                frame->prev->next = frame;
-                frame->next->prev = frame;
+                augmented_frame->next       = unwindData->augmented_stack;
+                augmented_frame->prev       = unwindData->augmented_stack->prev;
+                augmented_frame->prev->next = augmented_frame;
+                augmented_frame->next->prev = augmented_frame;
             }
 
-            frame->ip                   = current_stack->ip;
-            frame->region               = current_stack->region;
-            unwindData->augmented_stack = frame;
+            augmented_frame->ip         = current_stack->ip;
+            augmented_frame->region     = current_stack->region;
+            unwindData->augmented_stack = augmented_frame;
         }
 
         /* Move stack frame to the unused list */
         scorep_unwinding_frame* frame = current_stack;
-        current_stack             = current_stack->next;
-        frame->next               = unwindData->unused_frames;
-        unwindData->unused_frames = frame;
+        current_stack = current_stack->next;
+        put_unused( unwindData, frame );
     }
 
     /* We now have the calling context for the current CPU stack, now enter
        the provided instrumented region */
     if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
     {
-        scorep_unwinding_surrogate* surrogate = unwindData->unused_surrogates;
-        if ( surrogate )
-        {
-            unwindData->unused_surrogates = surrogate->prev;
-        }
-        else
-        {
-            surrogate = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *surrogate ) );
-        }
-        memset( surrogate, 0, sizeof( *surrogate ) );
-
+        scorep_unwinding_surrogate* surrogate = get_unused( unwindData );
         surrogate->prev = unwindData->augmented_stack->surrogates;
         if ( wrappedRegion )
         {
@@ -858,9 +850,8 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
             ip = current_stack->ip;
 
             scorep_unwinding_frame* top = current_stack;
-            current_stack             = current_stack->next;
-            top->next                 = unwindData->unused_frames;
-            unwindData->unused_frames = top;
+            current_stack = current_stack->next;
+            put_unused( unwindData, top );
 
             if ( frame == unwindData->augmented_stack )
             {
@@ -879,9 +870,8 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
     /* Now pop the instrumented region from the augmented stack */
     scorep_unwinding_augmented_frame* frame     = unwindData->augmented_stack;
     scorep_unwinding_surrogate*       surrogate = frame->surrogates;
-    frame->surrogates             = surrogate->prev;
-    surrogate->prev               = unwindData->unused_surrogates;
-    unwindData->unused_surrogates = surrogate;
+    frame->surrogates = surrogate->prev;
+    put_unused( unwindData, frame );
 
     /*
      * pop also all non-surrogate frames from the augmented stack until the next
@@ -904,9 +894,7 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
             frame->next->prev           = frame->prev;
             unwindData->augmented_stack = frame->next;
         }
-        frame->next                         = unwindData->unused_augmented_frames;
-        frame->prev                         = NULL;
-        unwindData->unused_augmented_frames = frame;
+        put_unused( unwindData, frame );
     }
 
     /* Now create the calling context for the leave */
@@ -954,17 +942,12 @@ scorep_unwinding_cpu_deactivate( SCOREP_Unwinding_CpuLocationData* unwindData )
         {
             scorep_unwinding_surrogate* surrogate = frame->surrogates;
             frame->surrogates = surrogate->prev;
+            put_unused( unwindData, surrogate );
 
             /* @todo trigger exit events of instrumented regions */
-
-            surrogate->prev               = unwindData->unused_surrogates;
-            unwindData->unused_surrogates = surrogate;
         }
 
-
-        frame->next                         = unwindData->unused_augmented_frames;
-        frame->prev                         = NULL;
-        unwindData->unused_augmented_frames = frame;
+        put_unused( unwindData, frame );
     }
 
     SCOREP_Location_DeactivateCpuSample( unwindData->location,

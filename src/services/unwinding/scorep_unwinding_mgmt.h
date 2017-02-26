@@ -70,20 +70,6 @@ typedef struct scorep_unwinding_region
 
 
 /**
- * Object for a frame in the current unwinding stack.
- */
-typedef struct scorep_unwinding_frame
-{
-    /** Next frame (i.e., the one who was called by this frame) */
-    struct scorep_unwinding_frame* next;
-    /** The instruction address for this frame */
-    uint64_t                       ip;
-    /** The region for this frame */
-    scorep_unwinding_region*       region;
-} scorep_unwinding_frame;
-
-
-/**
  * Data structure of a node on the calling context tree (CCT)
  */
 typedef struct scorep_unwinding_calling_context_tree_node
@@ -99,6 +85,20 @@ typedef struct scorep_unwinding_calling_context_tree_node
     /** Pointer to next sibling element */
     struct scorep_unwinding_calling_context_tree_node* next_sibling;
 } scorep_unwinding_calling_context_tree_node;
+
+
+/**
+ * Object for a frame in the current unwinding stack.
+ */
+typedef struct scorep_unwinding_frame
+{
+    /** Next frame (i.e., the one who was called by this frame) */
+    struct scorep_unwinding_frame* next;
+    /** The instruction address for this frame */
+    uint64_t                       ip;
+    /** The region for this frame */
+    scorep_unwinding_region*       region;
+} scorep_unwinding_frame;
 
 
 /**
@@ -143,22 +143,25 @@ typedef struct scorep_unwinding_augmented_frame
     scorep_unwinding_surrogate* surrogates;
 } scorep_unwinding_augmented_frame;
 
+typedef union scorep_unwinding_unused_object
+{
+    union scorep_unwinding_unused_object* next;
+    scorep_unwinding_frame                frame;
+    scorep_unwinding_surrogate            surrogate;
+    scorep_unwinding_augmented_frame      augmented_frame;
+} scorep_unwinding_unused_object;
 
 /** Per-location based data related to unwinding for all CPU locations. */
 typedef struct SCOREP_Unwinding_CpuLocationData
 {
     struct SCOREP_Location* location;
 
-    /** Unused stack frame objects */
-    scorep_unwinding_frame* unused_frames;
+    /** Unused objects */
+    scorep_unwinding_unused_object* unused_objects;
 
     /** The augumented stack with instrumented regions, NULL if no instrumented
      *  region is on the stack, points to the last element entered instrumented region */
     scorep_unwinding_augmented_frame* augmented_stack;
-    /** Unused augmented stack frame objects */
-    scorep_unwinding_augmented_frame* unused_augmented_frames;
-    /** Unused frame surrogates */
-    scorep_unwinding_surrogate*       unused_surrogates;
 
     /** The address of the main function */
     uint64_t start_ip_of_main;
