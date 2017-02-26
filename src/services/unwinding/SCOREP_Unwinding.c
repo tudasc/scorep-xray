@@ -91,6 +91,8 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
 
     SCOREP_ErrorCode    result        = SCOREP_SUCCESS;
     SCOREP_LocationType location_type = SCOREP_Location_GetType( location );
+    void*               location_data = SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
+
     switch ( location_type )
     {
         case SCOREP_LOCATION_TYPE_CPU_THREAD:
@@ -103,7 +105,7 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
                     UTILS_BUG_ON( wrappedRegion != 0, "Wrapped regions not supported for sample events." );
                     UTILS_BUG_ON( framesToSkip != 0, "Skipping frames not supported for sample events." );
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER:
-                    result = scorep_unwinding_cpu_handle_enter( location,
+                    result = scorep_unwinding_cpu_handle_enter( location_data,
                                                                 instrumentedRegionHandle,
                                                                 wrappedRegion,
                                                                 framesToSkip,
@@ -115,7 +117,7 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_EXIT:
                     UTILS_BUG_ON( wrappedRegion, "Wrapped regions not supported for exit events." );
                     UTILS_BUG_ON( framesToSkip, "Skipping frames not supported for exit events." );
-                    result = scorep_unwinding_cpu_handle_exit( location,
+                    result = scorep_unwinding_cpu_handle_exit( location_data,
                                                                currentCallingContext,
                                                                unwindDistance,
                                                                previousCallingContext );
@@ -136,7 +138,7 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
                     break;
 
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER:
-                    result = scorep_unwinding_gpu_handle_enter( location,
+                    result = scorep_unwinding_gpu_handle_enter( location_data,
                                                                 instrumentedRegionHandle,
                                                                 currentCallingContext,
                                                                 unwindDistance,
@@ -144,7 +146,7 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
                     break;
 
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_EXIT:
-                    result = scorep_unwinding_gpu_handle_exit( location,
+                    result = scorep_unwinding_gpu_handle_exit( location_data,
                                                                currentCallingContext,
                                                                unwindDistance,
                                                                previousCallingContext );
@@ -294,13 +296,16 @@ unwinding_subsystem_init_location( SCOREP_Location* location,
 
     SCOREP_LocationType location_type = SCOREP_Location_GetType( location );
 
+    void* location_data;
     switch ( location_type )
     {
         case SCOREP_LOCATION_TYPE_CPU_THREAD:
-            return scorep_unwinding_cpu_init_location( location );
+            location_data = scorep_unwinding_cpu_get_location_data( location );
+            break;
 
         case SCOREP_LOCATION_TYPE_GPU:
-            return scorep_unwinding_gpu_init_location( location );
+            location_data = scorep_unwinding_gpu_get_location_data( location );
+            break;
 
         case SCOREP_LOCATION_TYPE_METRIC:
             /* No need to handle locations which are just used to store metrics */
@@ -310,6 +315,12 @@ unwinding_subsystem_init_location( SCOREP_Location* location,
             UTILS_BUG( "Could not create location data of unwinding service. Location type is not supported." );
             return SCOREP_ERROR_PROCESSED_WITH_FAULTS;
     }
+
+    SCOREP_Location_SetSubsystemData( location,
+                                      scorep_unwinding_subsystem_id,
+                                      location_data );
+
+    return SCOREP_SUCCESS;
 }
 
 static void
@@ -325,7 +336,8 @@ unwinding_subsystem_deactivate_cpu_location( SCOREP_Location*        location,
     if ( phase == SCOREP_CPU_LOCATION_PHASE_EVENTS )
     {
         /* The location really goes into idle state, thus tear down */
-        scorep_unwinding_cpu_deactivate( location );
+        void* location_data = SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
+        scorep_unwinding_cpu_deactivate( location_data );
     }
 }
 

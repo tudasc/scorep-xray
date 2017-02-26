@@ -31,8 +31,8 @@
 
 #include "scorep_unwinding_region.h"
 
-SCOREP_ErrorCode
-scorep_unwinding_cpu_init_location( SCOREP_Location* location )
+SCOREP_Unwinding_CpuLocationData*
+scorep_unwinding_cpu_get_location_data( SCOREP_Location* location )
 {
     /* Create per-location unwinding management data */
     SCOREP_Unwinding_CpuLocationData* cpu_unwind_data =
@@ -41,13 +41,10 @@ scorep_unwinding_cpu_init_location( SCOREP_Location* location )
 
     /* Initialize the object */
     memset( cpu_unwind_data, 0, sizeof( *cpu_unwind_data ) );
+    cpu_unwind_data->location                 = location;
     cpu_unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
 
-    SCOREP_Location_SetSubsystemData( location,
-                                      scorep_unwinding_subsystem_id,
-                                      cpu_unwind_data );
-
-    return SCOREP_SUCCESS;
+    return cpu_unwind_data;
 }
 
 /**
@@ -60,7 +57,8 @@ scorep_unwinding_cpu_init_location( SCOREP_Location* location )
  * @return calling context tree representation of current stack
  */
 static void
-update_calling_context( scorep_unwinding_calling_context_tree_node** unwindContext,
+update_calling_context( SCOREP_Unwinding_CpuLocationData*            unwindData,
+                        scorep_unwinding_calling_context_tree_node** unwindContext,
                         uint64_t                                     ip,
                         SCOREP_RegionHandle                          region )
 {
@@ -84,7 +82,7 @@ update_calling_context( scorep_unwinding_calling_context_tree_node** unwindConte
     }
 
     /* Allocate memory for a new child */
-    child         = SCOREP_Memory_AllocForMisc( sizeof( *child ) );
+    child         = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *child ) );
     child->handle =
         SCOREP_Definitions_NewCallingContext( ip,
                                               region,
@@ -298,7 +296,7 @@ push_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
     }
     else
     {
-        frame = SCOREP_Memory_AllocForMisc( sizeof( *frame ) );
+        frame = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *frame ) );
     }
     memset( frame, 0, sizeof( *frame ) );
 
@@ -545,39 +543,37 @@ get_wrapped_region( SCOREP_Unwinding_CpuLocationData* unwindData,
 }
 
 SCOREP_ErrorCode
-scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
-                                   SCOREP_RegionHandle          instrumentedRegionHandle,
-                                   intptr_t                     wrappedRegion,
-                                   size_t                       framesToSkip,
-                                   SCOREP_CallingContextHandle* callingContext,
-                                   uint32_t*                    unwindDistance,
-                                   SCOREP_CallingContextHandle* previousCallingContext )
+scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
+                                   SCOREP_RegionHandle               instrumentedRegionHandle,
+                                   intptr_t                          wrappedRegion,
+                                   size_t                            framesToSkip,
+                                   SCOREP_CallingContextHandle*      callingContext,
+                                   uint32_t*                         unwindDistance,
+                                   SCOREP_CallingContextHandle*      previousCallingContext )
 {
-    UTILS_DEBUG_ENTRY( "instrumentedRegionHandle=%u[%s]",
+    if ( !unwindData )
+    {
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
+    }
+
+    UTILS_DEBUG_ENTRY( "%p instrumentedRegionHandle=%u[%s]",
+                       unwindData->location,
                        instrumentedRegionHandle,
                        instrumentedRegionHandle
                        ? SCOREP_RegionHandle_GetName( instrumentedRegionHandle )
                        : "" );
 
-    SCOREP_Unwinding_CpuLocationData* unwind_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
-
-    if ( !unwind_data )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
-    }
-
     /* export the previous calling context, but do not reset our previous yet,
        as we may fail to get an backtrace */
-    *previousCallingContext = unwind_data->previous_calling_context;
+    *previousCallingContext = unwindData->previous_calling_context;
 
-    int ret = unw_getcontext( &unwind_data->context );
+    int ret = unw_getcontext( &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                             "Could not get libunwind context: %s", unw_strerror( -ret ) );
     }
-    ret = unw_init_local( &unwind_data->cursor, &unwind_data->context );
+    ret = unw_init_local( &unwindData->cursor, &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
@@ -586,33 +582,33 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
 
     bool     wrapped_region_is_on_stack = false;
     uint64_t wrapped_region_ip          = 0;
-    if ( unwind_data->wrapped_region )
+    if ( unwindData->wrapped_region )
     {
         wrapped_region_is_on_stack = true;
     }
     if ( wrappedRegion )
     {
-        UTILS_BUG_ON( unwind_data->wrapped_region, "Entering a wrapped region again!" );
+        UTILS_BUG_ON( unwindData->wrapped_region, "Entering a wrapped region again!" );
 
         /* If we just enter the wrapped region, the wrapped region wont be on
            the stack yet */
         wrapped_region_is_on_stack = false;
 
-        unwind_data->wrapped_region =
-            get_wrapped_region( unwind_data, wrappedRegion );
-        if ( !unwind_data->wrapped_region )
+        unwindData->wrapped_region =
+            get_wrapped_region( unwindData, wrappedRegion );
+        if ( !unwindData->wrapped_region )
         {
             return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                                 "Could not determine function for wrapped region." );
         }
         /* For the enter event in the wrapped region, we use the start address,
            wont be changed by get_current_stack */
-        wrapped_region_ip           = unwind_data->wrapped_region->start;
-        unwind_data->frames_to_skip = framesToSkip;
+        wrapped_region_ip          = unwindData->wrapped_region->start;
+        unwindData->frames_to_skip = framesToSkip;
     }
 
     scorep_unwinding_frame* current_stack =
-        get_current_stack( unwind_data, wrapped_region_is_on_stack, &wrapped_region_ip );
+        get_current_stack( unwindData, wrapped_region_is_on_stack, &wrapped_region_ip );
     if ( !current_stack )
     {
         UTILS_BUG_ON( instrumentedRegionHandle != 0, "Empty stack for enter" );
@@ -623,38 +619,39 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
     /* As this is the virtual root, we need to assume that it made progress,
        thus start with an unwind distance of 1 */
     *unwindDistance = 1;
-    scorep_unwinding_calling_context_tree_node* unwind_context = &unwind_data->calling_context_root;
+    scorep_unwinding_calling_context_tree_node* unwind_context = &unwindData->calling_context_root;
 
     /* If this is a sample inside a wrapped region, just take the unwind context from the
        instrumented region and the wrapped_region_ip to create the calling context and return */
-    if ( !instrumentedRegionHandle && unwind_data->wrapped_region )
+    if ( !instrumentedRegionHandle && unwindData->wrapped_region )
     {
-        UTILS_BUG_ON( unwind_data->augmented_stack == NULL,
+        UTILS_BUG_ON( unwindData->augmented_stack == NULL,
                       "Sample in wrapped region without instrumented region on the stack." );
         UTILS_BUG_ON( scorep_in_wrapped_region == 0,
                       "Sample inside a wrapped-region triggered without being told so." );
-        unwind_context                   = unwind_data->augmented_stack->surrogates->unwind_context;
-        unwind_data->augmented_stack->ip = wrapped_region_ip;
+        unwind_context                  = unwindData->augmented_stack->surrogates->unwind_context;
+        unwindData->augmented_stack->ip = wrapped_region_ip;
         /* Decent into the instrumented region */
         *unwindDistance = 1;
-        update_calling_context( &unwind_context,
+        update_calling_context( unwindData,
+                                &unwind_context,
                                 wrapped_region_ip,
-                                unwind_data->augmented_stack->surrogates->region_handle );
+                                unwindData->augmented_stack->surrogates->region_handle );
 
-        *callingContext                       = unwind_context->handle;
-        unwind_data->previous_calling_context = *callingContext;
+        *callingContext                      = unwind_context->handle;
+        unwindData->previous_calling_context = *callingContext;
 
-        drop_stack( unwind_data, current_stack );
+        drop_stack( unwindData, current_stack );
 
         return SCOREP_SUCCESS;
     }
 
     /* If we have instrumented regions on the stack, determine the unwind context
      * and the tail of the current unwind stack. */
-    if ( unwind_data->augmented_stack )
+    if ( unwindData->augmented_stack )
     {
-        uint64_t                          previous_ip = unwind_data->augmented_stack->ip;
-        scorep_unwinding_augmented_frame* frame       = unwind_data->augmented_stack->prev;
+        uint64_t                          previous_ip = unwindData->augmented_stack->ip;
+        scorep_unwinding_augmented_frame* frame       = unwindData->augmented_stack->prev;
         while ( current_stack )
         {
             if ( frame->region != current_stack->region )
@@ -664,11 +661,11 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
             previous_ip = current_stack->ip;
 
             scorep_unwinding_frame* top = current_stack;
-            current_stack              = current_stack->next;
-            top->next                  = unwind_data->unused_frames;
-            unwind_data->unused_frames = top;
+            current_stack             = current_stack->next;
+            top->next                 = unwindData->unused_frames;
+            unwindData->unused_frames = top;
 
-            if ( frame == unwind_data->augmented_stack )
+            if ( frame == unwindData->augmented_stack )
             {
                 break;
             }
@@ -677,15 +674,16 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
 
         /* Use the unwind context from the last instrumented region, as this
            is a real node, we start the unwind distance with 0 again */
-        unwind_context                   = unwind_data->augmented_stack->surrogates->unwind_context;
-        *unwindDistance                  = 0;
-        unwind_data->augmented_stack->ip = previous_ip;
+        unwind_context                  = unwindData->augmented_stack->surrogates->unwind_context;
+        *unwindDistance                 = 0;
+        unwindData->augmented_stack->ip = previous_ip;
 
         /* Decent into the instrumented region */
         ( *unwindDistance )++;
-        update_calling_context( &unwind_context,
-                                unwind_data->augmented_stack->ip,
-                                unwind_data->augmented_stack->surrogates->region_handle );
+        update_calling_context( unwindData,
+                                &unwind_context,
+                                unwindData->augmented_stack->ip,
+                                unwindData->augmented_stack->surrogates->region_handle );
     }
 
     /* Descent with the tail of the current stack down the unwind context
@@ -709,7 +707,8 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
 
         /* Decent into the calling context tree */
         ( *unwindDistance )++;
-        update_calling_context( &unwind_context,
+        update_calling_context( unwindData,
+                                &unwind_context,
                                 current_stack->ip,
                                 current_stack->region->handle );
 
@@ -718,18 +717,18 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
            one */
         if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
         {
-            scorep_unwinding_augmented_frame* frame = unwind_data->unused_augmented_frames;
+            scorep_unwinding_augmented_frame* frame = unwindData->unused_augmented_frames;
             if ( frame )
             {
-                unwind_data->unused_augmented_frames = frame->next;
+                unwindData->unused_augmented_frames = frame->next;
             }
             else
             {
-                frame = SCOREP_Memory_AllocForMisc( sizeof( *frame ) );
+                frame = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *frame ) );
             }
             memset( frame, 0, sizeof( *frame ) );
 
-            if ( unwind_data->augmented_stack == NULL )
+            if ( unwindData->augmented_stack == NULL )
             {
                 /* First frame */
                 frame->next = frame;
@@ -737,112 +736,111 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Location*             location,
             }
             else
             {
-                frame->next       = unwind_data->augmented_stack;
-                frame->prev       = unwind_data->augmented_stack->prev;
+                frame->next       = unwindData->augmented_stack;
+                frame->prev       = unwindData->augmented_stack->prev;
                 frame->prev->next = frame;
                 frame->next->prev = frame;
             }
 
-            frame->ip                    = current_stack->ip;
-            frame->region                = current_stack->region;
-            unwind_data->augmented_stack = frame;
+            frame->ip                   = current_stack->ip;
+            frame->region               = current_stack->region;
+            unwindData->augmented_stack = frame;
         }
 
         /* Move stack frame to the unused list */
         scorep_unwinding_frame* frame = current_stack;
-        current_stack              = current_stack->next;
-        frame->next                = unwind_data->unused_frames;
-        unwind_data->unused_frames = frame;
+        current_stack             = current_stack->next;
+        frame->next               = unwindData->unused_frames;
+        unwindData->unused_frames = frame;
     }
 
     /* We now have the calling context for the current CPU stack, now enter
        the provided instrumented region */
     if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
     {
-        scorep_unwinding_surrogate* surrogate = unwind_data->unused_surrogates;
+        scorep_unwinding_surrogate* surrogate = unwindData->unused_surrogates;
         if ( surrogate )
         {
-            unwind_data->unused_surrogates = surrogate->prev;
+            unwindData->unused_surrogates = surrogate->prev;
         }
         else
         {
-            surrogate = SCOREP_Memory_AllocForMisc( sizeof( *surrogate ) );
+            surrogate = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *surrogate ) );
         }
         memset( surrogate, 0, sizeof( *surrogate ) );
 
-        surrogate->prev = unwind_data->augmented_stack->surrogates;
+        surrogate->prev = unwindData->augmented_stack->surrogates;
         if ( wrappedRegion )
         {
-            surrogate->ip = unwind_data->wrapped_region->start;
+            surrogate->ip = unwindData->wrapped_region->start;
         }
         else
         {
-            surrogate->ip = unwind_data->augmented_stack->ip;
+            surrogate->ip = unwindData->augmented_stack->ip;
         }
-        surrogate->region_handle                 = instrumentedRegionHandle;
-        surrogate->unwind_context                = unwind_context;
-        unwind_data->augmented_stack->surrogates = surrogate;
+        surrogate->region_handle                = instrumentedRegionHandle;
+        surrogate->unwind_context               = unwind_context;
+        unwindData->augmented_stack->surrogates = surrogate;
 
         /* Now descent into the instrumented region */
         ( *unwindDistance )++;
-        update_calling_context( &unwind_context,
+        update_calling_context( unwindData,
+                                &unwind_context,
                                 surrogate->ip,
                                 instrumentedRegionHandle );
     }
 
-    *callingContext                       = unwind_context->handle;
-    unwind_data->previous_calling_context = *callingContext;
+    *callingContext                      = unwind_context->handle;
+    unwindData->previous_calling_context = *callingContext;
 
     return SCOREP_SUCCESS;
 }
 
 SCOREP_ErrorCode
-scorep_unwinding_cpu_handle_exit( SCOREP_Location*             location,
-                                  SCOREP_CallingContextHandle* callingContext,
-                                  uint32_t*                    unwindDistance,
-                                  SCOREP_CallingContextHandle* previousCallingContext )
+scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
+                                  SCOREP_CallingContextHandle*      callingContext,
+                                  uint32_t*                         unwindDistance,
+                                  SCOREP_CallingContextHandle*      previousCallingContext )
 {
-    UTILS_DEBUG_ENTRY( "%p", location );
-
-    SCOREP_Unwinding_CpuLocationData* unwind_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
-
-    if ( !unwind_data )
+    if ( !unwindData )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
     }
 
-    *previousCallingContext = unwind_data->previous_calling_context;
+    UTILS_DEBUG_ENTRY( "%p",
+                       unwindData->location );
 
-    int ret = unw_getcontext( &unwind_data->context );
+    *previousCallingContext = unwindData->previous_calling_context;
+
+    int ret = unw_getcontext( &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                             "Could not get libunwind context: %s", unw_strerror( -ret ) );
     }
-    ret = unw_init_local( &unwind_data->cursor, &unwind_data->context );
+    ret = unw_init_local( &unwindData->cursor, &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                             "Could not get libunwind cursor: %s", unw_strerror( -ret ) );
     }
 
-    UTILS_BUG_ON( unwind_data->augmented_stack == NULL, "Leave event without instrumented regions." );
+    UTILS_BUG_ON( unwindData->augmented_stack == NULL, "Leave event without instrumented regions." );
 
-    uint64_t ip = unwind_data->augmented_stack->ip;
-    if ( unwind_data->wrapped_region )
+    uint64_t ip = unwindData->augmented_stack->ip;
+    if ( unwindData->wrapped_region )
     {
         /* If we are leaving the wrapped region, we wont have a address on the stack,
            take end-1 as the ip */
-        ip                          = unwind_data->wrapped_region->end - 1;
-        unwind_data->wrapped_region = NULL;
-        unwind_data->frames_to_skip = 0;
+        ip                         = unwindData->wrapped_region->end - 1;
+        unwindData->wrapped_region = NULL;
+        unwindData->frames_to_skip = 0;
     }
     else
     {
         uint64_t                wrapped_region_ip;
         scorep_unwinding_frame* current_stack =
-            get_current_stack( unwind_data, false, &wrapped_region_ip );
+            get_current_stack( unwindData, false, &wrapped_region_ip );
         if ( !current_stack )
         {
             return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
@@ -850,7 +848,7 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Location*             location,
         }
 
         /* Determine the IP where the leave happended */
-        scorep_unwinding_augmented_frame* frame = unwind_data->augmented_stack->prev;
+        scorep_unwinding_augmented_frame* frame = unwindData->augmented_stack->prev;
         while ( current_stack )
         {
             if ( frame->region != current_stack->region )
@@ -860,97 +858,95 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Location*             location,
             ip = current_stack->ip;
 
             scorep_unwinding_frame* top = current_stack;
-            current_stack              = current_stack->next;
-            top->next                  = unwind_data->unused_frames;
-            unwind_data->unused_frames = top;
+            current_stack             = current_stack->next;
+            top->next                 = unwindData->unused_frames;
+            unwindData->unused_frames = top;
 
-            if ( frame == unwind_data->augmented_stack )
+            if ( frame == unwindData->augmented_stack )
             {
                 break;
             }
             frame = frame->prev;
         }
-        drop_stack( unwind_data, current_stack );
+        drop_stack( unwindData, current_stack );
     }
-    unwind_data->augmented_stack->ip = ip;
+    unwindData->augmented_stack->ip = ip;
     SCOREP_RegionHandle region_handle =
-        unwind_data->augmented_stack->surrogates->region_handle;
+        unwindData->augmented_stack->surrogates->region_handle;
     scorep_unwinding_calling_context_tree_node* unwind_context =
-        unwind_data->augmented_stack->surrogates->unwind_context;
+        unwindData->augmented_stack->surrogates->unwind_context;
 
     /* Now pop the instrumented region from the augmented stack */
-    scorep_unwinding_augmented_frame* frame     = unwind_data->augmented_stack;
+    scorep_unwinding_augmented_frame* frame     = unwindData->augmented_stack;
     scorep_unwinding_surrogate*       surrogate = frame->surrogates;
-    frame->surrogates              = surrogate->prev;
-    surrogate->prev                = unwind_data->unused_surrogates;
-    unwind_data->unused_surrogates = surrogate;
+    frame->surrogates             = surrogate->prev;
+    surrogate->prev               = unwindData->unused_surrogates;
+    unwindData->unused_surrogates = surrogate;
 
     /*
      * pop also all non-surrogate frames from the augmented stack until the next
      * instrumented region or drop the whole argumented stack if this was the
      * last instrumented region we left
      */
-    while ( unwind_data->augmented_stack && unwind_data->augmented_stack->surrogates == NULL )
+    while ( unwindData->augmented_stack && unwindData->augmented_stack->surrogates == NULL )
     {
         /* This is a real stack region, remove from augmented stack */
-        frame = unwind_data->augmented_stack;
+        frame = unwindData->augmented_stack;
         if ( frame == frame->prev )
         {
             /* The last one */
-            unwind_data->augmented_stack = NULL;
+            unwindData->augmented_stack = NULL;
         }
         else
         {
             /* remove frame from double-linked list */
-            frame->prev->next            = frame->next;
-            frame->next->prev            = frame->prev;
-            unwind_data->augmented_stack = frame->next;
+            frame->prev->next           = frame->next;
+            frame->next->prev           = frame->prev;
+            unwindData->augmented_stack = frame->next;
         }
-        frame->next                          = unwind_data->unused_augmented_frames;
-        frame->prev                          = NULL;
-        unwind_data->unused_augmented_frames = frame;
+        frame->next                         = unwindData->unused_augmented_frames;
+        frame->prev                         = NULL;
+        unwindData->unused_augmented_frames = frame;
     }
 
     /* Now create the calling context for the leave */
-    update_calling_context( &unwind_context,
+    update_calling_context( unwindData,
+                            &unwind_context,
                             ip,
                             region_handle );
-    *unwindDistance                       = 1;
-    *callingContext                       = unwind_context->handle;
-    unwind_data->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
+    *unwindDistance                      = 1;
+    *callingContext                      = unwind_context->handle;
+    unwindData->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
 
     return SCOREP_SUCCESS;
 }
 
 void
-scorep_unwinding_cpu_deactivate( SCOREP_Location* location )
+scorep_unwinding_cpu_deactivate( SCOREP_Unwinding_CpuLocationData* unwindData )
 {
-    UTILS_DEBUG_ENTRY( "%p", location );
-
-    SCOREP_Unwinding_CpuLocationData* unwind_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
-
-    if ( !unwind_data )
+    if ( !unwindData )
     {
         UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
         return;
     }
 
-    while ( unwind_data->augmented_stack )
+    UTILS_DEBUG_ENTRY( "%p", unwindData->location );
+
+    while ( unwindData->augmented_stack )
     {
         /* This is a real stack region, remove from augmented stack */
-        scorep_unwinding_augmented_frame* frame = unwind_data->augmented_stack;
+        scorep_unwinding_augmented_frame* frame = unwindData->augmented_stack;
         if ( frame == frame->prev )
         {
             /* The last one */
-            unwind_data->augmented_stack = NULL;
+            unwindData->augmented_stack = NULL;
         }
         else
         {
             /* remove frame from double-linked list */
-            frame->prev->next            = frame->next;
-            frame->next->prev            = frame->prev;
-            unwind_data->augmented_stack = frame->next;
+            frame->prev->next           = frame->next;
+            frame->next->prev           = frame->prev;
+            unwindData->augmented_stack = frame->next;
         }
 
         /* Now pop all instrumented region from the augmented stack */
@@ -961,17 +957,17 @@ scorep_unwinding_cpu_deactivate( SCOREP_Location* location )
 
             /* @todo trigger exit events of instrumented regions */
 
-            surrogate->prev                = unwind_data->unused_surrogates;
-            unwind_data->unused_surrogates = surrogate;
+            surrogate->prev               = unwindData->unused_surrogates;
+            unwindData->unused_surrogates = surrogate;
         }
 
 
-        frame->next                          = unwind_data->unused_augmented_frames;
-        frame->prev                          = NULL;
-        unwind_data->unused_augmented_frames = frame;
+        frame->next                         = unwindData->unused_augmented_frames;
+        frame->prev                         = NULL;
+        unwindData->unused_augmented_frames = frame;
     }
 
-    SCOREP_Location_DeactivateCpuSample( location,
-                                         unwind_data->previous_calling_context );
-    unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+    SCOREP_Location_DeactivateCpuSample( unwindData->location,
+                                         unwindData->previous_calling_context );
+    unwindData->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
 }

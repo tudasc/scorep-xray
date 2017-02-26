@@ -30,36 +30,8 @@
 
 #include "scorep_unwinding_region.h"
 
-/**
- * Element in the list of instrumented regions.
- */
-typedef struct scorep_unwinding_instrumented_region
-{
-    /** Corresponding region handle */
-    SCOREP_RegionHandle                          region_handle;
-    /** Pointer to corresponding node in the calling context tree */
-    scorep_unwinding_calling_context_tree_node*  cct_node;
-    /** Pointer to previous instrumented function in the stack */
-    struct scorep_unwinding_instrumented_region* prev;
-} scorep_unwinding_instrumented_region;
-
-/** Per-location based data related to unwinding for all GPU locations. */
-typedef struct SCOREP_Unwinding_GpuLocationData
-{
-    /** List of regions that were entered through instrumentation */
-    scorep_unwinding_instrumented_region* instrumented_regions;
-    /** List with free elements for the inst_list */
-    scorep_unwinding_instrumented_region* unused_instrumented_regions;
-    /** Root calling context node for all generated nodes,
-        i.e., the SCOREP_INVALID_CALLING_CONTEXT node. */
-    scorep_unwinding_calling_context_tree_node calling_context_root;
-    /** Last known calling context */
-    SCOREP_CallingContextHandle                previous_calling_context;
-} SCOREP_Unwinding_GpuLocationData;
-
-
-SCOREP_ErrorCode
-scorep_unwinding_gpu_init_location( SCOREP_Location* location )
+SCOREP_Unwinding_GpuLocationData*
+scorep_unwinding_gpu_get_location_data( SCOREP_Location* location )
 {
     /* Create per-location unwinding management data for non-CPU locations */
     SCOREP_Unwinding_GpuLocationData* gpu_unwind_data =
@@ -68,45 +40,40 @@ scorep_unwinding_gpu_init_location( SCOREP_Location* location )
 
     /* Initialize the object */
     memset( gpu_unwind_data, 0, sizeof( *gpu_unwind_data ) );
+    gpu_unwind_data->location                 = location;
     gpu_unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
 
-    SCOREP_Location_SetSubsystemData( location,
-                                      scorep_unwinding_subsystem_id,
-                                      gpu_unwind_data );
-
-    return SCOREP_SUCCESS;
+    return gpu_unwind_data;
 }
 
 /**
  * Pushes an instrumented function to the list of instrumented functions.
  *
- * @param[inout] instrumentedRegionList     List of regions that were entered through instrumentation
- * @param[inout] instrumentedRegionFreeList List with free elements for instrumented regions
- * @param instruction                       The instruction object for the instrumented region
- * @param regionHandle                      The region handle for the instrumented region
+ * @param unwindData        Unwind data.
+ * @param regionHandle      The region handle for the instrumented region
  *
  * @return Pointer to new entry representing an instrumented function
  */
 static scorep_unwinding_instrumented_region*
-push_instrumented_region( scorep_unwinding_instrumented_region** instrumentedRegionList,
-                          scorep_unwinding_instrumented_region** instrumentedRegionFreeList,
-                          SCOREP_RegionHandle                    regionHandle )
+push_instrumented_region( SCOREP_Unwinding_GpuLocationData* unwindData,
+                          SCOREP_RegionHandle               regionHandle )
 {
-    scorep_unwinding_instrumented_region* instrumented_region = *instrumentedRegionFreeList;
+    scorep_unwinding_instrumented_region* instrumented_region = unwindData->unused_instrumented_regions;
     if ( instrumented_region )
     {
-        *instrumentedRegionFreeList = instrumented_region->prev;
+        unwindData->unused_instrumented_regions = instrumented_region->prev;
     }
     else
     {
-        instrumented_region = SCOREP_Memory_AllocForMisc( sizeof( *instrumented_region ) );
+        instrumented_region = SCOREP_Location_AllocForMisc( unwindData->location,
+                                                            sizeof( *instrumented_region ) );
     }
     memset( instrumented_region, 0, sizeof( *instrumented_region ) );
 
     instrumented_region->region_handle = regionHandle;
 
-    instrumented_region->prev = *instrumentedRegionList;
-    *instrumentedRegionList   = instrumented_region;
+    instrumented_region->prev        = unwindData->instrumented_regions;
+    unwindData->instrumented_regions = instrumented_region;
 
     return instrumented_region;
 }
@@ -114,25 +81,23 @@ push_instrumented_region( scorep_unwinding_instrumented_region** instrumentedReg
 /**
  * Pops entry from the list of instrumented functions.
  *
- * @param[inout] instrumentedRegionList     List of regions that were entered through instrumentation
- * @param[inout] instrumentedRegionFreeList List with free elements for instrumented regions
+ * @param unwindData        Unwind data.
  */
 static void
-pop_instrumented_region( scorep_unwinding_instrumented_region** instrumentedRegionList,
-                         scorep_unwinding_instrumented_region** instrumentedRegionFreeList )
+pop_instrumented_region( SCOREP_Unwinding_GpuLocationData* unwindData )
 {
-    scorep_unwinding_instrumented_region* top = *instrumentedRegionList;
-    *instrumentedRegionList     = top->prev;
-    top->prev                   = *instrumentedRegionFreeList;
-    *instrumentedRegionFreeList = top;
+    scorep_unwinding_instrumented_region* top = unwindData->instrumented_regions;
+    unwindData->instrumented_regions        = top->prev;
+    top->prev                               = unwindData->unused_instrumented_regions;
+    unwindData->unused_instrumented_regions = top;
 }
 
 SCOREP_ErrorCode
-scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
-                                   SCOREP_RegionHandle          instrumentedRegionHandle,
-                                   SCOREP_CallingContextHandle* callingContext,
-                                   uint32_t*                    unwindDistance,
-                                   SCOREP_CallingContextHandle* previousCallingContext )
+scorep_unwinding_gpu_handle_enter( SCOREP_Unwinding_GpuLocationData* unwindData,
+                                   SCOREP_RegionHandle               instrumentedRegionHandle,
+                                   SCOREP_CallingContextHandle*      callingContext,
+                                   uint32_t*                         unwindDistance,
+                                   SCOREP_CallingContextHandle*      previousCallingContext )
 {
     UTILS_DEBUG_ENTRY( "instrumentedRegionHandle=%u[%s]",
                        instrumentedRegionHandle,
@@ -140,15 +105,12 @@ scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
                        ? SCOREP_RegionHandle_GetName( instrumentedRegionHandle )
                        : "" );
 
-    SCOREP_Unwinding_GpuLocationData* unwind_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
-
-    if ( !unwind_data )
+    if ( !unwindData )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
     }
 
-    *previousCallingContext = unwind_data->previous_calling_context;
+    *previousCallingContext = unwindData->previous_calling_context;
 
     UTILS_BUG_ON( instrumentedRegionHandle == SCOREP_INVALID_REGION, "GPU enter called without instrumented region handle" );
 
@@ -156,10 +118,9 @@ scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
      * A valid instrumentedRegionHandle indicates that this enter
      * event was triggered by an instrumented function. The list of
      * instrumented functions within the current stack is maintained
-     * in unwind_data->instrumented_regions and needs to be updated.
+     * in unwindData->instrumented_regions and needs to be updated.
      */
-    scorep_unwinding_instrumented_region* instrumented_region = push_instrumented_region( &unwind_data->instrumented_regions,
-                                                                                          &unwind_data->unused_instrumented_regions,
+    scorep_unwinding_instrumented_region* instrumented_region = push_instrumented_region( unwindData,
                                                                                           instrumentedRegionHandle );
 
     scorep_unwinding_calling_context_tree_node* current;
@@ -170,7 +131,7 @@ scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
     if ( instrumented_region->prev == NULL )
     {
         /* Instrumented region on first stack level, it has no predecessor */
-        current = &unwind_data->calling_context_root;
+        current = &unwindData->calling_context_root;
     }
     else
     {
@@ -202,7 +163,7 @@ scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
     {
         /* Allocate memory for a new child */
         scorep_unwinding_calling_context_tree_node* new_child =
-            SCOREP_Location_AllocForMisc( location, sizeof( *new_child ) );
+            SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *new_child ) );
 
         new_child->children = NULL;
         new_child->ip       = 0;
@@ -221,33 +182,30 @@ scorep_unwinding_gpu_handle_enter( SCOREP_Location*             location,
         current = new_child;
     }
 
-    instrumented_region->cct_node         = current;
-    *callingContext                       = current->handle;
-    unwind_data->previous_calling_context = *callingContext;
-    *unwindDistance                       = 2;
+    instrumented_region->cct_node        = current;
+    *callingContext                      = current->handle;
+    unwindData->previous_calling_context = *callingContext;
+    *unwindDistance                      = 2;
 
     return SCOREP_SUCCESS;
 }
 
 SCOREP_ErrorCode
-scorep_unwinding_gpu_handle_exit( SCOREP_Location*             location,
-                                  SCOREP_CallingContextHandle* callingContext,
-                                  uint32_t*                    unwindDistance,
-                                  SCOREP_CallingContextHandle* previousCallingContext )
+scorep_unwinding_gpu_handle_exit( SCOREP_Unwinding_GpuLocationData* unwindData,
+                                  SCOREP_CallingContextHandle*      callingContext,
+                                  uint32_t*                         unwindDistance,
+                                  SCOREP_CallingContextHandle*      previousCallingContext )
 {
-    SCOREP_Unwinding_GpuLocationData* unwind_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
-
-    if ( !unwind_data )
+    if ( !unwindData )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
     }
 
-    *previousCallingContext = unwind_data->previous_calling_context;
+    *previousCallingContext = unwindData->previous_calling_context;
 
-    UTILS_DEBUG_ENTRY( "%p", location );
+    UTILS_DEBUG_ENTRY( "%p", unwindData->location );
 
-    scorep_unwinding_instrumented_region* instrumented_region = unwind_data->instrumented_regions;
+    scorep_unwinding_instrumented_region* instrumented_region = unwindData->instrumented_regions;
 
     /* Update calling context tree */
     *unwindDistance = 1;
@@ -255,16 +213,15 @@ scorep_unwinding_gpu_handle_exit( SCOREP_Location*             location,
 
     if ( instrumented_region->prev == NULL )
     {
-        unwind_data->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+        unwindData->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
     }
     else
     {
-        unwind_data->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
+        unwindData->previous_calling_context = SCOREP_CallingContextHandle_GetParent( *callingContext );
     }
 
     /* Remove element from instrumented instructions */
-    pop_instrumented_region( &unwind_data->instrumented_regions,
-                             &unwind_data->unused_instrumented_regions );
+    pop_instrumented_region( unwindData );
 
     return SCOREP_SUCCESS;
 }

@@ -147,6 +147,8 @@ typedef struct scorep_unwinding_augmented_frame
 /** Per-location based data related to unwinding for all CPU locations. */
 typedef struct SCOREP_Unwinding_CpuLocationData
 {
+    struct SCOREP_Location* location;
+
     /** Unused stack frame objects */
     scorep_unwinding_frame* unused_frames;
 
@@ -190,6 +192,36 @@ typedef struct SCOREP_Unwinding_CpuLocationData
     /** Buffer to retrieve the region name from libunwind. */
     char region_name_buffer[ MAX_FUNC_NAME_LENGTH ];
 } SCOREP_Unwinding_CpuLocationData;
+
+
+/**
+ * Element in the list of instrumented regions.
+ */
+typedef struct scorep_unwinding_instrumented_region
+{
+    /** Corresponding region handle */
+    SCOREP_RegionHandle                          region_handle;
+    /** Pointer to corresponding node in the calling context tree */
+    scorep_unwinding_calling_context_tree_node*  cct_node;
+    /** Pointer to previous instrumented function in the stack */
+    struct scorep_unwinding_instrumented_region* prev;
+} scorep_unwinding_instrumented_region;
+
+/** Per-location based data related to unwinding for all GPU locations. */
+typedef struct SCOREP_Unwinding_GpuLocationData
+{
+    struct SCOREP_Location* location;
+
+    /** List of regions that were entered through instrumentation */
+    scorep_unwinding_instrumented_region* instrumented_regions;
+    /** List with free elements for the inst_list */
+    scorep_unwinding_instrumented_region* unused_instrumented_regions;
+    /** Root calling context node for all generated nodes,
+        i.e., the SCOREP_INVALID_CALLING_CONTEXT node. */
+    scorep_unwinding_calling_context_tree_node calling_context_root;
+    /** Last known calling context */
+    SCOREP_CallingContextHandle                previous_calling_context;
+} SCOREP_Unwinding_GpuLocationData;
 
 
 SCOREP_ErrorCode

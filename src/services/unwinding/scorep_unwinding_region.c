@@ -187,7 +187,7 @@ scorep_unwinding_region_insert( SCOREP_Unwinding_CpuLocationData* unwindData,
     }
 
     size_t                   len = strlen( name );
-    scorep_unwinding_region* new = SCOREP_Memory_AllocForMisc( sizeof( *new ) + len );
+    scorep_unwinding_region* new = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *new ) + len );
     memset( new, 0, sizeof( *new ) );
     new->start = start;
     new->end   = end;

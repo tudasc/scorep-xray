@@ -23,21 +23,21 @@
 
 struct SCOREP_Location;
 
-SCOREP_ErrorCode
-scorep_unwinding_gpu_init_location( struct SCOREP_Location* location );
+SCOREP_Unwinding_GpuLocationData*
+scorep_unwinding_gpu_get_location_data( struct SCOREP_Location* location );
 
 SCOREP_ErrorCode
-scorep_unwinding_gpu_handle_enter( struct SCOREP_Location*      location,
-                                   SCOREP_RegionHandle          instrumentedRegionHandle,
-                                   SCOREP_CallingContextHandle* callingContext,
-                                   uint32_t*                    unwindDistance,
-                                   SCOREP_CallingContextHandle* previousCallingContext );
+scorep_unwinding_gpu_handle_enter( SCOREP_Unwinding_GpuLocationData* unwindData,
+                                   SCOREP_RegionHandle               instrumentedRegionHandle,
+                                   SCOREP_CallingContextHandle*      callingContext,
+                                   uint32_t*                         unwindDistance,
+                                   SCOREP_CallingContextHandle*      previousCallingContext );
 
 SCOREP_ErrorCode
-scorep_unwinding_gpu_handle_exit( struct SCOREP_Location*      location,
-                                  SCOREP_CallingContextHandle* callingContext,
-                                  uint32_t*                    unwindDistance,
-                                  SCOREP_CallingContextHandle* previousCallingContext );
+scorep_unwinding_gpu_handle_exit( SCOREP_Unwinding_GpuLocationData* unwindData,
+                                  SCOREP_CallingContextHandle*      callingContext,
+                                  uint32_t*                         unwindDistance,
+                                  SCOREP_CallingContextHandle*      previousCallingContext );
 
 
 #endif /* SCOREP_UNWINDING_GPU_H */
