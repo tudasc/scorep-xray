@@ -164,6 +164,8 @@ calling_context_descent( SCOREP_Location*                             location,
                          uint64_t                                     ip,
                          SCOREP_RegionHandle                          region )
 {
+    ( *unwindDistance )++;
+
     int compare_result = 0;
     if ( ( *unwindContext )->children )
     {
@@ -210,7 +212,6 @@ calling_context_descent( SCOREP_Location*                             location,
 
     /* The new allocated child is our new node now */
     *unwindContext = ( *unwindContext )->children;
-    ( *unwindDistance )++;
 }
 
 #endif /* SCOREP_UNWINDING_CCT_H */
