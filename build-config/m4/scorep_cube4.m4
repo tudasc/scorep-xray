@@ -75,7 +75,7 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
                          [has_cubelib_reader_lib="no"])
 
      AC_MSG_CHECKING([for cube reader library])
-     AS_IF([test "x${has_cubelib_header}" = "xyes" && test "x${has_cubelib_lib}" = "xyes"],
+     AS_IF([test "x${has_cubelib_header}" = "xyes" && test "x${has_cubelib_reader_lib}" = "xyes"],
          [AC_MSG_RESULT([yes])
           AFS_SUMMARY([cube c++ library support], [yes, using ${CUBELIB_CPPFLAGS} ${CUBELIB_LDFLAGS} ${CUBELIB_LIBS}])
           AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 1])],
