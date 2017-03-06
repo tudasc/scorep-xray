@@ -280,6 +280,12 @@ various Score-P components.
     pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the
     command line. See also the Open Issues of OPARI2.
 
+  - OPARI2-instrumented OpenMP code using user-defined reductions
+    (UDR), introduced with OpenMP 4, might crash when the UDR includes
+    execution of instrumented routines, which Score-P currently
+    reports as events on invalid threads or mis-matching enter/exit
+    events.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
