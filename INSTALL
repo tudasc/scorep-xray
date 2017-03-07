@@ -186,7 +186,12 @@ For the components otf2, cubew, cubelib, and opari2, the corresponding
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
 
-  --enable-platform-mic   Force build for Intel MIC platform [no]
+  --enable-platform-mic   Force build for Intel Xeon Phi co-processors
+                          [no].  This option is only needed for Xeon
+                          Phi co-processors, like the Knights Corner
+                          (KNC). It is not needed for self-hosted Xeon
+                          Phis, like the Knights Landing (KNL); for these
+                          chips no special treatment is required.
   --enable-debug          activate internal debug output [no]
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -518,13 +523,18 @@ On Fedora and it's derivates the mentioned package is called:
      gcc-plugin-devel
 
 
-Intel Xeon Phi (aka. MIC)
-=========================
+Intel Xeon Phi (aka. MIC) co-processors
+=======================================
 
-   Building Score-P for the Intel MIC platform requires some extra
-care, and in some cases two installations into the same location.
-Therefore, we strongly recommend to strictly follow the procedure as
-described below.
+   [Note: The following instructions only apply to Intel Xeon Phi
+ co-processors, like the Knights Corner (KNC). They do not apply to
+ self-hosted Xeon Phis, like the Knights Landing (KNL); for these
+ chips no special treatment is required.]
+
+   Building Score-P for Intel Xeon Phi co-processors requires some
+extra care, and in some cases two installations into the same
+location.  Therefore, we strongly recommend to strictly follow the
+procedure as described below.
 
   1. Ensure that Intel compilers and Intel MPI (if desired) are
      installed and available in $PATH, and that the Intel Manycore
