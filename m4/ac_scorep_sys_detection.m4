@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2016,
+## Copyright (c) 2009-2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -67,7 +67,13 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 AC_MSG_CHECKING([for platform])
 AC_ARG_ENABLE([platform-mic],
     [AS_HELP_STRING([--enable-platform-mic],
-                    [Force build for Intel MIC platform [no]])],
+                    [Force build for Intel Xeon Phi co-processors [no].
+                     This option is only needed for Xeon Phi
+                     co-processors, like the Knights Corner (KNC). It
+                     is not needed for self-hosted Xeon Phis, like the
+                     Knights Landing (KNL); for these chips no special
+                     treatment is required.])],
+
     [AS_CASE([${enableval}],
         [yes],
             [ac_scorep_platform=mic],
