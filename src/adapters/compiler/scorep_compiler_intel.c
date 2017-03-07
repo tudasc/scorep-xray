@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -59,11 +59,12 @@
 static SCOREP_RegionHandle
 register_region( const char* str )
 {
-    uint64_t    len         = 0;
-    const char* region_name = strchr( str, ':' );
+    /* str is supposed to be of the form "file_name:region_name". */
+    uint64_t    file_name_len = 0;
+    const char* region_name   = strchr( str, ':' );
     if ( region_name )
     {
-        len = region_name - str;
+        file_name_len = region_name - str;
         region_name++;
     }
     else
@@ -78,10 +79,9 @@ register_region( const char* str )
     }
 
     /* Get file name */
-    char* file_name = malloc( len + 1 );
-    UTILS_ASSERT( file_name );
-    memcpy( file_name, str, len );
-    file_name[ len ] = '\0';
+    char file_name[ file_name_len + 1 ];
+    memcpy( file_name, str, file_name_len );
+    file_name[ file_name_len ] = '\0';
 
     /* Filter on file name early to avoid unused SourceFile definitions. */
     if ( SCOREP_Filter_MatchFile( file_name ) )
@@ -107,8 +107,6 @@ register_region( const char* str )
                                                       SCOREP_PARADIGM_COMPILER,
                                                       SCOREP_REGION_FUNCTION );
     }
-
-    free( file_name );
 
     return region_handle;
 }
