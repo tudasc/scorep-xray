@@ -204,5 +204,10 @@ done
 echo "static"
 echo "void add_library_dependencies_${tag}( std::deque<std::string>& libs, std::deque<std::string>& ldflags, std::deque<std::string>& rpaths, std::deque<std::string>& dependency_las, std::map< std::string, la_object>* la_objects )"
 echo "{"
-printf "    ${tag}_dependency_%d( libs, ldflags, rpaths, dependency_las, la_objects );\n" $(seq ${fct_counter})
+# do not use the single-printf trick, if ${fct_counter} == 0, than printf still
+# prints the format-specifier once with 0 as the default value for not specified
+# arguments
+for i in $(seq ${fct_counter}); do
+    printf "    ${tag}_dependency_%d( libs, ldflags, rpaths, dependency_las, la_objects );\n" $i
+done
 echo "}"
