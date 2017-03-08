@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013, 2016,
+dnl Copyright (c) 2013, 2016-2017,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -20,7 +20,8 @@ dnl file build-config/m4/scorep_omp_ancestry.m4
 # substitution SCOREP_OMP_ANCESTRY if the OpenMP implementation
 # supports the OpenMP 3.0 ancestry runtime library routines.
 AC_DEFUN([SCOREP_OPENMP_ANCESTRY], [
-AC_REQUIRE([AC_SCOREP_OPENMP])
+AC_REQUIRE([AC_SCOREP_OPENMP])dnl
+AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 
 AC_LANG_PUSH([C])
 scorep_cflags_save=${CFLAGS}
@@ -38,11 +39,18 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
     omp_get_team_size(0);
     omp_get_active_level();
 ]])],
-    [scorep_have_omp_ancestry=1
-     AC_MSG_RESULT([yes])
-     AFS_SUMMARY([OpenMP ancestry], [yes])],
-    [scorep_have_omp_ancestry=0
-     AC_MSG_RESULT([no])
+    [scorep_have_omp_ancestry=1],
+    [scorep_have_omp_ancestry=0])
+
+# PGI's implementation of omp_get_ancestor_thread_num returns
+# 'Error: omp_get_ancestor_thread_num: not implemented'.
+AS_IF([test "x${ax_cv_c_compiler_vendor}" = xportland], 
+    [scorep_have_omp_ancestry=0])
+
+AS_IF([test 1 -eq ${scorep_have_omp_ancestry}], 
+    [AC_MSG_RESULT([yes])
+     AFS_SUMMARY([OpenMP ancestry], [yes])], 
+    [AC_MSG_RESULT([no])
      AFS_SUMMARY([OpenMP ancestry], [no])])
 
 AFS_AM_CONDITIONAL([HAVE_SCOREP_OMP_ANCESTRY],
