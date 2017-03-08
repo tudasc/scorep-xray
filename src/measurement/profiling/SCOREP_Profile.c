@@ -447,10 +447,14 @@ on_location_creation( SCOREP_Location* locationData,
             }
 
             /* Enter the artificial metric region */
-            SCOREP_Profile_Enter( locationData,
-                                  0, /* timestamp */
-                                  per_process_metrics,
-                                  NULL /* metrics */ );
+            scorep_profile_type_data_t type_data;
+            scorep_profile_type_set_region_handle( &type_data, per_process_metrics );
+            node = scorep_profile_find_create_child( thread_data,
+                                                     node,
+                                                     SCOREP_PROFILE_NODE_REGULAR_REGION,
+                                                     type_data,
+                                                     0 /* timestamp */ );
+            scorep_profile_set_current_node( thread_data, node );
         }
     }
 }

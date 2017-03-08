@@ -47,6 +47,8 @@ Bugfixes:
 - Fix race condition in parallel make (make -j). Note that parallel
   'make check' still exhibits race conditions due to Fortran
   dependency issues.
+- Fix segmentation fault in the profile when memory recording
+  a metric counters are recorded at the same time.
 
 ------------------- Released version 3.0 -----------------------------
 

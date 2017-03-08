@@ -184,7 +184,7 @@ typedef bool ( scorep_profile_compare_node_t )( scorep_profile_node* node_a,
    @param type     The type of the node.
    @param data     The type dependent data for this node.
    @param timestamp The timestamp of its first enter event.
-   @param context  Specifies whether this call happens in the context of e tied or untied task.
+   @param context  Specifies whether this call happens in the context of a tied or untied task.
    @return A pointer to the newly created node.
  */
 scorep_profile_node*
