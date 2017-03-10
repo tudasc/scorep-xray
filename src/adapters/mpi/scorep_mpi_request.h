@@ -59,7 +59,7 @@ typedef struct
     unsigned                         flags;
     int                              tag;
     int                              dest;
-    int                              bytes;
+    uint64_t                         bytes;
     MPI_Datatype                     datatype;
     SCOREP_InterimCommunicatorHandle comm_handle;
     SCOREP_MpiRequestId              id;
@@ -89,7 +89,7 @@ scorep_mpi_request_create( MPI_Request         request,
                            unsigned            flags,
                            int                 tag,
                            int                 dest,
-                           int                 bytes,
+                           uint64_t            bytes,
                            MPI_Datatype        datatype,
                            MPI_Comm            comm,
                            SCOREP_MpiRequestId id );

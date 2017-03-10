@@ -95,7 +95,7 @@ scorep_mpi_request_create( MPI_Request         request,
                            unsigned            flags,
                            int                 tag,
                            int                 dest,
-                           int                 bytes,
+                           uint64_t            bytes,
                            MPI_Datatype        datatype,
                            MPI_Comm            comm,
                            SCOREP_MpiRequestId id )
@@ -285,12 +285,12 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
             if ( xnb_active )
             {
                 SCOREP_MpiIrecv( status->MPI_SOURCE, req->comm_handle,
-                                 status->MPI_TAG, count * sz, req->id );
+                                 status->MPI_TAG, ( uint64_t )count * sz, req->id );
             }
             else
             {
                 SCOREP_MpiRecv( status->MPI_SOURCE, req->comm_handle,
-                                status->MPI_TAG, count * sz );
+                                status->MPI_TAG, ( uint64_t )count * sz );
             }
         }
         else if ( req->flags & SCOREP_MPI_REQUEST_SEND && xnb_active )
