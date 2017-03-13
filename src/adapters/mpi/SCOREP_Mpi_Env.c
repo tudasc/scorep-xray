@@ -281,7 +281,7 @@ MPI_Finalize( void )
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        /* @todo handle <> adress mismatch, check, if we still get samples inside the barrier */
+        /* @todo handle <> address mismatch, check, if we still get samples inside the barrier */
         SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ],
                                    ( intptr_t )PMPI_Barrier );
     }

@@ -55,7 +55,7 @@
  * @brief Registration of MPI functions
  * For all MPI functions a region is registered at initialization time of the MPI adapter.
  * The dynamic region handle obtained from the measurement system is stored in an array
- * unter a fixed index for every region.
+ * with a fixed index for every region.
  */
 
 #ifndef SCOREP_MPIWRAP_REG_H
@@ -94,7 +94,7 @@
 #define SCOREP_COLL_TYPE__ALL2ALL                      5
 /** function may be partially synchronizing */
 #define SCOREP_COLL_TYPE__PARTIAL                      6
-/** function is implicitely synchronizing */
+/** function is implicitly synchronizing */
 #define SCOREP_COLL_TYPE__IMPLIED                      7
 
 /** Mappings from MPI collective names to Score-P @{ */
@@ -118,7 +118,7 @@
 /** @} */
 
 /**
- * Bitpatterns for runtime wrapper enabling
+ * Bit patterns for runtime wrapper enabling
  */
 enum scorep_mpi_groups
 {
@@ -945,7 +945,7 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_WTIME,
 
     /** Artificial root for MPI-only experiments when no user-code
-     * instrumenation is available */
+     * instrumentation is available */
     SCOREP_MPI_REGION__PARALLEL,
 
     /** Total number of regions */

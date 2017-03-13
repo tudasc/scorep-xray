@@ -5035,7 +5035,7 @@ scorep_mpi_register_regions( void )
 #endif
 
     /* Artificial root for MPI-only experiments when no user-code
-     * instrumenation is available */
+     * instrumentation is available */
     scorep_mpi_regions[ SCOREP_MPI_REGION__PARALLEL ] =
         SCOREP_Definitions_NewRegion( "PARALLEL",
                                       NULL,

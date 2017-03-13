@@ -218,7 +218,7 @@ int MPI_Win_free(MPI_Win* win)
 
 /**
  * @}
- * @name C wrappers for synchonization functions
+ * @name C wrappers for synchronization functions
  * @{
  */
 
@@ -727,4 +727,4 @@ MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm c
 #pragma wrapgen single MPI_Win_shared_query skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Win_sync skel/SCOREP_Mpi_Std.w
 #pragma wrapgen single MPI_Win_unlock_all skel/SCOREP_Mpi_Std.w
- 
+

@@ -53,7 +53,7 @@
  * @file
  * @ingroup    MPI_Wrapper
  *
- * @brief Fortran interface wrappers for miscelaneous and handler conversion
+ * @brief Fortran interface wrappers for miscellaneous and handler conversion
  *        functions
  */
 

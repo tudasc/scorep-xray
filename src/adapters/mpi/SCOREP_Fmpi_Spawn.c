@@ -349,7 +349,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
             {
                 UTILS_ERROR_POSIX();
             }
-            /* set index to begining of the block */
+            /* set index to beginning of the block */
             c_arg_ptr = c_array_of_argv[ cur_cmd ][ 0 ];
 
             /* reset start_ptr */
@@ -891,7 +891,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
             {
                 UTILS_ERROR_POSIX();
             }
-            /* set index to begining of the block */
+            /* set index to beginning of the block */
             c_arg_ptr = c_array_of_argv[ cur_cmd ][ 0 ];
 
             /* reset start_ptr */

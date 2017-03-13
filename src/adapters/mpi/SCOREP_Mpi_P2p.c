@@ -1856,7 +1856,7 @@ MPI_Testsome( int          incount,
 
 /**
  * @}
- * @name Persitent requests
+ * @name Persistent requests
  * @{
  */
 
@@ -2377,12 +2377,12 @@ MPI_Request_free( MPI_Request* request )
         }
     }
 
-    /* -- We had to call PMPI_Wait for cancellable requests, which already
+    /* -- We had to call PMPI_Wait for cancelable requests, which already
      *    frees (non-persistent) requests itself and sets them to
      *    MPI_REQUEST_NULL.
      *    As MPI_Request_free does not really like being called with
      *    MPI_REQUEST_NULL, we have to catch this situation here and only
-     *    pass MPI_REQUEST_NULL if the application explicitely wanted that
+     *    pass MPI_REQUEST_NULL if the application explicitly wanted that
      *    for some reason.
      */
     if ( *request != MPI_REQUEST_NULL || orig_req_null )
@@ -2436,7 +2436,7 @@ MPI_Cancel( MPI_Request* request )
                                    ( intptr_t )PMPI_Cancel );
     }
 
-    /* Mark request as cancellable and check for successful cancellation
+    /* Mark request as cancelable and check for successful cancellation
      * on request completion or MPI_Request_free.
      * If XNONBLOCK is enabled, there will be a 'cancelled' event
      * instead of a normal completion event in the trace, which can be
@@ -2521,7 +2521,7 @@ MPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status, int* flag )
 
 /**
  * @}
- * @name Auxiluary functions
+ * @name Auxiliary functions
  * @{
  */
 

@@ -375,7 +375,7 @@ MPI_Win_free( MPI_Win* win )
 
 /**
  * @}
- * @name C wrappers for synchonization functions
+ * @name C wrappers for synchronization functions
  * @{
  */
 
