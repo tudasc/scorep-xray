@@ -4,15 +4,29 @@ dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2009-2012,
-dnl    RWTH Aachen, Germany
-dnl    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-dnl    Technische Universitaet Dresden, Germany
-dnl    University of Oregon, Eugene, USA
-dnl    Forschungszentrum Juelich GmbH, Germany
-dnl    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-dnl    Technische Universitaet Muenchen, Germany
+dnl RWTH Aachen, Germany
 dnl
-dnl See the COPYING file in the package base directory for details.
+dnl Copyright (c) 2009-2012,
+dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+dnl
+dnl Copyright (c) 2009-2012,
+dnl Technische Universitaet Dresden, Germany
+dnl
+dnl Copyright (c) 2009-2012,
+dnl University of Oregon, Eugene, USA
+dnl
+dnl Copyright (c) 2009-2012, 2017,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
+dnl Copyright (c) 2009-2012,
+dnl German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+dnl
+dnl Copyright (c) 2009-2012, 2016,
+dnl Technische Universitaet Darmstadt, Germany
+dnl
+dnl This software may be modified and distributed under the terms of
+dnl a BSD-style license.  See the COPYING file in the package base
+dnl directory for details.
 dnl
 
 dnl file build-config/m4/scorep_online_access.m4
@@ -53,28 +67,25 @@ AS_CASE([${build_os}],
 
 AM_PROG_LEX
 AC_MSG_CHECKING([for a suitable version of flex])
-[flex_version=`${LEX} -V | sed 's/[a-z,\.]//g'`]
-AS_IF([test "x${LEX}" != "x:" && test ${flex_version} -gt 254],
-      [ac_scorep_have_online_access_flex="yes"],
-      [])
+AS_IF([test "x${LEX}" != x],
+    [flex_version=`${LEX} -V | sed 's/[a-z,\.]//g'`
+     AS_IF([test ${flex_version} -gt 254],
+         [ac_scorep_have_online_access_flex=yes])])
 AC_MSG_RESULT([${ac_scorep_have_online_access_flex}])
 
 AC_PROG_YACC
-AS_IF([test "${YACC}" != "yacc"],
-      [ac_scorep_have_online_access_yacc="yes"],
-      [])
+AS_IF([test "x${YACC}" != x],
+      [ac_scorep_have_online_access_yacc=yes])
 
 AS_IF([test "x${ac_scorep_have_online_access_headers}" = "xyes" && \
        test "x${ac_scorep_have_online_access_flex}" = "xyes" && \
        test "x${ac_scorep_have_online_access_getaddrinfo}" = "xyes" && \
        test "x${ac_scorep_have_online_access_yacc}" = "xyes"],
-      [ac_scorep_have_online_access="yes"],
-      [])
+      [ac_scorep_have_online_access="yes"])
 
 AS_IF([test "x${ac_scorep_platform}" = "xbgp" || \
        test "x${ac_scorep_platform}" = "xbgl"],
-      [ac_scorep_have_online_access="no"],
-      [])
+      [ac_scorep_have_online_access="no"])
 
 dnl case ${build_os} in
 dnl             aix*)
