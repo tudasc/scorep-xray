@@ -35,7 +35,7 @@ ${proto:c}
   }
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     scorep_mpi_request_create(*request, (SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT),
-                       tag, dest, count*sz, datatype, comm,
+                       tag, dest, (uint64_t)count*sz, datatype, comm,
                        scorep_mpi_get_request_id());
   if (event_gen_active)
     {

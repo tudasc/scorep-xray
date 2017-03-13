@@ -693,7 +693,7 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, count * sz, datatype, comm, reqid );
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -769,7 +769,7 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, count * sz, datatype, comm, reqid );
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -845,7 +845,7 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, count * sz, datatype, comm, reqid );
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -921,7 +921,7 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, count * sz, datatype, comm, reqid );
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1899,7 +1899,7 @@ MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, count * sz, datatype, comm,
+                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
                                    scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
@@ -1951,7 +1951,7 @@ MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, count * sz, datatype, comm,
+                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
                                    scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
@@ -2003,7 +2003,7 @@ MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, count * sz, datatype, comm,
+                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
                                    scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
@@ -2055,7 +2055,7 @@ MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, count * sz, datatype, comm,
+                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
                                    scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
@@ -2113,7 +2113,7 @@ MPI_Recv_init( void*        buf,
         int sz;
         PMPI_Type_size( datatype, &sz );
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_RECV | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, source, count * sz, datatype, comm,
+                                   tag, source, ( uint64_t )count * sz, datatype, comm,
                                    scorep_mpi_get_request_id() );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )

@@ -47,7 +47,7 @@ ${proto:c}
     if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
        scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_SEND,
-                           tag, dest, count*sz, datatype, comm, reqid);
+                           tag, dest, (uint64_t)count*sz, datatype, comm, reqid);
 
         ${guard:hooks}
       	${check:hooks}
