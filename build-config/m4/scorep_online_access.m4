@@ -67,10 +67,12 @@ AS_CASE([${build_os}],
 
 AM_PROG_LEX
 AC_MSG_CHECKING([for a suitable version of flex])
+set -x
 AS_IF([test "x${LEX}" != x],
-    [flex_version=`${LEX} -V | sed 's/[a-z,\.]//g'`
-     AS_IF([test ${flex_version} -gt 254],
+    [flex_version=`${LEX} -V | sed 's/[[a-zA-Z\.]]//g'`
+     AS_IF([test "${flex_version}" -gt 254],
          [ac_scorep_have_online_access_flex=yes])])
+set +x
 AC_MSG_RESULT([${ac_scorep_have_online_access_flex}])
 
 AC_PROG_YACC
