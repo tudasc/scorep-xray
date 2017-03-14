@@ -49,6 +49,9 @@ Bugfixes:
   dependency issues.
 - Fix segmentation fault in the profile when memory operations
   and metric counters are recorded at the same time.
+- Improve detection of ARM and Cray platforms.
+- Allow for shell variables in configure options. Options like
+  '--includedir=\${prefix}/include' caused configure to fail.
 
 ------------------- Released version 3.0 -----------------------------
 
