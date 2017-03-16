@@ -33,6 +33,9 @@ Features and improvements:
   need to be provided a PATH to cubew-config and cubelib-config,
   respectively, if not already in PATH. The Cube GUI is separately
   available from http://www.scalasca.org.
+- The GCC compiler instrumentation plug-in now instruments functions
+  that will not return in the usual way, like, e.g., a Pthread
+  start_routine that calls pthread_exit.
 
 Bugfixes:
 
