@@ -185,7 +185,7 @@ For the components otf2, cubew, cubelib, and opari2, the corresponding
 
 To enable support for CUDA measurement via the CUPTI interface we
 provide three configure options: the path to the CUDA runtime, the
-path to the CUPTI library, and the path to the CUDA library. Ususally
+path to the CUPTI library, and the path to the CUDA library. Usually
 you just need to provide the path to the runtime via --with-libcudart;
 CUPTI will be detected automatically in the extras/CUPTI subdirectory
 and the system libcuda will be used. This usually works for GNU and
