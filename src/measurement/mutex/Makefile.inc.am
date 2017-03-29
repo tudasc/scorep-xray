@@ -102,7 +102,7 @@ lib_LTLIBRARIES += libscorep_mutex_mockup.la
 libscorep_mutex_mockup_la_SOURCES = \
     $(SRC_ROOT)src/measurement/mutex/scorep_mutex_mockup.c \
     $(SRC_ROOT)src/measurement/mutex/include/SCOREP_Mutex.h
-libscorep_mutex_mockup_la_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mutex_mockup_la_CFLAGS = $(AM_CFLAGS)
 libscorep_mutex_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS)     \
     -I$(INC_DIR_MUTEX) \
