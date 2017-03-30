@@ -87,8 +87,8 @@ struct SCOREP_Allocator_PageManager
 
     uint32_t*                   moved_page_id_mapping;
 
-    /* sentinal which allocation could be rolled back */
-    /* unly movable allocations curently */
+    /* sentinel which allocation could be rolled back */
+    /* only movable allocations currently */
     SCOREP_Allocator_MovableMemory last_allocation;
 };
 
@@ -99,7 +99,7 @@ struct SCOREP_Allocator_ObjectManager
     SCOREP_Allocator_Page*      pages_in_use_list;
     /* list of free objects */
     void*                       free_list;
-    /* size of each object, was rounded-up to meet the required alligment */
+    /* size of each object, was rounded-up to meet the required alignment */
     uint32_t                    object_size;
 };
 

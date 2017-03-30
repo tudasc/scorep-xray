@@ -491,6 +491,7 @@ SCOREP_Allocator_CreatePageManager( SCOREP_Allocator_Allocator* allocator )
 
     if ( !page_manager )
     {
+        /* Out of memory. */
         return 0;
     }
 
@@ -517,6 +518,7 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 
     if ( !page_manager )
     {
+        /* Out of memory. */
         return 0;
     }
 
@@ -532,6 +534,12 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
     lock_allocator( allocator );
     SCOREP_Allocator_Page* page = get_page( allocator, order );
     unlock_allocator( allocator );
+
+    if ( !page )
+    {
+        /* Out of memory. */
+        return 0;
+    }
 
     page_manager->moved_page_id_mapping = ( uint32_t* )page->memory_start_address;
     memset( page_manager->moved_page_id_mapping, 0, order << allocator->page_shift );

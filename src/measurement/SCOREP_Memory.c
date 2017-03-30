@@ -345,7 +345,13 @@ SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movabl
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreateMovedPagedMemory( void )
 {
-    return SCOREP_Allocator_CreateMovedPageManager( allocator );
+    SCOREP_Allocator_PageManager* page_manager = SCOREP_Allocator_CreateMovedPageManager( allocator );
+    if ( !page_manager )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    return page_manager;
 }
 
 SCOREP_Allocator_PageManager*
