@@ -274,10 +274,9 @@ static void*
 page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
                     size_t                        requestedSize )
 {
-    if ( requestedSize == 0 )
-    {
-        return 0;
-    }
+    assert( pageManager );
+    assert( pageManager->moved_page_id_mapping == 0 );
+    assert( requestedSize > 0 );
 
     /* do not try to allocate more than the allocator has memory */
     if ( requestedSize > total_memory( pageManager->allocator ) )
@@ -589,14 +588,6 @@ void*
 SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
                         size_t                        memorySize )
 {
-    assert( pageManager );
-    assert( pageManager->moved_page_id_mapping == 0 );
-
-    if ( memorySize == 0 )
-    {
-        return 0;
-    }
-
     return page_manager_alloc( pageManager, memorySize );
 }
 
@@ -632,14 +623,6 @@ SCOREP_Allocator_MovableMemory
 SCOREP_Allocator_AllocMovable( SCOREP_Allocator_PageManager* pageManager,
                                size_t                        memorySize )
 {
-    assert( pageManager );
-    assert( pageManager->moved_page_id_mapping == 0 );
-
-    if ( memorySize == 0 )
-    {
-        return 0;
-    }
-
     /// @todo padding?
     void* memory = page_manager_alloc( pageManager, memorySize );
     if ( !memory )

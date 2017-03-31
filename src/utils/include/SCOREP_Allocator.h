@@ -137,6 +137,15 @@ void
 SCOREP_Allocator_DeletePageManager( SCOREP_Allocator_PageManager* pageManager );
 
 
+/**
+ * Returns the start address of a memory chunk of at least @a memorySize bytes
+ * from a @a pageManager's page. The contents of the memory block is undetermined.
+ * Returns 0 if the allocation failed; this indicates a out-of-memory situation.
+ *
+ * @see SCOREP_Allocator_AllocMovable()
+ * @param pageManager A valid SCOREP_Allocator_PageManager object.
+ * @param memorySize Size of the memory block, must be > 0.
+ */
 void*
 SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
                         size_t                        memorySize );
@@ -146,6 +155,19 @@ void
 SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager );
 
 
+/**
+ * Allocates a movable chunk of memory of at least @a memorySize bytes from
+ * a @a pageManager's page. Returns a reference/handle to this memory chunk.
+ * To access the real memory you need to dereference the handle using
+ * SCOREP_Allocator_GetAddressFromMovableMemory() or
+ * SCOREP_Allocator_GetAddressFromMovedMemory().
+ * Returns 0 if the allocation failed; this indicates a out-of-memory situation.
+ *
+ * @see SCOREP_Allocator_Alloc()
+ * @see SCOREP_Allocator_RollbackAllocMovable()
+ * @param pageManager A valid SCOREP_Allocator_PageManager object.
+ * @param memorySize Size of the memory block, must be > 0.
+ */
 SCOREP_Allocator_MovableMemory
 SCOREP_Allocator_AllocMovable( SCOREP_Allocator_PageManager* pageManager,
                                size_t                        memorySize );
@@ -179,7 +201,7 @@ SCOREP_Allocator_GetAddressFromMovedMemory(
     SCOREP_Allocator_MovableMemory      movedMemory );
 
 
-/** Discarde the last movable allocation */
+/** Discard the last movable allocation */
 void
 SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManager,
                                        SCOREP_Allocator_MovableMemory movableMemory );

@@ -225,10 +225,7 @@ allocator_test_10( CuTest* tc )
         = SCOREP_Allocator_CreatePageManager( allocator );
     CuAssertPtrNotNull( tc, page_manager_1 );
 
-    void* memory = SCOREP_Allocator_Alloc( page_manager_1, 0 );
-    CuAssertPtrEquals( tc, 0, memory );
-
-    memory = SCOREP_Allocator_Alloc( page_manager_1, 257 );
+    void* memory = SCOREP_Allocator_Alloc( page_manager_1, 257 );
     CuAssertPtrNotNullMsg( tc, "from first page", memory );
 
     memory = SCOREP_Allocator_Alloc( page_manager_1, 255 );
@@ -732,10 +729,7 @@ allocator_test_18( CuTest* tc )
         = SCOREP_Allocator_CreatePageManager( allocator );
     CuAssertPtrNotNull( tc, page_manager_1 );
 
-    void* memory = SCOREP_Allocator_Alloc( page_manager_1, 0 );
-    CuAssertPtrEquals( tc, 0, memory );
-
-    memory = SCOREP_Allocator_Alloc( page_manager_1, 1024 );
+    void* memory = SCOREP_Allocator_Alloc( page_manager_1, 1024 );
     CuAssertPtrNotNullMsg( tc, "2 pages", memory );
 
     memory = SCOREP_Allocator_Alloc( page_manager_1, 512 );
