@@ -40,7 +40,7 @@
 
 /**
  * Opaque handle to memory that can be easily moved between
- * processes. Used for definitions as the have to be moved during
+ * processes. Used for definitions as they have to be moved during
  * unification.
  */
 typedef uint32_t SCOREP_Allocator_MovableMemory;
