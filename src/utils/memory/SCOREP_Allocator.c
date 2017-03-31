@@ -480,25 +480,29 @@ SCOREP_Allocator_DeleteAllocator( SCOREP_Allocator_Allocator* allocator )
 }
 
 
+#define get_page_manager( alloc, pm ) \
+    do { \
+        assert( alloc ); \
+        lock_allocator( alloc ); \
+        pm = get_union_object( alloc ); \
+        unlock_allocator( alloc ); \
+        if ( !pm ) \
+        { \
+            /* Out of memory. */ \
+            return 0; \
+        } \
+        pm->allocator             = alloc; \
+        pm->pages_in_use_list     = 0; \
+        pm->moved_page_id_mapping = 0; \
+        pm->last_allocation       = 0; \
+    } while ( 0 )
+
+
 SCOREP_Allocator_PageManager*
 SCOREP_Allocator_CreatePageManager( SCOREP_Allocator_Allocator* allocator )
 {
-    assert( allocator );
-
-    lock_allocator( allocator );
-    SCOREP_Allocator_PageManager* page_manager = get_union_object( allocator );
-    unlock_allocator( allocator );
-
-    if ( !page_manager )
-    {
-        /* Out of memory. */
-        return 0;
-    }
-
-    page_manager->allocator             = allocator;
-    page_manager->pages_in_use_list     = 0;
-    page_manager->moved_page_id_mapping = 0;
-    page_manager->last_allocation       = 0;
+    SCOREP_Allocator_PageManager* page_manager;
+    get_page_manager( allocator, page_manager );
 
     /* may fail, but maybe we have free pages later */
     page_manager_get_new_page( page_manager, page_size( allocator ) );
@@ -510,22 +514,8 @@ SCOREP_Allocator_CreatePageManager( SCOREP_Allocator_Allocator* allocator )
 SCOREP_Allocator_PageManager*
 SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 {
-    assert( allocator );
-
-    lock_allocator( allocator );
-    SCOREP_Allocator_PageManager* page_manager = get_union_object( allocator );
-    unlock_allocator( allocator );
-
-    if ( !page_manager )
-    {
-        /* Out of memory. */
-        return 0;
-    }
-
-    page_manager->allocator             = allocator;
-    page_manager->pages_in_use_list     = 0;
-    page_manager->moved_page_id_mapping = 0;
-    page_manager->last_allocation       = 0;
+    SCOREP_Allocator_PageManager* page_manager;
+    get_page_manager( allocator, page_manager );
 
     uint32_t order = get_order( allocator,
                                 sizeof( *page_manager->moved_page_id_mapping )
@@ -546,6 +536,9 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 
     return page_manager;
 }
+
+
+#undef get_page_manager
 
 
 void

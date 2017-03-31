@@ -251,6 +251,11 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
 
     new_handle =
         SCOREP_Allocator_AllocMovable( pageManager, total_size );
+    if ( new_handle == 0 )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
     new_definition =
         SCOREP_Allocator_GetAddressFromMovableMemory( pageManager, new_handle );
     SCOREP_INIT_DEFINITION_HEADER( new_definition );

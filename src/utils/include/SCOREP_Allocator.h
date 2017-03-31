@@ -223,10 +223,15 @@ SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
                                void** const                        pageStarts );
 
 
+/**
+ * Only used in tests.
+ */
 SCOREP_Allocator_Page*
 SCOREP_Allocator_AcquirePage( SCOREP_Allocator_Allocator* allocator );
 
-
+/**
+ * Only used in tests.
+ */
 void
 SCOREP_Allocator_ReleasePage( SCOREP_Allocator_Page* page );
 

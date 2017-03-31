@@ -315,7 +315,7 @@ SCOREP_Memory_AllocForDefinitions( SCOREP_Location* location,
 
     SCOREP_Allocator_MovableMemory mem =
         SCOREP_Allocator_AllocMovable( page_manager, size );
-    if ( mem == SCOREP_MOVABLE_NULL )
+    if ( !mem )
     {
         /* aborts */
         SCOREP_Memory_HandleOutOfMemory();

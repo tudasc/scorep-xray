@@ -209,6 +209,9 @@ scorep_tracing_chunk_allocate( void*         userData,
     void* chunk = SCOREP_Allocator_Alloc( *perBufferData, chunkSize );
 
     /* ignore allocation failures, OTF2 will flush and free chunks */
+#if HAVE( UTILS_DEBUG )
+    UTILS_WARNING( "Cannot allocate %" PRIu64 " bytes for tracing; but OTF2 will flush and free chunks.", chunkSize );
+#endif
 
     return chunk;
 }
