@@ -692,8 +692,8 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
+            scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
+                                           tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -768,8 +768,8 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
+            scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
+                                           tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -844,8 +844,8 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
+            scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
+                                           tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -920,8 +920,8 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
-            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
-                                       tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
+            scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
+                                           tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
             if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1003,8 +1003,8 @@ MPI_Irecv( void*        buf,
             SCOREP_MpiIrecvRequest( reqid );
         }
 
-        scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_RECV,
-                                   tag, 0, ( uint64_t )count * sz, datatype, comm, reqid );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_NONE,
+                                       tag, 0, ( uint64_t )count * sz, datatype, comm, reqid );
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
         {
@@ -1290,7 +1290,7 @@ MPI_Waitany( int          count,
           #endif
                 scorep_mpi_check_request( orig_req, status );
             }
-            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1415,7 +1415,7 @@ MPI_Waitsome( int          incount,
 
                     ++cur;
                 }
-                else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE )
+                else if ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
                 {
                     SCOREP_MpiRequestTested( orig_req->id );
                 }
@@ -1599,7 +1599,7 @@ MPI_Testany( int          count,
           #endif
                 scorep_mpi_check_request( orig_req, status );
             }
-            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+            else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1707,7 +1707,7 @@ MPI_Testall( int          count,
         for ( i = 0; i < count; i++ )
         {
             orig_req = scorep_mpi_saved_request_get( i );
-            if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+            if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
                 SCOREP_MpiRequestTested( orig_req->id );
             }
@@ -1820,7 +1820,7 @@ MPI_Testsome( int          incount,
 
                     ++cur;
                 }
-                else if ( orig_req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE )
+                else if ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
                 {
                     SCOREP_MpiRequestTested( orig_req->id );
                 }
@@ -1898,9 +1898,9 @@ MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
-        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
-                                   scorep_mpi_get_request_id() );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm,
+                                       scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
     {
@@ -1950,9 +1950,9 @@ MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
-        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
-                                   scorep_mpi_get_request_id() );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm,
+                                       scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
     {
@@ -2002,9 +2002,9 @@ MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype
     }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
-        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
-                                   scorep_mpi_get_request_id() );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm,
+                                       scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
     {
@@ -2054,9 +2054,9 @@ MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
     }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
-        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, dest, ( uint64_t )count * sz, datatype, comm,
-                                   scorep_mpi_get_request_id() );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
+                                       tag, dest, ( uint64_t )count * sz, datatype, comm,
+                                       scorep_mpi_get_request_id() );
     }
     if ( event_gen_active )
     {
@@ -2112,9 +2112,9 @@ MPI_Recv_init( void*        buf,
     {
         int sz;
         PMPI_Type_size( datatype, &sz );
-        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_RECV | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
-                                   tag, source, ( uint64_t )count * sz, datatype, comm,
-                                   scorep_mpi_get_request_id() );
+        scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
+                                       tag, source, ( uint64_t )count * sz, datatype, comm,
+                                       scorep_mpi_get_request_id() );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -2171,23 +2171,23 @@ MPI_Start( MPI_Request* request )
     #endif
 
         req = scorep_mpi_request_get( *request );
-        if ( req && ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
+        if ( req && ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) )
         {
-            req->flags |= SCOREP_MPI_REQUEST_IS_ACTIVE;
-            if ( ( req->flags & SCOREP_MPI_REQUEST_SEND ) && ( req->dest != MPI_PROC_NULL ) )
+            req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE;
+            if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND ) && ( req->payload.p2p.dest != MPI_PROC_NULL ) )
             {
                 if ( xnb_active )
                 {
-                    SCOREP_MpiIsend( req->dest, req->comm_handle,
-                                     req->tag, req->bytes, req->id );
+                    SCOREP_MpiIsend( req->payload.p2p.dest, req->payload.p2p.comm_handle,
+                                     req->payload.p2p.tag, req->payload.p2p.bytes, req->id );
                 }
                 else
                 {
-                    SCOREP_MpiSend( req->dest, req->comm_handle,
-                                    req->tag, req->bytes );
+                    SCOREP_MpiSend( req->payload.p2p.dest, req->payload.p2p.comm_handle,
+                                    req->payload.p2p.tag, req->payload.p2p.bytes );
                 }
             }
-            else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
+            else if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && xnb_active )
             {
                 SCOREP_MpiIrecvRequest( req->id );
             }
@@ -2264,15 +2264,15 @@ MPI_Startall( int          count,
             request = &array_of_requests[ i ];
             req     = scorep_mpi_request_get( *request );
 
-            if ( req && ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
+            if ( req && ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) )
             {
-                req->flags |= SCOREP_MPI_REQUEST_IS_ACTIVE;
-                if ( ( req->flags & SCOREP_MPI_REQUEST_SEND ) && ( req->dest != MPI_PROC_NULL ) )
+                req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE;
+                if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND ) && ( req->payload.p2p.dest != MPI_PROC_NULL ) )
                 {
-                    SCOREP_MpiIsend( req->dest, req->comm_handle,
-                                     req->tag, req->bytes, req->id );
+                    SCOREP_MpiIsend( req->payload.p2p.dest, req->payload.p2p.comm_handle,
+                                     req->payload.p2p.tag, req->payload.p2p.bytes, req->id );
                 }
-                else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
+                else if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && xnb_active )
                 {
                     SCOREP_MpiIrecvRequest( req->id );
                 }
@@ -2348,7 +2348,7 @@ MPI_Request_free( MPI_Request* request )
   #endif
     if ( req )
     {
-        if ( req->flags & SCOREP_MPI_REQUEST_CAN_CANCEL && event_gen_active && xnb_active )
+        if ( req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active && xnb_active )
         {
             MPI_Status status;
             int        cancelled;
@@ -2365,10 +2365,10 @@ MPI_Request_free( MPI_Request* request )
             }
         }
 
-        if ( ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) && ( req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+        if ( ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) && ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
         {
             /* mark active requests for deallocation */
-            req->flags |= SCOREP_MPI_REQUEST_DEALLOCATE;
+            req->flags |= SCOREP_MPI_REQUEST_FLAG_DEALLOCATE;
         }
         else
         {
@@ -2447,7 +2447,7 @@ MPI_Cancel( MPI_Request* request )
 
     if ( req )
     {
-        req->flags |= SCOREP_MPI_REQUEST_CAN_CANCEL;
+        req->flags |= SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL;
     }
 
     if ( event_gen_active )

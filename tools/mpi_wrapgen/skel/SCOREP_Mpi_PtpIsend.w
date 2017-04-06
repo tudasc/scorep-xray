@@ -46,7 +46,7 @@ ${proto:c}
     SCOREP_EXIT_WRAPPED_REGION();
     if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
-       scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_SEND,
+       scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                            tag, dest, (uint64_t)count*sz, datatype, comm, reqid);
 
         ${guard:hooks}

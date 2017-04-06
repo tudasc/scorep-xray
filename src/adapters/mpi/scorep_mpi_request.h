@@ -40,30 +40,51 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
 
+typedef enum scorep_mpi_request_type
+{
+    SCOREP_MPI_REQUEST_TYPE_NONE,
+    SCOREP_MPI_REQUEST_TYPE_SEND,
+    SCOREP_MPI_REQUEST_TYPE_RECV,
+    SCOREP_MPI_REQUEST_TYPE_IO_READ,
+    SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+    SCOREP_MPI_REQUEST_TYPE_RMA,
+    SCOREP_MPI_REQUEST_TYPE_COLL_COMM,
+    SCOREP_MPI_REQUEST_TYPE_COLL_SYNC
+} scorep_mpi_request_type;
+
 enum scorep_mpi_requests_flags
 {
-    SCOREP_MPI_REQUEST_NONE          = 0x00,
-    SCOREP_MPI_REQUEST_SEND          = 0x01,
-    SCOREP_MPI_REQUEST_RECV          = 0x02,
-    SCOREP_MPI_REQUEST_IS_PERSISTENT = 0x10,
-    SCOREP_MPI_REQUEST_DEALLOCATE    = 0x20,
-    SCOREP_MPI_REQUEST_IS_ACTIVE     = 0x40,
-    SCOREP_MPI_REQUEST_ANY_TAG       = 0x80,
-    SCOREP_MPI_REQUEST_ANY_SRC       = 0x100,
-    SCOREP_MPI_REQUEST_CAN_CANCEL    = 0x200
+    SCOREP_MPI_REQUEST_FLAG_NONE          = 0x00,
+    SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT = 0x01,
+    SCOREP_MPI_REQUEST_FLAG_DEALLOCATE    = 0x02,
+    SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE     = 0x10,
+    SCOREP_MPI_REQUEST_FLAG_ANY_TAG       = 0x20,
+    SCOREP_MPI_REQUEST_FLAG_ANY_SRC       = 0x40,
+    SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL    = 0x80
 };
+
+typedef uint64_t scorep_mpi_request_flag;
 
 typedef struct
 {
-    MPI_Request                      request;
-    unsigned                         flags;
     int                              tag;
     int                              dest;
     uint64_t                         bytes;
     MPI_Datatype                     datatype;
     SCOREP_InterimCommunicatorHandle comm_handle;
-    SCOREP_MpiRequestId              id;
     void*                            online_analysis_pod;
+} scorep_mpi_request_p2p_data;
+
+typedef struct
+{
+    MPI_Request             request;
+    scorep_mpi_request_type request_type;
+    scorep_mpi_request_flag flags;
+    union
+    {
+        scorep_mpi_request_p2p_data p2p;
+    } payload;
+    SCOREP_MpiRequestId id;
 } scorep_mpi_request;
 
 
@@ -75,24 +96,26 @@ scorep_mpi_get_request_id( void );
 
 /**
  * @brief Create entry for a given MPI request handle
- * @param request  MPI request handle
- * @param flags    Bitmask containing flags set for this request
- * @param tag      MPI tag for this request
- * @param dest     Destination rank of request
- * @param bytes    Number of bytes transfered in request
- * @param datatype MPI datatype handle
- * @param comm     MPI communicator handle
- * @param id       Request id
+ * @param request      MPI request handle
+ * @param request_type Type of request
+ * @param flags        Bitmask containing flags set for this request
+ * @param tag          MPI tag for this request
+ * @param dest         Destination rank of request
+ * @param bytes        Number of bytes transfered in request
+ * @param datatype     MPI datatype handle
+ * @param comm         MPI communicator handle
+ * @param id           Request id
  */
 void
-scorep_mpi_request_create( MPI_Request         request,
-                           unsigned            flags,
-                           int                 tag,
-                           int                 dest,
-                           uint64_t            bytes,
-                           MPI_Datatype        datatype,
-                           MPI_Comm            comm,
-                           SCOREP_MpiRequestId id );
+scorep_mpi_request_p2p_create( MPI_Request             request,
+                               scorep_mpi_request_type request_type,
+                               scorep_mpi_request_flag flags,
+                               int                     tag,
+                               int                     dest,
+                               uint64_t                bytes,
+                               MPI_Datatype            datatype,
+                               MPI_Comm                comm,
+                               SCOREP_MpiRequestId     id );
 
 /**
  * @brief  Retrieve internal request entry for an MPI request handle

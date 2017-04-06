@@ -343,7 +343,7 @@ SCOREP_Hooks_Post_MPI_Isend( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 
     UTILS_DEBUG_EXIT( "position %d, dest %d, tag %d, time %llu", position, global_dest, tag, start_time_stamp );
 }
@@ -406,7 +406,7 @@ SCOREP_Hooks_Post_MPI_Issend( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 
     UTILS_DEBUG_EXIT( "position %d, dest %d, tag %d, time %llu", position, global_dest, tag, start_time_stamp );
 }
@@ -469,7 +469,7 @@ SCOREP_Hooks_Post_MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 
     UTILS_DEBUG_EXIT( "position %d, dest %d, tag %d, time %llu", position, global_dest, tag, start_time_stamp );
 }
@@ -532,7 +532,7 @@ SCOREP_Hooks_Post_MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 
     UTILS_DEBUG_EXIT( "position %d, dest %d, tag %d, time %llu", position, global_dest, tag, start_time_stamp );
 }
@@ -605,7 +605,7 @@ SCOREP_Hooks_Post_MPI_Irecv( void*        buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* orig_req = scorep_mpi_request_get( *request );
-    orig_req->online_analysis_pod = ( void* )online_analysis_pod;
+    orig_req->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 
     UTILS_DEBUG_EXIT( "source(*-%d,%d), tag(*-%d,%d)", online_analysis_pod->tp_comm_partner_wc, global_source, online_analysis_pod->tp_tag_wc, tag );
 }
@@ -645,7 +645,7 @@ SCOREP_Hooks_Post_MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 }
 
 void
@@ -683,7 +683,7 @@ SCOREP_Hooks_Post_MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 }
 
 void
@@ -721,7 +721,7 @@ SCOREP_Hooks_Post_MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 }
 
 void
@@ -759,7 +759,7 @@ SCOREP_Hooks_Post_MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
-    scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
+    scorep_request->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 }
 
 void
@@ -831,7 +831,7 @@ SCOREP_Hooks_Post_MPI_Recv_init( void*        buf,
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* orig_req = scorep_mpi_request_get( *request );
-    orig_req->online_analysis_pod = ( void* )online_analysis_pod;
+    orig_req->payload.p2p.online_analysis_pod = ( void* )online_analysis_pod;
 }
 
 void
@@ -846,17 +846,17 @@ SCOREP_Hooks_Post_MPI_Start( MPI_Request* request,
     {
         return;
     }
-    if ( !scorep_request->online_analysis_pod ||
-         !( scorep_request->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) ||
-         !( scorep_request->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+    if ( !scorep_request->payload.p2p.online_analysis_pod ||
+         !( scorep_request->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) ||
+         !( scorep_request->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
     {
         return;
     }
 
     /* get online wait states analysis request tracking pod */
-    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_request->online_analysis_pod;
+    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_request->payload.p2p.online_analysis_pod;
 
-    if ( ( scorep_request->flags & SCOREP_MPI_REQUEST_SEND ) && ( scorep_request->dest != MPI_PROC_NULL ) )
+    if ( ( scorep_request->request_type == SCOREP_MPI_REQUEST_TYPE_SEND ) && ( scorep_request->payload.p2p.dest != MPI_PROC_NULL ) )
     {
         UTILS_DEBUG( "myrank = %d", scorep_mpiprofiling_myrank );
         void*       localTimePack;
@@ -890,7 +890,7 @@ SCOREP_Hooks_Post_MPI_Start( MPI_Request* request,
          * operation timpack request is needed to cancel the timepack send aswell*/
         online_analysis_pod->tp_request = tp_request;
     }
-    else if ( scorep_request->flags & SCOREP_MPI_REQUEST_RECV )
+    else if ( scorep_request->request_type == SCOREP_MPI_REQUEST_TYPE_RECV )
     {
         // what the hell will I do here??... nothing!
     }
@@ -904,12 +904,12 @@ SCOREP_Hooks_Pre_MPI_Request_free( scorep_mpi_request* scorep_req )
     {
         return;
     }
-    if ( !scorep_req->online_analysis_pod )
+    if ( !scorep_req->payload.p2p.online_analysis_pod )
     {
         return;
     }
 
-//	scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+//	scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->payload.p2p.online_analysis_pod;
 //		MPI_Status s;
 //	PMPI_Wait(&(online_analysis_pod->tp_request),&s);
 //	int canceled_flag=0;
@@ -920,13 +920,13 @@ SCOREP_Hooks_Pre_MPI_Request_free( scorep_mpi_request* scorep_req )
 //      printf("canceled successfully\n");
 
     /* free online analysis request pod */
-    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->payload.p2p.online_analysis_pod;
     if ( online_analysis_pod->group != MPI_GROUP_NULL )
     {
         PMPI_Group_free( &online_analysis_pod->group );
     }
-    free( scorep_req->online_analysis_pod );
-    scorep_req->online_analysis_pod = NULL;
+    free( scorep_req->payload.p2p.online_analysis_pod );
+    scorep_req->payload.p2p.online_analysis_pod = NULL;
 }
 
 void
@@ -937,15 +937,15 @@ SCOREP_Hooks_Post_MPI_Cancel( scorep_mpi_request* scorep_req )
     {
         return;
     }
-    if ( !scorep_req->online_analysis_pod )
+    if ( !scorep_req->payload.p2p.online_analysis_pod )
     {
         return;
     }
     /* cancel piggybacked send operation. In case of recv nothing has to be done, since the piggybacked recv
      * is triggered only at the completetion time of the original recv*/
-    if ( scorep_req->flags & SCOREP_MPI_REQUEST_SEND )
+    if ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND )
     {
-        scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+        scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->payload.p2p.online_analysis_pod;
         PMPI_Cancel( &( online_analysis_pod->tp_request ) );
     }
 }
@@ -965,10 +965,9 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete( scorep_mpi_request* orig_req,
     {
         return;
     }
-    unsigned flags = orig_req->flags;
 
     /* get online wait states analysis request tracking pod */
-    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )orig_req->online_analysis_pod;
+    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )orig_req->payload.p2p.online_analysis_pod;
 
     /* if the online wait states analysis request tracking pod is NULL then no piggyback message is sent.
      * This happens when the global rank of the source is out of the MPI_COMM_WORLD of this proc*/
@@ -984,7 +983,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete( scorep_mpi_request* orig_req,
     /* Do online mpi wait states analysis only if it is a recv operation.
      * If waiting for a send operation, nothing to be done here. The associated piggyback send operation
      * will be completed by the timepack pool mamnagement*/
-    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) && !canceled_flag )
+    if ( ( orig_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && !canceled_flag )
     {
         /* if the associated recv operation had a wild-card as a source, get the source from status
          * and translate it to the global rank. Else get it from the pod*/
@@ -1037,7 +1036,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete( scorep_mpi_request* orig_req,
     }
 
     /* Free the memory of the pod unless the request is persistent*/
-    if ( !( flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
+    if ( !( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) )
     {
         SCOREP_Hooks_Pre_MPI_Request_free( orig_req );
         UTILS_DEBUG( "online_pod freed" );
@@ -1060,10 +1059,9 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( scorep_mpi_request* orig_req,
     {
         return;
     }
-    unsigned flags = orig_req->flags;
 
     /* get online wait states analysis request tracking pod */
-    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )orig_req->online_analysis_pod;
+    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )orig_req->payload.p2p.online_analysis_pod;
 
     /* if the online wait states analysis request tracking pod is NULL then no piggyback message is sent.
      * This happens when the global rank of the source is out of the MPI_COMM_WORLD of this proc*/
@@ -1079,7 +1077,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( scorep_mpi_request* orig_req,
     /* Do online mpi wait states analysis only if it is a recv operation.
      * If waiting for a send operation, nothing to be done here. The associated piggyback send operation
      * will be completed by the timepack pool mamnagement*/
-    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) && !canceled_flag )
+    if ( ( orig_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && !canceled_flag )
     {
         /* if the associated recv operation had a wild-card as a source, get the source from status
          * and translate it to the global rank. Else get it from the pod*/
@@ -1136,7 +1134,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( scorep_mpi_request* orig_req,
     }
 
     /* Free the memory of the pod unless the request is persistent*/
-    if ( !( flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
+    if ( !( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) )
     {
         SCOREP_Hooks_Pre_MPI_Request_free( orig_req );
         UTILS_DEBUG( "online_pod freed" );
