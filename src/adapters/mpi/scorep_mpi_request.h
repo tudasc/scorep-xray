@@ -96,19 +96,19 @@ scorep_mpi_get_request_id( void );
 
 /**
  * @brief Create entry for a given MPI request handle
- * @param request      MPI request handle
- * @param request_type Type of request
- * @param flags        Bitmask containing flags set for this request
- * @param tag          MPI tag for this request
- * @param dest         Destination rank of request
- * @param bytes        Number of bytes transfered in request
- * @param datatype     MPI datatype handle
- * @param comm         MPI communicator handle
- * @param id           Request id
+ * @param request   MPI request handle
+ * @param type      Type of request
+ * @param flags     Bitmask containing flags set for this request
+ * @param tag       MPI tag for this request
+ * @param dest      Destination rank of request
+ * @param bytes     Number of bytes transfered in request
+ * @param datatype  MPI datatype handle
+ * @param comm      MPI communicator handle
+ * @param id        Request id
  */
 void
 scorep_mpi_request_p2p_create( MPI_Request             request,
-                               scorep_mpi_request_type request_type,
+                               scorep_mpi_request_type type,
                                scorep_mpi_request_flag flags,
                                int                     tag,
                                int                     dest,
