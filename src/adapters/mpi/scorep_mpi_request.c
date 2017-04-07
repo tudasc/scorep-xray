@@ -90,8 +90,11 @@ scorep_mpi_get_request_id( void )
     return ++scorep_mpi_last_request_id;
 }
 
-static struct scorep_mpi_request_hash*
-scorep_mpi_request_create_entry( MPI_Request request )
+static scorep_mpi_request*
+scorep_mpi_request_create_entry( MPI_Request             request,
+                                 SCOREP_MpiRequestId     id,
+                                 scorep_mpi_request_type request_type,
+                                 scorep_mpi_request_flag flags )
 {
     struct scorep_mpi_request_block* new_block;
     struct scorep_mpi_request_hash*  hash_entry = scorep_mpi_get_request_hash_entry( request );
@@ -133,12 +136,17 @@ scorep_mpi_request_create_entry( MPI_Request request )
         hash_entry->lastreq++;
     }
 
-    return hash_entry;
+    scorep_mpi_request* req = hash_entry->lastreq;
+    req->request      = request;
+    req->id           = id;
+    req->request_type = request_type;
+    req->flags        = flags;
+    return req;
 }
 
 void
 scorep_mpi_request_p2p_create( MPI_Request             request,
-                               scorep_mpi_request_type request_type,
+                               scorep_mpi_request_type type,
                                scorep_mpi_request_flag flags,
                                int                     tag,
                                int                     dest,
@@ -147,24 +155,19 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
                                MPI_Comm                comm,
                                SCOREP_MpiRequestId     id )
 {
-    struct scorep_mpi_request_hash* hash_entry = scorep_mpi_request_create_entry( request );
+    scorep_mpi_request* req = scorep_mpi_request_create_entry( request, id, type, flags );
 
     /* store request information */
-    hash_entry->lastreq->request           = request;
-    hash_entry->lastreq->request_type      = request_type;
-    hash_entry->lastreq->flags             = SCOREP_MPI_REQUEST_FLAG_NONE;
-    hash_entry->lastreq->flags            |= flags;
-    hash_entry->lastreq->payload.p2p.tag   = tag;
-    hash_entry->lastreq->payload.p2p.dest  = dest;
-    hash_entry->lastreq->payload.p2p.bytes = bytes;
+    req->payload.p2p.tag   = tag;
+    req->payload.p2p.dest  = dest;
+    req->payload.p2p.bytes = bytes;
 #if HAVE( DECL_PMPI_TYPE_DUP )
-    PMPI_Type_dup( datatype, &hash_entry->lastreq->payload.p2p.datatype );
+    PMPI_Type_dup( datatype, &req->payload.p2p.datatype );
 #else
-    hash_entry->lastreq->payload.p2p.datatype = datatype;
+    req->payload.p2p.datatype = datatype;
 #endif
-    hash_entry->lastreq->payload.p2p.comm_handle         = SCOREP_MPI_COMM_HANDLE( comm );
-    hash_entry->lastreq->payload.p2p.online_analysis_pod = NULL;
-    hash_entry->lastreq->id                              = id;
+    req->payload.p2p.comm_handle         = SCOREP_MPI_COMM_HANDLE( comm );
+    req->payload.p2p.online_analysis_pod = NULL;
 }
 
 scorep_mpi_request*
