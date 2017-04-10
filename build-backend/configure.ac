@@ -262,7 +262,7 @@ AS_IF([test -n "${scorep_cubew_bindir}"],
 
 AS_IF([test -n "${scorep_cubelib_bindir}"],
       [AC_SUBST([CUBELIB_BINDIR], ["${scorep_cubelib_bindir}"])],
-      [AC_SUBST([CUBELIB_BINDIR], ["../vendor/cubelib/build-backend"])])
+      [AC_SUBST([CUBELIB_BINDIR], ["../vendor/cubelib/build-frontend"])])
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
