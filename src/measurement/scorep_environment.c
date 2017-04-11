@@ -152,7 +152,8 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "Total memory in bytes per process to be consumed by the measurement system",
         "SCOREP_TOTAL_MEMORY will be split into pages of size SCOREP_PAGE_SIZE "
         "(potentially adjusted), i.e., if SCOREP_TOTAL_MEMORY is not a power of "
-        "two, it gets reduced to the next smaller power of two."
+        "two, it gets reduced to the next smaller value that is a multiple of "
+        "SCOREP_PAGE_SIZE."
     },
     {
         "page_size",
