@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -149,17 +149,21 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         &env_total_memory,
         NULL,
         "16000k",
-        "Total memory in bytes per process for the measurement system",
-        ""
+        "Total memory in bytes per process to be consumed by the measurement system",
+        "SCOREP_TOTAL_MEMORY will be split into pages of size SCOREP_PAGE_SIZE "
+        "(potentially adjusted), i.e., if SCOREP_TOTAL_MEMORY is not a power of "
+        "two, it gets reduced to the next smaller power of two."
     },
     {
         "page_size",
         SCOREP_CONFIG_TYPE_SIZE,
         &env_page_size,
         NULL,
-        "8k", // with 1200k total memory this means 150 pages
+        "8k",
         "Memory page size in bytes",
-        "TOTAL_MEMORY will be split up into pages of size PAGE_SIZE."
+        "If not a power of two, SCOREP_PAGE_SIZE will be increased to the next "
+        "larger power of two. SCOREP_TOTAL_MEMORY will be split up into pages "
+        "of (the adjusted) SCOREP_PAGE_SIZE. Minimum size is 512 bytes."
     },
     {
         "experiment_directory",
