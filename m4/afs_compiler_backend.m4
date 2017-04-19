@@ -103,8 +103,8 @@ AC_ARG_WITH([compiler-suite],
                     afs_tmp_var="${afs_[]afs_tmp_var[]_vendor}"])
               ])
           ],
-          [# crosscompile systems
-           AC_MSG_WARN([--with-compiler-suite currently not supported on cross-compile systems as backend compilers are choosen by system type. To specify frontend compilers, use --with-frontend-compiler-suite.])])
+          [# cross-compile systems
+           AC_MSG_WARN([--with-compiler-suite currently not supported on cross-compile systems as backend compilers are chosen by system type. To specify frontend compilers, use --with-frontend-compiler-suite.])])
     ] dnl ,[ # action if not given ]
 )
 
@@ -196,7 +196,7 @@ m4_foreach([afs_tmp_var],
         ])
     ])
 
-dnl # print all varaibles and values
+dnl # print all variables and values
 dnl m4_foreach([afs_tmp_var],
 dnl     [afs_all_build_variables_list], [AS_IF([test -n "${afs_tmp_var}"], [echo afs_tmp_var[]: ${afs_tmp_var}
 dnl ])
