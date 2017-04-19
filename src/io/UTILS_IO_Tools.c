@@ -40,7 +40,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if HAVE( UNISTD_H )
 #include <unistd.h>
+#endif
 
 #include <utils_package.h>
 
