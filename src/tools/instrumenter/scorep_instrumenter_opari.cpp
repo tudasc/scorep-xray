@@ -186,7 +186,7 @@ SCOREP_Instrumenter_OpariAdapter::precompile( SCOREP_Instrumenter&         instr
                                               const std::string&           source_file )
 {
     /* For Fortran source files, the extension must be in upper case to use the
-       C-Preporcessor */
+       C-preprocessor */
     std::string extension = get_extension( source_file );
     if ( is_fortran_file( source_file ) )
     {
