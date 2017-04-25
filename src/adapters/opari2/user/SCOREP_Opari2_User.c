@@ -77,7 +77,7 @@ POMP2_Begin( POMP2_USER_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_USER_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_USER_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_User_Region* region = *( SCOREP_Opari2_User_Region** )pomp_handle;
         SCOREP_EnterRegion( region->regionHandle );
     }

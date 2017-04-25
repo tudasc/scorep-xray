@@ -145,7 +145,7 @@ POMP2_Atomic_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -181,7 +181,7 @@ POMP2_Barrier_enter( POMP2_Region_handle* pomp_handle,
     *pomp_old_task = pomp_current_task;
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -264,7 +264,7 @@ POMP2_Flush_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -337,7 +337,7 @@ POMP2_Critical_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -371,7 +371,7 @@ POMP2_For_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -405,7 +405,7 @@ POMP2_Master_begin( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerBlock );
     }
@@ -526,7 +526,7 @@ POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
     /* Generate fork event */
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         UTILS_ASSERT( region != NULL );
         SCOREP_ThreadForkJoin_Fork( SCOREP_PARADIGM_OPENMP,
@@ -566,7 +566,7 @@ POMP2_Section_begin( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerBlock );
     }
@@ -600,7 +600,7 @@ POMP2_Sections_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -666,7 +666,7 @@ POMP2_Single_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -736,7 +736,7 @@ POMP2_Ordered_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -780,7 +780,7 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
         SCOREP_ThreadForkJoin_TaskCreate( SCOREP_PARADIGM_OPENMP,
@@ -881,7 +881,7 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
         SCOREP_ThreadForkJoin_TaskCreate( SCOREP_PARADIGM_OPENMP,
@@ -966,7 +966,7 @@ POMP2_Taskwait_begin( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -1012,7 +1012,7 @@ POMP2_Workshare_enter( POMP2_Region_handle* pomp_handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
+        SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }

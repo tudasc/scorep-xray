@@ -58,12 +58,12 @@
 extern SCOREP_Mutex scorep_opari2_openmp_assign_lock;
 
 /**
-   @def SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( handle, ctc_string )
+   @def SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( handle, ctc_string )
    Checks whether @a handle is initialized and initializes it if it is not.
    @param handle      A pointer to a POMP2_Region_handle.
    @param ctc_string  A string that contains the initialization information.
  */
-#define SCOREP_OPARI2_OPENMP_HANDLE_UNITIALIZED_REGION( handle, ctc_string ) \
+#define SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( handle, ctc_string ) \
     if ( *handle == NULL )                                                   \
     {                                                                        \
         SCOREP_MutexLock( scorep_opari2_openmp_assign_lock );                \
