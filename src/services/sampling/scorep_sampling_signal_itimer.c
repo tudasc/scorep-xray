@@ -105,6 +105,7 @@ create_interrupt_generator( scorep_sampling_single_location_data*          sampl
 
     /* Set up the signal handler */
     struct sigaction signal_action;
+    memset( &signal_action, 0, sizeof( signal_action ) );
     signal_action.sa_sigaction = timer_signal_handler;
     /*
      * SA_SIGINFO:  we want the 3 argument version of the signal handler
@@ -151,6 +152,7 @@ enable_interrupt_generator( scorep_sampling_single_location_data* samplingData,
 
     /* Set up the signal handler */
     struct sigaction signal_action;
+    memset( &signal_action, 0, sizeof( signal_action ) );
     signal_action.sa_sigaction = timer_signal_handler;
     /*
      * SA_SIGINFO:  we want the 3 argument version of the signal handler
@@ -193,6 +195,7 @@ static void
 disable_interrupt_generator( scorep_sampling_single_location_data* samplingData )
 {
     struct sigaction signal_action;
+    memset( &signal_action, 0, sizeof( signal_action ) );
     signal_action.sa_handler = SIG_DFL;
 
     /* Install the signal handler */
