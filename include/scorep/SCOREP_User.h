@@ -32,7 +32,7 @@
 #define SCOREP_USER_H
 
 /**
-    @file       SCOREP_User.h
+    @file
     @ingroup    SCOREP_User
 
     @brief This file contains the interface for the manual user instrumentation.
@@ -831,7 +831,7 @@
     the metric is used. If it is used in more than one place it need to be a global
     definition.
     @param metricHandle The name of the variable which will be declared for storing
-                        the meric handle.
+                        the metric handle.
 
     C/C++ example:
     @code
