@@ -31,7 +31,7 @@
 /**
  * @file
  *
- * @brief Uses nm to iterate over the symbol table of an exectubale.
+ * @brief Uses nm to iterate over the symbol table of an executable.
  */
 
 #include <config.h>

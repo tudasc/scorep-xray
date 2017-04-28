@@ -80,7 +80,7 @@ cplus_demangle( const char* mangled,
 #define SCOREP_COMPILER_DEMANGLE_VERBOSE   ( 1 << 3 )  /* include implementation details */
 #define SCOREP_COMPILER_DEMANGLE_TYPES     ( 1 << 4 )  /* include type encodings */
 
-/* Demangeling style. */
+/* Demangling style. */
 static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
                                             SCOREP_COMPILER_DEMANGLE_ANSI    |
                                             SCOREP_COMPILER_DEMANGLE_VERBOSE |
@@ -88,7 +88,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
 #endif /* GNU_DEMANGLE */
 
 /* ***************************************************************************************
-   helper functions for symbaol table analysis
+   helper functions for symbol table analysis
 *****************************************************************************************/
 
 /**
@@ -215,7 +215,7 @@ process_symbol( long         address,
 
 /**
  * Returns true if symbols (functions names) are provided, e.g., via file
- * using the SCOREP_NM_SYSMBOLS environment variable.
+ * using the SCOREP_NM_SYMBOLS environment variable.
  */
 static bool
 symbols_provided( void )

@@ -80,7 +80,7 @@ scorep_compiler_register_region( const scorep_compiler_region_description* regio
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    UTILS_DEBUG( "inititialize GCC plugin compiler adapter" );
+    UTILS_DEBUG( "initialize GCC plugin compiler adapter" );
 
     /* Initialize region mutex */
     SCOREP_MutexCreate( &scorep_compiler_region_mutex );

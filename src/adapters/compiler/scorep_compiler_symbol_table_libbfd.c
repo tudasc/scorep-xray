@@ -31,7 +31,7 @@
 /**
  * @file
  *
- * @brief Uses libbfd to iterate over the symbol table of an exectubale.
+ * @brief Uses libbfd to iterate over the symbol table of an executable.
  */
 
 #include <config.h>

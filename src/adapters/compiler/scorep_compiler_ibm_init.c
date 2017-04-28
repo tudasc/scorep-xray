@@ -53,7 +53,7 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    UTILS_DEBUG( "inititialize IBM xl compiler adapter!" );
+    UTILS_DEBUG( "initialize IBM xl compiler adapter!" );
 
     /* Initialize region mutex */
     SCOREP_MutexCreate( &scorep_compiler_region_mutex );

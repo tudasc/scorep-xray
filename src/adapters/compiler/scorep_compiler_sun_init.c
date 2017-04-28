@@ -58,7 +58,7 @@ static SCOREP_RegionHandle main_region_handle = SCOREP_INVALID_REGION;
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    UTILS_DEBUG( "inititialize studio compiler adapter!" );
+    UTILS_DEBUG( "initialize studio compiler adapter!" );
 
     SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 

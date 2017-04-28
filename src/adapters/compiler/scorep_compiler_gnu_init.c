@@ -53,7 +53,7 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    UTILS_DEBUG( "inititialize GNU compiler adapter." );
+    UTILS_DEBUG( "initialize GNU compiler adapter." );
 
     /* Initialize region mutex */
     SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -69,7 +69,7 @@ scorep_compiler_subsystem_init( void )
         scorep_compiler_get_hash_statistics();
     }
 
-    UTILS_DEBUG( "inititialization of GNU compiler adapter done." );
+    UTILS_DEBUG( "initialization of GNU compiler adapter done." );
 
     return SCOREP_SUCCESS;
 }
