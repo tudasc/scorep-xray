@@ -255,7 +255,7 @@
 /**
     @def SCOREP_USER_REGION_INIT(handle, name, type)
     This macro initializes a user defined region. If the region handle is already
-    inititialized, no operation is executed.
+    initialized, no operation is executed.
     @param handle  The handle of the region to be started. This handle must be declared
                    using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be

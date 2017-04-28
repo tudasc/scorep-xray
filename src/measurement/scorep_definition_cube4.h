@@ -112,7 +112,7 @@ typedef struct
    Writes the definitions to the Cube 4 struct, given by @a my_cube. Fills
    the mapping table given by map.
    @param myCube      Pointer to the cube struct to which the data is written.
-   @param map         Pointer to an already inititialized mapping structure.
+   @param map         Pointer to an already initialized mapping structure.
    @param nRanks      Number of ranks.
    @param nLocations  Global number of locations.
    @param locationsPerRank List of number of locations per rank.
