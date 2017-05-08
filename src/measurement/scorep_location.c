@@ -366,13 +366,17 @@ SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 
 
 void
-SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
+SCOREP_Location_SetLastTimestamp( SCOREP_Location* location,
                                   uint64_t         timestamp )
 {
-    UTILS_BUG_ON( timestamp < locationData->last_timestamp,
-                  "Wrong timestamp order: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
-                  locationData->last_timestamp, timestamp );
-    locationData->last_timestamp = timestamp;
+    UTILS_BUG_ON( timestamp < location->last_timestamp,
+                  "Wrong timestamp order on location %" PRIu32 ": %" PRIu64 " (last recorded) > %" PRIu64 " (current). "
+                  "This might be an indication of thread migration. Please pin your threads. "
+                  "Using a SCOREP_TIMER different from tsc might also help.",
+                  SCOREP_Location_GetId( location ),
+                  location->last_timestamp,
+                  timestamp );
+    location->last_timestamp = timestamp;
 }
 
 
