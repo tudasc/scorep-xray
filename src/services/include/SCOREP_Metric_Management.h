@@ -33,7 +33,7 @@
 
 /**
  *
- *  @file       SCOREP_Metric_Management.h
+ *  @file
  *
  */
 

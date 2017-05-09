@@ -32,12 +32,9 @@
 #define SCOREP_PROFILE_CONVERTER_H
 
 /**
- * @file scorep_profile_converter.h
+ * @file
+ *
  * Declares some converter defines.
- *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *
- * @status alpha
  *
  */
 

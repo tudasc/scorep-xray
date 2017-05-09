@@ -29,7 +29,7 @@
  */
 
 /**
- * @file        scorep_platform_bgq.c
+ * @file
  *
  *
  * Implementation to obtain the system tree information from a Blue Gene/Q

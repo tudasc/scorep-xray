@@ -29,7 +29,7 @@
  */
 
 /**
- * @file        src/services/scorep_platform_system_tree.c
+ * @file
  *
  *
  * Platform independent code for building up the path in the system tree.

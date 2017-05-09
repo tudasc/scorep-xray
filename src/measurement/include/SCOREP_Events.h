@@ -514,8 +514,8 @@ SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType  collectiveOp,
  * with SCOREP_RmaTryLock. In this case, no release record may follow.
  * With this a series of unsuccessful locking attempts can be identified.
  * If an lock attempt is successful, it is marked with
- * @a SCOREP_RmaAquireLock right away instead of a pair of
- * @a SCOREP_RmaTryLock and @ SCOREP_RmaAquireLock.
+ * @a SCOREP_RmaAcquireLock right away instead of a pair of
+ * @a SCOREP_RmaTryLock and @ SCOREP_RmaAcquireLock.
  *
  * @param win Memory window.
  *
@@ -556,7 +556,7 @@ SCOREP_RmaAcquireLock( SCOREP_RmaWindowHandle windowHandle,
  * This record marks the time that a request for a lock is issued where
  * the RMA model ensures that the lock is granted eventually without
  * further notification. As of now this is specific for MPI. In this case,
- * the @a SCOREP_RmaAquireLock event is not present.
+ * the @a SCOREP_RmaAcquireLock event is not present.
  *
  * @param win Memory window.
  *
@@ -575,7 +575,7 @@ SCOREP_RmaRequestLock( SCOREP_RmaWindowHandle windowHandle,
 
 /**
  * Marks the time the lock is freed. It contains all fields that are
- * necessary to match it to either an earlier @a SCOREP_AquireLock or
+ * necessary to match it to either an earlier @a SCOREP_AcquireLock or
  * @a SCOREP_RequestLock event and is required to follow either of the
  * two.
  *
@@ -702,7 +702,7 @@ SCOREP_RmaGet( SCOREP_RmaWindowHandle windowHandle,
  *
  * @param type Type of atomic operation (see @a SCOREP_RmaAtomicType).
  *
- * @param bytesSent Number of bytes transferred to rmeote target.
+ * @param bytesSent Number of bytes transferred to remote target.
  *
  * @param bytesReceived Number of bytes transferred from remote target.
  *

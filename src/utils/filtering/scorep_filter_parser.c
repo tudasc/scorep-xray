@@ -30,7 +30,7 @@
 
 
 /**
- * @file       scorep_filter_parser.c
+ * @file
  *
  *
  * Parses the filter file and creates a filter.

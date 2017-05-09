@@ -14,7 +14,7 @@
 #define SCOREP_INSTRUMENTER_ONLINE_ACCESS_HPP
 
 /**
- * @file scorep_instrumenter_online_access.hpp
+ * @file
  *
  * Defines the class for online access.
  */

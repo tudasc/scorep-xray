@@ -11,7 +11,7 @@
  */
 
 /**
- * @file scorep_instrumenter_user.cpp
+ * @file
  *
  * Implements the class for manual user instrumentation.
  */

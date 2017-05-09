@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/tools/config/SCOREP_Config_LibraryDependecies.cpp
+ * @file
  *
  * Implements the representation and analysis of library dependencies
  */

@@ -299,7 +299,7 @@ static const SCOREP_ConfigVariable scorep_profile_confvars[] = {
         NULL,
         "false",
         "Write .core files if an error occurred",
-        "If an error occures inside the profiling system, the profiling is disabled. "
+        "If an error occurs inside the profiling system, the profiling is disabled. "
         "For debugging reasons, it might be feasible to get the state of the local "
         "stack at these points. It is not recommended to enable this feature for "
         "large scale measurements."

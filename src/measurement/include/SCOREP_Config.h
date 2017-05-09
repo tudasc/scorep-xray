@@ -217,7 +217,7 @@ SCOREP_ConfigDump( FILE* dumpFile );
  * If @a full is set than the long description is also displayed.
  *
  * @param full Displays the long help description too.
- * @param html Use an html descripion list for the output.
+ * @param html Use an html description list for the output.
  */
 void
 SCOREP_ConfigHelp( bool  full,

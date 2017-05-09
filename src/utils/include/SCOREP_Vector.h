@@ -33,7 +33,7 @@
 
 /*--- Header file documentation -------------------------------------------*/
 /**
- * @file            SCOREP_Vector.h
+ * @file
  * @ingroup         SCOREP_Vector_module
  *
  * @brief           A STL-like C-implementation of a vector.
@@ -353,7 +353,7 @@ SCOREP_Vector_Clear( SCOREP_Vector* instance );
 /*--- Algorithms ----------------------------------------------------------*/
 
 /**
- * Searches for the first occurence of @a value in the given SCOREP_Vector
+ * Searches for the first occurrence of @a value in the given SCOREP_Vector
  * @a instance, using the binary comparison function @a compareFunc (see
  * @ref SCOREP_Vector_CompareFunc for implementation details). If a matching
  * item could
@@ -368,7 +368,7 @@ SCOREP_Vector_Clear( SCOREP_Vector* instance );
  * @param index       Memory location where index of matching item is stored
  *                    (ignored if @c NULL)
  *
- * @return Non-zero if matching item cound be found; zero otherwise
+ * @return Non-zero if matching item could be found; zero otherwise
  */
 int32_t
 SCOREP_Vector_Find( const SCOREP_Vector*      instance,
@@ -399,7 +399,7 @@ SCOREP_Vector_Find( const SCOREP_Vector*      instance,
  * @param index        Memory location where index of matching item is stored
  *                     (ignored if @c NULL)
  *
- * @return Non-zero if matching item cound be found; zero otherwise
+ * @return Non-zero if matching item could be found; zero otherwise
  */
 int32_t
 SCOREP_Vector_LowerBound( const SCOREP_Vector*      instance,
@@ -430,7 +430,7 @@ SCOREP_Vector_LowerBound( const SCOREP_Vector*      instance,
  * @param index        Memory location where index of matching item is stored
  *                    (ignored if @c NULL)
  *
- * @return Non-zero if matching item cound be found; zero otherwise
+ * @return Non-zero if matching item could be found; zero otherwise
  */
 int32_t
 SCOREP_Vector_UpperBound( const SCOREP_Vector*      instance,

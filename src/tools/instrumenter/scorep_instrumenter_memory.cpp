@@ -14,7 +14,7 @@
  */
 
 /**
- * @file scorep_instrumenter_memory.cpp
+ * @file
  *
  * Implements the class for memory tracking.
  */

@@ -34,10 +34,11 @@
 
 
 /**
- * @file SCOREP_Allocator.h Scorep-public types (for user-public types see
- * SCOREP_Allocator_PublicTypes.h) and functions needed in other headers that
- * declare memory management functionality.
+ * @file
  *
+ * @brief Score-P public types (for user-public types see
+ * SCOREP_Allocator_PublicTypes.h) and functions needed
+ * in other headers that declare memory management functionality.
  *
  */
 
@@ -88,7 +89,7 @@ SCOREP_Allocator_RoundupToAlignment( size_t size );
  * of memory and a page size of @a pageSize.
  *
  * @param totalMemory    Amount of memory that the allocator may use.
- *                       The actuall available memory will be round-down to
+ *                       The actual available memory will be round-down to
  *                       the greatest multiple of the final value of @a
  *                       pageSize.
  * @param pageSize       The @a totalMemory will be split into pages of size @a

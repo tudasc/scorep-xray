@@ -71,7 +71,7 @@ write_node_tau( scorep_profile_node* node,
                 uint64_t*            callpath_counter );
 
 /**
-   Replaces all occurences of symbols in a string that have a special meaning in XML
+   Replaces all occurrences of symbols in a string that have a special meaning in XML
    by their predefined entities. It Allocates memory for the resulting string,
    which the application must free.
    @param str  A string in which the function replaces the symbols.

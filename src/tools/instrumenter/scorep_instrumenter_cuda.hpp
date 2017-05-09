@@ -14,7 +14,7 @@
 #define SCOREP_INSTRUMENTER_CUDA_HPP
 
 /**
- * @file scorep_instrumenter_cuda.hpp
+ * @file
  *
  * Defines the class for cuda instrumentation.
  */

@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       scorep_platform_system_tree_generic.c
+ * @file
  *
  *
  */

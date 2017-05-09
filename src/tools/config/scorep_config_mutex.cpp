@@ -14,7 +14,7 @@
  */
 
 /**
- * @file scorep_config_mutex.cpp
+ * @file
  *
  * Collects information about available mutex systems
  */

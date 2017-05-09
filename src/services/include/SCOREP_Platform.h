@@ -32,7 +32,7 @@
 #define SCOREP_PLATFORM_H
 
 /**
- * @file       SCOREP_Platform.h
+ * @file
  *
  *
  */

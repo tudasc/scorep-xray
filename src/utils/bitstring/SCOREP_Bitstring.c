@@ -29,7 +29,7 @@
  */
 
 /**
- * @file SCOREP_Bitstring.c
+ * @file
  *
  *
  * Implementation of functions for manipulation of bitstrings.

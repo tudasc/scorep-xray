@@ -32,7 +32,7 @@
 #define SCOREP_BITSTRING_H
 
 /**
- * @file SCOREP_Bitstring.h
+ * @file
  *
  *
  * Declaration of functions for manipulation of bitstrings.

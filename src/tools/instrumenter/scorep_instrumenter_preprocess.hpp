@@ -20,7 +20,7 @@
 #define SCOREP_INSTRUMENTER_PREPROCESS_HPP
 
 /**
- * @file scorep_instrumenter_preprocess.hpp
+ * @file
  *
  * Defines the class for the preprocessing.
  */

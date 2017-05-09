@@ -34,7 +34,7 @@
 
 
 /**
- * @file       src/memory/scorep_page.h
+ * @file
  *
  *
  */

@@ -32,7 +32,7 @@
 #define SCOREP_FILTER_MATCHING_H
 
 /**
- * @file       scorep_filter_matching.h
+ * @file
  *
  *
  * Defines the types for the internal representation of the filter rules and its

@@ -436,7 +436,7 @@ SCOREP_FinalizeMppMeasurement( void )
  * Has only effect, when set during initialization.
  */
 void
-SCOREP_SetDefaultRecodingMode( bool enabled )
+SCOREP_SetDefaultRecordingMode( bool enabled )
 {
     UTILS_ASSERT( scorep_default_recoding_mode_changes_allowed );
     scorep_enable_recording_by_default = enabled;

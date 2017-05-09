@@ -34,7 +34,7 @@
 
 
 /**
- * @file       src/memory/scorep_bitset.h
+ * @file
  *
  *
  */

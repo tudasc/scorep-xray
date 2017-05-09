@@ -14,7 +14,7 @@
  */
 
 /**
- * @file        SCOREP_AllocMetric.c
+ * @file
  *
  * @brief
  */

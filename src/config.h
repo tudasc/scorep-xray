@@ -32,7 +32,7 @@
 #define CONFIG_H
 
 /**
- * @file       config.h
+ * @file
  *
  * @brief      Provide a single config.h that hides the frontend/backend
  *             issues from the developer

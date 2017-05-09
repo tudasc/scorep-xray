@@ -14,7 +14,7 @@
 #define SCOREP_INSTRUMENTER_OPENACC_HPP
 
 /**
- * @file scorep_instrumenter_openacc.hpp
+ * @file
  *
  * Defines the class for OpenACC instrumentation.
  */

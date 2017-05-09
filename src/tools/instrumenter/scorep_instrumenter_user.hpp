@@ -14,7 +14,7 @@
 #define SCOREP_INSTRUMENTER_USER_HPP
 
 /**
- * @file scorep_instrumenter_user.hpp
+ * @file
  *
  * Defines the class for the manual user instrumentation.
  */

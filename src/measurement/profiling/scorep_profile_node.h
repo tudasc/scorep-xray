@@ -384,10 +384,10 @@ scorep_profile_sort_subtree( scorep_profile_node*           root,
                              scorep_profile_compare_node_t* comparisionFunc );
 
 /**
-   Replaces all occurences of @a old in thread start nodes by @a substitute.
+   Replaces all occurrences of @a old in thread start nodes by @a substitute.
    @param old        A pointer to a fork node, that is replaced in the type specific data
                      of all thread start nodes.
-   @param substitute A pointer to a fork node, that will replace the occurences of
+   @param substitute A pointer to a fork node, that will replace the occurrences of
                      @a old.
  */
 void

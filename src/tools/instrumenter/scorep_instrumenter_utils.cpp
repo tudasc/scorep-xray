@@ -32,7 +32,7 @@
  */
 
 /**
- * @file       scorep_instrumenter_utils.cpp
+ * @file
  */
 
 #include <config.h>

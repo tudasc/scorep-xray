@@ -175,11 +175,11 @@ SCOREP_RecordingEnabled( void );
  * Sets whether recording is enabled or disabled by default at measurement start.
  * Has only effect, when set during initialization.
  * @param enabled  If true, recording is enabled at program start until it is
- *                 explicitly disabled. If false, rociding is disabled at
+ *                 explicitly disabled. If false, recording is disabled at
  *                 program start, until it is explicitly enabled.
  */
 void
-SCOREP_SetDefaultRecodingMode( bool enabled );
+SCOREP_SetDefaultRecordingMode( bool enabled );
 
 
 typedef int ( * SCOREP_ExitCallback )( void );

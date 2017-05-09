@@ -29,7 +29,7 @@
  */
 
 /**
- * @file            SCOREP_Vector.c
+ * @file
  * @ingroup         SCOREP_Vector_module
  *
  * @brief           Implementation of a STL-like vector.

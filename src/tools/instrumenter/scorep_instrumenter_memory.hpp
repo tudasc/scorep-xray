@@ -14,7 +14,7 @@
 #define SCOREP_INSTRUMENTER_MEMORY_HPP
 
 /**
- * @file scorep_instrumenter_memory.hpp
+ * @file
  *
  * Defines the class for memory tracking.
  */

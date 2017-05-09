@@ -34,7 +34,7 @@
 
 
 /**
- * @file       scorep_allocator.h
+ * @file
  *
  *
  */

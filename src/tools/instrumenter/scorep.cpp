@@ -29,6 +29,8 @@
  */
 
 /**
+ * @file
+ *
  * The instrumentation tool of Score-P: scorep.
  * .
  */
@@ -83,7 +85,7 @@ print_help( void )
               << "                  execute any command.\n"
               << "  --keep-files    Do not delete temporarily created files after successfull\n"
               << "                  instrumentation. By default, temporary files are deleted\n"
-              << "                  if no error occures during instrumentation.\n"
+              << "                  if no error occurs during instrumentation.\n"
               << "  --instrument-filter=<file>\n"
               << "                  Specifies the filter file for filtering functions during\n"
               << "                  compile-time. Not supported by all instrumentation methods.\n"

@@ -17,7 +17,7 @@
 #define SCOREP_INSTRUMENTER_COMPILER_HPP
 
 /**
- * @file scorep_instrumenter_compiler.hpp
+ * @file
  *
  * Defines the class for compiler instrumentation.
  */

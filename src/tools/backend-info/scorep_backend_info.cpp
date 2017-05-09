@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       src/tools/backend-info/scorep_backend_info.cpp
+ * @file
  *
  *
  * The info tool of Score-P: scorep-backend-info.

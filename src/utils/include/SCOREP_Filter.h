@@ -32,11 +32,11 @@
 #define SCOREP_FILTER_H
 
 /**
- * @file       SCOREP_Filter.h
+ * @file
  *
  *
  * The interface to the filtering system.  The file that contains the filter
- * definitions can be set via the envirionment variable
+ * definitions can be set via the environment variable
  * SCOREP_FILTERING_FILE. If no file is specified or the given file is not
  * found, filtering is disabled.
  */
@@ -111,7 +111,7 @@ SCOREP_Filter_MatchFile( const char* file_name );
  *                      from @a function_name. If no different mangled name is
  *                      available you may pass NULL here. In this case the function_name
  *                      will be used to compare against patterns that are prepended
- *                      by the MANGLED keyword. In praticular passing NULL or the
+ *                      by the MANGLED keyword. In particular passing NULL or the
  *                      same string as for @a function_name leads to the same results.
  * @returns True, if the tested function should be excluded from measurement.
  */

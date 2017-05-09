@@ -29,7 +29,7 @@
  */
 
 /**
- * @file scorep_config_utils.cpp
+ * @file
  *
  * Utility functions for the config tool.
  */

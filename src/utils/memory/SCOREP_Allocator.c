@@ -30,7 +30,7 @@
 
 
 /**
- * @file SCOREP_Allocator.c Implementation of the paged memory allocator.
+ * @file
  *
  *
  *
@@ -391,11 +391,11 @@ SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
     maint_memory_needed = roundupto( maint_memory_needed, 64 );
     if ( totalMemory <= maint_memory_needed )
     {
-        /* too few memory to hold maintainance stuff */
+        /* too few memory to hold maintenance stuff */
         return 0;
     }
 
-    /* mark the pages used we need for our own maintanance
+    /* mark the pages used we need for our own maintenance
      * (i.e. this object and the page_map)
      */
     uint32_t already_used_pages = maint_memory_needed >> page_shift;

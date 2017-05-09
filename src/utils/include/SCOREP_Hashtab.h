@@ -33,10 +33,10 @@
 
 /*--- Header file documentation -------------------------------------------*/
 /**
- * @file            SCOREP_Hashtab.h
+ * @file
  * @ingroup         SCOREP_Hashtab_module
  *
- * @brief           This file provides the function header and type definiions for
+ * @brief           This file provides the function header and type definitions for
  *                  a STL-like hash table.
  */
 
@@ -238,7 +238,7 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
  *                   use to a later call to @a SCOREP_Hashtab_Insert() with the
  *                   same key @a key. (ignored if @c NULL)
  *
- * @return Pointer to hash table entry if matching item cound be found;
+ * @return Pointer to hash table entry if matching item could be found;
  *         @c NULL otherwise
  */
 SCOREP_Hashtab_Entry*
@@ -259,7 +259,7 @@ SCOREP_Hashtab_Foreach( const SCOREP_Hashtab*          instance,
 
 /**
  * Removes the entry specified by @a key from the hash table @a instance.
- * The user must provide appropriate deletion funtion to free the memory allocated
+ * The user must provide appropriate deletion function to free the memory allocated
  * for @a key and value.
  *
  * @param instance    Object in which the item is searched
@@ -367,7 +367,7 @@ SCOREP_Hashtab_FreeAll( SCOREP_Hashtab*               instance,
  */
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to NULL-terminated strings. It uses strcmp() for comparison.
  *
  * @param key      Pointer to a NULL-terminated string.
@@ -380,7 +380,7 @@ SCOREP_Hashtab_CompareStrings( const void* key,
                                const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to 8-bit integers.
  *
  * @param key      Pointer to a 8-bit integer.
@@ -393,7 +393,7 @@ SCOREP_Hashtab_CompareInt8( const void* key,
                             const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to 16-bit integers.
  *
  * @param key      Pointer to a 16-bit integer.
@@ -406,7 +406,7 @@ SCOREP_Hashtab_CompareInt16( const void* key,
                              const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to 32-bit integers.
  *
  * @param key      Pointer to a 32-bit integer.
@@ -419,7 +419,7 @@ SCOREP_Hashtab_CompareInt32( const void* key,
                              const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to 64-bit integers.
  *
  * @param key      Pointer to a 64-bit integer.
@@ -432,7 +432,7 @@ SCOREP_Hashtab_CompareInt64( const void* key,
                              const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to unsigned 32-bit integers.
  *
  * @param key      Pointer to a unsigned 32-bit integer.
@@ -445,7 +445,7 @@ SCOREP_Hashtab_CompareUint32( const void* key,
                               const void* item_key );
 
 /**
- * A comparison function for the hash table which interpretes the keys as pointers
+ * A comparison function for the hash table which interprets the keys as pointers
  * to unsigned 64-bit integers.
  *
  * @param key      Pointer to a unsigned 64-bit integer.
@@ -504,7 +504,7 @@ size_t
 SCOREP_Hashtab_HashInt32( const void* key );
 
 /**
- * Default hash function. It uses the adress/8 as hash value. The division by
+ * Default hash function. It uses the address/8 as hash value. The division by
  * 8 is done to avoid gaps because of wordsize alignments.
  *
  * @param key A pointer.

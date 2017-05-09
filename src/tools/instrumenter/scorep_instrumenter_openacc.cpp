@@ -11,7 +11,7 @@
  */
 
 /**
- * @file scorep_instrumenter_openacc.cpp
+ * @file
  *
  * Implements the class for OpenACC instrumentation.
  */

@@ -59,7 +59,7 @@ typedef struct
     uint32_t                    offset;              /**< Offset for this rank */
     uint32_t                    num_unified_metrics; /**< Number of unified metrics */
     uint8_t*                    bit_vector;          /**< Indicates callpath with values */
-    int32_t                     has_tasks;           /**< Whether tasks occured */
+    int32_t                     has_tasks;           /**< Whether tasks occurred */
     int32_t                     same_thread_num;     /**< Non-zero if same number of
                                                           threads on all ranks */
 

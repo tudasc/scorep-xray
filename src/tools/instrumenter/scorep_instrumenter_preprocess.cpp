@@ -20,7 +20,7 @@
  */
 
 /**
- * @file scorep_instrumenter_preprocess.cpp
+ * @file
  *
  * Implements the class for preprocessing.
  */

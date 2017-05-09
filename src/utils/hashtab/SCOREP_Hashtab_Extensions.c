@@ -29,7 +29,7 @@
  */
 
 /**
- * @file            SCOREP_Hashtab.c
+ * @file
  * @ingroup         SCOREP_Hashtab_module
  *
  * @brief           Extensions to the hashtable.

@@ -236,9 +236,9 @@ typedef struct SCOREP_Subsystem
      *
      * @param location           The location for the current CPU.
      * @param parentLocation     The creator of this location.  Only valid in
-     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT phase.
      * @param forkSequenceCount  The fork sequence count. Only valid in the
-     *                           SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     *                           SCOREP_CPU_LOCATION_PHASE_MGMT phase.
      * @param phase              The phase.
      */
     SCOREP_ErrorCode ( * subsystem_activate_cpu_location )( struct SCOREP_Location* location,
@@ -270,7 +270,7 @@ typedef struct SCOREP_Subsystem
      *
      * @param location           The location for the current CPU.
      * @param parentLocation     The creator of this location.  Only valid in
-     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT phase.
      * @param phase              The phase.
      */
     void ( * subsystem_deactivate_cpu_location )( struct SCOREP_Location* location,

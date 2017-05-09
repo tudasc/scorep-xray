@@ -301,7 +301,7 @@ sample( SCOREP_Location*                location,
     if ( scorep_tracing_convert_calling_context )
     {
         /* No place for them yet, maybe last enter in the future, but currenlty there
-         * is no way the user could add attrbiutes to samples anyway. */
+         * is no way the user could add attributes to samples anyway. */
         OTF2_AttributeList_RemoveAllAttributes( attribute_list );
 
         SCOREP_Unwinding_ProcessCallingContext( location,
@@ -1521,7 +1521,7 @@ exit_rewind_point( SCOREP_Location*    location,
     /* Remove all rewind points from the stack and the buffer until the
      * searched region id for the requested rewind is found.
      * This ensures, that nested rewind regions could be managed without
-     * a leck in the needed memory. */
+     * a lack in the needed memory. */
     do
     {
         /* Remove from stack. */

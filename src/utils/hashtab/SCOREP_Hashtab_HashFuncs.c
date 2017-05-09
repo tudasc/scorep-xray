@@ -30,7 +30,7 @@
  */
 
 /**
- * @file            SCOREP_Hashtab.c
+ * @file
  * @ingroup         SCOREP_Hashtab_module
  *
  * @brief           Provides simple hash functions for standard data types.

@@ -30,10 +30,10 @@
 
 
 /**
- * @file       scorep_filter_matching.c
+ * @file
  *
  *
- * Maintains the internal filter rules and performs the pattern machcing requests.
+ * Maintains the internal filter rules and performs the pattern matching requests.
  * We maintain two rule lists: One for the function name rules and one for the
  * file name rules. Due to the possible include/exclude
  * combinations, the rules must be evaluated in sequential order. Thus, the use of a

@@ -32,7 +32,7 @@
  */
 
 /**
- * @file       SCOREP_Instrumenter.hpp
+ * @file
  *
  * @brief      Class to steer the instrumentation of the user code.
  */
@@ -69,7 +69,7 @@ class SCOREP_Instrumenter_Mutex;
    Class SCOREP_Instrumenter
 ******************************************************************************/
 /**
- *  @brief performes instrumentation stage
+ *  @brief performs instrumentation stage
  *
  *  This class examines the available compiler settings and the type of
  *  instrumentation. Makes the necessary modifications to the user command
@@ -168,7 +168,7 @@ private:
                          const std::string& output_file );
 
     /**
-       Removes temorarily created files.
+       Removes temporarily created files.
      */
     void
     clean_temp_files( void );

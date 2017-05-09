@@ -11,7 +11,7 @@
  */
 
 /**
- * @file scorep_instrumenter_cuda.cpp
+ * @file
  *
  * Implements the class for cuda instrumentation.
  */
@@ -39,7 +39,7 @@
  * *************************************************************************************/
 SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_CUDA, "cuda" ),
-      m_nvcc_compiler( false )
+    m_nvcc_compiler( false )
 {
 #if !HAVE_BACKEND( CUDA_SUPPORT )
     unsupported();

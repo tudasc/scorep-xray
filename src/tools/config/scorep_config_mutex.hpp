@@ -17,7 +17,7 @@
 #define SCOREP_CONFIG_MUTEX_HPP
 
 /**
- * @file scorep_config_mutex.hpp
+ * @file
  *
  * Collects information about available threading systems.
  */

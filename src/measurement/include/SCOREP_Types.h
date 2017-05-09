@@ -77,13 +77,13 @@
  */
 typedef enum SCOREP_MeasurementPhase
 {
-    /** @breif The measurement was not initialized yet, or is currently initializing. */
+    /** @brief The measurement was not initialized yet, or is currently initializing. */
     SCOREP_MEASUREMENT_PHASE_PRE    = -1,
 
-    /** @breif The measurement is initialized and not finalized yet. */
+    /** @brief The measurement is initialized and not finalized yet. */
     SCOREP_MEASUREMENT_PHASE_WITHIN = 0,
 
-    /** @breif The measurement is finalizing or already finalized. */
+    /** @briefs The measurement is finalizing or already finalized. */
     SCOREP_MEASUREMENT_PHASE_POST   = 1
 } SCOREP_MeasurementPhase;
 
@@ -308,7 +308,7 @@ typedef enum SCOREP_ParadigmFlags
      *  Attests that the paradigm is purely RMA based.
      *
      *  As the definitions structure for RMA windows is based on communicators,
-     *  these additional definitions don't reflect the actuall paradigm.
+     *  these additional definitions don't reflect the actual paradigm.
      *  By setting this flag for the paradigm it can therefore attest to the
      *  measurement data reader that the additional communicator definitions
      *  are not used.
@@ -461,7 +461,7 @@ typedef enum SCOREP_GroupType
  * future if we are going to implement phases/dynamic regions etc. inside the
  * measurement system as opposed to inside the adapters or as a postprocessing
  * step. The names should be self explanatory; most of them are already used
- * (whith a different prefix) in VampiTrace and Scalasca.
+ * (with a different prefix) in VampirTrace and Scalasca.
  *
  * @todo remove SCOREP_REGION_UNKNOWN
  */

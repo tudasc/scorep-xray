@@ -33,7 +33,7 @@
 
 
 /**
- * @file       config-custom.h
+ * @file
  *
  * @brief This file gets included by config.h (resp. config-frontend.h and
  * config-backend.h) and contains supplementary macros to be used with the

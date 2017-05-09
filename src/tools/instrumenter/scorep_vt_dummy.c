@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       scorep_vt_dummy.c
+ * @file
  *
  * When linking applications with icc and the -tcollect flag for compiler
  * instrumentation, icc tries to link a libVT. To avoid linking problems,

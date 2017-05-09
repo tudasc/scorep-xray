@@ -32,7 +32,7 @@
 #define SCOREP_CONFIG_UTILS_HPP
 
 /**
- * @file scorep_config_utils.cpp
+ * @file
  *
  * Utility functions for the config tool.
  */
@@ -79,10 +79,10 @@ has_item( const std::deque<std::string>& input,
           const std::string&             item );
 
 /**
- * Removes dublicate entries from a deque container of strings. It keeps only the
- * last occurence of each entry. This ensures that the dependencies are maintained.
+ * Removes duplicate entries from a deque container of strings. It keeps only the
+ * last occurrence of each entry. This ensures that the dependencies are maintained.
  * @param input  The list of strings which where double entries are removed.
- * @returns the list of strings where all but the last occurence are removed.
+ * @returns the list of strings where all but the last occurrence are removed.
  */
 std::deque<std::string>
 remove_double_entries( const std::deque<std::string>& input );
