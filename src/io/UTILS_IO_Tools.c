@@ -228,7 +228,7 @@ UTILS_IO_SimplifyPath( char* path )
     /* If string does not start with a slash, process first path item */
     if ( ( path[ 0 ] != '/' ) && ( level > 0 ) )
     {
-        /* Sepcial handling for path starting with '../' */
+        /* Special handling for path starting with '../' */
         if ( ( path[ 0 ] == '.' ) &&
              ( path[ 1 ] == '.' ) &&
              ( path[ 2 ] == '/' ) )
@@ -242,7 +242,7 @@ UTILS_IO_SimplifyPath( char* path )
             level--;
         }
 
-        /* start with leading ../ seqence for each remaining level */
+        /* start with leading ../ sequence for each remaining level */
         pos = 0;
         while ( pos < level * 3 )
         {
@@ -322,7 +322,7 @@ UTILS_IO_JoinPath( int nPaths, ... )
         /* check if path is absolute */
         if ( path[ 0 ] == '/' )
         {
-            /* Yes, reset counters, and remeber the position */
+            /* Yes, reset counters, and remember the position */
             total_length  = 0;
             sep           = "";
             last_absolute = i;
