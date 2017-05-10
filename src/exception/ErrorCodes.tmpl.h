@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -53,7 +53,7 @@ extern "C" {
  */
 typedef enum
 {
-    /** Special marker for error messages which indicates an deprecation. */
+    /** Special marker for error messages which indicates a deprecation. */
     @AFS_PACKAGE_NAME@_DEPRECATED    = -3,
 
     /** Special marker when the application will be aborted. */
@@ -72,7 +72,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_INVALID = 1,
 
     /* These are the internal implementation of POSIX error codes. */
-    /** The list of arguments is to long */
+    /** The list of arguments is too long */
     @AFS_PACKAGE_NAME@_ERROR_E2BIG,
     /** Not enough rights */
     @AFS_PACKAGE_NAME@_ERROR_EACCES,
@@ -80,7 +80,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_EADDRNOTAVAIL,
     /** Address family is not supported */
     @AFS_PACKAGE_NAME@_ERROR_EAFNOSUPPORT,
-    /** Resource temporaly not available */
+    /** Resource temporarily not available */
     @AFS_PACKAGE_NAME@_ERROR_EAGAIN,
     /** Connection is already processed */
     @AFS_PACKAGE_NAME@_ERROR_EALREADY,
@@ -108,9 +108,9 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_EDQUOT,
     /** File does already exist */
     @AFS_PACKAGE_NAME@_ERROR_EEXIST,
-    /** Invalid Address */
+    /** Invalid address */
     @AFS_PACKAGE_NAME@_ERROR_EFAULT,
-    /** File is to big */
+    /** File is too large */
     @AFS_PACKAGE_NAME@_ERROR_EFBIG,
     /** Operation is work in progress */
     @AFS_PACKAGE_NAME@_ERROR_EINPROGRESS,
@@ -124,17 +124,17 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_EISCONN,
     /** Target is a directory */
     @AFS_PACKAGE_NAME@_ERROR_EISDIR,
-    /** To many layers of symbolic links */
+    /** Too many layers of symbolic links */
     @AFS_PACKAGE_NAME@_ERROR_ELOOP,
-    /** To many opened files */
+    /** Too many opened files */
     @AFS_PACKAGE_NAME@_ERROR_EMFILE,
-    /** To many links */
+    /** Too many links */
     @AFS_PACKAGE_NAME@_ERROR_EMLINK,
-    /** Message buffer is to small */
+    /** Message buffer is too small */
     @AFS_PACKAGE_NAME@_ERROR_EMSGSIZE,
     /** Reserved */
     @AFS_PACKAGE_NAME@_ERROR_EMULTIHOP,
-    /** Filename is to long */
+    /** Filename is too long */
     @AFS_PACKAGE_NAME@_ERROR_ENAMETOOLONG,
     /** Network is down */
     @AFS_PACKAGE_NAME@_ERROR_ENETDOWN,
@@ -142,7 +142,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_ENETRESET,
     /** Network is not reachable */
     @AFS_PACKAGE_NAME@_ERROR_ENETUNREACH,
-    /** To much opened files */
+    /** Too many opened files */
     @AFS_PACKAGE_NAME@_ERROR_ENFILE,
     /** No buffer space available */
     @AFS_PACKAGE_NAME@_ERROR_ENOBUFS,
@@ -150,7 +150,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_ENODATA,
     /** This device does not support this function */
     @AFS_PACKAGE_NAME@_ERROR_ENODEV,
-    /** File or Directory does not exist */
+    /** File or directory does not exist */
     @AFS_PACKAGE_NAME@_ERROR_ENOENT,
     /** Cannot execute binary */
     @AFS_PACKAGE_NAME@_ERROR_ENOEXEC,
@@ -174,7 +174,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_ENOSYS,
     /** Socket is not connected */
     @AFS_PACKAGE_NAME@_ERROR_ENOTCONN,
-    /** This is not an directory */
+    /** This is not a directory */
     @AFS_PACKAGE_NAME@_ERROR_ENOTDIR,
     /** This directory is not empty */
     @AFS_PACKAGE_NAME@_ERROR_ENOTEMPTY,
@@ -194,11 +194,11 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_EPERM,
     /** Broken pipe */
     @AFS_PACKAGE_NAME@_ERROR_EPIPE,
-    /** Protocoll error */
+    /** Protocol error */
     @AFS_PACKAGE_NAME@_ERROR_EPROTO,
-    /** Protocoll is not supported */
+    /** Protocol is not supported */
     @AFS_PACKAGE_NAME@_ERROR_EPROTONOSUPPORT,
-    /** Wrong protocoll type for this socket */
+    /** Wrong protocol type for this socket */
     @AFS_PACKAGE_NAME@_ERROR_EPROTOTYPE,
     /** Value is out of range */
     @AFS_PACKAGE_NAME@_ERROR_ERANGE,
@@ -214,7 +214,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_ETIME,
     /** Connection timed out */
     @AFS_PACKAGE_NAME@_ERROR_ETIMEDOUT,
-    /** File couldn't be executed while it is opened */
+    /** File could not be executed while it is opened */
     @AFS_PACKAGE_NAME@_ERROR_ETXTBSY,
     /** Operation would be blocking */
     @AFS_PACKAGE_NAME@_ERROR_EWOULDBLOCK,
@@ -255,12 +255,12 @@ const char*
  * Signature of error handler callback functions. The error handler can be set
  * with @ref @AFS_PACKAGE_NAME@_Error_RegisterCallback.
  *
- * @param userData        : Data passed to this function as given by the registry call.
+ * @param userData        : Data passed to this function as given by the registration call.
  * @param file            : Name of the source-code file where the error appeared
- * @param line            : Line number in the source-code where the error appeared
+ * @param line            : Line number in the source code where the error appeared
  * @param function        : Name of the function where the error appeared
- * @param errorCode       : Error Code
- * @param msgFormatString : Format string like it is used at the printf family.
+ * @param errorCode       : Error code
+ * @param msgFormatString : Format string like it is used for the printf family.
  * @param va              : Variable argument list
  *
  * @returns Should return the errorCode
@@ -278,7 +278,7 @@ typedef @AFS_PACKAGE_NAME@_ErrorCode
 /**
  * Register a programmers callback function for error handling.
  *
- * @param errorCallbackIn : Fucntion will be called instead of printing a
+ * @param errorCallbackIn : Function which will be called instead of printing a
  *                          default message to standard error.
  * @param userData :        Data pointer passed to the callback.
  *

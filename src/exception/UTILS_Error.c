@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -63,9 +63,9 @@
  *
  * @param function        : Name of the function where the error appeared
  * @param file            : Name of the source-code file where the error appeared
- * @param line            : Line number in the source-code where the error appeared
- * @param errorCode       : Error Code
- * @param msgFormatString : Format string like it is used at the printf family.
+ * @param line            : Line number in the source code where the error appeared
+ * @param errorCode       : Error code
+ * @param msgFormatString : Format string like it is used for the printf family.
  * @param va              : Variable argument list
  *
  * @returns Should return the errorCode
@@ -206,11 +206,11 @@ static const struct utils_error_decl error_decls[] =
     }
 
     /* This is the internal implementation of posix error code descriptions. */
-    _e( E2BIG,           "The list of arguments is to long" ),
+    _e( E2BIG,           "The list of arguments is too long" ),
     _e( EACCES,          "Not enough rights" ),
     _e( EADDRNOTAVAIL,   "Address is not available" ),
     _e( EAFNOSUPPORT,    "Address family is not supported" ),
-    _e( EAGAIN,          "Resource temporaly not available" ),
+    _e( EAGAIN,          "Resource temporarily not available" ),
     _e( EALREADY,        "Connection is already processed" ),
     _e( EBADF,           "Invalid file pointer" ),
     _e( EBADMSG,         "Invalid message" ),
@@ -224,28 +224,28 @@ static const struct utils_error_decl error_decls[] =
     _e( EDOM,            "Domain error" ),
     _e( EDQUOT,          "Reserved" ),
     _e( EEXIST,          "File does already exist" ),
-    _e( EFAULT,          "Invalid Address" ),
-    _e( EFBIG,           "File is to big" ),
+    _e( EFAULT,          "Invalid address" ),
+    _e( EFBIG,           "File is too large" ),
     _e( EINPROGRESS,     "Operation is work in progress" ),
     _e( EINTR,           "Interuption of an operating system call" ),
     _e( EINVAL,          "Invalid argument" ),
     _e( EIO,             "Generic I/O error" ),
     _e( EISCONN,         "Socket is already connected" ),
     _e( EISDIR,          "Target is a directory" ),
-    _e( ELOOP,           "To many layers of symbolic links" ),
-    _e( EMFILE,          "To many opened files" ),
-    _e( EMLINK,          "To many links" ),
-    _e( EMSGSIZE,        "Message buffer is to small" ),
+    _e( ELOOP,           "Too many layers of symbolic links" ),
+    _e( EMFILE,          "Too many opened files" ),
+    _e( EMLINK,          "Too many links" ),
+    _e( EMSGSIZE,        "Message buffer is too small" ),
     _e( EMULTIHOP,       "Reserved" ),
-    _e( ENAMETOOLONG,    "Filename is to long" ),
+    _e( ENAMETOOLONG,    "Filename is too long" ),
     _e( ENETDOWN,        "Network is down" ),
     _e( ENETRESET,       "Connection was reset from the network" ),
     _e( ENETUNREACH,     "Network is not reachable" ),
-    _e( ENFILE,          "To much opened files" ),
+    _e( ENFILE,          "Too many opened files" ),
     _e( ENOBUFS,         "No buffer space available" ),
     _e( ENODATA,         "No more data left in the queue" ),
     _e( ENODEV,          "This device does not support this function" ),
-    _e( ENOENT,          "File or Directory does not exist" ),
+    _e( ENOENT,          "File or directory does not exist" ),
     _e( ENOEXEC,         "Cannot execute binary" ),
     _e( ENOLCK,          "Locking failed" ),
     _e( ENOLINK,         "Reserved" ),
@@ -257,7 +257,7 @@ static const struct utils_error_decl error_decls[] =
     _e( ENOSTR,          "This is not a stream" ),
     _e( ENOSYS,          "Requested function is not implemented" ),
     _e( ENOTCONN,        "Socket is not connected" ),
-    _e( ENOTDIR,         "This is not an directory" ),
+    _e( ENOTDIR,         "This is not a directory" ),
     _e( ENOTEMPTY,       "This directory is not empty" ),
     _e( ENOTSOCK,        "No socket" ),
     _e( ENOTSUP,         "This operation is not supported" ),
@@ -267,9 +267,9 @@ static const struct utils_error_decl error_decls[] =
     _e( EOVERFLOW,       "Value is to long for the datatype" ),
     _e( EPERM,           "Operation is not permitted" ),
     _e( EPIPE,           "Broken pipe" ),
-    _e( EPROTO,          "Protocoll error" ),
-    _e( EPROTONOSUPPORT, "Protocoll is not supported" ),
-    _e( EPROTOTYPE,      "Wrong protocoll type for this socket" ),
+    _e( EPROTO,          "Protocol error" ),
+    _e( EPROTONOSUPPORT, "Protocol is not supported" ),
+    _e( EPROTOTYPE,      "Wrong protocol type for this socket" ),
     _e( ERANGE,          "Value is out of range" ),
     _e( EROFS,           "Filesystem is read only" ),
     _e( ESPIPE,          "This seek is not allowed" ),
@@ -277,7 +277,7 @@ static const struct utils_error_decl error_decls[] =
     _e( ESTALE,          "Reserved" ),
     _e( ETIME,           "Timout in file stream or IOCTL" ),
     _e( ETIMEDOUT,       "Connection timed out" ),
-    _e( ETXTBSY,         "File couldn't be executed while it is opened" ),
+    _e( ETXTBSY,         "File could not be executed while it is opened" ),
     _e( EWOULDBLOCK,     "Operation would be blocking" ),
     _e( EXDEV,           "Invalid link between devices" ),
 
