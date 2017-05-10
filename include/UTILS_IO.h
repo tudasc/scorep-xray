@@ -59,8 +59,8 @@ UTILS_DoesFileExist( const char* filename );
    information. If not, it searches the directories in the PATH environment
    variable.
    @param exe    The executable name as given to argv[0].
-   @returns The path to the executable without the executable name itselfs and
-            trailing slash. If no path was found, NULL is retured.
+   @returns The path to the executable without the executable name itself and
+            trailing slash. If no path was found, NULL is returned.
  */
 #define UTILS_GetExecutablePath PACKAGE_MANGLE_NAME( UTILS_GetExecutablePath )
 char*
@@ -111,7 +111,7 @@ UTILS_IO_GetWithoutPath( const char* path );
  * preceding pathes. Thus the final representation of the path is minimized. Furthermore,
  * /./ sequences are cut out.
  * If the original path contained at least one slash, this functions will prepend
- * a ./ if the simplified path has no nore slashes. This maintains the information
+ * a ./ if the simplified path has no more slashes. This maintains the information
  * whether the sting was a simple file name or given as a path.
  * @param path the path that is simplified. The simplified path is stored in the same
  *        location. It must not be a pointer to a constant in the program segment.

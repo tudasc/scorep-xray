@@ -104,7 +104,7 @@ UTILS_BEGIN_C_DECLS
 #define UTILS_NOT_YET_IMPLEMENTED() UTILS_WARN_ONCE( "Not yet implemented" )
 
 /**
- * Use this to print a deprecation message once on wirst usage of the deprecated
+ * Use this to print a deprecation message once on first usage of the deprecated
  * entity.
  */
 #define UTILS_DEPRECATED( ... ) \

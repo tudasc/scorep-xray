@@ -47,7 +47,7 @@
 #include <UTILS_Error.h>
 
 /*
- * The angle brackets need to tighly enclose the header name, else
+ * The angle brackets need to tightly enclose the header name, else
  * the additional spaces are taken into account for the file name
  */
 /* *INDENT-OFF* */

@@ -227,7 +227,7 @@ enum
 
 
 /**
- * Use this to hide code, especialy variables, which are only accessed in
+ * Use this to hide code, especially variables, which are only accessed in
  * debug mode.
  *
  * @note You should not use a ';' after this statement. But ... needs to be a
