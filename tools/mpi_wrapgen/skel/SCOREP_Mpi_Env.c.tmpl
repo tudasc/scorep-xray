@@ -16,6 +16,11 @@
 #include <SCOREP_Events.h>
 
 
+#if !defined( SCOREP_MPI_NO_HOOKS )
+#include "scorep_mpi_oa_profile.h"
+#endif
+
+
 /**
  * Flag set if the measurement system was already opened by another adapter.
  * If the measurement system is not already initialized, it is assumed that
@@ -30,6 +35,16 @@ static int scorep_mpi_parallel_entered = 0;
  * return the proper value if it calls MPI_Finalized afterwards.
  */
 static bool mpi_finalize_called = false;
+
+/**
+ * Issue an 'undefined reference' link error in libscorep_adapter_mpi_mgmt if
+ * no symbols from SCOREP_Mpi_Env.o were linked due to missing corresponding
+ * MPI symbols in the application.
+ */
+void
+scorep_hint_No_MPI_startup_symbols_found_in_application( void )
+{
+}
 
 /**
  * @name C wrappers

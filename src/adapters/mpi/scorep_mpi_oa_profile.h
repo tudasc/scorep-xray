@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -64,21 +64,6 @@ typedef struct scorep_wait_state_tracking_struct
 
 extern int scorep_mpiprofiling_myrank;
 
-/**
- * @internal
- * Structure to hold the \a MPI_COMM_WORLD duplication used in mpi profiling.
- */
-typedef struct scorep_mpiprofile_world_comm_dup_struct
-{
-    MPI_Group group;                            /** Associated MPI group */
-    MPI_Comm  comm;
-} scorep_mpiprofile_world_comm_dup;
-
-/**
- * Contains the data of the MPI_COMM_WORLD definition.
- */
-extern scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
-
 int
 scorep_mpiprofile_get_timepack_from_pool( void** free_buffer,
                                           int*   index );
@@ -107,9 +92,6 @@ int
 scorep_mpiprofiling_rank_to_pe( int      rank,
                                 MPI_Comm comm,
                                 int*     global_rank );
-
-void
-scorep_mpiprofile_init( void );
 
 void
 scorep_mpiprofile_init_metrics( void );

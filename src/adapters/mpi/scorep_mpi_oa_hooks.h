@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -46,13 +46,6 @@
 
 #include <SCOREP_Types.h>
 #include "scorep_mpi_request.h"
-
-void
-scorep_mpiprofile_init( void );
-
-void
-scorep_mpiprofile_finalize( void );
-
 
 /*----------------------------------------------
  * 1x1 pre- and post- communication hooks
@@ -433,17 +426,17 @@ SCOREP_Hooks_Post_MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf,
                               int                         return_val );
 
 void
-SCOREP_Hooks_Post_MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf,
-                                 SCOREP_MPI_CONST_DECL int sendcounts[],
-                                 SCOREP_MPI_CONST_DECL int sdispls[],
+SCOREP_Hooks_Post_MPI_Alltoallw( SCOREP_MPI_CONST_DECL void*        sendbuf,
+                                 SCOREP_MPI_CONST_DECL int          sendcounts[],
+                                 SCOREP_MPI_CONST_DECL int          sdispls[],
                                  SCOREP_MPI_CONST_DECL MPI_Datatype sendtypes[],
-                                 void* recvbuf,
-                                 SCOREP_MPI_CONST_DECL int recvcounts[],
-                                 SCOREP_MPI_CONST_DECL int rdispls[],
+                                 void*                              recvbuf,
+                                 SCOREP_MPI_CONST_DECL int          recvcounts[],
+                                 SCOREP_MPI_CONST_DECL int          rdispls[],
                                  SCOREP_MPI_CONST_DECL MPI_Datatype recvtypes[],
-                                 MPI_Comm comm,
-                                 uint64_t start_time_stamp,
-                                 int return_val );
+                                 MPI_Comm                           comm,
+                                 uint64_t                           start_time_stamp,
+                                 int                                return_val );
 
 void
 SCOREP_Hooks_Post_MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf,

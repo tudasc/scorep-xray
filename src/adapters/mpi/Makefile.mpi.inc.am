@@ -41,7 +41,9 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.c \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.h \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h               \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.c   \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.h
 nodist_EXTRA_libscorep_adapter_mpi_mgmt_la_SOURCES = force_link_with_F77LD.f
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \

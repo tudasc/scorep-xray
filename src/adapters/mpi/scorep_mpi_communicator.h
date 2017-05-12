@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -65,14 +65,6 @@
  */
 #define SCOREP_INVALID_MPI_GROUP SCOREP_INVALID_GROUP
 
-/**
- * @internal
- * @brief Initialize communicator management.
- * Allocation and initialization of internal data structures. Registration of
- * MPI_COMM_WORLD.
- */
-extern void
-scorep_mpi_comm_init( void );
 
 /**
  *  @internal
@@ -154,15 +146,6 @@ scorep_mpi_winacc_get_gid( MPI_Win          win,
 
 #endif
 
-/**
- * @internal
- * @brief Start tracking of a given MPI communicator.
- * makes the definition of the given communicator to the measurement system.
- * @param comm MPI communicator handle.
- */
-extern void
-scorep_mpi_comm_create( MPI_Comm comm,
-                        MPI_Comm parent_comm );
 
 /**
  * @internal
@@ -172,15 +155,6 @@ scorep_mpi_comm_create( MPI_Comm comm,
  */
 extern void
 scorep_mpi_comm_free( MPI_Comm comm );
-
-/**
- * @internal
- * @brief  Retrieves the internal SCOREP handle of a given MPI communicator.
- * @param  comm MPI communicator
- * @return Internal SCOREP handle of MPI communicator %comm
- */
-extern SCOREP_InterimCommunicatorHandle
-scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
  * @internal
@@ -194,17 +168,5 @@ scorep_mpi_comm_set_name( MPI_Comm    comm,
 
 extern void
 scorep_mpi_comm_set_default_names( void );
-
-/**
- * @def SCOREP_MPI_COMM_WORLD_HANDLE
- * The SCOREP communicator handle for MPI_COMM_WORLD.
- */
-#define SCOREP_MPI_COMM_WORLD_HANDLE scorep_mpi_world.handle
-
-/**
- * @def SCOREP_MPI_COMM_HANDLE
- * Translates a MPI communicator to the SCOREP communicator handle
- */
-#define SCOREP_MPI_COMM_HANDLE( c ) ( ( c ) == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) )
 
 #endif /* SCOREP_MPI_COMMUNICATOR_H */

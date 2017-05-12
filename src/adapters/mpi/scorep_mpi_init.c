@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,6 +49,9 @@
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request.h"
+#if !defined( SCOREP_MPI_NO_HOOKS )
+#include "scorep_mpi_oa_profile_mgmt.h"
+#endif // !defined( SCOREP_MPI_NO_HOOKS )
 
 #include <stdlib.h>
 
@@ -194,6 +197,13 @@ static SCOREP_ErrorCode
 mpi_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
+
+    /* Communicate via an undefined reference link error that the
+     * application is not a MPI application. */
+    extern void
+    scorep_hint_No_MPI_startup_symbols_found_in_application( void );
+
+    scorep_hint_No_MPI_startup_symbols_found_in_application();
 
     mpi_subsystem_id = subsystem_id;
 

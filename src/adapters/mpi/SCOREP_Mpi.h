@@ -116,18 +116,6 @@ extern bool scorep_mpi_hooks_on;
 extern int scorep_mpi_status_size;
 
 /**
- * Intialize MPI Profiling module
- */
-extern void
-scorep_mpiprofile_init( void );
-
-/**
- * Reinitialize MPI profiling metrics
- */
-extern void
-scorep_mpiprofile_reinit_metrics( void );
-
-/**
  * Flag which indicates whether event generation is turned on/off.
  */
 extern bool scorep_mpi_generate_events;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2016,
@@ -113,6 +113,89 @@ typedef struct scorep_mpi_comm_definition_payload
  * Contains the data of the MPI_COMM_WORLD definition.
  */
 extern struct scorep_mpi_world_type scorep_mpi_world;
+
+/**
+ *  @internal
+ * structure for communicator tracking
+ */
+struct scorep_mpi_communicator_type
+{
+    MPI_Comm                         comm; /**< MPI Communicator handle */
+    SCOREP_InterimCommunicatorHandle cid;  /**< Internal SCOREP Communicator handle */
+};
+
+/**
+ * @internal
+ * structure for group tracking
+ */
+struct scorep_mpi_group_type
+{
+    MPI_Group              group;  /**< MPI group handle */
+    SCOREP_Mpi_GroupHandle gid;    /**< Internal SCOREP group handle */
+    int32_t                refcnt; /**< Number of references to this group */
+};
+
+extern uint64_t scorep_mpi_max_communicators;
+/**
+ *  @def SCOREP_MPI_MAX_COMM
+ *  @internal
+ *  Maximum amount of concurrently defined communicators per process.
+ */
+#define SCOREP_MPI_MAX_COMM    scorep_mpi_max_communicators
+
+extern uint64_t scorep_mpi_max_groups;
+/**
+ *  @def SCOREP_MPI_MAX_GROUP
+ *  @internal
+ *  Maximum amount of concurrently defined groups per process.
+ */
+#define SCOREP_MPI_MAX_GROUP   scorep_mpi_max_groups
+
+/**
+ * @def SCOREP_MPI_COMM_WORLD_HANDLE
+ * The SCOREP communicator handle for MPI_COMM_WORLD.
+ */
+#define SCOREP_MPI_COMM_WORLD_HANDLE scorep_mpi_world.handle
+
+/**
+ * @def SCOREP_MPI_COMM_HANDLE
+ * Translates a MPI communicator to the SCOREP communicator handle
+ */
+#define SCOREP_MPI_COMM_HANDLE( c ) ( ( c ) == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) )
+
+extern int32_t scorep_mpi_last_comm;
+
+extern struct scorep_mpi_group_type* scorep_mpi_groups;
+
+extern struct scorep_mpi_communicator_type* scorep_mpi_comms;
+
+/**
+ * @internal
+ * @brief Initialize communicator management.
+ * Allocation and initialization of internal data structures. Registration of
+ * MPI_COMM_WORLD.
+ */
+extern void
+scorep_mpi_comm_init( void );
+
+/**
+ * @internal
+ * @brief Start tracking of a given MPI communicator.
+ * makes the definition of the given communicator to the measurement system.
+ * @param comm MPI communicator handle.
+ */
+extern void
+scorep_mpi_comm_create( MPI_Comm comm,
+                        MPI_Comm parent_comm );
+
+/**
+ * @internal
+ * @brief  Retrieves the internal SCOREP handle of a given MPI communicator.
+ * @param  comm MPI communicator
+ * @return Internal SCOREP handle of MPI communicator %comm
+ */
+extern SCOREP_InterimCommunicatorHandle
+scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
  * Initializes the window handling specific data structures.

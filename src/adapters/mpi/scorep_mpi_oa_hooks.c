@@ -44,6 +44,7 @@
 #define SCOREP_DEBUG_MODULE_NAME MPIPROFILING
 #include <UTILS_Debug.h>
 #include "scorep_mpi_oa_profile.h"
+#include "scorep_mpi_oa_profile_mgmt.h"
 
 #include <stdlib.h>
 #include <stdio.h>

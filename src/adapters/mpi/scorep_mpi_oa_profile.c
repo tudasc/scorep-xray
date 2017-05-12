@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014
+ * Copyright (c) 2009-2011, 2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -40,6 +40,7 @@
 
 #include <config.h>
 #include "scorep_mpi_oa_profile.h"
+#include "scorep_mpi_oa_profile_mgmt.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -57,9 +58,6 @@
 
 
 static int64_t scorep_mpiprofiling_lateThreshold;
-int            scorep_mpiprofiling_myrank;
-static int     scorep_mpiprofiling_numprocs;
-static int     scorep_mpiprofiling_initialized         = 0;
 static int     scorep_mpiprofiling_metrics_initialized = 0;
 
 static void* scorep_mpiprofiling_remote_time_packs;
@@ -76,8 +74,6 @@ static int          scorep_mpiprofiling_timepack_pool_size = 0;
 #define POOL_INITIAL_SIZE       5
 #define POOL_SIZE_INCREMENT             2
 
-
-scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
 SCOREP_SamplingSetHandle scorep_mpiprofiling_lateSend = SCOREP_INVALID_METRIC;
 SCOREP_SamplingSetHandle scorep_mpiprofiling_lateRecv = SCOREP_INVALID_METRIC;
@@ -105,51 +101,6 @@ static void
 mpiprofiling_set_late_threshold( int64_t newThreshold )
 {
     scorep_mpiprofiling_lateThreshold = newThreshold;
-}
-
-/**
- * Initializes MPI profiling module
- */
-void
-scorep_mpiprofile_init( void )
-{
-    if ( scorep_mpiprofiling_initialized )
-    {
-        return;
-    }
-    UTILS_DEBUG_ENTRY();
-    /* -- duplicate MPI_COMM_WORLD to be used for mpi profiling messages -- */
-    if ( PMPI_Comm_dup( MPI_COMM_WORLD, &( scorep_mpiprofiling_world_comm_dup.comm ) ) != MPI_SUCCESS )
-    {
-        UTILS_DEBUG( "Could not duplicate MPI_COMM_WORLD" );
-        return;
-    }
-    if ( PMPI_Comm_group( scorep_mpiprofiling_world_comm_dup.comm, &( scorep_mpiprofiling_world_comm_dup.group ) ) != MPI_SUCCESS )
-    {
-        UTILS_DEBUG( "Could not get the group of the MPI_COMM_WORLD duplicate" );
-        return;
-    }
-
-    PMPI_Comm_size( scorep_mpiprofiling_world_comm_dup.comm, &scorep_mpiprofiling_numprocs );
-    PMPI_Comm_rank( scorep_mpiprofiling_world_comm_dup.comm, &scorep_mpiprofiling_myrank );
-    UTILS_DEBUG( "myrank = %d, numprocs = %d", scorep_mpiprofiling_myrank, scorep_mpiprofiling_numprocs );
-
-    /* -- allocate timepack buffers -- */
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
-    scorep_mpiprofiling_local_time_pack   = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
-    scorep_mpiprofiling_remote_time_pack  = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
-    scorep_mpiprofiling_remote_time_packs = malloc( scorep_mpiprofiling_numprocs * MPIPROFILER_TIMEPACK_BUFSIZE );
-    if ( scorep_mpiprofiling_remote_time_packs == NULL
-         || scorep_mpiprofiling_local_time_pack == NULL
-         || scorep_mpiprofiling_remote_time_pack == NULL )
-    {
-        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                     "We have UTILS_FATAL() to abort!" );
-        abort();
-    }
-    #endif
-
-    scorep_mpiprofiling_initialized = 1;
 }
 
 void
