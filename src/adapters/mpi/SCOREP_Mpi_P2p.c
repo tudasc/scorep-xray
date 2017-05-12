@@ -60,6 +60,7 @@
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include "scorep_mpi_request.h"
 #include <UTILS_Error.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>

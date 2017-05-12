@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -39,6 +39,7 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
+#include <mpi.h>
 
 typedef enum scorep_mpi_request_type
 {

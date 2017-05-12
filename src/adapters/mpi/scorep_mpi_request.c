@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -36,6 +36,7 @@
 
 #include <config.h>
 
+#include "scorep_mpi_request.h"
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <SCOREP_Events.h>
