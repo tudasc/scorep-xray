@@ -203,7 +203,17 @@ scorep_tracing_chunk_allocate( void*         userData,
     {
         /* This manager has a pre-allocated page, which is much smaller
            than the chunksize, which is wasted now */
-        *perBufferData = SCOREP_Memory_CreateTracingPageManager();
+        if ( OTF2_FILETYPE_EVENTS == fileType )
+        {
+            // take the pre-allocated one from the current location
+            *perBufferData = SCOREP_Location_GetMemoryPageManager(
+                SCOREP_Location_GetCurrentCPULocation(),
+                SCOREP_MEMORY_TYPE_TRACING_EVENTS );
+        }
+        else
+        {
+            *perBufferData = SCOREP_Memory_CreateTracingPageManager();
+        }
     }
 
     void* chunk = SCOREP_Allocator_Alloc( *perBufferData, chunkSize );
@@ -240,8 +250,11 @@ scorep_tracing_chunk_free_all( void*         userData,
 
     if ( final )
     {
-        /* drop also the page manager */
-        SCOREP_Allocator_DeletePageManager( *perBufferData );
+        if ( OTF2_FILETYPE_EVENTS != fileType )
+        {
+            /* drop also the page manager */
+            SCOREP_Allocator_DeletePageManager( *perBufferData );
+        }
     }
 }
 

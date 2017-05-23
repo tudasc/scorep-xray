@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011, 2014, 2016,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011, 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license. See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -55,7 +69,7 @@ allocator_test_1( CuTest* tc )
     uint32_t page_size = 2048;                    // page_size > total_mem
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrEquals( tc, 0, allocator );
 }
 
@@ -67,7 +81,7 @@ allocator_test_2( CuTest* tc )
     uint32_t page_size = 1024;
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrEquals( tc, 0, allocator );
 
     SCOREP_Allocator_DeleteAllocator( allocator );
@@ -81,7 +95,7 @@ allocator_test_3( CuTest* tc )
     uint32_t page_size = 0;                    // no pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrEquals( tc, 0, allocator );
 }
 
@@ -93,7 +107,7 @@ allocator_test_4( CuTest* tc )
     uint32_t page_size = 0;                    // invalid page size
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrEquals( tc, 0, allocator );
 }
 
@@ -105,7 +119,7 @@ allocator_test_5( CuTest* tc )
     uint32_t page_size = 512;                    // 2048 pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_DeleteAllocator( allocator );
@@ -119,7 +133,7 @@ allocator_test_6( CuTest* tc )
     uint32_t page_size = 511;                    // 2052.0078 pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_DeleteAllocator( allocator );
@@ -133,7 +147,7 @@ allocator_test_7( CuTest* tc )
     uint32_t page_size = 1024;                    // two page
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -152,7 +166,7 @@ allocator_test_8( CuTest* tc )
     uint32_t page_size =  512;                    // two page
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -178,47 +192,13 @@ allocator_test_8( CuTest* tc )
 
 
 void
-allocator_test_9( CuTest* tc )
-{
-    uint32_t total_mem = 2048;
-    uint32_t page_size = 1024;                    // two page
-
-    SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
-    CuAssertPtrNotNull( tc, allocator );
-
-    SCOREP_Allocator_Page* page_1 = SCOREP_Allocator_AcquirePage( allocator );
-    CuAssertPtrNotNull( tc, page_1 );
-
-    SCOREP_Allocator_Page* page_2 = SCOREP_Allocator_AcquirePage( allocator );
-    CuAssert( tc, "cannot fetch initial page as there is just one",
-              page_2 == 0 );
-
-    SCOREP_Allocator_ReleasePage( page_1 );
-
-    page_2 = SCOREP_Allocator_AcquirePage( allocator );
-    CuAssertPtrNotNull( tc, page_2 );
-
-    void* begin = SCOREP_Allocator_GetStartAddressFromPage( page_2 );
-    void* end   = SCOREP_Allocator_GetEndAddressFromPage( page_2 );
-
-    CuAssert( tc, "end-begin != page_size",
-              ( ptrdiff_t )end - ( ptrdiff_t )begin == page_size );
-
-    SCOREP_Allocator_ReleasePage( page_2 );
-
-    SCOREP_Allocator_DeleteAllocator( allocator );
-}
-
-
-void
 allocator_test_10( CuTest* tc )
 {
     uint32_t total_mem = 1536;
     uint32_t page_size = 512;                    // three pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -272,7 +252,7 @@ allocator_test_11( CuTest* tc )
     uint32_t page_size = 512;                    // two pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -302,7 +282,7 @@ allocator_test_12( CuTest* tc )
     uint32_t page_size = 512;                    // two pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -326,7 +306,7 @@ allocator_test_13( CuTest* tc )
     uint32_t page_size = 512;                    // two pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -414,7 +394,7 @@ allocator_test_14( CuTest* tc )
 
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager
@@ -543,172 +523,16 @@ allocator_test_14( CuTest* tc )
 
 
 void
-allocator_test_15( CuTest* tc )
-{
-    uint32_t total_mem = 4096;
-    uint32_t page_size = 1024; // four pages
-
-    /* the remote page manager, will be 'moved' */
-
-    SCOREP_Allocator_Allocator* remote_allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
-    CuAssertPtrNotNull( tc, remote_allocator );
-
-    /*
-     * pop some pages before creating the page manager, so we don't get the
-     * first page
-     */
-    SCOREP_Allocator_Page* page_1
-        = SCOREP_Allocator_AcquirePage( remote_allocator );
-    SCOREP_Allocator_Page* page_2
-        = SCOREP_Allocator_AcquirePage( remote_allocator );
-
-
-    SCOREP_Allocator_PageManager* remote_page_manager
-        = SCOREP_Allocator_CreatePageManager( remote_allocator );
-    CuAssertPtrNotNull( tc, remote_page_manager );
-
-    /* put back the unused pages */
-    SCOREP_Allocator_ReleasePage( page_1 );
-    SCOREP_Allocator_ReleasePage( page_2 );
-
-    /* force a non-zero offset in the movable */
-    SCOREP_Allocator_AllocMovable( remote_page_manager, 512 );
-    SCOREP_Allocator_MovableMemory the_movable
-        = SCOREP_Allocator_AllocMovable( remote_page_manager, sizeof( int ) );
-    CuAssert( tc, "check movable pointer", the_movable != 0 );
-
-
-    int* int_memory
-        = SCOREP_Allocator_GetAddressFromMovableMemory( remote_page_manager,
-                                                        the_movable );
-    CuAssertPtrNotNull( tc, int_memory );
-
-    *int_memory = 42;
-
-    /* prepare the remote for moving */
-    uint32_t number_of_used_pages
-        = SCOREP_Allocator_GetNumberOfUsedPages( remote_page_manager );
-    CuAssertIntEquals( tc, 1, number_of_used_pages );
-
-    uint32_t moved_page_ids[ 1 ];
-    uint32_t moved_page_usages[ 1 ];
-    void*    moved_page_starts[ 1 ];
-    SCOREP_Allocator_GetPageInfos( remote_page_manager,
-                                   moved_page_ids,
-                                   moved_page_usages,
-                                   moved_page_starts );
-    CuAssert( tc, "page id is not 0", moved_page_ids[ 0 ] != 0 );
-    CuAssert( tc, "usage is non-zero",
-              moved_page_usages[ 0 ] >= ( 512 + sizeof( int ) ) );
-    CuAssertPtrNotNull( tc, moved_page_starts[ 0 ] );
-
-    /*
-     * Now transfer number_of_used_pages, moved_page_ids, and moved_page_usages
-     * to the receiving partner
-     */
-
-    /* the local page manager */
-
-    SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
-    CuAssertPtrNotNull( tc, allocator );
-
-    SCOREP_Allocator_PageManager* moved_page_manager
-        = SCOREP_Allocator_CreateMovedPageManager( allocator );
-    CuAssertPtrNotNull( tc, moved_page_manager );
-
-    /* For each page in {moved_page_ids[ i ],moved_page_usages[ i ]} do */
-    {
-        /* Get memory to hold the moved page */
-        void* moved_memory
-            = SCOREP_Allocator_AllocMovedPage( moved_page_manager,
-                                               moved_page_ids[ 0 ],
-                                               moved_page_usages[ 0 ] );
-        CuAssertPtrNotNull( tc, moved_memory );
-
-        /*
-         * Now copy the page, moved_page_starts[ 0 ] should be used in MPI_Send
-         * and moved_memory in MPI_Recv.
-         *
-         * We get here invalid reads from the source in valgrind,
-         * because of the padding between allocs.
-         */
-        memcpy( moved_memory, moved_page_starts[ 0 ], moved_page_usages[ 0 ] );
-    }
-    /* For each end */
-
-    /* finally transfer the the_movable */
-
-    int_memory = SCOREP_Allocator_GetAddressFromMovableMemory( moved_page_manager,
-                                                               the_movable );
-    CuAssertPtrNotNull( tc, int_memory );
-    CuAssertIntEquals( tc, 42, *int_memory );
-
-    SCOREP_Allocator_DeletePageManager( moved_page_manager );
-    SCOREP_Allocator_DeleteAllocator( allocator );
-    SCOREP_Allocator_DeletePageManager( remote_page_manager );
-    SCOREP_Allocator_DeleteAllocator( remote_allocator );
-}
-
-
-void
-allocator_test_16( CuTest* tc )
-{
-    uint32_t total_mem = 1024;
-    uint32_t page_size = 512; // two pages
-    struct obj
-    {
-        uint32_t foo;
-        void*    bar;
-        uint8_t  baz;
-    }* obj_1, * obj_2;
-
-
-    SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
-    CuAssertPtrNotNull( tc, allocator );
-
-    SCOREP_Allocator_ObjectManager* object_manager
-        = SCOREP_Allocator_CreateObjectManager( allocator,
-                                                sizeof( struct obj ) );
-    CuAssertPtrNotNull( tc, object_manager );
-
-    obj_1 = SCOREP_Allocator_GetObject( object_manager );
-    CuAssertPtrNotNull( tc, obj_1 );
-
-    obj_1->foo = __LINE__;
-    obj_1->bar = allocator;
-    obj_1->baz = 23;
-
-    obj_2 = SCOREP_Allocator_GetObject( object_manager );
-    CuAssertPtrNotNull( tc, obj_2 );
-
-    obj_2->foo = __LINE__;
-    obj_2->bar = object_manager;
-    obj_2->baz = 42;
-
-    CuAssertPtrEquals( tc, allocator, obj_1->bar );
-
-    SCOREP_Allocator_PutObject( object_manager, obj_1 );
-    SCOREP_Allocator_PutObject( object_manager, obj_2 );
-
-    SCOREP_Allocator_DeleteObjectManager( object_manager );
-
-    SCOREP_Allocator_DeleteAllocator( allocator );
-}
-
-
-void
 allocator_test_17( CuTest* tc )
 {
-    uint64_t total_mem = UINT64_MAX;
-    uint32_t page_size = 8; // too many pages to fit into 32bit
+    uint32_t total_mem = UINT32_MAX;
+    uint32_t page_size = 256; // min page size 512,
+                              // from 257 till 512 page_size is rounded to 512
 
     if ( sizeof( size_t ) == sizeof( uint64_t ) )
     {
         SCOREP_Allocator_Allocator* allocator
-            = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+            = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
 
         CuAssertPtrEquals( tc, 0, allocator );
     }
@@ -722,7 +546,7 @@ allocator_test_18( CuTest* tc )
     uint32_t page_size = 512;                    // twenty pages
 
     SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
 
     SCOREP_Allocator_PageManager* page_manager_1
@@ -772,8 +596,6 @@ main()
                          "create page manager" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_8,
                          "two page manager competing for one page" );
-    SUITE_ADD_TEST_NAME( suite, allocator_test_9,
-                         "acquire pages" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_10,
                          "alignment" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_11,
@@ -788,12 +610,8 @@ main()
 #endif // HAVE( SCOREP_VALGRIND )
     SUITE_ADD_TEST_NAME( suite, allocator_test_14,
                          "page infos" );
-    SUITE_ADD_TEST_NAME( suite, allocator_test_15,
-                         "move page manager" );
-    SUITE_ADD_TEST_NAME( suite, allocator_test_16,
-                         "object manager" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_17,
-                         "too many pages" );
+                         "min page size 512" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_18,
                          "big pages" );
 

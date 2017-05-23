@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -47,7 +47,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SCOREP_DEBUG_MODULE_NAME ALLOCATOR
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include "scorep_bitset.h"
 #include "scorep_page.h"
@@ -129,36 +131,101 @@ page_bitset( SCOREP_Allocator_Allocator* allocator )
 }
 
 
+static inline void
+track_update_high_watermark( SCOREP_Allocator_Allocator* allocator )
+{
+    if ( allocator->n_pages_allocated > allocator->n_pages_high_watermark )
+    {
+        allocator->n_pages_high_watermark = allocator->n_pages_allocated;
+    }
+}
+
+static inline void
+track_bitset_set_range( SCOREP_Allocator_Allocator* allocator,
+                        uint32_t                    offset,
+                        uint32_t                    length )
+{
+    bitset_set_range( page_bitset( allocator ), allocator->n_pages_capacity, offset, length );
+    allocator->n_pages_allocated += length;
+    track_update_high_watermark( allocator );
+}
+
+static inline void
+track_bitset_clear( SCOREP_Allocator_Allocator* allocator, uint32_t pos )
+{
+    bitset_clear( page_bitset( allocator ), allocator->n_pages_capacity, pos );
+    allocator->n_pages_allocated--;
+}
+
+static inline void
+track_bitset_clear_range( SCOREP_Allocator_Allocator* allocator,
+                          uint32_t                    offset,
+                          uint32_t                    length )
+{
+    bitset_clear_range( page_bitset( allocator ), allocator->n_pages_capacity, offset, length );
+    allocator->n_pages_allocated -= length;
+}
+
+static inline uint32_t
+track_bitset_find_and_set( SCOREP_Allocator_Allocator* allocator )
+{
+    allocator->n_pages_allocated++;  /* increment even if there is no new page */
+    track_update_high_watermark( allocator );
+    return bitset_find_and_set( page_bitset( allocator ), allocator->n_pages_capacity );
+}
+
+static inline uint32_t
+track_bitset_find_and_set_range( SCOREP_Allocator_Allocator* allocator,
+                                 uint32_t                    rangeLength )
+{
+    allocator->n_pages_allocated += rangeLength;
+    track_update_high_watermark( allocator );
+    return bitset_find_and_set_range( page_bitset( allocator ), allocator->n_pages_capacity, rangeLength );
+}
+
+
+static inline void
+fill_with_union_objects( uint32_t freeMemory, char* startAddr, SCOREP_Allocator_Allocator* allocator )
+{
+    while ( freeMemory > union_size() )
+    {
+        SCOREP_Allocator_Object* object = ( SCOREP_Allocator_Object* )startAddr;
+        object->next            = allocator->free_objects;
+        allocator->free_objects = object;
+        startAddr              += union_size();
+        freeMemory             -= union_size();
+    }
+}
+
+
 /*
  * Caller needs to hold the allocator lock.
  */
 static void*
 get_union_object( SCOREP_Allocator_Allocator* allocator )
 {
+    UTILS_DEBUG_ENTRY();
     if ( !allocator->free_objects )
     {
-        uint32_t page_id = bitset_find_and_set( page_bitset( allocator ),
-                                                allocator->n_pages );
-        if ( page_id >= allocator->n_pages )
+        /* try to get a new maintenance page */
+        uint32_t page_id = track_bitset_find_and_set( allocator );
+        if ( page_id >= allocator->n_pages_capacity )
         {
+            UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
             return NULL;
         }
-        char*    start       = ( char* )allocator + ( page_id << allocator->page_shift );
+        char*    start_addr  = ( char* )allocator + ( page_id << allocator->page_shift );
         uint32_t free_memory = page_size( allocator );
-        while ( free_memory > union_size() )
-        {
-            SCOREP_Allocator_Object* object = ( SCOREP_Allocator_Object* )start;
-            object->next            = allocator->free_objects;
-            allocator->free_objects = object;
-            start                  += union_size();
-            free_memory            -= union_size();
-        }
+        fill_with_union_objects( free_memory, start_addr, allocator );
+        allocator->n_pages_maintenance++;
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "\'allocated\' 1 maintenance page." );
     }
 
     SCOREP_Allocator_Object* object = allocator->free_objects;
     allocator->free_objects = object->next;
     object->next            = NULL;
 
+    UTILS_DEBUG_EXIT();
     return object;
 }
 
@@ -169,9 +236,11 @@ get_union_object( SCOREP_Allocator_Allocator* allocator )
 static void
 put_union_object( SCOREP_Allocator_Allocator* allocator, void* object_ptr )
 {
+    UTILS_DEBUG_ENTRY();
     SCOREP_Allocator_Object* object = object_ptr;
     object->next            = allocator->free_objects;
     allocator->free_objects = object;
+    UTILS_DEBUG_EXIT();
 }
 
 
@@ -184,22 +253,18 @@ put_page( SCOREP_Allocator_Allocator* allocator,
 {
     uint32_t order   = get_page_order( page );
     uint32_t page_id = get_page_id( page );
-
+    UTILS_DEBUG_ENTRY( "release page=%p, order=%" PRIu32 ", page_id=%" PRIu32 "" );
     if ( order == 1 )
     {
-        bitset_clear( page_bitset( allocator ),
-                      allocator->n_pages,
-                      page_id );
+        track_bitset_clear( allocator, page_id );
     }
     else
     {
-        bitset_clear_range( page_bitset( allocator ),
-                            allocator->n_pages,
-                            page_id,
-                            order );
+        track_bitset_clear_range( allocator, page_id, order );
     }
 
     put_union_object( allocator, page );
+    UTILS_DEBUG_EXIT();
 }
 
 
@@ -209,33 +274,34 @@ put_page( SCOREP_Allocator_Allocator* allocator,
 static SCOREP_Allocator_Page*
 get_page( SCOREP_Allocator_Allocator* allocator, uint32_t order )
 {
+    UTILS_DEBUG_ENTRY();
     uint32_t page_id;
 
     SCOREP_Allocator_Page* page = get_union_object( allocator );
     if ( !page )
     {
+        UTILS_DEBUG_EXIT( "out-of-memory: no free union_object, order=%" PRIu32 "", order );
         return 0;
     }
 
     if ( order == 1 )
     {
-        page_id = bitset_find_and_set( page_bitset( allocator ),
-                                       allocator->n_pages );
+        page_id = track_bitset_find_and_set( allocator );
     }
     else
     {
-        page_id = bitset_find_and_set_range( page_bitset( allocator ),
-                                             allocator->n_pages,
-                                             order );
+        page_id = track_bitset_find_and_set_range( allocator, order );
     }
 
-    if ( page_id >= allocator->n_pages )
+    if ( page_id >= allocator->n_pages_capacity )
     {
         put_union_object( allocator, page );
+        UTILS_DEBUG_EXIT( "out-of-memory: no free page(s), order=%" PRIu32 "", order );
         return 0;
     }
     init_page( allocator, page, page_id, order );
 
+    UTILS_DEBUG_EXIT( "new page=%p, order=%" PRIu32 ", page_id=%" PRIu32 "", page, order, page_id );
     return page;
 }
 
@@ -245,6 +311,7 @@ page_manager_get_new_page( SCOREP_Allocator_PageManager* pageManager,
                            uint32_t                      min_page_size )
 {
     uint32_t order = get_order( pageManager->allocator, min_page_size );
+    UTILS_DEBUG_ENTRY( "min_page_size=%" PRIu32 " -> order=%" PRIu32 "", min_page_size, order );
 
     lock_allocator( pageManager->allocator );
     SCOREP_Allocator_Page* page = get_page( pageManager->allocator, order );
@@ -254,9 +321,14 @@ page_manager_get_new_page( SCOREP_Allocator_PageManager* pageManager,
     {
         page->next                     = pageManager->pages_in_use_list;
         pageManager->pages_in_use_list = page;
+        UTILS_DEBUG_EXIT( "new page = %p", page );
+        return page;
     }
-
-    return page;
+    else
+    {
+        UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
+        return 0;
+    }
 }
 
 
@@ -281,6 +353,7 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
     /* do not try to allocate more than the allocator has memory */
     if ( requestedSize > total_memory( pageManager->allocator ) )
     {
+        UTILS_DEBUG_EXIT( "out-of-memory: requestedSize > total_memory" );
         return 0;
     }
 
@@ -298,56 +371,19 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
     /* no page found, request new one */
     if ( !page )
     {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "requesting new page ..." );
         page = page_manager_get_new_page( pageManager, requestedSize );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "... got page %p.", page );
     }
 
     /* still no page, out of memory */
     if ( !page )
     {
-        return NULL;
+        UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
+        return 0;
     }
 
     return grab_memory( page, requestedSize );
-}
-
-
-/* put all objects from the page into the free list */
-static void
-slurp_page( SCOREP_Allocator_ObjectManager* objectManager,
-            SCOREP_Allocator_Page*          page )
-{
-    uint32_t number_of_objects_per_page = get_page_length( page )
-                                          / objectManager->object_size;
-
-    for ( uint32_t i = 0;
-          i < number_of_objects_per_page;
-          i++, page->memory_current_address += objectManager->object_size )
-    {
-        void** object = ( void* )page->memory_current_address;
-        *object                  = objectManager->free_list;
-        objectManager->free_list = object;
-    }
-}
-
-
-static void
-object_manager_get_new_page( SCOREP_Allocator_ObjectManager* objectManager )
-{
-    uint32_t order = get_order( objectManager->allocator,
-                                MIN_NUMBER_OF_OBJECTS_PER_PAGE * objectManager->object_size );
-
-    lock_allocator( objectManager->allocator );
-    SCOREP_Allocator_Page* page = get_page( objectManager->allocator, order );
-    unlock_allocator( objectManager->allocator );
-
-    if ( !page )
-    {
-        return;
-    }
-    page->next                       = objectManager->pages_in_use_list;
-    objectManager->pages_in_use_list = page;
-
-    slurp_page( objectManager, page );
 }
 
 
@@ -359,37 +395,38 @@ SCOREP_Allocator_RoundupToAlignment( size_t size )
 
 
 SCOREP_Allocator_Allocator*
-SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
-                                  uint32_t                     pageSize,
+SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
+                                  uint32_t*                    pageSize,
                                   SCOREP_Allocator_Guard       lockFunction,
                                   SCOREP_Allocator_Guard       unlockFunction,
                                   SCOREP_Allocator_GuardObject lockObject )
 {
-    pageSize = npot( pageSize );
+    UTILS_DEBUG_ENTRY();
+    *pageSize = npot( *pageSize );
 
-    if ( totalMemory <= pageSize || totalMemory == 0 || pageSize == 0 )
+    if ( *totalMemory <= *pageSize || *totalMemory == 0 || *pageSize == 0 )
     {
         return 0;
     }
     /* min page size 512? */
-    if ( pageSize / union_size() < MIN_NUMBER_OF_OBJECTS_PER_PAGE )
+    if ( *pageSize / union_size() < MIN_NUMBER_OF_OBJECTS_PER_PAGE )
     {
         return 0;
     }
 
     uint32_t page_shift = 0;
-    while ( pageSize >> ( page_shift + 1 ) )
+    while ( ( *pageSize ) >> ( page_shift + 1 ) )
     {
         page_shift++;
     }
 
-    uint32_t n_pages = totalMemory / pageSize;
+    uint32_t n_pages = ( *totalMemory ) / ( *pageSize );
     /* round the total memory down to a multiple of pageSize */
-    totalMemory = n_pages * pageSize;
+    *totalMemory = n_pages * ( *pageSize );
 
     uint32_t maint_memory_needed = union_size() + bitset_size( n_pages );
-    maint_memory_needed = roundupto( maint_memory_needed, 64 );
-    if ( totalMemory <= maint_memory_needed )
+    maint_memory_needed = roundupto( maint_memory_needed, 64 ); // why 64?
+    if ( ( *totalMemory ) <= maint_memory_needed )
     {
         /* too few memory to hold maintenance stuff */
         return 0;
@@ -410,11 +447,11 @@ SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
                         already_used_pages,
                         ( double )( free_memory_in_last_page / union_size() ) / n_pages );
 
-    /* guaranty at least for .5% of the total number of pages pre-allocated page structs */
+    /* guarantee at least for .5% of the total number of pages pre-allocated page structs */ // why .5% ?
     while ( ( free_memory_in_last_page / union_size() ) < ( n_pages / 200 ) )
     {
         already_used_pages++;
-        free_memory_in_last_page += pageSize;
+        free_memory_in_last_page += ( *pageSize );
     }
     if ( already_used_pages >= n_pages )
     {
@@ -428,14 +465,15 @@ SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
                         already_used_pages,
                         ( double )( free_memory_in_last_page / union_size() ) / n_pages );
 
-    SCOREP_Allocator_Allocator* allocator = calloc( 1, totalMemory );
+    SCOREP_Allocator_Allocator* allocator = calloc( 1, *totalMemory );
     if ( !allocator )
     {
         return 0;
     }
-    allocator->page_shift   = page_shift;
-    allocator->n_pages      = n_pages;
-    allocator->free_objects = NULL;
+    allocator->page_shift          = page_shift;
+    allocator->n_pages_capacity    = n_pages;
+    allocator->n_pages_maintenance = already_used_pages;
+    allocator->free_objects        = NULL;
 
     allocator->lock        = null_guard;
     allocator->unlock      = null_guard;
@@ -447,27 +485,16 @@ SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
         allocator->lock_object = lockObject;
     }
 
-    bitset_mark_invalid( page_bitset( allocator ), allocator->n_pages );
+    bitset_mark_invalid( page_bitset( allocator ), allocator->n_pages_capacity );
 
-    bitset_set_range( page_bitset( allocator ),
-                      allocator->n_pages,
-                      0,
-                      already_used_pages );
+    track_bitset_set_range( allocator, 0, allocator->n_pages_maintenance );
 
-    /*
-     * slurp the reminding memory of the already used pages to have a pool
-     * of pre-allocated union objects
-     */
-    char* start = ( char* )allocator + maint_memory_needed;
-    while ( free_memory_in_last_page >= union_size() )
-    {
-        SCOREP_Allocator_Object* object = ( SCOREP_Allocator_Object* )start;
-        object->next              = allocator->free_objects;
-        allocator->free_objects   = object;
-        start                    += union_size();
-        free_memory_in_last_page -= union_size();
-    }
+    char* start_addr = ( char* )allocator + maint_memory_needed;
+    fill_with_union_objects( free_memory_in_last_page, start_addr, allocator );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "\'allocated\' %" PRIu32 " maintenance page(s).",
+                        allocator->n_pages_maintenance );
 
+    UTILS_DEBUG_EXIT();
     return allocator;
 }
 
@@ -479,6 +506,13 @@ SCOREP_Allocator_DeleteAllocator( SCOREP_Allocator_Allocator* allocator )
 }
 
 
+uint32_t
+SCOREP_Allocator_GetMaxNumberOfPages( const SCOREP_Allocator_Allocator* allocator )
+{
+    return allocator->n_pages_capacity;
+}
+
+
 #define get_page_manager( alloc, pm ) \
     do { \
         assert( alloc ); \
@@ -487,7 +521,7 @@ SCOREP_Allocator_DeleteAllocator( SCOREP_Allocator_Allocator* allocator )
         unlock_allocator( alloc ); \
         if ( !pm ) \
         { \
-            /* Out of memory. */ \
+            UTILS_DEBUG_EXIT( "out-of-memory: no union object" ); \
             return 0; \
         } \
         pm->allocator             = alloc; \
@@ -500,12 +534,14 @@ SCOREP_Allocator_DeleteAllocator( SCOREP_Allocator_Allocator* allocator )
 SCOREP_Allocator_PageManager*
 SCOREP_Allocator_CreatePageManager( SCOREP_Allocator_Allocator* allocator )
 {
+    UTILS_DEBUG_ENTRY();
     SCOREP_Allocator_PageManager* page_manager;
     get_page_manager( allocator, page_manager );
 
     /* may fail, but maybe we have free pages later */
     page_manager_get_new_page( page_manager, page_size( allocator ) );
 
+    UTILS_DEBUG_EXIT();
     return page_manager;
 }
 
@@ -513,12 +549,13 @@ SCOREP_Allocator_CreatePageManager( SCOREP_Allocator_Allocator* allocator )
 SCOREP_Allocator_PageManager*
 SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 {
+    UTILS_DEBUG_ENTRY();
     SCOREP_Allocator_PageManager* page_manager;
     get_page_manager( allocator, page_manager );
 
     uint32_t order = get_order( allocator,
                                 sizeof( *page_manager->moved_page_id_mapping )
-                                * allocator->n_pages );
+                                * allocator->n_pages_capacity );
 
     lock_allocator( allocator );
     SCOREP_Allocator_Page* page = get_page( allocator, order );
@@ -526,13 +563,14 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 
     if ( !page )
     {
-        /* Out of memory. */
+        UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
         return 0;
     }
 
     page_manager->moved_page_id_mapping = ( uint32_t* )page->memory_start_address;
     memset( page_manager->moved_page_id_mapping, 0, order << allocator->page_shift );
 
+    UTILS_DEBUG_EXIT();
     return page_manager;
 }
 
@@ -543,6 +581,7 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 void
 SCOREP_Allocator_DeletePageManager( SCOREP_Allocator_PageManager* pageManager )
 {
+    UTILS_DEBUG_ENTRY();
     assert( pageManager );
     SCOREP_Allocator_Allocator* allocator = pageManager->allocator;
 
@@ -562,25 +601,21 @@ SCOREP_Allocator_DeletePageManager( SCOREP_Allocator_PageManager* pageManager )
         uint32_t page_id = offset >> allocator->page_shift;
         uint32_t order   = get_order( allocator,
                                       sizeof( *pageManager->moved_page_id_mapping )
-                                      * allocator->n_pages );
+                                      * allocator->n_pages_capacity );
         if ( order == 1 )
         {
-            bitset_clear( page_bitset( allocator ),
-                          allocator->n_pages,
-                          page_id );
+            track_bitset_clear( allocator, page_id );
         }
         else
         {
-            bitset_clear_range( page_bitset( allocator ),
-                                allocator->n_pages,
-                                page_id,
-                                order );
+            track_bitset_clear_range( allocator, page_id, order );
         }
     }
 
     put_union_object( allocator, pageManager );
 
     unlock_allocator( allocator );
+    UTILS_DEBUG_EXIT();
 }
 
 
@@ -595,6 +630,7 @@ SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
 void
 SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager )
 {
+    UTILS_DEBUG_ENTRY();
     assert( pageManager );
     assert( pageManager->allocator );
 
@@ -612,10 +648,11 @@ SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager )
         memset( pageManager->moved_page_id_mapping,
                 0,
                 sizeof( *pageManager->moved_page_id_mapping )
-                * pageManager->allocator->n_pages );
+                * pageManager->allocator->n_pages_capacity );
     }
 
     pageManager->last_allocation = 0;
+    UTILS_DEBUG_EXIT();
 }
 
 
@@ -627,6 +664,7 @@ SCOREP_Allocator_AllocMovable( SCOREP_Allocator_PageManager* pageManager,
     void* memory = page_manager_alloc( pageManager, memorySize );
     if ( !memory )
     {
+        UTILS_DEBUG_EXIT( "out-of-memory" );
         return 0;
     }
 
@@ -640,16 +678,18 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
                                  uint32_t                      moved_page_id,
                                  uint32_t                      page_usage )
 {
+    UTILS_DEBUG_ENTRY();
     assert( movedPageManager );
     assert( movedPageManager->moved_page_id_mapping != 0 );
     assert( moved_page_id != 0 );
-    assert( moved_page_id < movedPageManager->allocator->n_pages );
+    assert( moved_page_id < movedPageManager->allocator->n_pages_capacity );
     assert( movedPageManager->moved_page_id_mapping[ moved_page_id ] == 0 );
 
     SCOREP_Allocator_Page* page = page_manager_get_new_page( movedPageManager,
                                                              page_usage );
     if ( !page )
     {
+        UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
         return 0;
     }
 
@@ -663,6 +703,7 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
     }
     set_page_usage( page, page_usage );
 
+    UTILS_DEBUG_EXIT();
     return page->memory_start_address;
 }
 
@@ -687,17 +728,6 @@ SCOREP_Allocator_GetAddressFromMovableMemory(
     }
 
     return ( char* )pageManager->allocator + movableMemory;
-}
-
-
-void*
-SCOREP_Allocator_GetAddressFromMovedMemory(
-    const SCOREP_Allocator_PageManager* movedPageManager,
-    SCOREP_Allocator_MovableMemory      movedMemory )
-{
-    assert( movedPageManager );
-    assert( movedPageManager->moved_page_id_mapping );
-    return SCOREP_Allocator_GetAddressFromMovableMemory( movedPageManager, movedMemory );
 }
 
 
@@ -783,136 +813,66 @@ SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
 }
 
 
-SCOREP_Allocator_Page*
-SCOREP_Allocator_AcquirePage( SCOREP_Allocator_Allocator* allocator )
+void
+SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
+                               SCOREP_Allocator_PageManagerStats* stats )
 {
-    assert( allocator );
-
     lock_allocator( allocator );
-    SCOREP_Allocator_Page* page = get_page( allocator, 1 );
+    stats->pages_allocated = allocator->n_pages_high_watermark;
+    stats->pages_used      = allocator->n_pages_allocated;
     unlock_allocator( allocator );
-
-    if ( !page )
-    {
-        return 0;
-    }
-
-    // to be on the safe side, ensure that page is "full" in order to not being
-    // used in alloc calls (using entire pages and "small allocations" together
-    // might not be a good idea. With getting pages from allocators and small
-    // amount of memory via page managers this should not be possible though.)
-    page->memory_current_address = page->memory_end_address;
-
-    return page;
 }
 
 
 void
-SCOREP_Allocator_ReleasePage( SCOREP_Allocator_Page* page )
+SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageManager,
+                                      const SCOREP_Allocator_Allocator*   allocator,
+                                      SCOREP_Allocator_PageManagerStats*  stats )
 {
-    assert( page );
+    assert( stats );
 
-    SCOREP_Allocator_Allocator* allocator = page->allocator;
+    memset( stats, 0, sizeof( *stats ) );
 
-    lock_allocator( allocator );
-    put_page( allocator, page );
-    unlock_allocator( allocator );
-}
-
-
-void*
-SCOREP_Allocator_GetStartAddressFromPage( SCOREP_Allocator_Page* page )
-{
-    assert( page );
-    return page->memory_start_address;
-}
-
-
-void*
-SCOREP_Allocator_GetEndAddressFromPage( SCOREP_Allocator_Page* page )
-{
-    assert( page );
-    return page->memory_end_address;
-}
-
-SCOREP_Allocator_ObjectManager*
-SCOREP_Allocator_CreateObjectManager( SCOREP_Allocator_Allocator* allocator,
-                                      size_t                      objectSize )
-{
-    assert( allocator && objectSize );
-
-    lock_allocator( allocator );
-    SCOREP_Allocator_ObjectManager* object_manager = get_union_object( allocator );
-    unlock_allocator( allocator );
-
-    if ( !object_manager )
+    if ( pageManager )
     {
-        return 0;
+        assert( allocator == 0 );
+        const SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
+        while ( page )
+        {
+            uint32_t page_multiple = get_order( page->allocator, get_page_length( page ) );
+            assert( page_multiple > 0 );
+            stats->pages_allocated  += page_multiple;
+            stats->memory_allocated += get_page_length( page );
+            uint32_t usage = get_page_usage( page );
+            stats->memory_used      += usage;
+            stats->memory_available += get_page_avail( page );
+            if ( usage )
+            {
+                stats->pages_used += page_multiple;
+            }
+            page = page->next;
+        }
+
+        if ( pageManager->moved_page_id_mapping ) /* moved page manager */
+        {
+            uint32_t order = get_order( pageManager->allocator,
+                                        sizeof( *pageManager->moved_page_id_mapping )
+                                        * pageManager->allocator->n_pages_capacity );
+            stats->pages_allocated += order;
+        }
     }
-
-    object_manager->allocator         = allocator;
-    object_manager->pages_in_use_list = NULL;
-    object_manager->free_list         = NULL;
-    object_manager->object_size       = roundup( objectSize );
-    /* we need to store a pointer in the object, when it is in the free list */
-    assert( object_manager->object_size >= sizeof( void* ) );
-
-    /* may fail, but maybe there are free pages, when the first real request comes */
-    object_manager_get_new_page( object_manager );
-
-    return object_manager;
-}
-
-void
-SCOREP_Allocator_DeleteObjectManager( SCOREP_Allocator_ObjectManager* objectManager )
-{
-    assert( objectManager );
-
-    SCOREP_Allocator_Allocator* allocator = objectManager->allocator;
-
-    lock_allocator( allocator );
-    SCOREP_Allocator_Page* page = objectManager->pages_in_use_list;
-    while ( page )
+    else /* maintenance pages */
     {
-        SCOREP_Allocator_Page* next_page = page->next;
-        put_page( allocator, page );
-        page = next_page;
+        assert( allocator );
+        stats->pages_allocated  = allocator->n_pages_maintenance;
+        stats->pages_used       = stats->pages_allocated;
+        stats->memory_allocated = stats->pages_allocated * page_size( allocator );
+        SCOREP_Allocator_Object* free_obj = allocator->free_objects;
+        while ( free_obj )
+        {
+            stats->memory_available += union_size();
+            free_obj                 = free_obj->next;
+        }
+        stats->memory_used = stats->memory_allocated - stats->memory_available;
     }
-    put_union_object( allocator, objectManager );
-    unlock_allocator( allocator );
-}
-
-void*
-SCOREP_Allocator_GetObject( SCOREP_Allocator_ObjectManager* objectManager )
-{
-    assert( objectManager );
-
-    if ( !objectManager->free_list )
-    {
-        object_manager_get_new_page( objectManager );
-    }
-
-    /* still no free objects */
-    if ( !objectManager->free_list )
-    {
-        return NULL;
-    }
-
-    void** object = objectManager->free_list;
-
-    objectManager->free_list = *object;
-    *object                  = NULL;
-
-    return object;
-}
-
-void
-SCOREP_Allocator_PutObject( SCOREP_Allocator_ObjectManager* objectManager,
-                            void*                           object )
-{
-    assert( objectManager && object );
-
-    void** free_object = object;
-    *free_object             = objectManager->free_list;
-    objectManager->free_list = free_object;
 }

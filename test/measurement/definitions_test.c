@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -224,7 +224,7 @@ allocator_initialize( CuTest* tc )
 {
     int total_mem = 1024 * 16;
     int page_size = 1024;
-    allocator = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+    allocator = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
     page_manager = SCOREP_Allocator_CreatePageManager( allocator );
     CuAssertPtrNotNull( tc, page_manager );

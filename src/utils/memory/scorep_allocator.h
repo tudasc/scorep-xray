@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -67,7 +67,10 @@ struct SCOREP_Allocator_Page
 struct SCOREP_Allocator_Allocator
 {
     uint32_t page_shift;
-    uint32_t n_pages;
+    uint32_t n_pages_capacity;
+    uint32_t n_pages_maintenance;
+    uint32_t n_pages_high_watermark;
+    uint32_t n_pages_allocated;
     //uint32_t union_size;
     //uint32_t reserved;
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -45,6 +45,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define SCOREP_DEBUG_MODULE_NAME ALLOCATOR
+#include <UTILS_Debug.h>
 #include <memory/scorep_bitset.h>
 
 /* 0 bits */

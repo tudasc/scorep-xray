@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -88,11 +88,11 @@ SCOREP_Allocator_RoundupToAlignment( size_t size );
  * Create a memory allocator object that uses at maximum @a totalMemory
  * of memory and a page size of @a pageSize.
  *
- * @param totalMemory    Amount of memory that the allocator may use.
+ * @param[out] totalMemory Amount of memory that the allocator may use.
  *                       The actual available memory will be round-down to
  *                       the greatest multiple of the final value of @a
  *                       pageSize.
- * @param pageSize       The @a totalMemory will be split into pages of size @a
+ * @param[out] pageSize  The @a totalMemory will be split into pages of size @a
  *                       pageSize. This requires the @a pageSize to be less or
  *                       equal than @a totalMemory. The @a pageSize will be
  *                       round-up to the next power of two.
@@ -110,8 +110,8 @@ SCOREP_Allocator_RoundupToAlignment( size_t size );
  * @return A valid allocator object or a null pointer if the creation fails.
  */
 SCOREP_Allocator_Allocator*
-SCOREP_Allocator_CreateAllocator( uint32_t                     totalMemory,
-                                  uint32_t                     pageSize,
+SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
+                                  uint32_t*                    pageSize,
                                   SCOREP_Allocator_Guard       lockFunction,
                                   SCOREP_Allocator_Guard       unlockFunction,
                                   SCOREP_Allocator_GuardObject lockObject );
@@ -160,8 +160,7 @@ SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager );
  * Allocates a movable chunk of memory of at least @a memorySize bytes from
  * a @a pageManager's page. Returns a reference/handle to this memory chunk.
  * To access the real memory you need to dereference the handle using
- * SCOREP_Allocator_GetAddressFromMovableMemory() or
- * SCOREP_Allocator_GetAddressFromMovedMemory().
+ * SCOREP_Allocator_GetAddressFromMovableMemory().
  * Returns 0 if the allocation failed; this indicates a out-of-memory situation.
  *
  * @see SCOREP_Allocator_Alloc()
@@ -196,17 +195,48 @@ SCOREP_Allocator_GetAddressFromMovableMemory(
     SCOREP_Allocator_MovableMemory      movableMemory );
 
 
-void*
-SCOREP_Allocator_GetAddressFromMovedMemory(
-    const SCOREP_Allocator_PageManager* movedPageManager,
-    SCOREP_Allocator_MovableMemory      movedMemory );
-
-
 /** Discard the last movable allocation */
 void
 SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManager,
                                        SCOREP_Allocator_MovableMemory movableMemory );
 
+
+typedef struct SCOREP_Allocator_PageManagerStats
+{
+    uint32_t pages_allocated;
+    uint32_t pages_used;
+    size_t   memory_allocated;
+    size_t   memory_used;
+    size_t   memory_available;
+} SCOREP_Allocator_PageManagerStats;
+
+
+/**
+ * Returns the number of pages hosted by the @a allocator.
+ * @param allocator
+ */
+uint32_t
+SCOREP_Allocator_GetMaxNumberOfPages( const SCOREP_Allocator_Allocator* allocator );
+
+
+/**
+ * Fill @a stats partially with the maximum number of pages used at a time
+ * (high watermark) and the current number of allocated pages, w.r.t.
+ * @a allocator.
+ */
+void
+SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
+                               SCOREP_Allocator_PageManagerStats* stats );
+
+
+/**
+ * Fill @a stats either with data from the @a pageManager's pages (pageManager != 0)
+ * or from the @a allocator's maintenance pages (pageManager == 0 && allocator != 0).
+ */
+void
+SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageManager,
+                                      const SCOREP_Allocator_Allocator*   allocator,
+                                      SCOREP_Allocator_PageManagerStats*  stats );
 
 /**
  * Get the number of used pages for this page manager.
@@ -244,42 +274,6 @@ SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
                                uint32_t*                           pageIds,
                                uint32_t*                           pageUsages,
                                void** const                        pageStarts );
-
-
-/**
- * Only used in tests.
- */
-SCOREP_Allocator_Page*
-SCOREP_Allocator_AcquirePage( SCOREP_Allocator_Allocator* allocator );
-
-/**
- * Only used in tests.
- */
-void
-SCOREP_Allocator_ReleasePage( SCOREP_Allocator_Page* page );
-
-
-void*
-SCOREP_Allocator_GetStartAddressFromPage( SCOREP_Allocator_Page* page );
-
-
-void*
-SCOREP_Allocator_GetEndAddressFromPage( SCOREP_Allocator_Page* page );
-
-
-SCOREP_Allocator_ObjectManager*
-SCOREP_Allocator_CreateObjectManager( SCOREP_Allocator_Allocator* allocator,
-                                      size_t                      objectSize );
-
-void
-SCOREP_Allocator_DeleteObjectManager( SCOREP_Allocator_ObjectManager* objectManager );
-
-void*
-SCOREP_Allocator_GetObject( SCOREP_Allocator_ObjectManager* objectManager );
-
-void
-SCOREP_Allocator_PutObject( SCOREP_Allocator_ObjectManager* objectManager,
-                            void*                           object );
 
 
 UTILS_END_C_DECLS

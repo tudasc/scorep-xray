@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -674,7 +674,9 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Location_FinalizeDefinitions, ( ) );
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
 
+    SCOREP_Memory_DumpStats( "[Score-P] ========= Just before unification ============ " );
     SCOREP_TIME( SCOREP_Unify, ( ) );
+    SCOREP_Memory_DumpStats( "[Score-P] ========= Just after unification ============= " );
 
     SCOREP_TIME( SCOREP_Substrates_WriteData, ( ) );
 

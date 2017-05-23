@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -56,7 +56,7 @@ page_size( const SCOREP_Allocator_Allocator* allocator )
 static inline uint32_t
 total_memory( const SCOREP_Allocator_Allocator* allocator )
 {
-    return allocator->n_pages << allocator->page_shift;
+    return allocator->n_pages_capacity << allocator->page_shift;
 }
 
 

@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -65,6 +65,9 @@ typedef enum SCOREP_MemoryType
     /** separate because we might clear them for periscope from time to time */
     SCOREP_MEMORY_TYPE_PROFILING,
 
+    /** separate because we need to flush these independently */
+    SCOREP_MEMORY_TYPE_TRACING_EVENTS,
+
     SCOREP_NUMBER_OF_MEMORY_TYPES
 } SCOREP_MemoryType;
 
@@ -78,8 +81,8 @@ typedef enum SCOREP_MemoryType
  * @param pageSize size of a single page in bytes, needs to be <= @a totalMemory
  */
 void
-SCOREP_Memory_Initialize( uint64_t totalMemory,
-                          uint64_t pageSize );
+SCOREP_Memory_Initialize( uint32_t totalMemory,
+                          uint32_t pageSize );
 
 
 /**
@@ -87,6 +90,17 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
  */
 void
 SCOREP_Memory_HandleOutOfMemory( void );
+
+
+/**
+ * Dumps memory usage stats to stderr. Note that the trace buffers are currently
+ * not accessible and are not shown in this stats.
+ * @param message Message printed in front of the statistics to distinguish output
+ * in case of multiple usage
+ */
+void
+SCOREP_Memory_DumpStats( const char* message );
+
 
 /**
  * Clean up the memory system.

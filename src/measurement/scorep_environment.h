@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -61,10 +61,10 @@ SCOREP_RegisterAllConfigVariables( void );
 bool
 SCOREP_Env_RunVerbose( void );
 
-uint64_t
+uint32_t
 SCOREP_Env_GetTotalMemory( void );
 
-uint64_t
+uint32_t
 SCOREP_Env_GetPageSize( void );
 
 const char*
