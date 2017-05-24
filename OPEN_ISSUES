@@ -171,7 +171,7 @@ various Score-P components.
 * MPI support
 
   - Most functions added with MPI-3.0 and MPI-3.1 only have Enter
-    and Exit event records, i.e. Score-P can measure the time spend 
+    and Exit event records, i.e., Score-P can measure the time spend
     in these routines, but no further analysis is possible.
 
   - MPI_Comm_idup() is not supported and will abort the measurement.
