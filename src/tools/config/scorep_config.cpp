@@ -53,20 +53,25 @@
 #include "scorep_config_utils.hpp"
 #include "scorep_config_mutex.hpp"
 
-#define ACTION_LIBS           1
-#define ACTION_CFLAGS         2
-#define ACTION_INCDIR         3
-#define ACTION_LDFLAGS        4
-#define ACTION_CC             5
-#define ACTION_CXX            6
-#define ACTION_FC             7
-#define ACTION_MPICC          8
-#define ACTION_MPICXX         9
-#define ACTION_MPIFC         10
-#define ACTION_COBI_DEPS     11
-#define ACTION_ADAPTER_INIT  12
-#define ACTION_TARGETS       13
-#define ACTION_CONSTRUCTOR   14
+enum
+{
+    ACTION_LIBS = 1,
+    ACTION_CFLAGS,
+    ACTION_INCDIR,
+    ACTION_LDFLAGS,
+    ACTION_CC,
+    ACTION_CXX,
+    ACTION_FC,
+    ACTION_MPICC,
+    ACTION_MPICXX,
+    ACTION_MPIFC,
+    ACTION_COBI_DEPS,
+    ACTION_ADAPTER_INIT,
+    ACTION_LIBWRAP_LINKTIME,
+    ACTION_LIBWRAP_RUNTIME,
+    ACTION_TARGETS,
+    ACTION_CONSTRUCTOR
+};
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
