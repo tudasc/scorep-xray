@@ -218,8 +218,8 @@ void
 SCOREP_Config_Adapter::printHelp( void )
 {
     std::cout << "   --" << m_name << "|--no" << m_name << "\n"
-              << "            Specifies whether " << m_name << " instrumentation is used.\n"
-              << "            On default " << m_name << " instrumentation is " \
+              << "              Specifies whether " << m_name << " instrumentation is used.\n"
+              << "              On default " << m_name << " instrumentation is " \
               << ( m_is_enabled ? "enabled" : "disabled" ) << ".\n";
 }
 
@@ -651,18 +651,18 @@ void
 SCOREP_Config_MemoryAdapter::printHelp( void )
 {
     std::cout << "   --" << m_name << "=<memory-api-list>|--no" << m_name << "\n"
-              << "            Specifies whether memory usage recording is used.\n"
-              << "            On default memory usage recording is " \
+              << "              Specifies whether memory usage recording is used.\n"
+              << "              On default memory usage recording is " \
               << ( m_is_enabled ? "enabled" : "disabled" ) << ".\n"
-              << "            The following memory interfaces may be recorded:\n"
-              << "             libc:\n"
-              << "              malloc,realloc,calloc,free,memalign,posix_memalign,valloc\n"
-              << "             libc11:\n"
-              << "              aligned_alloc\n"
-              << "             c++L32|c++L64:\n"
-              << "              new,new[],delete,delete[] (IA-64 C++ ABI)\n"
-              << "             pgCCL32|pgCCL64:\n"
-              << "              new,new[],delete,delete[] (old PGI/EDG C++ ABI)\n";
+              << "              The following memory interfaces may be recorded:\n"
+              << "               libc:\n"
+              << "                malloc,realloc,calloc,free,memalign,posix_memalign,valloc\n"
+              << "               libc11:\n"
+              << "                aligned_alloc\n"
+              << "               c++L32|c++L64:\n"
+              << "                new,new[],delete,delete[] (IA-64 C++ ABI)\n"
+              << "               pgCCL32|pgCCL64:\n"
+              << "                new,new[],delete,delete[] (old PGI/EDG C++ ABI)\n";
 }
 
 bool

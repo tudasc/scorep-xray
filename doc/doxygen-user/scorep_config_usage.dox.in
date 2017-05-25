@@ -2,87 +2,93 @@
 Usage:
 scorep-config <command> [<options>]
   Commands:
-   --cflags    prints additional compiler flags for a C compiler. They already
-               contain the include flags.
-   --cxxflags  prints additional compiler flags for a C++ compiler. They already
-               contain the include flags.
-   --fflags    prints additional compiler flags for a Fortran compiler. They already
-               contain the include flags.
+   --cflags   Prints additional compiler flags for a C compiler.
+              They already contain the include flags.
+   --cxxflags Prints additional compiler flags for a C++ compiler.
+              They already contain the include flags.
+   --fflags   Prints additional compiler flags for a Fortran compiler.
+              They already contain the include flags.
    --cppflags[=language]
-               prints the include flags. They are already contained in the
-               output of the --cflags, --cxxflags, and --fflags commands.
-               language may be one of c (default), c++, or fortran
-   --ldflags   prints the library path flags for the linker
-   --libs      prints the required linker flags
-   --cc        prints the C compiler name
-   --cxx       prints the C++ compiler name
-   --fc        prints the Fortran compiler name
-   --mpicc     prints the MPI C compiler name
-   --mpicxx    prints the MPI C++ compiler name
-   --mpifc     prints the MPI Fortran compiler name
-   --help      prints this usage information
-   --version   prints the version number of the Score-P package
-   --scorep-revision prints the revision number of the Score-P package
-   --common-revision prints the revision number of the common package
-   --remap-specfile  prints the path to the remapper specification file
+              Prints the include flags. They are already contained in the
+              output of the --cflags, --cxxflags, and --fflags commands.
+              language may be one of c (default), c++, or fortran.
+   --ldflags  Prints the library path flags for the linker.
+   --libs     Prints the required libraries to link against.
+   --cc       Prints the C compiler name.
+   --cxx      Prints the C++ compiler name.
+   --fc       Prints the Fortran compiler name.
+   --mpicc    Prints the MPI C compiler name.
+   --mpicxx   Prints the MPI C++ compiler name.
+   --mpifc    Prints the MPI Fortran compiler name.
+   --help     Prints this usage information.
+   --version  Prints the version number of the Score-P package.
+   --scorep-revision
+              Prints the revision number of the Score-P package.
+   --common-revision
+              Prints the revision number of the common package.
+   --remap-specfile
+              Prints the path to the remapper specification file.
+   --adapter-init
+              Prints the code for adapter initialization.
   Options:
-   --nvcc      Convert flags to be suitable for the nvcc compiler.
-   --static    Use only static Score-P libraries if possible.
-   --dynamic   Use only dynamic Score-P libraries if possible.
+   --target   Get flags for specified target, e.g., mic.
+   --nvcc     Convert flags to be suitable for the nvcc compiler.
+   --static   Use only static Score-P libraries if possible.
+   --dynamic  Use only dynamic Score-P libraries if possible.
    --online-access|--noonline-access
-            Specifies whether online access (needed by Periscope) is enabled.
-            On default it is enabled.
+              Specifies whether online access (needed by Periscope) is
+              enabled. On default it is enabled.
    --compiler|--nocompiler
-            Specifies whether compiler instrumentation is used.
-            On default compiler instrumentation is enabled.
+              Specifies whether compiler instrumentation is used.
+              On default compiler instrumentation is enabled.
    --user|--nouser
-            Specifies whether user instrumentation is used.
-            On default user instrumentation is disabled.
+              Specifies whether user instrumentation is used.
+              On default user instrumentation is disabled.
    --pomp|--nopomp
-            Specifies whether pomp instrumentation is used.
-            On default pomp instrumentation is disabled.
+              Specifies whether pomp instrumentation is used.
+              On default pomp instrumentation is disabled.
    --cuda|--nocuda
-            Specifies whether cuda instrumentation is used.
-            On default cuda instrumentation is enabled.
+              Specifies whether cuda instrumentation is used.
+              On default cuda instrumentation is enabled.
    --openacc|--noopenacc
-            Specifies whether openacc instrumentation is used.
-            On default openacc instrumentation is enabled.
+              Specifies whether openacc instrumentation is used.
+              On default openacc instrumentation is enabled.
    --opencl|--noopencl
-            Specifies whether opencl instrumentation is used.
-            On default opencl instrumentation is enabled.
+              Specifies whether opencl instrumentation is used.
+              On default opencl instrumentation is enabled.
    --preprocess|--nopreprocess
-            Specifies whether preprocess instrumentation is used.
-            On default preprocess instrumentation is disabled.
+              Specifies whether preprocess instrumentation is used.
+              On default preprocess instrumentation is disabled.
    --memory=<memory-api-list>|--nomemory
-            Specifies whether memory usage recording is used.
-            On default memory usage recording is enabled.
-            The following memory interfaces may be recorded:
-             libc:
-              malloc,realloc,calloc,free,memalign,posix_memalign,valloc
-             libc11:
-              aligned_alloc
-             c++L32|c++L64:
-              new,new[],delete,delete[] (IA-64 C++ ABI)
-             pgCCL32|pgCCL64:
-              new,new[],delete,delete[] (old PGI/EDG C++ ABI)
+              Specifies whether memory usage recording is used.
+              On default memory usage recording is disabled.
+              The following memory interfaces may be recorded:
+               libc:
+                malloc,realloc,calloc,free,memalign,posix_memalign,valloc
+               libc11:
+                aligned_alloc
+               c++L32|c++L64:
+                new,new[],delete,delete[] (IA-64 C++ ABI)
+               pgCCL32|pgCCL64:
+                new,new[],delete,delete[] (old PGI/EDG C++ ABI)
    --thread=<threading system>
-            Available threading systems are:
-         none	This is the default.
-         omp
-         pthread
+              Available threading systems are:
+               none (default)
+               omp
+               pthread
    --mutex=<locking system>[:<variant>]
-            Available locking systems are:
-         none
-         omp
-         pthread
-         pthread:spinlock
-         pthread:wrap
-            If no variant is specified the default for the respective
-            threading system is used.
+              Available locking systems are:
+               none
+               omp
+               pthread:default
+               pthread:wrap
+               pthread:spinlock
+              If no variant is specified the default for the respective
+              threading system is used.
    --mpp=<multi-process paradigm>
-            Available multi-process paradigms are:
-         mpi	This is the default.
-         shmem
-         none
+              Available multi-process paradigms are:
+               none (default)
+               mpi
+               shmem
 
 Report bugs to <support@score-p.org>

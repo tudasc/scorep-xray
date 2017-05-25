@@ -64,14 +64,14 @@ void
 SCOREP_Config_Mutex::printAll( void )
 {
     std::cout << "   --mutex=<locking system>[:<variant>]\n"
-              << "            Available locking systems are:\n";
+              << "              Available locking systems are:\n";
     std::deque<SCOREP_Config_Mutex*>::iterator i;
     for ( i = all.begin(); i != all.end(); i++ )
     {
         ( *i )->printHelp();
     }
-    std::cout << "            If no variant is specified the default for the respective\n"
-              << "            threading system is used.\n";
+    std::cout << "              If no variant is specified the default for the respective\n"
+              << "              threading system is used.\n";
 }
 
 bool
@@ -125,7 +125,7 @@ SCOREP_Config_Mutex::~SCOREP_Config_Mutex()
 void
 SCOREP_Config_Mutex::printHelp( void )
 {
-    std::cout << "         " << m_name;
+    std::cout << "               " << m_name;
     if ( m_variant.length() > 0 )
     {
         std::cout << ":" << m_variant;

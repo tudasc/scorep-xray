@@ -65,15 +65,13 @@ SCOREP_Config_ThreadSystem::fini( void )
 void
 SCOREP_Config_ThreadSystem::printAll( void )
 {
-    std::cout << "   --thread=<threading system>[:<variant>]\n"
-              << "            Available threading systems are:\n";
+    std::cout << "   --thread=<threading system>\n"
+              << "              Available threading systems are:\n";
     std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
     for ( i = m_all.begin(); i != m_all.end(); i++ )
     {
         ( *i )->printHelp();
     }
-    std::cout << "            If no variant is specified the first matching\n"
-              << "            threading system is used.\n";
 }
 
 bool
@@ -139,14 +137,14 @@ SCOREP_Config_ThreadSystem::~SCOREP_Config_ThreadSystem()
 void
 SCOREP_Config_ThreadSystem::printHelp( void )
 {
-    std::cout << "         " << m_name;
+    std::cout << "               " << m_name;
     if ( m_variant.length() > 0 )
     {
         std::cout << ":" << m_variant;
     }
     if ( this == current )
     {
-        std::cout << "\tThis is the default.";
+        std::cout << " (default)";
     }
     std::cout << std::endl;
 }

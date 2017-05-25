@@ -82,38 +82,42 @@ enum
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
-    "   --cflags    prints additional compiler flags for a C compiler. They already\n" \
-    "               contain the include flags.\n" \
-    "   --cxxflags  prints additional compiler flags for a C++ compiler. They already\n" \
-    "               contain the include flags.\n" \
-    "   --fflags    prints additional compiler flags for a Fortran compiler. They already\n" \
-    "               contain the include flags.\n" \
+    "   --cflags   Prints additional compiler flags for a C compiler.\n" \
+    "              They already contain the include flags.\n" \
+    "   --cxxflags Prints additional compiler flags for a C++ compiler.\n" \
+    "              They already contain the include flags.\n" \
+    "   --fflags   Prints additional compiler flags for a Fortran compiler.\n" \
+    "              They already contain the include flags.\n" \
     "   --cppflags[=language]\n" \
-    "               prints the include flags. They are already contained in the\n" \
-    "               output of the --cflags, --cxxflags, and --fflags commands.\n" \
-    "               language may be one of c (default), c++, or fortran\n" \
-    "   --ldflags   prints the library path flags for the linker\n" \
-    "   --libs      prints the required linker flags\n" \
-    "   --cc        prints the C compiler name\n" \
-    "   --cxx       prints the C++ compiler name\n" \
-    "   --fc        prints the Fortran compiler name\n" \
-    "   --mpicc     prints the MPI C compiler name\n" \
-    "   --mpicxx    prints the MPI C++ compiler name\n" \
-    "   --mpifc     prints the MPI Fortran compiler name\n" \
-    "   --help      prints this usage information\n" \
-    "   --version   prints the version number of the Score-P package\n" \
-    "   --scorep-revision prints the revision number of the Score-P package\n" \
-    "   --common-revision prints the revision number of the common package\n" \
-    "   --remap-specfile  prints the path to the remapper specification file\n" \
-    "   --adapter-init    prints the code for adapter initialization\n" \
+    "              Prints the include flags. They are already contained in the\n" \
+    "              output of the --cflags, --cxxflags, and --fflags commands.\n" \
+    "              language may be one of c (default), c++, or fortran.\n" \
+    "   --ldflags  Prints the library path flags for the linker.\n" \
+    "   --libs     Prints the required libraries to link against.\n" \
+    "   --cc       Prints the C compiler name.\n" \
+    "   --cxx      Prints the C++ compiler name.\n" \
+    "   --fc       Prints the Fortran compiler name.\n" \
+    "   --mpicc    Prints the MPI C compiler name.\n" \
+    "   --mpicxx   Prints the MPI C++ compiler name.\n" \
+    "   --mpifc    Prints the MPI Fortran compiler name.\n" \
+    "   --help     Prints this usage information.\n" \
+    "   --version  Prints the version number of the Score-P package.\n" \
+    "   --scorep-revision\n" \
+    "              Prints the revision number of the Score-P package.\n" \
+    "   --common-revision\n" \
+    "              Prints the revision number of the common package.\n" \
+    "   --remap-specfile\n" \
+    "              Prints the path to the remapper specification file.\n" \
+    "   --adapter-init\n" \
+    "              Prints the code for adapter initialization.\n" \
     "  Options:\n" \
-    "   --target    Get flags for specified target, e.g. mic.\n" \
-    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
-    "   --static    Use only static Score-P libraries if possible.\n" \
-    "   --dynamic   Use only dynamic Score-P libraries if possible.\n" \
+    "   --target   Get flags for specified target, e.g., mic.\n" \
+    "   --nvcc     Convert flags to be suitable for the nvcc compiler.\n" \
+    "   --static   Use only static Score-P libraries if possible.\n" \
+    "   --dynamic  Use only dynamic Score-P libraries if possible.\n" \
     "   --online-access|--noonline-access\n" \
-    "            Specifies whether online access (needed by Periscope) is enabled.\n" \
-    "            On default it is enabled.\n"
+    "              Specifies whether online access (needed by Periscope) is\n" \
+    "              enabled. On default it is enabled.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";

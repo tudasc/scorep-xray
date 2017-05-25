@@ -64,7 +64,7 @@ void
 SCOREP_Config_MppSystem::printAll( void )
 {
     std::cout << "   --mpp=<multi-process paradigm>\n"
-              << "            Available multi-process paradigms are:\n";
+              << "              Available multi-process paradigms are:\n";
     std::deque<SCOREP_Config_MppSystem*>::iterator i;
     for ( i = all.begin(); i != all.end(); i++ )
     {
@@ -101,10 +101,10 @@ SCOREP_Config_MppSystem::~SCOREP_Config_MppSystem()
 void
 SCOREP_Config_MppSystem::printHelp( void )
 {
-    std::cout << "         " << m_name;
+    std::cout << "               " << m_name;
     if ( this == current )
     {
-        std::cout << "\tThis is the default.";
+        std::cout << " (default)";
     }
     std::cout << std::endl;
 }
