@@ -3,7 +3,16 @@
 bin_PROGRAMS += scorep-info
 
 scorep_info_SOURCES = \
-    $(SRC_ROOT)src/tools/info/scorep_info.cpp
+    $(SRC_ROOT)src/tools/info/scorep_info.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_config_summary.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_config_summary.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_config_vars.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_config_vars.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.cpp
 
 scorep_info_CPPFLAGS = \
     $(AM_CPPFLAGS) \
