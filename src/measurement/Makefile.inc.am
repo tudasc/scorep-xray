@@ -98,7 +98,6 @@ libscorep_measurement_core_la_SOURCES =                            \
 
 libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_THREAD) \
     @CUBEW_CPPFLAGS@ \
