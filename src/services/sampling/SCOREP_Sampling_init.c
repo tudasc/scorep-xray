@@ -229,6 +229,8 @@ sampling_subsystem_init_location( SCOREP_Location* location,
         sampling_data->nr_data = num_sampling_sources;
 
         SCOREP_MutexUnlock( init_sampling_mutex );
+
+        sig_atomic_t touch = scorep_sampling_is_known_pthread;
     }
 
     return SCOREP_SUCCESS;

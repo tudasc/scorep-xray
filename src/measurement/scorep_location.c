@@ -175,8 +175,19 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( const char* name )
 {
-    return scorep_location_create_location( SCOREP_LOCATION_TYPE_CPU_THREAD,
-                                            name );
+    SCOREP_Location* new_location =
+        scorep_location_create_location( SCOREP_LOCATION_TYPE_CPU_THREAD, name );
+#if HAVE( THREAD_LOCAL_STORAGE )
+    sig_atomic_t touch = scorep_in_measurement;
+
+#if HAVE( SAMPLING_SUPPORT )
+    touch = scorep_in_signal_context;
+    touch = scorep_in_wrapped_region;
+#endif
+
+#endif
+
+    return new_location;
 }
 
 char scorep_per_process_metrics_location_name[] = "Per process metrics";
