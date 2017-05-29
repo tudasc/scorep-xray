@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -58,7 +58,7 @@ DOC_SRC_DIR = $(srcdir)/doc
 doxygen-uninstall:
 	rm -rf $(DESTDIR)$(docdir)
 
-if SVN_CONTROLLED #-----------------------------------------------------------
+if SVN_CONTROLLED
 
 USER_DOC_DIR = $(top_distdir)$(ac_scorep_doxygen_distdir)/doc
 
@@ -67,7 +67,7 @@ doxygen-user-install:
 doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision-file-to-dist
 
 update-revision:
-	svnversion -c $(srcdir) | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION" 
+	svnversion -c $(srcdir) | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION"
 	svnversion -c $(srcdir)/vendor/common | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION_COMMON"
 
 copy-revision-file-to-dist:
@@ -94,7 +94,7 @@ doxygen-user-clean:
 	rm -rf $(USER_DOC_DIR)/*
 
 
-if HAVE_DOXYGEN #-----------------------------------------------------
+if HAVE_DOXYGEN
 
 doxygen-user: doxygen-project-number doc/doxygen-user/main.dox doc/doxygen-user.cfg
 	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
@@ -107,14 +107,14 @@ doxygen-user: doxygen-project-number doc/doxygen-user/main.dox doc/doxygen-user.
 
 CLEANFILES += doc/doxygen-user-html.cfg doc/doxygen-user-at-make-time.cfg doxygen.err
 
-else # i.e. ! HAVE_DOXYGEN -------------------------------------------
+else !HAVE_DOXYGEN
 
 doxygen-user:
 	echo "WARNING: doxygen not available. Cannot generate documentation." >&2
 
-endif # HAVE_DOXYGEN -------------------------------------------------
+endif !HAVE_DOXYGEN
 
-if HAVE_DOXYGEN_LATEX #-----------------------------------------------
+if HAVE_DOXYGEN_LATEX
 
 doxygen-user-pdf: doxygen-user
 	cat doc/doxygen-user-html.cfg > doc/doxygen-user-pdf.cfg
@@ -130,15 +130,15 @@ doxygen-user-pdf: doxygen-user
 	rm -f * &&                  \
 	mv ../refman.pdf @PACKAGE@.pdf
 
-else # i.e. ! HAVE_DOXYGEN_LATEX -------------------------------------
+else !HAVE_DOXYGEN_LATEX
 
 doxygen-user-pdf: doxygen-user
 	echo "WARNING: pdflatex not available. Cannot generate doxygen pdf documentation." >&2
 	if test -d "$(USER_DOC_DIR)/pdf"; then rm -rf "$(USER_DOC_DIR)/pdf"; fi
 
-endif # HAVE_DOXYGEN_LATEX -------------------------------------------
+endif !HAVE_DOXYGEN_LATEX
 
-else # i.e. ! SVN_CONTROLLED -----------------------------------------
+else !SVN_CONTROLLED
 
 doxygen-user-clean:
 
@@ -173,7 +173,7 @@ doxygen-user-install:
 
 copy-revision-file-to-dist:
 
-endif # SVN_CONTROLLED
+endif !SVN_CONTROLLED
                                                                              ##
                                                                              ##
 ###############################################################################

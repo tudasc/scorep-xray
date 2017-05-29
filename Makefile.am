@@ -124,9 +124,9 @@ if SVN_CONTROLLED
 
 if CROSS_BUILD
 INFO_TOOL_BUILD=build-frontend
-else
+else !CROSS_BUILD
 INFO_TOOL_BUILD=build-backend
-endif
+endif !CROSS_BUILD
 
 scorep-info-command:
 	@$(am__cd) $(INFO_TOOL_BUILD) && $(MAKE) $(AM_MAKEFLAGS) scorep-info
@@ -184,13 +184,13 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	cat $^ >$@
 
-else
+else !SVN_CONTROLLED
 
 doc/doxygen-user/main.dox:
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	touch $@
 
-endif
+endif !SVN_CONTROLLED
 
 
 if CROSS_BUILD
