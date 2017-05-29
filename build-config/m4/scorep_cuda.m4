@@ -149,7 +149,7 @@ AS_IF([test "x$scorep_cudart_error" = "xno"],
                        scorep_cudart_error="yes"])])
 
 dnl check the version of the CUDA runtime API
-AS_IF([test x"$scorep_cudart_error" = "xno"],
+AS_IF([test "x$scorep_cudart_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda_runtime_api.h"]],
         [[
 #ifndef CUDART_VERSION

@@ -84,27 +84,27 @@ AFS_SUMMARY_PUSH
 AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_GNU_SOURCE])
 
 # check that we have at least one interrupt generator
-AS_IF([test x"${ac_scorep_have_papi}" = x"yes" ||
-       test x"${ac_scorep_have_perf}" = x"yes" ||
-       ( test x"${has_sampling_sigaction_sa_sigaction}" = x"yes" && test x"${has_sampling_siginfo_t}" = x"yes" )],
+AS_IF([test "x${ac_scorep_have_papi}" = "xyes" ||
+       test "x${ac_scorep_have_perf}" = "xyes" ||
+       ( test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" && test "x${has_sampling_siginfo_t}" = "xyes" )],
       [have_interrupt_generators=yes],
       [have_interrupt_generators=no])
 
 scorep_unwinding_support=yes
 scorep_unwinding_summary_reason=
-AS_IF([test x"${scorep_have_libunwind}" != x"yes"],
+AS_IF([test "x${scorep_have_libunwind}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing libunwind support"])
 
-AS_IF([test x"${scorep_have_thread_local_storage}" != x"yes"],
+AS_IF([test "x${scorep_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing TLS support"])
 
-AS_IF([test x"${afs_have_gnu_linker}" != x"yes"],
+AS_IF([test "x${afs_have_gnu_linker}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing GNU linker"])
 
-AS_IF([test x"${build_cpu}" != x"x86_64"],
+AS_IF([test "x${build_cpu}" != "xx86_64"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }unsupported CPU architecture"])
 
@@ -113,7 +113,7 @@ AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_summary}])
 
 # generating output
 AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
-                    [test x"${scorep_unwinding_support}" = x"yes"],
+                    [test "x${scorep_unwinding_support}" = "xyes"],
                     [Defined if unwinding support is available.],
                     [AC_SUBST([LIBUNWIND_CPPFLAGS], ["${with_libunwind_cppflags}"])
                      AC_SUBST([LIBUNWIND_LDFLAGS],  ["${with_libunwind_ldflags} ${with_libunwind_rpathflag}"])
@@ -122,22 +122,22 @@ AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
                      AC_SUBST([SCOREP_UNWINDING_LDFLAGS], ["-Wl,-z,now"])])
 
 AC_SCOREP_COND_HAVE([SAMPLING_SUPPORT],
-                    [test x"${scorep_unwinding_support}" = x"yes" &&
-                     test x"${has_sampling_headers}" = x"yes" &&
-                     test x"${has_sampling_functions}" = x"yes" &&
-                     test x"${has_sampling_sigaction_sa_handler}" = x"yes" &&
-                     test x"${have_interrupt_generators}" = x"yes"],
+                    [test "x${scorep_unwinding_support}" = "xyes" &&
+                     test "x${has_sampling_headers}" = "xyes" &&
+                     test "x${has_sampling_functions}" = "xyes" &&
+                     test "x${has_sampling_sigaction_sa_handler}" = "xyes" &&
+                     test "x${have_interrupt_generators}" = "xyes"],
                     [Defined if sampling support is available.],
                     [has_sampling="yes"
                      sampling_summary="yes, using ${sampling_cppflags}"
                      AC_SUBST([SAMPLING_CPPFLAGS], ["${sampling_cppflags}"])
-                     AS_IF([test x"${has_sampling_sigaction_sa_sigaction}" = x"yes" &&
-                            test x"${has_sampling_siginfo_t}" = x"yes"],
+                     AS_IF([test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" &&
+                            test "x${has_sampling_siginfo_t}" = "xyes"],
                            [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1],
                                       [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
                             sampling_summary+=", sa_sigaction"])],
                     [has_sampling="no"
-                     AS_IF([test x"${have_interrupt_generators}" = x"no"],
+                     AS_IF([test "x${have_interrupt_generators}" = "xno"],
                            [sampling_summary="no, cannot find any interrupt generator"],
                            [sampling_summary="no"])
                      AC_SUBST([SAMPLING_CPPFLAGS], [""])])

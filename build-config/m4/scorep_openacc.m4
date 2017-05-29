@@ -45,7 +45,7 @@ scorep_compiler_acc_flags=""
 AC_ARG_ENABLE([openacc],
               [AS_HELP_STRING([--enable-openacc],
                               [Enable or disable support for OpenACC. (defaults to yes)])],
-              [AS_IF([test x"$enableval" = "xyes"], [scorep_enable_openacc="yes"], [scorep_enable_openacc="no"])])
+              [AS_IF([test "x$enableval" = "xyes"], [scorep_enable_openacc="yes"], [scorep_enable_openacc="no"])])
 
 # advertise the $OPENACC_INCLUDE and $OPENACC_PROFILING_INCLUDE variables in the --help output
 AC_ARG_VAR([OPENACC_INCLUDE],           [Include path to openacc.h header.])

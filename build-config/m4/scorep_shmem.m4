@@ -56,7 +56,7 @@
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([SCOREP_SHMEM_WORKING], [
-AS_IF([test x = x"$SHMEMLIBS"], [
+AS_IF([test x = "x$SHMEMLIBS"], [
     AC_LANG_CASE(
     [C],
        [AC_CHECK_FUNC([start_pes], [SHMEMLIBS=" "])],
@@ -87,16 +87,16 @@ AS_IF([test x = x"$SHMEMLIBS"], [
 ])
 AC_LANG_CASE(
 [Fortran 77], [
-    AS_IF([test x = x"$SHMEMLIBS"], [
+    AS_IF([test x = "x$SHMEMLIBS"], [
         AC_CHECK_LIB($SHMEM_LIB_NAME, [START_PES], [SHMEMLIBS=" "])
     ])
 ],
 [Fortran], [
-    AS_IF([test x = x"$SHMEMLIBS"], [
+    AS_IF([test x = "x$SHMEMLIBS"], [
         AC_CHECK_LIB($SHMEM_LIB_NAME, [START_PES], [SHMEMLIBS=" "])
     ])
 ])
-AS_IF([test x = x"$SHMEMLIBS"], [
+AS_IF([test x = "x$SHMEMLIBS"], [
     AC_CHECK_LIB($SHMEM_LIB_NAME, [start_pes], [SHMEMLIBS=" "])
 ])
 
@@ -104,7 +104,7 @@ dnl We have to use AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[],[]) and no
 dnl latter uses $CPP, not $CC (which may be oshcc).
 AC_LANG_CASE(
 [C], [
-    AS_IF([test x != x"$SHMEMLIBS"], [
+    AS_IF([test x != "x$SHMEMLIBS"], [
         AC_MSG_CHECKING([for shmem.h])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <shmem.h>]], [[]])], [
             AC_MSG_RESULT([yes])
@@ -115,7 +115,7 @@ AC_LANG_CASE(
     ])
 ],
 [C++], [
-    AS_IF([test x != x"$SHMEMLIBS"], [
+    AS_IF([test x != "x$SHMEMLIBS"], [
         AC_MSG_CHECKING([for shmem.h])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <shmem.h>]], [[]])], [
             AC_MSG_RESULT([yes])
@@ -126,7 +126,7 @@ AC_LANG_CASE(
     ])
 ],
 [Fortran 77], [
-    AS_IF([test x != x"$SHMEMLIBS"], [
+    AS_IF([test x != "x$SHMEMLIBS"], [
         AC_MSG_CHECKING([for shmem.fh])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'shmem.fh'])], [
             AC_MSG_RESULT([yes])
@@ -137,7 +137,7 @@ AC_LANG_CASE(
     ])
 ],
 [Fortran], [
-    AS_IF([test x != x"$SHMEMLIBS"], [
+    AS_IF([test x != "x$SHMEMLIBS"], [
         AC_MSG_CHECKING([for shmem.fh])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'shmem.fh'])], [
             AC_MSG_RESULT([yes])
@@ -151,7 +151,7 @@ AC_LANG_CASE(
 AC_SUBST([SHMEMLIBS])
 
 # Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
-AS_IF([test x = x"$SHMEMLIBS"], [
+AS_IF([test x = "x$SHMEMLIBS"], [
     $2
 ], [
     ifelse([$1], , [AC_DEFINE([HAVE_SHMEM], [1], [Define if you have the SHMEM library.])], [$1])
