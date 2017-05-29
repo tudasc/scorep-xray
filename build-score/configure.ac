@@ -30,6 +30,22 @@ dnl
 AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
+AFS_PACKAGE_BUILD_INIT([score])
+AFS_SUMMARY_INIT
+
+AC_CONFIG_AUX_DIR([../build-config])
+## See also ACLOCAL_AMFLAGS in Makefile.am.
+AC_CONFIG_MACRO_DIRS([../build-config/m4 ../vendor/common/build-config/m4])
+
+AC_CONFIG_HEADERS([../src/config-score.h])
+
+AC_DEFUN([SCOREP_SCORE], [])
+
+## require $afs_cross_compiling to be set to 'yes' or 'no'
+AS_IF([test "x${afs_cross_compiling}" != "xyes" && \
+       test "x${afs_cross_compiling}" != "xno"],
+    [AC_MSG_ERROR([invalid value '$afs_cross_compiling' for variable \$afs_cross_compiling.], [1])])
+
 # Compilers etc. are set according to Cube installation (see below),
 # so ignore environment variables set in the environment.
 AS_UNSET([CC])
@@ -47,17 +63,6 @@ AC_ARG_VAR([CXXFLAGS_FOR_BUILD_SCORE],
     [C++ compiler flags for building scorep-score])
 AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_set}" = xset],
     [CXXFLAGS="${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_value}"])
-
-AFS_PACKAGE_BUILD_INIT([score])
-AFS_SUMMARY_INIT
-
-AC_CONFIG_AUX_DIR([../build-config])
-## See also ACLOCAL_AMFLAGS in Makefile.am.
-AC_CONFIG_MACRO_DIRS([../build-config/m4 ../vendor/common/build-config/m4])
-
-AC_CONFIG_HEADERS([../src/config-score.h])
-
-AC_DEFUN([SCOREP_SCORE], [])
 
 AC_PROG_AWK
 AC_PROG_GREP
