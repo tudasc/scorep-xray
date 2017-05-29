@@ -12,7 +12,7 @@
 ##
 
 INSTALLCHECK_LOCAL += installchecks-wrapper
-installchecks-wrapper:
+installchecks-wrapper: ../test/tools/wrapper/run_wrapper_checks.sh
 	$(SHELL) ../test/tools/wrapper/run_wrapper_checks.sh
 
 CLEAN_LOCAL += clean-installchecks-wrapper
