@@ -107,13 +107,13 @@ SCOREP_Instrumenter_Paradigm::printHelp( void )
         std::cout << "              " << getConfigName() << std::endl;
         std::cout << space << m_description << "\n";
 
-        SCOREP_Instrumenter_Adapter::printDepList( &m_requires,
+        SCOREP_Instrumenter_Adapter::printDepList( m_requires,
                                                    space + "It requires and, thus, automatically enables " );
-        SCOREP_Instrumenter_Adapter::printDepList( &m_conflicts,
+        SCOREP_Instrumenter_Adapter::printDepList( m_conflicts,
                                                    space + "It conflicts and, thus, automatically disables " );
-        SCOREP_Instrumenter_Adapter::printDepList( &m_default_on,
+        SCOREP_Instrumenter_Adapter::printDepList( m_default_on,
                                                    space + "By default, it enables also " );
-        SCOREP_Instrumenter_Adapter::printDepList( &m_default_off,
+        SCOREP_Instrumenter_Adapter::printDepList( m_default_off,
                                                    space + "By default, it disables " );
     }
 }

@@ -153,16 +153,16 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
                       << m_name << ".\n";
         }
 
-        printDepList( &m_requires,
+        printDepList( m_requires,
                       space + "It requires and, thus, automatically enables " );
-        printDepList( &m_prerequisites,
+        printDepList( m_prerequisites,
                       space + "It cannot be enabled, if not at least one of the "
                       "following is enabled: " );
-        printDepList( &m_conflicts,
+        printDepList( m_conflicts,
                       space + "It conflicts and, thus, automatically disables " );
-        printDepList( &m_default_on,
+        printDepList( m_default_on,
                       space + "By default, it enables also " );
-        printDepList( &m_default_off,
+        printDepList( m_default_off,
                       space + "By default, it disables " );
     }
     std::cout << "  --no" << m_name;
@@ -530,20 +530,20 @@ SCOREP_Instrumenter_Adapter::defaultOff( SCOREP_Instrumenter_AdapterId id )
 }
 
 void
-SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* list,
-                                           const std::string&                  entry )
+SCOREP_Instrumenter_Adapter::printDepList( const SCOREP_Instrumenter_DependencyList& list,
+                                           const std::string&                        entry )
 {
-    std::string                                  output;
-    SCOREP_Instrumenter_DependencyList::iterator i;
-    std::string                                  space = entry.substr( 0, entry.find_first_not_of( " " ) - 1 );
-    if ( !list->empty() )
+    std::string                                        output;
+    SCOREP_Instrumenter_DependencyList::const_iterator i;
+    std::string                                        space = entry.substr( 0, entry.find_first_not_of( " " ) - 1 );
+    if ( !list.empty() )
     {
         output = entry;
-        for ( i = list->begin(); i != list->end(); i++ )
+        for ( i = list.begin(); i != list.end(); ++i )
         {
-            if ( i != list->begin() )
+            if ( i != list.begin() )
             {
-                if ( i + 1 == list->end() )
+                if ( i + 1 == list.end() )
                 {
                     output += " and ";
                 }

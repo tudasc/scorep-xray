@@ -528,8 +528,8 @@ public:
      * @param entry String that is prepended to the list if the list is not empty.
      */
     static void
-    printDepList( SCOREP_Instrumenter_DependencyList* list,
-                  const std::string&                  entry );
+    printDepList( const SCOREP_Instrumenter_DependencyList& list,
+                  const std::string&                        entry );
 
 private:
     /**
