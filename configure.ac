@@ -192,20 +192,20 @@ AS_IF([test -n "${scorep_cubew_config_bin}" && \
 
 user_args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk user_provided_configure_args`"
 AS_IF([test "x${scorep_have_cubew_config}" = xno],
-    [AC_CONFIG_SUBDIR_CUSTOM([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])])
+    [AX_CONFIG_SUBDIR([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])])
 
 
 AC_SCOREP_HAVE_CONFIG_TOOL([cubelib],   [7])
 
 user_args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk user_provided_configure_args`"
 AS_IF([test "x${scorep_have_cubelib_config}" = xno],
-    [AC_CONFIG_SUBDIR_CUSTOM([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])])
+    [AX_CONFIG_SUBDIR([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])])
 
 AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
-      [AC_CONFIG_SUBDIR_CUSTOM([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])])
+      [AX_CONFIG_SUBDIR([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])])
 
 AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
-      [AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])])
+      [AX_CONFIG_SUBDIR([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])])
 
 # handle own package's subdir configures
 
@@ -219,13 +219,13 @@ scorep_score_extra_arg=
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR_EVALUATED])
 AS_IF([test "x${bindir}" = "x${BINDIR_EVALUATED}"],
     [scorep_score_extra_arg="--bindir=${BINDIR_EVALUATED}"])
-AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} ${arg} ${scorep_cubelib_config_arg} ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
+AX_CONFIG_SUBDIR([build-score], [${scorep_score_extra_arg} ${scorep_cubelib_config_arg}  ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
+AX_CONFIG_SUBDIR([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
 AM_CONDITIONAL([HAVE_SCOREP_MPI], [test "x${scorep_mpi_user_disabled}" != "xyes"])
 AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
-    [AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+    [AX_CONFIG_SUBDIR([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
     ],
     [AFS_SUMMARY([MPI support], [no, explicitly disabled via --without-mpi])
      AC_CONFIG_FILES([src/scorep_config_tool_mpi.h:src/tools/config/scorep_config_tool_without_mpi.h.in])
@@ -236,7 +236,7 @@ AM_CONDITIONAL([HAVE_SCOREP_SHMEM],
                 ( test "x${ac_scorep_platform}" = "xlinux" || \
                   test -f "${srcdir}/vendor/common/build-config/platforms/platform-shmem-${ac_scorep_platform}" )])
 AM_COND_IF([HAVE_SCOREP_SHMEM],
-    [AC_CONFIG_SUBDIR_CUSTOM([build-shmem], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+    [AX_CONFIG_SUBDIR([build-shmem], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
     ],
     [AS_IF([test "x${scorep_shmem_user_disabled}" = "xyes"],
         [AFS_SUMMARY([SHMEM support], [no, explicitly disabled via --without-shmem])],
@@ -244,10 +244,10 @@ AM_COND_IF([HAVE_SCOREP_SHMEM],
      AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
     ])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_cubelib_config_arg}])
+AX_CONFIG_SUBDIR([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_cubelib_config_arg}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cubew_config_arg}  ${scorep_otf2_config_arg}])
+    AX_CONFIG_SUBDIR([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_otf2_config_arg}])
 fi
 
 AC_CONFIG_FILES([

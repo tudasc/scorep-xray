@@ -31,7 +31,7 @@
 
 ## The SUBDIRS variable holds a list of subdirectories automake (recursivly)
 ## must build.
-SUBDIRS = $(subdirs) $(subdirs_custom)
+SUBDIRS = $(subdirs) $(ax_config_subdirs)
 
 ## Options passed to aclocal to specify local macro directories. Although
 ## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
