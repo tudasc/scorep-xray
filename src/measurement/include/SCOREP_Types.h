@@ -728,13 +728,6 @@ typedef uint64_t SCOREP_MpiRequestId;
 
 
 /**
- * @def SCOREP_MPI_INVALID_RANK
- * Defines an invalid MPI rank.
- */
-#define SCOREP_MPI_INVALID_RANK -1
-
-
-/**
  * Symbolic constant representing an invalid or unknown rank.
  * @see SCOREP_MpiCollective()
  */
