@@ -16,9 +16,6 @@ Features and improvements:
   SCORE_PROFILING_FORMAT environment variable. The new formats
   THREAD_SUM, THREAD_TUPLE, KEY_THREADS, and CLUSTER_THREADS are
   available.
-- The induced penalty to access thread-local storage variables was
-  considerably reduced for some compilers, notable for the Intel
-  compilers.
 - Replace the two threading variants --thread=omp:pomp_tpd and
   --thread=omp:ancestry by only one: --thread=omp. The possible
   options are detected at configure time. If both are available,
@@ -33,6 +30,20 @@ Features and improvements:
   need to be provided a PATH to cubew-config and cubelib-config,
   respectively, if not already in PATH. The Cube GUI is separately
   available from http://www.scalasca.org.
+
+Bugfixes:
+
+------------------- Released version 3.1 -----------------------------
+
+Features and improvements:
+
+- The induced penalty to access thread-local storage variables was
+  considerably reduced for some compilers, notable for the Intel
+  compilers.
+- If both OpenMP instrumentation options, omp:tpd and omp:ancestry,
+  are supported, use omp:ancestry as default. This works around a
+  problem found with recent Intel compilers (e.g., 17.0.0) and the
+  omp:tpd option.
 - The GCC compiler instrumentation plug-in now instruments functions
   that will not return in the usual way, like, e.g., a Pthread
   start_routine that calls pthread_exit.
@@ -44,7 +55,7 @@ Bugfixes:
 - Fix loosing parameter call-paths by avoiding multiple definitions of
   the same parameters.
 - Fix that memory allocation measurements are disabled if the
-  user explicitly specifies --memory
+  user explicitly specifies --memory.
 - Fix conflict of function wrapping with IPA on BlueGene systems.
 - Do not preprocess assembler files anymore.
 - Fix race condition in parallel make (make -j). Note that parallel
