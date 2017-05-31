@@ -90,9 +90,9 @@ scorep_mpi_get_status_array( int size )
         scorep_mpi_status_array = malloc( size * sizeof( MPI_Status ) );
         if ( scorep_mpi_status_array == NULL )
         {
-            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                         "We have UTILS_FATAL() to abort!" );
-            abort();
+            UTILS_FATAL( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                         "Allocation of %zu bytes for internal MPI status array failed!",
+                         size * sizeof( MPI_Status ) );
         }
         scorep_mpi_status_array_size = size;
     }
@@ -104,7 +104,8 @@ scorep_mpi_get_status_array( int size )
         if ( scorep_mpi_status_array == NULL )
         {
             UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                         "We have UTILS_FATAL() to abort!" );
+                         "Re-allocation of %zu bytes for internal MPI status array failed!",
+                         size * sizeof( MPI_Status ) );
             abort();
         }
         scorep_mpi_status_array_size = size;
