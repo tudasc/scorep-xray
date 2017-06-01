@@ -69,9 +69,7 @@ scorep_mpiprofile_init( void )
          || scorep_mpiprofiling_local_time_pack == NULL
          || scorep_mpiprofiling_remote_time_pack == NULL )
     {
-        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                     "We have UTILS_FATAL() to abort!" );
-        abort();
+        UTILS_FATAL( "Memory allocation for time packs failed." );
     }
     #endif // _WITH_PREALLOCATION_OF_TIME_PACKS
 

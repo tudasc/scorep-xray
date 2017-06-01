@@ -2438,8 +2438,7 @@ FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_F
     c_array_of_types = ( MPI_Datatype* )malloc( *count * sizeof( MPI_Datatype ) );
     if ( !c_array_of_types )
     {
-        UTILS_FATAL( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                     "Allocation of %zu bytes for type conversion failed",
+        UTILS_FATAL( "Allocation of %zu bytes for type conversion failed",
                      *count * sizeof( MPI_Datatype ) );
     }
     /* index variable i, is already defined by the implicit conversion done
