@@ -80,7 +80,7 @@ compare_variable( const void* key,
 struct scorep_config_variable
 {
     SCOREP_ConfigVariable          data;
-    char                           env_var_name[ ENV_NAME_LEN_MAX ];
+    char                           env_var_name[ ENV_NAME_LEN_MAX + 1 ];
     bool                           is_evaluated;
     struct scorep_config_variable* next;
 };
