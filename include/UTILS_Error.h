@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -251,13 +251,13 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *  @param messageFormatString A printf-like format string.
  */
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME( UTILS_Error_Abort )
-void
+UTILS_DECLSPEC_NORETURN void
 UTILS_Error_Abort( const char* srcdir,
                    const char* fileName,
                    uint64_t    line,
                    const char* functionName,
                    const char* messageFormatString,
-                   ... ) __attribute__( ( noreturn ) );
+                   ... ) UTILS_ATTRIBUTE_NORETURN;
 
 
 

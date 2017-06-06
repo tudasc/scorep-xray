@@ -4,6 +4,9 @@
  * Copyright (c) 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2017,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -36,6 +39,20 @@
     #define UTILS_FUNCTION_NAME __FUNCTION__
 #else
     #define UTILS_FUNCTION_NAME __func__
+#endif
+
+/**
+ * @def   UTILS_DECLSPEC_NORETURN
+ * @def   UTILS_ATTRIBUTE_NORETURN
+ * @brief Portable macros to mark a function that it will not return to the caller.
+ *
+ */
+#if defined( _WIN32 )
+    #define UTILS_DECLSPEC_NORETURN __declspec( noreturn )
+    #define UTILS_ATTRIBUTE_NORETURN /*  */
+#else
+    #define UTILS_DECLSPEC_NORETURN  /*  */
+    #define UTILS_ATTRIBUTE_NORETURN __attribute__( ( noreturn ) )
 #endif
 
 #endif /* UTILS_PORTABILITY_H */
