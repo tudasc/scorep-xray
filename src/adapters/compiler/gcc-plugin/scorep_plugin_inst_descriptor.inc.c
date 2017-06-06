@@ -194,7 +194,7 @@ scorep_plugin_region_description_build( const char* function_name,
                                         TREE_TYPE( region_descr_value ) );
 
     /* Align the struct generously, so that it works for 32 and 64 bit */
-    DECL_ALIGN( region_descr_var )      = 64 * BITS_PER_UNIT;
+    SET_DECL_ALIGN( region_descr_var, 64 * BITS_PER_UNIT );
     DECL_USER_ALIGN( region_descr_var ) = 1;
 
     /* The struct is 64 bytes, because of reserved entries */

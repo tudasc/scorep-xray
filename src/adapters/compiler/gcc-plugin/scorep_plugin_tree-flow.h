@@ -23,6 +23,11 @@
 #include "stringpool.h"
 #include "basic-block.h"
 #include "tree-ssa-alias.h"
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 7000
+#include "tree-vrp.h"
+#endif
+
 #include "tree-ssanames.h"
 #include "internal-fn.h"
 #include "gimple-expr.h"

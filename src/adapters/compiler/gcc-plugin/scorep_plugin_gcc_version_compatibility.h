@@ -39,3 +39,7 @@
 #else
 #define GIMPLE gimple *
 #endif
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 7000
+#define SET_DECL_ALIGN( decl, x ) DECL_ALIGN( decl ) = ( x )
+#endif
