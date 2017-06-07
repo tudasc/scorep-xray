@@ -33,6 +33,13 @@ Features and improvements:
 
 Bugfixes:
 
+- Improve the extraction of topology information from the Slurm
+  topology/tree plugin to create the system tree. There were cases
+  where the Slurm topology information wasn't correctly distributed to
+  the individual compute nodes. This resulted in a system tree with a
+  single node parenting all processes instead of several nodes
+  parenting subsets of processes.
+
 ------------------- Released version 3.1 -----------------------------
 
 Features and improvements:

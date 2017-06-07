@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -62,15 +62,19 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
 
     /*
      * Use the Slurm topology/tree plugin information, if available
-     * see http://slurm.schedmd.com/topology.html
+     * see https://slurm.schedmd.com/topology.html. The relevant environment
+     * variable are SLURM_TOPOLOGY_ADDR and SLURM_TOPOLOGY_ADDR_PATTERN.
+     * SLURM_TOPOLOGY_ADDR_PATTERN is of the form "switch.[switch.]node".
+     * Although Slurm topology already includes a node, i.e., host, we don't
+     * use it as it is not reliable among different MPI and launcher
+     * combinations.
      */
 
-    /* UTILS_CStr_dup wont barf on NULL */
+    /* UTILS_CStr_dup wont bark on NULL */
     char* env_slurm_topo_addr         = UTILS_CStr_dup( getenv( "SLURM_TOPOLOGY_ADDR" ) );
     char* env_slurm_topo_addr_pattern = UTILS_CStr_dup( getenv( "SLURM_TOPOLOGY_ADDR_PATTERN" ) );
 
-    /* The Slurm topology already includes a host, use it, or fallback to gethostname. */
-    bool need_host = true;
+    /* process switches */
     if ( env_slurm_topo_addr && env_slurm_topo_addr_pattern )
     {
         /* We skip the first switch, as we already have the machine root. */
@@ -91,41 +95,37 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
                 *pattern_next++ = '\0';
             }
 
-            SCOREP_SystemTreeDomain domain = SCOREP_SYSTEM_TREE_DOMAIN_NONE;
-            if ( 0 == strcmp( pattern, "node" ) )
+            if ( 0 == strcmp( pattern, "switch" ) )
             {
-                need_host = false;
-                domain    = SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY;
-            }
-
-            if ( 0 == strcmp( pattern, "switch" ) && is_first_switch )
-            {
-                is_first_switch = false;
-
-                /*
-                 * We assume that there is only one root in the tree. As we
-                 * already have our own root (i.e., machine) node, we just
-                 * attach this first switch as property to it.
-                 */
-                SCOREP_Platform_SystemTreeProperty* property =
-                    scorep_platform_system_tree_add_property( root,
-                                                              pattern,
-                                                              0, addr );
-
-                if ( !property )
+                if ( is_first_switch )
                 {
-                    goto fail;
+                    is_first_switch = false;
+
+                    /*
+                     * We assume that there is only one root in the tree. As we
+                     * already have our own root (i.e., machine) node, we just
+                     * attach this first switch as property to it.
+                     */
+                    SCOREP_Platform_SystemTreeProperty* property =
+                        scorep_platform_system_tree_add_property( root,
+                                                                  pattern,
+                                                                  0, addr );
+
+                    if ( !property )
+                    {
+                        goto fail;
+                    }
                 }
-            }
-            else
-            {
-                node = scorep_platform_system_tree_top_down_add( &tail,
-                                                                 domain,
-                                                                 pattern,
-                                                                 0, addr );
-                if ( !node )
+                else
                 {
-                    goto fail;
+                    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                                     SCOREP_SYSTEM_TREE_DOMAIN_NONE,
+                                                                     pattern,
+                                                                     0, addr );
+                    if ( !node )
+                    {
+                        goto fail;
+                    }
                 }
             }
 
@@ -136,23 +136,21 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     free( env_slurm_topo_addr );
     free( env_slurm_topo_addr_pattern );
 
-    if ( need_host )
+    /* process host(name) */
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
+                                                     "node",
+                                                     256, "" );
+    if ( !node )
     {
-        node = scorep_platform_system_tree_top_down_add( &tail,
-                                                         SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
-                                                         "node",
-                                                         256, "" );
-        if ( !node )
-        {
-            goto fail;
-        }
+        goto fail;
+    }
 
-        if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
-        {
-            SCOREP_Platform_FreePath( root );
-            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                "UTILS_IO_GetHostname() failed." );
-        }
+    if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
+    {
+        SCOREP_Platform_FreePath( root );
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "UTILS_IO_GetHostname() failed." );
     }
 
     return SCOREP_SUCCESS;
