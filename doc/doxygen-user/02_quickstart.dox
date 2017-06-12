@@ -138,7 +138,7 @@ previously), can issue the following command to configure @scorep:
 
 In addition to general options available in all Autotools based build
 systems, there are @scorep configuration flags.  These can be printed
-out by passing the --help flag to the configure script.
+out by passing the \--help flag to the configure script.
 
 They are usually self explanatory.  Here is a list of them with a short
 explanation:
@@ -162,20 +162,20 @@ explanation:
 	</li>
 
 <li>
-<tt>--with-mpi=(mpich2|impi|openmpi)</tt>
+<tt>\--with-mpi=(mpich2|impi|openmpi)</tt>
   The MPI compiler and runtime suite to use.  Currently
 	there are entries for MPICH2, Intel MPI and Open MPI.
 	</li>
 
 <li>
-<tt>--with-shmem=(openshmem|openmpi|sgimpt)</tt>
+<tt>\--with-shmem=(openshmem|openmpi|sgimpt)</tt>
     The SHMEM compiler suite to build this package in
     non cross-compiling mode. Usually autodetected.
     Needs to be in $PATH.
 </li>
 
 <li>
-<tt>--with-otf2=(yes|<otf2-bindir>)</tt>
+<tt>\--with-otf2=(yes|<otf2-bindir>)</tt>
 	An already install OTF2 can be specified with this flag.  This is
 	usually not necessary since OTF2 is built together with @scorep.
 	Specify yes if the tool is in your $PATH, otherwise specify the
@@ -183,12 +183,12 @@ explanation:
 	</li>
 
 <li>
-<tt>--with-opari2=(yes|<opari2-bindir>)</tt>
+<tt>\--with-opari2=(yes|<opari2-bindir>)</tt>
 	Similar to the previous configuration flag, but for OPARI2.
 	</li>
 
 <li>
-<tt>--with-cube=(yes|<cube-bindir>)</tt>
+<tt>\--with-cube=(yes|<cube-bindir>)</tt>
 	Similar to the previous two configuration flags, but for CUBE.
 	</li>
 	</ul>

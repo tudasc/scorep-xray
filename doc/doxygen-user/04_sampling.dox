@@ -178,9 +178,9 @@ scorep mpicc -fopenmp my_hybrid_code.c -o my_hybrid_application
 @endcode
 
 Note: If you use the GNU compiler and shared libraries of @scorep you might get errors due to undefined references depending on your gcc version.
-Please add <tt>--no-as-needed</tt> to your scorep command line.
+Please add <tt>\--no-as-needed</tt> to your scorep command line.
 This flag will add a GNU ld linker flag to fix undefined references when using shared @scorep libraries.
-This happens on systems using <tt>--as-needed</tt> as linker default.
+This happens on systems using <tt>\--as-needed</tt> as linker default.
 It will be handled transparently in future releases of @scorep.
 
 Set the following environment variables:

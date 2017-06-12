@@ -356,7 +356,7 @@ one can use @scorep manual user instrumentation API (see Section @secref{manual_
 for more fine-grained annotation of particular code segments. For example
 initialization code, solver or any other code segment of interest can be annotated.
 
-In order to enable user instrumentation, an <tt>--user</tt> argument has to be passed to
+In order to enable user instrumentation, an <tt>\--user</tt> argument has to be passed to
 @scorep command prepending compiler and linker specification:
 
 @code

@@ -61,7 +61,7 @@ the compiler or compiler wrapper enables specific programming paradigm
 by default (e.g., Pthreads on Cray and Blue Gene/Q systems),
 <tt>scorep</tt> needs to be made aware of the programming paradigm in
 order to do the correct instrumentation. Please see <tt>scorep
---help</tt> for the available options.
+\--help</tt> for the available options.
 
 When using Makefiles, it is often convenient to define a "preparation preposition"
 placeholder (e.g., <tt>PREP</tt>) which can be prefixed to (selected)
@@ -85,7 +85,7 @@ instrumentation procedure has to be used:
 <li>Configure application as usual, but provide additional
 argument:
 
-<tt>--disable-dependency-tracking</tt></li>
+<tt>\--disable-dependency-tracking</tt></li>
 
 <li>Build application using <tt>make</tt> command with compiler specification variables set as follows:
 
@@ -107,13 +107,13 @@ linker flags and libraries, or include paths:
     [--thread=none|--thread=omp|--thread=pthread] --libs
 @endverbatim
 
-The @verb--mpp=<paradigm> switch selects which message passing paradigm is used.
-Currently, @scorep supports applications using MPI ( @verb--mpp=mpi ) or SHMEM
-( @verb--mpp=shmem ) and applications without any message passing paradigm.
+The @verb{--mpp=<paradigm>} switch selects which message passing paradigm is used.
+Currently, @scorep supports applications using MPI ( @verb{--mpp=mpi} ) or SHMEM
+( @verb{--mpp=shmem} ) and applications without any message passing paradigm.
 It is not possible to specify two message passing systems for the same application.
-The @verb--thread=<paradigm> switch selects which threading system is used in
-Score-P. You may use OpenMP ( @verb--thread=omp ), no threading system
-( @verb--thread=none ) or POSIX threading system ( @verb--thread=pthread ). It is not possible to specify two threading systems
+The @verb{--thread=<paradigm>} switch selects which threading system is used in
+@scorep. You may use OpenMP ( @verb{--thread=omp} ), no threading system
+( @verb{--thread=none} ) or POSIX threading system ( @verb{--thread=pthread} ). It is not possible to specify two threading systems
 for the same application. However, you may combine a message passing system with
 a threading system.
 
@@ -132,20 +132,20 @@ one of the following, depending on the language:
     scorep-config --fflags [<options>]
 @endverbatim
 
-If you compile a C file, you should use <tt>--cflags</tt>. If you use a C++ program,
-you should use <tt>--cxxflags</tt>. And if you compile a Fortran source file, you
-should use <tt>--flags</tt>.
+If you compile a C file, you should use <tt>\--cflags</tt>. If you use a C++ program,
+you should use <tt>\--cxxflags</tt>. And if you compile a Fortran source file, you
+should use <tt>\--flags</tt>.
 
 With the additional options it is possible to select the used adapter, the threading system and
 the message passing system. For each adapter, we provides a pair of flags of the form
-<tt>--adapter</tt>, and <tt>--noadapter</tt> (please replace <tt>adapter</tt> by the
+<tt>\--adapter</tt>, and <tt>\--noadapter</tt> (please replace <tt>adapter</tt> by the
 name of the adapter). This allows to get options
-for non-default instrumentation possibilities. E.g., <tt>--user</tt> enables the
-manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
+for non-default instrumentation possibilities. E.g., <tt>\--user</tt> enables the
+manual instrumentation with the @scorep user API, the <tt>\--nocompiler</tt> option
 disables compiler instrumentation.
 
 @note
-  Disabling OpenMP measurements with the <tt>--noopenmp</tt> flag,
+  Disabling OpenMP measurements with the <tt>\--noopenmp</tt> flag,
   disables all except parallel regions. Internally Score-P needs to
   track events on a per-thread basis and thus needs to be aware of the
   creation and destruction of OpenMP threads. Accordingly these
@@ -190,70 +190,70 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> MPI </td>
-      <td align="center" valign="middle"> --mpp=mpi </td>
+      <td align="center" valign="middle"> \--mpp=mpi </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> (see Sec. @ref mpi_groups ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> SHMEM </td>
-      <td align="center" valign="middle"> --mpp=shmem/--mpp=none </td>
+      <td align="center" valign="middle"> \--mpp=shmem/\--mpp=none </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenCL </td>
-      <td align="center" valign="middle"> --opencl/--noopencl </td>
+      <td align="center" valign="middle"> \--opencl/\--noopencl </td>
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> (see Sec. @ref opencl_adapter ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenACC </td>
-      <td align="center" valign="middle"> --openacc/--noopenacc </td>
+      <td align="center" valign="middle"> \--openacc/\--noopenacc </td>
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> (see Sec. @ref openacc_adapter ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> --thread=omp / --no|openmp </td>
+      <td align="center" valign="middle"> \--thread=omp / \--no|openmp </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> Pthread </td>
-      <td align="center" valign="middle"> --thread=pthread </td>
+      <td align="center" valign="middle"> \--thread=pthread </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> Basic Pthread library calls  </td>
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> Compiler (see Sec. @ref compiler_instrumentation ) </td>
-      <td align="center" valign="middle"> --compiler/--nocompiler </td>
+      <td align="center" valign="middle"> \--compiler/\--nocompiler </td>
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> all </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </tt> </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> PDT instrumentation (see Sec. @ref tau_instrumentation ) </td>
-      <td align="center" valign="middle"> --pdt/--nopdt </td>
+      <td align="center" valign="middle"> \--pdt/\--nopdt </td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> all </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
-      <td align="center" valign="middle"> --pomp/--nopomp</td>
+      <td align="center" valign="middle"> \--pomp/\--nopomp</td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> Manual (see Sec. @ref manual_instrumentation ) </td>
-      <td align="center" valign="middle"> --user/--nouser </td>
+      <td align="center" valign="middle"> \--user/\--nouser </td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective recording (see Sec. @ref selective_recording ) </td>
@@ -268,7 +268,7 @@ library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
 
 @note To fine-tune instrumentation of OpenMP regions, use the
-      <tt>--opari=<parameter-list></tt> option. For available parameters please
+      <tt>\--opari=<parameter-list></tt> option. For available parameters please
       refer to the OPARI2 manual.
 
 @note Since Score-P version 1.3 there were two variants of internal
@@ -276,16 +276,16 @@ parallel constructs and API calls are instrumented by default.
       @verb{--thread=omp:ancestry}, depending on the functionality
       available on the target system. From Score-P version 4 on, due
       to internal refactorings, we replace the two OpenMP threading
-      variants by only one: @verb{----thread=omp}. The possible
+      variants by only one: @verb{--thread=omp}. The possible
       options are detected at configure time. If both are available,
       the ancestry mechanism will be used by default.
 
 By default, automatic instrumentation of user-level source routines by
-the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
-The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired,
+the compiler is enabled (equivalent to specifying <tt>\--compiler</tt>).
+The compiler instrumentation can be disabled with <tt>\--nocompiler</tt> when desired,
 such as when
 using PDToolkit, or POMP2 or @scorep user API manual source annotations, are
-enabled with <tt>--pdt</tt>, <tt>--pomp</tt> and <tt>--user</tt>, respectively.
+enabled with <tt>\--pdt</tt>, <tt>\--pomp</tt> and <tt>\--user</tt>, respectively.
 Compiler, PDToolkit, POMP2 and @scorep user API instrumentation can all be
 used simultaneously, or in arbitrary combinations, however, it is
 generally desirable to avoid instrumentation duplication (which would
@@ -295,8 +295,8 @@ because it inserts @scorep user macros into the source code.
 
 Sometimes it is desirable to explicitly direct the @scorep instrumenter to
 do nothing except execute the associated compile/link command. For such cases
-it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
-<tt>--thread=none</tt>, and/or <tt>--mpp=none</tt>. Although no instrumentation is
+it is possible to disable default instrumentation with <tt>\--nocompiler</tt>,
+<tt>\--thread=none</tt>, and/or <tt>\--mpp=none</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumenter correctly
 handles the compile/link commands.
 
@@ -574,7 +574,7 @@ Fortran:
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
-ignored. If the @scorep instrumenter <tt>--user</tt> flag is used, the
+ignored. If the @scorep instrumenter <tt>\--user</tt> flag is used, the
 <tt>SCOREP_USER_ENABLE</tt> symbol will be defined automatically. Also note, that Fortran
 source files instrumented this way have to be preprocessed with the C
 preprocessor (CPP).
@@ -745,11 +745,11 @@ C/C++:
 
 @note Since @scorep version 1.4, OpenMP instrumentation using @opari2
 no longer activates @pomp2 instrumentation implicitly. You need to
-explicitly add the <tt>--pomp</tt> option to the @scorep instrumenter.
+explicitly add the <tt>\--pomp</tt> option to the @scorep instrumenter.
 
 If you manually instrument the desired user functions and regions of
 your application source files using the @pomp2 <tt>INST</tt>
-directives described below, the @scorep instrumenter <tt>--pomp</tt>
+directives described below, the @scorep instrumenter <tt>\--pomp</tt>
 flag will generate instrumentation for them. @pomp2 instrumentation
 directives are supported for Fortran and C/C++. The main advantages
 are that
@@ -846,7 +846,7 @@ disregard the source code information left by @opari2. Thus,
 for these compilers the source location information is incorrect anyway.
 
 If the preprocessing is not desired, you can disable it
-with the <tt>--nopreprocess</tt> flag. In this case the instrumentation is performed
+with the <tt>\--nopreprocess</tt> flag. In this case the instrumentation is performed
 before the preprocessing happens. In this case constructs and regions in header
 files, macros, or templates are not instrumented. Conditional compilation directives
 around constructs may also lead to broken instrumentation.
@@ -871,7 +871,7 @@ compilation, and appropriate @scorep user API calls will be inserted
 automatically. However, please note that this feature is still somewhat
 experimental and has a number of limitations (see Section @secref{tau_inst_limitations}).
 
-To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <tt>--pdt</tt> option, e.g.,
+To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <tt>\--pdt</tt> option, e.g.,
 @verbatim
     scorep --pdt  mpicc -c foo.c
 @endverbatim
@@ -934,7 +934,7 @@ a <tt>-Bstatic</tt> flag, afterwards appended @scorep libraries are also linked
 statically.
 
 If you want to override the default and enforce linking of static or dynamic
-@scorep libraries, you can add the flag <tt>--static</tt> or <tt>--dynamic</tt>
+@scorep libraries, you can add the flag <tt>\--static</tt> or <tt>\--dynamic</tt>
 for the instrumenter. E.g. a command to enforce static linking can look like:
 
 @verbatim
@@ -947,8 +947,8 @@ is enforced.
 If enforcing static or dynamic linking is not possible on your
 system, e.g., because no static/dynamic @scorep libraries are installed,
 the instrumenter will abort with an error. You can determine whether
-<tt>--static</tt> or <tt>--dynamic</tt> is available from the
-output of <tt>scorep --help</tt>. If the <tt>--static</tt> or
-<tt>--dynamic</tt> flags are not shown, then they are not available.
+<tt>\--static</tt> or <tt>\--dynamic</tt> is available from the
+output of <tt>scorep \--help</tt>. If the <tt>\--static</tt> or
+<tt>\--dynamic</tt> flags are not shown, then they are not available.
 
 */

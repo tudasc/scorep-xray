@@ -260,9 +260,9 @@ section @secref{manual_instrumentation}), regions instrumented with the user API
 from @opari2 (see section @secref{pomp_instrumentation}), and CUDA device and host
 activities (see Section @secref{cuda_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
-<tt>--disable</tt> to restrict instrumentation of @openmp directives. This
-<tt>--disable</tt> flag can than be passed on to the @opari2 invocation with the
-<tt>--opari=<parameter-list></tt> flag of the @scorep instrumenter.
+<tt>\--disable</tt> to restrict instrumentation of @openmp directives. This
+<tt>\--disable</tt> flag can than be passed on to the @opari2 invocation with the
+<tt>\--opari=<parameter-list></tt> flag of the @scorep instrumenter.
 Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts
 @scorep user API instrumentation those regions can be filtered, too.
 Regions can be filtered based on their region name (e.g., their function name)
@@ -836,7 +836,7 @@ If @scorep has been built with CUDA support it is capable of recording CUDA API 
 
 @scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation:
 
- <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>
+ <tt>\--compiler-bindir=<path-to-intel-compiler-command></tt>
 
  Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default.
 
@@ -893,7 +893,7 @@ compiler are attributed with <tt>acc_implicit</tt>.
 
 To enable OpenACC measurement in Score-P the user has to:
 <ul>
-  <li> Build and install shared libraries of Score-P (use <tt>--enable-shared</tt> option when configuring Score-P).
+  <li> Build and install shared libraries of Score-P (use <tt>\--enable-shared</tt> option when configuring Score-P).
   <li> Set the environment variable <tt>ACC_PROFLIB</tt> to specify the OpenACC profiling library.<br>
        Example: <pre>export ACC_PROFLIB=<path_to_scorep_installation>/lib/libscorep_adapter_openacc_event.so</pre>
   <li> Set the environment variable \confvar{SCOREP_OPENACC_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular composition of OpenACC measurement features.
