@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
 #include <scorep_ipc.h>
+#include <scorep_environment.h>
 
 #include <stddef.h>
 #include <assert.h>
@@ -89,7 +90,7 @@ synchronize_with_worker( int worker, int* min_index )
 void
 SCOREP_SynchronizeClocks( void )
 {
-    if ( SCOREP_Timer_ClockIsGlobal() )
+    if ( SCOREP_Timer_ClockIsGlobal() || !SCOREP_Env_DoTracing() )
     {
         SCOREP_AddClockOffset( SCOREP_Timer_GetClockTicks(), 0, 0 );
         return;
