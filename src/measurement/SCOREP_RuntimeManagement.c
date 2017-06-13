@@ -416,6 +416,8 @@ SCOREP_InitMppMeasurement( void )
     SCOREP_RegisterExitHandler();
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMppMeasurement );
+
+    SCOREP_Ipc_Barrier();
 }
 
 void
