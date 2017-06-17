@@ -380,7 +380,7 @@ SCOREP_Timer_ClockIsGlobal( void )
 #endif  /* BACKEND_SCOREP_TIMER_MINGW */
 
 #if HAVE( BACKEND_SCOREP_TIMER_AIX )
-        case TIMER_MINGW:
+        case TIMER_AIX:
             return false;
 #endif  /* BACKEND_SCOREP_TIMER_AIX */
 
