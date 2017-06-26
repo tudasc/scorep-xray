@@ -384,7 +384,7 @@ gethostname( char*  name,
 
 #endif
 
-int
+PACKAGE_ErrorCode
 UTILS_IO_GetHostname( char* name, size_t namelen )
 {
 #if HAVE( GETHOSTNAME )
@@ -397,13 +397,13 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
                                 ( size_t )computer_name_len : namelen - 1;
     strncpy( name, computer_name, effective_name_len );
     name[ effective_name_len ] = '\0';
-    return 0;
+    return PACKAGE_SUCCESS;
 #else
 
     char* hostname = getenv( "HOST" );
     if ( ( hostname == NULL ) || ( *hostname == '\0' ) )
     {
-        return -1;
+        return PACKAGE_ABORT;
     }
 
     size_t len = strlen( hostname ) + 1; /* For terminating zero */
@@ -412,7 +412,7 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
         len = namelen;
     }
     strncpy( name, hostname, len );
-    return 0;
+    return PACKAGE_SUCCESS;
 #endif
 }
 
@@ -458,4 +458,29 @@ UTILS_IO_GetCwd( char* buf, size_t size )
     strcpy( buf, cwd );
     return buf;
 #endif
+}
+
+PACKAGE_ErrorCode
+UTILS_IO_FileCopy( const char* sourceFileName, const char* destFileName )
+{
+    char   buf[ BUFSIZ ];
+    size_t size;
+
+    FILE* source = fopen( sourceFileName, "rb" );
+    FILE* dest   = fopen( destFileName, "wb" );
+    if ( !source || !dest )
+    {
+        UTILS_ERROR_POSIX( "Error opening file" );
+        return PACKAGE_ERROR_FILE_CAN_NOT_OPEN;
+    }
+
+    while ( size = fread( buf, 1, BUFSIZ, source ) )
+    {
+        fwrite( buf, 1, size, dest );
+    }
+
+    fclose( source );
+    fclose( dest );
+
+    return PACKAGE_SUCCESS;
 }

@@ -49,9 +49,9 @@ extern "C"
    @param filename  The name of the file which is checked.
    @returns true if the file exists, else false.
  */
-#define UTILS_DoesFileExist PACKAGE_MANGLE_NAME( UTILS_DoesFileExist )
+#define UTILS_IO_DoesFileExist PACKAGE_MANGLE_NAME( UTILS_IO_DoesFileExist )
 bool
-UTILS_DoesFileExist( const char* filename );
+UTILS_IO_DoesFileExist( const char* filename );
 
 /**
    Gives the path to the executeable name (argv[0]) without the executable
@@ -62,9 +62,9 @@ UTILS_DoesFileExist( const char* filename );
    @returns The path to the executable without the executable name itself and
             trailing slash. If no path was found, NULL is returned.
  */
-#define UTILS_GetExecutablePath PACKAGE_MANGLE_NAME( UTILS_GetExecutablePath )
+#define UTILS_IO_GetExecutablePath PACKAGE_MANGLE_NAME( UTILS_IO_GetExecutablePath )
 char*
-UTILS_GetExecutablePath( const char* exe );
+UTILS_IO_GetExecutablePath( const char* exe );
 
 /**
  * Reads a line until a newline from @a file. The line is stored in the buffer
@@ -144,10 +144,10 @@ UTILS_IO_JoinPath( int nPaths,
  *                 is stored. The result is NULL-terminated, except when the name was
  *                 too long for the memory location.
  * @param namelen  Length of the memory segment reserved for @a name.
- * @returns zero if the operation was successful. Else a non-zero value is returned.
+ * @returns PACKAGE_SUCCESS if the operation was successful.
  */
 #define UTILS_IO_GetHostname PACKAGE_MANGLE_NAME( UTILS_IO_GetHostname )
-int
+PACKAGE_ErrorCode
 UTILS_IO_GetHostname( char*  name,
                       size_t namelen );
 
@@ -162,6 +162,20 @@ UTILS_IO_GetHostname( char*  name,
 char*
 UTILS_IO_GetCwd( char*  buf,
                  size_t size );
+
+/**
+ * File copy
+ *
+ * @param sourceFileName filename of the source file
+ * @param destFileName   filename of the target file
+ *
+ * @returns zero if the operation was successful. If an error occurred,
+ *          a PACKAGE_ERROR_FILE_CAN_NOT_OPEN error code is returned.
+ */
+PACKAGE_ErrorCode
+#define UTILS_IO_FileCopy PACKAGE_MANGLE_NAME( UTILS_IO_FileCopy )
+UTILS_IO_FileCopy( const char* sourceFileName,
+                   const char* destFileName );
 
 #ifdef __cplusplus
 }

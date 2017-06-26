@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 
 #include <utils_package.h>
 
@@ -34,11 +35,20 @@
 #include <UTILS_CStr.h>
 
 bool
-UTILS_DoesFileExist( const char* filename )
+UTILS_IO_DoesFileExist( const char* filename )
 {
-    FILE* file = fopen( filename, "r" );
+    FILE* file = fopen( filename, "rb" );
     if ( file != NULL )
     {
+        struct stat statbuf;
+        stat( filename, &statbuf );
+
+        if ( S_ISDIR( statbuf.st_mode ) )
+        {
+            fclose( file );
+            return false;
+        }
+
         fclose( file );
         return true;
     }
@@ -46,7 +56,7 @@ UTILS_DoesFileExist( const char* filename )
 }
 
 char*
-UTILS_GetExecutablePath( const char* exe )
+UTILS_IO_GetExecutablePath( const char* exe )
 {
     char* executable_name = UTILS_CStr_dup( exe );
     char* current_pos     = executable_name;
@@ -117,7 +127,7 @@ UTILS_GetExecutablePath( const char* exe )
             full_file_name[ path_len + 1 + strlen( exe ) ] = '\0';
 
             // Copy return path, because the list will be freed.
-            if ( UTILS_DoesFileExist( full_file_name ) )
+            if ( UTILS_IO_DoesFileExist( full_file_name ) )
             {
                 current_path = UTILS_CStr_dup( current_path );
                 free( path_list );
