@@ -170,7 +170,7 @@ SCOREP_Instrumenter_PdtAdapter::set_pdt_path( const std::string& pdt )
 {
     if ( pdt == "yes" )
     {
-        char* path = UTILS_GetExecutablePath( "tau_instrumentor" );
+        char* path = UTILS_IO_GetExecutablePath( "tau_instrumentor" );
         if ( path != NULL )
         {
             m_pdt_bin_path = path;
