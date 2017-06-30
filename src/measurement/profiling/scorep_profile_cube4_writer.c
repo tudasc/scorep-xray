@@ -676,7 +676,7 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet,
             else                                                                                   \
             {                                                                                      \
                 uint32_t* items_per_rank = writeSet->items_per_rank;                               \
-                if (my_rank == 0)                                                                  \
+                if (NUMBER != 1 && my_rank == 0)                                                   \
                 {                                                                                  \
                     items_per_rank = (uint32_t*)malloc(writeSet->ranks_number * sizeof(uint32_t)); \
                     UTILS_ASSERT(items_per_rank);                                                  \
@@ -687,10 +687,10 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet,
                 }                                                                                  \
                 SCOREP_IpcGroup_Gatherv(comm,                                                      \
                                         aggregated_values,                                         \
-                                        writeSet->local_items* NUMBER,                             \
+                                        writeSet->local_items * NUMBER,                            \
                                         global_values, items_per_rank,                             \
                                         SCOREP_IPC_##TYPE, 0);                                     \
-                if (NUMBER != 1)                                                                   \
+                if (NUMBER != 1 && my_rank == 0)                                                   \
                 {                                                                                  \
                     free(items_per_rank);                                                          \
                 }                                                                                  \
