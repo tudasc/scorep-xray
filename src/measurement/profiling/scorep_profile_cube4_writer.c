@@ -609,106 +609,107 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* writeSet,
    @def SCOREP_PROFILE_WRITE_CUBE_METRIC
    Code to write metric values in cube format. Used to reduce code replication.
  */
-#define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, NUMBER, cube_type, zero )         \
-static void                                                                             \
-write_cube_##cube_type(                                                                 \
-                        scorep_cube_writing_data*                 writeSet,             \
-                        SCOREP_Ipc_Group*                         comm,                 \
-                        cube_metric*                              metric,               \
-                        scorep_profile_get_ ## cube_type ## _func getValue,             \
-                        void*                                     funcData)             \
-{                                                                                       \
-    scorep_profile_node* node              = NULL;                                      \
-    cube_cnode*          cnode             = NULL;                                      \
-    type *               aggregated_values = NULL;                                      \
-    type *               local_values      = NULL;                                      \
-    type *               global_values     = NULL;                                      \
-    int                  my_rank       = SCOREP_IpcGroup_GetRank( comm );               \
-    if ( writeSet->callpath_number == 0 ) return;                                       \
-                                                                                        \
-    local_values      = ( type * )malloc( writeSet->local_threads * sizeof( type ) );   \
-    aggregated_values = ( type * )malloc( writeSet->local_items   * sizeof( type ) );   \
-    UTILS_ASSERT( local_values );                                                       \
-    UTILS_ASSERT( aggregated_values );                                                  \
-                                                                                        \
-    if ( writeSet->my_rank == 0 )                                                       \
-    {                                                                                   \
-        /* Array of all values for one metric for one callpath for all locations */     \
-        global_values = ( type * )malloc( writeSet->global_items * sizeof( type ) );    \
-                                                                                        \
-        /* Initialize writing of a new metric */                                        \
-	cube_set_known_cnodes_for_metric( writeSet->my_cube, metric,                    \
-                                          (char*)writeSet->bit_vector );                \
-    }                                                                                   \
-    /* Iterate over all unified callpathes */                                           \
-    for ( uint64_t cp_index = 0; cp_index < writeSet->callpath_number; cp_index++ )     \
-    {                                                                                   \
-        if ( ! SCOREP_Bitstring_IsSet( writeSet->bit_vector, cp_index ) )               \
-	{                                                                               \
-            continue;                                                                   \
-        }                                                                               \
-        for ( uint64_t thread_index = 0;                                                \
-              thread_index < writeSet->local_threads; thread_index ++ )                 \
-        {                                                                               \
-            uint64_t node_index = thread_index * writeSet->callpath_number + cp_index;  \
-            node = writeSet->id_2_node[ node_index ];                                   \
-            if ( node != NULL )                                                         \
-            {                                                                           \
-	        local_values[ thread_index ] = getValue( node, funcData );              \
-            }                                                                           \
-            else                                                                        \
-            {                                                                           \
-                local_values[ thread_index ] = zero;                                    \
-            }                                                                           \
-        }                                                                               \
-	scorep_profile_aggregate_ ## type ( &local_values,                              \
-                                            &aggregated_values,                         \
-                                            writeSet );                                 \
-        /* Collect data from all processes */                                           \
-        SCOREP_IpcGroup_Barrier( comm );                                                \
-        if ( writeSet->same_thread_num )                                                \
-        {                                                                               \
-            SCOREP_IpcGroup_Gather( comm, aggregated_values, global_values,	        \
-                                    writeSet->local_items * NUMBER,                     \
-                                    SCOREP_IPC_ ## TYPE, 0 );                           \
-        }                                                                               \
-        else                                                                            \
-        {                                                                               \
-	    uint32_t* items_per_rank = writeSet->items_per_rank;                        \
-	    if ( my_rank == 0 )				                                \
-	    {                                                                           \
-	        items_per_rank = ( uint32_t* ) malloc( writeSet->ranks_number );        \
-                UTILS_ASSERT( items_per_rank );                                         \
-                for (uint32_t rank = 0; rank < writeSet->ranks_number; rank ++ )        \
-		{                                                                       \
-		    items_per_rank[ rank ] = writeSet->items_per_rank[ rank ] * NUMBER; \
-		}                                                                       \
-            }                                                                           \
-            SCOREP_IpcGroup_Gatherv( comm,                                              \
-                                     aggregated_values,                                 \
-                                     writeSet->local_items * NUMBER,                    \
-                                     global_values, items_per_rank,                     \
-                                     SCOREP_IPC_ ## TYPE, 0 );                          \
-            if ( NUMBER != 1 )                                                          \
-	    {                                                                           \
-	        free( items_per_rank );                                                 \
-            }                                                                           \
-        }                                                                               \
-                                                                                        \
-        /* Write data for one callpath */                                               \
-        if ( writeSet->my_rank == 0 )                                                   \
-        {                                                                               \
-	    cnode = cube_get_cnode( writeSet->my_cube, cp_index );                      \
-            cube_write_sev_row_of_ ## cube_type( writeSet->my_cube, metric,             \
-                                                 cnode, global_values );                \
-        }                                                                               \
-    }                                                                                   \
-                                                                                        \
-    /* Clean up */                                                                      \
-    free( global_values );                                                              \
-    free( local_values );                                                               \
-    free( aggregated_values );                                                          \
-}
+#define SCOREP_PROFILE_WRITE_CUBE_METRIC(type, TYPE, NUMBER, cube_type, zero)                      \
+    static void                                                                                    \
+        write_cube_##cube_type(                                                                    \
+            scorep_cube_writing_data* writeSet,                                                    \
+            SCOREP_Ipc_Group* comm,                                                                \
+            cube_metric* metric,                                                                   \
+            scorep_profile_get_##cube_type##_func getValue,                                        \
+            void* funcData)                                                                        \
+    {                                                                                              \
+        scorep_profile_node* node = NULL;                                                          \
+        cube_cnode* cnode = NULL;                                                                  \
+        type* aggregated_values = NULL;                                                            \
+        type* local_values = NULL;                                                                 \
+        type* global_values = NULL;                                                                \
+        int my_rank = SCOREP_IpcGroup_GetRank(comm);                                               \
+        if (writeSet->callpath_number == 0)                                                        \
+            return;                                                                                \
+                                                                                                   \
+        local_values = (type*)malloc(writeSet->local_threads * sizeof(type));                      \
+        aggregated_values = (type*)malloc(writeSet->local_items * sizeof(type));                   \
+        UTILS_ASSERT(local_values);                                                                \
+        UTILS_ASSERT(aggregated_values);                                                           \
+                                                                                                   \
+        if (writeSet->my_rank == 0)                                                                \
+        {                                                                                          \
+            /* Array of all values for one metric for one callpath for all locations */            \
+            global_values = (type*)malloc(writeSet->global_items * sizeof(type));                  \
+                                                                                                   \
+            /* Initialize writing of a new metric */                                               \
+            cube_set_known_cnodes_for_metric(writeSet->my_cube, metric,                            \
+                                             (char*)writeSet->bit_vector);                         \
+        }                                                                                          \
+        /* Iterate over all unified callpathes */                                                  \
+        for (uint64_t cp_index = 0; cp_index < writeSet->callpath_number; cp_index++)              \
+        {                                                                                          \
+            if (!SCOREP_Bitstring_IsSet(writeSet->bit_vector, cp_index))                           \
+            {                                                                                      \
+                continue;                                                                          \
+            }                                                                                      \
+            for (uint64_t thread_index = 0;                                                        \
+                 thread_index < writeSet->local_threads; thread_index++)                           \
+            {                                                                                      \
+                uint64_t node_index = thread_index * writeSet->callpath_number + cp_index;         \
+                node = writeSet->id_2_node[node_index];                                            \
+                if (node != NULL)                                                                  \
+                {                                                                                  \
+                    local_values[thread_index] = getValue(node, funcData);                         \
+                }                                                                                  \
+                else                                                                               \
+                {                                                                                  \
+                    local_values[thread_index] = zero;                                             \
+                }                                                                                  \
+            }                                                                                      \
+            scorep_profile_aggregate_##type(&local_values,                                         \
+                                            &aggregated_values,                                    \
+                                            writeSet);                                             \
+            /* Collect data from all processes */                                                  \
+            SCOREP_IpcGroup_Barrier(comm);                                                         \
+            if (writeSet->same_thread_num)                                                         \
+            {                                                                                      \
+                SCOREP_IpcGroup_Gather(comm, aggregated_values, global_values,                     \
+                                       writeSet->local_items* NUMBER,                              \
+                                       SCOREP_IPC_##TYPE, 0);                                      \
+            }                                                                                      \
+            else                                                                                   \
+            {                                                                                      \
+                uint32_t* items_per_rank = writeSet->items_per_rank;                               \
+                if (my_rank == 0)                                                                  \
+                {                                                                                  \
+                    items_per_rank = (uint32_t*)malloc(writeSet->ranks_number * sizeof(uint32_t)); \
+                    UTILS_ASSERT(items_per_rank);                                                  \
+                    for (uint32_t rank = 0; rank < writeSet->ranks_number; rank++)                 \
+                    {                                                                              \
+                        items_per_rank[rank] = writeSet->items_per_rank[rank] * NUMBER;            \
+                    }                                                                              \
+                }                                                                                  \
+                SCOREP_IpcGroup_Gatherv(comm,                                                      \
+                                        aggregated_values,                                         \
+                                        writeSet->local_items* NUMBER,                             \
+                                        global_values, items_per_rank,                             \
+                                        SCOREP_IPC_##TYPE, 0);                                     \
+                if (NUMBER != 1)                                                                   \
+                {                                                                                  \
+                    free(items_per_rank);                                                          \
+                }                                                                                  \
+            }                                                                                      \
+                                                                                                   \
+            /* Write data for one callpath */                                                      \
+            if (writeSet->my_rank == 0)                                                            \
+            {                                                                                      \
+                cnode = cube_get_cnode(writeSet->my_cube, cp_index);                               \
+                cube_write_sev_row_of_##cube_type(writeSet->my_cube, metric,                       \
+                                                  cnode, global_values);                           \
+            }                                                                                      \
+        }                                                                                          \
+                                                                                                   \
+        /* Clean up */                                                                             \
+        free(global_values);                                                                       \
+        free(local_values);                                                                        \
+        free(aggregated_values);                                                                   \
+    }
 
 /* *INDENT-ON* */
 
