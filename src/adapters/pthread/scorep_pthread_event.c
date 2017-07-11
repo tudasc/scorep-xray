@@ -209,6 +209,13 @@ cleanup_handler( void* arg )
 
     UTILS_DEBUG_ENTRY();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        UTILS_DEBUG_EXIT();
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     SCOREP_Location*              location = arg;
     scorep_pthread_location_data* data     =
         SCOREP_Location_GetSubsystemData( location, scorep_pthread_subsystem_id );
