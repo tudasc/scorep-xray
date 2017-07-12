@@ -474,7 +474,7 @@ UTILS_IO_FileCopy( const char* sourceFileName, const char* destFileName )
         return PACKAGE_ERROR_FILE_CAN_NOT_OPEN;
     }
 
-    while ( size = fread( buf, 1, BUFSIZ, source ) )
+    while ( ( size = fread( buf, 1, BUFSIZ, source ) ) )
     {
         fwrite( buf, 1, size, dest );
     }
