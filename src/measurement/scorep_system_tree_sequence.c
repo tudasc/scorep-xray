@@ -79,7 +79,7 @@ typedef struct
 typedef struct
 {
     mapping_data* data[ 2 ];   /* Matrix with two rows of unequal length of mapping data */
-    uint64_t      length[ 2 ]; /* Length of the rows n the data matrix */
+    uint64_t      length[ 2 ]; /* Length of the rows in the data matrix */
 } hierarchical_map_data;
 
 /**
@@ -362,6 +362,8 @@ static inline int64_t
 compare_system_tree_structure( scorep_system_tree_seq* a,
                                scorep_system_tree_seq* b )
 {
+    UTILS_ASSERT( a );
+    UTILS_ASSERT( b );
     int64_t diff = a->seq_type - b->seq_type;
     if ( diff != 0 )
     {
@@ -917,15 +919,19 @@ get_next_parent_comm( SCOREP_Ipc_Group* currentComm,
                                   SCOREP_IpcGroup_GetRank( currentComm ) );
 }
 
+/**
+ * Merges all children from @a source into @a destination and creates the @a mappings.
+ * @param mapping     Returns the mapping data for source.
+ * @param destination The sequence definition node into that the children of
+ *                    @a source are merged.
+ * @param source      The sequence definitions from which the children are merged into
+ *                    @a destination.
+ */
 static void
 merge_children( mapping_data*           mapping,
                 scorep_system_tree_seq* destination,
                 scorep_system_tree_seq* source )
 {
-    /* Assertion conclusion that all elements we gathered branch only in the next level
-       Only the destination may have more than one child from former merges. */
-    UTILS_ASSERT( source->num_children == 1 );
-
     uint64_t num_add = 0;
 
     /* Try to find for all children a match */
@@ -937,8 +943,8 @@ merge_children( mapping_data*           mapping,
                                                       source->children[ j ] );
         if ( diff == 0 ) /* Both match */
         {
-            mapping->node_id                        = destination->children[ i ]->node_id;
-            mapping->index                          = destination->children[ i ]->num_copies;
+            mapping[ j ].node_id                    = destination->children[ i ]->node_id;
+            mapping[ j ].index                      = destination->children[ i ]->num_copies;
             destination->children[ i ]->num_copies += source->children[ j ]->num_copies;
             free_system_tree_children( source->children[ j ] );
             source->children[ j ] = NULL;
@@ -965,37 +971,50 @@ merge_children( mapping_data*           mapping,
         scorep_system_tree_seq** new_children = malloc( num_add * sizeof( scorep_system_tree_seq* ) );
         UTILS_ASSERT( new_children );
 
-        mapping->node_id = source->children[ 0 ]->node_id;
-        mapping->index   = 0;
-
         j = 0;
         for ( uint64_t i = 0, k = 0; k < num_add; k++ )
         {
+            /* The current source child had a match and was already merged.
+               Continue with the next child from source. */
+            while ( source->children[ j ] == NULL && j < source->num_children )
+            {
+                j++;
+            }
+
+            /* If all children are merged already simply copy the remaining
+               children from the old destination to the new destination. */
             if ( j >= source->num_children )
             {
                 new_children[ k ] = destination->children[ i ];
                 i++;
             }
-            else if ( source->children[ j ] == NULL )
-            {
-                j++;
-            }
+            /* All children from the old destination are already in the new copy.
+               Copy the remaining children from the source. */
             else if ( i >= destination->num_children )
             {
-                new_children[ k ] = source->children[ j ];
+                new_children[ k ]    = source->children[ j ];
+                mapping[ j ].node_id = source->children[ j ]->node_id;
+                mapping[ j ].index   = 0;
                 j++;
             }
+            /* The current child from the old destination is smaller,
+               thus, copy it. */
             else if ( compare_system_tree_structure( destination->children[ i ],
                                                      source->children[ j ] ) < 0 )
             {
                 new_children[ k ] = destination->children[ i ];
                 i++;
             }
+            /* The remaining case is that the source is smaller,
+               thus, copy it. */
             else
             {
-                new_children[ k ] = source->children[ j ];
+                new_children[ k ]    = source->children[ j ];
+                mapping[ j ].node_id = source->children[ j ]->node_id;
+                mapping[ j ].index   = 0;
                 j++;
             }
+            UTILS_ASSERT( new_children[ k ] );
         }
 
         free( destination->children );
@@ -1129,8 +1148,10 @@ distribute_global_system_tree_seq( scorep_system_tree_seq* input )
 static void
 restore_parent( scorep_system_tree_seq* root )
 {
+    UTILS_ASSERT( root );
     for ( uint64_t i = 0; i < root->num_children; i++ )
     {
+        UTILS_ASSERT( root->children );
         root->children[ i ]->parent = root;
         restore_parent( root->children[ i ] );
     }
