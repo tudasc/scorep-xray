@@ -2085,14 +2085,14 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
                           SCOREP_IPC_SUM );
     if ( has_cluster_global == 0 )
     {
-        if ( writeData->my_rank == 0 )
+        if ( writeData->my_rank == writeData->root_rank )
         {
             cube_def_attr( writeData->my_cube, "CLUSTERING", "OFF" );
         }
         return; /* No clusters */
     }
 
-    if ( writeData->my_rank == 0 )
+    if ( writeData->my_rank == writeData->root_rank )
     {
         cube_def_attr( writeData->my_cube, "CLUSTERING", "ON" );
 
@@ -2113,7 +2113,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
     /* Create mapping from cluster number to Cube's cnode id.
        Clusters are enumerated from 1 to n.
        Cluster number 0 means invalid cluster */
-    if ( writeData->my_rank == 0 )
+    if ( writeData->my_rank == writeData->root_rank )
     {
         SCOREP_CallpathHandle handle =
             SCOREP_CallpathHandle_GetUnified( root->callpath_handle );
@@ -2138,7 +2138,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
                           1, SCOREP_IPC_UINT32_T,
                           SCOREP_IPC_MAX );
 
-    if ( writeData->my_rank == 0 )
+    if ( writeData->my_rank == writeData->root_rank )
     {
         sprintf( value, "%" PRIu32, global_it_count );
         cube_def_attr( writeData->my_cube, "CLUSTER ITERATION COUNT", value );
@@ -2159,7 +2159,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
     /* Collect data to rank 0 */
     /* Variant that writes one iterations for all process in one line */
     uint32_t* line = NULL;
-    if ( writeData->my_rank == 0 )
+    if ( writeData->my_rank == writeData->root_rank )
     {
         line = ( uint32_t* )malloc( writeData->ranks_number * sizeof( uint32_t ) );
     }
@@ -2171,7 +2171,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
                            0 );
         SCOREP_Ipc_Barrier();
 
-        if ( writeData->my_rank == 0 )
+        if ( writeData->my_rank == writeData->root_rank )
         {
             /* Replace cluster number by cnode id
                cnode id 0 means that the iteations did not appear on this rank. */
@@ -2182,7 +2182,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
             cluster_write_line( writeData, i, writeData->ranks_number, line );
         }
     }
-    if ( writeData->my_rank == 0 )
+    if ( writeData->my_rank == writeData->root_rank )
     {
         free( line );
         free( cluster_ids );

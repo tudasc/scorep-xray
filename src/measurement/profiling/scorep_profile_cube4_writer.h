@@ -51,6 +51,7 @@ typedef struct
     /* available on all processes initialization */
     SCOREP_Profile_OutputFormat format;              /**< specifies the output format */
     uint32_t                    my_rank;             /**< This rank */
+    uint32_t                    root_rank;           /**< Rank that collects the data */
     uint32_t                    ranks_number;        /**< Number of ranks in COMM_WORLD */
     uint32_t                    local_threads;       /**< Number of threads in this rank */
     uint32_t                    local_items;         /**< Number of items from this rank */

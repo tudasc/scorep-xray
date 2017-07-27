@@ -78,8 +78,8 @@ typedef struct
  */
 typedef struct
 {
-    mapping_data* data[ 2 ];   /* Matrix with two rows of unequal length of mapping data */
-    uint64_t      length[ 2 ]; /* Length of the rows in the data matrix */
+    mapping_data* data[ 3 ];   /* Matrix with three rows of unequal length of mapping data */
+    uint64_t      length[ 3 ]; /* Length of the rows in the data matrix */
 } hierarchical_map_data;
 
 /**
@@ -1241,14 +1241,23 @@ hierarchical_reduce( SCOREP_Ipc_Group*        comm,
                      scorep_system_tree_seq** root,
                      uint64_t                 level )
 {
-    uint32_t size   = SCOREP_IpcGroup_GetSize( comm );
-    uint32_t rank   = SCOREP_IpcGroup_GetRank( comm );
-    uint32_t sender = 2 * rank + 1;
+    uint32_t size = SCOREP_IpcGroup_GetSize( comm );
+    uint32_t rank = SCOREP_IpcGroup_GetRank( comm );
 
     scorep_system_tree_seq* current          = get_node_at_level( *root, level );
     hierarchical_map_data*  mappings         = calloc( 1, sizeof( hierarchical_map_data ) );
     scorep_system_tree_seq* remote_root[ 2 ] = { NULL, NULL };
     UTILS_ASSERT( mappings );
+
+    /* Initialize own mapping */
+    mappings->length[ 0 ] = current->num_children;
+    mappings->data[ 0 ]   = calloc( current->num_children, sizeof( mapping_data ) );
+    UTILS_ASSERT( mappings->data[ 0 ] );
+    for ( int i = 0; i < current->num_children; i++ )
+    {
+        mappings->data[ 0 ][ i ].node_id = current->children[ i ]->node_id;
+        mappings->data[ 0 ][ i ].index   = 0;
+    }
 
     /* Receive data from children */
     for ( uint32_t i = 0; i <= 1; i++ )
@@ -1261,14 +1270,14 @@ hierarchical_reduce( SCOREP_Ipc_Group*        comm,
         remote_root[ i ] = receive_definitions( comm, sender );
         scorep_system_tree_seq* remote_current = get_node_at_level( remote_root[ i ], level );
 
-        mappings->length[ i ] = remote_current->num_children;
-        mappings->data[ i ]   = calloc( remote_current->num_children, sizeof( mapping_data ) );
-        UTILS_ASSERT( mappings );
+        mappings->length[ i + 1 ] = remote_current->num_children;
+        mappings->data[ i + 1 ]   = calloc( remote_current->num_children, sizeof( mapping_data ) );
+        UTILS_ASSERT( mappings->data[ i + 1 ] );
 
-        merge_children( mappings->data[ i ], current, remote_current );
+        merge_children( mappings->data[ i + 1 ], current, remote_current );
     }
     // Convert node numbers into indexes in the children array
-    for ( uint32_t i = 0; i <= 1; i++ )
+    for ( uint32_t i = 0; i < 3; i++ )
     {
         if ( mappings->data[ i ] != NULL )
         {
@@ -1348,28 +1357,26 @@ hierarchical_scatter( SCOREP_Ipc_Group*       comm,
             break;
         }
 
-        uint64_t* child_offsets = malloc( mappings->length[ i ] * sizeof( uint64_t ) );
+        uint64_t* child_offsets = malloc( mappings->length[ i + 1 ] * sizeof( uint64_t ) );
         SCOREP_IpcGroup_Send( comm, &parent, 1, SCOREP_IPC_UINT64_T, receiver );
-        for ( uint64_t j = 0; j < mappings->length[ i ]; j++ )
+        for ( uint64_t j = 0; j < mappings->length[ i + 1 ]; j++ )
         {
             // We know from the mappings on which position in the offsets
             // the corresponding node was. Thus, we can find the definitions
             // node from the offsets.
-            uint64_t                index   = ( mappings->data[ i ] )[ j ].node_id;
-            scorep_system_tree_seq* current = get_node_depth_first( root, offsets[ index ] );
+            uint64_t                node_id = ( mappings->data[ i + 1 ] )[ j ].node_id;
+            scorep_system_tree_seq* current = get_node_depth_first( root, offsets[ node_id ] );
             UTILS_ASSERT( current );
             uint64_t node_count = count_nodes( current ) / current->num_copies;
-            child_offsets[ j ] = offsets[ index ] + ( mappings->data[ i ] )[ j ].index * node_count;
+            child_offsets[ j ] = offsets[ node_id ] + ( mappings->data[ i + 1 ] )[ j ].index * node_count;
         }
-        send_offsets( comm, receiver, child_offsets, mappings->length[ i ] );
+        send_offsets( comm, receiver, child_offsets, mappings->length[ i + 1 ] );
         free( child_offsets );
     }
 
     /* Clean up */
-    uint64_t global_index = offsets[ 0 ];
+    uint64_t global_index = offsets[ mappings->data[ 0 ][ 0 ].node_id ];
     free( offsets );
-
-    // The first element am I
     return global_index;
 }
 
@@ -1548,18 +1555,21 @@ create_rank_mappings( void )
     uint32_t  size;
     uint32_t* rank_mappings = NULL;
     uint32_t  rank          = SCOREP_Ipc_GetRank();
+    uint32_t  root;
     if ( rank == 0 )
     {
         size          = SCOREP_Ipc_GetSize();
         rank_mappings = malloc( size * sizeof( uint32_t ) );
         UTILS_ASSERT( rank_mappings );
+        root = SCOREP_IpcGroup_GetRank( depth_order_comm );
     }
+    SCOREP_Ipc_Bcast( &root, 1, SCOREP_IPC_UINT32_T, 0 );
     SCOREP_IpcGroup_Gather( depth_order_comm,
                             &rank,
                             rank_mappings,
                             1,
                             SCOREP_IPC_UINT32_T,
-                            0 );
+                            root );
     return rank_mappings;
 }
 
