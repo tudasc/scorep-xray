@@ -93,10 +93,9 @@ various Score-P components.
     function definition by Score-P.
 
   - When using any of the intrinsics headers from GCC (e.g.,
-    xmmintrin.h and friends), than, from GCC version 4.6 onwards, it
-    is known that the result of the compiler instrumentation will fail
-    at link time because of undefined reference. A work around is to
-    pass
+    xmmintrin.h and friends), than, from GCC version 4.6 onwards and up to 5.4
+    and 6.3, it is known that the result of the compiler instrumentation will
+    fail at link time because of undefined reference. A work around is to pass
 
       -finstrument-functions-exclude-file-list=intrin.h
 
