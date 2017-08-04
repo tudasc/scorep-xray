@@ -1344,10 +1344,12 @@ thread_begin( SCOREP_Location*                 location,
               SCOREP_InterimCommunicatorHandle threadTeam,
               uint32_t                         createSequenceCount )
 {
+    uint64_t* metric_values = SCOREP_Metric_Read( location );
+
     SCOREP_Profile_Enter( location,
                           timestamp,
                           thread_create_wait_regions,
-                          0 );
+                          metric_values );
 }
 
 
@@ -1368,10 +1370,12 @@ thread_end( SCOREP_Location*                 location,
             SCOREP_InterimCommunicatorHandle threadTeam,
             uint32_t                         createSequenceCount )
 {
+    uint64_t* metric_values = SCOREP_Metric_Read( location );
+
     SCOREP_Profile_Exit( location,
                          timestamp,
                          thread_create_wait_regions,
-                         0 );
+                         metric_values );
 }
 
 
