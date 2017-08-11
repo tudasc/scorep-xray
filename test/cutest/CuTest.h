@@ -161,7 +161,7 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 #define CuAssertIntEquals( tc, ex, ac )           CuAssertIntEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
 #define CuAssertIntEqualsMsg( tc, ms, ex, ac )    CuAssertIntEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ) )
 #define CuAssertDblEquals( tc, ex, ac, dl )       CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ), ( dl ) )
-#define CuAssertDblEqualsMsg( tc, ms, ex, ac, dl )CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ), ( dl ) )
+#define CuAssertDblEqualsMsg( tc, ms, ex, ac, dl ) CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ), ( dl ) )
 #define CuAssertPtrEquals( tc, ex, ac )           CuAssertPtrEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
 #define CuAssertPtrEqualsMsg( tc, ms, ex, ac )    CuAssertPtrEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ) )
 
