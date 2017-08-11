@@ -347,6 +347,35 @@ CuAssertIntEquals_LineMsg( CuTest*     tc,
     CuFail_Line( tc, file, line, message, buf );
 }
 
+
+void
+CuAssertIntNotEquals_LineMsg( CuTest*     tc,
+                              const char* file,
+                              int         line,
+                              const char* message,
+                              int         notExpected,
+                              int         actual )
+{
+    char buf[ STRING_MAX ];
+    int  success = 0;
+
+    if ( notExpected != actual )
+    {
+        success = 1;
+    }
+
+    tc->failedLocally = !success;
+
+    tc->testAllreduce( &success );
+    if ( success )
+    {
+        return;
+    }
+
+    sprintf( buf, "Not expected <%d> but was <%d>", notExpected, actual );
+    CuFail_Line( tc, file, line, message, buf );
+}
+
 void
 CuAssertDblEquals_LineMsg( CuTest*     tc,
                            const char* file,

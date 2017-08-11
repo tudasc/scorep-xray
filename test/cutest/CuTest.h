@@ -122,6 +122,14 @@ CuAssertIntEquals_LineMsg( CuTest*     tc,
                            const char* message,
                            int         expected,
                            int         actual );
+
+void
+CuAssertIntNotEquals_LineMsg( CuTest*     tc,
+                              const char* file,
+                              int         line,
+                              const char* message,
+                              int         notExpected,
+                              int         actual );
 void
 CuAssertDblEquals_LineMsg( CuTest*     tc,
                            const char* file,
@@ -148,10 +156,12 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 
 #define CuAssertStrEquals( tc, ex, ac )           CuAssertStrEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
 #define CuAssertStrEqualsMsg( tc, ms, ex, ac )    CuAssertStrEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ) )
+#define CuAssertIntNotEquals( tc, nex, ac )        CuAssertIntNotEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( nex ), ( ac ) )
+#define CuAssertIntNotEqualsMsg( tc, ms, nex, ac ) CuAssertIntNotEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( nex ), ( ac ) )
 #define CuAssertIntEquals( tc, ex, ac )           CuAssertIntEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
 #define CuAssertIntEqualsMsg( tc, ms, ex, ac )    CuAssertIntEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ) )
-#define CuAssertDblEquals( tc, ex, ac, dl )        CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ), ( dl ) )
-#define CuAssertDblEqualsMsg( tc, ms, ex, ac, dl ) CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ), ( dl ) )
+#define CuAssertDblEquals( tc, ex, ac, dl )       CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ), ( dl ) )
+#define CuAssertDblEqualsMsg( tc, ms, ex, ac, dl )CuAssertDblEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ), ( dl ) )
 #define CuAssertPtrEquals( tc, ex, ac )           CuAssertPtrEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
 #define CuAssertPtrEqualsMsg( tc, ms, ex, ac )    CuAssertPtrEquals_LineMsg( ( tc ), __FILE__, __LINE__, ( ms ), ( ex ), ( ac ) )
 
