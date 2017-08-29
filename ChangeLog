@@ -7,7 +7,7 @@ Major features:
 Features and improvements:
 
 - Provided the option to use sequence definitions for the system tree.
-  They provide a constant sizs system tree description. The trade-off
+  They provide a constant size system tree description. The trade-off
   is the loss of individual names and properties for locations,
   location groups and system tree nodes. Currently supported only for
   MPI.
