@@ -905,7 +905,7 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_to_scorep_handle( pomp_current_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -927,9 +927,10 @@ POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
         SCOREP_Opari2_Openmp_Region* region = *( SCOREP_Opari2_Openmp_Region** )pomp_handle;
-        SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
-                                         region->innerBlock,
-                                         pomp2_decode_task_handle( pomp_current_task ) );
+        pomp_current_task = scorep_to_pomp2_handle(
+            SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
+                                             region->innerBlock,
+                                             pomp2_decode_task_handle( pomp_current_task ) ) );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
