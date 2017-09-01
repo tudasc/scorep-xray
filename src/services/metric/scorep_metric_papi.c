@@ -1157,7 +1157,7 @@ scorep_metric_papi_get_metric_name( SCOREP_Metric_EventSet* eventSet,
  *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
- *  @return Returns a description of the unit of requested metric.
+ *  @return Returns a description of the requested metric.
  */
 static const char*
 scorep_metric_papi_get_metric_description( SCOREP_Metric_EventSet* eventSet,
