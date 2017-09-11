@@ -385,7 +385,7 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
     else
     {
         /*
-         * Add compiler instrumentation cflags, because we encaountered a
+         * Add compiler instrumentation cflags, because we encountered a
          * case on JUQUEEN with the XLC compiler, that performed
          * rebuilding of code during linking on high optimization
          * levels. If the link command does not contain compiler
