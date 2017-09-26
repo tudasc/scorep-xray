@@ -1042,6 +1042,7 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
         cube_def_attr( write_set.my_cube, "Creator", "Score-P " PACKAGE_VERSION );
         cube_def_attr( write_set.my_cube, "CUBE_CT_AGGR", "SUM" );
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
+        cube_def_mirror( write_set.my_cube, "http://www.vi-hps.org/upload/packages/scorep/" );
 
         if ( SCOREP_IsUnwindingEnabled() )
         {
