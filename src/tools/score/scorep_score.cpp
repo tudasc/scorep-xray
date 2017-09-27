@@ -55,11 +55,11 @@ int
 main( int    argc,
       char** argv )
 {
-    string   file_name;
-    string   filter_file;
-    uint64_t dense_num    = 0;
-    bool     show_regions = false;
-    bool     use_mangled  = false;
+    string  file_name;
+    string  filter_file;
+    int64_t dense_num    = 0;
+    bool    show_regions = false;
+    bool    use_mangled  = false;
 
     //--------------------------------------- Parameter options parsing
 
