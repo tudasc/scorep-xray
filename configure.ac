@@ -250,6 +250,9 @@ if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     AX_CONFIG_SUBDIR([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_otf2_config_arg}])
 fi
 
+adl_RECURSIVE_EVAL([${docdir}], [DOCDIR])
+AC_SUBST([DOCDIR])
+
 AC_CONFIG_FILES([
     Makefile
     src/config-common.h:vendor/common/build-config/config-common.h

@@ -1,3 +1,9 @@
+<doc>
+    <mirrors>
+        <murl>file://@DOCDIR@/profile/</murl>
+        <murl>http://www.vi-hps.org/upload/packages/scorep/</murl>
+    </mirrors>
+</doc>
 <metrics>
     <metric>
         <!-- This metric is copied from the summary profile -->
