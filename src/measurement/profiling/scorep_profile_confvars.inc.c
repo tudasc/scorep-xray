@@ -152,7 +152,7 @@ static const SCOREP_ConfigType_SetEntry profile_format_table[] = {
 static const SCOREP_ConfigType_SetEntry profile_clustering_mode_table[] = {
     {
         "none/0",
-        SCOREP_PROFILE_CLUSTER_SUBTREE,
+        SCOREP_PROFILE_CLUSTER_NONE,
         "No structural similarity required."
     },
     {
