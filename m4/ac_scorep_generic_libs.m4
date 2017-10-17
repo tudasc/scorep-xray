@@ -204,10 +204,8 @@ dnl sets with_[$2_]$1_include and with_[$2_]$1_lib to (yes|no|path/(include|lib)
 AS_IF([test "x${with_$2[]$1}" = "xyes"], [with_$2[]$1_include="yes"; with_$2[]$1_lib="yes"],
       [test "x${with_$2[]$1}" = "xno"],  [with_$2[]$1_include="no";  with_$2[]$1_lib="no"],
       [with_$2[]$1_include="${with_$2[]$1}/include"
-       AS_IF([test "x${build_cpu}" = "xx86_64"],
-             [AS_IF([test -d "${with_$2[]$1}/lib64"],
-                    [with_$2[]$1_lib="${with_$2[]$1}/lib64"],
-                    [with_$2[]$1_lib="${with_$2[]$1}/lib"])],
+       AS_IF([test -d "${with_$2[]$1}/lib64"],
+             [with_$2[]$1_lib="${with_$2[]$1}/lib64"],
              [with_$2[]$1_lib="${with_$2[]$1}/lib"])])
 ])
 
