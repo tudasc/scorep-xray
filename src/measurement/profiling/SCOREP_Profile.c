@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -93,6 +93,10 @@ SCOREP_ParameterHandle scorep_profile_param_instance = SCOREP_INVALID_PARAMETER;
 
 /* *INDENT-OFF* */
 static void parameter_uint64( SCOREP_Location* thread, uint64_t timestamp, SCOREP_ParameterHandle param, uint64_t value );
+static void trigger_sparse_integer_at_enter( SCOREP_Location* thread, SCOREP_MetricHandle metric, uint64_t value );
+static void trigger_sparse_integer_at_exit( SCOREP_Location* thread, SCOREP_MetricHandle metric, uint64_t value );
+static void trigger_sparse_double_at_enter( SCOREP_Location* thread, SCOREP_MetricHandle metric, double value );
+static void trigger_sparse_double_at_exit( SCOREP_Location* thread, SCOREP_MetricHandle metric, double value );
 /* *INDENT-ON* */
 
 static inline void
@@ -825,7 +829,9 @@ enter_region( SCOREP_Location*    location,
                           regionHandle,
                           metricValues );
 
-    SCOREP_Metric_WriteToProfile( location );
+    SCOREP_Metric_WriteToProfile( location,
+                                  trigger_sparse_integer_at_enter,
+                                  trigger_sparse_double_at_enter );
 }
 
 
@@ -845,7 +851,9 @@ exit_region( SCOREP_Location*    location,
              SCOREP_RegionHandle regionHandle,
              uint64_t*           metricValues )
 {
-    SCOREP_Metric_WriteToProfile( location );
+    SCOREP_Metric_WriteToProfile( location,
+                                  trigger_sparse_integer_at_exit,
+                                  trigger_sparse_double_at_exit );
 
     SCOREP_Profile_Exit( location,
                          timestamp,
@@ -1024,9 +1032,40 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
         return;
     }
 
-    scorep_profile_trigger_int64( location, metric, value, node );
+    scorep_profile_trigger_int64( location, metric, value, node,
+                                  SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
 
+
+static void
+trigger_sparse_integer_at_enter( SCOREP_Location*    thread,
+                                 SCOREP_MetricHandle metric,
+                                 uint64_t            value )
+{
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
+    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
+    scorep_profile_trigger_int64( location, metric, value, node,
+                                  SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
+}
+
+
+static void
+trigger_sparse_integer_at_exit( SCOREP_Location*    thread,
+                                SCOREP_MetricHandle metric,
+                                uint64_t            value )
+{
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
+    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
+    if ( node == NULL )
+    {
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Metric triggered outside of a region." );
+        SCOREP_PROFILE_STOP( location );
+        return;
+    }
+    scorep_profile_trigger_int64( location, metric, value, node,
+                                  SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
+}
 
 /**
    Called when a user metric / atomic / context event for unsigned integer values was triggered.
@@ -1122,7 +1161,39 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
         return;
     }
 
-    scorep_profile_trigger_double( location, metric, value, node );
+    scorep_profile_trigger_double( location, metric, value, node,
+                                   SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
+}
+
+
+static void
+trigger_sparse_double_at_enter( SCOREP_Location*    thread,
+                                SCOREP_MetricHandle metric,
+                                double              value )
+{
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
+    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
+    scorep_profile_trigger_double( location, metric, value, node,
+                                   SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
+}
+
+
+static void
+trigger_sparse_double_at_exit( SCOREP_Location*    thread,
+                               SCOREP_MetricHandle metric,
+                               double              value )
+{
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
+    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
+    if ( node == NULL )
+    {
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Metric triggered outside of a region." );
+        SCOREP_PROFILE_STOP( location );
+        return;
+    }
+    scorep_profile_trigger_double( location, metric, value, node,
+                                   SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
 }
 
 
@@ -1479,7 +1550,8 @@ leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
     UTILS_ASSERT( substrateData );
     leaked_memory_memento* leak = substrateData[ scorep_profile_substrate_id ];
     UTILS_ASSERT( leak );
-    scorep_profile_trigger_int64( leak->location, bytes_leaked_metric, bytesLeaked, leak->node );
+    scorep_profile_trigger_int64( leak->location, bytes_leaked_metric, bytesLeaked, leak->node,
+                                  SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
 
 

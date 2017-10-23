@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -57,16 +57,18 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
                      uint64_t*                    metrics );
 
 void
-scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
-                              SCOREP_MetricHandle          metric,
-                              uint64_t                     value,
-                              scorep_profile_node*         node );
+scorep_profile_trigger_int64( SCOREP_Profile_LocationData*         location,
+                              SCOREP_MetricHandle                  metric,
+                              uint64_t                             value,
+                              scorep_profile_node*                 node,
+                              scorep_profile_trigger_update_scheme scheme );
 
 void
-scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
-                                SCOREP_MetricHandle          metric,
-                                double                       value,
-                                scorep_profile_node*         node );
+scorep_profile_trigger_double(  SCOREP_Profile_LocationData*         location,
+                                SCOREP_MetricHandle                  metric,
+                                double                               value,
+                                scorep_profile_node*                 node,
+                                scorep_profile_trigger_update_scheme scheme );
 
 
 #endif /* SCOREP_PROFILE_EVENT_BASE_H */

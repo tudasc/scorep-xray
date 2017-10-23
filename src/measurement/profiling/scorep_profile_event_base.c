@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 
 #include <config.h>
 
+#include "scorep_profile_event_base.h"
 #include <UTILS_Error.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
@@ -193,10 +194,11 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
 
 void
-scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
-                              SCOREP_MetricHandle          metric,
-                              uint64_t                     value,
-                              scorep_profile_node*         node )
+scorep_profile_trigger_int64( SCOREP_Profile_LocationData*         location,
+                              SCOREP_MetricHandle                  metric,
+                              uint64_t                             value,
+                              scorep_profile_node*                 node,
+                              scorep_profile_trigger_update_scheme scheme )
 {
     scorep_profile_sparse_metric_int* current = NULL;
     scorep_profile_sparse_metric_int* next    = NULL;
@@ -206,7 +208,7 @@ scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
     if ( next == NULL )
     {
         node->first_int_sparse = scorep_profile_create_sparse_int( location,
-                                                                   metric, value );
+                                                                   metric, value, scheme );
         return;
     }
 
@@ -216,7 +218,7 @@ scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
         current = next;
         if ( current->metric == metric )
         {
-            scorep_profile_update_sparse_int( current, value );
+            scorep_profile_update_sparse_int( current, value, scheme );
             return;
         }
         next = current->next_metric;
@@ -224,14 +226,15 @@ scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
     while ( next != NULL );
 
     /* Append new sparse metric */
-    current->next_metric = scorep_profile_create_sparse_int( location, metric, value );
+    current->next_metric = scorep_profile_create_sparse_int( location, metric, value, scheme );
 }
 
 void
-scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
-                                SCOREP_MetricHandle          metric,
-                                double                       value,
-                                scorep_profile_node*         node )
+scorep_profile_trigger_double(  SCOREP_Profile_LocationData*         location,
+                                SCOREP_MetricHandle                  metric,
+                                double                               value,
+                                scorep_profile_node*                 node,
+                                scorep_profile_trigger_update_scheme scheme )
 {
     scorep_profile_sparse_metric_double* current = NULL;
     scorep_profile_sparse_metric_double* next    = NULL;
@@ -240,7 +243,7 @@ scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
     next = node->first_double_sparse;
     if ( next == NULL )
     {
-        node->first_double_sparse = scorep_profile_create_sparse_double( location, metric, value );
+        node->first_double_sparse = scorep_profile_create_sparse_double( location, metric, value, scheme );
         return;
     }
 
@@ -248,9 +251,9 @@ scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
     do
     {
         current = next;
-        if ( current->handle == metric )
+        if ( current->metric == metric )
         {
-            scorep_profile_update_sparse_double( current, value );
+            scorep_profile_update_sparse_double( current, value, scheme );
             return;
         }
         next = current->next_metric;
@@ -258,5 +261,5 @@ scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
     while ( next != NULL );
 
     /* Append new sparse metric */
-    current->next_metric = scorep_profile_create_sparse_double( location, metric, value );
+    current->next_metric = scorep_profile_create_sparse_double( location, metric, value, scheme );
 }

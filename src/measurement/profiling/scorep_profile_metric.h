@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -42,6 +42,21 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Profile.h>
+
+
+/*
+ * Sparse metrics can be passed to the profiling substrate as-is,
+ * e.g., MPI bytes_sent, malloc-size, etc., or as an enter-exit pair
+ * where the diffenrence of exit_value - enter_value (>0) is used for
+ * the sparse metric, e.g., SYNC metrics provided by the metrics service.
+ */
+typedef enum scorep_profile_trigger_update_scheme
+{
+    SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE,
+    SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE,
+    SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS,
+    SCOREP_PROFILE_TRIGGER_UPDATE_INVALID
+} scorep_profile_trigger_update_scheme;
 
 /* **************************************************************************************
    Metric types
@@ -73,7 +88,9 @@ typedef struct
 typedef struct scorep_profile_sparse_metric_int_struct
 {
     SCOREP_MetricHandle                             metric;
+    bool                                            start_value_set;
     uint64_t                                        count;
+    uint64_t                                        start_value;
     uint64_t                                        sum;
     uint64_t                                        min;
     uint64_t                                        max;
@@ -88,8 +105,10 @@ typedef struct scorep_profile_sparse_metric_int_struct
  */
 typedef struct scorep_profile_sparse_metric_double_struct
 {
-    SCOREP_AnyHandle                                   handle;
+    SCOREP_MetricHandle                                metric;
+    bool                                               start_value_set;
     uint64_t                                           count;
+    double                                             start_value;
     double                                             sum;
     double                                             min;
     double                                             max;
@@ -165,11 +184,13 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
  * @param location Pointer to the location data of the creatin thread.
  * @param metric The handle of the metric definition for the recorded values.
  * @param value  The first sample for the recorded statistics.
+ * @param scheme The update scheme.
  */
 scorep_profile_sparse_metric_int*
-scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
-                                  SCOREP_MetricHandle          metric,
-                                  uint64_t                     value );
+scorep_profile_create_sparse_int( SCOREP_Profile_LocationData*         location,
+                                  SCOREP_MetricHandle                  metric,
+                                  uint64_t                             value,
+                                  scorep_profile_trigger_update_scheme scheme );
 
 /**
  * Copy constructor for sparse metric for integer values. It allocates memory for a new
@@ -187,10 +208,12 @@ scorep_profile_copy_sparse_int( SCOREP_Profile_LocationData*      location,
  * added to the statistics of @a metric.
  * @param metric Pointer to the metric instance for which the new value is recorded.
  * @param value  The sample of the metric which is added to the statistics.
+ * @param scheme The update scheme.
  */
 void
-scorep_profile_update_sparse_int( scorep_profile_sparse_metric_int* metric,
-                                  uint64_t                          value );
+scorep_profile_update_sparse_int( scorep_profile_sparse_metric_int*    metric,
+                                  uint64_t                             value,
+                                  scorep_profile_trigger_update_scheme scheme );
 
 /**
  *  Merges the statistics of a metric to another metric. Adds the statistics from
@@ -215,11 +238,13 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
  * @param location Pointer to the location data of the creatin thread.
  * @param metric The handle of the metric definition for the recorded values.
  * @param value  The first sample for the recorded statistics.
+ * @param scheme The update scheme.
  */
 scorep_profile_sparse_metric_double*
-scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
-                                     SCOREP_AnyHandle             handle,
-                                     double                       value );
+scorep_profile_create_sparse_double( SCOREP_Profile_LocationData*         location,
+                                     SCOREP_AnyHandle                     handle,
+                                     double                               value,
+                                     scorep_profile_trigger_update_scheme scheme );
 
 /**
  * Copy constructor for sparse metric for double values. It allocates memory for a new
@@ -237,10 +262,12 @@ scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location
  * added to the statistics of @a metric.
  * @param metric Pointer to the metric instance for which the new value is recorded.
  * @param value  The sample of the metric which is added to the statistics.
+ * @param scheme The update scheme.
  */
 void
 scorep_profile_update_sparse_double( scorep_profile_sparse_metric_double* metric,
-                                     double                               value );
+                                     double                               value,
+                                     scorep_profile_trigger_update_scheme scheme );
 
 /**
  *  Merges the statistics of a metric to another metric. Adds the statistics from

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
@@ -168,11 +168,13 @@ scorep_profile_update_task_metrics( SCOREP_Profile_LocationData* location )
         scorep_profile_trigger_int64( location,
                                       scorep_profile_migration_loss_metric,
                                       loss,
-                                      scorep_profile_get_current_node( location ) );
+                                      scorep_profile_get_current_node( location ),
+                                      SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
         scorep_profile_trigger_int64( location,
                                       scorep_profile_migration_win_metric,
                                       location->migration_win,
-                                      scorep_profile_get_current_node( location ) );
+                                      scorep_profile_get_current_node( location ),
+                                      SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 
         location->migration_sum = 0;
         location->migration_win = 0;

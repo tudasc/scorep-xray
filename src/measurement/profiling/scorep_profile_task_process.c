@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013
+ * Copyright (c) 2009-2012, 2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -88,7 +88,8 @@ visit_to_switches( scorep_profile_node* node,
     scorep_profile_trigger_int64( ( SCOREP_Profile_LocationData* )param,
                                   switches_metric,
                                   node->count,
-                                  node );
+                                  node,
+                                  SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
     node->count = 0;
 }
 

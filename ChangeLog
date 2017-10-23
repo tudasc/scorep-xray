@@ -39,6 +39,9 @@ Bugfixes:
   the individual compute nodes. This resulted in a system tree with a
   single node parenting all processes instead of several nodes
   parenting subsets of processes.
+- Recording of synchrounous metrics (SCOREP_METRIC_SYNC), i.e.,
+  per-process metrics or metrics provided by a 'sync' plugin, resulted
+  in wrong values in profiling mode. Fixed.
 
 ------------------- Released version 3.1 -----------------------------
 

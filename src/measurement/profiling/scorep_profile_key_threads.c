@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Technische Universität Darmstadt, Darmstadt, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -253,7 +256,8 @@ add_num_threads_metric( scorep_profile_node* node, void* param )
         scorep_profile_trigger_int64( ( SCOREP_Profile_LocationData* )param,
                                       number_of_threads_metric,
                                       1,
-                                      node );
+                                      node,
+                                      SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
     }
 }
 

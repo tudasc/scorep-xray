@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -699,7 +699,7 @@ scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
     {
         dest_sparse_double = destination->first_double_sparse;
         while ( ( dest_sparse_double != NULL ) &&
-                ( dest_sparse_double->handle != source_sparse_double->handle ) )
+                ( dest_sparse_double->metric != source_sparse_double->metric ) )
         {
             dest_sparse_double = dest_sparse_double->next_metric;
         }

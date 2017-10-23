@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -136,11 +136,6 @@ struct SCOREP_Metric_LocationSynchronousMetricSet
 
     /** Flag to indicate whether value of metric was updated recently */
     bool* is_update_available;
-
-    /** Last written value of a specific metric. Used by
-     *  SCOREP_Profile_Trigger* to calculate difference
-     *  between current and last metric value. */
-    uint64_t* last_written_value;
 
     /** Number of metrics contained in event sets */
     uint32_t metrics_counts[ SCOREP_NUMBER_OF_METRIC_SOURCES ];
@@ -705,15 +700,6 @@ initialize_location_metric_cb( SCOREP_Location* location,
                     = malloc( current_overall_number_of_metrics * sizeof( bool ) );
                 UTILS_ASSERT( current_location_metric_set->is_update_available );
 
-                /* This metric can be stored in the profile. The way synchronous metrics are stored in the profile
-                 * requires a buffer for the last written value of a metric. Next time this metric is written again,
-                 * the buffered value will be used too calculate difference between the last written value and the
-                 * recent one. 'last_written_value' is used as this buffer described above. */
-                current_location_metric_set->last_written_value
-                    = malloc( current_overall_number_of_metrics * sizeof( uint64_t ) );
-                UTILS_ASSERT( current_location_metric_set->last_written_value );
-                memset( current_location_metric_set->last_written_value, 0, current_overall_number_of_metrics * sizeof( uint64_t ) );
-
                 uint32_t recent_sampling_set_index = 0;
                 for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
                 {
@@ -1058,7 +1044,6 @@ finalize_location_metric_cb( SCOREP_Location* location,
             }
             free( location_synchronous_metric_set->sampling_sets );
             free( location_synchronous_metric_set->is_update_available );
-            free( location_synchronous_metric_set->last_written_value );
 
             /* Save pointer to currently handled metric set */
             sync_tmp = location_synchronous_metric_set;
@@ -1425,11 +1410,6 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                 current_location_metric_set->is_update_available
                     = malloc( current_overall_number_of_metrics * sizeof( bool ) );
                 UTILS_ASSERT( current_location_metric_set->is_update_available );
-
-                /* At the moment metrics of kind SCOREP_METRIC_PER_HOST and SCOREP_METRIC_ONCE
-                 * are not stored in the profile. Therefore, no buffer for old metric values
-                 * is required. */
-                current_location_metric_set->last_written_value = NULL;
 
                 uint32_t recent_sampling_set_index = 0;
                 for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
@@ -1857,7 +1837,9 @@ SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
 }
 
 void
-SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
+SCOREP_Metric_WriteToProfile( SCOREP_Location*                location,
+                              SCOREP_Profile_TriggerIntegerCb profileTriggerIntegerCb,
+                              SCOREP_Profile_TriggerDoubleCb  profileTriggerDoubleCb )
 {
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
@@ -1909,24 +1891,18 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
 
                     SCOREP_MetricValueType value_type =
                         SCOREP_MetricHandle_GetValueType( sampling_set->metric_handles[ 0 ] );
-                    uint64_t diff_int;
-                    double   diff_dbl;
                     switch ( value_type )
                     {
                         case SCOREP_METRIC_VALUE_INT64:
                         case SCOREP_METRIC_VALUE_UINT64:
-                            diff_int                                                                  = metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] - location_synchronous_metric_set->last_written_value[ sampling_set_index ];
-                            location_synchronous_metric_set->last_written_value[ sampling_set_index ] = metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ];
-                            SCOREP_Profile_TriggerInteger( location,
-                                                           sampling_set->metric_handles[ 0 ],
-                                                           diff_int );
+                            profileTriggerIntegerCb( location,
+                                                     sampling_set->metric_handles[ 0 ],
+                                                     metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] );
                             break;
                         case SCOREP_METRIC_VALUE_DOUBLE:
-                            diff_dbl                                                                  = ( double )metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] - ( double )location_synchronous_metric_set->last_written_value[ sampling_set_index ];
-                            location_synchronous_metric_set->last_written_value[ sampling_set_index ] = metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ];
-                            SCOREP_Profile_TriggerDouble( location,
-                                                          sampling_set->metric_handles[ 0 ],
-                                                          diff_dbl );
+                            profileTriggerDoubleCb( location,
+                                                    sampling_set->metric_handles[ 0 ],
+                                                    metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] );
                             break;
                         default:
                             UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -65,13 +65,34 @@ void
 SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
                             uint64_t         timestamp );
 
+
+/*
+ * A callback to be provided by the profiling substrate to obtain the
+ * current value of a unit64_t metric on a location.
+ */
+typedef void (* SCOREP_Profile_TriggerIntegerCb)( SCOREP_Location*    location,
+                                                  SCOREP_MetricHandle metric,
+                                                  uint64_t            value );
+
+/*
+ * A callback to be provided by the profiling substrate to obtain the
+ * current value of a double metric on a location.
+ */
+typedef void (* SCOREP_Profile_TriggerDoubleCb)( SCOREP_Location*    location,
+                                                 SCOREP_MetricHandle metric,
+                                                 double              value );
+
 /** @brief Writes metrics (except strictly synchronous ones which are
  *         handled by enter/leave events) of a location in profiling mode.
  *
  *  @param location             Location data.
+ *  @param profileTriggerIntegerCb Callback to obtain unit64_t metric value(s).
+ *  @param profileTriggerDoubleCb Callback to obtain double metric value(s).
  */
 void
-SCOREP_Metric_WriteToProfile( SCOREP_Location* location );
+SCOREP_Metric_WriteToProfile( SCOREP_Location*                location,
+                              SCOREP_Profile_TriggerIntegerCb profileTriggerIntegerCb,
+                              SCOREP_Profile_TriggerDoubleCb  profileTriggerDoubleCb );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between

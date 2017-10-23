@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -436,7 +436,7 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
 
     while ( current != NULL )
     {
-        if ( current->handle == metric )
+        if ( current->metric == metric )
         {
             switch ( SCOREP_MetricHandle_GetProfilingType( metric ) )
             {
@@ -475,7 +475,7 @@ get_sparse_tuple_value_from_double( scorep_profile_node* node, void* data )
 
     while ( current != NULL )
     {
-        if ( current->handle == metric )
+        if ( current->metric == metric )
         {
             value.N    = current->count;
             value.Min  = current->min;
