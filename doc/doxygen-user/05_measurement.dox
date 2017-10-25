@@ -991,4 +991,34 @@ the data back to the remote tool. The flat profile is sent in two parts, where t
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt>
 or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
 
+@section substrate_plugins Substrate Plugins
+@seclabel{substrate_plugins}
+
+Substrate plugins extend the functionality of @scorep by providing additional backends.
+The libraries are loaded when your application is started and Score-P is initialized.
+So there is no need to recompile your application or instrument it manually.
+
+A simple example of a backend can be found in Appendix @secref{substratepluginexample}.
+Every plugin needs to include SCOREP_SubstratePlugins.h and define its name via SCOREP_SUBSTRATE_PLUGIN_ENTRY(<name>).
+The same name must be used with the prefix <tt>scorep_substrate_</tt> as library name.
+The commands to build the corresponding library of this plugin might look like:
+
+@code
+gcc -c -fPIC print_regions.c   \
+    -o libscorep_substrate_PrintRegions.so.o `scorep-config --cppflags`
+gcc -shared -Wl,-soname,libscorep_substrate_PrintRegions.so  \
+    -o libscorep_substrate_PrintRegions.so libscorep_substrate_PrintRegions.so.o
+@endcode
+
+To enable a substrate plugin, add the plugin <PLUGINNAME> to the environment variable \confvar{SCOREP_SUBSTRATE_PLUGINS}.
+In the following example we want to use the above <tt>PrintRegions</tt> plugin.
+Make sure that the substrate plugin library is placed in a directory which is part of <tt>LD_LIBRARY_PATH</tt>.
+
+<pre>
+SCOREP_SUBSTRATE_PLUGINS=PrintRegions
+</pre>
+
+@note Multiple substrate plugins can be loaded by listing them <tt>SCOREP_SUBSTRATE_PLUGINS=foo,bar</tt>, the default separator ',' can be changed by setting the environment variable \confvar{SCOREP_SUBSTRATE_PLUGINS_SEP}.
+@note Developers of plugins are highly encouraged to use environment variables in their plugins with the naming scheme <tt>SCOREP_SUBSTRATE_<substrate name>_<variable></tt>, e.g., <tt>SCOREP_SUBSTRATE_PRINTREGIONS_VERBOSE</tt>
 */
+

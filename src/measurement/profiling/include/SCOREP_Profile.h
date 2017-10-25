@@ -230,7 +230,14 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
 
 
 /**
-   Returns an array of profiling callbacks.
+   Returns an array of callbacks for management purposes.
+   @return Array of profiling substrate management callbacks.
+ */
+const SCOREP_Substrates_Callback*
+SCOREP_Profile_GetSubstrateMgmtCallbacks( void );
+
+/**
+   Returns an array of callbacks for run time events.
    @param mode Recording enabled/disabled.
    @return Array of profiling substrate callbacks for the requested mode.
  */

@@ -99,6 +99,7 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_CUTEST) \
                                -I$(INC_ROOT)src/measurement \
                                -I$(INC_ROOT)src/measurement/include \
+                               -I$(INC_ROOT)src/measurement/substrates/include \
                                -I$(PUBLIC_INC_DIR) \
                                $(UTILS_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_HASH) \

@@ -202,8 +202,8 @@ scorep_task_create( SCOREP_Location* location,
     memset( new_task->substrate_data, 0, SCOREP_Substrates_NumberOfRegisteredSubstrates() * sizeof( void* ) );
 
     /* Ignore return value 'substrate_id', only needed for re-initialization in OA. */
-    SCOREP_CALL_SUBSTRATE( CoreTaskCreate, CORE_TASK_CREATE,
-                           ( location, new_task ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( CoreTaskCreate, CORE_TASK_CREATE,
+                                ( location, new_task ) );
 
     return new_task;
 }
@@ -212,8 +212,8 @@ void
 scorep_task_complete( SCOREP_Location*  location,
                       SCOREP_TaskHandle task )
 {
-    SCOREP_CALL_SUBSTRATE( CoreTaskComplete, CORE_TASK_COMPLETE,
-                           ( location, task ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( CoreTaskComplete, CORE_TASK_COMPLETE,
+                                ( location, task ) );
     recycle_task( location, task );
 }
 

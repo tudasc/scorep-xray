@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
@@ -102,6 +103,9 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
 
     SCOREP_Definitions_Unlock();
 
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_GROUP ) );
+
     return new_handle;
 }
 
@@ -128,6 +132,9 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
         true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_GROUP ) );
 
     return new_handle;
 }

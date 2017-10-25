@@ -62,6 +62,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
@@ -94,6 +95,9 @@ SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent )
         SCOREP_LOCATION_GROUP_TYPE_PROCESS );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_LOCATION_GROUP ) );
 
     return new_handle;
 }

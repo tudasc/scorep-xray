@@ -92,6 +92,11 @@ SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle )
         return;
     }
 
+    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
+    {
+        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
+    }
+
     SCOREP_CALL_SUBSTRATE( Sample, SAMPLE,
                            ( location,
                              timestamp,
@@ -140,6 +145,11 @@ enter_region( SCOREP_Location*    location,
 
     SCOREP_Task_Enter( location, regionHandle );
 
+    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
+    {
+        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
+    }
+
     SCOREP_CALL_SUBSTRATE( EnterRegion, ENTER_REGION,
                            ( location, timestamp, regionHandle, metricValues ) );
 }
@@ -170,6 +180,11 @@ scorep_calling_context_enter( SCOREP_Location*    location,
                                         &unwind_distance );
     UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
                   "Unwinding could not create calling context for enter event." );
+
+    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
+    {
+        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
+    }
 
     SCOREP_CALL_SUBSTRATE( CallingContextEnter, CALLING_CONTEXT_ENTER,
                            ( location,
@@ -277,6 +292,11 @@ exit_region( SCOREP_Location*    location,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
+    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
+    {
+        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
+    }
+
     SCOREP_CALL_SUBSTRATE( ExitRegion, EXIT_REGION,
                            ( location, timestamp, regionHandle, metricValues ) );
 
@@ -305,6 +325,11 @@ scorep_calling_context_exit( SCOREP_Location*    location,
                                         &unwind_distance );
     UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
                   "Unwinding could not create calling context for exit event." );
+
+    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
+    {
+        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
+    }
 
     SCOREP_CALL_SUBSTRATE( CallingContextExit, CALLING_CONTEXT_EXIT,
                            ( location,
@@ -404,8 +429,8 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
                      void*                  value )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location, attributeHandle, value ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
+                                ( location, attributeHandle, value ) );
 }
 
 
@@ -417,8 +442,8 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
                               SCOREP_AttributeHandle attributeHandle,
                               void*                  value )
 {
-    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location, attributeHandle, value ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
+                                ( location, attributeHandle, value ) );
 }
 
 
@@ -427,13 +452,14 @@ add_source_code_location( SCOREP_Location* location,
                           const char*      file,
                           SCOREP_LineNo    lineNumber )
 {
-    SCOREP_SourceCodeLocationHandle value =
+    uint64_t                        timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_SourceCodeLocationHandle value     =
         SCOREP_Definitions_NewSourceCodeLocation( file,
                                                   lineNumber );
-    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location,
-                             scorep_source_code_location_attribute,
-                             &value ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
+                                ( location,
+                                  scorep_source_code_location_attribute,
+                                  &value ) );
 }
 
 
@@ -1171,9 +1197,11 @@ SCOREP_TrackAlloc( uint64_t addrAllocated,
                    size_t   bytesAllocatedMetric,
                    size_t   bytesAllocatedProcess )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( TrackAlloc, TRACK_ALLOC,
                            ( location,
+                             timestamp,
                              addrAllocated,
                              bytesAllocated,
                              substrateData,
@@ -1192,9 +1220,11 @@ SCOREP_TrackRealloc( uint64_t oldAddr,
                      size_t   bytesAllocatedMetric,
                      size_t   bytesAllocatedProcess )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( TrackRealloc, TRACK_REALLOC,
                            ( location,
+                             timestamp,
                              oldAddr,
                              oldBytesAllocated,
                              oldSubstrateData,
@@ -1213,9 +1243,11 @@ SCOREP_TrackFree( uint64_t addrFreed,
                   size_t   bytesAllocatedMetric,
                   size_t   bytesAllocatedProcess )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( TrackFree, TRACK_FREE,
                            ( location,
+                             timestamp,
                              addrFreed,
                              bytesFreed,
                              substrateData,
@@ -1229,8 +1261,8 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
                      size_t   bytesLeaked,
                      void*    substrateData[] )
 {
-    SCOREP_CALL_SUBSTRATE( LeakedMemory, LEAKED_MEMORY,
-                           ( addrLeaked, bytesLeaked, substrateData ) );
+    SCOREP_CALL_SUBSTRATE_MGMT( LeakedMemory, LEAKED_MEMORY,
+                                ( addrLeaked, bytesLeaked, substrateData ) );
 }
 
 

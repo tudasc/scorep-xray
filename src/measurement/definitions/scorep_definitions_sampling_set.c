@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Mutex.h>
@@ -128,6 +129,9 @@ SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
 
     SCOREP_Definitions_Unlock();
 
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
+
     return new_handle;
 }
 
@@ -150,6 +154,9 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
         scopeHandle );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
 
     return new_handle;
 }
@@ -418,4 +425,71 @@ equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
                && existingDefinition->occurrence
                == newDefinition->occurrence;
     }
+}
+
+uint8_t
+SCOREP_SamplingSetHandle_GetNumberOfMetrics( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    if ( definition->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_definition = ( SCOREP_ScopedSamplingSetDef* )definition;
+        definition = SCOREP_LOCAL_HANDLE_DEREF( scoped_definition->sampling_set_handle, SamplingSet );
+    }
+    return definition->number_of_metrics;
+}
+
+const SCOREP_MetricHandle*
+SCOREP_SamplingSetHandle_GetMetricHandles( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    if ( definition->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_definition = ( SCOREP_ScopedSamplingSetDef* )definition;
+        definition = SCOREP_LOCAL_HANDLE_DEREF( scoped_definition->sampling_set_handle, SamplingSet );
+    }
+    return definition->metric_handles;
+}
+
+bool
+SCOREP_SamplingSetHandle_IsScoped( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    return definition->is_scoped;
+}
+
+SCOREP_MetricScope
+SCOREP_SamplingSetHandle_GetScope( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    if ( definition->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_definition = ( SCOREP_ScopedSamplingSetDef* )definition;
+        return scoped_definition->scope_type;
+    }
+    return SCOREP_INVALID_METRIC_SCOPE;
+}
+
+SCOREP_MetricOccurrence
+SCOREP_SamplingSetHandle_GetMetricOccurrence( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    if ( definition->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_definition = ( SCOREP_ScopedSamplingSetDef* )definition;
+        definition = SCOREP_LOCAL_HANDLE_DEREF( scoped_definition->sampling_set_handle, SamplingSet );
+    }
+    return definition->occurrence;
+}
+
+SCOREP_SamplingSetClass
+SCOREP_SamplingSetHandle_GetSamplingSetClass( SCOREP_SamplingSetHandle handle )
+{
+    SCOREP_SamplingSetDef* definition = SCOREP_LOCAL_HANDLE_DEREF( handle, SamplingSet );
+    if ( definition->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_definition = ( SCOREP_ScopedSamplingSetDef* )definition;
+        definition = SCOREP_LOCAL_HANDLE_DEREF( scoped_definition->sampling_set_handle, SamplingSet );
+    }
+    return definition->klass;
 }

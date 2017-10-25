@@ -16,10 +16,9 @@
 
 ## file       src/measurement/substrates/Makefile.inc.am
 
-
 noinst_LTLIBRARIES += libscorep_substrates.la
 
-libscorep_substrates_la_CPPFLAGS = \
+scorep_substrates_common_cppflags = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@ \
@@ -35,7 +34,23 @@ libscorep_substrates_la_CPPFLAGS = \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_SUBSTRATES)
 
+libscorep_substrates_la_CPPFLAGS = $(scorep_substrates_common_cppflags)
+
 libscorep_substrates_la_SOURCES = \
     $(SRC_ROOT)src/measurement/substrates/SCOREP_Substrates_Management.c \
-    $(SRC_ROOT)src/measurement/substrates/include/SCOREP_Substrates_Management.h \
+    $(SRC_ROOT)src/measurement/substrates/include/SCOREP_Substrates_Management.h
+
+libscorep_substrates_la_LIBADD =
+libscorep_substrates_la_LDFLAGS =
+
+if HAVE_DLFCN_SUPPORT
+libscorep_substrates_la_SOURCES += \
+    $(SRC_ROOT)src/measurement/substrates/scorep_substrates_plugins.c \
+    $(SRC_ROOT)src/measurement/substrates/scorep_substrates_plugins.h \
     $(SRC_ROOT)src/measurement/substrates/include/scorep_substrates_definition.h
+else
+libscorep_substrates_la_SOURCES += \
+    $(SRC_ROOT)src/measurement/substrates/scorep_substrates_plugins_mockup.c \
+    $(SRC_ROOT)src/measurement/substrates/scorep_substrates_plugins.h \
+    $(SRC_ROOT)src/measurement/substrates/include/scorep_substrates_definition.h
+endif

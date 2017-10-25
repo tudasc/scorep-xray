@@ -223,7 +223,13 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Memory_Initialize,
                  ( SCOREP_Env_GetTotalMemory(), SCOREP_Env_GetPageSize() ) );
 
+
     SCOREP_TIME( SCOREP_Paradigms_Initialize, ( ) );
+
+    /*
+     * Initialize external Substrates
+     */
+    SCOREP_TIME( SCOREP_Substrates_EarlyInitialize, ( ) );
 
     /* == Initialize definitions and create some core specific definitions == */
 
@@ -733,24 +739,21 @@ scorep_trigger_exit_callbacks( void )
 void
 scorep_define_measurement_regions( void )
 {
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        scorep_record_off_region = SCOREP_Definitions_NewRegion(
-            "MEASUREMENT OFF", NULL,
-            SCOREP_INVALID_SOURCE_FILE,
-            SCOREP_INVALID_LINE_NO,
-            SCOREP_INVALID_LINE_NO,
-            SCOREP_PARADIGM_USER,
-            SCOREP_REGION_ARTIFICIAL );
+    scorep_record_off_region = SCOREP_Definitions_NewRegion(
+        "MEASUREMENT OFF", NULL,
+        SCOREP_INVALID_SOURCE_FILE,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_PARADIGM_USER,
+        SCOREP_REGION_ARTIFICIAL );
 
-        scorep_buffer_flush_region = SCOREP_Definitions_NewRegion(
-            "TRACE BUFFER FLUSH", NULL,
-            SCOREP_INVALID_SOURCE_FILE,
-            SCOREP_INVALID_LINE_NO,
-            SCOREP_INVALID_LINE_NO,
-            SCOREP_PARADIGM_MEASUREMENT,
-            SCOREP_REGION_ARTIFICIAL );
-    }
+    scorep_buffer_flush_region = SCOREP_Definitions_NewRegion(
+        "TRACE BUFFER FLUSH", NULL,
+        SCOREP_INVALID_SOURCE_FILE,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_PARADIGM_MEASUREMENT,
+        SCOREP_REGION_ARTIFICIAL );
 }
 
 void

@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Mutex.h>
@@ -105,6 +106,9 @@ SCOREP_SamplingSet_AddRecorder( SCOREP_SamplingSetHandle samplingSetHandle,
                                       recorderHandle );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( recorderHandle, SCOREP_HANDLE_TYPE_SAMPLING_SET_RECORDER ) );
 }
 
 

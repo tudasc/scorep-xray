@@ -53,6 +53,7 @@
 #include <otf2/otf2.h>
 
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Paradigms.h>
@@ -128,11 +129,11 @@ disable_recording( SCOREP_Location*    location,
 }
 
 
-void
-SCOREP_Tracing_Metric( SCOREP_Location*         location,
-                       uint64_t                 timestamp,
-                       SCOREP_SamplingSetHandle samplingSet,
-                       const uint64_t*          metricValues )
+static void
+write_metric( SCOREP_Location*         location,
+              uint64_t                 timestamp,
+              SCOREP_SamplingSetHandle samplingSet,
+              const uint64_t*          metricValues )
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
@@ -169,7 +170,6 @@ enter( SCOREP_Location*    location,
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
-    SCOREP_Metric_WriteToTrace( location, timestamp );
     OTF2_EvtWriter_Enter( evt_writer,
                           attribute_list,
                           timestamp,
@@ -187,7 +187,6 @@ leave( SCOREP_Location*    location,
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
-    SCOREP_Metric_WriteToTrace( location, timestamp );
     OTF2_EvtWriter_Leave( evt_writer,
                           attribute_list,
                           timestamp,
@@ -231,7 +230,6 @@ calling_context_enter( SCOREP_Location*            location,
     }
     else
     {
-        SCOREP_Metric_WriteToTrace( location, timestamp );
         OTF2_EvtWriter_CallingContextEnter( evt_writer,
                                             attribute_list,
                                             timestamp,
@@ -276,7 +274,6 @@ calling_context_leave( SCOREP_Location*            location,
     }
     else
     {
-        SCOREP_Metric_WriteToTrace( location, timestamp );
         OTF2_EvtWriter_CallingContextLeave( evt_writer,
                                             attribute_list,
                                             timestamp,
@@ -315,7 +312,6 @@ sample( SCOREP_Location*                location,
     }
     else if ( currentCallingContextHandle != SCOREP_INVALID_CALLING_CONTEXT )
     {
-        SCOREP_Metric_WriteToTrace( location, timestamp );
         OTF2_EvtWriter_CallingContextSample( evt_writer,
                                              attribute_list,
                                              timestamp,
@@ -331,6 +327,10 @@ add_attribute( SCOREP_Location*       location,
                SCOREP_AttributeHandle attributeHandle,
                void*                  value )
 {
+    if ( !SCOREP_RecordingEnabled() )
+    {
+        return;
+    }
     OTF2_AttributeList* attribute_list =
         scorep_tracing_get_trace_data( location )->otf_attribute_list;
 
@@ -1375,10 +1375,10 @@ trigger_counter_int64( SCOREP_Location*         location,
     } union_value;
     union_value.int64 = value;
 
-    SCOREP_Tracing_Metric( location,
-                           timestamp,
-                           counterHandle,
-                           &union_value.uint64 );
+    write_metric( location,
+                  timestamp,
+                  counterHandle,
+                  &union_value.uint64 );
 }
 
 
@@ -1388,10 +1388,10 @@ trigger_counter_uint64( SCOREP_Location*         location,
                         SCOREP_SamplingSetHandle counterHandle,
                         uint64_t                 value )
 {
-    SCOREP_Tracing_Metric( location,
-                           timestamp,
-                           counterHandle,
-                           &value );
+    write_metric( location,
+                  timestamp,
+                  counterHandle,
+                  &value );
 }
 
 
@@ -1408,10 +1408,10 @@ trigger_counter_double( SCOREP_Location*         location,
     } union_value;
     union_value.float64 = value;
 
-    SCOREP_Tracing_Metric( location,
-                           timestamp,
-                           counterHandle,
-                           &union_value.uint64 );
+    write_metric( location,
+                  timestamp,
+                  counterHandle,
+                  &union_value.uint64 );
 }
 
 
@@ -1604,19 +1604,20 @@ SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet )
     }
 }
 
+static int64_t
+get_requirement( SCOREP_Substrates_RequirementFlag flag )
+{
+    switch ( flag )
+    {
+        case SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY:
+            return 1;
+        default:
+            return 0;
+    }
+}
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,            INIT_SUBSTRATE,               SCOREP_Tracing_Initialize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,        FINALIZE_SUBSTRATE,           SCOREP_Tracing_Finalize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,          ENABLE_RECORDING,             enable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,       ON_LOCATION_CREATION,         SCOREP_Tracing_OnLocationCreation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,       ON_LOCATION_DELETION,         SCOREP_Tracing_DeleteLocationData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,        PRE_UNIFY_SUBSTRATE,          SCOREP_Tracing_FinalizeEventWriters ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                WRITE_DATA,                   SCOREP_Tracing_Write ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,            INITIALIZE_MPP,               SCOREP_Tracing_OnMppInit ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnsureGlobalId,           ENSURE_GLOBAL_ID,             SCOREP_Tracing_AssignLocationId ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,              ENTER_REGION,                 enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,               EXIT_REGION,                  leave ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                   SAMPLE,                       sample ),
@@ -1672,20 +1673,34 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,     THREAD_CREATE_WAIT_WAIT,      thread_wait ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,    THREAD_CREATE_WAIT_BEGIN,     thread_begin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,      THREAD_CREATE_WAIT_END,       thread_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( AddAttribute,             ADD_ATTRIBUTE,                add_attribute )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,          ENABLE_RECORDING,             enable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetricBeforeEvent,   WRITE_METRIC_BEFORE_EVENT,    write_metric ),
     },
     {   /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,            INIT_SUBSTRATE,               SCOREP_Tracing_Initialize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,        FINALIZE_SUBSTRATE,           SCOREP_Tracing_Finalize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,       ON_LOCATION_CREATION,         SCOREP_Tracing_OnLocationCreation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,       ON_LOCATION_DELETION,         SCOREP_Tracing_DeleteLocationData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,        PRE_UNIFY_SUBSTRATE,          SCOREP_Tracing_FinalizeEventWriters ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                WRITE_DATA,                   SCOREP_Tracing_Write ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,            INITIALIZE_MPP,               SCOREP_Tracing_OnMppInit ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnsureGlobalId,           ENSURE_GLOBAL_ID,             SCOREP_Tracing_AssignLocationId )
     }
 };
 
+const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRATES_NUM_MGMT_EVENTS ] =
+{
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitSubstrate,      INIT_SUBSTRATE,       SCOREP_Tracing_Initialize ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( FinalizeSubstrate,  FINALIZE_SUBSTRATE,   SCOREP_Tracing_Finalize ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnLocationCreation, ON_LOCATION_CREATION, SCOREP_Tracing_OnLocationCreation ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnLocationDeletion, ON_LOCATION_DELETION, SCOREP_Tracing_DeleteLocationData ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( PreUnifySubstrate,  PRE_UNIFY_SUBSTRATE,  SCOREP_Tracing_FinalizeEventWriters ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( WriteData,          WRITE_DATA,           SCOREP_Tracing_Write ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitializeMpp,      INITIALIZE_MPP,       SCOREP_Tracing_OnMppInit ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( EnsureGlobalId,     ENSURE_GLOBAL_ID,     SCOREP_Tracing_AssignLocationId ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( AddAttribute,       ADD_ATTRIBUTE,        add_attribute ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,     GET_REQUIREMENT,      get_requirement ),
+};
+
+
+const SCOREP_Substrates_Callback*
+SCOREP_Tracing_GetSubstrateMgmtCallbacks()
+{
+    return substrate_mgmt_callbacks;
+}
 
 const SCOREP_Substrates_Callback*
 SCOREP_Tracing_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode )

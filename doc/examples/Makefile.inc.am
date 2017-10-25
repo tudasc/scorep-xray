@@ -16,4 +16,5 @@
 examplesdir = $(docdir)/examples
 dist_examples_DATA = \
     doc/examples/Makefile \
-    doc/examples/hello_world.c
+    doc/examples/hello_world.c \
+    doc/examples/print_regions.c

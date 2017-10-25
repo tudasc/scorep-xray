@@ -35,7 +35,10 @@ scorepincludedir = $(includedir)/scorep
 scorepinclude_HEADERS =                        \
     $(PUBLIC_INC_SRC)SCOREP_MetricPlugins.h    \
     $(PUBLIC_INC_SRC)SCOREP_MetricTypes.h      \
+    $(PUBLIC_INC_SRC)SCOREP_PublicHandles.h    \
     $(PUBLIC_INC_SRC)SCOREP_PublicTypes.h      \
+    $(PUBLIC_INC_SRC)SCOREP_SubstrateEvents.h  \
+    $(PUBLIC_INC_SRC)SCOREP_SubstratePlugins.h \
     $(PUBLIC_INC_SRC)SCOREP_User.h             \
     $(PUBLIC_INC_SRC)SCOREP_User.inc           \
     $(PUBLIC_INC_SRC)SCOREP_User_Functions.h   \

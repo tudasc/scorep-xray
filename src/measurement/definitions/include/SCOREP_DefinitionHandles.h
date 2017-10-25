@@ -41,78 +41,22 @@
 
 
 #include <scorep/SCOREP_PublicTypes.h>
-
-
-typedef SCOREP_AnyHandle SCOREP_StringHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_SystemTreeNodePropertyHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_LocationGroupHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_LocationHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_GroupHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_InterimCommunicatorHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_MPICartesianCoordsHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_IOFileGroupHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_IOFileHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_MarkerGroupHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_MarkerHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_ParameterHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_SamplingSetRecorderHandle;
-
+#include <scorep/SCOREP_PublicHandles.h>
 
 typedef SCOREP_AnyHandle SCOREP_AttributeHandle;
 
+typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
 
-typedef SCOREP_AnyHandle SCOREP_LocationPropertyHandle;
+typedef SCOREP_AnyHandle SCOREP_IOFileGroupHandle;
 
+typedef SCOREP_AnyHandle SCOREP_IOFileHandle;
 
-typedef SCOREP_AnyHandle SCOREP_SourceCodeLocationHandle;
+typedef SCOREP_AnyHandle SCOREP_MarkerHandle;
 
+typedef SCOREP_AnyHandle SCOREP_MarkerGroupHandle;
 
-typedef SCOREP_AnyHandle SCOREP_CallingContextHandle;
+typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
 
-
-typedef SCOREP_AnyHandle SCOREP_InterruptGeneratorHandle;
-
+typedef SCOREP_AnyHandle SCOREP_MPICartesianCoordsHandle;
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

@@ -72,6 +72,7 @@ static char*    env_experiment_directory;
 static bool     env_overwrite_experiment_directory;
 static char*    env_machine_name;
 static bool     env_system_tree_sequence;
+static bool     force_cfg_files;
 
 /*
  * Tracing setup
@@ -215,6 +216,20 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "Currently, system tree sequence definitions support only MPI "
         "(and trivially single-process) applications."
     },
+    {
+        "force_cfg_files",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &force_cfg_files,
+        NULL,
+        "true",
+        "Force the creation of experiment directory and configuration files",
+        "If this is set to 'true' (which is the default), the experiment directory "
+        " will be created along with some configuration files, even if no substrate "
+        "writes data (i.e., profiling and tracing are disabled and no substrate "
+        "plugin registered for writing).\n"
+        "If this is set to 'false', the directory will only be created if any "
+        "substrate actually writes data."
+    },
     SCOREP_CONFIG_TERMINATOR
 };
 
@@ -305,6 +320,13 @@ SCOREP_Env_GetMachineName( void )
 {
     assert( env_variables_initialized );
     return env_machine_name;
+}
+
+bool
+SCOREP_Env_DoForceCfgFiles( void )
+{
+    assert( env_variables_initialized );
+    return force_cfg_files;
 }
 
 bool

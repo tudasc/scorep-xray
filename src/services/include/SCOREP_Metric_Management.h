@@ -62,8 +62,8 @@ SCOREP_Metric_Read( SCOREP_Location* location );
  *  @param timestamp            Time when event occurred.
  */
 void
-SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
-                            uint64_t         timestamp );
+SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
+                                    uint64_t         timestamp );
 
 
 /*

@@ -47,23 +47,12 @@
 #include <scorep_location.h>
 #include <scorep_substrates_definition.h>
 
-
 /**
- * Records metrics for tracing. This function stores dense metrics for tracing.
- *
- * @param location     A pointer to the thread location data of the thread that executed
- *                     the metric event.
- * @param timestamp    The timestamp, when the metric event occurred.
- * @param regionHandle The handle of the region for which the metric event occurred.
- * @param metricValues Array of the dense metric values.
- *
+   Returns an array of tracing callbacks for management events.
+   @return Array of tracing substrate callbacks.
  */
-void
-SCOREP_Tracing_Metric( SCOREP_Location*         location,
-                       uint64_t                 timestamp,
-                       SCOREP_SamplingSetHandle samplingSet,
-                       const uint64_t*          metricValues );
-
+const SCOREP_Substrates_Callback*
+SCOREP_Tracing_GetSubstrateMgmtCallbacks( void );
 
 /**
    Returns an array of tracing callbacks.
@@ -72,7 +61,6 @@ SCOREP_Tracing_Metric( SCOREP_Location*         location,
  */
 const SCOREP_Substrates_Callback*
 SCOREP_Tracing_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode );
-
 
 size_t
 SCOREP_Tracing_GetSamplingSetCacheSize( uint32_t numberOfMetrics );

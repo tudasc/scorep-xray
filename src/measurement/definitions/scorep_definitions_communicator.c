@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <scorep_location.h>
 #include <SCOREP_Mutex.h>
@@ -227,6 +228,9 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
     }
 
     va_end( va );
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_INTERIM_COMMUNICATOR ) );
 
     return new_handle;
 }

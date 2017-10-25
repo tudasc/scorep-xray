@@ -42,6 +42,7 @@
 
 #include <CuTest.h>
 
+#include <SCOREP_Substrates_Management.h>
 #include <SCOREP_Memory.h>
 
 #include <SCOREP_Definitions.h>
@@ -49,6 +50,7 @@
 static void
 test_1( CuTest* tc )
 {
+    SCOREP_Substrates_EarlyInitialize();
     SCOREP_Memory_Initialize( 4 * 4096, 4096 );
     SCOREP_Definitions_Initialize();
 
@@ -66,6 +68,7 @@ test_1( CuTest* tc )
 static void
 test_2( CuTest* tc )
 {
+    SCOREP_Substrates_EarlyInitialize();
     SCOREP_Memory_Initialize( 4 * 4096, 4096 );
     SCOREP_Definitions_Initialize();
 

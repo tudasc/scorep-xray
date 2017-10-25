@@ -40,6 +40,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
@@ -75,6 +76,9 @@ SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
             value ? value : "", NULL ) );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_PROPERTY ) );
 
     return new_handle;
 }

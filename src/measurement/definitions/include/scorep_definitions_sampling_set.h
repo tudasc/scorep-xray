@@ -163,4 +163,54 @@ scorep_definitions_unify_sampling_set( SCOREP_SamplingSetDef*               defi
                                        struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
+/**
+ * Get the number of metrics in a sampling set.
+ * @param handle the handle to the existing sampling set
+ * @return the number of associated metrics
+ */
+uint8_t
+SCOREP_SamplingSetHandle_GetNumberOfMetrics( SCOREP_SamplingSetHandle handle );
+
+/**
+ * Get the metric handles in a sampling set.
+ * @param handle the handle to the existing sampling set
+ * @return a list of associated metrics. get the length of the list with SCOREP_SamplingSet_GetNumberOfMetrics
+ */
+const SCOREP_MetricHandle*
+SCOREP_SamplingSetHandle_GetMetricHandles( SCOREP_SamplingSetHandle handle );
+
+/**
+ * Check whether a sampling set is scoped (belongs to a number of locations).
+ * @param handle the handle to the existing sampling set
+ * @return whether the sampling set is scoped or not
+ */
+bool
+SCOREP_SamplingSetHandle_IsScoped( SCOREP_SamplingSetHandle handle );
+
+
+/**
+ * Returns the scope of the sampling set or SCOREP_INVALID_METRIC_SCOPE if sampling set is not scoped
+ * @param handle the handle to the existing sampling set
+ * @return scope or SCOREP_INVALID_METRIC_SCOPE
+ */
+SCOREP_MetricScope
+SCOREP_SamplingSetHandle_GetScope( SCOREP_SamplingSetHandle handle );
+
+/**
+ * Returns the metric occurence of the sampling set
+ * @param handle the handle to the existing sampling set
+ * @return metric occurence
+ */
+SCOREP_MetricOccurrence
+SCOREP_SamplingSetHandle_GetMetricOccurrence( SCOREP_SamplingSetHandle handle );
+
+/**
+ * Returns the class of the sampling set
+ * @param handle the handle to the existing sampling set
+ * @return sampling set class
+ */
+SCOREP_SamplingSetClass
+SCOREP_SamplingSetHandle_GetSamplingSetClass( SCOREP_SamplingSetHandle handle );
+
+
 #endif /* SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_H */

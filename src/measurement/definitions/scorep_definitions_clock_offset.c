@@ -149,9 +149,9 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
 }
 
 void
-SCOREP_ForAllClockOffsets( void  ( * cb )( SCOREP_ClockOffset*,
-                                           void* ),
-                           void* userData )
+SCOREP_ForAllClockOffsets( void ( * cb )( SCOREP_ClockOffset*,
+                                          void* ),
+                           void*    userData )
 {
     for ( SCOREP_ClockOffset* clock_offset = clock_offset_head;
           clock_offset;

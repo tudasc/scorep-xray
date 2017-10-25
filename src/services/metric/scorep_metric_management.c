@@ -57,7 +57,7 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Profile.h>
-#include <tracing/SCOREP_Tracing_Events.h>
+#include <scorep_substrates_definition.h>
 
 
 #include <SCOREP_Definitions.h>
@@ -243,6 +243,11 @@ static scorep_strictly_synchronous_metrics strictly_synchronous_metrics;
 static size_t metric_subsystem_id;
 
 
+/** @brief Writes all metrics of a location in tracing mode.
+ *
+ *  @param location             Location data.
+ *  @param timestamp            Time when event occurred.
+ */
 /* *********************************************************************
  * Function prototypes
  **********************************************************************/
@@ -328,10 +333,12 @@ scorep_metric_post_mortem_cb( SCOREP_Location* location,
                           pair_index < num_pairs[ metric_index ];                                                                                       \
                           pair_index++ )                                                                                                                \
                     {                                                                                                                                   \
-                        SCOREP_Tracing_Metric( location_asynchronous_metric_set->additional_locations[ metric_index ],                                  \
-                                               time_value_pairs[ metric_index ][ pair_index ].timestamp,                                                \
-                                               location_asynchronous_metric_set->sampling_sets[ recent_metric_index ],                                  \
-                                               &( time_value_pairs[ metric_index ][ pair_index ].value ) );                                             \
+                        SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,                                                                                  \
+                                               WRITE_METRIC_BEFORE_EVENT,                                                                               \
+                                               ( location_asynchronous_metric_set->additional_locations[ metric_index ],                                \
+                                                 time_value_pairs[ metric_index ][ pair_index ].timestamp,                                              \
+                                                 location_asynchronous_metric_set->sampling_sets[ recent_metric_index ],                                \
+                                                 &( time_value_pairs[ metric_index ][ pair_index ].value ) ) );                                         \
                     }                                                                                                                                   \
                                                                                                                                                         \
                     free( time_value_pairs[ metric_index ] );                                                                                           \
@@ -1769,14 +1776,9 @@ SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void )
     return strictly_synchronous_metrics.overall_number_of_metrics;
 }
 
-/** @brief Writes all metrics of a location in tracing mode.
- *
- *  @param location             Location data.
- *  @param timestamp            Time when event occurred.
- */
 void
-SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
-                            uint64_t         timestamp )
+SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
+                                    uint64_t         timestamp )
 {
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
@@ -1792,10 +1794,11 @@ SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
     /* (1) Handle 'strictly synchronous' metrics */
     if ( strictly_synchronous_metrics.sampling_set != SCOREP_INVALID_SAMPLING_SET )
     {
-        SCOREP_Tracing_Metric( location,
-                               timestamp,
-                               strictly_synchronous_metrics.sampling_set,
-                               metric_data->values );
+        SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,
+                               WRITE_METRIC_BEFORE_EVENT,
+                               ( location, timestamp,
+                                 strictly_synchronous_metrics.sampling_set,
+                                 metric_data->values ) );
     }
 
     /* (2) Handle additional synchronous metrics */
@@ -1814,10 +1817,11 @@ SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
             {
                 if ( location_synchronous_metric_set->is_update_available[ sampling_set_index ] )
                 {
-                    SCOREP_Tracing_Metric( location,
-                                           timestamp,
-                                           location_synchronous_metric_set->sampling_sets[ sampling_set_index ],
-                                           &( metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] ) );
+                    SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,
+                                           WRITE_METRIC_BEFORE_EVENT,
+                                           ( location, timestamp,
+                                             location_synchronous_metric_set->sampling_sets[ sampling_set_index ],
+                                             &( metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] ) ) );
                 }
                 sampling_set_index++;
             }

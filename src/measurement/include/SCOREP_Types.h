@@ -88,29 +88,26 @@ typedef enum SCOREP_MeasurementPhase
 } SCOREP_MeasurementPhase;
 
 
-/** Activation and deactivation phase for CPU locations */
+/** Activation and deactivation phase for CPU locations
+ *
+ * (1) SCOREP_CPU_LOCATION_PHASE_MGMT::
+ *     A general notification about the intention to activate the location.
+ *     No events are allowed, just maintenance stuff should be done with
+ *     CPU the location.
+ * (2) SCOREP_CPU_LOCATION_PHASE_EVENTS::
+ *     The location was successfully activated. Events can now be triggered.
+ *
+ * Additionally, a CPU location can be in a PAUSE phase where no events are
+ * allowed.
+ *     SCOREP_CPU_LOCATION_PHASE_PAUSE::
+ *     Location goes into an PAUSE phase were no events are allowed.
+ */
 typedef enum SCOREP_CPULocationPhase
 {
     SCOREP_CPU_LOCATION_PHASE_MGMT,
     SCOREP_CPU_LOCATION_PHASE_EVENTS,
     SCOREP_CPU_LOCATION_PHASE_PAUSE
 } SCOREP_CPULocationPhase;
-
-
-/**
- * Type used in specifying line numbers.
- * @see SCOREP_Definitions_NewRegion()
- */
-typedef uint32_t SCOREP_LineNo;
-
-
-
-/**
- * Symbolic constant representing an invalid or unknown line number.
- * @see SCOREP_Definitions_NewRegion()
- */
-#define SCOREP_INVALID_LINE_NO 0
-
 
 
 /**
@@ -243,60 +240,6 @@ typedef uint32_t SCOREP_LineNo;
 
 
 /**
- * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to
- * track the origin of a region definition, the adapter needs to provide @e
- * his type.
- *
- */
-
-#define SCOREP_PARADIGM_CLASSES \
-    SCOREP_PARADIGM_CLASS( MPP,                "multi-process", PROCESS ) \
-    SCOREP_PARADIGM_CLASS( THREAD_FORK_JOIN,   "fork/join",     THREAD_FORK_JOIN ) \
-    SCOREP_PARADIGM_CLASS( THREAD_CREATE_WAIT, "create/wait",   THREAD_CREATE_WAIT ) \
-    SCOREP_PARADIGM_CLASS( ACCELERATOR,        "accelerator",   ACCELERATOR )
-
-
-typedef enum SCOREP_ParadigmClass
-{
-#define SCOREP_PARADIGM_CLASS( NAME, name, OTF2_NAME ) \
-    SCOREP_PARADIGM_CLASS_ ## NAME,
-    SCOREP_PARADIGM_CLASSES
-
-#undef SCOREP_PARADIGM_CLASS
-
-    SCOREP_INVALID_PARADIGM_CLASS /**< For internal use only. */
-} SCOREP_ParadigmClass;
-
-
-/* Keep MPI first after the non-parallel paradigms */
-#define SCOREP_PARADIGMS \
-    SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM ) \
-    SCOREP_PARADIGM( USER,               "user",               USER ) \
-    SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
-    SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING ) \
-    SCOREP_PARADIGM( MEMORY,             "memory",             NONE ) \
-    SCOREP_PARADIGM( MPI,                "mpi",                MPI ) \
-    SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
-    SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
-    SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
-    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
-    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
-    SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC )
-
-
-typedef enum SCOREP_ParadigmType
-{
-#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME ) \
-    SCOREP_PARADIGM_ ## NAME,
-    SCOREP_PARADIGMS
-
-#undef SCOREP_PARADIGM
-
-    SCOREP_INVALID_PARADIGM_TYPE /**< For internal use only. */
-} SCOREP_ParadigmType;
-
-
-/**
  *  Known flags for parallel paradigms.
  *
  *  Flags are essential boolean typed SCOREP_ParadigmProperty and thus
@@ -341,63 +284,6 @@ typedef enum SCOREP_ParadigmProperty
 
     SCOREP_INVALID_PARADIGM_PROPERTY /**< For internal use only. */
 } SCOREP_ParadigmProperty;
-
-
-/**
- * Types to be used in defining the occurrence of a sampling set.
- *
- */
-typedef enum SCOREP_MetricOccurrence
-{
-    /** Metric occurs at every region enter and leave. */
-    SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT = 0,
-    /** Metric occurs only at a region enter and leave, but does not need to
-     *  occur at every enter/leave. */
-    SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS        = 1,
-    /** Metric can occur at any place i.e. it is not related to region enter and
-     *  leaves. */
-    SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS       = 2,
-
-    SCOREP_INVALID_METRIC_OCCURRENCE /**< For internal use only. */
-} SCOREP_MetricOccurrence;
-
-/**
- * Types to be used in defining the scope of a scoped sampling set.
- *
- */
-typedef enum SCOREP_MetricScope
-{
-    /** Scope of a metric is another location. */
-    SCOREP_METRIC_SCOPE_LOCATION         = 0,
-    /** Scope of a metric is a location group. */
-    SCOREP_METRIC_SCOPE_LOCATION_GROUP   = 1,
-    /** Scope of a metric is a system tree node. */
-    SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE = 2,
-    /** Scope of a metric is a generic group of locations. */
-    SCOREP_METRIC_SCOPE_GROUP            = 3,
-
-    SCOREP_INVALID_METRIC_SCOPE /**< For internal use only. */
-} SCOREP_MetricScope;
-
-/**
- * Types to be used in defining a location (SCOREP_Definitions_NewLocation()).
- *
- */
-#define SCOREP_LOCATION_TYPES \
-    SCOREP_LOCATION_TYPE( CPU_THREAD, "CPU thread" ) \
-    SCOREP_LOCATION_TYPE( GPU,        "GPU" ) \
-    SCOREP_LOCATION_TYPE( METRIC,     "metric location" ) \
-
-
-typedef enum SCOREP_LocationType
-{
-    #define SCOREP_LOCATION_TYPE( NAME, name_string ) SCOREP_LOCATION_TYPE_ ## NAME,
-    SCOREP_LOCATION_TYPES
-    #undef SCOREP_LOCATION_TYPE
-
-    SCOREP_NUMBER_OF_LOCATION_TYPES,
-    SCOREP_INVALID_LOCATION_TYPE /**< For internal use only. */
-} SCOREP_LocationType;
 
 /**
  * Types to be used in defining a location group (SCOREP_Definitions_NewLocationGroup()).
@@ -452,125 +338,6 @@ typedef enum SCOREP_GroupType
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
-
-
-
-/**
- * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). These types
- * are currently not used inside the measurement system. This @e may change in
- * future if we are going to implement phases/dynamic regions etc. inside the
- * measurement system as opposed to inside the adapters or as a postprocessing
- * step. The names should be self explanatory; most of them are already used
- * (with a different prefix) in VampirTrace and Scalasca.
- *
- * @todo remove SCOREP_REGION_UNKNOWN
- */
-#define SCOREP_REGION_TYPES \
-    SCOREP_REGION_TYPE( COLL_ONE2ALL, "one2all" ) \
-    SCOREP_REGION_TYPE( COLL_ALL2ONE, "all2one" ) \
-    SCOREP_REGION_TYPE( COLL_ALL2ALL, "all2all" ) \
-    SCOREP_REGION_TYPE( COLL_OTHER,   "other collective" ) \
-    SCOREP_REGION_TYPE( POINT2POINT,  "point2point" ) \
-    SCOREP_REGION_TYPE( PARALLEL,     "parallel" ) \
-    SCOREP_REGION_TYPE( SECTIONS,     "sections" ) \
-    SCOREP_REGION_TYPE( SECTION,      "section" ) \
-    SCOREP_REGION_TYPE( WORKSHARE,    "workshare" ) \
-    SCOREP_REGION_TYPE( SINGLE,       "single" ) \
-    SCOREP_REGION_TYPE( MASTER,       "master" ) \
-    SCOREP_REGION_TYPE( CRITICAL,     "critical" ) \
-    SCOREP_REGION_TYPE( ATOMIC,       "atomic" ) \
-    SCOREP_REGION_TYPE( BARRIER,      "barrier" ) \
-    SCOREP_REGION_TYPE( IMPLICIT_BARRIER, "implicit barrier" ) \
-    SCOREP_REGION_TYPE( FLUSH,        "flush" ) \
-    SCOREP_REGION_TYPE( CRITICAL_SBLOCK, "critical sblock" ) \
-    SCOREP_REGION_TYPE( SINGLE_SBLOCK, "single sblock" ) \
-    SCOREP_REGION_TYPE( WRAPPER,      "wrapper" ) \
-    SCOREP_REGION_TYPE( TASK,         "task" ) \
-    SCOREP_REGION_TYPE( TASK_UNTIED,  "untied task" ) \
-    SCOREP_REGION_TYPE( TASK_WAIT,    "taskwait" ) \
-    SCOREP_REGION_TYPE( TASK_CREATE,  "task create" ) \
-    SCOREP_REGION_TYPE( ORDERED,      "ordered" ) \
-    SCOREP_REGION_TYPE( ORDERED_SBLOCK, "ordered sblock" ) \
-    SCOREP_REGION_TYPE( ARTIFICIAL,   "artificial" ) \
-    SCOREP_REGION_TYPE( RMA,          "rma" ) \
-    SCOREP_REGION_TYPE( THREAD_CREATE, "thread create" ) \
-    SCOREP_REGION_TYPE( THREAD_WAIT,  "thread wait" ) \
-    SCOREP_REGION_TYPE( ALLOCATE,     "allocate" ) \
-    SCOREP_REGION_TYPE( DEALLOCATE,   "deallocate" ) \
-    SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" )
-
-
-#define SCOREP_REGION_TYPE( NAME, name_str ) \
-    SCOREP_REGION_ ## NAME,
-
-typedef enum SCOREP_RegionType
-{
-    SCOREP_REGION_UNKNOWN = 0,
-    SCOREP_REGION_FUNCTION,
-    SCOREP_REGION_LOOP,
-    SCOREP_REGION_USER,
-    SCOREP_REGION_CODE,
-
-    SCOREP_REGION_PHASE,
-    SCOREP_REGION_DYNAMIC,
-    SCOREP_REGION_DYNAMIC_PHASE,
-    SCOREP_REGION_DYNAMIC_LOOP,
-    SCOREP_REGION_DYNAMIC_FUNCTION,
-    SCOREP_REGION_DYNAMIC_LOOP_PHASE,
-
-    SCOREP_REGION_TYPES
-
-    SCOREP_INVALID_REGION_TYPE /**< For internal use only. */
-} SCOREP_RegionType;
-
-#undef SCOREP_REGION_TYPE
-
-
-/**
- * Types to be used in defining a parameter for parameter based profiling
- * (SCOREP_Definitions_NewParameter()).
- *
- */
-typedef enum SCOREP_ParameterType
-{
-    SCOREP_PARAMETER_INT64,
-    SCOREP_PARAMETER_UINT64,
-    SCOREP_PARAMETER_STRING,
-
-    SCOREP_INVALID_PARAMETER_TYPE /**< For internal use only. */
-} SCOREP_ParameterType;
-
-/**
- * Types to specify the used collectives in calls to @a SCOREP_MpiCollectiveBegin
- * and @a SCOREP_RmaCollectiveBegin.
- */
-typedef enum SCOREP_CollectiveType
-{
-    SCOREP_COLLECTIVE_BARRIER,
-    SCOREP_COLLECTIVE_BROADCAST,
-    SCOREP_COLLECTIVE_GATHER,
-    SCOREP_COLLECTIVE_GATHERV,
-    SCOREP_COLLECTIVE_SCATTER,
-    SCOREP_COLLECTIVE_SCATTERV,
-    SCOREP_COLLECTIVE_ALLGATHER,
-    SCOREP_COLLECTIVE_ALLGATHERV,
-    SCOREP_COLLECTIVE_ALLTOALL,
-    SCOREP_COLLECTIVE_ALLTOALLV,
-    SCOREP_COLLECTIVE_ALLTOALLW,
-    SCOREP_COLLECTIVE_ALLREDUCE,
-    SCOREP_COLLECTIVE_REDUCE,
-    SCOREP_COLLECTIVE_REDUCE_SCATTER,
-    SCOREP_COLLECTIVE_REDUCE_SCATTER_BLOCK,
-    SCOREP_COLLECTIVE_SCAN,
-    SCOREP_COLLECTIVE_EXSCAN,
-    SCOREP_COLLECTIVE_CREATE_HANDLE,
-    SCOREP_COLLECTIVE_DESTROY_HANDLE,
-    SCOREP_COLLECTIVE_ALLOCATE,
-    SCOREP_COLLECTIVE_DEALLOCATE,
-    SCOREP_COLLECTIVE_CREATE_HANDLE_AND_ALLOCATE,
-    SCOREP_COLLECTIVE_DESTROY_HANDLE_AND_DEALLOCATE
-} SCOREP_CollectiveType;
-
 
 /**
  * The type of a SCOREP_ConfigVariable.
@@ -716,25 +483,6 @@ typedef struct SCOREP_ConfigType_SetEntry
 
 
 /**
- * Type of MPI Ranks. Type of MPI ranks always int.
- */
-typedef int SCOREP_MpiRank;
-
-
-/**
- * Type of a MPI Non-blocking communication request id.
- */
-typedef uint64_t SCOREP_MpiRequestId;
-
-
-/**
- * Symbolic constant representing an invalid or unknown rank.
- * @see SCOREP_MpiCollective()
- */
-#define SCOREP_INVALID_ROOT_RANK -1
-
-
-/**
  * List of known otf2-properties.
  */
 typedef enum
@@ -761,16 +509,6 @@ typedef enum
 } SCOREP_PropertyCondition;
 
 
-/**
- * Class of locations which recorded a sampling set.
- */
-typedef enum SCOREP_SamplingSetClass
-{
-    SCOREP_SAMPLING_SET_ABSTRACT,
-    SCOREP_SAMPLING_SET_CPU,
-    SCOREP_SAMPLING_SET_GPU
-} SCOREP_SamplingSetClass;
-
 
 /**
  * Domains of a system tree.
@@ -787,92 +525,6 @@ typedef enum SCOREP_SystemTreeDomain
     SCOREP_SYSTEM_TREE_DOMAIN_CORE          = ( 1 << 5 ),
     SCOREP_SYSTEM_TREE_DOMAIN_PU            = ( 1 << 6 )
 } SCOREP_SystemTreeDomain;
-
-
-#define SCOREP_RMA_SYNC_TYPES \
-    SCOREP_RMA_SYNC_TYPE( MEMORY, memory, "memory" )             /* Synchronize memory copy. */ \
-    SCOREP_RMA_SYNC_TYPE( NOTIFY_IN, notify_in, "notify in" )    /* Incoming remote notification. */ \
-    SCOREP_RMA_SYNC_TYPE( NOTIFY_OUT, notify_out, "notify out" ) /* Outgoing remote notification. */
-
-/**
- * Type of direct RMA synchronization call.
- */
-typedef enum SCOREP_RmaSyncType
-{
-#define SCOREP_RMA_SYNC_TYPE( upper, lower, name )  SCOREP_RMA_SYNC_TYPE_ ## upper,
-    SCOREP_RMA_SYNC_TYPES
-    #undef SCOREP_RMA_SYNC_TYPE
-
-    SCOREP_INVALID_RMA_SYNC_TYPE /**< For internal use only. */
-} SCOREP_RmaSyncType;
-
-
-/*
- * NONE: No process synchronization or access completion (e.g.,
- * MPI_Win_post.
- *
- * PROCESS: Synchronize processes (e.g., MPI_Win_create/free)
- *
- * MEMORY: Complete memory accesses (e.g., MPI_Win_complete, MPI_Win_wait)
- */
-#define SCOREP_RMA_SYNC_LEVELS \
-    SCOREP_RMA_SYNC_LEVEL( NONE, none, "none", 0 ) \
-    SCOREP_RMA_SYNC_LEVEL( PROCESS, process, "process", 1 << 0 ) \
-    SCOREP_RMA_SYNC_LEVEL( MEMORY, memory, "memory", 1 << 1 )
-
-
-/**
- * Types to be used by RMA records to be passed
- * to SCOREP_Rma*() functions.
- */
-typedef enum SCOREP_RmaSyncLevel
-{
-#define SCOREP_RMA_SYNC_LEVEL( upper, lower, name, value ) \
-    SCOREP_RMA_SYNC_LEVEL_ ## upper = value,
-
-    SCOREP_RMA_SYNC_LEVELS
-#undef SCOREP_RMA_SYNC_LEVEL
-} SCOREP_RmaSyncLevel;
-
-
-/**
- * General Lock Type.
- */
-typedef enum SCOREP_LockType
-{
-    /** Exclusive lock. No other lock will be granted.
-     */
-    SCOREP_LOCK_EXCLUSIVE,
-    /** Shared lock. Other shared locks will be granted, but no exclusive
-     *  locks.
-     */
-    SCOREP_LOCK_SHARED,
-
-    SCOREP_INVALID_LOCK_TYPE /**< For internal use only. */
-} SCOREP_LockType;
-
-#define SCOREP_RMA_ATOMIC_TYPES \
-    SCOREP_RMA_ATOMIC_TYPE( ACCUMULATE, accumulate,      "accumulate" )   \
-    SCOREP_RMA_ATOMIC_TYPE( INCREMENT, increment,       "increment" )     \
-    SCOREP_RMA_ATOMIC_TYPE( TEST_AND_SET, test_and_set,    "test and set" ) \
-    SCOREP_RMA_ATOMIC_TYPE( COMPARE_AND_SWAP, compare_and_swap, "compare and swap" ) \
-    SCOREP_RMA_ATOMIC_TYPE( SWAP, swap, "swap" ) \
-    SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_ADD, fetch_and_add, "fetch and add" ) \
-    SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_INCREMENT, fetch_and_increment, "fetch and increment" ) \
-    SCOREP_RMA_ATOMIC_TYPE( ADD, add, "add" )
-
-
-/**
- * RMA Atomic Operation Type.
- */
-typedef enum SCOREP_RmaAtomicType
-{
-#define SCOREP_RMA_ATOMIC_TYPE( upper, lower, name ) SCOREP_RMA_ATOMIC_TYPE_ ## upper,
-    SCOREP_RMA_ATOMIC_TYPES
-    #undef SCOREP_RMA_ATOMIC_TYPE
-
-    SCOREP_INVALID_RMA_ATOMIC_TYPE
-} SCOREP_RmaAtomicType;
 
 
 /**
@@ -932,10 +584,6 @@ typedef enum SCOREP_InterruptGeneratorMode
     SCOREP_INTERRUPT_GENERATOR_MODE_COUNT
 } SCOREP_InterruptGeneratorMode;
 
-/**
- * Task Handle
- */
-typedef struct SCOREP_Task* SCOREP_TaskHandle;
 
 /*@}*/
 

@@ -6,6 +6,12 @@ Major features:
 
 Features and improvements:
 
+- Provide the Substrate Plugin interface, which enables plugins to
+  consume Score-P runtime events for recording, analysis, and
+  optimization purposes.
+- Added the option SCOREP_FORCE_CFG_FILES, which enables users to
+  force the creation of the experiment directory even if there are no
+  active substrates that write any output. Defaults to true.
 - Provided the option to use sequence definitions for the system tree.
   They provide a constant size system tree description. The trade-off
   is the loss of individual names and properties for locations,

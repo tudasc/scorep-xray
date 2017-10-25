@@ -201,7 +201,7 @@ typedef struct SCOREP_Metric_Plugin_Info
      */
 
     /**
-     * Should be set to SCOREP_PLUGIN_VERSION
+     * Should be set to SCOREP_METRIC_PLUGIN_VERSION
      * (needed for back- and forward compatibility)
      */
     uint32_t plugin_version;

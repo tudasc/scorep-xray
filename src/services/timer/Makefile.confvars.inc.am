@@ -11,7 +11,7 @@
 ## directory for details.
 ##
 
-## file       src/services/metric/Makefile.confvars.inc.am
+## file       src/services/timer/Makefile.confvars.inc.am
 
 noinst_LTLIBRARIES += libscorep_timer_confvars.la
 

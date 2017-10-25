@@ -1,0 +1,11 @@
+/**
+@page substratepluginexample  @scorep Substrate Plugin Example
+@seclabel{substratepluginexample}
+
+Simple example of a @scorep substrate plugin
+
+@include print_regions.c
+
+@see SCOREP_SubstratePlugins.h
+
+*/

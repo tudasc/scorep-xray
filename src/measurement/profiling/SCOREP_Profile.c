@@ -1463,6 +1463,7 @@ static leaked_memory_memento* leaked_memory_memento_free_list;
 
 static void
 track_alloc( struct SCOREP_Location* threadData,
+             uint64_t                timestamp,
              uint64_t                addrAllocated,
              size_t                  bytesAllocated,
              void*                   substrateData[],
@@ -1492,6 +1493,7 @@ track_alloc( struct SCOREP_Location* threadData,
 
 static void
 track_realloc( struct SCOREP_Location* threadData,
+               uint64_t                timestamp,
                uint64_t                oldAddr,
                size_t                  oldBytesAllocated,
                void*                   oldSubstrateData[],
@@ -1522,6 +1524,7 @@ track_realloc( struct SCOREP_Location* threadData,
 
 static void
 track_free( struct SCOREP_Location* threadData,
+            uint64_t                timestamp,
             uint64_t                addrFreed,
             size_t                  bytesFreed,
             void*                   substrateData[],
@@ -1547,6 +1550,12 @@ track_free( struct SCOREP_Location* threadData,
 static void
 leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
 {
+    /* This function triggers a counter, which should not happen when recording is disabled.
+     * Therfore, return. */
+    if ( !SCOREP_RecordingEnabled() )
+    {
+        return;
+    }
     UTILS_ASSERT( substrateData );
     leaked_memory_memento* leak = substrateData[ scorep_profile_substrate_id ];
     UTILS_ASSERT( leak );
@@ -1554,23 +1563,21 @@ leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
                                   SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
 
+static int64_t
+get_requirement( SCOREP_Substrates_RequirementFlag flag )
+{
+    switch ( flag )
+    {
+        case SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY:
+            return 1;
+        default:
+            return 0;
+    }
+}
 
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN, SCOREP_Profile_Enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnTracingBufferFlushEnd,   ON_TRACING_BUFFER_FLUSH_END,   SCOREP_Profile_Exit ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,               ENTER_REGION,                  enter_region ),
@@ -1605,27 +1612,41 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackAlloc,                TRACK_ALLOC,                   track_alloc ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackRealloc,              TRACK_REALLOC,                 track_realloc ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackFree,                 TRACK_FREE,                    track_free ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                 leaked_memory )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
     },
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end ),
     }
 };
 
+const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRATES_NUM_MGMT_EVENTS ] =
+{
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,               SCOREP_Profile_Initialize ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,           SCOREP_Profile_Finalize ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,         on_location_creation ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,         delete_location_data ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnCpuLocationActivation,   ON_CPU_LOCATION_ACTIVATION,   on_location_activation ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( OnCpuLocationDeactivation, ON_CPU_LOCATION_DEACTIVATION, on_location_deactivation ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,          SCOREP_Profile_Process ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( WriteData,                 WRITE_DATA,                   write ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,             SCOREP_Profile_CreateTaskData ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,           SCOREP_Profile_FreeTaskData ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitializeMpp,             INITIALIZE_MPP,               SCOREP_Profile_InitializeMpp ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                leaked_memory ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,            GET_REQUIREMENT,              get_requirement ),
+};
+
+
+
+const SCOREP_Substrates_Callback*
+SCOREP_Profile_GetSubstrateMgmtCallbacks()
+{
+    return substrate_mgmt_callbacks;
+}
 
 const SCOREP_Substrates_Callback*
 SCOREP_Profile_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode )

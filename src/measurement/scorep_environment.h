@@ -102,6 +102,11 @@ SCOREP_Env_DoProfiling( void );
 bool
 SCOREP_Env_DoUnwinding( void );
 
+/*
+ * Enforce creation of config files
+ */
+bool
+SCOREP_Env_DoForceCfgFiles( void );
 
 UTILS_END_C_DECLS
 

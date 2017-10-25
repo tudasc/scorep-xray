@@ -62,6 +62,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
@@ -110,6 +111,9 @@ SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeN
                 propertyValue, NULL ) );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( handle, SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE_PROPERTY ) );
 }
 
 

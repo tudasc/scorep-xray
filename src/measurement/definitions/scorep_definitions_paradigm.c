@@ -31,6 +31,7 @@
 #include <UTILS_Debug.h>
 
 
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Memory.h>
 
@@ -85,6 +86,9 @@ SCOREP_Definitions_NewParadigm( SCOREP_ParadigmType  paradigm,
 
     SCOREP_Definitions_Unlock();
 
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_PARADIGM ) );
+
     return new_paradigm;
 }
 
@@ -116,4 +120,39 @@ SCOREP_ForAllParadigms( void ( * cb )( SCOREP_Paradigm*,
     {
         cb( paradigm, userData );
     }
+}
+/**
+ * Returns paradigm class (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return class (e.g. SCOREP_PARADIGM_CLASS_MPP for MPI regions)
+ */
+SCOREP_ParadigmClass
+SCOREP_ParadigmHandle_GetClass( SCOREP_ParadigmHandle handle )
+{
+    SCOREP_Paradigm* paradigm = SCOREP_MEMORY_DEREF_LOCAL( handle, SCOREP_Paradigm* );
+    return paradigm->paradigm_class;
+}
+
+/**
+ * Returns paradigm name  (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return name (lowercase, e.g., mpi)
+ */
+const char*
+SCOREP_ParadigmHandle_GetName( SCOREP_ParadigmHandle handle )
+{
+    SCOREP_Paradigm* paradigm = SCOREP_MEMORY_DEREF_LOCAL( handle, SCOREP_Paradigm* );
+    return SCOREP_LOCAL_HANDLE_DEREF( paradigm->name_handle, String )->string_data;
+}
+
+/**
+ * Returns paradigm type (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return type (e.g. SCOREP_PARADIGM_MPI for MPI regions)
+ */
+SCOREP_ParadigmType
+SCOREP_ParadigmHandle_GetType( SCOREP_ParadigmHandle handle )
+{
+    SCOREP_Paradigm* paradigm = SCOREP_MEMORY_DEREF_LOCAL( handle, SCOREP_Paradigm* );
+    return paradigm->paradigm_type;
 }

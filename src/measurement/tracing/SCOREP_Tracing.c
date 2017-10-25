@@ -57,6 +57,7 @@
 #include "scorep_tracing_internal.h"
 
 #include <SCOREP_Substrates_Management.h>
+#include <scorep_substrates_definition.h>
 
 #define SCOREP_DEBUG_MODULE_NAME TRACING
 #include <UTILS_Debug.h>

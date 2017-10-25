@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
@@ -135,6 +136,10 @@ SCOREP_Definitions_NewMetric( const char*                name,
         profilingType );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_METRIC ) );
+
 
     return new_handle;
 }
@@ -316,4 +321,25 @@ SCOREP_MetricProfilingType
 SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->profiling_type;
+}
+
+
+/**
+ * Returns the mode of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricMode
+SCOREP_MetricHandle_GetMode( SCOREP_MetricHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->mode;
+}
+
+/**
+ * Returns the source type of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricSourceType
+SCOREP_MetricHandle_GetSourceType( SCOREP_MetricHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->source_type;
 }

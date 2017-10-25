@@ -128,6 +128,22 @@ SCOREP_MetricProfilingType
 SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle );
 
 
+/**
+ * Returns the mode of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricMode
+SCOREP_MetricHandle_GetMode( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the source type of a metric.(@see SCOREP_MetricTypes.h)
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricSourceType
+SCOREP_MetricHandle_GetSourceType( SCOREP_MetricHandle handle );
+
+
 void
 scorep_definitions_unify_metric( SCOREP_MetricDef*                    definition,
                                  struct SCOREP_Allocator_PageManager* handlesPageManager );

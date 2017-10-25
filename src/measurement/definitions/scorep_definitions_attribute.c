@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <scorep_location.h>
 #include <SCOREP_Mutex.h>
@@ -104,6 +105,9 @@ SCOREP_Definitions_NewAttribute( const char*          name,
         type );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_ATTRIBUTE ) );
 
     return new_handle;
 }

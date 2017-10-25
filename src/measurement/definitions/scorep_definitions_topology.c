@@ -101,6 +101,7 @@ SCOREP_Definitions_NewMPICartesianTopology( const char*                      top
 
     SCOREP_Definitions_Unlock();
 
+
     return new_handle;
 }
 

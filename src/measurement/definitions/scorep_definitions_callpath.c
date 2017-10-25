@@ -61,6 +61,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Mutex.h>
@@ -111,6 +112,10 @@ SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle parentCallpath,
         SCOREP_INVALID_STRING );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_CALLPATH ) );
+
 
     return new_handle;
 }

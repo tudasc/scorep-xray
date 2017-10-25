@@ -81,7 +81,30 @@ SCOREP_Definitions_ParadigmSetProperty( SCOREP_Paradigm*        paradigm,
 void
 SCOREP_ForAllParadigms( void ( * cb )( SCOREP_Paradigm*,
                                        void* ),
-                        void* userData );
+                        void*    userData );
 
+/**
+ * Returns paradigm class (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return class (e.g. SCOREP_PARADIGM_CLASS_MPP for MPI regions)
+ */
+SCOREP_ParadigmClass
+SCOREP_ParadigmHandle_GetClass( SCOREP_ParadigmHandle handle );
+
+/**
+ * Returns paradigm name  (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return name (lowercase, e.g., mpi)
+ */
+const char*
+SCOREP_ParadigmHandle_GetName( SCOREP_ParadigmHandle handle );
+
+/**
+ * Returns paradigm type (@see SCOREP_PublicTypes.h)
+ * @param handle to paradigm
+ * @return type (e.g. SCOREP_PARADIGM_MPI for MPI regions)
+ */
+SCOREP_ParadigmType
+SCOREP_ParadigmHandle_GetType( SCOREP_ParadigmHandle handle );
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_PARADIGM_H */

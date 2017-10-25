@@ -53,6 +53,9 @@
  * scorep_finalize() we rename the temporary directory to something like
  * scorep_<prgname>_nProcs_x_nLocations.
  *
+ * @note The directory is only available if any substrate actually needs it.
+ * In this case, SCOREP_GetExperimentDirName() returns NULL
+ *
  * @todo rename directory in scorep_finalize().
  */
 const char*

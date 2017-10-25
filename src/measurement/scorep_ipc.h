@@ -39,7 +39,7 @@
  *
  */
 
-
+#include <scorep/SCOREP_PublicTypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -119,47 +119,6 @@ SCOREP_Ipc_GetRank( void )
 {
     return SCOREP_IpcGroup_GetRank( SCOREP_IPC_GROUP_WORLD );
 }
-
-
-// list of used ipc datatypes
-#define SCOREP_IPC_DATATYPES \
-    SCOREP_IPC_DATATYPE( BYTE ) \
-    SCOREP_IPC_DATATYPE( CHAR ) \
-    SCOREP_IPC_DATATYPE( UNSIGNED_CHAR ) \
-    SCOREP_IPC_DATATYPE( INT ) \
-    SCOREP_IPC_DATATYPE( UNSIGNED ) \
-    SCOREP_IPC_DATATYPE( INT32_T ) \
-    SCOREP_IPC_DATATYPE( UINT32_T ) \
-    SCOREP_IPC_DATATYPE( INT64_T ) \
-    SCOREP_IPC_DATATYPE( UINT64_T ) \
-    SCOREP_IPC_DATATYPE( DOUBLE )
-
-typedef enum SCOREP_Ipc_Datatype
-{
-    #define SCOREP_IPC_DATATYPE( datatype ) \
-    SCOREP_IPC_ ## datatype,
-    SCOREP_IPC_DATATYPES
-    #undef SCOREP_IPC_DATATYPE
-    SCOREP_IPC_NUMBER_OF_DATATYPES
-} SCOREP_Ipc_Datatype;
-
-
-// list of used ipc operations
-#define SCOREP_IPC_OPERATIONS \
-    SCOREP_IPC_OPERATION( BAND ) \
-    SCOREP_IPC_OPERATION( BOR ) \
-    SCOREP_IPC_OPERATION( MIN ) \
-    SCOREP_IPC_OPERATION( MAX ) \
-    SCOREP_IPC_OPERATION( SUM )
-
-typedef enum SCOREP_Ipc_Operation
-{
-    #define SCOREP_IPC_OPERATION( op ) \
-    SCOREP_IPC_ ## op,
-    SCOREP_IPC_OPERATIONS
-    #undef SCOREP_IPC_OPERATION
-    SCOREP_IPC_NUMBER_OF_OPERATIONS
-} SCOREP_Ipc_Operation;
 
 
 int

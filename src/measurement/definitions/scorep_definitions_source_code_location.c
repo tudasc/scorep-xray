@@ -45,6 +45,7 @@
 
 
 #include <SCOREP_DefinitionHandles.h>
+#include <scorep_substrates_definition.h>
 #include <scorep_types.h>
 
 static SCOREP_SourceCodeLocationHandle
@@ -80,6 +81,9 @@ SCOREP_Definitions_NewSourceCodeLocation( const char*   file,
         lineNumber );
 
     SCOREP_Definitions_Unlock();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_SOURCE_CODE_LOCATION ) );
 
     return new_handle;
 }

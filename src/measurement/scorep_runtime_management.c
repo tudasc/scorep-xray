@@ -50,6 +50,9 @@
 #include <SCOREP_Location.h>
 #include "scorep_environment.h"
 
+#include <scorep_substrates_definition.h>
+#include <SCOREP_Substrates_Management.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -90,10 +93,16 @@ static char* scorep_experiment_dir_name;
 static bool  scorep_experiment_dir_needs_rename;
 static bool  scorep_experiment_dir_created;
 
+static bool scorep_experiment_dir_not_needed;
 
 const char*
 SCOREP_GetExperimentDirName( void )
 {
+    if ( scorep_experiment_dir_not_needed )
+    {
+        return NULL;
+    }
+
     scorep_create_experiment_dir_name();
     return scorep_experiment_dir_name;
 }
@@ -104,6 +113,25 @@ SCOREP_CreateExperimentDir( void )
 {
     UTILS_BUG_ON( scorep_experiment_dir_created,
                   "SCOREP_CreateExperimentDir called multiple times." );
+
+    /* check if any substrate actually needs the directory. If not, skip it. */
+    uint64_t directory_required;
+    SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_ANY( SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY, directory_required );
+    if ( !directory_required && !SCOREP_Env_DoForceCfgFiles() )
+    {
+        /* If tracing and profiling is disabled and no other substrate is present */
+        if ( SCOREP_Substrates_NumberOfRegisteredSubstrates() == 0 && SCOREP_Status_GetRank() == 0 )
+        {
+            UTILS_WARNING( "Score-P will not create an experiment directory. "
+                           "If you want to change this, set the environment variable SCOREP_FORCE_CFG_FILES to true "
+                           "or register any substrate (e.g., profiling or tracing) that writes results." );
+        }
+        scorep_experiment_dir_not_needed   = true;
+        scorep_experiment_dir_created      = true;
+        scorep_experiment_dir_needs_rename = false;
+        return;
+    }
+
     scorep_create_experiment_dir_name();
 
     if ( SCOREP_Status_GetRank() == 0 )
