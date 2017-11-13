@@ -54,6 +54,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Paradigms_Initialize )           \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_EarlyInitialize )     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
