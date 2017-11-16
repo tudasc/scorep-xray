@@ -50,6 +50,27 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     ##
     ## try to link
     ##
+    has_getrlimit_func="yes"
+    AC_MSG_CHECKING([for getrlimit])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <sys/resource.h>
+
+            #if !HAVE_DECL_GETRLIMIT
+            int getrlimit(int resource, struct rlimit *rlp);
+            #endif
+            int main()
+            {
+                struct rlimit res_nofile;
+                int res = getrlimit( RLIMIT_NOFILE, &res_nofile );
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_GETRLIMIT, 1, [Can link a getrlimit function])],
+        [AC_MSG_RESULT(no)
+         has_getrlimit_func="no"]
+    ) # AC_LINK_IF_ELSE
 
     has_realpath_func="yes"
     AC_MSG_CHECKING([for realpath])
@@ -264,6 +285,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     ##
     ## result
     ##
+    AM_CONDITIONAL([HAVE_GETRLIMIT], [test "x${has_getrlimit_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_REALPATH], [test "x${has_realpath_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETHOSTID], [test "x${has_gethostid_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETHOSTNAME], [test "x${has_gethostname_func}" = "xyes"])
