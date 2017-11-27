@@ -64,6 +64,12 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 # /opt/cray/pmi/5.0.11
 # Therefore, we need a fall-back solution. We will test for several directories
 # including the network name.
+#
+# Even newer software stacks on Cray XC systems (Cori, Piz Daint)
+# don't provide the /opt/cray/pmi/default link but instead
+# /opt/cray/pe/pmi/default. They still provide the network via
+# /opt/cray/ari/modulefiles.
+#
 AC_MSG_CHECKING([for platform])
 AC_ARG_ENABLE([platform-mic],
     [AS_HELP_STRING([--enable-platform-mic],
@@ -93,21 +99,26 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                       [ac_scorep_platform="bgq"],
                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
                       [ac_scorep_platform="bgp"],
-                  [test "x${build_cpu}" = "xx86_64"  && test -L /opt/cray/pmi/default],
-                      [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
-                               [ac_scorep_platform="crayxt"],
-                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
-                               [ac_scorep_platform="crayxe"],
-                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
-                               [ac_scorep_platform="crayxk"],
-                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
-                               [ac_scorep_platform="crayxc"],
-                           [test -d /opt/cray/ari/modulefiles],
-                               [ac_scorep_platform="crayxc"],
-                           [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
-                               [ac_scorep_platform="crayxk"],
-                           [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
-                               [ac_scorep_platform="crayxe"],
+                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/cray],
+                      [AS_IF([test -L /opt/cray/pmi/default],
+                           [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
+                                   [ac_scorep_platform="crayxt"],
+                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                                   [ac_scorep_platform="crayxe"],
+                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                                   [ac_scorep_platform="crayxk"],
+                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
+                                   [ac_scorep_platform="crayxc"],
+                               [test -d /opt/cray/ari/modulefiles],
+                                   [ac_scorep_platform="crayxc"],
+                               [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                                   [ac_scorep_platform="crayxk"],
+                               [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                                   [ac_scorep_platform="crayxe"])],
+                      [test -L /opt/cray/pe/pmi/default],
+                           [AS_IF([test -d /opt/cray/ari/modulefiles],
+                               [ac_scorep_platform="crayxc"])])
+                       AS_IF([test "x${ac_scorep_platform}" = "x"],
                            [AC_MSG_ERROR([Unknown Cray platform.])])],
                   [test "x${build_cpu}" = "xarmv7l" || test "x${build_cpu}" = "xarmv7hl" || test "x${build_cpu}" = "xaarch64" ],
                       [ac_scorep_platform="arm"],
