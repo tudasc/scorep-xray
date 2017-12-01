@@ -6,6 +6,8 @@ Major features:
 
 Features and improvements:
 
+- Improve detection and compiler selection for SGI MPT
+  implementations.
 - Provide the Substrate Plugin interface, which enables plugins to
   consume Score-P runtime events for recording, analysis, and
   optimization purposes.
