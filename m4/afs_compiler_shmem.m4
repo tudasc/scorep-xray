@@ -6,6 +6,9 @@
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2017,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -77,15 +80,18 @@ AS_IF([test -n "${SHMEMCC}"],
     ])
 
 AC_MSG_CHECKING([for SGI MPT])
-SHMEMCC=`which rail-config 2> /dev/null`
-AS_IF([(test -f /etc/sgi-release && test -n "${SHMEMCC}")],
-    [R_SHMEMCC=`readlink -f ${SHMEMCC}`
-     AS_IF([test -n "${R_SHMEMCC}"],
-         [SHMEMCC=${R_SHMEMCC}])
-     SBINDIR=`dirname ${SHMEMCC}`
+# rail-config - Sets up the MPI multi-rail configuration file
+# newer SGI MPT versions provide wrappers (oshcc, oshCC, oshfort)
+SHMEMRC=`which rail-config 2> /dev/null`
+AS_IF([(test -f /etc/sgi-release && test "x${SHMEMRC}" != x)],
+    [SBINDIR=`dirname ${SHMEMRC}`
+     AS_IF([test -f "${SBINDIR}/oshcc"],
+         [SHMEM=sgimptwrapper
+          variant="(wrapper)"],
+         [SHMEM=sgimpt
+          variant="(plain)"])
      NSHMEMS=`expr ${NSHMEMS} + 1`
-     SHMEM=sgimpt
-     AC_MSG_RESULT([SGI MPT ${SBINDIR}])
+     AC_MSG_RESULT([SGI MPT ${variant} ${SBINDIR}])
      AS_IF([test -z "${SHMEMS}"],
          [SHMEMS="${SHMEM}"],
          [SHMEMS="${SHMEMS}|${SHMEM}"])

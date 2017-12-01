@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2014, 2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -82,15 +82,18 @@ AS_IF([test -n "${MPCC}"],
     ])
 
 AC_MSG_CHECKING([for SGI MPT])
+# rail-config - Sets up the MPI multi-rail configuration file
+# newer SGI MPT versions provide wrappers (mpicc, mpicxx, mpif77/90/08)
 MPIRC=`which rail-config 2> /dev/null`
-AS_IF([(test -f /etc/sgi-release && test -n "${MPIRC}")],
-    [R_MPIRC=`readlink -f ${MPIRC}`
-     AS_IF([test -n "${R_MPIRC}"],
-         [MPICC=${R_MPIRC}])
-     MBINDIR=`dirname ${MPIRC}`
+AS_IF([(test -f /etc/sgi-release && test "x${MPIRC}" != x)],
+    [MBINDIR=`dirname ${MPIRC}`
+     AS_IF([test -f "${MBINDIR}/mpicc"],
+         [MPI=sgimptwrapper
+          variant="(wrapper)"],
+         [MPI=sgimpt
+          variant="(plain)"])
      NMPIS=`expr ${NMPIS} + 1`
-     MPI=sgimpt
-     AC_MSG_RESULT([SGI MPT ${MBINDIR}])
+     AC_MSG_RESULT([SGI MPT ${variant} ${MBINDIR}])
      AS_IF([test -z "${MPIS}"],
          [MPIS="${MPI}"],
          [MPIS="${MPIS}|${MPI}"])
