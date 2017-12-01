@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ##    University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2017,
 ##    Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -107,22 +107,22 @@ fi
 dnl We have to use AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[],[]) and not AC_CHECK_HEADER because the
 dnl latter uses $CPP, not $CC (which may be mpicc).
 AC_LANG_CASE([C], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpi.h])
+	AC_MSG_CHECKING([for mpi.h (C)])
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi],
 [C++], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpi.h])
+	AC_MSG_CHECKING([for mpi.h (C++)])
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi],
 [Fortran 77], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpif.h])
+	AC_MSG_CHECKING([for mpif.h (F77)])
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi],
 [Fortran], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpif.h])
+	AC_MSG_CHECKING([for mpif.h (FC)])
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi])
