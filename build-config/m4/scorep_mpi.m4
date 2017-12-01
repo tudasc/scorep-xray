@@ -367,7 +367,7 @@ else
 fi
 
 if test "x${scorep_mpi_supported}" = "xno"; then
-  AC_MSG_WARN([Non suitable MPI compilers found. SCOREP MPI and hybrid libraries will not be build.])
+  AC_MSG_WARN([No suitable MPI compilers found. SCOREP MPI and hybrid libraries will not be build.])
 fi
 AM_CONDITIONAL([HAVE_MPI_SUPPORT], [test "x${scorep_mpi_supported}" = "xyes"])
 AM_CONDITIONAL([HAVE_MPIFC], [test "x${scorep_mpi_f90_supported}" = "xyes"])
