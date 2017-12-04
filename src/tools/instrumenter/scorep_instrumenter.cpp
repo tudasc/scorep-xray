@@ -68,8 +68,6 @@
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_mutex.hpp"
 
-#include <sys/time.h>
-
 void
 print_help();
 
@@ -332,6 +330,7 @@ SCOREP_Instrumenter::getConfigBaseCall( void )
 /* ****************************************************************************
  *                                                              private methods
  * ***************************************************************************/
+
 std::string
 SCOREP_Instrumenter::create_object_name( const std::string& sourceFile )
 {
@@ -351,12 +350,9 @@ SCOREP_Instrumenter::create_object_name( const std::string& sourceFile )
         // from different directories have the same name.
         if ( m_command_line.isLinking() )
         {
-            struct timeval tv;
-            gettimeofday( &tv, NULL );
             std::stringstream new_name;
             new_name << remove_extension( object_file )
-                     << "_" << tv.tv_sec
-                     << "_" << tv.tv_usec
+                     << create_random_string()
                      << get_extension( object_file );
             object_file = new_name.str();
         }

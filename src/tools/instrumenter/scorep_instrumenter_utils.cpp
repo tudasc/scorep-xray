@@ -45,6 +45,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
+#include <sys/time.h>
 
 std::string
 undo_backslashing( std::string str )
@@ -525,4 +526,15 @@ remove_string_from_list( const std::string& haystackList,
                                       haystack );
 
     return result.substr( 1, result.length() - 2 );
+}
+
+std::string
+create_random_string( void )
+{
+    struct timeval tv;
+    gettimeofday( &tv, NULL );
+    std::stringstream random_string;
+    random_string << "_" << tv.tv_sec
+                  << "_" << tv.tv_usec;
+    return random_string.str();
 }

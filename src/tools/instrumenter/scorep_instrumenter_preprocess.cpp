@@ -71,6 +71,7 @@ SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         
     if ( !is_fortran_file( source_file ) )
     {
         output_file = remove_extension( remove_path( source_file ) )
+                      + create_random_string()
                       + ".input"
                       + orig_ext;
 

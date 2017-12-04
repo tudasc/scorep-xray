@@ -50,6 +50,10 @@ Bugfixes:
 - Recording of synchrounous metrics (SCOREP_METRIC_SYNC), i.e.,
   per-process metrics or metrics provided by a 'sync' plugin, resulted
   in wrong values in profiling mode. Fixed.
+- Added a time-based string to temporary results files of the
+  preprocessing step during instrumentation. This should avoid name
+  clashes if the same source file is concurrently processed twice during
+  the build process.
 
 ------------------- Released version 3.1 -----------------------------
 

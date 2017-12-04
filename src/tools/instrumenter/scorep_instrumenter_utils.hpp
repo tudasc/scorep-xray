@@ -312,4 +312,11 @@ remove_string_from_list( const std::string& haystackList,
                          const std::string& needleString,
                          char               separator );
 
+/**
+ * Creates a string for intermediate files to avoid name clashes.
+ */
+std::string
+create_random_string( void );
+
+
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP
