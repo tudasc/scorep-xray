@@ -4,6 +4,9 @@
  * Copyright (c) 2012-2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,14 +40,35 @@
 
 #endif
 
+#if HAVE( SHMEM_PROFILING_INTERFACE )
+#define SHMEM_HAVE_DECL( DECL ) HAVE( SHMEM_SYMBOL_P ## DECL )
+#elif HAVE( GNU_LINKER )
+#define SHMEM_HAVE_DECL( DECL ) HAVE( SHMEM_SYMBOL_ ## DECL )
+#endif
+
+/* Enable stringize when 'name' is a macro. */
+#define XCALL_SHMEM( name ) CALL_SHMEM( name )
+
+#if SHMEM_HAVE_DECL( SHMEM_N_PES )
+#define SCOREP_SHMEM_N_PES shmem_n_pes
+#else
+#define SCOREP_SHMEM_N_PES _num_pes
+#endif
+
+#if SHMEM_HAVE_DECL( SHMEM_MY_PE )
+#define SCOREP_SHMEM_MY_PE shmem_my_pe
+#else
+#define SCOREP_SHMEM_MY_PE _my_pe
+#endif
+
 void
 CALL_SHMEM( start_pes )( int );
 
 int
-CALL_SHMEM( _my_pe )( void );
+XCALL_SHMEM( SCOREP_SHMEM_MY_PE )( void );
 
 int
-CALL_SHMEM( _num_pes )( void );
+XCALL_SHMEM( SCOREP_SHMEM_N_PES )( void );
 
 void
 CALL_SHMEM( shmem_barrier_all )( void );
@@ -97,8 +121,8 @@ main( int    argc,
     int me;
 
     CALL_SHMEM( start_pes )( 0 );
-    pes = CALL_SHMEM( _num_pes )();
-    me  = CALL_SHMEM( _my_pe )();
+    pes = XCALL_SHMEM( SCOREP_SHMEM_N_PES )();
+    me  = XCALL_SHMEM( SCOREP_SHMEM_MY_PE )();
 
     for ( int i = 0; i < _SHMEM_REDUCE_SYNC_SIZE; i++ )
     {

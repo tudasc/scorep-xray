@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014, 2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -84,7 +87,20 @@
 
 #endif
 
+/* Enable stringize if 'name' is a macro. */
+#define XCALL_SHMEM( name ) CALL_SHMEM( name )
 
+#if SHMEM_HAVE_DECL( SHMEM_N_PES )
+#define SCOREP_SHMEM_N_PES shmem_n_pes
+#else
+#define SCOREP_SHMEM_N_PES _num_pes
+#endif
+
+#if SHMEM_HAVE_DECL( SHMEM_MY_PE )
+#define SCOREP_SHMEM_MY_PE shmem_my_pe
+#else
+#define SCOREP_SHMEM_MY_PE _my_pe
+#endif
 
 #include "scorep_shmem_function_list.inc"
 

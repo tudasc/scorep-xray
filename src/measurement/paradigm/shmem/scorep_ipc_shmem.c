@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -111,7 +114,7 @@ SCOREP_Ipc_Init( void )
     /* Duplicate 'comm world' */
     scorep_ipc_group_world.pe_start      = 0;
     scorep_ipc_group_world.log_pe_stride = 0;
-    scorep_ipc_group_world.pe_size       = CALL_SHMEM( _num_pes )();
+    scorep_ipc_group_world.pe_size       = XCALL_SHMEM( SCOREP_SHMEM_N_PES )();
     scorep_ipc_group_world.is_group_set  = 1;
 
     /* Assign data types */
@@ -262,7 +265,7 @@ SCOREP_IpcGroup_GetSize( SCOREP_Ipc_Group* group )
 int
 SCOREP_IpcGroup_GetRank( SCOREP_Ipc_Group* group )
 {
-    return CALL_SHMEM( _my_pe )();
+    return XCALL_SHMEM( SCOREP_SHMEM_MY_PE )();
 }
 
 
