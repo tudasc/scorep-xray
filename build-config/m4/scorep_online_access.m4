@@ -33,6 +33,7 @@ dnl file build-config/m4/scorep_online_access.m4
 
 AC_DEFUN([AC_SCOREP_ONLINE_ACCESS],
 [
+AC_REQUIRE([AC_PROG_SED])dnl
 ac_scorep_have_online_access="no"
 ac_scorep_have_online_access_flex="no"
 ac_scorep_have_online_access_yacc="no"
@@ -65,13 +66,18 @@ AS_CASE([${build_os}],
 	   )
 
 
-AM_PROG_LEX
-AC_MSG_CHECKING([for a suitable version of flex])
-AS_IF([test "x${LEX}" != x],
-    [flex_version=`${LEX} -V | sed 's/[[a-zA-Z\.]]//g'`
+AC_PROG_LEX
+AS_IF([test "x${LEX}" != "x:"],
+    [AC_MSG_CHECKING([for a suitable version of flex])
+     flex_version_full=`${LEX} -V | ${SED} 's/[[a-zA-Z]]//g'`
+     flex_version=`echo "${flex_version_full}" | ${SED} 's/\.//g'`
      AS_IF([test "${flex_version}" -gt 254],
-         [ac_scorep_have_online_access_flex=yes])])
-AC_MSG_RESULT([${ac_scorep_have_online_access_flex}])
+         [ac_scorep_have_online_access_flex=yes
+          AC_MSG_RESULT([${flex_version_full}])],
+         [AC_MSG_RESULT([none (${flex_version_full}, need > 2.5.4)])])])
+dnl remaining AM_PROG_LEX part that is not covered by AC_PROG_LEX
+AS_IF([test "x$LEX" = "x:"],
+    [LEX=${am_missing_run}flex])
 
 AC_PROG_YACC
 AS_IF([test "x${YACC}" != x],
