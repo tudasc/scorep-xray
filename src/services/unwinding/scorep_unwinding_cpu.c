@@ -181,7 +181,7 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     int             ret = unw_get_proc_info( cursor, &proc_info );
     if ( ret < 0 )
     {
-        UTILS_DEBUG( "unw_get_proc_info() failed for IP %tx: %s", ip, unw_strerror( -ret ) );
+        UTILS_DEBUG( "unw_get_proc_info() failed for IP %tx: %s", ip, unw_strerror( ret ) );
         return NULL;
     }
 
@@ -205,7 +205,7 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     if ( ret < 0 )
     {
         UTILS_DEBUG( "error while retrieving function name for IP %tx through libunwind: %s",
-                     proc_info.start_ip, unw_strerror( -ret ) );
+                     proc_info.start_ip, unw_strerror( ret ) );
         snprintf( unwindData->region_name_buffer, MAX_FUNC_NAME_LENGTH,
                   "UNKNOWN@%tx", proc_info.start_ip );
         // ??? return NULL;
@@ -313,7 +313,7 @@ get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
         int ret = unw_step( &unwindData->cursor );
         if ( ret < 0 )
         {
-            UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( -ret ) );
+            UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
             break;
         }
         if ( 0 == ret )
@@ -345,7 +345,7 @@ get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
         ret = unw_get_reg( &unwindData->cursor, UNW_REG_IP, &ip );
         if ( ret < 0 )
         {
-            UTILS_DEBUG( "Could not get IP register (unw_get_reg() returned %s", unw_strerror( -ret ) );
+            UTILS_DEBUG( "Could not get IP register (unw_get_reg() returned %s", unw_strerror( ret ) );
             continue;
         }
         UTILS_DEBUG( "unwinding %s %s %zu: IP %p",
@@ -473,7 +473,7 @@ get_wrapped_region( SCOREP_Unwinding_CpuLocationData* unwindData,
                                                        &proc_info, 0 );
         if ( ret < 0 )
         {
-            UTILS_DEBUG( "unw_get_proc_info_by_ip() failed for IP %tx: %s", wrappedRegion, unw_strerror( -ret ) );
+            UTILS_DEBUG( "unw_get_proc_info_by_ip() failed for IP %tx: %s", wrappedRegion, unw_strerror( ret ) );
             proc_info.start_ip = wrappedRegion;
             proc_info.end_ip   = wrappedRegion + 1;
         }
@@ -527,13 +527,13 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind context: %s", unw_strerror( -ret ) );
+                            "Could not get libunwind context: %s", unw_strerror( ret ) );
     }
     ret = unw_init_local( &unwindData->cursor, &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind cursor: %s", unw_strerror( -ret ) );
+                            "Could not get libunwind cursor: %s", unw_strerror( ret ) );
     }
 
     bool     wrapped_region_is_on_stack = false;
@@ -751,13 +751,13 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind context: %s", unw_strerror( -ret ) );
+                            "Could not get libunwind context: %s", unw_strerror( ret ) );
     }
     ret = unw_init_local( &unwindData->cursor, &unwindData->context );
     if ( ret < 0 )
     {
         return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind cursor: %s", unw_strerror( -ret ) );
+                            "Could not get libunwind cursor: %s", unw_strerror( ret ) );
     }
 
     UTILS_BUG_ON( unwindData->augmented_stack == NULL, "Leave event without instrumented regions." );
