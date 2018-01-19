@@ -281,7 +281,7 @@ typedef enum SCOREP_ParadigmClass
  * - SCOREP_PARADIGM_SAMPLING refers to sampling
  * - SCOREP_PARADIGM_MEMORY refers to a memory region (malloc/realloc/...)
  * - SCOREP_PARADIGM_MPI refers to MPI instrumentation
- * - SCOREP_PARADIGM_SHMEM refers to MPI instrumentation
+ * - SCOREP_PARADIGM_SHMEM refers to SHMEM instrumentation
  * - SCOREP_PARADIGM_OPENMP refers to OpenMP instrumentation
  * - SCOREP_PARADIGM_PTHREAD refers to Pthread instrumentation
  * - SCOREP_PARADIGM_CUDA refers to CUDA instrumentation
