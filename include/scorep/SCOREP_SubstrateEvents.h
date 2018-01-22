@@ -1254,6 +1254,8 @@ typedef void ( * SCOREP_Substrates_ThreadForkJoinTaskEndCb )(
  *
  * @param createSequenceCount a process unique increasing number that is increased at every
  * SCOREP_Substrates_ThreadCreateWaitCreateCb and SCOREP_Substrates_ThreadForkJoinForkCb
+ *
+ * @{
  */
 
 typedef void ( * SCOREP_Substrates_ThreadCreateWaitCreateCb )(
