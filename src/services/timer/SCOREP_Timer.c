@@ -313,15 +313,15 @@ SCOREP_Timer_GetClockResolution( void )
                     double stddev        = 0;
                     if ( size > 1 )
                     {
-                        stddev = sqrt( ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 ) );
+                        stddev = ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 );
                     }
-                    double percent   = stddev * 100 / avg_frequency;
-                    double threshold = 0.00001;     /* 'invented' value derived from a 4 process
-                                                       run that took 15 seconds. */
+                    double percent   = stddev * 100 * 100 / ( avg_frequency * avg_frequency );
+                    double threshold = 0.00001 * 0.00001; /* 'invented' value derived from a 4 process
+                                                             run that took 15 seconds. */
                     if ( percent > threshold )
                     {
                         UTILS_WARNING( "Calculated timer (tsc) frequencies differ between processes "
-                                       "by more than %f%% (avg_frequency = %f/s; stddev = %f/s; "
+                                       "by more than %f%% (avg_frequency = %f/s; stddev * stddev = %f/s; "
                                        "threshold = %f%%). Consider using a timer with a fixed "
                                        "frequency like gettimeofday or clock_gettime or prolong "
                                        "the measurement duration.",
