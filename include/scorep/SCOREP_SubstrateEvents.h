@@ -15,7 +15,7 @@
 
 
 /**
- * @file       SCOREP_SubstrateEvents.h
+ * @file
  *
  * @brief Description of the substrate plugin events header.
  *        For information on how to use substrate plugins, please refer to section @secref{substrate_plugins}.
