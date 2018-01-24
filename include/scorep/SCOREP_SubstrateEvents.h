@@ -89,7 +89,7 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_RMA_COLLECTIVE_BEGIN,          /**< marks the start of an RMA collective (used by shmem), see SCOREP_Substrates_RmaCollectiveBeginCb() */
     SCOREP_EVENT_RMA_COLLECTIVE_END,            /**< marks the start of an RMA collective (used by shmem), see SCOREP_Substrates_RmaCollectiveEndCb() */
     SCOREP_EVENT_RMA_TRY_LOCK,                  /**< marks an RMA trylock (used by shmem), see SCOREP_Substrates_RmaTryLockCb() */
-    SCOREP_EVENT_RMA_ACQUIRE_LOCK,              /**< marks the acquiration of an RMA lock (used by shmem), see SCOREP_Substrates_RmaAcquireLockCb() */
+    SCOREP_EVENT_RMA_ACQUIRE_LOCK,              /**< marks the acquisition of an RMA lock (used by shmem), see SCOREP_Substrates_RmaAcquireLockCb() */
     SCOREP_EVENT_RMA_REQUEST_LOCK,              /**< marks a request for an RMA lock (used by shmem), see SCOREP_Substrates_RmaRequestLockCb() */
     SCOREP_EVENT_RMA_RELEASE_LOCK,              /**< marks a release of an RMA lock (used by shmem), see SCOREP_Substrates_RmaReleaseLockCb() */
     SCOREP_EVENT_RMA_SYNC,                      /**< marks a simple pairwise RMA synchronization, see SCOREP_Substrates_RmaSyncCb() */
@@ -375,7 +375,7 @@ typedef void ( * SCOREP_Substrates_MpiSendCb )(
  *
  * @param tag provided MPI tag for this message
  *
- * @param bytesSent number of bytes received with this message
+ * @param bytesReceived number of bytes received with this message
  */
 typedef void ( * SCOREP_Substrates_MpiRecvCb )(
     struct SCOREP_Location*          location,
@@ -414,6 +414,8 @@ typedef void ( * SCOREP_Substrates_MpiCollectiveBeginCb )(
  * @param tag provided MPI tag for this message
  *
  * @param bytesSent number of bytes received with this message
+ *
+ * @param bytesReceived number of bytes received with this message
  */
 typedef void ( * SCOREP_Substrates_MpiCollectiveEndCb )(
     struct SCOREP_Location*          location,
@@ -529,7 +531,7 @@ typedef void ( * SCOREP_Substrates_MpiIsendCb )(
  *
  * @param tag MPI tag
  *
- * @param bytesSent number of sent bytes
+ * @param bytesReceived number of bytes received with this message
  *
  * @param requestId request ID of the non blocking communication to be canceled (see MPI standard)
  */
@@ -674,7 +676,7 @@ typedef void ( * SCOREP_Substrates_RmaAcquireLockCb )(
  * This record marks the time that a request for a lock is issued where
  * the RMA model ensures that the lock is granted eventually without
  * further notification. As of now this is specific for MPI. In this case,
- * the @a SCOREP_RmaAquireLock event is not present.
+ * the @a SCOREP_RmaAcquireLock event is not present.
  *
  * @param location location which creates this event
  *
@@ -712,8 +714,6 @@ typedef void ( * SCOREP_Substrates_RmaRequestLockCb )(
  * @param remote Rank of target in context of window.
  *
  * @param lockId Lock id in context of window.
- *
- * @param lockType Type of lock (shared vs. exclusive).
  */
 typedef void ( * SCOREP_Substrates_RmaReleaseLockCb )(
     struct SCOREP_Location* location,
@@ -724,10 +724,6 @@ typedef void ( * SCOREP_Substrates_RmaReleaseLockCb )(
 
 /**
  * This record marks a simple pairwise synchronization.
- *
- * @param location location which creates this event
- *
- * @param timestamp timestamp for this event
  *
  * @param location location which creates this event
  *
@@ -761,7 +757,7 @@ typedef void ( * SCOREP_Substrates_RmaSyncCb )(
  *
  * @param windowHandle Memory window.
  *
- * @param group Group of participating processes or threads.
+ * @param groupHandle Group of participating processes or threads.
  */
 typedef void ( * SCOREP_Substrates_RmaGroupSyncCb )(
     struct SCOREP_Location* location,
@@ -829,7 +825,7 @@ typedef void ( * SCOREP_Substrates_RmaGetCb )(
  *
  * @param type Type of atomic operation (see @a SCOREP_RmaAtomicType).
  *
- * @param bytesSent Number of bytes transferred to rmeote target.
+ * @param bytesSent Number of bytes transferred to remote target.
  *
  * @param bytesReceived Number of bytes transferred from remote target.
  *
@@ -877,7 +873,7 @@ typedef void ( * SCOREP_Substrates_RmaWaitChangeCb )(
  *
  * @param timestamp timestamp for this event
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param matchingId Matching number.
  *
@@ -909,7 +905,7 @@ typedef void ( * SCOREP_Substrates_RmaOpCompleteNonBlockingCb )(
  *
  * @param timestamp timestamp for this event
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param matchingId Matching number.
  */
@@ -932,7 +928,7 @@ typedef void ( * SCOREP_Substrates_RmaOpTestCb )(
  *
  * @param timestamp timestamp for this event
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param matchingId Matching number.
  */
@@ -1177,7 +1173,7 @@ typedef void ( * SCOREP_Substrates_ThreadForkJoinTaskCreateCb )(
  *                         @a threadId, this constitutes a unique task ID
  *                         inside the parallel region.
  *
- * @param task             A handle to the resumed task.
+ * @param taskHandle       A handle to the resumed task.
  */
 
 typedef void ( * SCOREP_Substrates_ThreadForkJoinTaskSwitchCb )(
@@ -1387,7 +1383,7 @@ typedef void ( * SCOREP_Substrates_TrackFreeCb )(
  * @param location                 A pointer to the thread location data of the thread that executed
  *                                 the metric event.
  * @param timestamp                The timestamp, when the metric event occurred.
- * @param SCOREP_SamplingSetHandle The sampling set with metrics
+ * @param samplingSet              The sampling set with metrics
  * @param metricValues             Array of the metric values.
  *
  */
