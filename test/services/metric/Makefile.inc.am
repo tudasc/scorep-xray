@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -107,12 +107,18 @@ if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
 TESTS_OMP  += ./../test/services/metric/run_rusage_openmp_metric_test.sh \
               ./../test/services/metric/run_rusage_openmp_per_process_metric_test.sh
-endif
+CLEAN_LOCAL += clean-local-metric-openmp-rusage-experiments
+clean-local-metric-openmp-rusage-experiments:
+	@rm -rf scorep-openmp-rusage-*
+endif HAVE_GETRUSAGE
 
 if HAVE_PAPI
 TESTS_OMP  += ./../test/services/metric/run_papi_openmp_metric_test.sh \
               ./../test/services/metric/run_papi_openmp_per_process_metric_test.sh
-endif
+CLEAN_LOCAL += clean-local-metric-openmp-papi-experiments
+clean-local-metric-openmp-papi-experiments:
+	@rm -rf scorep-openmp-papi-*
+endif HAVE_PAPI
 
 jacobi_omp_c_metric_test_LDFLAGS  = $(omp_ldflags)
 

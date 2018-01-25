@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -67,6 +67,11 @@ TESTS_OMP += ./../test/omp_tasks/run_single_loop_test.sh
 endif !SCOREP_COMPILER_PGI
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \
 	            $(SRC_ROOT)test/omp_tasks/task_single_loop.c
+
+CLEAN_LOCAL += clean-local-omp-tasks-experiments
+clean-local-omp-tasks-experiments:
+	@rm -rf scorep_fibonacci_*
+	@rm -rf scorep_single_loop_*
 
 endif HAVE_SCOREP_OMP_TPD
 

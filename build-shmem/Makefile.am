@@ -6,7 +6,7 @@
 ## Copyright (c) 2013-2015,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2015, 2017,
+## Copyright (c) 2015, 2017-2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -25,6 +25,10 @@ ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 include ../vendor/common/build-config/Makefile.tests-shmem.inc.am
+AM_TESTS_ENVIRONMENT_SHMEM = export SCOREP_EXPERIMENT_DIRECTORY=make_check_experiment_shmem;
+CLEAN_LOCAL += clean-local-experiment-directories
+clean-local-experiment-directories:
+	@rm -rf make_check_experiment_shmem*
 
 # Build external targets - i.e., scorep targets that are built in
 # different build-* directories - at once, using just a single rule:

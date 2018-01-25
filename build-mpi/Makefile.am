@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017-2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,7 +40,12 @@ ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 include ../vendor/common/build-config/Makefile.tests-mpi.inc.am
+AM_TESTS_ENVIRONMENT_MPI = export SCOREP_EXPERIMENT_DIRECTORY=make_check_experiment_mpi;
 include ../vendor/common/build-config/Makefile.tests-mpi-omp.inc.am
+AM_TESTS_ENVIRONMENT_MPI_OMP = export SCOREP_EXPERIMENT_DIRECTORY=make_check_experiment_mpi-omp;
+CLEAN_LOCAL += clean-local-experiment-directories
+clean-local-experiment-directories:
+	@rm -rf make_check_experiment_mpi*
 
 # Build external targets - i.e., scorep targets that are built in
 # different build-* directories - at once, using just a single rule:
