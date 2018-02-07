@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014, 2016,
+ * Copyright (c) 2012-2014, 2016, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -44,6 +44,10 @@
 #include "plugin.h"
 #include "gimple.h"
 #include "tree-pass.h"
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
+#include "stringpool.h"
+#include "attribs.h"
+#endif
 
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>

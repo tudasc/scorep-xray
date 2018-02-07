@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,8 +21,8 @@
 #include "plugin.h"
 
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
-#include "attribs.h"
 #include "stringpool.h"
+#include "attribs.h"
 #endif
 
 #include "tree-pass.h"
