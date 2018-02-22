@@ -1617,7 +1617,8 @@ get_requirement( SCOREP_Substrates_RequirementFlag flag )
 }
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
-    {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
+    /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
+    {
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,              ENTER_REGION,                 enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,               EXIT_REGION,                  leave ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                   SAMPLE,                       sample ),
@@ -1677,7 +1678,9 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetricBeforeEvent,   WRITE_METRIC_BEFORE_EVENT,    write_metric ),
     },
-    {   /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
+    /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
+    {
+        0, /* all callbacks are NULL, but avoid empty initializer list */
     }
 };
 
