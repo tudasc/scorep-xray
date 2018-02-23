@@ -395,8 +395,8 @@ SCOREP_Substrates_EarlyInitialize( void )
     /* Initialize plugins */
     SCOREP_Substrate_Plugins_EarlyInit();
 
-    /* get max. number of substrates */
-    int nr_of_substrates = 0;
+    /* get max. number of substrates, start with 1 for properties */
+    int nr_of_substrates = 1;
     if ( SCOREP_IsTracingEnabled() )
     {
         nr_of_substrates++;
@@ -411,6 +411,9 @@ SCOREP_Substrates_EarlyInitialize( void )
     SCOREP_Substrates_Callback* substrates_enabled_unpacked     = calloc( ( nr_of_substrates + 1 ) * SCOREP_SUBSTRATES_NUM_EVENTS, sizeof( SCOREP_Substrates_Callback ) );
     SCOREP_Substrates_Callback* substrates_disabled_unpacked    = calloc( ( nr_of_substrates + 1 ) * SCOREP_SUBSTRATES_NUM_EVENTS, sizeof( SCOREP_Substrates_Callback ) );
     SCOREP_Substrates_Callback* scorep_substrates_mgmt_unpacked = calloc( ( nr_of_substrates + 1 ) * SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, sizeof( SCOREP_Substrates_Callback ) );
+
+    /* historically, properties were the first things in the disabled list, so add it first */
+    append_callbacks( scorep_properties_get_substrate_callbacks(), substrates_disabled_unpacked, SCOREP_SUBSTRATES_NUM_EVENTS, SCOREP_SUBSTRATES_NUM_EVENTS, nr_of_substrates );
 
     /* SCOREP_EVENT_INIT_SUBSTRATE: needed to set correct substrate id that is
      * used for indexing into location- and task-local substrate data arrays.
