@@ -693,7 +693,7 @@ instrumentation. The start and end
 of the online access phase defines the interaction points, where new measurement
 control commands are applied and data requests are answered.
 
-To insert an online online access phase into the code, the user has to insert the macros
+To insert an online access phase into the code, the user has to insert the macros
 <tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and the corresponding
 <tt>SCOREP_USER_OA_PHASE_END</tt> at appropriate locations. These macros must be
 <ul>

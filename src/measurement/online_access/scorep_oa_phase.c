@@ -36,6 +36,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
@@ -53,7 +54,7 @@ scorep_oa_phase_enter( const SCOREP_RegionHandle handle )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     UTILS_ASSERT( handle != SCOREP_INVALID_REGION );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld", handle );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %" PRIu32, handle );
 
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING )
     {
@@ -71,7 +72,7 @@ scorep_oa_phase_exit( const SCOREP_RegionHandle handle )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
     UTILS_ASSERT( handle != SCOREP_INVALID_REGION );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld", handle );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %" PRIu32, handle );
 
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_END )
     {
