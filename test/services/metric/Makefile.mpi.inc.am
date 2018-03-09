@@ -47,13 +47,6 @@ jacobi_mpi_c_metric_test_CPPFLAGS = \
 jacobi_mpi_c_metric_test_LDADD    = $(mpi_libadd)
 jacobi_mpi_c_metric_test_LDFLAGS  = $(mpi_ldflags)
 
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_events.out
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_events.out
-
 # As long as there is no appropriate make target add binary to MPI test
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
@@ -105,13 +98,6 @@ jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/services/metric/data/
 endif SCOREP_COMPILER_SUN
 
 
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_rusage_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_rusage_metric_events.out
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_events.out
-
 # As long as there is no appropriate make target add binary to MPI test
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
@@ -133,3 +119,16 @@ endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 
 endif HAVE_MPI_SUPPORT
+
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_rusage_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_rusage_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_events.out

@@ -42,13 +42,6 @@ jacobi_serial_c_metric_test_CPPFLAGS  = \
 jacobi_serial_c_metric_test_LDADD     = $(serial_libadd)
 
 
-EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_rusage_serial_metric_test.sh.in \
-                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_definitions.out \
-                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_events.out
-EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_papi_serial_metric_test.sh.in \
-                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_definitions.out \
-                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_events.out
-
 if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
 TESTS_SERIAL += ./../test/services/metric/run_rusage_serial_metric_test.sh
@@ -88,21 +81,6 @@ endif
 
 jacobi_omp_c_metric_test_LDADD    = $(omp_libadd)
 
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh.in \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_events.out \
-              $(SRC_ROOT)test/services/metric/run_rusage_openmp_per_process_metric_test.sh.in \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_events_1.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_events_2.out
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh.in \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_events.out \
-              $(SRC_ROOT)test/services/metric/run_papi_openmp_per_process_metric_test.sh.in \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_definitions.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_events_1.out \
-              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_events_2.out
-
 if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
 TESTS_OMP  += ./../test/services/metric/run_rusage_openmp_metric_test.sh \
@@ -127,3 +105,24 @@ endif !SCOREP_COMPILER_SUN
 endif HAVE_SCOREP_OMP_TPD
 
 endif HAVE_OPENMP_SUPPORT
+
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_serial_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_papi_serial_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_rusage_openmp_per_process_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_events_1.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_per_process_metric_events_2.out \
+              $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_events.out \
+              $(SRC_ROOT)test/services/metric/run_papi_openmp_per_process_metric_test.sh.in \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_events_1.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_per_process_metric_events_2.out

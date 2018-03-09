@@ -55,10 +55,8 @@ omp_test_LDADD    = $(omp_libadd)
 omp_test_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_profile.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_profile.sh
 
 
 check_PROGRAMS += internal_thread_handling
@@ -73,7 +71,6 @@ internal_thread_handling_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
 
 endif HAVE_SCOREP_OMP_TPD
 
@@ -100,13 +97,17 @@ omp_test_nested_LDADD    = $(omp_libadd)
 omp_test_nested_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested.sh
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested_profile.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested_profile.sh
 
 endif HAVE_SCOREP_OMP_TPD
 
 endif !SCOREP_COMPILER_PGI
 
 endif HAVE_OPENMP_SUPPORT
+
+EXTRA_DIST += $(SRC_ROOT)test/omp/run_omp_test.sh \
+              $(SRC_ROOT)test/omp/run_omp_test_profile.sh \
+              $(SRC_ROOT)test/omp/run_internal_thread_handling.sh \
+              $(SRC_ROOT)test/omp/run_omp_test_nested.sh \
+              $(SRC_ROOT)test/omp/run_omp_test_nested_profile.sh

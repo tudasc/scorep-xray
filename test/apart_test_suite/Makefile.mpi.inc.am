@@ -67,8 +67,6 @@ endif
 mpi_patt_all_test_f90_with_oa_LDADD      = $(mpi_libadd)
 mpi_patt_all_test_f90_with_oa_LDFLAGS    = $(mpi_ldflags)
 
-EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh.in
-
 CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod
 
 endif #if HAVE_ONLINE_ACCESS
@@ -104,3 +102,5 @@ CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.m
 
 endif
 # if MPI_SUPPORTED
+
+EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh.in

@@ -76,8 +76,8 @@ sequence_definition_test_LDFLAGS  = $(mpi_omp_ldflags)
 
 TESTS_MPI_OMP += sequence_definition_test
 
-EXTRA_DIST += $(SRC_ROOT)test/mpi_omp/run_mpi_omp_sequence_definition_test.sh.in
-
 endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 endif HAVE_MPI_SUPPORT
+
+EXTRA_DIST += $(SRC_ROOT)test/mpi_omp/run_mpi_omp_sequence_definition_test.sh.in

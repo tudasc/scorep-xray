@@ -81,6 +81,7 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
 
 
 if ! CROSS_BUILD
+## This EXTRA_DIST is deliberately inside this conditional block
 EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
               $(srcdir)/build-frontend/aclocal.m4   \
               $(srcdir)/build-frontend/Makefile.am  \

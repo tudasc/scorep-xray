@@ -27,7 +27,7 @@ endif
 
 scorep_online_access_registry_LDADD = $(LIB_ROOT)libutils.la
 
+endif #if HAVE_ONLINE_ACCESS
+
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_mpi
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_serial
-
-endif #if HAVE_ONLINE_ACCESS

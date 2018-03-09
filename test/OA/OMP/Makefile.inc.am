@@ -47,8 +47,9 @@ oa_omp_test_LDADD    = $(omp_libadd)
 oa_omp_test_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += ./../test/OA/OMP/run_oa_omp_test.sh
-EXTRA_DIST       += $(SRC_ROOT)test/OA/OMP/run_oa_omp_test.sh.in
 
 endif HAVE_ONLINE_ACCESS
 endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
+
+EXTRA_DIST += $(SRC_ROOT)test/OA/OMP/run_oa_omp_test.sh.in

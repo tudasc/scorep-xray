@@ -52,21 +52,15 @@ omp_tasks_LDADD    = $(omp_libadd)
 omp_tasks_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profile.sh
-EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profile.sh
 
 if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_fibonacci_test.sh
 endif !SCOREP_COMPILER_PGI
-EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_fibonacci_test.sh.in \
-	            $(SRC_ROOT)test/omp_tasks/task_fibonacci.c
 if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_single_loop_test.sh
 endif !SCOREP_COMPILER_PGI
-EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \
-	            $(SRC_ROOT)test/omp_tasks/task_single_loop.c
 
 CLEAN_LOCAL += clean-local-omp-tasks-experiments
 clean-local-omp-tasks-experiments:
@@ -76,3 +70,10 @@ clean-local-omp-tasks-experiments:
 endif HAVE_SCOREP_OMP_TPD
 
 endif HAVE_OPENMP_SUPPORT
+
+EXTRA_DIST +=  $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh \
+               $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profile.sh \
+               $(SRC_ROOT)test/omp_tasks/run_fibonacci_test.sh.in \
+               $(SRC_ROOT)test/omp_tasks/task_fibonacci.c \
+               $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \
+               $(SRC_ROOT)test/omp_tasks/task_single_loop.c

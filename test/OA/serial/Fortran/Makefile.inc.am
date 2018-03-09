@@ -55,9 +55,8 @@ oa_f_test_LDADD = $(serial_libadd)
 
 oa_f_test_LDFLAGS = $(serial_ldflags)
 
-EXTRA_DIST       += \
-    $(SRC_ROOT)test/OA/serial/Fortran/run_oa_f_test.sh.in
-
 TESTS_SERIAL += ./../test/OA/serial/Fortran/run_oa_f_test.sh
 
 endif #if HAVE_ONLINE_ACCESS
+
+EXTRA_DIST += $(SRC_ROOT)test/OA/serial/Fortran/run_oa_f_test.sh.in
