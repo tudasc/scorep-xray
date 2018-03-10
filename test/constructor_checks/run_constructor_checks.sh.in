@@ -46,8 +46,7 @@ cleanup()
 trap cleanup EXIT
 
 paradigm_threads="none"
-@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp_pomp_tpd"
-@HAVE_OPENMP_SUPPORT_TRUE@@HAVE_SCOREP_OMP_ANCESTRY_TRUE@paradigm_threads="$paradigm_threads omp_ancestry"
+@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp"
 
 for thread in $paradigm_threads
 do
