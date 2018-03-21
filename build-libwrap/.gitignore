@@ -1,0 +1,12 @@
+/configure
+/Makefile.in
+/autom4te.cache
+/aclocal.m4
+/libtool
+/config.log
+/config.status
+/config.summary
+/.deps
+/Makefile
+/library_wrapping_supported
+/scorep-library-wrapper-generator

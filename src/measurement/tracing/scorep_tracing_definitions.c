@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -830,6 +830,10 @@ scorep_write_group_definitions( void*                     writerHandle,
         OTF2_GroupFlag group_flags = OTF2_GROUP_FLAG_NONE;
         switch ( definition->group_type )
         {
+            case SCOREP_GROUP_REGIONS:
+                paradigm = OTF2_PARADIGM_NONE;
+                break;
+
             case SCOREP_GROUP_MPI_LOCATIONS:
             case SCOREP_GROUP_MPI_GROUP:
             case SCOREP_GROUP_MPI_SELF:
@@ -864,6 +868,17 @@ scorep_write_group_definitions( void*                     writerHandle,
                 break;
         }
 
+        const uint64_t* members = definition->members;
+        if ( definition->group_type == SCOREP_GROUP_REGIONS )
+        {
+            uint64_t* resolved_members = calloc( definition->number_of_members, sizeof( *members ) );
+            for ( uint64_t i = 0; i < definition->number_of_members; i++ )
+            {
+                resolved_members[ i ] = SCOREP_HANDLE_TO_ID( members[ i ], Region, definitionManager->page_manager );
+            }
+            members = resolved_members;
+        }
+
         OTF2_ErrorCode status = defGroup(
             writerHandle,
             definition->sequence_number,
@@ -872,10 +887,14 @@ scorep_write_group_definitions( void*                     writerHandle,
             paradigm,
             group_flags,
             definition->number_of_members,
-            definition->members );
+            members );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Group" );
+        }
+        if ( members != definition->members )
+        {
+            free( ( uint64_t* )members );
         }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();

@@ -1,0 +1,118 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+. "@abs_builddir@/common.sh"
+
+test_init "Score-P $lwi_name filter"
+
+rundir=test_libwrap_init_filter
+mkdir -p "$rundir"
+rundir="$(cd "$rundir"; pwd)"
+
+cleanup()
+{
+    cd "$execdir"
+    rm -rf "$rundir"
+}
+cleanup
+trap cleanup 0
+
+# we change to this directory for the test, to remove everything at once once we are done
+mkdir -p "$rundir"
+cd "$rundir"
+
+test_expect_success_all "build and install target c library"    \
+    "cp -r $TARGET_LIB_C_SRC_ROOT ."                            \
+    "cd target-lib-c"                                           \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\"" \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+
+target_lib_path=$(pwd)/target-lib-c/lib
+
+insert_libwrap_h="#include <foo.h>\n#include <foo2.h>\n"
+endif_line="#endif \/\* LIBWRAP_H \*\/"
+insert_main_c="    struct some_struct\* s = fn_1_new();\n"
+return_line="    return 0;"
+new_return_line="    return fn_2_get(s);"
+
+test_name=wrap_all_but_fn_2
+wrap_filter="\
+SCOREP_REGION_NAMES_BEGIN\n\
+  EXCLUDE MANGLED fn_2_get\n\
+SCOREP_REGION_NAMES_END\n"
+test_expect_success_all "wrap all but fn_2" \
+    "$lwi --name $test_name --cppflags \"-I$TARGET_LIB_C_SRC_ROOT\" --prefix $test_name/ -x c --ldflags \"-L$target_lib_path\" --libs \"-lfoo\" $test_name" \
+    "cd $test_name"                                                                \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h"      \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$new_return_line/g\" main.c"      \
+    "printf \"$wrap_filter\" > $test_name.filter"                                  \
+    "make"                                                                         \
+    "! test_grep -q fn_2_get $test_name.wrap"                                      \
+    "! test_grep -q fn_2_get scorep_libwrap_$test_name.c"                          \
+    "test_grep -q fn_1_new $test_name.wrap # at least something should be wrapped" \
+    "test_grep -q fn_1_new scorep_libwrap_$test_name.c"
+
+test_name=wrap_only_fn_2
+wrap_filter="\
+SCOREP_REGION_NAMES_BEGIN\n\
+  EXCLUDE *\n\
+  INCLUDE MANGLED fn_2_get\n\
+SCOREP_REGION_NAMES_END\n"
+test_expect_success_all "wrap only fn_2" \
+    "$lwi --name $test_name --cppflags \"-I$TARGET_LIB_C_SRC_ROOT\" --prefix $test_name/ -x c --ldflags \"-L$target_lib_path\" --libs \"-lfoo\" $test_name" \
+    "cd $test_name"                                                           \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h" \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$new_return_line/g\" main.c" \
+    "printf \"$wrap_filter\" > $test_name.filter"                                                                        \
+    "make"                                                                                                               \
+    "! test_grep -q fn_1_new $test_name.wrap # check at least one function that is not supposed to be wrapped"           \
+    "! test_grep -q fn_1_new scorep_libwrap_$test_name.c"                                                                \
+    "test_grep -q fn_2_get $test_name.wrap"                                                                              \
+    "test_grep -q fn_2_get scorep_libwrap_$test_name.c"                                                                  \
+    "test \$(tail -n +2 $test_name.wrap | wc -l) = 1 # has exactly one entry"
+
+test_name=wrap_all_but_foo2h
+wrap_filter="\
+SCOREP_FILE_NAMES_BEGIN\n\
+  EXCLUDE */foo2.h\n\
+SCOREP_FILE_NAMES_END\n"
+test_expect_success_all "wrap all but foo2.h" \
+    "$lwi --name $test_name --cppflags \"-I$TARGET_LIB_C_SRC_ROOT\" --prefix $test_name/ -x c --ldflags \"-L$target_lib_path\" --libs \"-lfoo\" $test_name" \
+    "cd $test_name"                                                           \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h" \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$new_return_line/g\" main.c" \
+    "printf \"$wrap_filter\" > $test_name.filter"                             \
+    "make"                                                                    \
+    "! test_grep -q fn_21_filter_test scorep_libwrap_$test_name.c"            \
+    "! test_grep -q fn_21_filter_test $test_name.wrap"                        \
+    "test \$(tail -n +2 $test_name.wrap | wc -l) -gt 0 # is not empty"
+
+test_name=wrap_only_foo2h
+wrap_filter="\
+SCOREP_FILE_NAMES_BEGIN\n\
+  EXCLUDE *\n\
+  INCLUDE */foo2.h\n\
+SCOREP_FILE_NAMES_END\n"
+test_expect_success_all "wrap only foo2.h" \
+    "$lwi --name $test_name --cppflags \"-I$TARGET_LIB_C_SRC_ROOT\" --prefix $test_name/ -x c --ldflags \"-L$target_lib_path\" --libs \"-lfoo\" $test_name" \
+    "cd $test_name"                                                           \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h" \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$new_return_line/g\" main.c" \
+    "printf \"$wrap_filter\" > $test_name.filter"                             \
+    "make"                                                                    \
+    "! test_grep -q fn_1_new scorep_libwrap_$test_name.c"                     \
+    "test_grep -q fn_21_filter_test $test_name.wrap"                          \
+    "test_grep -q fn_21_filter_test scorep_libwrap_$test_name.c"              \
+    "test \$(tail -n +2 $test_name.wrap | wc -l) = 1 # has exactly one entry"
+
+test_done

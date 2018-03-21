@@ -13,8 +13,12 @@
 /config-score.h.in
 /config-gcc-plugin.h.in
 /config-gcc-plugin.h
+/config-libwrap.h
+/config-libwrap.h.in
 /scorep_config_tool_backend.h
 /scorep_config_tool_mpi.h
+/scorep_config_tool_shmem.h
 /stamp-h*
 /scorep_config_library_dependencies_inc.hpp
 /scorep_config_library_dependencies_mpi_inc.hpp
+/scorep_config_library_dependencies_shmem_inc.hpp

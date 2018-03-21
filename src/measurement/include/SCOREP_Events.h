@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -81,12 +81,37 @@
 
 
 /**
+ * Notify the measurement that a wrappers was entered.
+ *
+ * Needs always be called for wrapped functions. Regardless, whether the
+ * function will be filterred or not. Consider using the
+ * @a SCOREP_EnterWrappedRegion function, if the function is not filtered.
+ * This function must directly be called by the wrapper function.
+ *
+ * @param regionHandle The region handle of the wrappee.
+ */
+void
+SCOREP_EnterWrapper( SCOREP_RegionHandle regionHandle );
+
+
+/**
+ * Notify the measurement that a wrappers will be left in case the region as filterred.
+ *
+ * Needs only be called for wrapped functions where the enter event was filtered.
+ *
+ * @param regionHandle The region handle of the wrappee.
+ */
+void
+SCOREP_ExitWrapper( SCOREP_RegionHandle regionHandle );
+
+/**
  * Process a sample event in the measurement system.
  *
  * @param interruptGeneratorHandle Source generating the interrupt of this sample
  */
 void
-SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle );
+SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
+               void*                           contextPtr );
 
 /**
  * Trigger a sample with an invalid current calling context,
@@ -106,18 +131,13 @@ SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
 void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 
-
 /**
- * Process a region enter event of a wrapped region in the measurement system.
- *
- * @param regionHandle The corresponding region for the enter event.
- * @param wrapped      The address of the wrapped region.
+ * A convenience call for a combined SCOREP_EnterWrapper/SCOREP_EnterRegion
+ * I.e., the region is not filtered
+ * This function must directly be called by the wrapper function.
  */
 void
-SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
-                           intptr_t            wrappedRegion );
-
-
+SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle );
 
 /**
  * Process a region exit event in the measurement system.
@@ -126,9 +146,6 @@ SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
  */
 void
 SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle );
-
-
-
 
 /**
  * Generate a rewind region enter event in the measurement system.

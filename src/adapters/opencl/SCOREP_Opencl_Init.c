@@ -79,17 +79,18 @@ opencl_subsystem_init( void )
         "OpenCL",
         SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
+#ifdef SCOREP_LIBWRAP_SHARED
+    /* need to resolve the function pointers, also when no recording was requested */
+    scorep_opencl_register_function_pointers();
+#endif
+
     if ( scorep_opencl_features > 0 )
     {
         scorep_opencl_register_regions();
 
-#ifdef SCOREP_LIBWRAP_SHARED
-        scorep_opencl_register_function_pointers();
-#endif
-
         scorep_opencl_set_features();
 
-        scorep_opencl_wrap_init();
+        scorep_opencl_init();
     }
 
     return SCOREP_SUCCESS;
@@ -109,7 +110,7 @@ opencl_subsystem_end( void )
 
     if ( scorep_opencl_features > 0 )
     {
-        scorep_opencl_wrap_finalize();
+        scorep_opencl_finalize();
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

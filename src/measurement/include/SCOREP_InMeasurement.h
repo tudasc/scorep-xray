@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -62,8 +62,6 @@ extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_mea
 
 extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
-
 #endif /* HAVE( SAMPLING_SUPPORT ) */
 
 #endif /* !__cplusplus */
@@ -80,29 +78,33 @@ extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wra
 /** Value of the in-measurement counter */
 #define SCOREP_IN_MEASUREMENT() ( scorep_in_measurement )
 
+/**
+ * @def SCOREP_ENTER_WRAPPED_REGION
+ * Enter a wrapped region.
+ *
+ * This is only eligible if the corresponding enter event was also triggered.
+ */
+#define SCOREP_ENTER_WRAPPED_REGION() \
+    sig_atomic_t scorep_in_measurement_save = scorep_in_measurement; \
+    scorep_in_measurement                   = 0
+
+/**
+ * @def SCOREP_ENTER_WRAPPED_REGION
+ * Leave a wrapped region
+ */
+#define SCOREP_EXIT_WRAPPED_REGION() \
+    scorep_in_measurement = scorep_in_measurement_save
+
 #if HAVE( SAMPLING_SUPPORT )
 
 /** Enter the signal context */
 #define SCOREP_ENTER_SIGNAL_CONTEXT() ( scorep_in_signal_context++ )
 
-/** Value of the in-signal-context counter */
-#define SCOREP_IN_SIGNAL_CONTEXT() ( scorep_in_signal_context )
-
 /** Leave the signal-context */
 #define SCOREP_EXIT_SIGNAL_CONTEXT() ( --scorep_in_signal_context )
 
-/**
- * Enter a wrapped region.
- *
- * This is only eligible if the corresponding enter event was also triggered.
- */
-#define SCOREP_ENTER_WRAPPED_REGION() ( scorep_in_wrapped_region++ )
-
-/** Value of the in-wrapped-region counter */
-#define SCOREP_IN_WRAPPED_REGION() ( scorep_in_wrapped_region )
-
-/** Leave a wrapped region */
-#define SCOREP_EXIT_WRAPPED_REGION() ( --scorep_in_wrapped_region )
+/** Value of the in-signal-context counter */
+#define SCOREP_IN_SIGNAL_CONTEXT() ( scorep_in_signal_context )
 
 #endif /* HAVE( SAMPLING_SUPPORT ) */
 
@@ -116,7 +118,11 @@ extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wra
 
 #define SCOREP_IN_MEASUREMENT_DECREMENT() do {} while ( 0 )
 
-#define SCOREP_IN_MEASUREMENT() ( 0 )
+#define SCOREP_IN_MEASUREMENT() 0
+
+#define SCOREP_ENTER_WRAPPED_REGION() do {} while ( 0 )
+
+#define SCOREP_EXIT_WRAPPED_REGION() do {} while ( 0 )
 
 #endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
 
@@ -124,15 +130,9 @@ extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wra
 
 #define SCOREP_ENTER_SIGNAL_CONTEXT() do {} while ( 0 )
 
-#define SCOREP_IN_SIGNAL_CONTEXT() 0
-
 #define SCOREP_EXIT_SIGNAL_CONTEXT() do {} while ( 0 )
 
-#define SCOREP_ENTER_WRAPPED_REGION() do {} while ( 0 )
-
-#define SCOREP_IN_WRAPPED_REGION() 0
-
-#define SCOREP_EXIT_WRAPPED_REGION() do {} while ( 0 )
+#define SCOREP_IN_SIGNAL_CONTEXT() 0
 
 #endif /* !HAVE( THREAD_LOCAL_STORAGE ) || !HAVE( SAMPLING_SUPPORT ) */
 

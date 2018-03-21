@@ -8,8 +8,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSubBuffer )( cl_mem                buffer,
     SCOREP_OPENCL_FUNC_ENTER( clCreateSubBuffer );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_mem ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clCreateSubBuffer, clCreateSubBuffer,
+    cl_mem ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clCreateSubBuffer,
         ( buffer, flags, bufferCreateType, bufferCreateInfo, errcodeRet ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
@@ -29,9 +29,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetMemObjectDestructorCallback )( cl_mem memObj,
     SCOREP_OPENCL_FUNC_ENTER( clSetMemObjectDestructorCallback );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clSetMemObjectDestructorCallback, clSetMemObjectDestructorCallback,
-        ( memObj, pfnNotify, userData ) );
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clSetMemObjectDestructorCallback, ( memObj, pfnNotify, userData ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
     SCOREP_OPENCL_FUNC_EXIT( clSetMemObjectDestructorCallback );
@@ -48,9 +47,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateUserEvent )( cl_context context,
     SCOREP_OPENCL_FUNC_ENTER( clCreateUserEvent );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_event ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clCreateUserEvent, clCreateUserEvent,
-        ( context, errcodeRet ) );
+    cl_event ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clCreateUserEvent, ( context, errcodeRet ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
     SCOREP_OPENCL_FUNC_EXIT( clCreateUserEvent );
@@ -68,9 +66,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetUserEventStatus )( cl_event event,
     SCOREP_OPENCL_FUNC_ENTER( clSetUserEventStatus );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clSetUserEventStatus, clSetUserEventStatus,
-        ( event, executionStatus ) );
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clSetUserEventStatus, ( event, executionStatus ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
     SCOREP_OPENCL_FUNC_EXIT( clSetUserEventStatus );
@@ -91,8 +88,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetEventCallback )( cl_event event,
     SCOREP_OPENCL_FUNC_ENTER( clSetEventCallback );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clSetEventCallback, clSetEventCallback,
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clSetEventCallback,
         ( event, commandExecCallbackType, pfnNotify, userData ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
@@ -122,8 +119,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBufferRect )( cl_command_queue commandQue
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueReadBufferRect );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clEnqueueReadBufferRect, clEnqueueReadBufferRect,
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clEnqueueReadBufferRect,
         ( commandQueue, buffer, blockingRead, bufferOffset, hostOffset, region,
           bufferRowPitch, bufferSlicePitch, hostRowPitch, hostSlicePitch, ptr,
           numEventsInWaitList, eventWaitList, event ) );
@@ -155,8 +152,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBufferRect )( cl_command_queue commandQu
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueWriteBufferRect );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clEnqueueWriteBufferRect, clEnqueueWriteBufferRect,
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clEnqueueWriteBufferRect,
         ( commandQueue, buffer, blockingWrite, bufferOffset, hostOffset, region,
           bufferRowPitch, bufferSlicePitch, hostRowPitch, hostSlicePitch, ptr,
           numEventsInWaitList, eventWaitList, event ) );
@@ -187,8 +184,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferRect )( cl_command_queue commandQue
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyBufferRect );
 
     SCOREP_OPENCL_WRAP_ENTER();
-    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
-        scorep_opencl_funcptr_clEnqueueCopyBufferRect, clEnqueueCopyBufferRect,
+    cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
+        clEnqueueCopyBufferRect,
         ( commandQueue, srcBuffer, dstBuffer, srcOrigin, dstOrigin, region,
           srcRowPitch, srcSlicePitch, dstRowPitch, dstSlicePitch,
           numEventsInWaitList, eventWaitList, event ) );

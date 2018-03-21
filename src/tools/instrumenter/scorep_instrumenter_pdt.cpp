@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014, 2016,
+ * Copyright (c) 2014, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,6 +29,8 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_shmem.h>
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>

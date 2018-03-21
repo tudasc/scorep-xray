@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2016,
+dnl Copyright (c) 2013-2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015-2016,
@@ -262,11 +262,12 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/shmem/Makefile:../test/inst
 ##AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
 ##                [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
 
+SCOREP_LIBRARY_WRAPPING_GENERATOR(
+    [AC_CONFIG_FILES([../test/tools/libwrap_init/shmem.sh])])
+
 AM_COND_IF([HAVE_SHMEM_PROFILING_INTERFACE],
-           [],
-           [AC_CONFIG_FILES([../share/shmem.wrap:../share/shmem.wrap.in],
-                            [printf '\x2dwrap %s\n' $scorep_shmem_wrap_symbols >../share/shmem.wrap],
-                            [scorep_shmem_wrap_symbols='$scorep_shmem_wrap_symbols'])])
+    [],
+    [SCOREP_LD_WRAP_FILE([shmem])])
 
 #AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],

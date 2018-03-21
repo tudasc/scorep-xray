@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -20,10 +20,11 @@
 
 #include <config.h>
 
+#include "scorep_opencl_libwrap.h"
+
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include "SCOREP_Libwrap_Macros.h"
 
 #include "scorep_opencl.h"
 #include "scorep_opencl_config.h"
@@ -35,23 +36,7 @@
 #include <stdio.h>
 
 
-#ifdef SCOREP_LIBWRAP_STATIC
-
-#define SCOREP_OPENCL_FUNC_ADDRESS( func ) \
-    ( ( intptr_t )__real_ ## func )
-
-#elif SCOREP_LIBWRAP_SHARED
-
-#define SCOREP_OPENCL_FUNC_ADDRESS( func ) \
-    ( ( intptr_t )scorep_opencl_funcptr_ ## func )
-
-#else
-
-#error Unsupported OpenCL wrapping mode
-
-#endif /* link modes */
-
-
+/* *INDENT-OFF* */
 #define SCOREP_OPENCL_FUNC_ENTER( func )                                    \
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();              \
                                                                             \
@@ -61,37 +46,37 @@
     }                                                                       \
                                                                             \
     if ( trigger                                                            \
-         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )                           \
-         && scorep_opencl_record_api )                                      \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )                         \
     {                                                                       \
-        SCOREP_EnterWrappedRegion( scorep_opencl_region__ ## func,          \
-                                   SCOREP_OPENCL_FUNC_ADDRESS( func ) );    \
+        if ( scorep_opencl_record_api )                                     \
+        {                                                                   \
+            SCOREP_EnterWrappedRegion( scorep_opencl_region__ ## func );    \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            SCOREP_EnterWrapper( scorep_opencl_region__ ## func );          \
+        }                                                                   \
     }
+/* *INDENT-ON* */
 
-#define SCOREP_OPENCL_FUNC_EXIT( func )                         \
-    if ( trigger                                                \
-         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
-         && scorep_opencl_record_api )                          \
-    {                                                           \
-        SCOREP_ExitRegion( scorep_opencl_region__ ## func );    \
-    }                                                           \
+#define SCOREP_OPENCL_FUNC_EXIT( func )                             \
+    if ( trigger                                                    \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )                 \
+    {                                                               \
+        if ( scorep_opencl_record_api )                             \
+        {                                                           \
+            SCOREP_ExitRegion( scorep_opencl_region__ ## func );    \
+        }                                                           \
+        else                                                        \
+        {                                                           \
+            SCOREP_ExitWrapper( scorep_opencl_region__ ## func );   \
+        }                                                           \
+    }                                                               \
     SCOREP_IN_MEASUREMENT_DECREMENT();
 
-#define SCOREP_OPENCL_WRAP_ENTER()                              \
-    if ( trigger                                                \
-         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
-         && scorep_opencl_record_api )                          \
-    {                                                           \
-        SCOREP_ENTER_WRAPPED_REGION();                          \
-    }
+#define SCOREP_OPENCL_WRAP_ENTER() SCOREP_ENTER_WRAPPED_REGION()
 
-#define SCOREP_OPENCL_WRAP_EXIT()                               \
-    if ( trigger                                                \
-         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
-         && scorep_opencl_record_api )                          \
-    {                                                           \
-        SCOREP_EXIT_WRAPPED_REGION();                           \
-    }
+#define SCOREP_OPENCL_WRAP_EXIT() SCOREP_EXIT_WRAPPED_REGION()
 
 /**
  * Handles wrapped OpenCL data transfer functions. This macro returns the
@@ -127,8 +112,7 @@
         }                                                                      \
                                                                                \
         SCOREP_OPENCL_WRAP_ENTER();                                            \
-        cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(                        \
-            scorep_opencl_funcptr_ ## func, func, args );                      \
+        cl_int ret = SCOREP_LIBWRAP_FUNC_CALL( func, args );                   \
         SCOREP_OPENCL_WRAP_EXIT();                                             \
                                                                                \
         if ( trigger                                                           \

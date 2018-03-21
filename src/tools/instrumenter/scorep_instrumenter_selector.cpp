@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -181,6 +181,22 @@ SCOREP_Instrumenter_Selector::checkObjects( SCOREP_Instrumenter& instrumenter )
     {
         ( *paradigm )->checkObjects( instrumenter );
     }
+}
+
+bool
+SCOREP_Instrumenter_Selector::isInterpositionLibrary( const std::string& libraryName )
+{
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+    for ( paradigm = m_paradigm_list.begin();
+          paradigm != m_paradigm_list.end();
+          paradigm++ )
+    {
+        if ( ( *paradigm )->isInterpositionLibrary( libraryName ) )
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 SCOREP_Instrumenter_Paradigm*
@@ -481,4 +497,20 @@ SCOREP_Instrumenter_Selector::checkAllObjects( SCOREP_Instrumenter& instrumenter
     {
         ( *selector )->checkObjects( instrumenter );
     }
+}
+
+bool
+SCOREP_Instrumenter_Selector::isAllInterpositionLibrary( const std::string& libraryName )
+{
+    SCOREP_Instrumenter_SelectorList::iterator selector;
+    for ( selector = m_selector_list.begin();
+          selector != m_selector_list.end();
+          selector++ )
+    {
+        if ( ( *selector )->isInterpositionLibrary( libraryName ) )
+        {
+            return true;
+        }
+    }
+    return false;
 }

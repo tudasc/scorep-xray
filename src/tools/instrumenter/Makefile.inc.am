@@ -52,14 +52,20 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.cpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.hpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_memory.cpp       \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_memory.hpp
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_memory.hpp       \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_linktime_wrapping.cpp \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_linktime_wrapping.hpp \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_libwrap.cpp      \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_libwrap.hpp
 
 
 scorep_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/tools/lib
 
 scorep_LDADD = \
+    libscorep_tools.la \
     libutils.la \
     libscorep_openmp_version.la
 

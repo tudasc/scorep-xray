@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2016,
+ * Copyright (c) 2009-2012, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -45,6 +45,7 @@
     SCOREP_SCORE_TYPE( ALL, POSSIBLE )  \
     SCOREP_SCORE_TYPE( FLT, YES )       \
     SCOREP_SCORE_TYPE( USR, POSSIBLE )  \
+    SCOREP_SCORE_TYPE( LIB, POSSIBLE )  \
     SCOREP_SCORE_TYPE( COM, POSSIBLE )  \
     SCOREP_SCORE_TYPE( MPI, NO )        \
     SCOREP_SCORE_TYPE( OMP, NO )        \

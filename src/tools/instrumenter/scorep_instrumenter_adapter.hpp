@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -48,6 +48,8 @@ typedef enum
     SCOREP_INSTRUMENTER_ADAPTER_OPENCL,
     SCOREP_INSTRUMENTER_ADAPTER_OPENACC,
     SCOREP_INSTRUMENTER_ADAPTER_MEMORY,
+    SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING,
+    SCOREP_INSTRUMENTER_ADAPTER_LIBWRAP,
 
     /* Should stay last element in enum */
     SCOREP_INSTRUMENTER_ADAPTER_NUM
@@ -299,6 +301,12 @@ public:
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
 
+    /**
+     * Return true, if the given library needs to be interposed
+     */
+    virtual bool
+    isInterpositionLibrary( const std::string& libraryName );
+
 protected:
     /**
      * If the instrumentation approach represented by this adapter is not
@@ -473,6 +481,12 @@ public:
      */
     static void
     checkAllObjects( SCOREP_Instrumenter& instrumenter );
+
+    /**
+     * Return true, if the given library needs to be interposed
+     */
+    static bool
+    isAllInterpositionLibrary( const std::string& libraryName );
 
     /**
      * Returns the adapter, specified by the @a id. This function may not

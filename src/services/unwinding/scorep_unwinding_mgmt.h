@@ -116,6 +116,8 @@ typedef struct scorep_unwinding_surrogate
     SCOREP_RegionHandle                         region_handle;
     /** The unwind context of this surrogate */
     scorep_unwinding_calling_context_tree_node* unwind_context;
+    /** is this a wrapped region */
+    bool                                        is_wrapped;
 } scorep_unwinding_surrogate;
 
 
@@ -145,12 +147,28 @@ typedef struct scorep_unwinding_augmented_frame
     scorep_unwinding_surrogate* surrogates;
 } scorep_unwinding_augmented_frame;
 
+/**
+ * Maintaines unhandled PushWrapper
+ */
+typedef struct scorep_unwinding_unhandled_wrapper
+{
+    struct scorep_unwinding_unhandled_wrapper* next;
+
+    /** An address inside the wrapper region, i.e., the one who called the original function */
+    uint64_t            wrapper_ip;
+    /** The number of wrappers involved in this wrapping (i.e., in-measurement) */
+    size_t              n_wrapper_frames;
+    /** The handle for the wrapped region */
+    SCOREP_RegionHandle wrappee_handle;
+} scorep_unwinding_unhandled_wrapper;
+
 typedef union scorep_unwinding_unused_object
 {
     union scorep_unwinding_unused_object* next;
     scorep_unwinding_frame                frame;
     scorep_unwinding_surrogate            surrogate;
     scorep_unwinding_augmented_frame      augmented_frame;
+    scorep_unwinding_unhandled_wrapper    unhandled_wrapper;
 } scorep_unwinding_unused_object;
 
 /** Per-location based data related to unwinding for all CPU locations. */
@@ -164,6 +182,9 @@ typedef struct SCOREP_Unwinding_CpuLocationData
     /** The augumented stack with instrumented regions, NULL if no instrumented
      *  region is on the stack, points to the last element entered instrumented region */
     scorep_unwinding_augmented_frame* augmented_stack;
+
+    /** Wrapper meta data, before they re used in actual unwinding */
+    scorep_unwinding_unhandled_wrapper* unhandled_wrappers;
 
     /** The address of the main function */
     uint64_t start_ip_of_main;
@@ -184,11 +205,6 @@ typedef struct SCOREP_Unwinding_CpuLocationData
 
     /** Last known calling context */
     SCOREP_CallingContextHandle previous_calling_context;
-
-    /** If we are currenlty in a wrapped region, this is it. */
-    scorep_unwinding_region* wrapped_region;
-    /** The frames to skip, if we found the wrapped region on the stack */
-    size_t                   frames_to_skip;
 
     /* Below is storage normally allocated on the stack.
        As they are rather big, we allocate them in the per-location data.

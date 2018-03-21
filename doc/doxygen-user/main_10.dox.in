@@ -2,7 +2,7 @@
 
 /**
 @ifnot LATEX
-@example print_regions.c
-Simple example of a @scorep substrate plugin
+@example hello_world.c
+Simple example of a @scorep metric plugin
 @endif
 */

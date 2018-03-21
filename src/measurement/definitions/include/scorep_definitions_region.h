@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,6 +58,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( Region )
     SCOREP_LineNo       begin_line;
     SCOREP_LineNo       end_line;
     SCOREP_ParadigmType paradigm_type;           // Used by Cube 4
+
+    /* Optional name for a region group */
+    SCOREP_StringHandle group_name_handle;
 };
 
 
@@ -117,6 +120,20 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
                               SCOREP_LineNo           endLine,
                               SCOREP_ParadigmType     paradigm,
                               SCOREP_RegionType       regionType );
+
+
+/**
+ * Assigns a group to this region.
+ *
+ * Region group definitions are created automatically by the unification
+ * based on this group name and the paradigm of the region.
+ *
+ * @param handle A region handle.
+ * @param groupName The group name.
+ */
+void
+SCOREP_RegionHandle_SetGroup( SCOREP_RegionHandle handle,
+                              const char*         groupName );
 
 
 uint32_t

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2016,
+## Copyright (c) 2009-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -41,13 +41,10 @@ libscorep_measurement_core_la_SOURCES =                            \
     $(SRC_ROOT)src/measurement/scorep_events_common.h              \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                     \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                     \
-    $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Task.c                       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h          \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h             \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap.h            \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h     \
     $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h  \
     $(SRC_ROOT)src/measurement/include/SCOREP_InMeasurement.h      \
@@ -105,6 +102,15 @@ libscorep_measurement_core_la_CPPFLAGS = \
     -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS) \
     @SCOREP_TIMER_CPPFLAGS@
+
+noinst_LTLIBRARIES += libscorep_measurement_libwrap.la
+libscorep_measurement_libwrap_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c
+libscorep_measurement_libwrap_la_CPPFLAGS = \
+    $(common_libscorep_cppflags) \
+    -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_DEFINITIONS) \
+    $(SCOREP_DLFCN_RTLD_NEXT_CPPFLAGS)
 
 if HAVE_COMPILER_CONSTRUCTOR_SUPPORT
 

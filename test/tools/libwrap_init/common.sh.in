@@ -1,0 +1,46 @@
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+. "@abs_top_srcdir@/../test/measurement/config/test-framework.sh"
+
+BINDIR="@BINDIR@"
+INSTALL="@INSTALL@"
+TEST_BUILD_DIR="@abs_builddir@"
+TEST_SRC_ROOT="$(cd "@abs_srcdir@" && pwd)"
+
+TARGET_LIB_C_SRC_ROOT=$TEST_SRC_ROOT/target-lib-c
+TARGET_LIB_CXX_SRC_ROOT=$TEST_SRC_ROOT/target-lib-cc
+TARGET_LIB_CDEPS_SRC_ROOT=$TEST_SRC_ROOT/target-lib-cdeps
+TARGET_LIB_MPI_SRC_ROOT=$TEST_SRC_ROOT/target-lib-mpi
+TARGET_LIB_SHMEM_SRC_ROOT=$TEST_SRC_ROOT/target-lib-shmem
+
+lwi=$BINDIR/scorep-libwrap-init
+lwi_name=${lwi##*/}
+
+LIBTOOL=@BACKEND_PKGLIBEXECDIR@/libtool
+
+@HAVE_MPI_SUPPORT_FALSE@mpi_support=false
+@HAVE_MPI_SUPPORT_TRUE@mpi_support=true
+@HAVE_MPI_SUPPORT_TRUE@MPI_LIBTOOL=@BACKEND_PKGLIBEXECDIR@/mpi/libtool
+
+@HAVE_SHMEM_SUPPORT_FALSE@shmem_support=false
+@HAVE_SHMEM_SUPPORT_TRUE@shmem_support=true
+@HAVE_SHMEM_SUPPORT_TRUE@SHMEM_LIBTOOL=@BACKEND_PKGLIBEXECDIR@/shmem/libtool
+
+CC="@CC@" # backend compilers
+CC=${CC##*/}
+
+CXX="@CXX@" # backend compilers
+CXX=${CXX##*/}
+
+execdir="$(pwd)"
+
+if [ -n "$RUN_BINARIES" ]; then run_binaries=true; else run_binaries=false; fi

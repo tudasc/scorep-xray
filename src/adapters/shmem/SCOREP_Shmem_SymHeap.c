@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -32,10 +32,11 @@
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( size_t size )                        \
     {                                                                           \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
-                                                                                \
         void* ret;                                                              \
                                                                                 \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                     \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;              \
+                                                                                \
+        if ( event_gen_active )                                                 \
         {                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                       \
                                                                                 \
@@ -45,12 +46,15 @@
                 SCOREP_AddAttribute( scorep_shmem_memory_alloc_size_attribute,  \
                                      &size_as_uint64 );                         \
             }                                                                   \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,       \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );    \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );     \
+        }                                                                       \
                                                                                 \
-            SCOREP_ENTER_WRAPPED_REGION();                                      \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( size ) );           \
-            SCOREP_EXIT_WRAPPED_REGION();                                       \
+        SCOREP_ENTER_WRAPPED_REGION();                                          \
+        ret = SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( size ) );                   \
+        SCOREP_EXIT_WRAPPED_REGION();                                           \
+                                                                                \
+        if ( event_gen_active )                                                 \
+        {                                                                       \
             if ( scorep_shmem_memory_recording && size > 0 && ret )             \
             {                                                                   \
                 SCOREP_AllocMetric_HandleAlloc(                                 \
@@ -61,10 +65,6 @@
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );             \
                                                                                 \
             SCOREP_SHMEM_EVENT_GEN_ON();                                        \
-        }                                                                       \
-        else                                                                    \
-        {                                                                       \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( size ) );           \
         }                                                                       \
                                                                                 \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
@@ -86,10 +86,11 @@ SHMEM_MALLOC( shmalloc )
                                            size_t size )                            \
     {                                                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
-                                                                                    \
         void* ret;                                                                  \
                                                                                     \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                  \
+                                                                                    \
+        if ( event_gen_active )                                                     \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
@@ -99,12 +100,15 @@ SHMEM_MALLOC( shmalloc )
                 SCOREP_AddAttribute( scorep_shmem_memory_alloc_size_attribute,      \
                                      &size_as_uint64 );                             \
             }                                                                       \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );         \
+        }                                                                           \
                                                                                     \
-            SCOREP_ENTER_WRAPPED_REGION();                                          \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( alignment, size ) );    \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
+        SCOREP_ENTER_WRAPPED_REGION();                                              \
+        ret = SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( alignment, size ) );            \
+        SCOREP_EXIT_WRAPPED_REGION();                                               \
+                                                                                    \
+        if ( event_gen_active )                                                     \
+        {                                                                           \
             if ( scorep_shmem_memory_recording && size > 0 && ret )                 \
             {                                                                       \
                 SCOREP_AllocMetric_HandleAlloc(                                     \
@@ -115,10 +119,6 @@ SHMEM_MALLOC( shmalloc )
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
             SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( alignment, size ) );    \
         }                                                                           \
                                                                                     \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
@@ -140,10 +140,12 @@ SHMEM_MEMALIGN( shmemalign )
                                            size_t size )                                \
     {                                                                                   \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                              \
-                                                                                        \
         void* result;                                                                   \
+        void* allocation = NULL;                                                        \
                                                                                         \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                             \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                      \
+                                                                                        \
+        if ( event_gen_active )                                                         \
         {                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                               \
                                                                                         \
@@ -153,20 +155,21 @@ SHMEM_MEMALIGN( shmemalign )
                 SCOREP_AddAttribute( scorep_shmem_memory_alloc_size_attribute,          \
                                      &size_as_uint64 );                                 \
             }                                                                           \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );             \
                                                                                         \
-            void* allocation = NULL;                                                    \
             if ( scorep_shmem_memory_recording && ptr )                                 \
             {                                                                           \
                 SCOREP_AllocMetric_AcquireAlloc( scorep_shmem_allocations_metric,       \
                                                  ( uint64_t )ptr, &allocation );        \
             }                                                                           \
+        }                                                                               \
                                                                                         \
-            SCOREP_ENTER_WRAPPED_REGION();                                              \
-            result = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr, size ) );           \
-            SCOREP_EXIT_WRAPPED_REGION();                                               \
+        SCOREP_ENTER_WRAPPED_REGION();                                                  \
+        result = SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( ptr, size ) );                   \
+        SCOREP_EXIT_WRAPPED_REGION();                                                   \
                                                                                         \
+        if ( event_gen_active )                                                         \
+        {                                                                               \
             if ( scorep_shmem_memory_recording )                                        \
             {                                                                           \
                 /*                                                                      \
@@ -209,10 +212,6 @@ SHMEM_MEMALIGN( shmemalign )
                                                                                         \
             SCOREP_SHMEM_EVENT_GEN_ON();                                                \
         }                                                                               \
-        else                                                                            \
-        {                                                                               \
-            result = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr, size ) );           \
-        }                                                                               \
                                                                                         \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                              \
         return result;                                                                  \
@@ -232,25 +231,29 @@ SHMEM_REALLOC( shrealloc )
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void* ptr )                              \
     {                                                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
+        void* allocation = NULL;                                                    \
                                                                                     \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                  \
+                                                                                    \
+        if ( event_gen_active )                                                     \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                                     \
-            void* allocation = NULL;                                                \
-            if ( scorep_shmem_memory_recording && ptr )                                                              \
+            if ( scorep_shmem_memory_recording && ptr )                             \
             {                                                                       \
                 SCOREP_AllocMetric_AcquireAlloc( scorep_shmem_allocations_metric,   \
                                                  ( uint64_t )ptr, &allocation );    \
             }                                                                       \
+        }                                                                           \
                                                                                     \
-            SCOREP_ENTER_WRAPPED_REGION();                                          \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                      \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
+        SCOREP_ENTER_WRAPPED_REGION();                                              \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( ptr ) );                              \
+        SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                     \
+        if ( event_gen_active )                                                     \
+        {                                                                           \
             if ( scorep_shmem_memory_recording )                                    \
             {                                                                       \
                 uint64_t dealloc_size = 0;                                          \
@@ -266,10 +269,6 @@ SHMEM_REALLOC( shrealloc )
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
             SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( ptr ) );                      \
         }                                                                           \
                                                                                     \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                          \

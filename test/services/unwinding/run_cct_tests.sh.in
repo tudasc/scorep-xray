@@ -2,7 +2,7 @@
 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -69,13 +69,15 @@ cleanup()
     rm -f test_cct_*
     rm -rf ${RESULT_DIR_PREFIX}-*
 }
-trap cleanup EXIT
+${V:+: }trap cleanup EXIT
 cleanup
 
 compile()
 {
     ${SCOREP} --build-check \
         ${_V_scorep} \
+        --nocompiler \
+        --nomemory \
         --user \
         --thread=none \
         ${CC} ${CFLAGS} \
@@ -115,7 +117,7 @@ print_result_profiling()
         GREP -v '^ -' |
         sed "s/^/${1}: /"
     printf "%d:   calltree:\n" $i
-    ${CUBE_INFO} -m visits:excl ${RESULT_DIR_PREFIX}-${1}_profiling/profile.cubex 2>&1 |
+    ${CUBE_INFO} -m visits:excl -m hits ${RESULT_DIR_PREFIX}-${1}_profiling/profile.cubex 2>&1 |
         sed "s/^|/${1}: /"
 }
 
@@ -186,28 +188,28 @@ print_expected_tracing_legacy()
     sed -n "s/^ \* TEL /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
 }
 
-UNWINDING_TESTS=${UNWINDING_TESTS-$(seq 13)}
+UNWINDING_TESTS=${UNWINDING_TESTS-$(seq 8)}
 for i in ${UNWINDING_TESTS}
 do
     printf "%d: compiling:\n" $i
     compile $i
 
     printf "%d: profiling:\n" $i
-    run_profiling $i false
+    run_profiling $i
     printf "%d:  result:\n" $i
     print_result_profiling $i
     printf "%d:  expected:\n" $i
     print_expected_profiling $i
 
     printf "%d: tracing:\n" $i
-    run_tracing $i false
+    run_tracing $i
     printf "%d:  result:\n" $i
     print_result_tracing $i
     printf "%d:  expected:\n" $i
     print_expected_tracing $i
 
     printf "%d: tracing (legacy):\n" $i
-    run_tracing_legacy $i false
+    run_tracing_legacy $i
     printf "%d:  result:\n" $i
     print_result_tracing_legacy $i
     printf "%d:  expected:\n" $i

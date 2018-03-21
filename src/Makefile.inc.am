@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -53,6 +53,7 @@ lib_LTLIBRARIES += libscorep_measurement.la
 libscorep_measurement_la_SOURCES =
 libscorep_measurement_la_LIBADD =        \
     libscorep_measurement_core.la        \
+    libscorep_measurement_libwrap.la     \
     libscorep_timer.la                   \
     libscorep_metric.la                  \
     libscorep_profile.la                 \

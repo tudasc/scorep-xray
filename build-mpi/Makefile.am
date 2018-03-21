@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -85,6 +85,9 @@ bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
 
 include ../build-includes/mpi-backend-only.am
+
+backend_pkglibexecdir = $(pkglibexecdir)@backend_suffix@/mpi
+backend_pkglibexec_SCRIPTS = libtool
 
 if CROSS_BUILD
 AM_CPPFLAGS += -DCROSS_BUILD

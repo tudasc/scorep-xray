@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -33,6 +33,8 @@
 #include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>

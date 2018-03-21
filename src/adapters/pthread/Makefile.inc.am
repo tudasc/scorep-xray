@@ -4,7 +4,7 @@
 ## Copyright (c) 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -16,7 +16,7 @@
 
 # runtime management library for the pthread adapter
 
-if HAVE_PTHREAD
+if HAVE_PTHREAD_SUPPORT
 
 lib_LTLIBRARIES += libscorep_adapter_pthread_mgmt.la
 
@@ -48,8 +48,6 @@ libscorep_adapter_pthread_mgmt_la_LDFLAGS = \
 
 # event library for the pthread adapter
 
-if HAVE_GNU_LINKER
-
 lib_LTLIBRARIES += libscorep_adapter_pthread_event.la
 
 libscorep_adapter_pthread_event_la_SOURCES = \
@@ -78,9 +76,6 @@ libscorep_adapter_pthread_event_la_LIBADD = \
 
 libscorep_adapter_pthread_event_la_LDFLAGS = \
     $(library_api_version_ldflags)           \
-    -Wl,-wrap,pthread_create,-wrap,pthread_join,-wrap,pthread_mutex_init,-wrap,pthread_mutex_destroy,-wrap,pthread_mutex_lock,-wrap,pthread_mutex_unlock,-wrap,pthread_mutex_trylock,-wrap,pthread_exit,-wrap,pthread_cancel,-wrap,pthread_detach,-wrap,pthread_cond_init,-wrap,pthread_cond_signal,-wrap,pthread_cond_broadcast,-wrap,pthread_cond_wait,-wrap,pthread_cond_timedwait,-wrap,pthread_cond_destroy \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    -Wl,-wrap,pthread_create,-wrap,pthread_join,-wrap,pthread_mutex_init,-wrap,pthread_mutex_destroy,-wrap,pthread_mutex_lock,-wrap,pthread_mutex_unlock,-wrap,pthread_mutex_trylock,-wrap,pthread_exit,-wrap,pthread_cancel,-wrap,pthread_detach,-wrap,pthread_cond_init,-wrap,pthread_cond_signal,-wrap,pthread_cond_broadcast,-wrap,pthread_cond_wait,-wrap,pthread_cond_timedwait,-wrap,pthread_cond_destroy
 
-endif HAVE_GNU_LINKER
-
-endif HAVE_PTHREAD
+endif HAVE_PTHREAD_SUPPORT

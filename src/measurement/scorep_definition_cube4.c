@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -687,6 +687,9 @@ write_region_definitions( cube_t*                       myCube,
                           SCOREP_DefinitionManager*     manager,
                           scorep_cube4_definitions_map* map )
 {
+    char*  paradigm_buffer          = NULL;
+    size_t paradigm_buffer_capacity = 0;
+
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Region, region )
     {
         /* Collect necessary data */
@@ -694,7 +697,20 @@ write_region_definitions( cube_t*                       myCube,
                                                                String )->string_data;
         const char* canonical_region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->canonical_name_handle,
                                                                          String )->string_data;
-        const char* paradigm  = scorep_paradigm_type_to_string( definition->paradigm_type );
+        const char* paradigm = scorep_paradigm_type_to_string( definition->paradigm_type );
+        if ( definition->group_name_handle != SCOREP_INVALID_STRING )
+        {
+            const char* group_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->group_name_handle,
+                                                                  String )->string_data;
+            size_t length = strlen( paradigm ) + strlen( ":" ) + strlen( group_name ) + 1;
+            if ( length >= paradigm_buffer_capacity )
+            {
+                paradigm_buffer_capacity = length;
+                paradigm_buffer          = realloc( paradigm_buffer, paradigm_buffer_capacity );
+            }
+            sprintf( paradigm_buffer, "%s:%s", paradigm, group_name );
+            paradigm = paradigm_buffer;
+        }
         const char* role      = scorep_region_type_to_string( definition->region_type );
         const char* file_name = "";
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
@@ -719,6 +735,8 @@ write_region_definitions( cube_t*                       myCube,
         add_region_mapping( map, cube_handle, handle );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    free( paradigm_buffer );
 }
 
 /**

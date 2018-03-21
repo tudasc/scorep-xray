@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -76,7 +76,8 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                SCOREP_LineNo             beginLine,
                SCOREP_LineNo             endLine,
                SCOREP_ParadigmType       paradigm,
-               SCOREP_RegionType         regionType );
+               SCOREP_RegionType         regionType,
+               SCOREP_StringHandle       groupNameHandle );
 
 
 static void
@@ -89,7 +90,8 @@ initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_LineNo             beginLine,
                    SCOREP_LineNo             endLine,
                    SCOREP_ParadigmType       paradigm,
-                   SCOREP_RegionType         regionType );
+                   SCOREP_RegionType         regionType,
+                   SCOREP_StringHandle       groupNameHandle );
 
 
 static bool
@@ -136,7 +138,8 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
         beginLine,
         endLine,
         paradigm,
-        regionType );
+        regionType,
+        SCOREP_INVALID_STRING );
 
     SCOREP_Definitions_Unlock();
 
@@ -146,6 +149,22 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
     return new_handle;
 }
 
+
+void
+SCOREP_RegionHandle_SetGroup( SCOREP_RegionHandle handle,
+                              const char*         groupName )
+{
+    SCOREP_Definitions_Lock();
+
+    SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
+
+    region->group_name_handle = scorep_definitions_new_string(
+        &scorep_local_definition_manager,
+        groupName,
+        NULL );
+
+    SCOREP_Definitions_Unlock();
+}
 
 void
 scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
@@ -163,6 +182,17 @@ scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
             handlesPageManager );
         UTILS_BUG_ON( unified_file_name_handle == SCOREP_INVALID_STRING,
                       "Invalid unification order of region definition: file name not yet unified" );
+    }
+
+    SCOREP_StringHandle unified_group_name_handle = SCOREP_INVALID_STRING;
+    if ( definition->group_name_handle != SCOREP_INVALID_STRING )
+    {
+        unified_group_name_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->group_name_handle,
+            String,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_group_name_handle == SCOREP_INVALID_STRING,
+                      "Invalid unification order of region definition: group name not yet unified" );
     }
 
     definition->unified = define_region(
@@ -183,7 +213,8 @@ scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
         definition->begin_line,
         definition->end_line,
         definition->paradigm_type,
-        definition->region_type );
+        definition->region_type,
+        unified_group_name_handle );
 }
 
 
@@ -196,7 +227,8 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                SCOREP_LineNo             beginLine,
                SCOREP_LineNo             endLine,
                SCOREP_ParadigmType       paradigm,
-               SCOREP_RegionType         regionType )
+               SCOREP_RegionType         regionType,
+               SCOREP_StringHandle       groupNameHandle )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -213,7 +245,8 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                        beginLine,
                        endLine,
                        paradigm,
-                       regionType );
+                       regionType,
+                       groupNameHandle );
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Region, region );
@@ -232,7 +265,8 @@ initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_LineNo             beginLine,
                    SCOREP_LineNo             endLine,
                    SCOREP_ParadigmType       paradigm,
-                   SCOREP_RegionType         regionType )
+                   SCOREP_RegionType         regionType,
+                   SCOREP_StringHandle       groupNameHandle )
 {
     definition->name_handle = regionNameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
@@ -258,6 +292,9 @@ initialize_region( SCOREP_RegionDef*         definition,
     HASH_ADD_POD( definition, end_line );
     definition->paradigm_type = paradigm;
     HASH_ADD_POD( definition, paradigm_type );
+
+    /* Not a primary key, might be changed later */
+    definition->group_name_handle = groupNameHandle;
 }
 
 

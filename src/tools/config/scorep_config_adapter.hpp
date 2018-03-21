@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -32,6 +32,8 @@
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
 #include "scorep_config_types.hpp"
+
+class SCOREP_Config_LibwrapAdapter;
 
 /* **************************************************************************************
  * class SCOREP_Config_Adapter
@@ -363,12 +365,19 @@ class SCOREP_Config_OpenclAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_OpenclAdapter();
     virtual void
+    printHelp( void );
+    virtual bool
+    checkArgument( const std::string& arg );
+    virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
     virtual void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
                 bool         nvcc );
+
+private:
+    std::string m_wrapmode;
 };
 
 /* **************************************************************************************
@@ -449,6 +458,40 @@ public:
 
 private:
     std::set<std::string> m_categories;
+};
+
+/* **************************************************************************************
+ * class SCOREP_Config_LibwrapAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the compiler adapter.
+ */
+class SCOREP_Config_LibwrapAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_LibwrapAdapter();
+
+    void
+    printHelp( void );
+
+    bool
+    checkArgument( const std::string& arg );
+
+    void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
+
+    void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+
+    void
+    appendInitStructName( std::deque<std::string>& init_structs );
+
+private:
+    std::set<std::pair<std::string, std::string> > m_wrappers;
 };
 
 #endif // SCOREP_CONFIG_ADAPTER_HPP

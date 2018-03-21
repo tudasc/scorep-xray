@@ -100,11 +100,22 @@ Common options are:
   --nopreprocess  Disables preprocess instrumentation.
   --user          Enables user instrumentation.
   --nouser        Disables user instrumentation.
-  --opencl        Enables OpenCL instrumentation.
+  --opencl[:<wrap-mode>]
+                  Enables OpenCL instrumentation.
   --noopencl      Disables OpenCL instrumentation.
   --openacc       Enables OpenACC instrumentation.
   --noopenacc     Disables OpenACC instrumentation.
   --memory        Enables memory usage instrumentation. It is enabled by default.
   --nomemory      Disables memory usage instrumentation.
+  --libwrap=[<wrap-mode>:](<library-wrapper-name>...|<path-to-library-wrapper>)
+                  Enables library wrapping. <wrap-mode> may be 'linktime'
+                  (default) or 'runtime'. <library-wrapper-name>... is
+                  a comma-separated list of library wrappers which will be
+                  looked up of the colon-separated 'SCOREP_LIBWRAP_PATH'
+                  environment variable and in the installation directory of
+                  Score-P itself. <path-to-library-wrapper> is a full
+                  path to the .libwrap anchor file.
+                  Use 'scorep-info libwrap-summary' for a more detailed listing
+                  of library available wrappers.
 
 Report bugs to <support@score-p.org>

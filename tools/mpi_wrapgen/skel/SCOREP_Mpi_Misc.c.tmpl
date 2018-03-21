@@ -34,41 +34,55 @@ int
 MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_MISC);
     int return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_MISC ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        if ( scorep_mpi_memory_recording )
+        if ( event_gen_active_for_group )
         {
-            uint64_t size_as_uint64 = size;
-            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
-                                 &size_as_uint64 );
+            if ( scorep_mpi_memory_recording )
+            {
+                uint64_t size_as_uint64 = size;
+                SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                     &size_as_uint64 );
+            }
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ],
-                                   ( intptr_t )PMPI_Alloc_mem );
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Alloc_mem( size, info, baseptr );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        else
         {
-            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
-                                            ( uint64_t )( *( void** )baseptr ),
-                                            size );
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
+    }
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Alloc_mem( size, info, baseptr );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+            {
+                SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                                ( uint64_t )( *( void** )baseptr ),
+                                                size );
+            }
+
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Alloc_mem( size, info, baseptr );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
@@ -87,46 +101,60 @@ int
 MPI_Free_mem( void* base )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_MISC);
     int return_val;
+    void* allocation = NULL;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_MISC ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ],
-                                   ( intptr_t )PMPI_Free_mem );
-
-        void* allocation = NULL;
-        if ( scorep_mpi_memory_recording && base )
+        if ( event_gen_active_for_group )
         {
-            SCOREP_AllocMetric_AcquireAlloc( scorep_mpi_allocations_metric,
-                                             ( uint64_t )base, &allocation );
-        }
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Free_mem( base );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( scorep_mpi_memory_recording )
-        {
-            uint64_t dealloc_size = 0;
-            if ( base && MPI_SUCCESS == return_val )
+            if ( scorep_mpi_memory_recording && base )
             {
-                SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
-                                               allocation, &dealloc_size );
+                SCOREP_AllocMetric_AcquireAlloc( scorep_mpi_allocations_metric,
+                                                 ( uint64_t )base, &allocation );
             }
-            SCOREP_AddAttribute( scorep_mpi_memory_dealloc_size_attribute,
-                                 &dealloc_size );
         }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
+        }
+    }
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Free_mem( base );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            if ( scorep_mpi_memory_recording )
+            {
+                uint64_t dealloc_size = 0;
+                if ( base && MPI_SUCCESS == return_val )
+                {
+                    SCOREP_AllocMetric_HandleFree( scorep_mpi_allocations_metric,
+                                                   allocation, &dealloc_size );
+                }
+                SCOREP_AddAttribute( scorep_mpi_memory_dealloc_size_attribute,
+                                     &dealloc_size );
+            }
+
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Free_mem( base );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -231,7 +231,6 @@ libscorep_adapter_opari2_openmp_event_la_LIBADD =   \
     libscorep_measurement.la
 
 libscorep_adapter_opari2_openmp_event_la_LDFLAGS = \
-    $(library_api_version_ldflags) \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    $(library_api_version_ldflags)
 
 endif HAVE_OPENMP_SUPPORT

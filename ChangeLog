@@ -2,7 +2,14 @@
 
 Major features:
 
-- t.b.a.
+- User Library Wrapping: Using scorep-libwrap-init, you can now
+  automatically generate library wrappers supplying only the
+  headers and library files of the target library.
+  You then install the wrapper into SCOREP_LIBWRAP_PATH and use it
+  with the new instrumenter flag --libwrap=<wrapper>.
+  For this only linking with Score-P is necessary, except when
+  the library is called from threads, then the threading paradigm
+  has to be instrumented as well.
 
 Features and improvements:
 

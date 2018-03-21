@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -36,26 +36,25 @@
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                                      ( team, color, key, newTeam) );       \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                                 \
+                                  ( team, color, key, newTeam) );           \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                                      ( team, color, key, newTeam) );       \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -79,26 +78,25 @@ TEAM_SPLIT( shmem_team_split )
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                            ( peStart, peStride, peSize, newTeam ) );       \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                                 \
+                        ( peStart, peStride, peSize, newTeam ) );           \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                            ( peStart, peStride, peSize, newTeam ) );       \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -119,24 +117,24 @@ TEAM_CREATE_STRIDED( shmem_team_create_strided )
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );             \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( team ) );                     \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );             \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -159,24 +157,24 @@ TEAM_FREE( shmem_team_free )
                                                                             \
         int ret;                                                            \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );       \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        ret = SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( team ) );               \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );       \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -206,26 +204,25 @@ TEAM_QUERY( shmem_team_mype )
                                                                             \
         int ret;                                                            \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                   \
-                                      ( team1, team1Pe, team2 ) );          \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        ret = SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                           \
+                                  ( team1, team1Pe, team2 ) );              \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                   \
-                                      ( team1, team1Pe, team2 ) );          \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -248,24 +245,24 @@ TEAM_TRANSLATE_PE( shmem_team_translate_pe )
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team, pSync ) );      \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( team, pSync ) );              \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team, pSync ) );      \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -290,26 +287,25 @@ TEAM_BARRIER( shmem_team_barrier )
     {                                                                       \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
                                                                             \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;          \
+                                                                            \
+        if ( event_gen_active )                                             \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME ); \
+        }                                                                   \
                                                                             \
-            SCOREP_ENTER_WRAPPED_REGION();                                  \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                                ( target, src, len, team, pSync ) );        \
-            SCOREP_EXIT_WRAPPED_REGION();                                   \
+        SCOREP_ENTER_WRAPPED_REGION();                                      \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                                 \
+                            ( target, src, len, team, pSync ) );            \
+        SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                             \
+        if ( event_gen_active )                                             \
+        {                                                                   \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
             SCOREP_SHMEM_EVENT_GEN_ON();                                    \
-        }                                                                   \
-        else                                                                \
-        {                                                                   \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                         \
-                                ( target, src, len, team, pSync ) );        \
         }                                                                   \
                                                                             \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
@@ -337,26 +333,25 @@ TEAM_ALLTOALL( shmem_team_alltoall )
     {                                                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
                                                                                     \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                  \
+                                                                                    \
+        if ( event_gen_active )                                                     \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );         \
+        }                                                                           \
                                                                                     \
-            SCOREP_ENTER_WRAPPED_REGION();                                          \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tOffsets, tSizes, src, sOffsets, sSizes, team, pSync ) ); \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
+        SCOREP_ENTER_WRAPPED_REGION();                                              \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                                         \
+            ( target, tOffsets, tSizes, src, sOffsets, sSizes, team, pSync ) );     \
+        SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                     \
+        if ( event_gen_active )                                                     \
+        {                                                                           \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
             SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tOffsets, tSizes, src, sOffsets, sSizes, team, pSync ) ); \
         }                                                                           \
                                                                                     \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
@@ -384,26 +379,25 @@ TEAM_ALLTOALLV( shmem_team_alltoallv )
     {                                                                               \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
                                                                                     \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                  \
+                                                                                    \
+        if ( event_gen_active )                                                     \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );         \
+        }                                                                           \
                                                                                     \
-            SCOREP_ENTER_WRAPPED_REGION();                                          \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tLength, tSizes, src, sOffsets, sSizes, team, pSync ) );  \
-            SCOREP_EXIT_WRAPPED_REGION();                                           \
+        SCOREP_ENTER_WRAPPED_REGION();                                              \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME,                                         \
+            ( target, tLength, tSizes, src, sOffsets, sSizes, team, pSync ) );      \
+        SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                     \
+        if ( event_gen_active )                                                     \
+        {                                                                           \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
                                                                                     \
             SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tLength, tSizes, src, sOffsets, sSizes, team, pSync ) );  \
         }                                                                           \
                                                                                     \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                          \

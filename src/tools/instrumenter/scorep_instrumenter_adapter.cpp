@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -274,6 +274,12 @@ SCOREP_Instrumenter_Adapter::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
 }
 
+bool
+SCOREP_Instrumenter_Adapter::isInterpositionLibrary( const std::string& libraryName )
+{
+    return false;
+}
+
 /* ------------------------------------------------------------------------- protected */
 
 void
@@ -453,6 +459,20 @@ SCOREP_Instrumenter_Adapter::checkAllObjects( SCOREP_Instrumenter& instrumenter 
     {
         adapter->second->checkObjects( instrumenter );
     }
+}
+
+bool
+SCOREP_Instrumenter_Adapter::isAllInterpositionLibrary( const std::string& libraryName )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+    for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
+    {
+        if ( adapter->second->isInterpositionLibrary( libraryName ) )
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void

@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -26,6 +26,7 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include "scorep_config_mpp.hpp"
+#include "scorep_config_utils.hpp"
 #include <iostream>
 
 /* **************************************************************************************
@@ -118,7 +119,7 @@ SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
 
 void
 SCOREP_Config_MppSystem::addLdFlags( std::string& /* ldflags */,
-                                     bool /* build_check */,
+                                     bool /* buildCheck */,
                                      bool /* nvcc */ )
 {
 }
@@ -183,7 +184,7 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
 
 void
 SCOREP_Config_MpiMppSystem::addLdFlags( std::string& ldflags,
-                                        bool         build_check,
+                                        bool         buildCheck,
                                         bool /* nvcc */ )
 {
 #if SCOREP_BACKEND_COMPILER_PGI
@@ -221,19 +222,11 @@ SCOREP_Config_ShmemMppSystem::addLibs( std::deque<std::string>&           libs,
 
 void
 SCOREP_Config_ShmemMppSystem::addLdFlags( std::string& ldflags,
-                                          bool         build_check,
-                                          bool /* nvcc */ )
+                                          bool         buildCheck,
+                                          bool         nvcc )
 {
 #if !HAVE_BACKEND( SHMEM_PROFILING_INTERFACE )
-    if ( build_check )
-    {
-        extern std::string path_to_binary;
-        ldflags += " -Wl,@" + path_to_binary + "../share/shmem.wrap";
-    }
-    else
-    {
-        ldflags += " -Wl,@" SCOREP_DATADIR "/shmem.wrap";
-    }
+    ldflags += get_ld_wrap_flag( "shmem", buildCheck, nvcc );
 #endif
 }
 

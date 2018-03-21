@@ -11,44 +11,59 @@ ${guard:start}
 ${proto:c}
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
+  uint64_t start_time_stamp;
+  ${decl}
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
+  if (event_gen_active)
     {
-      ${decl}
       SCOREP_MPI_EVENT_GEN_OFF();
-      ${xblock}
+      if (event_gen_active_for_group)
+        {
+          ${xblock}
 
-      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
-                                ( intptr_t )P${name});
-      SCOREP_MpiCollectiveBegin();
-      uint64_t start_time_stamp =
-        SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
+          SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+          SCOREP_MpiCollectiveBegin();
+          start_time_stamp =
+            SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
+        }
+      else
+        {
+          SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
+    }
 
-      SCOREP_ENTER_WRAPPED_REGION();
-      return_val = ${call:pmpi};
-      SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = ${call:pmpi};
+  SCOREP_EXIT_WRAPPED_REGION();
 
-      ${guard:hooks}
-        ${check:hooks}
-          ${call:posthook};
-      ${guard:end}
+  if (event_gen_active)
+    {
+      if (event_gen_active_for_group)
+        {
+          ${guard:hooks}
+            ${check:hooks}
+              ${call:posthook};
+          ${guard:end}
 
-      SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
-                              root_loc,
-                              SCOREP_MPI_COLLECTIVE__${name|uppercase},
-                              ${mpi:sendcount},
-                              ${mpi:recvcount});
-      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+          SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
+                                  root_loc,
+                                  SCOREP_MPI_COLLECTIVE__${name|uppercase},
+                                  ${mpi:sendcount},
+                                  ${mpi:recvcount});
+          SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
+      else
+        {
+          SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
 
       SCOREP_MPI_EVENT_GEN_ON();
     }
-  else
-    {
-      return_val = ${call:pmpi};
-    }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 ${guard:end}

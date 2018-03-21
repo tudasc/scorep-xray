@@ -79,9 +79,13 @@ do
         res=$?
         cat opencl_test.out
 
-        if [ $res -ne 0 ]; then
+        if [ $res -eq 0 ]; then
+            : success
+        elif [ $res -ne 77 ]; then
             rm -rf scorep-measurement-tmp
             exit $res
+        else
+            : skipped
         fi
 
     done #memcpy

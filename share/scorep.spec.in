@@ -96,12 +96,15 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                global(libwrap);
+
                 ${includesMPI}     = 0;
                 ${includesSHMEM}   = 0;
                 ${includesOpenMP}  = 0;
                 ${includesPthread} = 0;
                 ${includesOpenCL}  = 0;
                 ${includesCUDA}    = 0;
+                ${includesLIBWRAP} = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -459,6 +462,12 @@
                         };
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] =~ /^libwrap:(.+)$/ )
+                    {
+                        ${includesLIBWRAP} = 1;
+                        ${libwrap}[${i}] = 1;
+                    };
+
                     ${i} = ${i} + 1;
                 };
 
@@ -550,6 +559,11 @@
                     cube::metric::set::cuda_kernel_executions("value", "VOID");
                 };
 
+                if ( ${includesLIBWRAP} == 0 )
+                {
+                    cube::metric::set::libwrap_time("value", "VOID");
+                };
+
                 return 0;
             }
             </cubeplinit>
@@ -561,7 +575,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
-                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time()
+                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>OpenCL kernels</disp_name>
@@ -1625,6 +1639,26 @@
                     </cubepl>
                 </metric>
             </metric>
+
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Wrapped libraries</disp_name>
+                <uniq_name>libwrap_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#libwrap_time</url>
+                <descr>Time spent in wrapped libraries</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${libwrap}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::time(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+            </metric>
+
         </metric>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Overhead</disp_name>

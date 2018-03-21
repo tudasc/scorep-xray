@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -64,10 +64,6 @@ SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 /*  Declare and initialize thread local storage for in-signal-context counter */
 SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
-SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
-
-/*  Declare and initialize thread local storage for in-wrapped-region counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region
 SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #endif
@@ -182,7 +178,6 @@ SCOREP_Location_CreateCPULocation( const char* name )
 
 #if HAVE( SAMPLING_SUPPORT )
     touch = scorep_in_signal_context;
-    touch = scorep_in_wrapped_region;
 #endif
 
 #endif

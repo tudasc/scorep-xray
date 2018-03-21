@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -163,6 +163,12 @@ public:
     checkObjects( SCOREP_Instrumenter& instrumenter );
 
     /**
+     * Return true, if the given library needs to be interposed
+     */
+    virtual bool
+    isInterpositionLibrary( const std::string& libraryName );
+
+    /**
      * Returns a pointer to the currently selected paradigm.
      */
     virtual SCOREP_Instrumenter_Paradigm*
@@ -294,6 +300,12 @@ public:
      */
     static void
     checkAllObjects( SCOREP_Instrumenter& instrumenter );
+
+    /**
+     * Return true, if the given library needs to be interposed
+     */
+    static bool
+    isAllInterpositionLibrary( const std::string& libraryName );
 
     /* ---------------------------------------------------------------- static members */
 private:

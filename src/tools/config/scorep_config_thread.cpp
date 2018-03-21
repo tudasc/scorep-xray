@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -45,7 +45,7 @@ SCOREP_Config_ThreadSystem::init( void )
 #if SCOREP_BACKEND_HAVE_OMP_TPD || SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_all.push_back( new SCOREP_Config_OmpThreadSystem() );
 #endif
-#if SCOREP_BACKEND_HAVE_PTHREAD && HAVE_BACKEND( GNU_LINKER )
+#if SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
     m_all.push_back( new SCOREP_Config_PthreadThreadSystem() );
 #endif
     current = m_all.front();

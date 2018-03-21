@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -11,7 +11,8 @@
 ## directory for details.
 ##
 
-frontend_bin_SCRIPTS = scorep-wrapper
+# scorep-wrapper is frontend tool, but is always generated in the build-backend
+frontend_bin_SCRIPTS += scorep-wrapper
 
 INSTALL_EXEC_HOOK += install-scorep-wrappers
 install-scorep-wrappers:

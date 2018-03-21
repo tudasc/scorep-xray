@@ -1,0 +1,524 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+. "@abs_builddir@/common.sh"
+
+test_init "Score-P $lwi_name simple"
+
+scorep_config=$BINDIR/scorep-config
+if [ "$($scorep_config --libwrap-support=linktime)" = true ]; then linktime_support=true; else linktime_support=false; fi
+if [ "$($scorep_config --libwrap-support=runtime)"  = true ]; then runtime_support=true;  else runtime_support=false;  fi
+
+o_ext=$(eval "$($LIBTOOL --config)"; printf "$objext")
+a_ext=$(eval "$($LIBTOOL --config)"; printf "$libext")
+so_ext_with_dot=$(eval "$($LIBTOOL --config)"; eval shared_ext=\"$shrext_cmds\"; printf "$shared_ext")
+so_ext=${so_ext_with_dot#.}
+
+libtool_shared=$(eval "$($LIBTOOL --config)"; test "$build_libtool_libs" = "yes" && echo true || echo false)
+libtool_static=$(eval "$($LIBTOOL --config)"; test "$build_old_libs" = "yes" && echo true || echo false)
+
+# if our libtool cannot build a shared library of the target library, than we
+# need to tell scorep-libwrap-init about it
+lwi_flags=
+if ! $libtool_shared; then
+    runtime_support=false
+    lwi_flags="--static-only-target-library"
+    #runtime_support=false
+fi
+
+if [ "$mpi_support" = true ];   then
+    . $TEST_BUILD_DIR/mpi.sh # determine MPICC and MPICXX
+fi
+if [ "$shmem_support" = true ]; then
+    . $TEST_BUILD_DIR/shmem.sh # determine SHMEMCC and SHMEMCXX
+fi
+
+rundir=test_libwrap_init_simple
+mkdir -p "$rundir"
+rundir="$(cd "$rundir"; pwd)"
+
+cleanup()
+{
+    cd "$execdir"
+    rm -rf "$rundir"
+}
+cleanup
+trap cleanup 0
+
+# we change to this directory for the test, to remove everything at once once we are done
+mkdir -p "$rundir"
+cd "$rundir"
+
+
+test_expect_success "scorep-config exists" "test -x $scorep_config"
+
+test_expect_success_all "c:     build and install target library"       \
+    "cp -r $TARGET_LIB_C_SRC_ROOT ."                                    \
+    "cd target-lib-c"                                                   \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\""         \
+    "test -f foo.$o_ext || ! $libtool_static"                           \
+    "test -f foo.lo"                                                    \
+    "test -f libfoo.la"                                                 \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install" \
+    "test -f lib/libfoo.la"                                             \
+    "test -f lib/libfoo.$a_ext  || ! $libtool_static"                   \
+    "test -f lib/libfoo.$so_ext || ! $libtool_shared"
+
+test_expect_success_all "c:     init wrapper" \
+    "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_C_SRC_ROOT\" --prefix wrapper-lib-c/ -x c --ldflags \"-L\$(pwd)/target-lib-c/lib\" --libs \"-lfoo\" wrapper-lib-c" \
+    "test -f wrapper-lib-c/libwrap.h"    \
+    "test -f wrapper-lib-c/libwrap.c"    \
+    "test -f wrapper-lib-c/main.c"       \
+    "test -f wrapper-lib-c/Makefile"     \
+    "test -f wrapper-lib-c/README.md"    \
+    "test -f wrapper-lib-c/foo.filter"   \
+    "test_grep \"[ ]*EXCLUDE[ ]*\*$\"                        wrapper-lib-c/foo.filter" \
+    "test_grep \"[ ]*INCLUDE[ ]*$TARGET_LIB_C_SRC_ROOT/\*$\" wrapper-lib-c/foo.filter" \
+    "! test_grep \"EXCLUDE.*INCLUDE\"                        wrapper-lib-c/foo.filter" \
+    "! test_grep \"INCLUDE.*EXCLUDE\"                        wrapper-lib-c/foo.filter"
+
+test_expect_success_all "c:     empty wrapper doesn't build" \
+    "cd wrapper-lib-c"                                       \
+    "! make"
+
+insert_libwrap_h="#include <foo.h>\n#include <foo2.h>"
+endif_line="#endif \/\* LIBWRAP_H \*\/"
+insert_main_c="    struct some_struct\* s = fn_1_new();\n"
+return_line="    return 0;"
+new_return_line="    return fn_2_get(s);"
+test_expect_success_all "c:     configure wrapper"                            \
+    "cd wrapper-lib-c"                                                        \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h" \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$new_return_line/g\" main.c"
+
+test_expect_success_all "c:     build wrapper" \
+    "cd wrapper-lib-c"                         \
+    "make"                                     \
+    "test -f foo.wrap"                         \
+    "test -f libwrap.i"                        \
+    "test -f main"                             \
+    "test -f scorep_libwrap_foo.c"             \
+    "test -f scorep_libwrap_foo.inc.c"         \
+    "test -f libscorep_libwrap_foo_linktime.la     || ! $linktime_support"                      \
+    "test -f libscorep_libwrap_foo_linktime.lo     || ! $linktime_support"                      \
+    "test -f libscorep_libwrap_foo_linktime.$o_ext || ! $linktime_support || ! $libtool_static" \
+    "test -f libscorep_libwrap_foo_runtime.la      || ! $runtime_support"                       \
+    "test -f libscorep_libwrap_foo_runtime.lo      || ! $runtime_support"                       \
+    "test -f libscorep_libwrap_foo_runtime.$o_ext  || ! $runtime_support  || ! $libtool_static" \
+    "  test_grep -q '\bfn_1_'  foo.wrap"               \
+    "  test_grep -q '\bfn_1_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_2_'  foo.wrap"               \
+    "  test_grep -q '\bfn_2_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_3_'  foo.wrap"               \
+    "  test_grep -q '\bfn_3_'  scorep_libwrap_foo.c"   \
+    "! test_grep -q '\bfn_4_'  foo.wrap    # ellipsis" \
+    "! test_grep -q '\bfn_4_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bvfn_4_' foo.wrap    # va_list variant of fn_4" \
+    "  test_grep -q '\bvfn_4_' scorep_libwrap_foo.c"   \
+    "! test_grep -q '\bfn_5_'  foo.wrap    # static"   \
+    "! test_grep -q '\bfn_5_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_6_'  foo.wrap"               \
+    "  test_grep -q '\bfn_6_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_7_'  foo.wrap"               \
+    "  test_grep -q '\bfn_7_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_8_'  foo.wrap"               \
+    "  test_grep -q '\bfn_8_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_9_'  foo.wrap"               \
+    "  test_grep -q '\bfn_9_'  scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_10_' foo.wrap"               \
+    "  test_grep -q '\bfn_10_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_11_' foo.wrap"               \
+    "  test_grep -q '\bfn_11_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_12_' foo.wrap"               \
+    "  test_grep -q '\bfn_12_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_13_' foo.wrap"               \
+    "  test_grep -q '\bfn_13_' scorep_libwrap_foo.c"   \
+    "# fn_14_ is included if c99 is enabled, and not if not. So we cannot test it here" \
+    "! test_grep -q '\bfn_15_' foo.wrap    # unknown argument list" \
+    "! test_grep -q '\bfn_15_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_16_' foo.wrap"               \
+    "  test_grep -q '\bfn_16_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_17_' foo.wrap"               \
+    "  test_grep -q '\bfn_17_' scorep_libwrap_foo.c"   \
+    "# fn_18_ is included if c99 is enabled, and not if not. So we cannot test it here" \
+    "  test_grep -q '\bfn_19_' foo.wrap"               \
+    "  test_grep -q '\bfn_19_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_20_' foo.wrap"               \
+    "  test_grep -q '\bfn_20_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_21_' foo.wrap"               \
+    "  test_grep -q '\bfn_21_' scorep_libwrap_foo.c"   \
+    "! test_grep -q '\bfn_22_' foo.wrap    # static"   \
+    "! test_grep -q '\bfn_22_' scorep_libwrap_foo.c"   \
+    "! test_grep -q '\bfn_23_' foo.wrap    # ellispis" \
+    "! test_grep -q '\bfn_23_' scorep_libwrap_foo.c"   \
+    "  test_grep -q '\bfn_24a_' foo.wrap           "   \
+    "  test_grep -q '\bfn_24a_' scorep_libwrap_foo.c"  \
+    "  test_grep -q '\bfn_24b_' foo.wrap           "   \
+    "  test_grep -q '\bfn_24b_' scorep_libwrap_foo.c"
+
+test_expect_success_all "c:     variadic-is-void" \
+    "cd wrapper-lib-c"                            \
+    "printf 'LIBWRAP_VARIADIC_IS_VOID_SYMBOLS += fn_15_unknown_arg_list\n' >>Makefile" \
+    "make"                                       \
+    "test_grep -q '\bfn_15_' foo.wrap    # unknown argument list is treated as void"   \
+    "test_grep -q '\bfn_15_' scorep_libwrap_foo.c"
+
+test_expect_success_all "c:     ellipsis-mapping"    \
+    "cd wrapper-lib-c"                               \
+    "printf 'LIBWRAP_ELLIPSIS_MAPPING_SYMBOLS += fn_4_ellipsis:vfn_4_ellipsis_va_list_variant\n' >>Makefile" \
+    "printf 'LIBWRAP_ELLIPSIS_MAPPING_SYMBOLS += fn_23_ellipsis_without_wrapping_va_list_variant:vprintf\n' >>Makefile" \
+    "make"                                           \
+    "test_grep -q '\bfn_4_'  foo.wrap    # ellipsis" \
+    "test_grep -q '\bfn_4_'  scorep_libwrap_foo.c"   \
+    "test_grep -q '\bfn_23_' foo.wrap    # ellipsis" \
+    "test_grep -q '\bfn_23_' scorep_libwrap_foo.c"
+
+test_expect_success_all "c:     check wrapper" \
+    "cd wrapper-lib-c"                         \
+    "make check"                               \
+    "! test -f missing.filter"
+
+test_expect_success_all "c:     install wrapper" \
+    "cd wrapper-lib-c"                           \
+    "make install"                               \
+    "test -f lib/libscorep_libwrap_foo_linktime.$a_ext  || ! $linktime_support || ! $libtool_static" \
+    "test -f lib/libscorep_libwrap_foo_linktime.la      || ! $linktime_support"                      \
+    "test -f lib/libscorep_libwrap_foo_linktime.$so_ext || ! $linktime_support || ! $libtool_shared" \
+    "test -f lib/libscorep_libwrap_foo_runtime.$a_ext   || ! $runtime_support  || ! $libtool_static" \
+    "test -f lib/libscorep_libwrap_foo_runtime.la       || ! $runtime_support"                       \
+    "test -f lib/libscorep_libwrap_foo_runtime.$so_ext  || ! $runtime_support  || ! $libtool_shared" \
+    "test -f share/scorep/foo.wrap"
+
+test_expect_success_all "c:     installcheck wrapper"              \
+    "cd wrapper-lib-c"                                             \
+    "make installcheck"                                            \
+    "test -f main_linktime_wrapped || ! $linktime_support"         \
+    "test -f main_runtime_wrapped  || ! $runtime_support || ! $libtool_shared"
+
+if [ "$run_binaries" = true ]; then
+    test_expect_success_all "c:     run binaries"                                     \
+        "cd wrapper-lib-c"                                                            \
+        "LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main"                \
+        "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+fi
+
+# ### multi lib with dependencies ###
+
+test_expect_success_all "cdeps: build and install target library" \
+    "cp -r $TARGET_LIB_CDEPS_SRC_ROOT ."                          \
+    "cd target-lib-cdeps"                                         \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\""   \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+
+test_expect_success_all "cdeps: init wrapper" \
+    "$lwi $lwi_flags --name bar --cppflags \"-I$TARGET_LIB_CDEPS_SRC_ROOT -I$TARGET_LIB_C_SRC_ROOT\" --prefix wrapper-lib-cdeps/ -x c --ldflags \"-L\$(pwd)/target-lib-cdeps/lib -L\$(pwd)/target-lib-c/lib\" --libs \"-lbar -lbar2 -lfoo\" wrapper-lib-cdeps"
+
+insert_libwrap_h="#include <bar.h>\n"
+endif_line="#endif \/\* LIBWRAP_H \*\/"
+include_libwrap_line="#include \\\"libwrap.h\\\""
+insert_main_c="    fn_1();\n    fn_2();\n"
+return_line="    return 0;"
+
+test_expect_success_all "cdeps: configure wrapper"                            \
+    "cd wrapper-lib-cdeps"                                                    \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\" libwrap.h" \
+    "test_sed_i \"s/$return_line/$insert_main_c\n$return_line/g\"  main.c  "
+
+test_expect_success_all "cdeps: build wrapper"    \
+    "cd wrapper-lib-cdeps"                        \
+    "make"                                        \
+    "  test_grep -q 'fn_1'  bar.wrap"             \
+    "  test_grep -q 'fn_1'  scorep_libwrap_bar.c" \
+    "  test_grep -q 'fn_2'  bar.wrap"             \
+    "  test_grep -q 'fn_2'  scorep_libwrap_bar.c" \
+    "test \$(tail -n +2 bar.wrap | wc -l) = 2"
+
+test_expect_success_all "cdeps: check, install and installcheck wrapper" \
+    "cd wrapper-lib-cdeps"                                               \
+    "make check"                                                         \
+    "make install"                                                       \
+    "make installcheck"
+
+if [ "$run_binaries" = true ]; then
+    test_expect_success_all "cdeps: run binaries" \
+        "cd wrapper-lib-cdeps"                    \
+        "LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main" \
+        "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+fi
+
+test_expect_success_all "cdeps: uninstall and clean target library and wrapper" \
+    "cd wrapper-lib-cdeps"                                                      \
+    "make uninstall"                                                            \
+    "make clean"                                                                \
+    "cd ../target-lib-cdeps"                                                    \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"       \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+
+test_expect_success_all "c:     uninstall and clean wrapper" \
+    "cd wrapper-lib-c"                                       \
+    "make uninstall"                                         \
+    "test ! -e lib/libscorep_libwrap_foo_linktime.$a_ext"    \
+    "test ! -e lib/libscorep_libwrap_foo_linktime.la"        \
+    "test ! -e lib/libscorep_libwrap_foo_linktime.$so_ext"   \
+    "test ! -e lib/libscorep_libwrap_foo_runtime.$a_ext"     \
+    "test ! -e lib/libscorep_libwrap_foo_runtime.la"         \
+    "test ! -e lib/libscorep_libwrap_foo_runtime.$so_ext"    \
+    "test ! -e share/scorep/foo.wrap"                        \
+    "make clean"                                             \
+    "test ! -e foo.wrap"                                     \
+    "test ! -e libwrap.i"                                    \
+    "test ! -e main.$o_ext"                                  \
+    "test ! -e main"                                         \
+    "test ! -e scorep_libwrap_foo.c"                         \
+    "test ! -e scorep_libwrap_foo.inc.c"                     \
+    "test ! -e libscorep_libwrap_foo_linktime.la"            \
+    "test ! -e libscorep_libwrap_foo_linktime.lo"            \
+    "test ! -e libscorep_libwrap_foo_linktime.$o_ext"        \
+    "test ! -e libscorep_libwrap_foo_runtime.la"             \
+    "test ! -e libscorep_libwrap_foo_runtime.lo"             \
+    "test ! -e libscorep_libwrap_foo_runtime.$o_ext"
+
+test_expect_success_all "c:     uninstall and clean target c library"     \
+    "cd target-lib-c"                                                     \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall" \
+    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"     \
+    "test ! -e foo.$o_ext"                                                \
+    "test ! -e foo.lo"                                                    \
+    "test ! -e libfoo.la"                                                 \
+    "test ! -e lib/libfoo.la"                                             \
+    "test ! -e lib/libfoo.$a_ext"                                         \
+    "test ! -e lib/libfoo.$so_ext"
+
+# ### mpi ###
+
+if [ "$mpi_support" = true ]; then
+    test_expect_success_all "mpi:   build and install target library"      \
+        "cp -r $TARGET_LIB_MPI_SRC_ROOT ."                                 \
+        "cd target-lib-mpi"                                                \
+        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\"" \
+        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" install"
+
+    test_expect_success_all "mpi:   init wrapper" \
+        "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_MPI_SRC_ROOT\" --prefix wrapper-lib-mpi/ -x c --backend mpi --ldflags \"-L\$(pwd)/target-lib-mpi/lib\" --libs \"-lfoo\" wrapper-lib-mpi"
+
+    insert_libwrap_h="#include <foo.h>\n"
+    endif_line="#endif \/\* LIBWRAP_H \*\/"
+    include_libwrap_line="#include \\\"libwrap.h\\\""
+    insert_main_c_1="#include <mpi.h>"
+    insert_main_c_2="    int foo = 123;\n    MPI_Init(\&argc, \&argv);\n    foo_mpi_broadcast_test(\&foo, 0);\n    MPI_Finalize();\n"
+    return_line="    return 0;"
+    test_expect_success_all "mpi:   configure wrapper"                                                 \
+        "cd wrapper-lib-mpi"                                                                           \
+        "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\"                      libwrap.h" \
+        "test_sed_i \"s/$include_libwrap_line/$include_libwrap_line\n\n$insert_main_c_1/g\" main.c   " \
+        "test_sed_i \"s/$return_line/$insert_main_c_2\n$return_line/g\"                     main.c   "
+
+    test_expect_success_all "mpi:   build wrapper"                     \
+        "cd wrapper-lib-mpi"                                           \
+        "make"                                                         \
+        "test_grep -q '\bfoo_mpi_broadcast_test' foo.wrap"             \
+        "test_grep -q '\bfoo_mpi_broadcast_test' scorep_libwrap_foo.c" \
+        "test \$(tail -n +2 foo.wrap | wc -l) = 1"
+
+    test_expect_success_all "mpi:   check, install and installcheck wrapper" \
+        "cd wrapper-lib-mpi"                                                 \
+        "make check"                                                         \
+        "make install"                                                       \
+        "make installcheck"
+
+    if [ "$run_binaries" = true ]; then
+        test_expect_success_all "mpi:   run mpi binaries"                                              \
+            "cd wrapper-lib-mpi"                                                                       \
+            "LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main"              \
+            "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_linktime_wrapped; fi" \
+            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_runtime_wrapped || ! $libtool_shared; fi"
+    fi
+
+    test_expect_success_all "mpi:   uninstall and clean target library and wrapper"  \
+        "cd wrapper-lib-mpi"                                                         \
+        "make uninstall"                                                             \
+        "make clean"                                                                 \
+        "cd ../target-lib-mpi"                                                       \
+        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" uninstall" \
+        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+fi
+
+# ### shmem ###
+
+if [ "$shmem_support" = true ]; then
+    test_expect_success_all "shmem: build and install target library"          \
+        "cp -r $TARGET_LIB_SHMEM_SRC_ROOT ."                                   \
+        "cd target-lib-shmem"                                                  \
+        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\"" \
+        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" install"
+
+    test_expect_success_all "shmem: init wrapper" \
+        "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_SHMEM_SRC_ROOT\" --prefix wrapper-lib-shmem/ -x c --backend shmem --ldflags \"-L\$(pwd)/target-lib-shmem/lib\" --libs \"-lfoo\" wrapper-lib-shmem"
+
+    insert_libwrap_h="#include <foo.h>\n"
+    endif_line="#endif \/\* LIBWRAP_H \*\/"
+    include_libwrap_line="#include \\\"libwrap.h\\\""
+    insert_main_c_1="#include <shmem.h>"
+    insert_main_c_2="    start_pes( 0 );\n    foo_shmem_test();\n"
+    return_line="    return 0;"
+    test_expect_success_all "shmem: configure wrapper"                                                 \
+        "cd wrapper-lib-shmem"                                                                         \
+        "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\"                      libwrap.h" \
+        "test_sed_i \"s/$include_libwrap_line/$include_libwrap_line\n\n$insert_main_c_1/g\" main.c   " \
+        "test_sed_i \"s/$return_line/$insert_main_c_2\n$return_line/g\"                     main.c   "
+
+    test_expect_success_all "shmem: build shmem-lib wrapper"   \
+        "cd wrapper-lib-shmem"                                 \
+        "make"                                                 \
+        "test_grep -q '\bfoo_shmem_test' foo.wrap"             \
+        "test_grep -q '\bfoo_shmem_test' scorep_libwrap_foo.c" \
+        "test \$(tail -n +2 foo.wrap | wc -l) = 1"
+
+    test_expect_success_all "shmem: check, install and installcheck wrapper" \
+        "cd wrapper-lib-shmem"                                               \
+        "make check"                                                         \
+        "make install"                                                       \
+        "make installcheck"
+
+    if [ "$run_binaries" = true ]; then
+        test_expect_success_all "shmem: run shmem binaries"                                 \
+            "cd wrapper-lib-shmem"                                                          \
+            "LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main" \
+            "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main_linktime_wrapped; fi" \
+            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main_runtime_wrapped || ! $libtool_shared; fi"
+    fi
+
+    test_expect_success_all "shmem: uninstall and clean shmem-based target and wrapper library" \
+        "cd wrapper-lib-shmem"                                                                  \
+        "make uninstall"                                                                        \
+        "make clean"                                                                            \
+        "cd ../target-lib-shmem"                                                                \
+        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"        \
+        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+fi
+
+# ### c++ ###
+
+test_expect_success_all "c++:   build and install c++-based target library" \
+    "cp -r $TARGET_LIB_CXX_SRC_ROOT ."                                      \
+    "cd target-lib-cc"                                                      \
+    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\"" \
+    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+
+test_expect_success_all "c++:   init wrapper"   \
+    "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_CXX_SRC_ROOT\" --prefix wrapper-lib-cc/ -x c++ --ldflags \"-L\$(pwd)/target-lib-cc/lib\" --libs \"-lfoo\" wrapper-lib-cc" \
+    "test ! -f wrapper-lib-cc/libwrap.c"  \
+    "test   -f wrapper-lib-cc/libwrap.cc" \
+    "test ! -f wrapper-lib-cc/main.c"     \
+    "test   -f wrapper-lib-cc/main.cc"
+
+insert_libwrap_h="#include <foo.h>\n"
+endif_line="#endif \/\* LIBWRAP_H \*\/"
+include_libwrap_line="#include \\\"libwrap.h\\\""
+insert_main_cc_1="using namespace ns;"
+insert_main_cc_2="    class_1 c1;\n    class_2 c2(argc);\n    class_2 c2b(c1);\n    class_1 c1b = c2b.fn_3_return_class_1();\n"
+return_line="    return 0;"
+
+# workaround because inline decision making for clang 3.8 and below is bad. 3.9 does it correctly.
+wrap_filter="SCOREP_REGION_NAMES_BEGIN\n  EXCLUDE MANGLED *class_1C?Ei* *fn_1_* *fn_1b_* *fn_2_* *class_2C?*class_1*\nSCOREP_REGION_NAMES_END\n"
+
+test_expect_success_all "c++:   configure wrapper"                                                  \
+    "cd wrapper-lib-cc"                                                                             \
+    "test_sed_i \"s/$endif_line/$insert_libwrap_h\n$endif_line/g\"                       libwrap.h" \
+    "test_sed_i \"s/$include_libwrap_line/$include_libwrap_line\n\n$insert_main_cc_1/g\" main.cc  " \
+    "test_sed_i \"s/$return_line/$insert_main_cc_2\n$return_line/g\"                     main.cc  " \
+    "printf \"$wrap_filter\" >> foo.filter"
+
+test_expect_success_all "c++:   build wrapper"                                  \
+    "cd wrapper-lib-cc"                                                         \
+    "make 2>err"                                                                \
+    "  test_grep -q 'class_1C.Ev'       foo.wrap           # class_1()"         \
+    "  test_grep -q 'class_1C.Ev'       scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'class_1C.Ei'       foo.wrap           # class_1(int)"      \
+    "! test_grep -q 'class_1C.Ei'       scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_1_get'          foo.wrap"                               \
+    "! test_grep -q 'fn_1_get'          scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_1b_set'         foo.wrap"                               \
+    "! test_grep -q 'fn_1b_set'         scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'class_2C.*class_1' foo.wrap     # class_2(const class_1&)" \
+    "! test_grep -q 'class_2C.*class_1' scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'class_2clEv'       foo.wrap     # operator()()"            \
+    "  test_grep -q 'class_2clEv'       scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'class_2clEd'       foo.wrap     # operator()(double)"      \
+    "  test_grep -q 'class_2clEd'       scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'class_2clEdi'      foo.wrap     # operator()(double, int)" \
+    "  test_grep -q 'class_2clEdi'      scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_2_'             foo.wrap     # header defined. Works only in clang 3.9+" \
+    "! test_grep -q 'fn_2_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_3_'             foo.wrap"                               \
+    "  test_grep -q 'fn_3_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_4_'             foo.wrap"                               \
+    "  test_grep -q 'fn_4_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_5_'             foo.wrap"                               \
+    "  test_grep -q 'fn_5_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_6_'             foo.wrap"                               \
+    "  test_grep -q 'fn_6_'             scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_7_'             foo.wrap     # private"                 \
+    "! test_grep -q 'fn_7_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_8_'             foo.wrap"                               \
+    "  test_grep -q 'fn_8_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_9_'             foo.wrap"                               \
+    "  test_grep -q 'fn_9_'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_10_'            foo.wrap"                               \
+    "  test_grep -q 'fn_10_'            scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_11_'            foo.wrap"                               \
+    "  test_grep -q 'fn_11_'            scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_12_extern_c'    foo.wrap     # not mangled "            \
+    "  test_grep -q 'fn_12_extern_c'    scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_13'             foo.wrap     # not mangled "            \
+    "! test_grep -q 'fn_13'             scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_14_'            foo.wrap     # template specialization" \
+    "  test_grep -q 'fn_14_'            scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_15_'            foo.wrap     # template func"           \
+    "! test_grep -q 'fn_15_'            scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_16_'            foo.wrap     # class template"          \
+    "! test_grep -q 'fn_16_'            scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_16_'            err || (cat err && false)"              \
+    "  test_grep -q 'fn_17_'            foo.wrap     # class template special." \
+    "  test_grep -q 'fn_17_'            scorep_libwrap_foo.cc"                  \
+    "! test_grep -q 'fn_17_'            err || (cat err && false)"              \
+    "! test_grep -q 'fn_18_'            foo.wrap     # scoped typedeffed function pointer return" \
+    "! test_grep -q 'fn_18_'            scorep_libwrap_foo.cc"                  \
+    "  test_grep -q 'fn_19_'            foo.wrap     # scoped typedeffed function pointer arg" \
+    "  test_grep -q 'fn_19_'            scorep_libwrap_foo.cc"
+
+test_expect_success_all "c++:   check, install and installcheck wrapper" \
+    "cd wrapper-lib-cc"                                                  \
+    "make check"                                                         \
+    "make install"                                                       \
+    "make installcheck"
+
+if [ "$run_binaries" = true ]; then
+    test_expect_success_all "c++:   run binaries"                       \
+        "cd wrapper-lib-cc"                                             \
+        "LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main" \
+        "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+fi
+
+test_expect_success_all "c++:   uninstall and clean target library and wrapper " \
+    "cd wrapper-lib-cc"                                                          \
+    "make uninstall"                                                             \
+    "make clean"                                                                 \
+    "cd ../target-lib-cc"                                                        \
+    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"      \
+    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+
+test_done

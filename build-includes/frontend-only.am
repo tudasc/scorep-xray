@@ -1,5 +1,6 @@
 ## -*- mode: makefile -*-
 
+include ../src/tools/lib/Makefile.inc.am
 include ../src/tools/instrumenter/Makefile.inc.am
 include ../src/tools/config/Makefile.inc.am
 include ../src/tools/info/Makefile.inc.am
@@ -8,3 +9,4 @@ include ../tools/oa_registry/Makefile.inc.am
 #include ../test/...
 
 include ../test/tools/wrapper/Makefile.inc.am
+include ../test/tools/libwrap_init/Makefile.inc.am

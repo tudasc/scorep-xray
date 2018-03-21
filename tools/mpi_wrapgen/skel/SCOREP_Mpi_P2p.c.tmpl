@@ -85,55 +85,67 @@ int MPI_Recv( void* buf,
               MPI_Status* status )
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
   int return_val;
+  int        sz;
+  uint64_t start_time_stamp;
+  MPI_Status mystatus;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P))
+  if (event_gen_active)
   {
-    int        sz;
-    uint64_t start_time_stamp;
-    MPI_Status mystatus;
-
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV],
-                              ( intptr_t )PMPI_Recv);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
 
-    #if ! defined(SCOREP_MPI_NO_HOOKS)
+#if !defined(SCOREP_MPI_NO_HOOKS)
       if(SCOREP_IS_MPI_HOOKS_ON)
         start_time_stamp = SCOREP_GetLastTimeStamp();
-    #endif
+#endif
 
-    if (status == MPI_STATUS_IGNORE)
-      status = &mystatus;
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
-    SCOREP_EXIT_WRAPPED_REGION();
+      if (status == MPI_STATUS_IGNORE)
+        status = &mystatus;
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
+    }
+  }
 
-    #if ! defined(SCOREP_MPI_NO_HOOKS)
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+#if ! defined(SCOREP_MPI_NO_HOOKS)
       if(SCOREP_IS_MPI_HOOKS_ON)
         SCOREP_Hooks_Post_MPI_Recv(buf, count, datatype, source, tag, comm, status, start_time_stamp, return_val);
-    #endif
+#endif
 
-    if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    {
-      PMPI_Type_size(datatype, &sz);
-      PMPI_Get_count(status, datatype, &count);
-      SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
-                     status->MPI_TAG, (uint64_t)count * sz);
+      if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+      {
+        PMPI_Type_size(datatype, &sz);
+        PMPI_Get_count(status, datatype, &count);
+        SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
+                       status->MPI_TAG, (uint64_t)count * sz);
+      }
+
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
     }
-
-
-
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -168,33 +180,34 @@ int MPI_Irecv(void* buf,
               MPI_Request* request)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  uint64_t start_time_stamp;
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  const int xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
   int       return_val;
+  uint64_t  start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV],
-                              ( intptr_t )PMPI_Irecv);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
+
+#if !defined(SCOREP_MPI_NO_HOOKS)
+      if(SCOREP_IS_MPI_HOOKS_ON)
+        start_time_stamp = SCOREP_GetLastTimeStamp();
+#endif
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
+    }
   }
 
-  #if ! defined(SCOREP_MPI_NO_HOOKS)
-  if(SCOREP_IS_MPI_HOOKS_ON)
-  	start_time_stamp = SCOREP_GetLastTimeStamp();
-  #endif
-
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Irecv(buf, count, datatype, source, tag, comm, request);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
   {
@@ -202,25 +215,32 @@ int MPI_Irecv(void* buf,
     int sz;
     PMPI_Type_size(datatype, &sz);
 
-    if (event_gen_active && xnb_active)
+    if (event_gen_active_for_group && xnb_active)
       SCOREP_MpiIrecvRequest(reqid);
 
     scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_NONE,
                        tag, 0, (uint64_t)count * sz, datatype, comm, reqid);
-	#if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
+#if !defined( SCOREP_MPI_NO_HOOKS )
+    if (event_gen_active_for_group && SCOREP_IS_MPI_HOOKS_ON)
       SCOREP_Hooks_Post_MPI_Irecv( buf, count, datatype, source, tag, comm, request, start_time_stamp, return_val );
-    #endif
+#endif
   }
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -240,18 +260,25 @@ int MPI_Wait(MPI_Request* request,
              MPI_Status* status)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  MPI_Status         mystatus;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  int                 return_val;
+  MPI_Status          mystatus;
   scorep_mpi_request* orig_req;
-  uint64_t   start_time_stamp;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT],
-                              ( intptr_t )PMPI_Wait);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -265,15 +292,9 @@ int MPI_Wait(MPI_Request* request,
   }
 
   orig_req   = scorep_mpi_request_get(*request);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Wait(request, status);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
   if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -284,12 +305,19 @@ int MPI_Wait(MPI_Request* request,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -308,7 +336,8 @@ int MPI_Waitall(int count,
                 MPI_Status* array_of_statuses)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
   scorep_mpi_request* orig_req;
   int                 i;
   int                return_val;
@@ -318,8 +347,14 @@ int MPI_Waitall(int count,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL],
-                              ( intptr_t )PMPI_Waitall);
+    if (event_gen_active_for_group)
+    {
+        SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
+    }
+    else
+    {
+        SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -337,15 +372,9 @@ int MPI_Waitall(int count,
 
   scorep_mpi_save_request_array(requests, count);
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Waitall(count, requests, array_of_statuses);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   for (i = 0; i < count; i++)
   {
@@ -360,12 +389,19 @@ int MPI_Waitall(int count,
   }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -385,19 +421,26 @@ int MPI_Waitany(int count,
                 MPI_Status* status)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  int                 return_val;
   scorep_mpi_request* orig_req;
-  MPI_Status         mystatus;
-  uint64_t   start_time_stamp;
+  MPI_Status          mystatus;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY],
-                              ( intptr_t )PMPI_Waitany);
+    if (event_gen_active_for_group)
+    {
+        SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
+    }
+    else
+    {
+        SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -411,17 +454,11 @@ int MPI_Waitany(int count,
   }
 
   scorep_mpi_save_request_array(requests, count);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Waitany(count, requests, index, status);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
-  if (event_gen_active && xnb_active)
+  if (event_gen_active_for_group && xnb_active)
     {
       int i;
 
@@ -452,12 +489,19 @@ int MPI_Waitany(int count,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -478,9 +522,10 @@ int MPI_Waitsome(int incount,
                  MPI_Status *array_of_statuses)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  int                 return_val;
   int                i;
   scorep_mpi_request* orig_req;
   uint64_t   start_time_stamp;
@@ -489,8 +534,14 @@ int MPI_Waitsome(int incount,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME],
-                              ( intptr_t )PMPI_Waitsome);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -508,17 +559,11 @@ int MPI_Waitsome(int incount,
 
   scorep_mpi_save_request_array(array_of_requests, incount);
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Waitsome(incount, array_of_requests, outcount,
                          array_of_indices, array_of_statuses );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
-  if (event_gen_active && xnb_active)
+  SCOREP_EXIT_WRAPPED_REGION();
+  if (event_gen_active_for_group && xnb_active)
     {
       int j, tmp, cur;
       MPI_Status tmpstat;
@@ -572,12 +617,19 @@ int MPI_Waitsome(int incount,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -596,19 +648,26 @@ int MPI_Test(MPI_Request* request,
              MPI_Status* status)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xtest_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xtest_active               = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  int                 return_val;
   scorep_mpi_request* orig_req;
-  MPI_Status         mystatus;
-  uint64_t   start_time_stamp;
+  MPI_Status          mystatus;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST],
-                              ( intptr_t )PMPI_Test);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -621,15 +680,9 @@ int MPI_Test(MPI_Request* request,
     status = &mystatus;
   }
   orig_req   = scorep_mpi_request_get(*request);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Test(request, flag, status);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
   if (*flag)
     {
    	  #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -638,19 +691,26 @@ int MPI_Test(MPI_Request* request,
       #endif
       scorep_mpi_check_request(orig_req, status);
     }
-  else if (orig_req && event_gen_active && xtest_active)
+  else if (orig_req && event_gen_active_for_group && xtest_active)
     {
       SCOREP_MpiRequestTested(orig_req->id);
     }
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -671,19 +731,26 @@ int MPI_Testany(int count,
                 MPI_Status *status)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xtest_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xtest_active               = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  int                 return_val;
   scorep_mpi_request* orig_req;
-  MPI_Status         mystatus;
-  uint64_t   start_time_stamp;
+  MPI_Status          mystatus;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY],
-                              ( intptr_t )PMPI_Testany);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -696,17 +763,11 @@ int MPI_Testany(int count,
     status = &mystatus;
   }
   scorep_mpi_save_request_array(array_of_requests, count);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
-  if (event_gen_active && xtest_active)
+  if (event_gen_active_for_group && xtest_active)
     {
       int i;
 
@@ -736,12 +797,19 @@ int MPI_Testany(int count,
     }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -761,19 +829,26 @@ int MPI_Testall(int count,
                 MPI_Status *array_of_statuses)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xtest_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
-  int                i;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xtest_active               = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  int                 return_val;
+  int                 i;
   scorep_mpi_request* orig_req;
-  uint64_t   start_time_stamp;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL],
-                              ( intptr_t )PMPI_Testall);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -791,15 +866,9 @@ int MPI_Testall(int count,
 
   scorep_mpi_save_request_array(array_of_requests, count);
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Testall(count, array_of_requests, flag, array_of_statuses);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   if (*flag)
     {
@@ -813,7 +882,7 @@ int MPI_Testall(int count,
           scorep_mpi_check_request(orig_req, &(array_of_statuses[i]));
         }
     }
-  else if (event_gen_active && xtest_active)
+  else if (event_gen_active_for_group && xtest_active)
     {
       int i;
 
@@ -826,12 +895,19 @@ int MPI_Testall(int count,
     }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -852,19 +928,26 @@ int MPI_Testsome(int incount,
                  MPI_Status *array_of_statuses)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int                return_val;
-  const int          xtest_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
-  int                i;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xtest_active               = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST);
+  int                 return_val;
+  int                 i;
   scorep_mpi_request* orig_req;
-  uint64_t   start_time_stamp;
+  uint64_t            start_time_stamp;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME],
-                              ( intptr_t )PMPI_Testsome);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
+    }
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -881,18 +964,12 @@ int MPI_Testsome(int incount,
   #endif
 
   scorep_mpi_save_request_array(array_of_requests, incount);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                           array_of_indices, array_of_statuses );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
-  if (event_gen_active && xtest_active)
+  if (event_gen_active_for_group && xtest_active)
     {
       int cur, j, tmp;
       MPI_Status tmpstat;
@@ -946,12 +1023,19 @@ int MPI_Testsome(int incount,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -982,26 +1066,27 @@ int MPI_Recv_init(void* buf,
                   MPI_Request* request)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT],
-                              ( intptr_t )PMPI_Recv_init);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
+    }
   }
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
   if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
   {
     int sz;
@@ -1018,12 +1103,19 @@ int MPI_Recv_init(void* buf,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -1040,26 +1132,34 @@ int MPI_Recv_init(void* buf,
 int MPI_Start(MPI_Request* request)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-  int                return_val;
-  uint64_t   start_time_stamp;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  int       return_val;
+  uint64_t  start_time_stamp;
 
   if (event_gen_active)
   {
-    scorep_mpi_request* req;
-
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START],
-                              ( intptr_t )PMPI_Start);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
+    }
+  }
 
+  if (event_gen_active_for_group)
+  {
 	#if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
       start_time_stamp = SCOREP_GetLastTimeStamp();
     #endif
 
-    req = scorep_mpi_request_get(*request);
+    scorep_mpi_request* req = scorep_mpi_request_get(*request);
     if (req && (req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT))
       {
         req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE;
@@ -1079,15 +1179,9 @@ int MPI_Start(MPI_Request* request)
       }
   }
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Start(request);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
   if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1095,12 +1189,19 @@ int MPI_Start(MPI_Request* request)
   #endif
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -1118,22 +1219,29 @@ int MPI_Startall(int count,
                  MPI_Request *array_of_requests)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-  int                return_val, i;
-  uint64_t   start_time_stamp;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  int       return_val;
+  int       i;
+  uint64_t  start_time_stamp;
 
   if (event_gen_active)
   {
-    MPI_Request*       request;
-
-    scorep_mpi_request* req;
-
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL],
-                              ( intptr_t )PMPI_Startall);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
+    }
+  }
 
+  if (event_gen_active_for_group)
+  {
 	#if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
       start_time_stamp = SCOREP_GetLastTimeStamp();
@@ -1141,8 +1249,7 @@ int MPI_Startall(int count,
 
     for (i = 0; i < count; i++)
     {
-      request = &array_of_requests[i];
-      req     = scorep_mpi_request_get(*request);
+      scorep_mpi_request* req = scorep_mpi_request_get(array_of_requests[i]);
 
       if (req && (req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT))
         {
@@ -1161,15 +1268,9 @@ int MPI_Startall(int count,
     }
   }
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Startall( count, array_of_requests );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
   if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1181,12 +1282,19 @@ int MPI_Startall(int count,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -1203,18 +1311,25 @@ int MPI_Startall(int count,
 int MPI_Request_free( MPI_Request* request )
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int          event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-  int                orig_req_null    = (*request == MPI_REQUEST_NULL);
-  int                return_val;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  const int           xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  int                 orig_req_null              = (*request == MPI_REQUEST_NULL);
+  int                 return_val;
   scorep_mpi_request* req;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE],
-                              ( intptr_t )PMPI_Request_free);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
+    }
   }
 
   req = scorep_mpi_request_get(*request);
@@ -1224,7 +1339,7 @@ int MPI_Request_free( MPI_Request* request )
   #endif
   if (req)
     {
-      if (req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active && xnb_active)
+      if (req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active_for_group && xnb_active)
         {
           MPI_Status status;
           int        cancelled;
@@ -1261,26 +1376,27 @@ int MPI_Request_free( MPI_Request* request )
    */
   if (*request != MPI_REQUEST_NULL || orig_req_null)
   {
-    if (event_gen_active)
-    {
-      SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Request_free(request);
-    if (event_gen_active)
-    {
-      SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
   }
 
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -1297,16 +1413,23 @@ int MPI_Request_free( MPI_Request* request )
 int MPI_Cancel( MPI_Request* request )
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
-  int       return_val;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_P2P);
+  int                 return_val;
   scorep_mpi_request* req;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL],
-                              ( intptr_t )PMPI_Cancel);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
+    }
   }
 
   /* Mark request as cancelable and check for successful cancellation
@@ -1321,16 +1444,10 @@ int MPI_Cancel( MPI_Request* request )
   if (req)
     req->flags |= SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL;
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Cancel(request);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
-
+  SCOREP_EXIT_WRAPPED_REGION();
+    
   #if !defined( SCOREP_MPI_NO_HOOKS )
   if ( SCOREP_IS_MPI_HOOKS_ON )
    	  SCOREP_Hooks_Post_MPI_Cancel(req);
@@ -1338,12 +1455,19 @@ int MPI_Cancel( MPI_Request* request )
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif

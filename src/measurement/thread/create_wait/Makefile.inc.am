@@ -6,7 +6,7 @@
 ## Copyright (c) 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -25,7 +25,7 @@
 INC_DIR_THREAD_CREATE_WAIT = $(INC_ROOT)src/measurement/thread/create_wait/include_extern
 INC_DIR_THREAD_CREATE_WAIT_INTERN = $(INC_ROOT)src/measurement/thread/create_wait/include_intern
 
-if HAVE_PTHREAD
+if HAVE_PTHREAD_SUPPORT
 
 lib_LTLIBRARIES += libscorep_thread_create_wait_pthread.la
 libscorep_thread_create_wait_pthread_la_CFLAGS = \
@@ -51,7 +51,7 @@ libscorep_thread_create_wait_pthread_la_LIBADD = \
 libscorep_thread_create_wait_pthread_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-endif HAVE_PTHREAD
+endif HAVE_PTHREAD_SUPPORT
 
 
 noinst_LTLIBRARIES += libscorep_thread_create_wait_generic.la

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -76,6 +76,13 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
                                     const char*      name,
                                     uint32_t         numberOfMembers,
                                     const uint64_t*  members );
+
+
+SCOREP_GroupHandle
+SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
+                                          const char*      name,
+                                          uint32_t         numberOfMembers,
+                                          const uint32_t*  members );
 
 
 void

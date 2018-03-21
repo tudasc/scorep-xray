@@ -12,38 +12,48 @@ ${guard:start}
 ${proto:c}
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
-  int return_val, sz;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
+  int       return_val;
+  int       sz;
 
   if (event_gen_active)
     {
       SCOREP_MPI_EVENT_GEN_OFF();
-      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
-                                ( intptr_t )P${name});
+      if (event_gen_active_for_group)
+        {
+          SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
+      else
+        {
+          SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
     }
 
   PMPI_Type_size(datatype, &sz);
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = ${call:pmpi};
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
+
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
                        tag, dest, (uint64_t)count*sz, datatype, comm,
                        scorep_mpi_get_request_id());
   if (event_gen_active)
     {
-      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+      if (event_gen_active_for_group)
+        {
+          SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
+      else
+        {
+          SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+        }
       SCOREP_MPI_EVENT_GEN_ON();
     }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 ${guard:end}

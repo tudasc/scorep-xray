@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -82,30 +82,44 @@ MPI_Abort( MPI_Comm comm,
            int      errorcode )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
     UTILS_WARNING( "Explicit MPI_Abort call abandoning the SCOREP measurement." );
     SCOREP_SetAbortFlag();
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ],
-                                   ( intptr_t )PMPI_Abort );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Abort( comm, errorcode );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Abort( comm, errorcode );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Abort( comm, errorcode );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
@@ -125,27 +139,41 @@ int
 MPI_Grequest_complete( MPI_Request request )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ],
-                                   ( intptr_t )PMPI_Grequest_complete );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Grequest_complete( request );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Grequest_complete( request );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Grequest_complete( request );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
@@ -166,31 +194,44 @@ int
 MPI_Get_count( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, int* count )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ],
-                                   ( intptr_t )PMPI_Get_count );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Get_count( status, datatype, count );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Get_count( status, datatype, count );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Get_count( status, datatype, count );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
 /**
  * Measurement wrapper for MPI_Get_elements
@@ -205,31 +246,44 @@ int
 MPI_Get_elements( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, int* count )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ],
-                                   ( intptr_t )PMPI_Get_elements );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Get_elements( status, datatype, count );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Get_elements( status, datatype, count );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Get_elements( status, datatype, count );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_GET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements_x )
 /**
  * Measurement wrapper for MPI_Get_elements_x
@@ -244,31 +298,44 @@ int
 MPI_Get_elements_x( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, MPI_Count* count )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ],
-                                   ( intptr_t )PMPI_Get_elements_x );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Get_elements_x( status, datatype, count );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Get_elements_x( status, datatype, count );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Get_elements_x( status, datatype, count );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
 /**
  * Measurement wrapper for MPI_Get_processor_name
@@ -283,31 +350,44 @@ int
 MPI_Get_processor_name( char* name, int* resultlen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ],
-                                   ( intptr_t )PMPI_Get_processor_name );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Get_processor_name( name, resultlen );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Get_processor_name( name, resultlen );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Get_processor_name( name, resultlen );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_GREQUEST_START ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_start )
 /**
  * Measurement wrapper for MPI_Grequest_start
@@ -322,31 +402,44 @@ int
 MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_function* free_fn, MPI_Grequest_cancel_function* cancel_fn, void* extra_state, MPI_Request* request )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ],
-                                   ( intptr_t )PMPI_Grequest_start );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_STATUS_SET_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_cancelled )
 /**
  * Measurement wrapper for MPI_Status_set_cancelled
@@ -361,31 +454,44 @@ int
 MPI_Status_set_cancelled( MPI_Status* status, int flag )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ],
-                                   ( intptr_t )PMPI_Status_set_cancelled );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Status_set_cancelled( status, flag );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Status_set_cancelled( status, flag );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Status_set_cancelled( status, flag );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
 /**
  * Measurement wrapper for MPI_Status_set_elements
@@ -400,31 +506,44 @@ int
 MPI_Status_set_elements( MPI_Status* status, MPI_Datatype datatype, int count )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ],
-                                   ( intptr_t )PMPI_Status_set_elements );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Status_set_elements( status, datatype, count );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Status_set_elements( status, datatype, count );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Status_set_elements( status, datatype, count );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements_x )
 /**
  * Measurement wrapper for MPI_Status_set_elements_x
@@ -439,31 +558,44 @@ int
 MPI_Status_set_elements_x( MPI_Status* status, MPI_Datatype datatype, MPI_Count count )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT );
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ],
-                                   ( intptr_t )PMPI_Status_set_elements_x );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
+        }
+    }
 
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Status_set_elements_x( status, datatype, count );
-        SCOREP_EXIT_WRAPPED_REGION();
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Status_set_elements_x( status, datatype, count );
+    SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Status_set_elements_x( status, datatype, count );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
-
 
 /**
  * @}

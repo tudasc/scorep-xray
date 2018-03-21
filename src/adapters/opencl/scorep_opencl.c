@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -21,6 +21,7 @@
 
 #include <config.h>
 
+#include "scorep_opencl_libwrap.h"
 #include "scorep_opencl.h"
 #include "scorep_opencl_config.h"
 
@@ -29,10 +30,6 @@
 #include <SCOREP_Timer_Ticks.h>
 
 #include <jenkins_hash.h>
-
-#ifdef SCOREP_LIBWRAP_SHARED
-#include "scorep_opencl_function_pointers.h"
-#endif
 
 #include <string.h>
 #include <inttypes.h>
@@ -81,12 +78,25 @@ static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
  *
  * @param func OpenCL API function call
  */
-#ifdef SCOREP_LIBWRAP_STATIC
-#define OPENCL_CALL( func, args ) __real_##func args
-#elif SCOREP_LIBWRAP_SHARED
-#define OPENCL_CALL( func, args ) scorep_opencl_funcptr_##func args
-#endif
+#define OPENCL_CALL( func, args ) SCOREP_LIBWRAP_FUNC_CALL( func, args )
 
+/*
+ * Checks if OpenCL API call returns successful and respectively prints
+ * the error.
+ *
+ * @param func OpenCL function (returning an error code of type cl_int)
+ */
+#define SCOREP_OPENCL_CALL( func, args )                                    \
+    do                                                                      \
+    {                                                                       \
+        cl_int err = OPENCL_CALL( func, args );                             \
+        if ( err != CL_SUCCESS )                                            \
+        {                                                                   \
+            UTILS_WARNING( "[OpenCL] Call to '%s' failed with error '%s'",  \
+                           #func, scorep_opencl_get_error_string( err ) );  \
+        }                                                                   \
+    }                                                                       \
+    while ( 0 )
 
 /*
  * OpenCL version specifics
@@ -179,9 +189,9 @@ opencl_create_comm_group( void );
 /* ****************************************************************** */
 
 /** Flag indicating whether OpenCL wrapper is initialized */
-static bool opencl_wrap_initialized = false;
+static bool opencl_initialized = false;
 /** Flag indicating whether OpenCL wrapper is finalized */
-static bool opencl_wrap_finalized = false;
+static bool opencl_finalized = false;
 
 
 /** list of Score-P OpenCL command queues */
@@ -197,9 +207,9 @@ static size_t queue_max_buffer_entries = 0;
  * multiple threads.
  */
 void
-scorep_opencl_wrap_init( void )
+scorep_opencl_init( void )
 {
-    if ( !opencl_wrap_initialized )
+    if ( !opencl_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Initialize wrapper" );
 
@@ -251,7 +261,7 @@ scorep_opencl_wrap_init( void )
         queue_max_buffer_entries = scorep_opencl_queue_size
                                    / sizeof( scorep_opencl_buffer_entry );
 
-        opencl_wrap_initialized = true;
+        opencl_initialized = true;
     }
 }
 
@@ -260,9 +270,9 @@ scorep_opencl_wrap_init( void )
  * Finalize the OpenCL adapter.
  */
 void
-scorep_opencl_wrap_finalize( void )
+scorep_opencl_finalize( void )
 {
-    if ( !opencl_wrap_finalized && opencl_wrap_initialized )
+    if ( !opencl_finalized && opencl_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Finalize wrapper" );
 
@@ -329,7 +339,7 @@ scorep_opencl_wrap_finalize( void )
             location_list = NULL;
         }
 
-        opencl_wrap_finalized = true;
+        opencl_finalized = true;
 
         SCOREP_MutexDestroy( &opencl_mutex );
     }

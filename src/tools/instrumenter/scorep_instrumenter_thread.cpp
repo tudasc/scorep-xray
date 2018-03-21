@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2017,
@@ -35,6 +35,8 @@
 #include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>
@@ -122,12 +124,15 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
     }
 #endif
 #if SCOREP_BACKEND_COMPILER_IBM
+    std::string omp_string = "omp";
     if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 6 ) == "-qsmp=" ) &&
-         ( find_string_in_list( current.substr( 6 ), "omp", ':' )
-           != std::string::npos ) )
+         ( current.substr( 0, 6 ) == "-qsmp=" ) )
     {
-        return true;
+        std::string sub_string = current.substr( 6 );
+        if ( find_string_in_list( sub_string, omp_string, ':' ) != std::string::npos )
+        {
+            return true;
+        }
     }
 #endif
 #if SCOREP_BACKEND_COMPILER_FUJITSU
@@ -175,10 +180,10 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     m_pthread_cflag( SCOREP_BACKEND_PTHREAD_CFLAGS ),
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {
-    m_has_ipa = false;
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD );
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-#if !SCOREP_BACKEND_HAVE_PTHREAD
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
+#if !SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
     unsupported();
 #endif
 }
@@ -209,15 +214,6 @@ SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
         m_selector->select( this, false );
         return true;
     }
-#if SCOREP_BACKEND_COMPILER_IBM
-    if ( current == "-O4" ||
-         current == "-O5" ||
-         current == "-qipa" ||
-         ( current.substr( 0, 6 ) == "-qipa=" ) )
-    {
-        m_has_ipa = true;
-    }
-#endif  /* SCOREP_BACKEND_COMPILER_IBM */
 
     return false;
 }
@@ -232,23 +228,12 @@ SCOREP_Instrumenter_Pthread::setConfigValue( const std::string& key,
     }
 }
 
-void
-SCOREP_Instrumenter_Pthread::checkDependencies( void )
+bool
+SCOREP_Instrumenter_Pthread::is_pthread_library( const std::string& libraryName )
 {
-    SCOREP_Instrumenter_Paradigm::checkDependencies();
-
-#if SCOREP_BACKEND_COMPILER_IBM
-    if ( m_has_ipa )
-    {
-        std::cerr << "ERROR: Pthread support does not work in combination with\n"
-                  << "       interprocedural analysis (-qipa compiler flag).\n"
-                  << "       Disable interprocedural analysis.\n"
-                  << "       You must not disable pthread support in Score-P\n"
-                  << "       if your application uses pthreads.\n"
-                  << std::endl;
-        exit( EXIT_FAILURE );
-    }
-#endif  /* SCOREP_BACKEND_COMPILER_IBM */
+    return check_lib_name( libraryName, std::string( "pthread" ) ) ||
+           check_lib_name( libraryName, std::string( "pthreads" ) ) ||
+           check_lib_name( libraryName, std::string( "lthread" ) );
 }
 
 /* *****************************************************************************

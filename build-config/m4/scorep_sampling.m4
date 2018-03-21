@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2016,
+## Copyright (c) 2009-2012, 2014-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -36,13 +36,11 @@ AC_DEFUN([SCOREP_SAMPLING], [
 # check whether the compiler provides support for thread-local storage
 # (TLS), the sampling check uses scorep_have_thread_local_storage to
 # determine whether TLS is supported or not
-AC_REQUIRE([SCOREP_THREAD_LOCAL_STORAGE])
+AC_REQUIRE([SCOREP_CHECK_THREAD_LOCAL_STORAGE])
 # Check whether we can use PAPI as interrupt generator
 AC_REQUIRE([_SCOREP_METRICS_CHECK_LIBPAPI])
 # Check whether we can use perf as interrupt generator
 AC_REQUIRE([_SCOREP_METRICS_CHECK_PERF])
-# needed to pass the bind-now flag to the linker
-AC_REQUIRE([AFS_GNU_LINKER])
 
 #check sampling prerequisites
 AC_LANG_PUSH([C])
@@ -94,22 +92,42 @@ scorep_unwinding_support=yes
 scorep_unwinding_summary_reason=
 AS_IF([test "x${scorep_have_libunwind}" != "xyes"],
       [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing libunwind support"])
+       scorep_unwinding_summary_reason+=", missing libunwind support"])
 
 AS_IF([test "x${scorep_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing TLS support"])
+       scorep_unwinding_summary_reason+=", missing TLS support"])
 
-AS_IF([test "x${afs_have_gnu_linker}" != "xyes"],
-      [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing GNU linker"])
+# Covers: GNU, Intel, IBM, Cray, Clang
+scorep_return_address=0
+AS_IF([test "x${scorep_unwinding_support}" = "xyes"],
+      [AC_MSG_CHECKING([for __builtin_extract_return_addr/__builtin_return_address])
+       AC_LINK_IFELSE([AC_LANG_PROGRAM([], [__builtin_extract_return_addr( __builtin_return_address( 0 ) );])],
+                      [AC_MSG_RESULT([yes])
+                       scorep_return_address="__builtin_extract_return_addr( __builtin_return_address( 0 ) )"],
+                      [AC_MSG_RESULT([no])
+                       AC_MSG_CHECKING([for __builtin_return_address])
+                       AC_LINK_IFELSE([AC_LANG_PROGRAM([], [__builtin_return_address( 0 );])],
+                                      [AC_MSG_RESULT([yes])
+                                       scorep_return_address="__builtin_return_address( 0 )"],
+                                      [AC_MSG_RESULT([no])])])])
+AC_DEFINE_UNQUOTED([SCOREP_RETURN_ADDRESS()],
+                   [$scorep_return_address],
+                   [Provides the return address from the current function.])
+AS_IF([test "x${scorep_return_address}" != x0], [
+    AC_DEFINE([HAVE_RETURN_ADDRESS], [1], [Defined if SCOREP_RETURN_ADDRESS() is functional.])
+])
 
-AS_IF([test "x${build_cpu}" != "xx86_64"],
-      [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }unsupported CPU architecture"])
+AS_IF([test "x${scorep_unwinding_support}" = "xyes"],
+      [save_CPPFLAGS=$CPPFLAGS
+       CPPFLAGS="$CPPFLAGS ${with_libunwind_cppflags}"
+       AC_CHECK_DECLS([unw_init_local_signal],
+                      [], [], [[#define UNW_LOCAL_ONLY
+#include <libunwind.h>
+]])
+       CPPFLAGS=$save_CPPFLAGS])
 
-scorep_unwinding_summary="${scorep_unwinding_support}${scorep_unwinding_summary_reason:+, }${scorep_unwinding_summary_reason}"
-AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_summary}])
+AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_support}${scorep_unwinding_summary_reason}])
 
 # generating output
 AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
@@ -117,9 +135,7 @@ AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
                     [Defined if unwinding support is available.],
                     [AC_SUBST([LIBUNWIND_CPPFLAGS], ["${with_libunwind_cppflags}"])
                      AC_SUBST([LIBUNWIND_LDFLAGS],  ["${with_libunwind_ldflags} ${with_libunwind_rpathflag}"])
-                     AC_SUBST([LIBUNWIND_LIBS],     ["${with_libunwind_libs}"])
-                     # shared case: we need to link all of our event libs with bind-now semantics
-                     AC_SUBST([SCOREP_UNWINDING_LDFLAGS], ["-Wl,-z,now"])])
+                     AC_SUBST([LIBUNWIND_LIBS],     ["${with_libunwind_libs}"])])
 
 AC_SCOREP_COND_HAVE([SAMPLING_SUPPORT],
                     [test "x${scorep_unwinding_support}" = "xyes" &&

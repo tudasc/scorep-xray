@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -26,6 +26,7 @@
 #include "scorep_memory_mgmt.h"
 #include "scorep_memory_attributes.h"
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Paradigms.h>
@@ -68,10 +69,13 @@ memory_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( scorep_memory_recording )
+    if ( scorep_memory_recording || SCOREP_IsUnwindingEnabled() )
     {
         register_memory_regions();
+    }
 
+    if ( scorep_memory_recording )
+    {
         SCOREP_AllocMetric_New( "Process memory usage", &scorep_memory_metric );
         scorep_memory_attributes_init();
     }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -39,25 +39,26 @@
     {                                                                                                                   \
         SCOREP_IN_MEASUREMENT_INCREMENT();                                                                              \
                                                                                                                         \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                                                             \
+        const int event_gen_active = SCOREP_SHMEM_IS_EVENT_GEN_ON;                                                      \
+                                                                                                                        \
+        if ( event_gen_active )                                                                                         \
         {                                                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                                               \
                                                                                                                         \
-            SCOREP_RmaWindowHandle window_handle                                                                        \
-                = scorep_shmem_get_pe_group( peStart, logPeStride, peSize );                                            \
-                                                                                                                        \
-            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                                               \
-                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );                                            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );                                             \
                                                                                                                         \
             SCOREP_RmaCollectiveBegin();                                                                                \
+        }                                                                                                               \
                                                                                                                         \
-            SCOREP_ENTER_WRAPPED_REGION();                                                                              \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nelems, peStart, logPeStride, peSize, pSync ) );  \
-            SCOREP_EXIT_WRAPPED_REGION();                                                                               \
+        SCOREP_ENTER_WRAPPED_REGION();                                                                                  \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCNAME, ( target, source, nelems, peStart, logPeStride, peSize, pSync ) );          \
+        SCOREP_EXIT_WRAPPED_REGION();                                                                                   \
                                                                                                                         \
+        if ( event_gen_active )                                                                                         \
+        {                                                                                                               \
             SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_ALLGATHER,                                                       \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,                      \
-                                     window_handle,                                                                     \
+                                     scorep_shmem_get_pe_group( peStart, logPeStride, peSize ),                         \
                                      NO_PROCESSING_ELEMENT,                                                             \
                                      ( peSize - 1 ) * nelems * NBYTES,                                                  \
                                      ( peSize - 1 ) * nelems * NBYTES );                                                \
@@ -65,10 +66,6 @@
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                                                     \
                                                                                                                         \
             SCOREP_SHMEM_EVENT_GEN_ON();                                                                                \
-        }                                                                                                               \
-        else                                                                                                            \
-        {                                                                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nelems, peStart, logPeStride, peSize, pSync ) );  \
         }                                                                                                               \
                                                                                                                         \
         SCOREP_IN_MEASUREMENT_DECREMENT();                                                                              \

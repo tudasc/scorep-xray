@@ -1,0 +1,172 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+. "@abs_builddir@/common.sh"
+
+test_init "Score-P $lwi_name arguments"
+
+rundir=test_libwrap_init_arguments
+mkdir -p "$rundir"
+rundir="$(cd "$rundir"; pwd)"
+
+cleanup()
+{
+    cd "$execdir"
+    rm -rf "$rundir"
+}
+cleanup
+trap cleanup 0
+
+# we change to this directory for the test, to remove everything at once once we are done
+mkdir -p "$rundir"
+cd "$rundir"
+
+
+test_expect_success "libtool exists"   "test -x $LIBTOOL"
+test_expect_success "$lwi_name exists" "test -x $lwi"
+
+test_expect_success_all "no arguments" \
+    "! $lwi"
+
+test_expect_success_all "--help" \
+    "$lwi --help"                \
+    "$lwi -h"
+
+test_expect_success_all "not enough arguments"      \
+    "! $lwi --name wrapper"                         \
+    "! $lwi --name wrapper workspace1"              \
+    "! $lwi --name wrapper --prefix dir workspace2" \
+    "! $lwi --name wrapper --prefix dir -x"
+
+# Note: A new working directory for each test is required since the tool aborts when finding
+#       and already Makefile
+
+test_expect_success_all "invalid wrapper names"     \
+    "! $lwi --name foo-wrapper invalid-workspace-1" \
+    "! $lwi --name -wrapper invalid-workspace-2" \
+    "! $lwi --name 0foo invalid-workspace-3" \
+    "! $lwi --name foo- invalid-workspace-4" \
+    "! $lwi --name --help invalid-workspace-5" \
+    "! $lwi --name --version invalid-workspace-6" \
+    "! $lwi --name 'foo bar' invalid-workspace-7"
+
+test_expect_success_all "wrong arguments"                           \
+    "! $lwi workspace --name wrapper --prefix dir -x c workspace4"  \
+    "! $lwi --name wrapper workspace --prefix dir -x c workspace5"  \
+    "! $lwi --name wrapper --prefix dir workspace -x c workspace6"  \
+    "! $lwi --name --prefix dir -x c workspace7"                    \
+    "! $lwi --name wrapper --prefix -x c workspace8"                \
+    "! $lwi --name wrapper --prefix dir -x c $lwi # invalid working dir. regular file" \
+    "! $lwi --name wrapper --prefix dir -x c --backend a workspace9 # invalid backend" \
+    "! $lwi --name wrapper --prefix dir -x c --ldflags='-lm' workspace9b # invalid ldflags" \
+    "! $lwi --name wrapper --prefix dir -x=c --ldflags='-lm' workspace9c # = after one-dash args"
+
+test_expect_success_all "correct arguments"                                                   \
+    "$lwi --name wrapper --prefix dir -x c workspace10"                                       \
+    "$lwi --name wrapper --prefix dir -x c --backend vanilla workspace11"                     \
+    "! $mpi_support   || $lwi --name wrapper --prefix dir -x c --backend mpi   workspace12"   \
+    "! $shmem_support || $lwi --name wrapper --prefix dir -x c --backend shmem workspace13"   \
+    "  $mpi_support   || ! $lwi --name wrapper --prefix dir -x c --backend mpi   workspace20" \
+    "  $shmem_support || ! $lwi --name wrapper --prefix dir -x c --backend shmem workspace21"
+
+test_expect_success_all "-x works correctly"              \
+    "$lwi --name wrapper --prefix dir -x c workspace14"   \
+    "$lwi --name wrapper --prefix dir -x c++ workspace15" \
+    "! $lwi --name wrapper --prefix dir -x a workspace16"
+
+
+test_expect_success_all "files have been created correctly for -x c --backend vanilla" \
+    "$lwi --name wrapper --prefix dir -x c workspace17" \
+    "test -d workspace17"                               \
+    "test -f workspace17/libwrap.h"                     \
+    "test -f workspace17/main.c"                        \
+    "test -f workspace17/Makefile"                      \
+    "test -f workspace17/README.md"                     \
+    "test -f workspace17/wrapper.filter"
+
+test_expect_success_all "files have been created correctly for -x c++ --backend vanilla" \
+    "$lwi --name wrapper --prefix dir -x c++ workspace18" \
+    "test -d workspace18"                                 \
+    "test -f workspace18/libwrap.h"                       \
+    "test -f workspace18/main.cc"                         \
+    "test -f workspace18/Makefile"                        \
+    "test -f workspace18/README.md"                       \
+    "test -f workspace18/wrapper.filter"
+
+lw_name=wrapper
+lw_prefix=workspace19/dir
+cppflags="-Wall -Wextra -I/usr/include -Idir/include"
+ldflags="-L/usr/lib -L/lib"
+libs="-lm -lc"
+test_expect_success_all "Makefile and filter is correctly created" \
+    "mkdir -p dir/include" \
+    "$lwi --name $lw_name --prefix $lw_prefix -x c --cppflags \"$cppflags\" --ldflags \"$ldflags\" --libs \"$libs\" workspace19" \
+    "test_grep -q \"LW_NAME\s*=\s*$lw_name\"             workspace19/Makefile"                \
+    "test_grep -q \"LW_PREFIX\s*=\s*$rundir/$lw_prefix\" workspace19/Makefile"                \
+    "test_grep -q \"CPPFLAGS\s*=\s*$cppflags\"           workspace19/Makefile"                \
+    "test_grep -q \"LDFLAGS\s*=\s*$ldflags\"             workspace19/Makefile"                \
+    "test_grep -q \"LIBS\s*=\s*$libs\"                   workspace19/Makefile"                \
+    "test_grep -q \"SCOREP_CC\s*=\s*.\"                  workspace19/Makefile # is not empty" \
+    "test_grep -q \"SCOREP_CC_WITHOUT_FLAGS\s*=\s*.\"    workspace19/Makefile # is not empty" \
+    "test_grep -q \"LIBTOOL\s*=\s*.\"                    workspace19/Makefile # is not empty" \
+    "test_grep -q \"INSTALL\s*=\s*.\"                    workspace19/Makefile # is not empty" \
+    "test_grep -q \"LW_GEN\s*=\s*.\"                     workspace19/Makefile # is not empty" \
+    "test_grep -q \"LW_LANGUAGE\s*=\s*c\"                workspace19/Makefile"                \
+    "test_grep -q \"LW_LIBLIST\s*=\s*\"                  workspace19/Makefile # exists"       \
+    "test_grep -q \"SCOREP_CPPFLAGS\s*=\s*\"             workspace19/Makefile # exists"       \
+    "test_grep -q \"INCLUDE /usr/include\"         workspace19/$lw_name.filter"               \
+    "test_grep -q \"INCLUDE $rundir/dir/include\"  workspace19/$lw_name.filter"
+
+lw_prefix=workspace22/dir
+test_expect_success_all "Makefile and filter is correctly created (with = arguments)" \
+    "$lwi --name=$lw_name --prefix=$lw_prefix -x c --cppflags=\"$cppflags\" --ldflags=\"$ldflags\" --libs=\"$libs\" workspace22" \
+    "test_grep -q \"LW_NAME\s*=\s*$lw_name\"             workspace22/Makefile"                \
+    "test_grep -q \"LW_PREFIX\s*=\s*$rundir/$lw_prefix\" workspace22/Makefile"                \
+    "test_grep -q \"CPPFLAGS\s*=\s*$cppflags\"           workspace22/Makefile"                \
+    "test_grep -q \"LDFLAGS\s*=\s*$ldflags\"             workspace22/Makefile"                \
+    "test_grep -q \"LIBS\s*=\s*$libs\"                   workspace22/Makefile"                \
+    "test_grep -q \"SCOREP_CC\s*=\s*.\"                  workspace22/Makefile # is not empty" \
+    "test_grep -q \"SCOREP_CC_WITHOUT_FLAGS\s*=\s*.\"    workspace22/Makefile # is not empty" \
+    "test_grep -q \"LIBTOOL\s*=\s*.\"                    workspace22/Makefile # is not empty" \
+    "test_grep -q \"INSTALL\s*=\s*.\"                    workspace22/Makefile # is not empty" \
+    "test_grep -q \"LW_GEN\s*=\s*.\"                     workspace22/Makefile # is not empty" \
+    "test_grep -q \"LW_LANGUAGE\s*=\s*c\"                workspace22/Makefile"                \
+    "test_grep -q \"LW_LIBLIST\s*=\s*\"                  workspace22/Makefile # exists"       \
+    "test_grep -q \"SCOREP_CPPFLAGS\s*=\s*\"             workspace22/Makefile # exists"       \
+    "test_grep -q \"INCLUDE /usr/include\"         workspace22/$lw_name.filter"               \
+    "test_grep -q \"INCLUDE $rundir/dir/include\"  workspace22/$lw_name.filter"
+
+test_expect_success_all "--update"                                    \
+    "  $lwi --name a --prefix a -x c workspace23"                     \
+    "! $lwi --name a --prefix a -x c workspace23"                     \
+    "cd workspace23"                                                  \
+    "echo 'emptyfile' > libwrap.h"                                    \
+    "echo 'emptyfile' > main.c"                                       \
+    "echo 'emptyfile' > a.filter"                                     \
+    "echo 'emptyfile' > README.md"                                    \
+    "$lwi --update --ldflags='newldflags' --name a --prefix a -x c ." \
+    "test_grep -q emptyfile  libwrap.h"                               \
+    "test_grep -q emptyfile  main.c"                                  \
+    "test_grep -q newldflags Makefile"                                \
+    "test_grep -q emptyfile  a.filter"                                \
+    "test_grep -q emptyfile  README.md"                               \
+    ""                                                                \
+    "rm libwrap.h main.c Makefile a.filter README.md"                 \
+    "$lwi --update --name a --prefix a -x c ."                        \
+    "test -f libwrap.h"                                               \
+    "test -f main.c"                                                  \
+    "test -f Makefile"                                                \
+    "test -f README.md"                                               \
+    "test -f a.filter"
+
+test_done

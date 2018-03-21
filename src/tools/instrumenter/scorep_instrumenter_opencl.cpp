@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -40,6 +40,7 @@
 SCOREP_Instrumenter_OpenCLAdapter::SCOREP_Instrumenter_OpenCLAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_OPENCL, "opencl" )
 {
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
 #if !HAVE_BACKEND( OPENCL_SUPPORT )
     unsupported();
 #endif
@@ -50,8 +51,15 @@ SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
 {
     std::string flags;
 
-    // Per default, the scorep-config returns OpenCL libs.
-    if ( !isEnabled() )
+    if ( isEnabled() )
+    {
+        flags += " --" + m_name;
+        if ( m_wrapmode.size() )
+        {
+            flags += ":" + m_wrapmode;
+        }
+    }
+    else
     {
         flags += " --no" + m_name;
     }
@@ -62,7 +70,8 @@ SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLin
 void
 SCOREP_Instrumenter_OpenCLAdapter::printHelp( void )
 {
-    std::cout << "  --opencl        Enables OpenCL instrumentation.\n"
+    std::cout << "  --opencl[:<wrap-mode>]\n"
+              << "                  Enables OpenCL instrumentation.\n"
               << "  --noopencl      Disables OpenCL instrumentation."
               << std::endl;
 }
@@ -73,7 +82,34 @@ SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
     if ( arg == "--opencl" )
     {
         m_usage = enabled;
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+        // linktime is the default
+        m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
+#endif
         return true;
+    }
+    else if ( arg.substr( 0, 9 ) == "--opencl:" )
+    {
+        m_usage    = enabled;
+        m_wrapmode = arg.substr( 9 );
+
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+        if ( m_wrapmode == "linktime" )
+        {
+            m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
+            return true;
+        }
+#endif
+
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        if ( m_wrapmode == "runtime" )
+        {
+            return true;
+        }
+#endif
+
+        std::cerr << "ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
+        exit( EXIT_FAILURE );
     }
     if ( arg == "--noopencl" )
     {
@@ -102,4 +138,16 @@ SCOREP_Instrumenter_OpenCLAdapter::checkCommand( const std::string& current,
         return false;
     }
     return false;
+}
+
+bool
+SCOREP_Instrumenter_OpenCLAdapter::isInterpositionLibrary( const std::string& libraryName )
+{
+    return is_opencl_library( libraryName );
+}
+
+bool
+SCOREP_Instrumenter_OpenCLAdapter::is_opencl_library( const std::string& libraryName )
+{
+    return check_lib_name( libraryName, "OpenCL" );
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -11,16 +11,14 @@
 
 #include <config.h>
 
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <signal.h>
 
-#include <SCOREP_Definitions.h>
 #include <SCOREP_InMeasurement.h>
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
-
 
 #define rot( x, k ) ( ( ( x ) << ( k ) ) | ( ( x ) >> ( 32 - ( k ) ) ) )
 #define mix( a, b, c ) \
@@ -33,36 +31,287 @@
         c -= b;  c ^= rot( b, 4 );  b += a; \
     }
 
+static SCOREP_RegionHandle wrapped0_region;
+static SCOREP_RegionHandle wrapped1_region;
+static SCOREP_RegionHandle user0_region;
+static SCOREP_RegionHandle user1_region;
+static unsigned            active_wrapped;
+
+#if HAVE( SAMPLING_SUPPORT )
 
 static SCOREP_InterruptGeneratorHandle raise_irq_handle;
 
 static void
-handler_SIGUSR1( int sig )
+handler_SIGUSR1( int        signalNumber,
+                 siginfo_t* signalInfo,
+                 void*      contextPtr )
 {
-    ( void )sig;
+    ( void )signalNumber;
+    ( void )signalInfo;
+    bool outside = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     SCOREP_ENTER_SIGNAL_CONTEXT();
-    SCOREP_Sample( raise_irq_handle );
+
+    if ( outside )
+    {
+        SCOREP_Sample( raise_irq_handle, contextPtr );
+    }
+
     SCOREP_EXIT_SIGNAL_CONTEXT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+#else
+
+#define raise( signal ) do { } while ( 0 )
+
+#endif
+
+size_t
+wrapped0_internal( const char* arg,
+                   size_t      len,
+                   uint32_t*   a,
+                   uint32_t*   b,
+                   uint32_t*   c,
+                   size_t      i )
+{
+    *a += arg[ i++ % len ];
+    *b += arg[ i++ % len ];
+    *c += arg[ i++ % len ];
+
+    raise( SIGUSR1 );
+
+    mix( ( *a ), ( *b ), ( *c ) );
+
+    return i;
+}
+
+size_t
+pwrapped0( const char* arg,
+           size_t      len,
+           uint32_t*   a,
+           uint32_t*   b,
+           uint32_t*   c,
+           size_t      i )
+{
+    *a += arg[ i++ % len ];
+    *b += arg[ i++ % len ];
+    *c += arg[ i++ % len ];
+
+    raise( SIGUSR1 );
+
+    mix( ( *a ), ( *b ), ( *c ) );
+
+    i = active_wrapped & 4 ? wrapped0_internal( arg, len, a, b, c, i ) : i;
+
+    raise( SIGUSR1 );
+
+    return i;
+}
+
+size_t
+wrapped0( const char* arg,
+          size_t      len,
+          uint32_t*   a,
+          uint32_t*   b,
+          uint32_t*   c,
+          size_t      i )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( active_wrapped & 1 )
+    {
+        SCOREP_EnterWrappedRegion( wrapped0_region );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( wrapped0_region );
+    }
+
+    SCOREP_ENTER_WRAPPED_REGION();
+    i = pwrapped0( arg, len, a, b, c, i );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( active_wrapped & 1 )
+    {
+        SCOREP_ExitRegion( wrapped0_region );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( wrapped0_region );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return i;
+}
+
+// simulates a MPI fortran wrapper
+size_t
+wrapped0_( const char* arg,
+           size_t      len,
+           uint32_t*   a,
+           uint32_t*   b,
+           uint32_t*   c,
+           size_t      i )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    i = wrapped0( arg, len, a, b, c, i );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return i;
+}
+
+size_t
+wrapped1_internal( const char* arg,
+                   size_t      len,
+                   uint32_t*   a,
+                   uint32_t*   b,
+                   uint32_t*   c,
+                   size_t      i )
+{
+    *a += arg[ i++ % len ];
+    *b += arg[ i++ % len ];
+    *c += arg[ i++ % len ];
+
+    raise( SIGUSR1 );
+
+    mix( ( *a ), ( *b ), ( *c ) );
+
+    i = ( active_wrapped & 2 ? wrapped0_ : wrapped0 )( arg, len, a, b, c, i );
+
+    raise( SIGUSR1 );
+
+    return i;
+}
+
+size_t
+wrapped1( const char* arg,
+          size_t      len,
+          uint32_t*   a,
+          uint32_t*   b,
+          uint32_t*   c,
+          size_t      i )
+{
+    *a += arg[ i++ % len ];
+    *b += arg[ i++ % len ];
+    *c += arg[ i++ % len ];
+
+    raise( SIGUSR1 );
+
+    mix( ( *a ), ( *b ), ( *c ) );
+
+    i = ( active_wrapped & 32 ? wrapped1_internal : active_wrapped & 2 ? wrapped0_ : wrapped0 )( arg, len, a, b, c, i );
+
+    raise( SIGUSR1 );
+
+    return i;
+}
+
+size_t
+__wrap_wrapped1( const char* arg,
+                 size_t      len,
+                 uint32_t*   a,
+                 uint32_t*   b,
+                 uint32_t*   c,
+                 size_t      i )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( active_wrapped & 8 )
+    {
+        SCOREP_EnterWrappedRegion( wrapped1_region );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( wrapped1_region );
+    }
+
+    SCOREP_ENTER_WRAPPED_REGION();
+    i = wrapped1( arg, len, a, b, c, i );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( active_wrapped & 8 )
+    {
+        SCOREP_ExitRegion( wrapped1_region );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( wrapped1_region );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return i;
+}
+
+// simulates a MPI fortran wrapper
+size_t
+__wrap_wrapped1_( const char* arg,
+                  size_t      len,
+                  uint32_t*   a,
+                  uint32_t*   b,
+                  uint32_t*   c,
+                  size_t      i )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    i = __wrap_wrapped1( arg, len, a, b, c, i );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return i;
 }
 
 int
 main( int ac, char* av[] )
 {
-    SCOREP_InterruptGeneratorHandle manually_irq_handle =
-        SCOREP_Definitions_NewInterruptGenerator(
-            "manually",
-            SCOREP_INTERRUPT_GENERATOR_MODE_COUNT,
-            SCOREP_METRIC_BASE_DECIMAL,
-            0,
-            1 );
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    wrapped0_region = SCOREP_Definitions_NewRegion( "wrapped0",
+                                                    NULL,
+                                                    SCOREP_INVALID_SOURCE_FILE,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_PARADIGM_MEASUREMENT,
+                                                    SCOREP_REGION_WRAPPER );
+    wrapped1_region = SCOREP_Definitions_NewRegion( "wrapped1",
+                                                    NULL,
+                                                    SCOREP_INVALID_SOURCE_FILE,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_PARADIGM_MEASUREMENT,
+                                                    SCOREP_REGION_WRAPPER );
+    user0_region = SCOREP_Definitions_NewRegion( "user0",
+                                                 NULL,
+                                                 SCOREP_INVALID_SOURCE_FILE,
+                                                 SCOREP_INVALID_LINE_NO,
+                                                 SCOREP_INVALID_LINE_NO,
+                                                 SCOREP_PARADIGM_USER,
+                                                 SCOREP_REGION_USER );
+    user1_region = SCOREP_Definitions_NewRegion( "user1",
+                                                 NULL,
+                                                 SCOREP_INVALID_SOURCE_FILE,
+                                                 SCOREP_INVALID_LINE_NO,
+                                                 SCOREP_INVALID_LINE_NO,
+                                                 SCOREP_PARADIGM_USER,
+                                                 SCOREP_REGION_USER );
+
+#if HAVE( SAMPLING_SUPPORT )
+
     raise_irq_handle = SCOREP_Definitions_NewInterruptGenerator(
-        "raise",
+        "manually",
         SCOREP_INTERRUPT_GENERATOR_MODE_COUNT,
         SCOREP_METRIC_BASE_DECIMAL,
         0,
         1 );
 
-    signal( SIGUSR1, handler_SIGUSR1 );
+    struct sigaction signal_action;
+    memset( &signal_action, 0, sizeof( signal_action ) );
+    signal_action.sa_sigaction = handler_SIGUSR1;
+    signal_action.sa_flags     = SA_SIGINFO | SA_RESTART;
+    sigfillset( &signal_action.sa_mask );
+    if ( 0 != sigaction( SIGUSR1, &signal_action, NULL ) )
+    {
+        UTILS_WARNING( "Failed to install signal handler for sampling." );
+    }
+
+#endif
 
     uint32_t a = 0, b = 0, c = 0;
 
@@ -70,72 +319,60 @@ main( int ac, char* av[] )
     size_t      len = strlen( arg );
     size_t      i   = 0;
 
-    SCOREP_Sample( manually_irq_handle );
+    raise( SIGUSR1 );
+
+    for ( int active_regions = 0; active_regions < 3; active_regions++ )
+    {
+        if ( active_regions > 0 )
+        {
+            SCOREP_EnterRegion( user0_region );
+        }
+
+        raise( SIGUSR1 );
+
+        if ( active_regions > 1 )
+        {
+            SCOREP_EnterRegion( user1_region );
+        }
+
+        for ( active_wrapped = 0; active_wrapped < 8; active_wrapped++ )
+        {
+            raise( SIGUSR1 );
+
+            i = ( active_wrapped & 2 ? wrapped0_ : wrapped0 )( arg, len, &a, &b, &c, i );
+
+            raise( SIGUSR1 );
+        }
+
+        for ( active_wrapped = 0; active_wrapped < 64; active_wrapped++ )
+        {
+            raise( SIGUSR1 );
+
+            i = ( active_wrapped & 16 ? __wrap_wrapped1_ : __wrap_wrapped1 )( arg, len, &a, &b, &c, i );
+
+            raise( SIGUSR1 );
+        }
+
+        if ( active_regions > 1 )
+        {
+            SCOREP_ExitRegion( user1_region );
+        }
+
+        raise( SIGUSR1 );
+
+        if ( active_regions > 0 )
+        {
+            SCOREP_ExitRegion( user0_region );
+        }
+    }
 
     raise( SIGUSR1 );
 
-    a += arg[ i++ % len ];
-    b += arg[ i++ % len ];
-    c += arg[ i++ % len ];
-    mix( a, b, c );
-
-    raise( SIGUSR1 );
-
-    a += arg[ i++ % len ];
-    b += arg[ i++ % len ];
-    c += arg[ i++ % len ];
-    mix( a, b, c );
-
-    raise( SIGUSR1 );
-
-    a += arg[ i++ % len ];
-    b += arg[ i++ % len ];
-    c += arg[ i++ % len ];
-    mix( a, b, c );
-
-    raise( SIGUSR1 );
-
-    a += arg[ i++ % len ];
-    b += arg[ i++ % len ];
-    c += arg[ i++ % len ];
-    mix( a, b, c );
-
-    SCOREP_Sample( manually_irq_handle );
+    printf( "%u %u %u\n", a, b, c );
 
     return 0;
 }
 
 /*
  * expected:
- * TD REGION                               0  Name: "main" <> (Aka. "main" <>), Descr.: "" <>, Role: FUNCTION, Paradigm: SAMPLING, Flags: NONE, File: ".../test/services/unwinding/test_cct_8.c" <>, Begin: 50, End: 106
- * TD REGION                               1  Name: "raise" <> (Aka. "raise" <>), Descr.: "" <>, Role: FUNCTION, Paradigm: SAMPLING, Flags: NONE, File: UNDEFINED, Begin: 0, End: 0
- * TD CALLING_CONTEXT                      0  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:73" <0>, Parent: UNDEFINED
- * TD CALLING_CONTEXT                      1  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:75" <1>, Parent: UNDEFINED
- * TD CALLING_CONTEXT                      2  Region: "raise" <1>, Source code location: UNDEFINED, Parent: "main@test_cct_8.c:75" <1>
- * TD CALLING_CONTEXT                      3  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:82" <2>, Parent: UNDEFINED
- * TD CALLING_CONTEXT                      4  Region: "raise" <1>, Source code location: UNDEFINED, Parent: "main@test_cct_8.c:82" <3>
- * TD CALLING_CONTEXT                      5  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:89" <3>, Parent: UNDEFINED
- * TD CALLING_CONTEXT                      6  Region: "raise" <1>, Source code location: UNDEFINED, Parent: "main@test_cct_8.c:89" <5>
- * TD CALLING_CONTEXT                      7  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:96" <4>, Parent: UNDEFINED
- * TD CALLING_CONTEXT                      8  Region: "raise" <1>, Source code location: UNDEFINED, Parent: "main@test_cct_8.c:96" <7>
- * TD CALLING_CONTEXT                      9  Region: "main" <0>, Source code location: ".../test/services/unwinding/test_cct_8.c:103" <5>, Parent: UNDEFINED
- * TD INTERRUPT_GENERATOR                  0  Name: "manually" <>, Mode: COUNT, Base: DECIMAL, Exponent: 0, Period: 1
- * TD INTERRUPT_GENERATOR                  1  Name: "raise" <>, Mode: COUNT, Base: DECIMAL, Exponent: 0, Period: 1
- *
- * TE CALLING_CONTEXT_SAMPLE                     0     0  Calling Context: "main@test_cct_8.c:73" <0>, Unwind Distance: 2, Interrupt Generator: "manually" <0>
- * TE                                                     +"main@test_cct_8.c:73" <0>
- * TE CALLING_CONTEXT_SAMPLE                     0     1  Calling Context: "raise" <2>, Unwind Distance: 3, Interrupt Generator: "raise" <1>
- * TE                                                     +"raise" <2>
- * TE                                                     +"main@test_cct_8.c:75" <1>
- * TE CALLING_CONTEXT_SAMPLE                     0     2  Calling Context: "raise" <4>, Unwind Distance: 3, Interrupt Generator: "raise" <1>
- * TE                                                     +"raise" <4>
- * TE                                                     +"main@test_cct_8.c:82" <3>
- * TE CALLING_CONTEXT_SAMPLE                     0     3  Calling Context: "raise" <6>, Unwind Distance: 3, Interrupt Generator: "raise" <1>
- * TE                                                     +"raise" <6>
- * TE                                                     +"main@test_cct_8.c:89" <5>
- * TE CALLING_CONTEXT_SAMPLE                     0     4  Calling Context: "raise" <8>, Unwind Distance: 3, Interrupt Generator: "raise" <1>
- * TE                                                     +"raise" <8>
- * TE                                                     +"main@test_cct_8.c:96" <7>
- * TE CALLING_CONTEXT_SAMPLE                     0     5  Calling Context: "main@test_cct_8.c:103" <9>, Unwind Distance: 2, Interrupt Generator: "manually" <0>
- * TE                                                     +"main@test_cct_8.c:103" <9>
  */

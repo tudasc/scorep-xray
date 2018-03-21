@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -28,6 +28,8 @@
 #include "scorep_config_adapter.hpp"
 #include "scorep_config_thread.hpp"
 #include "scorep_config_utils.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>
@@ -63,7 +65,6 @@
  * *************************************************************************************/
 
 std::deque<SCOREP_Config_Adapter*> SCOREP_Config_Adapter::all;
-
 void
 SCOREP_Config_Adapter::init( void )
 {
@@ -91,6 +92,7 @@ SCOREP_Config_Adapter::init( void )
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "memory" ) );
 #endif
+    all.push_back( new SCOREP_Config_LibwrapAdapter() );
 }
 
 void
@@ -443,7 +445,6 @@ void
 SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "lib" + m_library + "_event" );
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
@@ -470,44 +471,89 @@ SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
  * *************************************************************************************/
 SCOREP_Config_OpenclAdapter::SCOREP_Config_OpenclAdapter()
     : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", true )
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+    , m_wrapmode( "linktime" )
+#elif HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+    , m_wrapmode( "runtime" )
+#endif
 {
+}
+
+void
+SCOREP_Config_OpenclAdapter::printHelp( void )
+{
+    std::cout << "   --opencl[:<wrapping mode>]|--noopencl\n"
+              << "              Specifies whether opencl instrumentation is used.\n"
+              << "              On default opencl instrumentation is enabled.\n"
+              << "              Available values for <wrap-mode> are:\n"
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+        << "               linktime (default)\n"
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        << "               runtime\n"
+#endif
+#elif HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        << "               runtime (default)\n"
+#endif
+    ;
+}
+
+bool
+SCOREP_Config_OpenclAdapter::checkArgument( const std::string& arg )
+{
+    if ( arg == "--opencl" )
+    {
+        m_is_enabled = true;
+        return true;
+    }
+
+    if ( arg.substr( 0, 9 ) == ( "--opencl:" ) )
+    {
+        m_is_enabled = true;
+        m_wrapmode   = arg.substr( 9 );
+
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+        if ( m_wrapmode == "linktime" )
+        {
+            return true;
+        }
+#endif
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        if ( m_wrapmode == "runtime" )
+        {
+            return true;
+        }
+#endif
+
+        std::cerr << "ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
+        exit( EXIT_FAILURE );
+
+        return true;
+    }
+
+    if ( arg == "--noopencl" )
+    {
+        m_is_enabled = false;
+        return true;
+    }
+    return false;
 }
 
 void
 SCOREP_Config_OpenclAdapter::addLibs( std::deque<std::string>&           libs,
                                       SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "lib" + m_library + "_event_static" );
-    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_static" );
+    libs.push_back( "lib" + m_library + "_event_" + m_wrapmode );
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_" + m_wrapmode );
 }
 
 void
 SCOREP_Config_OpenclAdapter::addLdFlags( std::string& ldflags,
-                                         bool         build_check,
+                                         bool         buildCheck,
                                          bool         nvcc )
 {
-    if ( build_check )
+    if ( m_wrapmode == "linktime" )
     {
-        extern std::string path_to_binary;
-        if ( nvcc )
-        {
-            ldflags += " -Wl,@" + path_to_binary + "../share/opencl.nvcc.wrap";
-        }
-        else
-        {
-            ldflags += " -Wl,@" + path_to_binary + "../share/opencl.wrap";
-        }
-    }
-    else
-    {
-        if ( nvcc )
-        {
-            ldflags += " -Wl,@" SCOREP_DATADIR "/opencl.nvcc.wrap";
-        }
-        else
-        {
-            ldflags += " -Wl,@" SCOREP_DATADIR "/opencl.wrap";
-        }
+        ldflags += get_ld_wrap_flag( "opencl", buildCheck, nvcc );
     }
 }
 
@@ -650,7 +696,7 @@ SCOREP_Config_MemoryAdapter::SCOREP_Config_MemoryAdapter()
 void
 SCOREP_Config_MemoryAdapter::printHelp( void )
 {
-    std::cout << "   --" << m_name << "=<memory-api-list>|--no" << m_name << "\n"
+    std::cout << "   --" << m_name << "=<api list>|--no" << m_name << "\n"
               << "              Specifies whether memory usage recording is used.\n"
               << "              On default memory usage recording is " \
               << ( m_is_enabled ? "enabled" : "disabled" ) << ".\n"
@@ -814,4 +860,127 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                    "-wrap,__nw__FUl,"
                    "-wrap,__nwa__FUl";
     }
+}
+
+/* **************************************************************************************
+ * Libwrap adapter
+ * *************************************************************************************/
+SCOREP_Config_LibwrapAdapter::SCOREP_Config_LibwrapAdapter()
+    : SCOREP_Config_Adapter( "libwrap", "", true )
+{
+}
+
+void
+SCOREP_Config_LibwrapAdapter::printHelp( void )
+{
+    std::cout << "   --libwrap=<wrapping mode>:<libwrap anchor-file>\n"
+              << "              Uses the specified library wrapper.\n";
+}
+
+bool
+SCOREP_Config_LibwrapAdapter::checkArgument( const std::string& arg )
+{
+    if ( arg.substr( 0, 10 ) == "--libwrap=" )
+    {
+        std::string libwrap = arg.substr( 10 );
+
+        std::string wrapmode;
+        if ( libwrap.compare( 0, 9, "linktime:" ) == 0 )
+        {
+            wrapmode = "linktime";
+            libwrap.erase( 0, 9 );
+        }
+        else if ( libwrap.compare( 0, 8, "runtime:" ) == 0 )
+        {
+            wrapmode = "runtime";
+            libwrap.erase( 0, 8 );
+        }
+        else
+        {
+            std::cerr << "ERROR: Missing libwrap mode in: '" << arg << "'" << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+        m_wrappers.insert( std::make_pair( wrapmode, libwrap ) );
+        m_is_enabled = true;
+        return true;
+    }
+    return false;
+}
+
+void
+SCOREP_Config_LibwrapAdapter::addLibs( std::deque<std::string>&           libs,
+                                       SCOREP_Config_LibraryDependencies& deps )
+{
+    for ( std::set<std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
+    {
+        const std::string& wrapmode = it->first;
+        const std::string& libwrap  = it->second;
+        /* we point to <prefix>/share/scorep/<name>.libwrap */
+        std::string libdir = join_path( extract_path( extract_path( extract_path( libwrap ) ) ), "lib" SCOREP_BACKEND_SUFFIX );
+        std::string name   = remove_extension( remove_path( libwrap ) );
+
+        std::deque<std::string> empty;
+        std::deque<std::string> dependency_las;
+        dependency_las.push_back( "libscorep_measurement" );
+
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+        if ( exists_file( join_path( libdir, "libscorep_libwrap_" + name + "_linktime.la" ) ) )
+        {
+            deps.insert( "libscorep_libwrap_" + name + "_linktime",
+                         "",
+                         libdir,
+                         empty, empty, empty,
+                         dependency_las );
+        }
+        else
+#endif
+        if ( wrapmode == "linktime" )
+        {
+            std::cerr << "ERROR: Library wrapping mode 'linktime' not supported by this installation." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        if ( exists_file( join_path( libdir, "libscorep_libwrap_" + name + "_runtime.la" ) ) )
+        {
+            deps.insert( "libscorep_libwrap_" + name + "_runtime",
+                         "",
+                         libdir,
+                         empty, empty, empty,
+                         dependency_las );
+        }
+        else
+#endif
+        if ( wrapmode == "runtime" )
+        {
+            std::cerr << "ERROR: Library wrapping mode 'runtime' not supported by this installation." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+        libs.push_back( "libscorep_libwrap_" + name + "_" + wrapmode );
+    }
+}
+
+void
+SCOREP_Config_LibwrapAdapter::addLdFlags( std::string& ldflags,
+                                          bool /* buildCheck */,
+                                          bool         nvcc )
+{
+    for ( std::set<std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
+    {
+        const std::string& wrapmode = it->first;
+        const std::string& libwrap  = it->second;
+
+        if ( wrapmode == "linktime" )
+        {
+            /* libwrap points to the .libwrap file */
+            ldflags += get_ld_wrap_flag( remove_extension( libwrap ), nvcc );
+        }
+    }
+}
+
+void
+SCOREP_Config_LibwrapAdapter::appendInitStructName( std::deque<std::string>& init_structs )
+{
 }

@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2016,
+dnl Copyright (c) 2009-2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -118,6 +118,8 @@ m4_include(../build-includes/compute-node.m4)
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
     [m4_include(../build-includes/login-node.m4)])
 
+adl_RECURSIVE_EVAL([${prefix}], [PREFIX])
+AC_SUBST([PREFIX])
 adl_RECURSIVE_EVAL([${includedir}], [INCLUDEDIR])
 AC_SUBST([INCLUDEDIR])
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
@@ -128,6 +130,10 @@ adl_RECURSIVE_EVAL([${libdir}${backend_suffix}/${PACKAGE}], [BACKEND_PKGLIBDIR])
 AC_SUBST([BACKEND_PKGLIBDIR])
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
 AC_SUBST([PKGDATADIR])
+adl_RECURSIVE_EVAL([${libexecdir}/${PACKAGE}], [PKGLIBEXECDIR])
+AC_SUBST([PKGLIBEXECDIR])
+adl_RECURSIVE_EVAL([${libexecdir}/${PACKAGE}${backend_suffix}], [BACKEND_PKGLIBEXECDIR])
+AC_SUBST([BACKEND_PKGLIBEXECDIR])
 adl_RECURSIVE_EVAL([${docdir}], [DOCDIR])
 AC_SUBST([DOCDIR])
 
@@ -379,7 +385,7 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
 AC_CONFIG_FILES([scorep-wrapper:../src/tools/wrapper/scorep-wrapper.in],
                 [chmod +x scorep-wrapper])
 AC_SUBST([SCOREP_WRAPPER_NAMES], [${scorep_list_of_wrappers}])
-AFS_SUMMARY([Wrappers], [${scorep_list_of_wrappers}])
+AFS_SUMMARY([Compiler wrappers], [${scorep_list_of_wrappers}])
 
 AC_CONFIG_FILES([Makefile], [
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
@@ -393,9 +399,9 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../te
                  ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
                  ../installcheck/instrumenter_checks/omp/Makefile:../test/instrumenter_checks/omp/Makefile.in
                  ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
-AM_COND_IF([HAVE_GNU_LINKER],
-    [AM_COND_IF([HAVE_PTHREAD],
-         [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])])
+
+AM_COND_IF([HAVE_PTHREAD_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])
 AM_COND_IF([HAVE_MEMORY_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/memory/Makefile:../test/instrumenter_checks/memory/Makefile.in])])
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
@@ -455,8 +461,25 @@ AC_CONFIG_FILES([../installcheck/constructor_checks/generate_makefile.sh:../test
 
 AC_CONFIG_FILES([run_cct_tests.sh:../test/services/unwinding/run_cct_tests.sh.in],
                 [chmod +x run_cct_tests.sh])
+
 AC_CONFIG_FILES([../test/tools/wrapper/run_wrapper_checks.sh],
                 [chmod +x ../test/tools/wrapper/run_wrapper_checks.sh])
+
+AM_COND_IF([BUILD_SHARED_LIBRARIES],
+           [AC_CONFIG_FILES([scorep-preload-init:../src/tools/preload_init/scorep-preload-init.in],
+               [chmod +x scorep-preload-init])])
+
+SCOREP_LIBRARY_WRAPPING_GENERATOR(
+    [AC_CONFIG_FILES([scorep-libwrap-init:../src/tools/libwrap_init/scorep-libwrap-init.in],
+        [chmod +x scorep-libwrap-init])
+     AC_CONFIG_FILES([../test/tools/libwrap_init/common.sh])
+     AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
+        [AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh],
+            [chmod +x ../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh])
+         AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh],
+            [chmod +x ../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh])
+         AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh],
+            [chmod +x ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh])])])
 
 #AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],
@@ -480,12 +503,7 @@ AS_CASE([${ac_scorep_platform}],
                libtool > libtool.fix && mv libtool.fix libtool])
          ])
 
-AC_CONFIG_FILES([../share/opencl.wrap:../share/opencl.wrap.in],
-                [printf '\x2dwrap %s\n' $scorep_opencl_wrap_symbols >../share/opencl.wrap],
-                [scorep_opencl_wrap_symbols='$scorep_opencl_wrap_symbols'])
-AC_CONFIG_FILES([../share/opencl.nvcc.wrap:../share/opencl.wrap.in],
-                [printf '\x2dXlinker \x2dwrap \x2dXlinker %s\n' $scorep_opencl_wrap_symbols >../share/opencl.nvcc.wrap \
-                 && sed -i '0,/-Xlinker\ /s/-Xlinker\ //' ../share/opencl.nvcc.wrap],
-                [scorep_opencl_wrap_symbols='$scorep_opencl_wrap_symbols'])
+AM_COND_IF([HAVE_OPENCL_SUPPORT],
+    [SCOREP_LD_WRAP_FILE([opencl])])
 
 AC_OUTPUT

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,8 @@
 #include <SCOREP_ErrorCodes.h>
 #include <string>
 
+#include <scorep_tools_config_parser.hpp>
+
 class SCOREP_Instrumenter_CmdLine;
 
 /* ****************************************************************************
@@ -54,6 +56,7 @@ class SCOREP_Instrumenter_CmdLine;
  * However, it may read-in data from a config file.
  */
 class SCOREP_Instrumenter_InstallData
+    : public SCOREP_Tools_ConfigParser
 {
     /* ****************************************************** Public methods */
 public:
@@ -91,12 +94,6 @@ public:
      */
     std::string
     getFC( void );
-
-    /**
-       Reads configuration data from a config file
-     */
-    SCOREP_ErrorCode
-    readConfigFile( const std::string& arg0 );
 
     /**
        Perfroms the changes on the install data retrieval if it is a build
@@ -171,6 +168,13 @@ public:
     isCompositeArg( const std::string& current,
                     const std::string& next );
 
+    /**
+       Checks whether the current @a arg parameter conflicts with linktime wrapping.
+       @param arg   The current parameter.
+     */
+    static bool
+    conflictsWithLinktimeWrapping( const std::string& arg );
+
     /* ***************************************************** Private methods */
 private:
     /**
@@ -191,18 +195,6 @@ private:
      */
     void
     set_pdt_path( const std::string& pdt );
-
-    /**
-       Extracts parameter from configuration file
-       It expects lines of the format key=value. Furthermore it truncates line
-       at the scrpit comment character '#'.
-       @param line    input line from the config file
-       @returns SCOREP_SUCCESS if the line was successfully parsed. Else it
-                returns an error code.
-     */
-    SCOREP_ErrorCode
-    read_parameter( std::string line );
-
 
     /* ***************************************************** Private members */
 private:

@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -26,32 +26,44 @@ SCOREP_LIBWRAP_FUNC_NAME( aligned_alloc )( size_t alignment,
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger ||
-         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ||
-         !scorep_memory_recording )
+         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return __real_aligned_alloc( alignment, size );
+        return SCOREP_LIBWRAP_FUNC_CALL( aligned_alloc, ( alignment, size ) );
     }
 
     UTILS_DEBUG_ENTRY( "%zu, %zu", alignment, size );
 
-    scorep_memory_attributes_add_enter_alloc_size( size );
-    SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ],
-                               ( intptr_t )__real_aligned_alloc );
-
-    SCOREP_ENTER_WRAPPED_REGION();
-    void* result = __real_aligned_alloc( alignment, size );
-    SCOREP_EXIT_WRAPPED_REGION();
-
-    if ( result )
+    if ( scorep_memory_recording )
     {
-        SCOREP_AllocMetric_HandleAlloc( scorep_memory_metric,
-                                        ( uint64_t )result,
-                                        size );
+        scorep_memory_attributes_add_enter_alloc_size( size );
+        SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ] );
     }
 
-    scorep_memory_attributes_add_exit_return_address( ( uint64_t )result );
-    SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ] );
+    SCOREP_ENTER_WRAPPED_REGION();
+    void* result = SCOREP_LIBWRAP_FUNC_CALL( aligned_alloc, ( alignment, size ) );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( scorep_memory_recording )
+    {
+        if ( result )
+        {
+            SCOREP_AllocMetric_HandleAlloc( scorep_memory_metric,
+                                            ( uint64_t )result,
+                                            size );
+        }
+
+        scorep_memory_attributes_add_exit_return_address( ( uint64_t )result );
+        SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_ALIGNED_ALLOC ] );
+    }
 
     UTILS_DEBUG_EXIT( "%zu, %zu, %p", alignment, size, result );
     SCOREP_IN_MEASUREMENT_DECREMENT();

@@ -48,6 +48,7 @@
 #include "scorep_info_command.hpp"
 #include "scorep_info_command_config_summary.hpp"
 #include "scorep_info_command_config_vars.hpp"
+#include "scorep_info_command_libwrap_summary.hpp"
 #include "scorep_info_command_open_issues.hpp"
 
 /**
@@ -97,6 +98,7 @@ main( int   argc,
 {
     new SCOREP_Info_Command_ConfigSummary();
     new SCOREP_Info_Command_ConfigVars();
+    new SCOREP_Info_Command_LibwrapSummary();
     new SCOREP_Info_Command_OpenIssues();
 
     if ( argc == 1 )

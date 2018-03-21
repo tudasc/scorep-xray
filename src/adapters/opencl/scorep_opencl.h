@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -31,64 +31,6 @@
 #include <SCOREP_Definitions.h>
 
 #define SCOREP_OPENCL_NO_ID          0xFFFFFFFF
-
-
-
-#ifdef SCOREP_LIBWRAP_STATIC
-
-/*
- * In static mode:
- * - Declaration of '__real_' functions
- */
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args )   \
-    return_type __real_ ## func func_args;
-
-/*
- * Checks if OpenCL API call returns successful and respectively prints
- * the error.
- *
- * @param func OpenCL function (returning an error code of type cl_int)
- */
-#define SCOREP_OPENCL_CALL( func, args )                                    \
-    {                                                                       \
-        cl_int err = __real_##func args;                                    \
-        if ( err != CL_SUCCESS )                                            \
-        {                                                                   \
-            UTILS_WARNING( "[OpenCL] Call to '%s' failed with error '%s'",  \
-                           #func, scorep_opencl_get_error_string( err ) );  \
-        }                                                                   \
-    }
-
-#elif SCOREP_LIBWRAP_SHARED
-
-/*
- * In shared mode: nothing to do
- */
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args )
-
-/*
- * Checks if OpenCL API call returns successful and respectively prints
- * the error.
- *
- * @param func OpenCL function (returning an error code of type cl_int)
- */
-#define SCOREP_OPENCL_CALL( func, args )                                    \
-    {                                                                       \
-        cl_int err = ( *scorep_opencl_funcptr_ ## func )args;               \
-        if ( err != CL_SUCCESS )                                            \
-        {                                                                   \
-            UTILS_WARNING( "[OpenCL] Call to '%s' failed with error '%s'",  \
-                           #func, scorep_opencl_get_error_string( err ) );  \
-        }                                                                   \
-    }
-
-#else
-
-#error Unsupported OpenCL wrapping mode
-
-#endif
-
-#include "scorep_opencl_function_list.inc"
 
 
 /**
@@ -189,13 +131,13 @@ extern SCOREP_RmaWindowHandle scorep_opencl_window_handle;
  * threads.
  */
 void
-scorep_opencl_wrap_init( void );
+scorep_opencl_init( void );
 
 /**
  * Finalize OpenCL wrapper handling.
  */
 void
-scorep_opencl_wrap_finalize( void );
+scorep_opencl_finalize( void );
 
 /**
  * Create a Score-P OpenCL command queue.

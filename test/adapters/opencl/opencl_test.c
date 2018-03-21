@@ -24,11 +24,16 @@
 #include <CL/cl.h>
 
 #define OPENCL_CHECK( err ) \
-    if ( err != CL_SUCCESS ) { \
-        fprintf( stderr, "[OpenCL] Error '%s'\n", \
-                 scorep_opencl_get_error_string( err ) ); \
-        return false; \
-    }
+    do \
+    { \
+        cl_int _err = ( err ); \
+        if ( _err != CL_SUCCESS ) \
+        { \
+            fprintf( stderr, "[OpenCL] Error '%s' (%d)\n", \
+                     scorep_opencl_get_error_string( _err ), _err ); \
+            return false; \
+        } \
+    } while ( 0 )
 
 #define BUF_SIZE ( 1024 * 4 )
 
@@ -56,7 +61,7 @@ scorep_opencl_get_error_string( cl_int error );
 
 
 static double
-gtod()
+gtod( void )
 {
     struct timeval act_time;
     gettimeofday( &act_time, NULL );
@@ -66,7 +71,7 @@ gtod()
 static void
 show_help( void )
 {
-    printf( "\noverhead [OPTION]\n" \
+    printf( "\nopencl_test [OPTION]\n" \
             "\t-p  platform ID\n" \
             "\t-d  device ID\n" \
             "\t-r  number of rounds\n" \
@@ -77,7 +82,7 @@ show_help( void )
 }
 
 static char
-get_options( char* argument )
+get_options( const char* argument )
 {
     if ( argument[ 0 ] == '-' )
     {
@@ -137,7 +142,7 @@ set_arguments( int argc, char* argv[] )
 }
 
 static bool
-get_devices()
+get_devices( void )
 {
     cl_uint         platformCount = 0;
     cl_platform_id* clPlatforms;
@@ -317,7 +322,7 @@ init_opencl_program( const char* sProgramStr, size_t deviceID, cl_uint deviceCou
 }
 
 bool
-setup_opencl_objects()
+setup_opencl_objects( void )
 {
     char*  programStr     = NULL;
     size_t programStrSize = 0;
@@ -372,7 +377,7 @@ setup_opencl_objects()
 }
 
 static bool
-finish_opencl_objects()
+finish_opencl_objects( void )
 {
     OPENCL_CHECK( clReleaseKernel( clKernel ) );
 
@@ -402,7 +407,7 @@ finish_opencl_objects()
 }
 
 static bool
-run()
+run( void )
 {
     size_t* globalWorkSize = ( size_t* )malloc( 1 * sizeof( size_t ) ); //new size_t[1];
     size_t* localWorkSize  = ( size_t* )malloc( 1 * sizeof( size_t ) ); //new size_t[1];
@@ -442,8 +447,6 @@ run()
 int
 main( int argc, char** argv )
 {
-    double start, end, sum;
-
     set_arguments( argc, argv );
 
     if ( !get_devices() )
@@ -452,6 +455,7 @@ main( int argc, char** argv )
     }
     else if ( setup_opencl_objects() )
     {
+        double  start, end, sum;
         int32_t r   = 0;
         bool    res = true;
         for ( r = 0; r < num_rounds; r++ )
@@ -468,13 +472,18 @@ main( int argc, char** argv )
         if ( !res )
         {
             printf( "run failed\n" );
+            return EXIT_FAILURE;
         }
 
         finish_opencl_objects();
+
+        printf( "Runtime = %lf sec (total=%lf)\n", sum / num_rounds, sum );
+
+        return EXIT_SUCCESS;
     }
 
-    printf( "Runtime = %lf sec (total=%lf)\n", sum / num_rounds, sum );
-    return 0;
+    /* if we get here, we just skipping the whole test */
+    return 77;
 }
 
 /*

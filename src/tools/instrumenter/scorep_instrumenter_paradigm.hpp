@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -171,6 +171,12 @@ public:
     virtual bool
     checkWrapperOption( const std::string& current,
                         const std::string& next );
+
+    /**
+     * Return true, if the given library needs to be interposed
+     */
+    virtual bool
+    isInterpositionLibrary( const std::string& libraryName );
 
 protected:
     /**

@@ -14,39 +14,39 @@ instrumenter (Section @secref{tau_instrumentation}).
 As well as user routines and specified source regions, @scorep currently supports the
 following kinds of events:
 
-<ul>
-  <li>
-    <b>@mpi library calls</b>:<br>
+<dl>
+  <dt>@mpi library calls:</dt>
+  <dd>
     Instrumentation is accomplished using the standard @mpi profiling interface
     @pmpi. To enable it, the application program has to be linked against the
     @scorep @mpi (or hybrid) measurement library plus @mpi-specific libraries.
     Note that the @scorep libraries must be linked <i>before</i> the @mpi library
     to ensure interposition will be effective.
-  </li>
+  </dd>
 
-  <li>
-    <b>@shmem library calls</b>:<br>
+  <dt>@shmem library calls:</dt>
+  <dd>
     Instrumentation is accomplished using the @shmem profiling interface
     or the GNU linker for library wrapping. To enable it, the application program
     has to be linked against the @scorep @shmem (or hybrid) measurement library
     plus @shmem-specific libraries. Note that the @scorep libraries must be linked
     <i>before</i> the @shmem library to ensure interposition will be effective.
-  </li>
+  </dd>
 
-  <li>
-    <b>@openmp directives @& API calls</b>:<br>
+  <dt>@openmp directives @& API calls:</dt>
+  <dd>
     The @scorep measurement system uses the @opari2 tool for instrumentation
     of @openmp constructs. See the @opari2 documentation on how to instrument
     @openmp source code. In addition, the application must be linked with the @scorep
     @openmp (or hybrid) measurement library.
-  </li>
+  </dd>
 
-    <li>
-    <b>Pthread library calls</b>:<br>
+  <dt>Pthread library calls:</dt>
+  <dd>
     The @scorep measurement system uses GNU linker for instrumentation
     of Pthreads library calls. At the moment only a few library calls are supported.
-  </li>
-</ul>
+  </dd>
+</dl>
 
 The @scorep instrumenter command <tt>scorep</tt> automatically takes
 care of compilation and linking to produce an instrumented executable,
@@ -85,16 +85,19 @@ instrumentation procedure has to be used:
 <li>Configure application as usual, but provide additional
 argument:
 
-<tt>\--disable-dependency-tracking</tt></li>
+@code
+--disable-dependency-tracking
+@endcode
+</li>
 
 <li>Build application using <tt>make</tt> command with compiler specification variables set as follows:
 
-<tt>make CC="scorep <your-cc-compiler>"  \\
+@code
+make CC="scorep <your-cc-compiler>"  \\
+     CXX="scorep <your-cxx-compiler>" \\
+     FC="scorep <your-fc-compiler>" ...
+@endcode
 
-         CXX="scorep <your-cxx-compiler>" \\
-
-         FC="scorep <your-fc-compiler>" ...
-</tt>
 </li>
 </ol>
 
@@ -921,6 +924,81 @@ of limitations:
     in the selective instrumentation file will be ignored.
   </li>
 </ul>
+
+@section user_library_wrapping User Library Wrapping
+@seclabel{user_library_wrapping}
+
+<!-- adapted from from src/tools/libwrap-init/README.md Overview -->
+User library wrapping enables you to install library wrappers for any
+C/C++ library you want.
+
+Without this mechanism, in order to intercept calls to a library, you would
+need to either build this library with @scorep or add manual instrumentation
+to the application using the library.
+Another advantage of user library wrapping is you don't need access to the
+source code of the to-be-wrapped library. Headers and library files suffice.
+
+This feature requires @scorep to be configured with libclang.
+You can find out whether user library wrapping is enabled via
+`scorep-info config-summary` in Section "Score-P (libwrap)".
+
+This section covers how to use already installed wrappers.
+Appendix @ref scoreplibwrap explains how to create user library wrappers,
+and provides additional details.
+
+<!-- adapted from src/tools/libwrap-init/README.md Workflow for Wrapping a Library Use the Wrapper -->
+To find out which user library wrappers are installed call
+
+    $ scorep-info libwrap-summary
+
+It lists all found wrappers, either installed into Score-P's installation
+directory or found via the <tt>SCOREP_LIBWRAP_PATH</tt> environment variable.
+Optionally you can run
+
+    $ scorep-info libwrap-summary <wrappername>
+
+to show the configuration of a specific wrapper.
+
+You can then use @scorep to link your application in the usual way and
+additionally provide `--libwrap=[<wrapmode>:]<wrappername>` to enable library wrapping for
+the target library.
+
+Example with only relinking the application:
+
+    $ scorep --libwrap=fftw3 gcc -o main main.o -L$FFTW_LIB -lfftw3
+
+Example with both recompiling and linking the application:
+
+    $ scorep --libwrap=fftw3 --nocompiler gcc -o main -I$FFTW_INC main.c \
+        -L$FFTW_LIB -lfftw3
+
+@subsection user_library_wrapping_modes Runtime vs Linktime Wrapping
+
+There exist two ways to wrap calls to the to-be-wrapped (or target-)
+library. The main difference lies in when the actual wrapping takes place -
+at @emph{linktime} or @emph{runtime}. While they are in essence the same, they differ in
+which function calls can be intercepted. Specifically:
+
+<dl>
+<dt>`linktime`:</dt>
+<dd>
+Wraps calls originating from object files that are part of the linker command
+line. In addition, calls originating from static libraries are wrapped as well.
+The actual technique used is the `-wrap` linker flag.
+</dd>
+<dt>`runtime`:</dt>
+<dd>
+Wraps all calls that linktime wrapping would, plus those which
+originate from already linked shared objects.
+The actual technique used is replacing the original function
+of the target library and using `dlopen` and `dlsym` in the
+wrapper to open the target library plus finding and calling the
+original function.
+</dd>
+</dl>
+
+You can choose linktime or runtime wrapping manually via the `--libwrap` flag
+by prefixing the wrapper name with either `linktime:` or `runtime:`.
 
 @section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
 @seclabel{scorep_link_mode}

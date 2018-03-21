@@ -64,11 +64,33 @@ public:
     ~SCOREP_Config_LibraryDependencies();
 
     /**
+     * Inserts a new @a la_object into the @a m_la_objects database.
+     *
+     * Used by the library wrapper adapter to add la_objects for the wrapper
+     * libraries.
+     *
+     * See @a la_object constructor for the parameters.
+     */
+    void
+    insert( const std::string&             lib_name,
+            const std::string&             build_dir,
+            const std::string&             install_dir,
+            const std::deque<std::string>& libs,
+            const std::deque<std::string>& ldflags,
+            const std::deque<std::string>& rpaths,
+            const std::deque<std::string>& dependency_las );
+
+    /**
      * Returns a list of libraries containing the @a inputLibs and its dependencies.
      * @param inputLibs   A list of libraries, that should be linked.
+     * @param honorLibs   Includes libraries listed in @p inputLibs
+     * @param honorDeps   Includes dependencies from libraries listed in @p
+     *                    inputLibs
      */
     std::deque<std::string>
-    getLibraries( const std::deque<std::string>& inputLibs );
+    getLibraries( const std::deque<std::string>& inputLibs,
+                  bool                           honorLibs = true,
+                  bool                           honorDeps = true );
 
     /**
      * Returns a list of library path flags for the @a inputLibs and
@@ -85,13 +107,18 @@ public:
      * Returns a list of paths in which the executable should look at runtime
      * to find the libraries. It can be used to construct the rpath flags for
      * the @a inputLibs and its dependencies.
-     * @param libs      A list of library names.
-     * @param install   If true the install paths are used. If false the
-     *                  build path are used.
+     * @param libs       A list of library names.
+     * @param install    If true the install paths are used. If false the
+     *                   build path are used.
+     * @param honorLibs  Includes libraries listed in @p libs
+     * @param honorDeps  Includes dependencies from libraries listed in @p
+     *                   libs
      */
     std::deque<std::string>
     getRpathFlags( const std::deque<std::string>& libs,
-                   bool                           install );
+                   bool                           install,
+                   bool                           honorLibs = true,
+                   bool                           honorDeps = true );
 
     /**
      * This function adds a dependency to a library. For both libraries the .la
@@ -113,7 +140,9 @@ protected:
      * @param libs  A list of library names.
      */
     std::deque<std::string>
-    get_dependencies( const std::deque<std::string>& libs );
+    get_dependencies( const std::deque<std::string>& libs,
+                      bool                           honorLibs = true,
+                      bool                           honorDeps = true );
 
     // ------------------------------------- Public members
 private:

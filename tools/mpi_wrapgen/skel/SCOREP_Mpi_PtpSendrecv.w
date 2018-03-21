@@ -13,51 +13,64 @@ ${guard:start}
 ${proto:c}
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int  event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int  event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
+  int        return_val;
+  MPI_Status mystatus;
   ${decl}
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
+  if (event_gen_active)
   {
-    MPI_Status mystatus;
-
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
-                              ( intptr_t )P${name});
-
-    if (dest != MPI_PROC_NULL)
+    if (event_gen_active_for_group)
     {
-      int sz;
-      PMPI_Type_size(sendtype, &sz);
-      SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                     sendtag, ${mpi:sendcount});
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+
+      if (dest != MPI_PROC_NULL)
+      {
+        int sz;
+        PMPI_Type_size(sendtype, &sz);
+        SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
+                       sendtag, ${mpi:sendcount});
+      }
+      if (status == MPI_STATUS_IGNORE)
+      {
+        status = &mystatus;
+      }
     }
-    if (status == MPI_STATUS_IGNORE)
+    else
     {
-      status = &mystatus;
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
+  }
 
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = ${call:pmpi};
-    SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = ${call:pmpi};
+  SCOREP_EXIT_WRAPPED_REGION();
 
-    if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
     {
-      int sz;
-      PMPI_Type_size(recvtype, &sz);
-      PMPI_Get_count(status, recvtype, &recvcount);
-      SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
-                     status->MPI_TAG, ${mpi:recvcount});
-    }
+      if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+      {
+        int sz;
+        PMPI_Type_size(recvtype, &sz);
+        PMPI_Get_count(status, recvtype, &recvcount);
+        SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
+                       status->MPI_TAG, ${mpi:recvcount});
+      }
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+    }
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-      return_val = ${call:pmpi};
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 ${guard:end}

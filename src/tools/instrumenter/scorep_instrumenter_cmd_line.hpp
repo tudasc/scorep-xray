@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -244,6 +244,13 @@ public:
     void
     removeUserArg( const std::string& argument );
 
+    /**
+       Checks whether command line parameter parsing provided meaningful
+       information, applies remaining detection decisions.
+     */
+    void
+    checkParameter( void );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -253,13 +260,6 @@ private:
      */
     virtual void
     print_parameter( void );
-
-    /**
-       Checks whether command line parameter parsing provided meaningful
-       information, applies remaining detection decisions.
-     */
-    void
-    check_parameter( void );
 
     /**
        Evaluates one parameter when in command mode.
@@ -334,6 +334,13 @@ private:
      */
     void
     add_library( const std::string& library );
+
+    /**
+       Checks whether the library name is a library we want to interpose.
+       @param libraryName  The name of the library.
+     */
+    bool
+    is_interposition_library( const std::string& libraryName );
 
     /* ***************************************************** Private members */
 private:

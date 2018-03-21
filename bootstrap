@@ -13,7 +13,8 @@ LOCAL_CONFIGURES = \
 	build-mpi/configure \
 	build-shmem/configure \
 	build-gcc-plugin/configure \
-	build-score/configure
+	build-score/configure \
+	build-libwrap/configure
 
 SUB_CONFIGURES = \
 	vendor/opari2/configure \
@@ -67,6 +68,9 @@ build-gcc-plugin/configure: build-backend/configure
 build-score/configure: build-backend/configure
 	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
+build-libwrap/configure: build-backend/configure
+	cd build-libwrap; $(AUTORECONF) $(AUTORECONFFLAGS)
+
 clean: clean-local
 	@$(MAKE) -C vendor/opari2  -f bootstrap clean
 	@$(MAKE) -C vendor/otf2    -f bootstrap clean
@@ -95,7 +99,8 @@ sub_builds = \
 	shmem \
 	frontend \
 	score \
-	gcc-plugin
+	gcc-plugin \
+	libwrap
 
 config_headers = \
 	backend \
@@ -104,7 +109,8 @@ config_headers = \
 	frontend \
 	backend-for-frontend \
 	score \
-	gcc-plugin
+	gcc-plugin \
+	libwrap
 
 clean-local:
 	@rm -rf $(clean_files)

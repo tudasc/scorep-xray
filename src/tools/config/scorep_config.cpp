@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -46,16 +46,20 @@
 
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_shmem.h>
 #include "SCOREP_Config_LibraryDependencies.hpp"
 #include "scorep_config_adapter.hpp"
 #include "scorep_config_mpp.hpp"
 #include "scorep_config_thread.hpp"
-#include "scorep_config_utils.hpp"
 #include "scorep_config_mutex.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 enum
 {
-    ACTION_LIBS = 1,
+    ACTION_EVENT_LIBS = 1,
+    ACTION_MGMT_LIBS  = 2,
+    ACTION_LIBS       = ACTION_EVENT_LIBS | ACTION_MGMT_LIBS,
     ACTION_CFLAGS,
     ACTION_INCDIR,
     ACTION_LDFLAGS,
@@ -65,6 +69,13 @@ enum
     ACTION_MPICC,
     ACTION_MPICXX,
     ACTION_MPIFC,
+    ACTION_SHMEMCC,
+    ACTION_SHMEMCXX,
+    ACTION_SHMEMFC,
+    ACTION_PREFIX,
+    ACTION_LIBTOOL,
+    ACTION_MPILIBTOOL,
+    ACTION_SHMEMLIBTOOL,
     ACTION_COBI_DEPS,
     ACTION_ADAPTER_INIT,
     ACTION_LIBWRAP_LINKTIME,
@@ -82,6 +93,8 @@ enum
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
+    "   --prefix   Prints the canonical installation prefix of this Score-P\n" \
+    "              installation.\n" \
     "   --cflags   Prints additional compiler flags for a C compiler.\n" \
     "              They already contain the include flags.\n" \
     "   --cxxflags Prints additional compiler flags for a C++ compiler.\n" \
@@ -93,13 +106,35 @@ enum
     "              output of the --cflags, --cxxflags, and --fflags commands.\n" \
     "              language may be one of c (default), c++, or fortran.\n" \
     "   --ldflags  Prints the library path flags for the linker.\n" \
-    "   --libs     Prints the required libraries to link against.\n" \
+    "   --libs     Prints the required libraries to link against\n" \
+    "              (combines --event-libs and --mgmt-libs).\n" \
+    "   --event-libs\n" \
+    "              Prints only the required libraries to link against which\n" \
+    "              includes event entry points into the measurement.\n" \
+    "   --mgmt-libs\n" \
+    "              Prints only the required libraries to link against which\n" \
+    "              includes management code from the Score-P measurement and\n" \
+    "              their dependencies.\n" \
+    "   --preload-libs\n" \
+    "              Prints only the required libraries which should be listed in\n" \
+    "              LD_PRELOAD.\n" \
     "   --cc       Prints the C compiler name.\n" \
     "   --cxx      Prints the C++ compiler name.\n" \
     "   --fc       Prints the Fortran compiler name.\n" \
     "   --mpicc    Prints the MPI C compiler name.\n" \
     "   --mpicxx   Prints the MPI C++ compiler name.\n" \
     "   --mpifc    Prints the MPI Fortran compiler name.\n" \
+    "   --shmemcc  Prints the SHMEM C compiler name.\n" \
+    "   --shmemcxx Prints the SHMEM C++ compiler name.\n" \
+    "   --shmemfc  Prints the SHMEM Fortran compiler name.\n" \
+    "   --libtool  Prints the path to the libtool script used to build Score-P\n" \
+    "              libraries.\n" \
+    "   --mpilibtool\n" \
+    "              Prints the path to the libtool script used to build Score-P\n" \
+    "              MPI libraries.\n" \
+    "   --shmemlibtool\n" \
+    "              Prints the path to the libtool script used to build Score-P\n" \
+    "              SHMEM libraries.\n" \
     "   --help     Prints this usage information.\n" \
     "   --version  Prints the version number of the Score-P package.\n" \
     "   --scorep-revision\n" \
@@ -110,6 +145,10 @@ enum
     "              Prints the path to the remapper specification file.\n" \
     "   --adapter-init\n" \
     "              Prints the code for adapter initialization.\n" \
+    "   --libwrap-support=linktime\n" \
+    "              Prints true if link-time library wrapping is supported.\n" \
+    "   --libwrap-support=runtime\n" \
+    "              Prints true if run-time library wrapping is supported.\n" \
     "  Options:\n" \
     "   --target   Get flags for specified target, e.g., mic.\n" \
     "   --nvcc     Convert flags to be suitable for the nvcc compiler.\n" \
@@ -203,6 +242,9 @@ main( int    argc,
     bool                   allow_dynamic = true;
     bool                   allow_static  = true;
     bool                   online_access = true;
+#if defined( SCOREP_SHARED_BUILD )
+    bool preload_libs = false;
+#endif
 
     /* set default target to plain */
     int         target      = TARGET_PLAIN;
@@ -257,6 +299,23 @@ main( int    argc,
         {
             action = ACTION_LIBS;
         }
+        else if ( strcmp( argv[ i ], "--event-libs" ) == 0 )
+        {
+            action = ACTION_EVENT_LIBS;
+        }
+        else if ( strcmp( argv[ i ], "--mgmt-libs" ) == 0 )
+        {
+            action = ACTION_MGMT_LIBS;
+        }
+#if defined( SCOREP_SHARED_BUILD )
+        else if ( strcmp( argv[ i ], "--preload-libs" ) == 0 )
+        {
+            allow_dynamic = true;
+            allow_static  = false;
+            preload_libs  = true;
+            action        = ACTION_EVENT_LIBS;
+        }
+#endif
         else if ( strcmp( argv[ i ], "--cflags" ) == 0 )
         {
             action   = ACTION_CFLAGS;
@@ -328,9 +387,37 @@ main( int    argc,
         {
             action = ACTION_MPIFC;
         }
+        else if ( strcmp( argv[ i ], "--shmemcc" ) == 0 )
+        {
+            action = ACTION_SHMEMCC;
+        }
+        else if ( strcmp( argv[ i ], "--shmemcxx" ) == 0 )
+        {
+            action = ACTION_SHMEMCXX;
+        }
+        else if ( strcmp( argv[ i ], "--shmemfc" ) == 0 )
+        {
+            action = ACTION_SHMEMFC;
+        }
         else if ( strcmp( argv[ i ], "--nvcc" ) == 0 )
         {
             nvcc = true;
+        }
+        else if ( strcmp( argv[ i ], "--prefix" ) == 0 )
+        {
+            action = ACTION_PREFIX;
+        }
+        else if ( strcmp( argv[ i ], "--libtool" ) == 0 )
+        {
+            action = ACTION_LIBTOOL;
+        }
+        else if ( strcmp( argv[ i ], "--mpilibtool" ) == 0 )
+        {
+            action = ACTION_MPILIBTOOL;
+        }
+        else if ( strcmp( argv[ i ], "--shmemlibtool" ) == 0 )
+        {
+            action = ACTION_SHMEMLIBTOOL;
         }
         else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
         {
@@ -370,6 +457,14 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--adapter-init" ) == 0 )
         {
             action = ACTION_ADAPTER_INIT;
+        }
+        else if ( strcmp( argv[ i ], "--libwrap-support=linktime" ) == 0 )
+        {
+            action = ACTION_LIBWRAP_LINKTIME;
+        }
+        else if ( strcmp( argv[ i ], "--libwrap-support=runtime" ) == 0 )
+        {
+            action = ACTION_LIBWRAP_RUNTIME;
         }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
@@ -470,6 +565,14 @@ main( int    argc,
     SCOREP_Config_Mutex::select( newMutexId );
     SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
+#if defined( SCOREP_SHARED_BUILD )
+    if ( preload_libs )
+    {
+        /* libscorep_measurement.so must be in the event libs */
+        libs.push_back( "libscorep_measurement" );
+    }
+#endif
+
     switch ( action )
     {
         case ACTION_LDFLAGS:
@@ -502,22 +605,28 @@ main( int    argc,
             std::cout.flush();
             break;
 
+        case ACTION_EVENT_LIBS:
+        case ACTION_MGMT_LIBS:
         case ACTION_LIBS:
+        {
+            bool honor_libs = !!( action & ACTION_EVENT_LIBS );
+            bool honor_deps = !!( action & ACTION_MGMT_LIBS );
             if ( !allow_dynamic || !allow_static )
             {
-                std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
-                libs = get_full_library_names( deps.getLibraries( libs ),
+                std::deque<std::string> rpath = deps.getRpathFlags( libs, install, honor_libs, honor_deps );
+                libs = get_full_library_names( deps.getLibraries( libs, honor_libs, honor_deps ),
                                                rpath,
                                                allow_static,
                                                allow_dynamic );
             }
             else
             {
-                libs = deps.getLibraries( libs );
+                libs = deps.getLibraries( libs, honor_libs, honor_deps );
             }
             std::cout << deque_to_string( libs, " ", " ", "" );
             std::cout.flush();
-            break;
+        }
+        break;
 
         case ACTION_CFLAGS:
             if ( SCOREP_Config_Adapter::isActive() )
@@ -578,6 +687,46 @@ main( int    argc,
             std::cout << SCOREP_MPIFC;
             std::cout.flush();
             break;
+
+        case ACTION_SHMEMCC:
+            std::cout << SCOREP_SHMEMCC;
+            std::cout.flush();
+            break;
+
+        case ACTION_SHMEMCXX:
+            std::cout << SCOREP_SHMEMCXX;
+            std::cout.flush();
+            break;
+
+        case ACTION_SHMEMFC:
+            std::cout << SCOREP_SHMEMFC;
+            std::cout.flush();
+            break;
+
+        case ACTION_PREFIX:
+            std::cout << SCOREP_PREFIX;
+            std::cout.flush();
+            break;
+
+        case ACTION_LIBTOOL:
+            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/libtool";
+            std::cout.flush();
+            break;
+
+        case ACTION_MPILIBTOOL:
+#if HAVE_BACKEND( MPI_SUPPORT )
+            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/mpi/libtool";
+#endif
+            std::cout.flush();
+            break;
+
+        case ACTION_SHMEMLIBTOOL:
+#if HAVE_BACKEND( SHMEM_SUPPORT )
+            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/shmem/libtool";
+#endif
+            std::cout.flush();
+            break;
+
         /*
            case ACTION_COBI_DEPS:
            if ( libs.empty() )
@@ -608,7 +757,20 @@ main( int    argc,
             }
 #endif
             break;
-
+        case ACTION_LIBWRAP_LINKTIME:
+#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+            std::cout << "true" << std::endl;
+#else
+            std::cout << "false" << std::endl;
+#endif
+            break;
+        case ACTION_LIBWRAP_RUNTIME:
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+            std::cout << "true" << std::endl;
+#else
+            std::cout << "false" << std::endl;
+#endif
+            break;
         default:
             std::cout << SHORT_HELP << std::endl;
             break;
@@ -692,48 +854,6 @@ append_ld_run_path_to_rpath( std::deque<std::string>& rpath )
     rpath.insert( rpath.end(), run_path.begin(), run_path.end() );
 }
 
-/**
- * Checks whether a file with @a filename exists.
- * @param file The filename of the file,
- * @returns true if a file with @a filename exists.
- */
-static bool
-exists_file( const std::string& filename )
-{
-    std::ifstream ifile( filename.c_str() );
-    return ( bool )ifile;
-}
-
-static std::string
-find_library( const std::string&             library,
-              const std::deque<std::string>& path_list,
-              bool                           allow_static,
-              bool                           allow_dynamic )
-{
-    std::string current_path;
-    std::string lib = library;
-
-    if ( lib.substr( 0, 2 ) == "-l" )
-    {
-        lib.replace( 0, 2, "lib" );
-    }
-    for ( std::deque<std::string>::const_iterator path = path_list.begin();
-          path != path_list.end(); path++ )
-    {
-        current_path = *path + "/" + lib;
-        if ( allow_dynamic && exists_file( current_path + ".so" ) )
-        {
-            return current_path + ".so";
-        }
-        if ( allow_static && exists_file( current_path + ".a" ) )
-        {
-            return current_path + ".a";
-        }
-    }
-
-    return "";
-}
-
 static bool
 is_scorep_lib( const std::string& name )
 {
@@ -760,13 +880,14 @@ get_full_library_names( const std::deque<std::string>& library_list,
                         bool                           allow_static,
                         bool                           allow_dynamic )
 {
-    std::deque<std::string> full_names;
+    std::vector<std::string> pathlist( path_list.begin(), path_list.end() );
+    std::deque<std::string>  full_names;
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
         if ( is_scorep_lib( *lib ) )
         {
-            std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
+            std::string name = find_library( *lib, pathlist, allow_static, allow_dynamic );
             if ( name != "" )
             {
                 full_names.push_back( name );

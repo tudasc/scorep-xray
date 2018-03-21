@@ -1,0 +1,318 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+set -e
+
+argv0=${0##*/}
+
+die()
+{
+    (
+        printf "%s: " "$argv0"
+        printf "$@"
+        printf "\n"
+        usage 1
+    ) >&2
+    exit 1
+}
+
+usage()
+{
+    if test $# -gt 0
+    then
+        printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
+        printf "Try '%s --help' for more information.\n" "$argv0"
+        return
+    fi
+
+    cat <<EOH
+Usage
+=====
+
+    ${argv0} <scorep-config flags> [--] <application> [<resultdir>]
+    ${argv0} --clean                    <preload-file>
+
+Options
+-------
+
+  - \`--help\`            This help text
+  - \`--verbose\`         Runs in verbose mode
+  - \`--value-only\`      Outputs only the value of \`LD_PRELOAD\` to standard out.
+  - \`--\`                Stop parsing arguments for \`scorep-config\`.
+
+Description
+===========
+
+\`scorep-preload-init\` is a script that prepares a measuremnt to be executed
+on an uninstrumented application with the help of the LD_PRELOAD mechanism.
+
+In case of an cross-machine, this preparation step must be executed on
+the login resources, <resultdir> must be available on the compute resources,
+and the value of LD_PRELOAD must only effect applications running on the
+compute resources.
+
+EOH
+}
+
+: ${SCOREP_BINDIR:="@BINDIR@"}
+: ${NM:="@NM@"}
+: ${EGREP:="@EGREP@"}
+: ${INSTALL:="@INSTALL@"}
+
+@HAVE_MPI_SUPPORT_FALSE@MPI_SUPPORT=false
+@HAVE_MPI_SUPPORT_TRUE@MPI_SUPPORT=true
+
+@HAVE_SHMEM_SUPPORT_FALSE@SHMEM_SUPPORT=false
+@HAVE_SHMEM_SUPPORT_TRUE@SHMEM_SUPPORT=true
+
+SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --noonline-access --thread=none"
+
+SCOREP_LIBWRAP_PATH="${SCOREP_LIBWRAP_PATH:+${SCOREP_LIBWRAP_PATH}:}@PREFIX@"
+
+CLEAN=false
+VALUE_ONLY=false
+MPP=detect
+
+# check for arguments
+while test $# -gt 0
+do
+    case ${1} in
+    (--help)
+        usage | if test -t 1
+        then
+            ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
+        else
+            cat
+        fi
+        exit 0
+    ;;
+    (--verbose)
+        V=1
+    ;;
+    (--clean)
+        CLEAN=true
+    ;;
+    (--value-only)
+        VALUE_ONLY=true
+    ;;
+    (--mpp=*)
+        MPP=${1#--mpp=}
+    ;;
+    (--opencl|--opencl:runtime)
+        SCOREP_CONFIG="${SCOREP_CONFIG} --opencl:runtime"
+    ;;
+    (--opencl:linktime)
+        die "linktime wrap mode does not work when preloading: '%s'" "${1}"
+    ;;
+    (--libwrap=*)
+        libwrap=${1#--libwrap=}
+        case ${libwrap} in
+        (runtime:*)
+            libwrap=${libwrap#runtime:}
+        ;;
+        (linktime:*) die "linktime wrap mode does not work when preloading: '%s'" "${1}" ;;
+        (*) : no wrap-mode ;;
+        esac
+
+        case ${libwrap} in
+        (*/*)
+            test -r "${libwrap}" ||
+                die "libwrap anchor does not exists: '%s'" "${1}"
+            libwrap="$(cd $(dirname "${libwrap}") && pwd)/$(basename "${libwrap}")"
+            SCOREP_CONFIG="${SCOREP_CONFIG} --libwrap=runtime:${libwrap}"
+        ;;
+        (*)
+            save0_IFS=${IFS}
+            IFS=,
+            for libwrap in ${libwrap}
+            do
+                save1_IFS=${IFS}
+                IFS=:
+                for path in ${SCOREP_LIBWRAP_PATH}
+                do
+                    IFS=${save_IFS}
+                    if test -r "${path}/share/scorep/${libwrap}.libwrap"
+                    then
+                        libwrap="${path}/share/scorep/${libwrap}.libwrap"
+                        SCOREP_CONFIG="${SCOREP_CONFIG} --libwrap=runtime:${libwrap}"
+                        break
+                    fi
+                done
+                IFS=${save1_IFS}
+                test -r "${libwrap}" ||
+                    die "could not find library wrapper in path: '%s'" "${libwrap}"
+            done
+            IFS=${save0_IFS}
+        ;;
+        esac
+    ;;
+    (--*)
+        # pass arguments to scorep-config
+        SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
+    ;;
+    (--)
+        shift
+        break
+    ;;
+    (*)
+        break
+    ;;
+    esac
+    shift
+done
+
+__v_libtool_=--silent
+__v_libtool_1=
+eval "_V_libtool=\${__v_libtool_${V}}"
+
+libtool_clean()
+{
+    ${SCOREP_LIBTOOL} ${_V_libtool} --mode=uninstall rm -f "${1}"
+}
+
+if ${CLEAN}
+then
+    if test $# -ne 1
+    then
+        die "missing clean argument"
+    fi
+    SCOREP_LIBTOOL=$(${SCOREP_CONFIG} --libtool)
+    libtool_clean "${1}"
+    rm -f "${1%*.la}.clean"
+    exit
+fi
+
+if test $# -gt 2
+then
+    die "too many arguments"
+fi
+
+BINARY=${1-}
+if test x"${BINARY:+set}" = x"set"
+then
+    BINARY_TAG=$(basename "${BINARY}")
+    RESULTDIR=$(cd ${2-$(dirname "${BINARY}")} && pwd)/.scorep_preload #")
+else
+    BINARY_TAG=unknown_$$
+    RESULTDIR=$(cd ${2-${PWD}} && pwd)/.scorep_preload
+fi
+
+SCOREP_TMP="$(mktemp -d -t scorep_preload.XXXXXXXXXX)"
+cleanup()
+{
+    rm -rf "${SCOREP_TMP}"
+}
+${V:+: }trap cleanup EXIT
+
+# auto detect used multi-process paradigm
+if test ${MPP} = detect
+then
+    # MPI is still the default for scorep-config
+    MPP=none
+
+    if test x"${BINARY:+set}" = x"set" && test -x ${BINARY}
+    then
+        ${NM} "${BINARY}" 2>/dev/null >"${SCOREP_TMP}/nm.out"
+
+        if ${EGREP} -l ' [UTD] (MPI|mpi)_' "${SCOREP_TMP}/nm.out" >/dev/null 2>&1
+        then
+            if ! ${MPI_SUPPORT}
+            then
+                die "detected MPI application but this Score-P installation does not support MPI"
+            fi
+            MPP=mpi
+        fi
+
+        if ${EGREP} -l ' [UTD] (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' "${SCOREP_TMP}/nm.out" >/dev/null 2>&1
+        then
+            if ! ${SHMEM_SUPPORT}
+            then
+                die "detected SHMEM application but this Score-P installation does not support SHMEM"
+            fi
+            MPP=shmem
+        fi
+    fi
+fi
+SCOREP_CONFIG="${SCOREP_CONFIG}${MPP:+ --mpp=${MPP}}"
+
+SCOREP_CONFIG_PREFIX=
+if [ "${MPP}" != none ]; then
+    SCOREP_CONFIG_PREFIX=${MPP}
+fi
+SCOREP_CC=$(${SCOREP_CONFIG} --${SCOREP_CONFIG_PREFIX}cc)
+SCOREP_LIBTOOL=$(${SCOREP_CONFIG} --${SCOREP_CONFIG_PREFIX}libtool)
+
+if test -e "${RESULTDIR}/${BINARY_TAG}.la"
+then
+    libtool_clean "${RESULTDIR}/${BINARY_TAG}.la"
+fi
+
+# build subsystems list
+${SCOREP_CONFIG} --adapter-init >"${SCOREP_TMP}/scorep_preload.c"
+
+${SCOREP_LIBTOOL} ${_V_libtool} --mode=compile --tag=CC \
+    ${SCOREP_CC} \
+    -shared \
+    -c \
+    -o "${SCOREP_TMP}/scorep_preload.lo" "${SCOREP_TMP}/scorep_preload.c"
+
+${SCOREP_LIBTOOL} ${_V_libtool} --mode=link --tag=CC \
+    ${SCOREP_CC} \
+    -avoid-version \
+    -module \
+    -shared \
+    -o ${SCOREP_TMP}/${BINARY_TAG}.la \
+    `${SCOREP_CONFIG} --ldflags` \
+    ${SCOREP_TMP}/scorep_preload.lo \
+    `${SCOREP_CONFIG} --mgmt-libs` \
+    -rpath "${RESULTDIR}"
+
+mkdir -p "${RESULTDIR}"
+${SCOREP_LIBTOOL} ${_V_libtool} --mode=install \
+    ${INSTALL} "${SCOREP_TMP}/${BINARY_TAG}.la" \
+    "${RESULTDIR}/${BINARY_TAG}.la"
+
+libscorep_preload=${RESULTDIR}/$(
+    . "${RESULTDIR}/${BINARY_TAG}.la"
+    echo "${library_names##* }"
+)
+
+# we still need to preload all event adapters, so that library interposition works
+LD_PRELOAD_VALUE="${libscorep_preload}"
+# --dynamic gives us full pathes to the shared objects
+for event_lib in `${SCOREP_CONFIG} --preload-libs`
+do
+    LD_PRELOAD_VALUE="${LD_PRELOAD_VALUE}:${event_lib}"
+done
+LD_PRELOAD_VALUE="${LD_PRELOAD_VALUE}${LD_PRELOAD:+:${LD_PRELOAD}}"
+
+printf "${argv0} --clean \"${RESULTDIR}/${BINARY_TAG}.la\"\n" >"${RESULTDIR}/${BINARY_TAG}.clean"
+
+if ${VALUE_ONLY}
+then
+    printf "%s\n" "${LD_PRELOAD_VALUE}"
+else
+    cat <<EOA
+The value for LD_PRELOAD is:
+
+    LD_PRELOAD=${LD_PRELOAD_VALUE}
+
+Set this variable when starting your application. This might be needed
+to be done when launching your appication or setting it before executing
+the application in the job script.
+
+To remove this preload result run:
+
+    $SHELL "${RESULTDIR}/${BINARY_TAG}.clean"
+EOA
+fi

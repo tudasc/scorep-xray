@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,11 +21,26 @@
 #include "scorep_unwinding_confvars.inc.c"
 
 void
+SCOREP_Unwinding_PushWrapper( SCOREP_Location*    location,
+                              SCOREP_RegionHandle regionHandle,
+                              uint64_t            wrapperIp,
+                              size_t              framesToSkip )
+{
+    UTILS_BUG( "This function should not have been called." );
+}
+
+void
+SCOREP_Unwinding_PopWrapper( SCOREP_Location*    location,
+                             SCOREP_RegionHandle regionHandle )
+{
+    UTILS_BUG( "This function should not have been called." );
+}
+
+void
 SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
+                                    void*                        contextPtr,
                                     SCOREP_Unwinding_Origin      origin,
                                     SCOREP_RegionHandle          instrumentedRegionHandle,
-                                    intptr_t                     wrappedRegion,
-                                    size_t                       framesToSkip,
                                     SCOREP_CallingContextHandle* currentCallingContext,
                                     SCOREP_CallingContextHandle* previousCallingContext,
                                     uint32_t*                    unwindDistance )

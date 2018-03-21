@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -250,11 +250,6 @@ private:
        Additional compiler flags added by the instrumenter
      */
     std::string m_compiler_flags;
-
-    /**
-       Additional linker flags added by the instrumenter
-     */
-    std::string m_linker_flags;
 
     //SCOREP_Instrumenter_CobiAdapter*       m_cobi_adapter;
     SCOREP_Instrumenter_CompilerAdapter*   m_compiler_adapter;

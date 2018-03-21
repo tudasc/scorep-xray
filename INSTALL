@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -369,6 +369,9 @@ be used to build Score-P are as follows:
                include and lib options directly.
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>
+  --with-llvm[=<llvm-bindir>]
+               Use an already installed LLVM. Provide path to
+               llvm-config. Auto-detected if already in $PATH.
 
 Instead of passing command-line options to the 'configure' script, the package
 configuration can also be influenced by setting the following environment
@@ -420,6 +423,14 @@ variables:
   LIBS_FOR_BUILD
               libraries to pass to the linker for the frontend build, e.g.
               -l<library>
+  LIBCLANG_CPPFLAGS
+              Additional C preprocessor flags when compiling against libclang
+  LIBCLANG_CXXFLAGS
+              Additional C++ compile flags when compiling against libclang
+  LIBCLANG_LDFLAGS
+              Additional linker flags when linking against libclang
+  LIBCLANG_LIBS
+              Additional libs when linking against libclang
   MPICC       MPI C compiler command
   MPICXX      MPI C++ compiler command
   MPIF77      MPI Fortran 77 compiler command
@@ -534,14 +545,13 @@ GNU Compiler Plug-In
 the GNU Compiler plug-in instrumentation, are not installed by default. Therefore
 an extra package needs to be installed.
 
-On Debian and it's derivates the package is called:
+On Debian and it's derivatives the package is called:
 
      gcc-<version>-plugin-dev
 
-On Fedora and it's derivates the mentioned package is called:
+On Fedora and it's derivatives the package is called:
 
      gcc-plugin-devel
-
 
 Intel Xeon Phi (aka. MIC) co-processors
 =======================================
@@ -600,7 +610,27 @@ just installed one is required:
 separate build directories) as long as the same options defining directory
 locations are passed in steps 2 and 5.
 
+User Library Wrapping
+=====================
 
+   To enable the user library wrapping feature, Score-P needs the LLVM compiler
+infrastructure. For one the 'llvm-config' program is needed, and also `libclang`
+and it's developer packages. The clang/clang++ compilers are not strictly
+needed, but will be used when avaiable.
+
+On Debian and it's derivatives the packages are called:
+
+     llvm-dev
+     libclang-dev
+
+On Fedora and it's derivatives the packages are called:
+
+     llvm-devel
+     clang-devel
+
+Or the pre-built packages at:
+
+     http://llvm.org/releases/download.html
 
                      Generic Installation Instructions
                      =================================

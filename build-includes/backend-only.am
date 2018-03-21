@@ -34,6 +34,8 @@ include ../src/tools/instrumenter/Makefile.backend-only.inc.am
 include ../src/tools/config/Makefile.la_dependencies.inc.am
 include ../src/tools/backend-info/Makefile.inc.am
 include ../src/tools/wrapper/Makefile.inc.am
+include ../src/tools/libwrap_init/Makefile.inc.am
+include ../src/tools/preload_init/Makefile.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
 include ../src/utils/memory/Makefile.inc.am

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,8 @@
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 #include <algorithm>
 

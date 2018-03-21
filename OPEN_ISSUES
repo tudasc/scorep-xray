@@ -385,13 +385,12 @@ various Score-P components.
 
 * Sampling support
 
-  - Sampling is currently supported for x86_64 CPUs only. The compiler
-    needs to support thread-local storage, either via the language
-    extension __thread or the C11 keyword _Thread_local. This excludes
-    PGI compilers prior to 'Version 2015'.
+  - Sampling is mostly tested on x86-64 CPUs. The compiler needs to support
+    thread-local storage, either via the language extension __thread or the C11
+    keyword _Thread_local. This excludes PGI compilers prior to 'Version 2015'.
 
   - Sampling uses libunwind as external library. Please use version
-    1.1 or later as earlier versions occasionally segfaulted.
+    1.2 or later as earlier versions occasionally segfaulted.
     - libunwind used in combination with Intel MPI, even when sampling
       is not active, may mysteriously alter the application output
       just by linking libunwind. Thus, sampling/libunwind support is
@@ -424,6 +423,62 @@ various Score-P components.
      - Trace rewinding
      - SCOREP_RECORDING_ON/SCOREP_RECORDING_OFF user instrumentation macros
      - Selective recording (SCOREP_SELECTIVE_CONFIG_FILE)
+
+--------------------------------------------------------------------------------
+
+* User library wrapping
+
+  - Functions returning function pointers are not supported, e.g.:
+
+      int ( *fn_x_return_function_pointer( void ) )( double );
+
+    A typedef works around this limitation, e.g.:
+
+      typedef int ( function )( void );
+      function fn_x_return_function_pointer( double );
+
+  - Nested Function pointer arguments are not supported, e.g.:
+
+      int sion_generic_register_gather_and_execute_cb(
+          int aid,
+          int gather_execute_cb( const void *, long long*, int,
+              long long, void *, int, int, int, int,
+              int process_cb( const void *, long long *, int ) ) );
+
+    Typedefs work around this limitation, e.g.:
+
+      typedef int ( process_function )( const void *, long long *, int );
+      typedef int ( gather_execute_function )( const void *, long long*, int,
+              long long, void *, int, int, int, int,
+              process_function process_cb );
+      int sion_generic_register_gather_and_execute_cb(
+          int aid, gather_execute_function gather_execute_cb );
+
+  - Typedefs from classes need to be fully qualified when used, e.g., convert:
+
+      class C {
+          typedef int mytype;
+          void f(mytype a);
+      };
+
+    into:
+
+      class C {
+          typedef int mytype;
+          void f(C::mytype a);
+      };
+
+  - LLVM upto version 3.9 does not support the ABI tag attribute from GCC 5
+    and onwards.  Thus creating library wrappers for symbols with ABI tags is
+    impossible.  The issue is tracked in LLVM here:
+
+      https://llvm.org/bugs/show_bug.cgi?id=23529
+
+  - Building and using library wrappers for Intel Xeon Phi co-processors is
+    untested.
+
+  - Using a library wrapper for functions which Score-P also calls may only
+    work on systems supporting RTLD_NEXT (at least GNU).
 
 --------------------------------------------------------------------------------
 

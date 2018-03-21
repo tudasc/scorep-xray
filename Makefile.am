@@ -67,6 +67,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/doxygen-user/main_7.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_8.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_9.dox.in                    \
+              $(srcdir)/doc/doxygen-user/main_10.dox.in                   \
+              $(srcdir)/doc/doxygen-user/main_11.dox.in                   \
               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md     \
               $(srcdir)/doc/profile/scorep_metrics.html                   \
               $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
@@ -181,7 +183,10 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     doc/doxygen-user/confvars.dox.in \
     $(srcdir)/doc/doxygen-user/main_8.dox.in \
     doc/doxygen-user/scorep_wrapper_usage.md \
-    $(srcdir)/doc/doxygen-user/main_9.dox.in
+    $(srcdir)/doc/doxygen-user/main_9.dox.in \
+    src/tools/libwrap_init/README.md \
+    $(srcdir)/doc/doxygen-user/main_10.dox.in \
+    $(srcdir)/doc/doxygen-user/main_11.dox.in
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	cat $^ >$@
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -70,7 +70,8 @@ SCOREP_AttributeHandle scorep_source_code_location_attribute;
 
 
 void
-SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle )
+SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
+               void*                           contextPtr )
 {
     UTILS_BUG_ON( !SCOREP_IsUnwindingEnabled(), "Invalid call." );
 
@@ -82,8 +83,9 @@ SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle )
     SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
     uint32_t                    unwind_distance;
     SCOREP_Unwinding_GetCallingContext( location,
+                                        contextPtr,
                                         SCOREP_UNWINDING_ORIGIN_SAMPLE,
-                                        SCOREP_INVALID_REGION, 0, 0,
+                                        SCOREP_INVALID_REGION,
                                         &current_calling_context,
                                         &previous_calling_context,
                                         &unwind_distance );
@@ -130,6 +132,29 @@ SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
                              metric_values ) );
 }
 
+void
+SCOREP_EnterWrapper( SCOREP_RegionHandle regionHandle )
+{
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_Unwinding_PushWrapper( SCOREP_Location_GetCurrentCPULocation(),
+                                      regionHandle,
+                                      ( uint64_t )SCOREP_RETURN_ADDRESS(),
+                                      SCOREP_IN_MEASUREMENT() );
+    }
+}
+
+
+void
+SCOREP_ExitWrapper( SCOREP_RegionHandle regionHandle )
+{
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_Unwinding_PopWrapper( SCOREP_Location_GetCurrentCPULocation(),
+                                     regionHandle );
+    }
+}
+
 
 /**
  * Process a region enter event in the measurement system.
@@ -163,18 +188,15 @@ static inline void
 scorep_calling_context_enter( SCOREP_Location*    location,
                               uint64_t            timestamp,
                               SCOREP_RegionHandle regionHandle,
-                              intptr_t            wrappedRegion,
-                              size_t              framesToSkip,
                               uint64_t*           metricValues )
 {
     SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
     SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
     uint32_t                    unwind_distance;
     SCOREP_Unwinding_GetCallingContext( location,
+                                        NULL,
                                         SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER,
                                         regionHandle,
-                                        wrappedRegion,
-                                        framesToSkip,
                                         &current_calling_context,
                                         &previous_calling_context,
                                         &unwind_distance );
@@ -208,8 +230,6 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
         scorep_calling_context_enter( location,
                                       timestamp,
                                       regionHandle,
-                                      0,
-                                      0,
                                       metric_values );
     }
     else
@@ -245,8 +265,6 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
         scorep_calling_context_enter( location,
                                       timestamp,
                                       regionHandle,
-                                      0,
-                                      0,
                                       metric_values );
     }
     else
@@ -257,8 +275,7 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
 
 
 void
-SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
-                           intptr_t            wrappedRegion )
+SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
@@ -266,11 +283,13 @@ SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
 
     if ( SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_Unwinding_PushWrapper( location,
+                                      regionHandle,
+                                      ( uint64_t )SCOREP_RETURN_ADDRESS(),
+                                      SCOREP_IN_MEASUREMENT() );
         scorep_calling_context_enter( location,
                                       timestamp,
                                       regionHandle,
-                                      wrappedRegion,
-                                      SCOREP_IN_MEASUREMENT(),
                                       metric_values );
     }
     else
@@ -318,8 +337,9 @@ scorep_calling_context_exit( SCOREP_Location*    location,
     SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
     uint32_t                    unwind_distance;
     SCOREP_Unwinding_GetCallingContext( location,
+                                        NULL,
                                         SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_EXIT,
-                                        regionHandle, 0, 0,
+                                        regionHandle,
                                         &current_calling_context,
                                         &previous_calling_context,
                                         &unwind_distance );

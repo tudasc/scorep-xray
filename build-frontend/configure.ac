@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2013, 2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -84,6 +84,15 @@ ac_scorep_backend="no"
 
 m4_include(../build-includes/login-node.m4)
 
+adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
+AC_SUBST([BINDIR])
+adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
+AC_SUBST([PKGDATADIR])
+adl_RECURSIVE_EVAL([${libexecdir}/${PACKAGE}], [PKGLIBEXECDIR])
+AC_SUBST([PKGLIBEXECDIR])
+adl_RECURSIVE_EVAL([${libexecdir}/${PACKAGE}/backend], [BACKEND_PKGLIBEXECDIR])
+AC_SUBST([BACKEND_PKGLIBEXECDIR])
+
 AC_SCOREP_SVN_CONTROLLED
 
 AM_CONDITIONAL([BUILD_TESTS], [true])
@@ -141,6 +150,14 @@ AC_SCOREP_COND_HAVE([MPI_SUPPORT],
 AC_SCOREP_COND_HAVE([SHMEM_SUPPORT],
                     [test -f ../build-shmem/Makefile],
                     [Defined if SHMEM support is available.])
+
+SCOREP_LIBRARY_WRAPPING_GENERATOR(
+    [AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh],
+                     [chmod +x ../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh])
+     AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh],
+                     [chmod +x ../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh])
+     AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh],
+                     [chmod +x ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh])])
 
 AC_CONFIG_FILES([Makefile], [
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \

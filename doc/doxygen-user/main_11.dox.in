@@ -1,0 +1,7 @@
+
+/**
+@ifnot LATEX
+@example print_regions.c
+Simple example of a @scorep substrate plugin
+@endif
+*/

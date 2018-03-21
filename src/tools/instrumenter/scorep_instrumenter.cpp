@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -67,6 +67,10 @@
 #include "scorep_instrumenter_memory.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_mutex.hpp"
+#include "scorep_instrumenter_linktime_wrapping.hpp"
+#include "scorep_instrumenter_libwrap.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 void
 print_help();
@@ -91,7 +95,9 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_openacc_adapter    = new SCOREP_Instrumenter_OpenACCAdapter();
     m_opencl_adapter     = new SCOREP_Instrumenter_OpenCLAdapter();
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
+    new SCOREP_Instrumenter_LinktimeWrappingAdapter();
     new SCOREP_Instrumenter_OnlineAccess();
+    new SCOREP_Instrumenter_LibwrapAdapter();
 
     /* pre-preprocess adapter order */
     m_preprocess_adapters.push_back( m_preprocess_adapter );
@@ -275,6 +281,9 @@ SCOREP_Instrumenter::Run( void )
         SCOREP_Instrumenter_Adapter::checkAllObjects( *this );
         SCOREP_Instrumenter_Selector::checkAllObjects( *this );
 
+        /* Some new adapters may be active now. */
+        m_command_line.checkParameter();
+
         // Create the config tool calls for linking
         prepare_config_tool_calls( "" );
 
@@ -401,19 +410,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     }
 #endif  /* SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
     // Generate calls
-    m_config_base  = scorep_config + target + mode;
-    m_linker_flags = "`" + scorep_config + target + mode + " --ldflags` " +
-                     "`" + scorep_config + target + mode + " --libs` ";
-#if defined( SCOREP_SHARED_BUILD )
-    /* temporary, see ticket:385 */
-    if ( m_command_line.getNoAsNeeded() )
-    {
-        m_linker_flags = "`" + scorep_config + target + mode + " --ldflags` " +
-                         LIBDIR_FLAG_WL "--no-as-needed " +
-                         "`" + scorep_config + target + mode + " --libs` "
-                         LIBDIR_FLAG_WL "--as-needed ";
-    }
-#endif
+    m_config_base = scorep_config + target + mode;
 }
 
 void
@@ -597,6 +594,17 @@ SCOREP_Instrumenter::create_subsystem_initialization( void )
 void
 SCOREP_Instrumenter::link_step( void )
 {
+    std::string libs_prefix;
+    std::string libs_suffix;
+#if defined( SCOREP_SHARED_BUILD )
+    /* temporary, see ticket:385 */
+    if ( m_command_line.getNoAsNeeded() )
+    {
+        libs_prefix = " " LIBDIR_FLAG_WL "--no-as-needed";
+        libs_suffix = " " LIBDIR_FLAG_WL "--as-needed";
+    }
+#endif
+
     std::stringstream command;
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
@@ -607,9 +615,11 @@ SCOREP_Instrumenter::link_step( void )
         command << " `" << m_config_base << " --constructor`";
     }
 #endif
+    command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
-    command << " " << m_linker_flags;
+    command << libs_prefix << " `" << m_config_base << " --event-libs`" << libs_suffix;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();
+    command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << libs_suffix;
 
     if ( m_command_line.getOutputName() != "" )
     {

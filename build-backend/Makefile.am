@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013-2016,
+## Copyright (c) 2009-2011, 2013-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -86,12 +86,15 @@ build_external_check_targets:
 
 AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 
-pkgdata_DATA += ../share/opencl.wrap \
-                ../share/opencl.nvcc.wrap
-
 frontend_bindir = @bindir@
 bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
+
+# for backend tools which are generated in this build-backend, e.g., scorep-wrapper
+frontend_bin_SCRIPTS =
+
+backend_pkglibexecdir = $(pkglibexecdir)@backend_suffix@
+backend_pkglibexec_SCRIPTS = libtool
 
 if CROSS_BUILD
 AM_CPPFLAGS += -DCROSS_BUILD
@@ -211,8 +214,7 @@ clean-local-instrumenter-checks:
             rm -rf ../installcheck/instrumenter_checks/$$paradigm/build; \
         done
 
-if HAVE_PTHREAD
-if HAVE_GNU_LINKER
+if HAVE_PTHREAD_SUPPORT
 
 INSTALLCHECK_LOCAL += instrumenter-checks-pthread
 instrumenter-checks-pthread: ../installcheck/instrumenter_checks/create_wait/pthread/Makefile \
@@ -223,8 +225,7 @@ CLEAN_LOCAL += clean-local-instrumenter-checks-pthread
 clean-local-instrumenter-checks-pthread: ../installcheck/instrumenter_checks/create_wait/pthread/Makefile
 	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean
 
-endif HAVE_GNU_LINKER
-endif HAVE_PTHREAD
+endif HAVE_PTHREAD_SUPPORT
 
 if HAVE_MEMORY_SUPPORT
 

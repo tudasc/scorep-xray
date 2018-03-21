@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2016,
+## Copyright (c) 2014-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -18,7 +18,13 @@
 
 if HAVE_OPENCL_SUPPORT
 
-opencl_libwrap_static_cppflags = -DSCOREP_LIBWRAP_STATIC
+pkgdata_DATA += ../share/opencl.wrap \
+                ../share/opencl.nvcc.wrap
+
+DISTCLEANFILES += ../share/opencl.nvcc.wrap
+
+opencl_libwrap_linktime_cppflags = -DSCOREP_LIBWRAP_STATIC
+opencl_libwrap_runtime_cppflags = -DSCOREP_LIBWRAP_SHARED
 
 
 # runtime management library for the OpenCL adapter
@@ -30,6 +36,7 @@ libscorep_adapter_opencl_mgmt_common_sources  = \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl_config.h \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl_regions.c \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl_regions.h \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_libwrap.h \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl.c \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl.h \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.h \
@@ -58,21 +65,45 @@ libscorep_adapter_opencl_mgmt_common_ldflags = \
     $(library_api_version_ldflags)
 
 
-lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_static.la
+if HAVE_LIBWRAP_LINKTIME_SUPPORT
 
-libscorep_adapter_opencl_mgmt_static_la_SOURCES  = \
+lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_linktime.la
+
+libscorep_adapter_opencl_mgmt_linktime_la_SOURCES  = \
     $(libscorep_adapter_opencl_mgmt_common_sources)
 
-libscorep_adapter_opencl_mgmt_static_la_CPPFLAGS = \
+libscorep_adapter_opencl_mgmt_linktime_la_CPPFLAGS = \
     $(libscorep_adapter_opencl_mgmt_common_cppflags) \
-    $(opencl_libwrap_static_cppflags)
+    $(opencl_libwrap_linktime_cppflags)
 
-libscorep_adapter_opencl_mgmt_static_la_LIBADD = \
+libscorep_adapter_opencl_mgmt_linktime_la_LIBADD = \
     $(libscorep_adapter_opencl_mgmt_common_libadd)
 
-libscorep_adapter_opencl_mgmt_static_la_LDFLAGS = \
+libscorep_adapter_opencl_mgmt_linktime_la_LDFLAGS = \
     $(libscorep_adapter_opencl_mgmt_common_ldflags) \
     -Wl,@../share/opencl.wrap
+
+endif
+
+if HAVE_LIBWRAP_RUNTIME_SUPPORT
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_runtime.la
+
+libscorep_adapter_opencl_mgmt_runtime_la_SOURCES  = \
+    $(libscorep_adapter_opencl_mgmt_common_sources) \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.c
+
+libscorep_adapter_opencl_mgmt_runtime_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_cppflags) \
+    $(opencl_libwrap_runtime_cppflags)
+
+libscorep_adapter_opencl_mgmt_runtime_la_LIBADD = \
+    $(libscorep_adapter_opencl_mgmt_common_libadd)
+
+libscorep_adapter_opencl_mgmt_runtime_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_ldflags)
+
+endif
 
 # event library for the OpenCL adapter
 
@@ -98,25 +129,48 @@ libscorep_adapter_opencl_event_common_libadd = \
 
 libscorep_adapter_opencl_event_common_ldflags = \
     @OPENCL_LDFLAGS@                            \
-    $(library_api_version_ldflags) \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    $(library_api_version_ldflags)
 
 
-lib_LTLIBRARIES += libscorep_adapter_opencl_event_static.la
+if HAVE_LIBWRAP_LINKTIME_SUPPORT
 
-libscorep_adapter_opencl_event_static_la_SOURCES = \
+lib_LTLIBRARIES += libscorep_adapter_opencl_event_linktime.la
+
+libscorep_adapter_opencl_event_linktime_la_SOURCES = \
     $(libscorep_adapter_opencl_event_common_sources)
 
-libscorep_adapter_opencl_event_static_la_CPPFLAGS = \
+libscorep_adapter_opencl_event_linktime_la_CPPFLAGS = \
     $(libscorep_adapter_opencl_event_common_cppflags) \
-    $(opencl_libwrap_static_cppflags)
+    $(opencl_libwrap_linktime_cppflags)
 
-libscorep_adapter_opencl_event_static_la_LDFLAGS = \
+libscorep_adapter_opencl_event_linktime_la_LDFLAGS = \
     $(libscorep_adapter_opencl_event_common_ldflags) \
     -Wl,@../share/opencl.wrap
 
-libscorep_adapter_opencl_event_static_la_LIBADD = \
+libscorep_adapter_opencl_event_linktime_la_LIBADD = \
     $(libscorep_adapter_opencl_event_common_libadd)
+
+endif
+
+if HAVE_LIBWRAP_RUNTIME_SUPPORT
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_event_runtime.la
+
+libscorep_adapter_opencl_event_runtime_la_SOURCES = \
+    $(libscorep_adapter_opencl_event_common_sources)
+
+libscorep_adapter_opencl_event_runtime_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_event_common_cppflags) \
+    $(opencl_libwrap_runtime_cppflags)
+
+libscorep_adapter_opencl_event_runtime_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_event_common_ldflags) \
+    -Wl,@../share/opencl.wrap
+
+libscorep_adapter_opencl_event_runtime_la_LIBADD = \
+    $(libscorep_adapter_opencl_event_common_libadd)
+
+endif
 
 endif HAVE_OPENCL_SUPPORT
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -15,11 +15,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <SCOREP_InMeasurement.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
-
-static SCOREP_InterruptGeneratorHandle irq_handle;
-static SCOREP_RegionHandle             user_region;
 
 #define rot( x, k ) ( ( ( x ) << ( k ) ) | ( ( x ) >> ( 32 - ( k ) ) ) )
 #define mix( a, b, c ) \
@@ -31,6 +30,37 @@ static SCOREP_RegionHandle             user_region;
         b -= a;  b ^= rot( a, 19 );  a += c; \
         c -= b;  c ^= rot( b, 4 );  b += a; \
     }
+
+static SCOREP_RegionHandle user_region;
+
+#if HAVE( SAMPLING_SUPPORT )
+
+static SCOREP_InterruptGeneratorHandle raise_irq_handle;
+
+static void
+handler_SIGUSR1( int        signalNumber,
+                 siginfo_t* signalInfo,
+                 void*      contextPtr )
+{
+    ( void )signalNumber;
+    ( void )signalInfo;
+    bool outside = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    SCOREP_ENTER_SIGNAL_CONTEXT();
+
+    if ( outside )
+    {
+        SCOREP_Sample( raise_irq_handle, contextPtr );
+    }
+
+    SCOREP_EXIT_SIGNAL_CONTEXT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+#else
+
+#define raise( signal ) do { } while ( 0 )
+
+#endif
 
 void
 enter_region_callback( void )
@@ -70,7 +100,7 @@ bar( const char* arg,
     *b += arg[ i++ % len ];
     *c += arg[ i++ % len ];
 
-    SCOREP_Sample( irq_handle );
+    raise( SIGUSR1 );
 
     mix( ( *a ), ( *b ), ( *c ) );
 
@@ -80,12 +110,11 @@ bar( const char* arg,
 int
 main( int ac, char* av[] )
 {
-    irq_handle = SCOREP_Definitions_NewInterruptGenerator(
-        "manually",
-        SCOREP_INTERRUPT_GENERATOR_MODE_COUNT,
-        SCOREP_METRIC_BASE_DECIMAL,
-        0,
-        1 );
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
     user_region = SCOREP_Definitions_NewRegion( "USER",
                                                 "USER",
                                                 SCOREP_INVALID_SOURCE_FILE,
@@ -93,6 +122,27 @@ main( int ac, char* av[] )
                                                 SCOREP_INVALID_LINE_NO,
                                                 SCOREP_PARADIGM_USER,
                                                 SCOREP_REGION_FUNCTION );
+
+#if HAVE( SAMPLING_SUPPORT )
+
+    raise_irq_handle = SCOREP_Definitions_NewInterruptGenerator(
+        "manually",
+        SCOREP_INTERRUPT_GENERATOR_MODE_COUNT,
+        SCOREP_METRIC_BASE_DECIMAL,
+        0,
+        1 );
+
+    struct sigaction signal_action;
+    memset( &signal_action, 0, sizeof( signal_action ) );
+    signal_action.sa_sigaction = handler_SIGUSR1;
+    signal_action.sa_flags     = SA_SIGINFO | SA_RESTART;
+    sigfillset( &signal_action.sa_mask );
+    if ( 0 != sigaction( SIGUSR1, &signal_action, NULL ) )
+    {
+        UTILS_WARNING( "Failed to install signal handler for sampling." );
+    }
+
+#endif
 
     uint32_t a = 0, b = 0, c = 0;
 
@@ -104,19 +154,19 @@ main( int ac, char* av[] )
 
     i = bar( arg, len, &a, &b, &c, i );
 
-    SCOREP_Sample( irq_handle );
+    raise( SIGUSR1 );
 
     i = bar( arg, len, &a, &b, &c, i );
 
-    SCOREP_Sample( irq_handle );
+    raise( SIGUSR1 );
 
     i = bar( arg, len, &a, &b, &c, i );
 
-    SCOREP_Sample( irq_handle );
+    raise( SIGUSR1 );
 
     i = bar( arg, len, &a, &b, &c, i );
 
-    SCOREP_Sample( irq_handle );
+    raise( SIGUSR1 );
 
     i = bar( arg, len, &a, &b, &c, i );
 

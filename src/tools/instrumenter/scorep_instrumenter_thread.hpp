@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2017,
@@ -80,13 +80,12 @@ public:
     setConfigValue( const std::string& key,
                     const std::string& value );
 
-    virtual void
-    checkDependencies( void );
-
 private:
-    bool        m_has_ipa;
     std::string m_pthread_cflag;
     std::string m_pthread_lib;
+
+    bool
+    is_pthread_library( const std::string& libraryName );
 };
 
 /* *****************************************************************************

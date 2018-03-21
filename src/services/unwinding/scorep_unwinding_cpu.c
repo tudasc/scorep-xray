@@ -113,8 +113,7 @@ region_to_skip( const char* regionName )
 {
     if ( 0 == strncmp( "scorep_", regionName, 7 ) ||
          0 == strncmp( "SCOREP_", regionName, 7 ) ||
-         NULL != strstr( regionName, "._omp_fn." ) ||
-         0 == strcmp( regionName, "gsignal" ) )
+         NULL != strstr( regionName, "._omp_fn." ) )
     {
         return true;
     }
@@ -181,7 +180,7 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     int             ret = unw_get_proc_info( cursor, &proc_info );
     if ( ret < 0 )
     {
-        UTILS_DEBUG( "unw_get_proc_info() failed for IP %tx: %s", ip, unw_strerror( ret ) );
+        UTILS_DEBUG( "unw_get_proc_info() failed for IP %#tx: %s", ip, unw_strerror( ret ) );
         return NULL;
     }
 
@@ -189,9 +188,13 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     /* This has been introduced by Zoltan, We use it because it might fix something */
     if ( proc_info.end_ip == 0 || proc_info.end_ip == ip )
     {
-        UTILS_DEBUG( "workaround active: proc_info.end_ip == ip: %tx, start=%tx", ip, proc_info.start_ip );
+        UTILS_DEBUG( "workaround active: proc_info.end_ip == ip: %#tx, start=%#tx", ip, proc_info.start_ip );
         return NULL;
     }
+
+    UTILS_BUG_ON( proc_info.start_ip > ip || ip >= proc_info.end_ip,
+                  "IP %#tx does not is insie region [%#tx,%#tx)",
+                  ip, proc_info.start_ip, proc_info.end_ip );
 
     // the function name, libunwind can give us
     /* char       SCOREP_Unwinding_LocationData::region_name_buffer[ MAX_FUNC_NAME_LENGTH ]; */
@@ -204,10 +207,10 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
                              &offset );
     if ( ret < 0 )
     {
-        UTILS_DEBUG( "error while retrieving function name for IP %tx through libunwind: %s",
+        UTILS_DEBUG( "error while retrieving function name for IP %#tx: %s",
                      proc_info.start_ip, unw_strerror( ret ) );
         snprintf( unwindData->region_name_buffer, MAX_FUNC_NAME_LENGTH,
-                  "UNKNOWN@%tx", proc_info.start_ip );
+                  "UNKNOWN@[%#tx,%#tx)", proc_info.start_ip, proc_info.end_ip );
         // ??? return NULL;
     }
 
@@ -283,100 +286,75 @@ drop_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
     }
 }
 
+/** Gets the IP from the current stack frame
+ *
+ *  @param unwindData             Unwinding data of the location
+ */
+static uint64_t
+get_current_ip( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    /* the current instruction pointer */
+    unw_word_t ip;
+    /* get the instruction pointer for the current instruction on the thread */
+    int ret = unw_get_reg( &unwindData->cursor, UNW_REG_IP, &ip );
+    if ( ret < 0 )
+    {
+        UTILS_DEBUG( "Could not get IP register (unw_get_reg() returned %s)", unw_strerror( ret ) );
+        return 0;
+    }
+    UTILS_DEBUG( "unwinding: IP %p", ( void* )ip );
+    return ip;
+}
+
 /** Creates the current stack out of the unwind cursor
  *
  *  @param unwindData             Unwinding data of the location
- *  @param wrappedRegionIsOnStack True, if the wrapped region is on the stack.
- *                                This is false, for the enter event of the wrapped region
- *  @param[out] wrappedRegionIp   The IP of the wrapped region frame.
  *
  *  @return the stack
  */
-static scorep_unwinding_frame*
-get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
-                   bool                              wrappedRegionIsOnStack,
-                   uint64_t*                         wrappedRegionIp )
+static void
+drop_signal_context( SCOREP_Unwinding_CpuLocationData* unwindData )
 {
-    scorep_unwinding_frame* current_stack = NULL;
+    UTILS_DEBUG_ENTRY();
 
-    bool   in_signal_context = SCOREP_IN_SIGNAL_CONTEXT() > 0;
-    bool   in_wrapped_region = unwindData->wrapped_region != 0 && wrappedRegionIsOnStack;
-    size_t frames_to_skip    = unwindData->wrapped_region != 0 ? unwindData->frames_to_skip : 0;
-
-    UTILS_DEBUG( "unwinding %s %s %zu",
-                 in_signal_context ? "true" : "false",
-                 in_wrapped_region ? "true" : "false",
-                 frames_to_skip );
-
-    while ( true )
+    int ret = 1;
+    for (; ret > 0; ret = unw_step( &unwindData->cursor ) )
     {
-        int ret = unw_step( &unwindData->cursor );
-        if ( ret < 0 )
+        if ( unw_is_signal_frame( &unwindData->cursor ) )
+        {
+            break;
+        }
+    }
+    if ( ret < 0 )
+    {
+        UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+    }
+    if ( 0 == ret )
+    {
+        UTILS_DEBUG( "unwinding: unw_step() returned 0" );
+    }
+}
+
+/** Creates the current stack out of the unwind cursor
+ *
+ *  @param unwindData             Unwinding data of the location
+ *
+ *  @return the stack
+ */
+static void
+pop_skipped_frames( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    UTILS_DEBUG_ENTRY();
+
+    int ret = 1;
+    for (; ret > 0; ret = unw_step( &unwindData->cursor ) )
+    {
+        /* the current instruction pointer */
+        unw_word_t ip = get_current_ip( unwindData );
+        if ( 0 == ip )
         {
             UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
             break;
-        }
-        if ( 0 == ret )
-        {
-            UTILS_DEBUG( "unwinding %s %s %zu: unw_step() returned 0",
-                         in_signal_context ? "true" : "false",
-                         in_wrapped_region ? "true" : "false",
-                         frames_to_skip );
-            break;
-        }
-
-        int use_prev_instr = 1;
-        if ( unw_is_signal_frame( &unwindData->cursor ) )
-        {
-            in_signal_context = false;
-            use_prev_instr    = 0;
-        }
-
-        /* If we were called from a signal handler, than we ignore stack frames
-           until we found the signal frame */
-        if ( in_signal_context )
-        {
-            continue;
-        }
-
-        /* the current instruction pointer */
-        unw_word_t ip;
-        /* get the instruction pointer for the current instruction on the thread */
-        ret = unw_get_reg( &unwindData->cursor, UNW_REG_IP, &ip );
-        if ( ret < 0 )
-        {
-            UTILS_DEBUG( "Could not get IP register (unw_get_reg() returned %s", unw_strerror( ret ) );
-            continue;
-        }
-        UTILS_DEBUG( "unwinding %s %s %zu: IP %p",
-                     in_signal_context ? "true" : "false",
-                     in_wrapped_region ? "true" : "false",
-                     frames_to_skip,
-                     ( void* )ip );
-        if ( 0 == ip )
-        {
-            break;
-        }
-
-        /* check if this frame is the wrapped region */
-        if ( in_wrapped_region
-             && unwindData->wrapped_region->start <= ip
-             && ip < unwindData->wrapped_region->end )
-        {
-            /* This is the frame of the wrapped region, we still skip it
-               as we have the wrapped region as an instrumented on the
-               augmented stack already */
-            in_wrapped_region = false;
-            /* Remember the IP of this frame, we will use it later when
-               updating the calling context */
-            *wrappedRegionIp = ip - use_prev_instr;
-            continue;
-        }
-
-        /* We ignore frames until we found the wrapped region frame. */
-        if ( in_wrapped_region )
-        {
-            continue;
         }
 
         /* lock-up the region by the IP */
@@ -389,10 +367,55 @@ get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
             continue;
         }
 
-        /* If we got this far, we may need to skip further frames based on frames_to_skip */
-        if ( frames_to_skip > 0 )
+        /* First frame we did not skipped */
+        break;
+    }
+    if ( ret < 0 )
+    {
+        UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+    }
+    if ( 0 == ret )
+    {
+        UTILS_DEBUG( "unwinding: unw_step() returned 0" );
+    }
+}
+
+/** Creates the current stack out of the unwind cursor
+ *
+ *  @param unwindData             Unwinding data of the location
+ *
+ *  @return the stack
+ */
+static scorep_unwinding_frame*
+get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    scorep_unwinding_frame* current_stack = NULL;
+
+    UTILS_DEBUG_ENTRY();
+
+    int ret = 1;
+    for (; ret > 0; ret = unw_step( &unwindData->cursor ) )
+    {
+        int use_prev_instr = 1;
+        if ( unw_is_signal_frame( &unwindData->cursor ) )
         {
-            frames_to_skip--;
+            use_prev_instr = 0;
+        }
+
+        /* the current instruction pointer */
+        unw_word_t ip = get_current_ip( unwindData );
+        if ( 0 == ip )
+        {
+            break;
+        }
+
+        /* lock-up the region by the IP */
+        scorep_unwinding_region* region = get_region( unwindData, &unwindData->cursor, ip );
+
+        /* if we could not recognize a region (because it has been in kernel space for example)
+         * or we know we can skip the region (e.g., because its within Score-P), skip it */
+        if ( !region || region->skip )
+        {
             continue;
         }
 
@@ -413,96 +436,208 @@ get_current_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
             break;
         }
     }
+    if ( ret < 0 )
+    {
+        UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+    }
+    if ( 0 == ret )
+    {
+        UTILS_DEBUG( "unwinding %s: unw_step() returned 0" );
+    }
 
     return current_stack;
 }
 
-/** Resolve PLT entries, works only if linked/executed with bind-now semantic.
- *  Implemented only for x86-64.
- *
- *  @param functionAddress The function address to resolve.
- *
- *  @return the resolved function address
- */
-static inline intptr_t
-resolve_plt( intptr_t functionAddress )
+static scorep_unwinding_surrogate*
+get_surrogate( SCOREP_Unwinding_CpuLocationData* unwindData,
+               uint64_t                          ip,
+               SCOREP_RegionHandle               instrumentedRegionHandle,
+               bool                              isWrapped )
 {
-    intptr_t v0, v1;
+    scorep_unwinding_surrogate* surrogate = get_unused( unwindData );
 
-    v0 = *( intptr_t* )functionAddress;
-    v1 = *( intptr_t* )( functionAddress + 8 );
+    surrogate->ip            = ip;
+    surrogate->region_handle = instrumentedRegionHandle;
+    surrogate->is_wrapped    = isWrapped;
 
-    /* Is this a plt entry? */
-    if ( ( v0 & 0xffff ) == 0x25ff
-         && ( ( ( v0 >> 48 ) & 0xff ) == 0x68 )
-         && ( ( ( v1 >> 24 ) & 0xff ) == 0xe9 ) )
-    {
-        /* it is, is it already resolved? */
-        intptr_t got = ( v0 >> 16 ) & 0xffffffff;
-        got += functionAddress + 6;
-        intptr_t v2 = *( intptr_t* )got;
-
-        if ( v2 == functionAddress + 6 )
-        {
-            UTILS_FATAL( "Executable or Score-P libraries not linked with bind-now semantics." );
-        }
-
-        functionAddress = v2;
-    }
-
-    return functionAddress;
+    return surrogate;
 }
 
-static scorep_unwinding_region*
-get_wrapped_region( SCOREP_Unwinding_CpuLocationData* unwindData,
-                    intptr_t                          wrappedRegion )
+static void
+push_surrogate( SCOREP_Unwinding_CpuLocationData*            unwindData,
+                scorep_unwinding_surrogate*                  surrogate,
+                scorep_unwinding_calling_context_tree_node** unwindContext,
+                uint32_t*                                    unwindDistance )
 {
-    /* Resolve PLT entries */
-    wrappedRegion = resolve_plt( wrappedRegion );
+    surrogate->unwind_context               = *unwindContext;
+    surrogate->prev                         = unwindData->augmented_stack->surrogates;
+    unwindData->augmented_stack->surrogates = surrogate;
 
-    /* Look for the region belonging to ip */
-    scorep_unwinding_region* region =
-        scorep_unwinding_region_find( unwindData, wrappedRegion );
+    /* Now descent into the instrumented region */
+    calling_context_descent( unwindData->location,
+                             unwindContext,
+                             unwindDistance,
+                             surrogate->ip,
+                             surrogate->region_handle );
+}
 
-    if ( !region )
+
+static void
+pop_surrogate( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    scorep_unwinding_augmented_frame* frame     = unwindData->augmented_stack;
+    scorep_unwinding_surrogate*       surrogate = frame->surrogates;
+    frame->surrogates = surrogate->prev;
+    put_unused( unwindData, surrogate );
+
+    /*
+     * pop also all non-surrogate frames from the augmented stack until the next
+     * instrumented region or drop the whole argumented stack if this was the
+     * last instrumented region we left
+     */
+    while ( unwindData->augmented_stack && unwindData->augmented_stack->surrogates == NULL )
     {
-        /* Get address range of function from libunwind */
-        unw_proc_info_t proc_info;
-        int             ret = unw_get_proc_info_by_ip( unw_local_addr_space,
-                                                       ( unw_word_t )wrappedRegion,
-                                                       &proc_info, 0 );
-        if ( ret < 0 )
+        /* This is a real stack region, remove from augmented stack */
+        frame = unwindData->augmented_stack;
+        if ( frame == frame->prev )
         {
-            UTILS_DEBUG( "unw_get_proc_info_by_ip() failed for IP %tx: %s", wrappedRegion, unw_strerror( ret ) );
-            proc_info.start_ip = wrappedRegion;
-            proc_info.end_ip   = wrappedRegion + 1;
+            /* The last one */
+            unwindData->augmented_stack = NULL;
         }
-
-        /* FIXME: libunwind bug workaround */
-        /* This has been introduced by Zoltan, We use it because it might fix something */
-        if ( proc_info.end_ip == wrappedRegion )
+        else
         {
-            UTILS_DEBUG( "workaround active: proc_info.end_ip == ip: %tx, start=%tx", wrappedRegion, proc_info.start_ip );
-            proc_info.end_ip++;
+            /* remove frame from double-linked list */
+            frame->prev->next           = frame->next;
+            frame->next->prev           = frame->prev;
+            unwindData->augmented_stack = frame->next;
         }
+        put_unused( unwindData, frame );
+    }
+}
 
-        region = create_region( unwindData,
-                                proc_info.start_ip,
-                                proc_info.end_ip,
-                                "" /* name is not important */ );
-
-        /* Don't set a handle, the region may be wrapped under different names */
-        region->handle = SCOREP_INVALID_REGION;
+static scorep_unwinding_surrogate*
+resolve_unhandled_wrappers( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    scorep_unwinding_surrogate* new_surrogates    = NULL;
+    bool                        next_is_caller_ip = false;
+    int                         use_prev_instr    = 1;
+    if ( SCOREP_IN_SIGNAL_CONTEXT() )
+    {
+        next_is_caller_ip = true;
+        use_prev_instr    = 0;
     }
 
-    return region;
+    scorep_unwinding_unhandled_wrapper* wrapper = unwindData->unhandled_wrappers;
+    while ( wrapper )
+    {
+        UTILS_DEBUG( "Handle wrapper: %p %zu",
+                     wrapper->wrapper_ip,
+                     wrapper->n_wrapper_frames );
+
+        uint64_t caller_ip = 0;
+
+        /* now step through the stack, until we find the wrapper */
+        int ret = 1;
+        for (; ret > 0; ret = unw_step( &unwindData->cursor ) )
+        {
+            /* the current instruction pointer */
+            unw_word_t ip = get_current_ip( unwindData );
+            if ( 0 == ip )
+            {
+                break;
+            }
+
+            if ( next_is_caller_ip )
+            {
+                caller_ip         = ip - use_prev_instr;
+                next_is_caller_ip = false;
+            }
+
+            /* lock-up the region by the IP */
+            scorep_unwinding_region* region = get_region( unwindData, &unwindData->cursor, ip );
+            if ( !region )
+            {
+                continue;
+            }
+
+            UTILS_DEBUG( "Handle wrapper: region on stack %s@[%p,%p)",
+                         region->name,
+                         region->start,
+                         region->end );
+
+            if ( wrapper->wrapper_ip < region->start || wrapper->wrapper_ip >= region->end )
+            {
+                continue;
+            }
+
+            /* we found the wrapper, now skip it and any possible pre-wrappers */
+            while ( wrapper->n_wrapper_frames-- )
+            {
+                ret = unw_step( &unwindData->cursor );
+                if ( ret < 0 )
+                {
+                    UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+                    break;
+                }
+                if ( 0 == ret )
+                {
+                    UTILS_DEBUG( "unwinding: unw_step() returned 0" );
+                    break;
+                }
+            }
+            break;
+        }
+        if ( ret < 0 )
+        {
+            UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+            goto out;
+        }
+        if ( 0 == ret )
+        {
+            UTILS_DEBUG( "unwinding: unw_step() returned 0" );
+            goto out;
+        }
+
+        scorep_unwinding_surrogate* surrogate = get_surrogate( unwindData,
+                                                               caller_ip,
+                                                               wrapper->wrappee_handle,
+                                                               true );
+        surrogate->prev = new_surrogates;
+        new_surrogates  = surrogate;
+
+        next_is_caller_ip = true;
+
+        wrapper = wrapper->next;
+    }
+
+    return new_surrogates;
+
+out:
+    /* we could not resolve all unhandled wrappers, drop the newly resolved one */
+    while ( new_surrogates )
+    {
+        scorep_unwinding_surrogate* surrogate = new_surrogates;
+        new_surrogates = surrogate->prev;
+        put_unused( unwindData, surrogate );
+    }
+    return NULL;
+}
+
+static void
+drop_unhandled_wrappers( SCOREP_Unwinding_CpuLocationData* unwindData )
+{
+    while ( unwindData->unhandled_wrappers )
+    {
+        scorep_unwinding_unhandled_wrapper* wrapper = unwindData->unhandled_wrappers;
+        unwindData->unhandled_wrappers = wrapper->next;
+        put_unused( unwindData, wrapper );
+    }
 }
 
 SCOREP_ErrorCode
 scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
+                                   void*                             contextPtr,
                                    SCOREP_RegionHandle               instrumentedRegionHandle,
-                                   intptr_t                          wrappedRegion,
-                                   size_t                            framesToSkip,
                                    SCOREP_CallingContextHandle*      callingContext,
                                    uint32_t*                         unwindDistance,
                                    SCOREP_CallingContextHandle*      previousCallingContext )
@@ -520,54 +655,151 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
                        : "" );
 
     /* export the previous calling context, but do not reset our previous yet,
-       as we may fail to get an backtrace */
+       as we may fail to get a backtrace */
     *previousCallingContext = unwindData->previous_calling_context;
 
-    int ret = unw_getcontext( &unwindData->context );
-    if ( ret < 0 )
+#if HAVE( DECL_UNW_INIT_LOCAL_SIGNAL )
+    if ( contextPtr )
     {
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind context: %s", unw_strerror( ret ) );
-    }
-    ret = unw_init_local( &unwindData->cursor, &unwindData->context );
-    if ( ret < 0 )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind cursor: %s", unw_strerror( ret ) );
-    }
-
-    bool     wrapped_region_is_on_stack = false;
-    uint64_t wrapped_region_ip          = 0;
-    if ( unwindData->wrapped_region )
-    {
-        wrapped_region_is_on_stack = true;
-    }
-    if ( wrappedRegion )
-    {
-        UTILS_BUG_ON( unwindData->wrapped_region, "Entering a wrapped region again!" );
-
-        /* If we just enter the wrapped region, the wrapped region wont be on
-           the stack yet */
-        wrapped_region_is_on_stack = false;
-
-        unwindData->wrapped_region =
-            get_wrapped_region( unwindData, wrappedRegion );
-        if ( !unwindData->wrapped_region )
+        int ret = unw_init_local_signal( &unwindData->cursor, contextPtr );
+        if ( ret < 0 )
         {
             return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                "Could not determine function for wrapped region." );
+                                "Could not get libunwind cursor from signal context: %s", unw_strerror( ret ) );
         }
-        /* For the enter event in the wrapped region, we use the start address,
-           wont be changed by get_current_stack */
-        wrapped_region_ip          = unwindData->wrapped_region->start;
-        unwindData->frames_to_skip = framesToSkip;
+    }
+    else
+#endif
+    {
+        int ret = unw_getcontext( &unwindData->context );
+        if ( ret < 0 )
+        {
+            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                                "Could not get libunwind context: %s", unw_strerror( ret ) );
+        }
+        ret = unw_init_local( &unwindData->cursor, &unwindData->context );
+        if ( ret < 0 )
+        {
+            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                                "Could not get libunwind cursor: %s", unw_strerror( ret ) );
+        }
+
+        if ( SCOREP_IN_SIGNAL_CONTEXT() )
+        {
+            drop_signal_context( unwindData );
+        }
+        else
+        {
+            pop_skipped_frames( unwindData );
+        }
     }
 
-    scorep_unwinding_frame* current_stack =
-        get_current_stack( unwindData, wrapped_region_is_on_stack, &wrapped_region_ip );
+    //UTILS_BUG_ON( "Entering an instrumented region while in a wrapper." );
+
+    scorep_unwinding_surrogate* new_surrogates = NULL;
+    if ( unwindData->unhandled_wrappers )
+    {
+        UTILS_BUG_ON( instrumentedRegionHandle && unwindData->unhandled_wrappers->wrappee_handle != instrumentedRegionHandle,
+                      "Entering the wrong wrapped region." );
+
+        new_surrogates = resolve_unhandled_wrappers( unwindData );
+
+        if ( new_surrogates == NULL )
+        {
+            UTILS_BUG_ON( instrumentedRegionHandle, "Could not resolve unhandled wrappers for enter event." );
+            /* Ignore sample */
+            return SCOREP_SUCCESS;
+        }
+
+        /* If we are already in a wrapped region, than we just need to push all new
+         * surrogates onto the augmented stack and can return */
+        if ( unwindData->augmented_stack
+             && unwindData->augmented_stack->surrogates->is_wrapped )
+        {
+            /*
+             * we could successfully resolve all unhandled wrappers, we can now
+             * safely drop them all
+             */
+            drop_unhandled_wrappers( unwindData );
+
+            scorep_unwinding_calling_context_tree_node* unwind_context = unwindData->augmented_stack->surrogates->unwind_context;
+            *unwindDistance = 0;
+
+            /* The previous wrapper made progress */
+            calling_context_descent( unwindData->location,
+                                     &unwind_context,
+                                     unwindDistance,
+                                     get_current_ip( unwindData ),
+                                     unwindData->augmented_stack->surrogates->region_handle );
+
+            /* We enter nested wrapped regions, just push all surrogates */
+            while ( new_surrogates )
+            {
+                scorep_unwinding_surrogate* surrogate = new_surrogates;
+                new_surrogates = surrogate->prev;
+
+                UTILS_DEBUG( "Entering nested-wrapper: %s",
+                             SCOREP_RegionHandle_GetName( surrogate->region_handle ) );
+
+                push_surrogate( unwindData,
+                                surrogate,
+                                &unwind_context,
+                                unwindDistance );
+            }
+
+            *callingContext                      = unwind_context->handle;
+            unwindData->previous_calling_context = *callingContext;
+
+            return SCOREP_SUCCESS;
+        }
+    }
+    if ( unwindData->augmented_stack
+         && unwindData->augmented_stack->surrogates->is_wrapped )
+    {
+        scorep_unwinding_calling_context_tree_node* unwind_context = unwindData->augmented_stack->surrogates->unwind_context;
+        *unwindDistance = 0;
+
+        if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
+        {
+            /* The previous wrapper made progress */
+            calling_context_descent( unwindData->location,
+                                     &unwind_context,
+                                     unwindDistance,
+                                     0, /* no IP yet, if instrumented region was triggered by wrappers, they are off anyway */
+                                     unwindData->augmented_stack->surrogates->region_handle );
+
+            /* instrumented region inside a wrapped region */
+            new_surrogates = get_surrogate( unwindData,
+                                            0, /* no IP yet, if instrumented region was triggered by wrappers, they are off anyway */
+                                            instrumentedRegionHandle,
+                                            false );
+
+            push_surrogate( unwindData,
+                            new_surrogates,
+                            &unwind_context,
+                            unwindDistance );
+        }
+        else
+        {
+            /* sample inside wrapped region */
+            calling_context_descent( unwindData->location,
+                                     &unwind_context,
+                                     unwindDistance,
+                                     get_current_ip( unwindData ),
+                                     unwindData->augmented_stack->surrogates->region_handle );
+        }
+
+        *callingContext                      = unwind_context->handle;
+        unwindData->previous_calling_context = *callingContext;
+
+        return SCOREP_SUCCESS;
+    }
+
+    scorep_unwinding_frame* current_stack = get_current_stack( unwindData );
     if ( !current_stack )
     {
-        UTILS_BUG_ON( instrumentedRegionHandle != 0, "Empty stack for enter" );
+        UTILS_BUG_ON( instrumentedRegionHandle, "Empty stack for enter" );
+
         /* Just ignore this sample */
         return SCOREP_SUCCESS;
     }
@@ -576,32 +808,6 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
        thus start with an unwind distance of 1 */
     *unwindDistance = 1;
     scorep_unwinding_calling_context_tree_node* unwind_context = &unwindData->calling_context_root;
-
-    /* If this is a sample inside a wrapped region, just take the unwind context from the
-       instrumented region and the wrapped_region_ip to create the calling context and return */
-    if ( !instrumentedRegionHandle && unwindData->wrapped_region )
-    {
-        UTILS_BUG_ON( unwindData->augmented_stack == NULL,
-                      "Sample in wrapped region without instrumented region on the stack." );
-        UTILS_BUG_ON( scorep_in_wrapped_region == 0,
-                      "Sample inside a wrapped-region triggered without being told so." );
-        unwind_context                  = unwindData->augmented_stack->surrogates->unwind_context;
-        unwindData->augmented_stack->ip = wrapped_region_ip;
-        /* Decent into the instrumented region */
-        *unwindDistance = 0;
-        calling_context_descent( unwindData->location,
-                                 &unwind_context,
-                                 unwindDistance,
-                                 wrapped_region_ip,
-                                 unwindData->augmented_stack->surrogates->region_handle );
-
-        *callingContext                      = unwind_context->handle;
-        unwindData->previous_calling_context = *callingContext;
-
-        drop_stack( unwindData, current_stack );
-
-        return SCOREP_SUCCESS;
-    }
 
     /* If we have instrumented regions on the stack, determine the unwind context
      * and the tail of the current unwind stack. */
@@ -671,9 +877,13 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         /* We want to enter an instrumented region, thus we need to create
            the augmented stack, thus convert the current frame to an augmented
            one */
-        if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
+        if ( instrumentedRegionHandle != SCOREP_INVALID_REGION
+             || new_surrogates )
         {
             scorep_unwinding_augmented_frame* augmented_frame = get_unused( unwindData );
+            augmented_frame->ip     = current_stack->ip;
+            augmented_frame->region = current_stack->region;
+
             if ( unwindData->augmented_stack == NULL )
             {
                 /* First frame */
@@ -687,9 +897,6 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
                 augmented_frame->prev->next = augmented_frame;
                 augmented_frame->next->prev = augmented_frame;
             }
-
-            augmented_frame->ip         = current_stack->ip;
-            augmented_frame->region     = current_stack->region;
             unwindData->augmented_stack = augmented_frame;
         }
 
@@ -699,30 +906,31 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
         put_unused( unwindData, frame );
     }
 
-    /* We now have the calling context for the current CPU stack, now enter
-       the provided instrumented region */
-    if ( instrumentedRegionHandle != SCOREP_INVALID_REGION )
-    {
-        scorep_unwinding_surrogate* surrogate = get_unused( unwindData );
-        surrogate->prev = unwindData->augmented_stack->surrogates;
-        if ( wrappedRegion )
-        {
-            surrogate->ip = unwindData->wrapped_region->start;
-        }
-        else
-        {
-            surrogate->ip = unwindData->augmented_stack->ip;
-        }
-        surrogate->region_handle                = instrumentedRegionHandle;
-        surrogate->unwind_context               = unwind_context;
-        unwindData->augmented_stack->surrogates = surrogate;
+    /*
+     * we could successfully resolve all unhandled wrappers, we can now safely
+     * drop them all
+     */
+    drop_unhandled_wrappers( unwindData );
 
-        /* Now descent into the instrumented region */
-        calling_context_descent( unwindData->location,
-                                 &unwind_context,
-                                 unwindDistance,
-                                 surrogate->ip,
-                                 instrumentedRegionHandle );
+    /* create the surrogate for the instrumented (non-wrapped) region */
+    if ( instrumentedRegionHandle != SCOREP_INVALID_REGION && !new_surrogates )
+    {
+        new_surrogates = get_surrogate( unwindData,
+                                        unwindData->augmented_stack->ip,
+                                        instrumentedRegionHandle,
+                                        false );
+    }
+
+    /* We now have the calling context for the current CPU stack, now enter
+       all provided instrumented region */
+    while ( new_surrogates )
+    {
+        scorep_unwinding_surrogate* surrogate = new_surrogates;
+        new_surrogates = surrogate->prev;
+        push_surrogate( unwindData,
+                        surrogate,
+                        &unwind_context,
+                        unwindDistance );
     }
 
     *callingContext                      = unwind_context->handle;
@@ -747,35 +955,28 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
 
     *previousCallingContext = unwindData->previous_calling_context;
 
-    int ret = unw_getcontext( &unwindData->context );
-    if ( ret < 0 )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind context: %s", unw_strerror( ret ) );
-    }
-    ret = unw_init_local( &unwindData->cursor, &unwindData->context );
-    if ( ret < 0 )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Could not get libunwind cursor: %s", unw_strerror( ret ) );
-    }
-
     UTILS_BUG_ON( unwindData->augmented_stack == NULL, "Leave event without instrumented regions." );
 
-    uint64_t ip = unwindData->augmented_stack->ip;
-    if ( unwindData->wrapped_region )
+    /* wrapped regions dont have an instruction for the leave event */
+    uint64_t ip = 0;
+    if ( !unwindData->augmented_stack->surrogates->is_wrapped
+         && unwindData->augmented_stack->surrogates->ip )
     {
-        /* If we are leaving the wrapped region, we wont have a address on the stack,
-           take end-1 as the ip */
-        ip                         = unwindData->wrapped_region->end - 1;
-        unwindData->wrapped_region = NULL;
-        unwindData->frames_to_skip = 0;
-    }
-    else
-    {
-        uint64_t                wrapped_region_ip;
-        scorep_unwinding_frame* current_stack =
-            get_current_stack( unwindData, false, &wrapped_region_ip );
+        int ret = unw_getcontext( &unwindData->context );
+        if ( ret < 0 )
+        {
+            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                                "Could not get libunwind context: %s", unw_strerror( ret ) );
+        }
+        ret = unw_init_local( &unwindData->cursor, &unwindData->context );
+        if ( ret < 0 )
+        {
+            return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                                "Could not get libunwind cursor: %s", unw_strerror( ret ) );
+        }
+        pop_skipped_frames( unwindData );
+
+        scorep_unwinding_frame* current_stack = get_current_stack( unwindData );
         if ( !current_stack )
         {
             return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
@@ -811,34 +1012,7 @@ scorep_unwinding_cpu_handle_exit( SCOREP_Unwinding_CpuLocationData* unwindData,
         unwindData->augmented_stack->surrogates->unwind_context;
 
     /* Now pop the instrumented region from the augmented stack */
-    scorep_unwinding_augmented_frame* frame     = unwindData->augmented_stack;
-    scorep_unwinding_surrogate*       surrogate = frame->surrogates;
-    frame->surrogates = surrogate->prev;
-    put_unused( unwindData, surrogate );
-
-    /*
-     * pop also all non-surrogate frames from the augmented stack until the next
-     * instrumented region or drop the whole argumented stack if this was the
-     * last instrumented region we left
-     */
-    while ( unwindData->augmented_stack && unwindData->augmented_stack->surrogates == NULL )
-    {
-        /* This is a real stack region, remove from augmented stack */
-        frame = unwindData->augmented_stack;
-        if ( frame == frame->prev )
-        {
-            /* The last one */
-            unwindData->augmented_stack = NULL;
-        }
-        else
-        {
-            /* remove frame from double-linked list */
-            frame->prev->next           = frame->next;
-            frame->next->prev           = frame->prev;
-            unwindData->augmented_stack = frame->next;
-        }
-        put_unused( unwindData, frame );
-    }
+    pop_surrogate( unwindData );
 
     /* Now create the calling context for the leave */
     *unwindDistance = 0;
@@ -897,4 +1071,135 @@ scorep_unwinding_cpu_deactivate( SCOREP_Unwinding_CpuLocationData* unwindData )
     SCOREP_Location_DeactivateCpuSample( unwindData->location,
                                          unwindData->previous_calling_context );
     unwindData->previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+}
+
+void
+scorep_unwinding_cpu_push_wrapper( SCOREP_Unwinding_CpuLocationData* unwindData,
+                                   SCOREP_RegionHandle               regionHandle,
+                                   uint64_t                          wrapperIp,
+                                   size_t                            framesToSkip )
+{
+    if ( !unwindData )
+    {
+        UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
+        return;
+    }
+
+    UTILS_DEBUG_ENTRY( "%p regionHandle=%u[%s] %" PRIu64 " %zu",
+                       unwindData->location, regionHandle,
+                       SCOREP_RegionHandle_GetName( regionHandle ),
+                       wrapperIp, framesToSkip );
+
+    if ( wrapperIp == 0 )
+    {
+        int ret = unw_getcontext( &unwindData->context );
+        if ( ret < 0 )
+        {
+            UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                         "Could not get libunwind context: %s", unw_strerror( ret ) );
+            return;
+        }
+        ret = unw_init_local( &unwindData->cursor, &unwindData->context );
+        if ( ret < 0 )
+        {
+            UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                         "Could not get libunwind cursor: %s", unw_strerror( ret ) );
+            return;
+        }
+        pop_skipped_frames( unwindData );
+
+        /*
+         * Find the frame of the last wrapper (the one called
+         * SCOREP_EnterWrappedRegion/SCOREP_EnterWrapper)
+         */
+        scorep_unwinding_region* region;
+        ret = 1;
+        for (; ret > 0; ret = unw_step( &unwindData->cursor ) )
+        {
+            region = NULL;
+
+            /* the current instruction pointer */
+            /* get the instruction pointer for the current instruction on the thread */
+            wrapperIp = get_current_ip( unwindData );
+            if ( 0 == wrapperIp )
+            {
+                break;
+            }
+
+            /* lock-up the region by the IP */
+            region = get_region( unwindData, &unwindData->cursor, wrapperIp );
+
+            /* if we could not recognize a region (because it has been in kernel space for example)
+             * or we know we can skip the region (e.g., because its within Score-P), skip it */
+            if ( !region || region->skip )
+            {
+                continue;
+            }
+
+            /* This is the first region after any ignored (i.e., inside Score-P) frames */
+            break;
+        }
+        if ( ret < 0 )
+        {
+            UTILS_DEBUG( "Breaking after unw_step() returned %s", unw_strerror( ret ) );
+        }
+        if ( 0 == ret )
+        {
+            UTILS_DEBUG( "unwinding: unw_step() returned 0" );
+        }
+
+        UTILS_BUG_ON( !wrapperIp, "Could not determine IP in wrapper region." );
+    }
+
+    scorep_unwinding_unhandled_wrapper* new_wrapper = get_unused( unwindData );
+    new_wrapper->wrapper_ip        = wrapperIp;
+    new_wrapper->n_wrapper_frames  = framesToSkip;
+    new_wrapper->wrappee_handle    = regionHandle;
+    new_wrapper->next              = unwindData->unhandled_wrappers;
+    unwindData->unhandled_wrappers = new_wrapper;
+
+    UTILS_DEBUG_EXIT( "%p regionHandle=%u[%s]",
+                      unwindData->location, regionHandle,
+                      SCOREP_RegionHandle_GetName( regionHandle ) );
+}
+
+void
+scorep_unwinding_cpu_pop_wrapper( SCOREP_Unwinding_CpuLocationData* unwindData,
+                                  SCOREP_RegionHandle               regionHandle )
+{
+    if ( !unwindData )
+    {
+        UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "location has no unwind data?" );
+        return;
+    }
+
+    UTILS_DEBUG_ENTRY( "%p regionHandle=%u[%s]",
+                       unwindData->location, regionHandle,
+                       SCOREP_RegionHandle_GetName( regionHandle ) );
+
+    if ( unwindData->unhandled_wrappers == NULL )
+    {
+        /* The wrapper was handled (enter or sample) */
+        UTILS_BUG_ON( unwindData->augmented_stack == NULL,
+                      "Wrapper neither on the unhandled stack, nor on the augmented stack." );
+
+        UTILS_BUG_ON( unwindData->augmented_stack->surrogates->region_handle != regionHandle,
+                      "Wrong order of push/pop wrapper operations." );
+
+        pop_surrogate( unwindData );
+
+        return;
+    }
+
+    scorep_unwinding_unhandled_wrapper* top_wrapper = unwindData->unhandled_wrappers;
+    unwindData->unhandled_wrappers = top_wrapper->next;
+    UTILS_DEBUG( "%p top => %u[%s] %p",
+                 unwindData->location, top_wrapper->wrappee_handle,
+                 SCOREP_RegionHandle_GetName( top_wrapper->wrappee_handle ),
+                 top_wrapper->wrapper_ip );
+
+    UTILS_BUG_ON( top_wrapper->wrappee_handle != regionHandle,
+                  "Wrong order of push/pop wrapper operations." );
+
+    put_unused( unwindData, top_wrapper );
 }

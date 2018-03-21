@@ -9,61 +9,78 @@ ${guard:start}
 ${proto:c}
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  ${rtype} return_val;
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
+  const int           xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
+  ${rtype}            return_val;
+  SCOREP_MpiRequestId reqid;
 
-  ${guard:hooks}
-    ${declarehooks};
-  ${guard:end}
+${guard:hooks}
+  ${declarehooks};
+${guard:end}
 
-  const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
+  int sz;
+  if (event_gen_active)
   {
-    int sz;
-    SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
+    reqid = scorep_mpi_get_request_id();
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
-                              ( intptr_t )P${name});
 
-	${guard:hooks}
-    ${check:hooks}
-        ${call:prehook};
-    ${guard:end}
-
-    if (dest != MPI_PROC_NULL)
+    if (event_gen_active_for_group)
     {
-      PMPI_Type_size(datatype, &sz);
-      if (xnb_active)
-         SCOREP_MpiIsend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                         tag, (uint64_t)count * sz, reqid);
-      else
-         SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                     tag, (uint64_t)count * sz);
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
 
+${guard:hooks}
+      ${check:hooks}
+          ${call:prehook};
+${guard:end}
+
+      if (dest != MPI_PROC_NULL)
+      {
+        PMPI_Type_size(datatype, &sz);
+        if (xnb_active)
+           SCOREP_MpiIsend(dest, SCOREP_MPI_COMM_HANDLE(comm),
+                           tag, (uint64_t)count * sz, reqid);
+        else
+           SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
+                       tag, (uint64_t)count * sz);
+
+      }
     }
-
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = ${call:pmpi};
-    SCOREP_EXIT_WRAPPED_REGION();
-    if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+    else
     {
-       scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
-                           tag, dest, (uint64_t)count*sz, datatype, comm, reqid);
-
-        ${guard:hooks}
-      	${check:hooks}
-        	${call:posthook};
-    	${guard:end}
-
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+  }
+
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = ${call:pmpi};
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+      {
+         scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
+                             tag, dest, (uint64_t)count*sz, datatype, comm, reqid);
+
+${guard:hooks}
+        ${check:hooks}
+          ${call:posthook};
+${guard:end}
+      }
+
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+    }
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = ${call:pmpi};
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 ${guard:end}

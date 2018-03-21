@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -18,10 +18,28 @@
 
 #include "foo.h"
 
-#include <SCOREP_Libwrap_Macros.h>
+#define SCOREP_LIBWRAP_DECLARE_REAL_FUNC_SPECIFIER static
+
+#include <scorep/SCOREP_Libwrap_Macros.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Libwrap.h>
+#include <scorep/SCOREP_Libwrap.h>
+
+SCOREP_LIBWRAP_DECLARE_REAL_FUNC( ( void ), foo, ( void ) );
+
+// region handles
+
+static SCOREP_RegionHandle
+SCOREP_LIBWRAP_REGION_HANDLE( foo );
+
+static int
+SCOREP_LIBWRAP_REGION_FILTERED( foo );
+
+static void
+library_wrapper_init( SCOREP_LibwrapHandle* lw )
+{
+    SCOREP_LIBWRAP_FUNC_INIT( lw, foo, "foo()", "example.h", 1 );
+}
 
 /* Library wrapper object */
 static SCOREP_LibwrapHandle* lw = SCOREP_LIBWRAP_NULL;
@@ -29,43 +47,35 @@ static SCOREP_LibwrapHandle* lw = SCOREP_LIBWRAP_NULL;
 const char* my_lib_name[ 1 ] = { "foo.so" };
 
 /* Library wrapper attributes */
-static SCOREP_LibwrapAttributes lw_attr =
+static const SCOREP_LibwrapAttributes lw_attr =
 {
+    SCOREP_LIBWRAP_VERSION,
+    "foo",
+    "Foo",
     SCOREP_LIBWRAP_MODE,
+    library_wrapper_init,
     1,
     my_lib_name
 };
-
-#ifdef SCOREP_LIBWRAP_STATIC
-
-void
-__real_foo( void );
-
-#endif
 
 /*
  * Function wrapper
  */
 void
-SCOREP_LIBWRAP_FUNC_NAME( foo ) ( void )
+SCOREP_LIBWRAP_FUNC_NAME( foo )( void )
 {
-    /* Initialize the measurement system */
-    SCOREP_InitMeasurement();
-    SCOREP_Libwrap_Initialize();
-
+    SCOREP_LIBWRAP_ENTER_MEASUREMENT();
     printf( "Wrapped function 'foo'\n" );
 
-    SCOREP_LIBWRAP_FUNC_INIT( lw, lw_attr,
-                              void, foo, ( void ),
-                              "example.h", 0 );
+    SCOREP_LIBWRAP_INIT( lw, lw_attr );
 
-    SCOREP_LIBWRAP_FUNC_ENTER
+    SCOREP_LIBWRAP_FUNC_ENTER( foo );
 
-    SCOREP_LIBWRAP_FUNC_CALL( lw,
-                              foo,
-                              ( ) );
+    SCOREP_LIBWRAP_ENTER_WRAPPED_REGION();
+    SCOREP_LIBWRAP_FUNC_CALL( foo, ( ) );
+    SCOREP_LIBWRAP_EXIT_WRAPPED_REGION();
 
-    SCOREP_LIBWRAP_FUNC_EXIT
+    SCOREP_LIBWRAP_FUNC_EXIT( foo );
 
-    SCOREP_Libwrap_Finalize();
+    SCOREP_LIBWRAP_EXIT_MEASUREMENT();
 }

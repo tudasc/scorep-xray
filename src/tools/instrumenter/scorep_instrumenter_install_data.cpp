@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,6 +38,7 @@
 #include "scorep_instrumenter_adapter.hpp"
 #include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
+#include <scorep_tools_utils.hpp>
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <UTILS_IO.h>
@@ -85,28 +86,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getFC( void )
 {
     return m_fortran_compiler;
-}
-
-SCOREP_ErrorCode
-SCOREP_Instrumenter_InstallData::readConfigFile( const std::string& arg0 )
-{
-    std::ifstream in_file;
-    in_file.open( arg0.c_str() );
-
-    if ( in_file.good() )
-    {
-        while ( in_file.good() )
-        {
-            char line[ 512 ] = { "" };
-            in_file.getline( line, 512 );
-            read_parameter( line );
-        }
-        return SCOREP_SUCCESS;
-    }
-    else
-    {
-        return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
-    }
 }
 
 void
@@ -206,6 +185,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return false;
+}
+
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
@@ -273,6 +258,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     {
         return true;
     }
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
     return false;
 }
 
@@ -344,6 +335,15 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
     return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return arg == "-O4" ||
+           arg == "-O5" ||
+           arg == "-qipa" ||
+           arg.substr( 0, 6 ) == "-qipa=";
 }
 
 /* *************************************** INTEL */
@@ -434,6 +434,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return false;
+}
+
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
@@ -501,6 +507,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     {
         return true;
     }
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
     return false;
 }
 
@@ -605,6 +617,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return false;
+}
+
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
@@ -674,6 +692,12 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return false;
+}
+
 #endif
 
 /* ****************************************************************************
@@ -697,33 +721,4 @@ SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
         SCOREP_Instrumenter_Adapter::setAllConfigValue( key, value );
         SCOREP_Instrumenter_Selector::setAllConfigValue( key, value );
     }
-}
-
-SCOREP_ErrorCode
-SCOREP_Instrumenter_InstallData::read_parameter( std::string line )
-{
-    /* check for comments */
-    std::string::size_type pos = line.find( "#" );
-    if ( pos == 0 )
-    {
-        return SCOREP_SUCCESS;                      // Whole line commented out
-    }
-    if ( pos != std::string::npos )
-    {
-        // Truncate line at comment
-        line = line.substr( pos, line.length() - pos - 1 );
-    }
-
-    /* separate value and key */
-    pos = line.find( "=" );
-    if ( pos == std::string::npos )
-    {
-        return SCOREP_ERROR_PARSE_NO_SEPARATOR;
-    }
-    std::string key   = line.substr( 0, pos );
-    std::string value = line.substr( pos + 2, line.length() - pos - 3 );
-
-    set_value( key, value );
-
-    return SCOREP_SUCCESS;
 }

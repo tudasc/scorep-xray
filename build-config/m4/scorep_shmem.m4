@@ -562,7 +562,8 @@ AS_IF([test "x${scorep_shmem_has_pshmem_functions}" = "xyes"],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([SCOREP_SHMEM], [
-AC_REQUIRE([_SCOREP_PDT_SHMEM_INSTRUMENTATION])
+AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
+AC_REQUIRE([_SCOREP_PDT_SHMEM_INSTRUMENTATION])dnl
 
 AC_DEFINE_UNQUOTED([SCOREP_SHMEM_NAME], ["${SHMEM_NAME}"],
                    [Name of the implemented SHMEM specification.])
@@ -603,8 +604,8 @@ AS_IF([test "x${scorep_shmem_supported}" = "xno"],
        _SCOREP_SHMEM_COMPLIANCE
        AS_IF([test "x${scorep_shmem_has_pshmem_functions}" = "xyes"],
              [shmem_interception_summary="yes, using SHMEM profiling interface"],
-             [test "x${afs_have_gnu_linker}" = "xyes"],
-             [shmem_interception_summary="yes, using library wrapping"])
+             [test "x${scorep_libwrap_linktime_support}" = "xyes"],
+             [shmem_interception_summary="yes, using linktime library wrapping"])
 ])
 
 AFS_SUMMARY([intercepting SHMEM calls], [${shmem_interception_summary}])

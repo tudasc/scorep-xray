@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014-2015,
+ * Copyright (c) 2009-2011, 2014-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -1055,32 +1055,36 @@ POMP2_Init_lock( omp_lock_t* s )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_init_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ],
-                                   ( intptr_t )omp_init_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_init_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    scorep_opari2_openmp_lock_init( s );
+
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EXIT_WRAPPED_REGION();
+        SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    else
     {
-        scorep_opari2_openmp_lock_init( s );
-
-        if ( scorep_opari2_recording_on )
-        {
-            SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
-        }
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1091,32 +1095,36 @@ POMP2_Destroy_lock( omp_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_destroy_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ],
-                                   ( intptr_t )omp_destroy_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_destroy_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    scorep_opari2_openmp_lock_destroy( s );
+
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EXIT_WRAPPED_REGION();
+        SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    else
     {
-        scorep_opari2_openmp_lock_destroy( s );
-
-        if ( scorep_opari2_recording_on )
-        {
-            SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
-        }
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1127,25 +1135,28 @@ POMP2_Set_lock( omp_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_set_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ],
-                                   ( intptr_t )omp_set_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_set_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         SCOREP_MutexLock( scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireLock( s );
@@ -1153,6 +1164,10 @@ POMP2_Set_lock( omp_lock_t* s )
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1163,32 +1178,39 @@ POMP2_Unset_lock( omp_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_unset_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ],
-                                   ( intptr_t )omp_unset_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
 
         SCOREP_MutexLock( scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetReleaseLock( s );
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    else
     {
-        SCOREP_ENTER_WRAPPED_REGION();
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
     }
+
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_unset_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1199,25 +1221,28 @@ POMP2_Test_lock( omp_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_test_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ],
-                                   ( intptr_t )omp_test_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     int result = omp_test_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         if ( result )
         {
@@ -1227,6 +1252,10 @@ POMP2_Test_lock( omp_lock_t* s )
             SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
         }
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1238,32 +1267,36 @@ POMP2_Init_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_OPARI2_OMP_ENSURE_INITIALIZED();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_init_nest_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ],
-                                   ( intptr_t )omp_init_nest_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_init_nest_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    scorep_opari2_openmp_lock_init( s );
+
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EXIT_WRAPPED_REGION();
+        SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    else
     {
-        scorep_opari2_openmp_lock_init( s );
-
-        if ( scorep_opari2_recording_on )
-        {
-            SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
-        }
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1274,31 +1307,35 @@ POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_destroy_nest_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ],
-                                   ( intptr_t )omp_destroy_nest_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_destroy_nest_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    scorep_opari2_openmp_lock_destroy( s );
+    if ( scorep_opari2_recording_on )
     {
-        scorep_opari2_openmp_lock_destroy( s );
-        if ( scorep_opari2_recording_on )
-        {
-            SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
-        }
+        SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1309,31 +1346,38 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_set_nest_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ],
-                                   ( intptr_t )omp_set_nest_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_set_nest_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         SCOREP_MutexLock( scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireNestLock( s );
         SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1344,31 +1388,38 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_unset_nest_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ],
-                                   ( intptr_t )omp_unset_nest_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
         SCOREP_MutexLock( scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetReleaseNestLock( s );
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    else
     {
-        SCOREP_ENTER_WRAPPED_REGION();
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
     }
+
+    SCOREP_ENTER_WRAPPED_REGION();
     omp_unset_nest_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1379,25 +1430,28 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return omp_test_nest_lock( s );
+    }
+
     UTILS_DEBUG_ENTRY();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
-        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ],
-                                   ( intptr_t )omp_test_nest_lock );
+        SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     int result = omp_test_nest_lock( s );
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && scorep_opari2_recording_on )
+    if ( scorep_opari2_recording_on )
     {
         if ( result )
         {
@@ -1408,6 +1462,10 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
         }
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
+    }
+    else
+    {
+        SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

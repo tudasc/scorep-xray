@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,6 +29,8 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_shmem.h>
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>
@@ -156,6 +158,23 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
     }
 }
 
+bool
+SCOREP_Instrumenter_Mpi::isInterpositionLibrary( const std::string& libraryName )
+{
+    return is_mpi_library( libraryName );
+}
+
+bool
+SCOREP_Instrumenter_Mpi::is_mpi_library( const std::string& libraryName )
+{
+    return check_lib_name( libraryName, "mpi" ) ||
+           check_lib_name( libraryName, "mpich" ) ||
+           check_lib_name( libraryName, "mpigf" ) ||
+           check_lib_name( libraryName, "mpigi" ) ||
+           check_lib_name( libraryName, "mpifort" ) ||
+           check_lib_name( libraryName, "mpicxx" );
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_Shmem
  * *************************************************************************************/
@@ -165,6 +184,9 @@ SCOREP_Instrumenter_Shmem::SCOREP_Instrumenter_Shmem
 ) : SCOREP_Instrumenter_Paradigm( selector, "shmem", "",
                                   "SHMEM support using library wrapping" )
 {
+#if !HAVE_BACKEND( SHMEM_PROFILING_INTERFACE )
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
+#endif
 #if !( HAVE_BACKEND( SHMEM_SUPPORT ) )
     unsupported();
 #endif
@@ -230,6 +252,29 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
     {
         m_selector->select( this, false );
     }
+}
+
+bool
+SCOREP_Instrumenter_Shmem::isInterpositionLibrary( const std::string& libraryName )
+{
+    return is_shmem_library( libraryName );
+}
+
+bool
+SCOREP_Instrumenter_Shmem::is_shmem_library( const std::string& libraryName )
+{
+    /*
+     * Check for libopenshmem (OpenSHMEM)
+     *           liboshmem    (OpenMPI)
+     *           libsma       (SGI MPT, Cray SHMEM)
+     */
+
+    if ( SCOREP_SHMEM_LIB_NAME != "" )
+    {
+        return check_lib_name( libraryName, SCOREP_SHMEM_LIB_NAME );
+    }
+
+    return false;
 }
 
 /* **************************************************************************************

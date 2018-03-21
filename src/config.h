@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -75,6 +75,9 @@
 
 #elif defined GCC_PLUGIN_BUILD
        #include <config-gcc-plugin.h>
+
+#elif defined LIBWRAP_BUILD
+    #include <config-libwrap.h>
 
 #else
     #error "You cannot use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."

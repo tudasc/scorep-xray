@@ -166,20 +166,29 @@ calling_context_descent( SCOREP_Location*                             location,
 {
     ( *unwindDistance )++;
 
-    int compare_result = 0;
-    if ( ( *unwindContext )->children )
+    scorep_unwinding_calling_context_tree_node* child = ( *unwindContext )->children;
+    while ( child )
     {
-        ( *unwindContext )->children = calling_context_splay( ( *unwindContext )->children, ip, region );
-        compare_result               = calling_context_compare_node( ip, region, ( *unwindContext )->children );
-        if ( compare_result == 0 )
+        int compare_result = calling_context_compare_node( ip, region, child );
+        if ( compare_result < 0 )
         {
-            *unwindContext = ( *unwindContext )->children;
+            child = child->left;
+        }
+        else if ( compare_result > 0 )
+        {
+            child = child->right;
+        }
+        else
+        {
+            *unwindContext = child;
             return;
         }
     }
 
+    /* Slow path */
+
     /* Allocate memory for a new child */
-    scorep_unwinding_calling_context_tree_node* child = SCOREP_Location_AllocForMisc( location, sizeof( *child ) );
+    child         = SCOREP_Location_AllocForMisc( location, sizeof( *child ) );
     child->handle =
         SCOREP_Definitions_NewCallingContext( ip,
                                               region,
@@ -192,8 +201,10 @@ calling_context_descent( SCOREP_Location*                             location,
     child->right    = NULL;
 
     /* Insert new child to parent's splay-tree of children */
+    ( *unwindContext )->children = calling_context_splay( ( *unwindContext )->children, ip, region );
     if ( ( *unwindContext )->children )
     {
+        int compare_result = calling_context_compare_node( ip, region, ( *unwindContext )->children );
         /* compare_result is valid, as this is not the first child */
         if ( compare_result < 0 )
         {

@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2014,
@@ -14,7 +14,7 @@
 ## directory for details.
 ##
 
-if HAVE_GNU_LINKER
+if HAVE_LIBWRAP_LINKTIME_SUPPORT
 
 check_PROGRAMS += scorep_libwrap_macros_static_test
 ##check_PROGRAMS += scorep_libwrap_macros_static_test \
@@ -65,4 +65,4 @@ TESTS_SERIAL += scorep_libwrap_macros_static_test
 ##                                          libfoo.la
 ##TESTS_SERIAL += scorep_libwrap_macros_shared_test
 
-endif HAVE_GNU_LINKER
+endif HAVE_LIBWRAP_LINKTIME_SUPPORT

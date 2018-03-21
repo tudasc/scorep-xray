@@ -81,13 +81,6 @@ libscorep_adapter_cuda_mgmt_la_LDFLAGS = \
     @CUDA_LDFLAGS@                       \
     $(library_api_version_ldflags)
 
-# event library for the cuda adapter
-
-lib_LTLIBRARIES += libscorep_adapter_cuda_event.la
-libscorep_adapter_cuda_event_la_SOURCES =
-libscorep_adapter_cuda_event_la_LIBADD = \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la
-libscorep_adapter_cuda_event_la_LDFLAGS = \
-    $(library_api_version_ldflags)
+# no event library for the cuda adapter
 
 endif

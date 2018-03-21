@@ -1,0 +1,28 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/tools/lib/Makefile.inc.am
+
+noinst_LTLIBRARIES += libscorep_tools.la
+
+libscorep_tools_la_SOURCES = \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_utils.cpp \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_utils.hpp \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_config_parser.cpp \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_config_parser.hpp \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_dir.cpp \
+    $(SRC_ROOT)src/tools/lib/scorep_tools_dir.hpp
+
+libscorep_tools_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS)

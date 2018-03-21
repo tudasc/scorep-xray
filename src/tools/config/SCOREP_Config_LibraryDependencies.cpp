@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,7 +40,8 @@
 #include <cstring>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
-#include "scorep_config_utils.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 using namespace std;
 
@@ -55,7 +56,6 @@ using namespace std;
 #if HAVE( SHMEM_SUPPORT )
 #include <scorep_config_library_dependencies_shmem_backend_inc.hpp>
 #endif /* SHMEM_SUPPORT */
-
 
 /* **************************************************************************************
                                                   class SCOREP_Config_LibraryDependencies
@@ -81,38 +81,71 @@ SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()
 {
 }
 
+void
+SCOREP_Config_LibraryDependencies::insert( const string&        libName,
+                                           const string&        buildDir,
+                                           const string&        installDir,
+                                           const deque<string>& libs,
+                                           const deque<string>& ldflags,
+                                           const deque<string>& rpath,
+                                           const deque<string>& dependencyLas )
+{
+    m_la_objects.insert(
+        std::make_pair( libName,
+                        la_object( libName,
+                                   buildDir,
+                                   installDir,
+                                   libs,
+                                   ldflags,
+                                   rpath,
+                                   dependencyLas ) ) );
+}
+
 deque<string>
-SCOREP_Config_LibraryDependencies::getLibraries( const deque<string>& input_libs )
+SCOREP_Config_LibraryDependencies::getLibraries( const deque<string>& inputLibs,
+                                                 bool                 honorLibs,
+                                                 bool                 honorDeps )
 {
     /* Traversing backwards will add the -l flags from the scorep_* lib last.
        this makes the system more robust against broken dependencies in installed
        .la files of other libraries, in particular libbfd.
        During configure we tested whether linking works and this is more reliable
        than installed .la files. */
-    deque<string>                   deps = get_dependencies( input_libs );
+    deque<string>                   deps = get_dependencies( inputLibs, true, honorDeps );
     deque<string>                   libs;
     deque<string>::reverse_iterator i;
     for ( i = deps.rbegin(); i != deps.rend(); i++ )
     {
-        la_object obj = m_la_objects[ *i ];
+        const la_object& obj = m_la_objects[ *i ];
         libs.push_front( "-l" + obj.m_lib_name.substr( 3 ) );
-        libs.insert( libs.end(),
-                     obj.m_libs.begin(),
-                     obj.m_libs.end() );
+        if ( honorDeps )
+        {
+            libs.insert( libs.end(),
+                         obj.m_libs.begin(),
+                         obj.m_libs.end() );
+        }
     }
 
-    return remove_double_entries( libs );
+    libs = remove_double_entries( libs );
+
+    if ( !honorLibs )
+    {
+        libs.erase( libs.begin(), libs.begin() + inputLibs.size() );
+    }
+
+    return libs;
 }
 
 deque<string>
-SCOREP_Config_LibraryDependencies::getLDFlags( const deque<string>& libs, bool install )
+SCOREP_Config_LibraryDependencies::getLDFlags( const deque<string>& libs,
+                                               bool                 install )
 {
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
     deque<string>::iterator i;
     for ( i = deps.begin(); i != deps.end(); i++ )
     {
-        la_object obj = m_la_objects[ *i ];
+        const la_object& obj = m_la_objects[ *i ];
         if ( install )
         {
             flags.push_back( "-L" + obj.m_install_dir );
@@ -130,15 +163,17 @@ SCOREP_Config_LibraryDependencies::getLDFlags( const deque<string>& libs, bool i
 
 deque<string>
 SCOREP_Config_LibraryDependencies::getRpathFlags( const deque<string>& libs,
-                                                  bool                 install )
+                                                  bool                 install,
+                                                  bool                 honorLibs,
+                                                  bool                 honorDeps )
 {
-    deque<string>           deps = get_dependencies( libs );
-    deque<string>           flags;
-    deque<string>::iterator i;
-    deque<string>::iterator j;
+    deque<string>                 deps = get_dependencies( libs, honorLibs, honorDeps );
+    deque<string>                 flags;
+    deque<string>::const_iterator i;
+    deque<string>::const_iterator j;
     for ( i = deps.begin(); i != deps.end(); i++ )
     {
-        la_object obj = m_la_objects[ *i ];
+        const la_object& obj = m_la_objects[ *i ];
         if ( install )
         {
             flags.push_back( obj.m_install_dir );
@@ -151,21 +186,29 @@ SCOREP_Config_LibraryDependencies::getRpathFlags( const deque<string>& libs,
         }
         for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
         {
-            string::size_type index = j->find( "-R" );
-            if ( index == 0 )
+            if ( 0 == j->compare( 0, 2, "-R" ) )
             {
-                j->replace( index, strlen( "-R" ), "" );
+                flags.push_back( j->substr( 2 ) );
             }
-            //flags.push_back( strip_head( *j, head, delimiter ) );
-            flags.push_back( *j );
+            else
+            {
+                flags.push_back( *j );
+            }
         }
     }
     return remove_double_entries( flags );
 }
 
 deque<string>
-SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs )
+SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs,
+                                                     bool                 honorLibs,
+                                                     bool                 honorDeps )
 {
+    if ( !honorDeps )
+    {
+        return libs;
+    }
+
     deque<string> deps = libs;
     for ( int i = 0; i < deps.size(); i++ )
     {
@@ -174,22 +217,28 @@ SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs )
             cerr << "ERROR: Cannot resolve dependency '" << deps[ i ] << "'" << endl;
             exit( EXIT_FAILURE );
         }
-        la_object obj = m_la_objects[ deps[ i ] ];
+        const la_object& obj = m_la_objects[ deps[ i ] ];
 
         deps.insert( deps.end(),
                      obj.m_dependency_las.begin(),
                      obj.m_dependency_las.end() );
     }
-    return remove_double_entries( deps );
+    deps = remove_double_entries( deps );
+
+    if ( !honorLibs )
+    {
+        deps.erase( deps.begin(), deps.begin() + libs.size() );
+    }
+    return deps;
 }
 
 void
-SCOREP_Config_LibraryDependencies::addDependency( const std::string& dependent_lib,
+SCOREP_Config_LibraryDependencies::addDependency( const std::string& dependentLib,
                                                   const std::string& dependency )
 {
-    if ( m_la_objects.find( dependent_lib ) == m_la_objects.end() )
+    if ( m_la_objects.find( dependentLib ) == m_la_objects.end() )
     {
-        cerr << "ERROR: Cannot add dependency to '" << dependent_lib << "'" << endl;
+        cerr << "ERROR: Cannot add dependency to '" << dependentLib << "'" << endl;
         exit( EXIT_FAILURE );
     }
     if ( m_la_objects.find( dependency ) == m_la_objects.end() )
@@ -198,5 +247,5 @@ SCOREP_Config_LibraryDependencies::addDependency( const std::string& dependent_l
         exit( EXIT_FAILURE );
     }
 
-    m_la_objects[ dependent_lib ].m_dependency_las.push_back( dependency );
+    m_la_objects[ dependentLib ].m_dependency_las.push_back( dependency );
 }

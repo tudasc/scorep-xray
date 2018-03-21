@@ -28,33 +28,6 @@
 #include <unistd.h>
 #include <string.h>
 
-typedef int ( * region_compare )( uint64_t                 key,
-                                  scorep_unwinding_region* node );
-
-/** Compare functions used when inserting a new region */
-static int
-compare_start( uint64_t                 key,
-               scorep_unwinding_region* node )
-{
-    return ( key > node->start ) - ( key < node->start );
-}
-
-/** Compare functions used when searching a region */
-static int
-compare_incl( uint64_t                 key,
-              scorep_unwinding_region* node )
-{
-    if ( key < node->start )
-    {
-        return -1;
-    }
-    if ( key >= node->end )
-    {
-        return 1;
-    }
-    return 0;
-}
-
 /* Splay tree based on: */
 /*
                 An implementation of top-down splaying
@@ -101,8 +74,7 @@ compare_incl( uint64_t                 key,
 
 static scorep_unwinding_region*
 splay( scorep_unwinding_region* root,
-       uint64_t                 key,
-       region_compare           compare )
+       uint64_t                 key )
 {
     scorep_unwinding_region  sentinel;
     scorep_unwinding_region* left;
@@ -119,13 +91,13 @@ splay( scorep_unwinding_region* root,
 
     for (;; )
     {
-        if ( compare( key, root ) < 0 )
+        if ( key < root->start )
         {
             if ( root->left == NULL )
             {
                 break;
             }
-            if ( compare( key, root->left ) < 0 )
+            if ( key < root->left->start )
             {
                 node        = root->left;                    /* rotate right */
                 root->left  = node->right;
@@ -140,13 +112,13 @@ splay( scorep_unwinding_region* root,
             right       = root;
             root        = root->left;
         }
-        else if ( compare( key, root ) > 0 )
+        else if ( key > root->start )
         {
             if ( root->right == NULL )
             {
                 break;
             }
-            if ( compare( key, root->right ) > 0 )
+            if ( key > root->right->start )
             {
                 node        = root->right;                   /* rotate left */
                 root->right = node->left;
@@ -175,6 +147,24 @@ splay( scorep_unwinding_region* root,
     return root;
 }
 
+
+static scorep_unwinding_region*
+alloc_region( SCOREP_Unwinding_CpuLocationData* unwindData,
+              uint64_t                          start,
+              uint64_t                          end,
+              const char*                       name )
+{
+    size_t                   len = strlen( name );
+    scorep_unwinding_region* new = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *new ) + len );
+    memset( new, 0, sizeof( *new ) );
+    new->start = start;
+    new->end   = end;
+    memcpy( new->name, name, len + 1 );
+    new->left = new->right = NULL;
+    return new;
+}
+
+
 scorep_unwinding_region*
 scorep_unwinding_region_insert( SCOREP_Unwinding_CpuLocationData* unwindData,
                                 uint64_t                          start,
@@ -186,42 +176,49 @@ scorep_unwinding_region_insert( SCOREP_Unwinding_CpuLocationData* unwindData,
         return NULL;
     }
 
-    size_t                   len = strlen( name );
-    scorep_unwinding_region* new = SCOREP_Location_AllocForMisc( unwindData->location, sizeof( *new ) + len );
-    memset( new, 0, sizeof( *new ) );
-    new->start = start;
-    new->end   = end;
-    memcpy( new->name, name, len + 1 );
-    new->left = new->right = NULL;
-
-    if ( unwindData->known_regions )
+    if ( unwindData->known_regions == NULL )
     {
-        unwindData->known_regions = splay( unwindData->known_regions, start, compare_start );
+        unwindData->known_regions = alloc_region( unwindData, start, end, name );
+    }
+    else
+    {
+        unwindData->known_regions = splay( unwindData->known_regions, start );
         if ( start < unwindData->known_regions->start )
         {
-            new->right       = unwindData->known_regions;
-            new->left        = new->right->left;
-            new->right->left = NULL;
+            scorep_unwinding_region* new = alloc_region( unwindData, start, end, name );
+            new->right                = unwindData->known_regions;
+            new->left                 = new->right->left;
+            new->right->left          = NULL;
+            unwindData->known_regions = new;
         }
         else if ( start > unwindData->known_regions->start )
         {
-            new->left        = unwindData->known_regions;
-            new->right       = new->left->right;
-            new->left->right = NULL;
+            scorep_unwinding_region* new = alloc_region( unwindData, start, end, name );
+            new->left                 = unwindData->known_regions;
+            new->right                = new->left->right;
+            new->left->right          = NULL;
+            unwindData->known_regions = new;
         }
         else
         {
-            UTILS_BUG( "Region already known: %s@[%" PRIx64 ", %" PRIx64 ") "
-                       "existing: %s@[%" PRIx64 ", %" PRIx64 ")",
-                       name, start, end,
-                       unwindData->known_regions->name,
-                       unwindData->known_regions->start,
-                       unwindData->known_regions->end );
+            /* start is the same, if the name matches, than just extend the end */
+            UTILS_BUG_ON( 0 != strcmp( name, unwindData->known_regions->name ),
+                          "Region already known: %s@[%#" PRIx64 ", %#" PRIx64 ") "
+                          "existing: %s@[%#" PRIx64 ", %#" PRIx64 ")",
+                          name, start, end,
+                          unwindData->known_regions->name,
+                          unwindData->known_regions->start,
+                          unwindData->known_regions->end );
+            UTILS_BUG_ON( end < unwindData->known_regions->end,
+                          "Region '%s@%#" PRIx64 "' does not extend: %#" PRIx64 " < %#" PRIx64,
+                          name, start, end, unwindData->known_regions->end );
+            UTILS_DEBUG( "Extending existing region '%s@%#" PRIx64 "': %#" PRIx64 " -> %#" PRIx64 "",
+                         name, start, unwindData->known_regions->end, end );
+            unwindData->known_regions->end = end;
         }
     }
-    unwindData->known_regions = new;
 
-    return new;
+    return unwindData->known_regions;
 }
 
 scorep_unwinding_region*
@@ -233,13 +230,24 @@ scorep_unwinding_region_find( SCOREP_Unwinding_CpuLocationData* unwindData,
         return NULL;
     }
 
-    unwindData->known_regions = splay( unwindData->known_regions, addr, compare_incl );
-    if ( compare_incl( addr, unwindData->known_regions ) == 0 )
+    scorep_unwinding_region* node = unwindData->known_regions;
+    while ( node )
     {
-        return unwindData->known_regions;
+        if ( addr < node->start )
+        {
+            node = node->left;
+        }
+        else if ( addr >= node->end )
+        {
+            node = node->right;
+        }
+        else
+        {
+            break;
+        }
     }
 
-    return NULL;
+    return node;
 }
 
 void
@@ -257,8 +265,7 @@ scorep_unwinding_region_clear( SCOREP_Unwinding_CpuLocationData* unwindData,
         else
         {
             node = splay( unwindData->known_regions->left,
-                          unwindData->known_regions->start,
-                          compare_start );
+                          unwindData->known_regions->start );
             node->right = unwindData->known_regions->right;
         }
         if ( cleanup )

@@ -11,6 +11,8 @@ scorep_info_SOURCES = \
     $(SRC_ROOT)src/tools/info/scorep_info_command_config_summary.cpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_config_vars.hpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_config_vars.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_libwrap_summary.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_libwrap_summary.cpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.hpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.cpp
 
@@ -20,9 +22,11 @@ scorep_info_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/tools/lib
 
 scorep_info_LDADD = \
+    libscorep_tools.la \
     libscorep_confvars.la \
     libscorep_hashtab.la \
     libutils.la

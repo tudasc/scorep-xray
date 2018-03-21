@@ -50,9 +50,11 @@ int MPI_Get(void*        origin_addr,
             MPI_Win      win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
 /* One-sided communication not handled in first version
     int32_t              sendsz;
@@ -62,8 +64,9 @@ int MPI_Get(void*        origin_addr,
 
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET],
-                              ( intptr_t )PMPI_Get);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET]);
 
 /* One-sided communication not handled in first version
     dest_proc_rank = scorep_mpi_win_rank_to_pe( target_rank, win );
@@ -74,28 +77,38 @@ int MPI_Get(void*        origin_addr,
     PMPI_Type_size(target_datatype, &sendsz);
     esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SCOREP_NEXT_RMA_ID, target_count * sendsz);
 */
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Get( origin_addr, origin_count,
-                  origin_datatype, target_rank, target_disp,
-                  target_count, target_datatype, win );
-    SCOREP_EXIT_WRAPPED_REGION();
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET]);
+    }
+  }
 
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Get( origin_addr, origin_count,
+                origin_datatype, target_rank, target_disp,
+                target_count, target_datatype, win );
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
     /* in MPI_GET the origin buffer is local */
 /* One-sided communication not handled in first version
     esd_mpi_get_1te( dest_proc_rank, win_handle, SCOREP_CURR_RMA_ID);
 */
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GET]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Get(origin_addr, origin_count,
-                  origin_datatype, target_rank, target_disp,
-                  target_count, target_datatype, win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -126,42 +139,56 @@ int
 MPI_Win_allocate( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        if ( scorep_mpi_memory_recording )
+        if ( event_gen_active_for_group )
         {
-            uint64_t size_as_uint64 = size;
-            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
-                                 &size_as_uint64 );
+            if ( scorep_mpi_memory_recording )
+            {
+                uint64_t size_as_uint64 = size;
+                SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                     &size_as_uint64 );
+            }
+
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
-
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ],
-                                   ( intptr_t )PMPI_Win_allocate );
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Win_allocate( size, disp_unit, info, comm, baseptr, win );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        else
         {
-            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
-                                            ( uint64_t )( *( void** )baseptr ),
-                                            size );
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
+    }
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Win_allocate( size, disp_unit, info, comm, baseptr, win );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( event_gen_active )
+    {
+        if (event_gen_active_for_group)
+        {
+            if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+            {
+                SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                                ( uint64_t )( *( void** )baseptr ),
+                                                size );
+            }
+
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Win_allocate( size, disp_unit, info, comm, baseptr, win );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
@@ -179,42 +206,56 @@ int
 MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int return_val;
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+    int       return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
+    if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        if ( scorep_mpi_memory_recording )
+        if ( event_gen_active_for_group )
         {
-            uint64_t size_as_uint64 = size;
-            SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
-                                 &size_as_uint64 );
+            if ( scorep_mpi_memory_recording )
+            {
+                uint64_t size_as_uint64 = size;
+                SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                                     &size_as_uint64 );
+            }
+
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
-
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ],
-                                   ( intptr_t )PMPI_Win_allocate_shared );
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        return_val = PMPI_Win_allocate_shared( size, disp_unit, info, comm, baseptr, win );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+        else
         {
-            SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
-                                            ( uint64_t )( *( void** )baseptr ),
-                                            size );
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
+    }
 
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Win_allocate_shared( size, disp_unit, info, comm, baseptr, win );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if (event_gen_active)
+    {
+        if ( event_gen_active_for_group )
+        {
+            if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+            {
+                SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                                ( uint64_t )( *( void** )baseptr ),
+                                                size );
+            }
+
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    else
-    {
-        return_val = PMPI_Win_allocate_shared( size, disp_unit, info, comm, baseptr, win );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif
@@ -238,27 +279,28 @@ int MPI_Win_create(void*    base,
                    MPI_Win* win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE],
-                              ( intptr_t )PMPI_Win_create);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE]);
+    }
   }
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Win_create(base, size, disp_unit,
                 info, comm, win );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
 /* One-sided communication not handled in first version
   if (*win != MPI_WIN_NULL)
@@ -269,11 +311,18 @@ int MPI_Win_create(void*    base,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_CREATE]);
+    }
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -293,7 +342,8 @@ int MPI_Win_create(void*    base,
 int MPI_Win_free(MPI_Win* win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int                 return_val;
 /* One-sided communication not handled in first version
   SCOREP_RmaWindowHandle win_handle;
@@ -303,34 +353,42 @@ int MPI_Win_free(MPI_Win* win)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE],
-                              ( intptr_t )PMPI_Win_free);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE]);
+
 /* One-sided communication not handled in first version
     win_handle = scorep_mpi_win_rank_id(*win);
 */
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE]);
+    }
   }
 
 /* One-sided communication not handled in first version
   scorep_mpi_win_rank_free(*win);
 */
 
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Win_free( win );
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FREE]);
+    }
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -355,28 +413,42 @@ int MPI_Win_free(MPI_Win* win)
 int MPI_Win_complete(MPI_Win win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE],
-                              ( intptr_t )PMPI_Win_complete);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE]);
+    }
+  }
 
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_complete(win);
-    SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_complete(win);
+  SCOREP_EXIT_WRAPPED_REGION();
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE]);
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_COMPLETE]);
+    }
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_complete(win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -394,29 +466,44 @@ int MPI_Win_fence(int     assert,
                   MPI_Win win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE],
-                              ( intptr_t )PMPI_Win_fence);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE]);
+    }
+  }
 
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_fence(assert, win);
-    SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_fence(assert, win);
+  SCOREP_EXIT_WRAPPED_REGION();
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE]);
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_FENCE]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_fence(assert, win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -441,34 +528,49 @@ int MPI_Win_lock(int     lock_type,
                  MPI_Win win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int   return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK],
-                              ( intptr_t )PMPI_Win_lock);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
 
 /* One-sided communication not handled in first version
-    esd_mpi_win_lock( rank, scorep_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
+      esd_mpi_win_lock( rank, scorep_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
 */
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_lock( lock_type, rank,
-                      assert, win );
-    SCOREP_EXIT_WRAPPED_REGION();
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
+    }
+  }
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_lock( lock_type, rank,
+                    assert, win );
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
   else
-  {
-    return_val = PMPI_Win_lock( lock_type, rank,
-                      assert, win );
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -489,32 +591,47 @@ int MPI_Win_post(MPI_Group group,
                  MPI_Win   win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST],
-                              ( intptr_t )PMPI_Win_post);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST]);
 
 /* One-sided communication not handled in first version
-    scorep_mpi_winacc_start(win, group, 0);
+      scorep_mpi_winacc_start(win, group, 0);
 */
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_post(group, assert, win);
-    SCOREP_EXIT_WRAPPED_REGION();
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST]);
+    }
+  }
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST]);
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_post(group, assert, win);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_POST]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_post(group, assert, win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -533,32 +650,48 @@ int MPI_Win_start(MPI_Group group,
                   MPI_Win   win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START],
-                              ( intptr_t )PMPI_Win_start);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START]);
 
 /* One-sided communication not handled in first version
-    scorep_mpi_winacc_start(win, group, 1);
+      scorep_mpi_winacc_start(win, group, 1);
 */
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_start(group, assert, win);
-    SCOREP_EXIT_WRAPPED_REGION();
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START]);
+    }
+  }
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START]);
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_start(group, assert, win);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_START]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
   else
-  {
-    return_val = PMPI_Win_start(group, assert, win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -578,42 +711,56 @@ int MPI_Win_test(MPI_Win win,
                  int*    flag)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST],
-                              ( intptr_t )PMPI_Win_test);
-
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_test(win, flag);
-    SCOREP_EXIT_WRAPPED_REGION();
-
-/* One-sided communication not handled in first version
-    if (*flag != 0)
+    if (event_gen_active_for_group)
     {
-      esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST],
-                      scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
-      scorep_mpi_winacc_end(win, 0);
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST]);
     }
     else
     {
-      esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST],
-                      scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 0);
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST]);
     }
+  }
+
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_test(win, flag);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+/* One-sided communication not handled in first version
+      if (*flag != 0)
+      {
+        esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST],
+                        scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
+        scorep_mpi_winacc_end(win, 0);
+      }
+      else
+      {
+        esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST],
+                        scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 0);
+      }
 */
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_TEST]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_test(win, flag);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -631,32 +778,47 @@ int MPI_Win_unlock(int     rank,
                    MPI_Win win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK],
-                              ( intptr_t )PMPI_Win_unlock);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK]);
+    }
+  }
 
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_unlock(rank, win);
-    SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_unlock(rank, win);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
 /* One-sided communication not handled in first version
-    esd_mpi_win_unlock(rank, scorep_mpi_win_rank_id(win));
+      esd_mpi_win_unlock(rank, scorep_mpi_win_rank_id(win));
 */
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_UNLOCK]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_unlock(rank, win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -675,35 +837,49 @@ int MPI_Win_unlock(int     rank,
 int MPI_Win_wait(MPI_Win win)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  int return_val;
+  const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
+  int       return_val;
 
-  if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
+  if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT],
-                              ( intptr_t )PMPI_Win_wait);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT]);
+    }
+  }
 
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Win_wait(win);
-    SCOREP_EXIT_WRAPPED_REGION();
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Win_wait(win);
+  SCOREP_EXIT_WRAPPED_REGION();
 
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
 /* One-sided communication not handled in first version
-    esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT],
-                    scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
-    scorep_mpi_winacc_end(win, 0);
+      esd_mpi_winexit(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT],
+                      scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
+      scorep_mpi_winacc_end(win, 0);
 */
 
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_WAIT]);
+    }
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
-  else
-  {
-    return_val = PMPI_Win_wait(win);
-  }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -734,4 +910,3 @@ int MPI_Win_wait(MPI_Win win)
 /**
  * @}
  */
-

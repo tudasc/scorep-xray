@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -19,7 +19,7 @@
 #ifndef SCOREP_LIBWRAP_MANAGEMENT_H
 #define SCOREP_LIBWRAP_MANAGEMENT_H
 
-#include <SCOREP_Libwrap.h>
+#include <scorep/SCOREP_Libwrap.h>
 
 /**
  * This function initializes library wrapping infrastructure.

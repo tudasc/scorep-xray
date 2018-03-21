@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -32,15 +32,28 @@ class SCOREP_Instrumenter_OpenCLAdapter : public SCOREP_Instrumenter_Adapter
 {
 public:
     SCOREP_Instrumenter_OpenCLAdapter( void );
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
-    virtual void
+
+    void
     printHelp( void );
-    virtual bool
+
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+
+    bool
     checkOption( const std::string& arg );
-    virtual bool
+
+    bool
     checkCommand( const std::string& current,
                   const std::string& next );
+
+    bool
+    isInterpositionLibrary( const std::string& libraryName );
+
+private:
+    bool
+    is_opencl_library( const std::string& libraryName );
+
+    std::string m_wrapmode;
 };
 
 #endif // SCOREP_INSTRUMENTER_OPENCL_HPP

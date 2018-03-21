@@ -280,6 +280,7 @@ typedef enum SCOREP_ParadigmClass
  * - SCOREP_PARADIGM_COMPILER refers to compiler instrumentation
  * - SCOREP_PARADIGM_SAMPLING refers to sampling
  * - SCOREP_PARADIGM_MEMORY refers to a memory region (malloc/realloc/...)
+ * - SCOREP_PARADIGM_LIBWRAP refers to region instrumented by user library wrapping
  * - SCOREP_PARADIGM_MPI refers to MPI instrumentation
  * - SCOREP_PARADIGM_SHMEM refers to SHMEM instrumentation
  * - SCOREP_PARADIGM_OPENMP refers to OpenMP instrumentation
@@ -295,6 +296,7 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
     SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING ) \
     SCOREP_PARADIGM( MEMORY,             "memory",             NONE ) \
+    SCOREP_PARADIGM( LIBWRAP,            "libwrap",            NONE ) \
     SCOREP_PARADIGM( MPI,                "mpi",                MPI ) \
     SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \

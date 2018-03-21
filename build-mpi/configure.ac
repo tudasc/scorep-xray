@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2016,
+dnl Copyright (c) 2009-2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -286,6 +286,9 @@ AC_CONFIG_FILES([../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh], \
                 [chmod +x ../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh])
 AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
                 [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
+
+SCOREP_LIBRARY_WRAPPING_GENERATOR(
+    [AC_CONFIG_FILES([../test/tools/libwrap_init/mpi.sh])])
 
 #AFS_LIBTOOL_FIX_LINKER_PREFERENCE
 AS_IF([test "x${enable_shared}" = xno],

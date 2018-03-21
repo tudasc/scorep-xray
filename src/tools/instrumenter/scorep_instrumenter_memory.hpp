@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -43,10 +43,6 @@ public:
 
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
-
-    virtual bool
-    checkCommand( const std::string& current,
-                  const std::string& next );
 
 private:
     std::set<std::string> m_categories;

@@ -1,5 +1,5 @@
 ${guard:start}
-  if (scorep_mpi_enabled & SCOREP_MPI_ENABLED_${group|uppercase})
+  if (scorep_mpi_enabled & SCOREP_MPI_ENABLED_${group|uppercase} || SCOREP_IsUnwindingEnabled())
   {
     scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}] =
       SCOREP_Definitions_NewRegion("${name}",

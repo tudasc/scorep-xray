@@ -1,0 +1,6 @@
+/run_libwrap_init_arguments_tests.sh
+/run_libwrap_init_filter_tests.sh
+/run_libwrap_init_simple_tests.sh
+/common.sh
+/mpi.sh
+/shmem.sh

@@ -1,0 +1,566 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+set -e
+
+print_info()
+{
+    echo "Info: $1" >&2
+    shift
+    for line in "$@"; do
+        printf "      %s\n" "$line"
+    done
+}
+
+print_warning()
+{
+    echo "Warning: $1" >&2
+    shift
+    for line in "$@"; do
+        printf "         %s\n" "$line"
+    done
+}
+
+print_error()
+{
+    echo "Error: $1" >&2
+    shift
+    for line in "$@"; do
+        printf "       %s\n" "$line"
+    done
+}
+
+error_and_exit()
+{
+    print_error "$@"
+    exit 1
+}
+
+pwd=$(pwd)
+
+INSTALL="@INSTALL@"
+if [ -z "$INSTALL" ]; then error_and_exit "\$INSTALL is undefined, but is necessary to proceed."; fi
+
+PREFIX="@PREFIX@"
+if [ -z "$PREFIX" ]; then error_and_exit "\$PREFIX is undefined, but is necessary to proceed."; fi
+
+BINDIR="@BINDIR@"
+if [ ! -d $BINDIR ]; then error_and_exit "\$BINDIR cannot be found."; fi
+
+PKGLIBEXECDIR="@PKGLIBEXECDIR@"
+if [ ! -d $PKGLIBEXECDIR ]; then error_and_exit "\$PKGLIBEXECDIR cannot be found."; fi
+
+scorep_config=$BINDIR/scorep-config
+if [ ! -x $scorep_config ]; then error_and_exit "$scorep_config does not exist, but is necessary to proceed."; fi
+
+lw_backend_suffix="@backend_suffix@"
+
+scorep_library_wrapper_generator=$PKGLIBEXECDIR/scorep-library-wrapper-generator
+if [ ! -x $scorep_library_wrapper_generator ]; then error_and_exit "$scorep_library_wrapper_generator does not exist, but is necessary to proceed."; fi
+
+DATADIR="@PKGDATADIR@"
+if [ ! -d $DATADIR ]; then error_and_exit "\$DATADIR is undefined, but should not."; fi
+
+libwrap_h=$DATADIR/libwrap/libwrap.h
+libwrap_c=$DATADIR/libwrap/libwrap.c
+main_c=$DATADIR/libwrap/main.c
+makefile_template=$DATADIR/libwrap/Makefile.template
+readme=$DATADIR/libwrap/README.md
+wrap_filter=$DATADIR/libwrap/wrap.filter
+if  [ ! -f $libwrap_h ] || [ ! -f $libwrap_c ] || [ ! -f $main_c ] || [ ! -f $makefile_template ] || [ ! -f $readme ] || [ ! -f $wrap_filter ]; then
+    error_and_exit "File $libwrap_h, $libwrap_c, $main_c, $makefile_template or $readme could not be found, but are necessary to proceed."
+fi
+
+@HAVE_MPI_SUPPORT_FALSE@mpi_support=false
+@HAVE_MPI_SUPPORT_TRUE@mpi_support=true
+
+@HAVE_SHMEM_SUPPORT_FALSE@shmem_support=false
+@HAVE_SHMEM_SUPPORT_TRUE@shmem_support=true
+
+if [ "$($scorep_config --libwrap-support=linktime)" = true ]; then lw_linktime_support=true; else lw_linktime_support=false; fi
+if [ "$($scorep_config --libwrap-support=runtime)"  = true ]; then lw_runtime_support=true;  else lw_runtime_support=false;  fi
+
+@BUILD_SHARED_LIBRARIES_TRUE@enable_shared=true
+@BUILD_SHARED_LIBRARIES_FALSE@enable_shared=false
+
+scriptname=${0##*/}
+
+print_help_message()
+{
+    cat $readme | if test -t 1; then
+        # if PAGER is set, use PAGER, else, check whether less exists, use it, use cat otherwise
+        ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
+    else
+        cat
+    fi
+}
+
+# lw stands for libwrap
+lw_name=""                      # picked via --name
+lw_display_name=""              # picked via --display-name, defaults to $lw_name
+lw_prefix="$PREFIX"             # picked via --prefix
+lw_language=""                  # picked via -x
+lw_workspace_directory="."      # picked via last argument
+lw_backend="vanilla"            # picked via --backend
+lw_cppflags=""                  # picked via --cppflags
+lw_ldflags=""                   # picked via --ldflags
+lw_libs=""                      # picked via --libs
+lw_update=false                 # picked via --update
+
+# ### argument handling ###
+
+if [ $# = 0 ]; then
+    print_help_message
+    exit 1
+fi
+
+lw_init_flags=
+while [ $# -gt 0 ]
+do
+    arg="$1"
+
+    case $arg in
+        --name|--name=*)
+            if [ "$arg" = "--name" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_name="$2"
+                shift
+            else
+                lw_name="${arg#--name=}"
+            fi
+        ;;
+        --display-name|--display-name=*)
+            if [ "$arg" = "--display-name" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_display_name="$2"
+                shift
+            else
+                lw_display_name="${arg#--display-name=}"
+            fi
+        ;;
+        --prefix|--prefix=*)
+            if [ "$arg" = "--prefix" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_prefix="$2"
+                shift
+            else
+                lw_prefix="${arg#--prefix=}"
+            fi
+            if [ "$lw_prefix" = "${lw_prefix#/}" ]; then
+                lw_prefix="$pwd/$lw_prefix"
+            fi
+            lw_prefix=${lw_prefix%%/}
+        ;;
+        -x)
+            lw_language="$2"
+            if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+            shift
+        ;;
+        --backend|--backend=*)
+            if [ "$arg" = "--backend" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_backend="$2"
+                shift
+            elif [ "$arg" != "${arg#--backend=}" ]; then
+                lw_backend="${arg#--backend=}"
+            else
+                error_and_exit "Invalid argument \"$arg\"."
+            fi
+        ;;
+        --cppflags|--cppflags=*)
+            if [ "$arg" = "--cppflags" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_cppflags="$2"
+                shift
+            else
+                lw_cppflags="${arg#--cppflags=}"
+            fi
+        ;;
+        --ldflags|--ldflags=*)
+            if [ "$arg" = "--ldflags" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_ldflags="$2"
+                shift
+            else
+                lw_ldflags="${arg#--ldflags=}"
+            fi
+        ;;
+        --libs|--libs=*)
+            if [ "$arg" = "--libs" ]; then
+                if [ $# -lt 2 ]; then error_and_exit "Not enough arguments."; fi
+                lw_libs="$2"
+                shift
+            else
+                lw_libs="${arg#--libs=}"
+            fi
+        ;;
+        --static-only-target-library)
+            lw_init_flags="$lw_init_flags${lw_init_flags:+ }--static-only-target-library"
+            lw_runtime_support=false
+            enable_shared=false
+        ;;
+        --update)
+            lw_update=true
+        ;;
+        -h|--help)
+            print_help_message
+            exit 0
+        ;;
+        *)
+            if [ -z $lw_name ] || [ -z $lw_language ]; then
+                error_and_exit "Invalid argument \"$1\"."
+            elif [ $# -gt 1 ]; then
+                error_and_exit "Too many arguments. None expected after \"$1\"."
+            else # $# == 1
+                lw_workspace_directory=$1
+            fi
+        ;;
+    esac
+    shift
+done
+
+# check if lw_name can be used as a valid C identifier
+if ! expr "X${lw_name}" : '^X[a-zA-Z_][a-zA-Z0-9_]*$' >/dev/null 2>&1; then
+    error_and_exit "Invalid wrapper name. Must be a valid C identifier: \"${lw_name}\""
+fi
+
+# lw_display_name defaults to lw_name
+: ${lw_display_name:=$lw_name}
+
+not_enough_arguments=false
+
+if [ -z $lw_name ]; then
+    print_error "No name specified. Use --name <wrappername>."
+    not_enough_arguments=true
+fi
+if [ -z $lw_language ]; then
+    print_error "No language specified. Use -x <language>."
+    not_enough_arguments=true
+fi
+
+if [ "$not_enough_arguments" = true ]; then
+    exit 1
+fi
+
+case $lw_language in
+(c++|c++??|c|c??) : except ;;
+(*)
+    error_and_exit "The selected language has to be c or c++, but is \"$lw_language\"."
+esac
+
+if [ $lw_backend != vanilla ] && [ $lw_backend != mpi ] && [ $lw_backend != shmem ]; then
+    error_and_exit "The selected backend has to be vanilla, mpi or shmem, but is \"$lw_backend\"."
+fi
+
+# determine $lw_srcext and $lw_libtool_tag from $lw_language
+case $lw_language in
+(c++|c++??)
+    lw_srcext=cc
+    lw_libtool_tag=CXX
+    lw_config_compiler_suffix=cxx
+;;
+(c|c??)
+    lw_srcext=c
+    lw_libtool_tag=CC
+    lw_config_compiler_suffix=cc
+esac
+
+# determine $lw_cc and $lw_libtool from $lw_backend
+if [ $lw_backend = vanilla ]; then
+    lw_compiler_prefix=
+elif [ $lw_backend = mpi ]; then
+    if [ $mpi_support != true ]; then error_and_exit "MPI is not supported."; fi
+    lw_compiler_prefix=mpi
+else # [ $lw_backend = shmem ]; then
+    if [ $shmem_support != true ]; then error_and_exit "SHMEM is not supported."; fi
+    lw_compiler_prefix=shmem
+fi
+
+lw_cc=$($scorep_config --${lw_compiler_prefix}${lw_config_compiler_suffix})
+lw_cc_without_flags=${lw_cc%% *}
+lw_libtool=$($scorep_config --${lw_compiler_prefix}libtool)
+
+if [ "$lw_cc" = "not available in this installation" ]; then error_and_exit "Internal: \$lw_cc = \"$lw_cc\". This shouldn't happen."; fi
+if [ -z "$lw_cc" ]; then error_and_exit "Internal: \$lw_cc hasn't been set, but should have been."; fi
+if [ ! -x "$lw_libtool" ]; then error_and_exit "$lw_libtool does not exist, but is necessary to proceed."; fi
+
+# ### create working dir ###
+if [ -e $lw_workspace_directory ] && [ ! -d $lw_workspace_directory ]; then
+    error_and_exit "Working directory \"$lw_workspace_directory\" exists and is not a directory."
+fi
+
+if [ ! -d $lw_workspace_directory ]; then
+    mkdir -p $lw_workspace_directory
+fi
+
+# ### copy all files (and edit makefile) into the working directory ###
+libwrap_h_target=$lw_workspace_directory/${libwrap_h##*/}
+libwrap_c_target=$lw_workspace_directory/$(basename ${libwrap_c##*/} .c).$lw_srcext
+main_target=$lw_workspace_directory/$(basename ${main_c##*/} .c).$lw_srcext
+wrap_filter_target=$lw_workspace_directory/${lw_name}.filter
+makefile=$lw_workspace_directory/Makefile
+readme_target=$lw_workspace_directory/${readme##*/}
+
+# do not accidentally overwrite files
+if [ "$lw_update" = false ] && ([ -e $libwrap_h_target ] || [ -e $main_target ] || [ -e $makefile ] || [ -e $readme_target ]); then
+    error_and_exit "File $libwrap_h_target, $main_target, $makefile or $readme_target already exists."
+fi
+
+# copy libwrap.h, libwrap.c/cc, main.c/cc and README.md into the working directory
+if [ ! -e $libwrap_h_target ]; then cp $libwrap_h $libwrap_h_target; fi
+if [ ! -e $libwrap_c_target ]; then cp $libwrap_c $libwrap_c_target; fi
+if [ ! -e $main_target      ]; then cp $main_c    $main_target     ; fi
+if [ ! -e $readme_target    ]; then cp $readme    $readme_target   ; fi
+
+# ### create lw_liblist from LIBS for use in lwgen ###
+
+# create lib_dirs, the list of directories to search the -l libraries in (Mind that this step is not really necessary as explained below)
+lib_dirs=""
+for flag in $lw_ldflags; do
+
+    if [ "${flag#-l}" != "$flag" ]; then
+        error_and_exit "-l flags are supposed to be put into --libs, but ${flag} is in --ldflags."
+    elif [ "${flag#-L}" != "$flag" ]; then
+        lib_dirs="$lib_dirs ${flag#-L}"
+    elif [ "${flag#-Wl,-rpath=}" != "$flag" ]; then 
+        # -Wl is generally problematic, we avoid this problem and cover some basic versions
+        # -rpath is not covered by unit tests since we can only check it properly when linking dynamically
+        lib_dirs="$lib_dirs ${flag#-Wl,-rpath=}"
+    elif [ "${flag#-Wl,-rpath,}" != "$flag" ]; then
+        lib_dirs="$lib_dirs ${flag#-Wl,-rpath,}"
+    fi
+
+done
+
+sys_lib_dlsearch_path_spec=$(
+    eval "$($lw_libtool --config)"
+    printf "%s" "$sys_lib_dlsearch_path_spec"
+)
+sys_lib_search_path_spec=$(
+    eval "$($lw_libtool --config)"
+    printf "%s" "$sys_lib_search_path_spec"
+)
+
+lib_dirs="$lib_dirs $sys_lib_dlsearch_path_spec $sys_lib_search_path_spec"
+
+# determine .so file extension
+so_ext_with_dot=$(
+    eval "$($lw_libtool --config)"
+    eval shared_ext=\"$shrext_cmds\"
+    printf "%s" "$shared_ext"
+)
+
+# generate libfoo.so from "foo"
+lib_so()
+{
+    printf "%s" $(
+        eval "$($lw_libtool --config)"
+        name=$1
+        eval libname=\"$libname_spec\"
+        shared_ext=$so_ext_with_dot
+        eval lib_so_1=\"$library_names_spec\"
+        printf "%s" "${lib_so_1##* }"
+    )
+}
+
+# Find the libs in those directories
+#
+# In princicple it is not necessary to locate the libs,
+# since they are supplied to dlopen which doesn't need full paths and uses ld-config etc. to find the libraries
+#
+# At the moment we just use this info to tell the user if we can't find the library, because later on the same will likely happen with dlopen.
+# Note: The full path is not used for dlopen, just the library name is.
+lw_liblist="" # -l "/home/asdf/lib/filename.so /opt/foo/lib/filename2.a ..."
+not_found_libs=""
+for lib in $lw_libs; do
+
+    if [ "${lib#-l}" != $lib ]; then
+        lib_so2=$(lib_so "${lib#-l}")
+    else # it is a real file: libasdf.so libasdf.a with or without path
+        if [ "${lib%$so_ext_with_dot}" != $lib ]; then # ends with .so
+            lib_so2=$lib
+        fi # ignore .a files because we don't need them for dlopen
+    fi
+
+    found=false
+    if [ ${lib_so2#/} != $lib_so2 ]; then # absolute path
+        if [ -e $lib_so2 ]; then
+            lw_liblist="$lw_liblist $lib_so2"
+            found=true
+        fi
+    else                                  # relative path
+        for dir in $lib_dirs; do
+            if [ -e $dir/$lib_so2 ]; then
+                lw_liblist="$lw_liblist $lib_so2"
+                found=true
+                break
+            fi
+        done
+    fi
+
+    if [ "$found" = false ]; then
+        not_found_libs="$not_found_libs $lib_so2"
+    fi
+done
+
+if $lw_runtime_support && [ -n "$not_found_libs" ]; then
+    print_warning "Could not find the following libraries: $not_found_libs." \
+                  "In case some of these are supposed to be wrapped via runtime library wrapping," \
+                  "you need add their paths to LD_LIBRARY_PATH before running your application." \
+                  "Or if a library's filename is incorrect, correct it in the LW_LIBLIST variable" \
+                  "(e.g. libasdf.so) in $makefile." \
+                  "If one of these libraries is only installed as a static library, runtime" \
+                  "library wrapping might not work. Please switch off runtime wrapping," \
+                  "e.g. via reinitializing the working directory by adding" \
+                  "'--update --static-only-target-library' to your 'scorep-libwrap-init'" \
+                  "command line." \
+                  ""
+fi
+
+# verify that the used libtool can build libs we expect
+libtool_shared=$(eval "$($lw_libtool --config)"; test "$build_libtool_libs" = "yes" && echo true || echo false)
+if [ "$enable_shared,$libtool_shared" = "true,false" ]; then error_and_exit "Cannot build shared library wrappers but it was requested."; fi
+
+lw_libtool_ldflags=
+if [ "$enable_shared,$libtool_shared" = "false,true" ]; then
+    lw_libtool_ldflags=-static
+fi
+
+# create makefile
+(
+    echo "LW_NAME                 = $lw_name"
+    echo "LW_DISPLAY_NAME         = '$(echo "$lw_display_name" | sed "s/'/'\\\\\\\\''/g")'"
+    echo "LW_PREFIX               = $lw_prefix"
+    echo "LW_BACKEND              = $lw_compiler_prefix" # don't export "vanilla". Export an empty string, instead.
+    echo "LW_BACKEND_SUFFIX       = $lw_backend_suffix"
+    echo "CPPFLAGS                = $lw_cppflags"
+    echo "LDFLAGS                 = $lw_ldflags"
+    echo "LIBS                    = $lw_libs"
+    echo "SCOREP_CC               = $lw_cc"
+    echo "SCOREP_CC_WITHOUT_FLAGS = $lw_cc_without_flags"
+    echo "LIBTOOL                 = $lw_libtool"
+    echo "LIBTOOL_LDFLAGS         = $lw_libtool_ldflags"
+    echo "INSTALL                 = $INSTALL"
+    echo
+    echo "LW_GEN                  = $scorep_library_wrapper_generator"
+    echo "LW_SCOREP               = $BINDIR/scorep"
+    echo "LW_LANGUAGE             = $lw_language"
+    echo "LW_SRCEXT               = $lw_srcext"
+    echo "LW_LIBTOOL_TAG          = $lw_libtool_tag"
+    echo "LW_LIBLIST              = $lw_liblist"
+    echo
+    echo "SCOREP_CPPFLAGS         = $($scorep_config --cppflags)"
+    echo
+    echo "LW_INIT_FLAGS           = $lw_init_flags"
+    echo
+
+    echo "# proxy targets to enable/disable making/installing/uninstalling linktime and runtime wrappers according to what score-p supports"
+    if [ "$lw_linktime_support" = true ]; then
+        echo "ALL_LIBWRAP_LINKTIME          = all-libwrap-linktime"
+        echo "INSTALL_LIBWRAP_LINKTIME      = install-libwrap-linktime"
+        echo "INSTALLCHECK_LIBWRAP_LINKTIME = main_linktime_wrapped"
+        echo "UNINSTALL_LIBWRAP_LINKTIME    = uninstall-libwrap-linktime"
+    else
+        echo "ALL_LIBWRAP_LINKTIME          ="
+        echo "INSTALL_LIBWRAP_LINKTIME      ="
+        echo "INSTALLCHECK_LIBWRAP_LINKTIME ="
+        echo "UNINSTALL_LIBWRAP_LINKTIME    ="
+    fi
+
+    if [ "$lw_runtime_support" = true ]; then
+        echo "ALL_LIBWRAP_RUNTIME          = all-libwrap-runtime"
+        echo "INSTALL_LIBWRAP_RUNTIME      = install-libwrap-runtime"
+        echo "INSTALLCHECK_LIBWRAP_RUNTIME = main_runtime_wrapped"
+        echo "UNINSTALL_LIBWRAP_RUNTIME    = uninstall-libwrap-runtime"
+    else
+        echo "ALL_LIBWRAP_RUNTIME          ="
+        echo "INSTALL_LIBWRAP_RUNTIME      ="
+        echo "INSTALLCHECK_LIBWRAP_RUNTIME ="
+        echo "UNINSTALL_LIBWRAP_RUNTIME    ="
+    fi
+    echo
+    cat $makefile_template
+) > $makefile
+
+# copy wrap.filter and edit it according to -I flags supplied via cppflags
+
+include_dirs=""
+not_dirs=""
+for flag in $lw_cppflags; do
+    if [ "${flag#-I}" != "$flag" ]; then
+        dir="${flag#-I}"
+        if [ -d $dir ]; then
+            if [ "${dir#/}" != "$dir" ]; then # absolute path
+                include_dirs="$include_dirs $dir"
+            else
+                include_dirs="$include_dirs $pwd/$dir"
+            fi
+        else
+            not_dirs="$not_dirs $dir"
+        fi
+    fi
+done
+
+if [ -n "$not_dirs" ]; then
+    print_warning "The following directories, specified via -I, could not be found: $not_dirs"              \
+                  "By default these include directories are whitelisted in the filter file."                \
+                  "You might want to add one or more of these directories to $wrap_filter_target manually." \
+                  ""
+fi
+
+if [ ! -e $wrap_filter_target ]; then
+    (
+        sed -e "/SCOREP_FILE_NAMES_BEGIN/q" $wrap_filter
+        if [ -n "$include_dirs" ]; then
+            echo "  EXCLUDE *"
+            for dir in $include_dirs; do
+                echo "  INCLUDE $(cd "$dir" && pwd)/*"
+            done
+        fi
+        sed -n -e "/SCOREP_FILE_NAMES_BEGIN/,\$p" $wrap_filter | tail -n +2
+    ) >$wrap_filter_target
+else
+    print_warning "$wrap_filter_target has not been overwritten."                       \
+                  "If your -I include flags have changed, you might want to update the" \
+                  "include rules for files with the new/removed directories."           \
+                  "Detected include directories: $include_dirs."                        \
+                  ""
+fi
+
+# print next steps
+echo "Created working directory '$lw_workspace_directory' for library wrapper $lw_name."
+echo ""
+echo "Next:"
+echo ""
+if [ "$(cd "$lw_workspace_directory" && pwd)" != "$(pwd)" ]; then
+    echo "    $ cd $lw_workspace_directory"
+    echo ""
+fi
+echo "Add the #include-statements for your library to libwrap.h."
+echo ""
+echo "Add one or more function calls to your library into main.c."
+echo "It will be used as a linking-test."
+echo ""
+echo "    $ make                 # build wrapper"
+echo "    $ make check           # execute tests"
+echo "    $ make install         # install wrapper"
+echo "    $ make installcheck    # execute more tests"
+echo ""
+echo "To use the wrapper, link your application like this before executing it:"
+echo ""
+if [ "$lw_prefix" != "$PREFIX" ]; then
+    echo "    $ export SCOREP_LIBWRAP_PATH=$lw_prefix${SCOREP_LIBWRAP_PATH:+:\$SCOREP_LIBWRAP_PATH}"
+fi
+echo "    $ scorep --libwrap=$lw_name $lw_cc_without_flags $lw_cppflags app.$lw_srcext $lw_ldflags $lw_libs -o app" # taken from make installcheck in Makefile.template
+echo ""
+echo "For detailed instructions consult '${readme##*/}'."

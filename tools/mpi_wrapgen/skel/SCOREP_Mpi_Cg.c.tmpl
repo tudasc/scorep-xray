@@ -38,34 +38,43 @@
 int MPI_Comm_free(MPI_Comm* comm)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion (scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE],
-                               ( intptr_t )PMPI_Comm_free);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
+    }
   }
 
   scorep_mpi_comm_free(*comm);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Comm_free (comm);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
+    }
     SCOREP_MPI_EVENT_GEN_ON ();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -97,34 +106,43 @@ int MPI_Comm_free(MPI_Comm* comm)
 int MPI_Group_free(MPI_Group* group)
 {
   SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE],
-                              ( intptr_t )PMPI_Group_free);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
+    }
+    else
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
+    }
   }
 
   scorep_mpi_group_free(*group);
-  if (event_gen_active)
-  {
-    SCOREP_ENTER_WRAPPED_REGION();
-  }
+
+  SCOREP_ENTER_WRAPPED_REGION();
   return_val = PMPI_Group_free(group);
-  if (event_gen_active)
-  {
-    SCOREP_EXIT_WRAPPED_REGION();
-  }
+  SCOREP_EXIT_WRAPPED_REGION();
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion (scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
+    }
+    else
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
+    }
     SCOREP_MPI_EVENT_GEN_ON ();
   }
-  SCOREP_IN_MEASUREMENT_DECREMENT();
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
   return return_val;
 }
 #endif
@@ -165,25 +183,26 @@ int
 MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT );
+    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG_EXT);
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ],
-                                   ( intptr_t )PMPI_Comm_set_name );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
+        }
+        else
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
+        }
     }
 
-    if ( event_gen_active )
-    {
-        SCOREP_ENTER_WRAPPED_REGION();
-    }
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Comm_set_name( comm, comm_name );
-    if ( event_gen_active )
-    {
-        SCOREP_EXIT_WRAPPED_REGION();
-    }
+    SCOREP_EXIT_WRAPPED_REGION();
     if ( return_val == MPI_SUCCESS )
     {
         scorep_mpi_comm_set_name( comm, comm_name );
@@ -191,11 +210,18 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 
     if ( event_gen_active )
     {
-        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
+        }
+        else
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
+        }
         SCOREP_MPI_EVENT_GEN_ON();
     }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
     return return_val;
 }
 #endif

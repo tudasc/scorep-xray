@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -61,8 +61,7 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     $(LIB_DIR_SCOREP)libutils.la
 libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags) \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    $(library_api_version_ldflags)
 
 BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la
 
@@ -141,8 +140,7 @@ libscorep_adapter_mpi_event_la_LIBADD = \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
 libscorep_adapter_mpi_event_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags) \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    $(library_api_version_ldflags)
 
 BACKEND_TARGETS += $(LIB_DIR_SCOREP)libscorep_measurement.la
 

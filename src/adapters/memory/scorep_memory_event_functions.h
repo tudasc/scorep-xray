@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -23,7 +23,7 @@
 
 #include "scorep_memory_mgmt.h"
 #include "scorep_memory_attributes.h"
-#include <SCOREP_Libwrap_Macros.h>
+#include <scorep/SCOREP_Libwrap_Macros.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_RuntimeManagement.h>
 
@@ -109,32 +109,44 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( size_t size ) \
 { \
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT(); \
     if ( !trigger || \
-         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || \
-         !scorep_memory_recording ) \
+         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ) \
     { \
         SCOREP_IN_MEASUREMENT_DECREMENT(); \
-        return __real_##FUNCTION( size ); \
+        return SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( size ) ); \
     } \
  \
     UTILS_DEBUG_ENTRY( "%zu", size ); \
  \
-    scorep_memory_attributes_add_enter_alloc_size( size ); \
-    SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ], \
-                               ( intptr_t )__real_##FUNCTION ); \
- \
-    SCOREP_ENTER_WRAPPED_REGION(); \
-    void* result = __real_##FUNCTION( size ); \
-    SCOREP_EXIT_WRAPPED_REGION(); \
- \
-    if ( result ) \
+    if ( scorep_memory_recording ) \
     { \
-        SCOREP_AllocMetric_HandleAlloc( scorep_memory_metric, \
-                                        ( uint64_t )result, \
-                                        size ); \
+        scorep_memory_attributes_add_enter_alloc_size( size ); \
+        SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+    else \
+    { \
+        SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
  \
-    scorep_memory_attributes_add_exit_return_address( ( uint64_t )result ); \
-    SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    SCOREP_ENTER_WRAPPED_REGION(); \
+    void* result = SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( size ) ); \
+    SCOREP_EXIT_WRAPPED_REGION(); \
+ \
+    if ( scorep_memory_recording ) \
+    { \
+        if ( result ) \
+        { \
+            SCOREP_AllocMetric_HandleAlloc( scorep_memory_metric, \
+                                            ( uint64_t )result, \
+                                            size ); \
+        } \
+ \
+        scorep_memory_attributes_add_exit_return_address( ( uint64_t )result ); \
+        SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+    else \
+    { \
+        SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
  \
     UTILS_DEBUG_EXIT( "%zu, %p", size, result ); \
     SCOREP_IN_MEASUREMENT_DECREMENT(); \
@@ -149,40 +161,52 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
 { \
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT(); \
     if ( !trigger || \
-         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || \
-         !scorep_memory_recording ) \
+         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ) \
     { \
         SCOREP_IN_MEASUREMENT_DECREMENT(); \
-        __real_##FUNCTION( ptr ); \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( ptr ) ); \
         return; \
     } \
  \
     UTILS_DEBUG_ENTRY( "%p", ptr ); \
  \
-    scorep_memory_attributes_add_enter_argument_address( ( uint64_t )ptr ); \
-    SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ], \
-                               ( intptr_t )__real_##FUNCTION ); \
- \
     void* allocation = NULL; \
-    if ( ptr ) \
+    if ( scorep_memory_recording ) \
     { \
-        SCOREP_AllocMetric_AcquireAlloc( scorep_memory_metric, \
-                                         ( uint64_t )ptr, &allocation ); \
+        scorep_memory_attributes_add_enter_argument_address( ( uint64_t )ptr ); \
+        SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+ \
+        if ( ptr ) \
+        { \
+            SCOREP_AllocMetric_AcquireAlloc( scorep_memory_metric, \
+                                             ( uint64_t )ptr, &allocation ); \
+        } \
+    } \
+    else \
+    { \
+        SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
  \
     SCOREP_ENTER_WRAPPED_REGION(); \
-    __real_##FUNCTION( ptr ); \
+    SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( ptr ) ); \
     SCOREP_EXIT_WRAPPED_REGION(); \
  \
-    uint64_t dealloc_size = 0; \
-    if ( ptr ) \
+    if ( scorep_memory_recording ) \
     { \
-        SCOREP_AllocMetric_HandleFree( scorep_memory_metric, \
-                                       allocation, &dealloc_size ); \
-    } \
+        uint64_t dealloc_size = 0; \
+        if ( ptr ) \
+        { \
+            SCOREP_AllocMetric_HandleFree( scorep_memory_metric, \
+                                           allocation, &dealloc_size ); \
+        } \
  \
-    scorep_memory_attributes_add_exit_dealloc_size( dealloc_size ); \
-    SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+        scorep_memory_attributes_add_exit_dealloc_size( dealloc_size ); \
+        SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+    else \
+    { \
+        SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
  \
     UTILS_DEBUG_EXIT(); \
     SCOREP_IN_MEASUREMENT_DECREMENT(); \

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -57,14 +57,17 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_Memory.h>
 
+#include <SCOREP_Hashtab.h>
+#include <jenkins_hash.h>
 
 static void
 resolve_interim_definitions( void );
 
-
 static void
 assign_empty_string_to_names( SCOREP_StringHandle emptyString );
 
+static void
+create_region_groups( void );
 
 void
 SCOREP_Unify( void )
@@ -109,10 +112,14 @@ SCOREP_Unify( void )
     /* Let the subsystems do some stuff */
     scorep_subsystems_post_unify();
 
-    /* Assign some known defs the empty string name, if they still have INVALID */
+    /* Execute post-processing steps by root */
     if ( SCOREP_Status_GetRank() == 0 )
     {
+        /* Assign some known defs the empty string name, if they still have INVALID */
         assign_empty_string_to_names( empty_string );
+
+        /* Create region groups */
+        create_region_groups();
     }
 
     /* fool linker, so that the scorep_unify_helpers.c unit is always linked
@@ -372,4 +379,137 @@ assign_empty_string_to_names( SCOREP_StringHandle emptyString )
 {
     ASSIGN_EMPTY_STRING( Group, group, name_handle );
     ASSIGN_EMPTY_STRING( Communicator, communicator, name_handle );
+}
+
+struct region_group_key
+{
+    const char*         name;
+    SCOREP_ParadigmType paradigm_type;
+};
+
+static size_t
+hash_region_group_key( const void* key )
+{
+    const struct region_group_key* region_group_key = key;
+    uint32_t                       hash_value       = jenkins_hash( region_group_key->name, strlen( region_group_key->name ), 0 );
+    return jenkins_hash( &region_group_key->paradigm_type, sizeof( region_group_key->paradigm_type ), hash_value );
+}
+
+static int32_t
+compare_region_group_key( const void* key,
+                          const void* itemKey )
+{
+    const struct region_group_key* region_group_key_a = key;
+    const struct region_group_key* region_group_key_b = itemKey;
+    int32_t                        result             = strcmp( region_group_key_a->name, region_group_key_b->name );
+    if ( result != 0 )
+    {
+        return result;
+    }
+
+    return region_group_key_a->paradigm_type == region_group_key_b->paradigm_type ? 0 : 1;
+}
+
+struct region_group
+{
+    struct region_group_key key;
+    uint32_t                number_of_regions;
+    uint32_t                current_pos;
+    SCOREP_RegionHandle*    region_handles;
+};
+
+void
+create_region_groups( void )
+{
+    SCOREP_Hashtab* region_groups =
+        SCOREP_Hashtab_CreateSize( 8, hash_region_group_key, compare_region_group_key );
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN(
+        scorep_unified_definition_manager, Region, region )
+    {
+        if ( definition->group_name_handle == SCOREP_INVALID_STRING )
+        {
+            continue;
+        }
+
+        struct region_group_key key;
+        key.name          = SCOREP_StringHandle_Get( definition->group_name_handle );
+        key.paradigm_type = definition->paradigm_type;
+
+        size_t                hash_hint;
+        SCOREP_Hashtab_Entry* entry =
+            SCOREP_Hashtab_Find( region_groups, &key, &hash_hint );
+        if ( !entry )
+        {
+            struct region_group* region_group = calloc( 1, sizeof( *region_group ) );
+            region_group->key = key;
+            entry             = SCOREP_Hashtab_Insert( region_groups,
+                                                       &region_group->key,
+                                                       region_group,
+                                                       &hash_hint );
+        }
+        struct region_group* region_group = entry->value;
+
+        region_group->number_of_regions++;
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    /* Allocate arrays for all groups */
+    SCOREP_Hashtab_Iterator* iter  = SCOREP_Hashtab_IteratorCreate( region_groups );
+    SCOREP_Hashtab_Entry*    entry = SCOREP_Hashtab_IteratorFirst( iter );
+    while ( entry )
+    {
+        struct region_group* region_group = entry->value;
+
+        region_group->region_handles = calloc( region_group->number_of_regions, sizeof( *region_group->region_handles ) );
+
+        entry = SCOREP_Hashtab_IteratorNext( iter );
+    }
+    SCOREP_Hashtab_IteratorFree( iter );
+
+    /* Fill all groups with there region members */
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN(
+        scorep_unified_definition_manager, Region, region )
+    {
+        if ( definition->group_name_handle == SCOREP_INVALID_STRING )
+        {
+            continue;
+        }
+
+        struct region_group_key key;
+        key.name          = SCOREP_StringHandle_Get( definition->group_name_handle );
+        key.paradigm_type = definition->paradigm_type;
+
+        SCOREP_Hashtab_Entry* entry =
+            SCOREP_Hashtab_Find( region_groups, &key, NULL );
+        UTILS_ASSERT( entry );
+        struct region_group* region_group = entry->value;
+
+        region_group->region_handles[ region_group->current_pos++ ] = handle;
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    /* Define groups */
+    iter  = SCOREP_Hashtab_IteratorCreate( region_groups );
+    entry = SCOREP_Hashtab_IteratorFirst( iter );
+    while ( entry )
+    {
+        struct region_group* region_group = entry->value;
+
+        SCOREP_Definitions_NewUnifiedGroupFrom32(
+            SCOREP_GROUP_REGIONS,
+            region_group->key.name,
+            region_group->number_of_regions,
+            ( const uint32_t* )region_group->region_handles );
+
+        /* drop the array now, so that we don't need a special 'free' handler for SCOREP_Hashtab_FreeAll */
+        free( region_group->region_handles );
+
+        entry = SCOREP_Hashtab_IteratorNext( iter );
+    }
+    SCOREP_Hashtab_IteratorFree( iter );
+
+    SCOREP_Hashtab_FreeAll( region_groups,
+                            &SCOREP_Hashtab_DeleteNone,
+                            &SCOREP_Hashtab_DeleteFree );
 }

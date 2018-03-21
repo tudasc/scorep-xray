@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -51,9 +51,9 @@ papi_signal_handler( int       eventSet,
     bool outside = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     SCOREP_ENTER_SIGNAL_CONTEXT();
 
-    if ( ( outside || SCOREP_IN_WRAPPED_REGION() ) && scorep_sampling_is_enabled() )
+    if ( outside && scorep_sampling_is_enabled() )
     {
-        SCOREP_Sample( papi_interrupt_generator );
+        SCOREP_Sample( papi_interrupt_generator, context );
     }
 
     SCOREP_EXIT_SIGNAL_CONTEXT();

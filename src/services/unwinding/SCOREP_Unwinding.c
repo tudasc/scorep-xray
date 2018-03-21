@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -44,6 +44,31 @@ size_t scorep_unwinding_subsystem_id;
  * Public functions
  * ****************************************************************** */
 
+void
+SCOREP_Unwinding_PushWrapper( SCOREP_Location*    location,
+                              SCOREP_RegionHandle regionHandle,
+                              uint64_t            wrapperIp,
+                              size_t              framesToSkip )
+{
+    SCOREP_LocationType location_type = SCOREP_Location_GetType( location );
+    UTILS_BUG_ON( location_type != SCOREP_LOCATION_TYPE_CPU_THREAD, "This function should not have been called for non-cpu locations." );
+    void* location_data = SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
+    scorep_unwinding_cpu_push_wrapper( location_data,
+                                       regionHandle,
+                                       wrapperIp,
+                                       framesToSkip );
+}
+
+void
+SCOREP_Unwinding_PopWrapper( SCOREP_Location*    location,
+                             SCOREP_RegionHandle regionHandle )
+{
+    SCOREP_LocationType location_type = SCOREP_Location_GetType( location );
+    UTILS_BUG_ON( location_type != SCOREP_LOCATION_TYPE_CPU_THREAD, "This function should not have been called for non-cpu locations." );
+    void* location_data = SCOREP_Location_GetSubsystemData( location, scorep_unwinding_subsystem_id );
+    scorep_unwinding_cpu_pop_wrapper( location_data, regionHandle );
+}
+
 /**
  * This function is triggered by enter/leave events of instrumented
  * functions or sampling interrupts. It will unwind and update the stack
@@ -73,10 +98,9 @@ size_t scorep_unwinding_subsystem_id;
  */
 void
 SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
+                                    void*                        contextPtr,
                                     SCOREP_Unwinding_Origin      origin,
                                     SCOREP_RegionHandle          instrumentedRegionHandle,
-                                    intptr_t                     wrappedRegion,
-                                    size_t                       framesToSkip,
                                     SCOREP_CallingContextHandle* currentCallingContext,
                                     SCOREP_CallingContextHandle* previousCallingContext,
                                     uint32_t*                    unwindDistance )
@@ -101,22 +125,22 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
             switch ( origin )
             {
                 case SCOREP_UNWINDING_ORIGIN_SAMPLE:
-                    UTILS_BUG_ON( instrumentedRegionHandle != SCOREP_INVALID_REGION, "Region handle provided for sample." );
-                    UTILS_BUG_ON( wrappedRegion != 0, "Wrapped regions not supported for sample events." );
-                    UTILS_BUG_ON( framesToSkip != 0, "Skipping frames not supported for sample events." );
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER:
+                    UTILS_BUG_ON( origin == SCOREP_UNWINDING_ORIGIN_SAMPLE
+                                  && instrumentedRegionHandle != SCOREP_INVALID_REGION,
+                                  "Region handle provided for sample." );
+                    UTILS_BUG_ON( origin == SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER
+                                  && instrumentedRegionHandle == SCOREP_INVALID_REGION,
+                                  "No region handle provided for enter." );
                     result = scorep_unwinding_cpu_handle_enter( location_data,
+                                                                contextPtr,
                                                                 instrumentedRegionHandle,
-                                                                wrappedRegion,
-                                                                framesToSkip,
                                                                 currentCallingContext,
                                                                 unwindDistance,
                                                                 previousCallingContext );
                     break;
 
                 case SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_EXIT:
-                    UTILS_BUG_ON( wrappedRegion, "Wrapped regions not supported for exit events." );
-                    UTILS_BUG_ON( framesToSkip, "Skipping frames not supported for exit events." );
                     result = scorep_unwinding_cpu_handle_exit( location_data,
                                                                currentCallingContext,
                                                                unwindDistance,
@@ -127,9 +151,6 @@ SCOREP_Unwinding_GetCallingContext( SCOREP_Location*             location,
 
         case SCOREP_LOCATION_TYPE_GPU:
             /* Handle non-CPU location (e.g., locations of GPU streams) */
-
-            UTILS_BUG_ON( wrappedRegion, "Wrapped regions not supported for GPU locations." );
-            UTILS_BUG_ON( framesToSkip, "Skipping frames not supported for GPU locations." );
 
             switch ( origin )
             {

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,6 +42,8 @@
 #include "scorep_instrumenter_adapter.hpp"
 #include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
+
+#include <scorep_tools_utils.hpp>
 
 #include <iostream>
 #include <stdlib.h>
@@ -132,7 +134,7 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
         }
     }
 
-    check_parameter();
+    checkParameter();
     if ( m_verbosity >= 2 )
     {
         print_parameter();
@@ -315,7 +317,7 @@ SCOREP_Instrumenter_CmdLine::getLibraryFiles( bool allow_dynamic,
           current_lib != m_libraries.end();
           current_lib++ )
     {
-        lib_files += " " + backslash_special_chars( find_library( *current_lib, m_libdirs, allow_dynamic, allow_static ) );
+        lib_files += " " + backslash_special_chars( find_library( *current_lib, m_libdirs, allow_static, allow_dynamic, true ) );
     }
     return lib_files;
 }
@@ -590,10 +592,8 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     /* Detect input files */
     if ( ( current[ 0 ] != '-' ) && is_library( current ) )
     {
-        std::string lib = remove_path( current );
-        if ( ( lib.length() >= 4 ) &&
-             ( lib.substr( 0, 3 ) == "lib" ) &&
-             ( is_interposition_library( lib.substr( 3 ) ) ) )
+        /* extract library name */
+        if ( is_interposition_library( get_library_name( current ) ) )
         {
             m_interposition_lib_set = true;
             m_current_flags         = &m_flags_after_interposition_lib;
@@ -796,7 +796,7 @@ SCOREP_Instrumenter_CmdLine::add_define( std::string arg )
 }
 
 void
-SCOREP_Instrumenter_CmdLine::check_parameter( void )
+SCOREP_Instrumenter_CmdLine::checkParameter( void )
 {
     /* Check dependencies */
     SCOREP_Instrumenter_Selector::checkDependencies();
@@ -865,4 +865,11 @@ void
 SCOREP_Instrumenter_CmdLine::add_library( const std::string& library )
 {
     m_libraries.push_back( library );
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::is_interposition_library( const std::string& libraryName )
+{
+    return SCOREP_Instrumenter_Adapter::isAllInterpositionLibrary( libraryName )
+           || SCOREP_Instrumenter_Selector::isAllInterpositionLibrary( libraryName );
 }

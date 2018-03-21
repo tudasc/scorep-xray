@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2015,
+## Copyright (c) 2009-2012, 2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -54,6 +54,9 @@ INC_DIR_DEFINITIONS = $(INC_ROOT)src/measurement/definitions/include
 
 ##  Where to find the valgrind headers.
 INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include
+
+# not in common yet, as cube has this already in its package specific common.am too.
+bin_SCRIPTS =
 
 CLEAN_LOCAL =
 clean-local: $(CLEAN_LOCAL)

@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2014, 2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -222,6 +222,8 @@ AS_IF([test "x${bindir}" = "x${BINDIR_EVALUATED}"],
 AX_CONFIG_SUBDIR([build-score], [${scorep_score_extra_arg} ${scorep_cubelib_config_arg}  ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AX_CONFIG_SUBDIR([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
+
+AX_CONFIG_SUBDIR([build-libwrap], [${args} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AM_CONDITIONAL([HAVE_SCOREP_MPI], [test "x${scorep_mpi_user_disabled}" != "xyes"])
 AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],

@@ -2,6 +2,8 @@
 Usage:
 scorep-config <command> [<options>]
   Commands:
+   --prefix   Prints the canonical installation prefix of this Score-P
+              installation.
    --cflags   Prints additional compiler flags for a C compiler.
               They already contain the include flags.
    --cxxflags Prints additional compiler flags for a C++ compiler.
@@ -13,13 +15,35 @@ scorep-config <command> [<options>]
               output of the --cflags, --cxxflags, and --fflags commands.
               language may be one of c (default), c++, or fortran.
    --ldflags  Prints the library path flags for the linker.
-   --libs     Prints the required libraries to link against.
+   --libs     Prints the required libraries to link against
+              (combines --event-libs and --mgmt-libs).
+   --event-libs
+              Prints only the required libraries to link against which
+              includes event entry points into the measurement.
+   --mgmt-libs
+              Prints only the required libraries to link against which
+              includes management code from the Score-P measurement and
+              their dependencies.
+   --preload-libs
+              Prints only the required libraries which should be listed in
+              LD_PRELOAD.
    --cc       Prints the C compiler name.
    --cxx      Prints the C++ compiler name.
    --fc       Prints the Fortran compiler name.
    --mpicc    Prints the MPI C compiler name.
    --mpicxx   Prints the MPI C++ compiler name.
    --mpifc    Prints the MPI Fortran compiler name.
+   --shmemcc  Prints the SHMEM C compiler name.
+   --shmemcxx Prints the SHMEM C++ compiler name.
+   --shmemfc  Prints the SHMEM Fortran compiler name.
+   --libtool  Prints the path to the libtool script used to build Score-P
+              libraries.
+   --mpilibtool
+              Prints the path to the libtool script used to build Score-P
+              MPI libraries.
+   --shmemlibtool
+              Prints the path to the libtool script used to build Score-P
+              SHMEM libraries.
    --help     Prints this usage information.
    --version  Prints the version number of the Score-P package.
    --scorep-revision
@@ -30,6 +54,10 @@ scorep-config <command> [<options>]
               Prints the path to the remapper specification file.
    --adapter-init
               Prints the code for adapter initialization.
+   --libwrap-support=linktime
+              Prints true if link-time library wrapping is supported.
+   --libwrap-support=runtime
+              Prints true if run-time library wrapping is supported.
   Options:
    --target   Get flags for specified target, e.g., mic.
    --nvcc     Convert flags to be suitable for the nvcc compiler.
@@ -53,13 +81,16 @@ scorep-config <command> [<options>]
    --openacc|--noopenacc
               Specifies whether openacc instrumentation is used.
               On default openacc instrumentation is enabled.
-   --opencl|--noopencl
+   --opencl[:<wrapping mode>]|--noopencl
               Specifies whether opencl instrumentation is used.
               On default opencl instrumentation is enabled.
+              Available wrapping modes are:
+               linktime (default)
+               runtime
    --preprocess|--nopreprocess
               Specifies whether preprocess instrumentation is used.
               On default preprocess instrumentation is disabled.
-   --memory=<memory-api-list>|--nomemory
+   --memory=<api list>|--nomemory
               Specifies whether memory usage recording is used.
               On default memory usage recording is disabled.
               The following memory interfaces may be recorded:
@@ -71,6 +102,8 @@ scorep-config <command> [<options>]
                 new,new[],delete,delete[] (IA-64 C++ ABI)
                pgCCL32|pgCCL64:
                 new,new[],delete,delete[] (old PGI/EDG C++ ABI)
+   --libwrap=<wrapping mode>:<libwrap anchor-file>
+              Uses the specified library wrapper.
    --thread=<threading system>
               Available threading systems are:
                none (default)

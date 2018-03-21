@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -162,20 +162,18 @@ m4_foreach([func],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([SCOREP_OPENCL], [
+AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
+
 AFS_SUMMARY_PUSH
 
-dnl check if library wrapping is possible
-SCOREP_LIBRARY_WRAPPING
-
-AS_IF([test "x$afs_have_gnu_linker" = "xyes"],
+AM_COND_IF([HAVE_LIBWRAP_SUPPORT],
       [AC_SCOREP_BACKEND_LIB([libOpenCL], [CL/cl.h])
        AS_IF([test "x$scorep_opencl_error" = "xyes"],
              [AS_UNSET([ac_cv_search_clGetPlatformIDs])
-              AC_SCOREP_BACKEND_LIB([libOpenCL], [OpenCL/opencl.h])],
-             [])],
+              AC_SCOREP_BACKEND_LIB([libOpenCL], [OpenCL/opencl.h])])],
       [scorep_opencl_error="yes"
        AM_CONDITIONAL(HAVE_LIBOPENCL, [test 1 -eq 0])
-       AC_MSG_NOTICE([OpenCL instrumentation disabled, no GNU linker available])])
+       AC_MSG_NOTICE([OpenCL instrumentation disabled, no library wrapping available])])
 
 scorep_opencl_wrap_symbols=""
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_1_0_SUPPORT],

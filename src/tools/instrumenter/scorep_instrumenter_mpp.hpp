@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2017,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -55,6 +55,17 @@ public:
 
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
+
+    bool
+    isInterpositionLibrary( const std::string& libraryName );
+
+private:
+    /**
+       Checks whether the library name is an mpi library.
+       @param library_name  The name of the library.
+     */
+    bool
+    is_mpi_library( const std::string& libraryName );
 };
 
 /* **************************************************************************************
@@ -74,6 +85,17 @@ public:
 
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
+
+    bool
+    isInterpositionLibrary( const std::string& libraryName );
+
+private:
+    /**
+       Checks whether the library name is an shmem library.
+       @param library_name  The name of the library.
+     */
+    bool
+    is_shmem_library( const std::string& libraryName );
 };
 
 /* **************************************************************************************
