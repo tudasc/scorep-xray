@@ -11,4 +11,8 @@
 ## directory for details.
 ##
 
+if BUILD_SHARED_LIBRARIES
+
 frontend_bin_SCRIPTS += scorep-preload-init
+
+endif BUILD_SHARED_LIBRARIES
