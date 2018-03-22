@@ -88,4 +88,4 @@ private:
     std::vector<std::pair<std::string, Wrapper> > m_wrappers;
 };
 
-#endif // SCOREP_INSTRUMENTER_ADAPTER_HPP
+#endif // SCOREP_INSTRUMENTER_LIBWRAP_HPP
