@@ -40,7 +40,6 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-ibm  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-intel  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pgi  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pgipower  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-studio  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-bullxmpi \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-hp \
@@ -70,7 +69,6 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-ibm  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-intel  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pgi  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pgipower  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-studio  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-altix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-arm  \
