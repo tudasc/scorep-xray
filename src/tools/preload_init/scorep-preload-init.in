@@ -61,6 +61,7 @@ the login resources, <resultdir> must be available on the compute resources,
 and the value of LD_PRELOAD must only effect applications running on the
 compute resources.
 
+Report bugs to <@PACKAGE_BUGREPORT@>
 EOH
 }
 

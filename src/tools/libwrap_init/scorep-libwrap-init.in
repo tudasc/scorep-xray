@@ -97,7 +97,11 @@ scriptname=${0##*/}
 
 print_help_message()
 {
-    cat $readme | if test -t 1; then
+    (
+        cat $readme
+        printf "\n"
+        printf "Report bugs to <%s>\n" "@PACKAGE_BUGREPORT@"
+    ) | if test -t 1; then
         # if PAGER is set, use PAGER, else, check whether less exists, use it, use cat otherwise
         ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
     else
