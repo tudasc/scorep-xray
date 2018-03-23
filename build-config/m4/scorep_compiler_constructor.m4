@@ -24,7 +24,9 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  scorep_compiler_constructor_cflags=""],
     [ibm],      [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
-    [portland], [scorep_compiler_constructor_mode=pragma
+    [portland], [AS_IF([test "x${build_cpu}" = "xpowerpc64le"],
+                       [scorep_compiler_constructor_mode=attribute],
+                       [scorep_compiler_constructor_mode=pragma])
                  scorep_compiler_constructor_cflags=""],
     [gnu],      [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
