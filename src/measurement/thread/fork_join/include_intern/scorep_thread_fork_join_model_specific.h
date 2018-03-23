@@ -31,11 +31,11 @@ struct SCOREP_Location;
 struct scorep_thread_private_data;
 
 void
-scorep_thread_create_mutexes();
+scorep_thread_create_mutexes( void );
 
 
 void
-scorep_thread_destroy_mutexes();
+scorep_thread_destroy_mutexes( void );
 
 
 /**

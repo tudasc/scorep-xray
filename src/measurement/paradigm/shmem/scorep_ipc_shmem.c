@@ -1404,11 +1404,13 @@ SCOREP_IpcGroup_Split( SCOREP_Ipc_Group* parent,
                        int               key )
 {
     UTILS_BUG( "SCOREP_IpcGroup_Split for shmem is not supported." );
+
+    /* not reached */
+    return NULL;
 }
 
 void
 SCOREP_IpcGroup_Free( SCOREP_Ipc_Group* group )
-
 {
     UTILS_BUG( "SCOREP_IpcGroup_Free for shmem is not supported." );
 }
