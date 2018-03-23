@@ -45,6 +45,11 @@ Features and improvements:
   need to be provided a PATH to cubew-config and cubelib-config,
   respectively, if not already in PATH. The Cube GUI is separately
   available from http://www.scalasca.org.
+- An experimental script named `scorep-preload-init` is provided
+  which helps to setting up a measurement done through the `LD_PRELOAD`
+  mechanism.  Score-P needs to be built with shared libraries to
+  enable this feature and not all instrumentations are supported
+  though.
 
 Bugfixes:
 

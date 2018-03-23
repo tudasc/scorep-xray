@@ -31,6 +31,7 @@ usage()
     if test $# -gt 0
     then
         printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
+        printf "Note that this script is still EXPERIMENTAL."
         printf "Try '%s --help' for more information.\n" "$argv0"
         return
     fi
@@ -60,6 +61,8 @@ In case of an cross-machine, this preparation step must be executed on
 the login resources, <resultdir> must be available on the compute resources,
 and the value of LD_PRELOAD must only effect applications running on the
 compute resources.
+
+Note that this script is still EXPERIMENTAL.
 
 Report bugs to <@PACKAGE_BUGREPORT@>
 EOH
@@ -315,5 +318,7 @@ the application in the job script.
 To remove this preload result run:
 
     $SHELL "${RESULTDIR}/${BINARY_TAG}.clean"
+
+Note that this script is still EXPERIMENTAL.
 EOA
 fi
