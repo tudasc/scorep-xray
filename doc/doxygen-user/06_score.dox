@@ -119,7 +119,7 @@ By default scorep-score uses demangled function names. However, if you want to
 map data to tools which use mangled names you might want to display mangled names.
 Furthermore, if you have trouble with function signatures that contain characters
 that also have a wildcard meaning, defining filters on mangled names might be easier.
-To display mangled names instead of demangled names, you can use the -m flag, e.g.
+To display mangled names instead of demangled names, you can use the -m flag, e.g.,
 
 @verbatim
 scorep-score profile.cubex -r -m
@@ -129,7 +129,7 @@ scorep-score profile.cubex -r -m
       it means that the -m flag is only effective if also the -r is specified.
 
 @note In some cases, the same name is shown for the mangled and the demangled name.
-      Some instrumentation methods, e.g. user instrumentation, provide only a
+      Some instrumentation methods, e.g., user instrumentation, provide only a
       demangled name. For C-compilers mangled and demangled names are usually
       identical. Or the demangling might have failed and only a mangled name is
       available. In these cases we show always the one name that is available.
@@ -149,7 +149,7 @@ to your needs. Section @secref{filtering} describes the format of a filter
 specification file.
 
 If you have a filter file, you can test the effect of your filter on the trace file.
-Therefor, you need to pass a @verb{-f} followed by the file name of your filter. E.g.
+Therefor, you need to pass a @verb{-f} followed by the file name of your filter. E.g.,
 if your filter file name is @verb{myfilter}, the command looks like this:
 
 @verbatim
@@ -182,7 +182,7 @@ trace. A new group @verb{FLT} appears, which contains all regions that
 are filtered. Under @verb{max_tbc} the group @verb{FLT} displays how the memory
 requirements per process are reduced. Furthermore, the groups that end
 on @verb{-FLT}, like @verb{ALL-FLT} contain only the unfiltered regions of the
-original group. E.g. @verb{USR-FLT} contains all regions of group @verb{USR} that
+original group. E.g., @verb{USR-FLT} contains all regions of group @verb{USR} that
 are not filtered.
 
 Furthermore, the column @verb{flt} is no longer empty but contain a symbol that
@@ -195,10 +195,10 @@ function a '@verb{+}' or '@verb{-}' indicates whether the function is filtered.
 
 @section score_metrics Calculating the effects of recording hardware counters
 
-Recording additional metrics, e.g. hardware counters may significantly increase
+Recording additional metrics, e.g., hardware counters may significantly increase
 the trace size, because for many events additional metric values
 are stored. In order to estimate the effects of these metrics, you may add
-a @verb{-c} followed by the number of metrics you want to record. E.g.
+a @verb{-c} followed by the number of metrics you want to record, e.g.,
 
 @verbatim
 scorep-score profile.cubex -c 3

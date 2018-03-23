@@ -206,7 +206,7 @@ If the @scorep profiling system detects inconsistencies during measurement, it s
 recording the profile and prints an error message. Examples for reasons of an
 inconsistent profile are, if the nesting order of function entries and exits is
 broken, or events appear for an uninitialized thread. This might indicate an bug
-of the profile, but typically the cause is an erroneous instrumentation. E.g. if
+of the profile, but typically the cause is an erroneous instrumentation. E.g., if
 manual instrumentation is applied, but not all possible exit points of a function
 are instrumented.
 
@@ -332,7 +332,7 @@ The filtering is based on the filenames as seen by the measurement system.
 Depending on instrumentation method and compiler the actual filename may
 contain the absolute path, a relative path or no path at all. The instrumentation
 tool tries to create as much absolute paths as possible. Paths are
-simplified before comparison to a rule. E.g. it removes <tt>path/../</tt>,
+simplified before comparison to a rule. E.g., it removes <tt>path/../</tt>,
 <tt>/./</tt> and multiple slashes. You may look up the actual filename in the resulting
 output of the measurement.
 
@@ -433,7 +433,7 @@ Filtering can be employed during measurement (described in Section @secref{filte
 ignore events from compiler-instrumented routines or user-instrumented routines.
 
 Another possibility is not to record the whole application run. In many cases,
-only parts of the application are of interest for analysis (e.g. a frequently
+only parts of the application are of interest for analysis (e.g., a frequently
 performed calculation) while other parts are of less interest (e.g., initialization
 and finalization) for performance analysis. Or the calculation itself shows
 iterative behavior, where recording of one iteration would be sufficient for
@@ -461,7 +461,7 @@ if:
        inside a parallel region is recorded. To prevent inconsistencies from
        incomplete recording of @openmp events, it is not possible to switch
        recording on/off from inside a parallel region </li>
-  <li> @mpi a communication is only recorded partially, e.g. if a send is missing, but
+  <li> @mpi a communication is only recorded partially, e.g., if a send is missing, but
        the corresponding receive on another process is recorded. To ensure recording
        of complete communication is the responsibility of the user.
   <li> enter/exit events are not correctly nested. </li>
@@ -692,7 +692,7 @@ SCOREP_METRIC_PLUGINS=HelloWorld_plugin
 SCOREP_METRIC_HELLOWORLD_PLUGIN=metric1,metric2
 </pre>
 
-@note Plugins are not supposed to trigger events (e.g. via @mpi, @openmp, Pthreads or user instrumentation) during initialization and finalization of the plugin.
+@note Plugins are not supposed to trigger events (e.g., via @mpi, @openmp, Pthreads or user instrumentation) during initialization and finalization of the plugin.
 @note A set of open source metric plugins is available at <a href="https://github.com/score-p">GitHub</a>.
 
 @section mpi_adapter MPI Performance Measurement
@@ -796,7 +796,7 @@ A shorthand to get event generation for all supported function calls is
 SCOREP_MPI_ENABLE_GROUPS=ALL
 </pre>
 
-A shorthand to add a single group, e.g. \p TYPE, to the configured default is
+A shorthand to add a single group, e.g., \p TYPE, to the configured default is
 <pre>
 SCOREP_MPI_ENABLE_GROUPS=DEFAULT,TYPE
 </pre>
@@ -847,7 +847,7 @@ CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
 To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_CUDA_BUFFER} (default: 1M).
 
-Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK} (default: 8k). Buffer chunks are allocated whenever CUPTI requests a buffer (e.g. to record activities on a CUDA stream).
+Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK} (default: 8k). Buffer chunks are allocated whenever CUPTI requests a buffer (e.g., to record activities on a CUDA stream).
 \confvar{SCOREP_CUDA_BUFFER} specifies the upper bound of memory to be allocated for CUPTI activities. Therefore it should be a multiple of \confvar{SCOREP_CUDA_BUFFER_CHUNK}.
 
 @note Make sure to call <tt>cudaDeviceReset()</tt> or <tt>cudaDeviceSynchronize()</tt> before the exit of the program. Otherwise GPU activities might be missing in the trace.

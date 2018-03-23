@@ -69,8 +69,7 @@ To enable sampling, several prerequisites have to be met.
         The PAPI interrupt source uses overflowing performance counters to interrupt the program.
         This source can be used in multi-threaded programs.
         Due to limitations from the PAPI library, PAPI counters will not be available if PAPI sampling is enabled.
-        However, you can use perf metrics.
-        E.g.,
+        However, you can use perf metrics, e.g.,
         @code
         export SCOREP_METRIC_PERF=instructions:page-faults
         @endcode
@@ -145,7 +144,7 @@ Additionally to the instrumentation, you now see where the instrumented region h
 A pure @mpi instrumentation for example does not tell you which functions have been issuing communications.
 With unwinding enabled, this is revealed and stored in the trace or profile.
 
-Instrument your program, e.g. with @mpi instrumentation enabled.
+Instrument your program, e.g., with @mpi instrumentation enabled.
 
 @code
 scorep mpicc my_mpi_code.c -o my_mpi_application
@@ -171,7 +170,7 @@ mpirun -np 16 ./my_mpi_application
 In this example you get rid of a possible enormous compiler instrumentation overhead but you are still able to see statistical occurrences of small code regions.
 The NAS Parallel Benchmark BT-MZ for example uses small sub functions within @openmp parallel functions that increase the measurement overhead significantly when compiler instrumentation is enabled.
 
-Instrument your program, e.g. with @mpi and @openmp instrumentation enabled.
+Instrument your program, e.g., with @mpi and @openmp instrumentation enabled.
 
 @code
 scorep mpicc -fopenmp my_hybrid_code.c -o my_hybrid_application

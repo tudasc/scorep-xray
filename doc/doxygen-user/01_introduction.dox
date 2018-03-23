@@ -120,7 +120,7 @@ You can subscribe to the news@score-p.org and support@score-p.org by ...
     	\begin{tabular}{ | p{3.3cm} | p{2cm} | p{1.6cm} | p{4.0cm} |}
 	    \hline
 	    \bf List Address & \bf Subscription & \bf Posting & \bf Usage \\ \hline
-news@score-p.org & open & core team & Important news regarding the Score-P software, e.g. announcements of new releases. \\ \hline
+news@score-p.org & open & core team & Important news regarding the Score-P software, e.g., announcements of new releases. \\ \hline
 support@score-p.org & closed & anyone & Bug reports and general user support for the Score-P software. \\ \hline
     	\end{tabular}
     \end{table}
@@ -139,7 +139,7 @@ support@score-p.org & closed & anyone & Bug reports and general user support for
       <td align="left" valign="middle">news@score-p.org</td>
       <td align="center" valign="middle">open</td>
       <td align="center" valign="middle">core team</td>
-      <td align="left" valign="middle">Important news regarding the Score-P software, e.g. announcements of new releases.</td>
+      <td align="left" valign="middle">Important news regarding the Score-P software, e.g., announcements of new releases.</td>
     </tr>
     <tr>
       <td align="left" valign="middle">support@score-p.org</td>

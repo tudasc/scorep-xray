@@ -598,8 +598,7 @@ supported for integer and string parameters. To associate a parameter value to a
 entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> for signed integer
 parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameters, or
 <tt>SCOREP_USER_PARAMETER_STRING</tt> for string parameters after the region entry
-(e.g. after
-<tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>).
+(e.g., after <tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>).
 
 Fortran:
 @code
@@ -672,7 +671,7 @@ on/off is done independently on each MPI process without synchronization.
 
 @note Switching recording on/off may result in inconsistent traces or profiles,
       if not applied with care. In particular, if communication is recorded incomplete
-      (e.g. if the send is missing but the corresponding receive event is recorded)
+      (e.g., if the send is missing but the corresponding receive event is recorded)
       it may result in errors during execution or analysis. Furthermore, it is not
       possible to switch recording on/off from within parallel OpenMP regions. We
       recommend to use the selective recording interface, instead of the manual on/off
@@ -1004,16 +1003,16 @@ by prefixing the wrapper name with either `linktime:` or `runtime:`.
 @seclabel{scorep_link_mode}
 
 If the @scorep was build with shared libraries and with static libraries,
-the instrumenter uses the compiler defaults for linking. E.g. if the compiler
+the instrumenter uses the compiler defaults for linking. E.g., if the compiler
 chooses shared libraries by default, the instrumenter will link your application
 with the shared Score-P libraries. Furthermore, the linking is affected by
-parameters in the original link command. E.g. if your link command contains
+parameters in the original link command. E.g., if your link command contains
 a <tt>-Bstatic</tt> flag, afterwards appended @scorep libraries are also linked
 statically.
 
 If you want to override the default and enforce linking of static or dynamic
 @scorep libraries, you can add the flag <tt>\--static</tt> or <tt>\--dynamic</tt>
-for the instrumenter. E.g. a command to enforce static linking can look like:
+for the instrumenter. E.g., a command to enforce static linking can look like:
 
 @verbatim
     scorep --static mpicc foo.c -o foo

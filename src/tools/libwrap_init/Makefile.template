@@ -326,7 +326,7 @@ install-libwrap-runtime: $(LIBWRAP_RUNTIME)
 	@mkdir -p $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)
 	$(LW_V_INSTALL)$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)
 	@if test -z "$(LW_LIBLIST)"; then \
-            echo "[Score-P] Error: Could not find any shared libraries. I.e. the"; \
+            echo "[Score-P] Error: Could not find any shared libraries. I.e., the"; \
             echo "[Score-P]        LW_LIBLIST variable in Makefile is empty!"; \
             echo "[Score-P]        This can lead to a broken runtime library wrapper."; \
             echo "[Score-P]        If one of the libraries specified via '--libs'"; \

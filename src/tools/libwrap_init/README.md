@@ -7,7 +7,7 @@ Usage
 Initializes the working directory for creating a user library wrapper,
 named `wrappername`, into `workspacedir`. The final wrapper will be installed
 into `directory`. `language` has to be either c or c++ plus optionally a
-standard e.g. c++11. The default workspace is the current directory.
+standard, e.g., c++11. The default workspace is the current directory.
 
 Options
 -------
@@ -22,7 +22,7 @@ Options
   - `--cppflags "<flags>"` Compiler flags for the to-be-wrapped library
   - `--ldflags "<flags>"`  Linker flags for the to-be-wrapped library
   - `--libs "<libraries>"` To-be-wrapped libraries and their dependencies,
-                           e.g. "-lm -lgmp".
+                           e.g., "-lm -lgmp".
   - `--static-only-target-library`
                            Add this flag if the to-be-wrapped library does not
                            provide a shared library. This implies switching off
@@ -90,7 +90,7 @@ obligatory and optional arguments. You need to supply:
 
   - A name for the wrapper library via `--name`, and
   - The used programming language (either `c` or `c++`) via `-x`.
-    Optionally you can add a specific standard e.g. `c++11`.
+    Optionally you can add a specific standard, e.g., `c++11`.
 
 Optional arguments:
 
@@ -147,7 +147,7 @@ the wrapper library to the terminal.
     files and functions from wrapping. By default it excludes every file except
     the ones in the directories specified via `-I` arguments in the cppflags.
     This means, hopefully, only the target library will be wrapped, and
-    sub-headers from e.g. `/usr/include` will not be wrapped.
+    sub-headers from, e.g., `/usr/include` will not be wrapped.
   - `README.md` is the file containing this text
 
 Step 2: Add library headers
@@ -212,7 +212,7 @@ Possible errors:
     the preprocessing step executed by your compiler, by default, generates code
     which is of a newer language standard than what Clang's default is.
     You can solve this by explicitely specificying the appropriate standard
-    via -x or the `Makefile` variable `LW_LANGUAGE`, e.g. `c++11`.
+    via -x or the `Makefile` variable `LW_LANGUAGE`, e.g., `c++11`.
 
 Possible warnings:
 
@@ -239,7 +239,7 @@ This step creates a number of files:
   - `scorep_libwrap_*.c` is the source of the wrapper library.
 
 If you change `libwrap.h`, `main.c`, `Makefile` or `*.filter` repeat this step.
-I.e. execute `make` again. Usually the wrapper creation workflow requires
+I.e., execute `make` again. Usually the wrapper creation workflow requires
 to run `make`, `make check` and after adjusting the wrapper settings to account
 for errors and warnings you again run `make` and `make check`.
 It can also take more iterations.
@@ -254,7 +254,7 @@ Run
 For each function found in the header files this step first checks whether
 there is a corresponding symbol in the library files. Second, it checks
 whether this symbol is also present when linking without the target library,
-i.e. is present in the executable or system libraries itself.
+i.e., is present in the executable or system libraries itself.
 
 A list of functions that have no corresponding symbol in the target library is
 provided in the filter file `missing.filter`. If there are symbols in it you
@@ -379,7 +379,7 @@ will likely generate function wrappers for functions that are inlined and
 cannot be wrapped. The workflow will provide you with a warning and what
 to do in this case.
 
-In contrast to wrappers integrated into Score-P, e.g. PThreads, MPI, and
+In contrast to wrappers integrated into Score-P, e.g., PThreads, MPI, and
 OpenCL, user library wrappers do not extract semantic information from the
 library. It only intercepts function calls and provides their timing
 information.
@@ -390,8 +390,8 @@ Miscellaneous
     $ make show-summary
 
 This command displays how the wrapper is currently configured. Use this
-information to e.g. redo the wrapper, or update the wrapper files via
-`--update` if e.g. there is new Score-P version.
+information to, e.g., redo the wrapper, or update the wrapper files via
+`--update` if, e.g., there is new Score-P version.
 
 FAQ
 ===
