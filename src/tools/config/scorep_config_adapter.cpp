@@ -445,6 +445,9 @@ void
 SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
+    /* there is no libscorep_adapter_cuda_event.la, thus in case this is the
+       only adapter, we need to add libscorep_measurement.la to the needed libs. */
+    libs.push_back( "libscorep_measurement" );
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
