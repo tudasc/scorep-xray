@@ -11,31 +11,16 @@
 ## directory for details.
 ##
 
+rundir=test_libwrap_init_simple
 . "@abs_builddir@/common.sh"
 
 test_init "Score-P $lwi_name filter"
 
-rundir=test_libwrap_init_filter
-mkdir -p "$rundir"
-rundir="$(cd "$rundir"; pwd)"
-
-cleanup()
-{
-    cd "$execdir"
-    rm -rf "$rundir"
-}
-cleanup
-trap cleanup 0
-
-# we change to this directory for the test, to remove everything at once once we are done
-mkdir -p "$rundir"
-cd "$rundir"
-
 test_expect_success_all "build and install target c library"    \
-    "cp -r $TARGET_LIB_C_SRC_ROOT ."                            \
+    "mkdir target-lib-c"                                        \
     "cd target-lib-c"                                           \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\"" \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+    "make -f \"$TARGET_LIB_C_SRC_ROOT\"/Makefile"               \
+    "make -f \"$TARGET_LIB_C_SRC_ROOT\"/Makefile install"
 
 target_lib_path=$(pwd)/target-lib-c/lib
 

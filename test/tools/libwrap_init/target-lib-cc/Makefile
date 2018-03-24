@@ -1,8 +1,12 @@
+include ../config.mk
+
 .PHONY: all
 all: libfoo.la
 
+VPATH = $(SRC_ROOT)/target-lib-cc
+
 foo.lo: foo.cc foo.h
-	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) -c -o foo.lo foo.cc
+	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) -c -o foo.lo $<
 
 libfoo.la: foo.lo
 	$(LIBTOOL) --tag=CXX --mode=link $(CXX) -avoid-version -rpath $$PWD/lib -o libfoo.la foo.lo

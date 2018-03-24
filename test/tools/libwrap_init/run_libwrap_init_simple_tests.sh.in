@@ -11,9 +11,8 @@
 ## directory for details.
 ##
 
+rundir=test_libwrap_init_simple
 . "@abs_builddir@/common.sh"
-
-test_init "Score-P $lwi_name simple"
 
 scorep_config=$BINDIR/scorep-config
 if [ "$($scorep_config --libwrap-support=linktime)" = true ]; then linktime_support=true; else linktime_support=false; fi
@@ -36,42 +35,20 @@ if ! $libtool_shared; then
     #runtime_support=false
 fi
 
-if [ "$mpi_support" = true ];   then
-    . $TEST_BUILD_DIR/mpi.sh # determine MPICC and MPICXX
-fi
-if [ "$shmem_support" = true ]; then
-    . $TEST_BUILD_DIR/shmem.sh # determine SHMEMCC and SHMEMCXX
-fi
-
-rundir=test_libwrap_init_simple
-mkdir -p "$rundir"
-rundir="$(cd "$rundir"; pwd)"
-
-cleanup()
-{
-    cd "$execdir"
-    rm -rf "$rundir"
-}
-cleanup
-trap cleanup 0
-
-# we change to this directory for the test, to remove everything at once once we are done
-mkdir -p "$rundir"
-cd "$rundir"
-
+test_init "Score-P $lwi_name simple"
 
 test_expect_success "scorep-config exists" "test -x $scorep_config"
 
-test_expect_success_all "c:     build and install target library"       \
-    "cp -r $TARGET_LIB_C_SRC_ROOT ."                                    \
-    "cd target-lib-c"                                                   \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\""         \
-    "test -f foo.$o_ext || ! $libtool_static"                           \
-    "test -f foo.lo"                                                    \
-    "test -f libfoo.la"                                                 \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install" \
-    "test -f lib/libfoo.la"                                             \
-    "test -f lib/libfoo.$a_ext  || ! $libtool_static"                   \
+test_expect_success_all "c:     build and install target library"   \
+    "mkdir target-lib-c"                                            \
+    "cd target-lib-c"                                               \
+    "make -f $TARGET_LIB_C_SRC_ROOT/Makefile"                       \
+    "test -f foo.$o_ext || ! $libtool_static"                       \
+    "test -f foo.lo"                                                \
+    "test -f libfoo.la"                                             \
+    "make -f $TARGET_LIB_C_SRC_ROOT/Makefile install"               \
+    "test -f lib/libfoo.la"                                         \
+    "test -f lib/libfoo.$a_ext  || ! $libtool_static"               \
     "test -f lib/libfoo.$so_ext || ! $libtool_shared"
 
 test_expect_success_all "c:     init wrapper" \
@@ -216,10 +193,10 @@ fi
 # ### multi lib with dependencies ###
 
 test_expect_success_all "cdeps: build and install target library" \
-    "cp -r $TARGET_LIB_CDEPS_SRC_ROOT ."                          \
+    "mkdir target-lib-cdeps"                                      \
     "cd target-lib-cdeps"                                         \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\""   \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+    "make -f $TARGET_LIB_CDEPS_SRC_ROOT/Makefile"                 \
+    "make -f $TARGET_LIB_CDEPS_SRC_ROOT/Makefile install"
 
 test_expect_success_all "cdeps: init wrapper" \
     "$lwi $lwi_flags --name bar --cppflags \"-I$TARGET_LIB_CDEPS_SRC_ROOT -I$TARGET_LIB_C_SRC_ROOT\" --prefix wrapper-lib-cdeps/ -x c --ldflags \"-L\$(pwd)/target-lib-cdeps/lib -L\$(pwd)/target-lib-c/lib\" --libs \"-lbar -lbar2 -lfoo\" wrapper-lib-cdeps"
@@ -263,8 +240,8 @@ test_expect_success_all "cdeps: uninstall and clean target library and wrapper" 
     "make uninstall"                                                            \
     "make clean"                                                                \
     "cd ../target-lib-cdeps"                                                    \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"       \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+    "make -f $TARGET_LIB_CDEPS_SRC_ROOT/Makefile uninstall"                     \
+    "make -f $TARGET_LIB_CDEPS_SRC_ROOT/Makefile clean"
 
 test_expect_success_all "c:     uninstall and clean wrapper" \
     "cd wrapper-lib-c"                                       \
@@ -290,25 +267,25 @@ test_expect_success_all "c:     uninstall and clean wrapper" \
     "test ! -e libscorep_libwrap_foo_runtime.lo"             \
     "test ! -e libscorep_libwrap_foo_runtime.$o_ext"
 
-test_expect_success_all "c:     uninstall and clean target c library"     \
-    "cd target-lib-c"                                                     \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall" \
-    "make CC=\"$CC\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"     \
-    "test ! -e foo.$o_ext"                                                \
-    "test ! -e foo.lo"                                                    \
-    "test ! -e libfoo.la"                                                 \
-    "test ! -e lib/libfoo.la"                                             \
-    "test ! -e lib/libfoo.$a_ext"                                         \
+test_expect_success_all "c:     uninstall and clean target c library"   \
+    "cd target-lib-c"                                                   \
+    "make -f $TARGET_LIB_C_SRC_ROOT/Makefile uninstall"                 \
+    "make -f $TARGET_LIB_C_SRC_ROOT/Makefile clean"                     \
+    "test ! -e foo.$o_ext"                                              \
+    "test ! -e foo.lo"                                                  \
+    "test ! -e libfoo.la"                                               \
+    "test ! -e lib/libfoo.la"                                           \
+    "test ! -e lib/libfoo.$a_ext"                                       \
     "test ! -e lib/libfoo.$so_ext"
 
 # ### mpi ###
 
 if [ "$mpi_support" = true ]; then
-    test_expect_success_all "mpi:   build and install target library"      \
-        "cp -r $TARGET_LIB_MPI_SRC_ROOT ."                                 \
-        "cd target-lib-mpi"                                                \
-        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\"" \
-        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" install"
+    test_expect_success_all "mpi:   build and install target library"   \
+        "mkdir target-lib-mpi"                                          \
+        "cd target-lib-mpi"                                             \
+        "make -f $TARGET_LIB_MPI_SRC_ROOT/Makefile"                     \
+        "make -f $TARGET_LIB_MPI_SRC_ROOT/Makefile install"
 
     test_expect_success_all "mpi:   init wrapper" \
         "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_MPI_SRC_ROOT\" --prefix wrapper-lib-mpi/ -x c --backend mpi --ldflags \"-L\$(pwd)/target-lib-mpi/lib\" --libs \"-lfoo\" wrapper-lib-mpi"
@@ -346,23 +323,23 @@ if [ "$mpi_support" = true ]; then
             "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_runtime_wrapped || ! $libtool_shared; fi"
     fi
 
-    test_expect_success_all "mpi:   uninstall and clean target library and wrapper"  \
-        "cd wrapper-lib-mpi"                                                         \
-        "make uninstall"                                                             \
-        "make clean"                                                                 \
-        "cd ../target-lib-mpi"                                                       \
-        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" uninstall" \
-        "make CC=\"$MPICC\" LIBTOOL=\"$MPI_LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+    test_expect_success_all "mpi:   uninstall and clean target library and wrapper" \
+        "cd wrapper-lib-mpi"                                                        \
+        "make uninstall"                                                            \
+        "make clean"                                                                \
+        "cd ../target-lib-mpi"                                                      \
+        "make -f $TARGET_LIB_MPI_SRC_ROOT/Makefile uninstall"                       \
+        "make -f $TARGET_LIB_MPI_SRC_ROOT/Makefile clean"
 fi
 
 # ### shmem ###
 
 if [ "$shmem_support" = true ]; then
-    test_expect_success_all "shmem: build and install target library"          \
-        "cp -r $TARGET_LIB_SHMEM_SRC_ROOT ."                                   \
-        "cd target-lib-shmem"                                                  \
-        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\"" \
-        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" install"
+    test_expect_success_all "shmem: build and install target library"   \
+        "mkdir target-lib-shmem"                                        \
+        "cd target-lib-shmem"                                           \
+        "make -f $TARGET_LIB_SHMEM_SRC_ROOT/Makefile"                   \
+        "make -f $TARGET_LIB_SHMEM_SRC_ROOT/Makefile install"
 
     test_expect_success_all "shmem: init wrapper" \
         "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_SHMEM_SRC_ROOT\" --prefix wrapper-lib-shmem/ -x c --backend shmem --ldflags \"-L\$(pwd)/target-lib-shmem/lib\" --libs \"-lfoo\" wrapper-lib-shmem"
@@ -405,17 +382,17 @@ if [ "$shmem_support" = true ]; then
         "make uninstall"                                                                        \
         "make clean"                                                                            \
         "cd ../target-lib-shmem"                                                                \
-        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"        \
-        "make CC=\"$SHMEMCC\" LIBTOOL=\"$SHMEM_LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+        "make -f $TARGET_LIB_SHMEM_SRC_ROOT/Makefile uninstall"                                 \
+        "make -f $TARGET_LIB_SHMEM_SRC_ROOT/Makefile clean"
 fi
 
 # ### c++ ###
 
 test_expect_success_all "c++:   build and install c++-based target library" \
-    "cp -r $TARGET_LIB_CXX_SRC_ROOT ."                                      \
+    "mkdir target-lib-cc"                                                   \
     "cd target-lib-cc"                                                      \
-    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\"" \
-    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" install"
+    "make -f $TARGET_LIB_CXX_SRC_ROOT/Makefile"                             \
+    "make -f $TARGET_LIB_CXX_SRC_ROOT/Makefile install"
 
 test_expect_success_all "c++:   init wrapper"   \
     "$lwi $lwi_flags --name foo --cppflags \"-I$TARGET_LIB_CXX_SRC_ROOT\" --prefix wrapper-lib-cc/ -x c++ --ldflags \"-L\$(pwd)/target-lib-cc/lib\" --libs \"-lfoo\" wrapper-lib-cc" \
@@ -518,7 +495,7 @@ test_expect_success_all "c++:   uninstall and clean target library and wrapper "
     "make uninstall"                                                             \
     "make clean"                                                                 \
     "cd ../target-lib-cc"                                                        \
-    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" uninstall"      \
-    "make CXX=\"$CXX\" LIBTOOL=\"$LIBTOOL\" INSTALL=\"$INSTALL\" clean"
+    "make -f $TARGET_LIB_CXX_SRC_ROOT/Makefile uninstall"                        \
+    "make -f $TARGET_LIB_CXX_SRC_ROOT/Makefile clean"
 
 test_done

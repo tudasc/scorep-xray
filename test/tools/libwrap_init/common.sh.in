@@ -27,20 +27,57 @@ lwi_name=${lwi##*/}
 
 LIBTOOL=@BACKEND_PKGLIBEXECDIR@/libtool
 
+CC="@CC@"
+CC=${CC##*/}
+
+CXX="@CXX@"
+CXX=${CXX##*/}
+
 @HAVE_MPI_SUPPORT_FALSE@mpi_support=false
 @HAVE_MPI_SUPPORT_TRUE@mpi_support=true
 @HAVE_MPI_SUPPORT_TRUE@MPI_LIBTOOL=@BACKEND_PKGLIBEXECDIR@/mpi/libtool
+@HAVE_MPI_SUPPORT_TRUE@. $TEST_BUILD_DIR/mpi.sh
 
 @HAVE_SHMEM_SUPPORT_FALSE@shmem_support=false
 @HAVE_SHMEM_SUPPORT_TRUE@shmem_support=true
 @HAVE_SHMEM_SUPPORT_TRUE@SHMEM_LIBTOOL=@BACKEND_PKGLIBEXECDIR@/shmem/libtool
+@HAVE_SHMEM_SUPPORT_TRUE@. $TEST_BUILD_DIR/shmem.sh
 
-CC="@CC@" # backend compilers
-CC=${CC##*/}
-
-CXX="@CXX@" # backend compilers
-CXX=${CXX##*/}
+if [ -n "$RUN_BINARIES" ]; then run_binaries=true; else run_binaries=false; fi
 
 execdir="$(pwd)"
 
-if [ -n "$RUN_BINARIES" ]; then run_binaries=true; else run_binaries=false; fi
+cleanup()
+{
+    cd "$execdir"
+    rm -rf "$rundir"
+}
+cleanup
+trap cleanup 0
+
+# we change to this directory for the test, to remove everything at once once we are done
+mkdir -p "$rundir"
+rundir="$(cd "$rundir"; pwd)"
+cd "$rundir"
+
+(
+    printf "SRC_ROOT = %s\n" "$TEST_SRC_ROOT"
+    printf "CC       = %s\n" "$CC"
+    printf "CXX      = %s\n" "$CXX"
+    printf "LIBTOOL  = %s\n" "$LIBTOOL"
+    printf "INSTALL  = %s\n" "$INSTALL"
+) >config.mk
+
+@HAVE_MPI_SUPPORT_TRUE@(
+@HAVE_MPI_SUPPORT_TRUE@    printf "SRC_ROOT = %s\n" "$TEST_SRC_ROOT"
+@HAVE_MPI_SUPPORT_TRUE@    printf "CC       = %s\n" "$MPICC"
+@HAVE_MPI_SUPPORT_TRUE@    printf "LIBTOOL  = %s\n" "$MPI_LIBTOOL"
+@HAVE_MPI_SUPPORT_TRUE@    printf "INSTALL  = %s\n" "$INSTALL"
+@HAVE_MPI_SUPPORT_TRUE@) >config-mpi.mk
+
+@HAVE_SHMEM_SUPPORT_TRUE@(
+@HAVE_SHMEM_SUPPORT_TRUE@    printf "SRC_ROOT = %s\n" "$TEST_SRC_ROOT"
+@HAVE_SHMEM_SUPPORT_TRUE@    printf "CC       = %s\n" "$SHMEMCC"
+@HAVE_SHMEM_SUPPORT_TRUE@    printf "LIBTOOL  = %s\n" "$SHMEM_LIBTOOL"
+@HAVE_SHMEM_SUPPORT_TRUE@    printf "INSTALL  = %s\n" "$INSTALL"
+@HAVE_SHMEM_SUPPORT_TRUE@) >config-shmem.mk

@@ -11,26 +11,10 @@
 ## directory for details.
 ##
 
+rundir=test_libwrap_init_arguments
 . "@abs_builddir@/common.sh"
 
 test_init "Score-P $lwi_name arguments"
-
-rundir=test_libwrap_init_arguments
-mkdir -p "$rundir"
-rundir="$(cd "$rundir"; pwd)"
-
-cleanup()
-{
-    cd "$execdir"
-    rm -rf "$rundir"
-}
-cleanup
-trap cleanup 0
-
-# we change to this directory for the test, to remove everything at once once we are done
-mkdir -p "$rundir"
-cd "$rundir"
-
 
 test_expect_success "libtool exists"   "test -x $LIBTOOL"
 test_expect_success "$lwi_name exists" "test -x $lwi"

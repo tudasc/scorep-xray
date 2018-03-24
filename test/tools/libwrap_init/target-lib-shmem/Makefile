@@ -1,8 +1,12 @@
+include ../config-shmem.mk
+
 .PHONY: all
 all: libfoo.la
 
+VPATH = $(SRC_ROOT)/target-lib-shmem
+
 foo.lo: foo.c foo.h
-	$(LIBTOOL) --tag=CC --mode=compile $(CC) -c -o foo.lo foo.c
+	$(LIBTOOL) --tag=CC --mode=compile $(CC) -c -o foo.lo $<
 
 libfoo.la: foo.lo
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -avoid-version -rpath $$PWD/lib -o libfoo.la foo.lo
