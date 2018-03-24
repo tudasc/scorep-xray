@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2012,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2018
  * Technische Universitaet Muenchen, Germany
  *
  * Copyright (c) 2016,
@@ -427,14 +427,19 @@ FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        /* Make sure the handle is initialized */
-        FSUB( SCOREP_F_Init )( regionHandle,
-                               regionNameF,
-                               regionType,
-                               fileNameF,
-                               lineNo,
-                               regionNameLen,
-                               fileNameLen );
+#ifndef __PGI
+        if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
+#endif
+        {
+            /* Make sure the handle is initialized */
+            FSUB( SCOREP_F_Init )( regionHandle,
+                                   regionNameF,
+                                   regionType,
+                                   fileNameF,
+                                   lineNo,
+                                   regionNameLen,
+                                   fileNameLen );
+        }
 
         SCOREP_User_RegionHandle handle = SCOREP_F2C_REGION( *regionHandle );
 
