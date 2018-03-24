@@ -221,7 +221,7 @@ do
             exit 0
         ;;
         *)
-            if [ -z $lw_name ] || [ -z $lw_language ]; then
+            if [ -z "$lw_name" ] || [ -z "$lw_language" ]; then
                 error_and_exit "Invalid argument \"$1\"."
             elif [ $# -gt 1 ]; then
                 error_and_exit "Too many arguments. None expected after \"$1\"."

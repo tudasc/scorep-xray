@@ -43,6 +43,7 @@ test_expect_success_all "--help" \
     "$lwi -h"
 
 test_expect_success_all "not enough arguments"      \
+    "! $lwi --name"                                 \
     "! $lwi --name wrapper"                         \
     "! $lwi --name wrapper workspace1"              \
     "! $lwi --name wrapper --prefix dir workspace2" \
@@ -51,14 +52,14 @@ test_expect_success_all "not enough arguments"      \
 # Note: A new working directory for each test is required since the tool aborts when finding
 #       and already Makefile
 
-test_expect_success_all "invalid wrapper names"     \
-    "! $lwi --name foo-wrapper invalid-workspace-1" \
-    "! $lwi --name -wrapper invalid-workspace-2" \
-    "! $lwi --name 0foo invalid-workspace-3" \
-    "! $lwi --name foo- invalid-workspace-4" \
-    "! $lwi --name --help invalid-workspace-5" \
-    "! $lwi --name --version invalid-workspace-6" \
-    "! $lwi --name 'foo bar' invalid-workspace-7"
+test_expect_success_all "invalid wrapper names"          \
+    "! $lwi --name foo-wrapper -x c invalid-workspace-1" \
+    "! $lwi --name -wrapper    -x c invalid-workspace-2" \
+    "! $lwi --name 0foo        -x c invalid-workspace-3" \
+    "! $lwi --name foo-        -x c invalid-workspace-4" \
+    "! $lwi --name --help      -x c invalid-workspace-5" \
+    "! $lwi --name --version   -x c invalid-workspace-6" \
+    "! $lwi --name 'foo bar'   -x c invalid-workspace-7"
 
 test_expect_success_all "wrong arguments"                           \
     "! $lwi workspace --name wrapper --prefix dir -x c workspace4"  \
@@ -83,7 +84,6 @@ test_expect_success_all "-x works correctly"              \
     "$lwi --name wrapper --prefix dir -x c workspace14"   \
     "$lwi --name wrapper --prefix dir -x c++ workspace15" \
     "! $lwi --name wrapper --prefix dir -x a workspace16"
-
 
 test_expect_success_all "files have been created correctly for -x c --backend vanilla" \
     "$lwi --name wrapper --prefix dir -x c workspace17" \
