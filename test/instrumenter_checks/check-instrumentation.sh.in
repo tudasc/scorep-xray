@@ -100,7 +100,8 @@ case ${PARADIGM} in
         ;;
 
     cuda)
-        # CUDA instrumentation
+        # CUDA instrumentation uses nvcc, which defaults to enable CUDA
+        CUDA=yes
         ;;
 
     *_*)

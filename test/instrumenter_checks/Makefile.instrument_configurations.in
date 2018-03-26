@@ -91,9 +91,6 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
-                        if test $$language = cu; then \
-                            options="$$options --cuda"; \
-                        fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
                             SUFFIX="$$suffix" \
