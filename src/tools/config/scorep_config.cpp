@@ -931,6 +931,11 @@ treat_linker_flags_for_nvcc( std::string& flags )
     std::string replace2 = "";
 
     flags = remove_multiple_whitespaces( flags );
+    if ( flags.length() == 0 )
+    {
+        /* empty flags don't need the -Xlinker prefix */
+        return;
+    }
     /* Replace all white-spaces by comma */
     flags = replace_all( pattern1, replace1, flags );
     /* Replace flag for passing arguments to linker through compiler
@@ -952,6 +957,11 @@ treat_compiler_flags_for_nvcc( std::string& flags )
     std::string replace1 = ",";
 
     flags = remove_multiple_whitespaces( flags );
+    if ( flags.length() == 0 )
+    {
+        /* empty flags don't need the -Xcompiler prefix */
+        return;
+    }
     /* Replace all white-spaces by comma */
     flags = replace_all( pattern1, replace1, flags );
 
