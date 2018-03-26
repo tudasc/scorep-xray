@@ -31,7 +31,7 @@
 ## directory for details.
 ##
 
-## file       test/instrumenter_checks/Makefile.common.in
+## file       test/instrumenter_checks/Makefile.instrument_configurations.in
 
 all:
 

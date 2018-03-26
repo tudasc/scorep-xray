@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       test/instrumenter_checks/shmem/src/heat/cc/Makefile
+## file       test/instrumenter_checks/shmem_omp/src/heat/cc/Makefile
 
 
 #------------------------------------------------------------------------------

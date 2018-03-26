@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       test/instrumenter_checks/serial/src/jacobi/cc/Makefile
+## file       test/instrumenter_checks/omp/src/jacobi/cc/Makefile
 
 
 #------------------------------------------------------------------------------

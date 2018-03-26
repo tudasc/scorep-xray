@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       test/instrumenter_checks/serial/src/jacobi/fc/Makefile
+## file       test/instrumenter_checks/mpi/src/jacobi/fc/Makefile
 
 
 #------------------------------------------------------------------------------

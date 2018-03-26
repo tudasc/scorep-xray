@@ -31,7 +31,7 @@
 ## directory for details.
 ##
 
-## file       test/instrumenter_checks/shmem/Makefile.in
+## file       test/instrumenter_checks/shmem_omp/Makefile.in
 
 CC   = @SHMEMCC@
 CXX  = @SHMEMCXX@

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## @configure_input@ from test/instrumenter_checks/create_wait/pthread/Makefile.in
+## @configure_input@ from test/instrumenter_checks/memory/Makefile.in
 
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
