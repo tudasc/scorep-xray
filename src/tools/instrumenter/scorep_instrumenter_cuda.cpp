@@ -52,6 +52,18 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
 }
 
 void
+SCOREP_Instrumenter_CudaAdapter::printHelp( void )
+{
+    std::cout
+        << "\
+  --cuda          Enables CUDA instrumentation. Enabled by default, if the\n\
+                  nvcc compiler is in use. In this case it also conflicts and\n\
+                  thus automatically disables preprocessing.\n\
+  --nocuda        Disables CUDA instrumentation."
+        << std::endl;
+}
+
+void
 SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler )
 {
     if ( remove_path( compiler ).substr( 0, 2 ) == "nv" )
@@ -61,6 +73,7 @@ SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler 
             m_usage = enabled;
         }
 
+        m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS );
         m_nvcc_compiler = true;
     }
 }

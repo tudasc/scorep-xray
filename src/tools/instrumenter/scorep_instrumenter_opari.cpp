@@ -166,7 +166,7 @@ SCOREP_Instrumenter_OpariAdapter::printHelp( void )
     std::cout << "                  enables preprocessing.\n";
     std::cout << "  --nopomp        Disables pomp user instrumentation. (Default)\n";
     std::cout << "  --openmp        Enables instrumentation of OpenMP directives. By default,\n";
-    std::cout << "                  it also enables preprocessing. (Default for compile units \n";
+    std::cout << "                  it also enables preprocessing. (Default for compile units\n";
     std::cout << "                  with enabled OpenMP support during the compilation)\n";
     std::cout << "  --noopenmp      Disables instrumentation of OpenMP directives. \n";
     std::cout << "                  Note: To ensure thread-safe execution of the measurement,\n";

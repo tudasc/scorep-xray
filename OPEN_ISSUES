@@ -311,6 +311,11 @@ various Score-P components.
   - On Cray systems you need to 'module load cudatoolkit', otherwise
     the CUDA related configure checks will fail, even if
     --with-libcuda and --with-libcudart are given.
+  - The nvcc compiler preinclude its CUDA runtime header. This results
+    in multiple defined symbols if the source file is preprocessed
+    before compilation. Thus this combination is not allowed by the
+    instrumenter.
+
 
 --------------------------------------------------------------------------------
 

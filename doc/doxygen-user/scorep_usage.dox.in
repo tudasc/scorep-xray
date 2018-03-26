@@ -63,10 +63,13 @@ Common options are:
   --compiler      Enables compiler instrumentation.
                   By default, it disables pdt instrumentation.
   --nocompiler    Disables compiler instrumentation.
-  --cuda          Enables cuda instrumentation.
-  --nocuda        Disables cuda instrumentation.
-  --online-access Enables online-access support. It is disabled by default
-  --noonline-access Disables online-access support.
+  --cuda          Enables CUDA instrumentation. Enabled by default, if the
+                  nvcc compiler is in use. In this case it also conflicts and
+                  thus automatically disables preprocessing.
+  --nocuda        Disables CUDA instrumentation.
+  --online-access Enables online-access support. It is disabled by default.
+  --noonline-access
+                  Disables online-access support.
   --pomp          Enables pomp user instrumentation. By default, it also
                   enables preprocessing.
   --nopomp        Disables pomp user instrumentation. (Default)
