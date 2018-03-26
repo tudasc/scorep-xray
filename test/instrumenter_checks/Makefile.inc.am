@@ -82,6 +82,10 @@ EXTRA_DIST += \
     $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/main.cpp \
     $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/jacobi.h \
     $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/jacobi.cpp \
+    $(INSTALLCHECK_DIR)/cuda/src/jacobi/cu/Makefile \
+    $(INSTALLCHECK_DIR)/cuda/src/jacobi/cu/main.cu \
+    $(INSTALLCHECK_DIR)/cuda/src/jacobi/cu/kernel.cu \
+    $(INSTALLCHECK_DIR)/cuda/src/jacobi/cu/definitions.cuh \
     $(INSTALLCHECK_DIR)/shmem/src/heat/cc/Makefile \
     $(INSTALLCHECK_DIR)/shmem/src/heat/cc/heat.c \
     $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/Makefile \

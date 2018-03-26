@@ -92,10 +92,15 @@ unset OPARI2_USER
 @HAVE_MEMORY_SUPPORT_TRUE@MEMORY=yes
 @HAVE_MEMORY_SUPPORT_FALSE@unset MEMORY
 unset USER
+unset CUDA
 unset VERBOSE
 case ${PARADIGM} in
     serial)
         # Compiler instrumentation only -- nothing to adjust
+        ;;
+
+    cuda)
+        # CUDA instrumentation
         ;;
 
     *_*)
@@ -127,6 +132,13 @@ while test $# -ne 0; do
             ;;
         --nocompiler)
             unset COMP
+            ;;
+
+        --cuda)
+            CUDA=yes
+            ;;
+        --nocuda)
+            unset CUDA
             ;;
 
         --mpp=*)
@@ -215,7 +227,7 @@ fi
 
 # --- Determine which kind of instrumentation is expected ---
 unset INST_EXPECTED
-if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}${MEMORY}"; then
+if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}${MEMORY}${CUDA}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
 fi
 if test -n "${COMP}"; then
@@ -235,6 +247,9 @@ if test -n "${USER}"; then
 fi
 if test -n "${MEMORY}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }memory"
+fi
+if test -n "${CUDA}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }cuda"
 fi
 
 
@@ -315,6 +330,13 @@ STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_memory_regions`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_memory_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }memory"
+fi
+
+# CUDA instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_cuda_features`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_cuda_mgmt.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }cuda"
 fi
 
 

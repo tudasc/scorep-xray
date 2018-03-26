@@ -91,6 +91,9 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
+                        if test $$language = cu; then \
+                            options="$$options --cuda"; \
+                        fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
                             SUFFIX="$$suffix" \
@@ -105,11 +108,13 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
+                            NVCC="$(NVCC)" \
                             LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS)" \
                             CXXFLAGS="$(CXXFLAGS)" \
                             F77FLAGS="$(FFLAGS)" \
                             FCFLAGS="$(FCFLAGS)" \
+                            CUFLAGS="$(CUFLAGS)" \
                             $$code && \
                         set +x && \
                         ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \
@@ -145,11 +150,13 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
+                            NVCC="$(NVCC)" \
                             LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS) $$POMP_FLAGS" \
                             CXXFLAGS="$(CXXFLAGS) $$POMP_FLAGS" \
                             F77FLAGS="$(FFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
                             FCFLAGS="$(FCFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
+                            CUFLAGS="$(CUFLAGS)" \
                             $$code && \
                         set +x && \
                         ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \

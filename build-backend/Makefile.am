@@ -185,6 +185,9 @@ if HAVE_OPENMP_SUPPORT
 PARADIGMS += omp
 endif
 #endif
+if HAVE_CUDA_SUPPORT
+PARADIGMS += cuda
+endif HAVE_CUDA_SUPPORT
 
 INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files)
@@ -202,6 +205,9 @@ instrumenter-checks: $(instrumenter_configuration_files)
 	done; test -z "$$fail"
 
 instrumenter_configuration_files = ../installcheck/instrumenter_checks/configurations_serial ../installcheck/instrumenter_checks/configurations_omp
+if HAVE_CUDA_SUPPORT
+instrumenter_configuration_files += ../installcheck/instrumenter_checks/configurations_cuda
+endif HAVE_CUDA_SUPPORT
 
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh

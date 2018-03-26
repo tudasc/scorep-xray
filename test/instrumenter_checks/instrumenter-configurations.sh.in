@@ -68,7 +68,7 @@ mutex_args=
 cd @abs_top_builddir@
 
 # remove files from previous invocation
-for paradigm in serial omp mpi mpi_omp shmem shmem_omp; do
+for paradigm in serial omp mpi mpi_omp shmem shmem_omp cuda; do
     rm -f ${file_prefix}${paradigm}
 done
 
@@ -131,8 +131,11 @@ done
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # cuda ------------------------------#
-
-                    # cuda_mpi --------------------------#
+@HAVE_CUDA_SUPPORT_TRUE@                    if [ $preprocess_user_arg != preprocess ]; then
+@HAVE_CUDA_SUPPORT_TRUE@                        for cuda_arg in cuda nocuda; do
+@HAVE_CUDA_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg nopreprocess $pdt_arg $cobi_arg $cuda_arg" >> ${file_prefix}cuda
+@HAVE_CUDA_SUPPORT_TRUE@                        done
+@HAVE_CUDA_SUPPORT_TRUE@                    fi
 
                     # ...  ------------------------------#
 
@@ -170,3 +173,7 @@ fi
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}shmem_omp"; then
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}shmem_omp"
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@fi
+
+@HAVE_CUDA_SUPPORT_TRUE@if test -f "${file_prefix}cuda"; then
+@HAVE_CUDA_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}cuda"
+@HAVE_CUDA_SUPPORT_TRUE@fi

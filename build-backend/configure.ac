@@ -404,6 +404,9 @@ AM_COND_IF([HAVE_PTHREAD_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])
 AM_COND_IF([HAVE_MEMORY_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/memory/Makefile:../test/instrumenter_checks/memory/Makefile.in])])
+AM_COND_IF([HAVE_CUDA_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/cuda/Makefile:../test/instrumenter_checks/cuda/Makefile.in])])
+
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
