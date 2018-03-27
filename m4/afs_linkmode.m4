@@ -26,9 +26,14 @@
 # `ac_scorep_platform` is set appropriately.  For each compute-node
 # executable `foo`, use
 #
-#   foo_LDFLAGS = $(AM_LDFLAGS) @AFS_LINKMODE_LDFLAGS@ 
+#   foo_LDFLAGS = $(AM_LDFLAGS) $(LINKMODE_LDFLAGS)
 #
-# for the link flags to take effect.
+# and add
+#
+#   LINKMODE_LDFLAGS = @AFS_LINKMODE_LDFLAGS@
+#
+# to build-{backend,mpi,shmem}/Makefile.am for the link flags to take
+# effect.
 #
 #
 # List of configure variables set:
