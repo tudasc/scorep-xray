@@ -26,11 +26,11 @@
 # `ac_scorep_platform` is set appropriately.  For each compute-node
 # executable `foo`, use
 #
-#   foo_LDFLAGS = $(AM_LDFLAGS) $(LINKMODE_LDFLAGS)
+#   foo_LDFLAGS = $(AM_LDFLAGS) $(LINKMODE_FLAGS)
 #
 # and add
 #
-#   LINKMODE_LDFLAGS = @AFS_LINKMODE_LDFLAGS@
+#   LINKMODE_FLAGS = @AFS_LINKMODE_LDFLAGS@
 #
 # to build-{backend,mpi,shmem}/Makefile.am for the link flags to take
 # effect.
@@ -54,8 +54,8 @@ AS_CASE([$ac_scorep_platform],
              afs_linkmode_LDFLAGS="-all-static"])],
     [bgq|k|fx10*],
         [AS_ECHO(["executable link mode: static"]) >&AS_MESSAGE_LOG_FD
-         AS_IF([test "x$enable_shared" = xyes],
-            [AC_MSG_FAILURE([shared libraries not supported on this platform])])
+         AS_IF([test "x$enable_shared" = xyes && test "x$enable_static" = xno],
+            [AC_MSG_FAILURE([static linking with only shared libraries not possible])])
          afs_linkmode_LDFLAGS="-all-static"],
     [AS_ECHO(["executable link mode: default"]) >&AS_MESSAGE_LOG_FD])
 AC_MSG_RESULT([${afs_linkmode_LDFLAGS:-none}])
