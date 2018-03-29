@@ -25,11 +25,22 @@ AM_CPPFLAGS += -DLIBWRAP_BUILD
 
 DISTCLEANFILES += $(builddir)/library_wrapping_supported
 
-include ../src/tools/lib/Makefile.inc.am
 include ../src/tools/library_wrapper_generator/Makefile.inc.am
 
+# we normally have this condition inside the .inc.am files, but we also enter
+# this build in case we do not build the library wrapper generator at all
+# in this case the noinst_ libraries are nevertheless build, which may leed to
+# compile errors, which we already cought at configure time
+#
+# ensure either that these .inc.am files do not have EXTRA_DIST statements, or
+# that these files are includes elsewhere unconditionally
+if HAVE_LIBRARY_WRAPPING_GENERATOR
+
+include ../src/tools/lib/Makefile.inc.am
 include ../src/utils/filtering/Makefile.inc.am
 include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am
 include ../vendor/common/src/utils/Makefile.inc.am
+
+endif HAVE_LIBRARY_WRAPPING_GENERATOR
