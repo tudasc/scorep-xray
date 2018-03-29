@@ -37,7 +37,6 @@ noinst_LTLIBRARIES += libscorep_tracing.la
 libscorep_tracing_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@ \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/services/include \
@@ -47,7 +46,8 @@ libscorep_tracing_la_CPPFLAGS = \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_SUBSTRATES) \
-    @SCOREP_TIMER_CPPFLAGS@
+    @SCOREP_TIMER_CPPFLAGS@ \
+    $(OTF2_CPPFLAGS)
 
 libscorep_tracing_la_SOURCES = \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_internal.h \

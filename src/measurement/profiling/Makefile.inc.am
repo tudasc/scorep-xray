@@ -43,13 +43,13 @@ PROFILE_FLAGS =                                    \
     -I$(INC_ROOT)src/measurement/paradigm          \
     -I$(INC_ROOT)src/services/include              \
     -I$(INC_ROOT)src/measurement                   \
-    @CUBEW_CPPFLAGS@                         \
     -I$(INC_ROOT)src/measurement/online_access     \
     -I$(PUBLIC_INC_DIR)                            \
     $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)                       \
     -I$(INC_DIR_DEFINITIONS)                       \
-    -I$(INC_DIR_SUBSTRATES)
+    -I$(INC_DIR_SUBSTRATES)                        \
+    @CUBEW_CPPFLAGS@
 
 noinst_LTLIBRARIES += libscorep_profile.la
 

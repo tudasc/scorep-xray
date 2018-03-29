@@ -41,8 +41,8 @@ scorep_score_usage.h: $(srcdir)/../doc/doxygen-user/scorep_score_usage.dox.in
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
-    @CUBELIB_CPPFLAGS@ \
-    -I$(INC_ROOT)src/utils/include
+    -I$(INC_ROOT)src/utils/include \
+    @CUBELIB_CPPFLAGS@
 
 scorep_score_LDFLAGS = @CUBELIB_LDFLAGS@
 scorep_score_LDADD = @CUBELIB_LIBS@ \

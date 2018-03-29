@@ -99,12 +99,12 @@ libscorep_adapter_opari2_user_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                               \
     -I$(INC_ROOT)src/measurement/include         \
     -I$(INC_ROOT)src/adapters/opari2             \
-    -I@OPARI2_REGION_INFO_INC_DIR@               \
     -I$(PUBLIC_INC_DIR)                          \
     -I$(INC_DIR_DEFINITIONS)                     \
-    @OPARI2_CPPFLAGS@                            \
     $(UTILS_CPPFLAGS)                            \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX)                           \
+    -I@OPARI2_REGION_INFO_INC_DIR@               \
+    @OPARI2_CPPFLAGS@
 
 libscorep_adapter_opari2_user_mgmt_la_LIBADD = \
     libscorep_adapter_opari2_mgmt.la \
@@ -132,11 +132,11 @@ SCOREP_OPARI2_USER_FORTRAN_FLAGS =       \
     -I$(INC_ROOT)src/adapters/include    \
     -I$(INC_ROOT)src/adapters/opari2     \
     -I$(INC_ROOT)src/measurement/include \
-    -I@OPARI2_REGION_INFO_INC_DIR@       \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
-    @OPARI2_CPPFLAGS@                    \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                    \
+    -I@OPARI2_REGION_INFO_INC_DIR@       \
+    @OPARI2_CPPFLAGS@
 
 SCOREP_OPARI2_USER_FORTRAN_SOURCES =                    \
     $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_UserF.c  \
@@ -183,12 +183,12 @@ libscorep_adapter_opari2_user_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                                \
     -I$(INC_ROOT)src/measurement/include          \
     -I$(INC_ROOT)src/adapters/opari2              \
-    -I@OPARI2_REGION_INFO_INC_DIR@                \
     -I$(PUBLIC_INC_DIR)                           \
     -I$(INC_DIR_DEFINITIONS)                      \
-    @OPARI2_CPPFLAGS@                             \
     $(UTILS_CPPFLAGS)                             \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX)                            \
+    -I@OPARI2_REGION_INFO_INC_DIR@                \
+    @OPARI2_CPPFLAGS@
 
 libscorep_adapter_opari2_user_event_la_LIBADD = \
     libscorep_adapter_opari2_user_fortran_sub1.la \

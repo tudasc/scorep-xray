@@ -21,7 +21,6 @@ noinst_LTLIBRARIES += libscorep_substrates.la
 scorep_substrates_common_cppflags = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@ \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/services/include \

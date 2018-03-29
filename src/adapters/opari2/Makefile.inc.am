@@ -48,12 +48,12 @@ nodist_libscorep_adapter_opari2_mgmt_la_SOURCES =         \
 
 libscorep_adapter_opari2_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \
-    -I@OPARI2_REGION_INFO_INC_DIR@           \
-    @OPARI2_CPPFLAGS@                       \
     -I$(PUBLIC_INC_DIR)                     \
     $(UTILS_CPPFLAGS)                       \
     -I$(INC_DIR_DEFINITIONS)                \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_ROOT)src/measurement/include    \
+    -I@OPARI2_REGION_INFO_INC_DIR@          \
+    @OPARI2_CPPFLAGS@
 
 libscorep_adapter_opari2_mgmt_la_LDFLAGS = \
     $(library_api_version_ldflags)

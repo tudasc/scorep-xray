@@ -97,11 +97,11 @@ libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_THREAD) \
-    @CUBEW_CPPFLAGS@ \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS) \
-    @SCOREP_TIMER_CPPFLAGS@
+    @SCOREP_TIMER_CPPFLAGS@ \
+    @CUBEW_CPPFLAGS@
 
 noinst_LTLIBRARIES += libscorep_measurement_libwrap.la
 libscorep_measurement_libwrap_la_SOURCES = \
