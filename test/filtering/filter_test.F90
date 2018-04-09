@@ -30,24 +30,32 @@
 #include <scorep/SCOREP_User.inc>
 
       subroutine Foo
+      implicit none
+      SCOREP_USER_FUNC_DEFINE()
       SCOREP_USER_FUNC_BEGIN( "foo" )
       write (*,*) "In Foo"
       SCOREP_USER_FUNC_END()
       end subroutine Foo
 
       subroutine BAR
+      implicit none
+      SCOREP_USER_FUNC_DEFINE()
       SCOREP_USER_FUNC_BEGIN( "BAR" )
       write (*,*) "In BAR"
       SCOREP_USER_FUNC_END()
       end subroutine BAR
 
       subroutine baz
+      implicit none
+      SCOREP_USER_FUNC_DEFINE()
       SCOREP_USER_FUNC_BEGIN( "baz" )
       write (*,*) "In baz"
       SCOREP_USER_FUNC_END()
       end subroutine baz
 
       program FilterTest
+      implicit none
+      SCOREP_USER_FUNC_DEFINE()
       SCOREP_USER_FUNC_BEGIN( "MAIN" )
 
       write (*,*) "In main"
