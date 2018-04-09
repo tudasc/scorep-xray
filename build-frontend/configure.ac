@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2015, 2017,
+dnl Copyright (c) 2009-2015, 2017-2018,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -64,6 +64,7 @@ AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([FC])
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
+AFS_MAINTAINER_MODE
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])

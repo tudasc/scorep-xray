@@ -4,6 +4,9 @@ dnl
 dnl Copyright (c) 2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
+dnl Copyright (c) 2018,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -115,6 +118,7 @@ AS_IF([test "x${scorep_have_llvm_config}" = "xno"],
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
+AFS_MAINTAINER_MODE
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])

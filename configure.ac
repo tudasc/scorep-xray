@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2017,
+dnl Copyright (c) 2009-2018,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -55,6 +55,7 @@ AC_SCOREP_SVN_CONTROLLED
 ## Call not before AC_CONFIG_MACRO_DIR
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
+AFS_MAINTAINER_MODE
 
 AC_SCOREP_DETECT_PLATFORMS
 AFS_CROSSCOMPILING

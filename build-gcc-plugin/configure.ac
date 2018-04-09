@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2012-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015,
+dnl Copyright (c) 2015, 2018,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -90,6 +90,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 AM_PROG_AR
+AFS_MAINTAINER_MODE
 
 LT_PREREQ([2.4.6])
 LT_INIT([shared disable-static])
