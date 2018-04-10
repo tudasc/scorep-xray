@@ -845,7 +845,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                     /* Asynchronous metrics will write their values to additional locations.
                      * Create new locations for each asynchronous metric */
                     current_location_metric_set->additional_locations
-                        = malloc( current_overall_number_of_metrics * sizeof( SCOREP_LocationHandle* ) );
+                        = malloc( current_overall_number_of_metrics * sizeof( SCOREP_Location* ) );
                     UTILS_ASSERT( current_location_metric_set->additional_locations != NULL );
                     for ( uint32_t loc_num = 0; loc_num < current_overall_number_of_metrics; loc_num++ )
                     {
@@ -1558,7 +1558,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                     /* Asynchronous metrics will write their values to additional locations.
                      * Create new locations for each asynchronous metric */
                     current_location_metric_set->additional_locations
-                        = malloc( current_overall_number_of_metrics * sizeof( SCOREP_LocationHandle* ) );
+                        = malloc( current_overall_number_of_metrics * sizeof( SCOREP_Location* ) );
                     UTILS_ASSERT( current_location_metric_set->additional_locations != NULL );
                     for ( uint32_t loc_num = 0; loc_num < current_overall_number_of_metrics; loc_num++ )
                     {
