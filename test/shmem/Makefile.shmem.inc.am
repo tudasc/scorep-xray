@@ -53,7 +53,7 @@ shmem_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo \
     $(LIB_DIR_SCOREP)libscorep_shmem_event.la \
     $(LIB_DIR_SCOREP)libscorep_shmem_mgmt.la
-shmem_ldflags = $(external_ldflags) $(shmem_libwrap_ldflags)
+shmem_ldflags = $(external_ldflags) $(LINKMODE_FLAGS) $(shmem_libwrap_ldflags)
 
 
 check_PROGRAMS += shmem_hello_world
