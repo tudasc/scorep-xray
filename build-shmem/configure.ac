@@ -62,6 +62,7 @@ AFS_MAINTAINER_MODE
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
+AFS_LINKMODE
 
 AC_PROG_CC dnl required
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
@@ -269,16 +270,6 @@ SCOREP_LIBRARY_WRAPPING_GENERATOR(
 AM_COND_IF([HAVE_SHMEM_PROFILING_INTERFACE],
     [],
     [SCOREP_LD_WRAP_FILE([shmem])])
-
-#AFS_LIBTOOL_FIX_LINKER_PREFERENCE
-AS_IF([test "x${enable_shared}" = xno],
-    [AS_CASE([${ac_scorep_platform}],
-         [bgq|crayx*|k|fx10*],
-              [AC_CONFIG_COMMANDS([libtool-fix-linker-preference],
-                   [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
-                    libtool > libtool.fix && mv libtool.fix libtool])
-              ])
-    ])
 
 # On Cray, libunwind.la's dependecy_libs contain -lc which leads to a
 # "multiple definition of `__lll_unlock_wake_private'" error. The patch

@@ -67,6 +67,9 @@ AM_CPPFLAGS += -DBACKEND_BUILD_SHMEM
 bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
 
+## Additional libtool linking flags
+LINKMODE_FLAGS = @AFS_LINKMODE_LDFLAGS@
+
 include ../build-includes/shmem-backend-only.am
 
 backend_pkglibexecdir = $(pkglibexecdir)@backend_suffix@/shmem

@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2017,
+## Copyright (c) 2014-2015, 2017-2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015,
@@ -59,7 +59,7 @@ mpi_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_la-scorep_monolithic_subsystems.lo \
     $(LIB_DIR_SCOREP)libscorep_mpi_event.la \
     $(LIB_DIR_SCOREP)libscorep_mpi_mgmt.la
-mpi_ldflags = $(external_ldflags)
+mpi_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 ## Hybrid ----------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ mpi_omp_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_omp_la-scorep_monolithic_subsystems.lo \
     $(LIB_DIR_SCOREP)libscorep_mpi_omp_event.la \
     $(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la
-mpi_omp_ldflags = $(external_ldflags)
+mpi_omp_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT

@@ -84,6 +84,9 @@ AM_CPPFLAGS += -DBACKEND_BUILD_MPI
 bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
 
+## Additional libtool linking flags
+LINKMODE_FLAGS = @AFS_LINKMODE_LDFLAGS@
+
 include ../build-includes/mpi-backend-only.am
 
 backend_pkglibexecdir = $(pkglibexecdir)@backend_suffix@/mpi

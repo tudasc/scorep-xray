@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017-2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -89,6 +89,9 @@ AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 frontend_bindir = @bindir@
 bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
+
+## Additional libtool linking flags
+LINKMODE_FLAGS = @AFS_LINKMODE_LDFLAGS@
 
 # for backend tools which are generated in this build-backend, e.g., scorep-wrapper
 frontend_bin_SCRIPTS =
