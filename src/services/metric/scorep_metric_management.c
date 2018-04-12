@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,7 +56,6 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Profile.h>
 #include <scorep_substrates_definition.h>
 
 
@@ -179,6 +178,9 @@ struct SCOREP_Metric_LocationAsynchronousMetricSet
 
     /** Next additional metric */
     SCOREP_Metric_LocationAsynchronousMetricSet* next;
+
+    SCOREP_MetricTimeValuePair**                 time_value_pairs[ SCOREP_NUMBER_OF_METRIC_SOURCES ];
+    uint64_t*                                    num_pairs[ SCOREP_NUMBER_OF_METRIC_SOURCES ];
 };
 
 
@@ -196,7 +198,10 @@ struct SCOREP_Metric_LocationData
     SCOREP_Metric_LocationSynchronousMetricSet* additional_synchronous_metrics;
 
     /** Additional scoped asynchronous metrics of location */
-    SCOREP_Metric_LocationAsynchronousMetricSet* additional_asynchronous_metrics;
+    SCOREP_Metric_LocationAsynchronousMetricSet* additional_asynchronous_event_metrics;
+
+    /** Additional scoped asynchronous metrics of location */
+    SCOREP_Metric_LocationAsynchronousMetricSet* additional_asynchronous_pm_metrics;
 
     /** This location records any metrics (regardless of metric type,
      * 'strictly synchronous' or additional metric) */
@@ -242,12 +247,21 @@ static scorep_strictly_synchronous_metrics strictly_synchronous_metrics;
 /** Our subsystem id, used to address our per-location metric data */
 static size_t metric_subsystem_id;
 
-
-/** @brief Writes all metrics of a location in tracing mode.
- *
- *  @param location             Location data.
- *  @param timestamp            Time when event occurred.
+/**
+ * Whether to record async metrics. Substrates need to require via
+ * GET_REQUIREMENT mgmt callback. See SCOREP_Substrates_RequirementFlag.
  */
+static bool checked_async_metrics;
+static bool prevent_async_metrics;
+
+/**
+ * Whether to record per_host and once metrics. Substrates need to require
+ * via GET_REQUIREMENT mgmt callback, see SCOREP_Substrates_RequirementFlag.
+ */
+static bool checked_per_host_and_once_metrics;
+static bool prevent_per_host_and_once_metrics;
+
+
 /* *********************************************************************
  * Function prototypes
  **********************************************************************/
@@ -305,58 +319,103 @@ scorep_metric_post_mortem_cb( SCOREP_Location* location,
         }                                                                                                                                                                                   \
     }
 
-#define read_and_write_asynchronous_metrics( FORCE_UPDATE )                                                                                             \
-    {                                                                                                                                                   \
-        uint32_t recent_metric_index;                                                                                                                   \
-                                                                                                                                                        \
-        recent_metric_index = 0;                                                                                                                        \
-        for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )                                                 \
-        {                                                                                                                                               \
-            if ( location_asynchronous_metric_set->metrics_counts[ source_index ] > 0 )                                                                 \
-            {                                                                                                                                           \
-                SCOREP_MetricTimeValuePair** time_value_pairs;                                                                                          \
-                uint64_t*                    num_pairs;                                                                                                 \
-                                                                                                                                                        \
-                num_pairs        = NULL;                                                                                                                \
-                time_value_pairs = malloc( location_asynchronous_metric_set->metrics_counts[ source_index ] * sizeof( SCOREP_MetricTimeValuePair* ) );  \
-                UTILS_ASSERT( time_value_pairs != NULL );                                                                                               \
-                                                                                                                                                        \
-                scorep_metric_sources[ source_index ]->metric_source_asynchronous_read( location_asynchronous_metric_set->event_set[ source_index ],    \
-                                                                                        time_value_pairs,                                               \
-                                                                                        &num_pairs,                                                     \
-                                                                                        FORCE_UPDATE );                                                 \
-                for ( uint32_t metric_index = 0;                                                                                                        \
-                      metric_index < location_asynchronous_metric_set->metrics_counts[ source_index ];                                                  \
-                      metric_index++ )                                                                                                                  \
-                {                                                                                                                                       \
-                    for ( uint32_t pair_index = 0;                                                                                                      \
-                          pair_index < num_pairs[ metric_index ];                                                                                       \
-                          pair_index++ )                                                                                                                \
-                    {                                                                                                                                   \
-                        SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,                                                                                  \
-                                               WRITE_METRIC_BEFORE_EVENT,                                                                               \
-                                               ( location_asynchronous_metric_set->additional_locations[ metric_index ],                                \
-                                                 time_value_pairs[ metric_index ][ pair_index ].timestamp,                                              \
-                                                 location_asynchronous_metric_set->sampling_sets[ recent_metric_index ],                                \
-                                                 &( time_value_pairs[ metric_index ][ pair_index ].value ) ) );                                         \
-                    }                                                                                                                                   \
-                                                                                                                                                        \
-                    free( time_value_pairs[ metric_index ] );                                                                                           \
-                    time_value_pairs[ metric_index ] = NULL;                                                                                            \
-                                                                                                                                                        \
-                    recent_metric_index++;                                                                                                              \
-                }                                                                                                                                       \
-                                                                                                                                                        \
-                free( time_value_pairs );                                                                                                               \
-                free( num_pairs );                                                                                                                      \
-                time_value_pairs = NULL;                                                                                                                \
-                num_pairs        = NULL;                                                                                                                \
-            }                                                                                                                                           \
-        }                                                                                                                                               \
-        location_asynchronous_metric_set = location_asynchronous_metric_set->next;                                                                      \
-    }
-
 /* *INDENT-ON* */
+
+static inline void
+cleanup_asynchronous_metric_set( SCOREP_Metric_LocationAsynchronousMetricSet* asyncMetricSet )
+{
+    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+    {
+        if ( asyncMetricSet->metrics_counts[ source_index ] > 0 )
+        {
+            for ( uint32_t metric_index = 0;
+                  metric_index < asyncMetricSet->metrics_counts[ source_index ];
+                  metric_index++ )
+            {
+                if ( asyncMetricSet->time_value_pairs[ source_index ][ metric_index ] != NULL )
+                {
+                    free( asyncMetricSet->time_value_pairs[ source_index ][ metric_index ] );
+                    asyncMetricSet->time_value_pairs[ source_index ][ metric_index ] = NULL;
+                }
+            }
+            if ( asyncMetricSet->time_value_pairs[ source_index ] != NULL )
+            {
+                free( asyncMetricSet->time_value_pairs[ source_index ] );
+                asyncMetricSet->time_value_pairs[ source_index ] = NULL;
+            }
+            if ( asyncMetricSet->num_pairs[ source_index ] != NULL )
+            {
+                free( asyncMetricSet->num_pairs[ source_index ] );
+                asyncMetricSet->num_pairs[ source_index ] = NULL;
+            }
+        }
+    }
+}
+
+static inline void
+read_asynchronous_metric_set( SCOREP_Metric_LocationAsynchronousMetricSet* asyncMetricSet, bool forceUpdate )
+{
+    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+    {
+        if ( asyncMetricSet->metrics_counts[ source_index ] > 0 )
+        {
+            UTILS_ASSERT( asyncMetricSet->time_value_pairs[ source_index ] == NULL );
+            asyncMetricSet->time_value_pairs[ source_index ] = malloc( asyncMetricSet->metrics_counts[ source_index ] * sizeof( SCOREP_MetricTimeValuePair* ) );
+            UTILS_BUG_ON( asyncMetricSet->time_value_pairs[ source_index ] == NULL, "Failed to allocate memory for asynchronous metrics." );
+
+            UTILS_ASSERT( asyncMetricSet->num_pairs[ source_index ] == NULL );
+
+            scorep_metric_sources[ source_index ]->metric_source_asynchronous_read( asyncMetricSet->event_set[ source_index ],
+                                                                                    asyncMetricSet->time_value_pairs[ source_index ],
+                                                                                    &( asyncMetricSet->num_pairs[ source_index ] ),
+                                                                                    forceUpdate );
+        }
+    }
+}
+
+/* can be used to read */
+static inline void
+read_asynchronous_metrics( SCOREP_Metric_LocationAsynchronousMetricSet* asyncMetricSet, bool forceUpdate )
+{
+    while ( asyncMetricSet != NULL )
+    {
+        cleanup_asynchronous_metric_set( asyncMetricSet );
+        read_asynchronous_metric_set( asyncMetricSet, forceUpdate );
+        asyncMetricSet = asyncMetricSet->next;
+    }
+}
+
+static inline void
+write_asynchronous_metric_set( SCOREP_Metric_LocationAsynchronousMetricSet* asyncMetricSet,
+                               WriteMetricsCb                               cb )
+{
+    /* cannot free memory here as this function is potentially called by several substrates. */
+    unsigned recent_metric_index = 0;
+    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+    {
+        if ( asyncMetricSet->metrics_counts[ source_index ] > 0 )
+        {
+            for ( uint32_t metric_index = 0;
+                  metric_index < asyncMetricSet->metrics_counts[ source_index ];
+                  metric_index++ )
+            {
+                for ( uint32_t pair_index = 0;
+                      pair_index < asyncMetricSet->num_pairs[ source_index ][ metric_index ];
+                      pair_index++ )
+                {
+                    /* SCOREP_Metric_WriteAsynchronousMetrics gets a location. This might be different from
+                     * asyncMetricSet->additional_locations[ metric_index ]. This is no race condition as
+                     * the latter is a metrics-only location. */
+                    cb( asyncMetricSet->additional_locations[ metric_index ],
+                        asyncMetricSet->time_value_pairs[ source_index ][ metric_index ][ pair_index ].timestamp,
+                        asyncMetricSet->sampling_sets[ recent_metric_index ],
+                        &( asyncMetricSet->time_value_pairs[ source_index ][ metric_index ][ pair_index ].value ) );
+                }
+                recent_metric_index++;
+            }
+        }
+    }
+}
 
 /* *********************************************************************
  * Service management
@@ -402,7 +461,10 @@ metric_subsystem_deregister( void )
 static void
 metric_subsystem_end( void )
 {
-    SCOREP_Location_ForAll( scorep_metric_post_mortem_cb, NULL );
+    if ( SCOREP_RecordingEnabled() )
+    {
+        SCOREP_Location_ForAll( scorep_metric_post_mortem_cb, NULL );
+    }
 }
 
 /** @brief Called on initialization of the metric service.
@@ -800,7 +862,10 @@ initialize_location_metric_cb( SCOREP_Location* location,
         {
             /* Reference to previously used location metric set data structure */
             SCOREP_Metric_LocationAsynchronousMetricSet* previous_location_asynchronous_metric_set
-                = metric_data->additional_asynchronous_metrics;
+                = ( metric_synchronicity == SCOREP_METRIC_ASYNC_EVENT ) ?
+                  metric_data->additional_asynchronous_event_metrics :
+                  metric_data->additional_asynchronous_pm_metrics;
+
 
             for ( SCOREP_MetricPer metric_type = SCOREP_METRIC_PER_THREAD; metric_type <= SCOREP_METRIC_PER_PROCESS; metric_type++ )
             {
@@ -825,15 +890,25 @@ initialize_location_metric_cb( SCOREP_Location* location,
                 /* The user requested some metrics of currently processed type (e.g. per-process metrics) */
                 if ( current_overall_number_of_metrics > 0 )
                 {
-                    if ( SCOREP_IsProfilingEnabled() )
+                    if ( !checked_async_metrics )
                     {
-                        UTILS_WARNING( "Asynchronous metrics are not supported in profiling mode and will be skipped." );
+                        checked_async_metrics = true;
+                        SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( PREVENT_ASYNC_METRICS,
+                                                                prevent_async_metrics );
+                    }
+                    if ( prevent_async_metrics )
+                    {
                         break;
                     }
 
                     /* Create a new location metric set */
                     current_location_metric_set = malloc( sizeof( SCOREP_Metric_LocationAsynchronousMetricSet ) );
                     UTILS_ASSERT( current_location_metric_set );
+                    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+                    {
+                        current_location_metric_set->time_value_pairs[ source_index ] = NULL;
+                        current_location_metric_set->num_pairs[ source_index ]        = NULL;
+                    }
 
                     /* Store metric synchronicity to distinguish ASYNC_EVENT and ASYNC metrics later on */
                     current_location_metric_set->synchronicity = metric_synchronicity;
@@ -945,7 +1020,14 @@ initialize_location_metric_cb( SCOREP_Location* location,
                     previous_location_asynchronous_metric_set = current_location_metric_set;
 
                     /* Update list of additional metrics for this location and  */
-                    metric_data->additional_asynchronous_metrics = current_location_metric_set;
+                    if ( metric_synchronicity == SCOREP_METRIC_ASYNC_EVENT )
+                    {
+                        metric_data->additional_asynchronous_event_metrics = current_location_metric_set;
+                    }
+                    else
+                    {
+                        metric_data->additional_asynchronous_pm_metrics = current_location_metric_set;
+                    }
 
                     metric_data->has_metrics = true;
                 } // END 'if ( current_overall_number_of_metrics > 0 )'
@@ -999,11 +1081,12 @@ metric_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* pare
                                       metric_subsystem_id,
                                       metric_data );
 
-    metric_data->has_metrics                     = false;
-    metric_data->additional_synchronous_metrics  = NULL;
-    metric_data->additional_asynchronous_metrics = NULL;
-    metric_data->values                          = NULL;
-    metric_data->size_of_values_array            = 0;
+    metric_data->has_metrics                           = false;
+    metric_data->additional_synchronous_metrics        = NULL;
+    metric_data->additional_asynchronous_event_metrics = NULL;
+    metric_data->additional_asynchronous_pm_metrics    = NULL;
+    metric_data->values                                = NULL;
+    metric_data->size_of_values_array                  = 0;
 
     /* All initialization is done in separate function that is re-used
      * by SCOREP_Metric_Reinitialize() */
@@ -1022,6 +1105,34 @@ finalize_location_metric_cb( SCOREP_Location* location,
                              void*            data )
 {
     UTILS_ASSERT( location != NULL );
+
+    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_METRIC )
+    {
+        /* No need to handle locations which are just used to store metrics */
+        return SCOREP_SUCCESS;
+    }
+
+    /* Free async data structures */
+    SCOREP_Metric_LocationData* metric_data =
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
+    UTILS_ASSERT( metric_data != NULL );
+
+    SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_sets[ 2 ]
+        = { metric_data->additional_asynchronous_event_metrics, metric_data->additional_asynchronous_pm_metrics };
+
+    if ( metric_data->has_metrics )
+    {
+        for ( int i = 0; i < 2; ++i )
+        {
+            SCOREP_Metric_LocationAsynchronousMetricSet* async_metric_set
+                = location_asynchronous_metric_sets[ i ];
+            while ( async_metric_set != NULL )
+            {
+                cleanup_asynchronous_metric_set( async_metric_set );
+                async_metric_set = async_metric_set->next;
+            }
+        }
+    }
 
     /* Call only, if previously initialized. Additionally, there is no
      * need to handle locations which are just used to store metrics. */
@@ -1059,34 +1170,41 @@ finalize_location_metric_cb( SCOREP_Location* location,
             /* Free currently handled metric set */
             free( sync_tmp );
         }
+        metric_data->additional_synchronous_metrics = NULL;
 
         /* Handle additional asynchronous metrics */
-        SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_set
-            = metric_data->additional_asynchronous_metrics;
-        SCOREP_Metric_LocationAsynchronousMetricSet* async_tmp;
-        while ( location_asynchronous_metric_set != NULL )
+        SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_sets[ 2 ]
+            = { metric_data->additional_asynchronous_event_metrics, metric_data->additional_asynchronous_pm_metrics };
+        for ( int i = 0; i < 2; ++i )
         {
-            /* For each metric source (e.g. PAPI or Resource Usage) */
-            for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+            SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_set
+                = location_asynchronous_metric_sets[ i ];
+            SCOREP_Metric_LocationAsynchronousMetricSet* async_tmp;
+            while ( location_asynchronous_metric_set != NULL )
             {
-                /* Check whether this metric source has additional metrics */
-                if ( location_asynchronous_metric_set->metrics_counts[ source_index ] > 0 )
+                /* For each metric source (e.g. PAPI or Resource Usage) */
+                for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
                 {
-                    /* Free event set of additional metric */
-                    scorep_metric_sources[ source_index ]->metric_source_free_additional_metric_event_set( location_asynchronous_metric_set->event_set[ source_index ] );
+                    /* Check whether this metric source has additional metrics */
+                    if ( location_asynchronous_metric_set->metrics_counts[ source_index ] > 0 )
+                    {
+                        /* Free event set of additional metric */
+                        scorep_metric_sources[ source_index ]->metric_source_free_additional_metric_event_set( location_asynchronous_metric_set->event_set[ source_index ] );
+                    }
                 }
-            }
-            free( location_asynchronous_metric_set->sampling_sets );
-            free( location_asynchronous_metric_set->additional_locations );
+                free( location_asynchronous_metric_set->sampling_sets );
+                free( location_asynchronous_metric_set->additional_locations );
 
-            /* Save pointer to currently handled metric set */
-            async_tmp = location_asynchronous_metric_set;
-            /* Set location_asynchronous_metric_set to next metric set*/
-            location_asynchronous_metric_set = location_asynchronous_metric_set->next;
-            /* Free currently handled metric set */
-            free( async_tmp );
+                /* Save pointer to currently handled metric set */
+                async_tmp = location_asynchronous_metric_set;
+                /* Set location_asynchronous_metric_set to next metric set*/
+                location_asynchronous_metric_set = location_asynchronous_metric_set->next;
+                /* Free currently handled metric set */
+                free( async_tmp );
+            }
         }
-        metric_data->additional_synchronous_metrics = NULL;
+        metric_data->additional_asynchronous_event_metrics = NULL;
+        metric_data->additional_asynchronous_pm_metrics    = NULL;
 
         /* Handle strictly synchronous metrics and finalize location in metric source */
         for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
@@ -1152,7 +1270,7 @@ scorep_metric_post_mortem_cb( SCOREP_Location* location,
 
     /* Just handle additional asynchronous metrics here ! */
     SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_set
-        = metric_data->additional_asynchronous_metrics;
+        = metric_data->additional_asynchronous_pm_metrics;
 
     while ( location_asynchronous_metric_set != NULL )
     {
@@ -1162,87 +1280,16 @@ scorep_metric_post_mortem_cb( SCOREP_Location* location,
             location_asynchronous_metric_set = location_asynchronous_metric_set->next;
             continue;
         }
+        read_asynchronous_metric_set( location_asynchronous_metric_set, true /* force_update */ );
 
-        if ( SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled() )
+        WriteMetricsCb* cb = ( WriteMetricsCb* )&( scorep_substrates[ SCOREP_EVENT_WRITE_POST_MORTEM_METRICS * scorep_substrates_max_substrates ] );
+        while ( *cb )
         {
-            read_and_write_asynchronous_metrics( true );
+            write_asynchronous_metric_set( location_asynchronous_metric_set, *cb );
+            ++cb;
         }
-        else
-        {
-            uint32_t recent_metric_index;
 
-            recent_metric_index = 0;
-            for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
-            {
-                if ( location_asynchronous_metric_set->metrics_counts[ source_index ] > 0 )
-                {
-                    SCOREP_MetricTimeValuePair** time_value_pairs;
-                    uint64_t*                    num_pairs;
-
-                    num_pairs        = NULL;
-                    time_value_pairs = malloc( location_asynchronous_metric_set->metrics_counts[ source_index ] * sizeof( SCOREP_MetricTimeValuePair* ) );
-                    UTILS_ASSERT( time_value_pairs != NULL );
-
-                    scorep_metric_sources[ source_index ]->metric_source_asynchronous_read( location_asynchronous_metric_set->event_set[ source_index ],
-                                                                                            time_value_pairs,
-                                                                                            &num_pairs,
-                                                                                            false );
-                    for ( uint32_t metric_index = 0;
-                          metric_index < location_asynchronous_metric_set->metrics_counts[ source_index ];
-                          metric_index++ )
-                    {
-                        for ( uint32_t pair_index = 0;
-                              pair_index < num_pairs[ metric_index ];
-                              pair_index++ )
-                        {
-                            SCOREP_SamplingSetDef* sampling_set
-                                = SCOREP_LOCAL_HANDLE_DEREF( location_asynchronous_metric_set->sampling_sets[ recent_metric_index ], SamplingSet );
-
-                            /* Asynchronous metrics always use scoped sampling sets */
-                            UTILS_ASSERT( sampling_set->is_scoped );
-
-                            SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
-                                ( SCOREP_ScopedSamplingSetDef* )sampling_set;
-                            sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
-                                                                      SamplingSet );
-
-                            /* Make sure that scoped sampling set contains only one metric */
-                            UTILS_ASSERT( sampling_set->number_of_metrics == 1 );
-
-                            SCOREP_MetricValueType value_type = SCOREP_MetricHandle_GetValueType( sampling_set->metric_handles[ 0 ] );
-                            switch ( value_type )
-                            {
-                                case SCOREP_METRIC_VALUE_INT64:
-                                case SCOREP_METRIC_VALUE_UINT64:
-                                    SCOREP_Profile_TriggerInteger( location,
-                                                                   sampling_set->metric_handles[ 0 ],
-                                                                   time_value_pairs[ metric_index ][ pair_index ].value );
-                                    break;
-                                case SCOREP_METRIC_VALUE_DOUBLE:
-                                    SCOREP_Profile_TriggerDouble( location,
-                                                                  sampling_set->metric_handles[ 0 ],
-                                                                  time_value_pairs[ metric_index ][ pair_index ].value );
-                                    break;
-                                default:
-                                    UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                                                 "Unknown metric value type %u", value_type );
-                            }
-                        }
-
-                        free( time_value_pairs[ metric_index ] );
-                        time_value_pairs[ metric_index ] = NULL;
-
-                        recent_metric_index++;
-                    }
-
-                    free( time_value_pairs );
-                    free( num_pairs );
-                    time_value_pairs = NULL;
-                    num_pairs        = NULL;
-                }
-            }
-            location_asynchronous_metric_set = location_asynchronous_metric_set->next;
-        }
+        location_asynchronous_metric_set = location_asynchronous_metric_set->next;
     }
     return false;
 }
@@ -1391,11 +1438,14 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
             /* The user requested some metrics of currently processed type (e.g. per-process metrics) */
             if ( current_overall_number_of_metrics > 0 )
             {
-                if ( SCOREP_IsProfilingEnabled() )
+                if ( !checked_per_host_and_once_metrics )
                 {
-                    UTILS_WARNING( "Metrics recorded per host or system-wide are "
-                                   "not supported in profiling mode. This metrics "
-                                   "will be skipped for all active substrates." );
+                    checked_per_host_and_once_metrics = true;
+                    SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( PREVENT_PER_HOST_AND_ONCE_METRICS,
+                                                            prevent_per_host_and_once_metrics );
+                }
+                if ( prevent_per_host_and_once_metrics )
+                {
                     break;
                 }
 
@@ -1511,7 +1561,9 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
         {
             /* Reference to previously used location metric set data structure */
             SCOREP_Metric_LocationAsynchronousMetricSet* previous_location_asynchronous_metric_set
-                = metric_data->additional_asynchronous_metrics;
+                = ( metric_synchronicity == SCOREP_METRIC_ASYNC_EVENT ) ?
+                  metric_data->additional_asynchronous_event_metrics :
+                  metric_data->additional_asynchronous_pm_metrics;
 
             for ( uint32_t metric_type = SCOREP_METRIC_PER_HOST; metric_type < SCOREP_METRIC_PER_MAX; metric_type++ )
             {
@@ -1536,17 +1588,25 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                 /* The user requested some metrics of currently processed type (e.g. per-process metrics) */
                 if ( current_overall_number_of_metrics > 0 )
                 {
-                    if ( SCOREP_IsProfilingEnabled() )
+                    if ( !checked_per_host_and_once_metrics )
                     {
-                        UTILS_WARNING( "Metrics recorded per host or system-wide are "
-                                       "not supported in profiling mode. This metrics "
-                                       "will be skipped for all active substrates." );
+                        checked_per_host_and_once_metrics = true;
+                        SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( PREVENT_PER_HOST_AND_ONCE_METRICS,
+                                                                prevent_per_host_and_once_metrics );
+                    }
+                    if ( prevent_per_host_and_once_metrics )
+                    {
                         break;
                     }
 
                     /* Create a new location metric set */
                     current_location_metric_set = malloc( sizeof( SCOREP_Metric_LocationAsynchronousMetricSet ) );
                     UTILS_ASSERT( current_location_metric_set );
+                    for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+                    {
+                        current_location_metric_set->time_value_pairs[ source_index ] = NULL;
+                        current_location_metric_set->num_pairs[ source_index ]        = NULL;
+                    }
 
                     /* Store metric synchronicity to distinguish ASYNC_EVENT and ASYNC metrics later on */
                     current_location_metric_set->synchronicity = metric_synchronicity;
@@ -1653,7 +1713,14 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                     previous_location_asynchronous_metric_set = current_location_metric_set;
 
                     /* Update list of additional metrics for this location and  */
-                    metric_data->additional_asynchronous_metrics = current_location_metric_set;
+                    if ( metric_synchronicity == SCOREP_METRIC_ASYNC_EVENT )
+                    {
+                        metric_data->additional_asynchronous_event_metrics = current_location_metric_set;
+                    }
+                    else
+                    {
+                        metric_data->additional_asynchronous_pm_metrics = current_location_metric_set;
+                    }
 
                     metric_data->has_metrics = true;
                 } // END 'if ( current_overall_number_of_metrics > 0 )'
@@ -1713,10 +1780,16 @@ SCOREP_Metric_Read( SCOREP_Location* location )
     /* (2) Handle additional synchronous metric */
     read_synchronous_metrics();
 
+    /* (3) Handle additional asynchronous metrics */
+    read_asynchronous_metrics( metric_data->additional_asynchronous_event_metrics, false /* force_update */ );
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has read metric values." );
 
     return metric_data->values;
 }
+
+#undef read_strictly_synchronous_metrics
+#undef read_synchronous_metrics
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between
@@ -1766,9 +1839,9 @@ SCOREP_Metric_GetStrictlySynchronousMetricHandle( uint32_t index )
     return strictly_synchronous_metrics.metrics[ index ];
 }
 
-/** @brief  Returns the number of a synchronous metrics.
+/** @brief  Returns the number of strictly synchronous metrics.
  *
- *  @return Returns the number of a synchronous metrics.
+ *  @return Returns the number of strictly synchronous metrics.
  */
 uint32_t
 SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void )
@@ -1776,11 +1849,37 @@ SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void )
     return strictly_synchronous_metrics.overall_number_of_metrics;
 }
 
-void
-SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
-                                    uint64_t         timestamp )
+/** @brief  Returns the maximal number of different synchronous metrics for a location.
+ *
+ *  @param location the location which should be checked for synchronous metrics
+ *  @return Returns the maximal number of different synchronous metrics.
+ */
+uint32_t
+SCOREP_Metric_GetMaximalNumberOfSynchronousMetrics( SCOREP_Location* location )
 {
-    /* Get the thread local data related to metrics */
+    SCOREP_Metric_LocationData* metric_data =
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
+    SCOREP_Metric_LocationSynchronousMetricSet* location_synchronous_metric_set =
+        metric_data->additional_synchronous_metrics;
+
+    uint32_t max_size = 0;
+
+    while ( location_synchronous_metric_set != NULL )
+    {
+        for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+        {
+            max_size += location_synchronous_metric_set->metrics_counts[ source_index ];
+        }
+        location_synchronous_metric_set = location_synchronous_metric_set->next;
+    }
+    return max_size;
+}
+
+void
+SCOREP_Metric_WriteStrictlySynchronousMetrics( SCOREP_Location* location,
+                                               uint64_t         timestamp,
+                                               WriteMetricsCb   cb )
+{
     SCOREP_Metric_LocationData* metric_data =
         SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
     UTILS_ASSERT( metric_data != NULL );
@@ -1794,11 +1893,23 @@ SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
     /* (1) Handle 'strictly synchronous' metrics */
     if ( strictly_synchronous_metrics.sampling_set != SCOREP_INVALID_SAMPLING_SET )
     {
-        SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,
-                               WRITE_METRIC_BEFORE_EVENT,
-                               ( location, timestamp,
-                                 strictly_synchronous_metrics.sampling_set,
-                                 metric_data->values ) );
+        cb( location, timestamp, strictly_synchronous_metrics.sampling_set, metric_data->values );
+    }
+}
+
+void
+SCOREP_Metric_WriteSynchronousMetrics( SCOREP_Location* location,
+                                       uint64_t         timestamp,
+                                       WriteMetricsCb   cb )
+{
+    SCOREP_Metric_LocationData* metric_data =
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
+    UTILS_ASSERT( metric_data != NULL );
+
+    if ( !metric_data->has_metrics )
+    {
+        /* Location does not record any metrics */
+        return;
     }
 
     /* (2) Handle additional synchronous metrics */
@@ -1806,9 +1917,7 @@ SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
         = metric_data->additional_synchronous_metrics;
     while ( location_synchronous_metric_set != NULL )
     {
-        uint32_t sampling_set_index;
-
-        sampling_set_index = 0;
+        uint32_t sampling_set_index = 0;
         for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
         {
             for ( uint32_t metric_index = 0;
@@ -1817,11 +1926,8 @@ SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
             {
                 if ( location_synchronous_metric_set->is_update_available[ sampling_set_index ] )
                 {
-                    SCOREP_CALL_SUBSTRATE( WriteMetricBeforeEvent,
-                                           WRITE_METRIC_BEFORE_EVENT,
-                                           ( location, timestamp,
-                                             location_synchronous_metric_set->sampling_sets[ sampling_set_index ],
-                                             &( metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] ) ) );
+                    cb( location, timestamp, location_synchronous_metric_set->sampling_sets[ sampling_set_index ],
+                        &( metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] ) );
                 }
                 sampling_set_index++;
             }
@@ -1829,21 +1935,11 @@ SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
 
         location_synchronous_metric_set = location_synchronous_metric_set->next;
     }
-
-    /* (3) Handle additional asynchronous metrics */
-    SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_set
-        = metric_data->additional_asynchronous_metrics;
-
-    while ( location_asynchronous_metric_set != NULL )
-    {
-        read_and_write_asynchronous_metrics( false );
-    }
 }
 
 void
-SCOREP_Metric_WriteToProfile( SCOREP_Location*                location,
-                              SCOREP_Profile_TriggerIntegerCb profileTriggerIntegerCb,
-                              SCOREP_Profile_TriggerDoubleCb  profileTriggerDoubleCb )
+SCOREP_Metric_WriteAsynchronousMetrics( SCOREP_Location* location,
+                                        WriteMetricsCb   cb )
 {
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
@@ -1856,76 +1952,17 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location*                location,
         return;
     }
 
-    /* 'Strictly synchronous' are handled at enter/leave events.
-     * So this type of metric can be skipped here. */
+    /* (3) Handle additional asynchronous metrics */
+    SCOREP_Metric_LocationAsynchronousMetricSet* location_asynchronous_metric_set
+        = metric_data->additional_asynchronous_event_metrics;
 
-    /* Handle additional synchronous metrics */
-    SCOREP_Metric_LocationSynchronousMetricSet* location_synchronous_metric_set
-        = metric_data->additional_synchronous_metrics;
-    while ( location_synchronous_metric_set != NULL )
+    while ( location_asynchronous_metric_set != NULL )
     {
-        uint32_t sampling_set_index;
-
-        sampling_set_index = 0;
-        for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
-        {
-            for ( uint32_t metric_index = 0;
-                  metric_index < location_synchronous_metric_set->metrics_counts[ source_index ];
-                  metric_index++ )
-            {
-                if ( location_synchronous_metric_set->is_update_available[ sampling_set_index ] )
-                {
-                    SCOREP_SamplingSetDef* sampling_set
-                        = SCOREP_LOCAL_HANDLE_DEREF( location_synchronous_metric_set->sampling_sets[ sampling_set_index ], SamplingSet );
-                    if ( sampling_set->is_scoped )
-                    {
-                        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
-                            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
-                        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
-                                                                  SamplingSet );
-                    }
-
-                    /* Make sure that sampling set contains only one metric.
-                     * We handle each synchronous metric in its individual
-                     * sampling sets to permit synchronous metrics to skip
-                     * writing a value if the metric was not updated. Therefore,
-                     * a sampling set of a synchronous metric needs to contain
-                     * exactly one metric. */
-                    UTILS_ASSERT( sampling_set->number_of_metrics == 1 );
-
-                    SCOREP_MetricValueType value_type =
-                        SCOREP_MetricHandle_GetValueType( sampling_set->metric_handles[ 0 ] );
-                    switch ( value_type )
-                    {
-                        case SCOREP_METRIC_VALUE_INT64:
-                        case SCOREP_METRIC_VALUE_UINT64:
-                            profileTriggerIntegerCb( location,
-                                                     sampling_set->metric_handles[ 0 ],
-                                                     metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] );
-                            break;
-                        case SCOREP_METRIC_VALUE_DOUBLE:
-                            profileTriggerDoubleCb( location,
-                                                    sampling_set->metric_handles[ 0 ],
-                                                    metric_data->values[ location_synchronous_metric_set->metrics_offsets[ source_index ] + metric_index ] );
-                            break;
-                        default:
-                            UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                                         "Unknown metric value type %u", value_type );
-                    }
-                }
-                sampling_set_index++;
-            }
-        }
-
-        location_synchronous_metric_set = location_synchronous_metric_set->next;
+        /* location_asynchronous_metric_set's metrics were read in read_asynchronous_metrics */
+        write_asynchronous_metric_set( location_asynchronous_metric_set, cb );
+        location_asynchronous_metric_set = location_asynchronous_metric_set->next;
     }
-
-    /* At the moment additional asynchronous metrics are not stored in the profile */
 }
-
-#undef read_strictly_synchronous_metrics
-#undef read_synchronous_metrics
-#undef read_and_write_asynchronous_metrics
 
 /* *********************************************************************
  * Subsystem declaration

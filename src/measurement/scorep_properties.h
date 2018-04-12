@@ -39,9 +39,8 @@
 
 #include <scorep_substrates_definition.h>
 
-void
-scorep_properties_initialize( void );
-
+const SCOREP_Substrates_Callback*
+scorep_properties_get_substrate_mgmt_callbacks( void );
 
 const SCOREP_Substrates_Callback*
 scorep_properties_get_substrate_callbacks( void );

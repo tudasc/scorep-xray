@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -94,11 +94,6 @@ SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
         return;
     }
 
-    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
-    {
-        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
-    }
-
     SCOREP_CALL_SUBSTRATE( Sample, SAMPLE,
                            ( location,
                              timestamp,
@@ -170,11 +165,6 @@ enter_region( SCOREP_Location*    location,
 
     SCOREP_Task_Enter( location, regionHandle );
 
-    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
-    {
-        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
-    }
-
     SCOREP_CALL_SUBSTRATE( EnterRegion, ENTER_REGION,
                            ( location, timestamp, regionHandle, metricValues ) );
 }
@@ -202,11 +192,6 @@ scorep_calling_context_enter( SCOREP_Location*    location,
                                         &unwind_distance );
     UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
                   "Unwinding could not create calling context for enter event." );
-
-    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
-    {
-        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
-    }
 
     SCOREP_CALL_SUBSTRATE( CallingContextEnter, CALLING_CONTEXT_ENTER,
                            ( location,
@@ -311,11 +296,6 @@ exit_region( SCOREP_Location*    location,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
-    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
-    {
-        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
-    }
-
     SCOREP_CALL_SUBSTRATE( ExitRegion, EXIT_REGION,
                            ( location, timestamp, regionHandle, metricValues ) );
 
@@ -345,11 +325,6 @@ scorep_calling_context_exit( SCOREP_Location*    location,
                                         &unwind_distance );
     UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
                   "Unwinding could not create calling context for exit event." );
-
-    if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT )  )
-    {
-        SCOREP_Metric_WriteBeforeSubstrate( location, timestamp );
-    }
 
     SCOREP_CALL_SUBSTRATE( CallingContextExit, CALLING_CONTEXT_EXIT,
                            ( location,
@@ -472,8 +447,7 @@ add_source_code_location( SCOREP_Location* location,
                           const char*      file,
                           SCOREP_LineNo    lineNumber )
 {
-    uint64_t                        timestamp = SCOREP_Location_GetLastTimestamp( location );
-    SCOREP_SourceCodeLocationHandle value     =
+    SCOREP_SourceCodeLocationHandle value =
         SCOREP_Definitions_NewSourceCodeLocation( file,
                                                   lineNumber );
     SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
@@ -1149,7 +1123,6 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
 void
 SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     UTILS_NOT_YET_IMPLEMENTED();

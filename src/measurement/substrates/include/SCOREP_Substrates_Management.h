@@ -46,10 +46,17 @@ SCOREP_Substrates_EnableRecording( void );
 void
 SCOREP_Substrates_DisableRecording( void );
 
+/**
+ * Initializes substrate plugins and collects callbacks of all active substrates
+ * This should be called before any definition is initialized, after the environment is initialized
+ */
 void
 SCOREP_Substrates_EarlyInitialize( void );
 
-size_t
+/**
+ * Gets the number of registered substrates, each internal substrate and each plugin counts as 1
+ */
+uint32_t
 SCOREP_Substrates_NumberOfRegisteredSubstrates( void );
 
 #endif /* SCOREP_SUBSTRATES_MANAGEMENT_H */

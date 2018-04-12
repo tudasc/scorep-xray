@@ -19,6 +19,7 @@
 #include <config.h>
 
 #include <SCOREP_Substrates_Management.h>
+#include <SCOREP_Metric_Management.h>
 #include <scorep_substrates_definition.h>
 
 #define SCOREP_DEBUG_MODULE_NAME SUBSTRATE
@@ -131,7 +132,10 @@ static const SCOREP_SubstratePluginCallbacks callbacks =
     SET_CALLBACK( SCOREP_SamplingSetHandle_IsScoped ),
     SET_CALLBACK( SCOREP_SamplingSetHandle_GetSamplingSetClass ),
     SET_CALLBACK( SCOREP_SourceFileHandle_GetName ),
-    SET_CALLBACK( SCOREP_StringHandle_Get )
+    SET_CALLBACK( SCOREP_StringHandle_Get ),
+    SET_CALLBACK( SCOREP_Metric_WriteStrictlySynchronousMetrics ),
+    SET_CALLBACK( SCOREP_Metric_WriteSynchronousMetrics ),
+    SET_CALLBACK( SCOREP_Metric_WriteAsynchronousMetrics )
 };
 
 /* check whether snprintf worked as assumed */
@@ -340,13 +344,13 @@ finalize_plugins( void )
 #define ASSIGN_EVENT( array, EVENT, cb ) \
     array[ SCOREP_EVENT_##EVENT ] = ( SCOREP_Substrates_Callback )( cb );
 
-int
-SCOREP_Substrate_Plugins_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode, int currentPlugin, SCOREP_Substrates_Callback** returnedCallbacks, uint32_t* currentArrayLength )
+uint32_t
+SCOREP_Substrate_Plugins_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode, uint32_t currentPlugin, SCOREP_Substrates_Callback** returnedCallbacks, uint32_t* currentArrayLength )
 {
-    if ( currentPlugin >= nr_registered_plugins || currentPlugin < 0 )
+    if ( currentPlugin >= nr_registered_plugins )
     {
         *returnedCallbacks = NULL;
-        return -1;
+        return 0;
     }
     if ( registered_plugins[ currentPlugin ].get_event_functions )
     {
@@ -360,7 +364,7 @@ SCOREP_Substrate_Plugins_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode, int
     }
 }
 
-int
+uint32_t
 SCOREP_Substrate_Plugins_GetNumberRegisteredPlugins( void )
 {
     return nr_registered_plugins;
@@ -370,13 +374,13 @@ SCOREP_Substrate_Plugins_GetNumberRegisteredPlugins( void )
     array[ SCOREP_MGMT_##EVENT ] = ( SCOREP_Substrates_Callback )( cb );
 
 
-int
-SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( int currentPlugin, SCOREP_Substrates_Callback** returnedCallbacks )
+uint32_t
+SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( uint32_t currentPlugin, SCOREP_Substrates_Callback** returnedCallbacks )
 {
-    if ( currentPlugin >= nr_registered_plugins || currentPlugin < 0 )
+    if ( currentPlugin >= nr_registered_plugins )
     {
         *returnedCallbacks = NULL;
-        return -1;
+        return 0;
     }
 
     SCOREP_Substrates_Callback* callbacks = calloc( SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, sizeof( SCOREP_Substrates_Callback ) );

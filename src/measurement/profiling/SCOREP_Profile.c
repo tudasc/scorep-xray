@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -93,10 +93,9 @@ SCOREP_ParameterHandle scorep_profile_param_instance = SCOREP_INVALID_PARAMETER;
 
 /* *INDENT-OFF* */
 static void parameter_uint64( SCOREP_Location* thread, uint64_t timestamp, SCOREP_ParameterHandle param, uint64_t value );
-static void trigger_sparse_integer_at_enter( SCOREP_Location* thread, SCOREP_MetricHandle metric, uint64_t value );
-static void trigger_sparse_integer_at_exit( SCOREP_Location* thread, SCOREP_MetricHandle metric, uint64_t value );
-static void trigger_sparse_double_at_enter( SCOREP_Location* thread, SCOREP_MetricHandle metric, double value );
-static void trigger_sparse_double_at_exit( SCOREP_Location* thread, SCOREP_MetricHandle metric, double value );
+
+static void write_sparse_metrics_enter( SCOREP_Location* location, uint64_t timestamp, SCOREP_SamplingSetHandle samplingSet, const uint64_t* values );
+static void write_sparse_metrics_exit( SCOREP_Location* location, uint64_t timestamp, SCOREP_SamplingSetHandle samplingSet, const uint64_t* values );
 /* *INDENT-ON* */
 
 static inline void
@@ -829,9 +828,7 @@ enter_region( SCOREP_Location*    location,
                           regionHandle,
                           metricValues );
 
-    SCOREP_Metric_WriteToProfile( location,
-                                  trigger_sparse_integer_at_enter,
-                                  trigger_sparse_double_at_enter );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_sparse_metrics_enter );
 }
 
 
@@ -851,9 +848,7 @@ exit_region( SCOREP_Location*    location,
              SCOREP_RegionHandle regionHandle,
              uint64_t*           metricValues )
 {
-    SCOREP_Metric_WriteToProfile( location,
-                                  trigger_sparse_integer_at_exit,
-                                  trigger_sparse_double_at_exit );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_sparse_metrics_exit );
 
     SCOREP_Profile_Exit( location,
                          timestamp,
@@ -1036,23 +1031,60 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
                                   SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
 
-
 static void
-trigger_sparse_integer_at_enter( SCOREP_Location*    thread,
-                                 SCOREP_MetricHandle metric,
-                                 uint64_t            value )
+write_sparse_metrics_enter( SCOREP_Location*         thread,
+                            uint64_t                 timestamp,
+                            SCOREP_SamplingSetHandle samplingSet,
+                            const uint64_t*          values )
 {
     SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
     scorep_profile_node*         node     = scorep_profile_get_current_node( location );
-    scorep_profile_trigger_int64( location, metric, value, node,
-                                  SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
+
+
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+    }
+
+    /* Make sure that sampling set contains only one metric.
+     * We handle each synchronous metric in its individual
+     * sampling sets to permit synchronous metrics to skip
+     * writing a value if the metric was not updated. Therefore,
+     * a sampling set of a synchronous metric needs to contain
+     * exactly one metric. */
+    UTILS_ASSERT( sampling_set->number_of_metrics == 1 );
+    SCOREP_MetricValueType value_type = SCOREP_MetricHandle_GetValueType(
+        sampling_set->metric_handles[ 0 ] );
+    switch ( value_type )
+    {
+        case SCOREP_METRIC_VALUE_INT64:
+        case SCOREP_METRIC_VALUE_UINT64:
+            scorep_profile_trigger_int64( location, sampling_set->metric_handles[ 0 ], values[ 0 ],
+                                          node, SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
+            break;
+        case SCOREP_METRIC_VALUE_DOUBLE:
+        {
+            double value = ( ( double* )values )[ 0 ];
+            scorep_profile_trigger_double( location, sampling_set->metric_handles[ 0 ], value, node,
+                                           SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
+            break;
+        }
+        default:
+            UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Unknown metric value type %u",
+                         value_type );
+    }
 }
 
-
 static void
-trigger_sparse_integer_at_exit( SCOREP_Location*    thread,
-                                SCOREP_MetricHandle metric,
-                                uint64_t            value )
+write_sparse_metrics_exit( SCOREP_Location*         thread,
+                           uint64_t                 timestamp,
+                           SCOREP_SamplingSetHandle samplingSet,
+                           const uint64_t*          values )
 {
     SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
     scorep_profile_node*         node     = scorep_profile_get_current_node( location );
@@ -1063,8 +1095,46 @@ trigger_sparse_integer_at_exit( SCOREP_Location*    thread,
         SCOREP_PROFILE_STOP( location );
         return;
     }
-    scorep_profile_trigger_int64( location, metric, value, node,
-                                  SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
+
+
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSetDef* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+    }
+
+    /* Make sure that sampling set contains only one metric.
+     * We handle each synchronous metric in its individual
+     * sampling sets to permit synchronous metrics to skip
+     * writing a value if the metric was not updated. Therefore,
+     * a sampling set of a synchronous metric needs to contain
+     * exactly one metric. */
+    UTILS_ASSERT( sampling_set->number_of_metrics == 1 );
+
+    SCOREP_MetricValueType value_type = SCOREP_MetricHandle_GetValueType(
+        sampling_set->metric_handles[ 0 ] );
+    switch ( value_type )
+    {
+        case SCOREP_METRIC_VALUE_INT64:
+        case SCOREP_METRIC_VALUE_UINT64:
+            scorep_profile_trigger_int64( location, sampling_set->metric_handles[ 0 ], values[ 0 ],
+                                          node, SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
+            break;
+        case SCOREP_METRIC_VALUE_DOUBLE:
+        {
+            double value = ( ( double* )values )[ 0 ];
+            scorep_profile_trigger_double( location, sampling_set->metric_handles[ 0 ], value, node,
+                                           SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
+            break;
+        }
+        default:
+            UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Unknown metric value type %u",
+                         value_type );
+    }
 }
 
 /**
@@ -1164,38 +1234,6 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
     scorep_profile_trigger_double( location, metric, value, node,
                                    SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
-
-
-static void
-trigger_sparse_double_at_enter( SCOREP_Location*    thread,
-                                SCOREP_MetricHandle metric,
-                                double              value )
-{
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
-    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
-    scorep_profile_trigger_double( location, metric, value, node,
-                                   SCOREP_PROFILE_TRIGGER_UPDATE_BEGIN_VALUE );
-}
-
-
-static void
-trigger_sparse_double_at_exit( SCOREP_Location*    thread,
-                               SCOREP_MetricHandle metric,
-                               double              value )
-{
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
-    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
-    if ( node == NULL )
-    {
-        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                     "Metric triggered outside of a region." );
-        SCOREP_PROFILE_STOP( location );
-        return;
-    }
-    scorep_profile_trigger_double( location, metric, value, node,
-                                   SCOREP_PROFILE_TRIGGER_UPDATE_END_VALUE );
-}
-
 
 /**
    Called when a signed integer parameter was triggered
@@ -1563,15 +1601,21 @@ leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
                                   SCOREP_PROFILE_TRIGGER_UPDATE_VALUE_AS_IS );
 }
 
-static int64_t
+static bool
 get_requirement( SCOREP_Substrates_RequirementFlag flag )
 {
     switch ( flag )
     {
-        case SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY:
-            return 1;
+        case SCOREP_SUBSTRATES_REQUIREMENT_CREATE_EXPERIMENT_DIRECTORY:
+            return true;
+        case SCOREP_SUBSTRATES_REQUIREMENT_PREVENT_ASYNC_METRICS:
+            UTILS_WARN_ONCE( "The profiling substrate prevents recording of asynchronous metrics." );
+            return true;
+        case SCOREP_SUBSTRATES_REQUIREMENT_PREVENT_PER_HOST_AND_ONCE_METRICS:
+            UTILS_WARN_ONCE( "The profiling substrate prevents recording of PER_HOST or ONCE metrics." );
+            return true;
         default:
-            return 0;
+            return false;
     }
 }
 

@@ -60,16 +60,16 @@ static void substrates_subsystem_finalize(void);
 
 /* Used from elsewhere, initialized in SCOREP_Substrates_EarlyInitialize/substrate_pack */
 const SCOREP_Substrates_Callback * scorep_substrates = NULL;
-int scorep_substrates_max_substrates = 0;
+uint32_t scorep_substrates_max_substrates = 0;
 
 SCOREP_Substrates_Callback* scorep_substrates_mgmt                = NULL;
-int                         scorep_substrates_max_mgmt_substrates = 0;
+uint32_t                    scorep_substrates_max_mgmt_substrates = 0;
 
 /* internal stuff used to switch between enabled and disabled */
 static SCOREP_Substrates_Callback* substrates_enabled;
-static int                         max_substrates_enabled;
+static uint32_t                    max_substrates_enabled;
 static SCOREP_Substrates_Callback* substrates_disabled;
-static int                         max_substrates_disabled;
+static uint32_t                    max_substrates_disabled;
 
 /* ************************************** subsystem struct */
 
@@ -114,10 +114,10 @@ aligned_malloc( size_t size )
 }
 
 void
-aligned_free( void* aligned_adr )
+aligned_free( void* alignedAdr )
 {
     /* free original address that prepends the aligned one */
-    free( ( ( void** )aligned_adr )[ -1 ] );
+    free( ( ( void** )alignedAdr )[ -1 ] );
 }
 
 /* ********************************************* static functions */
@@ -157,17 +157,19 @@ substrates_subsystem_init_mpp( void )
 
 
 /**
- * Appends callbacks from @a substrateCBs to the global substrates
- * array scorep_substrates.
- *
- * @param substrateCBs Array of substrate callbacks to append.
+ * Appends callbacks of a specific substrate to the unpacked list of callbacks
+ * @param incomingCBs The callbacks from a specific substrate
+ * @param allCbs the unpacked list of all callbacks, must hold maxLength*nr_substrates entries
+ * @length the length of incomingCBs as the substrate defines it
+ * @maxLength the length of incomingCBs as this Score-P version defines it, i.e. SCOREP_SUBSTRATES_NUM_MGMT_EVENTS or SCOREP_SUBSTRATES_NUM_EVENTS
+ * @nr_substrates the number of registered substrates that was also used to create allCbs
  */
 static void
 append_callbacks( const SCOREP_Substrates_Callback* incomingCBs,
                   SCOREP_Substrates_Callback*       allCBs,
                   uint32_t                          length,
                   uint32_t                          maxLength,
-                  int                               nr_substrates )
+                  int                               nrSubstrates )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -183,13 +185,13 @@ append_callbacks( const SCOREP_Substrates_Callback* incomingCBs,
             uint32_t substrate = 0;
 
             /* search for NULL terminator */
-            while ( allCBs[ event * ( nr_substrates + 1 ) + substrate ] )
+            while ( allCBs[ event * ( nrSubstrates + 1 ) + substrate ] )
             {
                 substrate++;
             }
 
             /* append substrate event */
-            allCBs[ event * ( nr_substrates + 1 ) + substrate ] = incomingCBs[ event ];
+            allCBs[ event * ( nrSubstrates + 1 ) + substrate ] = incomingCBs[ event ];
         }
     }
 }
@@ -320,17 +322,17 @@ SCOREP_Substrates_DisableRecording( void )
 
 static void
 substrates_pack( SCOREP_Substrates_Callback*  source,
-                 int                          sourceMainLength,
+                 uint32_t                     sourceMainLength,
                  SCOREP_Substrates_Callback** target,
-                 int*                         targetSubLength,
-                 int                          nr_substrates )
+                 uint32_t*                    targetSubLength,
+                 uint32_t                     nrSubstrates )
 {
-    int main, sub, max = 0;
+    uint32_t source_it, sub, max = 0;
     /* get longest setting in source */
-    for ( main = 0; main < sourceMainLength; main++ )
+    for ( source_it = 0; source_it < sourceMainLength; source_it++ )
     {
         sub = 0;
-        while ( source[ main * ( nr_substrates + 1 ) + sub ] != NULL )
+        while ( source[ source_it * ( nrSubstrates + 1 ) + sub ] != NULL )
         {
             sub++;
         }
@@ -376,15 +378,15 @@ substrates_pack( SCOREP_Substrates_Callback*  source,
 
     UTILS_BUG_ON( ( *target == NULL ), "Could not allocate memory for substrate callbacks." );
 
-    for ( main = 0; main < sourceMainLength; main++ )
+    for ( source_it = 0; source_it < sourceMainLength; source_it++ )
     {
         sub = 0;
-        while ( source[ main * ( nr_substrates + 1 ) + sub ] != NULL )
+        while ( source[ source_it * ( nrSubstrates + 1 ) + sub ] != NULL )
         {
-            ( *target )[ main * ( *targetSubLength ) + sub ] = source[ main * ( nr_substrates + 1 ) + sub ];
+            ( *target )[ source_it * ( *targetSubLength ) + sub ] = source[ source_it * ( nrSubstrates + 1 ) + sub ];
             sub++;
         }
-        ( *target )[ main * ( *targetSubLength ) + sub ] = NULL;
+        ( *target )[ source_it * ( *targetSubLength ) + sub ] = NULL;
     }
 }
 
@@ -414,6 +416,8 @@ SCOREP_Substrates_EarlyInitialize( void )
 
     /* historically, properties were the first things in the disabled list, so add it first */
     append_callbacks( scorep_properties_get_substrate_callbacks(), substrates_disabled_unpacked, SCOREP_SUBSTRATES_NUM_EVENTS, SCOREP_SUBSTRATES_NUM_EVENTS, nr_of_substrates );
+    append_callbacks( scorep_properties_get_substrate_mgmt_callbacks(), scorep_substrates_mgmt_unpacked, SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, nr_of_substrates );
+
 
     /* SCOREP_EVENT_INIT_SUBSTRATE: needed to set correct substrate id that is
      * used for indexing into location- and task-local substrate data arrays.
@@ -452,10 +456,10 @@ SCOREP_Substrates_EarlyInitialize( void )
     /* for SCOREP_SUBSTRATES_RECORDING_ENABLED */
     SCOREP_Substrates_Mode mode = SCOREP_SUBSTRATES_RECORDING_ENABLED;
 
-    int                         current_plugin   = 0;
+    uint32_t                    current_plugin   = 0;
     SCOREP_Substrates_Callback* callbacks        = NULL;
     uint32_t                    callbacks_length = 0;
-    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks( mode, current_plugin, &callbacks, &callbacks_length ) ) > 0 )
+    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks( mode, current_plugin, &callbacks, &callbacks_length ) ) != 0 )
     {
         if ( callbacks_length > SCOREP_SUBSTRATES_NUM_EVENTS )
         {
@@ -478,7 +482,7 @@ SCOREP_Substrates_EarlyInitialize( void )
     /* for SCOREP_SUBSTRATES_RECORDING_DISABLED */
     mode           = SCOREP_SUBSTRATES_RECORDING_DISABLED;
     current_plugin = 0;
-    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks( mode, current_plugin, &callbacks, &callbacks_length ) ) > 0 )
+    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks( mode, current_plugin, &callbacks, &callbacks_length ) ) != 0 )
     {
         if ( callbacks_length > SCOREP_SUBSTRATES_NUM_EVENTS )
         {
@@ -500,7 +504,7 @@ SCOREP_Substrates_EarlyInitialize( void )
 
     /* for management */
     current_plugin = 0;
-    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( current_plugin, &callbacks ) ) > 0 )
+    while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( current_plugin, &callbacks ) ) != 0 )
     {
         append_callbacks( callbacks, scorep_substrates_mgmt_unpacked, SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, SCOREP_SUBSTRATES_NUM_MGMT_EVENTS, nr_of_substrates );
         free( callbacks );
@@ -522,7 +526,7 @@ SCOREP_Substrates_EarlyInitialize( void )
 }
 
 
-size_t
+uint32_t
 SCOREP_Substrates_NumberOfRegisteredSubstrates( void )
 {
     return substrate_id;

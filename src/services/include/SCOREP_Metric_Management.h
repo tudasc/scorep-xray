@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2017,
+ * Copyright (c) 2009-2013, 2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,6 +39,7 @@
 
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Location.h>
+#include <SCOREP_Definitions.h>
 
 /* *********************************************************************
  * Functions called directly by measurement environment
@@ -55,44 +56,6 @@
  */
 uint64_t*
 SCOREP_Metric_Read( SCOREP_Location* location );
-
-/** @brief Writes all metrics of a location in tracing mode.
- *
- *  @param location             Location data.
- *  @param timestamp            Time when event occurred.
- */
-void
-SCOREP_Metric_WriteBeforeSubstrate( SCOREP_Location* location,
-                                    uint64_t         timestamp );
-
-
-/*
- * A callback to be provided by the profiling substrate to obtain the
- * current value of a unit64_t metric on a location.
- */
-typedef void (* SCOREP_Profile_TriggerIntegerCb)( SCOREP_Location*    location,
-                                                  SCOREP_MetricHandle metric,
-                                                  uint64_t            value );
-
-/*
- * A callback to be provided by the profiling substrate to obtain the
- * current value of a double metric on a location.
- */
-typedef void (* SCOREP_Profile_TriggerDoubleCb)( SCOREP_Location*    location,
-                                                 SCOREP_MetricHandle metric,
-                                                 double              value );
-
-/** @brief Writes metrics (except strictly synchronous ones which are
- *         handled by enter/leave events) of a location in profiling mode.
- *
- *  @param location             Location data.
- *  @param profileTriggerIntegerCb Callback to obtain unit64_t metric value(s).
- *  @param profileTriggerDoubleCb Callback to obtain double metric value(s).
- */
-void
-SCOREP_Metric_WriteToProfile( SCOREP_Location*                location,
-                              SCOREP_Profile_TriggerIntegerCb profileTriggerIntegerCb,
-                              SCOREP_Profile_TriggerDoubleCb  profileTriggerDoubleCb );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between
@@ -125,5 +88,65 @@ SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void );
  */
 SCOREP_MetricHandle
 SCOREP_Metric_GetStrictlySynchronousMetricHandle( uint32_t index );
+
+
+/*
+ * A callback to be provided by substrates to
+ * SCOREP_Metric_WriteStrictlySynchronousMetrics(),
+ * SCOREP_Metric_WriteSynchronousMetrics(), and
+ * SCOREP_Metric_WriteAsynchronousMetrics().
+ * This MUST be the same as SCOREP_Substrates_WriteMetricsCb()
+ * @param location location where metric was read
+ * @param timestamp timestamp when metric was read
+ * @param samplingSet the sampling set corresponding to @metricValues
+ * @param metricValues the current values of the metrics. The length of metricValues can be gathered by checking the number of metrics in the samplingSet
+ */
+typedef void (* WriteMetricsCb)( SCOREP_Location*         location,
+                                 uint64_t                 timestamp,
+                                 SCOREP_SamplingSetHandle samplingSet,
+                                 const uint64_t*          metricValues );
+
+/** @brief Triggers WriteMetricsCb @a cb once with the strictly synchronous
+ * metrics obtained in the last call to SCOREP_Metrics_Read() on @a location.
+ *
+ * This function shall only be called while processing enters, exits, and samples
+ * @param location The location the metrics are provided from, reported back via cb
+ * @param timestamp A corresponding timestamp, reported back via cb
+ * @param cb a callback that processes the metrics
+ */
+
+void
+SCOREP_Metric_WriteStrictlySynchronousMetrics( SCOREP_Location* location,
+                                               uint64_t         timestamp,
+                                               WriteMetricsCb   cb );
+
+/** @brief Triggers WriteMetricsCb @a cb once per updated synchronous
+ * metric where the synchronous metrics were obtained in the last call to
+ * SCOREP_Metrics_Read() on @a location.
+ *
+ * This function shall only be called while processing enters, exits, and samples.
+ * The callback might be called multiple times if multiple sampling sets are present.
+ * @param location The location the metrics are provided from, reported back via cb
+ * @param timestamp A corresponding timestamp, reported back via cb
+ * @param cb a callback that processes the metrics
+ */
+void
+SCOREP_Metric_WriteSynchronousMetrics( SCOREP_Location* location,
+                                       uint64_t         timestamp,
+                                       WriteMetricsCb   cb );
+
+/** @brief Triggers WriteMetricsCb @a cb once per available asynchronous
+ * metric where the asynchronous metrics were obtained in the last call to
+ * SCOREP_Metrics_Read() on @a location.
+ *
+ * This function shall only be called while processing enters, exits, and samples.
+ * The callback might be called multiple times if multiple sampling sets are present.
+ *
+ * @param location The location the metrics are provided from, reported back via cb
+ * @param cb a callback that processes the metrics
+ */
+void
+SCOREP_Metric_WriteAsynchronousMetrics( SCOREP_Location* location,
+                                        WriteMetricsCb   cb );
 
 #endif /* SCOREP_METRIC_MANAGEMENT_H */

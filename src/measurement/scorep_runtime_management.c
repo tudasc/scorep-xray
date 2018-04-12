@@ -115,8 +115,9 @@ SCOREP_CreateExperimentDir( void )
                   "SCOREP_CreateExperimentDir called multiple times." );
 
     /* check if any substrate actually needs the directory. If not, skip it. */
-    uint64_t directory_required;
-    SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_ANY( SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY, directory_required );
+    /* directory_required must be initialized 0, according to SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY doc */
+    uint64_t directory_required = 0;
+    SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( CREATE_EXPERIMENT_DIRECTORY, directory_required );
     if ( !directory_required && !SCOREP_Env_DoForceCfgFiles() )
     {
         /* If tracing and profiling is disabled and no other substrate is present */

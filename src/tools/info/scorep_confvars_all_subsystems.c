@@ -42,6 +42,7 @@
 
 #include <scorep_subsystem.h>
 
+extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
 extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_UnwindingService;
@@ -59,12 +60,12 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MemoryAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
 
 /**
  * List of subsystems.
  */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Subsystem_Substrates,
     &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
     &SCOREP_Subsystem_UnwindingService,
@@ -81,8 +82,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_OpenclAdapter,
     &SCOREP_Subsystem_OpenaccAdapter,
-    &SCOREP_Subsystem_MemoryAdapter,
-    &SCOREP_Subsystem_Substrates
+    &SCOREP_Subsystem_MemoryAdapter
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

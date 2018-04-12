@@ -27,16 +27,16 @@
 #include <scorep_substrates_definition.h>
 
 /* There is no support for dynamic loading, so we provide stub functions */
-int
+uint32_t
 SCOREP_Substrate_Plugins_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode, int current_plugin, SCOREP_Substrates_Callback** returned_callbacks, uint32_t* current_array_length )
 {
-    return -1;
+    return 0;
 }
 
-int
+uint32_t
 SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( int current_plugin, SCOREP_Substrates_Callback** returned_callbacks )
 {
-    return -1;
+    return 0;
 }
 
 void

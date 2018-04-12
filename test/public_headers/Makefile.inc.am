@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011, 2015,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2017,
+## Copyright (c) 2009-2017,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -42,21 +42,27 @@ check_PROGRAMS +=                                          \
     self_contained_public_header_SCOREP_Libwrap_Macros_SHARED_cpp \
     self_contained_public_header_SCOREP_Libwrap_Macros_WEAK_c     \
     self_contained_public_header_SCOREP_Libwrap_Macros_WEAK_cpp   \
-    self_contained_public_header_SCOREP_MetricPlugins_c    \
-    self_contained_public_header_SCOREP_MetricPlugins_cpp  \
-    self_contained_public_header_SCOREP_MetricTypes_c      \
-    self_contained_public_header_SCOREP_MetricTypes_cpp    \
-    self_contained_public_header_SCOREP_PublicTypes_c      \
-    self_contained_public_header_SCOREP_PublicTypes_cpp    \
-    self_contained_public_header_SCOREP_User_Functions_c   \
-    self_contained_public_header_SCOREP_User_Functions_cpp \
-    self_contained_public_header_SCOREP_User_c             \
-    self_contained_public_header_SCOREP_User_cpp           \
-    self_contained_public_header_SCOREP_User_Types_c       \
-    self_contained_public_header_SCOREP_User_Types_cpp     \
-    self_contained_public_header_SCOREP_User_Variables_c   \
-    self_contained_public_header_SCOREP_User_Variables_cpp \
-    self_contained_public_header_SCOREP_Tau_c              \
+    self_contained_public_header_SCOREP_MetricPlugins_c      \
+    self_contained_public_header_SCOREP_MetricPlugins_cpp    \
+    self_contained_public_header_SCOREP_MetricTypes_c        \
+    self_contained_public_header_SCOREP_MetricTypes_cpp      \
+    self_contained_public_header_SCOREP_PublicHandles_c      \
+    self_contained_public_header_SCOREP_PublicHandles_cpp    \
+    self_contained_public_header_SCOREP_PublicTypes_c        \
+    self_contained_public_header_SCOREP_PublicTypes_cpp      \
+    self_contained_public_header_SCOREP_SubstrateEvents_c    \
+    self_contained_public_header_SCOREP_SubstrateEvents_cpp  \
+    self_contained_public_header_SCOREP_SubstratePlugins_c   \
+    self_contained_public_header_SCOREP_SubstratePlugins_cpp \
+    self_contained_public_header_SCOREP_User_Functions_c     \
+    self_contained_public_header_SCOREP_User_Functions_cpp   \
+    self_contained_public_header_SCOREP_User_c               \
+    self_contained_public_header_SCOREP_User_cpp             \
+    self_contained_public_header_SCOREP_User_Types_c         \
+    self_contained_public_header_SCOREP_User_Types_cpp       \
+    self_contained_public_header_SCOREP_User_Variables_c     \
+    self_contained_public_header_SCOREP_User_Variables_cpp   \
+    self_contained_public_header_SCOREP_Tau_c                \
     self_contained_public_header_SCOREP_Tau_cpp
 
 self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) $(UTILS_CPPFLAGS)
@@ -101,11 +107,29 @@ self_contained_public_header_SCOREP_MetricTypes_c_CPPFLAGS = $(self_contained_pu
 self_contained_public_header_SCOREP_MetricTypes_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricTypes.cpp
 self_contained_public_header_SCOREP_MetricTypes_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
 
+self_contained_public_header_SCOREP_PublicHandles_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicHandles.c
+self_contained_public_header_SCOREP_PublicHandles_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_PublicHandles_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicHandles.cpp
+self_contained_public_header_SCOREP_PublicHandles_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
 self_contained_public_header_SCOREP_PublicTypes_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.c
 self_contained_public_header_SCOREP_PublicTypes_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
 
 self_contained_public_header_SCOREP_PublicTypes_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.cpp
 self_contained_public_header_SCOREP_PublicTypes_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_SubstrateEvents_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstrateEvents.c
+self_contained_public_header_SCOREP_SubstrateEvents_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_SubstrateEvents_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstrateEvents.cpp
+self_contained_public_header_SCOREP_SubstrateEvents_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_SubstratePlugins_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstratePlugins.c
+self_contained_public_header_SCOREP_SubstratePlugins_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_SubstratePlugins_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstratePlugins.cpp
+self_contained_public_header_SCOREP_SubstratePlugins_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
 
 self_contained_public_header_SCOREP_User_Functions_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_User_Functions.c
 self_contained_public_header_SCOREP_User_Functions_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
@@ -152,21 +176,27 @@ installcheck_public_headers = \
     installcheck_public_header_SCOREP_Libwrap_Macros_SHARED_cpp.$(OBJEXT) \
     installcheck_public_header_SCOREP_Libwrap_Macros_WEAK_c.$(OBJEXT)     \
     installcheck_public_header_SCOREP_Libwrap_Macros_WEAK_cpp.$(OBJEXT)   \
-    installcheck_public_header_SCOREP_MetricPlugins_c.$(OBJEXT)    \
-    installcheck_public_header_SCOREP_MetricPlugins_cpp.$(OBJEXT)  \
-    installcheck_public_header_SCOREP_MetricTypes_c.$(OBJEXT)      \
-    installcheck_public_header_SCOREP_MetricTypes_cpp.$(OBJEXT)    \
-    installcheck_public_header_SCOREP_PublicTypes_c.$(OBJEXT)      \
-    installcheck_public_header_SCOREP_PublicTypes_cpp.$(OBJEXT)    \
-    installcheck_public_header_SCOREP_User_Functions_c.$(OBJEXT)   \
-    installcheck_public_header_SCOREP_User_Functions_cpp.$(OBJEXT) \
-    installcheck_public_header_SCOREP_User_c.$(OBJEXT)             \
-    installcheck_public_header_SCOREP_User_cpp.$(OBJEXT)           \
-    installcheck_public_header_SCOREP_User_Types_c.$(OBJEXT)       \
-    installcheck_public_header_SCOREP_User_Types_cpp.$(OBJEXT)     \
-    installcheck_public_header_SCOREP_User_Variables_c.$(OBJEXT)   \
-    installcheck_public_header_SCOREP_User_Variables_cpp.$(OBJEXT) \
-    installcheck_public_header_SCOREP_Tau_c.$(OBJEXT)              \
+    installcheck_public_header_SCOREP_MetricPlugins_c.$(OBJEXT)      \
+    installcheck_public_header_SCOREP_MetricPlugins_cpp.$(OBJEXT)    \
+    installcheck_public_header_SCOREP_MetricTypes_c.$(OBJEXT)        \
+    installcheck_public_header_SCOREP_MetricTypes_cpp.$(OBJEXT)      \
+    installcheck_public_header_SCOREP_PublicHandles_c.$(OBJEXT)      \
+    installcheck_public_header_SCOREP_PublicHandles_cpp.$(OBJEXT)    \
+    installcheck_public_header_SCOREP_PublicTypes_c.$(OBJEXT)        \
+    installcheck_public_header_SCOREP_PublicTypes_cpp.$(OBJEXT)      \
+    installcheck_public_header_SCOREP_SubstrateEvents_c.$(OBJEXT)    \
+    installcheck_public_header_SCOREP_SubstrateEvents_cpp.$(OBJEXT)  \
+    installcheck_public_header_SCOREP_SubstratePlugins_c.$(OBJEXT)   \
+    installcheck_public_header_SCOREP_SubstratePlugins_cpp.$(OBJEXT) \
+    installcheck_public_header_SCOREP_User_Functions_c.$(OBJEXT)     \
+    installcheck_public_header_SCOREP_User_Functions_cpp.$(OBJEXT)   \
+    installcheck_public_header_SCOREP_User_c.$(OBJEXT)               \
+    installcheck_public_header_SCOREP_User_cpp.$(OBJEXT)             \
+    installcheck_public_header_SCOREP_User_Types_c.$(OBJEXT)         \
+    installcheck_public_header_SCOREP_User_Types_cpp.$(OBJEXT)       \
+    installcheck_public_header_SCOREP_User_Variables_c.$(OBJEXT)     \
+    installcheck_public_header_SCOREP_User_Variables_cpp.$(OBJEXT)   \
+    installcheck_public_header_SCOREP_Tau_c.$(OBJEXT)                \
     installcheck_public_header_SCOREP_Tau_cpp.$(OBJEXT)
 
 if ! HAVE_SCOREP_EXTERNAL_OPARI2
@@ -218,10 +248,28 @@ installcheck_public_header_SCOREP_MetricTypes_c.$(OBJEXT): $(SRC_ROOT)test/publi
 installcheck_public_header_SCOREP_MetricTypes_cpp.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricTypes.cpp
 	$(AM_V_CXX)$(installcheck_public_header_CXXCOMPILE)
 
+installcheck_public_header_SCOREP_PublicHandles_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicHandles.c
+	$(AM_V_CC)$(installcheck_public_header_COMPILE)
+
+installcheck_public_header_SCOREP_PublicHandles_cpp.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicHandles.cpp
+	$(AM_V_CXX)$(installcheck_public_header_CXXCOMPILE)
+
 installcheck_public_header_SCOREP_PublicTypes_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.c
 	$(AM_V_CC)$(installcheck_public_header_COMPILE)
 
 installcheck_public_header_SCOREP_PublicTypes_cpp.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.cpp
+	$(AM_V_CXX)$(installcheck_public_header_CXXCOMPILE)
+
+installcheck_public_header_SCOREP_SubstrateEvents_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstrateEvents.c
+	$(AM_V_CC)$(installcheck_public_header_COMPILE)
+
+installcheck_public_header_SCOREP_SubstrateEvents_cpp.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstrateEvents.cpp
+	$(AM_V_CXX)$(installcheck_public_header_CXXCOMPILE)
+
+installcheck_public_header_SCOREP_SubstratePlugins_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstratePlugins.c
+	$(AM_V_CC)$(installcheck_public_header_COMPILE)
+
+installcheck_public_header_SCOREP_SubstratePlugins_cpp.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_SubstratePlugins.cpp
 	$(AM_V_CXX)$(installcheck_public_header_CXXCOMPILE)
 
 installcheck_public_header_SCOREP_User_Functions_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_User_Functions.c

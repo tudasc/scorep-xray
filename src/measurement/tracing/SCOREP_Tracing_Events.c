@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -170,6 +170,9 @@ enter( SCOREP_Location*    location,
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
+    SCOREP_Metric_WriteAsynchronousMetrics( location, write_metric );
+    SCOREP_Metric_WriteStrictlySynchronousMetrics( location, timestamp, write_metric );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_metric );
     OTF2_EvtWriter_Enter( evt_writer,
                           attribute_list,
                           timestamp,
@@ -187,6 +190,9 @@ leave( SCOREP_Location*    location,
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
+    SCOREP_Metric_WriteAsynchronousMetrics( location, write_metric );
+    SCOREP_Metric_WriteStrictlySynchronousMetrics( location, timestamp, write_metric );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_metric );
     OTF2_EvtWriter_Leave( evt_writer,
                           attribute_list,
                           timestamp,
@@ -230,6 +236,9 @@ calling_context_enter( SCOREP_Location*            location,
     }
     else
     {
+        SCOREP_Metric_WriteAsynchronousMetrics( location, write_metric );
+        SCOREP_Metric_WriteStrictlySynchronousMetrics( location, timestamp, write_metric );
+        SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_metric );
         OTF2_EvtWriter_CallingContextEnter( evt_writer,
                                             attribute_list,
                                             timestamp,
@@ -274,6 +283,9 @@ calling_context_leave( SCOREP_Location*            location,
     }
     else
     {
+        SCOREP_Metric_WriteAsynchronousMetrics( location, write_metric );
+        SCOREP_Metric_WriteStrictlySynchronousMetrics( location, timestamp, write_metric );
+        SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_metric );
         OTF2_EvtWriter_CallingContextLeave( evt_writer,
                                             attribute_list,
                                             timestamp,
@@ -295,6 +307,7 @@ sample( SCOREP_Location*                location,
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
+    SCOREP_Metric_WriteAsynchronousMetrics( location, write_metric );
     if ( scorep_tracing_convert_calling_context )
     {
         /* No place for them yet, maybe last enter in the future, but currenlty there
@@ -312,6 +325,8 @@ sample( SCOREP_Location*                location,
     }
     else if ( currentCallingContextHandle != SCOREP_INVALID_CALLING_CONTEXT )
     {
+        SCOREP_Metric_WriteStrictlySynchronousMetrics( location, timestamp, write_metric );
+        SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_metric );
         OTF2_EvtWriter_CallingContextSample( evt_writer,
                                              attribute_list,
                                              timestamp,
@@ -1604,17 +1619,18 @@ SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet )
     }
 }
 
-static int64_t
+static bool
 get_requirement( SCOREP_Substrates_RequirementFlag flag )
 {
     switch ( flag )
     {
-        case SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY:
-            return 1;
+        case SCOREP_SUBSTRATES_REQUIREMENT_CREATE_EXPERIMENT_DIRECTORY:
+            return true;
         default:
-            return 0;
+            return false;
     }
 }
+
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
@@ -1676,7 +1692,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,      THREAD_CREATE_WAIT_END,       thread_end ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,          ENABLE_RECORDING,             enable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetricBeforeEvent,   WRITE_METRIC_BEFORE_EVENT,    write_metric ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetrics,             WRITE_POST_MORTEM_METRICS,    write_metric ),
     },
     /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
     {

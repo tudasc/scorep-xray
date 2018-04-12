@@ -122,6 +122,7 @@ get_event_functions(
     {
         functions[ SCOREP_EVENT_ENTER_REGION ] = ( SCOREP_Substrates_Callback )enter_region;
         functions[ SCOREP_EVENT_EXIT_REGION ]  = ( SCOREP_Substrates_Callback )exit_region;
+        /* function prototypes for other events can be found in scorep/SCOREP_SubstrateEvents.h */
 
         /* enable and disable are guaranteed to be called for SCOREP_SUBSTRATES_RECORDING_ENABLED */
         functions[ SCOREP_EVENT_ENABLE_RECORDING ]  = ( SCOREP_Substrates_Callback )enable;

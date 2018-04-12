@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2018,
  *    Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -660,18 +660,23 @@ typedef enum SCOREP_Ipc_Operation
 
 /**
  * \enum SCOREP_SubstratesRequirementFlags
- * \brief Substrates can define requirements for Score-P. This enables some optimizations.
- * Substrate Plugins pass it to Score-P via SCOREP_SubstratePluginInfo.get_requirement()
- * Internal Plugins pass it to Score-P via SCOREP_Substrates_getRequirement()
- * If this SCOREP_SubstratePluginInfo.get_requirements is not implemented, it is assumed that all values are 0.
- * A description is provided with each of the requirement flags.
- * New requirement flags can be added by just stating them in SCOREP_SubstratesRequirementFlag.
+ * \brief Substrates can require features by returning true when asked; they
+ * return false when they don't care about or are unaware of the feature.
+ * Substrates are asked about a feature via the GET_REQUIREMENT MGMT substrate
+ * callback (internal substrates) or via
+ * SCOREP_SubstratePluginInfo.get_requirement() (external substrates).
+ * The feature itself decides how to deal with the requirements by evaluating
+ * all substrate's answers about a feature using
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY (or
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL)
  */
 typedef enum SCOREP_Substrates_RequirementFlag
 {
-    SCOREP_SUBSTRATES_REQUIREMENT_EXPERIMENT_DIRECTORY = 0, /**< Set this to != 0 if you need the experiment directory. If no substrate uses this option, the experiment directory will not be created and no configuration file will be written.*/
+    SCOREP_SUBSTRATES_REQUIREMENT_CREATE_EXPERIMENT_DIRECTORY,       /**< Return true on this feature if your substrate needs the experiment directory. There will be no directory nor configuration log file if no substrate requests it. */
+    SCOREP_SUBSTRATES_REQUIREMENT_PREVENT_ASYNC_METRICS,             /**< Return true on this feature if your substrate can't handle asynchronous metrics. No asynchronous metrics will be recorded if at least on substrate prevents it. */
+    SCOREP_SUBSTRATES_REQUIREMENT_PREVENT_PER_HOST_AND_ONCE_METRICS, /**< Return true on this feature if your substrate can't handle PER_HOST or ONCE metrics. No PER_HOST or ONCE metrics will be recorded if at least on substrate prevents it. */
 
-    SCOREP_SUBSTRATES_NUM_REQUIREMENT                       /**< Non-ABI used internally  */
+    SCOREP_SUBSTRATES_NUM_REQUIREMENTS                               /**< Non-ABI used internally  */
 } SCOREP_Substrates_RequirementFlag;
 
 /** @} */

@@ -4,7 +4,7 @@
  * Copyright (c) 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015-2016,
@@ -90,56 +90,70 @@
         } \
     } while ( 0 )
 
-/**
- * Macro for checking any consumers of events
- * Usage:
- * if ( SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( WRITE_METRIC_BEFORE_EVENT ) )
- * {
- *   function_that_writes_metrics();
- * }
- * Both macros will return NULL if there is no consumer for the event, otherwise it will be the pointer to the first substrate function
+/*
+ * Macro for checking the request of a specific feature.
+ * Not intended to be used directly, use SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
+ * or SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL instead.
+ * It will loop over all substrates and combine their return values of the
+ * GET_REQUIREMENT callback with RESULT using the operation OP.
+ * For available features that can be used as REQUIREMENT see
+ * SCOREP_Substrates_RequirementFlag.
+ * RESULT is of type bool.
+ * OP is an operation working on type bool.
+ * @see SCOREP_Substrates_RequirementFlag
+ * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL
+ * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
  */
-#define SCOREP_SUBSTRATE_EVENT_IS_CONSUMED( EVENT ) \
-    scorep_substrates[ SCOREP_EVENT_##EVENT * scorep_substrates_max_substrates ]
-
-#define SCOREP_SUBSTRATE_MGMT_EVENT_IS_CONSUMED( EVENT ) \
-    scorep_substrates_mgmt[ SCOREP_EVENT_##EVENT * scorep_substrates_max_mgmt_substrates ]
-
-/**
- * Macro for checking requirements
- */
-#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT,  OP, U64_TMP ) \
+#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, OP ) \
     do \
     { \
-        RESULT = 0; \
         SCOREP_Substrates_GetRequirementCb* substrate_cb = ( SCOREP_Substrates_GetRequirementCb* )&( scorep_substrates_mgmt[ SCOREP_MGMT_GET_REQUIREMENT * scorep_substrates_max_mgmt_substrates ] ); \
         while ( *substrate_cb ) \
         { \
-            U64_TMP = ( ( *substrate_cb )( REQUIREMENT ) ); \
-            RESULT OP U64_TMP; \
+            bool      _requirement_tmp = ( ( *substrate_cb )( SCOREP_SUBSTRATES_REQUIREMENT_##REQUIREMENT ) ); \
+            RESULT OP _requirement_tmp; \
             ++substrate_cb; \
         } \
     } while ( 0 )
 
-#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_ALL( REQUIREMENT, RESULT ) \
+/**
+ * Macro for checking whether all substrates request a specific feature. For
+ * available features that can be used as REQUIREMENT see
+ * SCOREP_Substrates_RequirementFlag.
+ * RESULT is of type bool; the initial value is of no importance. If all
+ * substrates requires a feature, RESULT will be true, otherwise false.
+ * The macro can be used after all substrates have been initialized.
+ * Note that substrates return false in case they don't know or care about
+ * a feature.
+ * @see SCOREP_Substrates_RequirementFlag
+ */
+#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL( REQUIREMENT, RESULT ) \
     do \
     { \
-        uint64_t __requirement_tmp = 0; \
-        SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, &=, __requirement_tmp ); \
+        RESULT = true; \
+        SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, &= ); \
     } while ( 0 )
 
-#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_ANY( REQUIREMENT, RESULT ) \
+/**
+ * Macro for checking whether any substrate requests a specific feature. For
+ * available features that can be used as REQUIREMENT see
+ * SCOREP_Substrates_RequirementFlag.
+ * RESULT is of type bool; the initial value is of no importance. If any
+ * substrate requires a feature, RESULT will be true, otherwise false.
+ * The macro can be used after all substrates have been initialized.
+ * E.g.
+ *   bool create_directory;
+ *   SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( CREATE_EXPERIMENT_DIRECTORY, create_directory );
+ *   if ( create_directory ) {
+ *     // there is at least one substrate that requires the creation of an experiment directory
+ *   }
+ * @see SCOREP_Substrates_RequirementFlag
+ */
+#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( REQUIREMENT, RESULT ) \
     do \
     { \
-        uint64_t __requirement_tmp = 0; \
-        SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, |=, __requirement_tmp ); \
-    } while ( 0 )
-
-#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_NONE( REQUIREMENT, RESULT ) \
-    do \
-    { \
-        SCOREP_SUBSTRATE_REQUIREMENT_CHECK_BIT_ANY( RESULT ); \
-        ( REQUIREMENT != 0 ) ? 0 : 1; \
+        RESULT = false; \
+        SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, |= ); \
     } while ( 0 )
 
 /**
@@ -184,11 +198,11 @@ typedef enum SCOREP_Substrates_MgmtType
  * in SCOREP_Substrates_Management.c. */
 
 extern const SCOREP_Substrates_Callback* scorep_substrates;
-extern int                               scorep_substrates_max_substrates;
+extern uint32_t                          scorep_substrates_max_substrates;
 
 
 extern SCOREP_Substrates_Callback* scorep_substrates_mgmt;
-extern int                         scorep_substrates_max_mgmt_substrates;
+extern uint32_t                    scorep_substrates_max_mgmt_substrates;
 
 // Per-event function pointer prototypes
 
@@ -392,14 +406,17 @@ typedef void ( * SCOREP_Substrates_LeakedMemoryCb )(
     void*    substrateData[] );
 
 /**
- * Provide Score-P with additional information about requirements, see SCOREP_SubstrateRequirementFlag for details.
- * These are called right after SCOREP_SubstratePluginInfo.init
- * There is one call for any SCOREP_Substrates_RequirementFlag provided by the Score-P installation.
- * Substrates must take care that they return 0 if flag is greater than SCOREP_SUBSTRATES_NUM_REQUIREMENT
- * @param flag the requirement flag that is queried
- * @return the setting for the requirement flag, which highly depends on the type of flag
+ * Indicate if a substrate requires a specific feature.
+ * A callback should return true if it requires @a feature.
+ * For features not known nor relevant to the substrate the callback should
+ * return false.
+ * Substrates that 'prevent' something (e.g., PREVENT_ASYNC_METRICS) may
+ * notify about the prevention (e.g., via UTILS_WARN_ONCE).
+ * The MGMT callback is supposed to be triggered via the macro
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY|ALL.
+ * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY|ALL
  */
-typedef int64_t ( * SCOREP_Substrates_GetRequirementCb)(
-    SCOREP_Substrates_RequirementFlag flag );
+typedef bool ( * SCOREP_Substrates_GetRequirementCb)(
+    SCOREP_Substrates_RequirementFlag feature );
 
 #endif /* SCOREP_SUBSTRATES_DEFINITION_H */

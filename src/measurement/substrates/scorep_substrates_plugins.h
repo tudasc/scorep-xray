@@ -19,23 +19,21 @@
 
 
 /**
- * traverse through the plugins and return their event functions
+ * traverse through the plugins and return their management functions
  * You should call it the following way:
  * SCOREP_Substrates_Callback * current_plugin_functions=NULL;
- * int current_plugin = 0;
- * uint32_t current_array_length = 0;
- * while ((current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks(mode,current_plugin, &current_plugin_functions, &current_array_length)) > 0)
+ * int     current_plugin = 0;
+ * while ( ( current_plugin = SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( current_plugin, &callbacks ) ) != 0 )
  * {
- *   // process the current_plugin_functions, remember the array has only a length of current_array_length
- *   ...
- *   free(current_plugin_functions);
+ *     // .. do sth
+ *     free( callbacks );
  * }
  * @param current_plugin: the current plugin to get the functions from. Start calling this function with 0 and continue with the returned
- * @param returned_callbacks: (out) a pointer to the function array to store the callbacks. Do not free it!
- * @return the next plugin index
+ * @param returned_callbacks: (out) a pointer to the allocated function array to store the callbacks. This should be freed.
+ * @return the next plugin index or 0 if there is no plugin at index current plugin (i.e., current_plugin >= SCOREP_Substrate_Plugins_GetNumberRegisteredPlugins())
  */
-int
-SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( int                          current_plugin,
+uint32_t
+SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( uint32_t                     current_plugin,
                                                     SCOREP_Substrates_Callback** returned_callbacks );
 
 
@@ -46,7 +44,7 @@ SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( int                         
  * SCOREP_Substrates_Callback * current_plugin_functions=NULL;
  * int current_plugin = 0;
  * uint32_t current_array_length = 0;
- * while ((current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks(mode,current_plugin, &current_plugin_functions, &current_array_length)) > 0)
+ * while ((current_plugin = SCOREP_Substrate_Plugins_GetSubstrateCallbacks(mode,current_plugin, &current_plugin_functions, &current_array_length)) != 0)
  * {
  *   // process the current_plugin_functions, remember the array has only a length of current_array_length
  *   ...
@@ -56,11 +54,11 @@ SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( int                         
  * @param current_plugin: the current plugin to get the functions from. Start calling this function with 0 and continue with the returned
  * @param returned_callbacks: (out) a pointer to the function array to store the callbacks. Do not free it!
  * @param current_array_length: (out) the length of the returned functions
- * @return the next plugin index
+ * @return the next plugin index or 0 if there is no plugin at index current_plugin (i.e., current_plugin >= SCOREP_Substrate_Plugins_GetNumberRegisteredPlugins())
  */
-int
+uint32_t
 SCOREP_Substrate_Plugins_GetSubstrateCallbacks( SCOREP_Substrates_Mode       mode,
-                                                int                          current_plugin,
+                                                uint32_t                     current_plugin,
                                                 SCOREP_Substrates_Callback** returned_callbacks,
                                                 uint32_t*                    current_array_length );
 
@@ -88,5 +86,5 @@ SCOREP_Substrate_Plugins_Register( void );
 /**
  * Get number of registered plugins
  */
-int
+uint32_t
 SCOREP_Substrate_Plugins_GetNumberRegisteredPlugins( void );

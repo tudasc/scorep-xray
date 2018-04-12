@@ -228,7 +228,8 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Paradigms_Initialize, ( ) );
 
     /*
-     * Initialize external Substrates
+     * Initialize external Substrates and register substrate callbacks
+     * @dependsOn Environment Variables
      */
     SCOREP_TIME( SCOREP_Substrates_EarlyInitialize, ( ) );
 
@@ -238,11 +239,6 @@ SCOREP_InitMeasurement( void )
      * @dependsOn Memory
      */
     SCOREP_TIME( SCOREP_Definitions_Initialize, ( ) );
-
-    /*
-     * @dependsOn Definitions
-     */
-    SCOREP_TIME( scorep_properties_initialize, ( ) );
 
     /*
      * Define system tree out of the path and get location group handle

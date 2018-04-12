@@ -93,10 +93,17 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
     }
 };
 
+/**
+ * TODO: check whether the call to scorep_properties_initialize can be done at a later time.
+ *        If so, introduce a substrate mgmt array and register the initialize there.
+ */
 
 void
-scorep_properties_initialize( void )
+scorep_properties_initialize( size_t substrateId )
 {
+    /* use the variable but ignore it */
+    ( void )substrateId;
+
     /* define properties */
     for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
     {
@@ -408,6 +415,11 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
 
 
 
+const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRATES_NUM_MGMT_EVENTS ] =
+{
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitSubstrate, INIT_SUBSTRATE,       scorep_properties_initialize )
+};
+
 /**
    Returns an array of property callbacks.
    @param mode Recording enabled/disabled.
@@ -417,4 +429,10 @@ const SCOREP_Substrates_Callback*
 scorep_properties_get_substrate_callbacks( void )
 {
     return substrate_callbacks;
+}
+
+const SCOREP_Substrates_Callback*
+scorep_properties_get_substrate_mgmt_callbacks( void )
+{
+    return substrate_mgmt_callbacks;
 }

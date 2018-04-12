@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,27 +61,45 @@ SCOREP_Metric_GetStrictlySynchronousSamplingSet( void )
     return SCOREP_INVALID_SAMPLING_SET;
 }
 
-uint32_t
-SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void )
-{
-    return 0;
-}
-
 SCOREP_MetricHandle
 SCOREP_Metric_GetStrictlySynchronousMetricHandle( uint32_t index )
 {
     return SCOREP_INVALID_METRIC;
 }
 
-void
-SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
-                            uint64_t         timestamp )
+uint32_t
+SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics( void )
 {
+    return 0;
+}
+
+uint32_t
+SCOREP_Metric_GetMaximalNumberOfSynchronousMetrics( SCOREP_Location* location )
+{
+    return 0;
 }
 
 void
-SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
+SCOREP_Metric_WriteStrictlySynchronousMetrics( SCOREP_Location* location,
+                                               uint64_t         timestamp,
+                                               WriteMetricsCb   cb )
 {
+    return;
+}
+
+void
+SCOREP_Metric_WriteSynchronousMetrics( SCOREP_Location* location,
+                                       uint64_t         timestamp,
+                                       WriteMetricsCb   cb )
+{
+    return;
+}
+
+void
+SCOREP_Metric_WriteAsynchronousMetrics( SCOREP_Location* location,
+                                        WriteMetricsCb   cb )
+{
+    return;
 }
 
 
