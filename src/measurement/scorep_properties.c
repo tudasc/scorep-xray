@@ -98,8 +98,8 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
  *        If so, introduce a substrate mgmt array and register the initialize there.
  */
 
-void
-scorep_properties_initialize( size_t substrateId )
+static void
+substrate_initialize( size_t substrateId )
 {
     /* use the variable but ignore it */
     ( void )substrateId;
@@ -417,7 +417,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
 
 const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRATES_NUM_MGMT_EVENTS ] =
 {
-    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitSubstrate, INIT_SUBSTRATE,       scorep_properties_initialize )
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitSubstrate, INIT_SUBSTRATE,       substrate_initialize )
 };
 
 /**
