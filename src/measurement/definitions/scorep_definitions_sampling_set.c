@@ -63,7 +63,7 @@
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
 #include <scorep_types.h>
-#include <tracing/SCOREP_Tracing_Events.h>
+#include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
