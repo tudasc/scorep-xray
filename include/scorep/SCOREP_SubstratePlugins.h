@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2018,
@@ -941,7 +941,7 @@ typedef struct SCOREP_SubstratePluginInfo
      * @param flag the requirement flag that is queried
      * @return the setting for the requirement flag, which highly depends on the type of flag
      */
-    int64_t ( * get_requirement )( SCOREP_Substrates_RequirementFlag flag );
+    bool ( * get_requirement )( SCOREP_Substrates_RequirementFlag flag );
 
     /**
      *  for future extensions

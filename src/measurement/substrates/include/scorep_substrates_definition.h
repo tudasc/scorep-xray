@@ -7,7 +7,7 @@
  * Copyright (c) 2015-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2018
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -92,8 +92,8 @@
 
 /*
  * Macro for checking the request of a specific feature.
- * Not intended to be used directly, use SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
- * or SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL instead.
+ * Not intended to be used directly, use
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY instead.
  * It will loop over all substrates and combine their return values of the
  * GET_REQUIREMENT callback with RESULT using the operation OP.
  * For available features that can be used as REQUIREMENT see
@@ -101,7 +101,6 @@
  * RESULT is of type bool.
  * OP is an operation working on type bool.
  * @see SCOREP_Substrates_RequirementFlag
- * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL
  * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
  */
 #define SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, OP ) \
@@ -114,24 +113,6 @@
             RESULT OP _requirement_tmp; \
             ++substrate_cb; \
         } \
-    } while ( 0 )
-
-/**
- * Macro for checking whether all substrates request a specific feature. For
- * available features that can be used as REQUIREMENT see
- * SCOREP_Substrates_RequirementFlag.
- * RESULT is of type bool; the initial value is of no importance. If all
- * substrates requires a feature, RESULT will be true, otherwise false.
- * The macro can be used after all substrates have been initialized.
- * Note that substrates return false in case they don't know or care about
- * a feature.
- * @see SCOREP_Substrates_RequirementFlag
- */
-#define SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL( REQUIREMENT, RESULT ) \
-    do \
-    { \
-        RESULT = true; \
-        SCOREP_SUBSTRATE_REQUIREMENT_CHECK( REQUIREMENT, RESULT, &= ); \
     } while ( 0 )
 
 /**
@@ -186,11 +167,12 @@ typedef enum SCOREP_Substrates_MgmtType
 
 /**
  * Number of the substrates for a particular event. Currently we support at
- * most three simultaneous substrates: profiling, tracing and invalidate property.
- * See SCOREP_Substrates_DisableRecording for the example where three simultaneous
- * substrates are used.
+ * most four simultaneous substrate classes: profiling, tracing, invalidate
+ * property, and plugins. The definition is used for example, to provide the
+ * substrate data for each location.
  */
-#define SCOREP_SUBSTRATES_NUM_SUBSTRATES 3
+
+#define SCOREP_SUBSTRATES_NUM_SUBSTRATES 4
 
 /* Global array holding the currently active substrate callbacks per event.
  * See 'enum SCOREP_Substrates_EventType'. The last element for each event is always NULL
@@ -413,8 +395,8 @@ typedef void ( * SCOREP_Substrates_LeakedMemoryCb )(
  * Substrates that 'prevent' something (e.g., PREVENT_ASYNC_METRICS) may
  * notify about the prevention (e.g., via UTILS_WARN_ONCE).
  * The MGMT callback is supposed to be triggered via the macro
- * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY|ALL.
- * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY|ALL
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY.
+ * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
  */
 typedef bool ( * SCOREP_Substrates_GetRequirementCb)(
     SCOREP_Substrates_RequirementFlag feature );

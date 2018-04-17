@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -416,6 +416,7 @@ write_asynchronous_metric_set( SCOREP_Metric_LocationAsynchronousMetricSet* asyn
         }
     }
 }
+
 
 /* *********************************************************************
  * Service management

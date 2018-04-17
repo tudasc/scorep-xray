@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2018,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -667,8 +667,7 @@ typedef enum SCOREP_Ipc_Operation
  * SCOREP_SubstratePluginInfo.get_requirement() (external substrates).
  * The feature itself decides how to deal with the requirements by evaluating
  * all substrate's answers about a feature using
- * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY (or
- * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ALL)
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
  */
 typedef enum SCOREP_Substrates_RequirementFlag
 {
