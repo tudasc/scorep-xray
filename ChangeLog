@@ -13,6 +13,10 @@ Major features:
 
 Features and improvements:
 
+- Utility "scorep-score" is provided now as a library application 
+  to allow using its functionality in third-party software. 
+  Path to the headers and to the library is available via 
+  "scorep-config --target score --cflags|--ldflags|--libs"
 - Improve detection and compiler selection for SGI MPT
   implementations.
 - Provide the Substrate Plugin interface, which enables plugins to
