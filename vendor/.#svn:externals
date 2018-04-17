@@ -1,5 +1,5 @@
-otf2              https://silc.zih.tu-dresden.de/svn/otf2-root/tags/REL-2.1
-opari2            https://silc.zih.tu-dresden.de/svn/opari2-root/tags/REL-2.0.1
-common            https://silc.zih.tu-dresden.de/svn/common-root/trunk
-cubew             https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeW/branches/RB-4.4
-cubelib           https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/branches/RB-4.4
+otf2              https://silc.zih.tu-dresden.de/svn/otf2-root/tags/REL-2.1.1-rc2
+opari2            https://silc.zih.tu-dresden.de/svn/opari2-root/tags/REL-2.0.3-rc2
+common    -r 2304 https://silc.zih.tu-dresden.de/svn/common-root/trunk
+cubew             https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeW/tags/release-4.4-RC2
+cubelib           https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/tags/release-4.4-RC2
