@@ -27,19 +27,18 @@
 # a BSD-style license. See the COPYING file in the package base
 # directory for details.
 
-## file       src/utils/filtering/Makefile.inc.am
+## file       src/utils/filter/Makefile.inc.am
 
 noinst_LTLIBRARIES += libscorep_filter.la
 
 libscorep_filter_la_SOURCES = \
     $(SRC_ROOT)src/utils/include/SCOREP_Filter.h            \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_parser.c   \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.h \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.c
+    $(SRC_ROOT)src/utils/filter/scorep_filter_parser.c   \
+    $(SRC_ROOT)src/utils/filter/scorep_filter_matching.h \
+    $(SRC_ROOT)src/utils/filter/scorep_filter_matching.c
 
 libscorep_filter_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/utils/include \
-    -I$(INC_ROOT)src/utils/filtering
+    -I$(INC_ROOT)src/utils/include

@@ -46,6 +46,7 @@ check-file-omp:
 LIB_DIR_SCOREP = ../build-backend/
 LIB_DIR_SCOREP_MPI = ../build-mpi/
 LIB_DIR_SCOREP_SHMEM = ../build-shmem/
+LIB_DIR_SCOREP_SCORE = ../build-score/
 
 # Build external targets - i.e., scorep targets that are built in
 # different build-* directories - at once, using just a single rule:
@@ -66,7 +67,8 @@ LIB_DIR_SCOREP_SHMEM = ../build-shmem/
 MPI_TARGETS =
 SHMEM_TARGETS =
 BACKEND_TARGETS =
-$(MPI_TARGETS) $(SHMEM_TARGETS) $(BACKEND_TARGETS): build_external_targets
+SCORE_TARGETS =
+$(MPI_TARGETS) $(SHMEM_TARGETS) $(BACKEND_TARGETS) $(SCORE_TARGETS): build_external_targets
 build_external_targets:
 	@targets=`echo $(MPI_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP_MPI)||g'`; \
 	if test "x$$targets" != x; then \
@@ -79,6 +81,10 @@ build_external_targets:
 	@targets=`echo $(BACKEND_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP)||g'`; \
 	if test "x$$targets" != x; then \
 		$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
+	fi
+	@targets=`echo $(SCORE_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP_SCORE)||g'`; \
+	    if test "x$$targets" != x; then \
+	    $(am__cd) $(LIB_DIR_SCOREP_SCORE) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
 	fi
 
 AM_CPPFLAGS += -DFRONTEND_BUILD -DCROSS_BUILD

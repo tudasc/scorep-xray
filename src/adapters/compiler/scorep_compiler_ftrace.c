@@ -47,7 +47,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
@@ -106,7 +106,7 @@ _ftrace_enter2_( void )
                 if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
                      ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
                      ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
-                     SCOREP_Filter_Match( NULL, region_name, NULL ) )
+                     SCOREP_Filtering_Match( NULL, region_name, NULL ) )
                 {
                     hash_node->region_handle = SCOREP_FILTERED_REGION;
                 }

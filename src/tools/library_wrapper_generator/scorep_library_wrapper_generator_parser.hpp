@@ -21,6 +21,8 @@
 
 #include <clang-c/Index.h>
 
+#include <SCOREP_Filter.h>
+
 struct macro_information
 {
     std::string              filename;
@@ -72,7 +74,8 @@ public:
                            const std::string& language,
                            const std::string& languageStandard,
                            const std::set<std::string>& variadicIsVoid,
-                           const std::map<std::string, std::string>& ellipsisMapping );
+                           const std::map<std::string, std::string>& ellipsisMapping,
+                           const SCOREP_Filter* filter );
     ~SCOREP_Libwrap_Parser();
 
     bool
@@ -112,6 +115,7 @@ private:
     std::set<std::string>              m_variadic_is_void;
     std::map<std::string, std::string> m_ellipsis_mapping;
     std::set<std::string>              m_all_wrapped_symbols;
+    const SCOREP_Filter*               m_filter;
 };
 
 #endif // SCOREP_LIBRARY_WRAPPER_GENERATOR_PARSER_HPP

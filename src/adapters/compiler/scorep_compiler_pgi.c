@@ -57,7 +57,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 #include <SCOREP_Task.h>
 
 #include "SCOREP_Compiler_Init.h"
@@ -328,7 +328,7 @@ check_region( SCOREP_RegionHandle* region,
                  ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
                  ( strstr( region_name, "SCOREP_User_RegionClass" ) == 0 ) &&
-                 ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
+                 ( !SCOREP_Filtering_Match( file_name, region_name, NULL ) ) )
             {
                 *region = SCOREP_Definitions_NewRegion( region_name,
                                                         NULL,

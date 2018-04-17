@@ -24,8 +24,6 @@
 #include <string.h>
 #include <strings.h>
 
-#include <SCOREP_Filter.h>
-
 #include "scorep_shmem_internal.h"
 
 #define SCOREP_SHMEM_PROCESS_FUNC( type, return_type, func, func_args ) \

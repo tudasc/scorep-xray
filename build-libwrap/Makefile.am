@@ -37,7 +37,7 @@ include ../src/tools/library_wrapper_generator/Makefile.inc.am
 if HAVE_LIBRARY_WRAPPING_GENERATOR
 
 include ../src/tools/lib/Makefile.inc.am
-include ../src/utils/filtering/Makefile.inc.am
+include ../src/utils/filter/Makefile.inc.am
 include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am

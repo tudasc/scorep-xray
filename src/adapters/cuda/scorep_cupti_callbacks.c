@@ -41,7 +41,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 #include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_Error.h>
@@ -769,7 +769,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
        this point */
 
     /*********** write enter and exit records for CUDA runtime API **************/
-    if ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) )
+    if ( !SCOREP_Filtering_MatchFunction( cbInfo->functionName, NULL ) )
     {
         if ( cbInfo->callbackSite == CUPTI_API_ENTER )
         {
@@ -1155,7 +1155,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     if ( record_driver_api_location )
     {
         /********** write enter and exit records for CUDA driver API **********/
-        if ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) )
+        if ( !SCOREP_Filtering_MatchFunction( cbInfo->functionName, NULL ) )
         {
             if ( cbInfo->callbackSite == CUPTI_API_ENTER )
             {
@@ -2058,7 +2058,7 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
         }
 
         if ( ( region != SCOREP_INVALID_REGION ) &&
-             ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) ) )
+             ( !SCOREP_Filtering_MatchFunction( cbInfo->functionName, NULL ) ) )
         {
             /* With 'location == NULL' SCOREP_Location_EnterRegion will
              * write the event on the current CPU location */
@@ -2096,7 +2096,7 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
         }
 
         if ( ( region != SCOREP_INVALID_REGION ) &&
-             ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) ) )
+             ( !SCOREP_Filtering_MatchFunction( cbInfo->functionName, NULL ) ) )
         {
             /* With 'location == NULL' SCOREP_Location_ExitRegion will
              * write the event on the current CPU location */

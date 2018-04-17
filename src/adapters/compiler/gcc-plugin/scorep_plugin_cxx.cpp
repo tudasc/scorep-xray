@@ -127,5 +127,10 @@ plugin_init( struct plugin_name_args*   plugin_info,
                        scorep_register_attributes,
                        NULL );
 
+    register_callback( plugin_name,
+                       PLUGIN_FINISH,
+                       scorep_plugin_parameters_fini,
+                       NULL );
+
     return 0;
 } /* plugin_init */

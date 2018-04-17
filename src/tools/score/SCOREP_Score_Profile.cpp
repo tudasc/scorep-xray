@@ -47,15 +47,9 @@
 using namespace std;
 using namespace cube;
 
-SCOREP_Score_Profile::SCOREP_Score_Profile( const string& cubeFile )
+
+SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube )
 {
-    struct stat file_stats;
-    stat( cubeFile.c_str(), &file_stats );
-    m_file_size = file_stats.st_size;
-
-    m_cube = new Cube();
-    m_cube->openCubeReport( cubeFile );
-
     m_time   = m_cube->get_met( "time" );
     m_visits = m_cube->get_met( "visits" );
     // if visits metric is not present, the cube used tau atomics
@@ -118,10 +112,11 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( const string& cubeFile )
     }
 }
 
+
 SCOREP_Score_Profile::~SCOREP_Score_Profile()
 {
-    delete ( m_cube );
-}
+};
+
 
 bool
 SCOREP_Score_Profile::hasHits( void ) const
@@ -151,6 +146,31 @@ SCOREP_Score_Profile::getTime( uint64_t region,
         return value->getDouble();
     }
 }
+
+double
+SCOREP_Score_Profile::getInclusiveTime( uint64_t region,
+                                        uint64_t process )
+{
+    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_INCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0.0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getSum().getDouble();
+    }
+    else
+    {
+        return value->getDouble();
+    }
+}
+
+
 
 double
 SCOREP_Score_Profile::getTotalTime( uint64_t region )
@@ -347,14 +367,15 @@ SCOREP_Score_Profile::print()
 SCOREP_Score_Type
 SCOREP_Score_Profile::getGroup( uint64_t region )
 {
-    assert( region < getNumberOfRegions() );
+    if ( region >= getNumberOfRegions() )
+    {
+        cerr << "[Score Error]: Region Id " << region
+             << " is bigger than number ("
+             << getNumberOfRegions()
+             << ") of known regions. Unknown type." << endl;
+        return SCOREP_SCORE_TYPE_UNKNOWN;
+    }
     return m_region_types[ region ];
-}
-
-uint64_t
-SCOREP_Score_Profile::getFileSize( void )
-{
-    return m_file_size;
 }
 
 /* **************************************************** private members */

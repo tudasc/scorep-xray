@@ -40,11 +40,13 @@
 
 #include "SCOREP_Score_Group.hpp"
 
+#include <map>
 #include <stdint.h>
 #include <string>
 
 class SCOREP_Score_Profile;
-
+class SCOREP_Score_Event;
+typedef struct SCOREP_Filter SCOREP_Filter;
 /**
  * This class implements the estimation logic.
  */
@@ -57,7 +59,7 @@ public:
      * @param denseNum  Number of dense metrics that should be recorded in the trace.
      */
     SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                            uint64_t              denseBum );
+                            uint64_t              denseNum );
 
     /**
      * Destructor.
@@ -75,6 +77,15 @@ public:
     void
     calculate( bool showRegions,
                bool useMangled );
+
+    /**
+     * Returns bytes per visit of for a region
+     * @param regionaName  Region name
+     *
+     */
+    uint64_t
+    bytesPerVisit( const std::string& regionName );
+
 
     /**
      * Prints the group information to the screen.
@@ -132,11 +143,35 @@ private:
     void
     calculate_event_sizes( void );
 
+    /**
+     * Regsiter the @p event by its name.
+     */
+    void
+    registerEvent( SCOREP_Score_Event* event );
+
+    /**
+     * returns the size estimate for the named event.
+     */
+    uint32_t
+    getEventSize( const std::string& eventName );
+
+    /**
+     * Sets the size estimate of the named event.
+     */
+    void
+    setEventSize( const std::string& name,
+                  uint32_t           size );
+
 private:
     /**
      * True, if a filter is used.
      */
     bool m_has_filter;
+
+    /**
+     * Filter rules.
+     */
+    SCOREP_Filter* m_filter;
 
     /**
      * Stores the pointer to the profile.
@@ -179,6 +214,11 @@ private:
      * Stores the number of dense metrics that should be taken into account.
      */
     uint64_t m_dense_num;
+
+    /**
+     * Stores all events by its name.
+     */
+    std::map< std::string, SCOREP_Score_Event* > m_events;
 };
 
 

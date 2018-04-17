@@ -52,7 +52,6 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Filter.h>
 #include <pomp2_region_info.h>
 
 #include <opari2/pomp2_lib.h>

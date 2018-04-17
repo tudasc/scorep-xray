@@ -50,9 +50,11 @@ class SCOREP_Score_Profile
 public:
     /**
      * Creates an instance of SCOREP_Score_Profile.
-     * @param cubeFile  The file name of the CUBE report.
+     * @param cubeFile  The CUBE report.
+     *
+     *  Creates Score Profile, using previosly set m_cube
      */
-    SCOREP_Score_Profile( const std::string& cubeFile );
+    SCOREP_Score_Profile( cube::Cube* cube );
 
     /**
      * Destructor.
@@ -66,12 +68,6 @@ public:
     bool
     hasHits( void ) const;
 
-    /**
-     * Returns sum of the time that an application spent in a region on all processes.
-     * @param regionId  ID of the region for which the time is requested.
-     */
-    double
-    getTotalTime( uint64_t regionId );
 
     /**
      * Returns the number of visits to a region on a specified process.
@@ -92,6 +88,15 @@ public:
              uint64_t process );
 
     /**
+     * Returns the inclusive time that a region spent on a specified process.
+     * @param regionId  ID of the region for which the time is requested.
+     * @param process   The process number fo which the time is requested.
+     */
+    double
+    getInclusiveTime( uint64_t regionId,
+                      uint64_t process );
+
+    /**
      * Returns the number of sampling hits to a region on a specified process.
      * @param regionId  ID of the region for which the number of hits are requested.
      * @param process   The process number fo which the number of hits are requested.
@@ -99,6 +104,13 @@ public:
     uint64_t
     getHits( uint64_t regionId,
              uint64_t process );
+
+    /**
+     * Returns sum of the time that an application spent in a region on all processes.
+     * @param regionId  ID of the region for which the time is requested.
+     */
+    double
+    getTotalTime( uint64_t regionId );
 
     /**
      * Returns sum of the number of visits for an specified region on all processes.
@@ -185,13 +197,9 @@ public:
     SCOREP_Score_Type
     getGroup( uint64_t regionId );
 
-    /**
-     * Returns the size of the profile report file.
-     */
-    uint64_t
-    getFileSize( void );
-
 private:
+
+
     /**
      * Calculates recursively whether a node is on a callpath to an MPI or OpenMP
      * region.
@@ -255,11 +263,6 @@ private:
      * Stores a mapping of regionIds to region types.
      */
     SCOREP_Score_Type* m_region_types;
-
-    /**
-     * Stores the size of the CUBE report file.
-     */
-    uint64_t m_file_size;
 
     /**
      * Number definitions per definition

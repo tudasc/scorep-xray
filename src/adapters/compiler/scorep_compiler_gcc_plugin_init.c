@@ -27,7 +27,7 @@
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_gcc_plugin.h"
@@ -50,9 +50,9 @@ scorep_compiler_register_region( const scorep_compiler_region_description* regio
      * If unwinding is enabled, we filter out all regions.
      */
     if ( SCOREP_IsUnwindingEnabled()
-         || SCOREP_Filter_Match( regionDescr->file,
-                                 regionDescr->name,
-                                 regionDescr->canonical_name ) )
+         || SCOREP_Filtering_Match( regionDescr->file,
+                                    regionDescr->name,
+                                    regionDescr->canonical_name ) )
     {
         *regionDescr->handle = SCOREP_FILTERED_REGION;
         return;

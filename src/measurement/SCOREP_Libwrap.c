@@ -35,7 +35,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Events.h>
@@ -125,7 +125,7 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
 
     if ( regionFiltered )
     {
-        *regionFiltered = !!SCOREP_Filter_Match( file, func, symbol );
+        *regionFiltered = !!SCOREP_Filtering_Match( file, func, symbol );
     }
 
     SCOREP_MutexUnlock( handle->region_definition_lock );

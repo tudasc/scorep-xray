@@ -43,98 +43,100 @@
 
 #include <SCOREP_ErrorCodes.h>
 
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
-
 UTILS_BEGIN_C_DECLS
 
+typedef struct SCOREP_Filter SCOREP_Filter;
+
+/**
+ * Creates a filter object.
+ *
+ * @return The new filter object.
+ */
+SCOREP_Filter*
+SCOREP_Filter_New( void );
+
+
+/**
+ * Destroys a filter object.
+ *
+ * @param filter  The new filter object.
+ */
+void
+SCOREP_Filter_Delete( SCOREP_Filter* filter );
+
+
+/**
+ * Loads filter rules from a file.
+ *
+ * @param filter        The filter rules.
+ * @param fileName      The file name to load filter rules from.
+ *
+ * @return SCOREP_SUCCESS or error code.
+ */
 SCOREP_ErrorCode
-SCOREP_Filter_ParseFile( const char* file_name );
+SCOREP_Filter_ParseFile( SCOREP_Filter* filter,
+                         const char*    fileName );
+
 
 /**
- * Frees the memory allocated to store filter rules. After calling this
- * function, no filter rules are available anymore.
- */
-void
-SCOREP_Filter_FreeRules( void );
-
-/**
- * Enables filtering.
- */
-void
-SCOREP_Filter_Enable( void );
-
-/**
- * Disables filtering.
- */
-void
-SCOREP_Filter_Disable( void );
-
-/**
- * Returns true if filtering is enabled.
- */
-bool
-SCOREP_Filter_IsEnabled( void );
-
-/**
- * Checks whether a function is filtered.
- * @param filename      The file name of the file that contain the considered function.
- * @param function_name The function name as it will be displayed in profile and
+ * Checks whether a file/function combination is filtered.
+ *
+ * @param filter        The filter rules.
+ * @param fileName      The file name of the file that contain the considered function.
+ * @param functionName  The function name as it will be displayed in profile and
  *                      trace definitions.
- * @param mangled_name  A mangled name of the function is available that differs
+ * @param mangledName   A mangled name of the function is available that differs
  *                      from @a function_name. If no different mangled name is
  *                      available you may pass NULL here. In this case the function_name
  *                      will be used to compare against patterns that are prepended
  *                      by the MANGLED keyword. In particular, passing NULL or the
  *                      same string as for @a function_name leads to the same results.
- * @returns True, if the tested function should be excluded from measurement.
+ * @param[out] result   True, if the tested file/function should be excluded from measurement.
+ *
+ * @return SCOREP_SUCCESS or error code.
  */
-bool
-SCOREP_Filter_Match( const char* file_name,
-                     const char* function_name,
-                     const char* mangled_name );
+SCOREP_ErrorCode
+SCOREP_Filter_Match( const SCOREP_Filter* filter,
+                     const char*          fileName,
+                     const char*          functionName,
+                     const char*          mangledName,
+                     int*                 result );
 
 /**
  * Checks whether a file is filtered.
- * @param filename      The file name of the file that is checked.
- * @returns True, if functions of the tested file should be excluded from measurement.
+ *
+ * @param filter        The filter rules.
+ * @param fileName      The file name of the file that is checked.
+ * @param[out] result   True, if the tested file should be excluded from measurement.
+ *
+ * @return SCOREP_SUCCESS or error code.
  */
-bool
-SCOREP_Filter_MatchFile( const char* file_name );
+SCOREP_ErrorCode
+SCOREP_Filter_MatchFile( const SCOREP_Filter* filter,
+                         const char*          fileName,
+                         int*                 result );
 
 /**
  * Checks whether a function is filtered.
- * @param function_name The function name as it will be displayed in profile and
+ *
+ * @param filter        The filter rules.
+ * @param functionName  The function name as it will be displayed in profile and
  *                      trace definitions.
- * @param mangled_name  A mangled name of the function is available that differs
+ * @param mangledName   A mangled name of the function is available that differs
  *                      from @a function_name. If no different mangled name is
  *                      available you may pass NULL here. In this case the function_name
  *                      will be used to compare against patterns that are prepended
  *                      by the MANGLED keyword. In particular passing NULL or the
  *                      same string as for @a function_name leads to the same results.
- * @returns True, if the tested function should be excluded from measurement.
- */
-bool
-SCOREP_Filter_MatchFunction( const char* function_name,
-                             const char* mangled_name );
-
-/**
- * Adds a filter rule to the function filter rule list. Because some adapters apply
- * filter restrictions during initialization, the rules should be added during
- * subsystem registration.
- * @param rule       The rule's string pattern.
- * @param is_exclude True if it is an exclude rule, false if it is an include rule.
- * @param is_mangled True if the mangled name should be used instead of the displayed
- *                   name. If a match request does not provide a mangled name, the
- *                   rule is matched against the displayed name. If you pass false,
- *                   Then it uses always the displayed name.
+ * @param[out] result   True, if the tested function should be excluded from measurement.
+ *
+ * @return SCOREP_SUCCESS or error code.
  */
 SCOREP_ErrorCode
-SCOREP_Filter_AddFunctionRule( const char* rule,
-                               bool        is_exclude,
-                               bool        is_mangled );
-
+SCOREP_Filter_MatchFunction( const SCOREP_Filter* filter,
+                             const char*          functionName,
+                             const char*          mangledName,
+                             int*                 result );
 
 UTILS_END_C_DECLS
 

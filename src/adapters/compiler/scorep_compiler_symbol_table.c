@@ -55,7 +55,7 @@
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
 
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "scorep_compiler_data.h"
 
@@ -191,7 +191,7 @@ process_symbol( long         address,
                    ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
                    ( strncmp( funcname_demangled, "cubew_", 6 ) != 0 );
 
-    use_address &= ( !SCOREP_Filter_Match( path, funcname_demangled, funcname ) );
+    use_address &= ( !SCOREP_Filtering_Match( path, funcname_demangled, funcname ) );
 
     if ( path != NULL )
     {

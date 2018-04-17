@@ -63,7 +63,7 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Filter_Init.h>
+#include <SCOREP_Filtering_Management.h>
 #include <scorep_unify.h>
 #include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Substrates_Management.h>
@@ -268,7 +268,7 @@ SCOREP_InitMeasurement( void )
     /* == Initialize substrates and subsystems == */
 
     /* Let the filtering service read its filter file early */
-    SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
+    SCOREP_TIME( SCOREP_Filtering_Initialize, ( ) );
 
     /*
      * @dependsOn Mutex
@@ -684,7 +684,7 @@ scorep_finalize( void )
 
     SCOREP_TIME( SCOREP_Libwrap_Finalize, ( ) );
 
-    SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
+    SCOREP_TIME( SCOREP_Filtering_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Location_FinalizeDefinitions, ( ) );
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
 

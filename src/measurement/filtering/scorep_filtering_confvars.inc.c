@@ -42,16 +42,16 @@
  * Contains the file name of the filter file. The value is set in the configuration
  * system through the variable SCOREP_FILTERING_FILE
  */
-static char* scorep_filter_file_name;
+static char* scorep_filtering_file_name;
 
 /**
    Array of configuration variables for filtering tracing.
  */
-static const SCOREP_ConfigVariable scorep_filter_confvars[] = {
+static const SCOREP_ConfigVariable scorep_filtering_confvars[] = {
     {
         "file",
         SCOREP_CONFIG_TYPE_PATH,
-        &scorep_filter_file_name,
+        &scorep_filtering_file_name,
         NULL,
         "",
         "A file name which contain the filter rules",
@@ -61,9 +61,9 @@ static const SCOREP_ConfigVariable scorep_filter_confvars[] = {
 };
 
 SCOREP_ErrorCode
-SCOREP_Filter_Register( void )
+SCOREP_Filtering_Register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                         "Register config variables for filtering system" );
-    return SCOREP_ConfigRegister( "filtering", scorep_filter_confvars );
+    return SCOREP_ConfigRegister( "filtering", scorep_filtering_confvars );
 }

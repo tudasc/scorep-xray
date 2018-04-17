@@ -50,7 +50,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "SCOREP_Compiler_Init.h"
 
@@ -84,7 +84,7 @@ register_region( const char* str )
     file_name[ file_name_len ] = '\0';
 
     /* Filter on file name early to avoid unused SourceFile definitions. */
-    if ( SCOREP_Filter_MatchFile( file_name ) )
+    if ( SCOREP_Filtering_MatchFile( file_name ) )
     {
         return SCOREP_FILTERED_REGION;
     }
@@ -97,7 +97,7 @@ register_region( const char* str )
     if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( !SCOREP_Filter_MatchFunction( region_name, NULL ) ) )
+         ( !SCOREP_Filtering_MatchFunction( region_name, NULL ) ) )
     {
         region_handle = SCOREP_Definitions_NewRegion( region_name,
                                                       NULL,

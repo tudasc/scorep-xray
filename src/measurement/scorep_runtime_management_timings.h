@@ -59,7 +59,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filtering_Initialize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
@@ -71,7 +71,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Task_ExitAllRegions )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Finalize )               \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Finalize )                \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filtering_Finalize )             \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeDefinitions )   \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Unify )                          \

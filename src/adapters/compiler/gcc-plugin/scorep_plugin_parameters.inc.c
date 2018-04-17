@@ -20,9 +20,13 @@
 int scorep_plugin_verbosity        = 0;
 int scorep_plugin_symbol_verbosity = 2;
 
+SCOREP_Filter* scorep_instrument_filter = NULL;
+
 static int
 scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
 {
+    scorep_instrument_filter = SCOREP_Filter_New();
+
     for ( int i = 0; i < plugin_info->argc; i++ )
     {
         const struct plugin_argument* arg = &plugin_info->argv[ i ];
@@ -34,7 +38,7 @@ scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
                              "Missing argument for filter paramter." );
                 return 1;
             }
-            SCOREP_ErrorCode status = SCOREP_Filter_ParseFile( arg->value );
+            SCOREP_ErrorCode status = SCOREP_Filter_ParseFile( scorep_instrument_filter, arg->value );
 
             if ( status != SCOREP_SUCCESS )
             {
@@ -96,4 +100,11 @@ scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
     }
 
     return 0;
+}
+
+static void
+scorep_plugin_parameters_fini( void* event_data,
+                               void* data )
+{
+    SCOREP_Filter_Delete( scorep_instrument_filter );
 }

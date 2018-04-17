@@ -44,7 +44,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_sun_data.h"
@@ -133,7 +133,7 @@ scorep_compiler_register_region( char* region_name )
          ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( NULL, region_name, NULL ) ) )
+         ( !SCOREP_Filtering_Match( NULL, region_name, NULL ) ) )
     {
         handle = SCOREP_Definitions_NewRegion( region_name,
                                                NULL,

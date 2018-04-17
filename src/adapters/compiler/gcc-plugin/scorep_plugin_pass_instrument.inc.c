@@ -50,7 +50,6 @@
 #endif
 
 #include <SCOREP_Filter.h>
-#include <scorep_filter_matching.h>
 
 #include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin.h"
@@ -233,8 +232,11 @@ scorep_plugin_pass_instrument_function( void )
     free( tmp_full_path );
 
     /* Don't instrument filtered functions */
-    if ( SCOREP_Filter_IsEnabled()
-         && SCOREP_Filter_Match( full_path, function_name, assembler_name ) )
+    int              result;
+    SCOREP_ErrorCode err = SCOREP_Filter_Match( scorep_instrument_filter,
+                                                full_path, function_name, assembler_name,
+                                                &result );
+    if ( err == SCOREP_SUCCESS && result )
     {
         VERBOSE_MSG( 1, "Function excluded by filter file: '%s'", function_name );
         free( full_path );

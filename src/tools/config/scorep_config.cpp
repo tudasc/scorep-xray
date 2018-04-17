@@ -150,7 +150,7 @@ enum
     "   --libwrap-support=runtime\n" \
     "              Prints true if run-time library wrapping is supported.\n" \
     "  Options:\n" \
-    "   --target   Get flags for specified target, e.g., mic.\n" \
+    "   --target   Get flags for specified target, e.g., mic, score.\n" \
     "   --nvcc     Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static   Use only static Score-P libraries if possible.\n" \
     "   --dynamic  Use only dynamic Score-P libraries if possible.\n" \
@@ -165,7 +165,8 @@ std::string m_rpath_tail      = "";
 enum
 {
     TARGET_PLAIN = 0,
-    TARGET_MIC   = 1
+    TARGET_MIC   = 1,
+    TARGET_SCORE = 2
 };
 
 static void
@@ -521,6 +522,10 @@ main( int    argc,
             {
                 target = TARGET_MIC;
             }
+            else if ( !strcmp( target_name, "score" ) )
+            {
+                target = TARGET_SCORE;
+            }
             else
             {
                 std::cerr << "ERROR: Unknown target: '" << target_name << "'" << std::endl;
@@ -558,224 +563,288 @@ main( int    argc,
     SCOREP_Config_LibraryDependencies deps;
     std::string                       str;
 
-    SCOREP_Config_Adapter::addLibsAll( libs, deps );
-    SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
-    SCOREP_Config_MutexId newMutexId = SCOREP_Config_ThreadSystem::current->validateDependencies();
-    SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
-    SCOREP_Config_Mutex::select( newMutexId );
-    SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
-#if defined( SCOREP_SHARED_BUILD )
-    if ( preload_libs )
+    if ( target == TARGET_SCORE )
     {
-        /* libscorep_measurement.so must be in the event libs */
-        libs.push_back( "libscorep_measurement" );
-    }
-#endif
-
-    switch ( action )
-    {
-        case ACTION_LDFLAGS:
-            get_rpath_struct_data();
-            std::cout << deque_to_string( deps.getLDFlags( libs, install ),
-                                          " ", " ", "" );
-            if ( USE_LIBDIR_FLAG )
-            {
-                std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
-                append_ld_run_path_to_rpath( rpath );
-                rpath = remove_system_path( rpath );
-                str   = deque_to_string( rpath,
-                                         m_rpath_head + m_rpath_delimiter,
-                                         m_rpath_delimiter,
-                                         m_rpath_tail );
-            }
-            if ( SCOREP_Config_Adapter::isActive() )
-            {
-                str += " " SCOREP_INSTRUMENTATION_LDFLAGS;
-            }
-            SCOREP_Config_Adapter::addLdFlagsAll( str, !install, nvcc );
-            SCOREP_Config_MppSystem::current->addLdFlags( str, !install, nvcc );
-            SCOREP_Config_ThreadSystem::current->addLdFlags( str, nvcc );
-
-            if ( nvcc )
-            {
-                treat_linker_flags_for_nvcc( str );
-            }
-            std::cout << str;
-            std::cout.flush();
-            break;
-
-        case ACTION_EVENT_LIBS:
-        case ACTION_MGMT_LIBS:
-        case ACTION_LIBS:
+        libs.push_back( "libscorep_estimator" );
+        switch ( action )
         {
-            bool honor_libs = !!( action & ACTION_EVENT_LIBS );
-            bool honor_deps = !!( action & ACTION_MGMT_LIBS );
-            if ( !allow_dynamic || !allow_static )
-            {
-                std::deque<std::string> rpath = deps.getRpathFlags( libs, install, honor_libs, honor_deps );
-                libs = get_full_library_names( deps.getLibraries( libs, honor_libs, honor_deps ),
-                                               rpath,
-                                               allow_static,
-                                               allow_dynamic );
-            }
-            else
-            {
-                libs = deps.getLibraries( libs, honor_libs, honor_deps );
-            }
-            std::cout << deque_to_string( libs, " ", " ", "" );
-            std::cout.flush();
-        }
-        break;
-
-        case ACTION_CFLAGS:
-            if ( SCOREP_Config_Adapter::isActive() )
-            {
-                str += " " SCOREP_INSTRUMENTATION_CPPFLAGS;
-            }
-            SCOREP_Config_Adapter::addCFlagsAll( str, !install, language, nvcc );
-            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, language, nvcc );
-
-        // Append the include directories, too
-        case ACTION_INCDIR:
-            if ( install )
-            {
-                str += "-I" SCOREP_INCLUDEDIR " -I" SCOREP_INCLUDEDIR "/scorep ";
-            }
-            else
-            {
-                str += "-I" + path_to_src + "include " +
-                       "-I" + path_to_src + "include/scorep ";
-            }
-            SCOREP_Config_Adapter::addIncFlagsAll( str, !install, language, nvcc );
-            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, language, nvcc );
-
-            if ( nvcc )
-            {
-                treat_compiler_flags_for_nvcc( str );
-            }
-            std::cout << str;
-            std::cout.flush();
-            break;
-
-        case ACTION_CC:
-            std::cout << SCOREP_CC;
-            std::cout.flush();
-            break;
-
-        case ACTION_CXX:
-            std::cout << SCOREP_CXX;
-            std::cout.flush();
-            break;
-
-        case ACTION_FC:
-            std::cout << SCOREP_FC;
-            std::cout.flush();
-            break;
-
-        case ACTION_MPICC:
-            std::cout << SCOREP_MPICC;
-            std::cout.flush();
-            break;
-
-        case ACTION_MPICXX:
-            std::cout << SCOREP_MPICXX;
-            std::cout.flush();
-            break;
-
-        case ACTION_MPIFC:
-            std::cout << SCOREP_MPIFC;
-            std::cout.flush();
-            break;
-
-        case ACTION_SHMEMCC:
-            std::cout << SCOREP_SHMEMCC;
-            std::cout.flush();
-            break;
-
-        case ACTION_SHMEMCXX:
-            std::cout << SCOREP_SHMEMCXX;
-            std::cout.flush();
-            break;
-
-        case ACTION_SHMEMFC:
-            std::cout << SCOREP_SHMEMFC;
-            std::cout.flush();
-            break;
-
-        case ACTION_PREFIX:
-            std::cout << SCOREP_PREFIX;
-            std::cout.flush();
-            break;
-
-        case ACTION_LIBTOOL:
-            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/libtool";
-            std::cout.flush();
-            break;
-
-        case ACTION_MPILIBTOOL:
-#if HAVE_BACKEND( MPI_SUPPORT )
-            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/mpi/libtool";
-#endif
-            std::cout.flush();
-            break;
-
-        case ACTION_SHMEMLIBTOOL:
-#if HAVE_BACKEND( SHMEM_SUPPORT )
-            std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/shmem/libtool";
-#endif
-            std::cout.flush();
-            break;
-
-        /*
-           case ACTION_COBI_DEPS:
-           if ( libs.empty() )
-           {
-            libs.push_back( "libscorep_measurement" );
-           }
-           write_cobi_deps( libs, deps, install );
-           break;
-         */
-        case ACTION_ADAPTER_INIT:
-            print_adapter_init_source();
-            break;
-
-        case ACTION_CONSTRUCTOR:
-            /* ignore this request if no support is avaible */
-#if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
-            /* only add the constructor object if we would also add libs */
-            if ( !libs.empty() )
-            {
-                if ( install )
+            case ACTION_LDFLAGS:
+                get_rpath_struct_data();
+                std::cout << deque_to_string( deps.getLDFlags( libs, install ),
+                                              " ", " ", "" );
+                if ( USE_LIBDIR_FLAG )
                 {
-                    std::cout << SCOREP_BACKEND_PKGLIBDIR "/scorep_constructor." OBJEXT << std::endl;
+                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
+                    append_ld_run_path_to_rpath( rpath );
+                    rpath = remove_system_path( rpath );
+                    str   = deque_to_string( rpath,
+                                             m_rpath_head + m_rpath_delimiter,
+                                             m_rpath_delimiter,
+                                             m_rpath_tail );
+                }
+                std::cout << str;
+                std::cout.flush();
+                break;
+
+            case ACTION_LIBS:
+            {
+                const bool honor_libs = !!( action & ACTION_EVENT_LIBS );
+                const bool honor_deps = !!( action & ACTION_MGMT_LIBS );
+                if ( !allow_dynamic || !allow_static )
+                {
+                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install, honor_libs, honor_deps );
+                    libs = get_full_library_names( deps.getLibraries( libs, honor_libs, honor_deps ),
+                                                   rpath,
+                                                   allow_static,
+                                                   allow_dynamic );
                 }
                 else
                 {
-                    std::cout << path_to_binary + "../build-backend/scorep_constructor." OBJEXT << std::endl;
+                    libs = deps.getLibraries( libs, honor_libs, honor_deps );
                 }
+                std::cout << deque_to_string( libs, " ", " ", "" );
+                std::cout.flush();
             }
-#endif
             break;
-        case ACTION_LIBWRAP_LINKTIME:
-#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
-            std::cout << "true" << std::endl;
-#else
-            std::cout << "false" << std::endl;
-#endif
-            break;
-        case ACTION_LIBWRAP_RUNTIME:
-#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
-            std::cout << "true" << std::endl;
-#else
-            std::cout << "false" << std::endl;
-#endif
-            break;
-        default:
-            std::cout << SHORT_HELP << std::endl;
-            break;
+            case ACTION_CFLAGS:
+            case ACTION_INCDIR:
+                if ( install )
+                {
+                    str += "-I" SCOREP_INCLUDEDIR;
+                }
+                else
+                {
+                    str += "-I" + path_to_src + "include ";
+                }
+                std::cout << str;
+                std::cout.flush();
+                break;
+            default:
+                std::cout << SHORT_HELP << std::endl;
+                break;
+        }
     }
+    else
+    {
+        SCOREP_Config_Adapter::addLibsAll( libs, deps );
+        SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
+        SCOREP_Config_MutexId newMutexId = SCOREP_Config_ThreadSystem::current->validateDependencies();
+        SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
+        SCOREP_Config_Mutex::select( newMutexId );
+        SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
+#if defined( SCOREP_SHARED_BUILD )
+        if ( preload_libs )
+        {
+            /* libscorep_measurement.so must be in the event libs */
+            libs.push_back( "libscorep_measurement" );
+        }
+#endif
+
+        switch ( action )
+        {
+            case ACTION_LDFLAGS:
+                get_rpath_struct_data();
+                std::cout << deque_to_string( deps.getLDFlags( libs, install ),
+                                              " ", " ", "" );
+                if ( USE_LIBDIR_FLAG )
+                {
+                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
+                    append_ld_run_path_to_rpath( rpath );
+                    rpath = remove_system_path( rpath );
+                    str   = deque_to_string( rpath,
+                                             m_rpath_head + m_rpath_delimiter,
+                                             m_rpath_delimiter,
+                                             m_rpath_tail );
+                }
+                if ( SCOREP_Config_Adapter::isActive() )
+                {
+                    str += " " SCOREP_INSTRUMENTATION_LDFLAGS;
+                }
+                SCOREP_Config_Adapter::addLdFlagsAll( str, !install, nvcc );
+                SCOREP_Config_MppSystem::current->addLdFlags( str, !install, nvcc );
+                SCOREP_Config_ThreadSystem::current->addLdFlags( str, nvcc );
+
+                if ( nvcc )
+                {
+                    treat_linker_flags_for_nvcc( str );
+                }
+                std::cout << str;
+                std::cout.flush();
+                break;
+
+            case ACTION_EVENT_LIBS:
+            case ACTION_MGMT_LIBS:
+            case ACTION_LIBS:
+            {
+                bool honor_libs = !!( action & ACTION_EVENT_LIBS );
+                bool honor_deps = !!( action & ACTION_MGMT_LIBS );
+                if ( !allow_dynamic || !allow_static )
+                {
+                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install, honor_libs, honor_deps );
+                    libs = get_full_library_names( deps.getLibraries( libs, honor_libs, honor_deps ),
+                                                   rpath,
+                                                   allow_static,
+                                                   allow_dynamic );
+                }
+                else
+                {
+                    libs = deps.getLibraries( libs, honor_libs, honor_deps );
+                }
+                std::cout << deque_to_string( libs, " ", " ", "" );
+                std::cout.flush();
+            }
+            break;
+
+            case ACTION_CFLAGS:
+                if ( SCOREP_Config_Adapter::isActive() )
+                {
+                    str += " " SCOREP_INSTRUMENTATION_CPPFLAGS;
+                }
+                SCOREP_Config_Adapter::addCFlagsAll( str, !install, language, nvcc );
+                SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, language, nvcc );
+
+            // Append the include directories, too
+            case ACTION_INCDIR:
+                if ( install )
+                {
+                    str += "-I" SCOREP_INCLUDEDIR " -I" SCOREP_INCLUDEDIR "/scorep ";
+                }
+                else
+                {
+                    str += "-I" + path_to_src + "include " +
+                           "-I" + path_to_src + "include/scorep ";
+                }
+                SCOREP_Config_Adapter::addIncFlagsAll( str, !install, language, nvcc );
+                SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, language, nvcc );
+
+                if ( nvcc )
+                {
+                    treat_compiler_flags_for_nvcc( str );
+                }
+                std::cout << str;
+                std::cout.flush();
+                break;
+
+            case ACTION_CC:
+                std::cout << SCOREP_CC;
+                std::cout.flush();
+                break;
+
+            case ACTION_CXX:
+                std::cout << SCOREP_CXX;
+                std::cout.flush();
+                break;
+
+            case ACTION_FC:
+                std::cout << SCOREP_FC;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPICC:
+                std::cout << SCOREP_MPICC;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPICXX:
+                std::cout << SCOREP_MPICXX;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPIFC:
+                std::cout << SCOREP_MPIFC;
+                std::cout.flush();
+                break;
+
+            case ACTION_SHMEMCC:
+                std::cout << SCOREP_SHMEMCC;
+                std::cout.flush();
+                break;
+
+            case ACTION_SHMEMCXX:
+                std::cout << SCOREP_SHMEMCXX;
+                std::cout.flush();
+                break;
+
+            case ACTION_SHMEMFC:
+                std::cout << SCOREP_SHMEMFC;
+                std::cout.flush();
+                break;
+
+            case ACTION_PREFIX:
+                std::cout << SCOREP_PREFIX;
+                std::cout.flush();
+                break;
+
+            case ACTION_LIBTOOL:
+                std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/libtool";
+                std::cout.flush();
+                break;
+
+            case ACTION_MPILIBTOOL:
+    #if HAVE_BACKEND( MPI_SUPPORT )
+                std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/mpi/libtool";
+    #endif
+                std::cout.flush();
+                break;
+
+            case ACTION_SHMEMLIBTOOL:
+    #if HAVE_BACKEND( SHMEM_SUPPORT )
+                std::cout << SCOREP_BACKEND_PKGLIBEXECDIR << "/shmem/libtool";
+    #endif
+                std::cout.flush();
+                break;
+
+            /*
+               case ACTION_COBI_DEPS:
+               if ( libs.empty() )
+               {
+                libs.push_back( "libscorep_measurement" );
+               }
+               write_cobi_deps( libs, deps, install );
+               break;
+             */
+            case ACTION_ADAPTER_INIT:
+                print_adapter_init_source();
+                break;
+
+            case ACTION_CONSTRUCTOR:
+                /* ignore this request if no support is avaible */
+    #if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
+                /* only add the constructor object if we would also add libs */
+                if ( !libs.empty() )
+                {
+                    if ( install )
+                    {
+                        std::cout << SCOREP_BACKEND_PKGLIBDIR "/scorep_constructor." OBJEXT << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << path_to_binary + "../build-backend/scorep_constructor." OBJEXT << std::endl;
+                    }
+                }
+    #endif
+                break;
+            case ACTION_LIBWRAP_LINKTIME:
+    #if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
+                std::cout << "true" << std::endl;
+    #else
+                std::cout << "false" << std::endl;
+    #endif
+                break;
+            case ACTION_LIBWRAP_RUNTIME:
+    #if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+                std::cout << "true" << std::endl;
+    #else
+                std::cout << "false" << std::endl;
+    #endif
+                break;
+            default:
+                std::cout << SHORT_HELP << std::endl;
+                break;
+        }
+    }
     clean_up();
     return ret;
 }

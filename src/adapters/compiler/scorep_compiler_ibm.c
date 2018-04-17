@@ -52,7 +52,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
@@ -108,7 +108,7 @@ get_region_handle( char* region_name,
                  ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
                  ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-                 !SCOREP_Filter_Match( file, region_name, NULL ) )
+                 !SCOREP_Filtering_Match( file, region_name, NULL ) )
             {
                 is_filtered = false;
             }

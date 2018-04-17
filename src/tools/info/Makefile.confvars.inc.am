@@ -36,6 +36,7 @@ libscorep_confvars_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement/online_access \
+    -I$(INC_ROOT)src/measurement/filtering \
     -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include \
     -I$(PUBLIC_INC_DIR) \

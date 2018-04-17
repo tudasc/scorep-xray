@@ -20,6 +20,8 @@
 #ifndef SCOREP_PLUGIN_H
 #define SCOREP_PLUGIN_H
 
+#include <SCOREP_Filter.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -36,6 +38,8 @@ extern struct attribute_spec scorep_no_instrument_attribute;
 extern void
 scorep_register_attributes( void* event_data,
                             void* data );
+
+extern SCOREP_Filter* scorep_instrument_filter;
 
 #ifdef __cplusplus
 }

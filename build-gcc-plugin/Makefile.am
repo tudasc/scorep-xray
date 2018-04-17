@@ -25,7 +25,7 @@ AM_CPPFLAGS += -DGCC_PLUGIN_BUILD
 
 if HAVE_GCC_PLUGIN_SUPPORT
 
-include ../src/utils/filtering/Makefile.inc.am
+include ../src/utils/filter/Makefile.inc.am
 include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am

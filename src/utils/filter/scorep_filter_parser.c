@@ -37,10 +37,12 @@
  */
 
 #include <config.h>
+
 #include <SCOREP_Filter.h>
 
 #include <UTILS_IO.h>
-#include <scorep_filter_matching.h>
+
+#include "scorep_filter_matching.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -50,8 +52,6 @@
 /* **************************************************************************************
    Variable and type definitions
 ****************************************************************************************/
-
-static bool scorep_filter_is_enabled;
 
 /**
  * Type for the possible states of the parser. The following states are possible:
@@ -119,6 +119,13 @@ typedef int scorep_filter_parse_modes;
    Local helper functions
 ****************************************************************************************/
 
+struct parse_state
+{
+    scorep_filter_rule_t***   file_rule_tail;
+    scorep_filter_rule_t***   function_rule_tail;
+    scorep_filter_parse_modes mode;
+};
+
 /**
  * Processes a token of the filter parser. A token may be a key word or an expression
  * for name matching.
@@ -129,8 +136,10 @@ typedef int scorep_filter_parse_modes;
  *          is returned. The only possible error code is SCOREP_ERROR_PARSE_SYNTAX.
  */
 static SCOREP_ErrorCode
-scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode )
+process_token( struct parse_state* state,
+               const char*         token )
 {
+    assert( state );
     assert( token );
     if ( *token == '\0' )
     {
@@ -140,9 +149,9 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FILE_NAMES_BEGIN */
     if ( strcmp( token, "SCOREP_FILE_NAMES_BEGIN" ) == 0 )
     {
-        if ( *mode == SCOREP_FILTER_PARSE_START )
+        if ( state->mode == SCOREP_FILTER_PARSE_START )
         {
-            *mode = SCOREP_FILTER_PARSE_FILES;
+            state->mode = SCOREP_FILTER_PARSE_FILES;
         }
         else
         {
@@ -155,10 +164,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FILE_NAMES_END */
     else if ( strcmp( token, "SCOREP_FILE_NAMES_END" ) == 0 )
     {
-        if ( ( *mode >= SCOREP_FILTER_PARSE_FILES ) &&
-             ( *mode <= SCOREP_FILTER_PARSE_FILES_INCLUDE ) )
+        if ( ( state->mode >= SCOREP_FILTER_PARSE_FILES ) &&
+             ( state->mode <= SCOREP_FILTER_PARSE_FILES_INCLUDE ) )
         {
-            *mode = SCOREP_FILTER_PARSE_START;
+            state->mode = SCOREP_FILTER_PARSE_START;
         }
         else
         {
@@ -171,9 +180,9 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_REGION_NAMES_BEGIN */
     else if ( strcmp( token, "SCOREP_REGION_NAMES_BEGIN" ) == 0 )
     {
-        if ( *mode == SCOREP_FILTER_PARSE_START )
+        if ( state->mode == SCOREP_FILTER_PARSE_START )
         {
-            *mode = SCOREP_FILTER_PARSE_REGIONS;
+            state->mode = SCOREP_FILTER_PARSE_REGIONS;
         }
         else
         {
@@ -186,10 +195,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_REGION_NAMES_END */
     else if ( strcmp( token, "SCOREP_REGION_NAMES_END" ) == 0 )
     {
-        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= SCOREP_FILTER_PARSE_REGIONS ) &&
-             ( SCOREP_FILTER_MODE_BASE( *mode ) <= SCOREP_FILTER_PARSE_REGIONS_INCLUDE ) )
+        if ( ( SCOREP_FILTER_MODE_BASE( state->mode ) >= SCOREP_FILTER_PARSE_REGIONS ) &&
+             ( SCOREP_FILTER_MODE_BASE( state->mode ) <= SCOREP_FILTER_PARSE_REGIONS_INCLUDE ) )
         {
-            *mode = SCOREP_FILTER_PARSE_START;
+            state->mode = SCOREP_FILTER_PARSE_START;
         }
         else
         {
@@ -202,17 +211,17 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ EXCLUDE */
     else if ( strcmp( token, "EXCLUDE" ) == 0 )
     {
-        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        switch ( SCOREP_FILTER_MODE_BASE( state->mode ) )
         {
             case SCOREP_FILTER_PARSE_FILES:
             case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FILES_EXCLUDE;
+                state->mode = SCOREP_FILTER_PARSE_FILES_EXCLUDE;
                 break;
             case SCOREP_FILTER_PARSE_REGIONS:
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE;
+                state->mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE;
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -224,17 +233,17 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ INCLUDE */
     else if ( strcmp( token, "INCLUDE" ) == 0 )
     {
-        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        switch ( SCOREP_FILTER_MODE_BASE( state->mode ) )
         {
             case SCOREP_FILTER_PARSE_FILES:
             case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FILES_INCLUDE;
+                state->mode = SCOREP_FILTER_PARSE_FILES_INCLUDE;
                 break;
             case SCOREP_FILTER_PARSE_REGIONS:
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE;
+                state->mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE;
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -246,13 +255,11 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ MANGLED */
     else if ( strcmp( token, "MANGLED" ) == 0 )
     {
-        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        switch ( SCOREP_FILTER_MODE_BASE( state->mode ) )
         {
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_MANGLED;
-                break;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_MANGLED;
+                state->mode |= SCOREP_FILTER_PARSE_MANGLED;
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -264,22 +271,27 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ Default */
     else
     {
-        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        bool exclude = false;
+        switch ( SCOREP_FILTER_MODE_BASE( state->mode ) )
         {
             case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
-                scorep_filter_add_file_rule( token, true );
-                break;
+                exclude = true;
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
-                scorep_filter_add_file_rule( token, false );
+                scorep_filter_add_rule( state->file_rule_tail,
+                                        token,
+                                        exclude,
+                                        false );
                 break;
+
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
-                SCOREP_Filter_AddFunctionRule( token, true,
-                                               SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
-                break;
+                exclude = true;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                SCOREP_Filter_AddFunctionRule( token, false,
-                                               SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
+                scorep_filter_add_rule( state->function_rule_tail,
+                                        token,
+                                        exclude,
+                                        SCOREP_FILTER_MODE_IS_MANGLED( state->mode ) );
                 break;
+
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
                              "Unexpected token '%s'", token );
@@ -290,6 +302,30 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     return SCOREP_SUCCESS;
 }
 
+SCOREP_Filter*
+SCOREP_Filter_New( void )
+{
+    SCOREP_Filter* new_filter = calloc( 1, sizeof( *new_filter ) );
+    if ( !new_filter )
+    {
+        return NULL;
+    }
+    new_filter->file_rules_tail     = &new_filter->file_rules;
+    new_filter->function_rules_tail = &new_filter->function_rules;
+    return new_filter;
+}
+
+void
+SCOREP_Filter_Delete( SCOREP_Filter* filter )
+{
+    if ( filter )
+    {
+        scorep_filter_free_rules( filter->file_rules );
+        scorep_filter_free_rules( filter->function_rules );
+        free( filter );
+    }
+}
+
 /**
  * Parses the given filter file @a file.
  * @param file  On already opened filter file that is parsed.
@@ -297,33 +333,36 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
  *          returned.
  */
 SCOREP_ErrorCode
-SCOREP_Filter_ParseFile( const char* file_name )
+SCOREP_Filter_ParseFile( SCOREP_Filter* filter,
+                         const char*    fileName )
 {
-    FILE*                     filter_file = NULL;
-    size_t                    buffer_size = 0;
-    char*                     buffer      = NULL;
-    size_t                    pos         = 0;
-    size_t                    length      = 0;
-    size_t                    token_start = 0;
-    scorep_filter_parse_modes mode        = SCOREP_FILTER_PARSE_START;
-    SCOREP_ErrorCode          err         = SCOREP_SUCCESS;
+    if ( !filter || !fileName )
+    {
+        return SCOREP_ERROR_INVALID_ARGUMENT;
+    }
 
-    /* Validity assertions */
-    assert( file_name );
+    FILE*              filter_file = NULL;
+    size_t             buffer_size = 0;
+    char*              buffer      = NULL;
+    size_t             pos         = 0;
+    size_t             length      = 0;
+    size_t             token_start = 0;
+    struct parse_state state;
+    SCOREP_ErrorCode   err = SCOREP_SUCCESS;
 
     /* Open configuration file */
-    filter_file = fopen( file_name, "r" );
+    filter_file = fopen( fileName, "r" );
     if ( filter_file == NULL )
     {
         UTILS_ERROR_POSIX(  "Unable to open filter specification file '%s'",
-                            file_name );
-        return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
+                            fileName );
+        err = SCOREP_ERROR_FILE_CAN_NOT_OPEN;
+        goto cleanup;
     }
 
-    /* Make sure that user functions are inserted before system filter */
-    scorep_filter_rule_t* function_rule_head;
-    scorep_filter_rule_t* function_rule_tail;
-    scorep_filter_start_user_rules( &function_rule_head, &function_rule_tail );
+    state.file_rule_tail     = &filter->file_rules_tail;
+    state.function_rule_tail = &filter->function_rules_tail;
+    state.mode               = SCOREP_FILTER_PARSE_START;
 
     /* Read file line by line */
     while ( !feof( filter_file ) )
@@ -380,8 +419,7 @@ SCOREP_Filter_ParseFile( const char* file_name )
                    ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if whitespace is escaped
             {
                 buffer[ pos ] = '\0';
-                err           = scorep_filter_process_token( &buffer[ token_start ],
-                                                             &mode );
+                err           = process_token( &state, &buffer[ token_start ] );
                 if ( err != SCOREP_SUCCESS )
                 {
                     goto cleanup;
@@ -392,8 +430,7 @@ SCOREP_Filter_ParseFile( const char* file_name )
         }
     }
 
-    SCOREP_Filter_Enable();
-    err = SCOREP_SUCCESS;
+    return SCOREP_SUCCESS;
 
 cleanup:
     if ( filter_file )
@@ -402,30 +439,63 @@ cleanup:
     }
     free( buffer );
 
-    scorep_filter_end_user_rules( function_rule_head, function_rule_tail );
+    return err;
+}
+
+SCOREP_ErrorCode
+SCOREP_Filter_MatchFile( const SCOREP_Filter* filter,
+                         const char*          fileName,
+                         int*                 result )
+{
+    if ( !filter || !result )
+    {
+        return SCOREP_ERROR_INVALID_ARGUMENT;
+    }
+
+    SCOREP_ErrorCode err;
+
+    *result = scorep_filter_match_file( filter->file_rules, fileName, &err );
 
     return err;
 }
 
-
-/* **************************************************************************************
-   Initialization of filtering system
-****************************************************************************************/
-
-void
-SCOREP_Filter_Enable( void )
+SCOREP_ErrorCode
+SCOREP_Filter_MatchFunction( const SCOREP_Filter* filter,
+                             const char*          functionName,
+                             const char*          mangledName,
+                             int*                 result )
 {
-    scorep_filter_is_enabled = true;
+    if ( !filter || !result )
+    {
+        return SCOREP_ERROR_INVALID_ARGUMENT;
+    }
+
+    SCOREP_ErrorCode err;
+
+    *result = scorep_filter_match_function( filter->function_rules,
+                                            functionName,
+                                            mangledName,
+                                            &err );
+
+    return err;
 }
 
-void
-SCOREP_Filter_Disable( void )
+SCOREP_ErrorCode
+SCOREP_Filter_Match( const SCOREP_Filter* filter,
+                     const char*          fileName,
+                     const char*          functionName,
+                     const char*          mangledName,
+                     int*                 result )
 {
-    scorep_filter_is_enabled = false;
-}
+    if ( !filter || !result )
+    {
+        return SCOREP_ERROR_INVALID_ARGUMENT;
+    }
 
-bool
-SCOREP_Filter_IsEnabled( void )
-{
-    return scorep_filter_is_enabled;
+    SCOREP_ErrorCode err;
+
+    *result = scorep_filter_match_file( filter->file_rules, fileName, &err ) ||
+              scorep_filter_match_function( filter->function_rules, functionName, mangledName, &err );
+
+    return err;
 }

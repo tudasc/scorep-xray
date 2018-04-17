@@ -41,9 +41,9 @@ include ../build-includes/common.am
 
 AM_CPPFLAGS += -DSCORE_BUILD
 
+include ../src/tools/config/Makefile.la_dependencies.inc.am
 include ../src/tools/score/Makefile.inc.am
-
-include ../src/utils/filtering/Makefile.inc.am
+include ../src/utils/filter/Makefile.inc.am
 include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am

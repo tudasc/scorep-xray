@@ -28,32 +28,31 @@
  *
  */
 
-#ifndef SCOREP_FILTER_INIT_H
-#define SCOREP_FILTER_INIT_H
+#ifndef SCOREP_FILTERING_H
+#define SCOREP_FILTERING_H
 
 /**
  * @file
  *
  *
- * Implements the filter initialization interface for the filtering system.
+ * Implements the filter interface.
  */
 
-/**
-   Initializes the filtering system and parses the configuration file.
- */
-void
-SCOREP_Filter_Initialize( void );
+#include <stdbool.h>
 
-/**
-   Registers the config variables for filtering.
- */
-SCOREP_ErrorCode
-SCOREP_Filter_Register( void );
+bool
+SCOREP_Filtering_Match( const char* fileName,
+                        const char* functionName,
+                        const char* mangledName );
 
-/**
-   Finalizes the filtering system and frees all memory.
- */
-void
-SCOREP_Filter_Finalize( void );
 
-#endif /* SCOREP_FILTER_INIT_H */
+bool
+SCOREP_Filtering_MatchFile( const char* fileName );
+
+
+bool
+SCOREP_Filtering_MatchFunction( const char* functionName,
+                                const char* mangledName );
+
+
+#endif /* SCOREP_FILTERING_H */

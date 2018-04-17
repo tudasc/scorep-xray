@@ -110,6 +110,7 @@ main( int   argc,
     config.verbose                           = 0;
     config.create_internal_wrapper_code_file = false;
     config.overwrite                         = false;
+    config.filter                            = SCOREP_Filter_New();
 
     /* current argument */
     string arg = "";
@@ -286,7 +287,7 @@ main( int   argc,
     /* Check and apply filter file if given */
     if ( !config.filter_file_name.empty() )
     {
-        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( config.filter_file_name.c_str() );
+        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( config.filter, config.filter_file_name.c_str() );
         if ( err != SCOREP_SUCCESS )
         {
             cerr << "ERROR: Parsing filter file '" << config.filter_file_name
@@ -399,6 +400,8 @@ main( int   argc,
             remove( config.wrap_file_name.c_str() );
         }
     }
+
+    SCOREP_Filter_Delete( config.filter );
 
     return ret;
 }

@@ -30,39 +30,6 @@
 
 using namespace std;
 
-std::map< std::string, SCOREP_Score_Event* > SCOREP_Score_Event::m_all_events;
-
-void
-SCOREP_Score_Event::RegisterEvent( SCOREP_Score_Event* event )
-{
-    m_all_events.insert( pair< string, SCOREP_Score_Event* >( event->getName(), event ) );
-}
-
-uint32_t
-SCOREP_Score_Event::GetEventSize( const string& name )
-{
-    map<string, SCOREP_Score_Event*>::const_iterator it = m_all_events.find( name );
-    if ( it == m_all_events.end() )
-    {
-        return 0;
-    }
-
-    return it->second->getEventSize();
-}
-
-void
-SCOREP_Score_Event::SetEventSize( const std::string& name,
-                                  uint32_t           size )
-{
-    map<string, SCOREP_Score_Event*>::iterator it = m_all_events.find( name );
-    if ( it == m_all_events.end() )
-    {
-        return;
-    }
-
-    it->second->setEventSize( size );
-}
-
 /* **************************************************************************************
  * class SCOREP_Score_Event
  ***************************************************************************************/

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -28,13 +28,37 @@
  *
  */
 
+#ifndef SCOREP_FILTERING_MANAGEMENT_H
+#define SCOREP_FILTERING_MANAGEMENT_H
 
 /**
  * @file
  *
  *
+ * Implements the filter initialization interface for the filtering system.
  */
 
-#include <config.h>
+#include <stdbool.h>
 
-#include "scorep_filter_confvars.inc.c"
+#include <SCOREP_ErrorCodes.h>
+
+/**
+   Initializes the filtering system and parses the configuration file.
+ */
+void
+SCOREP_Filtering_Initialize( void );
+
+/**
+   Registers the config variables for filtering.
+ */
+SCOREP_ErrorCode
+SCOREP_Filtering_Register( void );
+
+/**
+   Finalizes the filtering system and frees all memory.
+ */
+void
+SCOREP_Filtering_Finalize( void );
+
+
+#endif /* SCOREP_FILTERING_MANAGEMENT_H */

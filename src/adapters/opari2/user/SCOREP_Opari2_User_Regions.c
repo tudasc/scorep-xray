@@ -52,7 +52,7 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 
 #include <opari2/pomp2_user_lib.h>
 
@@ -99,7 +99,7 @@ scorep_opari2_user_register_region( SCOREP_Opari2_User_Region* region )
     sprintf( source_name, "@%s:%" PRIi32, basename, genericInfo->startLine1 );
 
     /* User regions can be filtered */
-    if ( SCOREP_Filter_Match( genericInfo->startFileName, NULL, NULL ) )
+    if ( SCOREP_Filtering_Match( genericInfo->startFileName, NULL, NULL ) )
     {
         free( source_name );
         return;

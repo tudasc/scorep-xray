@@ -28,7 +28,6 @@
 
 #include <string>
 #include <deque>
-#include <map>
 #include <set>
 #include <stdint.h>
 
@@ -39,25 +38,6 @@ class SCOREP_Score_Event
 {
     /*------------------------------------------------ public functions */
 public:
-
-    /**
-     * Regsiter the @p event by its name.
-     */
-    static void
-    RegisterEvent( SCOREP_Score_Event* event );
-
-    /**
-     * returns the size estimate for the named event.
-     */
-    static uint32_t
-    GetEventSize( const std::string& eventName );
-
-    /**
-     * Sets the size estimate of the named event.
-     */
-    static void
-    SetEventSize( const std::string& name,
-                  uint32_t           size );
 
     /**
      * Constructs an new instance of SCOREP_Score_Event.
@@ -115,12 +95,6 @@ protected:
      * Stores the event size.
      */
     uint32_t m_size;
-
-public:
-    /**
-     * Stores all events by its name.
-     */
-    static std::map< std::string, SCOREP_Score_Event* > m_all_events;
 };
 
 /* **************************************************************************************

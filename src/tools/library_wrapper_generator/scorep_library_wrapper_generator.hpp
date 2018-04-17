@@ -22,6 +22,8 @@
 
 #include "scorep_library_wrapper_generator_parser.hpp"
 
+#include <SCOREP_Filter.h>
+
 struct generator_configuration
 {
     int                                verbose;
@@ -37,6 +39,7 @@ struct generator_configuration
     /** The include statement in the generated code (e.g., "<netcdf.h>") */
     std::string                        include_statement;
     std::string                        filter_file_name;
+    SCOREP_Filter*                     filter;
     std::string                        wrap_file_name;
     /** Name of the file containing the forward declarations of the wrapper functions */
     std::string                        function_list_file_name;

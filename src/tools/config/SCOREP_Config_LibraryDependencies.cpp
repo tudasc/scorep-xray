@@ -56,6 +56,7 @@ using namespace std;
 #if HAVE( SHMEM_SUPPORT )
 #include <scorep_config_library_dependencies_shmem_backend_inc.hpp>
 #endif /* SHMEM_SUPPORT */
+#include <scorep_config_library_dependencies_score_inc.hpp>
 
 /* **************************************************************************************
                                                   class SCOREP_Config_LibraryDependencies
@@ -75,6 +76,7 @@ SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies( void )
     #if HAVE( SHMEM_SUPPORT )
     add_library_dependencies_shmem_backend( libs, ldflags, rpaths, dependency_las, &m_la_objects );
     #endif /* SHMEM_SUPPORT */
+    add_library_dependencies_score( libs, ldflags, rpaths, dependency_las, &m_la_objects );
 }
 
 SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()

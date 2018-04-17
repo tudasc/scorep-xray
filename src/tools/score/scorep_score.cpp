@@ -146,10 +146,12 @@ main( int    argc,
     //-------------------------------------- Scoreing
 
     SCOREP_Score_Profile* profile;
-
+    cube::Cube*           cube;
     try
     {
-        profile = new SCOREP_Score_Profile( file_name );
+        cube = new cube::Cube();
+        cube->openCubeReport( file_name );
+        profile = new SCOREP_Score_Profile( cube );
     }
     catch ( ... )
     {
@@ -172,5 +174,6 @@ main( int    argc,
     }
 
     delete ( profile );
+    delete ( cube );
     return 0;
 }

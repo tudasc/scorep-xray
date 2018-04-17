@@ -19,8 +19,6 @@
 #include <sstream>
 #include <vector>
 
-#include <SCOREP_Filter.h>
-
 using namespace std;
 
 /* clang_Cursor_isFunctionInlined comes with clang 3.9
@@ -37,10 +35,12 @@ SCOREP_Libwrap_Parser::SCOREP_Libwrap_Parser( int verbose,
                                               const string& language,
                                               const string& languageStandard,
                                               const set<string>& variadicIsVoid,
-                                              const map<string, string>& ellipsisMapping )
+                                              const map<string, string>& ellipsisMapping,
+                                              const SCOREP_Filter* filter )
     : m_verbose( verbose )
     , m_variadic_is_void( variadicIsVoid )
     , m_ellipsis_mapping( ellipsisMapping )
+    , m_filter( filter )
 {
     vector<string> string_vector;
     string_vector.push_back( "-ferror-limit=0" );
@@ -192,11 +192,19 @@ SCOREP_Libwrap_Parser::Visit( CXCursor cursor,
         return CXChildVisit_Continue;
     }
 
-    if ( ( cursor_kind != CXCursor_FunctionDecl
-           && cursor_kind != CXCursor_CXXMethod
-           && cursor_kind != CXCursor_Constructor
-           && cursor_kind != CXCursor_Destructor )
-         || ( !filename.empty() && filename != "libwrap.i" && SCOREP_Filter_MatchFile( filename.c_str() ) ) )
+    if ( cursor_kind != CXCursor_FunctionDecl
+         && cursor_kind != CXCursor_CXXMethod
+         && cursor_kind != CXCursor_Constructor
+         && cursor_kind != CXCursor_Destructor )
+    {
+        return CXChildVisit_Recurse;
+    }
+
+    int filtered = false;
+    if ( !filename.empty()
+         && filename != "libwrap.i"
+         && SCOREP_Filter_MatchFile( m_filter, filename.c_str(), &filtered ) == SCOREP_SUCCESS
+         && filtered )
     {
         return CXChildVisit_Recurse;
     }
@@ -375,8 +383,12 @@ SCOREP_Libwrap_Parser::AddFunctionDecl( CXCursor      cursor,
      * ignore message from the variadic check.
      * we already checked the filename earlier on.
      */
-    if ( SCOREP_Filter_MatchFunction( function_decl.functionname.c_str(),
-                                      function_decl.symbolname.c_str() ) )
+    int filtered = false;
+    if ( SCOREP_Filter_MatchFunction( m_filter,
+                                      function_decl.functionname.c_str(),
+                                      function_decl.symbolname.c_str(),
+                                      &filtered ) == SCOREP_SUCCESS
+         && filtered )
     {
         return;
     }

@@ -58,9 +58,10 @@ include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 # the case and the dependency could not be resolved one could add some
 # of the 'build_external_targets' to BUILT_SOURCES as there is less
 # parallelism in 'all' compared to 'all-am'.
+SCORE_TARGETS =
 MPI_TARGETS =
 SHMEM_TARGETS =
-$(MPI_TARGETS) $(SHMEM_TARGETS): build_external_targets
+$(MPI_TARGETS) $(SHMEM_TARGETS) $(SCORE_TARGETS): build_external_targets
 build_external_targets:
 	@targets=`echo $(MPI_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP_MPI)||g'`; \
 	if test "x$$targets" != x; then \
@@ -70,7 +71,10 @@ build_external_targets:
 	if test "x$$targets" != x; then \
 		$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
 	fi
-
+	@targets=`echo $(SCORE_TARGETS) | sed 's|^[ ^t]*||;s|[ ^]*$$||;s|$(LIB_DIR_SCOREP_SCORE)||g'`; \
+	if test "x$$targets" != x; then \
+		$(am__cd) $(LIB_DIR_SCOREP_SCORE) && $(MAKE) $(AM_MAKEFLAGS) $$targets; \
+	fi
 MPI_CHECK_TARGETS =
 SHMEM_CHECK_TARGETS =
 $(MPI_CHECK_TARGETS) $(SHMEM_CHECK_TARGETS): build_external_check_targets
@@ -144,6 +148,8 @@ LIB_DIR_SCOREP_MPI = ../build-mpi/
 
 ## Here the SHMEM convenience libraries are build
 LIB_DIR_SCOREP_SHMEM = ../build-shmem/
+
+LIB_DIR_SCOREP_SCORE = ../build-score/
 
 CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 

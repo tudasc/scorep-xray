@@ -52,7 +52,8 @@ SCOREP_Libwrap_Generator::generate_source_code_files()
                                   m_config.language,
                                   m_config.language_standard,
                                   m_config.variadic_is_void,
-                                  m_config.ellipsis_mapping );
+                                  m_config.ellipsis_mapping,
+                                  m_config.filter );
 
     if ( !parser.ParseHeader() )
     {

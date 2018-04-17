@@ -37,7 +37,7 @@
 #include <config.h>
 
 #include <SCOREP_Config.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 #include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_CStr.h>
@@ -462,7 +462,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
             }
         }
 
-        if ( !SCOREP_Filter_MatchFunction( kernel->name, NULL ) )
+        if ( !SCOREP_Filtering_MatchFunction( kernel->name, NULL ) )
         {
             SCOREP_Location_EnterRegion( stream_location, start, regionHandle );
 

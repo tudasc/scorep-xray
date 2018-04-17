@@ -43,7 +43,7 @@
 #include <SCOREP_Events.h>
 #include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
-#include <SCOREP_Filter.h>
+#include <SCOREP_Filtering.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
 #include <SCOREP_OA_Functions.h>
@@ -365,7 +365,7 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
 
         /* Check for filters */
         const char* simplified_name = SCOREP_SourceFileHandle_GetName( file );
-        if ( !SCOREP_Filter_Match( simplified_name, name, NULL ) )
+        if ( !SCOREP_Filtering_Match( simplified_name, name, NULL ) )
         {
             new_handle = scorep_user_create_region( name );
         }
