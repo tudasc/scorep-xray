@@ -10,16 +10,29 @@ of the distribution tarball for details.
                        Score-P LICENSE AGREEMENT
                        =========================
 
-Copyright (c) 2009-2014 RWTH Aachen University, Germany
-Copyright (c) 2009-2013 Gesellschaft fuer numerische Simulation mbH
-                        Braunschweig, Germany
-Copyright (c) 2009-2018 Technische Universitaet Dresden, Germany
-Copyright (c) 2009-2013 University of Oregon, Eugene, USA
-Copyright (c) 2009-2018 Forschungszentrum Juelich GmbH, Germany
-Copyright (c) 2009-2015 German Research School for Simulation Sciences GmbH,
-                        Juelich/Aachen, Germany
-Copyright (c) 2009-2016 Technische Universitaet Muenchen, Germany
-Copyright (c) 2015-2016 Technische Universitaet Darmstadt, Germany
+ * Copyright (c) 2009-2014,
+ * RWTH Aachen University, Germany
+
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH, Braunschweig, Germany
+
+ * Copyright (c) 2009-2018,
+ * Technische Universitaet Dresden, Germany
+
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+
+ * Copyright (c) 2009-2018,
+ * Forschungszentrum Juelich GmbH, Germany
+
+ * Copyright (c) 2009-2015,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+
+ * Copyright (c) 2009-2016, 2018,
+ * Technische Universitaet Muenchen, Germany
+
+ * Copyright (c) 2015-2017,
+ * Technische Universitaet Darmstadt, Germany
 
 
 All rights reserved.
