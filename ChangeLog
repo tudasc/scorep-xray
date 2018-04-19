@@ -70,6 +70,10 @@ Bugfixes:
   preprocessing step during instrumentation. This should avoid name
   clashes if the same source file is concurrently processed twice during
   the build process.
+- The support for a modularized OPARI2, introduced in Score-P 2.0,
+  attributed wrong names for the inner regions of the OpenMP
+  constructs critical, ordered, section, single, and task. This is
+  fixed now.
 
 ------------------- Released version 3.1 -----------------------------
 

@@ -227,17 +227,8 @@ scorep_opari2_register_openmp_region( SCOREP_Opari2_Openmp_Region* region )
     /* Register inner region */
     if ( type_inner != SCOREP_REGION_UNKNOWN )
     {
-        char* type_name = NULL;
-
-        if ( region->name == 0 )
-        {
-            type_name = region_type_map[ region->regionType ].innerRegionName;
-        }
-        else
-        {
-            type_name = region->name;
-        }
-        int length = strlen( type_name ) + 8 + strlen( source_name ) + 1;
+        char* type_name = region_type_map[ region->regionType ].innerRegionName;
+        int   length    = strlen( type_name ) + 8 + strlen( source_name ) + 1;
         region_name = ( char* )malloc( length );
         sprintf( region_name, "!$omp %s %s", type_name, source_name );
         region->innerBlock = SCOREP_Definitions_NewRegion( region_name,
