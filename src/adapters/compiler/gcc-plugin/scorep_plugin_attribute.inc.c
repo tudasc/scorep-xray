@@ -32,19 +32,19 @@
 
 struct attribute_spec scorep_no_instrument_attribute =
 {
-    .name                   = "scorep_no_instrument",
-    .min_length             = 0,
-    .max_length             = 0,
-    .decl_required          = false,
-    .type_required          = false,
-    .function_type_required = false,
+    /* .name                   = */ "scorep_no_instrument",
+    /* .min_length             = */ 0,
+    /* .max_length             = */ 0,
+    /* .decl_required          = */ false,
+    /* .type_required          = */ false,
+    /* .function_type_required = */ false,
     #if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 8000
-    .affects_type_identity = false,
-    .handler               = NULL
+    /* .affects_type_identity = */ false,
+    /* .handler               = */ NULL
     #else
-    .handler                = NULL,
+    /* .handler                = */ NULL,
     #if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4007
-    .affects_type_identity  = false
+    /* .affects_type_identity  = */ false
     #endif
     #endif
 };
