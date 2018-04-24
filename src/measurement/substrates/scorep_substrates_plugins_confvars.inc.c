@@ -32,7 +32,7 @@ static char* scorep_substrate_plugins_separator = NULL;
  *  @li @c SCOREP_SUBSTRATE_PLUGINS list of requested substrate plugins.
  *  @li @c SCOREP_SUBSTRATE_PLUGINS_SEP separator for SCOREP_SUBSTRATE_PLUGINS
  */
-static SCOREP_ConfigVariable scorep_substrates_plugins_confvars[] = {
+static const SCOREP_ConfigVariable scorep_substrates_plugins_confvars[] = {
     {
         "plugins",
         SCOREP_CONFIG_TYPE_STRING,
