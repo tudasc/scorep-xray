@@ -370,7 +370,8 @@ be used to build Score-P are as follows:
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>
   --with-llvm[=<llvm-bindir>]
-               Use an already installed LLVM. Provide path to
+               Use an already installed LLVM, including Clang as we
+               need libclang for library-wrapping. Provide path to
                llvm-config. Auto-detected if already in $PATH.
 
 Instead of passing command-line options to the 'configure' script, the package

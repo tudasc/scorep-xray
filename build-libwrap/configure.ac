@@ -63,7 +63,7 @@ AC_ARG_VAR([LIBCLANG_LIBS],     [Additional libs when linking against libclang])
 
 AC_ARG_WITH([llvm],
             [AS_HELP_STRING([--with-llvm[[=<llvm-bindir>]]],
-                            [Use an already installed LLVM. Provide path to llvm-config. Auto-detected if already in $PATH.])],
+                            [Use an already installed LLVM, including Clang as we need libclang for library-wrapping. Provide path to llvm-config. Auto-detected if already in $PATH.])],
             [with_llvm="${with_llvm%/}"], dnl yes, no, or <path>
             [with_llvm="not_given"])
 
