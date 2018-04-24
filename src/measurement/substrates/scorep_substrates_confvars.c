@@ -27,7 +27,7 @@
 static SCOREP_ErrorCode
 substrates_subsystem_register( size_t subsystem_id )
 {
-    SCOREP_ConfigRegisterCond( "SUBSTRATE",
+    SCOREP_ConfigRegisterCond( "substrate",
                                scorep_substrates_plugins_confvars,
                                HAVE_BACKEND_DLFCN_SUPPORT );
     return SCOREP_SUCCESS;
