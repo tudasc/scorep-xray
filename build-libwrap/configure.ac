@@ -147,7 +147,7 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
        libwrap_cppflags="${llvm_cppflags} ${LIBCLANG_CPPFLAGS}"
        # the CXXFLAGS from llvm-config may only be understood by clang++, but not by g++, thus ignore
        libwrap_cxxflags="${LIBCLANG_CXXFLAGS}"
-       libwrap_ldlags="${llvm_ldflags} ${LIBCLANG_LDFLAGS}"
+       libwrap_ldflags="${llvm_ldflags} ${LIBCLANG_LDFLAGS}"
        libwrap_libs="-lclang ${LIBCLANG_LIBS}"
 
        AC_LANG_PUSH([C++])
@@ -158,7 +158,7 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
        save_LIBS=$LIBS
        CPPFLAGS="$CPPFLAGS $libwrap_cppflags"
        CXXFLAGS="$CXXFLAGS $libwrap_cxxflags"
-       LDFLAGS="$LDFLAGS $libwrap_ldlags"
+       LDFLAGS="$LDFLAGS $libwrap_ldflags"
        LIBS="$LIBS $libwrap_libs"
 
        # Check whether the header exists, this is a hint, that the dev packages
@@ -219,7 +219,7 @@ AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],
            [scorep_have_libwrap_generator=yes
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CPPFLAGS], ["${libwrap_cppflags}"])
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CXXFLAGS], ["${libwrap_cxxflags}"])
-            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LDFLAGS],  ["${libwrap_ldlags} -R${llvm_libdir}"])
+            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LDFLAGS],  ["${libwrap_ldflags} -R${llvm_libdir}"])
             AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LIBS],     ["${libwrap_libs}"])],
            [scorep_have_libwrap_generator=no])
 
