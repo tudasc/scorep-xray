@@ -50,7 +50,6 @@
 typedef enum SCOREP_HandleType
 {
     SCOREP_HANDLE_TYPE_ANY = 0,                   /** The handle type is not defined/invalid */
-    SCOREP_HANDLE_TYPE_ATTRIBUTE,                 /** The handle type is SCOREP_AttributeHandle (defined in src/measurement/definitions/include/SCOREP_DefinitionHandles.h) */
     SCOREP_HANDLE_TYPE_CALLING_CONTEXT,           /** The handle type is SCOREP_CallingContextHandle */
     SCOREP_HANDLE_TYPE_CALLPATH,                  /** The handle type is SCOREP_CallpathHandle */
     SCOREP_HANDLE_TYPE_GROUP,                     /** The handle type is SCOREP_GroupHandle */
