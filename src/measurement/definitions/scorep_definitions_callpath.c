@@ -276,11 +276,7 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Callpath, callpath );
 
-    if ( definition_manager == &scorep_local_definition_manager )
-    {
-        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                    ( new_handle, SCOREP_HANDLE_TYPE_CALLPATH ) );
-    }
+    /* no NewDefinitionHandle, callpath are only defined at unification by profiling */
 
     return new_handle;
 }

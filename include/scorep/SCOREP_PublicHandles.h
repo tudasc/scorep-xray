@@ -51,7 +51,6 @@ typedef enum SCOREP_HandleType
 {
     SCOREP_HANDLE_TYPE_ANY = 0,                   /** The handle type is not defined/invalid */
     SCOREP_HANDLE_TYPE_CALLING_CONTEXT,           /** The handle type is SCOREP_CallingContextHandle */
-    SCOREP_HANDLE_TYPE_CALLPATH,                  /** The handle type is SCOREP_CallpathHandle */
     SCOREP_HANDLE_TYPE_GROUP,                     /** The handle type is SCOREP_GroupHandle */
     SCOREP_HANDLE_TYPE_INTERIM_COMMUNICATOR,      /** The handle type is SCOREP_InterimCommunicatorHandle */
     SCOREP_HANDLE_TYPE_INTERRUPT_GENERATOR,       /** The handle type is SCOREP_InterruptGeneratorHandle */
@@ -75,8 +74,6 @@ typedef enum SCOREP_HandleType
 } SCOREP_HandleType;
 
 typedef SCOREP_AnyHandle SCOREP_CallingContextHandle;
-
-typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 
 typedef SCOREP_AnyHandle SCOREP_GroupHandle;
 

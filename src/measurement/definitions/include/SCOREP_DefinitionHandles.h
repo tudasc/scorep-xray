@@ -45,6 +45,8 @@
 
 typedef SCOREP_AnyHandle SCOREP_AttributeHandle;
 
+typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
+
 typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
 
 typedef SCOREP_AnyHandle SCOREP_IOFileGroupHandle;
