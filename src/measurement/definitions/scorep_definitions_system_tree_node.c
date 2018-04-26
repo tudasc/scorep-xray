@@ -104,9 +104,6 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
 
     SCOREP_Definitions_Unlock();
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE ) );
-
     return new_handle;
 }
 
@@ -189,6 +186,12 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE ) );
+    }
 
     return new_handle;
 }

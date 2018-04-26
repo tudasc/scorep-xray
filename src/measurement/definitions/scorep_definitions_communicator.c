@@ -229,9 +229,6 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
 
     va_end( va );
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_INTERIM_COMMUNICATOR ) );
-
     return new_handle;
 }
 
@@ -335,6 +332,9 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
     {
         *payloadOut = payload;
     }
+
+    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                ( new_handle, SCOREP_HANDLE_TYPE_INTERIM_COMMUNICATOR ) );
 
     return new_handle;
 }

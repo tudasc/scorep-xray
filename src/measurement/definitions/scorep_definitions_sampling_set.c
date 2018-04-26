@@ -129,9 +129,6 @@ SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
 
     SCOREP_Definitions_Unlock();
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
-
     return new_handle;
 }
 
@@ -154,9 +151,6 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
         scopeHandle );
 
     SCOREP_Definitions_Unlock();
-
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
 
     return new_handle;
 }
@@ -269,6 +263,12 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
         SCOREP_Tracing_CacheSamplingSet( new_handle );
     }
 
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
+    }
+
     return new_handle;
 }
 
@@ -360,6 +360,12 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
         SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SamplingSet,
                                                    sampling_set );
 
+
+        if ( definition_manager == &scorep_local_definition_manager )
+        {
+            SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                        ( new_handle, SCOREP_HANDLE_TYPE_SAMPLING_SET ) );
+        }
         return new_handle;
     }
 }

@@ -103,9 +103,6 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
 
     SCOREP_Definitions_Unlock();
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_GROUP ) );
-
     return new_handle;
 }
 
@@ -132,9 +129,6 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
         true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
-
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_GROUP ) );
 
     return new_handle;
 }
@@ -251,6 +245,12 @@ define_group( SCOREP_DefinitionManager* definition_manager,
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Group, group );
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_GROUP ) );
+    }
 
     return new_handle;
 }

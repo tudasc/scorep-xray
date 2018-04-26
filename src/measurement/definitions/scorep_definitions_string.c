@@ -79,9 +79,6 @@ SCOREP_Definitions_NewString( const char* str )
 
     SCOREP_Definitions_Unlock();
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_STRING ) );
-
     return new_handle;
 }
 
@@ -147,6 +144,12 @@ scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_mana
      */
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( String, string );
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_STRING ) );
+    }
 
     return new_handle;
 }

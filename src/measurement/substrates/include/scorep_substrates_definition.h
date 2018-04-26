@@ -93,8 +93,7 @@
 
 /*
  * Macro for checking the request of a specific feature.
- * Not intended to be used directly, use
- * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY instead.
+ * Not intended to be used directly, use SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY instead.
  * It will loop over all substrates and combine their return values of the
  * GET_REQUIREMENT callback with RESULT using the operation OP.
  * For available features that can be used as REQUIREMENT see
@@ -169,9 +168,8 @@ typedef enum SCOREP_Substrates_MgmtType
 
 /**
  * Number of the substrates for a particular event. Currently we support at
- * most four simultaneous substrate classes: profiling, tracing, invalidate
- * property, and plugins. The definition is used for example, to provide the
- * substrate data for each location.
+ * most four simultaneous substrate classes: profiling, tracing, invalidate property, and plugins.
+ * The definition is used for example, to provide the substrate data for each location.
  */
 
 #define SCOREP_SUBSTRATES_NUM_SUBSTRATES 4
@@ -346,7 +344,9 @@ typedef void ( * SCOREP_Substrates_EnsureGlobalIdCb )(
 /**
  * Called whenever there is a new definition (SCOREP_MGMT_NEW_DEFINITION_HANDLE).
  *
- * This is not thread safe. Thus, substrates must handle locking.
+ * This is not necessarily thread safe. Thus, substrates must handle locking.
+ * This might be within a definition lock. Substrates are not allowed to define
+ * new handles during this event.
  * @param handle handle to the new definition
  * @param type type of the handle
  */
@@ -397,8 +397,8 @@ typedef void ( * SCOREP_Substrates_LeakedMemoryCb )(
  * Substrates that 'prevent' something (e.g., PREVENT_ASYNC_METRICS) may
  * notify about the prevention (e.g., via UTILS_WARN_ONCE).
  * The MGMT callback is supposed to be triggered via the macro
- * SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY.
- * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY
+ * SCOREP_SUBSTRATE_REQUIREMENT_CHECK(_ANY).
+ * @see SCOREP_SUBSTRATE_REQUIREMENT_CHECK(_ANY)
  */
 typedef bool ( * SCOREP_Substrates_GetRequirementCb)(
     SCOREP_Substrates_RequirementFlag feature );

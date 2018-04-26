@@ -921,6 +921,9 @@ typedef struct SCOREP_SubstratePluginInfo
      * Plugins should use the callbacks passed by set_callbacks,
      * <tt>SCOREP_PublicHandles.h</tt>, and <tt>SCOREP_PublicTypes.h</tt>
      *  to make sense from the handle, (e.g., to get the name of a region)
+     *  The handles can be unique for every process and are not necessarily comparable.
+     *  It might be that this is called within a locked region. Therefore your implementation
+     *  should be as lightweight as possible.
      *  @param handle a handle to the newly created object
      *  @param type the type of the handle
      */

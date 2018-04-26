@@ -111,9 +111,6 @@ SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeN
                 propertyValue, NULL ) );
 
     SCOREP_Definitions_Unlock();
-
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( handle, SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE_PROPERTY ) );
 }
 
 
@@ -183,6 +180,7 @@ add_system_tree_node_property( SCOREP_DefinitionManager*   definition_manager,
     new_definition->property_value_handle = propertyValueHandle;
     HASH_ADD_HANDLE( new_definition, property_value_handle, String );
 
+    /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SystemTreeNodeProperty,
                                                system_tree_node_property );
 
@@ -191,5 +189,11 @@ add_system_tree_node_property( SCOREP_DefinitionManager*   definition_manager,
     *systemTreeNode->properties_tail = new_handle;
     systemTreeNode->properties_tail  = &new_definition->properties_next;
 
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE_PROPERTY ) );
+    }
     return new_handle;
 }

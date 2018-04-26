@@ -105,9 +105,6 @@ SCOREP_SamplingSet_AddRecorder( SCOREP_SamplingSetHandle samplingSetHandle,
                                       recorderHandle );
 
     SCOREP_Definitions_Unlock();
-
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( recorderHandle, SCOREP_HANDLE_TYPE_SAMPLING_SET_RECORDER ) );
 }
 
 
@@ -136,6 +133,12 @@ scorep_sampling_set_add_recorder( SCOREP_DefinitionManager* definition_manager,
     *definition_manager->sampling_set_recorder.tail = new_handle;
     definition_manager->sampling_set_recorder.tail  = &new_definition->next;
     new_definition->sequence_number                 = definition_manager->sampling_set_recorder.counter++;
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( recorderHandle, SCOREP_HANDLE_TYPE_SAMPLING_SET_RECORDER ) );
+    }
 }
 
 

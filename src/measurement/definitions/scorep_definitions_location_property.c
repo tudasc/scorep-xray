@@ -77,9 +77,6 @@ SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
 
     SCOREP_Definitions_Unlock();
 
-    SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                ( new_handle, SCOREP_HANDLE_TYPE_PROPERTY ) );
-
     return new_handle;
 }
 
@@ -135,5 +132,10 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( LocationProperty, location_property );
 
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_PROPERTY ) );
+    }
     return new_handle;
 }
