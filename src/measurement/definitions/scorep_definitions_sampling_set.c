@@ -360,7 +360,6 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
         SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SamplingSet,
                                                    sampling_set );
 
-
         if ( definition_manager == &scorep_local_definition_manager )
         {
             SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,

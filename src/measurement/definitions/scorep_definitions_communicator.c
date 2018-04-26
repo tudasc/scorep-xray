@@ -484,5 +484,7 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
     comms->tail                     = &new_definition->next;
     new_definition->sequence_number = comms->counter++;
 
+    /* no NewDefinitionHandle, communicators should only be defined at unification */
+
     return new_handle;
 }

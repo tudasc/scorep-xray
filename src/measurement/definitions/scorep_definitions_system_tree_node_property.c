@@ -189,7 +189,6 @@ add_system_tree_node_property( SCOREP_DefinitionManager*   definition_manager,
     *systemTreeNode->properties_tail = new_handle;
     systemTreeNode->properties_tail  = &new_definition->properties_next;
 
-
     if ( definition_manager == &scorep_local_definition_manager )
     {
         SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
