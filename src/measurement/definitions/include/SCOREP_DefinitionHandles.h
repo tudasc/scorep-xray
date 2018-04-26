@@ -59,4 +59,6 @@ typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
 
 typedef SCOREP_AnyHandle SCOREP_MPICartesianCoordsHandle;
 
+typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
+
 #endif /* SCOREP_DEFINITIONHANDLES_H */

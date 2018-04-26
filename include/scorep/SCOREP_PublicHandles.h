@@ -62,7 +62,6 @@ typedef enum SCOREP_HandleType
     SCOREP_HANDLE_TYPE_METRIC,                    /** The handle type is SCOREP_MetricHandle (defined in SCOREP_PublicTypes.h) */
     SCOREP_HANDLE_TYPE_PARADIGM,                  /** The handle type is SCOREP_ParadigmHandle (defined in SCOREP_PublicTypes.h) */
     SCOREP_HANDLE_TYPE_PARAMETER,                 /** The handle type is SCOREP_ParameterHandle */
-    SCOREP_HANDLE_TYPE_PROPERTY,                  /** The handle type is SCOREP_PropertyHandle */
     SCOREP_HANDLE_TYPE_REGION,                    /** The handle type is SCOREP_RegionHandle (defined in SCOREP_PublicTypes.h) */
     SCOREP_HANDLE_TYPE_RMA_WINDOW,                /** The handle type is SCOREP_RmaWindowHandle */
     SCOREP_HANDLE_TYPE_SAMPLING_SET,              /** The handle type is SCOREP_SamplingSetHandle (defined in SCOREP_PublicTypes.h) */
@@ -93,8 +92,6 @@ typedef SCOREP_AnyHandle SCOREP_LocationGroupHandle;
 typedef SCOREP_AnyHandle SCOREP_LocationPropertyHandle;
 
 typedef SCOREP_AnyHandle SCOREP_ParameterHandle;
-
-typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
 
 typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;
 
