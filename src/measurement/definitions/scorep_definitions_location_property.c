@@ -135,7 +135,7 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
     if ( definition_manager == &scorep_local_definition_manager )
     {
         SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                    ( new_handle, SCOREP_HANDLE_TYPE_PROPERTY ) );
+                                    ( new_handle, SCOREP_HANDLE_TYPE_LOCATION_PROPERTY ) );
     }
     return new_handle;
 }
