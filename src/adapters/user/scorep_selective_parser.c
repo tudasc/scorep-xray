@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014
@@ -38,6 +38,7 @@
 #include <config.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
@@ -442,4 +443,16 @@ scorep_selective_finalize( void )
                            scorep_selective_delete_selected_region );
     SCOREP_Vector_Free( scorep_selected_regions );
     scorep_selected_regions = NULL;
+}
+
+void
+scorep_user_subsystem_dump_manifest( FILE*       manifestFile,
+                                     const char* relativeSourceDir,
+                                     const char* targetDir )
+{
+    if ( SCOREP_ConfigCopyFile( "selective", "config_file", relativeSourceDir, targetDir ) )
+    {
+        SCOREP_ConfigManifestSectionHeader( manifestFile, "User instrumentation" );
+        SCOREP_ConfigManifestSectionEntry( manifestFile, "scorep.selective", "Copy of the applied config file for selective recording, source file `%s`.", scorep_selective_file_name );
+    }
 }

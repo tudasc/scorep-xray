@@ -4,7 +4,7 @@
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015-2016,
@@ -56,6 +56,7 @@ static void substrates_subsystem_deactivate_cpu_location(struct SCOREP_Location*
 static SCOREP_ErrorCode substrates_subsystem_pre_unify(void);
 static SCOREP_ErrorCode substrates_subsystem_post_unify(void);
 static void substrates_subsystem_finalize(void);
+static void substrates_subsystem_dump_manifest(FILE* manifestFile, const char* relativeSourceDir, const char* targetDir);
 /* *INDENT-ON* */
 
 /* Used from elsewhere, initialized in SCOREP_Substrates_EarlyInitialize/substrate_pack */
@@ -86,6 +87,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_Substrates =
     .subsystem_pre_unify               = &substrates_subsystem_pre_unify,
     .subsystem_post_unify              = &substrates_subsystem_post_unify,
     .subsystem_finalize                = &substrates_subsystem_finalize,
+    .subsystem_dump_manifest           = &substrates_subsystem_dump_manifest,
 };
 
 static size_t subsystem_id;
@@ -295,6 +297,16 @@ substrates_subsystem_finalize( void )
     aligned_free( scorep_substrates_mgmt );
 }
 
+static void
+substrates_subsystem_dump_manifest( FILE*       manifestFile,
+                                    const char* relativeSourceDir,
+                                    const char* targetDir )
+{
+    UTILS_DEBUG_ENTRY();
+
+    SCOREP_CALL_SUBSTRATE_MGMT( DumpManifest, DUMP_MANIFEST,
+                                ( manifestFile, relativeSourceDir, targetDir ) );
+}
 
 void
 SCOREP_Substrates_WriteData( void )

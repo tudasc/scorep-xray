@@ -12,7 +12,9 @@ Major features:
   has to be instrumented as well.
 
 Features and improvements:
-
+- Score-P now generates a dynamic MANIFEST file for each experiment
+  and copies files, like the filter or selective configuration files,
+  to the experiment directory.
 - The utility "scorep-score" is provided now as a library application
   to allow using its functionality in third-party software. Obtain
   compile flags via

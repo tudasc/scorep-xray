@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -49,6 +49,7 @@
 #include <SCOREP_Config.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_IO.h>
 #define SCOREP_DEBUG_MODULE_NAME CONFIG
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
@@ -82,6 +83,7 @@ struct scorep_config_variable
     SCOREP_ConfigVariable          data;
     char                           env_var_name[ ENV_NAME_LEN_MAX + 1 ];
     bool                           is_evaluated;
+    bool                           is_changed;
     struct scorep_config_variable* next;
 };
 
@@ -310,7 +312,6 @@ get_variable( struct scorep_config_name_space* nameSpace,
     return variable;
 }
 
-
 SCOREP_ErrorCode
 SCOREP_ConfigRegister( const char*                  nameSpaceName,
                        const SCOREP_ConfigVariable* variables )
@@ -347,8 +348,8 @@ SCOREP_ConfigRegister( const char*                  nameSpaceName,
         UTILS_BUG_ON( !variables->longHelp, "Missing long description value." );
 
         size_t name_len = strlen( variables->name );
-        UTILS_BUG_ON( name_len == 1 || name_len > ENV_NAME_SUB_LEN_MAX,
-                      "Variable name too long." );
+        UTILS_BUG_ON( name_len == 1, "Variable name needs to be longer than 1 character." );
+        UTILS_BUG_ON( name_len > ENV_NAME_SUB_LEN_MAX, "Variable name too long." );
         check_name( variables->name, name_len, false );
 
         struct scorep_config_variable* variable;
@@ -459,6 +460,7 @@ SCOREP_ConfigApplyEnv( void )
                                                    variable->data.type,
                                                    variable->data.variableReference,
                                                    variable->data.variableContext );
+                variable->is_changed = true;
 
                 if ( !successfully_parsed )
                 {
@@ -549,8 +551,8 @@ SCOREP_ConfigGetData( const char* nameSpaceName,
 }
 
 
-SCOREP_ErrorCode
-SCOREP_ConfigDump( FILE* dumpFile )
+static SCOREP_ErrorCode
+config_dump( FILE* dumpFile, bool allVariables, bool withValue )
 {
     UTILS_ASSERT( dumpFile );
 
@@ -564,15 +566,46 @@ SCOREP_ConfigDump( FILE* dumpFile )
               variable;
               variable = variable->next )
         {
-            dump_value( dumpFile,
-                        variable->env_var_name,
-                        variable->data.type,
-                        variable->data.variableReference,
-                        variable->data.variableContext );
+            if ( variable->is_changed || allVariables )
+            {
+                char buffer[ 200 ];
+                if ( allVariables )
+                {
+                    sprintf( buffer, "%s", variable->env_var_name );
+                }
+                else
+                {
+                    sprintf( buffer, "    %s", variable->env_var_name );
+                }
+                if ( withValue )
+                {
+                    dump_value( dumpFile,
+                                buffer,
+                                variable->data.type,
+                                variable->data.variableReference,
+                                variable->data.variableContext );
+                }
+                else
+                {
+                    fprintf( dumpFile, "%s\n", buffer );
+                }
+            }
         }
     }
 
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+SCOREP_ConfigDump( FILE* dumpFile )
+{
+    return config_dump( dumpFile, true, true );
+}
+
+SCOREP_ErrorCode
+SCOREP_ConfigDumpChangedVars( FILE* dumpFile )
+{
+    return config_dump( dumpFile, false, false );
 }
 
 
@@ -664,10 +697,18 @@ wrap_lines( const char* message,
         switch ( nl )
         {
             case 0:
-                fprintf( out, "%*s%s",
-                         firstIndent, "",
-                         html ? "<p>" : "" );
-                sep = "";
+                if ( firstIndent <= 0 )
+                {
+                    fprintf( out, "\n%*s%s",
+                             indent, "",
+                             html ? "<p>" : "" );
+                }
+                else
+                {
+                    fprintf( out, "%*s%s",
+                             firstIndent, "",
+                             html ? "<p>" : "" );
+                }                sep = "";
                 break;
 
             case 4:
@@ -716,9 +757,41 @@ wrap_lines( const char* message,
     fprintf( out, "%s\n",
              html ? "</p>" : "" );
 }
-
-
 #define WRAP_MARGIN 80
+
+void
+SCOREP_ConfigManifestSectionHeader( FILE* out, const char* section )
+{
+    fprintf( out, "\n      * %s:\n\n", section );
+}
+
+void
+SCOREP_ConfigManifestSectionEntry( FILE* out, const char* fileName, const char* descriptionFormatString, ... )
+{
+    char name[ 250 ];
+    char buffer[ 1000 ];
+    sprintf( name, "        * `%s`", fileName );
+
+    va_list va;
+    va_start( va, descriptionFormatString );
+    vsprintf( buffer, descriptionFormatString, va );
+
+    if ( strlen( name ) < 31 ) //ends before the second column
+    {
+        //start description in the same line
+        int len = 31 - strlen( name ) + 1;
+
+        fprintf( out, "%s", name );
+        wrap_lines( buffer, WRAP_MARGIN, 32, len, false, out );
+    }
+    else
+    {
+        //start description in a new line
+        wrap_lines( name, WRAP_MARGIN, 0, 8, false, out );
+        wrap_lines( buffer, WRAP_MARGIN, 32, 32, false, out );
+    }
+}
+
 void
 SCOREP_ConfigHelp( bool  full,
                    bool  html,
@@ -743,8 +816,8 @@ SCOREP_ConfigHelp( bool  full,
                      html ? "</tt></dt>" : "" );
 
             fprintf( out, "%s",
-                     html ? " <dd>\n  " : "  Description: " );
-            wrap_lines( variable->data.shortHelp, WRAP_MARGIN, 15, 0, html, out );
+                     html ? " <dd>\n  " : "  Description:" );
+            wrap_lines( variable->data.shortHelp, WRAP_MARGIN, 15, 1, html, out );
 
             fprintf( out, "%sType:%s%s%s\n",
                      html ? "  <br/>\n  <dl>\n   <dt>" : "         ",
@@ -1813,4 +1886,70 @@ dump_value( FILE*             out,
         default:
             break;
     }
+}
+
+bool
+SCOREP_ConfigCopyFile( const char* nameSpaceName,
+                       const char* name,
+                       const char* relativeSourceDir,
+                       const char* targetDir )
+{
+    UTILS_DEBUG( "Copy file based on variable %s from namespace %s", nameSpaceName, name );
+
+    UTILS_ASSERT( nameSpaceName );
+    size_t name_space_len = strlen( nameSpaceName );
+    UTILS_BUG_ON( name_space_len > ENV_NAME_SUB_LEN_MAX,
+                  "Name space is too long." );
+    check_name( nameSpaceName, name_space_len, true );
+
+    struct scorep_config_name_space* name_space;
+    name_space = get_name_space( nameSpaceName,
+                                 name_space_len,
+                                 false );
+    UTILS_ASSERT( name_space );
+
+    size_t name_len = strlen( name );
+    UTILS_BUG_ON( name_len == 1, "Variable name needs to be longer than 1 character." );
+    UTILS_BUG_ON( name_len > ENV_NAME_SUB_LEN_MAX, "Variable name too long." );
+    check_name( name, name_len, false );
+
+    const struct scorep_config_variable* variable;
+    variable = get_variable( name_space,
+                             name,
+                             false );
+
+    if ( variable == NULL )
+    {
+        /* didn't find the variable. */
+        return false;
+    }
+    const char* value = *( const char** )variable->data.variableReference;
+
+    if (   value == NULL || *value == '\0'  || !variable->data.variableContext )
+    {
+        /* empty value, e.g., default setting, or empty target name,
+           therefore nothing needs to be done. */
+        return false;
+    }
+    char* input_file_name = UTILS_IO_JoinPath(
+        2, relativeSourceDir, value );
+
+    if ( UTILS_IO_DoesFileExist( input_file_name ) )
+    {
+        char* output_file_name = UTILS_IO_JoinPath(
+            2, targetDir, ( const char* )variable->data.variableContext );
+
+        if ( output_file_name )
+        {
+            SCOREP_ErrorCode error = UTILS_IO_FileCopy( input_file_name, output_file_name );
+            if ( error )
+            {
+                UTILS_WARNING(  "Cannot copy file %s to %s.", input_file_name, output_file_name  );
+            }
+        }
+        free( output_file_name );
+    }
+
+    free( input_file_name );
+    return true;
 }

@@ -1619,6 +1619,58 @@ get_requirement( SCOREP_Substrates_RequirementFlag flag )
     }
 }
 
+static void
+dump_manifest( FILE* manifestFile, const char* relativeSourceDir, const char* targetDir )
+{
+    UTILS_ASSERT( manifestFile );
+
+    SCOREP_ConfigManifestSectionHeader( manifestFile, "Profiling" );
+    char name[ 200 ];
+    sprintf( name, "%s.cubex", scorep_profile_basename );
+
+    switch ( scorep_profile_output_format )
+    {
+        case SCOREP_PROFILE_OUTPUT_CUBE4:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name, "CUBE4 result file of the summary measurement." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_CUBE_TUPLE:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name, "Extended set of statistics in CUBE4 format." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_THREAD_SUM:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name,
+                                               "Sums all locations within a location group and stores the data in Cube4 format." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_THREAD_TUPLE:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name,
+                                               "Sums all locations within a location group and stores in addition some statistical"
+                                               " data about the distribution among the locations of a location group." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_KEY_THREADS:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name,
+                                               "Stores the initial location, the slowest location and the fastest location per process. "
+                                               "Sums all other locations within a location group. The result is stored in Cube4 format." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_CLUSTER_THREADS:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, name,
+                                               "Clusters locations within a location group if they have the same calltree structure. "
+                                               "Sums locations within a cluster. Stores the result in Cube4 format." );
+            break;
+        case SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT:
+            SCOREP_ConfigManifestSectionEntry( manifestFile, "tau/snapshot.<rank>.0.0", "TAU snapshot files." );
+            break;
+    }
+    ;
+
+    if ( scorep_profile_enable_core_files )
+    {
+        char core_name[ 200 ];
+        sprintf( core_name, "%s.<rank>.<thrd>.core", scorep_profile_basename );
+
+        SCOREP_ConfigManifestSectionEntry( manifestFile, core_name,
+                                           "State of the profiling at error condition. (exists only in case of failure)" );
+    }
+}
+
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
@@ -1682,6 +1734,7 @@ const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRA
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( InitializeMpp,             INITIALIZE_MPP,               SCOREP_Profile_InitializeMpp ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                leaked_memory ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,            GET_REQUIREMENT,              get_requirement ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( DumpManifest,              DUMP_MANIFEST,                dump_manifest ),
 };
 
 

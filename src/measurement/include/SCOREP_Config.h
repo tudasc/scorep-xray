@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -184,7 +184,6 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
                        const char* variableName,
                        const char* variableValue );
 
-
 /**
  * Returns the config variable data if it exists.
  *
@@ -209,6 +208,46 @@ SCOREP_ConfigGetData( const char* nameSpaceName,
  */
 SCOREP_ErrorCode
 SCOREP_ConfigDump( FILE* dumpFile );
+
+/**
+ * Dumps the current value of all explicitly set config variables to the given file,
+ * one per line.
+ *
+ * The output is suitable for shell consumption.
+ *
+ * @param dumpFile An already opened I/O stream for writing.
+ *
+ * @return SCOREP_SUCCESS.
+ */
+SCOREP_ErrorCode
+SCOREP_ConfigDumpChangedVars( FILE* dumpFile );
+
+/**
+ * Copy the file referenced in the Score-P variable, if necessary
+ *
+ * @param nameSpaceName     The name space for the variable.
+ * @param variableName      The name of the variable.
+ * @param relativeSourceDir directory used as starting point for relative paths,
+ *                          e.g., the current working dir.
+ * @param targetDir target directory for the copy operation.
+ *
+ * @return true on success false otherwise.
+ */
+bool
+SCOREP_ConfigCopyFile( const char* nameSpaceName,
+                       const char* variableName,
+                       const char* relativeSourceDir,
+                       const char* targetDir );
+
+void
+SCOREP_ConfigManifestSectionHeader( FILE*       out,
+                                    const char* section );
+
+void
+SCOREP_ConfigManifestSectionEntry( FILE*       out,
+                                   const char* fileName,
+                                   const char* descriptionFormatString,
+                                   ... );
 
 
 /**

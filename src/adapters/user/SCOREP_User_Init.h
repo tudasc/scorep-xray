@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -78,6 +78,15 @@ extern SCOREP_Hashtab* scorep_user_region_by_name_hash_table;
     to lookup the name in a extra datastructure.
  */
 extern SCOREP_Hashtab* scorep_user_region_table;
+
+/**
+   Dumps file information into the manifest file and copies files depending on the
+   SCOREP_SELECTIVE_CONFIG_FILE
+ */
+void
+scorep_user_subsystem_dump_manifest( FILE*       manifestFile,
+                                     const char* relativeSourceDir,
+                                     const char* targetDir );
 
 /** @} */
 

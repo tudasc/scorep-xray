@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -94,5 +94,10 @@ scorep_subsystems_post_unify( void );
 
 void
 scorep_subsystems_deregister( void );
+
+void
+scorep_subsystems_dump_manifest( FILE*       manifestFile,
+                                 const char* relativeSourceDir,
+                                 const char* targetDir );
 
 #endif /* SCOREP_INTERNAL_SUBSYSTEM_H */

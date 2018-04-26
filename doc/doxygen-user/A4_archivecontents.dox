@@ -1,0 +1,46 @@
+/** @page archiveannex  Experiment Directory Contents
+@seclabel{archiveannex}
+
+The contents of the experiment directory might vary
+ depending on the settings for the measurement run. The following table
+ shows the possible files and the environment variables they are depending on.
+
+<b>Files that should be present from the start, e.g., in an aborted measurement:</b><br>
+
+<b>README</b>&nbsp;&nbsp;<i>Information about this measurement, e.g., list of expected files</i><br>
+
+<b>scorep.cfg</b>&nbsp;&nbsp; <i>Listing of used environment variables</i><br>
+
+
+<b>scorep.filter</b>&nbsp;&nbsp; <i>Copy of the used filter file</i><br>
+&nbsp;&nbsp;   SCOREP_FILTERING_FILE<br>
+
+<b>scorep.selective</b>&nbsp;&nbsp; <i>Copy of the used config file for selective recording</i><br>
+&nbsp;&nbsp;   SCOREP_SELECTIVE_CONFIG_FILE<br>
+
+<br><b>Files that will be created at the end of the measurement:</b><br>
+
+<b>profile.cubex</b>&nbsp;&nbsp; <i>Cube4 result file of the summary measurement or an extended set of statistics</i><br>
+&nbsp;&nbsp;   SCOREP_ENABLE_PROFILING, SCOREP_PROFILING_BASE_NAME, SCOREP_PROFILING_FORMAT<br>
+
+<b>tau/snapshot.[rank].0.0</b>&nbsp;&nbsp; <i></i>TAU snapshot files<br>
+&nbsp;&nbsp;   SCOREP_ENABLE_PROFILING, SCOREP_PROFILING_BASE_NAME, SCOREP_PROFILING_FORMAT<br>
+
+<b>traces/</b>&nbsp;&nbsp;   <i>Sub-directory with per location trace data</i><br>
+&nbsp;&nbsp;   SCOREP_ENABLE_TRACING<br>
+
+<b>traces.def</b>&nbsp;&nbsp;   <i>OTF2 global definitions file</i><br>
+&nbsp;&nbsp;   SCOREP_ENABLE_TRACING<br>
+
+
+<b>traces.otf2</b>&nbsp;&nbsp;   <i>OTF2 anchor file</i><br>
+&nbsp;&nbsp;   SCOREP_ENABLE_TRACING<br>
+
+<br><b>Additional debug information, the files and their contents may vary depending on the measurement progress:</b><br>
+
+<b>profile.[rank].[thread].core</b>&nbsp;&nbsp;   <i>Profiling core file in case of error</i><br>
+&nbsp;&nbsp;   SCOREP_PROFILING_ENABLE_CORE_FILES, SCOREP_PROFILING_BASE_NAME<br>
+
+
+
+*/

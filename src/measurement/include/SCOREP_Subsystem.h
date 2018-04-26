@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,7 +44,7 @@
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Types.h>
 
-#include <stddef.h>
+#include <stdio.h>
 
 
 /**
@@ -303,6 +303,15 @@ typedef struct SCOREP_Subsystem
      * Called in reverse order in the subsystem list.
      */
     void ( * subsystem_deregister )( void );
+
+    /**
+     * Dump subsystem information and configs to file.
+     *
+     * Called during experiment directory creation.
+     */
+    void ( * subsystem_dump_manifest )( FILE*       manifestFile,
+                                        const char* relativeSourceDir,
+                                        const char* targetDir );
 } SCOREP_Subsystem;
 
 

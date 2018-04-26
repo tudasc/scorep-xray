@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -379,6 +379,29 @@ scorep_subsystems_deregister( void )
         if ( SCOREP_Env_RunVerbose() )
         {
             fprintf( stderr, "[Score-P] de-registered %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
+        }
+    }
+}
+
+void
+scorep_subsystems_dump_manifest( FILE*       manifestFile,
+                                 const char* relativeSourceDir,
+                                 const char* targetDir )
+{
+    /* call dump measurement functions for all subsystems */
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_dump_manifest )
+        {
+            continue;
+        }
+
+        scorep_subsystems[ i ]->subsystem_dump_manifest( manifestFile, relativeSourceDir, targetDir );
+
+        if ( SCOREP_Env_RunVerbose() )
+        {
+            fprintf( stderr, "[Score-P] dumped measurement nformation and configs of %s subsystem\n",
                      scorep_subsystems[ i ]->subsystem_name );
         }
     }

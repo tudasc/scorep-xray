@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2018,
+ * Copyright (c) 2009-2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,6 +61,7 @@
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Substrates_Management.h>
 #include <SCOREP_Unwinding.h>
+#include <SCOREP_Config.h>
 
 #include <scorep_environment.h>
 #include <scorep_status.h>
@@ -1619,6 +1620,17 @@ SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet )
     }
 }
 
+static void
+dump_manifest( FILE* manifestFile, const char* relativeSourceDir, const char* targetDir )
+{
+    UTILS_ASSERT( manifestFile );
+
+    SCOREP_ConfigManifestSectionHeader( manifestFile, "Tracing" );
+    SCOREP_ConfigManifestSectionEntry( manifestFile, "traces.otf2", "OTF2 anchor file." );
+    SCOREP_ConfigManifestSectionEntry( manifestFile, "traces.def", "OTF2 global definitions file." );
+    SCOREP_ConfigManifestSectionEntry( manifestFile, "traces/", "Sub-directory containing per location trace data." );
+}
+
 static bool
 get_requirement( SCOREP_Substrates_RequirementFlag flag )
 {
@@ -1712,6 +1724,7 @@ const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRA
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( EnsureGlobalId,     ENSURE_GLOBAL_ID,     SCOREP_Tracing_AssignLocationId ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( AddAttribute,       ADD_ATTRIBUTE,        add_attribute ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,     GET_REQUIREMENT,      get_requirement ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( DumpManifest,       DUMP_MANIFEST,        dump_manifest ),
 };
 
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -351,6 +351,10 @@ typedef enum SCOREP_ConfigType
      * SCOREP_ConfigVariable::variableReference should point to a variable of
      * type char*. The value of the variable should always be a valid pointer
      * returned from the @a malloc family of functions or @a NULL.
+     *
+     * SCOREP_ConfigVariable::variableContext if it contains a default file name
+     * the respective file will be copied to the measurement archive by use of
+     * SCOREP_ConfigCopyFile(). If it is NULL it will be skipped.
      */
     SCOREP_CONFIG_TYPE_STRING,
 

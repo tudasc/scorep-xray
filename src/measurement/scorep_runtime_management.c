@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,6 +49,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Location.h>
 #include "scorep_environment.h"
+#include "scorep_subsystem.h"
 
 #include <scorep_substrates_definition.h>
 #include <SCOREP_Substrates_Management.h>
@@ -85,6 +86,7 @@ static void scorep_create_directory( void );
 static void scorep_create_experiment_dir_name( void );
 static bool scorep_dir_name_is_created( void );
 static void scorep_dump_config( void );
+static void dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* targetDir );
 /* *INDENT-ON* */
 
 
@@ -139,9 +141,10 @@ SCOREP_CreateExperimentDir( void )
     {
         scorep_create_directory();
 
-        /* dump the measurement configuration early, so that it is also
+        /* dump the measurement configuration, filter and manifest early, so that it is also
            available in case of failure */
         scorep_dump_config();
+        dump_manifest_and_subsystem_configs( scorep_working_directory, scorep_experiment_dir_name );
     }
 
     scorep_experiment_dir_created = true;
@@ -379,11 +382,6 @@ SCOREP_RenameExperimentDir( void )
 static void
 scorep_dump_config( void )
 {
-    if ( SCOREP_Status_GetRank() != 0 )
-    {
-        return;
-    }
-
     char* dump_file_name = UTILS_IO_JoinPath(
         2, SCOREP_GetExperimentDirName(), "scorep.cfg" );
     if ( !dump_file_name )
@@ -407,5 +405,69 @@ scorep_dump_config( void )
     free( dump_file_name );
 
     SCOREP_ConfigDump( dump_file );
+    fclose( dump_file );
+}
+
+static void
+dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* targetDir )
+{
+    char* dump_file_name = UTILS_IO_JoinPath(
+        2, scorep_experiment_dir_name, "MANIFEST.md" );
+    if ( !dump_file_name )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "Cannot allocate memory for MANIFEST.md file name" );
+        return;
+    }
+
+    FILE* dump_file = fopen( dump_file_name, "w" );
+    if ( !dump_file )
+    {
+        UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
+                     "Cannot write MANIFEST.md into `%s'",
+                     dump_file_name );
+        return;
+    }
+    free( dump_file_name );
+
+    /* Note, further additions to the MANIFEST.md file or triggered file copies
+     * should use the following scheme:
+     * 1) If the information is part of a subsystem it should use the
+     *    scorep_subsystems_dump_manifest callback and let the subsystem handle the
+     *    information.
+     * 2) If it is subsystem independent, use the provided SCOREP_ConfigCopyFile to
+     *    trigger a file copy. If the new information is configuration independent,
+     *    it can be added directly as part of the static header.
+     */
+
+    /* static header */
+    fprintf( dump_file, "# Experiment directory overview\n\n" );
+
+    fprintf( dump_file, "The result directory of this measurement should contain the following files:\n\n" );
+    fprintf( dump_file, "   1. Files that should be present even if the measurement aborted:\n\n" );
+    fprintf( dump_file, "      * `MANIFEST.md`           This manifest file\n" );
+    fprintf( dump_file, "      * `scorep.cfg`            Listing of used environment variables\n" );
+
+    /* write dynamic information */
+    /* add info for a possible filter file since it isn't controlled by subsystem
+       Only on SCOREP_SUCCESS a file has been copied and the respective text has to be
+       generated.
+     */
+    if ( SCOREP_ConfigCopyFile( "filtering", "file", relativeSourceDir, targetDir ) )
+    {
+        fprintf( dump_file, "      * `scorep.filter`         Copy of the applied filter file\n" );
+    }
+
+    fprintf( dump_file, "\n   2. Files that will be created by subsystems of the measurement core:\n" );
+
+    /* collect information from subsystems*/
+    scorep_subsystems_dump_manifest( dump_file, relativeSourceDir, targetDir );
+
+    fprintf( dump_file, "\n\n\n" );
+    fprintf( dump_file, "# List of Score-P variables that were explicitly set for this measurement\n\n"
+             " The complete list of Score-P variables used, incl. current default values, \n"
+             " can be found in `scorep.cfg`.\n\n" );
+
+    SCOREP_ConfigDumpChangedVars( dump_file );
     fclose( dump_file );
 }

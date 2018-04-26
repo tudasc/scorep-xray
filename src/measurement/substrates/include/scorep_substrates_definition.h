@@ -31,6 +31,7 @@
 #include <SCOREP_DefinitionHandles.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 /**
  * Macro defining substrate call construct
@@ -146,6 +147,7 @@ typedef enum SCOREP_Substrates_MgmtType
     SCOREP_MGMT_INIT_SUBSTRATE = 0,
     SCOREP_MGMT_INITIALIZE_MPP,
     SCOREP_MGMT_ENSURE_GLOBAL_ID,
+    SCOREP_MGMT_DUMP_MANIFEST,
     SCOREP_MGMT_ON_LOCATION_CREATION,
     SCOREP_MGMT_ON_LOCATION_DELETION,
     SCOREP_MGMT_ON_CPU_LOCATION_ACTIVATION,
@@ -400,5 +402,11 @@ typedef void ( * SCOREP_Substrates_LeakedMemoryCb )(
  */
 typedef bool ( * SCOREP_Substrates_GetRequirementCb)(
     SCOREP_Substrates_RequirementFlag feature );
+
+
+typedef void ( * SCOREP_Substrates_DumpManifestCb )(
+    FILE*       manifestFile,
+    const char* relativeSourceDir,
+    const char* targetDir );
 
 #endif /* SCOREP_SUBSTRATES_DEFINITION_H */

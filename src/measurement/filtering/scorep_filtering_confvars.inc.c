@@ -52,7 +52,7 @@ static const SCOREP_ConfigVariable scorep_filtering_confvars[] = {
         "file",
         SCOREP_CONFIG_TYPE_PATH,
         &scorep_filtering_file_name,
-        NULL,
+        "scorep.filter",
         "",
         "A file name which contain the filter rules",
         ""

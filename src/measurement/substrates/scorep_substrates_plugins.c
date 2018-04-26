@@ -4,6 +4,9 @@
  * Copyright (c) 2015-2018,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2018,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,6 +40,7 @@
 #include "scorep_substrates_plugins.h"
 
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Config.h>
 
 #include <scorep/SCOREP_SubstratePlugins.h>
 
@@ -135,7 +139,9 @@ static const SCOREP_SubstratePluginCallbacks callbacks =
     SET_CALLBACK( SCOREP_StringHandle_Get ),
     SET_CALLBACK( SCOREP_Metric_WriteStrictlySynchronousMetrics ),
     SET_CALLBACK( SCOREP_Metric_WriteSynchronousMetrics ),
-    SET_CALLBACK( SCOREP_Metric_WriteAsynchronousMetrics )
+    SET_CALLBACK( SCOREP_Metric_WriteAsynchronousMetrics ),
+    SET_CALLBACK( SCOREP_ConfigManifestSectionHeader ),
+    SET_CALLBACK( SCOREP_ConfigManifestSectionEntry )
 };
 
 /* check whether snprintf worked as assumed */
@@ -392,6 +398,7 @@ SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( uint32_t currentPlugin, SCOR
         ASSIGN_MGMT( callbacks, FINALIZE_SUBSTRATE, finalize_plugins );
     }
 
+    ASSIGN_MGMT( callbacks, DUMP_MANIFEST, registered_plugins[ currentPlugin ].dump_manifest );
     ASSIGN_MGMT( callbacks, INITIALIZE_MPP, registered_plugins[ currentPlugin ].init_mpp );
     ASSIGN_MGMT( callbacks, ON_LOCATION_CREATION, registered_plugins[ currentPlugin ].create_location );
     ASSIGN_MGMT( callbacks, ON_LOCATION_DELETION, registered_plugins[ currentPlugin ].delete_location );

@@ -118,6 +118,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stddef.h>
 
 #include <scorep/SCOREP_PublicTypes.h>
@@ -126,10 +127,10 @@
 
 
 /** Current version of Score-P substrate plugin interface */
-#define SCOREP_SUBSTRATE_PLUGIN_VERSION 1
+#define SCOREP_SUBSTRATE_PLUGIN_VERSION 2
 
 /** This should be reduced by 1 for each new function added to SCOREP_SubstratePluginInfo */
-#define SCOREP_SUBSTRATE_PLUGIN_UNDEFINED_MANAGEMENT_FUNCTIONS 100
+#define SCOREP_SUBSTRATE_PLUGIN_UNDEFINED_MANAGEMENT_FUNCTIONS 99
 
 
 #ifdef __cplusplus
@@ -727,6 +728,20 @@ typedef struct SCOREP_SubstratePluginCallbacks
     void
     ( * SCOREP_Metric_WriteAsynchronousMetrics )( struct SCOREP_Location*          location,
                                                   SCOREP_Substrates_WriteMetricsCb cb );
+
+    /** @brief Create formated header in the manifest file */
+    void
+    ( * SCOREP_ConfigManifestSectionHeader )( FILE*       out,
+                                              const char* section );
+
+    /** @brief Create formated entry in the manifest file consisting out of a name and a
+     * description, the latter in printf style.
+     */
+    void
+    ( * SCOREP_ConfigManifestSectionEntry )( FILE*       out,
+                                             const char* fileName,
+                                             const char* descriptionFormatString,
+                                             ... );
 } SCOREP_SubstratePluginCallbacks;
 
 
@@ -942,6 +957,14 @@ typedef struct SCOREP_SubstratePluginInfo
      * @return the setting for the requirement flag, which highly depends on the type of flag
      */
     bool ( * get_requirement )( SCOREP_Substrates_RequirementFlag flag );
+
+    /**
+     * This function is called during experiment directory creation and allows to write information about involved
+     * files to the Manifest file and initiate file copies if needed.
+     */
+    void ( * dump_manifest )(  FILE*       manifestFile,
+                               const char* relativeSourceDir,
+                               const char* targetDir );
 
     /**
      *  for future extensions

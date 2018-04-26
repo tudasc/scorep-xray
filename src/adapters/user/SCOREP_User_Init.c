@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,6 +44,7 @@
 
 
 #include "scorep_user.h"
+#include "scorep_selective_region.h"
 
 /* size of hash map for the regions tagged by name */
 #define SCOREP_USER_REGION_BY_NAME_SIZE 128
@@ -100,6 +101,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
     .subsystem_init          = &user_subsystem_init,
     .subsystem_init_location = &user_subsystem_init_location,
     .subsystem_finalize      = &user_subsystem_finalize,
+    .subsystem_dump_manifest = &scorep_user_subsystem_dump_manifest,
 };
 
 
