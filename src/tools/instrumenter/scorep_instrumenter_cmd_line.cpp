@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -701,7 +701,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         std::cerr << "ERROR: It is not possible to build instrumented shared "
                   << "libraries with a statically build Score-P\n"
                   << "       You need a Score-P installation that was build with "
-                  << "shared libraries" << std::endl;
+                  << "shared libraries (--enable-shared)" << std::endl;
         exit( EXIT_FAILURE );
 #endif
         m_target_is_shared_lib = true;
