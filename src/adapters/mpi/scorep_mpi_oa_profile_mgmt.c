@@ -22,8 +22,12 @@
 
 #include <config.h>
 
+#include "scorep_mpi_oa_profile.h"
 #include "scorep_mpi_oa_profile_mgmt.h"
 
+#include <stdlib.h>
+
+#include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME MPIPROFILING
 #include <UTILS_Debug.h>
 
@@ -32,6 +36,16 @@ int                              scorep_mpiprofiling_initialized = 0;
 static int                       scorep_mpiprofiling_numprocs;
 int                              scorep_mpiprofiling_myrank;
 scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
+
+extern void* scorep_mpiprofiling_remote_time_packs;
+extern void* scorep_mpiprofiling_local_time_pack;
+extern void* scorep_mpiprofiling_remote_time_pack;
+extern int   scorep_mpiprofiling_remote_time_packs_in_use;
+extern int   scorep_mpiprofiling_local_time_pack_in_use;
+extern int   scorep_mpiprofiling_remote_time_pack_in_use;
+
+extern MPI_Request* scorep_mpiprofiling_timepack_requests;
+extern int          scorep_mpiprofiling_timepack_pool_size;
 
 /**
  * Initializes MPI profiling module
@@ -74,4 +88,42 @@ scorep_mpiprofile_init( void )
     #endif // _WITH_PREALLOCATION_OF_TIME_PACKS
 
     scorep_mpiprofiling_initialized = 1;
+}
+
+/**
+ * Finalizes MPI profiling module
+ */
+void
+scorep_mpiprofile_finalize( void )
+{
+    if ( !scorep_mpiprofiling_initialized )
+    {
+        return;
+    }
+    UTILS_DEBUG_ENTRY();
+    scorep_mpiprofiling_initialized = 0;
+    if ( scorep_mpiprofiling_remote_time_packs_in_use )
+    {
+        UTILS_DEBUG( "remote_time_packs_in_use is still in use" );
+    }
+    if ( scorep_mpiprofiling_local_time_pack_in_use )
+    {
+        UTILS_DEBUG( "scorep_mpiprofiling_local_time_pack_in_use is still in use" );
+    }
+    if ( scorep_mpiprofiling_remote_time_pack_in_use )
+    {
+        UTILS_DEBUG( "scorep_mpiprofiling_remote_time_pack_in_use is still in use" );
+    }
+    MPI_Status statuses[ scorep_mpiprofiling_timepack_pool_size ];
+    int        flag = 0;
+    PMPI_Testall( scorep_mpiprofiling_timepack_pool_size, scorep_mpiprofiling_timepack_requests, &flag, statuses );
+    if ( !flag )
+    {
+        UTILS_DEBUG( "at least one timepack buffer in the pool is busy" );
+    }
+    scorep_mpiprofile_free_timepack_pool();
+    free( scorep_mpiprofiling_local_time_pack );
+    free( scorep_mpiprofiling_remote_time_pack );
+    free( scorep_mpiprofiling_remote_time_packs );
+    UTILS_DEBUG_EXIT();
 }

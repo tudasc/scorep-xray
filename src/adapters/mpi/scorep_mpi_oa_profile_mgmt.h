@@ -25,6 +25,8 @@
 
 #include <mpi.h>
 
+#define _WITH_PREALLOCATION_OF_TIME_PACKS
+
 /**
  * @internal
  * Structure to hold the \a MPI_COMM_WORLD duplication used in mpi profiling.

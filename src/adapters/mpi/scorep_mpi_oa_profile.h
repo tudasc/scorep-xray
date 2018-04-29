@@ -94,12 +94,6 @@ scorep_mpiprofiling_rank_to_pe( int      rank,
                                 int*     global_rank );
 
 void
-scorep_mpiprofile_init_metrics( void );
-
-void
-scorep_mpiprofile_reinit_metrics( void );
-
-void
 scorep_mpiprofile_finalize( void );
 
 void*
@@ -157,20 +151,5 @@ void
 scorep_mpiprofile_eval_multi_time_packs( void* srcTimePacks,
                                          void* dstTimePack,
                                          int   size );
-
-/**
- * Evaluates two time stamps of the communicating processes to determine waiting states
- *
- * @param src Rrank of the receive side.
- * @param dst Rank of the destination side.
- * @param sendTime Time stamp on the send side.
- * @param recvTime Time stamp on the receive side.
- */
-void
-scorep_mpiprofile_eval_time_stamps( int      src,
-                                    int      dst,
-                                    uint64_t sendTime,
-                                    uint64_t recvTime );
-
 
 #endif /* SCOREP_MPIPROFILE_H */
