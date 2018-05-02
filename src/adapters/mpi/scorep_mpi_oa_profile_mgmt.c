@@ -44,8 +44,21 @@ int   scorep_mpiprofiling_remote_time_packs_in_use = 0;
 int   scorep_mpiprofiling_local_time_pack_in_use   = 0;
 int   scorep_mpiprofiling_remote_time_pack_in_use  = 0;
 
+void**       scorep_mpiprofiling_send_timepack_pool = 0;
 MPI_Request* scorep_mpiprofiling_timepack_requests  = 0;
 int          scorep_mpiprofiling_timepack_pool_size = 0;
+
+static void
+scorep_mpiprofile_free_timepack_pool( void )
+{
+    int i;
+    for ( i = 0; i < scorep_mpiprofiling_timepack_pool_size; i++ )
+    {
+        free( scorep_mpiprofiling_send_timepack_pool[ i ] );
+    }
+    free( scorep_mpiprofiling_send_timepack_pool );
+    free( scorep_mpiprofiling_timepack_requests );
+}
 
 /**
  * Initializes MPI profiling module

@@ -67,7 +67,7 @@ extern int   scorep_mpiprofiling_remote_time_packs_in_use;
 extern int   scorep_mpiprofiling_local_time_pack_in_use;
 extern int   scorep_mpiprofiling_remote_time_pack_in_use;
 
-static void**       mpiprofiling_send_timepack_pool = 0;
+extern void**       scorep_mpiprofiling_send_timepack_pool;
 extern MPI_Request* scorep_mpiprofiling_timepack_requests;
 extern int          scorep_mpiprofiling_timepack_pool_size;
 
@@ -181,9 +181,9 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
     if ( scorep_mpiprofiling_timepack_pool_size == 0 )
     {
         /* -- never used: initialize -- */
-        mpiprofiling_send_timepack_pool       = malloc( POOL_INITIAL_SIZE * sizeof( void* ) );
-        scorep_mpiprofiling_timepack_requests = malloc( POOL_INITIAL_SIZE * sizeof( MPI_Request ) );
-        if ( mpiprofiling_send_timepack_pool == NULL || scorep_mpiprofiling_timepack_requests == NULL )
+        scorep_mpiprofiling_send_timepack_pool = malloc( POOL_INITIAL_SIZE * sizeof( void* ) );
+        scorep_mpiprofiling_timepack_requests  = malloc( POOL_INITIAL_SIZE * sizeof( MPI_Request ) );
+        if ( scorep_mpiprofiling_send_timepack_pool == NULL || scorep_mpiprofiling_timepack_requests == NULL )
         {
             UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
             abort();
@@ -192,9 +192,9 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
         int i;
         for ( i = 0; i < scorep_mpiprofiling_timepack_pool_size; i++ )
         {
-            scorep_mpiprofiling_timepack_requests[ i ] = MPI_REQUEST_NULL;
-            mpiprofiling_send_timepack_pool[ i ]       = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
-            if ( mpiprofiling_send_timepack_pool[ i ] == NULL )
+            scorep_mpiprofiling_timepack_requests[ i ]  = MPI_REQUEST_NULL;
+            scorep_mpiprofiling_send_timepack_pool[ i ] = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+            if ( scorep_mpiprofiling_send_timepack_pool[ i ] == NULL )
             {
                 UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                 abort();
@@ -229,9 +229,9 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
             /* -- all the slots for timepack send buffers are busy, need to increase the pool -- */
             int old_size = scorep_mpiprofiling_timepack_pool_size;
             scorep_mpiprofiling_timepack_pool_size += POOL_SIZE_INCREMENT;
-            mpiprofiling_send_timepack_pool         = realloc( mpiprofiling_send_timepack_pool, scorep_mpiprofiling_timepack_pool_size * sizeof( void* ) );
+            scorep_mpiprofiling_send_timepack_pool  = realloc( scorep_mpiprofiling_send_timepack_pool, scorep_mpiprofiling_timepack_pool_size * sizeof( void* ) );
             scorep_mpiprofiling_timepack_requests   = realloc( scorep_mpiprofiling_timepack_requests, scorep_mpiprofiling_timepack_pool_size * sizeof( MPI_Request ) );
-            if ( mpiprofiling_send_timepack_pool == NULL || scorep_mpiprofiling_timepack_requests == NULL )
+            if ( scorep_mpiprofiling_send_timepack_pool == NULL || scorep_mpiprofiling_timepack_requests == NULL )
             {
                 UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                 abort();
@@ -239,9 +239,9 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
             int i;
             for ( i = old_size; i < scorep_mpiprofiling_timepack_pool_size; i++ )
             {
-                scorep_mpiprofiling_timepack_requests[ i ] = MPI_REQUEST_NULL;
-                mpiprofiling_send_timepack_pool[ i ]       = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
-                if ( mpiprofiling_send_timepack_pool[ i ] == NULL )
+                scorep_mpiprofiling_timepack_requests[ i ]  = MPI_REQUEST_NULL;
+                scorep_mpiprofiling_send_timepack_pool[ i ] = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+                if ( scorep_mpiprofiling_send_timepack_pool[ i ] == NULL )
                 {
                     UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                     abort();
@@ -252,7 +252,7 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
         }
     }
     ( *index )       = insert_position;
-    ( *free_buffer ) = mpiprofiling_send_timepack_pool[ insert_position ];
+    ( *free_buffer ) = scorep_mpiprofiling_send_timepack_pool[ insert_position ];
     return 0;
 }
 
@@ -264,18 +264,6 @@ scorep_mpiprofile_store_timepack_request_in_pool( MPI_Request request, int posit
         return;
     }
     scorep_mpiprofiling_timepack_requests[ position ] = request;
-}
-
-void
-scorep_mpiprofile_free_timepack_pool( void )
-{
-    int i;
-    for ( i = 0; i < scorep_mpiprofiling_timepack_pool_size; i++ )
-    {
-        free( mpiprofiling_send_timepack_pool[ i ] );
-    }
-    free( mpiprofiling_send_timepack_pool );
-    free( scorep_mpiprofiling_timepack_requests );
 }
 
 void

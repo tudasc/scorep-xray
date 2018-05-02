@@ -73,9 +73,6 @@ scorep_mpiprofile_store_timepack_request_in_pool( MPI_Request request,
                                                   int         position );
 
 void
-scorep_mpiprofile_free_timepack_pool( void );
-
-void
 scorep_mpiprofile_init_timepack( void*    buf,
                                  uint64_t time );
 
