@@ -60,16 +60,16 @@
 static int64_t mpiprofiling_lateThreshold;
 static int     mpiprofiling_metrics_initialized = 0;
 
-void* scorep_mpiprofiling_remote_time_packs        = NULL;
-void* scorep_mpiprofiling_local_time_pack          = NULL;
-void* scorep_mpiprofiling_remote_time_pack         = NULL;
-int   scorep_mpiprofiling_remote_time_packs_in_use = 0;
-int   scorep_mpiprofiling_local_time_pack_in_use   = 0;
-int   scorep_mpiprofiling_remote_time_pack_in_use  = 0;
+extern void* scorep_mpiprofiling_remote_time_packs;
+extern void* scorep_mpiprofiling_local_time_pack;
+extern void* scorep_mpiprofiling_remote_time_pack;
+extern int   scorep_mpiprofiling_remote_time_packs_in_use;
+extern int   scorep_mpiprofiling_local_time_pack_in_use;
+extern int   scorep_mpiprofiling_remote_time_pack_in_use;
 
-static void** mpiprofiling_send_timepack_pool        = 0;
-MPI_Request*  scorep_mpiprofiling_timepack_requests  = 0;
-int           scorep_mpiprofiling_timepack_pool_size = 0;
+static void**       mpiprofiling_send_timepack_pool = 0;
+extern MPI_Request* scorep_mpiprofiling_timepack_requests;
+extern int          scorep_mpiprofiling_timepack_pool_size;
 
 #define POOL_INITIAL_SIZE       5
 #define POOL_SIZE_INCREMENT     2

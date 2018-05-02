@@ -37,15 +37,15 @@ static int                       scorep_mpiprofiling_numprocs;
 int                              scorep_mpiprofiling_myrank;
 scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
-extern void* scorep_mpiprofiling_remote_time_packs;
-extern void* scorep_mpiprofiling_local_time_pack;
-extern void* scorep_mpiprofiling_remote_time_pack;
-extern int   scorep_mpiprofiling_remote_time_packs_in_use;
-extern int   scorep_mpiprofiling_local_time_pack_in_use;
-extern int   scorep_mpiprofiling_remote_time_pack_in_use;
+void* scorep_mpiprofiling_remote_time_packs        = NULL;
+void* scorep_mpiprofiling_local_time_pack          = NULL;
+void* scorep_mpiprofiling_remote_time_pack         = NULL;
+int   scorep_mpiprofiling_remote_time_packs_in_use = 0;
+int   scorep_mpiprofiling_local_time_pack_in_use   = 0;
+int   scorep_mpiprofiling_remote_time_pack_in_use  = 0;
 
-extern MPI_Request* scorep_mpiprofiling_timepack_requests;
-extern int          scorep_mpiprofiling_timepack_pool_size;
+MPI_Request* scorep_mpiprofiling_timepack_requests  = 0;
+int          scorep_mpiprofiling_timepack_pool_size = 0;
 
 /**
  * Initializes MPI profiling module
