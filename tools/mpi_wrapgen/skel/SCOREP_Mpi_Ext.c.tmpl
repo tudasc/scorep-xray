@@ -10,9 +10,9 @@
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
 #include <UTILS_Error.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_RuntimeManagement.h>
 
 /**
  * @name C wrappers
@@ -45,7 +45,7 @@ int MPI_Abort(MPI_Comm comm,
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT]);
     }
@@ -61,7 +61,7 @@ int MPI_Abort(MPI_Comm comm,
     {
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT]);
     }

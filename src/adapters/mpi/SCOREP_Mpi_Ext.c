@@ -60,9 +60,9 @@
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
 #include <UTILS_Error.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_RuntimeManagement.h>
 
 /**
  * @name C wrappers
@@ -96,7 +96,7 @@ MPI_Abort( MPI_Comm comm,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
         }
@@ -112,7 +112,7 @@ MPI_Abort( MPI_Comm comm,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
         }
@@ -150,7 +150,7 @@ MPI_Grequest_complete( MPI_Request request )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
         }
@@ -166,7 +166,7 @@ MPI_Grequest_complete( MPI_Request request )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
         }
@@ -205,7 +205,7 @@ MPI_Get_count( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
         }
@@ -221,7 +221,7 @@ MPI_Get_count( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
         }
@@ -257,7 +257,7 @@ MPI_Get_elements( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatyp
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
         }
@@ -273,7 +273,7 @@ MPI_Get_elements( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatyp
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
         }
@@ -309,7 +309,7 @@ MPI_Get_elements_x( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datat
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
         }
@@ -325,7 +325,7 @@ MPI_Get_elements_x( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datat
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
         }
@@ -361,7 +361,7 @@ MPI_Get_processor_name( char* name, int* resultlen )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
         }
@@ -377,7 +377,7 @@ MPI_Get_processor_name( char* name, int* resultlen )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
         }
@@ -413,7 +413,7 @@ MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_fun
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
         }
@@ -429,7 +429,7 @@ MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_fun
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
         }
@@ -465,7 +465,7 @@ MPI_Status_set_cancelled( MPI_Status* status, int flag )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
         }
@@ -481,7 +481,7 @@ MPI_Status_set_cancelled( MPI_Status* status, int flag )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
         }
@@ -517,7 +517,7 @@ MPI_Status_set_elements( MPI_Status* status, MPI_Datatype datatype, int count )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
         }
@@ -533,7 +533,7 @@ MPI_Status_set_elements( MPI_Status* status, MPI_Datatype datatype, int count )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
         }
@@ -569,7 +569,7 @@ MPI_Status_set_elements_x( MPI_Status* status, MPI_Datatype datatype, MPI_Count 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
         }
@@ -585,7 +585,7 @@ MPI_Status_set_elements_x( MPI_Status* status, MPI_Datatype datatype, MPI_Count 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
         }

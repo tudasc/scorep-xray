@@ -60,6 +60,7 @@
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
@@ -121,7 +122,7 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] );
         }
@@ -149,7 +150,7 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] );
         }
@@ -228,7 +229,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] );
         }
@@ -256,7 +257,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] );
         }
@@ -317,7 +318,7 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] );
         }
@@ -345,7 +346,7 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] );
         }
@@ -405,7 +406,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] );
         }
@@ -433,7 +434,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] );
         }
@@ -509,7 +510,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] );
         }
@@ -537,7 +538,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] );
         }
@@ -617,7 +618,7 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] );
         }
@@ -645,7 +646,7 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] );
         }
@@ -687,7 +688,7 @@ MPI_Barrier( MPI_Comm comm )
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
         }
@@ -715,7 +716,7 @@ MPI_Barrier( MPI_Comm comm )
                                      0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
         }
@@ -776,7 +777,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
         }
@@ -804,7 +805,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
         }
@@ -858,7 +859,7 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] );
         }
@@ -886,7 +887,7 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] );
         }
@@ -956,7 +957,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] );
         }
@@ -984,7 +985,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] );
         }
@@ -1059,7 +1060,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] );
         }
@@ -1087,7 +1088,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] );
         }
@@ -1156,7 +1157,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] );
         }
@@ -1184,7 +1185,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] );
         }
@@ -1253,7 +1254,7 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] );
         }
@@ -1281,7 +1282,7 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] );
         }
@@ -1341,7 +1342,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] );
         }
@@ -1369,7 +1370,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] );
         }
@@ -1433,7 +1434,7 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] );
         }
@@ -1461,7 +1462,7 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] );
         }
@@ -1534,7 +1535,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] );
         }
@@ -1562,7 +1563,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] );
         }
@@ -1638,7 +1639,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
             start_time_stamp =
                 SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] );
         }
@@ -1666,7 +1667,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
                                      recvbytes );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] );
         }
@@ -1704,7 +1705,7 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         }
@@ -1720,7 +1721,7 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         }
@@ -1756,7 +1757,7 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         }
@@ -1772,7 +1773,7 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         }
@@ -1808,7 +1809,7 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         }
@@ -1824,7 +1825,7 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         }
@@ -1860,7 +1861,7 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         }
@@ -1876,7 +1877,7 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         }
@@ -1912,7 +1913,7 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         }
@@ -1928,7 +1929,7 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         }
@@ -1964,7 +1965,7 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         }
@@ -1980,7 +1981,7 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         }
@@ -2017,7 +2018,7 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         }
@@ -2033,7 +2034,7 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         }
@@ -2069,7 +2070,7 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         }
@@ -2085,7 +2086,7 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         }
@@ -2121,7 +2122,7 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         }
@@ -2137,7 +2138,7 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         }
@@ -2173,7 +2174,7 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         }
@@ -2189,7 +2190,7 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         }
@@ -2225,7 +2226,7 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         }
@@ -2241,7 +2242,7 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         }
@@ -2277,7 +2278,7 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         }
@@ -2293,7 +2294,7 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         }
@@ -2329,7 +2330,7 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         }
@@ -2345,7 +2346,7 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         }
@@ -2381,7 +2382,7 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         }
@@ -2397,7 +2398,7 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         }
@@ -2433,7 +2434,7 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         }
@@ -2449,7 +2450,7 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         }
@@ -2485,7 +2486,7 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         }
@@ -2501,7 +2502,7 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         }
@@ -2537,7 +2538,7 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         }
@@ -2553,7 +2554,7 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         }
@@ -2590,7 +2591,7 @@ MPI_Reduce_local( SCOREP_MPI_CONST_DECL void* inbuf, void* inoutbuf, int count, 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] );
         }
@@ -2606,7 +2607,7 @@ MPI_Reduce_local( SCOREP_MPI_CONST_DECL void* inbuf, void* inoutbuf, int count, 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] );
         }

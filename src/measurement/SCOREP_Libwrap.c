@@ -500,7 +500,10 @@ SCOREP_Libwrap_EnterWrapper( SCOREP_RegionHandle region )
 #if HAVE( RETURN_ADDRESS )
     SCOREP_IN_MEASUREMENT_INCREMENT();
 #endif
-    SCOREP_EnterWrapper( region );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_EnterWrapper( region );
+    }
 #if HAVE( RETURN_ADDRESS )
     SCOREP_IN_MEASUREMENT_DECREMENT();
 #endif
@@ -509,7 +512,10 @@ SCOREP_Libwrap_EnterWrapper( SCOREP_RegionHandle region )
 void
 SCOREP_Libwrap_ExitWrapper( SCOREP_RegionHandle region )
 {
-    SCOREP_ExitWrapper( region );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_ExitWrapper( region );
+    }
 }
 
 int

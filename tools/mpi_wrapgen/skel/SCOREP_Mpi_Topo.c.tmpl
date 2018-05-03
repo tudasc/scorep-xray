@@ -12,6 +12,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
@@ -53,7 +54,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE]);
     }
@@ -140,7 +141,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     {
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE]);
     }

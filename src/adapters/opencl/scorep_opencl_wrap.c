@@ -52,7 +52,7 @@
         {                                                                   \
             SCOREP_EnterWrappedRegion( scorep_opencl_region__ ## func );    \
         }                                                                   \
-        else                                                                \
+        else  if ( SCOREP_IsUnwindingEnabled() )                            \
         {                                                                   \
             SCOREP_EnterWrapper( scorep_opencl_region__ ## func );          \
         }                                                                   \
@@ -67,7 +67,7 @@
         {                                                           \
             SCOREP_ExitRegion( scorep_opencl_region__ ## func );    \
         }                                                           \
-        else                                                        \
+        else if ( SCOREP_IsUnwindingEnabled() )                     \
         {                                                           \
             SCOREP_ExitWrapper( scorep_opencl_region__ ## func );   \
         }                                                           \

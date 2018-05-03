@@ -43,7 +43,7 @@ SCOREP_LIBWRAP_FUNC_NAME( calloc )( size_t nmemb,
         scorep_memory_attributes_add_enter_alloc_size( nmemb * size );
         SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_CALLOC ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_CALLOC ] );
     }
@@ -64,7 +64,7 @@ SCOREP_LIBWRAP_FUNC_NAME( calloc )( size_t nmemb,
         scorep_memory_attributes_add_exit_return_address( ( uint64_t )result );
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_CALLOC ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_CALLOC ] );
     }
@@ -106,7 +106,7 @@ SCOREP_LIBWRAP_FUNC_NAME( realloc )( void*  ptr,
                                              ( uint64_t )ptr, &allocation );
         }
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_REALLOC ] );
     }
@@ -158,7 +158,7 @@ SCOREP_LIBWRAP_FUNC_NAME( realloc )( void*  ptr,
 
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_REALLOC ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_REALLOC ] );
     }
@@ -187,7 +187,7 @@ SCOREP_LIBWRAP_FUNC_NAME( memalign )( size_t alignment,
         scorep_memory_attributes_add_enter_alloc_size( size );
         SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_MEMALIGN ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_MEMALIGN ] );
     }
@@ -208,7 +208,7 @@ SCOREP_LIBWRAP_FUNC_NAME( memalign )( size_t alignment,
         scorep_memory_attributes_add_exit_return_address( ( uint64_t )result );
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_MEMALIGN ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_MEMALIGN ] );
     }
@@ -238,7 +238,7 @@ SCOREP_LIBWRAP_FUNC_NAME( posix_memalign )( void** ptr,
         scorep_memory_attributes_add_enter_alloc_size( size );
         SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_POSIX_MEMALIGN ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_POSIX_MEMALIGN ] );
     }
@@ -259,7 +259,7 @@ SCOREP_LIBWRAP_FUNC_NAME( posix_memalign )( void** ptr,
         scorep_memory_attributes_add_exit_return_address( ( uint64_t )*ptr );
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_POSIX_MEMALIGN ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_POSIX_MEMALIGN ] );
     }

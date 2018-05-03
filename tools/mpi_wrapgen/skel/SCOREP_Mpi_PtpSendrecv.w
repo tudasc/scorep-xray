@@ -38,7 +38,7 @@ ${proto:c}
         status = &mystatus;
       }
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
@@ -63,7 +63,7 @@ ${proto:c}
 
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }

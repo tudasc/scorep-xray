@@ -61,6 +61,7 @@
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
@@ -114,7 +115,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
       esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ACCUMULATE ] );
         }
@@ -134,7 +135,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ACCUMULATE ] );
         }
@@ -170,7 +171,7 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
         }
@@ -186,7 +187,7 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
         }
@@ -223,7 +224,7 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
         }
@@ -239,7 +240,7 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
         }
@@ -300,7 +301,7 @@ MPI_Get( void*        origin_addr,
     esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SCOREP_NEXT_RMA_ID, target_count * sendsz);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET ] );
         }
@@ -322,7 +323,7 @@ MPI_Get( void*        origin_addr,
  */
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET ] );
         }
@@ -360,7 +361,7 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
         }
@@ -376,7 +377,7 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
         }
@@ -424,7 +425,7 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
       esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUT ] );
         }
@@ -444,7 +445,7 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUT ] );
         }
@@ -480,7 +481,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] );
         }
@@ -496,7 +497,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] );
         }
@@ -533,7 +534,7 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] );
         }
@@ -549,7 +550,7 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] );
         }
@@ -585,7 +586,7 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
         }
@@ -601,7 +602,7 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
         }
@@ -637,7 +638,7 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] );
         }
@@ -653,7 +654,7 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] );
         }
@@ -703,7 +704,7 @@ MPI_Win_allocate( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, vo
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
@@ -726,7 +727,7 @@ MPI_Win_allocate( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, vo
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
         }
@@ -770,7 +771,7 @@ MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm c
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
@@ -793,7 +794,7 @@ MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm c
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
         }
@@ -830,7 +831,7 @@ MPI_Win_attach( MPI_Win win, void* base, MPI_Aint size )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ATTACH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ATTACH ] );
         }
@@ -846,7 +847,7 @@ MPI_Win_attach( MPI_Win win, void* base, MPI_Aint size )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ATTACH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ATTACH ] );
         }
@@ -888,7 +889,7 @@ MPI_Win_create( void*    base,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] );
         }
@@ -912,7 +913,7 @@ MPI_Win_create( void*    base,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] );
         }
@@ -949,7 +950,7 @@ MPI_Win_create_dynamic( MPI_Info info, MPI_Comm comm, MPI_Win* win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] );
         }
@@ -965,7 +966,7 @@ MPI_Win_create_dynamic( MPI_Info info, MPI_Comm comm, MPI_Win* win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] );
         }
@@ -1001,7 +1002,7 @@ MPI_Win_detach SCOREP_MPI_WIN_DETACH_PROTO_ARGS
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DETACH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DETACH ] );
         }
@@ -1017,7 +1018,7 @@ MPI_Win_detach SCOREP_MPI_WIN_DETACH_PROTO_ARGS
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DETACH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DETACH ] );
         }
@@ -1062,7 +1063,7 @@ MPI_Win_free( MPI_Win* win )
     win_handle = scorep_mpi_win_rank_id(*win);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE ] );
         }
@@ -1082,7 +1083,7 @@ MPI_Win_free( MPI_Win* win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE ] );
         }
@@ -1119,7 +1120,7 @@ MPI_Win_shared_query( MPI_Win win, int rank, MPI_Aint* size, int* disp_unit, voi
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SHARED_QUERY ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SHARED_QUERY ] );
         }
@@ -1135,7 +1136,7 @@ MPI_Win_shared_query( MPI_Win win, int rank, MPI_Aint* size, int* disp_unit, voi
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SHARED_QUERY ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SHARED_QUERY ] );
         }
@@ -1178,7 +1179,7 @@ MPI_Win_complete( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_COMPLETE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_COMPLETE ] );
         }
@@ -1194,7 +1195,7 @@ MPI_Win_complete( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_COMPLETE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_COMPLETE ] );
         }
@@ -1232,7 +1233,7 @@ MPI_Win_fence( int     assert,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] );
         }
@@ -1249,7 +1250,7 @@ MPI_Win_fence( int     assert,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] );
         }
@@ -1287,7 +1288,7 @@ MPI_Win_flush( int rank, MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH ] );
         }
@@ -1303,7 +1304,7 @@ MPI_Win_flush( int rank, MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH ] );
         }
@@ -1339,7 +1340,7 @@ MPI_Win_flush_all( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_ALL ] );
         }
@@ -1355,7 +1356,7 @@ MPI_Win_flush_all( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_ALL ] );
         }
@@ -1391,7 +1392,7 @@ MPI_Win_flush_local( int rank, MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL ] );
         }
@@ -1407,7 +1408,7 @@ MPI_Win_flush_local( int rank, MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL ] );
         }
@@ -1443,7 +1444,7 @@ MPI_Win_flush_local_all( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL_ALL ] );
         }
@@ -1459,7 +1460,7 @@ MPI_Win_flush_local_all( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL_ALL ] );
         }
@@ -1503,7 +1504,7 @@ MPI_Win_lock( int     lock_type,
       esd_mpi_win_lock( rank, scorep_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK ] );
         }
@@ -1520,7 +1521,7 @@ MPI_Win_lock( int     lock_type,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK ] );
         }
@@ -1560,7 +1561,7 @@ MPI_Win_lock_all( int assert, MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK_ALL ] );
         }
@@ -1576,7 +1577,7 @@ MPI_Win_lock_all( int assert, MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK_ALL ] );
         }
@@ -1619,7 +1620,7 @@ MPI_Win_post( MPI_Group group,
       scorep_mpi_winacc_start(win, group, 0);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_POST ] );
         }
@@ -1635,7 +1636,7 @@ MPI_Win_post( MPI_Group group,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_POST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_POST ] );
         }
@@ -1679,7 +1680,7 @@ MPI_Win_start( MPI_Group group,
       scorep_mpi_winacc_start(win, group, 1);
  */
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_START ] );
         }
@@ -1695,7 +1696,7 @@ MPI_Win_start( MPI_Group group,
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_START ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_START ] );
         }
@@ -1735,7 +1736,7 @@ MPI_Win_sync( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SYNC ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SYNC ] );
         }
@@ -1751,7 +1752,7 @@ MPI_Win_sync( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SYNC ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SYNC ] );
         }
@@ -1789,7 +1790,7 @@ MPI_Win_test( MPI_Win win,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_TEST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_TEST ] );
         }
@@ -1818,7 +1819,7 @@ MPI_Win_test( MPI_Win win,
  */
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_TEST ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_TEST ] );
         }
@@ -1857,7 +1858,7 @@ MPI_Win_unlock( int     rank,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK ] );
         }
@@ -1877,7 +1878,7 @@ MPI_Win_unlock( int     rank,
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK ] );
         }
@@ -1915,7 +1916,7 @@ MPI_Win_unlock_all( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK_ALL ] );
         }
@@ -1931,7 +1932,7 @@ MPI_Win_unlock_all( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK_ALL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK_ALL ] );
         }
@@ -1968,7 +1969,7 @@ MPI_Win_wait( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_WAIT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_WAIT ] );
         }
@@ -1990,7 +1991,7 @@ MPI_Win_wait( MPI_Win win )
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_WAIT ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_WAIT ] );
         }
@@ -2028,7 +2029,7 @@ MPI_Win_get_group( MPI_Win win, MPI_Group* group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_GROUP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_GROUP ] );
         }
@@ -2048,7 +2049,7 @@ MPI_Win_get_group( MPI_Win win, MPI_Group* group )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_GROUP ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_GROUP ] );
         }
@@ -2090,7 +2091,7 @@ MPI_Win_call_errhandler( MPI_Win win, int errorcode )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CALL_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CALL_ERRHANDLER ] );
         }
@@ -2106,7 +2107,7 @@ MPI_Win_call_errhandler( MPI_Win win, int errorcode )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CALL_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CALL_ERRHANDLER ] );
         }
@@ -2142,7 +2143,7 @@ MPI_Win_create_errhandler( MPI_Win_errhandler_fn* function, MPI_Errhandler* errh
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_ERRHANDLER ] );
         }
@@ -2158,7 +2159,7 @@ MPI_Win_create_errhandler( MPI_Win_errhandler_fn* function, MPI_Errhandler* errh
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_ERRHANDLER ] );
         }
@@ -2194,7 +2195,7 @@ MPI_Win_get_errhandler( MPI_Win win, MPI_Errhandler* errhandler )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ERRHANDLER ] );
         }
@@ -2210,7 +2211,7 @@ MPI_Win_get_errhandler( MPI_Win win, MPI_Errhandler* errhandler )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ERRHANDLER ] );
         }
@@ -2246,7 +2247,7 @@ MPI_Win_set_errhandler( MPI_Win win, MPI_Errhandler errhandler )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ERRHANDLER ] );
         }
@@ -2262,7 +2263,7 @@ MPI_Win_set_errhandler( MPI_Win win, MPI_Errhandler errhandler )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ERRHANDLER ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ERRHANDLER ] );
         }
@@ -2304,7 +2305,7 @@ MPI_Win_create_keyval( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI_Win_del
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_KEYVAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_KEYVAL ] );
         }
@@ -2320,7 +2321,7 @@ MPI_Win_create_keyval( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI_Win_del
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_KEYVAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_KEYVAL ] );
         }
@@ -2356,7 +2357,7 @@ MPI_Win_delete_attr( MPI_Win win, int win_keyval )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DELETE_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DELETE_ATTR ] );
         }
@@ -2372,7 +2373,7 @@ MPI_Win_delete_attr( MPI_Win win, int win_keyval )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DELETE_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DELETE_ATTR ] );
         }
@@ -2408,7 +2409,7 @@ MPI_Win_free_keyval( int* win_keyval )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE_KEYVAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE_KEYVAL ] );
         }
@@ -2424,7 +2425,7 @@ MPI_Win_free_keyval( int* win_keyval )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE_KEYVAL ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE_KEYVAL ] );
         }
@@ -2460,7 +2461,7 @@ MPI_Win_get_attr( MPI_Win win, int win_keyval, void* attribute_val, int* flag )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ATTR ] );
         }
@@ -2476,7 +2477,7 @@ MPI_Win_get_attr( MPI_Win win, int win_keyval, void* attribute_val, int* flag )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ATTR ] );
         }
@@ -2512,7 +2513,7 @@ MPI_Win_get_info( MPI_Win win, MPI_Info* info_used )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_INFO ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_INFO ] );
         }
@@ -2528,7 +2529,7 @@ MPI_Win_get_info( MPI_Win win, MPI_Info* info_used )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_INFO ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_INFO ] );
         }
@@ -2564,7 +2565,7 @@ MPI_Win_get_name( MPI_Win win, char* win_name, int* resultlen )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_NAME ] );
         }
@@ -2580,7 +2581,7 @@ MPI_Win_get_name( MPI_Win win, char* win_name, int* resultlen )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_NAME ] );
         }
@@ -2616,7 +2617,7 @@ MPI_Win_set_attr( MPI_Win win, int win_keyval, void* attribute_val )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ATTR ] );
         }
@@ -2632,7 +2633,7 @@ MPI_Win_set_attr( MPI_Win win, int win_keyval, void* attribute_val )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ATTR ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ATTR ] );
         }
@@ -2668,7 +2669,7 @@ MPI_Win_set_info( MPI_Win win, MPI_Info info )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_INFO ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_INFO ] );
         }
@@ -2684,7 +2685,7 @@ MPI_Win_set_info( MPI_Win win, MPI_Info info )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_INFO ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_INFO ] );
         }
@@ -2720,7 +2721,7 @@ MPI_Win_set_name( MPI_Win win, SCOREP_MPI_CONST_DECL char* win_name )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_NAME ] );
         }
@@ -2736,7 +2737,7 @@ MPI_Win_set_name( MPI_Win win, SCOREP_MPI_CONST_DECL char* win_name )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_NAME ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_NAME ] );
         }
@@ -2778,7 +2779,7 @@ MPI_Win_c2f( MPI_Win win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_C2F ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_C2F ] );
         }
@@ -2794,7 +2795,7 @@ MPI_Win_c2f( MPI_Win win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_C2F ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_C2F ] );
         }
@@ -2830,7 +2831,7 @@ MPI_Win_f2c( MPI_Fint win )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_F2C ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_F2C ] );
         }
@@ -2846,7 +2847,7 @@ MPI_Win_f2c( MPI_Fint win )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_F2C ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_F2C ] );
         }

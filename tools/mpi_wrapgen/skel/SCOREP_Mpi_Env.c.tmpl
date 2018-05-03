@@ -102,7 +102,7 @@ int MPI_Init(int* argc, char*** argv )
       /* Enter the init region */
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT]);
     }
@@ -127,7 +127,7 @@ int MPI_Init(int* argc, char*** argv )
     {
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT]);
     }
@@ -190,7 +190,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT_THREAD]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT_THREAD]);
     }
@@ -223,7 +223,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
     {
         SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT_THREAD]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_INIT_THREAD]);
     }
@@ -262,7 +262,7 @@ int MPI_Finalize( void )
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_FINALIZE]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_FINALIZE]);
     }
@@ -295,7 +295,7 @@ int MPI_Finalize( void )
       /* Exit MPI_Finalize region */
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_FINALIZE]);
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_FINALIZE]);
     }
@@ -339,7 +339,7 @@ MPI_Finalized( int* flag )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZED ] );
         }
@@ -360,7 +360,7 @@ MPI_Finalized( int* flag )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZED ] );
         }
@@ -396,7 +396,7 @@ MPI_Initialized( int* flag )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INITIALIZED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INITIALIZED ] );
         }
@@ -412,7 +412,7 @@ MPI_Initialized( int* flag )
         {
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INITIALIZED ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INITIALIZED ] );
         }

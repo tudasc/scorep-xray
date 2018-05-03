@@ -122,7 +122,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( size_t size ) \
         scorep_memory_attributes_add_enter_alloc_size( size ); \
         SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
-    else \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
     { \
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
@@ -143,7 +143,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( size_t size ) \
         scorep_memory_attributes_add_exit_return_address( ( uint64_t )result ); \
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
-    else \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
     { \
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
@@ -182,7 +182,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
                                              ( uint64_t )ptr, &allocation ); \
         } \
     } \
-    else \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
     { \
         SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
@@ -203,7 +203,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
         scorep_memory_attributes_add_exit_dealloc_size( dealloc_size ); \
         SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \
-    else \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
     { \
         SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
     } \

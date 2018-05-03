@@ -1067,7 +1067,7 @@ POMP2_Init_lock( omp_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
@@ -1082,7 +1082,7 @@ POMP2_Init_lock( omp_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_LOCK ] );
     }
@@ -1107,7 +1107,7 @@ POMP2_Destroy_lock( omp_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
@@ -1122,7 +1122,7 @@ POMP2_Destroy_lock( omp_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_LOCK ] );
     }
@@ -1147,7 +1147,7 @@ POMP2_Set_lock( omp_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
@@ -1165,7 +1165,7 @@ POMP2_Set_lock( omp_lock_t* s )
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
@@ -1195,7 +1195,7 @@ POMP2_Unset_lock( omp_lock_t* s )
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
     }
@@ -1208,7 +1208,7 @@ POMP2_Unset_lock( omp_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
     }
@@ -1233,7 +1233,7 @@ POMP2_Test_lock( omp_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
@@ -1253,7 +1253,7 @@ POMP2_Test_lock( omp_lock_t* s )
         }
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
@@ -1279,7 +1279,7 @@ POMP2_Init_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
@@ -1294,7 +1294,7 @@ POMP2_Init_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_INIT_NEST_LOCK ] );
     }
@@ -1319,7 +1319,7 @@ POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
@@ -1333,7 +1333,7 @@ POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_DESTROY_NEST_LOCK ] );
     }
@@ -1358,7 +1358,7 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
@@ -1375,7 +1375,7 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
@@ -1404,7 +1404,7 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
         SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
     }
@@ -1417,7 +1417,7 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
     }
@@ -1442,7 +1442,7 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }
@@ -1463,7 +1463,7 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );
     }

@@ -10,6 +10,7 @@
 /* We do wrap deprecated functions here, but we don't want warnings */
 #define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Mpi.h"
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
@@ -52,7 +53,7 @@ MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
             }
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
@@ -75,7 +76,7 @@ MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] );
         }
@@ -119,7 +120,7 @@ MPI_Free_mem( void* base )
                                                  ( uint64_t )base, &allocation );
             }
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
         }
@@ -147,7 +148,7 @@ MPI_Free_mem( void* base )
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
         }
-        else
+        else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] );
         }

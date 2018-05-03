@@ -88,6 +88,8 @@
  * @a SCOREP_EnterWrappedRegion function, if the function is not filtered.
  * This function must directly be called by the wrapper function.
  *
+ * This function should only be called if unwinding is enabled.
+ *
  * @param regionHandle The region handle of the wrappee.
  */
 void
@@ -98,6 +100,8 @@ SCOREP_EnterWrapper( SCOREP_RegionHandle regionHandle );
  * Notify the measurement that a wrappers will be left in case the region as filterred.
  *
  * Needs only be called for wrapped functions where the enter event was filtered.
+ *
+ * This function should only be called if unwinding is enabled.
  *
  * @param regionHandle The region handle of the wrappee.
  */

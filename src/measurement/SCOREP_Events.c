@@ -130,24 +130,18 @@ SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
 void
 SCOREP_EnterWrapper( SCOREP_RegionHandle regionHandle )
 {
-    if ( SCOREP_IsUnwindingEnabled() )
-    {
-        SCOREP_Unwinding_PushWrapper( SCOREP_Location_GetCurrentCPULocation(),
-                                      regionHandle,
-                                      ( uint64_t )SCOREP_RETURN_ADDRESS(),
-                                      SCOREP_IN_MEASUREMENT() );
-    }
+    SCOREP_Unwinding_PushWrapper( SCOREP_Location_GetCurrentCPULocation(),
+                                  regionHandle,
+                                  ( uint64_t )SCOREP_RETURN_ADDRESS(),
+                                  SCOREP_IN_MEASUREMENT() );
 }
 
 
 void
 SCOREP_ExitWrapper( SCOREP_RegionHandle regionHandle )
 {
-    if ( SCOREP_IsUnwindingEnabled() )
-    {
-        SCOREP_Unwinding_PopWrapper( SCOREP_Location_GetCurrentCPULocation(),
-                                     regionHandle );
-    }
+    SCOREP_Unwinding_PopWrapper( SCOREP_Location_GetCurrentCPULocation(),
+                                 regionHandle );
 }
 
 

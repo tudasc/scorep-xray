@@ -122,7 +122,7 @@ wrapped0( const char* arg,
     {
         SCOREP_EnterWrappedRegion( wrapped0_region );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( wrapped0_region );
     }
@@ -135,7 +135,7 @@ wrapped0( const char* arg,
     {
         SCOREP_ExitRegion( wrapped0_region );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( wrapped0_region );
     }
@@ -219,7 +219,7 @@ __wrap_wrapped1( const char* arg,
     {
         SCOREP_EnterWrappedRegion( wrapped1_region );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterWrapper( wrapped1_region );
     }
@@ -232,7 +232,7 @@ __wrap_wrapped1( const char* arg,
     {
         SCOREP_ExitRegion( wrapped1_region );
     }
-    else
+    else if ( SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitWrapper( wrapped1_region );
     }
