@@ -1000,6 +1000,77 @@ add_mapping_to_cube_writing_data( scorep_cube_writing_data* writeSet )
     }
 }
 
+static void
+add_default_spec_file( cube_t* myCube )
+{
+    UTILS_BUG_ON( myCube == NULL );
+
+    /* Try to read scorep.spec into a buffer. If successful, pass it to cube.
+     * Otherwise print a warning and continue. */
+
+    char* buf           = NULL;
+    char* spec_filename = PKGDATADIR "/scorep.spec";
+    FILE* spec_file     = fopen( spec_filename, "rb" );
+    if ( !spec_file )
+    {
+        UTILS_WARNING( "Could not open \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        return;
+    }
+
+    int res = fseek( spec_file, 0, SEEK_END );
+    if ( res == -1 )
+    {
+        UTILS_WARNING( "Could not process \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        goto cleanup;
+    }
+
+    long len = ftell( spec_file );
+    if ( len == -1 )
+    {
+        UTILS_WARNING( "Could not process \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        goto cleanup;
+    }
+
+    buf = malloc( len );
+    if ( !buf )
+    {
+        UTILS_WARNING( "Could not allocate buffer to hold \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        goto cleanup;
+    }
+
+    res = fseek( spec_file, 0, SEEK_SET );
+    if ( res == -1 )
+    {
+        UTILS_WARNING( "Could not process \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        goto cleanup;
+    }
+
+    size_t items_read = fread( buf, len, 1, spec_file );
+    if ( items_read != 1 )
+    {
+        UTILS_WARNING( "Could not read \'%s\'. Spec-file not added to cube file.",
+                       spec_filename );
+        goto cleanup;
+    }
+
+    cube_write_misc_data( myCube, "remapping.spec", buf, len );
+
+cleanup:
+    if ( spec_file )
+    {
+        fclose( spec_file );
+    }
+    if ( buf )
+    {
+        free( buf );
+    }
+}
+
 /* *****************************************************************************
    Main writer function
 *******************************************************************************/
@@ -1056,6 +1127,8 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
             sprintf( buffer, "%u", scorep_unified_definition_manager->interrupt_generator.counter );
             cube_def_attr( write_set.my_cube, "Score-P::DefinitionCounters::InterruptGenerator", buffer );
         }
+
+        add_default_spec_file( write_set.my_cube );
     }
 
     /* Write definitions to cube */

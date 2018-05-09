@@ -8,6 +8,9 @@ Features and improvements:
 - Score-P now generates a dynamic MANIFEST file for each experiment
   and copies files, like the filter or selective configuration files,
   to the experiment directory.
+- In profiling mode, add the file <DATADIR>/scorep/scorep.spec to
+  the profile.cubex container, thus making the profile output more
+  self-contained.
 
 Bugfixes:
 
