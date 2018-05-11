@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -44,9 +44,9 @@
 #include <inttypes.h>
 
 /* *INDENT-OFF* */
-static void* scorep_pthread_wrapped_start_routine( void* wrappedArg );
-static void cleanup_handler( void* wrappedArg );
-static inline void record_acquire_lock_event( scorep_pthread_mutex* scorepMutex );
+static void* scorep_pthread_wrapped_start_routine( void* );
+static void cleanup_handler( void* );
+static inline void record_acquire_lock_event( scorep_pthread_mutex* );
 static void issue_process_shared_mutex_warning( void );
 /* *INDENT-ON* */
 
@@ -63,9 +63,6 @@ struct scorep_pthread_wrapped_arg
     bool                               cancelled;
     bool                               exited;
 };
-
-static size_t
-get_reuse_key( scorep_pthread_wrapped_arg* wrappedArg );
 
 
 int
@@ -91,14 +88,6 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
     if ( attr )
     {
         int result = pthread_attr_getdetachstate( attr, &detach_state );
-
-        if ( detach_state == PTHREAD_CREATE_DETACHED )
-        {
-            UTILS_WARN_ONCE( "The current thread is in detached state. "
-                             "The usage of pthread_detach is considered dangerous in the "
-                             "context of Score-P. If the detached thread is still running "
-                             "at the end of main, the measurement will fail." );
-        }
     }
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_CREATE ] );
@@ -163,7 +152,7 @@ scorep_pthread_wrapped_start_routine( void* wrappedArg )
     SCOREP_ThreadCreateWait_Begin( SCOREP_PARADIGM_PTHREAD,
                                    wrapped_arg->parent_tpd,
                                    wrapped_arg->sequence_count,
-                                   get_reuse_key( wrapped_arg ),
+                                   ( uintptr_t )wrapped_arg->orig_start_routine,
                                    &location );
 
     scorep_pthread_location_data* data =
@@ -214,30 +203,34 @@ cleanup_handler( void* arg )
         SCOREP_Location_GetSubsystemData( location, scorep_pthread_subsystem_id );
     scorep_pthread_wrapped_arg* wrapped_arg = data->wrapped_arg;
 
-    if ( wrapped_arg->exited )
+    void* terminate = SCOREP_ThreadCreateWait_TryTerminate( location );
+    if ( terminate )
     {
-        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
+        if ( wrapped_arg->exited )
+        {
+            SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
+        }
+
+        if ( wrapped_arg->exited || wrapped_arg->cancelled )
+        {
+            /*
+             * @todo Move to task subsystems deactivate_cpu_location.
+             */
+
+            /* A call to pthread_exit will prevent entered regions to be exited
+             * the normal way. Therefore, exit remaining regions explicitly. */
+
+            /* A call to pthread_cancel might prevent entered regions to be exited
+             * the normal way. If the runtime acts upon a cancellation request,
+             * exit remaining regions explicitly. */
+            SCOREP_Task_ExitAllRegions( location,
+                                        SCOREP_Task_GetCurrentTask( location ) );
+        }
+        SCOREP_ThreadCreateWait_End( SCOREP_PARADIGM_PTHREAD,
+                                     wrapped_arg->parent_tpd,
+                                     wrapped_arg->sequence_count,
+                                     terminate );
     }
-
-    if ( wrapped_arg->exited || wrapped_arg->cancelled )
-    {
-        /*
-         * @todo Move to task subsystems deactivate_cpu_location.
-         */
-
-        /* A call to pthread_exit will prevent entered regions to be exited
-         * the normal way. Therefore, exit remaining regions explicitly. */
-
-        /* A call to pthread_cancel might prevent entered regions to be exited
-         * the normal way. If the runtime acts upon a cancellation request,
-         * exit remaining regions explicitly. */
-
-        SCOREP_Task_ExitAllRegions( location,
-                                    SCOREP_Task_GetCurrentTask( location ) );
-    }
-    SCOREP_ThreadCreateWait_End( SCOREP_PARADIGM_PTHREAD,
-                                 wrapped_arg->parent_tpd,
-                                 wrapped_arg->sequence_count );
 
     if ( wrapped_arg->cancelled ||  wrapped_arg->detached == PTHREAD_CREATE_DETACHED )
     {
@@ -385,10 +378,6 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_detach )( pthread_t thread )
     }
 
     UTILS_DEBUG_ENTRY();
-
-    UTILS_WARN_ONCE( "The usage of pthread_detach is considered dangerous in the "
-                     "context of Score-P. If the detached thread is still running "
-                     "at the end of main, the measurement will fail." );
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_DETACH ] );
 
@@ -882,29 +871,4 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_destroy )( pthread_cond_t* cond )
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return result;
-}
-
-size_t
-get_reuse_key( scorep_pthread_wrapped_arg* wrappedArg )
-{
-    switch ( scorep_pthread_reuse_policy )
-    {
-        case SCOREP_PTHREAD_REUSE_POLICY_NEVER:
-            /* A key of 0 indicates in the threading component 'no reuse' at all*/
-            return 0;
-        case SCOREP_PTHREAD_REUSE_POLICY_SAME_START_ROUTINE:
-            /* When we use the address of the start routine as the key,
-             * only threads with the same start routine may share the same
-             * locations.
-             */
-            return ( size_t )wrappedArg->orig_start_routine;
-        case SCOREP_PTHREAD_REUSE_POLICY_ALWAYS:
-            /* Using an arbitrary key different than 0 will reuse locations
-             * also for threads which have different start routine.
-             */
-            return 1;
-        default:
-            UTILS_FATAL( "Invalid reuse-policy." );
-            return 0;
-    }
 }

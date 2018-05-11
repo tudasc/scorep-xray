@@ -2,6 +2,17 @@
 
 Major features:
 
+- Orphan thread support: Score-P now records events from POSIX threads
+  that were not instrumented, e.g., threads created from std::thread,
+  Intel TBB, Intel Cilk Plus, or any other runtime which is based on
+  POSIX threads. Previously, events from such threads caused a
+  'TPD == 0' measurement abort. Note that if your link-line does not
+  need a POSIX thread option like -pthread, you need to use the
+  Score-P option --thread=pthread to activate this feature.
+  This feature also includes support for POSIX threads that are
+  running longer than main. For these threads, Score-P will exit all
+  active regions and end the thread (from the measurement point of
+  view).
 
 Features and improvements:
 

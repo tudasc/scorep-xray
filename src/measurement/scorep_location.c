@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,7 +39,6 @@
 #include <config.h>
 #include "scorep_location.h"
 
-#include <assert.h>
 #include <inttypes.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -275,7 +274,7 @@ void*
 SCOREP_Location_GetSubsystemData( SCOREP_Location* locationData,
                                   size_t           subsystem_id )
 {
-    assert( subsystem_id < scorep_subsystems_get_number() );
+    UTILS_BUG_ON( subsystem_id >= scorep_subsystems_get_number(), "subsystem_id out of range." );
 
     return locationData->per_subsystem_data[ subsystem_id ];
 }
@@ -286,7 +285,7 @@ SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
                                   size_t           subsystem_id,
                                   void*            subsystem_data )
 {
-    assert( subsystem_id < scorep_subsystems_get_number() );
+    UTILS_BUG_ON( subsystem_id >= scorep_subsystems_get_number(), "subsystem_id out of range." );
 
     locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
 }
@@ -302,15 +301,16 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
 void
 SCOREP_Location_FinalizeLocations( void )
 {
-    assert( !SCOREP_Thread_InParallel() );
+    UTILS_BUG_ON( SCOREP_Thread_InParallel(), "Threads other than the master active." );
 
-    SCOREP_Location* location_data = location_list_head;
-    while ( location_data )
+    SCOREP_Location* location = location_list_head;
+    while ( location )
     {
-        SCOREP_Location* tmp = location_data->next;
-        scorep_subsystems_finalize_location( location_data );
-        SCOREP_Memory_DeletePageManagers( location_data->page_managers );
-        location_data = tmp;
+        SCOREP_Location* tmp = location->next;
+
+        scorep_subsystems_finalize_location( location );
+        SCOREP_Memory_DeletePageManagers( location->page_managers );
+        location = tmp;
     }
 }
 
@@ -318,7 +318,7 @@ SCOREP_Location_FinalizeLocations( void )
 void
 SCOREP_Location_Finalize( void )
 {
-    assert( !SCOREP_Thread_InParallel() );
+    UTILS_BUG_ON( SCOREP_Thread_InParallel(), "Threads other than the master active." );
 
     location_list_head = 0;
     location_list_tail = &location_list_head;
@@ -423,7 +423,7 @@ SCOREP_Location_ForAll( bool ( * cb )( SCOREP_Location*,
                                        void* ),
                         void*    data )
 {
-    assert( cb );
+    UTILS_BUG_ON( cb == NULL, "Callback invalid." );
 
     for ( SCOREP_Location* location_data = location_list_head;
           location_data;

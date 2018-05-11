@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016,
+ * Copyright (c) 2014, 2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -21,8 +21,10 @@
 
 #include <config.h>
 
+#include <scorep_thread_create_wait_model_specific.h>
 #include <scorep_thread_model_specific.h>
 #include <scorep_thread_generic.h>
+#include <SCOREP_ThreadCreateWait_Event.h>
 
 #include <scorep_location.h>
 
@@ -34,28 +36,36 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Properties.h>
+#include <SCOREP_Task.h>
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 
 /* *INDENT-OFF* */
 static void create_tpd_key( void );
-static struct scorep_thread_private_data* pop_from_tpd_reuse_pool( size_t reuseKey );
-static void push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd );
+static struct scorep_thread_private_data* pop_from_tpd_reuse_pool( uintptr_t );
+static void push_to_tpd_reuse_pool( struct scorep_thread_private_data* );
+static void tpd_dtor( void* );
+static void create_orphan_key( void );
+static void orphan_dtor( void* );
+static struct scorep_thread_private_data* create_orphan_thread( void );
 /* *INDENT-ON*  */
 
 
 static pthread_key_t tpd_key;
 static pthread_once_t tpd_key_once = PTHREAD_ONCE_INIT;
+static pthread_key_t  orphan_key;
+static pthread_once_t orphan_key_once = PTHREAD_ONCE_INIT;
 
 typedef struct private_data_pthread private_data_pthread;
 struct private_data_pthread
 {
-    size_t tpd_reuse_key;
+    uintptr_t tpd_reuse_key;
 };
 
 struct reuse_pool_tpd
@@ -67,7 +77,7 @@ struct reuse_pool_tpd
 struct tpd_reuse_pool
 {
     struct tpd_reuse_pool* next;
-    size_t                 reuse_key;
+    uintptr_t              reuse_key;
     struct reuse_pool_tpd* unused_tpds;
 };
 
@@ -79,14 +89,20 @@ static struct reuse_pool_tpd* tpd_reuse_pool_free_list;
 static SCOREP_Mutex           tpd_reuse_pool_mutex;
 
 static SCOREP_Mutex pthread_location_count_mutex;
+static SCOREP_Mutex orphan_location_count_mutex;
 
 struct SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation( void )
 {
     UTILS_DEBUG_ENTRY();
     struct scorep_thread_private_data* tpd = scorep_thread_get_private_data();
-    UTILS_BUG_ON( tpd == 0, "Invalid Pthread thread specific data object. "
-                  "Please ensure that all pthread_create calls are instrumented." );
+
+    if ( tpd == 0 )
+    {
+        UTILS_DEBUG( "tpd == NULL, creating orphan thread" );
+        tpd = create_orphan_thread();
+    }
+
     struct SCOREP_Location* location = scorep_thread_get_location( tpd );
     UTILS_BUG_ON( location == 0, "Invalid location object associated with "
                   "Pthread thread specific data object." );
@@ -99,6 +115,34 @@ scorep_thread_get_private_data( void )
 {
     UTILS_DEBUG_ENTRY();
     return pthread_getspecific( tpd_key );
+}
+
+
+static struct scorep_thread_private_data*
+create_orphan_thread( void )
+{
+    UTILS_DEBUG_ENTRY();
+    SCOREP_Location* location;
+    scorep_thread_create_wait_orphan_begin( &location );
+
+    /* An orphan thread needs to trigger Score-P when it is terminated.
+     * Cleanup handlers or dtors of thread-specific keys might be used for
+     * this task.
+     * The pthread_cleanup_push man page states: "Clean-up handlers are not
+     * called if the thread terminates by performing a return from the thread
+     * start function."
+     * The pthread_key_create man page states: "When a thread terminates via
+     * pthread_exit or by cancellation, destr_function is called, ..."
+     * The pthread_exit man page states: "Performing a return from the start
+     * function of any thread other than the main thread results in an
+     * implicit call to pthread_exit(), ..."
+     * I.e., by using a dtor of a thread-specific key we intercept all possible
+     * ways a thread can terminate. */
+    pthread_setspecific( orphan_key, location );
+
+    struct scorep_thread_private_data* tpd = scorep_thread_get_private_data();
+    UTILS_BUG_ON( tpd == NULL, "Creation of orphan thread data structure failed." );
+    return tpd;
 }
 
 
@@ -115,11 +159,21 @@ scorep_thread_on_initialize( struct scorep_thread_private_data* initialTpd )
     status = pthread_setspecific( tpd_key, initialTpd );
     UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
 
+    status = pthread_once( &orphan_key_once, create_orphan_key );
+    UTILS_BUG_ON( status != 0, "Failed to create pthread_key_t object via "
+                  "pthread_once()." );
+
+    status = pthread_setspecific( orphan_key, NULL );
+    UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
+
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &tpd_reuse_pool_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for location reuse pool." );
 
     result = SCOREP_MutexCreate( &pthread_location_count_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for pthread location count." );
+
+    result = SCOREP_MutexCreate( &orphan_location_count_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for orphan location count." );
 }
 
 
@@ -127,8 +181,53 @@ static void
 create_tpd_key( void )
 {
     UTILS_DEBUG_ENTRY();
-    int status = pthread_key_create( &tpd_key, NULL );
+    int status = pthread_key_create( &tpd_key, &tpd_dtor );
     UTILS_BUG_ON( status != 0, "Failed to allocate a new pthread_key_t." );
+}
+
+
+static void
+tpd_dtor( void* tpd )
+{
+    UTILS_DEBUG_ENTRY();
+    /* Order of dtor execution is not deterministic, but we need a valid
+     * tpd_key in orphan_dtor(). Re-assign tpd_key if orphan_dtor()
+     * is going to be called, i.e. orphan != NULL. For non-orphan
+     * threads, orphan == NULL. */
+    void* orphan = pthread_getspecific( orphan_key );
+    if ( orphan )
+    {
+        pthread_setspecific( tpd_key, tpd );
+    }
+}
+
+
+static void
+create_orphan_key( void )
+{
+    UTILS_DEBUG_ENTRY();
+    int status = pthread_key_create( &orphan_key, &orphan_dtor );
+    UTILS_BUG_ON( status != 0, "Failed to allocate a new pthread_key_t." );
+}
+
+
+static void
+orphan_dtor( void* location )
+{
+    UTILS_DEBUG_ENTRY();
+    void* terminate = SCOREP_ThreadCreateWait_TryTerminate( location );
+    if ( terminate )
+    {
+        UTILS_BUG_ON( location == NULL, "Valid location object needed." );
+        void* tpd = pthread_getspecific( tpd_key );
+        UTILS_BUG_ON( tpd == NULL, "tpd must be valid during clean up of orphan thread." );
+
+        /* The thread's start_routine will not trigger an exit event if the thread is
+         * ended via pthread_cancel or pthread_exit. Close the region manually. */
+        SCOREP_Task_ExitAllRegions( location,
+                                    SCOREP_Task_GetCurrentTask( location ) );
+        scorep_thread_create_wait_orphan_end( terminate );
+    }
 }
 
 
@@ -141,6 +240,7 @@ scorep_thread_on_finalize( struct scorep_thread_private_data* tpd )
 
     SCOREP_MutexDestroy( &tpd_reuse_pool_mutex );
     SCOREP_MutexDestroy( &pthread_location_count_mutex );
+    SCOREP_MutexDestroy( &orphan_location_count_mutex );
 }
 
 
@@ -185,7 +285,7 @@ scorep_thread_create_wait_on_wait( void*                   modelData,
 void
 scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTpd,
                                     uint32_t                            sequenceCount,
-                                    size_t                              locationReuseKey,
+                                    uintptr_t                           locationReuseKey,
                                     struct scorep_thread_private_data** currentTpd,
                                     bool*                               locationIsCreated )
 {
@@ -203,9 +303,10 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
         unsigned location_count = ++pthread_location_count;
         SCOREP_MutexUnlock( pthread_location_count_mutex );
 
-        char location_name[ 80 ];
-        int  length = snprintf( location_name, 80, "Pthread thread %d", location_count );
-        UTILS_ASSERT( length < 80 );
+        const int provided_length = 80;
+        char      location_name[ provided_length ];
+        int       real_length = snprintf( location_name, provided_length, "Pthread thread %d", location_count );
+        UTILS_ASSERT( real_length <  provided_length );
 
         SCOREP_Location* location = SCOREP_Location_CreateCPULocation( location_name );
         *locationIsCreated = true;
@@ -224,11 +325,13 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     /* Set/update reuse key, used at _on_end() time. */
     private_data_pthread* model_data = scorep_thread_get_model_data( *currentTpd );
     model_data->tpd_reuse_key = locationReuseKey;
+
+    UTILS_DEBUG_EXIT();
 }
 
 
 static struct scorep_thread_private_data*
-pop_from_tpd_reuse_pool( size_t reuseKey )
+pop_from_tpd_reuse_pool( uintptr_t reuseKey )
 {
     UTILS_DEBUG_ENTRY();
     struct scorep_thread_private_data* tpd_to_reuse = NULL;
@@ -296,7 +399,7 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
     /* tpd not needed anymore, maintain for reuse in the future */
 
     private_data_pthread* model_data = scorep_thread_get_model_data( tpd );
-    size_t                reuse_key  = model_data->tpd_reuse_key;
+    uintptr_t             reuse_key  = model_data->tpd_reuse_key;
 
     if ( reuse_key )
     {
@@ -357,6 +460,67 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
 
         SCOREP_MutexUnlock( tpd_reuse_pool_mutex );
     }
+    UTILS_DEBUG_EXIT();
+}
+
+
+void
+scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** currentTpd,
+                                           bool*                               locationIsCreated )
+{
+    UTILS_DEBUG_ENTRY();
+
+    static unsigned orphan_location_count;
+    *locationIsCreated = false;
+
+    uintptr_t reuse_key = scorep_thread_create_wait_get_reuse_key( SCOREP_PARADIGM_ORPHAN_THREAD, 0 );
+    *currentTpd = pop_from_tpd_reuse_pool( reuse_key );
+
+    if ( !*currentTpd )
+    {
+        /* No tpd to reuse available. Create new tpd and location. */
+        SCOREP_MutexLock( orphan_location_count_mutex );
+        unsigned location_count = ++orphan_location_count;
+        SCOREP_MutexUnlock( orphan_location_count_mutex );
+
+        char location_name[ 80 ];
+        int  length = snprintf( location_name, 80, "Orphan thread %d", location_count );
+        UTILS_ASSERT( length < 80 );
+
+        SCOREP_Location* location = SCOREP_Location_CreateCPULocation( location_name );
+        *locationIsCreated = true;
+        *currentTpd        =  scorep_thread_create_private_data( NULL /* parent */, location );
+        scorep_thread_set_location( *currentTpd, location );
+    }
+    else
+    {
+        /* Reuse tpd and its location, update parent. */
+        scorep_thread_set_parent( *currentTpd, NULL /* parent */ );
+    }
+
+    int status = pthread_setspecific( tpd_key, *currentTpd );
+    UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
+
+    /* Set/update reuse key, used at _on_end() time. */
+    private_data_pthread* model_data = scorep_thread_get_model_data( *currentTpd );
+    model_data->tpd_reuse_key = reuse_key;
+
+    UTILS_DEBUG_EXIT();
+}
+
+
+void
+scorep_thread_create_wait_on_orphan_end( struct scorep_thread_private_data* currentTpd )
+{
+    UTILS_DEBUG_ENTRY();
+
+    int status = pthread_setspecific( tpd_key, NULL );
+    UTILS_BUG_ON( status != 0, "Failed to reset Pthread thread specific data." );
+    status = pthread_setspecific( orphan_key, NULL );
+    UTILS_BUG_ON( status != 0, "Failed to reset Pthread thread specific data." );
+
+    push_to_tpd_reuse_pool( currentTpd );
+
     UTILS_DEBUG_EXIT();
 }
 

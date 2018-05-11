@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015,
@@ -33,6 +33,7 @@
 #include <scorep_status.h>
 #include <scorep_substrates_definition.h>
 #include <SCOREP_Substrates_Management.h>
+#include <SCOREP_InMeasurement.h>
 
 #include <string.h>
 
@@ -232,6 +233,8 @@ void
 SCOREP_Task_ExitAllRegions( SCOREP_Location*  location,
                             SCOREP_TaskHandle task )
 {
+    UTILS_BUG_ON( location != SCOREP_Location_GetCurrentCPULocation(),
+                  "You try to trigger exits on location A from location B." );
     while ( task->current_frame != NULL )
     {
         /* The exit removes the top region from the stack. */
@@ -239,6 +242,29 @@ SCOREP_Task_ExitAllRegions( SCOREP_Location*  location,
         if ( region != SCOREP_FILTERED_REGION )
         {
             SCOREP_ExitRegion( region );
+        }
+        else
+        {
+            task_pop_stack( location, task );
+        }
+    }
+}
+
+void
+SCOREP_Location_Task_ExitAllRegions( SCOREP_Location*  location,
+                                     SCOREP_TaskHandle task,
+                                     uint64_t          timestamp )
+{
+    UTILS_BUG_ON( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) &&
+                  location != SCOREP_Location_GetCurrentCPULocation(),
+                  "It is not safe to trigger exits on location A from location B during measurement." );
+    while ( task->current_frame != NULL )
+    {
+        /* The exit removes the top region from the stack. */
+        SCOREP_RegionHandle region = SCOREP_Task_GetTopRegion( task );
+        if ( region != SCOREP_FILTERED_REGION )
+        {
+            SCOREP_Location_ExitRegion( location, timestamp, region );
         }
         else
         {

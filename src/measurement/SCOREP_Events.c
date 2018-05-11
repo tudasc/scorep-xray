@@ -353,8 +353,11 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
                             uint64_t            timestamp,
                             SCOREP_RegionHandle regionHandle )
 {
-    UTILS_BUG_ON( location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
-                  "SCOREP_Location_ExitRegion() must not be used for CPU thread locations." );
+    UTILS_BUG_ON( location &&
+                  SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD &&
+                  !SCOREP_IS_MEASUREMENT_PHASE( POST ),
+                  "SCOREP_Location_ExitRegion() must not be used for CPU thread locations "
+                  "during measurement phases PRE or WITHIN." );
 
     if ( !location )
     {

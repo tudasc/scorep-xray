@@ -285,6 +285,7 @@ typedef enum SCOREP_ParadigmClass
  * - SCOREP_PARADIGM_SHMEM refers to SHMEM instrumentation
  * - SCOREP_PARADIGM_OPENMP refers to OpenMP instrumentation
  * - SCOREP_PARADIGM_PTHREAD refers to Pthread instrumentation
+ * - SCOREP_PARADIGM_ORPHAN_THREAD refers to Pthreads that are not instrumented
  * - SCOREP_PARADIGM_CUDA refers to CUDA instrumentation
  * - SCOREP_PARADIGM_OPENCL refers to OpenCL instrumentation
  * - SCOREP_PARADIGM_OPENACC refers to OpenACC instrumentation
@@ -301,6 +302,7 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
     SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
+    SCOREP_PARADIGM( ORPHAN_THREAD,      "orphan thread",      UNKNOWN ) \
     SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
     SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
     SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC )

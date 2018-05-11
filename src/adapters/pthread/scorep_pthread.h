@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015, 2017,
@@ -68,15 +68,5 @@ struct scorep_pthread_location_data
     struct scorep_pthread_wrapped_arg* wrapped_arg;
     struct scorep_pthread_wrapped_arg* free_list;
 };
-
-/** Policies when to reuse a Pthread location. */
-typedef enum scorep_pthread_reuse_policy_type
-{
-    SCOREP_PTHREAD_REUSE_POLICY_NEVER,
-    SCOREP_PTHREAD_REUSE_POLICY_SAME_START_ROUTINE,
-    SCOREP_PTHREAD_REUSE_POLICY_ALWAYS
-} scorep_pthread_reuse_policy_type;
-
-extern scorep_pthread_reuse_policy_type scorep_pthread_reuse_policy;
 
 #endif /* SCOREP_PTHREAD_H */

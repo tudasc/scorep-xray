@@ -368,22 +368,14 @@ various Score-P components.
 
 * POSIX threads support
 
-  - Please note that you need to instrument every thread creation
-    where the newly generated thread might create measurement events
-    (which is usually the case when you use the default compiler-based
-    instrumentation).
-
-  - The usage of pthread_detach will cause the program to fail if the
-    detached thread is still running after the end of main.
-
   - Pthread support is currently not available on systems that use
     linkers other than the GNU linker, e.g., AIX systems.
 
-  - Please note that on systems where Pthreads don't need extra flags
-    (like e.g., -pthread) to be compiled and linked (e.g., Cray, Blue
-    Gene/Q), Score-P cannot instrument Pthreads automatically. You need
-    to enable Pthread instrumentation manually via scorep's
-    --thread=pthread option.
+  - Please note that on systems where Pthreads or runtimes based on
+    Pthreads don't need extra flags (like e.g., -pthread) to be
+    compiled and linked (e.g., Cray, Blue Gene/Q), Score-P cannot
+    instrument Pthreads automatically. You need to enable Pthread
+    instrumentation manually via scorep's --thread=pthread option.
 
 --------------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015, 2017,
@@ -49,9 +49,6 @@ struct SCOREP_Location;
 size_t scorep_pthread_subsystem_id;
 
 
-scorep_pthread_reuse_policy_type scorep_pthread_reuse_policy;
-
-
 static SCOREP_ErrorCode
 pthread_subsystem_register( size_t subsystemId )
 {
@@ -76,17 +73,6 @@ pthread_subsystem_init( void )
 
     register_pthread_regions();
     scorep_pthread_mutex_init();
-
-    /* Evaluate undocumented env vars for location reuse */
-    scorep_pthread_reuse_policy = SCOREP_PTHREAD_REUSE_POLICY_NEVER;
-    if ( getenv( "SCOREP_PTHREAD_EXPERIMENTAL_REUSE" ) )
-    {
-        scorep_pthread_reuse_policy = SCOREP_PTHREAD_REUSE_POLICY_SAME_START_ROUTINE;
-        if ( getenv( "SCOREP_PTHREAD_EXPERIMENTAL_REUSE_ALWAYS" ) )
-        {
-            scorep_pthread_reuse_policy = SCOREP_PTHREAD_REUSE_POLICY_ALWAYS;
-        }
-    }
 
     UTILS_DEBUG_EXIT();
     return SCOREP_SUCCESS;

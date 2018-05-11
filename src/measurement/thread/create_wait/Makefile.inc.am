@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2016,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014, 2017,
@@ -37,6 +37,7 @@ libscorep_thread_create_wait_pthread_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                                 \
     -I$(INC_DIR_THREAD_INTERN)                     \
     -I$(INC_DIR_THREAD_CREATE_WAIT_INTERN)         \
+    -I$(INC_DIR_THREAD_CREATE_WAIT)                \
     -I$(INC_DIR_MUTEX)                             \
     -I$(INC_DIR_SUBSTRATES)                        \
     -I$(INC_ROOT)src/measurement/include           \
