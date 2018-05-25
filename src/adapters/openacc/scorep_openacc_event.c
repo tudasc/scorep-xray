@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -25,7 +25,9 @@
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
 
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
+#include <SCOREP_Task.h>
 #include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_openacc.h"
@@ -147,10 +149,25 @@ handle_leave_region( acc_prof_info*  profInfo,
     {
         SCOREP_ExitRegion( regionHandle );
     }
-    else if ( profInfo && profInfo->src_file && profInfo->line_no )
+    else
     {
-        UTILS_WARNING( "[OpenACC] Region handle (leave) for %s:%i invalid ",
-                       profInfo->src_file, profInfo->line_no );
+        UTILS_WARN_ONCE( "[OpenACC] \"tool_info\" has not been set!" );
+
+        SCOREP_Location*    location     = SCOREP_Location_GetCurrentCPULocation();
+        SCOREP_TaskHandle   curr_task    = SCOREP_Task_GetCurrentTask( location );
+        SCOREP_RegionHandle regionHandle = SCOREP_Task_GetTopRegion( curr_task );
+
+        if ( SCOREP_INVALID_REGION != regionHandle &&
+             SCOREP_RegionHandle_GetParadigmType( regionHandle ) == SCOREP_PARADIGM_OPENACC )
+        {
+            SCOREP_ExitRegion( regionHandle );
+        }
+        else
+        {
+            UTILS_WARNING( "[OpenACC] Region handle (leave) for %s:%i invalid ",
+                           ( profInfo && profInfo->src_file ) ? profInfo->src_file : "",
+                           ( profInfo && profInfo->line_no ) ? profInfo->line_no : SCOREP_INVALID_LINE_NO );
+        }
     }
 }
 
