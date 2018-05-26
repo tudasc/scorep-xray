@@ -127,6 +127,8 @@ AM_PROG_CC_C_O
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
 AC_SUBST([PKGDATADIR])
 
+rm -f gcc_plugin_supported
+
 # Only if the platform supports shared libraries, try to check for plug-in
 # support in GCC
 AS_CASE([${ac_scorep_platform},${scorep_gcc_plugin_target_vendor},${enable_shared},${scorep_enable_gcc_plugin}],
@@ -142,7 +144,7 @@ AS_CASE([${ac_scorep_platform},${scorep_gcc_plugin_target_vendor},${enable_share
         [AFS_SUMMARY([GCC plug-in support], [no, only GNU compilers supported])])
 
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [],
+    [touch gcc_plugin_supported],
     [AS_IF([test "x${scorep_enable_gcc_plugin}" = "xyes"],
         [AC_MSG_ERROR([Request to enable the GCC plug-in could not be fulfilled. Run configure with --disable-gcc-plugin or run without --enable-gcc-plugin to see the reason.])])])
 

@@ -187,11 +187,11 @@ AC_DEFINE_UNQUOTED([SCOREP_GCC_PLUGIN_TARGET_VERSION],
 # SCOREP_GCC_PLUGIN
 # -----------------
 # Performs checks whether the GCC compiler has plug-in support, and with which
-# compiler it was built.
+# compiler it was built. Produces the AFS conditional HAVE_GCC_PLUGIN_SUPPORT.
 AC_DEFUN([SCOREP_GCC_PLUGIN], [
 AC_REQUIRE([_SCOREP_GCC_PLUGIN_TARGET_VERSION])dnl
 
-rm -f gcc_plugin_supported
+scorep_gcc_plugin_support="no"
 
 # we need the include directory from the target CC
 scorep_gcc_plugin_includedir=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
@@ -202,23 +202,23 @@ AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
     [# GCC 4.5 and 4.6 are always built with the C compiler
     _SCOREP_GCC_PLUGIN_CHECK([C],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
-         touch gcc_plugin_supported])],
+         scorep_gcc_plugin_support="yes"])],
     [test ${scorep_gcc_plugin_target_version} -eq 4007],
     [# GCC 4.7 can either be build with the C or the C++ compiler
     _SCOREP_GCC_PLUGIN_CHECK([C],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
-         touch gcc_plugin_supported],
+         scorep_gcc_plugin_support="yes"],
         [AS_UNSET([ac_cv_header_gcc_plugin_h])
          AS_UNSET([ac_cv_header_tree_h])
          _SCOREP_GCC_PLUGIN_CHECK([C++],
             [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
-             touch gcc_plugin_supported])])],
+             scorep_gcc_plugin_support="yes"])])],
     [# GCC 4.8 and onwards are compiled with the C++ compiler
     _SCOREP_GCC_PLUGIN_CHECK([C++],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
-         touch gcc_plugin_supported])])
+         scorep_gcc_plugin_support="yes"])])
 
-AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [false])
+AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test "x${scorep_gcc_plugin_support}" = "xyes"], [false])
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
@@ -238,8 +238,6 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
         AFS_SUMMARY([Compiler used], [$CXX])],
         [AFS_SUMMARY([Compiler used], [$CC])])
 ])
-
-
 
 AS_UNSET([scorep_gcc_plugin_includedir])
 AS_UNSET([scorep_gcc_plugin_support_reason])
