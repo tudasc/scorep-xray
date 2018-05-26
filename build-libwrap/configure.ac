@@ -70,6 +70,7 @@ AC_ARG_WITH([llvm],
 rm -f library_wrapping_supported
 reason=""
 
+scorep_have_llvm_config=no
 AS_IF([test "x${with_llvm}" != "xno"],
       [AS_IF([test "x${with_llvm}" = "xyes" || test "x${with_llvm}" = "xnot_given"],
              [AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], ["no"])
