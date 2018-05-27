@@ -468,8 +468,6 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
     scorep_subsystems_dump_manifest( dump_file, relativeSourceDir, targetDir );
 
     fprintf( dump_file, "\n" );
-    fprintf( dump_file, "\n" );
-    fprintf( dump_file, "\n" );
     fprintf( dump_file, "# List of Score-P variables that were explicitly set for this measurement\n" );
     fprintf( dump_file, "\n" );
     fprintf( dump_file, " The complete list of Score-P variables used, incl. current default values, \n" );
