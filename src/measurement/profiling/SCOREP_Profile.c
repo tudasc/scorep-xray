@@ -1659,7 +1659,6 @@ dump_manifest( FILE* manifestFile, const char* relativeSourceDir, const char* ta
             SCOREP_ConfigManifestSectionEntry( manifestFile, "tau/snapshot.<rank>.0.0", "TAU snapshot files." );
             break;
     }
-    ;
 
     if ( scorep_profile_enable_core_files )
     {
