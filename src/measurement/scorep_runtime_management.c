@@ -441,10 +441,13 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
      */
 
     /* static header */
-    fprintf( dump_file, "# Experiment directory overview\n\n" );
+    fprintf( dump_file, "# Experiment directory overview\n" );
+    fprintf( dump_file, "\n" );
 
-    fprintf( dump_file, "The result directory of this measurement should contain the following files:\n\n" );
-    fprintf( dump_file, "   1. Files that should be present even if the measurement aborted:\n\n" );
+    fprintf( dump_file, "The result directory of this measurement should contain the following files:\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, "   1. Files that should be present even if the measurement aborted:\n" );
+    fprintf( dump_file, "\n" );
     fprintf( dump_file, "      * `MANIFEST.md`           This manifest file\n" );
     fprintf( dump_file, "      * `scorep.cfg`            Listing of used environment variables\n" );
 
@@ -458,15 +461,20 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
         fprintf( dump_file, "      * `scorep.filter`         Copy of the applied filter file\n" );
     }
 
-    fprintf( dump_file, "\n   2. Files that will be created by subsystems of the measurement core:\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, "   2. Files that will be created by subsystems of the measurement core:\n" );
 
     /* collect information from subsystems*/
     scorep_subsystems_dump_manifest( dump_file, relativeSourceDir, targetDir );
 
-    fprintf( dump_file, "\n\n\n" );
-    fprintf( dump_file, "# List of Score-P variables that were explicitly set for this measurement\n\n"
-             " The complete list of Score-P variables used, incl. current default values, \n"
-             " can be found in `scorep.cfg`.\n\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, "# List of Score-P variables that were explicitly set for this measurement\n" );
+    fprintf( dump_file, "\n" );
+    fprintf( dump_file, " The complete list of Score-P variables used, incl. current default values, \n" );
+    fprintf( dump_file, " can be found in `scorep.cfg`.\n" );
+    fprintf( dump_file, "\n" );
 
     SCOREP_ConfigDumpChangedVars( dump_file );
     fclose( dump_file );
