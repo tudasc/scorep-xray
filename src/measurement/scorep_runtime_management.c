@@ -470,8 +470,8 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
     fprintf( dump_file, "\n" );
     fprintf( dump_file, "# List of Score-P variables that were explicitly set for this measurement\n" );
     fprintf( dump_file, "\n" );
-    fprintf( dump_file, " The complete list of Score-P variables used, incl. current default values, \n" );
-    fprintf( dump_file, " can be found in `scorep.cfg`.\n" );
+    fprintf( dump_file, "The complete list of Score-P variables used, incl. current default values,\n" );
+    fprintf( dump_file, "can be found in `scorep.cfg`.\n" );
     fprintf( dump_file, "\n" );
 
     SCOREP_ConfigDumpChangedVars( dump_file );
