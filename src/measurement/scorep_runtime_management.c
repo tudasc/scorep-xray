@@ -448,8 +448,8 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
     fprintf( dump_file, "\n" );
     fprintf( dump_file, "   1. Files that should be present even if the measurement aborted:\n" );
     fprintf( dump_file, "\n" );
-    fprintf( dump_file, "      * `MANIFEST.md`           This manifest file\n" );
-    fprintf( dump_file, "      * `scorep.cfg`            Listing of used environment variables\n" );
+    fprintf( dump_file, "      * `MANIFEST.md`           This manifest file.\n" );
+    fprintf( dump_file, "      * `scorep.cfg`            Listing of used environment variables.\n" );
 
     /* write dynamic information */
     /* add info for a possible filter file since it isn't controlled by subsystem
@@ -458,7 +458,7 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
      */
     if ( SCOREP_ConfigCopyFile( "filtering", "file", relativeSourceDir, targetDir ) )
     {
-        fprintf( dump_file, "      * `scorep.filter`         Copy of the applied filter file\n" );
+        fprintf( dump_file, "      * `scorep.filter`         Copy of the applied filter file.\n" );
     }
 
     fprintf( dump_file, "\n" );

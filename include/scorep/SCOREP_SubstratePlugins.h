@@ -735,7 +735,7 @@ typedef struct SCOREP_SubstratePluginCallbacks
                                               const char* section );
 
     /** @brief Create formated entry in the manifest file consisting out of a name and a
-     * description, the latter in printf style.
+     * description, the latter in printf style and terminated with a period.
      */
     void
     ( * SCOREP_ConfigManifestSectionEntry )( FILE*       out,
