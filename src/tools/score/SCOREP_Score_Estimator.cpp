@@ -716,7 +716,7 @@ SCOREP_Score_Estimator::printGroups( void )
         total_buf = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
 
-    memory_req = max_buf + memory_req;
+    memory_req = max_buf;
     memory_req = value > memory_req ? value : memory_req;
     memory_req = memory_req + value *  m_profile->getMaxNumberOfLocationsPerProcess();
 
