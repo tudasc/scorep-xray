@@ -11,7 +11,6 @@ various Score-P components.
 * Platform support
 
   - Score-P has been tested on the following platforms:
-    + IBM Blue Gene/Q, only static libraries supported
     + Cray XC (see 'Shared libraries on Cray systems' below)
     + K Computer
     + various Linux/Intel (x86/x64/Power8/ARM AArch32/AArch64) clusters
@@ -20,6 +19,7 @@ various Score-P components.
     basis for building and testing the toolset on other systems.
 
   - The following platforms have not been tested recently:
+    + IBM Blue Gene/Q, only static libraries supported
     + SGI Altix/ICE
     + IBM Blue Gene/P
     + Cray XT, XE, XK
