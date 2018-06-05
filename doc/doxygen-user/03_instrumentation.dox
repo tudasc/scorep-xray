@@ -658,8 +658,13 @@ instrumentation. The macro
 <tt>SCOREP_RECORDING_ON</tt>. Just like the already covered user-defined annotated
 regions, <tt>SCOREP_RECORDING_ON</tt> and the corresponding
  <tt>SCOREP_RECORDING_OFF</tt>
-must be correctly nested with other enter/exit events. Finally,
-with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether recording is switched on.
+ must be correctly nested with other enter/exit events. Please beware
+that if program start is recorded, i.e., <tt>main</tt> or
+<tt>MAIN_</tt> are instrumented and not filtered, the recording needs
+to be switched on before program end in order to get valid
+measurements.
+Finally, with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether
+recording is switched on.
 
 Events are not recorded when recording is switched off (though associated
 definitions are), resulting in smaller measurement overhead.  In particular,
