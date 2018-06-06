@@ -146,7 +146,7 @@ scorep_pthread_summary_reason=
 
 AS_IF([test "x${scorep_pthread_support}" = x1],
     [AM_COND_IF([HAVE_LIBWRAP_LINKTIME_SUPPORT],
-        [scorep_pthread_summary_reason+=", using ${PTHREAD_CC} ${PTHREAD_CFLAGS} ${PTHREAD_LIBS}"],
+        [],
         [scorep_pthread_support=0
          scorep_pthread_summary_reason+=", missing linktime library wrapping support"])],
     [scorep_pthread_support=0
@@ -164,7 +164,7 @@ AFS_AM_CONDITIONAL([HAVE_PTHREAD_SUPPORT], [test "x${scorep_pthread_support}" = 
 AFS_AM_CONDITIONAL([HAVE_PTHREAD_WITHOUT_FLAGS],
     [test "x${PTHREAD_CFLAGS}" = x && test "x${PTHREAD_LIBS}" = x], [false])
 AM_COND_IF([HAVE_PTHREAD_SUPPORT],
-   [AFS_SUMMARY([Pthread support], [yes${scorep_pthread_summary_reason}])],
+   [AFS_SUMMARY([Pthread support], [yes, using ${PTHREAD_CC} ${PTHREAD_CFLAGS} ${PTHREAD_LIBS}])],
    [AFS_SUMMARY([Pthread support], [no${scorep_pthread_summary_reason}])])
 AS_UNSET([scorep_pthread_summary_reason])
 ])dnl SCOREP_PTHREAD
