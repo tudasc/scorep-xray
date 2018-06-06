@@ -101,12 +101,16 @@ AS_UNSET([scorep_tls_reason])
 # _SCOREP_CHECK_TLS_SPECIFIER( TLS_SPECIFIER,
 #                              PROLOG,
 #                              ACTION_FOUND,
-#                              ACTION_NOT_FOUND )
-# -----------------
+#                              ACTION_NOT_FOUND,
+#                              [ADDITIONAL_CFLAGS] )
+# --------------------------------------------------
 # Performs checks whether the compiler supports TLS_SPECIFIER.
 AC_DEFUN([_SCOREP_CHECK_TLS_SPECIFIER], [
 
 AC_LANG_PUSH([C])
+
+cflags_save="$CFLAGS"
+CFLAGS="$CFLAGS $5"
 
 AC_MSG_CHECKING([for $1])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -119,6 +123,8 @@ $1 int global_thread_private_var = 1;
    [AC_MSG_RESULT([no])
     $4
     :])
+
+CFLAGS="$cflags_save"
 
 AC_LANG_POP([C])
 
