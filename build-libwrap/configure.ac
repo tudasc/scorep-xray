@@ -70,23 +70,25 @@ AC_ARG_WITH([llvm],
 rm -f library_wrapping_supported
 reason=""
 
-scorep_have_llvm_config=no
+# AC_CHECK_PROGS does has no effect, if the $1 argument is already set
+AS_UNSET([scorep_have_llvm_config])
 AS_IF([test "x${with_llvm}" != "xno"],
       [AS_IF([test "x${with_llvm}" = "xyes" || test "x${with_llvm}" = "xnot_given"],
              [AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], ["no"])
               AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
                     [scorep_llvm_config_bin="`which ${scorep_have_llvm_config}`"])],
              [# --with-llvm=<path>
-              AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], ["no"], [${with_llvm}])
+              AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], [no], [${with_llvm}])
               AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
                     [scorep_llvm_config_bin="${with_llvm}/${scorep_have_llvm_config}"],
                     [AS_UNSET([ac_cv_prog_scorep_have_llvm_config])
                      AS_UNSET([scorep_have_llvm_config])
-                     AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], ["no"], ["${with_llvm}/bin"])
+                     AC_CHECK_PROGS([scorep_have_llvm_config], [llvm-config llvm-config-4.0 llvm-config-3.9 llvm-config-3.8 llvm-config-3.7 llvm-config-3.6], [no], ["${with_llvm}/bin"])
                      AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
                            [scorep_llvm_config_bin="${with_llvm}/bin/${scorep_have_llvm_config}"])])
              ])],
-      [reason="explicitly disabled via --without-llvm"])
+      [scorep_have_llvm_config="no"
+       reason="explicitly disabled via --without-llvm"])
 
 AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
       [# try executing llvm-config to rule out that it doesn't work due to not finding linked libs e.g.
