@@ -24,13 +24,12 @@ AC_DEFUN([AFS_AM_CONDITIONAL],
 [m4_case([$3], [true], [],
                [false], [],
                [m4_fatal([AFS_AM_CONDITIONAL requires the third parameter to be either 'true' or 'false'.])])dnl
-AC_CONFIG_COMMANDS_PRE(
-[if test -z "${$1_TRUE}" && test -z "${$1_FALSE}"; then
-m4_if([$3], [true], [dnl
-  $1_TRUE=
-  $1_FALSE='#'],[dnl
-  $1_TRUE='#'
-  $1_FALSE=])
-fi])dnl
+m4_divert_text([DEFAULTS],
+[m4_if([$3], [true], [dnl
+$1_TRUE=
+$1_FALSE='#'],[dnl
+$1_TRUE='#'
+$1_FALSE=])
+])dnl
 AM_CONDITIONAL($1, [$2])dnl
 ])dnl
