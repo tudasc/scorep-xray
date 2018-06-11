@@ -658,10 +658,14 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
        as we may fail to get a backtrace */
     *previousCallingContext = unwindData->previous_calling_context;
 
-#if HAVE( DECL_UNW_INIT_LOCAL_SIGNAL )
+#if HAVE( DECL_UNW_INIT_LOCAL2 ) || HAVE( DECL_UNW_INIT_LOCAL_SIGNAL )
     if ( contextPtr )
     {
+#if HAVE( DECL_UNW_INIT_LOCAL2 )
+        int ret = unw_init_local2( &unwindData->cursor, contextPtr, UNW_INIT_SIGNAL_FRAME );
+#elif HAVE( DECL_UNW_INIT_LOCAL_SIGNAL )
         int ret = unw_init_local_signal( &unwindData->cursor, contextPtr );
+#endif
         if ( ret < 0 )
         {
             return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,

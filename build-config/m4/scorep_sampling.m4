@@ -121,7 +121,7 @@ AS_IF([test "x${scorep_return_address}" != x0], [
 AS_IF([test "x${scorep_unwinding_support}" = "xyes"],
       [save_CPPFLAGS=$CPPFLAGS
        CPPFLAGS="$CPPFLAGS ${with_libunwind_cppflags}"
-       AC_CHECK_DECLS([unw_init_local_signal],
+       AC_CHECK_DECLS([unw_init_local2, unw_init_local_signal],
                       [], [], [[#define UNW_LOCAL_ONLY
 #include <libunwind.h>
 ]])
