@@ -192,7 +192,9 @@ is_object_file( const std::string& filename )
 }
 
 bool
-is_library( const std::string& filename )
+is_library( const std::string& filename,
+            bool               allowDynamic,
+            bool               allowStatic )
 {
     std::string basename  = remove_path( filename );
     std::string extension = get_extension( basename );
@@ -200,27 +202,33 @@ is_library( const std::string& filename )
     {
         return false;
     }
-    if ( extension == ".a" )
-    {
-        return true;
-    }
-    if ( extension == ".so" )
+
+    if ( allowStatic && extension == ".a" )
     {
         return true;
     }
 
-    /* Check for libtool library version extension */
-    std::string::size_type pos = basename.rfind( ".so." );
-    if ( pos == std::string::npos )
+    if ( allowDynamic )
     {
-        return false;
+        if ( extension == ".so" )
+        {
+            return true;
+        }
+
+        /* Check for libtool library version extension */
+        std::string::size_type pos = basename.rfind( ".so." );
+        if ( pos == std::string::npos )
+        {
+            return false;
+        }
+        if ( basename.find_first_not_of( ".0123456789", pos + 3 ) == std::string::npos
+             && extension != "." )
+        {
+            /* everything after ".so" consists only of "." or digits, and does not end in "." */
+            return true;
+        }
     }
-    if ( basename.find_first_not_of( ".0123456789", pos + 3 ) == std::string::npos
-         && extension != "." )
-    {
-        /* everything after ".so" consists only of "." or digits, and does not end in "." */
-        return true;
-    }
+
     return false;
 }
 

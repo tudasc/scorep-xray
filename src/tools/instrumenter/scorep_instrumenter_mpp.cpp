@@ -236,7 +236,13 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
           current_file != object_list->end();
           current_file++ )
     {
-        if ( is_object_file( *current_file ) || is_library( *current_file ) )
+        bool allow_dynamic = true;
+#if !HAVE_BACKEND( SHMEM_PROFILING_INTERFACE )
+        // with only link-time wrapping, we must exclude dynamic libraries
+        allow_dynamic = false;
+#endif
+        if ( is_object_file( *current_file )
+             || is_library( *current_file, allow_dynamic ) )
         {
             all_objects_stream << " " << *current_file;
         }

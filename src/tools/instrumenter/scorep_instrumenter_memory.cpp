@@ -106,7 +106,8 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
           current_file != object_list->end();
           current_file++ )
     {
-        if ( is_object_file( *current_file ) || is_library( *current_file ) )
+        /* we currently only wrap at link-time, thus exclude dynamic libraries here */
+        if ( is_object_file( *current_file ) || is_library( *current_file, false ) )
         {
             all_objects_stream << " " << *current_file;
         }

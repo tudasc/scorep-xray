@@ -113,10 +113,14 @@ is_object_file( const std::string& filename );
 /**
     Checks whether a file is a library.
     @param filename A file name.
+    @param allowDynamic accept dynamic libraries too (.so*)
+    @param allowStatic accept static libraries too (.a)
     @returns true if the file starts with "lib" and has a known library extension.
  */
 bool
-is_library( const std::string& filename );
+is_library( const std::string& filename,
+            bool               allowDynamic = true,
+            bool               allowStatic  = true );
 
 /**
     Extracts the library name from a library file (i.e., to be used in '-l' flags).
