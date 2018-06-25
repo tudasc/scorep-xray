@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2017,
+ * Copyright (c) 2009-2013, 2015-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -845,6 +845,25 @@ write_system_tree( cube_t*                   myCube,
 
         system_tree[ pos ].cube_node =
             cube_def_system_tree_node( myCube, display_name, "", class, parent );
+
+        SCOREP_SystemTreeNodePropertyHandle property_handle = definition->properties;
+        while ( property_handle != SCOREP_INVALID_SYSTEM_TREE_NODE_PROPERTY )
+        {
+            SCOREP_SystemTreeNodePropertyDef* property =
+                SCOREP_HANDLE_DEREF( property_handle,
+                                     SystemTreeNodeProperty,
+                                     manager->page_manager );
+            property_handle = property->properties_next;
+
+            const char* key = SCOREP_HANDLE_DEREF( property->property_name_handle,
+                                                   String,
+                                                   manager->page_manager )->string_data;
+            const char* value = SCOREP_HANDLE_DEREF( property->property_value_handle,
+                                                     String,
+                                                     manager->page_manager )->string_data;
+
+            cube_system_tree_node_def_attr( system_tree[ pos ].cube_node, key, value );
+        }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( display_name );
