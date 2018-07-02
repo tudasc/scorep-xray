@@ -3,12 +3,15 @@
 
 If an application was instrumented with @scorep, you will get an executable, which
 you can execute like the uninstrumented application. After the application run, you
-will find an experiment directory in your current working directory, which contains
-all recorded data. The experiment directory has the format
+will find an experiment directory as child of the current working directory,
+which contains all recorded data (note that there will be no directory if no
+substrate requested one). The experiment directory has the format
 <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>, where <tt>YYYYMMDD</tt> and <tt>HHMM</tt> encodes
 the date followed by a series of random numbers. You may specify the name of the
 experiment directory by setting the environment variable \confvar{SCOREP_EXPERIMENT_DIRECTORY}
-to the desired name of the directory. If the directory already exists, the existing
+to the desired name of the directory. Note that this directory will also be created
+directly under the current working directory. No parent directories will be created.
+If the directory already exists, the existing
 directory will be renamed by appending a date like above by default. You can let
 @scorep abort the measurement immediately by setting \confvar{SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY}
 to <tt>false</tt> if the experiment directory already exists. This has only an
@@ -1021,4 +1024,3 @@ SCOREP_SUBSTRATE_PLUGINS=PrintRegions
 @note Multiple substrate plugins can be loaded by listing them <tt>SCOREP_SUBSTRATE_PLUGINS=foo,bar</tt>, the default separator ',' can be changed by setting the environment variable \confvar{SCOREP_SUBSTRATE_PLUGINS_SEP}.
 @note Developers of plugins are highly encouraged to use environment variables in their plugins with the naming scheme <tt>SCOREP_SUBSTRATE_<substrate name>_<variable></tt>, e.g., <tt>SCOREP_SUBSTRATE_PRINTREGIONS_VERBOSE</tt>
 */
-
