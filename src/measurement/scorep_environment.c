@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015, 2017,
+ * Copyright (c) 2009-2011, 2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -172,7 +172,10 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         &env_experiment_directory,
         NULL,
         "",
-        "Name of the experiment directory",
+        "Name of the experiment directory as child of the current working directory",
+        "The experiment directory is created directly under the current working "
+        "directory. No parent directories will be created. The experiment "
+        "directory is only created if it is requested by at least one substrate. "
         "When no experiment name is given (the default) Score-P names the "
         "experiment directory `scorep-measurement-tmp' and renames this "
         "after a successful measurement to a generated name based on the "
