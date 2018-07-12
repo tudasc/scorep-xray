@@ -153,6 +153,15 @@ int MPI_Recv( void* buf,
 
 #pragma wrapgen single MPI_Probe skel/SCOREP_Mpi_Std.w
 
+#pragma wrapgen single MPI_Mprobe skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Improbe skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Mrecv skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Imrecv skel/SCOREP_Mpi_Std.w
+
+
 #pragma wrapgen multiple restrict(nMPI_Sendrecv) skel/SCOREP_Mpi_PtpSendrecv.w
 
 /**
