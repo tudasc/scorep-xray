@@ -122,8 +122,8 @@ SCOREP_CreateExperimentDir( void )
     SCOREP_SUBSTRATE_REQUIREMENT_CHECK_ANY( CREATE_EXPERIMENT_DIRECTORY, directory_required );
     if ( !directory_required && !SCOREP_Env_DoForceCfgFiles() )
     {
-        /* If tracing and profiling is disabled and no other substrate is present */
-        if ( SCOREP_Substrates_NumberOfRegisteredSubstrates() == 0 && SCOREP_Status_GetRank() == 0 )
+        /* If tracing and profiling is disabled and no other substrate except for scorep-properties (which is always there) is present */
+        if ( SCOREP_Substrates_NumberOfRegisteredSubstrates() == 1 && SCOREP_Status_GetRank() == 0 )
         {
             UTILS_WARNING( "Score-P will not create an experiment directory. "
                            "If you want to change this, set the environment variable SCOREP_FORCE_CFG_FILES to true "

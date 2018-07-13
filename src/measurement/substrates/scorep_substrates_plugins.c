@@ -409,6 +409,7 @@ SCOREP_Substrate_Plugins_GetSubstrateMgmtCallbacks( uint32_t currentPlugin, SCOR
     ASSIGN_MGMT( callbacks, CORE_TASK_CREATE, registered_plugins[ currentPlugin ].core_task_create );
     ASSIGN_MGMT( callbacks, CORE_TASK_COMPLETE, registered_plugins[ currentPlugin ].core_task_complete );
     ASSIGN_MGMT( callbacks, NEW_DEFINITION_HANDLE, registered_plugins[ currentPlugin ].new_definition_handle );
+    ASSIGN_MGMT( callbacks, GET_REQUIREMENT, registered_plugins[ currentPlugin ].get_requirement );
 
     *returnedCallbacks = callbacks;
     return currentPlugin + 1;
