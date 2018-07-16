@@ -240,6 +240,12 @@ typedef enum SCOREP_CPULocationPhase
 
 
 /**
+ * Symbolic constant denoting that the fork sequence count
+ * is not in a valid state.
+ */
+#define SCOREP_THREAD_INVALID_SEQUENCE_COUNT UINT32_MAX
+
+/**
  *  Known flags for parallel paradigms.
  *
  *  Flags are essential boolean typed SCOREP_ParadigmProperty and thus

@@ -30,13 +30,6 @@ struct scorep_thread_private_data;
 struct SCOREP_Location;
 
 /**
- * Symbolic constant denoting that the fork sequence count
- * is not in a valid state.
- */
-#define SCOREP_THREAD_INVALID_SEQUENCE_COUNT UINT32_MAX
-
-
-/**
  * Returns a process-unique sequence count starting a 0 for the
  * initial thread and being incremented thereafter. Values >= 1
  * identify a parallel execution started by either

@@ -1178,7 +1178,7 @@ thread_create( SCOREP_Location*                 location,
                                  timestamp,
                                  SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
                                                             InterimCommunicator ),
-                                 createSequenceCount );
+                                 createSequenceCount == SCOREP_THREAD_INVALID_SEQUENCE_COUNT ? OTF2_UNDEFINED_UINT64 : createSequenceCount );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }
@@ -1198,7 +1198,7 @@ thread_wait( SCOREP_Location*                 location,
                                timestamp,
                                SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
                                                           InterimCommunicator ),
-                               createSequenceCount );
+                               createSequenceCount == SCOREP_THREAD_INVALID_SEQUENCE_COUNT ? OTF2_UNDEFINED_UINT64 : createSequenceCount );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }
@@ -1218,7 +1218,7 @@ thread_begin( SCOREP_Location*                 location,
                                 timestamp,
                                 SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
                                                            InterimCommunicator ),
-                                createSequenceCount );
+                                createSequenceCount == SCOREP_THREAD_INVALID_SEQUENCE_COUNT ? OTF2_UNDEFINED_UINT64 : createSequenceCount );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }
@@ -1238,7 +1238,7 @@ thread_end( SCOREP_Location*                 location,
                               timestamp,
                               SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
                                                          InterimCommunicator ),
-                              createSequenceCount );
+                              createSequenceCount == SCOREP_THREAD_INVALID_SEQUENCE_COUNT ? OTF2_UNDEFINED_UINT64 : createSequenceCount );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }
