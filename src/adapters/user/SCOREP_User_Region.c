@@ -204,6 +204,29 @@ SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle )
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+void
+SCOREP_User_RegionSetGroup( const SCOREP_User_RegionHandle handle,
+                            const char*                    groupName )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        if ( handle != SCOREP_USER_INVALID_REGION  &&
+             handle != SCOREP_FILTERED_USER_REGION  )
+        {
+            SCOREP_RegionHandle_SetGroup( handle->handle, groupName );
+        }
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 
 void
 SCOREP_User_RegionByNameBegin( const char*                  name,

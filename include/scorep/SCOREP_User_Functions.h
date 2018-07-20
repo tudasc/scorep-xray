@@ -116,6 +116,15 @@ void
 SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle );
 
 /**
+ * Associate a region with a group.
+ * @param handle     Handle to a region, which is supposed to be added to a group.
+ * @param groupName  Group name to add the region to.
+ */
+void
+SCOREP_User_RegionSetGroup( const SCOREP_User_RegionHandle handle,
+                            const char*                    groupName );
+
+/**
     Generates an enter event for the specified region. If the region was not registered
     before, it registers the region. On the first enter, the region is registered to
     the measurement system. A pre-initialized handle is not needed in this version, if
