@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -1058,7 +1058,8 @@ POMP2_Init_lock( omp_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_init_lock( s );
+        omp_init_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1098,7 +1099,8 @@ POMP2_Destroy_lock( omp_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_destroy_lock( s );
+        omp_destroy_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1138,7 +1140,8 @@ POMP2_Set_lock( omp_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_set_lock( s );
+        omp_set_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1181,7 +1184,8 @@ POMP2_Unset_lock( omp_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_unset_lock( s );
+        omp_unset_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1270,7 +1274,8 @@ POMP2_Init_nest_lock( omp_nest_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_init_nest_lock( s );
+        omp_init_nest_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1310,7 +1315,8 @@ POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_destroy_nest_lock( s );
+        omp_destroy_nest_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1349,7 +1355,8 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_set_nest_lock( s );
+        omp_set_nest_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
@@ -1391,7 +1398,8 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
-        return omp_unset_nest_lock( s );
+        omp_unset_nest_lock( s );
+        return;
     }
 
     UTILS_DEBUG_ENTRY();
