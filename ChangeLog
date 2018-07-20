@@ -25,6 +25,8 @@ Features and improvements:
 
 Bugfixes:
 
+- Fixed PGI compiler adapter to prevent the corruption of register
+  values in some cases.
 
 ------------------- Released version 4.0 -----------------------------
 

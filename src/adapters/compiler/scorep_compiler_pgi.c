@@ -283,7 +283,7 @@ struct PGI_PROFENT_64
 /**
  * called during program initialization
  */
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 __rouinit( void )
 {
@@ -301,7 +301,7 @@ __rouinit( void )
  * called during program termination
  */
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 __rouexit( void )
 {
@@ -349,14 +349,14 @@ check_region( SCOREP_RegionHandle* region,
 
 #if __i386__
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouent( struct PGI_PROFENT_32* profent )
 {
     SCOREP_COMPILER_ENTER_MPROF();
 }
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouent2( struct PGI_PROFENT_32* profent )
 {
@@ -366,14 +366,14 @@ ___rouent2( struct PGI_PROFENT_32* profent )
 /**
  * called at the end of each instrumented routine
  */
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouret( void )
 {
     SCOREP_COMPILER_EXIT_MPROF();
 }
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouret2( void )
 {
@@ -388,7 +388,7 @@ ___rouret2( void )
  * The profent is in register %r9, which is by the amd64 calling convention
  * the 6th argument
  */
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___instent64( void*                  arg0,
               void*                  arg1,
@@ -403,7 +403,7 @@ ___instent64( void*                  arg0,
 /**
  * called at the end of each instrumented routine
  */
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___instret64( void*                  arg0,
               void*                  arg1,
@@ -415,7 +415,7 @@ ___instret64( void*                  arg0,
     SCOREP_COMPILER_EXIT_MINST();
 }
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___instentavx( void*                  arg0,
                void*                  arg1,
@@ -428,7 +428,7 @@ ___instentavx( void*                  arg0,
 }
 
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___instretavx( void*                  arg0,
                void*                  arg1,
@@ -446,7 +446,7 @@ ___instretavx( void*                  arg0,
  * The profent is in register %r9, which is by the amd64 calling convention
  * the 6th argument
  */
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouent64( void*                  arg0,
              void*                  arg1,
@@ -458,7 +458,7 @@ ___rouent64( void*                  arg0,
     SCOREP_COMPILER_ENTER_MINST();
 }
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___rouret64( void )
 {
@@ -467,7 +467,7 @@ ___rouret64( void )
 
 #endif
 
-#pragma save_all_gp_regs
+#pragma save_all_regs
 void
 ___linent2( void )
 {
