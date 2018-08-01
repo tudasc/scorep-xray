@@ -419,24 +419,25 @@ scorep_cupti_callbacks_all( void*                userdata,
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    if ( CUPTI_CB_DOMAIN_RUNTIME_API == domain )
-    {
-        scorep_cupti_callbacks_runtime_api( cbid, ( const CUpti_CallbackData* )cbInfo );
-    }
+    /*
+     * Keep the jump table. The Intel compiler miscompiles this functions, and
+     * clobbers it registers used to access the TLS scorep_in_measurement
+     * variable. A jump table disables inlining, which was sufficient,
+     * to convince the Intel compiler to produce correct code.
+     */
+    typedef void ( * domain_callback_function )( CUpti_CallbackId,
+                                                 const void* );
 
-    if ( CUPTI_CB_DOMAIN_DRIVER_API == domain )
-    {
-        scorep_cupti_callbacks_driver_api( cbid, ( const CUpti_CallbackData* )cbInfo );
-    }
+    static const domain_callback_function domain_callbacks[ CUPTI_CB_DOMAIN_SIZE ] = {
+        [ CUPTI_CB_DOMAIN_DRIVER_API ]  = ( domain_callback_function )scorep_cupti_callbacks_driver_api,
+        [ CUPTI_CB_DOMAIN_RUNTIME_API ] = ( domain_callback_function )scorep_cupti_callbacks_runtime_api,
+        [ CUPTI_CB_DOMAIN_RESOURCE ]    = ( domain_callback_function )scorep_cupti_callbacks_resource,
+        [ CUPTI_CB_DOMAIN_SYNCHRONIZE ] = ( domain_callback_function )scorep_cupti_callbacks_sync
+    };
 
-    if ( CUPTI_CB_DOMAIN_RESOURCE == domain )
+    if ( domain < CUPTI_CB_DOMAIN_SIZE && domain_callbacks[ domain ] )
     {
-        scorep_cupti_callbacks_resource( cbid, ( const CUpti_ResourceData* )cbInfo );
-    }
-
-    if ( CUPTI_CB_DOMAIN_SYNCHRONIZE == domain )
-    {
-        scorep_cupti_callbacks_sync( cbid, ( const CUpti_SynchronizeData* )cbInfo );
+        domain_callbacks[ domain ]( cbid, cbInfo );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
