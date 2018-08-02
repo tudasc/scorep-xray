@@ -124,8 +124,8 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
                        int32_t*                     regionType,
                        char*                        fileNameF,
                        int32_t*                     lineNo,
-                       scorep_fortran_charlen_t     regionNameLen,
-                       scorep_fortran_charlen_t     fileNameLen )
+                       int                          regionNameLen,
+                       int                          fileNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -215,8 +215,8 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
                         int32_t*                     regionType,
                         char*                        fileNameF,
                         int32_t*                     lineNo,
-                        scorep_fortran_charlen_t     regionNameLen,
-                        scorep_fortran_charlen_t     fileNameLen )
+                        int                          regionNameLen,
+                        int                          fileNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -248,12 +248,12 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 }
 
 void
-FSUB( SCOREP_F_RegionByNameBegin )( char*                    regionNameF,
-                                    int32_t*                 regionType,
-                                    char*                    fileNameF,
-                                    int32_t*                 lineNo,
-                                    scorep_fortran_charlen_t regionNameLen,
-                                    scorep_fortran_charlen_t fileNameLen )
+FSUB( SCOREP_F_RegionByNameBegin )( char*    regionNameF,
+                                    int32_t* regionType,
+                                    char*    fileNameF,
+                                    int32_t* lineNo,
+                                    int      regionNameLen,
+                                    int      fileNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -296,8 +296,8 @@ FSUB( SCOREP_F_RewindBegin )( SCOREP_Fortran_RegionHandle* handle,
                               int32_t*                     type,
                               char*                        fileName_f,
                               int32_t*                     lineNo,
-                              scorep_fortran_charlen_t     nameLen,
-                              scorep_fortran_charlen_t     fileNameLen )
+                              int                          nameLen,
+                              int                          fileNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -339,8 +339,8 @@ FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
 
 
 void
-FSUB( SCOREP_F_RegionByNameEnd )( char*                    regionNameF,
-                                  scorep_fortran_charlen_t regionNameLen )
+FSUB( SCOREP_F_RegionByNameEnd )( char* regionNameF,
+                                  int   regionNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -415,8 +415,8 @@ FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
                           int32_t*                     regionType,
                           char*                        fileNameF,
                           int32_t*                     lineNo,
-                          scorep_fortran_charlen_t     regionNameLen,
-                          scorep_fortran_charlen_t     fileNameLen )
+                          int                          regionNameLen,
+                          int                          fileNameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 

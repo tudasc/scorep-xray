@@ -62,7 +62,7 @@ void
 FSUB( SCOREP_F_ParameterInt64 )( SCOREP_Fortran_Parameter* handle,
                                  const char*               name,
                                  int64_t*                  value,
-                                 scorep_fortran_charlen_t  name_len )
+                                 int                       name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -99,7 +99,7 @@ void
 FSUB( SCOREP_F_ParameterUint64 )( SCOREP_Fortran_Parameter* handle,
                                   const char*               name,
                                   uint64_t*                 value,
-                                  scorep_fortran_charlen_t  name_len )
+                                  int                       name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -136,8 +136,8 @@ void
 FSUB( SCOREP_F_ParameterString )( SCOREP_User_ParameterHandle* handle,
                                   const char*                  name,
                                   const char*                  value,
-                                  scorep_fortran_charlen_t     name_len,
-                                  scorep_fortran_charlen_t     value_len )
+                                  int                          name_len,
+                                  int                          value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
