@@ -64,8 +64,8 @@ FSUB( SCOREP_F_InitMetric )( SCOREP_Fortran_MetricHandle* metricHandle,
                              char*                        unitF,
                              int*                         metricType,
                              int*                         context,
-                             int                          nameLen,
-                             int                          unitLen )
+                             scorep_fortran_charlen_t     nameLen,
+                             scorep_fortran_charlen_t     unitLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
