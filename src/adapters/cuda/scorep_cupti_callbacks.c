@@ -419,27 +419,33 @@ scorep_cupti_callbacks_all( void*                userdata,
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    /*
-     * Keep the jump table. The Intel compiler miscompiles this functions, and
-     * clobbers it registers used to access the TLS scorep_in_measurement
-     * variable. A jump table disables inlining, which was sufficient,
-     * to convince the Intel compiler to produce correct code.
-     */
-    typedef void ( * domain_callback_function )( CUpti_CallbackId,
-                                                 const void* );
-
-    static const domain_callback_function domain_callbacks[ CUPTI_CB_DOMAIN_SIZE ] = {
-        [ CUPTI_CB_DOMAIN_DRIVER_API ]  = ( domain_callback_function )scorep_cupti_callbacks_driver_api,
-        [ CUPTI_CB_DOMAIN_RUNTIME_API ] = ( domain_callback_function )scorep_cupti_callbacks_runtime_api,
-        [ CUPTI_CB_DOMAIN_RESOURCE ]    = ( domain_callback_function )scorep_cupti_callbacks_resource,
-        [ CUPTI_CB_DOMAIN_SYNCHRONIZE ] = ( domain_callback_function )scorep_cupti_callbacks_sync
-    };
-
-    if ( domain < CUPTI_CB_DOMAIN_SIZE && domain_callbacks[ domain ] )
+    if ( CUPTI_CB_DOMAIN_RUNTIME_API == domain )
     {
-        domain_callbacks[ domain ]( cbid, cbInfo );
+        scorep_cupti_callbacks_runtime_api( cbid, ( const CUpti_CallbackData* )cbInfo );
     }
 
+    if ( CUPTI_CB_DOMAIN_DRIVER_API == domain )
+    {
+        scorep_cupti_callbacks_driver_api( cbid, ( const CUpti_CallbackData* )cbInfo );
+    }
+
+    if ( CUPTI_CB_DOMAIN_RESOURCE == domain )
+    {
+        scorep_cupti_callbacks_resource( cbid, ( const CUpti_ResourceData* )cbInfo );
+    }
+
+    if ( CUPTI_CB_DOMAIN_SYNCHRONIZE == domain )
+    {
+        scorep_cupti_callbacks_sync( cbid, ( const CUpti_SynchronizeData* )cbInfo );
+    }
+
+    /*
+     * Keep this empty asm. The Intel compiler miscompiles this functions, and
+     * clobbers it registers to access the TLS scorep_in_measurement variable.
+     */
+#if defined( __ICC ) || defined( __ECC ) || defined( __INTEL_COMPILER )
+    asm ( "" );
+#endif
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
