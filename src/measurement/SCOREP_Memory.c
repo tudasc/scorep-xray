@@ -465,8 +465,9 @@ memory_dump_stats_common( const char* message )
         fprintf( stderr,     "[Score-P] Memory: Requested:\n" );
         fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "SCOREP_TOTAL_MEMORY [bytes]", total_memory );
         fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "SCOREP_PAGE_SIZE [bytes]", page_size );
-        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of pages of size SCOREP_PAGE_SIZE",
+        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "Number of pages of size SCOREP_PAGE_SIZE",
                  SCOREP_Allocator_GetMaxNumberOfPages( allocator ) );
+        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of locations", SCOREP_Location_GetCountOfLocations() );
     }
 }
 
