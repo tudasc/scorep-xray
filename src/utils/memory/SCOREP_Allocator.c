@@ -831,8 +831,6 @@ SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageMa
 {
     assert( stats );
 
-    memset( stats, 0, sizeof( *stats ) );
-
     if ( pageManager )
     {
         assert( allocator == 0 );

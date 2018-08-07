@@ -27,6 +27,7 @@ Bugfixes:
 
 - Fixed PGI compiler adapter to prevent the corruption of register
   values in some cases.
+- Fixed calculation of memory statistics in out-of-memory condition.
 
 ------------------- Released version 4.0 -----------------------------
 
