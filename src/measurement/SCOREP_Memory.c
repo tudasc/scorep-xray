@@ -74,10 +74,10 @@ typedef enum memory_tracking
  * in the event of out-of-memory
  */
 #define SCORER_MEMORY_STATS_SIZE ( SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT )
-SCOREP_Allocator_PageManagerStats stats_min[ SCORER_MEMORY_STATS_SIZE ];
-SCOREP_Allocator_PageManagerStats stats_mean[ SCORER_MEMORY_STATS_SIZE ];
-SCOREP_Allocator_PageManagerStats stats_max[ SCORER_MEMORY_STATS_SIZE ];
-SCOREP_Allocator_PageManagerStats stats[ SCORER_MEMORY_STATS_SIZE ];
+static SCOREP_Allocator_PageManagerStats stats_min[ SCORER_MEMORY_STATS_SIZE ];
+static SCOREP_Allocator_PageManagerStats stats_mean[ SCORER_MEMORY_STATS_SIZE ];
+static SCOREP_Allocator_PageManagerStats stats_max[ SCORER_MEMORY_STATS_SIZE ];
+static SCOREP_Allocator_PageManagerStats stats[ SCORER_MEMORY_STATS_SIZE ];
 
 
 static SCOREP_Mutex memory_lock;
