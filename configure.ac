@@ -212,15 +212,18 @@ AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
 
 # Always build scorep-score as frontend tool. scorep-score uses cube
 # libraries and compiler information, either from internal or external
-# cube. Don't pass the usual ${args} to the score configure, it
-# figures it out by querying an installed cube or by searching the
-# internal cube's configure output. If --bindir was used we need to
-# pass it down though (--bindir was used if $bindir = $BINDIR).
-scorep_score_extra_arg=
+# cube. Don't pass the usual ${args} (except for shared/static and
+# --bindir and --libdir, if given). bin/libdir was given if 
+# bin/libdir == BIN/LIBDIR_EVALUATED.
+AC_PROG_EGREP
+scorep_score_extra_arg="$(GREP_OPTIONS= ${EGREP} -e 'able-shared' -e 'able-static' user_provided_configure_args | tr "\n" " ")"
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR_EVALUATED])
 AS_IF([test "x${bindir}" = "x${BINDIR_EVALUATED}"],
-    [scorep_score_extra_arg="--bindir=${BINDIR_EVALUATED}"])
-AX_CONFIG_SUBDIR([build-score], [${scorep_score_extra_arg} ${scorep_cubelib_config_arg}  ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
+    [scorep_score_extra_arg="--bindir=${BINDIR_EVALUATED} ${scorep_score_extra_arg}"])
+adl_RECURSIVE_EVAL([${libdir}], [LIBDIR_EVALUATED])
+AS_IF([test "x${libdir}" = "x${LIBDIR_EVALUATED}"],
+    [scorep_score_extra_arg="--libdir=${LIBDIR_EVALUATED} ${scorep_score_extra_arg}"])
+AX_CONFIG_SUBDIR([build-score], [${scorep_score_extra_arg} ${scorep_cubelib_config_arg} ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AX_CONFIG_SUBDIR([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
