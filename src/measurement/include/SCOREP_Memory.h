@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015, 2017,
+ * Copyright (c) 2009-2011, 2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -117,19 +117,13 @@ SCOREP_Memory_CreateTracingPageManager( void );
 
 
 /**
- * If we encounter a new thread, we need to add page managers for all page
- * types to the newly created thread local data structures. But only here we
- * know how many and from which allocator. The page manager array needs to have
- * a length of SCOREP_NUMBER_OF_MEMORY_TYPES.
- *
- * Aborts, if creation fails.
- *
- * @see SCOREP_Thread.h
- *
- * @return
+ * Create a page manager on the fly. Triggers SCOREP_Memory_HandleOutOfMemory()
+ * if creation fails.
+ * By creation on the fly we will only create the least amount of page managers,
+ * thus reducing the number of pages wasted if the page manager stays unused.
  */
-void
-SCOREP_Memory_CreatePageManagers( SCOREP_Allocator_PageManager** pageManagers );
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreatePageManager( void );
 
 
 void

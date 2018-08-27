@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -205,7 +205,7 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
          * The caller needs to take care of the locking, if the
          * manager entry is shared.
          */
-        page_manager = SCOREP_Location_GetMemoryPageManager(
+        page_manager = SCOREP_Location_GetOrCreateMemoryPageManager(
             location,
             SCOREP_MEMORY_TYPE_DEFINITIONS );
     }

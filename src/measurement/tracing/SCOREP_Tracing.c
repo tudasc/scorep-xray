@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -207,7 +207,7 @@ scorep_tracing_chunk_allocate( void*         userData,
         if ( OTF2_FILETYPE_EVENTS == fileType )
         {
             // take the pre-allocated one from the current location
-            *perBufferData = SCOREP_Location_GetMemoryPageManager(
+            *perBufferData = SCOREP_Location_GetOrCreateMemoryPageManager(
                 SCOREP_Location_GetCurrentCPULocation(),
                 SCOREP_MEMORY_TYPE_TRACING_EVENTS );
         }

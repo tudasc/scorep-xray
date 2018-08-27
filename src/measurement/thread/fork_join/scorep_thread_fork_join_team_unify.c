@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -162,8 +162,8 @@ find_next_thread_team( SCOREP_Location* location,
 
     /* Search in the definitions for a thread team canditate */
     SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
+        SCOREP_Location_GetOrCreateMemoryPageManager( location,
+                                                      SCOREP_MEMORY_TYPE_DEFINITIONS );
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
         &data->thread_team,
         InterimCommunicator,
@@ -240,8 +240,8 @@ find_thread_team_members( SCOREP_Location* location,
     uint64_t* thread_team_members = args[ 2 ];
 
     SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
+        SCOREP_Location_GetOrCreateMemoryPageManager( location,
+                                                      SCOREP_MEMORY_TYPE_DEFINITIONS );
 
     SCOREP_InterimCommunicatorDef* team_leader =
         SCOREP_Allocator_GetAddressFromMovableMemory(
@@ -317,8 +317,8 @@ redirect_unified_to_collated( SCOREP_Location* location,
         SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
 
     SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
+        SCOREP_Location_GetOrCreateMemoryPageManager( location,
+                                                      SCOREP_MEMORY_TYPE_DEFINITIONS );
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
         &data->thread_team,
         InterimCommunicator,

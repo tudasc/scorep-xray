@@ -82,7 +82,7 @@ static SCOREP_Allocator_PageManagerStats stats[ SCORER_MEMORY_STATS_SIZE ];
 
 
 static SCOREP_Mutex memory_lock;
-
+static SCOREP_Mutex out_of_memory_mutex;
 
 /// The one and only allocator for the measurement and the adapters
 static SCOREP_Allocator_Allocator* allocator;
@@ -90,6 +90,7 @@ static uint32_t                    total_memory;
 static uint32_t                    page_size;
 
 static bool is_initialized;
+static bool out_of_memory;
 
 static SCOREP_Allocator_PageManager* definitions_page_manager;
 
@@ -104,6 +105,7 @@ SCOREP_Memory_Initialize( uint32_t totalMemory,
     is_initialized = true;
 
     SCOREP_MutexCreate( &memory_lock );
+    SCOREP_MutexCreate( &out_of_memory_mutex );
 
     if ( totalMemory > ( uint64_t )UINT32_MAX )
     {
@@ -165,12 +167,24 @@ SCOREP_Memory_Finalize( void )
     SCOREP_Allocator_DeleteAllocator( allocator );
     allocator = 0;
 
+    SCOREP_MutexDestroy( &out_of_memory_mutex );
     SCOREP_MutexDestroy( &memory_lock );
 }
 
 void
 SCOREP_Memory_HandleOutOfMemory( void )
 {
+    /* let only first thread do the OOM handling */
+    SCOREP_MutexLock( out_of_memory_mutex );
+    if ( !out_of_memory )
+    {
+        out_of_memory = true;
+    }
+    else
+    {
+        abort();
+    }
+
     UTILS_ERROR( SCOREP_ERROR_MEMORY_OUT_OF_PAGES,
                  "Out of memory. Please increase SCOREP_TOTAL_MEMORY=%zu and try again.",
                  total_memory );
@@ -190,6 +204,7 @@ SCOREP_Memory_HandleOutOfMemory( void )
     memory_dump_stats_full();
 
     abort();
+    SCOREP_MutexUnlock( out_of_memory_mutex );
 }
 
 SCOREP_Allocator_PageManager*
@@ -206,28 +221,15 @@ SCOREP_Memory_CreateTracingPageManager( void )
 }
 
 
-void
-SCOREP_Memory_CreatePageManagers( SCOREP_Allocator_PageManager** pageManagers )
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreatePageManager( void )
 {
-    for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
+    SCOREP_Allocator_PageManager* page_manager = SCOREP_Allocator_CreatePageManager( allocator );
+    if ( !page_manager )
     {
-        pageManagers[ i ] = 0;
-        if ( i == SCOREP_MEMORY_TYPE_PROFILING && !SCOREP_IsProfilingEnabled() )
-        {
-            continue;
-        }
-        if ( i == SCOREP_MEMORY_TYPE_TRACING_EVENTS && !SCOREP_IsTracingEnabled() )
-        {
-            continue;
-        }
-        pageManagers[ i ] =
-            SCOREP_Allocator_CreatePageManager( allocator );
-        if ( !pageManagers[ i ] )
-        {
-            /* aborts */
-            SCOREP_Memory_HandleOutOfMemory();
-        }
+        SCOREP_Memory_HandleOutOfMemory();
     }
+    return page_manager;
 }
 
 
@@ -263,8 +265,8 @@ SCOREP_Location_AllocForMisc( SCOREP_Location* locationData, size_t size )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager( locationData,
-                                              SCOREP_MEMORY_TYPE_MISC ),
+        SCOREP_Location_GetOrCreateMemoryPageManager( locationData,
+                                                      SCOREP_MEMORY_TYPE_MISC ),
         size );
     if ( !mem )
     {
@@ -287,7 +289,7 @@ free_memory_type_for_location( SCOREP_Location* location,
                                void*            arg )
 {
     SCOREP_MemoryType type = *( SCOREP_MemoryType* )arg;
-    SCOREP_Allocator_Free( SCOREP_Location_GetMemoryPageManager( location, type ) );
+    SCOREP_Allocator_Free( SCOREP_Location_GetOrCreateMemoryPageManager( location, type ) );
     return false;
 }
 
@@ -310,8 +312,8 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* location, size_t size )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_PROFILING ),
+        SCOREP_Location_GetOrCreateMemoryPageManager( location,
+                                                      SCOREP_MEMORY_TYPE_PROFILING ),
         size );
     if ( !mem )
     {
@@ -344,7 +346,7 @@ SCOREP_Memory_AllocForDefinitions( SCOREP_Location* location,
     SCOREP_Allocator_PageManager* page_manager = definitions_page_manager;
     if ( location )
     {
-        page_manager = SCOREP_Location_GetMemoryPageManager(
+        page_manager = SCOREP_Location_GetOrCreateMemoryPageManager(
             location,
             SCOREP_MEMORY_TYPE_DEFINITIONS );
     }

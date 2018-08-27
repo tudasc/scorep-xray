@@ -130,9 +130,6 @@ scorep_location_create_location( SCOREP_LocationType type,
     memset( new_location, 0, total_memory );
     new_location->location_handle = location_handle;
 
-    /* Locking done in SCOREP_Allocator_CreatePageManager */
-    SCOREP_Memory_CreatePageManagers( new_location->page_managers );
-
     new_location->type = type;
     new_location->next = NULL;
 
@@ -337,6 +334,20 @@ SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
 {
     UTILS_BUG_ON( 0 > type || type >= SCOREP_NUMBER_OF_MEMORY_TYPES,
                   "Invalid memory type given." );
+    return locationData->page_managers[ type ];
+}
+
+SCOREP_Allocator_PageManager*
+SCOREP_Location_GetOrCreateMemoryPageManager( SCOREP_Location*  locationData,
+                                              SCOREP_MemoryType type )
+{
+    UTILS_BUG_ON( 0 > type || type >= SCOREP_NUMBER_OF_MEMORY_TYPES,
+                  "Invalid memory type given." );
+    /* Create page_manager on the fly */
+    if ( locationData->page_managers[ type ] == NULL )
+    {
+        locationData->page_managers[ type ] = SCOREP_Memory_CreatePageManager();
+    }
     return locationData->page_managers[ type ];
 }
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -74,6 +74,11 @@ SCOREP_Location_GetCountOfLocations( void );
 SCOREP_Allocator_PageManager*
 SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
                                       SCOREP_MemoryType type );
+
+
+SCOREP_Allocator_PageManager*
+SCOREP_Location_GetOrCreateMemoryPageManager( SCOREP_Location*  locationData,
+                                              SCOREP_MemoryType type );
 
 
 void*

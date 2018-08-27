@@ -22,6 +22,9 @@ Features and improvements:
 - In profiling mode, add the file <DATADIR>/scorep/scorep.spec to
   the profile.cubex container, thus making the profile output more
   self-contained.
+- On thread creation, request internal memory on the fly instead of in
+  advance. Depending on the measurement configuration this will save
+  some memory.
 
 Bugfixes:
 
