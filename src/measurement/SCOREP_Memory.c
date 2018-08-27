@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2015, 2017,
+ * Copyright (c) 2009-2012, 2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,8 +52,9 @@
 #include <inttypes.h>
 
 /* *INDENT-OFF* */
-static void memory_dump_stats_aggr( const char* message );
-static void memory_dump_stats_full( const char* message );
+static void memory_dump_stats_aggr( void );
+static void memory_dump_stats_full( void );
+static void memory_dump_stats_common( const char* message, bool report );
 /* *INDENT-ON* */
 
 /*
@@ -184,7 +185,9 @@ SCOREP_Memory_HandleOutOfMemory( void )
     }
     /* For emergency report we dump full stats in order to avoid dead lock */
     fprintf( stderr, "[Score-P] Memory usage of rank %u\n",  SCOREP_Status_GetRank() );
-    memory_dump_stats_full( "[Score-P] Memory used so far:" );
+    memory_dump_stats_common( "[Score-P] Memory used so far:", true );
+    fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of locations", SCOREP_Location_GetCountOfLocations() );
+    memory_dump_stats_full();
 
     abort();
 }
@@ -402,12 +405,14 @@ SCOREP_Memory_DumpStats( const char* message )
     {
         if ( strcmp( getenv( "SCOREP_DEVELOPMENT_MEMORY_STATS" ), "aggregated" ) == 0 )
         {
-            memory_dump_stats_aggr( message );
+            memory_dump_stats_common( message, SCOREP_Status_GetRank() == 0 );
+            memory_dump_stats_aggr();
         }
         else
         if ( strcmp( getenv( "SCOREP_DEVELOPMENT_MEMORY_STATS" ), "full" ) == 0 )
         {
-            memory_dump_stats_full( message );
+            memory_dump_stats_common( message, SCOREP_Status_GetRank() == 0 );
+            memory_dump_stats_full();
         }
     }
 }
@@ -432,11 +437,11 @@ memory_dump_for_location( SCOREP_Location* location,
 
 
 static void
-memory_dump_stats_common( const char* message )
+memory_dump_stats_common( const char* message, bool report )
 {
     if ( message != 0 )
     {
-        if ( SCOREP_Status_GetRank() == 0 )
+        if ( report )
         {
             fprintf( stderr, "%s\n", message );
         }
@@ -456,7 +461,7 @@ memory_dump_stats_common( const char* message )
     }
     SCOREP_Location_ForAll( memory_dump_for_location, NULL );
 
-    if ( SCOREP_Status_GetRank() == 0 )
+    if ( report )
     {
         /* header */
         fprintf( stderr, "[Score-P] Score-P runtime-management memory tracking:\n" );
@@ -465,9 +470,8 @@ memory_dump_stats_common( const char* message )
         fprintf( stderr,     "[Score-P] Memory: Requested:\n" );
         fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "SCOREP_TOTAL_MEMORY [bytes]", total_memory );
         fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "SCOREP_PAGE_SIZE [bytes]", page_size );
-        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n", "Number of pages of size SCOREP_PAGE_SIZE",
+        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of pages of size SCOREP_PAGE_SIZE",
                  SCOREP_Allocator_GetMaxNumberOfPages( allocator ) );
-        fprintf( stderr,     "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of locations", SCOREP_Location_GetCountOfLocations() );
     }
 }
 
@@ -608,10 +612,8 @@ memory_reduce_stats( SCOREP_Allocator_PageManagerStats* totalStats,
 
 
 static void
-memory_dump_stats_aggr( const char* message )
+memory_dump_stats_aggr( void )
 {
-    memory_dump_stats_common( message );
-
     /* get stat's min/max/mean */
     for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
     {
@@ -701,10 +703,8 @@ memory_dump_stats_aggr( const char* message )
 
 
 static void
-memory_dump_stats_full( const char* message )
+memory_dump_stats_full( void )
 {
-    memory_dump_stats_common( message );
-
     fprintf( stderr, "[Score-P] Memory: Pages\n" );
     fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n", "Maximum number of pages allocated at a time",
              stats[ SCORER_MEMORY_TRACKING_TOTAL ].pages_allocated  );
