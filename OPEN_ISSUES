@@ -562,6 +562,9 @@ various Score-P components.
 
     One known malicious run-time system is NetDRMS.
 
+  - Score-P currently cannot handle the compiler option '-include <file>'
+    when <file> ends with either '.h' or '.hpp'.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
