@@ -28,6 +28,14 @@ Features and improvements:
 
 Bugfixes:
 
+------------------- Released version 4.1 -----------------------------
+
+Bugfixes:
+
+- scorep-score: fixed potentially wrong output of SCOREP_TOTAL_MEMORY
+  which was caused by an uninitialized variable.
+- Improve robustness of wrapping memory-related function calls
+  during link-time.
 - Fixed PGI compiler adapter to prevent the corruption of register
   values in some cases.
 - Fixed calculation of memory statistics in out-of-memory condition.
