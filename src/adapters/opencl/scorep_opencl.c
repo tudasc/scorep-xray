@@ -844,11 +844,13 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     if ( device_diff == 0 )
     {
         UTILS_WARNING( "[OpenCL] Did not flush events as device_diff == 0" );
+        SCOREP_ExitRegion( opencl_flush_region_handle );
         return false;
     }
     if ( host_diff == 0 )
     {
         UTILS_WARNING( "[OpenCL] Did not flush events as host_diff == 0" );
+        SCOREP_ExitRegion( opencl_flush_region_handle );
         return false;
     }
 
