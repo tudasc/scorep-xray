@@ -39,21 +39,39 @@ check_PROGRAMS += omp_tasks_uninstrumented
 omp_tasks_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
 omp_tasks_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
+check_PROGRAMS += omp_tasks_untied_uninstrumented
+
+omp_tasks_untied_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.f90
+omp_tasks_untied_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+
 if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += omp_tasks
 
 omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
                      $(SRC_ROOT)test/omp_tasks/omp_tasks.c.opari.inc \
-                     $(SRC_ROOT)test/omp_tasks/pomp.c
+                     $(SRC_ROOT)test/omp_tasks/omp_tasks.pomp.c
 omp_tasks_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 omp_tasks_LDADD    = $(omp_libadd)
 omp_tasks_LDFLAGS  = $(omp_ldflags)
 
-TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
+if SCOREP_COMPILER_GNU
+# Just use GNU here, makes name mangling easier (see omp_tasks_untied.pomp.c).
+check_PROGRAMS += omp_tasks_untied
 
-TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profile.sh
+omp_tasks_untied_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.mod.f90       \
+                            $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.f90.opari.inc \
+                            $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.pomp.c
+omp_tasks_untied_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+omp_tasks_untied_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+omp_tasks_untied_LDADD    = $(omp_libadd)
+omp_tasks_untied_LDFLAGS  = $(omp_ldflags)
+endif SCOREP_COMPILER_GNU
+
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_tracing.sh
+
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profiling.sh
 
 if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_fibonacci_test.sh

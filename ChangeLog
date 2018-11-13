@@ -28,6 +28,9 @@ Features and improvements:
 
 Bugfixes:
 
+- Instrumentation of Fortran OpenMP programs that use untied tasks
+  failed with undefined references. Fixed.
+
 ------------------- Released version 4.1 -----------------------------
 
 Bugfixes:
