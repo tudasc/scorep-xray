@@ -9,7 +9,7 @@
 ! directory for details.
 !
 
-SUBROUTINE foo(n)
+RECURSIVE SUBROUTINE foo(n)
       include 'omp_tasks_untied.f90.opari.inc'
   write(*,*) n
   if (n == 1) then

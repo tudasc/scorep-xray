@@ -9,7 +9,7 @@
 ! directory for details.
 !
 
-SUBROUTINE foo(n)
+RECURSIVE SUBROUTINE foo(n)
   write(*,*) n
   if (n == 1) then
     return
