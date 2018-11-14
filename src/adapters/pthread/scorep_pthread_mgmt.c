@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015, 2017,
@@ -46,7 +46,8 @@ static void register_pthread_regions( void );
 struct SCOREP_Location;
 
 
-size_t scorep_pthread_subsystem_id;
+size_t    scorep_pthread_subsystem_id;
+pthread_t scorep_pthread_main_thread;
 
 
 static SCOREP_ErrorCode
@@ -73,6 +74,7 @@ pthread_subsystem_init( void )
 
     register_pthread_regions();
     scorep_pthread_mutex_init();
+    scorep_pthread_main_thread = pthread_self();
 
     UTILS_DEBUG_EXIT();
     return SCOREP_SUCCESS;

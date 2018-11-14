@@ -30,6 +30,9 @@ Bugfixes:
 
 - Instrumentation of Fortran OpenMP programs that use untied tasks
   failed with undefined references. Fixed.
+- So far, programs that pthread_exit() the main thread crashed based
+  on the requirement that the program's main thread is responsible for
+  the measurement finalization. This requirement was removed.
 
 ------------------- Released version 4.1 -----------------------------
 

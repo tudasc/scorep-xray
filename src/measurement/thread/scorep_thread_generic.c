@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -47,6 +47,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -114,7 +115,11 @@ SCOREP_Thread_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
     UTILS_BUG_ON( initial_tpd == 0, "" );
-    UTILS_BUG_ON( scorep_thread_get_private_data() != initial_tpd, "" );
+    if ( scorep_thread_get_private_data() != initial_tpd )
+    {
+        UTILS_WARNING( "Measurement finalization not on master thread but on location %" PRIu32 ".",
+                       SCOREP_Location_GetId( SCOREP_Location_GetCurrentCPULocation() ) );
+    }
 
     scorep_thread_on_finalize( initial_tpd );
     scorep_thread_delete_private_data( initial_tpd );

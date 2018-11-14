@@ -262,6 +262,17 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_join )( pthread_t thread,
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_JOIN ] );
 
+    extern pthread_t scorep_pthread_main_thread;
+    if ( pthread_equal( thread, scorep_pthread_main_thread ) )
+    {
+        /* Main thread is being joined. Main thread's creation wasn't
+         * instrumented, i.e., there is no wrapped_arg to work on, so
+         * skip further processing. */
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_JOIN ] );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return SCOREP_LIBWRAP_FUNC_CALL( pthread_join, ( thread, valuePtr ) );
+    }
+
     void* result;
     SCOREP_ENTER_WRAPPED_REGION();
     int status = SCOREP_LIBWRAP_FUNC_CALL( pthread_join, ( thread, &result ) );
@@ -316,13 +327,25 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_exit )( void* valuePtr )
     UTILS_DEBUG_ENTRY();
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
-    /* Matching exit will be triggered from cleanup_handler(); */
+    /* Matching exit will be triggered from cleanup_handler() or condition below. */
 
     SCOREP_Location*              location = SCOREP_Location_GetCurrentCPULocation();
     scorep_pthread_location_data* data     =
         SCOREP_Location_GetSubsystemData( location, scorep_pthread_subsystem_id );
     scorep_pthread_wrapped_arg* wrapped_arg = data->wrapped_arg;
-    UTILS_BUG_ON( wrapped_arg == 0 );
+
+    if ( wrapped_arg == 0 )
+    {
+        /* Main thread called pthread_exit().
+         * Main thread's creation wasn't instrumented nor is main thread an
+         * orphan thread, i.e., no Score-P cleanup handler nor pthread
+         * threadspecific key dtor is going to be called. Skip further
+         * processing. */
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        SCOREP_LIBWRAP_FUNC_CALL( pthread_exit, ( valuePtr ) );
+    }
+
     UTILS_BUG_ON( wrapped_arg->orig_ret_val != 0 );
 
     /* The cleanup_handler will be called, but we must notify him, that
