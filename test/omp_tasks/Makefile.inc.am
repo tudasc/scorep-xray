@@ -89,8 +89,8 @@ endif HAVE_SCOREP_OMP_TPD
 
 endif HAVE_OPENMP_SUPPORT
 
-EXTRA_DIST +=  $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh \
-               $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profile.sh \
+EXTRA_DIST +=  $(SRC_ROOT)test/omp_tasks/run_omp_tasks_tracing.sh \
+               $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profiling.sh \
                $(SRC_ROOT)test/omp_tasks/run_fibonacci_test.sh.in \
                $(SRC_ROOT)test/omp_tasks/task_fibonacci.c \
                $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \
