@@ -425,8 +425,8 @@ equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
                == newDefinition->number_of_metrics
                && 0 == memcmp( existingDefinition->metric_handles,
                                newDefinition->metric_handles,
-                               sizeof( existingDefinition->metric_handles[ 0 ]
-                                       * existingDefinition->number_of_metrics ) )
+                               sizeof( existingDefinition->metric_handles[ 0 ] )
+                               * existingDefinition->number_of_metrics  )
                && existingDefinition->occurrence
                == newDefinition->occurrence;
     }
