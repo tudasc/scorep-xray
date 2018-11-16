@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  *    Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -76,6 +76,17 @@ typedef uint64_t SCOREP_User_ParameterHandle;
     Marks an parameter handle as invalid or uninitialized
  */
 #define SCOREP_USER_INVALID_PARAMETER -1
+
+/**
+    @def SCOREP_USER_INVALID_TOPOLOGY
+    Marks a topology handle as invalid or uninitialized
+ */
+#define SCOREP_USER_INVALID_TOPOLOGY -1
+/**
+   Type for topology handles in the user adapter
+ */
+typedef struct SCOREP_User_Topology* SCOREP_User_CartesianTopologyHandle;
+#define SCOREP_USER_INVALID_CARTESIAN_TOPOLOGY NULL
 
 /* **************************************************************************************
  * Defines for the Region types

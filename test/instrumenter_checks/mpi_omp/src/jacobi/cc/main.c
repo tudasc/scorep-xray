@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <omp.h>
+#include <scorep/SCOREP_User.h>
 #include "jacobi.h"
 
 #define U( j, i ) data->afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -41,6 +42,23 @@ Init( struct JacobiData* data, int* argc, char** argv )
 
     MPI_Comm_rank( MPI_COMM_WORLD, &data->iMyRank );
     MPI_Comm_size( MPI_COMM_WORLD, &data->iNumProcs );
+
+    /*user topology test*/
+    SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( mytopo, "My own Topology", 2 );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( mytopo, 2, 1, "dim1_2" );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( mytopo, ( data->iNumProcs + 1 ) / 2, 1, "dim2_4" );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( mytopo );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( mytopo, 2, data->iMyRank % 2, data->iMyRank / 2 );
+
+    /*mpi topology test*/
+    int      dim[ 2 ], period[ 2 ], reorder;
+    MPI_Comm comm;
+    dim[ 0 ]    = 1;
+    dim[ 1 ]    = data->iNumProcs;
+    period[ 0 ] = 1;
+    period[ 1 ] = 0;
+    reorder     = 1;
+    MPI_Cart_create( MPI_COMM_WORLD, 2, dim, period, reorder, &comm );
 
     if ( data->iMyRank == 0 )
     {

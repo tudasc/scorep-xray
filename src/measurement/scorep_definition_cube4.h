@@ -295,5 +295,4 @@ scorep_get_min_time_handle( void );
 cube_metric*
 scorep_get_num_threads_handle( void );
 
-
 #endif /* SCOREP_DEFINITION_CUBE4_H */

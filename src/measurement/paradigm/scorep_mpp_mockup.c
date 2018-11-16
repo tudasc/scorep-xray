@@ -78,3 +78,22 @@ void
 scorep_timing_reduce_runtime_management_timings( void )
 {
 }
+
+#if HAVE( PLATFORM_K )
+/* On K a MPI call is used to gather coordinate information.
+   In serial mode the call is not called or needed, however the platform
+   files are MPI unaware and therefore the symbol is needed to avoid
+   undefined references.
+ */
+int
+FJMPI_Topology_sys_rank2xyzabc( int  rank,
+                                int* x,
+                                int* y,
+                                int* z,
+                                int* a,
+                                int* b,
+                                int* c )
+{
+    return 0;
+}
+#endif

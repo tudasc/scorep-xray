@@ -56,7 +56,7 @@
 ****************************************************************************************/
 
 
-#include "scorep_user_confvars.inc.c"
+#include "scorep_user_selective_confvars.inc.c"
 
 
 /**

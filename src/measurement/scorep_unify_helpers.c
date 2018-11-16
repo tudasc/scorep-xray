@@ -41,6 +41,7 @@
 #include "scorep_unify_helpers.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <UTILS_Error.h>
 
@@ -124,6 +125,88 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
     }
 
     return offset_to_global;
+}
+
+void
+scorep_unify_helper_get_number_of_cpu_locations( int*      numberOfLocationsPerRank,
+                                                 uint32_t* totalNumberOfLocations,
+                                                 int*      maxLocationsPerRank )
+{
+    UTILS_ASSERT( totalNumberOfLocations );
+    UTILS_ASSERT( maxLocationsPerRank );
+    UTILS_ASSERT( numberOfLocationsPerRank );
+
+    int local_number_of_cpu_locations = 0;
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                         Location,
+                                                         location )
+    {
+        if ( definition->location_type != SCOREP_LOCATION_TYPE_CPU_THREAD )
+        {
+            continue;
+        }
+        local_number_of_cpu_locations++;
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    uint32_t size = SCOREP_Ipc_GetSize();
+
+    SCOREP_Ipc_Allgather( &local_number_of_cpu_locations,
+                          numberOfLocationsPerRank,
+                          1,
+                          SCOREP_IPC_INT );
+
+    *totalNumberOfLocations = 0;
+    *maxLocationsPerRank    = 0;
+    /* calculate the total sum and the maximum of locations per rank
+       required for cases with different numbers of threads per rank */
+    for ( uint32_t i = 0; i < size; i++ )
+    {
+        *totalNumberOfLocations += ( uint32_t )numberOfLocationsPerRank[ i ];
+        if ( *maxLocationsPerRank < numberOfLocationsPerRank[ i ] )
+        {
+            *maxLocationsPerRank = numberOfLocationsPerRank[ i ];
+        }
+    }
+}
+
+void
+scorep_unify_helper_exchange_all_cpu_locations( uint64_t* allLocations,
+                                                uint32_t  totalNumberOfLocations,
+                                                int*      numberOfLocationsPerRank )
+{
+    UTILS_ASSERT( allLocations );
+    UTILS_ASSERT( numberOfLocationsPerRank );
+
+    uint64_t cpu_locations[ numberOfLocationsPerRank[ SCOREP_Ipc_GetRank() ] ];
+
+    /* collect the global location ids for the cpu locations */
+    uint32_t local_number_of_cpu_locations = 0;
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                         Location,
+                                                         location )
+    {
+        if ( definition->location_type != SCOREP_LOCATION_TYPE_CPU_THREAD )
+        {
+            continue;
+        }
+        cpu_locations[ local_number_of_cpu_locations++ ]
+            = definition->global_location_id;
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    /* Distribute all location ids to all ranks for group creation */
+    SCOREP_Ipc_Gatherv( cpu_locations,
+                        numberOfLocationsPerRank[ SCOREP_Ipc_GetRank() ],
+                        allLocations,
+                        numberOfLocationsPerRank,
+                        SCOREP_IPC_UINT64_T,
+                        0 );
+    SCOREP_Ipc_Bcast( ( void* )allLocations,
+                      ( int )totalNumberOfLocations,
+                      SCOREP_IPC_UINT64_T,
+                      0 );
 }
 
 void

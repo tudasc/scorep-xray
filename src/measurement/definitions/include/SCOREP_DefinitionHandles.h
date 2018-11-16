@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -57,9 +57,7 @@ typedef SCOREP_AnyHandle SCOREP_MarkerHandle;
 
 typedef SCOREP_AnyHandle SCOREP_MarkerGroupHandle;
 
-typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
 
-typedef SCOREP_AnyHandle SCOREP_MPICartesianCoordsHandle;
 
 typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
 

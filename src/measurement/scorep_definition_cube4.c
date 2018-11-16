@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -58,6 +58,34 @@
 #include <UTILS_Error.h>
 
 #define LOCATION_NAME_BUFFER_LENGTH 32
+
+/**
+ * Retrieve rank information from mapped rank index in location group.
+ * Used during writing of CUBE profiles.
+ *
+ * @param index                   Index in the COM_LOCATIONS group for non-MPI topologies.
+ * @param topoHandle              Select the Group depending on the topology.
+ *
+ * @return                        The global rank of this location index.
+ *
+ */
+uint32_t
+SCOREP_Topologies_CoordRankFromGroupIndex( uint32_t                       index,
+                                           SCOREP_CartesianTopologyHandle topoHandle );
+
+/**
+ * Retrieve thread information from mapped rank index in location group.
+ * Used during writing of CUBE profiles.
+ *
+ * @param index                   Index in the COM_LOCATIONS group for non-MPI topologies.
+ * @param topoHandle              Select the Group depending on topology type.
+ *
+ * @return                        The thread of this location index.
+ *
+ */
+uint32_t
+SCOREP_Topologies_CoordThreadFromGroupIndex( uint32_t                       index,
+                                             SCOREP_CartesianTopologyHandle topoHandle );
 
 /* ****************************************************************************
  * Internal helper functions
@@ -561,7 +589,6 @@ write_metric_definitions( cube_t*                       myCube,
         }
     }
 
-    SCOREP_MetricDef*   metric_definition;
     char*               metric_name;
     char*               metric_unit;
     char*               metric_description;
@@ -925,7 +952,8 @@ write_all_location_definitions( cube_t*                   myCube,
                                 uint64_t                  numberOfThreads )
 {
     /* Counts the number of threads already registered for each rank */
-    uint32_t* threads = calloc( ranks, sizeof( uint32_t ) );
+    uint32_t threads[ ranks ];
+    memset( threads, 0, ranks * sizeof( uint32_t ) );
     UTILS_ASSERT( threads );
 
     /* Location group (processes) mapping of global ids to cube definitions */
@@ -956,7 +984,6 @@ write_all_location_definitions( cube_t*                   myCube,
         threads[ parent_id ]++;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-    free( threads );
     free( processes );
     return locations;
 }
@@ -1126,6 +1153,133 @@ scorep_write_cube_location_property( cube_t*                   myCube,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
+/**
+   Writes cartesian topology definitions to Cube. The new Cube definitions are added
+   to the mapping table @a map.
+   @param myCube      Pointer to Cube instance.
+   @param manager     Pointer to Score-P definition manager with unified definitions.
+   @param map         Pointer to mapping instance to map Score-P and Cube definitions.
+   @param locationMap Mapping between Cube and Score-P locations
+ */
+static void
+write_cartesian_definitions( cube_t*                       myCube,
+                             SCOREP_DefinitionManager*     manager,
+                             scorep_cube4_definitions_map* map,
+                             cube_location**               locationMap )
+{
+    /* General information for the definition accesses. Since this is post unification
+       we are in a serial part of Score-P. Therefore, no locking is required. */
+
+    /* store the coord location id mapping to avoid the additional loop through the locations inside the coord loop */
+    uint64_t coord_loc_id_per_coord_rank[ manager->location_group.counter ];
+    memset( coord_loc_id_per_coord_rank, 0, manager->location_group.counter * sizeof( uint64_t ) );
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
+    {
+        /* is a thread */
+        if ( cube_location_get_type( locationMap[ definition->sequence_number ] ) == CUBE_LOCATION_TYPE_CPU_THREAD )
+        {
+            if ( cube_location_get_rank( locationMap[ definition->sequence_number ] ) == 0 )
+            {
+                coord_loc_id_per_coord_rank[ cube_location_group_get_rank( cube_location_get_parent( locationMap[ definition->sequence_number ] ) ) ] = definition->sequence_number;
+            }
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    /*  Create the cartesian topologies */
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, CartesianTopology, cartesian_topology )
+    {
+        uint32_t             topo_id   = definition->sequence_number;
+        uint32_t             n_dims    = definition->n_dimensions;
+        SCOREP_Topology_Type topo_type = definition->topology_type;
+        long                 dim_procs[ n_dims ];
+        int                  dim_period[ n_dims ];
+
+        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_name,
+                                                        String )->string_data;
+
+        for ( uint32_t i = 0; i < n_dims; i++ )
+        {
+            dim_procs[ i ]  = definition->cartesian_dims[ i ].n_processes_per_dim;
+            dim_period[ i ] = definition->cartesian_dims[ i ].periodicity_per_dim;
+        }
+        cube_cartesian* cube_handle = cube_def_cart( myCube,
+                                                     n_dims,
+                                                     dim_procs,
+                                                     dim_period );
+        cube_cart_set_name( cube_handle, name );
+
+        for ( uint32_t i = 0; i < n_dims; i++ )
+        {
+            cube_cart_set_dim_name( cube_handle, SCOREP_UNIFIED_HANDLE_DEREF( definition->cartesian_dims[ i ].dimension_name,
+                                                                              String )->string_data, i );
+        }
+
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, CartesianCoords, cartesian_coords )
+        {
+            uint32_t coord_rank   = definition->rank;
+            uint32_t coord_thread = definition->thread;
+            uint32_t n_coords     = definition->n_coords;
+            uint32_t coord_loc_id = 0;
+            uint32_t cart_topo_id = SCOREP_HANDLE_TO_ID( definition->topology_handle,
+                                                         CartesianTopology,
+                                                         manager->page_manager );
+            SCOREP_Topology_Type cart_topo_type = SCOREP_LOCAL_HANDLE_DEREF( definition->topology_handle,
+                                                                             CartesianTopology )->topology_type;
+            uint32_t global_rank = 0;
+            if ( cart_topo_type == SCOREP_TOPOLOGIES_MPI )
+            {
+                SCOREP_GroupType group_type = SCOREP_UNIFIED_HANDLE_DEREF(
+                    SCOREP_UNIFIED_HANDLE_DEREF(
+                        SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_handle, CartesianTopology )->communicator_handle,
+                        Communicator )->group_handle,
+                    Group )->group_type;
+
+                if ( group_type !=  SCOREP_GROUP_MPI_SELF )
+                {
+                    global_rank = SCOREP_UNIFIED_HANDLE_DEREF(
+                        SCOREP_UNIFIED_HANDLE_DEREF(
+                            SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_handle, CartesianTopology )->communicator_handle,
+                            Communicator )->group_handle,
+                        Group )->members[ coord_rank ];
+                }
+            }
+            else
+            {
+                coord_rank   =  SCOREP_Topologies_CoordRankFromGroupIndex( definition->rank, definition->topology_handle );
+                coord_thread =  SCOREP_Topologies_CoordThreadFromGroupIndex( definition->rank, definition->topology_handle );
+            }
+
+            if ( cart_topo_id == topo_id )
+            {
+                long temp_coords_of_current_rank[ definition->n_coords ];
+                for ( uint32_t i = 0; i < definition->n_coords; i++ )
+                {
+                    temp_coords_of_current_rank[ i ] = definition->coords_of_current_rank[ i ];
+                }
+
+                /* globalRank for MPI, important for topologies on sub-communicators */
+                if ( cart_topo_type == SCOREP_TOPOLOGIES_MPI )
+                {
+                    cube_def_coords( myCube,
+                                     cube_handle,
+                                     locationMap[ coord_loc_id_per_coord_rank[ global_rank ]  ],
+                                     temp_coords_of_current_rank );
+                }
+                else /* thread for platform, processxthreads */
+                {
+                    cube_def_coords( myCube,
+                                     cube_handle,
+                                     locationMap[ coord_loc_id_per_coord_rank[ coord_rank ] + coord_thread ],
+                                     temp_coords_of_current_rank );
+                }
+            }
+        }
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
 /* ****************************************************************************
  * System tree sequence definitions expansion.
  *****************************************************************************/
@@ -1289,7 +1443,6 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
     SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
     if ( SCOREP_Ipc_GetRank() == 0 )
     {
-        SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
         UTILS_ASSERT( scorep_unified_definition_manager );
 
         write_metric_definitions( myCube, manager, map, layout );
@@ -1321,6 +1474,7 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
                     location_map = write_all_location_definitions( myCube, manager,
                                                                    nRanks, nLocations );
                     scorep_write_cube_location_property( myCube, manager, location_map );
+                    write_cartesian_definitions( myCube, manager, map, location_map );
                     free( location_map );
                     break;
 

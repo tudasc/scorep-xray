@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -73,6 +73,8 @@ typedef struct SCOREP_Platform_SystemTreePathElement
 } SCOREP_Platform_SystemTreePathElement;
 
 
+struct SCOREP_Location;
+
 /**
  * Returns the path of this process in the system tree, starting at the root.
  *
@@ -125,5 +127,50 @@ SCOREP_Platform_GetNodeId( void );
     for ( _property = _node->properties; _property; _property = _property->next )
 
 UTILS_END_C_DECLS
+
+/**
+ * Returns the number of topology dimensions or 0 if undefined.
+ */
+uint32_t
+SCOREP_Platform_GetHardwareTopologyNumberOfDimensions( void );
+
+/**
+ * Provides the hardware topology data about dimensions and its name.
+ *
+ * @param name              Name of the topology. Refers to static const
+ *                          name strings, no free needed.
+ * @param nDims             Number of dimensions, length of the arrays.
+ * @param procsPerDim       Dimension sizes for all dimensions.
+ * @param periodicityPerDim Periodicity information for all dimensions.
+ * @param dimNames          Dimension names for all dimensions.
+ *
+ * @return          SCOREP_SUCCESS if coords have been provided,
+ *                  SCOREP_ERROR_INVALID otherwise.
+ */
+SCOREP_ErrorCode
+SCOREP_Platform_GetHardwareTopologyInformation( char const** name,
+                                                int          nDims,
+                                                int*         procsPerDim,
+                                                int*         periodicityPerDim,
+                                                char*        dimNames[] );
+
+/**
+ * Provides the coordinates for the respective hardware topology
+ *
+ * @param nCoords   Length of the coordinate array.
+ * @param coords    The to be filled array of coordinates.
+ * @param location  Location data to extract thread information if needed,
+ *                  e.g., K Computer.
+ *
+ * @return          SCOREP_SUCCESS if coords have been provided,
+ *                  SCOREP_ERROR_INVALID otherwise.
+ */
+SCOREP_ErrorCode
+SCOREP_Platform_GetCartCoords( int                     nCoords,
+                               int*                    coords,
+                               struct SCOREP_Location* location  );
+
+
+
 
 #endif /* SCOREP_PLATFORM_H */

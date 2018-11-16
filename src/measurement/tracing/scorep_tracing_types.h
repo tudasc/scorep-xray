@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -117,6 +117,16 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         // Pthread
         case_return( PTHREAD_LOCATIONS,   COMM_LOCATIONS );
         case_return( PTHREAD_THREAD_TEAM, COMM_GROUP );
+
+        //Topologies
+        case_return( TOPOLOGY_HARDWARE_LOCATIONS, COMM_LOCATIONS );
+        case_return( TOPOLOGY_HARDWARE_GROUP, COMM_GROUP );
+
+        case_return( TOPOLOGY_PROCESS_LOCATIONS, COMM_LOCATIONS );
+        case_return( TOPOLOGY_PROCESS_GROUP, COMM_GROUP );
+
+        case_return( TOPOLOGY_USER_LOCATIONS, COMM_LOCATIONS );
+        case_return( TOPOLOGY_USER_GROUP, COMM_GROUP );
 
 #undef case_return
         default:

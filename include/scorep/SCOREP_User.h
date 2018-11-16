@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013-2014,
+ * Copyright (c) 2009-2011, 2013-2014, 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014-2015,
@@ -1182,6 +1182,130 @@
 
 #endif // SCOREP_USER_ENABLE
 
+/* ****************************************************************************
+* Documentation for Topology macros
+* ****************************************************************************/
+
+/**
+    @name Macros for creation of user topologies
+    @{
+ */
+
+/**
+    @def SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( userTopology, name, nDims )
+    This statement creates an user topology by the given name and initializes it
+    based on name and number of expected dimensions.
+
+    @param userTopology     The handle that identifies the topology in subsequent calls.
+    @param name             The unique name for the user topology.
+    @param nDims            The number of dimensions.
+
+    @note The name of each user topology has to be unique to appear as a distinct
+    topology!
+
+
+    @def SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( userTopology, size, periodic, name )
+    This statement defines a dimension for the topology of the given handle.
+
+    @param userTopology     The handle that identifies the respective topology.
+    @param size             Number of elements in the dimension.
+    @param periodic         The periodicity of the dimension; Bool values allowed.
+    @param name             The name of the dimension.
+
+
+    @def SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( userTopology )
+    Initialize the topology after all dimensions are set.
+
+    @param userTopology     The handle that identifies the respective topology.
+
+
+    @def SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( userTopology, nDims, ... )
+    This statement defines the coordinates for the topology of the given handle.
+    This call has to be done on the thread/process that should be associated with this
+    set of coordinates, as the mapping will be done implicitly.
+    The number of coordinate parameters in the variable array has to be the same
+    as the number of dimensions for the topology.
+
+    @param userTopology     The handle that identifies the respective topology.
+    @param nDims            The number of dimensions, which is the number of
+                            coordinate parameters in C and the length of the
+                            coordinate array in Fortran.
+    @param variable array   Coordinate information for each of the nDims dimensions.
+
+    The order of macro execution is important. All dimensions have to be added
+    before the init call; the coordinates have to be added after the init call.
+
+    @note For MPI programs, all calls to SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS
+    have to happen after MPI_Init!
+
+    C/C++ Example:
+    @code
+    SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE ( mytopo, "This is a new user topology", 2 );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM ( mytopo, 2 , 1, "dim1_2" );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM ( mytopo, ( numprocs + 1 ) / 2 , 1, "dim2_4" );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_INIT ( mytopo );
+    SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS ( mytopo, 2, rank % 2, rank / 2 );
+    @endcode
+
+    Note that SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS takes the location into account
+    on which it is executed. To create coordinates on a thread level, use this macro
+    inside an OpenMP parallel region or in a POSIX thread's start_routine. It is possible
+    to set all coordinates in a serial part of your program though.
+
+    Note, for Fortran the CREATE macro is split in a define and create step to allow its
+    placement in the variable section.
+
+    Fortran example:
+    @code
+    program main
+      integer :: numprocs
+      SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE( mytopo )
+      integer, dimension(2) :: coords
+
+      !...
+
+      SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( mytopo, "This is a new user topology", 2 )
+      SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( mytopo, 2, 1, "dim1_2" )
+      SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( mytopo, ( numprocs + 1 ) / 2 , 1, "dim2_4" )
+      SCOREP_USER_CARTESIAN_TOPOLOGY_INIT ( mytopo );
+      coords = (/ MOD( rank, 2 ), rank / 2 /)
+      SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS ( mytopo, 2, coords )
+    end program main
+
+    @endcode
+
+    @def SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE( userTopology )
+    This statement defines an user topology in the Fortran case. As a variable definition
+    it has to be placed in the variable section.
+
+    @param userTopology     The handle that identifies the topology in subsequent calls.
+ */
+
+/**@}*/
+
+/* **************************************************************************************
+ * User Topology macros
+ * *************************************************************************************/
+#ifdef SCOREP_USER_ENABLE
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( userTopology, name, nDims ) \
+    SCOREP_User_CartesianTopologyHandle userTopology = SCOREP_USER_INVALID_CARTESIAN_TOPOLOGY; \
+    SCOREP_User_CartTopologyCreate( &userTopology, name, nDims );
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( userTopology, size, periodic, name ) \
+    SCOREP_User_CartTopologyAddDim( userTopology, size, periodic, name );
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( userTopology ) \
+    SCOREP_User_CartTopologyInit( userTopology );
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( userTopology, nDims, ... ) \
+    SCOREP_User_CartTopologySetCoords( userTopology, nDims, __VA_ARGS__ );
+
+#endif // SCOREP_USER_ENABLE
+
+//just for doxygen completeness in Fortran case.
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE( userTopology )
+
 /* **************************************************************************************
  * Documentation for C++ specific macros
  * *************************************************************************************/
@@ -1402,6 +1526,10 @@
 #define SCOREP_RECORDING_ON()
 #define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON() 0
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( userTopology, name, ndims )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( userTopology, size, periodic, name )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( userTopology )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( userTopology, nDims, ... )
 
 #endif // SCOREP_USER_ENABLE
 

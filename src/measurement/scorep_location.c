@@ -368,6 +368,12 @@ SCOREP_Location_SetSubstrateData( SCOREP_Location* location,
     location->substrate_data[ substrateId ] = substrateData;
 }
 
+uint64_t
+SCOREP_Location_CalculateGlobalId( int rank, uint32_t thread )
+{
+    return ( ( uint64_t )thread << 32 ) | ( uint64_t )rank;
+}
+
 
 uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
@@ -375,12 +381,21 @@ SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
     UTILS_BUG_ON( !SCOREP_Status_IsMppInitialized(),
                   "Should only be called after the MPP was initialized." );
 
-    uint64_t local_location_id = SCOREP_Location_GetId( locationData );
-    uint64_t rank              = SCOREP_Status_GetRank();
-
-    return ( local_location_id << 32 ) | rank;
+    return SCOREP_Location_CalculateGlobalId( SCOREP_Status_GetRank(), SCOREP_Location_GetId( locationData ) );
 }
 
+uint32_t
+SCOREP_Location_CalculateLocalId( uint64_t globalId )
+{
+    return ( uint32_t )( (  globalId ) >> 32 );
+}
+
+
+uint32_t
+SCOREP_Location_CalculateRank( uint64_t globalId )
+{
+    return ( uint32_t )( ( globalId ) & 0xFFFFFFFFu );
+}
 
 void
 SCOREP_Location_SetLastTimestamp( SCOREP_Location* location,

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016-2017,
  *    Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -379,6 +379,61 @@ SCOREP_User_TriggerMetricUint64( SCOREP_SamplingSetHandle metricHandle,
 void
 SCOREP_User_TriggerMetricDouble( SCOREP_SamplingSetHandle metricHandle,
                                  double                   value );
+
+/* ****************************************************************************
+* User Topology functions
+* ****************************************************************************/
+/**
+    Creates an user topology by the given name and initializes it
+    based on name and number of expected dimensions.
+
+    @param topologyHandle   The handle that identifies the topology in subsequent calls.
+    @param name             The name for the topology.
+    @param nDims            The number of dimensions.
+ */
+void
+SCOREP_User_CartTopologyCreate( SCOREP_User_CartesianTopologyHandle* topologyHandle,
+                                const char*                          name,
+                                uint32_t                             nDims );
+
+/**
+    Defines a dimension for the topology of the given handle.
+
+    @param topologyHandle   The handle that identifies the respective topology.
+    @param size             Number of elements in the dimension.
+    @param periodic         The periodicity of the dimension.
+    @param name             The name of the dimension.
+ */
+void
+SCOREP_User_CartTopologyAddDim( SCOREP_User_CartesianTopologyHandle topologyHandle,
+                                uint32_t                            size,
+                                bool                                periodic,
+                                const char*                         name );
+
+/**
+    Initialize the topology after all dimensions are set.
+
+    @param topologyHandle   The handle that identifies the respective topology.
+ */
+void
+SCOREP_User_CartTopologyInit( SCOREP_User_CartesianTopologyHandle topologyHandle );
+
+
+/**
+    Defines the coordinates of a rank/thread for the topology of the given handle.
+
+    @param topologyHandle   The handle that identifies the respective topology.
+    @param nDims            The number of dimensions, which is the number of
+                            coordinate parameters in C and the length of the
+                            coordinate array in Fortran.
+    @param variable array   Coordinate information with a number of values equal
+                            to the number of dimensions of the referenced topology.
+ */
+void
+SCOREP_User_CartTopologySetCoords( SCOREP_User_CartesianTopologyHandle topologyHandle,
+                                   uint32_t                            nDims,
+                                   ... );
+
 
 /* *************************************************************************************
 * Control functions

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -352,7 +352,8 @@ SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle );
     DEF_WITH_MAPPING( Attribute, attribute ) \
     DEF_WITH_MAPPING( SourceCodeLocation, source_code_location ) \
     DEF_WITH_MAPPING( CallingContext, calling_context ) \
-    DEF_WITH_MAPPING( InterruptGenerator, interrupt_generator )
+    DEF_WITH_MAPPING( InterruptGenerator, interrupt_generator ) \
+    DEF_WITH_MAPPING( CartesianTopology, cartesian_topology )
 
 
 /**
@@ -382,8 +383,8 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interim_communicator );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( communicator );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( rma_window );
-    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_topology );
-    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_coords );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( cartesian_topology );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( cartesian_coords );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( metric );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set_recorder );

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -866,6 +866,21 @@ scorep_write_group_definitions( void*                     writerHandle,
             case SCOREP_GROUP_PTHREAD_THREAD_TEAM:
                 paradigm = OTF2_PARADIGM_PTHREAD;
                 break;
+
+            case SCOREP_GROUP_TOPOLOGY_HARDWARE_LOCATIONS:
+            case SCOREP_GROUP_TOPOLOGY_HARDWARE_GROUP:
+                paradigm = OTF2_PARADIGM_HARDWARE;
+                break;
+
+            case SCOREP_GROUP_TOPOLOGY_PROCESS_LOCATIONS:
+            case SCOREP_GROUP_TOPOLOGY_PROCESS_GROUP:
+                paradigm = OTF2_PARADIGM_MEASUREMENT_SYSTEM;
+                break;
+
+            case SCOREP_GROUP_TOPOLOGY_USER_LOCATIONS:
+            case SCOREP_GROUP_TOPOLOGY_USER_GROUP:
+                paradigm = OTF2_PARADIGM_USER;
+                break;
         }
 
         const uint64_t* members = definition->members;
@@ -1229,6 +1244,114 @@ scorep_write_attribute_definitions( void*                     writerHandle,
 }
 
 static void
+scorep_write_cartesian_coords_definitions( void*                     writerHandle,
+                                           SCOREP_DefinitionManager* definitionManager,
+                                           bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+    typedef OTF2_ErrorCode ( * def_cartesian_coords_pointer_t )( void*,
+                                                                 OTF2_CartTopologyRef,
+                                                                 uint32_t,
+                                                                 uint8_t,
+                                                                 const uint32_t* );
+
+
+    def_cartesian_coords_pointer_t defCartCoords = ( def_cartesian_coords_pointer_t )
+                                                   OTF2_DefWriter_WriteCartCoordinate;
+    if ( isGlobal )
+    {
+        defCartCoords = ( def_cartesian_coords_pointer_t )OTF2_GlobalDefWriter_WriteCartCoordinate;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, CartesianCoords, cartesian_coords )
+    {
+        SCOREP_CartesianTopologyHandle topo = definition->topology_handle;
+
+        OTF2_ErrorCode status = defCartCoords(
+            writerHandle,
+            SCOREP_HANDLE_TO_ID( topo, CartesianTopology, definitionManager->page_manager ),
+            definition->rank,
+            definition->n_coords,
+            definition->coords_of_current_rank );
+
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "CartesianCartCoords" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+static void
+scorep_write_cartesian_topology_definitions( void*                     writerHandle,
+                                             SCOREP_DefinitionManager* definitionManager,
+                                             bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+
+    typedef OTF2_ErrorCode ( * def_cartesian_topology_pointer_t )( void*,
+                                                                   OTF2_CartTopologyRef,
+                                                                   OTF2_StringRef,
+                                                                   OTF2_CommRef,
+                                                                   uint8_t,
+                                                                   const OTF2_CartDimensionRef* );
+
+    def_cartesian_topology_pointer_t defCartTopo = ( def_cartesian_topology_pointer_t )
+                                                   OTF2_DefWriter_WriteCartTopology;
+
+    typedef OTF2_ErrorCode ( * def_cartesian_dimension_pointer_t )( void*,
+                                                                    OTF2_CartDimensionRef,
+                                                                    OTF2_StringRef,
+                                                                    uint32_t,
+                                                                    OTF2_CartPeriodicity );
+
+
+    def_cartesian_dimension_pointer_t defCartDim = ( def_cartesian_dimension_pointer_t )
+                                                   OTF2_DefWriter_WriteCartDimension;
+    if ( isGlobal )
+    {
+        defCartTopo = ( def_cartesian_topology_pointer_t )OTF2_GlobalDefWriter_WriteCartTopology;
+        defCartDim  = ( def_cartesian_dimension_pointer_t )OTF2_GlobalDefWriter_WriteCartDimension;
+    }
+
+    /* dimensions don't have a handle in Score-P, but in OTF2, thus generate ids on the fly */
+    uint32_t dimension_counter = 0;
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, CartesianTopology, cartesian_topology )
+    {
+        OTF2_CartDimensionRef tempRef[ definition->n_dimensions ];
+        for ( int i = 0; i < definition->n_dimensions; i++ )
+        {
+            OTF2_ErrorCode status = defCartDim(
+                writerHandle,
+                dimension_counter,
+                SCOREP_HANDLE_TO_ID( definition->cartesian_dims[ i ].dimension_name, String, definitionManager->page_manager ),
+                definition->cartesian_dims[ i ].n_processes_per_dim,
+                definition->cartesian_dims[ i ].periodicity_per_dim ? OTF2_CART_PERIODIC_TRUE : OTF2_CART_PERIODIC_FALSE );
+            tempRef[ i ] = dimension_counter;
+            if ( status != OTF2_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "CartesianDimension" );
+            }
+            dimension_counter++;
+        }
+        OTF2_ErrorCode status = defCartTopo(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->topology_name, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->communicator_handle, InterimCommunicator, definitionManager->page_manager ),
+            definition->n_dimensions,
+            tempRef );
+
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "CartesianTopology" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+static void
 scorep_write_source_code_location_definitions( void*                     writerHandle,
                                                SCOREP_DefinitionManager* definitionManager,
                                                bool                      isGlobal )
@@ -1531,6 +1654,8 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_source_code_location_definitions( localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_calling_context_definitions(      localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_interrupt_generator_definitions(  localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_cartesian_topology_definitions(   localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_cartesian_coords_definitions(     localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 #else
 void
@@ -1677,6 +1802,8 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_source_code_location_definitions( global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_calling_context_definitions(      global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_interrupt_generator_definitions(  global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_cartesian_topology_definitions(   global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_cartesian_coords_definitions(     global_definition_writer, scorep_unified_definition_manager, true );
 }
 
 void

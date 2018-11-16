@@ -13,7 +13,7 @@
 !  Copyright (c) 2009-2011,
 !  University of Oregon, Eugene, USA
 !
-!  Copyright (c) 2009-2011, 2013,
+!  Copyright (c) 2009-2011, 2013, 2016,
 !  Forschungszentrum Juelich GmbH, Germany
 !
 !  Copyright (c) 2009-2011,
@@ -49,12 +49,14 @@
 #define SCOREP_USER_REGION_HANDLE    integer*8
 #define SCOREP_USER_METRIC_HANDLE    integer*8
 #define SCOREP_USER_PARAMETER_HANDLE integer*8
+#define SCOREP_USER_TOPOLOGY_HANDLE  integer*8
 
 !************************************************************* Constants
 
 #define SCOREP_USER_INVALID_REGION    -1
 #define SCOREP_USER_INVALID_METRIC    -1
 #define SCOREP_USER_INVALID_PARAMETER -1
+#define SCOREP_USER_INVALID_TOPOLOGY  -1
 
 #define SCOREP_USER_REGION_TYPE_COMMON    0
 #define SCOREP_USER_REGION_TYPE_FUNCTION  1
@@ -142,6 +144,23 @@
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value ) \
         call SCOREP_F_MetricDouble( metricHandle, value )
 
+!************************************************************* User topology macros
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE( userTopology ) \
+        SCOREP_USER_DECL_VAR(SCOREP_USER_TOPOLOGY_HANDLE, userTopology, SCOREP_USER_INVALID_TOPOLOGY)
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( userTopology, name, nDims ) \
+        call SCOREP_F_CartTopologyCreate( userTopology, name, nDims )
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( userTopology, size, periodic, name ) \
+        call SCOREP_F_CartTopologyAddDim( userTopology, size, periodic, name )
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( userTopology ) \
+        call SCOREP_F_CartTopologyInit( userTopology )
+
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( userTopology, nDims, coords ) \
+        call SCOREP_F_CartTopologySetCoords( userTopology, nDims, coords )
+
 !************************************************************* User control
 
 #define SCOREP_RECORDING_ON() call SCOREP_F_EnableRecording()
@@ -185,5 +204,10 @@
 #define SCOREP_RECORDING_ON()
 #define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn ) isOn = .false.
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE( userTopology )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE( userTopology, name, ndims )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM( userTopology, size, periodic, name )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_INIT( userTopology )
+#define SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS( userTopology, nDims, coords )
 
 #endif

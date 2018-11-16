@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014-2015, 2017,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,7 +52,7 @@ static const SCOREP_ConfigVariable scorep_selective_confvars[] = {
         "config_file",
         SCOREP_CONFIG_TYPE_PATH,
         &scorep_selective_file_name,
-        "scorep.selective",
+        NULL,
         "",
         "A file name which configures selective recording",
         ""

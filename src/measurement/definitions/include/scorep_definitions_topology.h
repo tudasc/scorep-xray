@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,75 +39,138 @@
 /**
  * @file
  *
+ *  Header for the topology definition calls
+ *  contains calls for mpi, user, platform and process x threads topologies
+ *
+ *  Variables are copied during definition creation. Therefore,
+ *  local stack variables can be used as input parameters.
  *
  */
 
 
-
-SCOREP_DEFINE_DEFINITION_TYPE( MPICartesianTopology )
+SCOREP_DEFINE_DEFINITION_TYPE( CartesianCoords )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICartesianTopology );
-
-    // Add SCOREP_MPICartesianTopology stuff from here on.
+    SCOREP_DEFINE_DEFINITION_HEADER( CartesianCoords );
+    // Add SCOREP_CartesianCoords stuff from here on.
+    SCOREP_CartesianTopologyHandle topology_handle;
+    uint32_t                       n_coords;
+    uint32_t                       rank;
+    uint32_t                       thread;
+    // variable array member
+    uint32_t coords_of_current_rank[];
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
+typedef struct SCOREP_Definitions_CartesianDimension
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICartesianCoords );
+    uint32_t            n_processes_per_dim;
+    bool                periodicity_per_dim;
+    SCOREP_StringHandle dimension_name;
+}SCOREP_Definitions_CartesianDimension;
 
-    // Add SCOREP_MPICartesianCoords stuff from here on.
+
+SCOREP_DEFINE_DEFINITION_TYPE( CartesianTopology )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( CartesianTopology );
+
+    // Add SCOREP_CartesianTopology stuff from here on.
+    SCOREP_StringHandle              topology_name;
+    SCOREP_InterimCommunicatorHandle communicator_handle;
+    SCOREP_Topology_Type             topology_type;
+    uint32_t                         n_dimensions;
+    // variable array member
+    SCOREP_Definitions_CartesianDimension cartesian_dims[];
 };
-
 
 /**
- * Associate a MPI cartesian topology with a process unique topology handle.
+ * Create a new cartesian topology with a process unique topology handle.
  *
- * @param topologyName A meaningful name for the topology. The string will be
- * copied.
+ * @param topologyName            Name generated for the specific platform.
  *
- * @param communicatorHandle A handle to the associated communicator,
- * previously defined by DefineInterimCommunicator().
+ * @param communicatorHandle      Inter Communicator, for non-MPI topologies
+ *                                SCOREP_INVALID_INTERIM_COMMUNICATOR during
+ *                                initialization
  *
- * @param nDimensions Number of dimensions of the cartesian topology.
+ * @param nDimensions             Number of dimensions of the topology.
  *
- * @param nProcessesPerDimension Number of processes in each dimension.
+ * @param nProcessesPerDimension  Number of processes in each dimension.
  *
- * @param periodicityPerDimension Periodicity in each dimension, true (1) or
- * false (0).
+ * @param periodicityPerDimension Periodicity in each dimension.
  *
- * @note The @a topologyName and the @a communicatorHandle will be used to
- * determine uniqueness during unification (only). It's the user's
- * responsibility to define unique topologies.
+ * @param dimensionNames          Names for each dimension.
  *
- * @return A process unique topology handle to be used in calls to
- * SCOREP_Definitions_NewMPICartesianCoords().
+ * @param topologyType            Type of the topology.
+ *
+ * @return                        A process unique topology handle.
  *
  */
-SCOREP_MPICartesianTopologyHandle
-SCOREP_Definitions_NewMPICartesianTopology( const char*                      topologyName,
-                                            SCOREP_InterimCommunicatorHandle communicatorHandle,
-                                            uint32_t                         nDimensions,
-                                            const uint32_t                   nProcessesPerDimension[],
-                                            const uint8_t                    periodicityPerDimension[] );
+SCOREP_CartesianTopologyHandle
+SCOREP_Definitions_NewCartesianTopology( const char*                      topologyName,
+                                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                         uint32_t                         nDimensions,
+                                         const int                        nProcessesPerDimension[],
+                                         const int                        periodicityPerDimension[],
+                                         const char*                      dimensionNames[],
+                                         SCOREP_Topology_Type             topologyType );
 
 
 /**
- * Define the coordinates of the current rank in the cartesian topology
- * referenced by @a cartesianTopologyHandle.
+ * Create a cartesian coordinate definition.
  *
- * @param cartesianTopologyHandle Handle to the cartesian topology for which
- * the coordinates are defines.
+ * @param cartesianTopologyHandle    The handle of the respective topology
  *
- * @param nCoords Number of dimensions of the cartesian topology.
+ * @param rank                       rank of the coordinate
  *
- * @param coordsOfCurrentRank Coordinates of current rank.
+ * @param thread                     thread of the coordinate
+ *
+ * @param nCoords                    number of coordinates for this definition
+ *
+ * @param coordsOfCurrentRank        Array containing the coordinates
  *
  */
 void
-SCOREP_Definitions_NewMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
-                                          uint32_t                          nCoords,
-                                          const uint32_t                    coordsOfCurrentRank[] );
+SCOREP_Definitions_NewCartesianCoords( SCOREP_CartesianTopologyHandle cartesianTopologyHandle,
+                                       uint32_t                       rank,
+                                       uint32_t                       thread,
+                                       uint32_t                       nCoords,
+                                       const int                      coordsOfCurrentRank[] );
+
+/**
+ * Create a cartesian coordinate definition after the unification in the unified
+ * definitions manager.
+ *
+ * @param cartesianTopologyHandle    The handle of the respective topology
+ *
+ * @param rank                       rank of the coordinate
+ *
+ * @param thread                     thread of the coordinate
+ *
+ * @param nCoords                    number of coordinates for this definition
+ *
+ * @param coordsOfCurrentRank        Array containing the coordinates
+ *
+ */
+void
+SCOREP_Definitions_NewUnifiedCartesianCoords( SCOREP_CartesianTopologyHandle cartesianTopologyHandle,
+                                              uint32_t                       rank,
+                                              uint32_t                       thread,
+                                              uint32_t                       nCoords,
+                                              const int                      coordsOfCurrentRank[] );
+
+
+
+void
+scorep_definitions_unify_cartesian_coords( SCOREP_CartesianCoordsDef*           definition,
+                                           struct SCOREP_Allocator_PageManager* handlesPageManager );
+
+void
+scorep_definitions_unify_cartesian_topology( SCOREP_CartesianTopologyDef*         definition,
+                                             struct SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+
+void
+scorep_definitions_rehash_cartesian_topology( SCOREP_CartesianTopologyDef* definition );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_TOPOLOGY_H */

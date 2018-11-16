@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -133,6 +133,10 @@ typedef int64_t SCOREP_Fortran_MetricHandle;
  */
 typedef int64_t SCOREP_Fortran_Parameter;
 
+/**
+    Defines the type obtained from Fortran calls for topology handles.
+ */
+typedef int64_t SCOREP_Fortran_TopologyHandle;
 
 
 /**

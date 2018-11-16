@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -172,6 +172,8 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
     UNIFY_DEFINITION( sourceDefinitionManager, Attribute, attribute );
+    UNIFY_DEFINITION( sourceDefinitionManager, CartesianTopology, cartesian_topology );
+    UNIFY_DEFINITION( sourceDefinitionManager, CartesianCoords, cartesian_coords );
     UNIFY_DEFINITION( sourceDefinitionManager, SourceCodeLocation, source_code_location );
     UNIFY_DEFINITION( sourceDefinitionManager, CallingContext, calling_context );
     UNIFY_DEFINITION( sourceDefinitionManager, InterruptGenerator, interrupt_generator );
@@ -354,6 +356,7 @@ void
 resolve_interim_definitions( void )
 {
     RESOLVE_INTERIM_COMM_REFERENCE( RmaWindow, rma_window, communicator_handle );
+    RESOLVE_INTERIM_COMM_REFERENCE( CartesianTopology, cartesian_topology, communicator_handle );
     /* Add here more defintions, which references interim comm definitions. */
 }
 

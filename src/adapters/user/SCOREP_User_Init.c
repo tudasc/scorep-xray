@@ -46,6 +46,8 @@
 #include "scorep_user.h"
 #include "scorep_selective_region.h"
 
+#include "scorep_user_topology_confvars.inc.c"
+
 /* size of hash map for the regions tagged by name */
 #define SCOREP_USER_REGION_BY_NAME_SIZE 128
 
@@ -60,7 +62,10 @@ user_subsystem_register( size_t subsystemId )
 {
     user_subsystem_id = subsystemId;
 
-    return scorep_selective_register();
+    scorep_selective_register();
+    SCOREP_ConfigRegister( "topology", scorep_user_topology_confvars );
+
+    return SCOREP_SUCCESS;
 }
 
 /** Initializes the user adapter.
@@ -111,16 +116,23 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 SCOREP_Mutex scorep_user_metric_mutex = SCOREP_INVALID_MUTEX;
 
 
+/** Mutex to avoid parallel allocation of local topology data
+ */
+SCOREP_Mutex scorep_user_topo_mutex = SCOREP_INVALID_MUTEX;
+
+
 void
 scorep_user_init_metrics( void )
 {
     SCOREP_MutexCreate( &scorep_user_metric_mutex );
+    SCOREP_MutexCreate( &scorep_user_topo_mutex );
 }
 
 void
 scorep_user_finalize_metrics( void )
 {
     SCOREP_MutexDestroy( &scorep_user_metric_mutex );
+    SCOREP_MutexDestroy( &scorep_user_topo_mutex );
 }
 
 

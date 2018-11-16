@@ -179,6 +179,11 @@ bool scorep_mpi_hooks_on = false;
 
 
 /**
+   Stores whether recording of MPI topologies is enabled
+ */
+bool scorep_mpi_enable_topologies;
+
+/**
    @internal
    Array of configuration variables.
    They are registered to the measurement system and are filled during until the
@@ -255,5 +260,18 @@ static const SCOREP_ConfigVariable scorep_mpi_confvars[] = {
         ""
     },
     #endif
+    SCOREP_CONFIG_TERMINATOR
+};
+
+static const SCOREP_ConfigVariable scorep_mpi_topology_confvars[] = {
+    {
+        "mpi",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_mpi_enable_topologies,
+        NULL,
+        "true",
+        "Record MPI cartesian topologies.",
+        ""
+    },
     SCOREP_CONFIG_TERMINATOR
 };

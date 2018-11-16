@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -69,6 +69,7 @@
     UTILS_DEFINE_DEBUG_MODULE( UNWINDING,          24 ), \
     UTILS_DEFINE_DEBUG_MODULE( SAMPLING,           25 ), \
     UTILS_DEFINE_DEBUG_MODULE( MEMORY,             26 ), \
-    UTILS_DEFINE_DEBUG_MODULE( OPENACC,            27 )
+    UTILS_DEFINE_DEBUG_MODULE( OPENACC,            27 ), \
+    UTILS_DEFINE_DEBUG_MODULE( TOPOLOGIES,         28 )
 
 #endif /* CONFIG_CUSTOM_H */

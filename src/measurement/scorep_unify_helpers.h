@@ -65,6 +65,39 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
                                            const uint64_t*  localMembers );
 
 
+/**
+ * Helper to gather global CPU location numbers, including total number of
+ * locations, the maximum number of locations per process and an array
+ * of location counts per process.
+ *
+ * @param numberOfLocationsPerRank   Array of locations per rank.
+ * @param totalNumberOfLocations     Global number of locations.
+ * @param maxLocationsPerRank        Maximum location number of all ranks.
+ */
+void
+scorep_unify_helper_get_number_of_cpu_locations( int*      numberOfLocationsPerRank,
+                                                 uint32_t* totalNumberOfLocations,
+                                                 int*      maxLocationsPerRank );
+
+/**
+ * Helper to exchange cpu location ids between all processes
+ * Use scorep_unify_helper_get_number_of_cpu_locations to get the input array of
+ * locations counts per rank and to determine the total number of CPU locations.
+ * The locations array allLocations has to be preallocated with the size of
+ * totalNumberOfLocations.
+ *
+ * @param allLocations               Array in size of totalNumberOfLocations
+ *                                   of all location ids.
+ * @param totalNumberOfLocations     Global number of locations.
+ * @param numberOfLocationsPerRank   Array of locations per rank.
+ */
+void
+scorep_unify_helper_exchange_all_cpu_locations( uint64_t* allLocations,
+                                                uint32_t  totalNumberOfLocations,
+                                                int*      numberOfLocationsPerRank );
+
+
+
 struct scorep_definitions_manager_entry;
 
 /**

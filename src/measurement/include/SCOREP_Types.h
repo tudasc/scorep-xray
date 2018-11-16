@@ -163,14 +163,14 @@ typedef enum SCOREP_CPULocationPhase
 
 
 /**
- * Symbolic constant representing an invalid or unknown MPI cartesion topology
+ * Symbolic constant representing an invalid or unknown MPI cartesian topology
  * definition.
  */
 #define SCOREP_INVALID_CART_TOPOLOGY SCOREP_MOVABLE_NULL
 
 
 /**
- * Symbolic constant representing an invalid or unknown MPI cartesion coordinates
+ * Symbolic constant representing an invalid or unknown MPI cartesian coordinates
  * definition.
  */
 #define SCOREP_INVALID_CART_COORDS SCOREP_MOVABLE_NULL
@@ -317,30 +317,39 @@ typedef enum SCOREP_LocationGroupType
  */
 typedef enum SCOREP_GroupType
 {
-    SCOREP_GROUP_UNKNOWN             = 0,
-    SCOREP_GROUP_LOCATIONS           = 1,
-    SCOREP_GROUP_REGIONS             = 2,
-    SCOREP_GROUP_METRIC              = 3,
+    SCOREP_GROUP_UNKNOWN                     = 0,
+    SCOREP_GROUP_LOCATIONS                   = 1,
+    SCOREP_GROUP_REGIONS                     = 2,
+    SCOREP_GROUP_METRIC                      = 3,
 
-    SCOREP_GROUP_MPI_LOCATIONS       = 4,
-    SCOREP_GROUP_MPI_GROUP           = 5,
-    SCOREP_GROUP_MPI_SELF            = 6,
+    SCOREP_GROUP_MPI_LOCATIONS               = 4,
+    SCOREP_GROUP_MPI_GROUP                   = 5,
+    SCOREP_GROUP_MPI_SELF                    = 6,
 
-    SCOREP_GROUP_OPENMP_LOCATIONS    = 7,
-    SCOREP_GROUP_OPENMP_THREAD_TEAM  = 8,
+    SCOREP_GROUP_OPENMP_LOCATIONS            = 7,
+    SCOREP_GROUP_OPENMP_THREAD_TEAM          = 8,
 
-    SCOREP_GROUP_CUDA_LOCATIONS      = 9,
-    SCOREP_GROUP_CUDA_GROUP          = 10,
+    SCOREP_GROUP_CUDA_LOCATIONS              = 9,
+    SCOREP_GROUP_CUDA_GROUP                  = 10,
 
-    SCOREP_GROUP_SHMEM_LOCATIONS     = 11,
-    SCOREP_GROUP_SHMEM_GROUP         = 12,
-    SCOREP_GROUP_SHMEM_SELF          = 13,
+    SCOREP_GROUP_SHMEM_LOCATIONS             = 11,
+    SCOREP_GROUP_SHMEM_GROUP                 = 12,
+    SCOREP_GROUP_SHMEM_SELF                  = 13,
 
-    SCOREP_GROUP_PTHREAD_LOCATIONS   = 14,
-    SCOREP_GROUP_PTHREAD_THREAD_TEAM = 15,
+    SCOREP_GROUP_PTHREAD_LOCATIONS           = 14,
+    SCOREP_GROUP_PTHREAD_THREAD_TEAM         = 15,
 
-    SCOREP_GROUP_OPENCL_LOCATIONS    = 16,
-    SCOREP_GROUP_OPENCL_GROUP        = 17,
+    SCOREP_GROUP_OPENCL_LOCATIONS            = 16,
+    SCOREP_GROUP_OPENCL_GROUP                = 17,
+
+    SCOREP_GROUP_TOPOLOGY_HARDWARE_LOCATIONS = 18,
+    SCOREP_GROUP_TOPOLOGY_HARDWARE_GROUP     = 19,
+
+    SCOREP_GROUP_TOPOLOGY_PROCESS_LOCATIONS  = 20,
+    SCOREP_GROUP_TOPOLOGY_PROCESS_GROUP      = 21,
+
+    SCOREP_GROUP_TOPOLOGY_USER_LOCATIONS     = 22,
+    SCOREP_GROUP_TOPOLOGY_USER_GROUP         = 23,
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
@@ -594,6 +603,21 @@ typedef enum SCOREP_InterruptGeneratorMode
     SCOREP_INTERRUPT_GENERATOR_MODE_COUNT
 } SCOREP_InterruptGeneratorMode;
 
+/**
+ * Possible cartesian topology types differentiated by their source:
+ *  - MPI topologies created by each MPI_Cart_create
+    - Process X Threads 2 dimensional topology of used processes and threads
+ *  - Platform/Hardware topology if available for the current system
+ *  - Topologies created through user instrumentation.
+ */
+typedef enum
+{
+    SCOREP_TOPOLOGIES_MPI = 0,
+    SCOREP_TOPOLOGIES_PROCESS,
+    SCOREP_TOPOLOGIES_PLATFORM,
+    SCOREP_TOPOLOGIES_USER,
+    SCOREP_TOPOLOGIES_NONE,
+} SCOREP_Topology_Type;
 
 /*@}*/
 

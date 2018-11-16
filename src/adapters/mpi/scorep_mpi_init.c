@@ -207,7 +207,10 @@ mpi_subsystem_register( size_t subsystem_id )
 
     mpi_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "mpi", scorep_mpi_confvars );
+    SCOREP_ConfigRegister( "mpi", scorep_mpi_confvars );
+    SCOREP_ConfigRegister( "topology", scorep_mpi_topology_confvars );
+
+    return SCOREP_SUCCESS;
 }
 
 /**

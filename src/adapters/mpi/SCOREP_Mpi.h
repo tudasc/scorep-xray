@@ -120,6 +120,11 @@ extern int scorep_mpi_status_size;
  */
 extern bool scorep_mpi_generate_events;
 
+/**
+   Flag which indicates whether recording of MPI topologies is enabled.
+ */
+bool scorep_mpi_enable_topologies;
+
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON
     Check whether event generation is turned on.
  */

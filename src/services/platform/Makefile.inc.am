@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2017,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -44,9 +44,12 @@ libscorep_platform_la_SOURCES += \
     $(SRC_ROOT)src/services/platform/scorep_platform_system_tree.c \
     $(SRC_ROOT)src/services/platform/scorep_platform_system_tree.h
 
+
+
 if PLATFORM_BGP
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgp.c
 libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_BGP
 
 if PLATFORM_BGQ
@@ -55,7 +58,12 @@ libscorep_platform_la_LDFLAGS = \
     $(AM_LDFLAGS)               \
     @SCOREP_PAMI_LDFLAGS@
 libscorep_platform_la_LIBADD = @SCOREP_PAMI_LIBS@
-libscorep_platform_la_CPPFLAGS += @SCOREP_PAMI_CPPFLAGS@
+libscorep_platform_la_CPPFLAGS += @SCOREP_PAMI_CPPFLAGS@ \
+                                  -I/bgsys/drivers/ppcfloor \
+                                  -I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk
+
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_bgq.c
+
 endif PLATFORM_BGQ
 
 # for any platform not handled above, use generic platform
@@ -67,6 +75,7 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_ALTIX
 
 if PLATFORM_AIX
@@ -76,11 +85,13 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_AIX
 
 if PLATFORM_BGL
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
                                  $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_bgl.c
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_BGL
 
 if PLATFORM_CRAY
@@ -93,6 +104,7 @@ else !HAVE_PMI
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 endif !HAVE_PMI
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_cray.c
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_CRAY
 
 if PLATFORM_LINUX
@@ -102,16 +114,19 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_LINUX
 
 if PLATFORM_SOLARIS
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
                                  $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_SOLARIS
 
 if PLATFORM_MAC
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
                                  $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_macos.c
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_MAC
 
 if PLATFORM_NECSX
@@ -121,6 +136,7 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_NECSX
 
 if PLATFORM_ARM
@@ -130,6 +146,7 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_ARM
 
 if PLATFORM_K
@@ -139,6 +156,8 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_tofu.c
+libscorep_platform_la_CPPFLAGS += -I$(INC_ROOT)src/measurement -I$(INC_DIR_DEFINITIONS)
 endif PLATFORM_K
 
 if PLATFORM_FX10
@@ -148,6 +167,8 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_tofu.c
+libscorep_platform_la_CPPFLAGS += -I$(INC_ROOT)src/measurement -I$(INC_DIR_DEFINITIONS)
 endif PLATFORM_FX10
 
 if PLATFORM_FX100
@@ -157,6 +178,8 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_tofu.c
+libscorep_platform_la_CPPFLAGS += -I$(INC_ROOT)src/measurement -I$(INC_DIR_DEFINITIONS)
 endif PLATFORM_FX100
 
 if PLATFORM_MIC
@@ -166,4 +189,5 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
 endif !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_MIC

@@ -58,9 +58,12 @@ mpi_subsystem_register( size_t subsystem_id )
 
     mpi_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegisterCond( "mpi",
-                                      scorep_mpi_confvars,
-                                      HAVE_BACKEND_MPI_SUPPORT );
+    SCOREP_ConfigRegisterCond( "mpi",
+                               scorep_mpi_confvars,
+                               HAVE_BACKEND_MPI_SUPPORT );
+    SCOREP_ConfigRegisterCond( "topology", scorep_mpi_topology_confvars,
+                               HAVE_BACKEND_MPI_SUPPORT );
+    return SCOREP_SUCCESS;
 }
 
 /* The initialization struct for the MPI adapter */

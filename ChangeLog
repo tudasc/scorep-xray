@@ -22,6 +22,19 @@ Features and improvements:
 - In profiling mode, add the file <DATADIR>/scorep/scorep.spec to
   the profile.cubex container, thus making the profile output more
   self-contained.
+- Added support for cartesian topologies.
+  Supported topology types:
+  1) MPI cartesian topologies via MPI_Cart_create.
+  2) Platform/Hardware specific topologies:
+     - IBM Blue Gene/Q
+     - K Computer
+  3) Process x Threads topology: Generic 2D topology,
+     currently only for CPU threads.
+  4) User topologies via user instrumentation API.
+  By default all available topology types will be recorded. They can
+  selectively be disabled based on type through environment variables,
+  see scorep-info config-vars. Viable topology results require a
+  distinct thread binding.
 - On thread creation, request internal memory on the fly instead of in
   advance. Depending on the measurement configuration this will save
   some memory.

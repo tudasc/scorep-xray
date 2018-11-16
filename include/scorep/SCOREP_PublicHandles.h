@@ -69,11 +69,17 @@ typedef enum SCOREP_HandleType
     SCOREP_HANDLE_TYPE_STRING,                    /** The handle type is SCOREP_StringHandle */
     SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE,          /** The handle type is SCOREP_SystemTreeNodeHandle */
     SCOREP_HANDLE_TYPE_SYSTEM_TREE_NODE_PROPERTY, /** The handle type is SCOREP_SystemTreeNodePropertyHandle */
+    SCOREP_HANDLE_TYPE_CARTESIAN_TOPOLOGY,        /** The handle type is SCOREP_CartesianTopologyHandle */
+    SCOREP_HANDLE_TYPE_CARTESIAN_COORDS,          /** The handle type is SCOREP_CartesianCoordsHandle */
 
     SCOREP_HANDLE_TYPE_NUM_HANDLES                /** Not ABI  */
 } SCOREP_HandleType;
 
 typedef SCOREP_AnyHandle SCOREP_CallingContextHandle;
+
+typedef SCOREP_AnyHandle SCOREP_CartesianTopologyHandle;
+
+typedef SCOREP_AnyHandle SCOREP_CartesianCoordsHandle;
 
 typedef SCOREP_AnyHandle SCOREP_GroupHandle;
 

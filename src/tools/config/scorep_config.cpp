@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1078,6 +1078,8 @@ print_adapter_init_source( void )
     SCOREP_Config_ThreadSystem::current->getInitStructName( init_structs );
     if ( !init_structs.empty() )
     {
+        init_structs.push_front( "SCOREP_Subsystem_PlatformTopology" );
+        init_structs.push_front( "SCOREP_Subsystem_Topologies" );
 #if HAVE_BACKEND( SAMPLING_SUPPORT )
         init_structs.push_front( "SCOREP_Subsystem_SamplingService" );
 #endif

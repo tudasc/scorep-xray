@@ -1,3 +1,4 @@
+#include <scorep/SCOREP_User.inc>
 program MAIN
     !***********************************************************************
     ! program to solve a finite difference                                 *
@@ -81,11 +82,33 @@ subroutine Init (myData)
 #else
     integer :: displacements(8), iStructDisp
 #endif
+    SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE(mytopo)
+    integer, dimension(2) :: coords
+    integer old_comm, new_comm, ndims, reorder
+    integer dim_size(2), periods(2)
 
 !    /* MPI Initialization */
     call MPI_Init(iErr)
     call MPI_Comm_rank(MPI_COMM_WORLD, myData%iMyRank, iErr)
     call MPI_Comm_size(MPI_COMM_WORLD, myData%iNumProcs, iErr)
+
+    SCOREP_USER_CARTESIAN_TOPOLOGY_CREATE(mytopo,"Topo", 2)
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM(mytopo, 2, 1,"dim1_2")
+    SCOREP_USER_CARTESIAN_TOPOLOGY_ADD_DIM(mytopo, (myData%iNumProcs+1)/2 , 1, "dim2_2" )
+    SCOREP_USER_CARTESIAN_TOPOLOGY_INIT ( mytopo )
+    coords = (/ MOD(myData%iMyRank,2), myData%iMyRank/2 /)
+    SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS (mytopo, 2, coords)
+
+    old_comm = MPI_COMM_WORLD
+    ndims = 2
+    dim_size(1) = 1
+    dim_size(2) = myData%iNumProcs
+    periods(1) = 1
+    periods(2) = 0
+    reorder = 1
+
+    call MPI_Cart_create(old_comm,ndims,dim_size,periods,reorder,new_comm,ierr)
+
     if (myData%iMyRank == 0) then
         call get_environment_variable("ITERATIONS", env)
         if (len_trim(env) > 0) then

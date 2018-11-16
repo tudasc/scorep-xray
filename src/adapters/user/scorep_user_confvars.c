@@ -39,8 +39,9 @@
 
 #include <SCOREP_Subsystem.h>
 
-#include "scorep_user_confvars.inc.c"
+#include "scorep_user_selective_confvars.inc.c"
 
+#include "scorep_user_topology_confvars.inc.c"
 
 static size_t user_subsystem_id;
 
@@ -53,7 +54,10 @@ user_subsystem_register( size_t subsystem_id )
 {
     user_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "selective", scorep_selective_confvars );
+    SCOREP_ConfigRegister( "selective", scorep_selective_confvars );
+    SCOREP_ConfigRegister( "topology", scorep_user_topology_confvars );
+
+    return SCOREP_SUCCESS;
 }
 
 /* The initialization struct for the MPI adapter */

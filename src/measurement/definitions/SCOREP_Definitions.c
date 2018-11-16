@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -178,8 +178,8 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, interim_communicator );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, communicator );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, rma_window );
-    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, mpi_cartesian_coords );
-    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, mpi_cartesian_topology );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, cartesian_coords );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, cartesian_topology );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, metric );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set_recorder );
@@ -205,10 +205,10 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node_property );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, group );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, cartesian_topology );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, cartesian_coords );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, communicator );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, rma_window );
-        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_topology );
-        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_coords );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, metric );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set_recorder );
@@ -236,8 +236,8 @@ finalize_definition_manager( SCOREP_DefinitionManager* definitionManager )
     free( definitionManager->interim_communicator.hash_table );
     free( definitionManager->communicator.hash_table );
     free( definitionManager->rma_window.hash_table );
-    free( definitionManager->mpi_cartesian_topology.hash_table );
-    free( definitionManager->mpi_cartesian_coords.hash_table );
+    free( definitionManager->cartesian_topology.hash_table );
+    free( definitionManager->cartesian_coords.hash_table );
     free( definitionManager->metric.hash_table );
     free( definitionManager->sampling_set.hash_table );
     free( definitionManager->sampling_set_recorder.hash_table );

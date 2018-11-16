@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -65,6 +65,8 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
+#include <stdio.h>
+#include <string.h>
 
 /**
  * @name C wrappers
@@ -117,75 +119,49 @@ MPI_Cart_create( MPI_Comm                   comm_old,
 
     if ( *comm_cart != MPI_COMM_NULL )
     {
-        SCOREP_MPICartesianTopologyHandle topid = SCOREP_INVALID_CART_TOPOLOGY;
-        SCOREP_InterimCommunicatorHandle  cid;
-        int32_t                           my_rank, i;
-        int32_t*                          coordv;
-        uint8_t*                          uperiodv;
-        uint32_t*                         udimv;
-        uint32_t*                         ucoordv;
-
-        /* register the new topology communicator */
+        /* register the new topology communicator
+           creation independent from actual recording of the topology */
         scorep_mpi_comm_create( *comm_cart, comm_old );
 
-        /* get the internal communicator id for the communicator of the new topology */
-        cid = scorep_mpi_comm_handle( *comm_cart );
-
-        /* find the rank of the calling process */
-        PMPI_Comm_rank( *comm_cart, &my_rank );
-
-        /* assign the cartesian topology dimension parameters */
-        udimv = calloc( ndims, sizeof( uint32_t ) );
-        if ( !udimv )
+        if ( scorep_mpi_enable_topologies )
         {
-            UTILS_ERROR_POSIX();
+            /* get the internal communicator id for the communicator of the new topology */
+            SCOREP_InterimCommunicatorHandle comm_id = scorep_mpi_comm_handle( *comm_cart );
+
+            /* find the rank of the calling process */
+            int my_rank;
+            PMPI_Comm_rank( *comm_cart, &my_rank );
+
+            /* create topology name*/
+            /* length = prefix + ndims separators + 11 bytes per dimension */
+            char topo_name[ 14 + ndims + 11 * ndims ];
+            sprintf( topo_name, "MPI_Cartesian" );
+            for ( int i = 0; i < ndims; ++i )
+            {
+                char sep = 'x';
+                if ( i == 0 )
+                {
+                    sep = '_';
+                }
+                sprintf( topo_name + strlen( topo_name ), "%c%d", sep, dims[ i ] );
+            }
+
+            /* create the cartesian topology definition record */
+            SCOREP_CartesianTopologyHandle topo_id = SCOREP_Definitions_NewCartesianTopology( topo_name,
+                                                                                              comm_id,
+                                                                                              ndims,
+                                                                                              dims,
+                                                                                              periodv,
+                                                                                              NULL,
+                                                                                              SCOREP_TOPOLOGIES_MPI );
+
+            int coordv[ ndims ];
+            PMPI_Cart_coords( *comm_cart, my_rank, ndims, coordv );
+
+            /* create the coordinates definition record */
+            SCOREP_Definitions_NewCartesianCoords( topo_id, my_rank, 0, ndims, coordv );
         }
-
-        uperiodv = calloc( ndims, sizeof( uint8_t ) );
-        if ( !uperiodv )
-        {
-            UTILS_ERROR_POSIX();
-        }
-
-        for ( i = 0; i < ndims; i++ )
-        {
-            udimv[ i ]    =  ( uint32_t )dims[ i ];
-            uperiodv[ i ] =  ( uint8_t )periodv[ i ];
-        }
-
-        /* create the cartesian topology definition record */
-        topid = SCOREP_Definitions_NewMPICartesianTopology( "", cid, ndims, udimv, uperiodv );
-
-        /* allocate space for coordv and ucoordv */
-        coordv = calloc( ndims, sizeof( int ) );
-        if ( !coordv )
-        {
-            UTILS_ERROR_POSIX();
-        }
-
-        ucoordv = calloc( ndims, sizeof( uint32_t ) );
-        if ( !ucoordv )
-        {
-            UTILS_ERROR_POSIX();
-        }
-
-        /* get the coordinates of the calling process in coordv */
-        PMPI_Cart_coords( *comm_cart, my_rank, ndims, coordv );
-
-        /* assign the coordinates */
-        for ( i = 0; i < ndims; i++ )
-        {
-            ucoordv[ i ] = ( uint32_t )coordv[ i ];
-        }
-
-        /* create the coordinates definition record */
-        SCOREP_Definitions_NewMPICartesianCoords( topid, ndims, ucoordv );
-
-        free( udimv );
-        free( uperiodv );
-        free( ucoordv );
     }
-
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
@@ -241,6 +217,43 @@ MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* n
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
+
+        SCOREP_InterimCommunicatorHandle comm_id     = scorep_mpi_comm_handle( comm );
+        SCOREP_InterimCommunicatorHandle sub_comm_id = scorep_mpi_comm_handle( *newcomm );
+
+        int ndims, nparentdims;
+        PMPI_Cartdim_get( *newcomm, &ndims );
+
+        int subdims[ ndims ], subperiods[ ndims ], subcoords[ ndims ];
+        PMPI_Cart_get( *newcomm, ndims, subdims, subperiods, subcoords );
+
+        /* create topology name*/
+        /* length = prefix + ndims separators + 11 bytes per dimension */
+        char topo_name[ 18 + ndims + 11 * ndims ];
+        sprintf( topo_name, "Sub MPI_Cartesian" );
+        for ( int i = 0; i < ndims; ++i )
+        {
+            char sep = 'x';
+            if ( i == 0 )
+            {
+                sep = '_';
+            }
+            sprintf( topo_name + strlen( topo_name ), "%c%d", sep, subdims[ i ] );
+        }
+
+        /* create the cartesian topology definition record */
+        SCOREP_CartesianTopologyHandle topo_id = SCOREP_Definitions_NewCartesianTopology( topo_name,
+                                                                                          sub_comm_id,
+                                                                                          ndims,
+                                                                                          subdims,
+                                                                                          subperiods,
+                                                                                          NULL,
+                                                                                          SCOREP_TOPOLOGIES_MPI );
+        int my_rank;
+        PMPI_Comm_rank( *newcomm, &my_rank );
+
+        /* create the coordinates definition record */
+        SCOREP_Definitions_NewCartesianCoords( topo_id, my_rank, 0, ndims, subcoords );
     }
 
     if ( event_gen_active )
@@ -260,6 +273,7 @@ MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* n
     return return_val;
 }
 #endif
+
 #if HAVE( DECL_PMPI_GRAPH_CREATE )
 /**
  * Measurement wrapper for MPI_Graph_create

@@ -60,6 +60,8 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MemoryAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_Topologies;
+extern const SCOREP_Subsystem SCOREP_Subsystem_PlatformTopology;
 
 /**
  * List of subsystems.
@@ -70,6 +72,8 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_MetricService,
     &SCOREP_Subsystem_UnwindingService,
     &SCOREP_Subsystem_SamplingService,
+    &SCOREP_Subsystem_Topologies,
+    &SCOREP_Subsystem_PlatformTopology,
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
     &SCOREP_Subsystem_Opari2UserAdapter,

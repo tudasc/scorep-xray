@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2018
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -123,6 +123,34 @@ SCOREP_Location_ForAll( bool ( * cb )( SCOREP_Location*,
 
 SCOREP_LocationHandle
 SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData );
+
+/**
+ *  Calculate 64bit global ID from 32bit rank and thread/locationId
+ *  via bit shift.
+ *
+ * @return global id
+ */
+uint64_t
+SCOREP_Location_CalculateGlobalId( int      rank,
+                                   uint32_t thread );
+
+/**
+ *  Calculate 32bit local id from 64bit global ID
+ *  via bit shift.
+ *
+ * @return local Id
+ */
+uint32_t
+SCOREP_Location_CalculateLocalId( uint64_t globalId );
+
+/**
+ *  Calculate 32bit rank from 64bit global ID
+ *  via bit shift.
+ *
+ * @return rank
+ */
+uint32_t
+SCOREP_Location_CalculateRank( uint64_t globalId );
 
 uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );

@@ -40,6 +40,7 @@
 #include "SCOREP_Subsystem.h"
 #include <SCOREP_Mutex.h>
 #include "SCOREP_Hashtab.h"
+#include <stdbool.h>
 
 /** @ingroup SCOREP_User_External
     @{
@@ -78,6 +79,31 @@ extern SCOREP_Hashtab* scorep_user_region_by_name_hash_table;
     to lookup the name in a extra datastructure.
  */
 extern SCOREP_Hashtab* scorep_user_region_table;
+
+/**
+   Variable storing the information on the recording of user topologies.
+ */
+extern bool scorep_user_enable_topologies;
+
+/**
+   Type for topology handles
+ */
+typedef struct SCOREP_User_Topology
+{
+    char*            name;
+    SCOREP_AnyHandle handle;
+    uint32_t         n_dims;
+    int*             dim_sizes;
+    int*             dim_periodicity;
+    char**           dim_names;
+
+    bool             initialized;
+    uint32_t         dimension_counter;
+} SCOREP_User_Topology;
+
+/** Mutex to avoid parallel allocation of local topology data
+ */
+extern SCOREP_Mutex scorep_user_topo_mutex;
 
 /**
    Dumps file information into the manifest file and copies files depending on the

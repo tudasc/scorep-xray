@@ -45,4 +45,5 @@ libscorep_user_confvars_la_CPPFLAGS = \
 libscorep_confvars_la_LIBADD += libscorep_user_confvars.la
 
 EXTRA_DIST += \
-    $(SRC_ROOT)src/adapters/user/scorep_user_confvars.inc.c
+    $(SRC_ROOT)src/adapters/user/scorep_user_selective_confvars.inc.c \
+    $(SRC_ROOT)src/adapters/user/scorep_user_topology_confvars.inc.c

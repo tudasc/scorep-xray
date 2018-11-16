@@ -1,0 +1,28 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2018,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/services/platform/Makefile.confvars.inc.am
+
+noinst_LTLIBRARIES += libscorep_platform_confvars.la
+
+libscorep_platform_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/services/platform/scorep_platform_topology_confvars.c
+
+libscorep_platform_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_platform_confvars.la
