@@ -38,6 +38,9 @@ Features and improvements:
 - On thread creation, request internal memory on the fly instead of in
   advance. Depending on the measurement configuration this will save
   some memory.
+- As Open MPI provides since version 3.0 a C++ compiler wrapper for
+  SHMEM, Score-P will also provide a instrumentation wrapper
+  `scorep-oshcxx` in this case.
 
 Bugfixes:
 
