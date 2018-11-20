@@ -181,8 +181,12 @@ AS_IF([test -n "${MPICC}"],
              [( (test -d ${MLIBDIR}/openmpi && ( test -f ${MLIBDIR}/libmpi.a || test -f ${MLIBDIR}/libmpi.so ) ) || \
               (test -d ${MLIB64DIR}/openmpi && ( test -f ${MLIB64DIR}/libmpi.a || test -f ${MLIB64DIR}/libmpi.so ) ) )],
              [NMPIS=`expr ${NMPIS} + 1`
-              FMPI=openmpi
-              AC_MSG_RESULT([Open MPI ${MPICC}])],
+              AS_IF([test ! -f ${MBINDIR}/oshcxx],
+                  [FMPI=openmpi
+                   AC_MSG_RESULT([Open MPI ${MPICC}])],
+                  [FMPI=openmpi3
+                   AC_MSG_RESULT([Open MPI 3 ${MPICC}])])
+             ],
              [( (test -d ${MLIBDIR}/bullxmpi && ( test -f ${MLIBDIR}/libmpi.a || test -f ${MLIBDIR}/libmpi.so ) ) || \
               (test -d ${MLIB64DIR}/bullxmpi && ( test -f ${MLIB64DIR}/libmpi.a || test -f ${MLIB64DIR}/libmpi.so ) ) )],
              [NMPIS=`expr ${NMPIS} + 1`

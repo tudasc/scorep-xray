@@ -54,6 +54,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich2 \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich3 \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-openmpi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-openmpi3 \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-platform \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-scali \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sgimpt \
@@ -61,6 +62,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sun \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-without \
               $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-openmpi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-openmpi3 \
               $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-openshmem \
               $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-sgimpt \
               $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-sgimptwrapper \

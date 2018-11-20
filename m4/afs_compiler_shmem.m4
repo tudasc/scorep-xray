@@ -63,8 +63,12 @@ AS_IF([test -n "${SHMEMCC}"],
                [(test -f ${SLIBDIR}/liboshmem.a || test -f ${SLIBDIR}/liboshmem.so || \
                  test -f ${SLIB64DIR}/liboshmem.a || test -f ${SLIB64DIR}/liboshmem.so)],
                [NSHMEMS=`expr ${NSHMEMS} + 1`
-                FSHMEM=openmpi
-                AC_MSG_RESULT([OpenMPI SHMEM ${SHMEMCC}])])
+                AS_IF([test ! -f ${SBINDIR}/oshcxx],
+                    [FSHMEM=openmpi
+                     AC_MSG_RESULT([Open MPI OpenSHMEM ${SHMEMCC}])],
+                    [FSHMEM=openmpi3
+                     AC_MSG_RESULT([Open MPI 3 OpenSHMEM ${SHMEMCC}])])
+                ])
 
          AS_IF([test -n "${FSHMEM}"],
              [AS_IF([test -z "${SHMEMS}"],
