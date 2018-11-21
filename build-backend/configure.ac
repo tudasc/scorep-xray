@@ -352,7 +352,7 @@ AM_COND_IF([HAVE_SHMEM_SUPPORT], [
 for compiler_prefix in '' ${additional_compiler_prefix_list}; do
     for compiler_var in CC CXX F77 FC; do
         full_compiler_var=${compiler_prefix}${compiler_var}
-        if eval test x\${${full_compiler_var}+set} != xset; then
+        if eval test x\${${full_compiler_var}:+set} != xset; then
             continue
         fi
         eval value=\$${full_compiler_var}
