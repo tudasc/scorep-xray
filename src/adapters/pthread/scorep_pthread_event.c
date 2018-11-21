@@ -4,7 +4,7 @@
  * Copyright (c) 2014, 2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2017,
+ * Copyright (c) 2014-2018,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -102,8 +102,9 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
     }
     else
     {
-        wrapped_arg = SCOREP_Location_AllocForMisc( location,
-                                                    sizeof( *wrapped_arg ) );
+        /* Don't use scorep's memory here as wrapped_arg might be used
+         * after scorep_finalize(). */
+        wrapped_arg = calloc( 1, sizeof( *wrapped_arg ) );
     }
     memset( wrapped_arg, 0, sizeof( *wrapped_arg ) );
     wrapped_arg->cancelled = true;
@@ -179,6 +180,13 @@ scorep_pthread_wrapped_start_routine( void* wrappedArg )
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
+
+    /* Take care of threads that are still executing after scorep_finalize()
+     * changed measurement phase. */
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        return wrapped_arg->orig_ret_val;
+    }
 
     return wrapped_arg;
 }
@@ -537,12 +545,17 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_lock )( pthread_mutex_t* pthreadMutex )
     int result = SCOREP_LIBWRAP_FUNC_CALL( pthread_mutex_lock, ( pthreadMutex ) );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( result == 0 )
+    /* Ignore threads that resume execution after scorep_finalize()
+     * changed measurement phase. */
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        record_acquire_lock_event( scorep_mutex );
-    }
+        if ( result == 0 )
+        {
+            record_acquire_lock_event( scorep_mutex );
+        }
 
-    SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_MUTEX_LOCK ] );
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_MUTEX_LOCK ] );
+    }
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -783,22 +796,27 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait )( pthread_cond_t*  cond,
     int result = SCOREP_LIBWRAP_FUNC_CALL( pthread_cond_wait, ( cond, pthreadMutex ) );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( scorep_mutex->process_shared == false )
+    /* Ignore threads that resume execution after scorep_finalize()
+     * changed measurement phase. */
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        scorep_mutex->acquisition_order++;
-        scorep_mutex->nesting_level++;
-        SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_PTHREAD,
-                                  scorep_mutex->id,
-                                  scorep_mutex->acquisition_order );
-    }
-    else
-    {
-        issue_process_shared_mutex_warning();
-    }
+        if ( scorep_mutex->process_shared == false )
+        {
+            scorep_mutex->acquisition_order++;
+            scorep_mutex->nesting_level++;
+            SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_PTHREAD,
+                                      scorep_mutex->id,
+                                      scorep_mutex->acquisition_order );
+        }
+        else
+        {
+            issue_process_shared_mutex_warning();
+        }
 
-    // do we want to see enter/exit for implicit pthread_mutex_lock here?
+        // do we want to see enter/exit for implicit pthread_mutex_lock here?
 
-    SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_WAIT ] );
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_WAIT ] );
+    }
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -848,22 +866,27 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait )( pthread_cond_t*        cond,
     int result = SCOREP_LIBWRAP_FUNC_CALL( pthread_cond_timedwait, ( cond, pthreadMutex, time ) );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( scorep_mutex->process_shared == false )
+    /* Ignore threads that resume execution after scorep_finalize()
+     * changed measurement phase. */
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        scorep_mutex->acquisition_order++;
-        scorep_mutex->nesting_level++;
-        SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_PTHREAD,
-                                  scorep_mutex->id,
-                                  scorep_mutex->acquisition_order );
-    }
-    else
-    {
-        issue_process_shared_mutex_warning();
-    }
+        if ( scorep_mutex->process_shared == false )
+        {
+            scorep_mutex->acquisition_order++;
+            scorep_mutex->nesting_level++;
+            SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_PTHREAD,
+                                      scorep_mutex->id,
+                                      scorep_mutex->acquisition_order );
+        }
+        else
+        {
+            issue_process_shared_mutex_warning();
+        }
 
-    // do we want to see enter/exit for implicit pthread_mutex_lock here?
+        // do we want to see enter/exit for implicit pthread_mutex_lock here?
 
-    SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_TIMEDWAIT ] );
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_TIMEDWAIT ] );
+    }
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();

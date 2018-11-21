@@ -31,7 +31,7 @@
 
 UTILS_BEGIN_C_DECLS
 
-extern SCOREP_MeasurementPhase scorep_measurement_phase;
+extern volatile SCOREP_MeasurementPhase scorep_measurement_phase;
 
 /**
  *  Evaluates to true if Score-P is in the measurement phase `PHASE`.

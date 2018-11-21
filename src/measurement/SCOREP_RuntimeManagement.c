@@ -93,7 +93,7 @@ static bool scorep_initialized = false;
 /** @brief Measurement system finalized? */
 static bool scorep_finalized = false;
 
-SCOREP_MeasurementPhase scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_PRE;
+volatile SCOREP_MeasurementPhase scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_PRE;
 
 /** @brief Location group handle */
 static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
