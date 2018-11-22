@@ -31,7 +31,7 @@ usage()
     if test $# -gt 0
     then
         printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
-        printf "Note that this script is still EXPERIMENTAL."
+        printf "Note that this script is still EXPERIMENTAL.\n"
         printf "Try '%s --help' for more information.\n" "$argv0"
         return
     fi
