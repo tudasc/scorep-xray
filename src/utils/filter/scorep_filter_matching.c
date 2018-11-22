@@ -50,6 +50,7 @@
 
 #include <fnmatch.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /* **************************************************************************************
@@ -277,4 +278,71 @@ scorep_filter_match_function( const scorep_filter_rule_t* functionRules,
     }
 
     return excluded;
+}
+
+bool
+scorep_filter_include_function( const scorep_filter_rule_t* functionRules,
+                                const char*                 functionName,
+                                const char*                 mangledName,
+                                SCOREP_ErrorCode*           err )
+{
+    bool excluded            = false;           /* Start with all included */
+    bool explicitly_included = false;
+    *err = SCOREP_SUCCESS;
+
+    if ( !functionName )
+    {
+        return true;
+    }
+
+    while ( functionRules )
+    {
+        bool matched = scorep_filter_match_function_rule( functionName,
+                                                          mangledName,
+                                                          functionRules,
+                                                          err );
+
+        if ( matched )
+        {
+            if ( functionRules->is_exclude )
+            {
+                explicitly_included = false;
+            }
+            else if ( 0 != strcmp( functionRules->pattern, "*" ) )
+            {
+                explicitly_included = true;
+            }
+        }
+
+        /* If included so far and we have an exclude rule */
+        if ( ( !excluded ) && functionRules->is_exclude )
+        {
+            excluded = matched;
+
+            if ( *err != SCOREP_SUCCESS )
+            {
+                return true;
+            }
+        }
+        /* If excluded so far and we have an include rule */
+        else if ( excluded && ( !functionRules->is_exclude ) )
+        {
+            excluded = !matched;
+
+            if ( *err != SCOREP_SUCCESS )
+            {
+                return true;
+            }
+        }
+
+        functionRules = functionRules->next;
+    }
+
+    if ( excluded )
+    {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
+                            "Filtered function %s\n", functionName );
+    }
+
+    return !excluded && explicitly_included;
 }

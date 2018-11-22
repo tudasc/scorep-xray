@@ -199,9 +199,17 @@ scorep_plugin_pass_instrument_function( void )
      */
     if ( is_declared_inline() )
     {
-        VERBOSE_MSG( 1, "Function is excluded because of inline declaration: '%s'", function_name );
-        free( function_name );
-        return 0;
+        /* Check if this function is explicitly included in filter file */
+        int              result;
+        SCOREP_ErrorCode err = SCOREP_Filter_IncludeFunction( scorep_instrument_filter,
+                                                              function_name, assembler_name,
+                                                              &result );
+        if ( err == SCOREP_SUCCESS && !result )
+        {
+            VERBOSE_MSG( 1, "Function is excluded because of inline declaration: '%s'", function_name );
+            free( function_name );
+            return 0;
+        }
     }
 
     /* Don't instrument functions which are marked with the "scorep_no_instrument"

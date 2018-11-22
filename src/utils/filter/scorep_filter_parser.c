@@ -481,6 +481,27 @@ SCOREP_Filter_MatchFunction( const SCOREP_Filter* filter,
 }
 
 SCOREP_ErrorCode
+SCOREP_Filter_IncludeFunction( const SCOREP_Filter* filter,
+                               const char*          functionName,
+                               const char*          mangledName,
+                               int*                 result )
+{
+    if ( !filter || !result )
+    {
+        return SCOREP_ERROR_INVALID_ARGUMENT;
+    }
+
+    SCOREP_ErrorCode err;
+
+    *result = scorep_filter_include_function( filter->function_rules,
+                                              functionName,
+                                              mangledName,
+                                              &err );
+
+    return err;
+}
+
+SCOREP_ErrorCode
 SCOREP_Filter_Match( const SCOREP_Filter* filter,
                      const char*          fileName,
                      const char*          functionName,

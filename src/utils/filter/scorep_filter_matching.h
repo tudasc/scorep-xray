@@ -83,5 +83,10 @@ scorep_filter_match_function( const scorep_filter_rule_t* functionRules,
                               const char*                 mangledName,
                               SCOREP_ErrorCode*           err );
 
+bool
+scorep_filter_include_function( const scorep_filter_rule_t* functionRules,
+                                const char*                 functionName,
+                                const char*                 mangledName,
+                                SCOREP_ErrorCode*           err );
 
 #endif /* SCOREP_FILTER_MATCHING_H */

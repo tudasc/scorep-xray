@@ -138,6 +138,32 @@ SCOREP_Filter_MatchFunction( const SCOREP_Filter* filter,
                              const char*          mangledName,
                              int*                 result );
 
+/**
+ * Checks whether a function is explicitly included.
+ *
+ * Handles a special case, where the result can only be true, if this function
+ * was matched by an explicit "INCLUDE" rule other than "INCLUDE *" or the implicit
+ * "start with everything is included".
+ *
+ * @param filter        The filter rules.
+ * @param functionName  The function name as it will be displayed in profile and
+ *                      trace definitions.
+ * @param mangledName   A mangled name of the function is available that differs
+ *                      from @a function_name. If no different mangled name is
+ *                      available you may pass NULL here. In this case the function_name
+ *                      will be used to compare against patterns that are prepended
+ *                      by the MANGLED keyword. In particular passing NULL or the
+ *                      same string as for @a function_name leads to the same results.
+ * @param[out] result   True, if the tested function was explicitly included.
+ *
+ * @return SCOREP_SUCCESS or error code.
+ */
+SCOREP_ErrorCode
+SCOREP_Filter_IncludeFunction( const SCOREP_Filter* filter,
+                               const char*          functionName,
+                               const char*          mangledName,
+                               int*                 result );
+
 UTILS_END_C_DECLS
 
 #endif /* SCOREP_FILTER_H */

@@ -43,6 +43,10 @@ Features and improvements:
   `scorep-oshcxx` in this case.
 - Values in config variables of type Set can now be negated by
   preceeding it with '~', e.g., 'SCOREP_MPI_ENABLE_GROUPS=default,~cg'.
+- Functions excluded from instrumentation by the GCC plug-in, because
+  they were declared as inline, can now be instrumented by providing
+  an instrumention filter to 'scorep' where the function is matched by
+  an explicit 'INCLUDE' rule, which is not the match-all '*' one.
 
 Bugfixes:
 
