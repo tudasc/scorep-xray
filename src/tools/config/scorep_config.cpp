@@ -639,6 +639,10 @@ main( int    argc,
         {
             /* libscorep_measurement.so must be in the event libs */
             libs.push_back( "libscorep_measurement" );
+
+#if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
+            deps.addDependency( "libscorep_measurement", "libscorep_constructor" );
+#endif
         }
 #endif
 
