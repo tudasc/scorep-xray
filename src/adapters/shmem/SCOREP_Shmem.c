@@ -40,9 +40,6 @@
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
         if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )                           \
         {                                                                   \
-            /* Notify, that we need to enter SCOREP_PARALLEL__SHMEM */      \
-            scorep_shmem_parallel_needed = true;                            \
-                                                                            \
             /* Initialize the measurement system */                         \
             SCOREP_InitMeasurement();                                       \
         }                                                                   \
@@ -80,9 +77,6 @@ INIT_SHMEM( shmem_init )
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
         if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )                           \
         {                                                                   \
-            /* Notify, that we need to enter SCOREP_PARALLEL__SHMEM */      \
-            scorep_shmem_parallel_needed = true;                            \
-                                                                            \
             /* Initialize the measurement system */                         \
             SCOREP_InitMeasurement();                                       \
         }                                                                   \
@@ -120,9 +114,6 @@ INIT_SHMEM_WITH_ARGUMENT( start_pes )
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
         if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )                           \
         {                                                                   \
-            /* Notify, that we need to enter SCOREP_PARALLEL__SHMEM */      \
-            scorep_shmem_parallel_needed = true;                            \
-                                                                            \
             /* Initialize the measurement system */                         \
             SCOREP_InitMeasurement();                                       \
         }                                                                   \
@@ -154,9 +145,6 @@ INIT_SHMEM_WITH_ARGUMENT( start_pes )
         SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
         if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )                           \
         {                                                                   \
-            /* Notify, that we need to enter SCOREP_PARALLEL__SHMEM */      \
-            scorep_shmem_parallel_needed = true;                            \
-                                                                            \
             /* Initialize the measurement system */                         \
             SCOREP_InitMeasurement();                                       \
         }                                                                   \

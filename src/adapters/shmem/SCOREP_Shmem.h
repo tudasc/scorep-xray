@@ -108,15 +108,6 @@ extern size_t scorep_shmem_number_of_pes;
 extern int scorep_shmem_my_rank;
 
 /**
- * Flag set if the measurement system was already opened by another
- * adapter. If the measurement system is not already initialized, it is
- * assumed that the SHMEM adapter is the only active adapter. In this
- * case, at first an additional region is entered. Thus, all regions
- * appear as children of this region.
- */
-extern bool scorep_shmem_parallel_needed;
-
-/**
  * Matching ID of consecutive RMA operations.
  */
 extern uint64_t scorep_shmem_rma_op_matching_id;

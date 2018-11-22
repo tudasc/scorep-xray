@@ -56,16 +56,6 @@ bool scorep_shmem_generate_events = false;
  */
 bool scorep_shmem_write_rma_op_complete_record = false;
 
-/**
- * Flag to indicate whether the extra parallel region was entered
- * or not. For example, this extra parallel region will be entered
- * if the call to main is not recorded due to disabled compiler
- * instrumentation and the call to shmem_init()/start_pes() is the
- * first recorded event.
- */
-bool scorep_shmem_parallel_needed = false;
-
-
 SCOREP_AllocMetric* scorep_shmem_allocations_metric = 0;
 
 SCOREP_AttributeHandle scorep_shmem_memory_alloc_size_attribute   = SCOREP_INVALID_ATTRIBUTE;
@@ -107,15 +97,6 @@ shmem_subsystem_init( void )
                                         SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
                                         "Active set ${id}" );
 
-    if ( SCOREP_IsUnwindingEnabled() )
-    {
-        /*
-         * If unwinding is enable, do not generate the SHMEM artificial region
-         * (even if only SHMEM is recorded)
-         */
-        scorep_shmem_parallel_needed = false;
-    }
-
     scorep_shmem_register_regions();
 
     if ( scorep_shmem_memory_recording )
@@ -137,12 +118,6 @@ static SCOREP_ErrorCode
 shmem_subsystem_begin( void )
 {
     UTILS_DEBUG_ENTRY();
-
-    /* Enter global SHMEM region */
-    if ( scorep_shmem_parallel_needed )
-    {
-        SCOREP_EnterRegion( scorep_shmem_region__SHMEM );
-    }
 
     SCOREP_SHMEM_EVENT_GEN_ON();
 
@@ -173,15 +148,6 @@ shmem_subsystem_end( void )
     {
         SCOREP_AllocMetric_ReportLeaked( scorep_shmem_allocations_metric );
     }
-
-//
-//    Hack: avoid exit event for artificial PARALLEL region, Score-P task stack should care about
-//
-//    /* Exit the extra global SHMEM region in case it was entered */
-//    if ( scorep_shmem_parallel_needed )
-//    {
-//        SCOREP_ExitRegion( scorep_shmem_region__SHMEM );
-//    }
 
     /* Destroy all RmaWin in the master thread. */
     scorep_shmem_close_pe_group();

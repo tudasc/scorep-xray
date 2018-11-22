@@ -54,20 +54,4 @@ scorep_shmem_register_regions( void )
 
 
 #include "scorep_shmem_function_list.inc"
-
-    if ( scorep_shmem_parallel_needed )
-    {
-        /*
-         * Artificial root for SHMEM-only experiments without user-code instrumentation
-         */
-
-        scorep_shmem_region__SHMEM =
-            SCOREP_Definitions_NewRegion( "PARALLEL",
-                                          NULL,
-                                          SCOREP_INVALID_SOURCE_FILE,
-                                          SCOREP_INVALID_LINE_NO,
-                                          SCOREP_INVALID_LINE_NO,
-                                          SCOREP_PARADIGM_SHMEM,
-                                          SCOREP_REGION_ARTIFICIAL );
-    }
 }
