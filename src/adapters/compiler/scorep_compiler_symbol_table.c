@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -56,11 +56,10 @@
 #include <UTILS_IO.h>
 
 #include <SCOREP_Filtering.h>
+#include <scorep_environment.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_compiler_data.h"
-
-extern char* scorep_compiler_executable;
-
 
 /* ***************************************************************************************
    Demangling declarations
@@ -90,66 +89,6 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
 /* ***************************************************************************************
    helper functions for symbol table analysis
 *****************************************************************************************/
-
-/**
-   Writes the path/filename of the executable into @a path.
-   @param path A pointer to a buffer into which the path is written. The
-               memory for the buffer will be allocated.
-   @retruns true if the path of the executable was obtained successfully.
-            false otherwise.
- */
-static bool
-get_executable( char** path )
-{
-    /* First trial, get the path from environment variable SCOREP_EXECUTABLE, if set */
-    if ( strlen( scorep_compiler_executable ) > 0 )
-    {
-        size_t length = strlen( scorep_compiler_executable ) + 1;
-        *path = malloc( sizeof( char ) * length );
-        strncpy( *path, scorep_compiler_executable, length );
-        UTILS_DEBUG( "path = \"%s\"", *path );
-        return true;
-    }
-
-    /* Second trial, use /proc/<pid>/exe */
-    pid_t  pid        = getpid();
-    size_t pid_length = floor( log10( abs( pid ) ) ) + 1;
-    {
-        size_t length = pid_length + 11;
-        char   tmp_path[ length ];
-        snprintf( tmp_path, length, "/proc/%d/exe", pid );
-        struct stat status;
-        int         err = stat( tmp_path, &status );
-        if ( err == 0 )
-        {
-            UTILS_DEBUG( "tmp_path = \"%s\"", tmp_path );
-            *path = malloc( sizeof( char ) * length );
-            strncpy( *path, tmp_path, length );
-            UTILS_DEBUG( "path = \"%s\"", *path );
-            return true;
-        }
-    }
-
-    /* Third trial, use /proc/<pid>/object/a.out */
-    size_t length = pid_length + 20;
-    char   tmp_path[ length ];
-    snprintf( tmp_path, length, "/proc/%d/object/a.out", pid );
-    struct stat status;
-    int         err = stat( tmp_path, &status );
-    if ( err == 0 )
-    {
-        UTILS_DEBUG( "tmp_path = \"%s\"", tmp_path );
-        *path = malloc( sizeof( char ) * length );
-        strncpy( *path, tmp_path, length );
-        UTILS_DEBUG( "path = \"%s\"", *path );
-        return true;
-    }
-
-    UTILS_WARNING( "Could not obtain executable name for reading symbols. "
-                   "Function enter/exit will not be recorded. You need to "
-                   "export SCOREP_EXECUTABLE to get function events." );
-    return false;
-}
 
 static void
 process_symbol( long         address,
@@ -367,7 +306,8 @@ scorep_compiler_parse_nm_file( const char*                       nmFilename,
 void
 scorep_compiler_load_symbols( void )
 {
-    char* executable;
+    bool        executable_name_is_file;
+    const char* executable = SCOREP_GetExecutableName( &executable_name_is_file );
 
     if ( symbols_provided() )
     {
@@ -377,10 +317,13 @@ scorep_compiler_load_symbols( void )
         scorep_compiler_parse_nm_file( scorep_compiler_nm_symbols,
                                        process_symbol );
     }
-    else if ( get_executable( &executable ) )
+    else if ( executable_name_is_file )
     {
-        scorep_compiler_process_symbol_table( executable,
-                                              process_symbol );
-        free( executable );
+        scorep_compiler_process_symbol_table( executable, process_symbol );
+    }
+    else
+    {
+        UTILS_FATAL( "Cannot process symbol table. Please provide the executable, "
+                     "preferably with full path, via SCOREP_EXECUTABLE." );
     }
 }

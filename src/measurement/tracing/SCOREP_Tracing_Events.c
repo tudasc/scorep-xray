@@ -162,6 +162,45 @@ write_metric( SCOREP_Location*         location,
 
 
 static void
+program_begin( SCOREP_Location*     location,
+               uint64_t             timestamp,
+               SCOREP_StringHandle  programName,
+               uint32_t             numberOfProgramArgs,
+               SCOREP_StringHandle* programArguments )
+{
+    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+
+    OTF2_StringRef args[ numberOfProgramArgs ];
+    for ( uint32_t i = 0; i < numberOfProgramArgs; i++ )
+    {
+        args[ i ] = SCOREP_LOCAL_HANDLE_TO_ID( programArguments[ i ], String );
+    }
+    OTF2_EvtWriter_ProgramBegin( evt_writer,
+                                 NULL,
+                                 timestamp,
+                                 SCOREP_LOCAL_HANDLE_TO_ID( programName, String ),
+                                 numberOfProgramArgs,
+                                 args );
+}
+
+static void
+program_end( SCOREP_Location*  location,
+             uint64_t          timestamp,
+             SCOREP_ExitStatus exitStatus )
+{
+    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+
+    OTF2_EvtWriter_ProgramEnd( evt_writer,
+                               NULL,
+                               timestamp,
+                               exitStatus == SCOREP_INVALID_EXIT_STATUS
+                               ? OTF2_UNDEFINED_INT64
+                               : ( int64_t )exitStatus );
+}
+
+
+
+static void
 enter( SCOREP_Location*    location,
        uint64_t            timestamp,
        SCOREP_RegionHandle regionHandle,
@@ -1647,6 +1686,8 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
 {
     /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
     {
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramBegin,             PROGRAM_BEGIN,                program_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramEnd,               PROGRAM_END,                  program_end ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,              ENTER_REGION,                 enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,               EXIT_REGION,                  leave ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                   SAMPLE,                       sample ),

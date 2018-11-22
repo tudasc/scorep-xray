@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -53,6 +53,8 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME CORE
 #include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
+#include <UTILS_IO.h>
 
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Memory.h>
@@ -130,6 +132,11 @@ static bool scorep_default_recoding_mode_changes_allowed = true;
  */
 static bool scorep_application_aborted = false;
 
+/**
+ * Remember the location of the main thread.
+ */
+static SCOREP_Location* main_thread_location;
+
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
@@ -139,7 +146,138 @@ static void scorep_define_measurement_regions( void );
 static void scorep_define_measurement_attributes( void );
 static void scorep_init_mpp( SCOREP_SynchronizationMode syncMode );
 static void scorep_synchronize( SCOREP_SynchronizationMode syncMode );
+static void local_cleanup( void );
 /* *INDENT-ON* */
+
+static char* executable_name;
+static bool executable_name_is_file;
+
+
+static void
+set_executable_name( int argc, char* argv[] )
+{
+    if ( executable_name == NULL )
+    {
+#if HAVE( POSIX_READLINK )
+        size_t bufsize = 128;
+        while ( 1 )
+        {
+            executable_name = realloc( executable_name, ( bufsize + 1 ) * sizeof( char ) );
+            ssize_t num_bytes = readlink( "/proc/self/exe", executable_name, bufsize );
+            if ( num_bytes == -1 )
+            {
+                UTILS_WARNING( "Could not readlink '/proc/self/exe'" );
+                break;
+            }
+            if ( num_bytes == bufsize )
+            {
+                bufsize *= 2;
+            }
+            else
+            {
+                executable_name[ num_bytes ] = '\0';
+                break;
+            }
+        }
+#endif  /* POSIX_READLINK */
+
+        if ( executable_name == NULL )
+        {
+            UTILS_WARNING( "Could not determine executable name via '/proc/self/exe'." );
+            if ( argc > 0 )
+            {
+                executable_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(), argv[ 0 ] );
+                UTILS_IO_SimplifyPath( executable_name );
+            }
+            else
+            {
+                const char* env_executable = SCOREP_Env_GetExecutable();
+                if ( strlen( env_executable ) != 0 )
+                {
+                    executable_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(), env_executable );
+                    UTILS_IO_SimplifyPath( executable_name );
+                }
+                else
+                {
+                    UTILS_WARNING( "Could not determine executable name, argv[0] not available and SCOREP_EXECUTABLE not set." );
+                    executable_name = UTILS_CStr_dup( "PROGRAM" );
+                }
+            }
+        }
+
+#if HAVE( POSIX_ACCESS )
+        if ( access( executable_name, X_OK ) != -1 )
+        {
+            executable_name_is_file = true;
+        }
+#endif  /* POSIX_ACCESS */
+    }
+}
+
+
+const char*
+SCOREP_GetExecutableName( bool* executableNameIsFile )
+{
+    UTILS_BUG_ON( executable_name == NULL,
+                  "SCOREP_GetExecutableName requires set_executable_name() to be called earlier." );
+    *executableNameIsFile = executable_name_is_file;
+    return executable_name;
+}
+
+
+static void
+begin_epoch( int argc, char* argv[] )
+{
+    SCOREP_TIME_START_TIMING( SCOREP_BeginEpoch );
+
+    SCOREP_BeginEpoch();
+
+    bool                unused;
+    const char*         program_name = SCOREP_GetExecutableName( &unused );
+    SCOREP_StringHandle program      = SCOREP_Definitions_NewString( program_name );
+    if ( argc > 0 )
+    {
+        argc--;
+        argv++;
+    }
+    SCOREP_StringHandle args[ argc ];
+    for ( int i = 0; i < argc; i++ )
+    {
+        args[ i ] = SCOREP_Definitions_NewString( argv[ i ] );
+    }
+    main_thread_location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_CALL_SUBSTRATE( ProgramBegin, PROGRAM_BEGIN,
+                           ( main_thread_location,
+                             SCOREP_GetBeginEpoch(),
+                             program,
+                             argc, args ) );
+    SCOREP_TIME_STOP_TIMING( SCOREP_BeginEpoch );
+}
+
+static void
+end_epoch( SCOREP_ExitStatus exitStatus )
+{
+    SCOREP_TIME_START_TIMING( SCOREP_EndEpoch );
+    SCOREP_EndEpoch();
+
+    /* We might execute this function on a thread different from the program's
+     * main thread (e.g. main thread called pthread_exit). As PROGRAM_BEGIN and
+     * PROGRAM_END conceptually belong together, we trigger the PROGRAM_END
+     * event on the same location where we triggered PROGRAM_BEGIN. Thus proper
+     * 'nesting' of BEGIN and END is given.
+     * Before we trigger the 'last' event on main thread's location, we need to
+     * make sure that all regions are exited. */
+    uint64_t end_epoch_timestamp = SCOREP_GetEndEpoch();
+    SCOREP_Location_Task_ExitAllRegions( main_thread_location,
+                                         SCOREP_Task_GetCurrentTask( main_thread_location ),
+                                         end_epoch_timestamp );
+
+    SCOREP_CALL_SUBSTRATE( ProgramEnd, PROGRAM_END,
+                           ( main_thread_location,
+                             end_epoch_timestamp,
+                             exitStatus ) );
+    SCOREP_TIME_STOP_TIMING( SCOREP_EndEpoch );
+}
 
 /**
  * Return true if SCOREP_InitMeasurement() has been executed.
@@ -157,6 +295,15 @@ SCOREP_IsInitialized( void )
  */
 void
 SCOREP_InitMeasurement( void )
+{
+    SCOREP_InitMeasurementWithArgs( 0, NULL );
+}
+
+/**
+ * Initialize the measurement system from the subsystem layer.
+ */
+void
+SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -197,6 +344,11 @@ SCOREP_InitMeasurement( void )
                      "and valid values is available via "
                      "\'scorep-info config-vars --full\'." );
     }
+
+    /*
+     * @dependsOn Environment variables
+     */
+    set_executable_name( argc, argv );
 
     /* Timer needs environment variables */
     SCOREP_Timer_Initialize();
@@ -314,17 +466,7 @@ SCOREP_InitMeasurement( void )
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );
-    SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
-
-    scorep_default_recoding_mode_changes_allowed = false;
-    if ( !scorep_enable_recording_by_default )
-    {
-        /*
-         * @dependsOn Epoch
-         * @dependsOn Thread_ActiveMaster
-         */
-        SCOREP_DisableRecording();
-    }
+    begin_epoch( argc, argv );
 
     /*
      * Notify all interesting subsystems that the party started.
@@ -338,6 +480,17 @@ SCOREP_InitMeasurement( void )
     scorep_subsystems_activate_cpu_location( SCOREP_Location_GetCurrentCPULocation(),
                                              NULL, 0,
                                              SCOREP_CPU_LOCATION_PHASE_EVENTS );
+
+    scorep_default_recoding_mode_changes_allowed = false;
+    if ( !scorep_enable_recording_by_default )
+    {
+        /*
+         * @dependsOn Epoch
+         * @dependsOn Thread_ActiveMaster
+         */
+        SCOREP_DisableRecording();
+    }
+
     /*
      * And now we allow also events from outside the measurement system.
      */
@@ -633,6 +786,14 @@ scorep_finalize( void )
      */
     SCOREP_TIME( SCOREP_Task_ExitAllRegions, ( location, SCOREP_Task_GetCurrentTask( location ) ) );
 
+    /* Last remaining at-exit user is TAU. Give him the chance to do something. */
+    SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
+
+    if ( !scorep_enable_recording_by_default )
+    {
+        SCOREP_EnableRecording();
+    }
+
     /*
      * Now tear down the master thread.
      * First notify the subsystems that the master location will be teared down.
@@ -640,20 +801,13 @@ scorep_finalize( void )
      */
     scorep_subsystems_deactivate_cpu_location( location, NULL, SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
-    /* Last remaining at-exit user is TAU. Give him the chance to do something. */
-    SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
-
     /*
      * We are now leaving the measurement.
      */
     scorep_subsystems_end();
 
-    if ( !scorep_enable_recording_by_default )
-    {
-        SCOREP_EnableRecording();
-    }
-
-    SCOREP_TIME( SCOREP_EndEpoch, ( ) );
+    /* @todo pass intercepted exit status */
+    end_epoch( SCOREP_INVALID_EXIT_STATUS );
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
 
@@ -712,11 +866,20 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Thread_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Memory_Finalize, ( ) );
 
+    local_cleanup();
+
     SCOREP_TIME_STOP_TIMING( scorep_finalize );
 
     SCOREP_TIME_PRINT_TIMINGS();
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static void
+local_cleanup( void )
+{
+    free( executable_name );
 }
 
 

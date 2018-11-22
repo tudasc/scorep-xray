@@ -41,11 +41,6 @@
 #include <stdlib.h>
 
 /**
-   Contains the name of the executable.
- */
-char* scorep_compiler_executable = NULL;
-
-/**
    Filename of file containing nm -l output for compiler instrumentation.
  */
 char* scorep_compiler_nm_symbols = NULL;
@@ -57,17 +52,6 @@ char* scorep_compiler_nm_symbols = NULL;
                    by some compiler adapters (GNU) to evaluate the symbol table.
  */
 static const SCOREP_ConfigVariable scorep_compiler_confvars[] = {
-    {
-        "executable",
-        SCOREP_CONFIG_TYPE_PATH,
-        &scorep_compiler_executable,
-        NULL,
-        "",
-        "Executable of the application",
-        "File name, preferably with full path, of the application's executable. "
-        "It is used for evaluating the symbol table of the application, which is "
-        "required by some compiler adapters."
-    },
     {
         "nm_symbols",
         SCOREP_CONFIG_TYPE_PATH,
@@ -113,5 +97,5 @@ compiler_subsystem_deregister( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    free( scorep_compiler_executable );
+    free( scorep_compiler_nm_symbols );
 }

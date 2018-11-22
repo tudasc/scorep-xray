@@ -83,6 +83,12 @@ SCOREP_EndEpoch( void )
 }
 
 
+uint64_t
+SCOREP_GetEndEpoch( void )
+{
+    assert( scorep_epoch_end_set );
+    return scorep_epoch_end;
+}
 
 
 void

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2016,
+## Copyright (c) 2009-2016, 2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -50,7 +50,7 @@ AS_UNSET([scorep_timer_default])
 AC_CHECK_TYPE([dummy])
 
 _SCOREP_TIMER_CHECK([gettimeofday], [_SCOREP_TIMER_GETTIMEOFDAY])
-_SCOREP_TIMER_CHECK([clock_gettime], [_SCOREP_TIMER_CLOCK_GETTIME], [-D_POSIX_C_SOURCE=199309L], [], [-lrt])
+_SCOREP_TIMER_CHECK([clock_gettime], [_SCOREP_TIMER_CLOCK_GETTIME], [], [], [-lrt])
 
 AS_CASE([${ac_scorep_platform}],
     [bgl],   [_SCOREP_TIMER_CHECK([bgl], [_SCOREP_TIMER_BGL], [-I/bgl/BlueLight/ppcfloor/bglsys/include])],

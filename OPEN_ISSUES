@@ -216,15 +216,6 @@ various Score-P components.
     Score-P fails at link time due to unresolved symbols in the
     Score-P libraries.
 
-  - Since Score-P version 2.x, measurement initialization is done
-    before entering 'main' using compiler-provided constructor
-    functions, if available. As a consequence, MPI- or SHMEM-only
-    instrumented applications will lack the artificial 'PARALLEL'
-    region that was used to enclose all following regions. To return
-    to the previous behavior, adding user-instrumentation, e.g., in
-    'main', would be sufficient. We will address this issue in a
-    future release of Score-P.
-
   - Score-P expects the MPI communication to be done on the master
     thread only. It is not that it is not possible to measure
     communication from other threads. But it is nearly impossible to

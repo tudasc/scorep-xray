@@ -65,9 +65,6 @@
 #include <inttypes.h>
 
 
-/** @def WORK_DIR_SIZE length for buffer storing the current working directory */
-#define WORK_DIR_SIZE 1024
-
 /** @def FORMAT_TIME_SIZE length for generated experiment directory names based on timestamp */
 #define FORMAT_TIME_SIZE  128
 
@@ -90,10 +87,9 @@ static void dump_manifest_and_subsystem_configs( const char* relativeSourceDir, 
 /* *INDENT-ON* */
 
 
-static char scorep_working_directory[ WORK_DIR_SIZE ];
 static char* scorep_experiment_dir_name;
-static bool  scorep_experiment_dir_needs_rename;
-static bool  scorep_experiment_dir_created;
+static bool scorep_experiment_dir_needs_rename;
+static bool scorep_experiment_dir_created;
 
 static bool scorep_experiment_dir_not_needed;
 
@@ -144,10 +140,29 @@ SCOREP_CreateExperimentDir( void )
         /* dump the measurement configuration, filter and manifest early, so that it is also
            available in case of failure */
         scorep_dump_config();
-        dump_manifest_and_subsystem_configs( scorep_working_directory, scorep_experiment_dir_name );
+        dump_manifest_and_subsystem_configs( SCOREP_GetWorkingDirectory(), scorep_experiment_dir_name );
     }
 
     scorep_experiment_dir_created = true;
+}
+
+
+const char*
+SCOREP_GetWorkingDirectory( void )
+{
+    static char* working_directory;
+    static bool  been_visited = false;
+    if ( !been_visited )
+    {
+        working_directory = UTILS_IO_GetCwd( NULL, 0 );
+        if ( working_directory == NULL )
+        {
+            UTILS_ERROR_POSIX( "Error while getting absolute path name of the current working directory." );
+            _Exit( EXIT_FAILURE );
+        }
+        been_visited = true;
+    }
+    return working_directory;
 }
 
 
@@ -162,14 +177,6 @@ scorep_create_experiment_dir_name( void )
     const char* env_get_experiment_dir_name;
     env_get_experiment_dir_name = SCOREP_Env_GetExperimentDirectory();
 
-    scorep_working_directory[ 0 ] = '\0';
-
-    if ( UTILS_IO_GetCwd( scorep_working_directory, sizeof( scorep_working_directory ) - 1 ) == NULL )
-    {
-        UTILS_ERROR_POSIX( "Error while getting absolute path name of the current working directory." );
-        _Exit( EXIT_FAILURE );
-    }
-
     if ( strlen( env_get_experiment_dir_name ) == 0 )
     {
         /*
@@ -178,7 +185,7 @@ scorep_create_experiment_dir_name( void )
          * at the end.
          */
 
-        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory,
+        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(),
                                                         SCOREP_TMP_DIR_NAME );
         scorep_experiment_dir_needs_rename = true;
     }
@@ -191,11 +198,11 @@ scorep_create_experiment_dir_name( void )
 
         /*
          * If env_get_experiment_dir_name contains an absolute path,
-         * scorep_working_directory will be skipped by UTILS_IO_JoinPath,
-         * otherwise scorep_experiment_dir_name is set to scorep_working_directory +
+         * SCOREP_GetWorkingDirectory() will be skipped by UTILS_IO_JoinPath,
+         * otherwise scorep_experiment_dir_name is set to SCOREP_GetWorkingDirectory() +
          * path separator + env_get_experiment_dir_name
          */
-        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory,
+        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(),
                                                         env_get_experiment_dir_name );
         scorep_experiment_dir_needs_rename = false;
     }
@@ -272,7 +279,7 @@ scorep_create_directory( void )
             UTILS_ASSERT( tmp );
             strncat( tmp, SCOREP_FAILED_DIR_NAME_PREFIX, strlen( SCOREP_FAILED_DIR_NAME_PREFIX ) );
             strncat( tmp, scorep_format_time( NULL ), FORMAT_TIME_SIZE );
-            char* failed_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory, tmp );
+            char* failed_experiment_dir_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(), tmp );
 
             if ( rename( scorep_experiment_dir_name, failed_experiment_dir_name ) != 0 )
             {
@@ -362,7 +369,7 @@ SCOREP_RenameExperimentDir( void )
     UTILS_ASSERT( tmp );
     strncat( tmp, SCOREP_DIR_NAME_PREFIX, strlen( SCOREP_DIR_NAME_PREFIX ) );
     strncat( tmp, scorep_format_time( NULL ), FORMAT_TIME_SIZE );
-    char* new_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory, tmp );
+    char* new_experiment_dir_name = UTILS_IO_JoinPath( 2, SCOREP_GetWorkingDirectory(), tmp );
 
     if ( rename( scorep_experiment_dir_name, new_experiment_dir_name ) != 0 )
     {

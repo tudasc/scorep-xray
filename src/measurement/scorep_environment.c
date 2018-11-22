@@ -71,6 +71,7 @@ static uint64_t env_page_size;
 static char*    env_experiment_directory;
 static bool     env_overwrite_experiment_directory;
 static char*    env_machine_name;
+static char*    env_executable;
 static bool     env_system_tree_sequence;
 static bool     force_cfg_files;
 
@@ -204,6 +205,18 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "file for customization options)."
     },
     {
+        "executable",
+        SCOREP_CONFIG_TYPE_PATH,
+        &env_executable,
+        NULL,
+        "",
+        "Executable of the application",
+        "File name, preferably with full path, of the application's executable. "
+        "This is a fallback if Score-P cannot determine the exetuable's name "
+        "automatically. The name is required by some compiler adapters. They will "
+        "complain if this environment variable is needed."
+    },
+    {
         "enable_system_tree_sequence_definitions",
         SCOREP_CONFIG_TYPE_BOOL,
         &env_system_tree_sequence,
@@ -323,6 +336,13 @@ SCOREP_Env_GetMachineName( void )
 {
     assert( env_variables_initialized );
     return env_machine_name;
+}
+
+const char*
+SCOREP_Env_GetExecutable( void )
+{
+    assert( env_variables_initialized );
+    return env_executable;
 }
 
 bool

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -104,6 +104,14 @@ SCOREP_IsInitialized( void );
 void
 SCOREP_InitMeasurement( void );
 
+
+/**
+ * Same as @s SCOREP_InitMeasurement but also provides the command arguments
+ * to the measurement.
+ */
+void
+SCOREP_InitMeasurementWithArgs( int   argc,
+                                char* argv[] );
 
 
 /**
@@ -202,6 +210,13 @@ uint64_t
 SCOREP_GetBeginEpoch( void );
 
 /**
+ * Get the final timestamp of this process which denotes the end of the
+ * epoch.
+ */
+uint64_t
+SCOREP_GetEndEpoch( void );
+
+/**
  * Set an indication that the application aborted.
  */
 void
@@ -215,6 +230,12 @@ SCOREP_SetAbortFlag( void );
 extern bool scorep_is_unwinding_enabled;
 #define SCOREP_IsUnwindingEnabled() scorep_is_unwinding_enabled
 
+/**
+ * Returns the full path to the executable, if available, otherwise 'PROGRAM'.
+ * If the executable name is an executable file @a executableNameIsFile equals true.
+ */
+const char*
+SCOREP_GetExecutableName( bool* executableNameIsFile );
 
 /*@}*/
 

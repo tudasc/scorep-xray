@@ -35,19 +35,21 @@
 
 void
 __attribute__( ( constructor ) )
-scorep_constructor( void );
+scorep_constructor( int   argc,
+                    char* argv[] );
 
 #elif SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_PRAGMA
 
 void
-scorep_constructor( void );
+scorep_constructor( int   argc,
+                    char* argv[] );
 
 #pragma init(scorep_constructor)
 
 #endif
 
 void
-scorep_constructor( void )
+scorep_constructor( int argc, char* argv[] )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -55,11 +57,17 @@ scorep_constructor( void )
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        SCOREP_InitMeasurement();
+        SCOREP_InitMeasurementWithArgs( argc, argv );
 
         if ( SCOREP_Env_RunVerbose() )
         {
             fprintf( stderr, "[Score-P] initialized via constructor\n" );
+            fprintf( stderr, "[Score-P] program: %s", argv[ 0 ] );
+            for ( int i = 1; i < argc; i++ )
+            {
+                fprintf( stderr, " %s", argv[ i ] );
+            }
+            fprintf( stderr, "\n" );
         }
     }
 

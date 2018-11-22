@@ -49,6 +49,17 @@ Bugfixes:
 - So far, programs that pthread_exit() the main thread crashed based
   on the requirement that the program's main thread is responsible for
   the measurement finalization. This requirement was removed.
+- Since Score-P version 2.x, measurement initialization is done before
+  entering 'main' using compiler-provided constructor functions, if
+  available. As a consequence, MPI- or SHMEM-only instrumented
+  programs lacked the artificial 'PARALLEL' region that was used to
+  enclose all following regions. Instead of the 'PARALLEL' region
+  Score-P now generates program-begin and program-end events that
+  enclose the entire application. If program arguments are given,
+  these are recorded as well. In tracing mode program-begin/end are
+  mapped to ProgramBegin/End event records; in profiling mode this
+  feature is modeled as enter/exit of an additional region with the
+  name of the executable, if available.
 
 ------------------- Released version 4.1 -----------------------------
 

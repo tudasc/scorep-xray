@@ -45,6 +45,20 @@
 /*@{*/
 
 /**
+ * Type used in specify the exit status of the program.
+ * @see ProgramEnd event
+ */
+typedef int64_t SCOREP_ExitStatus;
+
+
+/**
+ * Symbolic constant representing an invalid or unknown exit status.
+ * Do not use INT64_C here, as this maybe accessed by C++
+ */
+#define SCOREP_INVALID_EXIT_STATUS ( ( int64_t )( ~( ( ~( ( uint64_t )0u ) ) >> 1 ) ) )
+
+
+/**
  * Type used in specifying line numbers.
  * @see SCOREP_Definitions_NewRegion()
  */

@@ -70,6 +70,8 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_DISABLE_RECORDING,               /**< disable recording of events, see SCOREP_Substrates_DisableRecordingCb() */
     SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_BEGIN,   /**< start flushing trace buffer to disk, see SCOREP_Substrates_OnTracingBufferFlushBeginCb() */
     SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_END,     /**< end flushing trace buffer to disk, see SCOREP_Substrates_OnTracingBufferFlushEndCb() */
+    SCOREP_EVENT_PROGRAM_BEGIN,                   /**< begin of program and measurement, see SCOREP_Substrates_ProgramBeginCb() */
+    SCOREP_EVENT_PROGRAM_END,                     /**< end of program and measurement, see SCOREP_Substrates_ProgramEndCb() */
     SCOREP_EVENT_ENTER_REGION,                    /**< enter an instrumented region, see SCOREP_Substrates_EnterRegionCb() */
     SCOREP_EVENT_EXIT_REGION,                     /**< exit an instrumented region, see SCOREP_Substrates_ExitRegionCb() */
     SCOREP_EVENT_SAMPLE,                          /**< record a calling context from sampling, see SCOREP_Substrates_SampleCb() */
@@ -197,6 +199,18 @@ typedef void ( * SCOREP_Substrates_OnTracingBufferFlushEndCb )(
     uint64_t                timestamp,
     SCOREP_RegionHandle     regionHandle,
     uint64_t*               metricValues );
+
+typedef void ( * SCOREP_Substrates_ProgramBeginCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_StringHandle     programName,
+    uint32_t                numberOfProgramArgs,
+    SCOREP_StringHandle*    programArguments );
+
+typedef void ( * SCOREP_Substrates_ProgramEndCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_ExitStatus       exitStatus );
 
 /**
  * called when entering a region via some instrumentation adapter.

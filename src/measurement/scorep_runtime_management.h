@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -89,5 +89,12 @@ SCOREP_OnTracingBufferFlushBegin( bool final );
 void
 SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp );
 
+
+/**
+ * Returns the directory the application was started in. May abort if
+ * directory cannot be obtained.
+ */
+const char*
+SCOREP_GetWorkingDirectory( void );
 
 #endif /* SCOREP_INTERNAL_RUNTIME_MANAGEMENT_H */
