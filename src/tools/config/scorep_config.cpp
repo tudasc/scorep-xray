@@ -308,15 +308,20 @@ main( int    argc,
         {
             action = ACTION_MGMT_LIBS;
         }
-#if defined( SCOREP_SHARED_BUILD )
         else if ( strcmp( argv[ i ], "--preload-libs" ) == 0 )
         {
+#if defined( SCOREP_SHARED_BUILD )
             allow_dynamic = true;
             allow_static  = false;
             preload_libs  = true;
             action        = ACTION_EVENT_LIBS;
-        }
+#else
+            std::cerr << "ERROR: Unsupported option: '" << argv[ i ] << "'.\n"
+                      << "       This installation contains no shared Score-P libraries." << std::endl;
+            clean_up();
+            exit( EXIT_FAILURE );
 #endif
+        }
         else if ( strcmp( argv[ i ], "--cflags" ) == 0 )
         {
             action   = ACTION_CFLAGS;
@@ -641,7 +646,7 @@ main( int    argc,
             libs.push_back( "libscorep_measurement" );
 
 #if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
-            deps.addDependency( "libscorep_measurement", "libscorep_constructor" );
+            libs.push_back( "libscorep_constructor" );
 #endif
         }
 #endif

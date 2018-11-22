@@ -47,6 +47,9 @@ Features and improvements:
   they were declared as inline, can now be instrumented by providing
   an instrumention filter to 'scorep' where the function is matched by
   an explicit 'INCLUDE' rule, which is not the match-all '*' one.
+- The experimental `scorep-preload-init` script will, if available, use
+  a constructor function for the initialization of the measurement
+  before entering the 'main' function.
 
 Bugfixes:
 
