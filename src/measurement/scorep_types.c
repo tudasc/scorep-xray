@@ -188,8 +188,6 @@ scorep_config_type_to_string( SCOREP_ConfigType configType )
             return "number";
         case SCOREP_CONFIG_TYPE_SIZE:
             return "size";
-        case SCOREP_CONFIG_TYPE_SET:
-            return "set";
         case SCOREP_CONFIG_TYPE_BITSET:
             return "bitset";
         case SCOREP_CONFIG_TYPE_OPTIONSET:

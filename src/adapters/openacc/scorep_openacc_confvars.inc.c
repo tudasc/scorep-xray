@@ -69,7 +69,11 @@ static const SCOREP_ConfigType_SetEntry openacc_enable_groups[] =
     {
         "default/yes/1",
         SCOREP_OPENACC_FEATURES_DEFAULT,
-        "OpenACC regions, enqueue and wait operations"
+        "OpenACC regions, enqueue and wait operations.\n"
+        "Includes:\n"
+        "\240-\240regions\n"
+        "\240-\240wait\n"
+        "\240-\240enqueue"
     },
     { NULL, 0, NULL }
 };

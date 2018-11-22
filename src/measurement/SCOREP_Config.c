@@ -624,7 +624,6 @@ config_type_as_string( SCOREP_ConfigType type )
             return "Number";
         case SCOREP_CONFIG_TYPE_SIZE:
             return "Number with size suffixes";
-        case SCOREP_CONFIG_TYPE_SET:
         case SCOREP_CONFIG_TYPE_BITSET:
             return "Set";
         case SCOREP_CONFIG_TYPE_OPTIONSET:
@@ -1084,11 +1083,6 @@ parse_string( const char* value,
               char**      stringReference );
 
 static bool
-parse_set( const char* value,
-           char***     stringListReference,
-           char**      acceptedValues );
-
-static bool
 parse_bitset( const char*                 value,
               uint64_t*                   bitsetReference,
               SCOREP_ConfigType_SetEntry* acceptedValues );
@@ -1118,10 +1112,6 @@ parse_value( const char*       value,
 
         case SCOREP_CONFIG_TYPE_SIZE:
             return parse_size( value, variableReference );
-
-        case SCOREP_CONFIG_TYPE_SET:
-            UTILS_BUG_ON( !variableContext, "Missing config variable context." );
-            return parse_set( value, variableReference, variableContext );
 
         case SCOREP_CONFIG_TYPE_BITSET:
             UTILS_BUG_ON( !variableContext, "Missing config variable context." );
@@ -1566,6 +1556,14 @@ parse_bitset( const char*                 value,
         /* all but the first call to strtok should be NULL */
         value_for_strtok = NULL;
 
+        /* '~' denotes remove from bitset */
+        bool invert = false;
+        if ( *entry == '~' )
+        {
+            invert = true;
+            entry++;
+        }
+
         /* check if entry is in acceptedValues */
         SCOREP_ConfigType_SetEntry* acceptedValue;
         for ( acceptedValue = acceptedValues;
@@ -1576,7 +1574,14 @@ parse_bitset( const char*                 value,
             {
                 /* found entry in accepted values list
                    add its value to the set */
-                *bitsetReference |= acceptedValue->value;
+                if ( invert )
+                {
+                    *bitsetReference &= ~acceptedValue->value;
+                }
+                else
+                {
+                    *bitsetReference |= acceptedValue->value;
+                }
                 break;
             }
         }
@@ -1704,30 +1709,6 @@ single_quote_string( const char* str )
 }
 
 static void
-dump_set( FILE*       out,
-          const char* name,
-          char**      stringList )
-{
-    const char* sep = "";
-
-    fprintf( out, "%s=", name );
-    while ( *stringList )
-    {
-        char* quoted_string = single_quote_string( *stringList );
-        if ( !quoted_string )
-        {
-            break;
-        }
-        fprintf( out, "%s%s", sep, quoted_string );
-        sep = ",";
-        free( quoted_string );
-
-        stringList++;
-    }
-    fprintf( out, "\n" );
-}
-
-static void
 dump_bitset( FILE*                       out,
              const char*                 name,
              uint64_t                    bitmask,
@@ -1850,10 +1831,6 @@ dump_value( FILE*             out,
                      "%s=%s\n",
                      name,
                      *( bool* )variableReference ? "true" : "false" );
-            break;
-
-        case SCOREP_CONFIG_TYPE_SET:
-            dump_set( out, name, *( char*** )variableReference );
             break;
 
         case SCOREP_CONFIG_TYPE_BITSET:

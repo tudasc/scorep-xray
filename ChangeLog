@@ -41,6 +41,8 @@ Features and improvements:
 - As Open MPI provides since version 3.0 a C++ compiler wrapper for
   SHMEM, Score-P will also provide a instrumentation wrapper
   `scorep-oshcxx` in this case.
+- Values in config variables of type Set can now be negated by
+  preceeding it with '~', e.g., 'SCOREP_MPI_ENABLE_GROUPS=default,~cg'.
 
 Bugfixes:
 

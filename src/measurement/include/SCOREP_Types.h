@@ -406,25 +406,6 @@ typedef enum SCOREP_ConfigType
     SCOREP_CONFIG_TYPE_SIZE,
 
     /**
-     * A symbolic set.
-     *
-     * SCOREP_ConfigVariable::variableReference should point to a variable of
-     * type char**.
-     *
-     * SCOREP_ConfigVariable::variableContext should point to a NULL terminated
-     * string list with valid set members
-     *
-     * The strings can be separated by any of the following characters:
-     *   @li " " - space
-     *   @li "," - comma
-     *   @li ":" - colon
-     *   @li ";" - semicolon
-     * The resulting string list will be converted to lower case.
-     * Only strings in the valid set members are allowed.
-     */
-    SCOREP_CONFIG_TYPE_SET,
-
-    /**
      * A symbolic set, represented as a bitmask.
      *
      * @note At most 64 set members are supported.

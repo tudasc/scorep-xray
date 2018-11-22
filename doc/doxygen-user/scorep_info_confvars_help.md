@@ -68,7 +68,8 @@ following characters:
  - ';' - semicolon
 
 Acceptable values can also have aliases, which are listed in the
-documentation and separated by '/'.
+documentation and separated by '/'. Values can be negated by preceeding it
+with '~'. Order of evaluation is from left to right.
 
 Option
 ------

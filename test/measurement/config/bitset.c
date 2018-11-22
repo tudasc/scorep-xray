@@ -56,6 +56,7 @@ static uint64_t bitset_variable;
 
 
 static const SCOREP_ConfigType_SetEntry bitset_entries[] = {
+    { "all",         15,         ""            },
     { "alpha",       1,          ""            },
     { "beta",        2,          ""            },
     { "gamma/DELTA", 4,          ""            },
@@ -149,6 +150,17 @@ main()
         { "nu",                  true,                    8                     },
         { "xi",                  true,                    8                     },
         { "alpha,beta,gamma,mu", true,                    15                    },
+        { "all",                 true,                    15                    },
+        { "~all",                true,                    0                     },
+        { "all,~alpha",          true,                    14                    },
+        { "~alpha,all",          true,                    15                    },
+        { "all,alpha,~alpha",    true,                    14                    },
+        { "all,~alpha,alpha",    true,                    15                    },
+        { "alpha,~alpha",        true,                    0                     },
+        { "beta,~alpha",         true,                    2                     },
+        { "~foo",                false,                   0                     },
+        { "alpha~",              false,                   0                     },
+        { "!alpha",              false,                   0                     },
         { NULL,                  true,                    0                     }
     };
 

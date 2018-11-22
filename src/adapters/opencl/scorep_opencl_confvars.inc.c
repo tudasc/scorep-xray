@@ -45,7 +45,11 @@ static const SCOREP_ConfigType_SetEntry opencl_enable_groups[] = {
     {
         "default/yes/true/1",
         SCOREP_OPENCL_FEATURES_DEFAULT,
-        "OpenCL API and GPU activities"
+        "OpenCL API and GPU activities.\n"
+        "Includes:\n"
+        "\240-\240api\n"
+        "\240-\240kernel\n"
+        "\240-\240  memcpy"
     },
     { NULL, 0, NULL }
 };

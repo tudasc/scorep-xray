@@ -64,7 +64,16 @@ static const SCOREP_ConfigType_SetEntry mpi_enable_groups[] = {
     {
         "default",
         SCOREP_MPI_ENABLED_DEFAULT,
-        "Default configuration"
+        "Default configuration.\n"
+        "Includes:\n"
+        "\240-\240cg\n"
+        "\240-\240coll\n"
+        "\240-\240env\n"
+        "\240-\240io\n"
+        "\240-\240p2p\n"
+        "\240-\240rma\n"
+        "\240-\240topo\n"
+        "\240-\240xnonblock"
     },
     {
         "env",
