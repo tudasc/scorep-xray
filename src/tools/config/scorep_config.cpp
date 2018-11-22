@@ -646,6 +646,7 @@ main( int    argc,
             libs.push_back( "libscorep_measurement" );
 
 #if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
+            /* --preload-libs only outputs the `libs` list, not any of the dependencies */
             libs.push_back( "libscorep_constructor" );
 #endif
         }

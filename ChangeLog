@@ -57,7 +57,9 @@ Bugfixes:
   failed with undefined references. Fixed.
 - So far, programs that pthread_exit() the main thread crashed based
   on the requirement that the program's main thread is responsible for
-  the measurement finalization. This requirement was removed.
+  the measurement finalization. This requirement was removed and was
+  accompanied by multiple improvements of threads lasting longer than
+  main.
 - Since Score-P version 2.x, measurement initialization is done before
   entering 'main' using compiler-provided constructor functions, if
   available. As a consequence, MPI- or SHMEM-only instrumented

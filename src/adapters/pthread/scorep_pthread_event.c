@@ -102,9 +102,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
     }
     else
     {
-        /* Don't use scorep's memory here as wrapped_arg might be used
-         * after scorep_finalize(). */
-        wrapped_arg = calloc( 1, sizeof( *wrapped_arg ) );
+        wrapped_arg = SCOREP_Location_AllocForMisc( location,
+                                                    sizeof( *wrapped_arg ) );
     }
     memset( wrapped_arg, 0, sizeof( *wrapped_arg ) );
     wrapped_arg->cancelled = true;
@@ -166,8 +165,20 @@ scorep_pthread_wrapped_start_routine( void* wrappedArg )
      * might get cancelled, i.e. we might not return from here and have to
      * rely on the cleanup_handler(). */
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    wrapped_arg->orig_ret_val = wrapped_arg->orig_start_routine( wrapped_arg->orig_arg );
+    void* orig_ret_val = wrapped_arg->orig_start_routine( wrapped_arg->orig_arg );
     SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    /* Take care of threads that are still executing after scorep_finalize()
+     * changed measurement phase. */
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        UTILS_DEBUG_EXIT();
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return orig_ret_val;
+    }
+
+    /* wrapped_arg is from Score-P memory, thus only accessible within the measurement */
+    wrapped_arg->orig_ret_val = orig_ret_val;
 
     /* The cleanup_handler will be called, but we must notify him, that we were
      * not cancelled in time (i.e. before normal thread execution finished) and
@@ -180,13 +191,6 @@ scorep_pthread_wrapped_start_routine( void* wrappedArg )
 
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
-
-    /* Take care of threads that are still executing after scorep_finalize()
-     * changed measurement phase. */
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        return wrapped_arg->orig_ret_val;
-    }
 
     return wrapped_arg;
 }
@@ -286,6 +290,17 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_join )( pthread_t thread,
     int status = SCOREP_LIBWRAP_FUNC_CALL( pthread_join, ( thread, &result ) );
     SCOREP_EXIT_WRAPPED_REGION();
     UTILS_BUG_ON( status != 0, "pthread_join failed." );
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        if ( valuePtr )
+        {
+            *valuePtr = result;
+        }
+        UTILS_DEBUG_EXIT();
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return status;
+    }
 
     if ( result == PTHREAD_CANCELED )
     {
