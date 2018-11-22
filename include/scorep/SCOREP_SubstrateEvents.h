@@ -63,6 +63,7 @@ typedef enum SCOREP_Substrates_Mode
 /**
  * \enum SCOREP_Substrates_EventType
  * \brief Substrate events. Lists every event that is going to be used by the substrate mechanism. More details can be found in the respective functions.
+ * To maintain API stability, new events need to be added at the end of the enum.
  */
 typedef enum SCOREP_Substrates_EventType
 {
@@ -70,8 +71,6 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_DISABLE_RECORDING,               /**< disable recording of events, see SCOREP_Substrates_DisableRecordingCb() */
     SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_BEGIN,   /**< start flushing trace buffer to disk, see SCOREP_Substrates_OnTracingBufferFlushBeginCb() */
     SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_END,     /**< end flushing trace buffer to disk, see SCOREP_Substrates_OnTracingBufferFlushEndCb() */
-    SCOREP_EVENT_PROGRAM_BEGIN,                   /**< begin of program and measurement, see SCOREP_Substrates_ProgramBeginCb() */
-    SCOREP_EVENT_PROGRAM_END,                     /**< end of program and measurement, see SCOREP_Substrates_ProgramEndCb() */
     SCOREP_EVENT_ENTER_REGION,                    /**< enter an instrumented region, see SCOREP_Substrates_EnterRegionCb() */
     SCOREP_EVENT_EXIT_REGION,                     /**< exit an instrumented region, see SCOREP_Substrates_ExitRegionCb() */
     SCOREP_EVENT_SAMPLE,                          /**< record a calling context from sampling, see SCOREP_Substrates_SampleCb() */
@@ -131,6 +130,8 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_TRACK_REALLOC,                   /**< track realloc memory (de-)allocation, see SCOREP_Substrates_TrackReallocCb() */
     SCOREP_EVENT_TRACK_FREE,                      /**< track realloc memory deallocation, see SCOREP_Substrates_TrackFreeCb() */
     SCOREP_EVENT_WRITE_POST_MORTEM_METRICS,       /**< write post mortem metrics before unify, see SCOREP_Substrates_WriteMetricsCb() */
+    SCOREP_EVENT_PROGRAM_BEGIN,                   /**< begin of program and measurement, see SCOREP_Substrates_ProgramBeginCb() */
+    SCOREP_EVENT_PROGRAM_END,                     /**< end of program and measurement, see SCOREP_Substrates_ProgramEndCb() */
 
     SCOREP_SUBSTRATES_NUM_EVENTS                  /**< Non-ABI, marks the end of the currently supported events and can change with different versions of Score-P (increases with increasing Score-P version) */
 } SCOREP_Substrates_EventType;
