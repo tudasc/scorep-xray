@@ -401,7 +401,7 @@ scorep_subsystems_dump_manifest( FILE*       manifestFile,
 
         if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "[Score-P] dumped measurement nformation and configs of %s subsystem\n",
+            fprintf( stderr, "[Score-P] dumped measurement information and configs of %s subsystem\n",
                      scorep_subsystems[ i ]->subsystem_name );
         }
     }
