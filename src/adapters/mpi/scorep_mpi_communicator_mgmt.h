@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2018,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -182,11 +182,22 @@ scorep_mpi_comm_init( void );
  * @internal
  * @brief Start tracking of a given MPI communicator.
  * makes the definition of the given communicator to the measurement system.
- * @param comm MPI communicator handle.
+ * @param comm       MPI communicator handle.
+ * @param parentComm Possible MPI communicator parent.
  */
 extern void
 scorep_mpi_comm_create( MPI_Comm comm,
-                        MPI_Comm parent_comm );
+                        MPI_Comm parentComm );
+
+/**
+ * @internal
+ * @brief Finalize the creation of an MPI communicator to track.
+ * @param comm             MPI communicator handle.
+ * @param parentCommHandle Possible MPI communicator parent as Score-P handle.
+ */
+extern void
+scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
+                                 SCOREP_InterimCommunicatorHandle parentCommHandle );
 
 /**
  * @internal

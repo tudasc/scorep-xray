@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2018,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -255,7 +258,8 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
 }
 
 void
-scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
+scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
+                                 SCOREP_InterimCommunicatorHandle parentCommHandle )
 {
     SCOREP_CommunicatorId            id;         /* identifier unique to root */
     SCOREP_MpiRank                   root;       /* global rank of rank 0 */
@@ -263,6 +267,49 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     int                              size;       /* size of communicator */
     SCOREP_InterimCommunicatorHandle handle;     /* Score-P handle for the communicator */
 
+    /* Lock communicator definition */
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+
+    /* is storage available */
+    if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
+    {
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
+                     "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
+                     "configuration variable" );
+        return;
+    }
+
+    /* fill in local data */
+    PMPI_Comm_rank( comm, &local_rank );
+    PMPI_Comm_size( comm, &size );
+
+    /* determine id and root for communicator definition */
+    scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
+
+    /* create definition in measurement system */
+    scorep_mpi_comm_definition_payload* comm_payload;
+    handle = SCOREP_Definitions_NewInterimCommunicator( parentCommHandle,
+                                                        SCOREP_PARADIGM_MPI,
+                                                        sizeof( *comm_payload ),
+                                                        ( void** )&comm_payload );
+    comm_payload->comm_size        = size;
+    comm_payload->local_rank       = local_rank;
+    comm_payload->global_root_rank = root;
+    comm_payload->root_id          = id;
+
+    /* enter comm in scorep_mpi_comms[] array */
+    scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
+    scorep_mpi_comms[ scorep_mpi_last_comm ].cid  = handle;
+    scorep_mpi_last_comm++;
+
+    /* clean up */
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+}
+
+void
+scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
+{
     /* Check if communicator handling has been initialized.
      * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
      * that use MPI_ calls instead of PMPI_ calls to create some
@@ -287,52 +334,15 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     SCOREP_InterimCommunicatorHandle parent_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
     int                              inter;
     PMPI_Comm_test_inter( comm, &inter );
-    if ( !inter && parent_comm != MPI_COMM_NULL )
+    if ( !inter && parentComm != MPI_COMM_NULL )
     {
         /* SCOREP_MPI_COMM_HANDLE() also takes the scorep_mpi_communicator_mutex
-         * mutex, thus resolve parent_comm outside of the comm mutex
+         * mutex, thus resolve parentComm outside of the comm mutex
          */
-        parent_handle = SCOREP_MPI_COMM_HANDLE( parent_comm );
+        parent_handle = SCOREP_MPI_COMM_HANDLE( parentComm );
     }
 
-    /* Lock communicator definition */
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
-
-    /* is storage available */
-    if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
-    {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
-        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
-                     "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
-                     "configuration variable" );
-        return;
-    }
-
-    /* fill in local data */
-    PMPI_Comm_rank( comm, &local_rank );
-    PMPI_Comm_size( comm, &size );
-
-    /* determine id and root for communicator definition */
-    scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
-
-    /* create definition in measurement system */
-    scorep_mpi_comm_definition_payload* comm_payload;
-    handle = SCOREP_Definitions_NewInterimCommunicator( parent_handle,
-                                                        SCOREP_PARADIGM_MPI,
-                                                        sizeof( *comm_payload ),
-                                                        ( void** )&comm_payload );
-    comm_payload->comm_size        = size;
-    comm_payload->local_rank       = local_rank;
-    comm_payload->global_root_rank = root;
-    comm_payload->root_id          = id;
-
-    /* enter comm in scorep_mpi_comms[] array */
-    scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
-    scorep_mpi_comms[ scorep_mpi_last_comm ].cid  = handle;
-    scorep_mpi_last_comm++;
-
-    /* clean up */
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    scorep_mpi_comm_create_finalize( comm, parent_handle );
 }
 
 /* no static, because this is called from the mpi unification test */

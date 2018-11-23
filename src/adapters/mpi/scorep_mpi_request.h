@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -50,7 +50,8 @@ typedef enum scorep_mpi_request_type
     SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
     SCOREP_MPI_REQUEST_TYPE_RMA,
     SCOREP_MPI_REQUEST_TYPE_COLL_COMM,
-    SCOREP_MPI_REQUEST_TYPE_COLL_SYNC
+    SCOREP_MPI_REQUEST_TYPE_COLL_SYNC,
+    SCOREP_MPI_REQUEST_TYPE_COMM_IDUP
 } scorep_mpi_request_type;
 
 enum scorep_mpi_requests_flags
@@ -78,12 +79,19 @@ typedef struct
 
 typedef struct
 {
+    MPI_Comm*                        new_comm;
+    SCOREP_InterimCommunicatorHandle parent_comm_handle;
+} scorep_mpi_request_comm_idup_data;
+
+typedef struct
+{
     MPI_Request             request;
     scorep_mpi_request_type request_type;
     scorep_mpi_request_flag flags;
     union
     {
-        scorep_mpi_request_p2p_data p2p;
+        scorep_mpi_request_p2p_data       p2p;
+        scorep_mpi_request_comm_idup_data comm_idup;
     } payload;
     SCOREP_MpiRequestId id;
 } scorep_mpi_request;
@@ -117,6 +125,11 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
                                MPI_Datatype            datatype,
                                MPI_Comm                comm,
                                SCOREP_MpiRequestId     id );
+
+void
+scorep_mpi_request_comm_idup_create( MPI_Request request,
+                                     MPI_Comm    parentComm,
+                                     MPI_Comm*   newcomm );
 
 /**
  * @brief  Retrieve internal request entry for an MPI request handle

@@ -172,8 +172,6 @@ various Score-P components.
     and Exit event records, i.e., Score-P can measure the time spend
     in these routines, but no further analysis is possible.
 
-  - MPI_Comm_idup() is not supported and will abort the measurement.
-
   - C++ bindings for MPI are not supported. These were deprecated as
     of MPI-2.2 and removed with MPI-3.0. When using C++ bindings for
     MPI, Score-P will most likely indicate the failed library wrapping

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -171,6 +171,26 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
     req->payload.p2p.online_analysis_pod = NULL;
 }
 
+void
+scorep_mpi_request_comm_idup_create( MPI_Request request,
+                                     MPI_Comm    parentComm,
+                                     MPI_Comm*   newComm )
+{
+    scorep_mpi_request* req = scorep_mpi_request_create_entry(
+        request,
+        UINT64_MAX, /* no events will be triggered, thus no ID needed */
+        SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
+        SCOREP_MPI_REQUEST_FLAG_NONE );
+
+    /* store request information */
+    req->payload.comm_idup.new_comm           = newComm;
+    req->payload.comm_idup.parent_comm_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    if ( parentComm != MPI_COMM_NULL )
+    {
+        req->payload.comm_idup.parent_comm_handle = SCOREP_MPI_COMM_HANDLE( parentComm );
+    }
+}
+
 scorep_mpi_request*
 scorep_mpi_request_get( MPI_Request request )
 {
@@ -277,45 +297,59 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
         return;
     }
 
-    if ( event_gen_active )
+    int cancelled = 0;
+    if ( req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL )
     {
-        int cancelled = 0;
-
-        if ( req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL )
+        PMPI_Test_cancelled( status, &cancelled );
+    }
+    if ( cancelled )
+    {
+        if ( xnb_active && req->id != UINT64_MAX )
         {
-            PMPI_Test_cancelled( status, &cancelled );
+            SCOREP_MpiRequestCancelled( req->id );
         }
-
-        if ( cancelled )
+    }
+    else
+    {
+        switch ( req->request_type )
         {
-            if ( xnb_active )
-            {
-                SCOREP_MpiRequestCancelled( req->id );
-            }
-        }
-        else if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && ( status->MPI_SOURCE != MPI_PROC_NULL ) )
-        {
-            /* if receive request, write receive trace record */
+            case SCOREP_MPI_REQUEST_TYPE_RECV:
+                if ( event_gen_active && status->MPI_SOURCE != MPI_PROC_NULL )
+                {
+                    /* if receive request, write receive trace record */
 
-            int count, sz;
+                    int count, sz;
 
-            PMPI_Type_size( req->payload.p2p.datatype, &sz );
-            PMPI_Get_count( status, req->payload.p2p.datatype, &count );
+                    PMPI_Type_size( req->payload.p2p.datatype, &sz );
+                    PMPI_Get_count( status, req->payload.p2p.datatype, &count );
 
-            if ( xnb_active )
-            {
-                SCOREP_MpiIrecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
-                                 status->MPI_TAG, ( uint64_t )count * sz, req->id );
-            }
-            else
-            {
-                SCOREP_MpiRecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
-                                status->MPI_TAG, ( uint64_t )count * sz );
-            }
-        }
-        else if ( ( req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND ) && xnb_active )
-        {
-            SCOREP_MpiIsendComplete( req->id );
+                    if ( xnb_active )
+                    {
+                        SCOREP_MpiIrecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
+                                         status->MPI_TAG, ( uint64_t )count * sz, req->id );
+                    }
+                    else
+                    {
+                        SCOREP_MpiRecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
+                                        status->MPI_TAG, ( uint64_t )count * sz );
+                    }
+                }
+                break;
+
+            case SCOREP_MPI_REQUEST_TYPE_SEND:
+                if ( event_gen_active && xnb_active )
+                {
+                    SCOREP_MpiIsendComplete( req->id );
+                }
+                break;
+
+            case SCOREP_MPI_REQUEST_TYPE_COMM_IDUP:
+                scorep_mpi_comm_create_finalize( *req->payload.comm_idup.new_comm,
+                                                 req->payload.comm_idup.parent_comm_handle );
+                break;
+
+            default:
+                break;
         }
     }
 

@@ -50,6 +50,8 @@ Features and improvements:
 - The experimental `scorep-preload-init` script will, if available, use
   a constructor function for the initialization of the measurement
   before entering the 'main' function.
+- 'MPI_Comm_idup' is now supported and does not abort the measurement
+  anymore.
 
 Bugfixes:
 
