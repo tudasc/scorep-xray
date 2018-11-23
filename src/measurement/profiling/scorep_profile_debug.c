@@ -201,7 +201,6 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
                  SCOREP_Ipc_GetRank(), thread );
 
         FILE* file = fopen( filename, "a" );
-        free( filename );
 
         if ( file == NULL )
         {
@@ -215,8 +214,9 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
         scorep_profile_dump( file, location );
 
         fclose( file );
-        UTILS_FATAL( "Cannot continue profiling, profiling core file written to %s.\n",
+        UTILS_FATAL( "Cannot continue profiling, profiling core file written to '%s'.",
                      filename );
+        free( filename );
     }
 
     UTILS_FATAL( "Cannot continue profiling. Activating core files (export "
