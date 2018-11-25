@@ -403,7 +403,7 @@ scorep_dump_config( void )
     if ( !dump_file )
     {
         UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
-                     "Can't write measurement configuration into `%s'",
+                     "Can't write measurement configuration into '%s'",
                      dump_file_name );
 
         free( dump_file_name );
@@ -431,7 +431,7 @@ dump_manifest_and_subsystem_configs( const char* relativeSourceDir, const char* 
     if ( !dump_file )
     {
         UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
-                     "Cannot write MANIFEST.md into `%s'",
+                     "Cannot write MANIFEST.md into '%s'",
                      dump_file_name );
         return;
     }

@@ -1335,7 +1335,7 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
                     break;
                 default:
                     UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                                 "Metric %s has unknown value type %d",
+                                 "Metric '%s' has unknown value type %d",
                                  SCOREP_MetricHandle_GetName( write_set.metric_map[ i ] ),
                                  SCOREP_MetricHandle_GetValueType( write_set.metric_map[ i ] ) );
             }

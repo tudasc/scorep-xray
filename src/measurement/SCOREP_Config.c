@@ -466,7 +466,7 @@ SCOREP_ConfigApplyEnv( void )
                 {
                     return UTILS_ERROR( SCOREP_ERROR_EINVAL,
                                         "Can't set variable '%s::%s' to "
-                                        "value `%s' from environment variable %s",
+                                        "value '%s' from environment variable %s",
                                         name_space->name,
                                         variable->data.name,
                                         environment_variable_value,
@@ -518,7 +518,7 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
     if ( !successfully_parsed )
     {
         return UTILS_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
-                            "Invalid value for config variable %s::%s: %s",
+                            "Invalid value for config variable '%s::%s': %s",
                             nameSpaceName, variableName, variableValue );
     }
 
@@ -1220,7 +1220,7 @@ parse_number( const char* value,
         UTILS_ERROR( parse_success == ERANGE
                      ? SCOREP_ERROR_ERANGE
                      : SCOREP_ERROR_EINVAL,
-                     "Can't parse number in config value: `%s'",
+                     "Can't parse number in config value: '%s'",
                      orig_value );
         return false;
     }
@@ -1235,7 +1235,7 @@ parse_number( const char* value,
     if ( *value != '\0' )
     {
         UTILS_ERROR( SCOREP_ERROR_EINVAL,
-                     "Unrecognized characters after number `%s'",
+                     "Unrecognized characters after number '%s'",
                      orig_value );
         return false;
     }
@@ -1258,7 +1258,7 @@ parse_size( const char* value,
         UTILS_ERROR( parse_success == ERANGE
                      ? SCOREP_ERROR_ERANGE
                      : SCOREP_ERROR_EINVAL,
-                     "Can't parse size in config value: `%s'",
+                     "Can't parse size in config value: '%s'",
                      value );
         return false;
     }
@@ -1305,7 +1305,7 @@ parse_size( const char* value,
 
         default:
             UTILS_ERROR( SCOREP_ERROR_EINVAL,
-                         "Invalid scale factor '%s' in config value `%s'",
+                         "Invalid scale factor '%s' in config value '%s'",
                          value, orig_value );
             return false;
     }
@@ -1326,7 +1326,7 @@ parse_size( const char* value,
     if ( *value != '\0' )
     {
         UTILS_ERROR( SCOREP_ERROR_EINVAL,
-                     "Unrecognized characters `%s' after size in config value `%s'",
+                     "Unrecognized characters '%s' after size in config value '%s'",
                      value, orig_value );
         return false;
     }
@@ -1335,7 +1335,7 @@ parse_size( const char* value,
     if ( ( *sizeNumberReference * scale_factor ) < *sizeNumberReference )
     {
         UTILS_ERROR( SCOREP_ERROR_EOVERFLOW,
-                     "Resulting value does not fit into variable: `%s'",
+                     "Resulting value does not fit into variable: '%s'",
                      value );
         return false;
     }
@@ -1921,7 +1921,7 @@ SCOREP_ConfigCopyFile( const char* nameSpaceName,
             SCOREP_ErrorCode error = UTILS_IO_FileCopy( input_file_name, output_file_name );
             if ( error )
             {
-                UTILS_WARNING(  "Cannot copy file %s to %s.", input_file_name, output_file_name  );
+                UTILS_WARNING(  "Cannot copy file '%s' to '%s'.", input_file_name, output_file_name  );
             }
         }
         free( output_file_name );

@@ -304,7 +304,7 @@ scorep_selective_parse_file( FILE* file )
                 {
                     UTILS_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
                                  "Invalid interval in selective recording configuration "
-                                 "file for region %s: '%s'. Ignore interval.",
+                                 "file for region '%s': '%s'. Ignore interval.",
                                  region_name, interval );
                 }
                 else

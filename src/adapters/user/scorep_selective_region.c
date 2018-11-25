@@ -51,7 +51,7 @@ scorep_user_create_region( const char* name )
     if ( region == NULL )
     {
         UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                     "Unable to allocate memory for user region %s", name );
+                     "Unable to allocate memory for user region '%s'", name );
         return NULL;
     }
 
