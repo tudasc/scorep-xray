@@ -32,16 +32,4 @@ void scorep_mpi_register_regions( void )
   SCOREP_SourceFileHandle file_id = SCOREP_Definitions_NewSourceFile("MPI");
 
 #pragma wrapgen multiple restrict() skel/SCOREP_Mpi_RegC.w
-
-  /* Artificial root for MPI-only experiments when no user-code
-   * instrumentation is available */
-  scorep_mpi_regions[SCOREP_MPI_REGION__PARALLEL] =
-      SCOREP_Definitions_NewRegion("PARALLEL",
-      			           NULL,
-				   SCOREP_INVALID_SOURCE_FILE,
-				   SCOREP_INVALID_LINE_NO,
-                                   SCOREP_INVALID_LINE_NO,
-				   SCOREP_PARADIGM_MPI,
-				   SCOREP_REGION_ARTIFICIAL);
 }
-

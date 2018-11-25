@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -5035,15 +5035,4 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-
-    /* Artificial root for MPI-only experiments when no user-code
-     * instrumentation is available */
-    scorep_mpi_regions[ SCOREP_MPI_REGION__PARALLEL ] =
-        SCOREP_Definitions_NewRegion( "PARALLEL",
-                                      NULL,
-                                      SCOREP_INVALID_SOURCE_FILE,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_PARADIGM_MPI,
-                                      SCOREP_REGION_ARTIFICIAL );
 }

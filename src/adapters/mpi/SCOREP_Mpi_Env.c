@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -72,15 +72,6 @@
 
 
 /**
- * Flag set if the measurement system was already opened by another adapter.
- * If the measurement system is not already initialized, it is assumed that
- * the MPI adapter is the only active adapter. In this case, at first an
- * additional region is entered MPI_Init. Thus, all regions appear as
- * children of this region.
- */
-static int scorep_mpi_parallel_entered = 0;
-
-/**
  * Stores whether the application has called MPI_Finalize to
  * return the proper value if it calls MPI_Finalized afterwards.
  */
@@ -129,15 +120,6 @@ MPI_Init( int* argc, char*** argv )
     {
         /* Initialize the measurement system */
         SCOREP_InitMeasurement();
-
-        if ( !SCOREP_IsUnwindingEnabled() )
-        {
-            /* Enter global MPI region */
-            SCOREP_EnterRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__PARALLEL ] );
-
-            /* Remember that SCOREP_MPI_REGION__PARALLEL was entered */
-            scorep_mpi_parallel_entered = 1;
-        }
     }
 
     /* init is deferred to later */
@@ -219,15 +201,6 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
     {
         /* Initialize the measurement system */
         SCOREP_InitMeasurement();
-
-        if ( !SCOREP_IsUnwindingEnabled() )
-        {
-            /* Enter global MPI region */
-            SCOREP_EnterRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__PARALLEL ] );
-
-            /* Remember that SCOREP_MPI_REGION__PARALLEL was entered */
-            scorep_mpi_parallel_entered = 1;
-        }
     }
 
     /* init is deferred to later */
@@ -360,12 +333,6 @@ MPI_Finalize( void )
         else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ] );
-        }
-
-        /* Exit the extra parallel region in case it was entered in MPI_Init */
-        if ( scorep_mpi_parallel_entered )
-        {
-            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__PARALLEL ] );
         }
 
         SCOREP_MPI_EVENT_GEN_ON();

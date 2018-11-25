@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -943,10 +943,6 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_WTICK,
     /** Score-P region ID for MPI_Wtime */
     SCOREP_MPI_REGION__MPI_WTIME,
-
-    /** Artificial root for MPI-only experiments when no user-code
-     * instrumentation is available */
-    SCOREP_MPI_REGION__PARALLEL,
 
     /** Total number of regions */
     SCOREP_MPI_NUM_REGIONS
