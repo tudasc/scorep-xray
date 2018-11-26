@@ -44,6 +44,9 @@ public:
     virtual void
     checkObjects( SCOREP_Instrumenter& instrumenter );
 
+    bool
+    isInterpositionLibrary( const std::string& libraryName );
+
 private:
     std::set<std::string> m_categories;
 };

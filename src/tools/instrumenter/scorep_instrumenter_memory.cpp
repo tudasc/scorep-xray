@@ -7,6 +7,9 @@
  * Copyright (c) 2017,
  * Technische Universitaet Darmstadt, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -131,6 +134,21 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
         }
     }
 
+    // check for hbw_malloc and friends from the hbwmalloc.h API
+    {
+        std::string command = SCOREP_NM + all_objects_stream.str() + " 2>/dev/null | "
+                              SCOREP_EGREP " -l ' U (hbw_malloc|hbw_free|hbw_calloc|hbw_realloc|hbw_posix_memalign|hbw_posix_memalign_psize)$' >/dev/null 2>&1";
+        if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
+        {
+            std::cout << command << std::endl;
+        }
+        int return_value = system( command.c_str() );
+        if ( return_value == 0 )
+        {
+            m_categories.insert( "hbwmalloc" );
+        }
+    }
+
     // check for aligned_alloc, i.e., "C11"
     {
         std::string command = SCOREP_NM + all_objects_stream.str() + " 2>/dev/null | "
@@ -210,4 +228,10 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
     {
         m_usage = enabled;
     }
+}
+
+bool
+SCOREP_Instrumenter_MemoryAdapter::isInterpositionLibrary( const std::string& libraryName )
+{
+    return check_lib_name( libraryName, "memkind" );
 }

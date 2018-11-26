@@ -52,6 +52,9 @@ Features and improvements:
   before entering the 'main' function.
 - 'MPI_Comm_idup' is now supported and does not abort the measurement
   anymore.
+- Added support for the high bandwidth memory interface (hbw_malloc)
+  of the memkind library, allowing memory tracking for the Intel KNL
+  MCDRAM with Score-P.
 
 Bugfixes:
 

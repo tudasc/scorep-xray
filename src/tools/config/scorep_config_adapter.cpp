@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -711,7 +711,10 @@ SCOREP_Config_MemoryAdapter::printHelp( void )
               << "               c++L32|c++L64:\n"
               << "                new,new[],delete,delete[] (IA-64 C++ ABI)\n"
               << "               pgCCL32|pgCCL64:\n"
-              << "                new,new[],delete,delete[] (old PGI/EDG C++ ABI)\n";
+              << "                new,new[],delete,delete[] (old PGI/EDG C++ ABI)\n"
+              << "               hbwmalloc:\n"
+              << "                hbw_malloc,hbw_realloc,hbw_calloc,hbw_free,hbw_posix_memalign,\n"
+              << "                hbw_posix_memalign_psize (Intel KNL MCDRAM API)\n";
 }
 
 bool
@@ -781,6 +784,11 @@ SCOREP_Config_MemoryAdapter::addLibs( std::deque<std::string>&           libs,
     if ( m_categories.count( "pgCCL64" ) )
     {
         libs.push_back( "lib" + m_library + "_event_pgCC_L64" );
+    }
+
+    if ( m_categories.count( "hbwmalloc" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_hbwmalloc" );
     }
 
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
@@ -862,6 +870,18 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                    "--undefined,__wrap___nw__FUl,"
                    "-wrap,__nw__FUl,"
                    "-wrap,__nwa__FUl";
+    }
+
+    if ( m_categories.count( "hbwmalloc" ) )
+    {
+        ldflags += " -Wl,"
+                   "--undefined,__wrap_hbw_malloc,"
+                   "-wrap,hbw_malloc,"
+                   "-wrap,hbw_realloc,"
+                   "-wrap,hbw_calloc,"
+                   "-wrap,hbw_free,"
+                   "-wrap,hbw_posix_memalign,"
+                   "-wrap,hbw_posix_memalign_psize";
     }
 }
 

@@ -4,6 +4,9 @@
  * Copyright (c) 2016,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2017,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -26,18 +29,24 @@
 #include <stdbool.h>
 
 #define SCOREP_MEMORY_REGIONS                            \
-    SCOREP_MEMORY_REGION( MALLOC,            ALLOCATE,   "malloc" ) \
-    SCOREP_MEMORY_REGION( REALLOC,           REALLOCATE, "realloc" ) \
-    SCOREP_MEMORY_REGION( CALLOC,            ALLOCATE,   "calloc" ) \
-    SCOREP_MEMORY_REGION( FREE,              DEALLOCATE, "free" ) \
-    SCOREP_MEMORY_REGION( MEMALIGN,          ALLOCATE,   "memalign" ) \
-    SCOREP_MEMORY_REGION( POSIX_MEMALIGN,    ALLOCATE,   "posix_memalign" ) \
-    SCOREP_MEMORY_REGION( VALLOC,            ALLOCATE,   "valloc" ) \
-    SCOREP_MEMORY_REGION( ALIGNED_ALLOC,     ALLOCATE,   "aligned_alloc" ) \
-    SCOREP_MEMORY_REGION( NEW,               ALLOCATE,   "operator new(size_t)" ) \
-    SCOREP_MEMORY_REGION( DELETE,            DEALLOCATE, "operator delete(void*)" ) \
-    SCOREP_MEMORY_REGION( NEW_ARRAY,         ALLOCATE,   "operator new[](size_t)" ) \
-    SCOREP_MEMORY_REGION( DELETE_ARRAY,      DEALLOCATE, "operator delete[](void*)" )
+    SCOREP_MEMORY_REGION( MALLOC,                   ALLOCATE,   "malloc" ) \
+    SCOREP_MEMORY_REGION( REALLOC,                  REALLOCATE, "realloc" ) \
+    SCOREP_MEMORY_REGION( CALLOC,                   ALLOCATE,   "calloc" ) \
+    SCOREP_MEMORY_REGION( FREE,                     DEALLOCATE, "free" ) \
+    SCOREP_MEMORY_REGION( MEMALIGN,                 ALLOCATE,   "memalign" ) \
+    SCOREP_MEMORY_REGION( POSIX_MEMALIGN,           ALLOCATE,   "posix_memalign" ) \
+    SCOREP_MEMORY_REGION( VALLOC,                   ALLOCATE,   "valloc" ) \
+    SCOREP_MEMORY_REGION( ALIGNED_ALLOC,            ALLOCATE,   "aligned_alloc" ) \
+    SCOREP_MEMORY_REGION( NEW,                      ALLOCATE,   "operator new(size_t)" ) \
+    SCOREP_MEMORY_REGION( DELETE,                   DEALLOCATE, "operator delete(void*)" ) \
+    SCOREP_MEMORY_REGION( NEW_ARRAY,                ALLOCATE,   "operator new[](size_t)" ) \
+    SCOREP_MEMORY_REGION( DELETE_ARRAY,             DEALLOCATE, "operator delete[](void*)" ) \
+    SCOREP_MEMORY_REGION( HBW_MALLOC,               ALLOCATE,   "hbw_malloc" ) \
+    SCOREP_MEMORY_REGION( HBW_REALLOC,              REALLOCATE, "hbw_realloc" ) \
+    SCOREP_MEMORY_REGION( HBW_CALLOC,               ALLOCATE,   "hbw_calloc" ) \
+    SCOREP_MEMORY_REGION( HBW_FREE,                 DEALLOCATE, "hbw_free" ) \
+    SCOREP_MEMORY_REGION( HBW_POSIX_MEMALIGN,       ALLOCATE,   "hbw_posix_memalign" ) \
+    SCOREP_MEMORY_REGION( HBW_POSIX_MEMALIGN_PSIZE, ALLOCATE,   "hbw_posix_memalign_psize" )
 
 
 typedef enum scorep_memory_region_types
