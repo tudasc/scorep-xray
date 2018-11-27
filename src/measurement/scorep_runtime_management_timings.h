@@ -64,10 +64,10 @@
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_synchronize )                    \
+    SCOREP_TIMING_TRANSFORM_OP( synchronize )                           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
     SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration )                   \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_trigger_exit_callbacks )         \
+    SCOREP_TIMING_TRANSFORM_OP( trigger_exit_callbacks )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Task_ExitAllRegions )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Finalize )               \

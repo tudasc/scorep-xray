@@ -140,10 +140,10 @@ static SCOREP_Location* main_thread_location;
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
-static void scorep_initialization_sanity_checks( void );
-static void scorep_trigger_exit_callbacks( void );
-static void scorep_define_measurement_regions( void );
-static void scorep_define_measurement_attributes( void );
+static void initialization_sanity_checks( void );
+static void trigger_exit_callbacks( void );
+static void define_measurement_regions( void );
+static void define_measurement_attributes( void );
 static void init_mpp( SCOREP_SynchronizationMode syncMode );
 static void synchronize( SCOREP_SynchronizationMode syncMode );
 static void local_cleanup( void );
@@ -323,7 +323,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the subsystem initialization.
     scorep_initialized = true;
-    scorep_initialization_sanity_checks();
+    initialization_sanity_checks();
 
     UTILS_DEBUG_ENTRY();
 
@@ -405,14 +405,14 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      *
      * @dependsOn Definitions
      */
-    scorep_define_measurement_regions();
+    define_measurement_regions();
 
     /*
      * Define attributes.
      *
      * @dependsOn Definitions
      */
-    scorep_define_measurement_attributes();
+    define_measurement_attributes();
 
     /* == Initialize substrates and subsystems == */
 
@@ -524,7 +524,7 @@ SCOREP_SetAbortFlag( void )
 
 
 void
-scorep_initialization_sanity_checks( void )
+initialization_sanity_checks( void )
 {
     if ( scorep_finalized )
     {
@@ -786,7 +786,7 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Task_ExitAllRegions, ( location, SCOREP_Task_GetCurrentTask( location ) ) );
 
     /* Last remaining at-exit user is TAU. Give him the chance to do something. */
-    SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
+    SCOREP_TIME( trigger_exit_callbacks, ( ) );
 
     if ( !scorep_enable_recording_by_default )
     {
@@ -891,7 +891,7 @@ SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
 }
 
 void
-scorep_trigger_exit_callbacks( void )
+trigger_exit_callbacks( void )
 {
     assert( scorep_n_exit_callbacks <= scorep_max_exit_callbacks );
     // trigger in lifo order
@@ -902,7 +902,7 @@ scorep_trigger_exit_callbacks( void )
 }
 
 void
-scorep_define_measurement_regions( void )
+define_measurement_regions( void )
 {
     scorep_record_off_region = SCOREP_Definitions_NewRegion(
         "MEASUREMENT OFF", NULL,
@@ -922,7 +922,7 @@ scorep_define_measurement_regions( void )
 }
 
 void
-scorep_define_measurement_attributes( void )
+define_measurement_attributes( void )
 {
     /* Resdides in SCOREP_Events.c */
     extern SCOREP_AttributeHandle scorep_source_code_location_attribute;
