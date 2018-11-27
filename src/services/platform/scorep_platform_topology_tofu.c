@@ -102,7 +102,7 @@ SCOREP_Platform_GetHardwareTopologyInformation( char const** name,
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !SCOREP_Status_IsMppInitialized() )
+    if ( SCOREP_Status_IsMpp() && !SCOREP_Status_IsMppInitialized() )
     {
         return SCOREP_ERROR_INVALID;
     }
@@ -148,7 +148,7 @@ SCOREP_Platform_GetCartCoords( int                     nCoords,
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !SCOREP_Status_IsMppInitialized() || ( SCOREP_Location_GetType( location ) !=  SCOREP_LOCATION_TYPE_CPU_THREAD ) )
+    if ( ( SCOREP_Status_IsMpp() && !SCOREP_Status_IsMppInitialized() ) || ( SCOREP_Location_GetType( location ) !=  SCOREP_LOCATION_TYPE_CPU_THREAD ) )
     {
         return SCOREP_ERROR_INVALID;
     }

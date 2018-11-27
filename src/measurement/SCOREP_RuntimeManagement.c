@@ -144,8 +144,8 @@ static void scorep_initialization_sanity_checks( void );
 static void scorep_trigger_exit_callbacks( void );
 static void scorep_define_measurement_regions( void );
 static void scorep_define_measurement_attributes( void );
-static void scorep_init_mpp( SCOREP_SynchronizationMode syncMode );
-static void scorep_synchronize( SCOREP_SynchronizationMode syncMode );
+static void init_mpp( SCOREP_SynchronizationMode syncMode );
+static void synchronize( SCOREP_SynchronizationMode syncMode );
 static void local_cleanup( void );
 /* *INDENT-ON* */
 
@@ -500,7 +500,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     {
         SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
 
-        scorep_init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN );
+        init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN );
 
         SCOREP_TIME_STOP_TIMING( SCOREP_InitMppMeasurement );
     }
@@ -568,7 +568,7 @@ SCOREP_InitMppMeasurement( void )
         _Exit( EXIT_FAILURE );
     }
 
-    scorep_init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN_MPP );
+    init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN_MPP );
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
@@ -737,7 +737,7 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
 }
 
 void
-scorep_init_mpp( SCOREP_SynchronizationMode syncMode )
+init_mpp( SCOREP_SynchronizationMode syncMode )
 {
     SCOREP_Status_OnMppInit();
 
@@ -745,7 +745,7 @@ scorep_init_mpp( SCOREP_SynchronizationMode syncMode )
 
     scorep_subsystems_initialize_mpp();
 
-    scorep_synchronize( syncMode );
+    synchronize( syncMode );
 }
 
 
@@ -772,8 +772,7 @@ scorep_finalize( void )
 
     SCOREP_OA_Finalize();
 
-    SCOREP_TIME( scorep_synchronize,
-                 ( SCOREP_SYNCHRONIZATION_MODE_END ) );
+    SCOREP_TIME( synchronize, ( SCOREP_SYNCHRONIZATION_MODE_END ) );
 
     /*
      * This barrier should prevent entering events from "outside".
@@ -934,8 +933,8 @@ scorep_define_measurement_attributes( void )
                                          SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION );
 }
 
-void
-scorep_synchronize( SCOREP_SynchronizationMode syncMode )
+static void
+synchronize( SCOREP_SynchronizationMode syncMode )
 {
     scorep_subsystems_synchronize( syncMode );
     SCOREP_SynchronizeClocks();

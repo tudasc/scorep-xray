@@ -193,7 +193,11 @@ SCOREP_Status_IsMppInitialized( void )
 bool
 SCOREP_Status_IsMppFinalized( void )
 {
-    return scorep_process_local_status.mpp_is_finalized;
+    if ( SCOREP_Status_IsMpp() )
+    {
+        return scorep_process_local_status.mpp_is_finalized;
+    }
+    return true;
 }
 
 

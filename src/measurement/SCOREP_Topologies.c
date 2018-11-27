@@ -116,7 +116,7 @@ create_and_store_platform_topology( struct SCOREP_Location* location )
 #if HAVE( SCOREP_DEBUG )
     int thread = SCOREP_Location_GetId( location );
     int rank   = -1;
-    if ( SCOREP_Status_IsMppInitialized() )
+    if ( SCOREP_Status_IsMpp() && SCOREP_Status_IsMppInitialized() )
     {
         rank = SCOREP_Status_GetRank();
     }
@@ -133,7 +133,7 @@ create_and_store_platform_topology( struct SCOREP_Location* location )
         uint32_t num_dims   = 0;
         uint32_t coord_rank = UINT32_MAX;
 
-        if ( SCOREP_Status_IsMppInitialized() )
+        if ( SCOREP_Status_IsMpp() && SCOREP_Status_IsMppInitialized() )
         {
             coord_rank = SCOREP_Status_GetRank();
         }

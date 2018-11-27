@@ -95,9 +95,10 @@ SCOREP_Status_OnMppFinalize( void );
 
 /**
  * Indicates whether MPP initialization (e.g., MPI_Init()) was already called or not. In non-MPP mode always true.
+ * Not suitable to check is this is in MPP program. For that, use SCOREP_Status_IsMpp() instead.
  *
  * @return In MPP mode true if initialization (e.g., MPI_Init()) has been called earlier, false otherwise.
- *         In non-MPP mode always true.
+ *         In non-MPP mode true after SCOREP_Status_OnMppInit() was called.
  */
 bool
 SCOREP_Status_IsMppInitialized( void );
