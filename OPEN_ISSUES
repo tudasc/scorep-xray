@@ -41,7 +41,11 @@ various Score-P components.
     have to be installed. The same applies for SHMEM.
 
   - The same is true if your system features more than one compiler
-    supporting automatic function instrumentation.
+    supporting automatic function instrumentation. Additionally if
+    the GNU compiler plug-in based instrumentation is used, than
+    different Major version of the GNU compiler suite are also
+    incompatible. I.e., for each major version a separate Score-P
+    installation must be provided.
 
   - To build Score-P it is required to have Fortran compilers and
     highly recommended to have MPI compilers.
