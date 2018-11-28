@@ -226,6 +226,10 @@ various Score-P components.
     the MPI forum to address this issue (endpoints). Until then, only
     MPI_THREAD_FUNNELED is supported.
 
+  - Open MPI 4.0.0 is known broken to build with Score-P, because it
+    accidentally removed deprecated-only MPI functions, without
+    removing the prototypes in `mpi.h`.
+
 --------------------------------------------------------------------------------
 
 * OpenMP support
