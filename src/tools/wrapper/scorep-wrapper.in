@@ -132,7 +132,7 @@ Examples
    environment of the \`cmake\` command.  Subsequent calls to \`make\` are not
    affected and will instrument the application as expected.
 
-   [CMake]: http://www.cmake.org/Wiki/CMake_FAQ#I_change_CMAKE_C_COMPILER_in_the_GUI_but_it_changes_back_on_the_next_configure_step._Why.3F
+   [CMake]: https://gitlab.kitware.com/cmake/community/wikis/FAQ#i-change-cmake_c_compiler-in-the-gui-but-it-changes-back-on-the-next-configure-step-why
 
  - For autotools based build systems it is recommended to configure in the
    following way:
