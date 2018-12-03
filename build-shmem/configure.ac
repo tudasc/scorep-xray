@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2017,
+dnl Copyright (c) 2013-2018,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015-2016, 2018,
@@ -83,9 +83,6 @@ AC_F77_LIBRARY_LDFLAGS
 AS_CASE([${ac_scorep_platform}],
         [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
 AC_F77_WRAPPERS
-SCOREP_FORTRAN_DEFAULT_INTEGER_SIZE
-SCOREP_FORTRAN_DEFAULT_REAL_SIZE
-SCOREP_FORTRAN_DEFAULT_DOUBLE_SIZE
 
 AC_PROG_FC dnl needed for tests only
 AC_PROG_FC_C_O
