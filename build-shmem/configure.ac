@@ -66,7 +66,6 @@ AFS_LINKMODE
 
 AC_PROG_CC dnl required
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AFS_SUMMARY([C99 compiler used], [$CC])
 AM_PROG_CC_C_O
 
 AC_PROG_CXX dnl needed for tests only
