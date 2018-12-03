@@ -31,8 +31,6 @@
 
 #include "scorep_shmem_function_list.inc"
 
-SCOREP_RegionHandle scorep_shmem_region__SHMEM;
-
 
 /**
  * Register SHMEM functions and initialize data structures

@@ -104,9 +104,6 @@
 
 #include "scorep_shmem_function_list.inc"
 
-/** Artificial root for SHMEM-only experiments without user-code instrumentation */
-extern SCOREP_RegionHandle scorep_shmem_region__SHMEM;
-
 /**
  * Register SHMEM functions and initialize data structures
  */
