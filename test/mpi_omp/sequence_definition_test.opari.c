@@ -35,7 +35,7 @@ main( int argc, char** argv )
         POMP2_Task_handle pomp2_old_task;
         POMP2_Parallel_fork( &opari2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, opari2_ctc_1 );
 #line 31 "/home/lorenz/src/scorep/incubation/test/mpi_omp/sequence_definition_test.c"
-  #pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(pomp_tpd_)
+  #pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
         { POMP2_Parallel_begin( &opari2_region_1 );
 #line 32 "/home/lorenz/src/scorep/incubation/test/mpi_omp/sequence_definition_test.c"
           {
