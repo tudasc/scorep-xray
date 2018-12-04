@@ -29,7 +29,7 @@
 
 #include "scorep_types.h"
 
-/* The compile time static number of known parallel paradgims */
+/* The compile time static number of known parallel paradigms */
 #define N_PARALLEL_PARADIGMS \
     ( SCOREP_INVALID_PARADIGM_TYPE - SCOREP_PARADIGM_MPI )
 
