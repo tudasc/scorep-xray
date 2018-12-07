@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -217,7 +217,7 @@ insert_memory_allocation( SCOREP_AllocMetric* allocMetric,
         }
         else
         {
-            UTILS_WARNING( "Allocation already known: %" PRIx64, allocation->address );
+            UTILS_WARNING( "Allocation already known: 0x%" PRIx64, allocation->address );
         }
     }
     allocMetric->allocations = allocation;
