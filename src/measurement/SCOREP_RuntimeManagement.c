@@ -89,28 +89,28 @@
 #include "scorep_libwrap_management.h"
 
 /** @brief Measurement system initialized? */
-static bool scorep_initialized = false;
+static bool initialized = false;
 
 
 /** @brief Measurement system finalized? */
-static bool scorep_finalized = false;
+static bool finalized = false;
 
 volatile SCOREP_MeasurementPhase scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_PRE;
 
 /** @brief Location group handle */
 static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
 
-#define scorep_max_exit_callbacks 1
-static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
-static int                 scorep_n_exit_callbacks = 0;
+#define max_exit_callbacks 1
+static SCOREP_ExitCallback exit_callbacks[ max_exit_callbacks ];
+static int                 n_exit_callbacks = 0;
 
 /* Artificial regions from Score-P */
 
 /** @brief Region handle to collect data for when measurement is disabled. */
-static SCOREP_RegionHandle scorep_record_off_region;
+static SCOREP_RegionHandle record_off_region;
 
 /** @brief Region handle for the trace buffer flush region. */
-static SCOREP_RegionHandle scorep_buffer_flush_region;
+static SCOREP_RegionHandle buffer_flush_region;
 
 /* Region handle for the program begin/end events. */
 static SCOREP_RegionHandle program_region;
@@ -120,20 +120,20 @@ static SCOREP_RegionHandle program_region;
  * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
  * functions.
  */
-static bool scorep_recording_enabled = true;
+static bool recording_enabled = true;
 
 /** @brief Specifies whether recoding is enabled by default */
-static bool scorep_enable_recording_by_default = true;
+static bool enable_recording_by_default = true;
 
 /** @brief Specifies whether it is allowed to modify the default
  *  recording mode. After initialization, it must not be changed.
  */
-static bool scorep_default_recoding_mode_changes_allowed = true;
+static bool default_recoding_mode_changes_allowed = true;
 
 /**
  * Indicates whether the application initiated an abortion.
  */
-static bool scorep_application_aborted = false;
+static bool application_aborted = false;
 
 /**
  * Remember the location of the main thread.
@@ -334,7 +334,7 @@ SCOREP_IsInitialized( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    return scorep_initialized && !scorep_finalized;
+    return initialized && !finalized;
 }
 
 /**
@@ -361,7 +361,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
         UTILS_FATAL( "Cannnot initialize measurement from the signal handler." );
     }
 
-    if ( scorep_initialized )
+    if ( initialized )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
@@ -369,7 +369,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
 
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the subsystem initialization.
-    scorep_initialized = true;
+    initialized = true;
     initialization_sanity_checks();
 
     UTILS_DEBUG_ENTRY();
@@ -528,8 +528,8 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
                                              NULL, 0,
                                              SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
-    scorep_default_recoding_mode_changes_allowed = false;
-    if ( !scorep_enable_recording_by_default )
+    default_recoding_mode_changes_allowed = false;
+    if ( !enable_recording_by_default )
     {
         /*
          * @dependsOn Epoch
@@ -566,14 +566,14 @@ SCOREP_GetLocationGroup( void )
 void
 SCOREP_SetAbortFlag( void )
 {
-    scorep_application_aborted = true;
+    application_aborted = true;
 }
 
 
 void
 initialization_sanity_checks( void )
 {
-    if ( scorep_finalized )
+    if ( finalized )
     {
         _Exit( EXIT_FAILURE );
     }
@@ -647,8 +647,8 @@ SCOREP_FinalizeMppMeasurement( void )
 void
 SCOREP_SetDefaultRecordingMode( bool enabled )
 {
-    UTILS_ASSERT( scorep_default_recoding_mode_changes_allowed );
-    scorep_enable_recording_by_default = enabled;
+    UTILS_ASSERT( default_recoding_mode_changes_allowed );
+    enable_recording_by_default = enabled;
 }
 
 
@@ -667,11 +667,11 @@ SCOREP_EnableRecording( void )
     if ( !SCOREP_Thread_InParallel() )
     {
         SCOREP_Substrates_EnableRecording();
-        scorep_recording_enabled = true;
+        recording_enabled = true;
 
         SCOREP_CALL_SUBSTRATE( EnableRecording, ENABLE_RECORDING,
                                ( location, timestamp,
-                                 scorep_record_off_region, metric_values ) );
+                                 record_off_region, metric_values ) );
     }
     else
     {
@@ -699,10 +699,10 @@ SCOREP_DisableRecording( void )
     {
         SCOREP_CALL_SUBSTRATE( DisableRecording, DISABLE_RECORDING,
                                ( location, timestamp,
-                                 scorep_record_off_region, metric_values ) );
+                                 record_off_region, metric_values ) );
 
         SCOREP_Substrates_DisableRecording();
-        scorep_recording_enabled = false;
+        recording_enabled = false;
     }
     else
     {
@@ -722,7 +722,7 @@ SCOREP_RecordingEnabled( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    return scorep_recording_enabled;
+    return recording_enabled;
 }
 
 
@@ -756,7 +756,7 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
          */
         SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN,
                                ( location, timestamp,
-                                 scorep_buffer_flush_region, metric_values ) );
+                                 buffer_flush_region, metric_values ) );
     }
 }
 
@@ -780,7 +780,7 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
      */
     SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushEnd, ON_TRACING_BUFFER_FLUSH_END,
                            ( location, timestamp,
-                             scorep_buffer_flush_region, metric_values ) );
+                             buffer_flush_region, metric_values ) );
 }
 
 void
@@ -808,12 +808,12 @@ scorep_finalize( void )
         UTILS_FATAL( "Can't finalize measurement from the signal handler." );
     }
 
-    if ( !scorep_initialized || scorep_finalized || scorep_application_aborted )
+    if ( !initialized || finalized || application_aborted )
     {
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
-    scorep_finalized = true;
+    finalized = true;
 
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
@@ -835,7 +835,7 @@ scorep_finalize( void )
     /* Last remaining at-exit user is TAU. Give him the chance to do something. */
     SCOREP_TIME( trigger_exit_callbacks, ( ) );
 
-    if ( !scorep_enable_recording_by_default )
+    if ( !enable_recording_by_default )
     {
         SCOREP_EnableRecording();
     }
@@ -932,26 +932,26 @@ local_cleanup( void )
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
 {
-    assert( scorep_n_exit_callbacks < scorep_max_exit_callbacks );
-    scorep_exit_callbacks[ scorep_n_exit_callbacks ] = exitCallback;
-    ++scorep_n_exit_callbacks;
+    assert( n_exit_callbacks < max_exit_callbacks );
+    exit_callbacks[ n_exit_callbacks ] = exitCallback;
+    ++n_exit_callbacks;
 }
 
 void
 trigger_exit_callbacks( void )
 {
-    assert( scorep_n_exit_callbacks <= scorep_max_exit_callbacks );
+    assert( n_exit_callbacks <= max_exit_callbacks );
     // trigger in lifo order
-    for ( int i = scorep_n_exit_callbacks; i-- > 0; )
+    for ( int i = n_exit_callbacks; i-- > 0; )
     {
-        ( *( scorep_exit_callbacks[ i ] ) )();
+        ( *( exit_callbacks[ i ] ) )();
     }
 }
 
 void
 define_measurement_regions( void )
 {
-    scorep_record_off_region = SCOREP_Definitions_NewRegion(
+    record_off_region = SCOREP_Definitions_NewRegion(
         "MEASUREMENT OFF", NULL,
         SCOREP_INVALID_SOURCE_FILE,
         SCOREP_INVALID_LINE_NO,
@@ -959,7 +959,7 @@ define_measurement_regions( void )
         SCOREP_PARADIGM_USER,
         SCOREP_REGION_ARTIFICIAL );
 
-    scorep_buffer_flush_region = SCOREP_Definitions_NewRegion(
+    buffer_flush_region = SCOREP_Definitions_NewRegion(
         "TRACE BUFFER FLUSH", NULL,
         SCOREP_INVALID_SOURCE_FILE,
         SCOREP_INVALID_LINE_NO,
