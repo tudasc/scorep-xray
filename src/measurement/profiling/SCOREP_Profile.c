@@ -79,7 +79,6 @@
  */
 static SCOREP_Mutex scorep_profile_location_mutex;
 
-static SCOREP_RegionHandle program_region;
 static SCOREP_RegionHandle thread_create_wait_regions;
 
 static SCOREP_MetricHandle bytes_allocated_metric           = SCOREP_INVALID_METRIC;
@@ -815,69 +814,27 @@ program_begin( SCOREP_Location*     location,
                uint64_t             timestamp,
                SCOREP_StringHandle  programName,
                uint32_t             numberOfProgramArgs,
-               SCOREP_StringHandle* programArguments )
+               SCOREP_StringHandle* programArguments,
+               SCOREP_RegionHandle  programRegionHandle )
 {
-    const char* region_name = UTILS_IO_GetWithoutPath( SCOREP_StringHandle_Get( programName ) );
-
-    /* Create region_canonical_name by concatenating programName and all programArguments. */
-    size_t strlength[ numberOfProgramArgs + 1 ];
-    int    displacements[ numberOfProgramArgs + 1 ];
-    size_t total_length;
-
-    /* Get string length and displacements. */
-    strlength[ 0 ]     = strlen( SCOREP_StringHandle_Get( programName ) );
-    total_length       = strlength[ 0 ] + 1;
-    displacements[ 0 ] = 0;
-
-    for ( int i = 0; i < numberOfProgramArgs; i++ )
-    {
-        strlength[ i + 1 ]     = strlen( SCOREP_StringHandle_Get( programArguments[ i ] ) );
-        total_length          += strlength[ i + 1 ] + 1;
-        displacements[ i + 1 ] = displacements[ i ] + strlength[ i ] + 1;
-    }
-
-    char region_canonical_name[ total_length ];
-    memset( &region_canonical_name[ 0 ], 0, total_length );
-
-    /* Concatenate strings */
-    memcpy( &region_canonical_name[ 0 ], SCOREP_StringHandle_Get( programName ), strlength[ 0 ] );
-    region_canonical_name[ strlength[ 0 ] ] = ' ';
-
-    for ( int i = 0; i < numberOfProgramArgs; i++ )
-    {
-        memcpy( &region_canonical_name[ 0 ] + displacements[ i + 1 ],
-                SCOREP_StringHandle_Get( programArguments[ i ] ),
-                strlength[ i + 1 ] );
-        region_canonical_name[ displacements[ i + 1 ] + strlength[ i + 1 ] ] = ' ';
-    }
-    region_canonical_name[ total_length - 1 ] = '\0';
-
-    program_region = SCOREP_Definitions_NewRegion(
-        region_name,
-        region_canonical_name,
-        SCOREP_INVALID_SOURCE_FILE,
-        SCOREP_INVALID_LINE_NO,
-        SCOREP_INVALID_LINE_NO,
-        SCOREP_PARADIGM_MEASUREMENT,
-        SCOREP_REGION_ARTIFICIAL );
-
     uint64_t* metric_values = SCOREP_Metric_Read( location );
     SCOREP_Profile_Enter( location,
                           timestamp,
-                          program_region,
+                          programRegionHandle,
                           metric_values );
 }
 
 
 static void
-program_end( SCOREP_Location*  location,
-             uint64_t          timestamp,
-             SCOREP_ExitStatus exitStatus )
+program_end( SCOREP_Location*    location,
+             uint64_t            timestamp,
+             SCOREP_ExitStatus   exitStatus,
+             SCOREP_RegionHandle programRegionHandle )
 {
     uint64_t* metric_values = SCOREP_Metric_Read( location );
     SCOREP_Profile_Exit( location,
                          timestamp,
-                         program_region,
+                         programRegionHandle,
                          metric_values );
 }
 

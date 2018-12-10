@@ -206,12 +206,14 @@ typedef void ( * SCOREP_Substrates_ProgramBeginCb )(
     uint64_t                timestamp,
     SCOREP_StringHandle     programName,
     uint32_t                numberOfProgramArgs,
-    SCOREP_StringHandle*    programArguments );
+    SCOREP_StringHandle*    programArguments,
+    SCOREP_RegionHandle     programRegionHandle );
 
 typedef void ( * SCOREP_Substrates_ProgramEndCb )(
     struct SCOREP_Location* location,
     uint64_t                timestamp,
-    SCOREP_ExitStatus       exitStatus );
+    SCOREP_ExitStatus       exitStatus,
+    SCOREP_RegionHandle     programRegionHandle );
 
 /**
  * called when entering a region via some instrumentation adapter.

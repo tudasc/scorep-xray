@@ -112,6 +112,9 @@ static SCOREP_RegionHandle scorep_record_off_region;
 /** @brief Region handle for the trace buffer flush region. */
 static SCOREP_RegionHandle scorep_buffer_flush_region;
 
+/* Region handle for the program begin/end events. */
+static SCOREP_RegionHandle program_region;
+
 /** Temporally disable trace event consumption.
  *
  * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
@@ -240,17 +243,60 @@ begin_epoch( int argc, char* argv[] )
         argc--;
         argv++;
     }
+
+    /* Create program_region, therefore create by program_canonical_name by
+     * concatenating program_name and all argv. In addition, store argv
+     * string handles in args. */
     SCOREP_StringHandle args[ argc ];
+    size_t              strlength[ argc + 1 ];
+    int                 displacements[ argc + 1 ];
+    size_t              total_length;
+
+    strlength[ 0 ]     = strlen( program_name );
+    displacements[ 0 ] = 0;
+    total_length       = strlength[ 0 ] + 1;
+
     for ( int i = 0; i < argc; i++ )
     {
-        args[ i ] = SCOREP_Definitions_NewString( argv[ i ] );
+        args[ i ]              = SCOREP_Definitions_NewString( argv[ i ] );
+        strlength[ i + 1 ]     = strlen( argv[ i ] );
+        displacements[ i + 1 ] = displacements[ i ] + strlength[ i ] + 1;
+        total_length          += strlength[ i + 1 ] + 1;
     }
+
+    char program_canonical_name[ total_length ];
+    memset( &program_canonical_name[ 0 ], 0, total_length );
+    memcpy( &program_canonical_name[ 0 ], program_name, strlength[ 0 ] );
+    program_canonical_name[ strlength[ 0 ] ] = ' ';
+
+    for ( int i = 0; i < argc; i++ )
+    {
+        memcpy( &program_canonical_name[ 0 ] + displacements[ i + 1 ],
+                argv[ i ],
+                strlength[ i + 1 ] );
+        program_canonical_name[ displacements[ i + 1 ] + strlength[ i + 1 ] ] = ' ';
+    }
+    program_canonical_name[ total_length - 1 ] = '\0';
+
+    const char* program_base_name = UTILS_IO_GetWithoutPath( program_name );
+
+    program_region = SCOREP_Definitions_NewRegion(
+        program_base_name,
+        program_canonical_name,
+        SCOREP_INVALID_SOURCE_FILE,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_PARADIGM_MEASUREMENT,
+        SCOREP_REGION_ARTIFICIAL );
+
     main_thread_location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE( ProgramBegin, PROGRAM_BEGIN,
                            ( main_thread_location,
                              SCOREP_GetBeginEpoch(),
                              program,
-                             argc, args ) );
+                             argc,
+                             args,
+                             program_region ) );
     SCOREP_TIME_STOP_TIMING( SCOREP_BeginEpoch );
 }
 
@@ -275,7 +321,8 @@ end_epoch( SCOREP_ExitStatus exitStatus )
     SCOREP_CALL_SUBSTRATE( ProgramEnd, PROGRAM_END,
                            ( main_thread_location,
                              end_epoch_timestamp,
-                             exitStatus ) );
+                             exitStatus,
+                             program_region ) );
     SCOREP_TIME_STOP_TIMING( SCOREP_EndEpoch );
 }
 

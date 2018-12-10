@@ -166,7 +166,8 @@ program_begin( SCOREP_Location*     location,
                uint64_t             timestamp,
                SCOREP_StringHandle  programName,
                uint32_t             numberOfProgramArgs,
-               SCOREP_StringHandle* programArguments )
+               SCOREP_StringHandle* programArguments,
+               SCOREP_RegionHandle  regionHandle )
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
@@ -184,9 +185,10 @@ program_begin( SCOREP_Location*     location,
 }
 
 static void
-program_end( SCOREP_Location*  location,
-             uint64_t          timestamp,
-             SCOREP_ExitStatus exitStatus )
+program_end( SCOREP_Location*    location,
+             uint64_t            timestamp,
+             SCOREP_ExitStatus   exitStatus,
+             SCOREP_RegionHandle regionHandle )
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
