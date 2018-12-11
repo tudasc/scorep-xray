@@ -802,7 +802,7 @@ topologies_subsystem_pre_unify( void )
             }
 
             int coords[ 2 ] = { SCOREP_Ipc_GetRank(), local_id_counter };
-            SCOREP_Definitions_NewCartesianCoords( process_topo_id, SCOREP_Ipc_GetRank(), local_id_counter, 2, coords );
+            SCOREP_Definitions_NewCartesianCoords( process_topo_id, SCOREP_Ipc_GetRank(), definition->sequence_number, 2, coords );
             local_id_counter++;
         }
         SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
