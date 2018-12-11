@@ -33,6 +33,12 @@ SCOREP_Platform_GetHardwareTopologyNumberOfDimensions( void )
     return 0;
 }
 
+bool
+SCOREP_Platform_GenerateTopology( void )
+{
+    return false;
+}
+
 SCOREP_ErrorCode
 SCOREP_Platform_GetHardwareTopologyInformation( char const** name,
                                                 int          nDims,

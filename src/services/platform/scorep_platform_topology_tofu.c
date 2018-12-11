@@ -93,6 +93,13 @@ SCOREP_Platform_GetHardwareTopologyNumberOfDimensions( void )
     return number_of_dimensions;
 }
 
+bool
+SCOREP_Platform_GenerateTopology( void )
+{
+    /* As the coordinate call is a MPI call, don't generate a platform topology without MPI*/
+    return SCOREP_Status_IsMpp();
+}
+
 SCOREP_ErrorCode
 SCOREP_Platform_GetHardwareTopologyInformation( char const** name,
                                                 int          nDims,

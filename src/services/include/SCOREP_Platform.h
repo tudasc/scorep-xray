@@ -170,7 +170,16 @@ SCOREP_Platform_GetCartCoords( int                     nCoords,
                                int*                    coords,
                                struct SCOREP_Location* location  );
 
-
+/**
+ * Provides a check to allow the prevention of the platform topology
+ * creation in certain cases, independent of user decisions.
+ *
+ * @return  true, if a topology can be generated. False, if the
+ *          current mode doesn't support it. Default is true for
+ *          a platform without additional restrictions.
+ */
+bool
+SCOREP_Platform_GenerateTopology( void );
 
 
 #endif /* SCOREP_PLATFORM_H */

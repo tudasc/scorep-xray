@@ -223,7 +223,10 @@ topologies_subsystem_init_location( struct SCOREP_Location* location,
                                     struct SCOREP_Location* parent )
 {
     UTILS_DEBUG_ENTRY();
-    if ( !scorep_topologies_enable_platform )
+
+    /* The first check is dependent on the user choice, the second is dependent
+       on the platform and the current Score-P running mode, e.g., MPP or not. */
+    if ( !scorep_topologies_enable_platform || !SCOREP_Platform_GenerateTopology() )
     {
         return SCOREP_SUCCESS;
     }
@@ -241,10 +244,6 @@ add_missing_platform_entries( SCOREP_Location* location,
                               void*            arg )
 {
     UTILS_DEBUG_ENTRY();
-    if ( !scorep_topologies_enable_platform )
-    {
-        return false;
-    }
 
     if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
@@ -260,7 +259,7 @@ static void
 topologies_subsystem_end( void )
 {
     UTILS_DEBUG_ENTRY();
-    if ( scorep_topologies_enable_platform )
+    if ( scorep_topologies_enable_platform && SCOREP_Platform_GenerateTopology() )
     {
         SCOREP_Location_ForAll( add_missing_platform_entries, NULL );
     }
