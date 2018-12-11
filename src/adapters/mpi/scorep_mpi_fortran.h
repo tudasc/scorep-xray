@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,7 +38,7 @@
  * @brief Helper functions to convert fortran and C data types.
  */
 
-#include <stdint.h>
+#include <stddef.h>
 
 /**
  * Converts a Fortran string into a C-string.
@@ -47,8 +47,8 @@
  * @returns the trimmed C-string. The allocated memory must be freed by the caller.
  */
 char*
-scorep_f2c_string( const char* f_string,
-                   uint32_t    length );
+scorep_f2c_string( const char*              f_string,
+                   scorep_fortran_charlen_t length );
 
 
 #endif /* SCOERP_FORTRAN_H */

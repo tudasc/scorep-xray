@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -670,7 +670,7 @@ FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbu
  * @ingroup type
  */
 void
-FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, int datarep_len )
+FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -701,7 +701,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatyp
  * @ingroup type
  */
 void
-FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datatype, MPI_Aint* size, int* ierr, int datarep_len )
+FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datatype, MPI_Aint* size, int* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -1386,7 +1386,7 @@ FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* 
  * @ingroup type
  */
 void
-FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, int* outcount, MPI_Datatype* datatype, int* ierr, int datarep_len )
+FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, int* outcount, MPI_Datatype* datatype, int* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -1567,11 +1567,11 @@ FSUB( MPI_Type_get_attr )( MPI_Datatype* type, int* type_keyval, void* attribute
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, int* ierr, int type_name_len )
+FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, int* ierr, scorep_fortran_charlen_t type_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_type_name     = NULL;
-    int   c_type_name_len = 0;
+    char*  c_type_name     = NULL;
+    size_t c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
     if ( !c_type_name )
     {
@@ -1618,7 +1618,7 @@ FSUB( MPI_Type_set_attr )( MPI_Datatype* type, int* type_keyval, void* attribute
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int type_name_len )
+FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, scorep_fortran_charlen_t type_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_type_name = NULL;
@@ -1788,7 +1788,7 @@ FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outb
  * For the order of events see @ref MPI_Pack_external
  */
 void
-FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -1820,7 +1820,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fi
  * For the order of events see @ref MPI_Pack_external_size
  */
 void
-FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* datatype, MPI_Aint* size, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* datatype, MPI_Aint* size, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -2546,7 +2546,7 @@ FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* out
  * For the order of events see @ref MPI_Unpack_external
  */
 void
-FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
@@ -2740,11 +2740,11 @@ FSUB( MPI_Type_get_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribut
  * For the order of events see @ref MPI_Type_get_name
  */
 void
-FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen, MPI_Fint* ierr, int type_name_len )
+FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t type_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_type_name     = NULL;
-    int   c_type_name_len = 0;
+    char*  c_type_name     = NULL;
+    size_t c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
     if ( !c_type_name )
     {
@@ -2795,7 +2795,7 @@ FSUB( MPI_Type_set_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribut
  * For the order of events see @ref MPI_Type_set_name
  */
 void
-FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, int type_name_len )
+FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, scorep_fortran_charlen_t type_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );

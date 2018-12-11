@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -294,7 +294,7 @@ FSUB( MPI_Info_create )( MPI_Info* info, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
@@ -355,12 +355,12 @@ FSUB( MPI_Info_free )( MPI_Info* info, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int* flag, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int* flag, int* ierr, scorep_fortran_charlen_t key_len, scorep_fortran_charlen_t value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_key       = NULL;
-    char* c_value     = NULL;
-    int   c_value_len = 0;
+    char*  c_key       = NULL;
+    char*  c_value     = NULL;
+    size_t c_value_len = 0;
     c_key = scorep_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
@@ -410,11 +410,11 @@ FSUB( MPI_Info_get_nkeys )( MPI_Info* info, int* nkeys, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_key     = NULL;
-    int   c_key_len = 0;
+    char*  c_key     = NULL;
+    size_t c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -442,7 +442,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, int k
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* flag, int* ierr, int key_len )
+FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* flag, int* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
@@ -465,7 +465,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* fl
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, scorep_fortran_charlen_t key_len, scorep_fortran_charlen_t value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key   = NULL;
@@ -622,7 +622,7 @@ FSUB( MPI_Info_create )( MPI_Fint* info, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Info_delete
  */
 void
-FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, int key_len )
+FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info = PMPI_Info_f2c( *info );
@@ -692,12 +692,12 @@ FSUB( MPI_Info_free )( MPI_Fint* info, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Info_get
  */
 void
-FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value, MPI_Fint* flag, MPI_Fint* ierr, int key_len, int value_len )
+FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value, MPI_Fint* flag, MPI_Fint* ierr, scorep_fortran_charlen_t key_len, scorep_fortran_charlen_t value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_key       = NULL;
-    char* c_value     = NULL;
-    int   c_value_len = 0;
+    char*  c_key       = NULL;
+    char*  c_value     = NULL;
+    size_t c_value_len = 0;
     c_key = scorep_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
@@ -749,11 +749,11 @@ FSUB( MPI_Info_get_nkeys )( MPI_Fint* info, MPI_Fint* nkeys, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Info_get_nthkey
  */
 void
-FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* ierr, int key_len )
+FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_key     = NULL;
-    int   c_key_len = 0;
+    char*  c_key     = NULL;
+    size_t c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -782,7 +782,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* i
  * For the order of events see @ref MPI_Info_get_valuelen
  */
 void
-FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MPI_Fint* flag, MPI_Fint* ierr, int key_len )
+FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MPI_Fint* flag, MPI_Fint* ierr, scorep_fortran_charlen_t key_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
@@ -806,7 +806,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MP
  * For the order of events see @ref MPI_Info_set
  */
 void
-FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, int key_len, int value_len )
+FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, scorep_fortran_charlen_t key_len, scorep_fortran_charlen_t value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info  = PMPI_Info_f2c( *info );

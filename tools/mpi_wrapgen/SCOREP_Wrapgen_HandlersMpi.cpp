@@ -2,25 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011, 2018,
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
- *    Technische Universitaet Dresden, Germany
- *
- * Copyright (c) 2009-2011,
- *    University of Oregon, Eugene, USA
+ * University of Oregon, Eugene, USA
  *
  * Copyright (c) 2009-2011, 2016
- *    Forschungszentrum Juelich GmbH, Germany
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
- *    Technische Universitaet Muenchen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -636,7 +636,7 @@ SCOREP::Wrapgen::handler::mpi::decl_f2c_c2f
             str += "char* c_" + arg_name + " = NULL;";
             if ( datatype::is_output_param( arg ) )
             {
-                str += "\nint c_" + arg_name + "_len = 0;";
+                str += "\nsize_t c_" + arg_name + "_len = 0;";
             }
         }
         else if ( arg.has_special_tag( "noaint" ) )
@@ -718,7 +718,7 @@ SCOREP::Wrapgen::handler::mpi::decl_fortran
             str += "char* c_" + arg_name + " = NULL;";
             if ( datatype::is_output_param( arg ) )
             {
-                str += "\nint c_" + arg_name + "_len = 0;";
+                str += "\nsize_t c_" + arg_name + "_len = 0;";
             }
         }
         else if ( arg.has_special_tag( "noaint" ) )
@@ -973,7 +973,7 @@ SCOREP::Wrapgen::handler::mpi::proto_fortran
         {
             // most compilers add an additional 'int' parameter for each
             // char-pointer in the parameter list
-            c_str_lengths += ", int " + arg_name + "_len";
+            c_str_lengths += ", scorep_fortran_charlen_t " + arg_name + "_len";
             str           += arg_type + " ";
         }
 #if 0
@@ -1068,7 +1068,7 @@ SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
         {
             // most compilers add an additional 'int' parameter for each
             // char-pointer in the parameter list
-            c_str_lengths += ", int " + arg_name + "_len";
+            c_str_lengths += ", scorep_fortran_charlen_t " + arg_name + "_len";
             str           += arg_type + " ";
         }
         else if ( datatype::is_range_triplet( arg ) )

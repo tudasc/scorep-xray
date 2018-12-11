@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -521,7 +521,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
  * @ingroup spawn
  */
 void
-FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Close_port )( char* port_name, int* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
@@ -544,7 +544,7 @@ FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
@@ -567,7 +567,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* c
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
@@ -647,12 +647,12 @@ FSUB( MPI_Comm_join )( int* fd, MPI_Comm* newcomm, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_service_name  = NULL;
-    char* c_port_name     = NULL;
-    int   c_port_name_len = 0;
+    char*  c_service_name  = NULL;
+    char*  c_port_name     = NULL;
+    size_t c_port_name_len = 0;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -683,11 +683,11 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
  * @ingroup spawn
  */
 void
-FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_port_name     = NULL;
-    int   c_port_name_len = 0;
+    char*  c_port_name     = NULL;
+    size_t c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
     {
@@ -715,7 +715,7 @@ FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, int port_name
  * @ingroup spawn
  */
 void
-FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
@@ -742,7 +742,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, i
  * @ingroup spawn
  */
 void
-FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
@@ -1086,7 +1086,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
  * For the order of events see @ref MPI_Close_port
  */
 void
-FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
+FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
@@ -1110,7 +1110,7 @@ FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
  * For the order of events see @ref MPI_Comm_accept
  */
 void
-FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
+FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
@@ -1136,7 +1136,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
  * For the order of events see @ref MPI_Comm_connect
  */
 void
-FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
+FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
@@ -1228,12 +1228,12 @@ FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Lookup_name
  */
 void
-FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_service_name  = NULL;
-    char* c_port_name     = NULL;
-    int   c_port_name_len = 0;
+    char*  c_service_name  = NULL;
+    char*  c_port_name     = NULL;
+    size_t c_port_name_len = 0;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1265,11 +1265,11 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
  * For the order of events see @ref MPI_Open_port
  */
 void
-FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port_name_len )
+FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_port_name     = NULL;
-    int   c_port_name_len = 0;
+    char*  c_port_name     = NULL;
+    size_t c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
     {
@@ -1298,7 +1298,7 @@ FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port
  * For the order of events see @ref MPI_Publish_name
  */
 void
-FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
@@ -1326,7 +1326,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, M
  * For the order of events see @ref MPI_Unpublish_name
  */
 void
-FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_t service_name_len, scorep_fortran_charlen_t port_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;

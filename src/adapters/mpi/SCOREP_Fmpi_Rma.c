@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1015,11 +1015,11 @@ FSUB( MPI_Win_get_info )( MPI_Win* win, MPI_Info* info_used, int* ierr )
  * @ingroup rma_ext
  */
 void
-FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ierr, int win_name_len )
+FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ierr, scorep_fortran_charlen_t win_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_win_name     = NULL;
-    int   c_win_name_len = 0;
+    char*  c_win_name     = NULL;
+    size_t c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
     if ( !c_win_name )
     {
@@ -1085,7 +1085,7 @@ FSUB( MPI_Win_set_info )( MPI_Win* win, MPI_Info* info, int* ierr )
  * @ingroup rma_ext
  */
 void
-FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, int win_name_len )
+FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, scorep_fortran_charlen_t win_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_win_name = NULL;
@@ -1891,11 +1891,11 @@ FSUB( MPI_Win_get_info )( MPI_Fint* win, MPI_Fint* info_used, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Win_get_name
  */
 void
-FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MPI_Fint* ierr, int win_name_len )
+FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t win_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_win_name     = NULL;
-    int   c_win_name_len = 0;
+    char*  c_win_name     = NULL;
+    size_t c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
     if ( !c_win_name )
     {
@@ -1968,7 +1968,7 @@ FSUB( MPI_Win_set_info )( MPI_Fint* win, MPI_Fint* info, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Win_set_name
  */
 void
-FSUB( MPI_Win_set_name )( MPI_Fint* win, char* win_name, MPI_Fint* ierr, int win_name_len )
+FSUB( MPI_Win_set_name )( MPI_Fint* win, char* win_name, MPI_Fint* ierr, scorep_fortran_charlen_t win_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win      = PMPI_Win_f2c( *win );

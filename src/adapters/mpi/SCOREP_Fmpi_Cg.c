@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1263,11 +1263,11 @@ FSUB( MPI_Comm_get_info )( MPI_Comm* comm, MPI_Info* info_used, int* ierr )
  * @ingroup cg_ext
  */
 void
-FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int* ierr, int comm_name_len )
+FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int* ierr, scorep_fortran_charlen_t comm_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_comm_name     = NULL;
-    int   c_comm_name_len = 0;
+    char*  c_comm_name     = NULL;
+    size_t c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
     if ( !c_comm_name )
     {
@@ -1333,7 +1333,7 @@ FSUB( MPI_Comm_set_info )( MPI_Comm* comm, MPI_Info* info, int* ierr )
  * @ingroup cg_ext
  */
 void
-FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, int comm_name_len )
+FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, scorep_fortran_charlen_t comm_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_comm_name = NULL;
@@ -2179,11 +2179,11 @@ FSUB( MPI_Comm_get_info )( MPI_Fint* comm, MPI_Fint* info_used, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Comm_get_name
  */
 void
-FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen, MPI_Fint* ierr, int comm_name_len )
+FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t comm_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_comm_name     = NULL;
-    int   c_comm_name_len = 0;
+    char*  c_comm_name     = NULL;
+    size_t c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
     if ( !c_comm_name )
     {
@@ -2256,7 +2256,7 @@ FSUB( MPI_Comm_set_info )( MPI_Fint* comm, MPI_Fint* info, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Comm_set_name
  */
 void
-FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int comm_name_len )
+FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, scorep_fortran_charlen_t comm_name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );

@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2018,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -46,7 +49,7 @@ void
 FSUB( SCOREP_F_CartTopologyCreate )( SCOREP_Fortran_TopologyHandle* topologyHandle,
                                      const char*                    name,
                                      uint32_t*                      nDims,
-                                     int                            nameLen )
+                                     scorep_fortran_charlen_t       nameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -105,7 +108,7 @@ FSUB( SCOREP_F_CartTopologyAddDim )( SCOREP_Fortran_TopologyHandle* topologyHand
                                      int*                           size,
                                      int*                           periodic,
                                      const char*                    name,
-                                     int                            nameLen )
+                                     scorep_fortran_charlen_t       nameLen )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 

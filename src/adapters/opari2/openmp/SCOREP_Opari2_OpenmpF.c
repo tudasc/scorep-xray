@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015
+ * Copyright (c) 2009-2013, 2015, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -53,7 +53,7 @@
 void
 FSUB( POMP2_Atomic_enter )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string,
-                            int                          ctc_string_len )
+                            scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Atomic_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -72,7 +72,7 @@ void
 FSUB( POMP2_Barrier_enter )( POMP2_Region_handle_fortran* region_handle,
                              POMP2_Task_handle_fortran*   pomp_old_task,
                              const char*                  ctc_string,
-                             int                          ctc_string_len )
+                             scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Barrier_enter( SCOREP_POMP_F2C_REGION( region_handle ),
@@ -114,7 +114,7 @@ FSUB( POMP2_Implicit_barrier_exit )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Flush_enter )( POMP2_Region_handle_fortran* region_handle,
                            const char*                  ctc_string,
-                           int                          ctc_string_len )
+                           scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Flush_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -148,7 +148,7 @@ FSUB( POMP2_Critical_end )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Critical_enter )( POMP2_Region_handle_fortran* region_handle,
                               const char*                  ctc_string,
-                              int                          ctc_string_len )
+                              scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Critical_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -166,7 +166,7 @@ FSUB( POMP2_Critical_exit )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Do_enter )( POMP2_Region_handle_fortran* region_handle,
                         const char*                  ctc_string,
-                        int                          ctc_string_len )
+                        scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_For_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -184,7 +184,7 @@ FSUB( POMP2_Do_exit )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Master_begin )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string,
-                            int                          ctc_string_len )
+                            scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Master_begin( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -202,7 +202,7 @@ FSUB( POMP2_Master_end )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Ordered_enter )( POMP2_Region_handle_fortran* region_handle,
                              const char*                  ctc_string,
-                             int                          ctc_string_len )
+                             scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Ordered_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -255,7 +255,7 @@ FSUB( POMP2_Parallel_fork )( POMP2_Region_handle_fortran* region_handle,
                              int*                         num_threads,
                              POMP2_Task_handle_fortran*   pomp_old_task,
                              const char*                  ctc_string,
-                             int                          ctc_string_len )
+                             scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Parallel_fork( SCOREP_POMP_F2C_REGION( region_handle ),
@@ -279,7 +279,7 @@ FSUB( POMP2_Parallel_join )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Section_begin )( POMP2_Region_handle_fortran* region_handle,
                              const char*                  ctc_string,
-                             int                          ctc_string_len )
+                             scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Section_begin( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -297,7 +297,7 @@ FSUB( POMP2_Section_end )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Sections_enter )( POMP2_Region_handle_fortran* region_handle,
                               const char*                  ctc_string,
-                              int                          ctc_string_len )
+                              scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Sections_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -331,7 +331,7 @@ FSUB( POMP2_Single_end )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Single_enter )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string,
-                            int                          ctc_string_len )
+                            scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Single_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );
@@ -352,7 +352,7 @@ FSUB( POMP2_Task_create_begin )( POMP2_Region_handle_fortran* region_handle,
                                  POMP2_Task_handle_fortran*   pomp2_old_task,
                                  int*                         pomp2_if,
                                  const char*                  ctc_string,
-                                 int                          ctc_string_len )
+                                 scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Task_create_begin( SCOREP_POMP_F2C_REGION( region_handle ),
@@ -397,7 +397,7 @@ FSUB( POMP2_Untied_task_create_begin )( POMP2_Region_handle_fortran* region_hand
                                         POMP2_Task_handle_fortran*   pomp2_old_task,
                                         int*                         pomp2_if,
                                         const char*                  ctc_string,
-                                        int                          ctc_string_len )
+                                        scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Task_create_begin( SCOREP_POMP_F2C_REGION( region_handle ),
@@ -440,7 +440,7 @@ void
 FSUB( POMP2_Taskwait_begin )( POMP2_Region_handle_fortran* region_handle,
                               POMP2_Task_handle_fortran*   pomp2_old_task,
                               const char*                  ctc_string,
-                              int                          ctc_string_len )
+                              scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Taskwait_begin( SCOREP_POMP_F2C_REGION( region_handle ),
@@ -462,7 +462,7 @@ FSUB( POMP2_Taskwait_end )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Workshare_enter )( POMP2_Region_handle_fortran* region_handle,
                                const char*                  ctc_string,
-                               int                          ctc_string_len )
+                               scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Workshare_enter( SCOREP_POMP_F2C_REGION( region_handle ), ctc_string );

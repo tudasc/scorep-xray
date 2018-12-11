@@ -4,6 +4,9 @@
  * Copyright (c) 2013
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2018,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -25,7 +28,7 @@
 #include <string.h>
 
 char*
-scorep_f2c_string( const char* f_string, uint32_t length )
+scorep_f2c_string( const char* f_string, scorep_fortran_charlen_t length )
 {
     char* c_string = ( char* )malloc( ( length + 1 ) * sizeof( char ) );
     if ( !c_string )

@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -182,7 +182,7 @@ FSUB( MPI_Add_error_code )( int* errorclass, int* errorcode, int* ierr )
  * @ingroup err
  */
 void
-FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, int string_len )
+FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, scorep_fortran_charlen_t string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
@@ -224,11 +224,11 @@ FSUB( MPI_Error_class )( int* errorcode, int* errorclass, int* ierr )
  * @ingroup err
  */
 void
-FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ierr, int string_len )
+FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ierr, scorep_fortran_charlen_t string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_string     = NULL;
-    int   c_string_len = 0;
+    char*  c_string     = NULL;
+    size_t c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
     if ( !c_string )
     {
@@ -300,7 +300,7 @@ FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, MPI_Fint*
  * For the order of events see @ref MPI_Add_error_string
  */
 void
-FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr, int string_len )
+FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr, scorep_fortran_charlen_t string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
@@ -344,11 +344,11 @@ FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, MPI_Fint* ie
  * For the order of events see @ref MPI_Error_string
  */
 void
-FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen, MPI_Fint* ierr, int string_len )
+FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_string     = NULL;
-    int   c_string_len = 0;
+    char*  c_string     = NULL;
+    size_t c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
     if ( !c_string )
     {

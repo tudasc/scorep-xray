@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -305,11 +305,11 @@ FSUB( MPI_Get_elements_x )( MPI_Status* status, MPI_Datatype* datatype, MPI_Coun
  * @ingroup ext
  */
 void
-FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, int name_len )
+FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, scorep_fortran_charlen_t name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_name     = NULL;
-    int   c_name_len = 0;
+    char*  c_name     = NULL;
+    size_t c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
     if ( !c_name )
     {
@@ -525,11 +525,11 @@ FSUB( MPI_Get_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* cou
  * For the order of events see @ref MPI_Get_processor_name
  */
 void
-FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr, int name_len )
+FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_name     = NULL;
-    int   c_name_len = 0;
+    char*  c_name     = NULL;
+    size_t c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
     if ( !c_name )
     {

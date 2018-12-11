@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2013-2015,
+ * Copyright (c) 2009-2011, 2013-2015, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -62,7 +62,7 @@ void
 FSUB( SCOREP_F_ParameterInt64 )( SCOREP_Fortran_Parameter* handle,
                                  const char*               name,
                                  int64_t*                  value,
-                                 int                       name_len )
+                                 scorep_fortran_charlen_t  name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -99,7 +99,7 @@ void
 FSUB( SCOREP_F_ParameterUint64 )( SCOREP_Fortran_Parameter* handle,
                                   const char*               name,
                                   uint64_t*                 value,
-                                  int                       name_len )
+                                  scorep_fortran_charlen_t  name_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
@@ -136,8 +136,8 @@ void
 FSUB( SCOREP_F_ParameterString )( SCOREP_User_ParameterHandle* handle,
                                   const char*                  name,
                                   const char*                  value,
-                                  int                          name_len,
-                                  int                          value_len )
+                                  scorep_fortran_charlen_t     name_len,
+                                  scorep_fortran_charlen_t     value_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 

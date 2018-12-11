@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -275,11 +275,11 @@ FSUB( MPI_Finalized )( int* flag, int* ierr )
  * @ingroup env
  */
 void
-FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, int version_len )
+FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, scorep_fortran_charlen_t version_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_version     = NULL;
-    int   c_version_len = 0;
+    char*  c_version     = NULL;
+    size_t c_version_len = 0;
     c_version = ( char* )malloc( ( version_len + 1 ) * sizeof( char ) );
     if ( !c_version )
     {
@@ -433,11 +433,11 @@ FSUB( MPI_Finalized )( MPI_Fint* flag, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Get_library_version
  */
 void
-FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* ierr, int version_len )
+FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* ierr, scorep_fortran_charlen_t version_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    char* c_version     = NULL;
-    int   c_version_len = 0;
+    char*  c_version     = NULL;
+    size_t c_version_len = 0;
     c_version = ( char* )malloc( ( version_len + 1 ) * sizeof( char ) );
     if ( !c_version )
     {

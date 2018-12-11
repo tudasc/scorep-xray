@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2018,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,7 +40,7 @@
 void
 FSUB( POMP2_USER_Assign_handle )( POMP2_Region_handle_fortran* regionHandle,
                                   char*                        ctc_string,
-                                  int                          ctc_string_len )
+                                  scorep_fortran_charlen_t     ctc_string_len )
 {
     char* str;
     str = ( char* )malloc( ( ctc_string_len + 1 ) * sizeof( char ) );

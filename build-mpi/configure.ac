@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2017,
+dnl Copyright (c) 2009-2018,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -171,6 +171,7 @@ AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_su
 # <AC_SCOREP_COMMON_CHECKS>
 AC_SCOREP_COMPILER_CHECKS
 SCOREP_FORTRAN_MANGLED
+SCOREP_CHECK_FORTRAN_CHARLEN_TYPE
 
 AC_C_BIGENDIAN
 

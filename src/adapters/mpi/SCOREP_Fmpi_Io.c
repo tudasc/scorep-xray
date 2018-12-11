@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -777,7 +777,7 @@ FSUB( MPI_File_close )( MPI_Fint* fh, MPI_Fint* ierr )
  * For the order of events see @ref MPI_File_delete
  */
 void
-FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int filename_len )
+FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, scorep_fortran_charlen_t filename_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_filename = NULL;
@@ -985,13 +985,13 @@ FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* ex
  * For the order of events see @ref MPI_File_get_view
  */
 void
-FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_etype;
     MPI_Datatype c_filetype;
     char*        c_datarep     = NULL;
-    int          c_datarep_len = 0;
+    size_t       c_datarep_len = 0;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
     if ( !c_datarep )
     {
@@ -1022,7 +1022,7 @@ FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
  * For the order of events see @ref MPI_File_open
  */
 void
-FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint* info, MPI_Fint* fh, MPI_Fint* ierr, int filename_len )
+FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint* info, MPI_Fint* fh, MPI_Fint* ierr, scorep_fortran_charlen_t filename_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_filename = NULL;
@@ -1180,7 +1180,7 @@ FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
  * For the order of events see @ref MPI_File_set_view
  */
 void
-FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* info, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* info, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh      = PMPI_File_f2c( *fh );
@@ -1228,7 +1228,7 @@ FSUB( MPI_File_sync )( MPI_Fint* fh, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Register_datarep
  */
 void
-FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, MPI_Fint* ierr, int datarep_len )
+FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, MPI_Fint* ierr, scorep_fortran_charlen_t datarep_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,7 @@
 void
 FSUB( POMP2_Begin )( POMP2_Region_handle_fortran* regionHandle,
                      const char*                  ctc_string,
-                     int                          ctc_string_len )
+                     scorep_fortran_charlen_t     ctc_string_len )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Begin( SCOREP_POMP_F2C_REGION( regionHandle ), ctc_string );
