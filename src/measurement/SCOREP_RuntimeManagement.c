@@ -145,7 +145,7 @@ static SCOREP_Location* main_thread_location;
 static void scorep_finalize( void );
 static void initialization_sanity_checks( void );
 static void trigger_exit_callbacks( void );
-static void define_measurement_regions( void );
+static void define_measurement_regions( int argc, char* argv[] );
 static void define_measurement_attributes( void );
 static void init_mpp( SCOREP_SynchronizationMode syncMode );
 static void synchronize( SCOREP_SynchronizationMode syncMode );
@@ -229,15 +229,10 @@ SCOREP_GetExecutableName( bool* executableNameIsFile )
 
 
 static void
-begin_epoch( int argc, char* argv[] )
+define_program_begin_end_region( int argc, char* argv[] )
 {
-    SCOREP_TIME_START_TIMING( SCOREP_BeginEpoch );
-
-    SCOREP_BeginEpoch();
-
-    bool                unused;
-    const char*         program_name = SCOREP_GetExecutableName( &unused );
-    SCOREP_StringHandle program      = SCOREP_Definitions_NewString( program_name );
+    bool        unused;
+    const char* program_name = SCOREP_GetExecutableName( &unused );
     if ( argc > 0 )
     {
         argc--;
@@ -245,12 +240,10 @@ begin_epoch( int argc, char* argv[] )
     }
 
     /* Create program_region, therefore create by program_canonical_name by
-     * concatenating program_name and all argv. In addition, store argv
-     * string handles in args. */
-    SCOREP_StringHandle args[ argc ];
-    size_t              strlength[ argc + 1 ];
-    int                 displacements[ argc + 1 ];
-    size_t              total_length;
+     * concatenating program_name and all argv. */
+    size_t strlength[ argc + 1 ];
+    int    displacements[ argc + 1 ];
+    size_t total_length;
 
     strlength[ 0 ]     = strlen( program_name );
     displacements[ 0 ] = 0;
@@ -258,7 +251,6 @@ begin_epoch( int argc, char* argv[] )
 
     for ( int i = 0; i < argc; i++ )
     {
-        args[ i ]              = SCOREP_Definitions_NewString( argv[ i ] );
         strlength[ i + 1 ]     = strlen( argv[ i ] );
         displacements[ i + 1 ] = displacements[ i ] + strlength[ i ] + 1;
         total_length          += strlength[ i + 1 ] + 1;
@@ -288,6 +280,30 @@ begin_epoch( int argc, char* argv[] )
         SCOREP_INVALID_LINE_NO,
         SCOREP_PARADIGM_MEASUREMENT,
         SCOREP_REGION_ARTIFICIAL );
+}
+
+
+static void
+begin_epoch( int argc, char* argv[] )
+{
+    SCOREP_TIME_START_TIMING( SCOREP_BeginEpoch );
+
+    SCOREP_BeginEpoch();
+
+    bool                unused;
+    const char*         program_name = SCOREP_GetExecutableName( &unused );
+    SCOREP_StringHandle program      = SCOREP_Definitions_NewString( program_name );
+    if ( argc > 0 )
+    {
+        argc--;
+        argv++;
+    }
+
+    SCOREP_StringHandle args[ argc ];
+    for ( int i = 0; i < argc; i++ )
+    {
+        args[ i ] = SCOREP_Definitions_NewString( argv[ i ] );
+    }
 
     main_thread_location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE( ProgramBegin, PROGRAM_BEGIN,
@@ -452,7 +468,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      *
      * @dependsOn Definitions
      */
-    define_measurement_regions();
+    define_measurement_regions( argc, argv );
 
     /*
      * Define attributes.
@@ -949,7 +965,7 @@ trigger_exit_callbacks( void )
 }
 
 void
-define_measurement_regions( void )
+define_measurement_regions( int argc, char* argv[] )
 {
     record_off_region = SCOREP_Definitions_NewRegion(
         "MEASUREMENT OFF", NULL,
@@ -966,6 +982,8 @@ define_measurement_regions( void )
         SCOREP_INVALID_LINE_NO,
         SCOREP_PARADIGM_MEASUREMENT,
         SCOREP_REGION_ARTIFICIAL );
+
+    define_program_begin_end_region( argc, argv );
 }
 
 void
