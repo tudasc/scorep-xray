@@ -46,12 +46,14 @@
 #include <config.h>
 
 #include <SCOREP_Definitions.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 #include <scorep_profile_event_base.h>
 #include <scorep_profile_node.h>
 
+#include <string.h>
 
 static void
 visit_to_switches( scorep_profile_node* node,
@@ -117,6 +119,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     if ( tasksRoot == NULL )
     {
         scorep_profile_type_data_t program_region_data;
+        memset( &program_region_data, 0, sizeof( program_region_data ) );
         scorep_profile_type_set_region_handle( &program_region_data, SCOREP_GetProgramRegion() );
         program_root = scorep_profile_create_node( location,
                                                    NULL,
@@ -125,6 +128,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                    UINT64_MAX, false );
 
         scorep_profile_type_data_t root_region_data;
+        memset( &root_region_data, 0, sizeof( root_region_data ) );
         scorep_profile_type_set_region_handle( &root_region_data, root_region );
         tasks_root = scorep_profile_create_node( location,
                                                  NULL,
