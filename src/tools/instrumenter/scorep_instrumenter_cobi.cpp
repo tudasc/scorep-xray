@@ -69,7 +69,7 @@ SCOREP_Instrumenter_CobiAdapter::postlink( SCOREP_Instrumenter&         instrume
     std::string orig_name   = output_name + ".orig";
     if ( cmdLine.getVerbosity() >= 1 )
     {
-        std::cout << "mv "
+        std::cerr << "mv "
                   << output_name
                   << " " << orig_name << std::endl;
     }

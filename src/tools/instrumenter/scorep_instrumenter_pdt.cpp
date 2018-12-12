@@ -180,7 +180,7 @@ SCOREP_Instrumenter_PdtAdapter::set_pdt_path( const std::string& pdt )
         }
         else
         {
-            std::cerr << "ERROR: Unable to find PDT binaries" << std::endl;
+            std::cerr << "[Score-P] ERROR: Unable to find PDT binaries" << std::endl;
             exit( EXIT_FAILURE );
         }
     }

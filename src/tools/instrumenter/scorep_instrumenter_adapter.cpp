@@ -82,7 +82,7 @@ SCOREP_Instrumenter_Adapter::checkDependencies( void )
     if ( !prereqs )
     {
         m_usage = disabled;
-        std::cerr << "WARNING: Disabled '" << m_name << "' because none of its "
+        std::cerr << "[Score-P] WARNING: Disabled '" << m_name << "' because none of its "
                   << "prerequisites are enabled" << std::endl;
     }
 
@@ -292,7 +292,7 @@ SCOREP_Instrumenter_Adapter::unsupported( void )
 void
 SCOREP_Instrumenter_Adapter::error_unsupported( void )
 {
-    std::cerr << "ERROR: This installation does not support '" << m_name << "' "
+    std::cerr << "[Score-P] ERROR: This installation does not support '" << m_name << "' "
               << "instrumentation" << std::endl;
     exit( EXIT_FAILURE );
 }
@@ -384,7 +384,7 @@ SCOREP_Instrumenter_Adapter::printEnabledAdapterList( void )
     {
         if ( adapter->second->isEnabled() )
         {
-            std::cout << " " << adapter->second->m_name;
+            std::cerr << " " << adapter->second->m_name;
         }
     }
 }
@@ -484,14 +484,14 @@ SCOREP_Instrumenter_Adapter::require( const std::string&            caller,
     adapter = m_adapter_list.find( id );
     if ( adapter == m_adapter_list.end() )
     {
-        std::cerr << "ERROR: Required adapter for '" << caller << "' adapter "
+        std::cerr << "[Score-P] ERROR: Required adapter for '" << caller << "' adapter "
                   << "is not available" << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( adapter->second->m_usage == disabled )
     {
-        std::cerr << "ERROR: Cannot disable '" << adapter->second->m_name << "' adapter\n"
-                  << "       Is required by " << caller << " adapter" << std::endl;
+        std::cerr << "[Score-P] ERROR: Cannot disable '" << adapter->second->m_name << "' adapter\n"
+                  << "                 Is required by " << caller << " adapter" << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( adapter->second->m_usage == detect )
@@ -514,8 +514,8 @@ SCOREP_Instrumenter_Adapter::conflict( const std::string&            caller,
     }
     if ( adapter->second->m_usage == enabled )
     {
-        std::cerr << "ERROR: Cannot enable '" << adapter->second->m_name << "' adapter\n"
-                  << "       Conflicts with '" << caller << "' adapter" << std::endl;
+        std::cerr << "[Score-P] ERROR: Cannot enable '" << adapter->second->m_name << "' adapter\n"
+                  << "                 Conflicts with '" << caller << "' adapter" << std::endl;
         exit( EXIT_FAILURE );
     }
     adapter->second->m_usage = disabled;

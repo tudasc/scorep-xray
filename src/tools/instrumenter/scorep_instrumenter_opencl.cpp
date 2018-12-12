@@ -108,7 +108,7 @@ SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
         }
 #endif
 
-        std::cerr << "ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
+        std::cerr << "[Score-P] ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
         exit( EXIT_FAILURE );
     }
     if ( arg == "--noopencl" )

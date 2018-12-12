@@ -125,7 +125,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (malloc|free|calloc|realloc|memalign|posix_memalign|valloc)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -140,7 +140,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (hbw_malloc|hbw_free|hbw_calloc|hbw_realloc|hbw_posix_memalign|hbw_posix_memalign_psize)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -155,7 +155,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U aligned_alloc$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -170,7 +170,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (_Znwj|_Znaj)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -185,7 +185,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (_Znwm|_Znam)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -200,7 +200,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (__nw__FUi|__nwa__FUi)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -215,7 +215,7 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
                               SCOREP_EGREP " -l ' U (__nw__FUl|__nwa__FUl)$' >/dev/null 2>&1";
         if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
         {
-            std::cout << command << std::endl;
+            std::cerr << command << std::endl;
         }
         int return_value = system( command.c_str() );
         if ( return_value == 0 )

@@ -636,7 +636,7 @@ SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
     std::string command( orig_command );
     if ( m_command_line.getVerbosity() >= 1 )
     {
-        std::cout << orig_command << std::endl;
+        std::cerr << orig_command << std::endl;
 
         /* --dry-run implies --verbose */
         if ( m_command_line.isDryRun() )
@@ -651,7 +651,7 @@ SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
     int return_value = system( command.c_str() );
     if ( return_value != 0 )
     {
-        std::cerr << "ERROR: Execution failed: " << orig_command << std::endl;
+        std::cerr << "[Score-P] ERROR: Execution failed: " << orig_command << std::endl;
         exit( EXIT_FAILURE );
     }
 }

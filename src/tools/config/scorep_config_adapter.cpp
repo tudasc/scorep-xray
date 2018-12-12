@@ -299,7 +299,7 @@ SCOREP_Config_MockupAdapter::checkArgument( const std::string& arg )
 {
     if ( arg == "--" + m_name )
     {
-        std::cerr << "ERROR: Unsupported feature '" << m_name << "' cannot be enabled by '" << arg << "'" << std::endl;
+        std::cerr << "[Score-P] ERROR: Unsupported feature '" << m_name << "' cannot be enabled by '" << arg << "'" << std::endl;
         exit( EXIT_FAILURE );
         return false;
     }
@@ -527,7 +527,7 @@ SCOREP_Config_OpenclAdapter::checkArgument( const std::string& arg )
         }
 #endif
 
-        std::cerr << "ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
+        std::cerr << "[Score-P] ERROR: Invalid or unsupported wrapping mode for OpenCL: " << m_wrapmode << std::endl;
         exit( EXIT_FAILURE );
 
         return true;
@@ -680,7 +680,7 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         int return_value = system( opari_config.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "ERROR: Execution failed: " << opari_config.c_str() << std::endl;
+            std::cerr << "[Score-P] ERROR: Execution failed: " << opari_config.c_str() << std::endl;
             exit( EXIT_FAILURE );
         }
         std::cout << " ";
@@ -920,7 +920,7 @@ SCOREP_Config_LibwrapAdapter::checkArgument( const std::string& arg )
         }
         else
         {
-            std::cerr << "ERROR: Missing libwrap mode in: '" << arg << "'" << std::endl;
+            std::cerr << "[Score-P] ERROR: Missing libwrap mode in: '" << arg << "'" << std::endl;
             exit( EXIT_FAILURE );
         }
 
@@ -960,7 +960,7 @@ SCOREP_Config_LibwrapAdapter::addLibs( std::deque<std::string>&           libs,
 #endif
         if ( wrapmode == "linktime" )
         {
-            std::cerr << "ERROR: Library wrapping mode 'linktime' not supported by this installation." << std::endl;
+            std::cerr << "[Score-P] ERROR: Library wrapping mode 'linktime' not supported by this installation." << std::endl;
             exit( EXIT_FAILURE );
         }
 
@@ -977,7 +977,7 @@ SCOREP_Config_LibwrapAdapter::addLibs( std::deque<std::string>&           libs,
 #endif
         if ( wrapmode == "runtime" )
         {
-            std::cerr << "ERROR: Library wrapping mode 'runtime' not supported by this installation." << std::endl;
+            std::cerr << "[Score-P] ERROR: Library wrapping mode 'runtime' not supported by this installation." << std::endl;
             exit( EXIT_FAILURE );
         }
 

@@ -316,8 +316,8 @@ main( int    argc,
             preload_libs  = true;
             action        = ACTION_EVENT_LIBS;
 #else
-            std::cerr << "ERROR: Unsupported option: '" << argv[ i ] << "'.\n"
-                      << "       This installation contains no shared Score-P libraries." << std::endl;
+            std::cerr << "[Score-P] ERROR: Unsupported option: '" << argv[ i ] << "'.\n"
+                      << "                 This installation contains no shared Score-P libraries." << std::endl;
             clean_up();
             exit( EXIT_FAILURE );
 #endif
@@ -365,7 +365,7 @@ main( int    argc,
             }
             else
             {
-                std::cerr << "ERROR: Invalid language for '--cppflags=': " << language_arg << std::endl;
+                std::cerr << "[Score-P] ERROR: Invalid language for '--cppflags=': " << language_arg << std::endl;
                 exit( EXIT_FAILURE );
             }
         }
@@ -429,7 +429,7 @@ main( int    argc,
         {
             if ( path_to_binary == "" )
             {
-                std::cerr << "ERROR: Using '--build-check' requires calling scorep-config not via $PATH" << std::endl;
+                std::cerr << "[Score-P] ERROR: Using '--build-check' requires calling scorep-config not via $PATH" << std::endl;
                 exit( EXIT_FAILURE );
             }
             install = false;
@@ -478,7 +478,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_ThreadSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "ERROR: Unknown threading system: '" << arg << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Unknown threading system: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -489,7 +489,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_MppSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "ERROR: Unknown multi-process paradigm: '" << arg << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Unknown multi-process paradigm: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -500,7 +500,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_Mutex::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "ERROR: Unknown locking system: '" << arg << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Unknown locking system: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -518,7 +518,7 @@ main( int    argc,
             }
             if ( !target_name )
             {
-                std::cerr << "ERROR: Missing argument for '--target'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Missing argument for '--target'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -533,7 +533,7 @@ main( int    argc,
             }
             else
             {
-                std::cerr << "ERROR: Unknown target: '" << target_name << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Unknown target: '" << target_name << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -544,7 +544,7 @@ main( int    argc,
             bool        known_arg = SCOREP_Config_Adapter::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "ERROR: Unknown option: '" << arg << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Unknown option: '" << arg << "'" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
             }
@@ -557,7 +557,7 @@ main( int    argc,
         delegate( argc, argv, "mic" );
 #else
 #if !HAVE( PLATFORM_MIC )
-        std::cerr << "ERROR: Unsupported target: '" << target_name << "'" << std::endl;
+        std::cerr << "[Score-P] ERROR: Unsupported target: '" << target_name << "'" << std::endl;
         clean_up();
         exit( EXIT_FAILURE );
 #endif  /* !HAVE( PLATFORM_MIC ) */

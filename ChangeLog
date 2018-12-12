@@ -57,6 +57,13 @@ Features and improvements:
   MCDRAM with Score-P.
 - All Fortran wrappers support now 64-bit character length arguments
   with GCC 8.
+- scorep: Multiple improvements to better interact with build systems:
+  - All warnings and errors are prefixed with '[Score-P] ', for better
+    identification.
+  - All output goes to stderr, to not interfere when catching output
+    from the compiler/linker in process substitutions.
+  - When no source files could be identified, the command is executed
+    as is.
 
 Bugfixes:
 

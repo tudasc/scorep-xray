@@ -174,7 +174,7 @@ SCOREP_Instrumenter_LibwrapAdapter::add_libwrap( const std::string& wrapmode,
     }
     if ( wrapmode == "runtime" && wrapper.m_dlopen_libs.empty() )
     {
-        std::cerr << "ERROR: Library wrapper '" << arg << "' does not support runtime wrapping. Use linktime wrapping instead." << std::endl;
+        std::cerr << "[Score-P] ERROR: Library wrapper '" << arg << "' does not support runtime wrapping. Use linktime wrapping instead." << std::endl;
         exit( EXIT_FAILURE );
     }
     m_wrappers.push_back( std::make_pair( wrapmode, wrapper ) );
@@ -212,7 +212,7 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
         {
             if ( !exists_file( libwrap ) )
             {
-                std::cerr << "ERROR: Library wrapper does not exists: '" << libwrap << "'" << std::endl;
+                std::cerr << "[Score-P] ERROR: Library wrapper does not exists: '" << libwrap << "'" << std::endl;
                 exit( EXIT_FAILURE );
             }
             add_libwrap( wrapmode, libwrap, canonicalize_path( libwrap ) );
@@ -243,7 +243,7 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
                 }
                 if ( j == m_path.size() )
                 {
-                    std::cerr << "ERROR: Library wrapper not found in SCOREP_LIBWRAP_PATH or in Score-P installation: '" << libwrap << "'" << std::endl;
+                    std::cerr << "[Score-P] ERROR: Library wrapper not found in SCOREP_LIBWRAP_PATH or in Score-P installation: '" << libwrap << "'" << std::endl;
                     exit( EXIT_FAILURE );
                 }
             }
@@ -254,7 +254,7 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
 
     if ( arg == "--libwrap" || arg == "--libwrap=" )
     {
-        std::cerr << "ERROR: Missing argument to '--libwrap'" << std::endl;
+        std::cerr << "[Score-P] ERROR: Missing argument to '--libwrap'" << std::endl;
         exit( EXIT_FAILURE );
     }
 

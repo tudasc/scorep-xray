@@ -133,7 +133,7 @@ SCOREP_Instrumenter_Paradigm::checkOption( const std::string& arg )
     {
         // If the user specified this particular variant we can say it is not supported.
         // Otherwise another variant exists that support the paradigm.
-        std::cerr << "ERROR: '" << getConfigName() << "' is not supported by "
+        std::cerr << "[Score-P] ERROR: '" << getConfigName() << "' is not supported by "
                   << "this Score-P installation" << std::endl;
         exit( EXIT_FAILURE );
     }
