@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013, 2017,
+ * Copyright (c) 2009-2012, 2013, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -95,10 +95,10 @@ visit_to_switches( scorep_profile_node* node,
 
 static scorep_profile_node*
 chroot_tasks( SCOREP_Profile_LocationData* location,
-              scorep_profile_node*         task_root,
+              scorep_profile_node*         tasksRoot,
               scorep_profile_node*         task )
 {
-    /* Register the region handle on first visist */
+    /* Register the region handle on first visit */
     static SCOREP_RegionHandle root_region = SCOREP_INVALID_REGION;
     if ( root_region == SCOREP_INVALID_REGION )
     {
@@ -111,30 +111,48 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                     SCOREP_REGION_ARTIFICIAL );
     }
 
-    /* Create root node for each new location */
-    if ( task_root == NULL )
+    /* Create root nodes for each new location */
+    scorep_profile_node* program_root = NULL;
+    scorep_profile_node* tasks_root   = NULL;
+    if ( tasksRoot == NULL )
     {
-        scorep_profile_type_data_t data;
-        scorep_profile_type_set_region_handle( &data, root_region );
+        scorep_profile_type_data_t program_region_data;
+        scorep_profile_type_set_region_handle( &program_region_data, SCOREP_GetProgramRegion() );
+        program_root = scorep_profile_create_node( location,
+                                                   NULL,
+                                                   SCOREP_PROFILE_NODE_TASK_ROOT,
+                                                   program_region_data,
+                                                   UINT64_MAX, false );
 
-        task_root = scorep_profile_create_node( location,
-                                                NULL,
-                                                SCOREP_PROFILE_NODE_TASK_ROOT,
-                                                data,
-                                                UINT64_MAX, false );
+        scorep_profile_type_data_t root_region_data;
+        scorep_profile_type_set_region_handle( &root_region_data, root_region );
+        tasks_root = scorep_profile_create_node( location,
+                                                 NULL,
+                                                 SCOREP_PROFILE_NODE_TASK_ROOT,
+                                                 root_region_data,
+                                                 UINT64_MAX, false );
+        scorep_profile_add_child( program_root, tasks_root );
+    }
+    else
+    {
+        program_root = tasksRoot;
+        UTILS_BUG_ON( program_root->first_child == NULL );
+        UTILS_BUG_ON( program_root->first_child->first_child != NULL );
+        tasks_root = program_root->first_child;
     }
 
     /* move task tree to task_root */
     scorep_profile_remove_node( task );
-    scorep_profile_add_child( task_root, task );
-    scorep_profile_merge_node_inclusive( task_root, task );
+    scorep_profile_add_child( tasks_root, task );
+    scorep_profile_merge_node_inclusive( tasks_root, task );
 
     /* give the task root the timestamp of the first task */
-    if ( task->first_enter_time < task_root->first_enter_time )
+    if ( task->first_enter_time < tasks_root->first_enter_time )
     {
-        task_root->first_enter_time = task->first_enter_time;
+        tasks_root->first_enter_time   = task->first_enter_time;
+        program_root->first_enter_time = task->first_enter_time;
     }
-    return task_root;
+    return program_root;
 }
 
 

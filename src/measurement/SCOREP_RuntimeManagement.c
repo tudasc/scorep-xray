@@ -107,13 +107,13 @@ static int                 n_exit_callbacks = 0;
 /* Artificial regions from Score-P */
 
 /** @brief Region handle to collect data for when measurement is disabled. */
-static SCOREP_RegionHandle record_off_region;
+static SCOREP_RegionHandle record_off_region = SCOREP_INVALID_REGION;
 
 /** @brief Region handle for the trace buffer flush region. */
-static SCOREP_RegionHandle buffer_flush_region;
+static SCOREP_RegionHandle buffer_flush_region = SCOREP_INVALID_REGION;
 
 /* Region handle for the program begin/end events. */
-static SCOREP_RegionHandle program_region;
+static SCOREP_RegionHandle program_region = SCOREP_INVALID_REGION;
 
 /** Temporally disable trace event consumption.
  *
@@ -280,6 +280,14 @@ define_program_begin_end_region( int argc, char* argv[] )
         SCOREP_INVALID_LINE_NO,
         SCOREP_PARADIGM_MEASUREMENT,
         SCOREP_REGION_ARTIFICIAL );
+}
+
+
+SCOREP_RegionHandle
+SCOREP_GetProgramRegion( void )
+{
+    UTILS_BUG_ON( program_region == SCOREP_INVALID_REGION );
+    return program_region;
 }
 
 
@@ -511,6 +519,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      * @dependsOn Thread (PAPI needs current location, but does not
      *            need to be activated yet)
      * @dependsOn Libwrap
+     * @dependsOn measurement_regions
      */
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
 

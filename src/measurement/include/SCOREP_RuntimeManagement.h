@@ -237,6 +237,12 @@ extern bool scorep_is_unwinding_enabled;
 const char*
 SCOREP_GetExecutableName( bool* executableNameIsFile );
 
+/**
+ * Returns the region handle enclosing that represents the application.
+ */
+SCOREP_RegionHandle
+SCOREP_GetProgramRegion( void );
+
 /*@}*/
 
 

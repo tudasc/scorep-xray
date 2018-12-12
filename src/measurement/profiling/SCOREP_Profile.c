@@ -450,14 +450,26 @@ on_location_creation( SCOREP_Location* locationData,
                     SCOREP_REGION_ARTIFICIAL );
             }
 
+            /* Enter the artificial program region */
+            scorep_profile_type_data_t program_region_data;
+            scorep_profile_type_set_region_handle( &program_region_data, SCOREP_GetProgramRegion() );
+            scorep_profile_node* program_root;
+            program_root = scorep_profile_find_create_child( thread_data,
+                                                             node,
+                                                             SCOREP_PROFILE_NODE_REGULAR_REGION,
+                                                             program_region_data,
+                                                             0 /* timestamp */ );
+
             /* Enter the artificial metric region */
             scorep_profile_type_data_t type_data;
             scorep_profile_type_set_region_handle( &type_data, per_process_metrics );
-            node = scorep_profile_find_create_child( thread_data,
-                                                     node,
-                                                     SCOREP_PROFILE_NODE_REGULAR_REGION,
-                                                     type_data,
-                                                     0 /* timestamp */ );
+            node = scorep_profile_create_node( thread_data,
+                                               program_root,
+                                               SCOREP_PROFILE_NODE_REGULAR_REGION,
+                                               type_data,
+                                               0 /* timestamp */, false );
+
+            scorep_profile_add_child( program_root, node );
             scorep_profile_set_current_node( thread_data, node );
         }
     }
@@ -820,7 +832,7 @@ program_begin( SCOREP_Location*     location,
     uint64_t* metric_values = SCOREP_Metric_Read( location );
     SCOREP_Profile_Enter( location,
                           timestamp,
-                          programRegionHandle,
+                          SCOREP_GetProgramRegion(),
                           metric_values );
 }
 
@@ -834,7 +846,7 @@ program_end( SCOREP_Location*    location,
     uint64_t* metric_values = SCOREP_Metric_Read( location );
     SCOREP_Profile_Exit( location,
                          timestamp,
-                         programRegionHandle,
+                         SCOREP_GetProgramRegion(),
                          metric_values );
 }
 
@@ -1489,6 +1501,10 @@ thread_begin( SCOREP_Location*                 location,
 
     SCOREP_Profile_Enter( location,
                           timestamp,
+                          SCOREP_GetProgramRegion(),
+                          metric_values );
+    SCOREP_Profile_Enter( location,
+                          timestamp,
                           thread_create_wait_regions,
                           metric_values );
 }
@@ -1516,6 +1532,10 @@ thread_end( SCOREP_Location*                 location,
     SCOREP_Profile_Exit( location,
                          timestamp,
                          thread_create_wait_regions,
+                         metric_values );
+    SCOREP_Profile_Exit( location,
+                         timestamp,
+                         SCOREP_GetProgramRegion(),
                          metric_values );
 }
 
