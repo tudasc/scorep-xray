@@ -114,11 +114,7 @@
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "mpi" )
                     {
                         ${includesMPI} = 1;
-
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "PARALLEL" ) )
-                        {
-                            ${mpi}[${i}] = 1;
-                        };
+                        ${mpi}[${i}]   = 1;
 
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
                         {

@@ -111,15 +111,7 @@
                     if ( ${paradigm} eq "mpi" )
                     {
                         ${includesMPI} = 1;
-
-                        // Without compiler instrumentation, an artificial PARALLEL region with
-                        // paradigm MPI is created by the adapter.  As it covers the application
-                        // execution time between MPI_Init and MPI_Finalize, it is classified as
-                        // Execution rather than MPI.
-                        if ( not ( ${name} eq "PARALLEL" ) )
-                        {
-                            ${mpi}[${i}] = 1;
-                        };
+                        ${mpi}[${i}]   = 1;
 
                         if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
                         {
