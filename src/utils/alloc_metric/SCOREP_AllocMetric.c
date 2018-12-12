@@ -343,7 +343,7 @@ SCOREP_AllocMetric_New( const char*          name,
                                       SCOREP_METRIC_VALUE_UINT64,
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
-                                      "Bytes",
+                                      "bytes",
                                       SCOREP_METRIC_PROFILING_TYPE_MAX );
 
     SCOREP_SamplingSetHandle sampling_set_handle =
