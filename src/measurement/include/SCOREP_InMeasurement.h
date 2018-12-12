@@ -73,7 +73,13 @@ extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_sig
 #define SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT() ( 0 == scorep_in_measurement++ )
 
 /** Leave the measurement system */
+#if defined( __ICC ) || defined( __ECC ) || defined( __INTEL_COMPILER )
+/* The Intel compiler sometimes produces wrong code, it clobbers registers to
+ * access the TLS scorep_in_measurement variable. The empty asm prevent this. */
+#define SCOREP_IN_MEASUREMENT_DECREMENT() asm ( "" ); ( --scorep_in_measurement )
+#else
 #define SCOREP_IN_MEASUREMENT_DECREMENT() ( --scorep_in_measurement )
+#endif
 
 /** Value of the in-measurement counter */
 #define SCOREP_IN_MEASUREMENT() ( scorep_in_measurement )

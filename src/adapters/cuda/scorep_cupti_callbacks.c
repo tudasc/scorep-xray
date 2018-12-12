@@ -439,13 +439,6 @@ scorep_cupti_callbacks_all( void*                userdata,
         scorep_cupti_callbacks_sync( cbid, ( const CUpti_SynchronizeData* )cbInfo );
     }
 
-    /*
-     * Keep this empty asm. The Intel compiler miscompiles this functions, and
-     * clobbers it registers to access the TLS scorep_in_measurement variable.
-     */
-#if defined( __ICC ) || defined( __ECC ) || defined( __INTEL_COMPILER )
-    asm ( "" );
-#endif
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
