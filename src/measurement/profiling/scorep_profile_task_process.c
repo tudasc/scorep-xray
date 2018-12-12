@@ -141,7 +141,6 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     {
         program_root = tasksRoot;
         UTILS_BUG_ON( program_root->first_child == NULL );
-        UTILS_BUG_ON( program_root->first_child->first_child != NULL );
         tasks_root = program_root->first_child;
     }
 
