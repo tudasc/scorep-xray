@@ -34,7 +34,7 @@ AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([../build-config/common/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
 AFS_PACKAGE_BUILD_INIT([MPI backend])
-AFS_SUMMARY_INIT
+AFS_SUMMARY_INIT([../build-backend])
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \

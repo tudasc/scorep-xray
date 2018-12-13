@@ -5,7 +5,7 @@
 /libtool
 /config.log
 /config.status
-/config.summary
+/config.summary*
 /.deps
 /Makefile
 /run_otf2_speed_test.sh
