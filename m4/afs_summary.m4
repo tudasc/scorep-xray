@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -31,22 +31,105 @@
 
 ## file afs_summary.m4
 
-# AFS_SUMMARY_INIT
-# ----------------
+# _AFS_SUMMARY_DEFINE_FN
+# ----------------------
+# Internal initialization
+m4_define([_AFS_SUMMARY_DEFINE_FN],
+[AC_REQUIRE_SHELL_FN([afs_fn_summary],
+    [AS_FUNCTION_DESCRIBE([afs_fn_summary], [DESCR VALUE INDENT [WRAP-MARGIN=_AFS_SUMMARY_WRAP_MARGIN]],
+        [Produces a line-wrapped summary line with DESCR and VALUE, indented by INDENT
+and wrapped at WRAP-MARGIN.])],
+[dnl function body
+    _afs_summary_wrap_width=${4-_AFS_SUMMARY_WRAP_MARGIN}
+    _afs_summary_column_width=_AFS_SUMMARY_COLUMN_WIDTH
+    _afs_summary_prefix="${3-}  ${1-}:"
+    printf "%s" "${_afs_summary_prefix}"
+    _afs_summary_padding="$(printf "%-${_afs_summary_column_width}s" "")"
+    _afs_summary_value="$(echo "${2-}" | $SED -e 's/  */ /g' -e 's/^ //' -e 's/ $//')"
+    AS_IF([test ${#_afs_summary_prefix} -ge ${#_afs_summary_padding}], [
+        _afs_summary_nl=" \\$as_nl${_afs_summary_padding}"
+    ], [
+        as_fn_arith ${#_afs_summary_padding} - ${#_afs_summary_prefix} &&
+            _afs_summary_nl="$(printf "%-${as_val}s" "")"
+    ])
+    _afs_summary_sep=""
+    as_fn_arith ${#_afs_summary_padding} + 1 &&
+        _afs_summary_column=$as_val
+    while test -n "${_afs_summary_value}"
+    do
+        _afs_summary_entry="${_afs_summary_value%% *}"
+        printf "%s" "${_afs_summary_nl}${_afs_summary_sep}${_afs_summary_entry}"
+
+        case "${_afs_summary_value}" in
+        (*" "*) _afs_summary_value="${_afs_summary_value#* }" ;;
+        (*) _afs_summary_value="" ;;
+        esac
+
+        as_fn_arith ${_afs_summary_column} + ${#_afs_summary_entry} + ${#_afs_summary_sep} &&
+            _afs_summary_column=$as_val
+        AS_IF([test ${_afs_summary_column} -ge ${_afs_summary_wrap_width}], [
+            _afs_summary_nl=" \\$as_nl${_afs_summary_padding}"
+            _afs_summary_sep=""
+            as_fn_arith ${#_afs_summary_padding} + 1 &&
+                _afs_summary_column=$as_val
+        ], [
+            _afs_summary_sep=" "
+            _afs_summary_nl=""
+        ])
+    done
+    echo
+AS_UNSET([_afs_summary_column_width])
+AS_UNSET([_afs_summary_wrap_width])
+AS_UNSET([_afs_summary_prefix])
+AS_UNSET([_afs_summary_padding])
+AS_UNSET([_afs_summary_value])
+AS_UNSET([_afs_summary_nl])
+AS_UNSET([_afs_summary_sep])
+AS_UNSET([_afs_summary_column])
+AS_UNSET([_afs_summary_entry])
+AS_UNSET([_afs_summary_tag])
+AS_UNSET([_afs_summary_tag_final])
+])]dnl
+) #_AFS_SUMMARY_DEFINE_FN
+
+# _AFS_SUMMARY_INIT
+# -----------------
+AC_DEFUN_ONCE([_AFS_SUMMARY_INIT],
+[AC_REQUIRE([AC_PROG_SED])]
+[m4_define_default([_AFS_SUMMARY_COLUMN_WIDTH], 32)]dnl
+[m4_define_default([_AFS_SUMMARY_WRAP_MARGIN], 128)]dnl
+_AFS_SUMMARY_DEFINE_FN
+)# _AFS_SUMMARY_INIT
+
+# AFS_SUMMARY_INIT( [BUILD-MASTER] )
+# ----------------------------------
 # Initializes the summary system and adds the package header (possibly
 # including the sub-build name) to it. It removes config.summary files
 # from previous configure runs recursively, therefore you need to call
 # AFS_SUMMARY_INIT before any sub-configures.
 # The sub-build name is used from the `AFS_PACKAGE_BUILD` variable
 # set by the AFS_PACKAGE_INIT macro.
-AC_DEFUN([AFS_SUMMARY_INIT], [
-rm -f AC_PACKAGE_TARNAME.summary
-LC_ALL=C find . -name config.summary -exec rm -f '{}' \;
+#
+# Provide BUILD-MASTER, if this config.summary should be cleaned up
+# from duplicate lines the BUILD-MASTER/config.summary file has too.
+#
+# Autoconf variables:
+# `_AFS_SUMMARY_COLUMN_WIDTH`:: The width of the description column.
+#                               Defaults to 32.
+# `_AFS_SUMMARY_WRAP_MARGIN`::  The wrap margin. Defaults to 128.
+AC_DEFUN([AFS_SUMMARY_INIT],
+[AC_REQUIRE([_AFS_SUMMARY_INIT])]dnl
+[rm -f AC_PACKAGE_TARNAME.summary
+LC_ALL=C find . -name 'config.summary*' -exec rm -f '{}' \;
+m4_ifnblank(m4_normalize($1), AS_LN_S(m4_normalize($1)[/config.summary], [config.summary-master]))
 m4_define([_AFS_SUMMARY_INDENT], [m4_ifndef([AFS_PACKAGE_BUILD], [], [  ])])dnl
-m4_define([_AFS_SUMMARY_FILE], [config.summary])
-cat >_AFS_SUMMARY_FILE <<_ACEOF
-AS_HELP_STRING(_AFS_SUMMARY_INDENT[]AC_PACKAGE_NAME[ ]m4_ifndef([AFS_PACKAGE_BUILD], AC_PACKAGE_VERSION, [(]AFS_PACKAGE_BUILD[)])[:], [], 32, 128)
-_ACEOF
+m4_define([_AFS_SUMMARY_FILE], [config.summary])dnl
+afs_fn_summary \
+    "AC_PACKAGE_NAME m4_ifndef([AFS_PACKAGE_BUILD], AC_PACKAGE_VERSION, [(]AFS_PACKAGE_BUILD[)])" \
+    "" \
+    "_AFS_SUMMARY_INDENT" \
+    >_AFS_SUMMARY_FILE
+m4_pushdef([_AFS_SUMMARY_INDENT], _AFS_SUMMARY_INDENT[  ])dnl
 ])
 
 
@@ -104,20 +187,18 @@ AFS_SUMMARY_SECTION_END
 AFS_SUMMARY([$1], [$2])
 cat _afs_summary_tmp >>_AFS_SUMMARY_FILE
 rm _afs_summary_tmp
+m4_undefine([_afs_summary_tmp])
 ])
 
-
-# AFS_SUMMARY( DESCR, VALUE )
-# ---------------------------
+# AFS_SUMMARY( DESCR, VALUE, [WRAP-MARGIN] )
+# ------------------------------------------
 # Generates a summary line with the given description and value.
+# DESCR needs to be colon-free. DESCR and VALUE will be expanded in double quotes.
 AC_DEFUN([AFS_SUMMARY], [
 AC_REQUIRE([AFS_SUMMARY_INIT])dnl
-
-cat >>_AFS_SUMMARY_FILE <<_ACEOF
-AS_HELP_STRING(_AFS_SUMMARY_INDENT[  $1:], [$2], 32, 128)
-_ACEOF
-])
-
+m4_if(m4_index([$1], [:]), [-1],
+[afs_fn_summary "_AS_QUOTE([$1])" "_AS_QUOTE([$2])" "_AFS_SUMMARY_INDENT" $3 >>_AFS_SUMMARY_FILE],
+[m4_fatal([$0: description should not have a colon (:): ]$1)])])
 
 # AFS_SUMMARY_VERBOSE( DESCR, VALUE )
 # -----------------------------------
@@ -145,39 +226,41 @@ cat AC_PACKAGE_TARNAME.summary
 # evaluates to true the summary is also printed to stdout.
 # Should be called after AC_OUTPUT.
 AC_DEFUN([AFS_SUMMARY_COLLECT], [
-    (
+
+(
     AS_ECHO(["Configure command:"])
-    prefix="  $as_myself "
-    printf "%-32s" "$prefix"
-    padding="                                "
-    AS_IF([test ${#prefix} -gt 32], [
-        sep="\\$as_nl$padding"
+    _afs_summary_column_width=]_AFS_SUMMARY_COLUMN_WIDTH[
+    _afs_summary_prefix="  $as_myself "
+    printf "%-${_afs_summary_column_width}s" "${_afs_summary_prefix}"
+    _afs_summary_padding="$(printf "%-${_afs_summary_column_width}s" "")"
+    AS_IF([test ${#_afs_summary_prefix} -gt ${_afs_summary_column_width}], [
+        _afs_summary_sep="\\$as_nl${_afs_summary_padding}"
     ], [
-        sep=""
+        _afs_summary_sep=""
     ])
 
     eval "set x $ac_configure_args"
     shift
-    AS_FOR([ARG], [arg], [], [
-        AS_CASE([$arg],
-        [*\'*], [arg="`$as_echo "$arg" | sed "s/'/'\\\\\\\\''/g"`"])
-        AS_ECHO_N(["$sep'$arg'"])
-        sep=" \\$as_nl$padding"
+    AS_FOR([ARG], [_afs_summary_arg], [], [
+        AS_CASE([${_afs_summary_arg}],
+        [*\'*], [_afs_summary_arg="`$as_echo "${_afs_summary_arg}" | $SED "s/'/'\\\\\\\\''/g"`"])
+        AS_ECHO_N(["${_afs_summary_sep}'${_afs_summary_arg}'"])
+        _afs_summary_sep=" \\$as_nl${_afs_summary_padding}"
     ])
     AS_ECHO([""])
 
-    AS_IF([test x"${MODULESHOME:+set}" = x"set"], [
+    AS_IF([test "x${MODULESHOME:+set}" = "xset"], [
         AS_ECHO([""])
         AS_ECHO(["Loaded modules:"])
-        sep=""
-        AS_IF([test x"${LOADEDMODULES:+set}" = x"set"], [
-            prefix="  module load "
-            printf "%-32s" "$prefix"
+        _afs_summary_sep=""
+        AS_IF([test "x${LOADEDMODULES:+set}" = "xset"], [
+            _afs_summary_prefix="  module load "
+            printf "%-${_afs_summary_column_width}s" "${_afs_summary_prefix}"
             IFS=': ' eval 'set x $LOADEDMODULES'
             shift
-            AS_FOR([MODULE], [module], [], [
-                AS_ECHO_N(["$sep$module"])
-                sep=" \\$as_nl$padding"
+            AS_FOR([MODULE], [_afs_summary_module], [], [
+                AS_ECHO_N(["${_afs_summary_sep}${_afs_summary_module}"])
+                _afs_summary_sep=" \\$as_nl${_afs_summary_padding}"
             ])
             AS_ECHO([""])
         ], [
@@ -186,19 +269,72 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
     ])
 
     AS_ECHO([""])
-    sep="Configuration summary:"
+    _afs_summary_sep="Configuration summary:"
+    _afs_summary_sub="$(printf "\032")"
     LC_ALL=C find . -name config.summary |
         LC_ALL=C $AWK -F "config.summary" '{print $[]1}' |
         LC_ALL=C sort |
         LC_ALL=C $AWK '{print $[]0 "config.summary"}' |
         while read summary
     do
-        AS_ECHO(["$sep"])
-        cat $summary
-        sep=""
+        AS_ECHO(["${_afs_summary_sep}"])
+        if test -r $summary-master
+        then
+            $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary        >$summary.sub
+            $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary-master >$summary-master.sub
+            LC_ALL=C $AWK '
+BEGIN {
+    sectionstack@<:@0@:>@ = ""
+    sectionstackprinted@<:@0@:>@ = 0
+    sectionestacklen = 0
+    sectionoffset = -1
+}
+
+{
+    if (ARGV@<:@1@:>@ == FILENAME) {
+        colon = in@&t@dex($[]0, ":")
+        refsections@<:@substr($[]0, 1, colon)@:>@ = substr($[]0, colon+1)
+        next
+    }
+    match($[]0, "^ *")
+    depth = RLENGTH / 2
+    if (sectionoffset == -1) {
+        sectionoffset = depth;
+    }
+    depth -= sectionoffset
+    while (sectionestacklen < depth) {
+        sectionstack@<:@sectionestacklen@:>@ = ""
+        sectionstackprinted@<:@sectionestacklen@:>@ = 1
+        sectionestacklen++
+    }
+    sectionstack@<:@depth@:>@ = $[]0
+    sectionstackprinted@<:@depth@:>@ = 0
+    sectionestacklen = depth + 1
+    colon = in@&t@dex($[]0, ":")
+    descr = substr($[]0, 1, colon)
+    value = substr($[]0, colon+1)
+    if (!(descr in refsections) || refsections@<:@descr@:>@ != value) {
+        for (i = 1; i < sectionestacklen; i++) {
+            if (!sectionstackprinted@<:@i-1@:>@) {
+                print sectionstack@<:@i-1@:>@
+                sectionstackprinted@<:@i-1@:>@ = 1
+            }
+        }
+        print descr value
+        sectionstackprinted@<:@depth@:>@ = 1
+    }
+}
+' \
+                $summary-master.sub $summary.sub | $SED -e 's/'"$_afs_summary_sub"'/'"\\$as_nl"'/g'
+            rm -f $summary.sub $summary-master $summary-master.sub
+        else
+            cat $summary
+        fi
+        _afs_summary_sep=""
     done
-    ) >AC_PACKAGE_TARNAME.summary
-    m4_ifblank($1,
-              [_AFS_SUMMARY_SHOW],
-              [AS_IF([$1], [_AFS_SUMMARY_SHOW])])
+) >AC_PACKAGE_TARNAME.summary
+
+m4_ifblank($1,
+          [_AFS_SUMMARY_SHOW],
+          [AS_IF([$1], [_AFS_SUMMARY_SHOW])])
 ])
