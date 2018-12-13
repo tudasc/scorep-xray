@@ -275,10 +275,9 @@ SCOREP_MEMORY_SUPPORT
 AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
-AC_CONFIG_FILES([Makefile], [
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&MPI/' \
-Makefile >Makefile.mpi && mv -f Makefile.mpi Makefile || rm -f Makefile.mpi
-])
+AFS_SET_SILENT_RULE_PREFIX([MPI])
+AFS_CONFIG_MAKEFILE
+
 AC_CONFIG_FILES([run_otf2_speed_test.sh \
                  ../installcheck/instrumenter_checks/mpi/Makefile:../test/instrumenter_checks/mpi/Makefile.in
                  ../installcheck/instrumenter_checks/mpi_omp/Makefile:../test/instrumenter_checks/mpi_omp/Makefile.in

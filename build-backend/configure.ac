@@ -390,12 +390,9 @@ AC_CONFIG_FILES([scorep-wrapper:../src/tools/wrapper/scorep-wrapper.in],
 AC_SUBST([SCOREP_WRAPPER_NAMES], [${scorep_list_of_wrappers}])
 AFS_SUMMARY([Compiler wrappers], [${scorep_list_of_wrappers}])
 
-AC_CONFIG_FILES([Makefile], [
-if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
-    Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
-fi
-], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+    [AFS_SET_SILENT_RULE_PREFIX([BE])])
+AFS_CONFIG_MAKEFILE
 
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../test/instrumenter_checks/Makefile.common_rules.in
                  ../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in

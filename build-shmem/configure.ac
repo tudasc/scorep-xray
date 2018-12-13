@@ -249,10 +249,9 @@ SCOREP_MEMORY_SUPPORT
 #AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
-AC_CONFIG_FILES([Makefile], [
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&     /; t; s/_0 = @echo "  /&SHMEM/' \
-Makefile >Makefile.shmem && mv -f Makefile.shmem Makefile || rm -f Makefile.shmem
-])
+AFS_SET_SILENT_RULE_PREFIX([SHMEM])
+AFS_CONFIG_MAKEFILE
+
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/shmem/Makefile:../test/instrumenter_checks/shmem/Makefile.in
                  ../installcheck/instrumenter_checks/shmem_omp/Makefile:../test/instrumenter_checks/shmem_omp/Makefile.in
                  ../src/scorep_config_tool_shmem.h:../src/tools/config/scorep_config_tool_shmem.h.in])

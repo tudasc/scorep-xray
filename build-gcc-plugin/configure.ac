@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2012-2015,
+dnl Copyright (c) 2012-2015, 2018,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015, 2018,
@@ -150,9 +150,7 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
 
 AC_SCOREP_ERROR_CODES
 
-AC_CONFIG_FILES([Makefile], [[
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&           /; t; s/_0 = @echo "  /&GCC PLUGIN /' \
-Makefile >Makefile.gcc-plugin && mv -f Makefile.gcc-plugin Makefile || rm -f Makefile.gcc-plugin
-]])
+AFS_SET_SILENT_RULE_PREFIX([GCC PLUGIN ])
+AFS_CONFIG_MAKEFILE
 
 AC_OUTPUT

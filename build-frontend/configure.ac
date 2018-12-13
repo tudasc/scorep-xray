@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013, 2017,
+dnl Copyright (c) 2009-2013, 2017-2018,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -160,9 +160,7 @@ SCOREP_LIBRARY_WRAPPING_GENERATOR(
      AC_CONFIG_FILES([../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh],
                      [chmod +x ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh])])
 
-AC_CONFIG_FILES([Makefile], [
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \
-Makefile >Makefile.fe && mv -f Makefile.fe Makefile || rm -f Makefile.fe
-])
+AFS_SET_SILENT_RULE_PREFIX([FE])
+AFS_CONFIG_MAKEFILE
 
 AC_OUTPUT
