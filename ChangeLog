@@ -13,15 +13,6 @@ Major features:
   running longer than main. For these threads, Score-P will exit all
   active regions and end the thread (from the measurement point of
   view).
-
-Features and improvements:
-
-- Score-P now generates a dynamic MANIFEST file for each experiment
-  and copies files, like the filter or selective configuration files,
-  to the experiment directory.
-- In profiling mode, add the file <DATADIR>/scorep/scorep.spec to
-  the profile.cubex container, thus making the profile output more
-  self-contained.
 - Added support for cartesian topologies.
   Supported topology types:
   1) MPI cartesian topologies via MPI_Cart_create.
@@ -35,6 +26,15 @@ Features and improvements:
   selectively be disabled based on type through environment variables,
   see scorep-info config-vars. Viable topology results require a
   distinct thread binding.
+
+Features and improvements:
+
+- Score-P now generates a dynamic MANIFEST file for each experiment
+  and copies files, like the filter or selective configuration files,
+  to the experiment directory.
+- In profiling mode, add the file <DATADIR>/scorep/scorep.spec to
+  the profile.cubex container, thus making the profile output more
+  self-contained.
 - On thread creation, request internal memory on the fly instead of in
   advance. Depending on the measurement configuration this will save
   some memory.
@@ -57,23 +57,14 @@ Features and improvements:
   MCDRAM with Score-P.
 - All Fortran wrappers support now 64-bit character length arguments
   with GCC 8.
-- scorep: Multiple improvements to better interact with build systems:
+- Multiple improvements in the scorep instrumenter command to better
+  interact with build systems:
   - All warnings and errors are prefixed with '[Score-P] ', for better
     identification.
   - All output goes to stderr, to not interfere when catching output
     from the compiler/linker in process substitutions.
   - When no source files could be identified, the command is executed
     as is.
-
-Bugfixes:
-
-- Instrumentation of Fortran OpenMP programs that use untied tasks
-  failed with undefined references. Fixed.
-- So far, programs that pthread_exit() the main thread crashed based
-  on the requirement that the program's main thread is responsible for
-  the measurement finalization. This requirement was removed and was
-  accompanied by multiple improvements of threads lasting longer than
-  main.
 - Since Score-P version 2.x, measurement initialization is done before
   entering 'main' using compiler-provided constructor functions, if
   available. As a consequence, MPI- or SHMEM-only instrumented
@@ -85,6 +76,16 @@ Bugfixes:
   mapped to ProgramBegin/End event records; in profiling mode this
   feature is modeled as enter/exit of an additional region with the
   name of the executable, if available.
+
+Bugfixes:
+
+- Instrumentation of Fortran OpenMP programs that use untied tasks
+  failed with undefined references. Fixed.
+- So far, programs that pthread_exit() the main thread crashed based
+  on the requirement that the program's main thread is responsible for
+  the measurement finalization. This requirement was removed and was
+  accompanied by multiple improvements of threads lasting longer than
+  main.
 
 ------------------- Released version 4.1 -----------------------------
 
