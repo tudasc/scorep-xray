@@ -125,7 +125,8 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                    NULL,
                                                    SCOREP_PROFILE_NODE_TASK_ROOT,
                                                    program_region_data,
-                                                   UINT64_MAX, false );
+                                                   SCOREP_GetBeginEpoch(),
+                                                   false );
 
         scorep_profile_type_data_t root_region_data;
         memset( &root_region_data, 0, sizeof( root_region_data ) );
@@ -152,8 +153,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     /* give the task root the timestamp of the first task */
     if ( task->first_enter_time < tasks_root->first_enter_time )
     {
-        tasks_root->first_enter_time   = task->first_enter_time;
-        program_root->first_enter_time = task->first_enter_time;
+        tasks_root->first_enter_time = task->first_enter_time;
     }
     return program_root;
 }
