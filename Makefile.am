@@ -105,7 +105,7 @@ install-data-local: doxygen-user-install
                         $(DESTDIR)$(docdir)/profile/scorep_metrics-$(PACKAGE_VERSION).html
 
 install-data-hook:
-	for target in $(TARGETS)""; do \
+	$(AM_V_at)for target in $(TARGETS)""; do \
 	    if test -n "$$target" && test -f $(pkgdatadir)/$$target/@PACKAGE@.summary; then \
 	        echo >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
 	        echo >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
