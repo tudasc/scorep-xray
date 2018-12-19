@@ -17,10 +17,10 @@ frontend_bin_SCRIPTS += scorep-wrapper
 INSTALL_EXEC_HOOK += install-scorep-wrappers
 install-scorep-wrappers:
 	@$(NORMAL_INSTALL)
-	test -z "$(frontend_bindir)" || $(MKDIR_P) "$(DESTDIR)$(frontend_bindir)"
-	@list='$(SCOREP_WRAPPER_NAMES)'; test -n "$(frontend_bindir)" || list=; \
+	@test -z "$(frontend_bindir)" || $(MKDIR_P) "$(DESTDIR)$(frontend_bindir)" || exit 1; \
+	list='$(SCOREP_WRAPPER_NAMES)'; test -n "$(frontend_bindir)" || list=; \
 	for p in $$list; do \
-	    (cd $(DESTDIR)$(frontend_bindir); rm -f "$$p"; $(LN_S) "scorep-wrapper" "$$p") || break; \
+	    (cd $(DESTDIR)$(frontend_bindir); rm -f "$$p"; $(LN_S) "scorep-wrapper" "$$p") || exit $$?; \
 	done
 
 UNINSTALL_LOCAL_TARGETS += uninstall-scorep-wrappers
