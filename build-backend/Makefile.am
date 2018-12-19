@@ -172,21 +172,6 @@ install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 
-SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)@PKGDATADIR@
-
-SCOREP_SHARE_GLOBAL_DIR=$(abs_top_srcdir)/../share
-SCOREP_PDT_CONFIG_INSTALL_TARGET = $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf
-
-uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
-	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat \
-              $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
-
-INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install
-
-scorep-config-tool-install:
-	$(MKDIR_P) $(SCOREP_SHARE_INSTALL_DIR)
-	$(INSTALL_DATA) $(INC_ROOT)share/SCOREP_Pdt_Instrumentation.conf $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
-
 PARADIGMS = serial
 # component separation will provide the HAVE_OPARI2 conditional
 #if HAVE_OPARI2

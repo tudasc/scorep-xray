@@ -69,6 +69,10 @@ scorep_LDADD = \
     libutils.la \
     libscorep_openmp_version.la
 
+if HAVE_SCOREP_PDT
+pkgdata_DATA += ../share/SCOREP_Pdt_Instrumentation.conf
+endif HAVE_SCOREP_PDT
+
 EXTRA_DIST += \
     $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf
 
