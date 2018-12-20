@@ -289,6 +289,20 @@ various Score-P components.
     reports as events on invalid threads or mis-matching enter/exit
     events.
 
+  - Score-P 5.0 introduced program-begin/-end events. In profiling
+    mode, these manifest as enter/exit of an additional region which
+    acts as the new root node for the program. Artificial regions like
+    THREADS and TASKS are now recorded as child nodes of this new
+    root node.
+    When recording OpenMP tasks, the tasks are recorded as children of
+    the TASKS node as well as children in the program's
+    calltree. Metrics, time in particular, are double accounted.
+    As a consequence, the new root node shows negative time values
+    when expanded (the absolute value equals the inclusive TASKS
+    value). The values shown for TASKS and the program's calltree are
+    correct though. This situation will be improved in a future
+    release of Score-P and/or Cube.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
@@ -552,6 +566,11 @@ various Score-P components.
 
   - Score-P currently cannot handle the compiler option '-include <file>'
     when <file> ends with either '.h' or '.hpp'.
+
+  - scorep-score applied to parameter-based profiles or profiles
+    containing dynamic regions provides unreliable results. This
+    situation will be improved in a future release of Score-P and/or
+    Cube.
 
 --------------------------------------------------------------------------------
 
