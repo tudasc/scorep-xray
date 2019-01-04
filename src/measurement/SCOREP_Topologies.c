@@ -593,11 +593,11 @@ define_topology_locations_pre_unify_create_groups( void )
 
 
             // group exchange allgather
-            uint64_t global_location_ids_groups[ num_procs ][ max_number_local_topologies ][ max_locations_per_rank ];
+            uint64_t global_location_ids_groups[ num_procs ][ number_global_topology_name_strings ][ max_locations_per_rank ];
 
             for ( uint64_t i = 0; i < num_procs; i++ )
             {
-                for ( uint64_t j = 0; j < max_number_local_topologies; j++ )
+                for ( uint64_t j = 0; j < number_global_topology_name_strings; j++ )
                 {
                     for ( uint64_t k = 0; k < max_locations_per_rank; k++ )
                     {
@@ -616,7 +616,7 @@ define_topology_locations_pre_unify_create_groups( void )
 
             SCOREP_Ipc_Allgather( global_location_ids_groups[ rank ],
                                   global_location_ids_groups,
-                                  max_number_local_topologies * max_locations_per_rank,
+                                  number_global_topology_name_strings * max_locations_per_rank,
                                   SCOREP_IPC_UINT64_T );
 
             // check which indices have to be added as we need only unique entries of location ids
@@ -646,7 +646,7 @@ define_topology_locations_pre_unify_create_groups( void )
                             if ( global_location_ids_groups[ i ][ global_topo_index ][ k ] == final_groups[ j ][ n ] )
                             {
                                 // existing location id, no need to add
-                                found_new_element = true;
+                                found_new_element = false;
                                 break;
                             }
                         }
