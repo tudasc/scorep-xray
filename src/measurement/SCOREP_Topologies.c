@@ -289,6 +289,7 @@ static void
 define_topology_locations_pre_unify_create_groups( void )
 {
     /* check which types of topologies are used, process x threads is always available if enabled */
+    uint32_t have_user_local = 0;
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
                                                          CartesianTopology,
                                                          cartesian_topology )
@@ -299,13 +300,24 @@ define_topology_locations_pre_unify_create_groups( void )
                 have_platform = true;
                 break;
             case SCOREP_TOPOLOGIES_USER:
-                have_user = true;
+                have_user_local = 1;
                 break;
             default:
                 break;
         }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+    // In edge cases some processes might not participate in user topologies at all while others do.
+    // Ensure that those processes will partake in the required global comm calls.
+    // Only required for user topologies.
+    uint32_t have_user_global = have_user_local;
+    SCOREP_Ipc_Allreduce( &have_user_local,
+                          &have_user_global,
+                          1,
+                          SCOREP_IPC_UINT32_T,
+                          SCOREP_IPC_MAX );
+    have_user = ( bool )have_user_global;
 
     /* we need group(s) for non-MPI topology communicators */
     if ( have_process || have_platform || have_user )
