@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -95,8 +95,8 @@ static bool out_of_memory;
 static SCOREP_Allocator_PageManager* definitions_page_manager;
 
 void
-SCOREP_Memory_Initialize( uint32_t totalMemory,
-                          uint32_t pageSize )
+SCOREP_Memory_Initialize( uint64_t totalMemory,
+                          uint64_t pageSize )
 {
     if ( is_initialized )
     {

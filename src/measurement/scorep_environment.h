@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016,
+ * Copyright (c) 2009-2011, 2015-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -61,10 +61,10 @@ SCOREP_RegisterAllConfigVariables( void );
 bool
 SCOREP_Env_RunVerbose( void );
 
-uint32_t
+uint64_t
 SCOREP_Env_GetTotalMemory( void );
 
-uint32_t
+uint64_t
 SCOREP_Env_GetPageSize( void );
 
 const char*

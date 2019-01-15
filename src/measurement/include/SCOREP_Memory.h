@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -81,8 +81,8 @@ typedef enum SCOREP_MemoryType
  * @param pageSize size of a single page in bytes, needs to be <= @a totalMemory
  */
 void
-SCOREP_Memory_Initialize( uint32_t totalMemory,
-                          uint32_t pageSize );
+SCOREP_Memory_Initialize( uint64_t totalMemory,
+                          uint64_t pageSize );
 
 
 /**

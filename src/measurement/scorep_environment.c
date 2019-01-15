@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016,
+ * Copyright (c) 2009-2011, 2015-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -298,22 +298,18 @@ SCOREP_Env_DoUnwinding( void )
 }
 
 
-uint32_t
+uint64_t
 SCOREP_Env_GetTotalMemory( void )
 {
     assert( env_variables_initialized );
-    assert( env_total_memory <= UINT32_MAX ); /* Max total memory is 4 GB. */
-    assert( env_total_memory > env_page_size );
     return env_total_memory;
 }
 
 
-uint32_t
+uint64_t
 SCOREP_Env_GetPageSize( void )
 {
     assert( env_variables_initialized );
-    assert( env_total_memory <= UINT32_MAX ); /* Max total memory is 4 GB. */
-    assert( env_total_memory > env_page_size );
     return env_page_size;
 }
 

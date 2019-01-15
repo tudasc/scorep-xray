@@ -86,6 +86,7 @@ Bugfixes:
   the measurement finalization. This requirement was removed and was
   accompanied by multiple improvements of threads lasting longer than
   main.
+- Restore ability to run with `SCOREP_TOTAL_MEMORY=4G` again.
 
 ------------------- Released version 4.1 -----------------------------
 
