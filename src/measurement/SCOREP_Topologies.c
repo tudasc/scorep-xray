@@ -433,7 +433,8 @@ define_topology_locations_pre_unify_create_groups( void )
                         start_pos =  comm_locations_user_count - 1;
                     }
                     // Storing respective index to COMM_LOCATIONS group in unique_local_group_members
-                    for ( uint64_t i = start_pos; i >= 0; i-- )
+                    uint64_t i = start_pos;
+                    while ( true )
                     {
                         if ( comm_locations_user[ i ] == global_location_id )
                         {
@@ -460,6 +461,7 @@ define_topology_locations_pre_unify_create_groups( void )
                             // a match in the COMM_LOCATIONS definition for this coordinate. That should never happen
                             UTILS_FATAL( "No location match found for this coordinate!" );
                         }
+                        i--;
                     }
                 }
             }
@@ -932,7 +934,8 @@ topologies_subsystem_post_unify( void )
                         // maximum start position is the last index
                         start_pos =  comm_locations_member_count - 1;
                     }
-                    for ( uint64_t i = start_pos; i >= 0; i-- )
+                    uint64_t i = start_pos;
+                    while ( true )
                     {
                         if ( cart_topo_type == SCOREP_TOPOLOGIES_PROCESS )
                         {
@@ -972,13 +975,14 @@ topologies_subsystem_post_unify( void )
                                 }
                                 break;
                             }
-                            if ( i == 0 )
-                            {
-                                // if we are still here and didn't break in any of the other cases, we haven't found
-                                // a match in the COMM_LOCATIONS definition for this coordinate. That should never happen
-                                UTILS_FATAL( "No location match found for this coordinate!" );
-                            }
                         }
+                        if ( i == 0 )
+                        {
+                            // if we are still here and didn't break in any of the other cases, we haven't found
+                            // a match in the COMM_LOCATIONS definition for this coordinate. That should never happen
+                            UTILS_FATAL( "No location match found for this coordinate!" );
+                        }
+                        i--;
                     }
                 }
             }
