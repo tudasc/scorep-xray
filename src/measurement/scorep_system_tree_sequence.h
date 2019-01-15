@@ -20,9 +20,9 @@
  * @file
  */
 
-#include <inttypes.h>
 #include <SCOREP_Types.h>
-#include "scorep_ipc.h"
+#include <inttypes.h>
+#include <stdbool.h>
 
 typedef struct scorep_system_tree_seq      scorep_system_tree_seq;
 
@@ -90,14 +90,14 @@ scorep_system_tree_seq_free( void );
  * where the ranks are sorted after their index of a depth first traversal of
  * the scalable system tree definitions.
  */
-SCOREP_Ipc_Group*
+struct SCOREP_Ipc_Group*
 scorep_system_tree_seq_get_ipc_group( void );
 
 /**
  * Cleans up a depth order communicator.
  */
 void
-scorep_system_tree_seq_free_ipc_group( SCOREP_Ipc_Group* );
+scorep_system_tree_seq_free_ipc_group( struct SCOREP_Ipc_Group* );
 
 /**
  * Returns the mapping of the locations to their index in the
