@@ -572,6 +572,12 @@ various Score-P components.
     situation will be improved in a future release of Score-P and/or
     Cube.
 
+  - Instrumentation of files that include system headers via local
+    headers of the same name fails for compilers that don't support
+    the '-iquote' option (e.g., PGI) and when scorep's --pdt option is
+    used. In this case, renaming of the local header is the only
+    workaround.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.

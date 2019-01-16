@@ -87,6 +87,11 @@ Bugfixes:
   accompanied by multiple improvements of threads lasting longer than
   main.
 - Restore ability to run with `SCOREP_TOTAL_MEMORY=4G` again.
+- Instrumentation failed for codes that include system headers via
+  local headers of the same name. This is fixed for compilers that
+  support the '-iquote' option (most of the compilers do, PGI
+  doesn't). Note that this bugfix is overruled if scorep's '--pdt'
+  option is used.
 
 ------------------- Released version 4.1 -----------------------------
 

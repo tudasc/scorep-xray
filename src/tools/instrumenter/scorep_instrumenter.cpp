@@ -221,8 +221,14 @@ SCOREP_Instrumenter::Run( void )
                      source directory to the include dirs, because local
                      files may be included
                  */
-                std::string extra_include_search_path = " -I" +  extract_path( *current_file );
-                std::string compiler_flags_save       = m_compiler_flags;
+                std::string search_path             = extract_path( *current_file );
+                std::string pdt_include_search_path = " -I" + search_path;
+                #if SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT
+                std::string opari2_include_search_path = " -iquote " +  search_path;
+                #else
+                std::string opari2_include_search_path = " -I" + search_path;
+                #endif /* ! SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT */
+                std::string compiler_flags_save = m_compiler_flags;
 
                 // Perform preprocessing steps
                 if ( m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::DISABLE &&
@@ -240,7 +246,7 @@ SCOREP_Instrumenter::Run( void )
                                         + orig_extension;
                             addTempFile( prep_file );
                         }
-                        m_compiler_flags += extra_include_search_path;
+                        m_compiler_flags += opari2_include_search_path;
                         preprocess_source_file( *current_file, prep_file );
                         *current_file = prep_file;
                     }
@@ -250,14 +256,14 @@ SCOREP_Instrumenter::Run( void )
                 // Perform compile step
                 if ( m_command_line.isCompiling() )
                 {
-                    if ( m_opari_adapter->isEnabled() &&
-                         m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::EXPLICIT_STEP )
+                    if ( m_pdt_adapter->isEnabled() )
                     {
-                        m_compiler_flags += extra_include_search_path;
+                        m_compiler_flags += pdt_include_search_path;
                     }
-                    else if ( m_pdt_adapter->isEnabled() )
+                    else if ( m_opari_adapter->isEnabled() &&
+                              m_command_line.getPreprocessMode() != SCOREP_Instrumenter_CmdLine::EXPLICIT_STEP )
                     {
-                        m_compiler_flags += extra_include_search_path;
+                        m_compiler_flags += opari2_include_search_path;
                     }
                     *current_file = precompile( *current_file );
 

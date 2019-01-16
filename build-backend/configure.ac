@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2018,
+dnl Copyright (c) 2009-2019,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -302,6 +302,7 @@ SCOREP_CHECK_PREINCLUDES
 AC_SCOREP_ONLINE_ACCESS
 
 SCOREP_MEMORY_SUPPORT
+SCOREP_IQUOTE_SUPPORT
 
 ## trunc and ceil needed by the cube4 writer
 AC_SEARCH_LIBS([trunc], [m])
