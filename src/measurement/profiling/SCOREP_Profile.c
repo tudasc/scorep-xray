@@ -834,6 +834,7 @@ program_begin( SCOREP_Location*     location,
                           timestamp,
                           SCOREP_GetProgramRegion(),
                           metric_values );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_sparse_metrics_enter );
 }
 
 
@@ -844,6 +845,7 @@ program_end( SCOREP_Location*    location,
              SCOREP_RegionHandle programRegionHandle )
 {
     uint64_t* metric_values = SCOREP_Metric_Read( location );
+    SCOREP_Metric_WriteSynchronousMetrics( location, timestamp, write_sparse_metrics_exit );
     SCOREP_Profile_Exit( location,
                          timestamp,
                          SCOREP_GetProgramRegion(),
