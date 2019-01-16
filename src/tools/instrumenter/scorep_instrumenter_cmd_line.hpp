@@ -98,12 +98,12 @@ public:
        Type to define the state of the preprocessing.
 
        DISABLE means that any preprocessing is disabled, e.g.,
-               because we are working on aleady preprocessed files.
+               because we are working on already preprocessed files.
 
        IN_COMPILE_STEP means that the compile step will also
                do preprocessing and we apply our preprocessing
                instrumentation, but do not need a separate preprocessing
-               inokation of the compiler.
+               invocation of the compiler.
 
        EXPLICIT_STEP means that we perform an explicit preprocessing step.
                Either because the user command is only a preprocessing
