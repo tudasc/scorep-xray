@@ -221,13 +221,21 @@ SCOREP_Instrumenter::Run( void )
                      source directory to the include dirs, because local
                      files may be included
                  */
-                std::string search_path             = extract_path( *current_file );
-                std::string pdt_include_search_path = " -I" + search_path;
-                #if SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT
-                std::string opari2_include_search_path = " -iquote " +  search_path;
-                #else
-                std::string opari2_include_search_path = " -I" + search_path;
-                #endif /* ! SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT */
+                std::string search_path                = extract_path( *current_file );
+                std::string pdt_include_search_path    = " -I" + search_path;
+                std::string opari2_include_search_path = " -I" +  search_path;
+                if ( is_c_file( *current_file ) )
+                {
+                    #if SCOREP_BACKEND_HAVE_C_IQUOTE_SUPPORT
+                    opari2_include_search_path = " -iquote " +  search_path;
+                    #endif /* SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT */
+                }
+                else if ( is_cpp_file( *current_file ) )
+                {
+                    #if SCOREP_BACKEND_HAVE_CXX_IQUOTE_SUPPORT
+                    opari2_include_search_path = " -iquote " +  search_path;
+                        #endif /* SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT */
+                }
                 std::string compiler_flags_save = m_compiler_flags;
 
                 // Perform preprocessing steps
