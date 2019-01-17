@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2017,
+ * Copyright (c) 2014-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -771,6 +771,16 @@ SCOREP_Config_MemoryAdapter::addLibs( std::deque<std::string>&           libs,
         libs.push_back( "lib" + m_library + "_event_cxx_L64" );
     }
 
+    if ( m_categories.count( "c++14L32" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_cxx14_L32" );
+    }
+
+    if ( m_categories.count( "c++14L64" ) )
+    {
+        libs.push_back( "lib" + m_library + "_event_cxx14_L64" );
+    }
+
     if ( m_categories.count( "pgCCL32" ) || m_categories.count( "pgCCL64" ) )
     {
         libs.push_back( "lib" + m_library + "_event_pgCC" );
@@ -846,6 +856,22 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                    "--undefined,__wrap__Znwm,"
                    "-wrap,_Znwm,"
                    "-wrap,_Znam";
+    }
+
+    if ( m_categories.count( "c++14L32" ) )
+    {
+        ldflags += " -Wl,"
+                   "--undefined,__wrap__ZdlPvj,"
+                   "-wrap,_ZdlPvj,"
+                   "-wrap,_ZdaPvj";
+    }
+
+    if ( m_categories.count( "c++14L64" ) )
+    {
+        ldflags += " -Wl,"
+                   "--undefined,__wrap__ZdlPvm,"
+                   "-wrap,_ZdlPvm,"
+                   "-wrap,_ZdaPvm";
     }
 
     if ( m_categories.count( "pgCCL32" ) || m_categories.count( "pgCCL64" ) )

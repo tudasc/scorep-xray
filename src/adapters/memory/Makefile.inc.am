@@ -1,7 +1,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2016,
+## Copyright (c) 2016, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2016-2017,
@@ -120,6 +120,7 @@ lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx.la
 
 libscorep_adapter_memory_event_cxx_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx.c
+nodist_EXTRA_libscorep_adapter_memory_event_cxx_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_cxx_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                            \
@@ -142,6 +143,7 @@ lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx_L32.la
 
 libscorep_adapter_memory_event_cxx_L32_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx_L32.c
+nodist_EXTRA_libscorep_adapter_memory_event_cxx_L32_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_cxx_L32_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                            \
@@ -165,6 +167,7 @@ lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx_L64.la
 
 libscorep_adapter_memory_event_cxx_L64_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx_L64.c
+nodist_EXTRA_libscorep_adapter_memory_event_cxx_L64_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_cxx_L64_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                            \
@@ -182,12 +185,61 @@ libscorep_adapter_memory_event_cxx_L64_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     -Wl,-wrap,_Znwm,-wrap,_Znam
 
+# event library for C++14 de-allocation routines in L32 mode
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx14_L32.la
+
+libscorep_adapter_memory_event_cxx14_L32_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx14_L32.c
+nodist_EXTRA_libscorep_adapter_memory_event_cxx14_L32_la_SOURCES = force_link_with_CXXLD.cc
+
+libscorep_adapter_memory_event_cxx14_L32_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                       \
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS)                    \
+    -DSCOREP_LIBWRAP_STATIC              \
+    -I$(INC_DIR_MUTEX)                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_cxx14_L32_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_cxx14_L32_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,_ZdlPvj,-wrap,_ZdaPvj
+
+# event library for C++14 de-allocation routines in L64 mode
+
+lib_LTLIBRARIES += libscorep_adapter_memory_event_cxx14_L64.la
+
+libscorep_adapter_memory_event_cxx14_L64_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/memory/scorep_memory_event_cxx14_L64.c
+nodist_EXTRA_libscorep_adapter_memory_event_cxx14_L64_la_SOURCES = force_link_with_CXXLD.cc
+
+libscorep_adapter_memory_event_cxx14_L64_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                       \
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS)                    \
+    -DSCOREP_LIBWRAP_STATIC              \
+    -I$(INC_DIR_MUTEX)                   \
+    -I$(INC_DIR_DEFINITIONS)
+
+libscorep_adapter_memory_event_cxx14_L64_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_memory_event_cxx14_L64_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    -Wl,-wrap,_ZdlPvm,-wrap,_ZdaPvm
+
 # event library for common C++ de-allocation routines (old PGI C++ ABI)
 
 lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC.la
 
 libscorep_adapter_memory_event_pgCC_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC.c
+nodist_EXTRA_libscorep_adapter_memory_event_pgCC_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_pgCC_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                            \
@@ -210,6 +262,7 @@ lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC_L32.la
 
 libscorep_adapter_memory_event_pgCC_L32_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC_L32.c
+nodist_EXTRA_libscorep_adapter_memory_event_pgCC_L32_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_pgCC_L32_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                            \
@@ -233,6 +286,7 @@ lib_LTLIBRARIES += libscorep_adapter_memory_event_pgCC_L64.la
 
 libscorep_adapter_memory_event_pgCC_L64_la_SOURCES = \
     $(SRC_ROOT)src/adapters/memory/scorep_memory_event_pgCC_L64.c
+nodist_EXTRA_libscorep_adapter_memory_event_pgCC_L64_la_SOURCES = force_link_with_CXXLD.cc
 
 libscorep_adapter_memory_event_pgCC_L64_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                            \

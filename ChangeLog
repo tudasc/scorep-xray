@@ -92,6 +92,8 @@ Bugfixes:
   support the '-iquote' option (most of the compilers do, PGI
   doesn't). Note that this bugfix is overruled if scorep's '--pdt'
   option is used.
+- Fix memory recording of C++14 applications, because Score-P did not
+  wrapped the delete/delete[] operators with size argument.
 
 ------------------- Released version 4.1 -----------------------------
 

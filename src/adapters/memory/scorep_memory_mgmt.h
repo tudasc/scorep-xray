@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2017,
@@ -39,8 +39,10 @@
     SCOREP_MEMORY_REGION( ALIGNED_ALLOC,            ALLOCATE,   "aligned_alloc" ) \
     SCOREP_MEMORY_REGION( NEW,                      ALLOCATE,   "operator new(size_t)" ) \
     SCOREP_MEMORY_REGION( DELETE,                   DEALLOCATE, "operator delete(void*)" ) \
+    SCOREP_MEMORY_REGION( DELETE_SIZE,              DEALLOCATE, "operator delete(void*,size_t)" ) \
     SCOREP_MEMORY_REGION( NEW_ARRAY,                ALLOCATE,   "operator new[](size_t)" ) \
     SCOREP_MEMORY_REGION( DELETE_ARRAY,             DEALLOCATE, "operator delete[](void*)" ) \
+    SCOREP_MEMORY_REGION( DELETE_ARRAY_SIZE,        DEALLOCATE, "operator delete[](void*,size_t)" ) \
     SCOREP_MEMORY_REGION( HBW_MALLOC,               ALLOCATE,   "hbw_malloc" ) \
     SCOREP_MEMORY_REGION( HBW_REALLOC,              REALLOCATE, "hbw_realloc" ) \
     SCOREP_MEMORY_REGION( HBW_CALLOC,               ALLOCATE,   "hbw_calloc" ) \

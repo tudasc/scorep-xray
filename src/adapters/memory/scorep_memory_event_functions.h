@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016-2017,
@@ -97,6 +97,14 @@ __real__Znwj( size_t size );
 void
 __real__ZdlPv( void* ptr );
 
+void
+__real__ZdlPvm( void*  ptr,
+                size_t size );
+
+void
+__real__ZdlPvj( void*  ptr,
+                size_t size );
+
 void*
 __real__Znam( size_t size );
 
@@ -105,6 +113,14 @@ __real__Znaj( size_t size );
 
 void
 __real__ZdaPv( void* ptr );
+
+void
+__real__ZdaPvm( void*  ptr,
+                size_t size );
+
+void
+__real__ZdaPvj( void*  ptr,
+                size_t size );
 
 
 /* Declaration of the mangled real functions new and delete (old PGI/EDG C++ ABI) */
@@ -215,6 +231,67 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr ) \
  \
     SCOREP_ENTER_WRAPPED_REGION(); \
     SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( ptr ) ); \
+    SCOREP_EXIT_WRAPPED_REGION(); \
+ \
+    if ( scorep_memory_recording ) \
+    { \
+        uint64_t dealloc_size = 0; \
+        if ( ptr ) \
+        { \
+            SCOREP_AllocMetric_HandleFree( scorep_memory_metric, \
+                                           allocation, &dealloc_size ); \
+        } \
+ \
+        scorep_memory_attributes_add_exit_dealloc_size( dealloc_size ); \
+        SCOREP_ExitRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
+    { \
+        SCOREP_ExitWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+ \
+    UTILS_DEBUG_EXIT(); \
+    SCOREP_IN_MEASUREMENT_DECREMENT(); \
+}
+/* *INDENT-ON* */
+
+
+/* *INDENT-OFF* */
+#define SCOREP_MEMORY_WRAP_FREE_SIZE( FUNCTION, REGION ) \
+void \
+SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void* ptr, size_t size ) \
+{ \
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT(); \
+    if ( !trigger || \
+         !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) ) \
+    { \
+        SCOREP_IN_MEASUREMENT_DECREMENT(); \
+        SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( ptr, size ) ); \
+        return; \
+    } \
+ \
+    UTILS_DEBUG_ENTRY( "%p, %zu", ptr, size ); \
+ \
+    void* allocation = NULL; \
+    if ( scorep_memory_recording ) \
+    { \
+        scorep_memory_attributes_add_enter_argument_address( ( uint64_t )ptr ); \
+        scorep_memory_attributes_add_exit_dealloc_size( size ); \
+        SCOREP_EnterWrappedRegion( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+ \
+        if ( ptr ) \
+        { \
+            SCOREP_AllocMetric_AcquireAlloc( scorep_memory_metric, \
+                                             ( uint64_t )ptr, &allocation ); \
+        } \
+    } \
+    else if ( SCOREP_IsUnwindingEnabled() ) \
+    { \
+        SCOREP_EnterWrapper( scorep_memory_regions[ SCOREP_MEMORY_##REGION ] ); \
+    } \
+ \
+    SCOREP_ENTER_WRAPPED_REGION(); \
+    SCOREP_LIBWRAP_FUNC_CALL( FUNCTION, ( ptr, size ) ); \
     SCOREP_EXIT_WRAPPED_REGION(); \
  \
     if ( scorep_memory_recording ) \

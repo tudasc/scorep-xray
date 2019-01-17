@@ -194,6 +194,36 @@ SCOREP_Instrumenter_MemoryAdapter::checkObjects( SCOREP_Instrumenter& instrument
         }
     }
 
+    // check for C++14 delete and friends in L32, i.e., "c++14L32"
+    {
+        std::string command = SCOREP_NM + all_objects_stream.str() + " 2>/dev/null | "
+                              SCOREP_EGREP " -l ' U _Zd[la]Pvj$' >/dev/null 2>&1";
+        if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
+        {
+            std::cerr << command << std::endl;
+        }
+        int return_value = system( command.c_str() );
+        if ( return_value == 0 )
+        {
+            m_categories.insert( "c++14L32" );
+        }
+    }
+
+    // check for C++14 delete and friends in L64, i.e., "c++14L64"
+    {
+        std::string command = SCOREP_NM + all_objects_stream.str() + " 2>/dev/null | "
+                              SCOREP_EGREP " -l ' U _Zd[la]Pvm$' >/dev/null 2>&1";
+        if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
+        {
+            std::cerr << command << std::endl;
+        }
+        int return_value = system( command.c_str() );
+        if ( return_value == 0 )
+        {
+            m_categories.insert( "c++14L64" );
+        }
+    }
+
     // check for new/delete and friends in L32 (old PGI/EDG C++ ABI), i.e., "pgCCL32"
     {
         std::string command = SCOREP_NM + all_objects_stream.str() + " 2>/dev/null | "
