@@ -192,6 +192,11 @@ AS_IF([test -n "${MPICC}"],
              [NMPIS=`expr ${NMPIS} + 1`
               FMPI=bullxmpi
               AC_MSG_RESULT([bullx MPI ${MPICC}])],
+             [( (test -d ${MLIBDIR}/spectrum_mpi && ( test -f ${MLIBDIR}/libmpi_ibm.a || test -f ${MLIBDIR}/libmpi_ibm.so ) ) || \
+              (test -d ${MLIB64DIR}/spectrum_mpi && ( test -f ${MLIB64DIR}/libmpi_ibm.a || test -f ${MLIB64DIR}/libmpi_ibm.so ) ) )],
+             [NMPIS=`expr ${NMPIS} + 1`
+              FMPI=spectrum
+              AC_MSG_RESULT([IBM Spectrum MPI ${MPICC}])],
              [(test -f ${MLIBDIR}/linux_ia32/libpcmpi.a || test -f ${MLIBDIR}/linux_ia32/libpcmpi.so || \
               test -f ${MLIBDIR}/linux_amd64/libpcmpi.a || test -f ${MLIBDIR}/linux_amd64/libpcmpi.so)],
              [NMPIS=`expr ${NMPIS} + 1`
