@@ -5,7 +5,7 @@
 #
 #  This file is part of the Score-P software (http://www.score-p.org)
 #
-#  Copyright (c) 2015,
+#  Copyright (c) 2015, 2019,
 #  Technische Universitaet Dresden, Germany
 #
 #  This software may be modified and distributed under the terms of
@@ -52,7 +52,7 @@ for thread in $paradigm_threads
 do
     cleanup
     printf "Running Score-P constructor check for C ($thread) "
-    $dir/constructor_check_${thread}_c$EXEEXT 2>&1 >/dev/null |
+    $dir/test_constructor_check_${thread}_c$EXEEXT 2>&1 >/dev/null |
         $GREP -q 'initialized via constructor' &&
         echo " ok" ||
         {
@@ -62,7 +62,7 @@ do
 
     cleanup
     printf "Running Score-P constructor check for C++ ($thread) "
-    $dir/constructor_check_${thread}_cxx$EXEEXT 2>&1 >/dev/null |
+    $dir/test_constructor_check_${thread}_cxx$EXEEXT 2>&1 >/dev/null |
         $GREP -q 'initialized via constructor' &&
         echo " ok" ||
         {
@@ -72,7 +72,7 @@ do
 
     cleanup
     printf "Running Score-P constructor check for Fortran ($thread) "
-    $dir/constructor_check_${thread}_f$EXEEXT 2>&1 >/dev/null |
+    $dir/test_constructor_check_${thread}_f$EXEEXT 2>&1 >/dev/null |
         $GREP -q 'initialized via constructor' &&
         echo " ok" ||
         {
