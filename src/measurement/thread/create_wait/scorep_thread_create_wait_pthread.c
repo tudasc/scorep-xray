@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016, 2018,
+ * Copyright (c) 2014, 2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -37,6 +37,7 @@
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Task.h>
+#include <SCOREP_InMeasurement.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -214,7 +215,17 @@ create_orphan_key( void )
 static void
 orphan_dtor( void* location )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     UTILS_DEBUG_ENTRY();
+
+    /* Orphan threads ending after WITHIN are handled by scorep_finalize(). */
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        UTILS_DEBUG_EXIT();
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     void* terminate = SCOREP_ThreadCreateWait_TryTerminate( location );
     if ( terminate )
     {
@@ -228,6 +239,8 @@ orphan_dtor( void* location )
                                     SCOREP_Task_GetCurrentTask( location ) );
         scorep_thread_create_wait_orphan_end( terminate );
     }
+    UTILS_DEBUG_EXIT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
