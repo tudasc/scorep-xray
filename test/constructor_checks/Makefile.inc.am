@@ -78,8 +78,8 @@ CLEANFILES += ../installcheck/constructor_checks/Makefile
 
 CLEAN_LOCAL += clean-local-constructor-checks
 clean-local-constructor-checks:
-	$(RM) ../installcheck/constructor_checks/constructor_check_*.$(OBJEXT)
-	$(RM) ../installcheck/constructor_checks/bin/constructor_check_*
+	$(RM) ../installcheck/constructor_checks/test_constructor_check_*.$(OBJEXT)
+	$(RM) ../installcheck/constructor_checks/bin/test_constructor_check_*
 
 endif HAVE_COMPILER_CONSTRUCTOR_SUPPORT
 
