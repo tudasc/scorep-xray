@@ -190,7 +190,7 @@ scorep_thread_is_initial_thread( scorep_thread_private_data* tpd )
 {
     UTILS_DEBUG_ENTRY();
     UTILS_ASSERT( tpd );
-    return tpd->parent == 0;
+    return tpd == initial_tpd;
 }
 
 
