@@ -85,3 +85,10 @@ SCOREP_Location_GetCurrentCPULocation( void )
 {
     return scorep_thread_sole_cpu_location;
 }
+
+
+bool
+SCOREP_Thread_IsIntialThread( void )
+{
+    return true;
+}

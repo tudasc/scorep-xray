@@ -71,4 +71,11 @@ struct scorep_thread_private_data*
 SCOREP_Thread_GetInitialTpd( void );
 
 
+/**
+ * Return true if the current active thread is the initial/master thread.
+ */
+bool
+SCOREP_Thread_IsIntialThread( void );
+
+
 #endif /* SCOREP_THREAD_MGMT_H */
