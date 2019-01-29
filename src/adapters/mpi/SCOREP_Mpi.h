@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,8 +40,6 @@
  */
 
 #include "SCOREP_Mpi_Reg.h"
-
-#include <SCOREP_AllocMetric.h>
 
 #include <mpi.h>
 #include <stdbool.h>
@@ -176,7 +174,8 @@ bool scorep_mpi_enable_topologies;
  *  Metric which tracks allocations done by calls to the MPI API, i.e.,
  *  MPI_ALLOC_MEM/MPI_FREE_MEM.
  */
-extern SCOREP_AllocMetric* scorep_mpi_allocations_metric;
+struct SCOREP_AllocMetric;
+extern struct SCOREP_AllocMetric* scorep_mpi_allocations_metric;
 
 extern SCOREP_AttributeHandle scorep_mpi_memory_alloc_size_attribute;
 extern SCOREP_AttributeHandle scorep_mpi_memory_dealloc_size_attribute;
