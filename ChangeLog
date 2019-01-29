@@ -45,8 +45,10 @@ Features and improvements:
   preceeding it with '~', e.g., 'SCOREP_MPI_ENABLE_GROUPS=default,~cg'.
 - Functions excluded from instrumentation by the GCC plug-in, because
   they were declared as inline, can now be instrumented by providing
-  an instrumention filter to 'scorep' where the function is matched by
-  an explicit 'INCLUDE' rule, which is not the match-all '*' one.
+  an instrumentation filter to 'scorep' where the function is matched
+  by an explicit 'INCLUDE' rule, which is not the match-all '*' one.
+  Functions excluded from instrumentation can be listed by adding 
+  --verbose=2 to the scorep command-line.
 - The experimental `scorep-preload-init` script will, if available, use
   a constructor function for the initialization of the measurement
   before entering the 'main' function.
