@@ -115,7 +115,7 @@ using the configure option:
 
   --with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam| \
               mpibull2|mpich|mpich2|mpich3|openmpi|openmpi3|platform| \
-              scali|sgimpt|sgimptwrapper|sun)
+              scali|sgimpt|sgimptwrapper|spectrum|sun)
                The MPI compiler suite to build this package in non
                cross-compiling mode. Usually autodetected. Needs to be
                in $PATH.
@@ -128,7 +128,7 @@ The SHMEM compiler, if in $PATH, is usually autodetected. If there are
 several SHMEM compilers in $PATH the user is requested to select one
 using the configure option:
 
-  --with-shmem=(openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper)
+  --with-shmem=(openshmem|openmpi|openmpi3|sgimpt|sgimptwrapper|spectrum)
                The SHMEM compiler suite to build this package in
                non cross-compiling mode. Usually autodetected.
                Needs to be in $PATH.
