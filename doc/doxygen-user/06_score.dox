@@ -1,7 +1,7 @@
 /** @page score Usage of scorep-score
 @seclabel{score}
 
-scorep-score is a tool that allows to estimate the size of an OTF2 trace
+@verb{scorep-score} is a tool that allows to estimate the size of an OTF2 trace
 from a CUBE4 profile. Furthermore, the effects of
 filters are estimated. The main goal is to define appropriate filters for
 a tracing run from a profile.
@@ -12,7 +12,7 @@ The general work-flow for performance analysis with @scorep is:
   <li> Perform a measurement run and record a profile (see Section @secref{measurement}).
        The profile already
        gives an overview what may happen inside the application. </li>
-  <li> Use scorep-score to define an appropriate filter for an application
+  <li> Use @verb{scorep-score} to define an appropriate filter for an application
        Otherwise the trace file may become too large. This step is explained
        in this Chapter.</li>
   <li> Perform a measurement run with tracing enabled and the filter
@@ -115,7 +115,7 @@ In the example above the function main belongs to group @verb{COM}
 required 24 bytes per process and used 0 s execution time. The
 regions are sorted by their buffer requirements.
 
-By default scorep-score uses demangled function names. However, if you want to
+By default @verb{scorep-score} uses demangled function names. However, if you want to
 map data to tools which use mangled names you might want to display mangled names.
 Furthermore, if you have trouble with function signatures that contain characters
 that also have a wildcard meaning, defining filters on mangled names might be easier.
