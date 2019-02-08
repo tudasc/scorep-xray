@@ -951,7 +951,7 @@ You can find out whether user library wrapping is enabled via
 `scorep-info config-summary` in Section "Score-P (libwrap)".
 
 This section covers how to use already installed wrappers.
-Appendix @ref scoreplibwrap explains how to create user library wrappers,
+Appendix @secref{scoreplibwrap} explains how to create user library wrappers,
 and provides additional details.
 
 <!-- adapted from src/tools/libwrap-init/README.md Workflow for Wrapping a Library Use the Wrapper -->
