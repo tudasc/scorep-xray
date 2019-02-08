@@ -111,14 +111,14 @@ linker flags and libraries, or include paths:
 @endverbatim
 
 The @verb{--mpp=<paradigm>} switch selects which message passing paradigm is used.
-Currently, @scorep supports applications using MPI ( @verb{--mpp=mpi} ) or SHMEM
-( @verb{--mpp=shmem} ) and applications without any message passing paradigm.
+Currently, @scorep supports applications using MPI (@verb{--mpp=mpi}) or SHMEM
+(@verb{--mpp=shmem}) and applications without any message passing paradigm.
 It is not possible to specify two message passing systems for the same application.
 The @verb{--thread=<paradigm>} switch selects which threading system is used in
-@scorep. You may use OpenMP ( @verb{--thread=omp} ), no threading system
-( @verb{--thread=none} ) or POSIX threading system ( @verb{--thread=pthread} ). It is not possible to specify two threading systems
-for the same application. However, you may combine a message passing system with
-a threading system.
+@scorep. You may use OpenMP (@verb{--thread=omp}), no threading system
+(@verb{--thread=none}) or POSIX threading system (@verb{--thread=pthread}). It
+is not possible to specify two threading systems for the same application. However,
+you may combine a message passing system with a threading system.
 
 @note
   A particular installation of @scorep may not offer all measurement
