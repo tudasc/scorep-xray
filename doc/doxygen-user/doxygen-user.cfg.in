@@ -233,7 +233,7 @@ ALIASES                = scorep=Score-P \
                          "necsx=NEC SX" \
                          papi=PAPI \
                          "seclabel{1}=\latexonly\label{sec:\1} \endlatexonly" \
-                         "secref{1}=\if LATEX \latexonly~\ref{sec:\1}\xspace \endlatexonly \else '@ref \1'\endif" \
+                         "secref{1}='@ref \1'" \
                          "verb{1}=\latexonly\verb+\1+\endlatexonly\htmlonly<tt>\1</tt>\endhtmlonly" \
                          "tabref{1}=\if LATEX \latexonly~\ref{tab:\1}\xspace \endlatexonly \else @ref \1\endif" \
                          "tablabel{1}=\latexonly\label{tab:\1}\endlatexonly" \
