@@ -158,30 +158,6 @@ disables compiler instrumentation.
 source routines and arbitrary regions, in addition to fully-automatic
 @mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
 
-\if LATEX
-\latexonly
-   \begin{table}
-	\caption{Score-P instrumenter option overview}
-	\label{tab:instopts}
-    	\begin{tabular}{ | p{1.7cm} | p{3.0cm} | p{1.6cm} | p{2.1cm} | p{2.1cm} |}
-	    \hline
-	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
-
-	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline
-	    SHMEM & {\ttfamily -\/-\/mpp=shmem/ \newline -\/-\/mpp=none} & (auto) &  configured by install & --  \\ \hline
-	    OpenCL & {\ttfamily -\/-\/opencl/ \newline -\/-\/noopencl} & enabled &  configured by install & see Sec. \ref{sec:opencl_adapter}  \\ \hline
-	    OpenACC & {\ttfamily -\/-\/openacc/ \newline -\/-\/noopenacc} & enabled &  configured by install & see Sec. \ref{sec:openacc_adapter}  \\ \hline
-	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none \newline -\/-\/openmp \newline -\/-\/noopenmp} & (auto)  &  all parallel constructs &  --  \\ \hline
-	    Pthread & {\ttfamily -\/-\/thread= \newline pthread} & (auto) &  Basic Pthread library calls &  --  \\ \hline
-	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective recording, Sec. \ref{sec:selective_recording}\\ \hline
-    	\end{tabular}
-    \end{table}
-\endlatexonly
-
-\else
   <table border=1 cellspacing=0>
     <caption>@scorep instrumenter option overview</caption>
     <tr>
@@ -262,7 +238,6 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective recording (see Sec. @ref selective_recording ) </td>
     </tr>
   </table>
-\endif
 
 When the instrumenter determines that MPI or OpenMP are being used, it
 automatically enables MPI library instrumentation or OPARI2-based OpenMP
