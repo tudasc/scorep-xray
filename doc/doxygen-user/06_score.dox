@@ -1,4 +1,4 @@
-/** @page score Usage of scorep-score
+/** @page score Scoring a Profile Measurement
 @seclabel{score}
 
 @verb{scorep-score} is a tool that allows to estimate the size of an OTF2 trace
