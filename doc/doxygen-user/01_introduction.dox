@@ -73,22 +73,28 @@ process to be analyzed and the number of cores to be used.
 
 @scorep supports the following programming paradigms:
 <dl>
-<dt>Multi-process paradigms:</dt>
-<dd><ul>
-  <li>@emph{MPI}</li>
-  <li>@emph{SHMEM}</li>
-</ul></dd>
-<dt>Thread-parallel paradigms:</dt>
-<dd><ul>
-  <li>@emph{OpenMP}</li>
-  <li>@emph{Pthreads}</li>
-</ul></dd>
-<dt>Accelerator-based paradigms:</dt>
-<dd><ul>
-  <li>@emph{CUDA}</li>
-  <li>@emph{OpenCL}</li>
-  <li>@emph{OpenACC}</li>
-</ul></dd>
+ <dt>Multi-process paradigms:</dt>
+ <dd>\if LATEX <br> \endif
+  <ul>
+   <li>@emph{MPI}</li>
+   <li>@emph{SHMEM}</li>
+  </ul>
+ </dd>
+ <dt>Thread-parallel paradigms:</dt>
+ <dd>\if LATEX <br> \endif
+  <ul>
+   <li>@emph{OpenMP}</li>
+   <li>@emph{Pthreads}</li>
+  </ul>
+ </dd>
+ <dt>Accelerator-based paradigms:</dt>
+ <dd>\if LATEX <br> \endif
+  <ul>
+   <li>@emph{CUDA}</li>
+   <li>@emph{OpenCL}</li>
+   <li>@emph{OpenACC}</li>
+  </ul>
+ </dd>
 </dl>
 And possible combinations from these including simple @emph{serial} programs.
 
