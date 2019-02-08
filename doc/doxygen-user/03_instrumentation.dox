@@ -182,6 +182,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
+      <td align="left" valign="middle"> CUDA </td>
+      <td align="center" valign="middle"> \--[no]cuda </td>
+      <td align="center" valign="middle"> enabled </td>
+      <td align="center" valign="middle"> all </td>
+      <td align="center" valign="middle"> @secref{cuda_adapter} </td>
+    </tr>
+    <tr>
       <td align="left" valign="middle"> OpenCL </td>
       <td align="center" valign="middle"> \--[no]opencl </td>
       <td align="center" valign="middle"> enabled </td>
@@ -236,6 +243,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> @secref{filtering} and @secref{selective_recording} </td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> @secref{scoreplibwrap} </td>
+      <td align="center" valign="middle"> \--libwrap=[...] </td>
+      <td align="center" valign="middle"> disabled </td>
+      <td align="center" valign="middle"> all by library wrapper </td>
+      <td align="center" valign="middle"> @secref{filtering} </td>
     </tr>
   </table>
 
