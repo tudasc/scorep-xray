@@ -70,19 +70,32 @@ runtime that was used by this group, and the column @verb{time/visit(us)} shows 
 average time per visit in microseconds.
 
 The following groups exist:
-<ul>
- <li> ALL:     Includes all functions of the application </li>
- <li> OMP:     This group contains all regions that represent an OpenMP construct </li>
- <li> MPI:     This group contains all MPI functions </li>
- <li> SHMEM:   This group contains all SHMEM functions </li>
- <li> PTHREAD: This group contains all Pthread functions </li>
- <li> CUDA:    This group contains all CUDA API functions and kernels </li>
- <li> OPENCL:  This group contains all OpenCL API functions and kernels </li>
- <li> OPENACC: This group contains all OpenACC API functions and kernels </li>
- <li> MEMORY:  This group contains all libc and C++ memory (de)allocation functions </li>
- <li> COM:     This group contains all functions, implemented by the user that appear on
-               a call-path to any functions from the above groups, except ALL.</li>
- <li> USR:     This group contains all user functions except those in the COM group. </li>
+<dl>
+ <dt>ALL:</dt>
+  <dd>Includes all functions of the application</dd>
+ <dt>OMP:</dt>
+  <dd>This group contains all regions that represent an OpenMP construct</dd>
+ <dt>MPI:</dt>
+  <dd>This group contains all MPI functions</dd>
+ <dt>SHMEM:</dt>
+  <dd>This group contains all SHMEM functions</dd>
+ <dt>PTHREAD:</dt>
+  <dd>This group contains all Pthread functions</dd>
+ <dt>CUDA:</dt>
+  <dd>This group contains all CUDA API functions and kernels</dd>
+ <dt>OPENCL:</dt>
+  <dd>This group contains all OpenCL API functions and kernels</dd>
+ <dt>OPENACC:</dt>
+  <dd>This group contains all OpenACC API functions and kernels</dd>
+ <dt>MEMORY:</dt>
+  <dd>This group contains all libc and C++ memory (de)allocation functions</dd>
+ <dt>COM:</dt>
+  <dd>This group contains all functions, implemented by the user that appear on
+      a call-path to any functions from the above groups, except <b>ALL</b>.</dd>
+ <dt>USR:</dt>
+  <dd>This group contains all user functions except those in the <b>COM</b> group.</dd>
+ <dt>LIB:</dt>
+  <dd>This group contains all user wrapped library functions (See @secref{scoreplibwrap}).</dd>
 </ul>
 
 @section score_region_output Additional per-region information
