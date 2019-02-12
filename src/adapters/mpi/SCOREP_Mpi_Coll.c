@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -768,8 +768,8 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
                 N = 0;
             }
 
-            sendbytes = N * count * sz;
-            recvbytes = count * sz;
+            sendbytes = ( uint64_t )N * count * sz;
+            recvbytes = ( uint64_t )count * sz;
 
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
