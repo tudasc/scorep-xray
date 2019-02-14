@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -831,7 +831,7 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
                 int sz;
                 PMPI_Type_size( sendtype, &sz );
                 SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
-                                sendtag, sendcount * sz );
+                                sendtag, ( uint64_t )sendcount * sz );
             }
             if ( status == MPI_STATUS_IGNORE )
             {
@@ -858,7 +858,7 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
                 PMPI_Type_size( recvtype, &sz );
                 PMPI_Get_count( status, recvtype, &recvcount );
                 SCOREP_MpiRecv( status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE( comm ),
-                                status->MPI_TAG, recvcount * sz );
+                                status->MPI_TAG, ( uint64_t )recvcount * sz );
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV ] );
@@ -912,7 +912,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
                 int sz;
                 PMPI_Type_size( sendtype, &sz );
                 SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
-                                sendtag, sendcount * sz );
+                                sendtag, ( uint64_t )sendcount * sz );
             }
             if ( status == MPI_STATUS_IGNORE )
             {
@@ -939,7 +939,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
                 PMPI_Type_size( recvtype, &sz );
                 PMPI_Get_count( status, recvtype, &recvcount );
                 SCOREP_MpiRecv( status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE( comm ),
-                                status->MPI_TAG, recvcount * sz );
+                                status->MPI_TAG, ( uint64_t )recvcount * sz );
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE ] );
