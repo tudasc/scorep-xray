@@ -96,8 +96,8 @@ Bugfixes:
   option is used.
 - Fix memory recording of C++14 applications, because Score-P did not
   wrapped the `delete`/`delete[]` operators with size argument.
-- Fix possible overflow of send/recv bytes in MPI_Bcast and
-MPI_Sendrecv(_replace)
+- Fix possible overflow of send/recv bytes in MPI_Bcast, MPI_Sendrecv,
+  and MPI_Sendrecv_replace.
 
 ------------------- Released version 4.1 -----------------------------
 
