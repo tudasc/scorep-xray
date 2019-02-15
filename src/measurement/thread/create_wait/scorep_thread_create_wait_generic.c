@@ -531,6 +531,9 @@ SCOREP_ThreadCreateWait_TryTerminate( struct SCOREP_Location* location )
     /* Take this locations subsystem data as an indicator if this location
      * needs to be terminated. Ensure that only one caller gets the OK to
      * terminate the thread. */
+    UTILS_BUG_ON( is_finalized,
+                  "Illegal call to SCOREP_ThreadCreateWait_TryTerminate. Measurement system has already terminated." );
+
     SCOREP_MutexLock( thread_subsystem_data_mutex );
     void* terminate = SCOREP_Location_GetSubsystemData( location, subsystem_id );
     SCOREP_Location_SetSubsystemData( location, subsystem_id, NULL );
