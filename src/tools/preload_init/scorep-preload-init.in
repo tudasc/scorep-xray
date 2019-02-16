@@ -26,6 +26,15 @@ die()
     exit 1
 }
 
+warn()
+{
+    (
+        printf "%s: warning: " "$argv0"
+        printf "$@"
+        printf "\n"
+    ) >&2
+}
+
 usage()
 {
     if test $# -gt 0
@@ -159,6 +168,10 @@ do
             IFS=${save0_IFS}
         ;;
         esac
+    ;;
+    (--compiler|--user|--pomp|--thread=*|--thread|--mutex=*|--mutex|--memory|--memory=*)
+        warn "option not suitable for uninstrumented applications: '%s'" "${1}"
+        SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
     ;;
     (--*)
         # pass arguments to scorep-config

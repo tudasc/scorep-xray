@@ -49,9 +49,11 @@ Features and improvements:
   by an explicit 'INCLUDE' rule, which is not the match-all '*' one.
   Functions excluded from instrumentation can be listed by adding
   `--verbose=2` to the `scorep` command-line.
-- The experimental `scorep-preload-init` script will, if available,
-  use a constructor function for the initialization of the measurement
-  before entering the 'main' function.
+- Changes to the experimental `scorep-preload-init` script:
+  - Also preloads the Score-P constructor to be able to early
+    initialize the measurement.
+  - Issues a warning for options which are not suitable for
+    uninstrumented applications.
 - 'MPI_Comm_idup' is now supported and does not abort the measurement
   anymore.
 - Added support for the high bandwidth memory interface (hbw_malloc)
