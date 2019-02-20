@@ -593,19 +593,17 @@ main( int    argc,
 
             case ACTION_LIBS:
             {
-                const bool honor_libs = !!( action & ACTION_EVENT_LIBS );
-                const bool honor_deps = !!( action & ACTION_MGMT_LIBS );
                 if ( !allow_dynamic || !allow_static )
                 {
-                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install, honor_libs, honor_deps );
-                    libs = get_full_library_names( deps.getLibraries( libs, honor_libs, honor_deps ),
+                    std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
+                    libs = get_full_library_names( deps.getLibraries( libs ),
                                                    rpath,
                                                    allow_static,
                                                    allow_dynamic );
                 }
                 else
                 {
-                    libs = deps.getLibraries( libs, honor_libs, honor_deps );
+                    libs = deps.getLibraries( libs );
                 }
                 std::cout << deque_to_string( libs, " ", " ", "" );
                 std::cout.flush();
