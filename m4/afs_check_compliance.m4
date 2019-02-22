@@ -120,30 +120,3 @@ AC_CHECK_DECLS([$4], [
     ])
 ], [], [$1])
 ])
-
-AC_DEFUN([AFS_CHECK_RETURN_TYPE], [
-AC_CHECK_DECLS([$4], [
-    afs_check_compliance_result=no
-    AC_MSG_CHECKING([return type of $4])
-    afs_save_[]_AC_LANG_ABBREV[]_werror_flag=$ac_[]_AC_LANG_ABBREV[]_werror_flag
-    ac_[]_AC_LANG_ABBREV[]_werror_flag=yes
-    AC_COMPILE_IFELSE([AFS_LANG_FUNCTION([$1], [$2], [$3], [$4], [$5])], [
-        afs_check_compliance_result=yes
-    ], [
-        afs_check_compliance_result=no
-    ])
-    ac_[]_AC_LANG_ABBREV[]_werror_flag=$afs_save_[]_AC_LANG_ABBREV[]_werror_flag
-    AC_MSG_RESULT([${afs_check_compliance_result}])
-    AS_IF([test "x${afs_check_compliance_result}" = "xyes"], [
-        AC_DEFINE(AS_TR_CPP([HAVE_]$4[_COMPLIANT]), [1], [$4 is standard compliant])
-        AC_DEFINE(AS_TR_CPP([AFS_PACKAGE_NAME[]_]$4[_RETURN_TYPE]), [$2], [Compliant return type for $4])
-    ], [
-	AC_COMPILE_IFELSE([AFS_LANG_FUNCTION([$1],[$7],[$3],[$4],[$5])], [
-            AC_DEFINE(AS_TR_CPP([AFS_PACKAGE_NAME[]_]$4[_RETURN_TYPE]), [$7], [Compliant return type for $4])
-
-	], [
-	    AC_MSG_ERROR([No valid return type for $4])
-	]
-    )])
-], [], [$1])
-])
