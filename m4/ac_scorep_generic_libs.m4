@@ -270,7 +270,7 @@ dnl does save and reset CPPFLAGS, LDFLAGS, and LIBS automatically
 
 #echo "with_$1_include = ${with_$1_include}"
 #echo "with_$1_lib     = ${with_$1_lib}"
-
+#echo "$1_NAME         = ${$1_NAME}"
 $1_dirs_exist="yes"
 AS_IF([test "x${with_$1_include}" != "xno" && test "x${with_$1_include}" != "xyes" && test ! -d ${with_$1_include}],
       [$1_dirs_exist="no"
@@ -315,7 +315,7 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        libs_save_$1="${LIBS}"
        cpp_flags_save_$1="${CPPFLAGS}"
        AS_IF([test "x${with_$1_lib}" != "xyes"],
-             [_AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])
+             [_AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib $1_debug.so], [${with_$1_lib}], [with_$1_lib_checks_successful])
               AS_IF([test "x${with_$1_lib_checks_successful}" = "xno"],
                     [tmp_basename=`basename ${with_$1_lib}`
                      tmp_dirname=`dirname ${with_$1_lib}`
