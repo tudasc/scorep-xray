@@ -92,7 +92,8 @@ AS_IF([test "x${with_llvm}" != "xno"],
 
 AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
       [# try executing llvm-config to rule out that it doesn't work due to not finding linked libs e.g.
-       AS_IF([${scorep_llvm_config_bin} --version >/dev/null],
+       llvm_config_version='${scorep_llvm_config_bin} --version >&AS_MESSAGE_LOG_FD'
+       AS_IF([_AC_DO_VAR([llvm_config_version])],
              [llvm_bindir=`${scorep_llvm_config_bin} --bindir`
               AS_IF([AS_EXECUTABLE_P([${llvm_bindir}/clang]) && AS_EXECUTABLE_P([${llvm_bindir}/clang++])],
                     [CC=${llvm_bindir}/clang
