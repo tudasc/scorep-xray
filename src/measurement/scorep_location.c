@@ -51,6 +51,8 @@
 #include <SCOREP_Thread_Mgmt.h>
 #include <SCOREP_Definitions.h>
 
+#include "scorep_events_common.h"
+
 #include <UTILS_Error.h>
 
 #if HAVE( THREAD_LOCAL_STORAGE )
@@ -184,7 +186,7 @@ SCOREP_Location_CreateCPULocation( const char* name )
 char scorep_per_process_metrics_location_name[] = "Per process metrics";
 
 SCOREP_Location*
-SCOREP_Location_AcquirePerProcessMetricsLocation( void )
+SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 {
     SCOREP_ErrorCode result = SCOREP_MutexLock( per_process_metrics_location_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot lock per_process_metrics_location_mutex" );
@@ -195,6 +197,11 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( void )
             SCOREP_Location_GetCurrentCPULocation(),
             SCOREP_LOCATION_TYPE_METRIC,
             scorep_per_process_metrics_location_name );
+    }
+
+    if ( timestamp )
+    {
+        *timestamp = scorep_get_timestamp( per_process_metrics_location );
     }
 
     return per_process_metrics_location;

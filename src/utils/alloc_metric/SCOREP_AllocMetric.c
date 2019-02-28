@@ -353,7 +353,7 @@ SCOREP_AllocMetric_New( const char*          name,
                                            SCOREP_SAMPLING_SET_ABSTRACT );
 
     SCOREP_Location* per_process_metric_location =
-        SCOREP_Location_AcquirePerProcessMetricsLocation();
+        SCOREP_Location_AcquirePerProcessMetricsLocation( NULL );
     ( *allocMetric )->sampling_set =
         SCOREP_Definitions_NewScopedSamplingSet( sampling_set_handle,
                                                  SCOREP_Location_GetLocationHandle( per_process_metric_location ),
@@ -426,10 +426,11 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
 
     /* We need to ensure, that we take the timestamp  *after* we acquired
        the metric location, else we may end up with an invalid timestamp order */
+    uint64_t         timestamp;
     SCOREP_Location* per_process_metric_location =
-        SCOREP_Location_AcquirePerProcessMetricsLocation();
+        SCOREP_Location_AcquirePerProcessMetricsLocation( &timestamp );
     SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
-                                          SCOREP_Timer_GetClockTicks(),
+                                          timestamp,
                                           allocMetric->sampling_set,
                                           allocMetric->total_allocated_memory );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
@@ -540,10 +541,11 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
 
     /* We need to ensure, that we take the timestamp  *after* we acquired
        the metric location, else we may end up with an invalid timestamp order */
+    uint64_t         timestamp;
     SCOREP_Location* per_process_metric_location =
-        SCOREP_Location_AcquirePerProcessMetricsLocation();
+        SCOREP_Location_AcquirePerProcessMetricsLocation( &timestamp );
     SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
-                                          SCOREP_Timer_GetClockTicks(),
+                                          timestamp,
                                           allocMetric->sampling_set,
                                           total_allocated_memory_save );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
@@ -594,10 +596,11 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
 
     /* We need to ensure, that we take the timestamp  *after* we acquired
        the metric location, else we may end up with an invalid timestamp order */
+    uint64_t         timestamp;
     SCOREP_Location* per_process_metric_location =
-        SCOREP_Location_AcquirePerProcessMetricsLocation();
+        SCOREP_Location_AcquirePerProcessMetricsLocation( &timestamp );
     SCOREP_Location_TriggerCounterUint64( per_process_metric_location,
-                                          SCOREP_Timer_GetClockTicks(),
+                                          timestamp,
                                           allocMetric->sampling_set,
                                           allocMetric->total_allocated_memory );
     SCOREP_Location_ReleasePerProcessMetricsLocation();

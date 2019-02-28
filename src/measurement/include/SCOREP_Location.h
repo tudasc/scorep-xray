@@ -71,9 +71,11 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
  * adapters, this function acquires a mutex that need to be released by a call
  * to SCOREP_Location_ReleasePerProcessMetricsLocation(). The location is
  * created during the first call to this function.
+ * If @a timestamp is non NULL, than also takes a timestamp for this location
+ * and return it in @a *timestamp.
  */
 SCOREP_Location*
-SCOREP_Location_AcquirePerProcessMetricsLocation( void );
+SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp );
 
 void
 SCOREP_Location_ReleasePerProcessMetricsLocation( void );
