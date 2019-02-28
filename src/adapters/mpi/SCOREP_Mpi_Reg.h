@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -118,37 +118,38 @@
 /** @} */
 
 /**
- * Bit patterns for runtime wrapper enabling
+ * Bit patterns for runtime wrapper enabling.
+ * @note Adding a new derived group requires a change in enable_derived_groups().
  */
 enum scorep_mpi_groups
 {
     /* pure groups, which can be specified in conf */
-    SCOREP_MPI_ENABLED_CG        =     1,
-    SCOREP_MPI_ENABLED_COLL      =     2,
-    SCOREP_MPI_ENABLED_ENV       =     4,
-    SCOREP_MPI_ENABLED_ERR       =     8,
-    SCOREP_MPI_ENABLED_EXT       =    16,
-    SCOREP_MPI_ENABLED_IO        =    32,
-    SCOREP_MPI_ENABLED_MISC      =    64,
-    SCOREP_MPI_ENABLED_P2P       =   128,
-    SCOREP_MPI_ENABLED_RMA       =   256,
-    SCOREP_MPI_ENABLED_SPAWN     =   512,
-    SCOREP_MPI_ENABLED_TOPO      =  1024,
-    SCOREP_MPI_ENABLED_TYPE      =  2048,
-    SCOREP_MPI_ENABLED_PERF      =  4096,
-    SCOREP_MPI_ENABLED_XNONBLOCK =  8192,
-    SCOREP_MPI_ENABLED_XREQTEST  = 16384,
+    SCOREP_MPI_ENABLED_CG        = 1 << 0,
+    SCOREP_MPI_ENABLED_COLL      = 1 << 1,
+    SCOREP_MPI_ENABLED_ENV       = 1 << 2,
+    SCOREP_MPI_ENABLED_ERR       = 1 << 3,
+    SCOREP_MPI_ENABLED_EXT       = 1 << 4,
+    SCOREP_MPI_ENABLED_IO        = 1 << 5,
+    SCOREP_MPI_ENABLED_MISC      = 1 << 6,
+    SCOREP_MPI_ENABLED_P2P       = 1 << 7,
+    SCOREP_MPI_ENABLED_RMA       = 1 << 8,
+    SCOREP_MPI_ENABLED_SPAWN     = 1 << 9,
+    SCOREP_MPI_ENABLED_TOPO      = 1 << 10,
+    SCOREP_MPI_ENABLED_TYPE      = 1 << 11,
+    SCOREP_MPI_ENABLED_PERF      = 1 << 12,
+    SCOREP_MPI_ENABLED_XNONBLOCK = 1 << 13,
+    SCOREP_MPI_ENABLED_XREQTEST  = 1 << 14,
     /* derived groups, which are a combination of existing groups */
-    SCOREP_MPI_ENABLED_CG_ERR    = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_CG_EXT    = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_CG_MISC   = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_IO_ERR    = SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_IO_MISC   = SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_RMA_ERR   = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_RMA_EXT   = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_RMA_MISC  = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_TYPE_EXT  = SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_TYPE_MISC = SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_MISC,
+    SCOREP_MPI_ENABLED_CG_ERR    = 1 << 15,
+    SCOREP_MPI_ENABLED_CG_EXT    = 1 << 16,
+    SCOREP_MPI_ENABLED_CG_MISC   = 1 << 17,
+    SCOREP_MPI_ENABLED_IO_ERR    = 1 << 18,
+    SCOREP_MPI_ENABLED_IO_MISC   = 1 << 19,
+    SCOREP_MPI_ENABLED_RMA_ERR   = 1 << 20,
+    SCOREP_MPI_ENABLED_RMA_EXT   = 1 << 21,
+    SCOREP_MPI_ENABLED_RMA_MISC  = 1 << 22,
+    SCOREP_MPI_ENABLED_TYPE_EXT  = 1 << 23,
+    SCOREP_MPI_ENABLED_TYPE_MISC = 1 << 24,
     /* NOTE: ALL should comprise all pure groups */
     SCOREP_MPI_ENABLED_ALL       = SCOREP_MPI_ENABLED_CG        |
                                    SCOREP_MPI_ENABLED_COLL      |

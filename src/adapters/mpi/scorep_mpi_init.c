@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -188,6 +188,30 @@ SCOREP_FORTRAN_GET_MPI_UNWEIGHTED( void );
 
 static size_t mpi_subsystem_id;
 
+static void
+enable_derived_groups( void )
+{
+    /* See derived groups in enum scorep_mpi_groups. */
+    #define ENABLE_DERIVED_GROUP( G1, G2 ) \
+    if ( ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_##G1 ) && ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_##G2 ) ) \
+    { \
+        scorep_mpi_enabled |= SCOREP_MPI_ENABLED_##G1##_##G2; \
+    }
+
+    ENABLE_DERIVED_GROUP( CG, ERR );
+    ENABLE_DERIVED_GROUP( CG, EXT );
+    ENABLE_DERIVED_GROUP( CG, MISC );
+    ENABLE_DERIVED_GROUP( IO, ERR );
+    ENABLE_DERIVED_GROUP( IO, MISC );
+    ENABLE_DERIVED_GROUP( RMA, ERR );
+    ENABLE_DERIVED_GROUP( RMA, EXT );
+    ENABLE_DERIVED_GROUP( RMA, MISC );
+    ENABLE_DERIVED_GROUP( TYPE, EXT );
+    ENABLE_DERIVED_GROUP( TYPE, MISC );
+
+    #undef ENABLE_DERIVED_GROUP
+}
+
 /**
    Implementation of the adapter_register function of the @ref
    SCOREP_Subsystem struct for the initialization process of the MPI
@@ -255,6 +279,7 @@ mpi_subsystem_init( void )
 
     scorep_mpi_win_init();
     scorep_mpi_register_regions();
+    enable_derived_groups();
 
     if ( scorep_mpi_memory_recording )
     {
