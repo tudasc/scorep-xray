@@ -56,8 +56,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
     [ibm],      [scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
-    [portland], [SCOREP_CC_FLAG_TEST(["-Mprof=func"])
-                 SCOREP_CC_FLAG_TEST(["-Minstrument=functions"])],
+    [portland], [SCOREP_CC_FLAG_TEST([-Mprof=func])
+                 SCOREP_CC_FLAG_TEST([-Minstrument=functions])],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
                        [scorep_compiler_instrumentation_cppflags=""],
                        [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"

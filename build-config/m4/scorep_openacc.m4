@@ -14,24 +14,18 @@
 ## file build-config/m4/scorep_openacc.m4
 
 AC_DEFUN([SCOREP_OPENACC_FLAG_TEST],[
-    AC_LANG_PUSH(C)
+    AC_LANG_PUSH([C])
     save_CFLAGS=$CFLAGS
     CFLAGS="$CFLAGS $1"
 
     AC_MSG_CHECKING([whether compiler understands $1])
-    AC_COMPILE_IFELSE([
-        AC_LANG_SOURCE([
-            int main()
-            {
-                return 0;
-            }
-            ])],
-	[AC_MSG_RESULT(yes)
-	 scorep_compiler_acc_flags="$1"],
-        [AC_MSG_RESULT(no)])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
+        [AC_MSG_RESULT([yes])
+         scorep_compiler_acc_flags="$1"],
+        [AC_MSG_RESULT([no])])
 
    CFLAGS="$save_CFLAGS"
-   AC_LANG_POP(C)
+   AC_LANG_POP([C])
 ])
 
 AC_DEFUN([SCOREP_OPENACC], [
@@ -157,9 +151,9 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
 AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
       [dnl check for OpenACC compiler flags
        AS_CASE([${ax_cv_c_compiler_vendor}],
-           [portland], [SCOREP_OPENACC_FLAG_TEST(["-acc"])],
+           [portland], [SCOREP_OPENACC_FLAG_TEST([-acc])],
            [gnu],      [],
-           [cray],     [SCOREP_OPENACC_FLAG_TEST(["-h pragma=acc"])],
+           [cray],     [SCOREP_OPENACC_FLAG_TEST([-h pragma=acc])],
            [])dnl
 
        dnl print a notice on the used OpenACC compiler flags
