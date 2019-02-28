@@ -1124,7 +1124,7 @@ set_rewind_affected_thread_paradigm( SCOREP_Location*    location,
 #define case_break( threading_class ) \
     case SCOREP_PARADIGM_CLASS_ ## threading_class: \
         scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_ ## threading_class ); \
-        break;
+        break
 
         case_break( THREAD_FORK_JOIN );
         case_break( THREAD_CREATE_WAIT );

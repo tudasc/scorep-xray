@@ -95,7 +95,7 @@ scorep_paradigm_property_to_string( SCOREP_ParadigmProperty paradigmProperty )
     {
 #define case_return( PROPERTY ) \
     case SCOREP_PARADIGM_PROPERTY_ ## PROPERTY: \
-        return #PROPERTY;
+        return #PROPERTY
 
         case_return( COMMUNICATOR_TEMPLATE );
         case_return( RMA_WINDOW_TEMPLATE );
