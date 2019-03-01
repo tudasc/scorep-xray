@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018,
+ * Copyright (c) 2009-2011, 2018-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -154,40 +154,7 @@ scorep_mpi_save_request_array( MPI_Request* arr_req,
 scorep_mpi_request*
 scorep_mpi_saved_request_get( int i );
 
-/**
- * @internal
- * size of hash table
- */
-#define SCOREP_MPI_REQUEST_TABLE_SIZE 256
-
-/**
- * @internal
- * Hash access structure
- */
-struct scorep_mpi_request_hash
-{
-    struct scorep_mpi_request_block* head_block;
-    struct scorep_mpi_request_block* last_block;
-    scorep_mpi_request*              lastreq;
-    int                              lastidx;
-};
-
-/**
- * @internal
- * size of element list behind a hash entry
- */
-#define SCOREP_MPI_REQUEST_BLOCK_SIZE 16
-
-/**
- * @internal
- * Block of linked list of request blocks
- */
-struct scorep_mpi_request_block
-{
-    scorep_mpi_request               req[ SCOREP_MPI_REQUEST_BLOCK_SIZE ];
-    struct scorep_mpi_request_block* next;
-    struct scorep_mpi_request_block* prev;
-};
-
+void
+scorep_mpi_request_finalize( void );
 
 #endif /* SCOREP_MPI_REQUEST_H */
