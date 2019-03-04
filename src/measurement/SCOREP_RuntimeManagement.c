@@ -765,10 +765,8 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
         SCOREP_Memory_HandleOutOfMemory();
     }
 
-    if ( !SCOREP_Status_IsMppInitialized() )
-    {
-        UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
-    }
+    UTILS_BUG_ON( !SCOREP_Status_IsMppInitialized(),
+                  "Trace buffer flush before MPP was initialized." );
 
     if ( !final )
     {

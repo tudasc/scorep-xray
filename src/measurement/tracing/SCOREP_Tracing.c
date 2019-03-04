@@ -66,6 +66,13 @@
 
 static OTF2_Archive* scorep_otf2_archive;
 
+
+/* We can't rely on SCOREP_Status_IsMppInitialized(), as it is already
+ * true before our SCOREP_Tracing_OnMppInit() was called, thus
+ * track the state by ourself too. */
+static bool event_files_opened;
+
+
 size_t scorep_tracing_substrate_id;
 
 
@@ -104,6 +111,10 @@ scorep_on_trace_pre_flush( void*         userData,
 {
     if ( fileType == OTF2_FILETYPE_EVENTS )
     {
+        if ( !event_files_opened )
+        {
+            UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
+        }
         SCOREP_OnTracingBufferFlushBegin( final );
     }
 
@@ -377,6 +388,11 @@ SCOREP_Tracing_OnMppInit( void )
         UTILS_FATAL( "Could not open OTF2 event files: %s",
                      OTF2_Error_GetDescription( otf2_err ) );
     }
+
+    /* We can flush only *after* OTF2 was properly MPP initialized,
+     * SCOREP_Status_IsMppInitialized() was already true, before this function
+     * was called */
+    event_files_opened = true;
 }
 
 
