@@ -280,6 +280,15 @@ mpi_subsystem_init( void )
     SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
 #endif
 
+    /*
+     * Order is important!
+     *
+     * `scorep_mpi_win_init` may disable a feature, thus needs to run before
+     * `enable_derived_groups`.
+     *
+     * `scorep_mpi_register_regions` already requires the derived groups, thus
+     * needs to run after `enable_derived_groups`.
+     */
     scorep_mpi_win_init();
     enable_derived_groups();
     scorep_mpi_register_regions();
