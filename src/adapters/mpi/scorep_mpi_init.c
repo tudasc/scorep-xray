@@ -281,8 +281,8 @@ mpi_subsystem_init( void )
 #endif
 
     scorep_mpi_win_init();
-    scorep_mpi_register_regions();
     enable_derived_groups();
+    scorep_mpi_register_regions();
 
     if ( scorep_mpi_memory_recording )
     {
