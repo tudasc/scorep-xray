@@ -168,9 +168,9 @@ SCOREP_Instrumenter_OpariAdapter::printHelp( void )
     std::cout << "  --openmp        Enables instrumentation of OpenMP directives. By default,\n";
     std::cout << "                  it also enables preprocessing. (Default for compile units\n";
     std::cout << "                  with enabled OpenMP support during the compilation)\n";
-    std::cout << "  --noopenmp      Disables instrumentation of OpenMP directives. \n";
+    std::cout << "  --noopenmp      Disables instrumentation of OpenMP directives.\n";
     std::cout << "                  Note: To ensure thread-safe execution of the measurement,\n";
-    std::cout << "                  Parallel regions still need to be tracked and will appear\n";
+    std::cout << "                  parallel regions still need to be tracked and will appear\n";
     std::cout << "                  in the results. (Default for compile units without OpenMP\n";
     std::cout << "                  enabled compilation)\n";
     std::cout << "  --opari=<parameter-list>\n";

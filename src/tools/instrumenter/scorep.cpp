@@ -83,7 +83,7 @@ print_help( void )
               << "                  2 = Detailed information is displayed\n"
               << "  --dry-run       Only displays the executed commands. It does not\n"
               << "                  execute any command.\n"
-              << "  --keep-files    Do not delete temporarily created files after successfull\n"
+              << "  --keep-files    Do not delete temporarily created files after successful\n"
               << "                  instrumentation. By default, temporary files are deleted\n"
               << "                  if no error occurs during instrumentation.\n"
               << "  --instrument-filter=<file>\n"

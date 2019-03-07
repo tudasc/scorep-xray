@@ -22,6 +22,9 @@ Common options are:
                   It applies the same syntax, as the one used by Score-P during
                   run-time.
   --version       Prints the Score-P version and exits.
+  --disable-preprocessing
+                  Tells scorep to skip all preprocessing related steps,
+                  the input files are already preprocessed.
   --static        Enforce static linking of the Score-P libraries.
   --dynamic       Enforce dynamic linking of the Score-P libraries.
   --no-as-needed  Adds a GNU ld linker flag to fix undefined references
@@ -110,15 +113,15 @@ Common options are:
   --noopenacc     Disables OpenACC instrumentation.
   --memory        Enables memory usage instrumentation. It is enabled by default.
   --nomemory      Disables memory usage instrumentation.
-  --libwrap=[<wrap-mode>:](<library-wrapper-name>...|<path-to-library-wrapper>)
-                  Enables library wrapping. <wrap-mode> may be 'linktime'
-                  (default) or 'runtime'. <library-wrapper-name>... is
-                  a comma-separated list of library wrappers which will be
-                  looked up of the colon-separated 'SCOREP_LIBWRAP_PATH'
-                  environment variable and in the installation directory of
-                  Score-P itself. <path-to-library-wrapper> is a full
-                  path to the .libwrap anchor file.
+  --libwrap=[<wrap-mode>:](<wrapper-name>...|<path-to-wrapper>)
+                  Enables user library wrapping for specified libraries.
+                  <wrap-mode> may be 'linktime' (default) or 'runtime'.
+                  <wrapper-name>... is a comma-separated list of library wrappers
+                  which will be looked up in the paths of the colon-separated
+                  'SCOREP_LIBWRAP_PATH' environment variable and in the installation
+                  directory of Score-P. <path-to-wrapper> is a full path to the
+                  .libwrap anchor file.
                   Use 'scorep-info libwrap-summary' for a more detailed listing
-                  of library available wrappers.
+                  of available library wrappers.
 
 Report bugs to <support@score-p.org>
