@@ -707,7 +707,8 @@ wrap_lines( const char* message,
                     fprintf( out, "%*s%s",
                              firstIndent, "",
                              html ? "<p>" : "" );
-                }                sep = "";
+                }
+                sep = "";
                 break;
 
             case 4:
