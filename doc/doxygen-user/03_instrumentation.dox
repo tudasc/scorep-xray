@@ -50,9 +50,11 @@ following kinds of events:
 
 The @scorep instrumenter command <tt>scorep</tt> automatically takes
 care of compilation and linking to produce an instrumented executable,
-and should be prefixed to compile and link commands.  Often this only
-requires prefixing definitions for @verb{CC} or @verb{MPICC} (and
-equivalents) in Makefiles.
+and should be prefixed to compile and link commands. Therefore, CMake
+projects can use wrapper scripts provided with the Score-P installation.
+Section @secref{scorepwrapper} explains their usage in more detail.
+Software projects using Makefiles often only require prefixing definitions
+for @verb{CC} or @verb{MPICC} (and equivalents).
 
 Usually the @scorep instrumenter <tt>scorep</tt> is able to
 automatically detect the programming paradigm from the set of compile
