@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2016, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -285,7 +285,7 @@ SCOREP_Timer_GetClockResolution( void )
 
                 /* Assert that all processes use roughly the same frequency.
                  * Problems with non-uniform frequencies to be solved by timer
-                 * per process/location record.*/
+                 * per location-group record.*/
                 if ( SCOREP_Ipc_GetRank() != 0 )
                 {
                     SCOREP_Ipc_Gather( &timer_tsc_freq, 0, 1, SCOREP_IPC_UINT64_T, 0 );
@@ -301,34 +301,80 @@ SCOREP_Timer_GetClockResolution( void )
                                        SCOREP_IPC_UINT64_T,
                                        0 );
 
-                    double sum            = 0;
-                    double sum_of_squares = 0;
+                    /* Compute average of (non-negative) frequencies using integers, see
+                     * https://www.quora.com/How-can-I-compute-the-average-of-a-large-array-of-integers-without-running-into-overflow */
+                    uint64_t avg_frequency = 0;
+                    {
+                        uint64_t x = 0;
+                        uint64_t y = 0;
+                        for ( uint64_t i = 0; i < size; ++i )
+                        {
+                            x += frequencies[ i ] / size;
+                            uint64_t b = frequencies[ i ] % size;
+                            if ( y >= size - b )
+                            {
+                                x++;
+                                y -= size - b;
+                            }
+                            else
+                            {
+                                y += b;
+                            }
+                        }
+                        /* Average is exactly x + y / N, with 0 <= y < N.
+                         * Take the integer part only. */
+                        avg_frequency = x;
+                    }
+
+                    /* HPC CPU clock frequencies are in the order of 10^9 since
+                     * 2000. We observed CPUs frequencies to differ in the order
+                     * of 10^3. Thus, we will 'accept' frequencies in the range
+                     * [average_freq - threshold, average_freq + threshold] where
+                     * threshold is 'average_freq / 10^6' (i.e. in the order of 10^3).
+                     * For slower CPUs make sure the threshold larger than (the
+                     * arbitrarily chosen) 10. */
+                    uint64_t dividend  = 1000000;
+                    uint64_t threshold = avg_frequency / dividend; /* Usually in the order of 10^3 */
+                    while ( threshold < 10 &&  dividend > 0 )
+                    {
+                        dividend  = dividend / 10;
+                        threshold = avg_frequency / dividend;
+                    }
+                    /* Check for frequency outliers. */
+                    uint64_t outliers[ size ];
+                    memset( outliers, 0, sizeof( uint64_t ) * size );
+                    bool has_outlier = false;
                     for ( int i = 0; i < size; ++i )
                     {
-                        sum            += frequencies[ i ];
-                        sum_of_squares += ( double )frequencies[ i ] * frequencies[ i ];
+                        uint64_t abs_diff;
+                        if ( avg_frequency > frequencies[ i ] )
+                        {
+                            abs_diff = avg_frequency - frequencies[ i ];
+                        }
+                        else
+                        {
+                            abs_diff = frequencies[ i ] - avg_frequency;
+                        }
+                        if ( abs_diff > threshold )
+                        {
+                            has_outlier   = true;
+                            outliers[ i ] = frequencies[ i ];
+                        }
                     }
-                    UTILS_BUG_ON( sum == 0, "Sum of process-local frequencies must not be 0." );
-                    double avg_frequency = sum / size;
-                    double stddev        = 0;
-                    if ( size > 1 )
+
+                    /* Report if there are outliers. */
+                    if ( has_outlier )
                     {
-                        stddev = ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 );
-                    }
-                    double percent   = stddev * 100 * 100 / ( avg_frequency * avg_frequency );
-                    double threshold = 0.00001 * 0.00001; /* 'invented' value derived from a 4 process
-                                                             run that took 15 seconds. */
-                    if ( percent > threshold )
-                    {
-                        UTILS_WARNING( "Calculated timer (tsc) frequencies differ between processes "
-                                       "by more than %f%% (avg_frequency = %f/s; stddev * stddev = %f/s; "
-                                       "threshold = %f%%). Consider using a timer with a fixed "
-                                       "frequency like gettimeofday or clock_gettime or prolong "
-                                       "the measurement duration.",
-                                       percent, avg_frequency, stddev, threshold );
+                        UTILS_WARNING( "Calculated timer (tsc) frequencies differ from average frequency "
+                                       "(%" PRIu64 " Hz) by more than %" PRIu64 " Hz. "
+                                       "Consider using a timer with a fixed frequency like gettimeofday "
+                                       "or clock_gettime. Prolonging the measurement duration might "
+                                       "mitigate the frequency variations.",
+                                       avg_frequency, threshold );
                         for ( int i = 0; i < size; ++i )
                         {
-                            printf( "rank[%d]:\t frequency = %" PRIu64 "/s \n", i, frequencies[ i ] );
+                            char* is_outlier = ( outliers[ i ] != 0 ) ? " (outlier)" : "";
+                            printf( "rank[%d]:\t frequency = %" PRIu64 " Hz%s\n", i, frequencies[ i ], is_outlier );
                         }
                     }
                 }
