@@ -105,6 +105,7 @@ In addition, @scorep supports event recording for the following programming inte
   <ul>
    <li>@emph{C}, up to C11 (i.e., @verb{malloc}/@verb{free})</li>
    <li>@emph{C++}, up to C++14 and old PGI/EDG (i.e., @verb{new}/@verb{delete})</li>
+   <li>@emph{High bandwidth memory API}, from the memkind library (i.e., @verb{hbw_malloc}/@verb{hbw_free})</li>
    <li>@emph{MPI}</li>
    <li>@emph{SHMEM}</li>
   </ul>
