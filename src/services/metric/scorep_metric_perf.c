@@ -234,6 +234,15 @@ metric_perf_create_event_code( char* name )
         return return_metric;
     }
 #endif /* HAVE_DECL_PERF_COUNT_HW_STALLED_CYCLES_BACKEND */
+#if HAVE_DECL_PERF_COUNT_HW_REF_CPU_CYCLES
+    else
+    if ( strstr( name, "ref-cycles" ) == name )
+    {
+        return_metric.type   = PERF_TYPE_HARDWARE;
+        return_metric.config = PERF_COUNT_HW_REF_CPU_CYCLES;
+        return return_metric;
+    }
+#endif /* HAVE_DECL_PERF_COUNT_HW_REF_CPU_CYCLES */
     else
     if ( strstr( name, "instructions" ) == name )
     {

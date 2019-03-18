@@ -219,7 +219,11 @@ has_metric_perf_headers="yes"
 AC_CHECK_HEADERS([linux/perf_event.h],
                  [],
                  [has_metric_perf_headers="no"])
-AC_CHECK_DECLS([PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, PERF_COUNT_SW_ALIGNMENT_FAULTS, PERF_COUNT_SW_EMULATION_FAULTS],
+AC_CHECK_DECLS([PERF_COUNT_HW_STALLED_CYCLES_FRONTEND,
+                PERF_COUNT_HW_STALLED_CYCLES_BACKEND,
+                PERF_COUNT_HW_REF_CPU_CYCLES,
+                PERF_COUNT_SW_ALIGNMENT_FAULTS,
+                PERF_COUNT_SW_EMULATION_FAULTS],
                [], [], [[#include <linux/perf_event.h>]])
 
 ##
