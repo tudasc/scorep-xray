@@ -69,7 +69,7 @@ perf_parse_event( char*                   name,
         returnMetric->config = PERF_COUNT_HW_CPU_CYCLES;
         return 0;
     }
-#if HAVE_DECL_PERF_COUNT_HW_STALLED_CYCLES_FRONTEND
+#if HAVE( DECL_PERF_COUNT_HW_STALLED_CYCLES_FRONTEND )
     else
     if ( ( strstr( name, "stalled-cycles-frontend" ) == name ) || ( strstr( name, "idle-cycles-frontend" ) == name ) )
     {
@@ -77,8 +77,8 @@ perf_parse_event( char*                   name,
         returnMetric->config = PERF_COUNT_HW_STALLED_CYCLES_FRONTEND;
         return 0;
     }
-#endif /* HAVE_DECL_PERF_COUNT_HW_STALLED_CYCLES_FRONTEND */
-#if HAVE_DECL_PERF_COUNT_HW_STALLED_CYCLES_BACKEND
+#endif /* HAVE( DECL_PERF_COUNT_HW_STALLED_CYCLES_FRONTEND ) */
+#if HAVE( DECL_PERF_COUNT_HW_STALLED_CYCLES_BACKEND )
     else
     if ( ( strstr( name, "stalled-cycles-backend" ) == name ) || ( strstr( name, "idle-cycles-backend" ) == name ) )
     {
@@ -86,7 +86,16 @@ perf_parse_event( char*                   name,
         returnMetric->config = PERF_COUNT_HW_STALLED_CYCLES_BACKEND;
         return 0;
     }
-#endif /* HAVE_DECL_PERF_COUNT_HW_STALLED_CYCLES_BACKEND */
+#endif /* HAVE( DECL_PERF_COUNT_HW_STALLED_CYCLES_BACKEND ) */
+#if HAVE( DECL_PERF_COUNT_HW_REF_CPU_CYCLES )
+    else
+    if ( strstr( name, "ref-cycles" ) == name )
+    {
+        returnMetric->type   = PERF_TYPE_HARDWARE;
+        returnMetric->config = PERF_COUNT_HW_REF_CPU_CYCLES;
+        return 0;
+    }
+#endif /* HAVE( DECL_PERF_COUNT_HW_REF_CPU_CYCLES ) */
     else
     if ( strstr( name, "instructions" ) == name )
     {
@@ -166,20 +175,20 @@ perf_parse_event( char*                   name,
         returnMetric->type   = PERF_TYPE_SOFTWARE;
         returnMetric->config = PERF_COUNT_SW_CPU_MIGRATIONS;
     }
-#if HAVE_DECL_PERF_COUNT_SW_ALIGNMENT_FAULTS
+#if HAVE( DECL_PERF_COUNT_SW_ALIGNMENT_FAULTS )
     if ( strstr( name, "alignment-faults" ) == name )
     {
         returnMetric->type   = PERF_TYPE_SOFTWARE;
         returnMetric->config = PERF_COUNT_SW_ALIGNMENT_FAULTS;
     }
-#endif /* HAVE_DECL_PERF_COUNT_SW_ALIGNMENT_FAULTS */
-#if PERF_COUNT_SW_EMULATION_FAULTS
+#endif /* HAVE( DECL_PERF_COUNT_SW_ALIGNMENT_FAULTS ) */
+#if HAVE( DECL_PERF_COUNT_SW_EMULATION_FAULTS )
     if ( strstr( name, "emulation-faults" ) == name )
     {
         returnMetric->type   = PERF_TYPE_SOFTWARE;
         returnMetric->config = PERF_COUNT_SW_EMULATION_FAULTS;
     }
-#endif /* PERF_COUNT_SW_EMULATION_FAULTS */
+#endif /* HAVE( DECL_PERF_COUNT_SW_EMULATION_FAULTS ) */
 
     if ( returnMetric->type == PERF_TYPE_SOFTWARE )
     {
