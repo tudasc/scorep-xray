@@ -56,8 +56,6 @@
  */
 
 #include <config.h>
-/* We do wrap deprecated functions here, but we don't want warnings */
-#define OMPI_WANT_MPI_INTERFACE_WARNING 0
 #include "SCOREP_Fmpi.h"
 
 #include <stdlib.h>

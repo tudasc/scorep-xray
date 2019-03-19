@@ -356,6 +356,9 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([AC_SCOREP_MPI], [
 AC_REQUIRE([_SCOREP_PDT_MPI_INSTRUMENTATION])
 
+AC_DEFINE([OMPI_WANT_MPI_INTERFACE_WARNING], [0], [Disable deprecation warnings in Open MPI])
+AC_DEFINE([OMPI_OMIT_MPI1_COMPAT_DECLS],     [0], [Possibly expose deprecated MPI-1 bindings in Open MPI 4.0+])
+
 if test "x${scorep_mpi_c_supported}" = "xyes"; then
   if test "x${scorep_mpi_f77_supported}" = "xyes" -o "x${scorep_mpi_f90_supported}" = "xyes"; then
     scorep_mpi_supported="yes"
