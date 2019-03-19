@@ -54,6 +54,9 @@
                 global(mpi_file_cops);
                 global(mpi_file_crops);
                 global(mpi_file_cwops);
+                global(mpi_request_handling);
+                global(mpi_request_start);
+                global(mpi_request_completion);
 
                 global(shmem);
                 global(shmem_mgmt_initfini);
@@ -160,13 +163,30 @@
                             ${mpi_sync_rma_passive}[${i}] = 1;
                         };
 
-                        if (
-                            ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "point2point" )
-                            or
-                            ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
-                           )
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "point2point" )
                         {
                             ${mpi_comm_p2p}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Test_cancelled$/ )
+                        {
+                            ${mpi_request_handling}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Start(all){0,1}$/ )
+                        {
+                            ${mpi_request_handling}[${i}] = 1;
+                            ${mpi_request_start}[${i}] = 1;
+                        };
+
+                        if ( ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
+                             or
+                             ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Cancel$/ )
+                             or
+                             ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Request_free$/ ) )
+                        {
+                            ${mpi_request_handling}[${i}] = 1;
+                            ${mpi_request_completion}[${i}] = 1;
                         };
 
                         if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
@@ -484,6 +504,9 @@
                     cube::metric::set::mpi_point2point("value", "VOID");
                     cube::metric::set::mpi_collective("value", "VOID");
                     cube::metric::set::mpi_rma_communication("value", "VOID");
+                    cube::metric::set::mpi_request_handling("value", "VOID");
+                    cube::metric::set::mpi_request_start("value", "VOID");
+                    cube::metric::set::mpi_request_completion("value", "VOID");
                     cube::metric::set::mpi_io("value", "VOID");
                     cube::metric::set::mpi_io_individual("value", "VOID");
                     cube::metric::set::mpi_io_collective("value", "VOID");
@@ -896,6 +919,60 @@
                             };
                             return ${tmp};
                         }
+                        </cubepl>
+                    </metric>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Request Handling</disp_name>
+                    <uniq_name>mpi_request_handling</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_handling</url>
+                    <descr>Time spent handling requests</descr>
+                    <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Request Start</disp_name>
+                        <uniq_name>mpi_request_start</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_start</url>
+                        <descr>Time spent starting persistent requests</descr>
+                        <cubepl>
+                            {
+                                ${tmp} = 0;
+                                if ( ${mpi_request_start}[${calculation::callpath::id}] == 1 )
+                                {
+                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                                };
+                                return ${tmp};
+                            }
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Request Completion</disp_name>
+                        <uniq_name>mpi_request_completion</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_completion</url>
+                        <descr>Time spent completing requests.</descr>
+                        <cubepl>
+                            {
+                                ${tmp} = 0;
+                                if ( ${mpi_request_completion}[${calculation::callpath::id}] == 1 )
+                                {
+                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                                };
+                                return ${tmp};
+                            }
                         </cubepl>
                     </metric>
                 </metric>

@@ -686,7 +686,7 @@
     <version id="1.0" />
 </prototype>
 
-<prototype name="MPI_Cancel" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Cancel" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
@@ -5275,7 +5275,7 @@
     <version id="2.0" />
 </prototype>
 
-<prototype name="MPI_Request_free" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Request_free" rtype="int" group="request" guard="request" >
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
@@ -5907,14 +5907,12 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Start" rtype="int" group="p2p" guard="p2p" >
-    <attribute id="kind">POINT2POINT</attribute>
+<prototype name="MPI_Start" rtype="int" group="request" guard="request" >
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
-<prototype name="MPI_Startall" rtype="int" group="p2p" guard="p2p" >
-    <attribute id="kind">POINT2POINT</attribute>
+<prototype name="MPI_Startall" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <version id="1.0" />
@@ -5952,7 +5950,7 @@
     <version id="3.0" />
 </prototype>
 
-<prototype name="MPI_Test" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Test" rtype="int" group="request" guard="request" >
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <param access="o" type_modifier="" type="int*" name="flag" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
@@ -5976,13 +5974,13 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Test_cancelled" rtype="int" group="p2p" guard="extra,p2p" >
+<prototype name="MPI_Test_cancelled" rtype="int" group="request" guard="extra,request" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="status" />
     <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
 </prototype>
 
-<prototype name="MPI_Testall" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Testall" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="int*" name="flag" />
@@ -6007,7 +6005,7 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Testany" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Testany" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="int*" name="index" />
@@ -6033,7 +6031,7 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Testsome" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Testsome" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="incount" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="int*" name="outcount" />
@@ -6454,7 +6452,7 @@
     <version id="2.0" />
 </prototype>
 
-<prototype name="MPI_Wait" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Wait" rtype="int" group="request" guard="request" >
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
@@ -6477,7 +6475,7 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Waitall" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Waitall" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="MPI_Status*" name="array_of_statuses" />
@@ -6501,7 +6499,7 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Waitany" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Waitany" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="int*" name="index" />
@@ -6526,7 +6524,7 @@
 ]]></xblock>
 </prototype>
 
-<prototype name="MPI_Waitsome" rtype="int" group="p2p" guard="p2p" >
+<prototype name="MPI_Waitsome" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="int" name="incount" />
     <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <param access="o" type_modifier="" type="int*" name="outcount" />

@@ -14,6 +14,12 @@ EXT (external interfaces, e.g., handle attributes), or \p ERR (error handlers).
 
 For example, the functions in group \p CG_MISC will only generate events
 if both groups \p CG and \p MISC are enabled at runtime.
+
+Furthermore, the group \p REQUEST cannot be enabled directly by the user.
+The group is automatically enabled if any of the groups \p CG, \p COLL, \p
+EXT, \p IO, \p P2P, or \p RMA is enabled. It is disabled only if all of
+these groups are disabled as well.
+
 @section f2g Function to group
 
 <table>
@@ -149,6 +155,15 @@ Communicators and Groups</b>
 </td></tr>
 <tr><td>
 #pragma wrapgen multiple restrict(gperf) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%"><b>REQUEST</b> -
+<b>Completion of request-based operations</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(grequest) mpi_docs/SCOREP_Doc_GroupList.w
 </td></tr>
 </table>
 

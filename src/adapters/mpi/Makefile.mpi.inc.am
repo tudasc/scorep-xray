@@ -38,8 +38,8 @@ if HAVE_MPI_SUPPORT
 lib_LTLIBRARIES += libscorep_adapter_mpi_mgmt.la
 libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_init.c              \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.c           \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.h           \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request_mgmt.c      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request_mgmt.h      \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.c \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.h \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
@@ -156,6 +156,7 @@ libscorep_adapter_mpi_c_event_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Io.c           \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Misc.c         \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_P2p.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Request.c      \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Rma.c          \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Spawn.c        \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Topo.c         \
@@ -192,18 +193,19 @@ noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_event_fortran_sub4.la
 
 SCOREP_MPI_EVENT_FORTRAN_SOURCES = \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c   \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c    \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Err.c   \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Ext.c   \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Io.c    \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Misc.c  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_P2p.c   \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Rma.c   \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Spawn.c \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Topo.c  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Type.c  \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c      \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c    \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Err.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Ext.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Io.c      \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Misc.c    \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_P2p.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Request.c \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Rma.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Spawn.c   \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Topo.c    \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Type.c    \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi.h
 
 SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS = \

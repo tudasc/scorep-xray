@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -366,8 +366,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Cancel )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Cancel )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CANCEL ] =
             SCOREP_Definitions_NewRegion( "MPI_Cancel",
@@ -3486,8 +3486,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Request_free )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_free )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_FREE ] =
             SCOREP_Definitions_NewRegion( "MPI_Request_free",
@@ -3707,8 +3707,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Start )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Start )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_START ] =
             SCOREP_Definitions_NewRegion( "MPI_Start",
@@ -3717,11 +3717,11 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_POINT2POINT );
+                                          SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Startall )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Startall )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STARTALL ] =
             SCOREP_Definitions_NewRegion( "MPI_Startall",
@@ -3730,7 +3730,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_POINT2POINT );
+                                          SCOREP_REGION_NONE );
     }
 #endif
 #if HAVE( DECL_PMPI_STATUS_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_c2f )
@@ -3798,8 +3798,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Test )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TEST ] =
             SCOREP_Definitions_NewRegion( "MPI_Test",
@@ -3811,8 +3811,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Test_cancelled )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test_cancelled )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TEST_CANCELLED ] =
             SCOREP_Definitions_NewRegion( "MPI_Test_cancelled",
@@ -3824,8 +3824,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Testall )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testall )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] =
             SCOREP_Definitions_NewRegion( "MPI_Testall",
@@ -3837,8 +3837,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Testany )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testany )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTANY ] =
             SCOREP_Definitions_NewRegion( "MPI_Testany",
@@ -3850,8 +3850,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Testsome )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testsome )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTSOME ] =
             SCOREP_Definitions_NewRegion( "MPI_Testsome",
@@ -4448,8 +4448,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Wait )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Wait )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAIT ] =
             SCOREP_Definitions_NewRegion( "MPI_Wait",
@@ -4461,8 +4461,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Waitall )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitall )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITALL ] =
             SCOREP_Definitions_NewRegion( "MPI_Waitall",
@@ -4474,8 +4474,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Waitany )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitany )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITANY ] =
             SCOREP_Definitions_NewRegion( "MPI_Waitany",
@@ -4487,8 +4487,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Waitsome )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitsome )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITSOME ] =
             SCOREP_Definitions_NewRegion( "MPI_Waitsome",

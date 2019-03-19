@@ -48,7 +48,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
-#include "scorep_mpi_request.h"
+#include "scorep_mpi_request_mgmt.h"
 #if !defined( SCOREP_MPI_NO_HOOKS )
 #include "scorep_mpi_oa_profile_mgmt.h"
 #endif // !defined( SCOREP_MPI_NO_HOOKS )
@@ -213,6 +213,18 @@ enable_derived_groups( void )
     ENABLE_DERIVED_GROUP( TYPE, MISC );
 
     #undef ENABLE_DERIVED_GROUP
+
+    /* Enable REQUEST group if any of its depending groups is enabled */
+    uint64_t enable_request_mask = SCOREP_MPI_ENABLED_CG   |
+                                   SCOREP_MPI_ENABLED_COLL |
+                                   SCOREP_MPI_ENABLED_EXT  |
+                                   SCOREP_MPI_ENABLED_IO   |
+                                   SCOREP_MPI_ENABLED_P2P  |
+                                   SCOREP_MPI_ENABLED_RMA;
+    if ( scorep_mpi_enabled & enable_request_mask )
+    {
+        scorep_mpi_enabled |= SCOREP_MPI_ENABLED_REQUEST;
+    }
 }
 
 /**

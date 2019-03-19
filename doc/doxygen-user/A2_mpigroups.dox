@@ -18,6 +18,12 @@ EXT (external interfaces, e.g., handle attributes), or \p ERR (error handlers).
 
 For example, the functions in group \p CG_MISC will only generate events
 if both groups \p CG and \p MISC are enabled at runtime.
+
+Furthermore, the group \p REQUEST cannot be enabled directly by the user.
+The group is automatically enabled if any of the groups \p CG, \p COLL, \p
+EXT, \p IO, \p P2P, or \p RMA is enabled. It is disabled only if all of
+these groups are disabled as well.
+
 @section f2g Function to group
 
 <table>
@@ -112,7 +118,7 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Cancel</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Cart_coords</td>
@@ -1072,7 +1078,7 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Request_free</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Request_get_status</td>
@@ -1140,11 +1146,11 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Start</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Startall</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Status_c2f</td>
@@ -1168,23 +1174,23 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Test</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Test_cancelled</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Testall</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Testany</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Testsome</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Topo_test</td>
@@ -1368,19 +1374,19 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Wait</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Waitall</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Waitany</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Waitsome</td>
-  <td>P2P</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Win_allocate</td>
@@ -1861,7 +1867,6 @@ MPI_Bsend,
 MPI_Bsend_init,
 MPI_Buffer_attach,
 MPI_Buffer_detach,
-MPI_Cancel,
 MPI_Ibsend,
 MPI_Improbe,
 MPI_Imrecv,
@@ -1875,7 +1880,6 @@ MPI_Mrecv,
 MPI_Probe,
 MPI_Recv,
 MPI_Recv_init,
-MPI_Request_free,
 MPI_Rsend,
 MPI_Rsend_init,
 MPI_Send,
@@ -1884,6 +1888,25 @@ MPI_Sendrecv,
 MPI_Sendrecv_replace,
 MPI_Ssend,
 MPI_Ssend_init,
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%"><b>PERF</b> -
+<b>Profiling Interface</b>
+</td></tr>
+<tr><td>
+MPI_Pcontrol,
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%"><b>REQUEST</b> -
+<b>Completion of request-based operations</b>
+</td></tr>
+<tr><td>
+MPI_Cancel,
+MPI_Request_free,
 MPI_Start,
 MPI_Startall,
 MPI_Test,
@@ -1895,15 +1918,6 @@ MPI_Wait,
 MPI_Waitall,
 MPI_Waitany,
 MPI_Waitsome,
-</td></tr>
-</table>
-
-<table width="100%">
-<tr><td width="10%"><b>PERF</b> -
-<b>Profiling Interface</b>
-</td></tr>
-<tr><td>
-MPI_Pcontrol,
 </td></tr>
 </table>
 

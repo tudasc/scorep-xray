@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018-2019,
+ * Copyright (c) 2009-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -58,11 +58,10 @@
  * with a fixed index for every region.
  */
 
-#ifndef SCOREP_MPIWRAP_REG_H
-#define SCOREP_MPIWRAP_REG_H
+#ifndef SCOREP_MPI_REG_H
+#define SCOREP_MPI_REG_H
 
 #include <SCOREP_Definitions.h>
-
 /*
  * -----------------------------------------------------------------------------
  *
@@ -145,11 +144,12 @@ enum scorep_mpi_groups
     SCOREP_MPI_ENABLED_CG_MISC   = 1 << 17,
     SCOREP_MPI_ENABLED_IO_ERR    = 1 << 18,
     SCOREP_MPI_ENABLED_IO_MISC   = 1 << 19,
-    SCOREP_MPI_ENABLED_RMA_ERR   = 1 << 20,
-    SCOREP_MPI_ENABLED_RMA_EXT   = 1 << 21,
-    SCOREP_MPI_ENABLED_RMA_MISC  = 1 << 22,
-    SCOREP_MPI_ENABLED_TYPE_EXT  = 1 << 23,
-    SCOREP_MPI_ENABLED_TYPE_MISC = 1 << 24,
+    SCOREP_MPI_ENABLED_REQUEST   = 1 << 20,
+    SCOREP_MPI_ENABLED_RMA_ERR   = 1 << 21,
+    SCOREP_MPI_ENABLED_RMA_EXT   = 1 << 22,
+    SCOREP_MPI_ENABLED_RMA_MISC  = 1 << 23,
+    SCOREP_MPI_ENABLED_TYPE_EXT  = 1 << 24,
+    SCOREP_MPI_ENABLED_TYPE_MISC = 1 << 25,
     /* NOTE: ALL should comprise all pure groups */
     SCOREP_MPI_ENABLED_ALL       = SCOREP_MPI_ENABLED_CG        |
                                    SCOREP_MPI_ENABLED_COLL      |
@@ -179,6 +179,20 @@ enum scorep_mpi_groups
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
 extern uint64_t scorep_mpi_enabled;
+
+/**
+ * Detect erroneous compile-time disablement of request group
+ */
+#if defined( SCOREP_MPI_NO_REQUEST )
+    #error SCOREP_MPI_NO_REQUEST must not be set manually. Please remove define from the compile line.
+#elif defined( SCOREP_MPI_NO_CG ) \
+    && defined( SCOREP_MPI_NO_COLL ) \
+    && defined( SCOREP_MPI_NO_EXT ) \
+    && defined( SCOREP_MPI_NO_IO ) \
+    && defined( SCOREP_MPI_NO_P2P ) \
+    && defined( SCOREP_MPI_NO_RMA )
+    #define SCOREP_MPI_NO_REQUEST
+#endif
 
 enum scorep_mpi_regions
 {
@@ -958,4 +972,4 @@ extern SCOREP_RegionHandle scorep_mpi_regions[ SCOREP_MPI_NUM_REGIONS ];
 void
 scorep_mpi_register_regions( void );
 
-#endif /* SCOREP_MPIWRAP_REG_H */
+#endif /* SCOREP_MPI_REG_H */

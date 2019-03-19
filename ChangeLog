@@ -80,6 +80,13 @@ Features and improvements:
   mapped to ProgramBegin/End event records; in profiling mode this
   feature is modeled as enter/exit of an additional region with the
   name of the executable, if available.
+- Created separate enable group for request handling functions in MPI.
+  MPI functions dealing with the completion of non-blocking requests
+  (i.e., the Test/Wait family of calls) are no longer part of the P2P
+  enable group and moved to a separate enable group, which is enabled
+  or disabled automatically by the Score-P runtime system.
+- Adapted remapper specification to reflect that Test/Wait functionality
+  is no longer specific to point-to-point communication.
 
 Bugfixes:
 

@@ -36,7 +36,7 @@
 
 #include <config.h>
 
-#include "scorep_mpi_request.h"
+#include "scorep_mpi_request_mgmt.h"
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <SCOREP_Events.h>

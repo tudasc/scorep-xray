@@ -27,8 +27,8 @@
  * directory for details.
  */
 
-#ifndef SCOREP_MPI_REQUEST_H
-#define SCOREP_MPI_REQUEST_H
+#ifndef SCOREP_MPI_REQUEST_MGMT_H
+#define SCOREP_MPI_REQUEST_MGMT_H
 
 /**
    @file
@@ -157,4 +157,4 @@ scorep_mpi_saved_request_get( int i );
 void
 scorep_mpi_request_finalize( void );
 
-#endif /* SCOREP_MPI_REQUEST_H */
+#endif /* SCOREP_MPI_REQUEST_MGMT_H */
