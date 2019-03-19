@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -81,6 +81,12 @@ scorep_profile_definition scorep_profile =
     0,         /* max_callpath_depth   */
     UINT64_MAX /* max_callpath_num     */
 };
+
+/**
+    The number of arguments of this process, needed to estimate the ProgramBegin
+    event's trace buffer requirements.
+ */
+uint32_t scorep_profile_number_of_program_args = 0;
 
 /*----------------------------------------------------------------------------------------
    Constructors / destructors

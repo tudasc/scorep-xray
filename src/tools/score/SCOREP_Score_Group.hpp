@@ -98,7 +98,7 @@ struct SCOREP_Score_FieldWidths
 /**
  * This class represents a group. If the user requested a per
  * region list (with -r) every region is a group, too.
- * It stores relevent data for that group.
+ * It stores relevant data for that group.
  */
 class SCOREP_Score_Group
 {
@@ -185,7 +185,7 @@ private:
     uint64_t m_type;
 
     /**
-     * Stores the numnber of processes.
+     * Stores the number of processes.
      */
     uint64_t m_processes;
 

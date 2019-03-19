@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2017,
+ * Copyright (c) 2009-2013, 2015-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -59,14 +59,29 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
     }
     m_hits = m_cube->get_met( "hits" );
 
-    /* Collect all attributes from the definition counters */
-    const string               attr_prefix( "Score-P::DefinitionCounters::" );
+    /* Collect all attributes from the definition counters and arguments */
+    const string               attr_counter_prefix( "Score-P::DefinitionCounters::" );
+    const string               attr_argument_prefix( "Score-P::DefinitionArguments::" );
     const map<string, string>& attributes = m_cube->get_attrs();
     for ( map<string, string>::const_iterator it = attributes.begin();
           it != attributes.end(); ++it )
     {
-        const string& key = it->first;
-        if ( key.size() <= attr_prefix.size() || 0 != key.compare( 0, attr_prefix.size(), attr_prefix ) )
+        const string&          key = it->first;
+        map<string, uint64_t>* map_to_insert;
+        string                 key_name;
+        if ( key.size() > attr_counter_prefix.size()
+             && 0 == key.compare( 0, attr_counter_prefix.size(), attr_counter_prefix ) )
+        {
+            map_to_insert = &m_definition_counters;
+            key_name      = key.substr( attr_counter_prefix.size() );
+        }
+        else if ( key.size() > attr_argument_prefix.size()
+                  && 0 == key.compare( 0, attr_argument_prefix.size(), attr_argument_prefix ) )
+        {
+            map_to_insert = &m_definition_arguments;
+            key_name      = key.substr( attr_argument_prefix.size() );
+        }
+        else
         {
             continue;
         }
@@ -84,18 +99,35 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
             continue;
         }
 
-        m_definition_counters.insert( map<string, uint64_t>::value_type(
-                                          key.substr( attr_prefix.size() ),
-                                          value ) );
+        map_to_insert->insert( map<string, uint64_t>::value_type( key_name, value ) );
     }
 
     m_processes = m_cube->get_procv();
     m_regions   = m_cube->get_regv();
 
     // Make sure the id of the region definitions match their position in the vector
+    // and add special regions to containers.
     for ( uint32_t i = 0; i < getNumberOfRegions(); i++ )
     {
         m_regions[ i ]->set_id( i );
+
+        if ( getRegionParadigm( i ) == "measurement" )
+        {
+            m_regions_to_omit_in_trace_enter_leave_events.insert( i );
+        }
+        else if ( getRegionParadigm( i ) == "user"
+                  && getRegionName( i ) == "MEASUREMENT OFF" )
+        {
+            m_regions_to_omit_in_trace_enter_leave_events.insert( i );
+        }
+        else if ( getRegionName( i ).substr( 0, 9 ) == "instance=" )
+        {
+            m_dynamic_regions.insert( i );
+        }
+        else if ( getRegionName( i ).find( '=', 0 ) != string::npos )
+        {
+            m_parameter_regions.insert( i );
+        }
     }
 
     // Analyze region types
@@ -108,6 +140,7 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
     vector<Cnode*> roots =  m_cube->get_root_cnodev();
     for ( uint64_t i = 0; i < roots.size(); i++ )
     {
+        m_root_region_names.insert( roots[ i ]->get_callee()->get_name() );
         calculate_calltree_types( &m_cube->get_cnodev(), roots[ i ] );
     }
 }
@@ -281,7 +314,7 @@ SCOREP_Score_Profile::getHits( uint64_t region,
 }
 
 string
-SCOREP_Score_Profile::getRegionName( uint64_t region )
+SCOREP_Score_Profile::getRegionName( uint64_t region ) const
 {
     return m_regions[ region ]->get_name();
 }
@@ -293,7 +326,7 @@ SCOREP_Score_Profile::getMangledName( uint64_t region )
 }
 
 string
-SCOREP_Score_Profile::getRegionParadigm( uint64_t region )
+SCOREP_Score_Profile::getRegionParadigm( uint64_t region ) const
 {
     string paradigm = m_regions[ region ]->get_paradigm();
     if ( paradigm == "unknown" )
@@ -347,6 +380,12 @@ SCOREP_Score_Profile::getDefinitionCounters( void )
     return m_definition_counters;
 }
 
+const map<string, uint64_t>&
+SCOREP_Score_Profile::getDefinitionArguments( void )
+{
+    return m_definition_arguments;
+}
+
 void
 SCOREP_Score_Profile::print()
 {
@@ -377,6 +416,32 @@ SCOREP_Score_Profile::getGroup( uint64_t region )
     }
     return m_region_types[ region ];
 }
+
+bool
+SCOREP_Score_Profile::isRootRegion( uint64_t region ) const
+{
+    return m_root_region_names.count( getRegionName( region ) );
+}
+
+bool
+SCOREP_Score_Profile::omitInTraceEnterLeaveEvents( uint64_t region ) const
+{
+    return m_regions_to_omit_in_trace_enter_leave_events.count( region );
+}
+
+bool
+SCOREP_Score_Profile::isParameterRegion( uint64_t region ) const
+{
+    return m_parameter_regions.count( region );
+}
+
+bool
+SCOREP_Score_Profile::isDynamicRegion( uint64_t region ) const
+{
+    return m_dynamic_regions.count( region );
+}
+
+
 
 /* **************************************************** private members */
 SCOREP_Score_Type
@@ -415,6 +480,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     {
         return SCOREP_SCORE_TYPE_MEMORY;
     }
+    if ( paradigm == "measurement" )
+    {
+        return SCOREP_SCORE_TYPE_SCOREP;
+    }
     if ( 0 == paradigm.compare( 0, 8, "libwrap:" ) )
     {
         return SCOREP_SCORE_TYPE_LIB;
@@ -438,11 +507,11 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
         {
             return SCOREP_SCORE_TYPE_PTHREAD;
         }
-        if ( has_prefix_than_upper( name, "cu" ) || has_prefix_than_upper( name, "cuda" ) )
+        if ( has_prefix_then_upper( name, "cu" ) || has_prefix_then_upper( name, "cuda" ) )
         {
             return SCOREP_SCORE_TYPE_CUDA;
         }
-        if ( has_prefix_than_upper( name, "cl" ) )
+        if ( has_prefix_then_upper( name, "cl" ) )
         {
             return SCOREP_SCORE_TYPE_OPENCL;
         }
@@ -477,7 +546,7 @@ SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
 }
 
 bool
-SCOREP_Score_Profile::has_prefix_than_upper( const string& str,
+SCOREP_Score_Profile::has_prefix_then_upper( const string& str,
                                              const string& prefix )
 {
     if ( str.size() <= prefix.size() )

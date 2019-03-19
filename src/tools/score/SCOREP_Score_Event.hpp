@@ -1,10 +1,10 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -30,6 +30,8 @@
 #include <deque>
 #include <set>
 #include <stdint.h>
+
+class SCOREP_Score_Profile;
 
 /* **************************************************************************************
  * class SCOREP_Score_Event
@@ -71,12 +73,12 @@ public:
     setEventSize( uint32_t size );
 
     /**
-     * Returns whether this event occurs in the specified region.
-     * @param regionName  The specified regions name.
+     * Returns whether @a region contributes with getEventSize() to this event.
+     * @param region The specified regions.
      */
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits = false );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 
     /**
      * Return whether this event obtains a new timestamp.
@@ -98,6 +100,33 @@ protected:
 };
 
 /* **************************************************************************************
+ * class SCOREP_Score_ProgramBeginEvent
+ ***************************************************************************************/
+class SCOREP_Score_ProgramBeginEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_ProgramBeginEvent( uint64_t numberOfArguments );
+    virtual bool
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
+
+private:
+    uint64_t m_number_of_arguments;
+};
+
+/* **************************************************************************************
+ * class SCOREP_Score_ProgramEndEvent
+ ***************************************************************************************/
+class SCOREP_Score_ProgramEndEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_ProgramEndEvent( void );
+    virtual bool
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
+};
+
+/* **************************************************************************************
  * class SCOREP_Score_EnterEvent
  ***************************************************************************************/
 class SCOREP_Score_EnterEvent : public SCOREP_Score_Event
@@ -105,8 +134,8 @@ class SCOREP_Score_EnterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_EnterEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 };
 
 /* **************************************************************************************
@@ -117,8 +146,8 @@ class SCOREP_Score_LeaveEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_LeaveEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 };
 
 /* **************************************************************************************
@@ -129,8 +158,8 @@ class SCOREP_Score_CallingContextEnterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_CallingContextEnterEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 };
 
 /* **************************************************************************************
@@ -141,8 +170,8 @@ class SCOREP_Score_CallingContextLeaveEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_CallingContextLeaveEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 };
 
 /* **************************************************************************************
@@ -162,8 +191,8 @@ class SCOREP_Score_MetricEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_MetricEvent( uint64_t numDense );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
     virtual void
     setEventSize( uint32_t size );
 
@@ -180,8 +209,8 @@ public:
     SCOREP_Score_TimestampEvent( void );
 
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 
     virtual bool
     hasTimestamp( void ) const;
@@ -195,8 +224,8 @@ class SCOREP_Score_ParameterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_ParameterEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
 };
 
 /* **************************************************************************************
@@ -209,8 +238,8 @@ public:
                                  const std::set<std::string>& regionNames,
                                  bool                         hasTimestamp );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
     virtual bool
     hasTimestamp( void ) const;
 
@@ -229,8 +258,8 @@ public:
                                    const std::deque<std::string>& regionPrefix,
                                    bool                           hasTimestamp );
     virtual bool
-    occursInRegion( const std::string& regionName,
-                    bool               hasHits );
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
     virtual bool
     hasTimestamp( void ) const;
 

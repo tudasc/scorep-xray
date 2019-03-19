@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016,2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -68,10 +68,10 @@ public:
     ~SCOREP_Score_Estimator();
 
     /**
-     * Claculates the group an region data.
+     * Calculates the group an region data.
      * @param showRegions  Pass true if the user wants to see per region data
      *                     in addition to the groups.
-     * @param useMangled   Wether mangled or demangled region names are used for
+     * @param useMangled   Whether mangled or demangled region names are used for
      *                     display.
      */
     void
@@ -80,11 +80,11 @@ public:
 
     /**
      * Returns bytes per visit of for a region
-     * @param regionaName  Region name
+     * @param region Region index in m_profile
      *
      */
     uint64_t
-    bytesPerVisit( const std::string& regionName );
+    bytesPerVisit( uint64_t region );
 
 
     /**
@@ -201,7 +201,7 @@ private:
     SCOREP_Score_FieldWidths m_widths;
 
     /**
-     * Stores the number of region definitons.
+     * Stores the number of region definitions.
      */
     uint64_t m_region_num;
 

@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -63,8 +63,8 @@ using namespace std;
  * Swaps the items on @a pos1 and @a pos2 from the group list.
  * Needed for the quicksort.
  * @param item  List of groups that is sorted.
- * @param pos1  Position of an elemant that is swapped with the element at @a pos2.
- * @param pos2  Position of an elemant that is swapped with the element at @a pos1.
+ * @param pos1  Position of an element that is swapped with the element at @a pos2.
+ * @param pos2  Position of an element that is swapped with the element at @a pos1.
  */
 static void
 swap( SCOREP_Score_Group** items,
@@ -292,7 +292,8 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
 
     m_filter     = SCOREP_Filter_New();
     m_has_filter = false;
-    registerEvent( new SCOREP_Score_TimestampEvent() );
+    SCOREP_Score_Event* timestamp_event = new SCOREP_Score_TimestampEvent();
+    registerEvent( timestamp_event );
     registerEvent( new SCOREP_Score_EnterEvent() );
     registerEvent( new SCOREP_Score_LeaveEvent() );
     if ( m_profile->hasHits() )
@@ -306,6 +307,14 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
         registerEvent( new SCOREP_Score_MetricEvent( denseNum ) );
     }
     registerEvent( new SCOREP_Score_ParameterEvent() );
+
+    const map<string, uint64_t>&                definition_arguments = m_profile->getDefinitionArguments();
+    const map<string, uint64_t>::const_iterator it                   = definition_arguments.find( "ProgramBegin::numberOfArguments" );
+    if ( it != definition_arguments.end() )
+    {
+        registerEvent( new SCOREP_Score_ProgramBeginEvent( it->second ) );
+        registerEvent( new SCOREP_Score_ProgramEndEvent() );
+    }
 
 #define SCOREP_SCORE_EVENT( name ) region_set.insert( name );
     set<string> region_set;
@@ -470,9 +479,25 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     registerEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadEnd",
                                                       region_list,
                                                       true ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_MEASUREMENT_BUFFER_FLUSH;
+    registerEvent( new SCOREP_Score_PrefixMatchEvent( "BufferFlush",
+                                                      region_list,
+                                                      true ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_MEASUREMENT_ON_OFF;
+    SCOREP_Score_Event* measurement_on_off_event = new SCOREP_Score_PrefixMatchEvent( "MeasurementOnOff",
+                                                                                      region_list,
+                                                                                      false );
+    registerEvent( measurement_on_off_event );
+
 #undef SCOREP_SCORE_EVENT
 
     calculate_event_sizes();
+    /* One visit to MeasurementOnOff corresponds to two MeasurementOnOff trace events. */
+    measurement_on_off_event->setEventSize( 2 * ( measurement_on_off_event->getEventSize() + timestamp_event->getEventSize() ) );
 
     m_filtered = NULL;
     m_regions  = NULL;
@@ -573,7 +598,7 @@ SCOREP_Score_Estimator::initializeFilter( const string& filterFile )
 
 
 uint64_t
-SCOREP_Score_Estimator::bytesPerVisit( const string& regionName )
+SCOREP_Score_Estimator::bytesPerVisit( uint64_t region )
 {
     uint64_t bytes_per_visit = 0;
     /* Calculate bytes per visit, though visits into sampling regions wont
@@ -581,10 +606,11 @@ SCOREP_Score_Estimator::bytesPerVisit( const string& regionName )
     for ( map<string, SCOREP_Score_Event*>::iterator i = m_events.begin();
           i != m_events.end(); i++ )
     {
-        if ( i->second->occursInRegion( regionName, m_profile->hasHits() ) )
+        SCOREP_Score_Event* event = i->second;
+        if ( event->contributes( *m_profile, region ) )
         {
-            bytes_per_visit += i->second->getEventSize();
-            if ( i->second->hasTimestamp() )
+            bytes_per_visit += event->getEventSize();
+            if ( event->hasTimestamp() )
             {
                 bytes_per_visit += getEventSize( "Timestamp" );
             }
@@ -621,7 +647,11 @@ SCOREP_Score_Estimator::calculate( bool showRegions,
            be recorded in the trace */
         if ( m_profile->getRegionParadigm( region ) != "sampling" )
         {
-            bytes_per_visit = bytesPerVisit( region_name );
+            bytes_per_visit = bytesPerVisit( region );
+            if ( bytes_per_visit == 0 )
+            {
+                continue;
+            }
         }
 
         /* Apply region data for each process */
@@ -811,7 +841,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     fstream estimator_in( in_filename.c_str(), ios_base::out );
     if ( !estimator_in )
     {
-        cerr << "ERROR: Failed to open temorary file for 'otf2-estimator' input" << endl;
+        cerr << "ERROR: Failed to open temporary file for 'otf2-estimator' input" << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -844,7 +874,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     fstream estimator_out( out_filename.c_str(), ios_base::in );
     if ( !estimator_out )
     {
-        cerr << "ERROR: Failed to open temorary file for 'otf2-estimator' output" << endl;
+        cerr << "ERROR: Failed to open temporary file for 'otf2-estimator' output" << endl;
         exit( EXIT_FAILURE );
     }
 

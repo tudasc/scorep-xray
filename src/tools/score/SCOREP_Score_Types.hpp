@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -54,7 +54,8 @@
     SCOREP_SCORE_TYPE( CUDA, POSSIBLE ) \
     SCOREP_SCORE_TYPE( OPENCL, NO )     \
     SCOREP_SCORE_TYPE( OPENACC, NO )    \
-    SCOREP_SCORE_TYPE( MEMORY, NO ) \
+    SCOREP_SCORE_TYPE( MEMORY, NO )     \
+    SCOREP_SCORE_TYPE( SCOREP, NO )     \
     SCOREP_SCORE_TYPE( UNKNOWN, NO )
 
 

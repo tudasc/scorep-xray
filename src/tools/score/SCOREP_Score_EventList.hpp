@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -350,5 +350,11 @@
 
 #define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_END \
     SCOREP_SCORE_EVENT( "pthread_create" )
+
+#define SCOREP_SCORE_EVENT_MEASUREMENT_BUFFER_FLUSH \
+    SCOREP_SCORE_EVENT( "TRACE BUFFER FLUSH" )
+
+#define SCOREP_SCORE_EVENT_MEASUREMENT_ON_OFF \
+    SCOREP_SCORE_EVENT( "MEASUREMENT OFF" )
 
 #endif // SCOREP_SCORE_EVENTLIST_HPP

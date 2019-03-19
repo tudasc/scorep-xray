@@ -1,10 +1,10 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -19,11 +19,12 @@
 /**
  * @file
  *
- * @brief      Inmplements class SCOREP_Score_Event.
+ * @brief      Implements class SCOREP_Score_Event.
  */
 
 #include <config.h>
 #include "SCOREP_Score_Event.hpp"
+#include "SCOREP_Score_Profile.hpp"
 
 #include <sstream>
 #include <utility>
@@ -64,8 +65,8 @@ SCOREP_Score_Event::setEventSize( uint32_t size )
 }
 
 bool
-SCOREP_Score_Event::occursInRegion( const string& regionName,
-                                    bool          hasHits )
+SCOREP_Score_Event::contributes( const SCOREP_Score_Profile& /*profile*/,
+                                 uint64_t /*region*/ )
 {
     return false;
 }
@@ -76,6 +77,57 @@ SCOREP_Score_Event::hasTimestamp( void ) const
     return true;
 }
 
+
+/* **************************************************************************************
+ * class SCOREP_Score_ProgramBeginEvent
+ ***************************************************************************************/
+SCOREP_Score_ProgramBeginEvent::SCOREP_Score_ProgramBeginEvent( uint64_t numberOfArguments )
+    : SCOREP_Score_Event( "ProgramBegin" )
+    , m_number_of_arguments( numberOfArguments )
+{
+    stringstream name;
+    name << m_name << " " << m_number_of_arguments;
+    m_name = name.str();
+}
+
+bool
+SCOREP_Score_ProgramBeginEvent::contributes( const SCOREP_Score_Profile& profile,
+                                             uint64_t                    region )
+{
+    if ( profile.isRootRegion( region )
+         // The first CUDA or OpenCL event on a GPU location is currently a
+         // root region. This will change with #1159. Till then, ignore.
+         && profile.getRegionParadigm( region ) != "cuda"
+         && profile.getRegionParadigm( region ) != "opencl" )
+    {
+        return true;
+    }
+    return false;
+}
+
+/* **************************************************************************************
+ * class SCOREP_Score_ProgramEndEvent
+ ***************************************************************************************/
+SCOREP_Score_ProgramEndEvent::SCOREP_Score_ProgramEndEvent( void )
+    : SCOREP_Score_Event( "ProgramEnd" )
+{
+}
+
+bool
+SCOREP_Score_ProgramEndEvent::contributes( const SCOREP_Score_Profile& profile,
+                                           uint64_t                    region )
+{
+    if ( profile.isRootRegion( region )
+         // The first CUDA or OpenCL event on a GPU location is currently a
+         // root region. This will change with #1159. Till then, ignore.
+         && profile.getRegionParadigm( region ) != "cuda"
+         && profile.getRegionParadigm( region ) != "opencl" )
+    {
+        return true;
+    }
+    return false;
+}
+
 /* **************************************************************************************
  * class SCOREP_Score_EnterEvent
  ***************************************************************************************/
@@ -84,14 +136,17 @@ SCOREP_Score_EnterEvent::SCOREP_Score_EnterEvent( void ) : SCOREP_Score_Event( "
 }
 
 bool
-SCOREP_Score_EnterEvent::occursInRegion( const std::string& regionName,
-                                         bool               hasHits )
+SCOREP_Score_EnterEvent::contributes( const SCOREP_Score_Profile& profile,
+                                      uint64_t                    region )
 {
-    if ( hasHits == false && regionName.find( '=', 0 ) == string::npos )
+    if ( profile.hasHits()
+         || profile.omitInTraceEnterLeaveEvents( region )
+         || profile.isParameterRegion( region )
+         || profile.isDynamicRegion( region ) )
     {
-        return true;
+        return false;
     }
-    return false; // Is a parameter region which has no enter/exit
+    return true;
 }
 
 /* **************************************************************************************
@@ -102,14 +157,17 @@ SCOREP_Score_LeaveEvent::SCOREP_Score_LeaveEvent( void ) : SCOREP_Score_Event( "
 }
 
 bool
-SCOREP_Score_LeaveEvent::occursInRegion( const std::string& regionName,
-                                         bool               hasHits )
+SCOREP_Score_LeaveEvent::contributes( const SCOREP_Score_Profile& profile,
+                                      uint64_t                    region )
 {
-    if ( hasHits == false && regionName.find( '=', 0 ) == string::npos )
+    if ( profile.hasHits()
+         || profile.omitInTraceEnterLeaveEvents( region )
+         || profile.isParameterRegion( region )
+         || profile.isDynamicRegion( region ) )
     {
-        return true;
+        return false;
     }
-    return false; // Is a parameter region which has no enter/exit
+    return true;
 }
 
 /* **************************************************************************************
@@ -120,14 +178,16 @@ SCOREP_Score_CallingContextEnterEvent::SCOREP_Score_CallingContextEnterEvent( vo
 }
 
 bool
-SCOREP_Score_CallingContextEnterEvent::occursInRegion( const std::string& regionName,
-                                                       bool               hasHits )
+SCOREP_Score_CallingContextEnterEvent::contributes( const SCOREP_Score_Profile& profile,
+                                                    uint64_t                    region )
 {
-    if ( hasHits == true && regionName.find( '=', 0 ) == string::npos )
+    if ( !profile.hasHits()
+         || profile.isParameterRegion( region )
+         || profile.isDynamicRegion( region ) )
     {
-        return true;
+        return false;
     }
-    return false; // Is a parameter region which has no enter/exit
+    return true;
 }
 
 /* **************************************************************************************
@@ -138,14 +198,16 @@ SCOREP_Score_CallingContextLeaveEvent::SCOREP_Score_CallingContextLeaveEvent( vo
 }
 
 bool
-SCOREP_Score_CallingContextLeaveEvent::occursInRegion( const std::string& regionName,
-                                                       bool               hasHits )
+SCOREP_Score_CallingContextLeaveEvent::contributes( const SCOREP_Score_Profile& profile,
+                                                    uint64_t                    region )
 {
-    if ( hasHits == true && regionName.find( '=', 0 ) == string::npos )
+    if ( !profile.hasHits()
+         || profile.isParameterRegion( region )
+         || profile.isDynamicRegion( region ) )
     {
-        return true;
+        return false;
     }
-    return false; // Is a parameter region which has no enter/exit
+    return true;
 }
 
 /* **************************************************************************************
@@ -168,14 +230,15 @@ SCOREP_Score_MetricEvent::SCOREP_Score_MetricEvent( uint64_t numDense )
 }
 
 bool
-SCOREP_Score_MetricEvent::occursInRegion( const string& regionName,
-                                          bool          hasHits )
+SCOREP_Score_MetricEvent::contributes( const SCOREP_Score_Profile& profile,
+                                       uint64_t                    region )
 {
-    if ( regionName.find( '=', 0 ) == string::npos )
+    if ( profile.isParameterRegion( region )
+         || profile.isDynamicRegion( region ) )
     {
-        return true;
+        return false;
     }
-    return false; // Is a parameter region which has no enter/exit
+    return true;
 }
 
 void
@@ -193,8 +256,8 @@ SCOREP_Score_TimestampEvent::SCOREP_Score_TimestampEvent( void )
 }
 
 bool
-SCOREP_Score_TimestampEvent::occursInRegion( const string& regionName,
-                                             bool          hasHits )
+SCOREP_Score_TimestampEvent::contributes( const SCOREP_Score_Profile& profile,
+                                          uint64_t                    region )
 {
     return false; // a timestamp never matches
 }
@@ -215,18 +278,10 @@ SCOREP_Score_ParameterEvent::SCOREP_Score_ParameterEvent( void )
 }
 
 bool
-SCOREP_Score_ParameterEvent::occursInRegion( const string& regionName,
-                                             bool          hasHits )
+SCOREP_Score_ParameterEvent::contributes( const SCOREP_Score_Profile& profile,
+                                          uint64_t                    region )
 {
-    if ( regionName.find( '=', 0 ) == string::npos )
-    {
-        return false;
-    }
-    if ( regionName.substr( 0, 9 ) == "instance=" )
-    {
-        return false;                                        // Dynamic region
-    }
-    return true;
+    return profile.isParameterRegion( region );
 }
 
 /* **************************************************************************************
@@ -242,10 +297,10 @@ SCOREP_Score_NameMatchEvent::SCOREP_Score_NameMatchEvent( const string&      eve
 }
 
 bool
-SCOREP_Score_NameMatchEvent::occursInRegion( const string& regionName,
-                                             bool          hasHits )
+SCOREP_Score_NameMatchEvent::contributes( const SCOREP_Score_Profile& profile,
+                                          uint64_t                    region )
 {
-    return m_region_names.count( regionName ) == 1;
+    return m_region_names.count( profile.getRegionName( region ) ) == 1;
 }
 
 bool
@@ -268,13 +323,13 @@ SCOREP_Score_PrefixMatchEvent::SCOREP_Score_PrefixMatchEvent(
 }
 
 bool
-SCOREP_Score_PrefixMatchEvent::occursInRegion( const string& regionName,
-                                               bool          hasHits )
+SCOREP_Score_PrefixMatchEvent::contributes( const SCOREP_Score_Profile& profile,
+                                            uint64_t                    region )
 {
     for ( deque<string>::iterator i = m_region_prefix.begin();
           i != m_region_prefix.end(); i++ )
     {
-        if ( *i == regionName.substr( 0, i->length() ) )
+        if ( *i == profile.getRegionName( region ).substr( 0, i->length() ) )
         {
             return true;
         }

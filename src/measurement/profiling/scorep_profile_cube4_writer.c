@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1107,6 +1107,11 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
     }
     scorep_profile_init_layout( &write_set, &layout );
 
+    uint32_t max_number_of_args;
+    SCOREP_Ipc_Reduce( &scorep_profile_number_of_program_args,
+                       &max_number_of_args, 1, SCOREP_IPC_UINT32_T,
+                       SCOREP_IPC_MAX, write_set.root_rank );
+
     if ( write_set.my_rank == write_set.root_rank )
     {
         /* generate header */
@@ -1114,6 +1119,10 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
         cube_def_attr( write_set.my_cube, "CUBE_CT_AGGR", "SUM" );
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
         cube_def_mirror( write_set.my_cube, "http://www.vi-hps.org/upload/packages/scorep/" );
+
+        char buffer[ 32 ];
+        sprintf( buffer, "%u", max_number_of_args );
+        cube_def_attr( write_set.my_cube, "Score-P::DefinitionArguments::ProgramBegin::numberOfArguments", buffer );
 
         if ( SCOREP_IsUnwindingEnabled() )
         {

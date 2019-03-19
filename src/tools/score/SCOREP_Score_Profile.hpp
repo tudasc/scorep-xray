@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -39,6 +39,7 @@
  */
 
 #include <string>
+#include <set>
 #include <Cube.h>
 #include "SCOREP_Score_Types.hpp"
 
@@ -131,7 +132,7 @@ public:
      * @param regionId  ID of the region for which the name is requested.
      */
     std::string
-    getRegionName( uint64_t regionId );
+    getRegionName( uint64_t regionId ) const;
 
     /**
      * Returns the mangled region name.
@@ -145,7 +146,7 @@ public:
      * @param regionId  ID of the region for which the paradigm is requested.
      */
     std::string
-    getRegionParadigm( uint64_t region );
+    getRegionParadigm( uint64_t region ) const;
 
     /**
      * Returns the name of the source file where a region was implemented.
@@ -185,6 +186,12 @@ public:
     getDefinitionCounters( void );
 
     /**
+     * Returns the arguments of definitions from the profile.
+     */
+    const std::map<std::string, uint64_t>&
+    getDefinitionArguments( void );
+
+    /**
      * Prints some basic infos on the profile. Used for debug purposes.
      */
     void
@@ -196,6 +203,31 @@ public:
      */
     SCOREP_Score_Type
     getGroup( uint64_t regionId );
+
+    /**
+     * Returns true if @a region is a (callpath's) root region.
+     */
+    bool
+    isRootRegion( uint64_t region ) const;
+
+    /**
+     * Returns true if @a region does not contribute to trace enter and leave events.
+     * E.g., the program region and MEASUREMENT_OFF
+     */
+    bool
+    omitInTraceEnterLeaveEvents( uint64_t region ) const;
+
+    /**
+     * Returns true if @a region is a parameter region.
+     */
+    bool
+    isParameterRegion( uint64_t region ) const;
+
+    /**
+     * Returns true if @a region is a dynamic region.
+     */
+    bool
+    isDynamicRegion( uint64_t region ) const;
 
 private:
 
@@ -225,7 +257,7 @@ private:
      * @param prefix  The prefix which @p string must have.
      */
     bool
-    has_prefix_than_upper( const std::string& str,
+    has_prefix_then_upper( const std::string& str,
                            const std::string& prefix );
 
 private:
@@ -268,6 +300,31 @@ private:
      * Number definitions per definition
      */
     std::map<std::string, uint64_t> m_definition_counters;
+
+    /**
+     * Definition specific arguments
+     */
+    std::map<std::string, uint64_t> m_definition_arguments;
+
+    /**
+     * Set of (callpath's) root regions, usually just one. MPMD programs might have several.
+     */
+    std::set<std::string> m_root_region_names;
+
+    /**
+     * Set of regions that don't contribute to trace enter and leave event.
+     */
+    std::set<uint64_t> m_regions_to_omit_in_trace_enter_leave_events;
+
+    /**
+     * Set of parameter regions.
+     */
+    std::set<uint64_t> m_parameter_regions;
+
+    /**
+     * Set of dynamic regions.
+     */
+    std::set<uint64_t> m_dynamic_regions;
 };
 
 

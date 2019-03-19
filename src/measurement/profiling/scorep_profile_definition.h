@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -130,6 +130,8 @@ typedef struct
  */
 extern scorep_profile_definition scorep_profile;
 
+
+extern uint32_t scorep_profile_number_of_program_args;
 
 
 /* **************************************************************************************
