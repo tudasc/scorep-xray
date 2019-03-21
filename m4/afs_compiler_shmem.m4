@@ -60,8 +60,13 @@ AS_IF([test -n "${SHMEMCC}"],
                [NSHMEMS=`expr ${NSHMEMS} + 1`
                 FSHMEM=openshmem
                 AC_MSG_RESULT([OpenSHMEM ${SHMEMCC}])],
-               [(test -f ${SLIBDIR}/liboshmem.a || test -f ${SLIBDIR}/liboshmem.so || \
-                 test -f ${SLIB64DIR}/liboshmem.a || test -f ${SLIB64DIR}/liboshmem.so)],
+               [( ( test -d ${SLIBDIR}/spectrum_mpi   && ( test -f ${SLIBDIR}/liboshmem.a   || test -f ${SLIBDIR}/liboshmem.so   ) ) || \
+                  ( test -d ${SLIB64DIR}/spectrum_mpi && ( test -f ${SLIB64DIR}/liboshmem.a || test -f ${SLIB64DIR}/liboshmem.so ) ) )],
+               [NSHMEMS=`expr ${NSHMEMS} + 1`
+                FSHMEM=spectrum
+                AC_MSG_RESULT([IBM Spectrum MPI OpenSHMEM ${SHMEMCC}])],
+               [( ( test -d ${SLIBDIR}/openmpi   && ( test -f ${SLIBDIR}/liboshmem  .a || test -f ${SLIBDIR}/liboshmem.so   ) ) || \
+                  ( test -d ${SLIB64DIR}/openmpi && ( test -f ${SLIB64DIR}/liboshmem.a || test -f ${SLIB64DIR}/liboshmem.so ) ) )],
                [NSHMEMS=`expr ${NSHMEMS} + 1`
                 AS_IF([test ! -f ${SBINDIR}/oshcxx],
                     [FSHMEM=openmpi
