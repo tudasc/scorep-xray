@@ -184,6 +184,7 @@ libscorep_adapter_compiler_symbol_table_la_LIBADD =
 libscorep_adapter_compiler_symbol_table_la_LDFLAGS =
 
 if HAVE_LIBBFD
+
 libscorep_adapter_compiler_symbol_table_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
@@ -208,11 +209,6 @@ libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
 endif HAVE_NM
 
 endif !HAVE_LIBBFD
-
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    -DGNU_DEMANGLE
-endif HAVE_DEMANGLE
 
 endif HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
 

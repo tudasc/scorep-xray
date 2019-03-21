@@ -65,7 +65,7 @@
    Demangling declarations
 *****************************************************************************************/
 
-#if defined( GNU_DEMANGLE )
+#if HAVE( DEMANGLE )
 /* Declaration of external demangling function */
 /* It is contained in "demangle.h" */
 extern char*
@@ -84,7 +84,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
                                             SCOREP_COMPILER_DEMANGLE_ANSI    |
                                             SCOREP_COMPILER_DEMANGLE_VERBOSE |
                                             SCOREP_COMPILER_DEMANGLE_TYPES;
-#endif /* GNU_DEMANGLE */
+#endif /* HAVE( DEMANGLE ) */
 
 /* ***************************************************************************************
    helper functions for symbol table analysis
@@ -104,7 +104,7 @@ process_symbol( long         address,
     }
 
     const char* funcname_demangled = funcname;
-#ifdef GNU_DEMANGLE
+#if HAVE( DEMANGLE )
     /* use demangled name if possible */
     if ( scorep_compiler_demangle_style >= 0 )
     {
@@ -116,7 +116,7 @@ process_symbol( long         address,
             funcname_demangled = funcname;
         }
     }
-#endif  /* GNU_DEMANGLE */
+#endif /* HAVE( DEMANGLE ) */
 
     bool use_address = ( address != 0 );
 
