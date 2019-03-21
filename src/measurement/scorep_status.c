@@ -86,14 +86,18 @@ static scorep_status scorep_process_local_status = {
     .otf2_has_flushed          = false
 };
 
+#if HAVE( UNWINDING_SUPPORT )
 bool scorep_is_unwinding_enabled = 0;
+#endif
 
 void
 SCOREP_Status_Initialize( void )
 {
     scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
     scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
-    scorep_is_unwinding_enabled                      = SCOREP_Env_DoUnwinding();
+#if HAVE( UNWINDING_SUPPORT )
+    scorep_is_unwinding_enabled = SCOREP_Env_DoUnwinding();
+#endif
 }
 
 

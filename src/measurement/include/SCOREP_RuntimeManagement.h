@@ -227,8 +227,16 @@ SCOREP_SetAbortFlag( void );
  *  Indicates that the unwinding mode is active.
  *
  */
+#if HAVE( UNWINDING_SUPPORT )
+
 extern bool scorep_is_unwinding_enabled;
 #define SCOREP_IsUnwindingEnabled() scorep_is_unwinding_enabled
+
+#else
+
+#define SCOREP_IsUnwindingEnabled() 0
+
+#endif
 
 /**
  * Returns the full path to the executable, if available, otherwise 'PROGRAM'.
