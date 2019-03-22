@@ -65,8 +65,8 @@ ac_scorep_cuda_safe_LIBS=$LIBS
 
 AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
-LDFLAGS="$LDFLAGS ${with_libcuda_ldflags} ${with_libcudart_ldflags}"
-LIBS="$LIBS ${with_libcuda_libs} ${with_libcudart_libs}"
+LDFLAGS="$LDFLAGS ${with_libcudart_ldflags}"
+LIBS="$LIBS ${with_libcudart_libs}"
 
 AC_SCOREP_BACKEND_LIB([libcuda])
 CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
@@ -77,7 +77,9 @@ AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
       [for path in ${sys_lib_search_path_spec}; do
            AS_IF([test -e ${path}/libcudart.a || test -e ${path}/libcudart.so || test -e ${path}/libcudart.dylib],
-                 [cupti_root="${path}"
+                 [AS_IF([test -d "${path}/../extras/CUPTI"],
+                        [cupti_root="${path}/../extras/CUPTI"],
+                        [cupti_root="${path}"])
                   break])
        done],
       [AS_IF([test "x${with_libcudart}" != "xnot_set"],
