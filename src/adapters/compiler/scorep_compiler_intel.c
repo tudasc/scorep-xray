@@ -59,13 +59,24 @@
 static SCOREP_RegionHandle
 register_region( const char* str )
 {
-    /* str is supposed to be of the form "file_name:region_name". */
+    /* str is supposed to be of the form "file_name:region_name".
+     * There are cases where the compiler just provides "file_name:";
+     * for the user these 'regions' are of little use as they can't
+     * be linked to the source code. Thus, filter them. */
     uint64_t    file_name_len = 0;
     const char* region_name   = strchr( str, ':' );
     if ( region_name )
     {
         file_name_len = region_name - str;
         region_name++;
+        if ( strlen( region_name ) == 0 )
+        {
+            UTILS_WARNING( "The Intel compiler provided \"%s\" as file:region "
+                           "identification. Without the region part we are unable "
+                           "to link to the source code, thus, we filter this region.",
+                           str );
+            return SCOREP_FILTERED_REGION;
+        }
     }
     else
     {
