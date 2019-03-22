@@ -330,11 +330,12 @@ SCOREP_Timer_GetClockResolution( void )
                      * 2000. We observed CPUs frequencies to differ in the order
                      * of 10^3. Thus, we will 'accept' frequencies in the range
                      * [average_freq - threshold, average_freq + threshold] where
-                     * threshold is 'average_freq / 10^6' (i.e. in the order of 10^3).
+                     * threshold is 'average_freq / 10^5' (i.e. in the order of
+                     * 10^4 or 0.01%).
                      * For slower CPUs make sure the threshold larger than (the
                      * arbitrarily chosen) 10. */
-                    uint64_t dividend  = 1000000;
-                    uint64_t threshold = avg_frequency / dividend; /* Usually in the order of 10^3 */
+                    uint64_t dividend  = 100000;
+                    uint64_t threshold = avg_frequency / dividend; /* Usually in the order of 10^4 */
                     while ( threshold < 10 &&  dividend > 0 )
                     {
                         dividend  = dividend / 10;
