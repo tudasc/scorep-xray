@@ -73,7 +73,9 @@ register_region( const char* str )
         {
             UTILS_WARNING( "The Intel compiler provided \"%s\" as file:region "
                            "identification. Without the region part we are unable "
-                           "to link to the source code, thus, we filter this region.",
+                           "to link to the source code, thus, we filter this region. "
+                           "The Intel compiler shows this behavior for functions "
+                           "declared inside an anonymous namespace.",
                            str );
             return SCOREP_FILTERED_REGION;
         }
