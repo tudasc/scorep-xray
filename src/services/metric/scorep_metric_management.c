@@ -486,7 +486,7 @@ metric_subsystem_init( void )
 
         for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
         {
-            /* Initialize metric source. metric_source_initialize() will return number of'synchronous
+            /* Initialize metric source. metric_source_initialize() will return number of 'synchronous
              * strict' metrics defined by the user and recorded by every location. */
             strictly_synchronous_metrics.counts[ i ] = scorep_metric_sources[ i ]->metric_source_initialize();
 
@@ -621,7 +621,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
 
         /* Number of elements in metric values buffer.
          * The buffer is used to store values of strictly synchronous
-         * and synhcronous metrics. All types of asynchronous metrics
+         * and synchronous metrics. All types of asynchronous metrics
          * store their values in additional metric locations. */
         uint64_t buffer_size = 0;
 
@@ -1341,7 +1341,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
              * cannot be decided before multi program paradigm (MPP) was initialized
              * (e.g. MPI_Init() was called). Certainly, there are function calls
              * before MPP initialization. So, we've lost some enter/leave events
-             * for reecording these metrics. That's why, PER_HOST resp. ONCE metrics
+             * for recording these metrics. That's why, PER_HOST resp. ONCE metrics
              * can't be 'strictly synchronous', which have to be recorded for all
              * enter/leave events of a location. */
             for ( SCOREP_MetricSynchronicity metric_synchronicity = SCOREP_METRIC_SYNC;
