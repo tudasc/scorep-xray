@@ -1366,7 +1366,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                         case SCOREP_METRIC_ONCE:
                             if ( metric_synchronicity == SCOREP_METRIC_STRICTLY_SYNC )
                             {
-                                UTILS_WARNING( "Invalid sync type for 'SCOREP_METRIC_ONCE' metric\n." );
+                                UTILS_WARNING( "Invalid sync type for 'SCOREP_METRIC_ONCE' metric." );
                                 continue;
                             }
 
@@ -1377,7 +1377,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                             }
                             break;
                         default:
-                            UTILS_WARNING( "Unknown metric scope\n." );
+                            UTILS_WARNING( "Unknown metric scope." );
                             continue;
                     }
                     /* Set up event sets for this location */
@@ -1516,7 +1516,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 scope_handle = SCOREP_GetSystemTreeNodeHandleForSharedMemory();
                                 if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                 {
-                                    UTILS_WARNING( "Cannot get handle for system tree root node." );
+                                    UTILS_WARNING( "Cannot get handle for system tree node of shared memory domain." );
                                 }
                                 break;
                             case SCOREP_METRIC_ONCE:
@@ -1524,7 +1524,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 scope_handle = SCOREP_GetSystemTreeRootNodeHandle();
                                 if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                 {
-                                    UTILS_WARNING( "Cannot get handle for system tree node of shared memory domain." );
+                                    UTILS_WARNING( "Cannot get handle for system tree root node." );
                                 }
                                 break;
                             default:
