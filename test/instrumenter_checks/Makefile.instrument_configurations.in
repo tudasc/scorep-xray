@@ -131,7 +131,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         fi; \
                         unset POMP_CFLAGS; \
                         unset POMP_FFLAGS; \
-                        case " $$line " in (*" pomp "*)
+                        case " $$line " in (*" pomp "*) \
                             POMP_CFLAGS="-DSCOREP_POMP_USER"; \
                             POMP_FFLAGS="$(FD_FLAG)$$POMP_CFLAGS" ;; \
                         esac; \
