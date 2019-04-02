@@ -129,10 +129,12 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
-                        unset POMP_FLAGS; \
-                        if test -n "`echo $$line | grep 'pomp' | grep -v 'nopomp'`"; then \
-                            POMP_FLAGS="-DSCOREP_POMP_USER"; \
-                        fi; \
+                        unset POMP_CFLAGS; \
+                        unset POMP_FFLAGS; \
+                        case " $$line " in (*" pomp "*)
+                            POMP_CFLAGS="-DSCOREP_POMP_USER"; \
+                            POMP_FFLAGS="$(FD_FLAG)$$POMP_CFLAGS" ;; \
+                        esac; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
                             SUFFIX="$$suffix" \
@@ -149,10 +151,10 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             FC="$(FC)" \
                             NVCC="$(NVCC)" \
                             LIBS="$(LIBS)" \
-                            CFLAGS="$(CFLAGS) $$POMP_FLAGS" \
-                            CXXFLAGS="$(CXXFLAGS) $$POMP_FLAGS" \
-                            F77FLAGS="$(FFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
-                            FCFLAGS="$(FCFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
+                            CFLAGS="$(CFLAGS) $$POMP_CFLAGS" \
+                            CXXFLAGS="$(CXXFLAGS) $$POMP_CFLAGS" \
+                            F77FLAGS="$(FFLAGS) $$POMP_FFLAGS" \
+                            FCFLAGS="$(FCFLAGS) $$POMP_FFLAGS" \
                             CUFLAGS="$(CUFLAGS)" \
                             $$code && \
                         set +x && \
