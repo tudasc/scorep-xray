@@ -74,7 +74,6 @@ delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
 {
     UTILS_ASSERT( entry );
 
-    free( ( SCOREP_RegionHandle* )entry->value );
     free( ( char* )entry->key );
 }
 
@@ -117,7 +116,7 @@ substitute_parameter_data( scorep_profile_node* node,
 {
     size_t                index;
     SCOREP_Hashtab_Entry* entry  = NULL;
-    SCOREP_RegionHandle*  handle = NULL;
+    SCOREP_RegionHandle   handle = SCOREP_INVALID_REGION;
 
     /* check whether a region of this name is already registered */
     entry = SCOREP_Hashtab_Find( scorep_profile_name_table, region,
@@ -131,27 +130,28 @@ substitute_parameter_data( scorep_profile_node* node,
         strcpy( region_name, region );
 
         /* Register region to measurement system */
-        handle  = malloc( sizeof( SCOREP_RegionHandle ) );
-        *handle = SCOREP_Definitions_NewRegion( region_name,
-                                                NULL,
-                                                SCOREP_INVALID_SOURCE_FILE,
-                                                SCOREP_INVALID_LINE_NO,
-                                                SCOREP_INVALID_LINE_NO,
-                                                SCOREP_PARADIGM_USER,
-                                                SCOREP_REGION_UNKNOWN );
+        handle = SCOREP_Definitions_NewRegion( region_name,
+                                               NULL,
+                                               SCOREP_INVALID_SOURCE_FILE,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_PARADIGM_USER,
+                                               SCOREP_REGION_UNKNOWN );
 
         /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_profile_name_table, ( void* )region_name,
-                               handle, &index );
+        SCOREP_Hashtab_InsertHandle( scorep_profile_name_table,
+                                     ( void* )region_name,
+                                     handle,
+                                     &index );
     }
     else
     {
-        handle = ( SCOREP_RegionHandle* )entry->value;
+        handle = entry->value.handle;
     }
 
     /* Modify node data */
     node->node_type = SCOREP_PROFILE_NODE_REGULAR_REGION;
-    scorep_profile_type_set_region_handle( &node->type_specific_data, *handle );
+    scorep_profile_type_set_region_handle( &node->type_specific_data, handle );
 }
 
 /**

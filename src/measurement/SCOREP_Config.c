@@ -209,7 +209,7 @@ get_name_space( const char* name, size_t nameLen, bool create )
 
     if ( entry )
     {
-        return entry->value;
+        return entry->value.ptr;
     }
 
     if ( !create )
@@ -235,10 +235,10 @@ get_name_space( const char* name, size_t nameLen, bool create )
     name_space->variables_head = NULL;
     name_space->variables_tail = &name_space->variables_head;
 
-    SCOREP_Hashtab_Insert( name_spaces,
-                           name_space,
-                           name_space,
-                           &hashHint );
+    SCOREP_Hashtab_InsertPtr( name_spaces,
+                              name_space,
+                              name_space,
+                              &hashHint );
 
     /* Maintain registration order */
     name_space->next  = NULL;
@@ -276,7 +276,7 @@ get_variable( struct scorep_config_name_space* nameSpace,
 
     if ( entry )
     {
-        return entry->value;
+        return entry->value.ptr;
     }
 
     size_t name_len = strlen( name );
@@ -299,10 +299,10 @@ get_variable( struct scorep_config_name_space* nameSpace,
              variable->data.name );
     string_to_upper( variable->env_var_name );
 
-    SCOREP_Hashtab_Insert( nameSpace->variables,
-                           variable,
-                           variable,
-                           &hashHint );
+    SCOREP_Hashtab_InsertPtr( nameSpace->variables,
+                              variable,
+                              variable,
+                              &hashHint );
 
     /* Maintain registration order */
     variable->next             = NULL;

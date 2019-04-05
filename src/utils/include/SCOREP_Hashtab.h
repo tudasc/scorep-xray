@@ -42,6 +42,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <SCOREP_Types.h>
 
 UTILS_BEGIN_C_DECLS
 
@@ -75,18 +76,76 @@ UTILS_BEGIN_C_DECLS
 
 /*--- Type definitions ----------------------------------------------------*/
 
-/** Data structure representing key/value pairs stored in the hash table. */
-typedef struct
-{
-    void* key;     /**< Unique key */
-    void* value;   /**< Stored value */
-} SCOREP_Hashtab_Entry;
-
 /** Opaque data structure representing a hash table. */
 typedef struct scorep_hashtab_struct SCOREP_Hashtab;
 
 /** Opaque data structure representing a hash table iterator. */
 typedef struct scorep_hashtab_iter_struct SCOREP_Hashtab_Iterator;
+
+/**
+ * Supported values of the hash table
+ * Adding a new type:
+ *  - Only add a new value name and type to HASHTAB_VALUES
+ */
+#define HASHTAB_VALUES( FUNC )                  \
+    FUNC( Ptr,    ptr,      void* )             \
+    FUNC( Uint32, uint32,   uint32_t )          \
+    FUNC( Uint64, uint64,   uint64_t )          \
+    FUNC( Handle, handle,   SCOREP_AnyHandle )
+
+/**
+ * Generates hash table entry with the HASHTAB_VALUES
+ */
+#define GEN_UNION_ENTRY( Name, name, type ) \
+    type name;
+
+typedef struct
+{
+    void* key; /**< Unique key */
+    union
+    {
+        HASHTAB_VALUES( GEN_UNION_ENTRY )
+    } value;
+} SCOREP_Hashtab_Entry;
+
+/* *INDENT-OFF* */
+/**
+ * Inserting elements
+ *
+ * Generates declaration of insertation functions of Hashtab
+ * e.g. SCOREP_Hashtab_InsertPtr
+ *
+ * Inserts the given (@a key,@a value) pair into the SCOREP_Hashtab @a instance.
+ * In addition, the hash value (e.g., returned by a preceeding call of
+ * SCOREP_Hashtab_Find()) can be specified. If the hash value should be
+ * (re-)calculated instead, @c NULL should be passed.
+ *
+ * This function also has to allocate memory for internal data structures. If
+ * this memory allocation request cannot be fulfilled, an error message is
+ * printed and the program is aborted.
+ *
+ * @param instance   Object in which the key/value pair should be inserted
+ * @param key        Unique key. The memory location to which it points must be
+ *                   valid as long as the hash entry exists.
+ * @param value      Associated value. The memory location to which it points must be
+ *                   valid as long as the hash entry exists.
+ * @param hashValPtr Optional storage where an hash value was previously stored
+ *                   by a call to @a SCOREP_Hashtab_Find() with the same key @a
+ *                   key. (ignored if @c NULL)
+ *
+ * @return Pointer to hash table entry of the newly inserted key;
+ *         @c NULL otherwise
+ */
+#define GEN_HASHTAB_INSERT_FUNC_DECL( Name, name, type )            \
+    SCOREP_Hashtab_Entry*                                           \
+    SCOREP_Hashtab_Insert##Name( SCOREP_Hashtab* instance,          \
+                                 void*           key,               \
+                                 type            name,              \
+                                 size_t*         hashValPtr );
+/* *INDENT-ON* */
+
+
+HASHTAB_VALUES( GEN_HASHTAB_INSERT_FUNC_DECL )
 
 /**
  * Pointer-to-function type describing hashing functions. The function has to
@@ -189,36 +248,6 @@ SCOREP_Hashtab_Size( const SCOREP_Hashtab* instance );
  */
 int32_t
 SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance );
-
-/* Inserting & removing elements */
-
-/**
- * Inserts the given (@a key,@a value) pair into the SCOREP_Hashtab @a instance.
- * In addition, the hash value (e.g., returned by a preceeding call of
- * SCOREP_Hashtab_Find()) can be specified. If the hash value should be
- * (re-)calculated instead, @c NULL should be passed.
- *
- * This function also has to allocate memory for internal data structures. If
- * this memory allocation request cannot be fulfilled, an error message is
- * printed and the program is aborted.
- *
- * @param instance   Object in which the key/value pair should be inserted
- * @param key        Unique key. The memory location to which it points must be
- *                   valid as long as the hash entry exists.
- * @param value      Associated value. The memory location to which it points must be
- *                   valid as long as the hash entry exists.
- * @param hashValPtr Optional storage where an hash value was previously stored
- *                   by a call to @a SCOREP_Hashtab_Find() with the same key @a
- *                   key. (ignored if @c NULL)
- *
- * @return Pointer to hash table entry of the newly inserted key;
- *         @c NULL otherwise
- */
-SCOREP_Hashtab_Entry*
-SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
-                       void*           key,
-                       void*           value,
-                       size_t*         hashValPtr );
 
 /* Algorithms */
 

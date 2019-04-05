@@ -157,50 +157,48 @@ SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance )
 
 /*--- Inserting & removing elements ---------------------------------------*/
 
-SCOREP_Hashtab_Entry*
-SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
-                       void*           key,
-                       void*           value,
-                       size_t*         hashValPtr )
-{
-    scorep_hashtab_listitem* item;
-    size_t                   hashval;
-    size_t                   index;
-
-    /* Validate arguments */
-    UTILS_ASSERT( instance && key );
-
-    /* Eventually calculate hash value */
-    if ( hashValPtr )
-    {
-        hashval = *hashValPtr;
+/* *INDENT-OFF* */
+#define GEN_HASHTAB_INSERT_FUNC_DEF( Name, name, type )                                 \
+    SCOREP_Hashtab_Entry*                                                               \
+    SCOREP_Hashtab_Insert##Name( SCOREP_Hashtab* instance,                              \
+                                  void*           key,                                  \
+                                  type            value,                                \
+                                  size_t*         hashValPtr )                          \
+    {                                                                                   \
+        scorep_hashtab_listitem* item;                                                  \
+        size_t                   hashval;                                               \
+        size_t                   index;                                                 \
+        /* Validate arguments */                                                        \
+        UTILS_ASSERT( instance && key );                                                \
+        /* Eventually calculate hash value */                                           \
+        if ( hashValPtr )                                                               \
+        {                                                                               \
+            hashval = *hashValPtr;                                                      \
+        }                                                                               \
+        else                                                                            \
+        {                                                                               \
+            hashval = instance->hash( key );                                            \
+        }                                                                               \
+        index = hashval % instance->tabsize;                                            \
+        /* Create new item */                                                           \
+        item = ( scorep_hashtab_listitem* )malloc( sizeof( scorep_hashtab_listitem ) ); \
+        if ( !item )                                                                    \
+        {                                                                               \
+            UTILS_ERROR_POSIX();                                                        \
+            return NULL;                                                                \
+        }                                                                               \
+        /* Initialize item */                                                           \
+        item->entry.key              = key;                                             \
+        item->entry.value.name       = value;                                           \
+        item->hash_value             = hashval;                                         \
+        item->next                   = instance->table[ index ];                        \
+        /* Add item to hash table */                                                    \
+        instance->table[ index ] = item;                                                \
+        instance->size++;                                                               \
+        return &item->entry;                                                            \
     }
-    else
-    {
-        hashval = instance->hash( key );
-    }
-    index = hashval % instance->tabsize;
-
-    /* Create new item */
-    item = ( scorep_hashtab_listitem* )malloc( sizeof( scorep_hashtab_listitem ) );
-    if ( !item )
-    {
-        UTILS_ERROR_POSIX();
-        return NULL;
-    }
-
-    /* Initialize item */
-    item->entry.key   = key;
-    item->entry.value = value;
-    item->hash_value  = hashval;
-    item->next        = instance->table[ index ];
-
-    /* Add item to hash table */
-    instance->table[ index ] = item;
-    instance->size++;
-
-    return &item->entry;
-}
+/* *INDENT-ON* */
+HASHTAB_VALUES( GEN_HASHTAB_INSERT_FUNC_DEF )
 
 void
 SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
@@ -245,7 +243,7 @@ SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
             }
 
             deleteKey( item->entry.key );
-            deleteValue( item->entry.value );
+            deleteValue( item->entry.value.ptr );
             free( item );
             return;
         }

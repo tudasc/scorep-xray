@@ -1778,14 +1778,17 @@ get_node_counter( scorep_system_tree_seq_name* nameData,
                                                        &hint );
     if ( entry != NULL )
     {
-        return entry->value;
+        return entry->value.ptr;
     }
 
     system_tree_node_type_counter* new_type = malloc( sizeof( system_tree_node_type_counter ) );
     new_type->string_id  = id;
     new_type->counter    = 0;
     new_type->class_name = SCOREP_StringHandle_GetById( id );
-    SCOREP_Hashtab_Insert( nameData->node_counter, &new_type->string_id, new_type, &hint );
+    SCOREP_Hashtab_InsertPtr( nameData->node_counter,
+                              &new_type->string_id,
+                              new_type,
+                              &hint );
 
     return new_type;
 }

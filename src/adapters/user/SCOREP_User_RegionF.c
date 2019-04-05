@@ -101,7 +101,7 @@ scorep_user_find_region( char* region_name )
         return SCOREP_USER_INVALID_REGION;
     }
 
-    return ( SCOREP_User_RegionHandle )entry->value;
+    return ( SCOREP_User_RegionHandle )entry->value.ptr;
 }
 
 static void
@@ -111,10 +111,10 @@ scorep_user_add_region( SCOREP_User_RegionHandle region_handle,
     assert( region_handle != SCOREP_USER_INVALID_REGION );
     assert( region_name );
 
-    SCOREP_Hashtab_Insert( scorep_user_region_table,
-                           ( void* )UTILS_CStr_dup( region_name ),
-                           region_handle,
-                           NULL );
+    SCOREP_Hashtab_InsertPtr( scorep_user_region_table,
+                              ( void* )UTILS_CStr_dup( region_name ),
+                              region_handle,
+                              NULL );
 }
 
 

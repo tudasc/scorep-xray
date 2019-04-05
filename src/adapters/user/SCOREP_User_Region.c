@@ -275,20 +275,18 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                 saved_name[ strlen( name ) ] = '\0';
                 strncpy( saved_name, name, strlen( name ) );
 
-                result = SCOREP_Hashtab_Insert(
-                    scorep_user_region_by_name_hash_table,
-                    ( void* )saved_name,
-                    ( void* )handle,
-                    &hash_hint );
+                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
+                                                   ( void* )saved_name,
+                                                   ( void* )handle,
+                                                   &hash_hint );
             }
             else
             {
                 /* insert handle into hashtab, handle is only a ptr hence we can cast to void* */
-                result = SCOREP_Hashtab_Insert(
-                    scorep_user_region_by_name_hash_table,
-                    ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
-                    ( void* )handle,
-                    &hash_hint );
+                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
+                                                   ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
+                                                   ( void* )handle,
+                                                   &hash_hint );
             }
         }
         SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
@@ -296,7 +294,7 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
     UTILS_BUG_ON( result == NULL, "Could not create region-by-name: '%s'", name );
 
     /* handle is now valid, we can just use it */
-    handle = ( SCOREP_User_RegionHandle )result->value;
+    handle = ( SCOREP_User_RegionHandle )result->value.ptr;
 
     UTILS_ASSERT( handle != SCOREP_USER_INVALID_REGION );
     SCOREP_User_RegionEnter( handle );
@@ -332,7 +330,7 @@ SCOREP_User_RegionByNameEnd( const char* name )
     /* if handle not found, end-region without begin-region */
     UTILS_BUG_ON( !result, "Trying to leave a region-by-name never entered: '%s'", name ); /* Error */
 
-    SCOREP_User_RegionHandle handle = result->value;
+    SCOREP_User_RegionHandle handle = result->value.ptr;
 
     UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to leave an uninitialized region-by-name: '%s'", name );
 

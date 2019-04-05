@@ -64,8 +64,16 @@ SCOREP_Hashtab_FreeAll( SCOREP_Hashtab*               instance,
     entry = SCOREP_Hashtab_IteratorFirst( iter );
     while ( entry )
     {
-        deleteKey( entry->key );
-        deleteValue( entry->value );
+        if ( deleteKey )
+        {
+            deleteKey( entry->key );
+        }
+
+        if ( deleteValue )
+        {
+            deleteValue( entry->value.ptr );
+        }
+
         entry = SCOREP_Hashtab_IteratorNext( iter );
     }
     SCOREP_Hashtab_IteratorFree( iter );

@@ -26,6 +26,7 @@ hashtab_test_LDADD = \
 hashtab_test_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
 
 TESTS_SERIAL += hashtab_test

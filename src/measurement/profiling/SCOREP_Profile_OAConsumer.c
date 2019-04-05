@@ -179,13 +179,17 @@ SCOREP_OAConsumer_DismissData( void )
     free( thread_index_pointer_array[ 0 ]->shared_index->merged_region_def_buffer );
     free( thread_index_pointer_array[ 0 ]->shared_index->static_measurement_buffer );
     free( thread_index_pointer_array[ 0 ]->shared_index->counter_definition_buffer );
-    SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ 0 ]->shared_index->merged_regions_def_table, &free, &free );
+    SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ 0 ]->shared_index->merged_regions_def_table,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteNone );
     free( thread_index_pointer_array[ 0 ]->shared_index );
 
     int i;
     for ( i = 0; i < thread_count; i++ )
     {
-        SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table, &free, &free  );
+        SCOREP_Hashtab_FreeAll( thread_index_pointer_array[ i ]->static_measurements_table,
+                                &SCOREP_Hashtab_DeleteFree,
+                                &SCOREP_Hashtab_DeleteNone );
         free( thread_index_pointer_array[ i ] );
     }
     free( thread_index_pointer_array );
@@ -240,14 +244,9 @@ print_hash_table( const SCOREP_Hashtab* hashTable,
         {
             UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Item (X,X,X)-" );
         }
-        if ( entry->value )
-        {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%d\n", *( uint32_t* )( entry->value ) );
-        }
-        else
-        {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "X\n" );
-        }
+
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%d\n", entry->value.uint32 );
+
         entry = SCOREP_Hashtab_IteratorNext( iter );
     }
     SCOREP_Hashtab_IteratorFree( iter );

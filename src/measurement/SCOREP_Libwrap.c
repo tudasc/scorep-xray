@@ -198,7 +198,7 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
             SCOREP_Hashtab_Entry* result = SCOREP_Hashtab_Find( lib_names_mapping, lib_name, NULL );
             if ( result )
             {
-                lib_name = result->value;
+                lib_name = result->value.ptr;
             }
             else
             {
@@ -352,7 +352,7 @@ SCOREP_Libwrap_Initialize( void )
             char* from = UTILS_CStr_dup( so ); \
             *( strstr( from, ".so." ) + 3 ) = '\0'; \
             char* so_copy = UTILS_CStr_dup( so ); \
-            SCOREP_Hashtab_Insert( lib_names_mapping, from, so_copy, NULL ); \
+            SCOREP_Hashtab_InsertPtr( lib_names_mapping, from, so_copy, NULL ); \
         } \
     } while ( 0 )
 #ifdef LD_SO

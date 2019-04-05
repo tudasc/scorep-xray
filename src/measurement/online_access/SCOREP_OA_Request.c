@@ -239,7 +239,7 @@ scorep_oa_requests_end( void )
     while ( entry )
     {
         /** recover the index of the requested metric in the Periscope metric list array */
-        SCOREP_OA_MetricRequest* metric_request = ( ( SCOREP_OA_MetricRequest* )entry->value );
+        SCOREP_OA_MetricRequest* metric_request = ( ( SCOREP_OA_MetricRequest* )entry->value.ptr );
 
         /** add the requested metric name to the corresponding metric source configuration string */
         switch ( metric_request->metric_source )
@@ -384,7 +384,9 @@ scorep_oa_requests_end( void )
     max_definition_id_previous_phase = max_definition_id_this_phase;
 
     /** metric request by name hash table is not needed any longer, free it */
-    SCOREP_Hashtab_FreeAll( requests_by_name, &free, &free );
+    SCOREP_Hashtab_FreeAll( requests_by_name,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteFree );
     requests_by_name = NULL;
 
 #if HAVE( SCOREP_DEBUG )
@@ -461,14 +463,14 @@ request_submit( const char*             metricName,
          * request type and  index of this metric in the Periscope metrics list if applicable*/
         SCOREP_OA_MetricRequest* request_value = calloc( 1, sizeof( SCOREP_OA_MetricRequest ) );
         UTILS_ASSERT( request_value );
-        request_value->metric_source = ( ( SCOREP_OA_MetricRequest* )entry->value )->metric_source;
+        request_value->metric_source = ( ( SCOREP_OA_MetricRequest* )entry->value.ptr )->metric_source;
         request_value->oa_index      = phase_request_oa_index++;
         request_value->metric_name   = UTILS_CStr_dup( metricName );
 
-        SCOREP_Hashtab_Insert( requests_by_id,
-                               ( void* )( request_key ),
-                               ( void* )( request_value ),
-                               NULL );
+        SCOREP_Hashtab_InsertPtr( requests_by_id,
+                                  ( void* )( request_key ),
+                                  ( void* )( request_value ),
+                                  NULL );
     }
     else
     {
@@ -600,10 +602,10 @@ scorep_oa_requests_add_metric_by_name( char*                   metricName,
             request_value->plugin_index = find_plugin_index( pluginName );
         }
 
-        SCOREP_Hashtab_Insert( requests_by_name,
-                               ( void* )( request_key ),
-                               ( void* )( request_value ),
-                               NULL );
+        SCOREP_Hashtab_InsertPtr( requests_by_name,
+                                  ( void* )( request_key ),
+                                  ( void* )( request_value ),
+                                  NULL );
         /** If it is a PAPI metric, add the size of the metric name string to the total size of papi
          *  metric name strings. Account for the delimiters between metric names. It will be later
          *  used to construct Score-P metric configuration string */
@@ -664,7 +666,7 @@ SCOREP_OA_RequestGet( uint32_t metricId )
 
     if ( entry )
     {
-        return ( SCOREP_OA_MetricRequest* )entry->value;
+        return ( SCOREP_OA_MetricRequest* )entry->value.ptr;
     }
     else
     {
@@ -708,7 +710,9 @@ SCOREP_OA_RequestsDismiss( void )
     }
 
     /** Free metric request hash table */
-    SCOREP_Hashtab_FreeAll( requests_by_id, &free, &free_metric_request );
+    SCOREP_Hashtab_FreeAll( requests_by_id,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &free_metric_request );
     requests_by_id = NULL;
     if ( execution_time_request )
     {
@@ -759,13 +763,13 @@ print_hash_table_request( const SCOREP_Hashtab* hashTable,
         {
             UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Item (X)-" );
         }
-        if ( entry->value )
+        if ( entry->value.ptr )
         {
             UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "(%d,%d,%s,%d)\n",
-                                    ( ( SCOREP_OA_MetricRequest* )entry->value )->metric_source,
-                                    ( ( SCOREP_OA_MetricRequest* )entry->value )->oa_index,
-                                    ( ( SCOREP_OA_MetricRequest* )entry->value )->metric_name,
-                                    ( ( SCOREP_OA_MetricRequest* )entry->value )->plugin_index );
+                                    ( ( SCOREP_OA_MetricRequest* )entry->value.ptr )->metric_source,
+                                    ( ( SCOREP_OA_MetricRequest* )entry->value.ptr )->oa_index,
+                                    ( ( SCOREP_OA_MetricRequest* )entry->value.ptr )->metric_name,
+                                    ( ( SCOREP_OA_MetricRequest* )entry->value.ptr )->plugin_index );
         }
         else
         {

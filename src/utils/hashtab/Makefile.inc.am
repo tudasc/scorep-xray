@@ -38,7 +38,8 @@ libscorep_hashtab_la_SOURCES = \
     $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_CompareFuncs.c \
     $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_Extensions.c \
     $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_HashFuncs.c
-libscorep_hashtab_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(PUBLIC_INC_DIR) \
+libscorep_hashtab_la_CPPFLAGS =          \
+    $(AM_CPPFLAGS)                       \
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)

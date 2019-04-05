@@ -350,9 +350,11 @@ scorep_cube4_delete_definitions_map( scorep_cube4_definitions_map* map )
     SCOREP_Hashtab_FreeAll( map->region_table_cube,
                             SCOREP_Hashtab_DeleteRegionHandle,
                             SCOREP_Hashtab_DeleteNone );
+
     SCOREP_Hashtab_FreeAll( map->metric_table_cube,
                             SCOREP_Hashtab_DeleteMetricHandle,
                             SCOREP_Hashtab_DeleteNone );
+
     SCOREP_Hashtab_FreeAll( map->callpath_table_cube,
                             SCOREP_Hashtab_DeleteCallpathHandle,
                             SCOREP_Hashtab_DeleteNone );
@@ -377,10 +379,15 @@ add_region_mapping( scorep_cube4_definitions_map* map,
     *scorep_copy = scorepHandle;
 
     /* Store handle in hashtable */
-    SCOREP_Hashtab_Insert( map->region_table_cube, scorep_copy,
-                           ( void* )cubeHandle, NULL );
-    SCOREP_Hashtab_Insert( map->region_table_scorep, ( void* )cubeHandle,
-                           scorep_copy, NULL );
+    SCOREP_Hashtab_InsertPtr( map->region_table_cube,
+                              scorep_copy,
+                              ( void* )cubeHandle,
+                              NULL );
+
+    SCOREP_Hashtab_InsertHandle( map->region_table_scorep,
+                                 ( void* )cubeHandle,
+                                 scorepHandle,
+                                 NULL );
 }
 
 static void
@@ -393,10 +400,15 @@ add_callpath_mapping( scorep_cube4_definitions_map* map,
     *scorep_copy = scorepHandle;
 
     /* Store handle in hashtable */
-    SCOREP_Hashtab_Insert( map->callpath_table_cube, scorep_copy,
-                           ( void* )cubeHandle, NULL );
-    SCOREP_Hashtab_Insert( map->callpath_table_scorep, ( void* )cubeHandle,
-                           scorep_copy, NULL );
+    SCOREP_Hashtab_InsertPtr( map->callpath_table_cube,
+                              scorep_copy,
+                              ( void* )cubeHandle,
+                              NULL );
+
+    SCOREP_Hashtab_InsertHandle( map->callpath_table_scorep,
+                                 ( void* )cubeHandle,
+                                 scorepHandle,
+                                 NULL );
 }
 
 static void
@@ -409,10 +421,15 @@ add_metric_mapping( scorep_cube4_definitions_map* map,
     *scorep_copy = scorepHandle;
 
     /* Store handle in hashtable */
-    SCOREP_Hashtab_Insert( map->metric_table_cube, scorep_copy,
-                           ( void* )cubeHandle, NULL );
-    SCOREP_Hashtab_Insert( map->metric_table_scorep, ( void* )cubeHandle,
-                           scorep_copy, NULL );
+    SCOREP_Hashtab_InsertPtr( map->metric_table_cube,
+                              scorep_copy,
+                              ( void* )cubeHandle,
+                              NULL );
+
+    SCOREP_Hashtab_InsertHandle( map->metric_table_scorep,
+                                 ( void* )cubeHandle,
+                                 scorepHandle,
+                                 NULL );
 }
 
 /* ****************************************************************************
@@ -432,7 +449,7 @@ scorep_get_cube4_ ## type (scorep_cube4_definitions_map* map,                 \
     {                                                                         \
         return NULL;                                                          \
     }                                                                         \
-    return ( ret_type *) entry->value;                                        \
+    return ( ret_type *) entry->value.ptr;                                    \
 }
 
 #define SCOREP_GET_SCOREP_MAPPING( in_type, type, Type, TYPE )                \
@@ -447,7 +464,7 @@ scorep_get_ ## type ## _from_cube4 (scorep_cube4_definitions_map* map,        \
     {                                                                         \
         return SCOREP_INVALID_ ## TYPE;                                       \
     }                                                                         \
-    return *( SCOREP_ ## Type ## Handle *) entry->value;                      \
+    return entry->value.handle;                                               \
 }
 /* *INDENT-ON* */
 

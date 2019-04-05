@@ -588,14 +588,10 @@ index_data_key( SCOREP_Hashtab*     hashTable,
         entry_key->parent_region_id = key->parent_region_id;
         entry_key->region_id        = key->region_id;
         entry_key->metric_id        = key->metric_id;
-        uint32_t* entry_index = calloc( 1, sizeof( uint32_t ) );
-        UTILS_ASSERT( entry_index );
-        *entry_index = currentIndex;
-
-        SCOREP_Hashtab_Insert(  hashTable,
-                                ( void* )( entry_key ),
-                                ( void* )( entry_index ),
-                                &index );
+        SCOREP_Hashtab_InsertUint32( hashTable,
+                                     ( void* )( entry_key ),
+                                     currentIndex,
+                                     &index );
         currentIndex++;
     }
     else
@@ -684,7 +680,7 @@ update_static_measurement( scorep_oa_key_type*        staticMeasKey,
 
     UTILS_ASSERT( entry );
 
-    uint32_t static_meas_index = *( uint32_t* )( entry->value );
+    uint32_t static_meas_index = entry->value.uint32;
 
     /** Extract merged region definition key */
     uint32_t metric_id = staticMeasKey->metric_id;
@@ -701,7 +697,7 @@ update_static_measurement( scorep_oa_key_type*        staticMeasKey,
 
     UTILS_ASSERT( entry );
 
-    uint32_t merged_region_def_index = *( uint32_t* )( entry->value );
+    uint32_t merged_region_def_index = entry->value.uint32;
 
     /** Update corresponding record in static measurement buffer */
     shared_index->static_measurement_buffer[ static_meas_index ].measurement_id = static_meas_index;
@@ -844,7 +840,7 @@ copy_merged_region_definitions( scorep_profile_node* node,
         /** Check whether entry was found. If not then a region being currently parsed was not previously indexed*/
         UTILS_ASSERT( entry );
 
-        uint32_t region_index = *( uint32_t* )( entry->value );
+        uint32_t region_index = entry->value.uint32;
 
         /** Get associated region handle of this node */
         SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );

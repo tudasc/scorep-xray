@@ -440,18 +440,17 @@ create_region_groups( void )
         key.paradigm_type = definition->paradigm_type;
 
         size_t                hash_hint;
-        SCOREP_Hashtab_Entry* entry =
-            SCOREP_Hashtab_Find( region_groups, &key, &hash_hint );
+        SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( region_groups, &key, &hash_hint );
         if ( !entry )
         {
             struct region_group* region_group = calloc( 1, sizeof( *region_group ) );
             region_group->key = key;
-            entry             = SCOREP_Hashtab_Insert( region_groups,
-                                                       &region_group->key,
-                                                       region_group,
-                                                       &hash_hint );
+            entry             = SCOREP_Hashtab_InsertPtr( region_groups,
+                                                          &region_group->key,
+                                                          region_group,
+                                                          &hash_hint );
         }
-        struct region_group* region_group = entry->value;
+        struct region_group* region_group = entry->value.ptr;
 
         region_group->number_of_regions++;
     }
@@ -462,7 +461,7 @@ create_region_groups( void )
     SCOREP_Hashtab_Entry*    entry = SCOREP_Hashtab_IteratorFirst( iter );
     while ( entry )
     {
-        struct region_group* region_group = entry->value;
+        struct region_group* region_group = entry->value.ptr;
 
         region_group->region_handles = calloc( region_group->number_of_regions, sizeof( *region_group->region_handles ) );
 
@@ -486,7 +485,7 @@ create_region_groups( void )
         SCOREP_Hashtab_Entry* entry =
             SCOREP_Hashtab_Find( region_groups, &key, NULL );
         UTILS_ASSERT( entry );
-        struct region_group* region_group = entry->value;
+        struct region_group* region_group = entry->value.ptr;
 
         region_group->region_handles[ region_group->current_pos++ ] = handle;
     }
@@ -497,7 +496,7 @@ create_region_groups( void )
     entry = SCOREP_Hashtab_IteratorFirst( iter );
     while ( entry )
     {
-        struct region_group* region_group = entry->value;
+        struct region_group* region_group = entry->value.ptr;
 
         SCOREP_Definitions_NewUnifiedGroupFrom32(
             SCOREP_GROUP_REGIONS,

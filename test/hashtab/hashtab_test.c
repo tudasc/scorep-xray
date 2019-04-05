@@ -39,7 +39,7 @@ hashfunc( const void* key )
 void
 procfunc( SCOREP_Hashtab_Entry* entry )
 {
-    int* v = ( int* )entry->value;
+    int* v = ( int* )entry->value.ptr;
     int* k = ( int* )entry->key;
     printf( "value: %d, key: %d\n", *v, *k );
 }
@@ -67,7 +67,7 @@ main()
     for ( i = 0; i < 24; i++ )
     {
         a[ i ] = i * i;
-        SCOREP_Hashtab_Insert( ht, &k[ i ], &a[ i ], 0 );
+        SCOREP_Hashtab_InsertPtr( ht, &k[ i ], &a[ i ], 0 );
     }
 
     /* Print all values */
@@ -77,7 +77,7 @@ main()
     e = SCOREP_Hashtab_Find( ht, &k[ 10 ], 0 );
 
     /* Print hashtabel size, key of the element and value */
-    printf( "Hastable size %d, %d. Element: %d\n", ( int )SCOREP_Hashtab_Size( ht ), k[ 10 ], *( ( int* )e->value ) );
+    printf( "Hastable size %d, %d. Element: %d\n", ( int )SCOREP_Hashtab_Size( ht ), k[ 10 ], *( ( int* )e->value.ptr ) );
 
     /* Delete hash table */
     SCOREP_Hashtab_Free( ht );
