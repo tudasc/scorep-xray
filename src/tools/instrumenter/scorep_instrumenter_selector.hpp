@@ -51,7 +51,7 @@ typedef std::deque<SCOREP_Instrumenter_Selector*> SCOREP_Instrumenter_SelectorLi
 class SCOREP_Instrumenter_Selector
 {
     /* ------------------------------------------------------------------------- types */
-private:
+protected:
     typedef enum
     {
         default_selection,
@@ -59,13 +59,24 @@ private:
         user_selection
     } selection_priority_t;
 
+    typedef enum
+    {
+        SINGLE_SELECTION,
+        MULTI_SELECTION
+    } selection_mode;
+
     /* ----------------------------------------------------------------------- methods */
 public:
     /**
      * Creates a SCOREP_Instrumenter_Selector instance.
-     * @param name    The name of the selection group.
+     *
+     * @param name                  The name of the selection group.
+     * @param enableMultiSelection  Enable selection of multiple items.
+     *                              Per default only one item from the
+     *                              list can be selected.
      */
-    SCOREP_Instrumenter_Selector( const std::string& name );
+    SCOREP_Instrumenter_Selector( const std::string& name,
+                                  bool               enableMultiSelection );
 
     /**
      * Deletes a SCOREP_Instrumenter_Paradigm instance.
@@ -169,10 +180,10 @@ public:
     isInterpositionLibrary( const std::string& libraryName );
 
     /**
-     * Returns a pointer to the currently selected paradigm.
+     * Check whether the paradigm is currently selected.
      */
-    virtual SCOREP_Instrumenter_Paradigm*
-    getSelection( void );
+    virtual bool
+    isAlreadySelected( SCOREP_Instrumenter_Paradigm* paradigm );
 
     /* ----------------------------------------------------------------------- members */
 protected:
@@ -182,6 +193,12 @@ protected:
     std::string m_name;
 
     /**
+     * Specifies the selection mode
+     * (selection of an individual or multiple items of the list)
+     */
+    selection_mode m_mode;
+
+    /**
      * Specifies the priority of the current selection.
      */
     selection_priority_t m_current_priority;
@@ -189,7 +206,7 @@ protected:
     /**
      * The currently enabled paradigm.
      */
-    SCOREP_Instrumenter_Paradigm* m_current_selection;
+    std::deque<SCOREP_Instrumenter_Paradigm*> m_current_selection;
 
     /**
      * A List of known paradigms.

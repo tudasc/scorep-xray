@@ -17,7 +17,7 @@
  */
 
 #include <config.h>
-
+#include <algorithm>
 #include "scorep_config_utils.hpp"
 
 #include <scorep_config_tool_backend.h>

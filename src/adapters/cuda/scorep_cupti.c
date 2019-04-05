@@ -145,7 +145,8 @@ scorep_cupti_init( void )
                                               SCOREP_METRIC_BASE_DECIMAL,
                                               0,
                                               "Byte",
-                                              SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                              SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                              SCOREP_INVALID_METRIC );
 
             scorep_cupti_sampling_set_gpumemusage =
                 SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,

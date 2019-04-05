@@ -58,6 +58,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Metric )
     int64_t                    exponent;
     SCOREP_StringHandle        unit_handle;
     SCOREP_MetricProfilingType profiling_type;
+    SCOREP_MetricHandle        parent_handle;
 };
 
 
@@ -78,7 +79,8 @@ SCOREP_Definitions_NewMetric( const char*                name,
                               SCOREP_MetricBase          base,
                               int64_t                    exponent,
                               const char*                unit,
-                              SCOREP_MetricProfilingType profilingType );
+                              SCOREP_MetricProfilingType profilingType,
+                              SCOREP_MetricHandle        parentHandle );
 
 
 /**
@@ -126,6 +128,14 @@ SCOREP_MetricHandle_GetName( SCOREP_MetricHandle handle );
  */
 SCOREP_MetricProfilingType
 SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the parent of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricHandle
+SCOREP_MetricHandle_GetParent( SCOREP_MetricHandle handle );
 
 
 /**

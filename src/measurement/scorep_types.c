@@ -109,13 +109,35 @@ scorep_paradigm_property_to_string( SCOREP_ParadigmProperty paradigmProperty )
 
 
 /**
+ * Converts a SCOREP_ParadigmProperty into a string.
+ */
+const char*
+scorep_io_paradigm_property_to_string( SCOREP_IoParadigmProperty paradigmProperty )
+{
+    switch ( paradigmProperty )
+    {
+#define case_return( PROPERTY ) \
+    case SCOREP_IO_PARADIGM_PROPERTY_ ## PROPERTY: \
+        return #PROPERTY;
+
+        case_return( VERSION );
+
+#undef case_return
+
+        default:
+            return "unknown";
+    }
+}
+
+
+/**
  * Converts a SCOREP_RegionType into a string.
  */
 const char*
 scorep_region_type_to_string( SCOREP_RegionType regionType )
 {
-    #define SCOREP_REGION_TYPE( NAME, name_str )  \
-    case SCOREP_REGION_ ## NAME:                  \
+    #define SCOREP_REGION_TYPE( NAME, name_str ) \
+    case SCOREP_REGION_ ## NAME: \
         return name_str;
 
     switch ( regionType )

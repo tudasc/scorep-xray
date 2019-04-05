@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016, 2018,
+ * Copyright (c) 2009-2013, 2015-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,8 @@
 #include "SCOREP_Tracing.h"
 #include "SCOREP_Tracing_ThreadInteraction.h"
 #include "SCOREP_Tracing_Events.h"
+
+#include <SCOREP_IoManagement.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1116,6 +1118,285 @@ rma_op_complete_remote( SCOREP_Location*       location,
 
 
 static void
+io_create_handle( SCOREP_Location*      location,
+                  uint64_t              timestamp,
+                  SCOREP_IoHandleHandle handle,
+                  SCOREP_IoAccessMode   mode,
+                  SCOREP_IoCreationFlag creationFlags,
+                  SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoCreateHandle( evt_writer,
+                                   attribute_list,
+                                   timestamp,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                   scorep_tracing_io_access_mode_to_otf2( mode ),
+                                   scorep_tracing_io_creation_flags_to_otf2( creationFlags ),
+                                   scorep_tracing_io_status_flags_to_otf2( statusFlags ) );
+}
+
+
+static void
+io_destroy_handle( SCOREP_Location*      location,
+                   uint64_t              timestamp,
+                   SCOREP_IoHandleHandle handle )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoDestroyHandle( evt_writer,
+                                    attribute_list,
+                                    timestamp,
+                                    SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ) );
+}
+
+
+static void
+io_duplicate_handle( SCOREP_Location*      location,
+                     uint64_t              timestamp,
+                     SCOREP_IoHandleHandle oldHandle,
+                     SCOREP_IoHandleHandle newHandle,
+                     SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoDuplicateHandle( evt_writer,
+                                      NULL,
+                                      timestamp,
+                                      SCOREP_LOCAL_HANDLE_TO_ID( oldHandle, IoHandle ),
+                                      SCOREP_LOCAL_HANDLE_TO_ID( newHandle, IoHandle ),
+                                      scorep_tracing_io_status_flags_to_otf2( statusFlags ) );
+}
+
+
+static void
+io_seek( SCOREP_Location*      location,
+         uint64_t              timestamp,
+         SCOREP_IoHandleHandle handle,
+         int64_t               offsetRequest,
+         SCOREP_IoSeekOption   whence,
+         uint64_t              offsetResult )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoSeek( evt_writer,
+                           attribute_list,
+                           timestamp,
+                           SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                           offsetRequest,
+                           scorep_tracing_io_seek_option_to_otf2( whence ),
+                           offsetResult );
+}
+
+
+static void
+io_change_status_flags( SCOREP_Location*      location,
+                        uint64_t              timestamp,
+                        SCOREP_IoHandleHandle handle,
+                        SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoChangeStatusFlags( evt_writer,
+                                        attribute_list,
+                                        timestamp,
+                                        SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                        scorep_tracing_io_status_flags_to_otf2( statusFlags ) );
+}
+
+
+static void
+io_delete_file( SCOREP_Location*      location,
+                uint64_t              timestamp,
+                SCOREP_IoParadigmType ioParadigm,
+                SCOREP_IoFileHandle   ioFile )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoDeleteFile( evt_writer,
+                                 attribute_list,
+                                 timestamp,
+                                 SCOREP_IoMgmt_GetParadigmId( ioParadigm ),
+                                 SCOREP_LOCAL_HANDLE_TO_ID( ioFile, IoFile ) );
+}
+
+
+static void
+io_operation_begin( SCOREP_Location*       location,
+                    uint64_t               timestamp,
+                    SCOREP_IoHandleHandle  handle,
+                    SCOREP_IoOperationMode mode,
+                    SCOREP_IoOperationFlag operationFlags,
+                    uint64_t               bytesRequest,
+                    uint64_t               matchingId )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    if ( bytesRequest == SCOREP_IO_UNKOWN_TRANSFER_SIZE )
+    {
+        bytesRequest = OTF2_UNDEFINED_UINT64;
+    }
+
+    OTF2_EvtWriter_IoOperationBegin( evt_writer,
+                                     attribute_list,
+                                     timestamp,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                     scorep_tracing_io_operation_mode_to_otf2( mode ),
+                                     scorep_tracing_io_operation_flag_to_otf2( operationFlags ),
+                                     bytesRequest,
+                                     matchingId );
+}
+
+
+static void
+io_operation_issued( SCOREP_Location*      location,
+                     uint64_t              timestamp,
+                     SCOREP_IoHandleHandle handle,
+                     uint64_t              matchingId )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoOperationIssued( evt_writer,
+                                      attribute_list,
+                                      timestamp,
+                                      SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                      matchingId );
+}
+
+
+static void
+io_operation_test( SCOREP_Location*      location,
+                   uint64_t              timestamp,
+                   SCOREP_IoHandleHandle handle,
+                   uint64_t              matchingId )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoOperationTest( evt_writer,
+                                    attribute_list,
+                                    timestamp,
+                                    SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                    matchingId );
+}
+
+
+static void
+io_operation_complete( SCOREP_Location*       location,
+                       uint64_t               timestamp,
+                       SCOREP_IoHandleHandle  handle,
+                       SCOREP_IoOperationMode mode,
+                       uint64_t               bytesResult,
+                       uint64_t               matchingId )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    if ( bytesResult == SCOREP_IO_UNKOWN_TRANSFER_SIZE )
+    {
+        bytesResult = OTF2_UNDEFINED_UINT64;
+    }
+
+    OTF2_EvtWriter_IoOperationComplete( evt_writer,
+                                        attribute_list,
+                                        timestamp,
+                                        SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                        bytesResult,
+                                        matchingId );
+}
+
+
+static void
+io_operation_cancelled( SCOREP_Location*      location,
+                        uint64_t              timestamp,
+                        SCOREP_IoHandleHandle handle,
+                        uint64_t              matchingId )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoOperationCancelled( evt_writer,
+                                         attribute_list,
+                                         timestamp,
+                                         SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                         matchingId );
+}
+
+
+static void
+io_acquire_lock( SCOREP_Location*      location,
+                 uint64_t              timestamp,
+                 SCOREP_IoHandleHandle handle,
+                 SCOREP_LockType       lockType )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoAcquireLock( evt_writer,
+                                  attribute_list,
+                                  timestamp,
+                                  SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                  scorep_tracing_lock_type_to_otf2( lockType ) );
+}
+
+
+static void
+io_release_lock( SCOREP_Location*      location,
+                 uint64_t              timestamp,
+                 SCOREP_IoHandleHandle handle,
+                 SCOREP_LockType       lockType )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoReleaseLock( evt_writer,
+                                  attribute_list,
+                                  timestamp,
+                                  SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                                  scorep_tracing_lock_type_to_otf2( lockType ) );
+}
+
+
+static void
+io_try_lock( SCOREP_Location*      location,
+             uint64_t              timestamp,
+             SCOREP_IoHandleHandle handle,
+             SCOREP_LockType       lockType )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    OTF2_EvtWriter_IoTryLock( evt_writer,
+                              attribute_list,
+                              timestamp,
+                              SCOREP_LOCAL_HANDLE_TO_ID( handle, IoHandle ),
+                              scorep_tracing_lock_type_to_otf2( lockType ) );
+}
+
+
+static void
 set_rewind_affected_thread_paradigm( SCOREP_Location*    location,
                                      SCOREP_ParadigmType paradigm )
 {
@@ -1745,6 +2026,20 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,     THREAD_CREATE_WAIT_WAIT,      thread_wait ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,    THREAD_CREATE_WAIT_BEGIN,     thread_begin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,      THREAD_CREATE_WAIT_END,       thread_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoCreateHandle,           IO_CREATE_HANDLE,             io_create_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDestroyHandle,          IO_DESTROY_HANDLE,            io_destroy_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDuplicateHandle,        IO_DUPLICATE_HANDLE,          io_duplicate_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoSeek,                   IO_SEEK,                      io_seek ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoChangeStatusFlags,      IO_CHANGE_STATUS_FLAGS,       io_change_status_flags ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDeleteFile,             IO_DELETE_FILE,               io_delete_file ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationBegin,         IO_OPERATION_BEGIN,           io_operation_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationIssued,        IO_OPERATION_ISSUED,          io_operation_issued ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationTest,          IO_OPERATION_TEST,            io_operation_test ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationComplete,      IO_OPERATION_COMPLETE,        io_operation_complete ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationCancelled,     IO_OPERATION_CANCELLED,       io_operation_cancelled ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoAcquireLock,            IO_ACQUIRE_LOCK,              io_acquire_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoReleaseLock,            IO_RELEASE_LOCK,              io_release_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoTryLock,                IO_TRY_LOCK,                  io_try_lock ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,          ENABLE_RECORDING,             enable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetrics,             WRITE_POST_MORTEM_METRICS,    write_metric ),

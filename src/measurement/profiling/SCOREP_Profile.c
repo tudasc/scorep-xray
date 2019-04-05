@@ -68,6 +68,7 @@
 #include "scorep_profile_task_init.h"
 #include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Thread_Mgmt.h>
+#include <scorep_profile_io.h>
 
 #include <string.h>
 
@@ -150,6 +151,7 @@ SCOREP_Profile_Initialize( size_t substrateId )
     scorep_profile_initialize_exchange();
     scorep_profile_task_initialize();
     scorep_profile_init_rma();
+    scorep_profile_io_init();
 
     if ( !scorep_profile.reinitialize )
     {
@@ -203,7 +205,8 @@ SCOREP_Profile_Initialize( size_t substrateId )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     bytes_freed_metric =
         SCOREP_Definitions_NewMetric( "DEALLOCATION_SIZE",
@@ -214,7 +217,8 @@ SCOREP_Profile_Initialize( size_t substrateId )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     bytes_leaked_metric =
         SCOREP_Definitions_NewMetric( "bytes_leaked",
@@ -225,7 +229,8 @@ SCOREP_Profile_Initialize( size_t substrateId )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     max_heap_memory_allocated_metric =
         SCOREP_Definitions_NewMetric( "maximum_heap_memory_allocated",
@@ -236,7 +241,8 @@ SCOREP_Profile_Initialize( size_t substrateId )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_MAX );
+                                      SCOREP_METRIC_PROFILING_TYPE_MAX,
+                                      SCOREP_INVALID_METRIC );
 }
 
 
@@ -283,6 +289,7 @@ SCOREP_Profile_Finalize( void )
     /* Finalize sub-systems */
     scorep_cluster_finalize();
     scorep_profile_finalize_exchange();
+    scorep_profile_io_finalize();
 
     /* Delete mutex */
     SCOREP_MutexDestroy( &scorep_profile_location_mutex );
@@ -1774,6 +1781,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackFree,                 TRACK_FREE,                    track_free ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationComplete,       IO_OPERATION_COMPLETE,         scorep_profile_io_operation_complete ),
     },
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
@@ -1799,6 +1807,8 @@ const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRA
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                leaked_memory ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,            GET_REQUIREMENT,              get_requirement ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( DumpManifest,              DUMP_MANIFEST,                dump_manifest ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( IoParadigmEnter,           IO_PARADIGM_ENTER,            scorep_profile_io_paradigm_enter ),
+    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( IoParadigmLeave,           IO_PARADIGM_LEAVE,            scorep_profile_io_paradigm_leave ),
 };
 
 

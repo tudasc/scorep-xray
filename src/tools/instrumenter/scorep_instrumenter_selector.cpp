@@ -33,9 +33,12 @@
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_shmem.h>
 
+#include <scorep_tools_utils.hpp>
+
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <algorithm>
 #include <sstream>
 
@@ -47,12 +50,14 @@
  * *************************************************************************************/
 SCOREP_Instrumenter_SelectorList SCOREP_Instrumenter_Selector::m_selector_list;
 
-SCOREP_Instrumenter_Selector::SCOREP_Instrumenter_Selector( const std::string& name )
+SCOREP_Instrumenter_Selector::SCOREP_Instrumenter_Selector( const std::string& name,
+                                                            bool               enableMultiSelection )
 {
-    m_name              = name;
-    m_current_selection = NULL;
-    m_current_priority  = default_selection;
+    m_name             = name;
+    m_current_priority = default_selection;
+    m_current_selection.clear();
     m_selector_list.push_back( this );
+    enableMultiSelection ? m_mode = MULTI_SELECTION : m_mode = SINGLE_SELECTION;
 }
 
 SCOREP_Instrumenter_Selector::~SCOREP_Instrumenter_Selector()
@@ -70,9 +75,14 @@ SCOREP_Instrumenter_Selector::~SCOREP_Instrumenter_Selector()
 void
 SCOREP_Instrumenter_Selector::printHelp( void )
 {
+    std::cout << "  --" << m_name << "=<paradigm>[:<variant>]";
+    if ( m_mode == MULTI_SELECTION )
+    {
+        std::cout << "(,<paradigm>[:<variant>])*";
+    }
+    std::cout << "\n                  Possible paradigms and variants are:\n";
+
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
-    std::cout << "  --" << m_name << "=<paradigm>[:<variant>]\n"
-              << "                  Possible paradigms and variants are:\n";
     for ( paradigm = m_paradigm_list.begin();
           paradigm != m_paradigm_list.end();
           paradigm++ )
@@ -103,7 +113,15 @@ bool
 SCOREP_Instrumenter_Selector::checkWrapperOption(  const std::string& current,
                                                    const std::string& next )
 {
-    return m_current_selection->checkWrapperOption( current, next );
+    bool                                       return_value = false;
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+    for ( paradigm = m_current_selection.begin();
+          paradigm != m_current_selection.end();
+          paradigm++ )
+    {
+        return_value |= ( *paradigm )->checkWrapperOption( current, next );
+    }
+    return return_value;
 }
 
 bool
@@ -117,17 +135,33 @@ SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
         exit( EXIT_SUCCESS );
     }
 
-    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
-    for ( paradigm = m_paradigm_list.begin();
-          paradigm != m_paradigm_list.end();
-          paradigm++ )
+    bool is_found = false;
+
+    std::deque<std::string>           categories = string_to_deque( arg, "," );
+    std::deque<std::string>::iterator category;
+    for ( category = categories.begin();
+          category != categories.end() && ( ( m_mode == MULTI_SELECTION ) || !is_found );
+          category++ )
     {
-        if ( ( *paradigm )->checkOption( arg ) )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = m_paradigm_list.begin();
+              paradigm != m_paradigm_list.end() && ( ( m_mode == MULTI_SELECTION ) || !is_found );
+              paradigm++ )
         {
-            select( *paradigm, true );
-            return true;
+            if ( ( *paradigm )->checkOption( *category ) )
+            {
+                select( *paradigm, true );
+                is_found = true;
+            }
         }
     }
+
+    if ( is_found )
+    {
+        return true;
+    }
+    std::cerr << "ERROR: Unknown paradigm '" << arg << "' specified for '--" << m_name << "'\n"
+              << "       Type 'scorep --" << m_name << "=help' to get a list of supported paradigms" << std::endl;
     std::cerr << "[Score-P] ERROR: Unknown paradigm '" << arg << "' specified for '--" << m_name << "'\n"
               << "                 Type 'scorep --" << m_name << "=help' to get a list of supported paradigms" << std::endl;
     exit( EXIT_FAILURE );
@@ -139,11 +173,15 @@ SCOREP_Instrumenter_Selector::checkOption( const std::string& arg )
 std::string
 SCOREP_Instrumenter_Selector::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
-    if ( m_current_selection != NULL )
+    std::string                                return_value;
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+    for ( paradigm = m_current_selection.begin();
+          paradigm != m_current_selection.end();
+          paradigm++ )
     {
-        return " --" + m_name + "=" + m_current_selection->getConfigName();
+        return_value += " --" + m_name + "=" + ( *paradigm )->getConfigName();
     }
-    return "";
+    return return_value;
 }
 
 void
@@ -199,10 +237,21 @@ SCOREP_Instrumenter_Selector::isInterpositionLibrary( const std::string& library
     return false;
 }
 
-SCOREP_Instrumenter_Paradigm*
-SCOREP_Instrumenter_Selector::getSelection( void )
+bool
+SCOREP_Instrumenter_Selector::isAlreadySelected( SCOREP_Instrumenter_Paradigm* paradigm )
 {
-    return m_current_selection;
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm_iter;
+    for ( paradigm_iter = m_paradigm_list.begin();
+          paradigm_iter != m_paradigm_list.end();
+          paradigm_iter++ )
+    {
+        if ( ( *paradigm_iter ) == paradigm )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /* -------------------------------------------------------------------- static methods */
@@ -337,18 +386,24 @@ SCOREP_Instrumenter_Selector::checkAllSupported( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( !( *selector )->m_current_selection->isSupported() )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
-            std::string name = ( *selector )->m_current_selection->getConfigName();
-            std::cerr << "[Score-P] ERROR: This Score-P installation does not support '" << name << "'\n"
-                      << "                 To analyze an application with '" << name << "',\n"
-                      << "                 you need a Score-P installation with support for "
-                      << "'" << name << "'\n"
-                      << "                 However, you can override a wrong auto-detection with "
-                      << "'--" << ( *selector )->m_name << "=<paradigm>'\n"
-                      << "                 You can see a list of supported paradigms with "
-                      << "'scorep --help'" << std::endl;
-            exit( EXIT_FAILURE );
+            if ( !( *paradigm )->isSupported() )
+            {
+                std::string name = ( *paradigm )->getName();
+                std::cerr << "[Score-P] ERROR: This Score-P installation does not support '" << name << "'\n"
+                          << "                 To analyze an application with '" << name << "',\n"
+                          << "                 you need a Score-P installation with support for "
+                          << "'" << name << "'\n"
+                          << "                 However, you can override a wrong auto-detection with "
+                          << "'--" << ( *selector )->m_name << "=<paradigm>'\n"
+                          << "                 You can see a list of supported paradigms with "
+                          << "'scorep --help'" << std::endl;
+                exit( EXIT_FAILURE );
+            }
         }
     }
 }
@@ -360,7 +415,7 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
     if ( !selection->isSupported() )
     {
         std::cerr << "[Score-P] ERROR: Selection of an unsupported paradigm implementation: "
-                  << "'" << selection->getConfigName() << "'" << std::endl;
+                  << "'" << selection->getName() << "'" << std::endl;
         exit( EXIT_FAILURE );
     }
 
@@ -368,21 +423,43 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
 
     if (  m_current_priority < priority )
     {
-        m_current_selection = selection;
-        m_current_priority  = priority;
-    }
-    else if ( selection == m_current_selection )
-    {
-        /* Do not throw errors, if we confirm the current selection */
+        if ( m_current_priority == default_selection )
+        {
+            /*
+             * Clear the default selection if another
+             * option is selected manually/automatically.
+             */
+            m_current_selection.clear();
+        }
+        m_current_selection.push_back( selection );
+        m_current_priority = priority;
         return;
     }
-    else if ( m_current_priority == priority )
+
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+    for ( paradigm = m_current_selection.begin();
+          paradigm != m_current_selection.end();
+          paradigm++ )
     {
-        if ( priority == user_selection )
+        if ( ( *paradigm ) == selection )
+        {
+            /* Do not throw errors, if we confirm the current selection */
+            return;
+        }
+    }
+
+    if ( m_current_priority == priority )
+    {
+        if ( priority == user_selection && m_mode == SINGLE_SELECTION )
         {
             std::cerr << "[Score-P] ERROR: You can use '--" << m_name << "' only once\n"
                       << "                 It is not possible to select two paradigms from the same group" << std::endl;
             exit( EXIT_FAILURE );
+        }
+        else
+        {
+            m_current_selection.push_back( selection );
+            return;
         }
         /* If we have multiple paradigms that can be applied, use the first one.
            Thus, do nothing now. */
@@ -399,9 +476,12 @@ SCOREP_Instrumenter_Selector::checkDependencies( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( ( *selector )->m_current_selection != NULL )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
-            ( *selector )->m_current_selection->checkDependencies();
+            ( *paradigm )->checkDependencies();
         }
     }
 }
@@ -414,9 +494,12 @@ SCOREP_Instrumenter_Selector::checkDefaults( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( ( *selector )->m_current_selection != NULL )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
-            ( *selector )->m_current_selection->checkDefaults();
+            ( *paradigm )->checkDefaults();
         }
     }
 }
@@ -429,10 +512,15 @@ SCOREP_Instrumenter_Selector::supportInstrumentFilters( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( ( *selector )->m_current_selection
-             && ( *selector )->m_current_selection->supportInstrumentFilters() )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
-            return true;
+            if ( ( *paradigm )->supportInstrumentFilters() )
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -446,10 +534,13 @@ SCOREP_Instrumenter_Selector::printSelectedParadigms( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( ( *selector )->m_current_selection != NULL )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
             std::cerr << " " << ( *selector )->m_name << "="
-                      << ( *selector )->m_current_selection->getConfigName();
+                      << ( *paradigm )->getName();
         }
     }
 }
@@ -476,9 +567,12 @@ SCOREP_Instrumenter_Selector::isParadigmSelected( const std::string& name )
           selector != m_selector_list.end();
           selector++ )
     {
-        if ( ( *selector )->m_current_selection != NULL )
+        SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+        for ( paradigm = ( *selector )->m_current_selection.begin();
+              paradigm != ( *selector )->m_current_selection.end();
+              paradigm++ )
         {
-            if ( ( *selector )->m_current_selection->checkOption( name ) )
+            if ( ( *paradigm )->checkOption( name ) )
             {
                 return true;
             }

@@ -132,6 +132,20 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_WRITE_POST_MORTEM_METRICS,       /**< write post mortem metrics before unify, see SCOREP_Substrates_WriteMetricsCb() */
     SCOREP_EVENT_PROGRAM_BEGIN,                   /**< begin of program and measurement, see SCOREP_Substrates_ProgramBeginCb() */
     SCOREP_EVENT_PROGRAM_END,                     /**< end of program and measurement, see SCOREP_Substrates_ProgramEndCb() */
+    SCOREP_EVENT_IO_CREATE_HANDLE,                /**< marks the creation of a new I/O handle, the handle gets active and can be used in subsequent I/O operations, see SCOREP_Substrates_IoCreateHandleCb */
+    SCOREP_EVENT_IO_DESTROY_HANDLE,               /**< marks the deletion of a, the I/O handle can't be used in subsequent I/O operations any longer, see SCOREP_Substrates_IoDestroyHandleCb */
+    SCOREP_EVENT_IO_DUPLICATE_HANDLE,             /**< marks the duplication of an already existing I/O handle, the new one gets active and can be used in subsequent I/O operations, see SCOREP_Substrates_IoDuplicateHandleCb */
+    SCOREP_EVENT_IO_SEEK,                         /**< marks a seek operation, sets  the  file  position indicator, see SCOREP_Substrates_IoSeekCb */
+    SCOREP_EVENT_IO_CHANGE_STATUS_FLAGS,          /**< called when status information of an I/O handle are changed, see SCOREP_Substrates_IoChangeStatusFlagsCb */
+    SCOREP_EVENT_IO_DELETE_FILE,                  /**< marks the deletion of a file, see SCOREP_Substrates_IoDeleteFileCb */
+    SCOREP_EVENT_IO_OPERATION_BEGIN,              /**< marks the begin of an I/O operation, see SCOREP_Substrates_IoOperationBeginCb */
+    SCOREP_EVENT_IO_OPERATION_ISSUED,             /**< called when an asynchronous I/O operation is submitted to the I/O subssystem, see SCOREP_Substrates_IoOperationIssuedCb */
+    SCOREP_EVENT_IO_OPERATION_TEST,               /**< called when an asynchronous I/O operation is tested for completion but is not finished yet, see SCOREP_Substrates_IoOperationTestCb */
+    SCOREP_EVENT_IO_OPERATION_COMPLETE,           /**< called when an asynchronous I/O operation is successfully tested for completion, see SCOREP_Substrates_IoOperationCompleteCb */
+    SCOREP_EVENT_IO_OPERATION_CANCELLED,          /**< called when an asynchronous I/O operation is aborted, see SCOREP_Substrates_IoOperationCancelledCb */
+    SCOREP_EVENT_IO_ACQUIRE_LOCK,                 /**< marks the acquisition of an I/O lock, see SCOREP_Substrates_IoAcquireLockCb */
+    SCOREP_EVENT_IO_RELEASE_LOCK,                 /**< marks the release of an I/O lock, see SCOREP_Substrates_IoReleaseLockCb */
+    SCOREP_EVENT_IO_TRY_LOCK,                     /**< called when , see SCOREP_Substrates_IoTryLockCb */
 
     SCOREP_SUBSTRATES_NUM_EVENTS                  /**< Non-ABI, marks the end of the currently supported events and can change with different versions of Score-P (increases with increasing Score-P version) */
 } SCOREP_Substrates_EventType;
@@ -1416,5 +1430,212 @@ typedef void ( * SCOREP_Substrates_WriteMetricsCb )(
     uint64_t                 timestamp,
     SCOREP_SamplingSetHandle samplingSet,
     const uint64_t*          metricValues );
+
+
+/**
+ * Records the creation of a new active I/O handle that can be used by subsequent I/O operation events.
+ * An IoHandle is active between a pair of consecutive IoCreateHandle and IoDestroyHandle events.
+ * All locations of a location group have access to an active IoHandle.
+ *
+ * @param location                 The location which creates this event.
+ * @param timestamp                The timestamp, when the event event occurred.
+ * @param handle                   A reference to the affected I/O handle which will be activated by this record.
+ * @param mode                     Determines which I/O operations can be applied to this I/O handle (e.g., read-only, write-only, read-write)
+ * @param creationFlags            Requested I/O handle creation flags (e.g., create, exclusive, etc.).
+ * @param statusFlags              I/O handle status flags which will be associated with the handle attribute (e.g., append, create, close-on-exec, async, etc).
+ */
+typedef void ( * SCOREP_Substrates_IoCreateHandleCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_IoAccessMode     mode,
+    SCOREP_IoCreationFlag   creationFlags,
+    SCOREP_IoStatusFlag     statusFlags );
+
+/**
+ * Records the end of an active I/O handle's lifetime.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   A reference to the affected I/O handle which will be activated by this record.
+ */
+typedef void ( * SCOREP_Substrates_IoDestroyHandleCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle );
+
+/**
+ * Records the duplication of an already existing active I/O handle.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param oldHandle                An active I/O handle.
+ * @param newHandle                A previously inactive I/O handle which will be activated by this record.
+ * @param statusFlags              The status flag for the new I/O handle newHandle. No status flags will be inherited from the I/O handle oldHandle.
+ */
+typedef void ( * SCOREP_Substrates_IoDuplicateHandleCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   oldHandle,
+    SCOREP_IoHandleHandle   newHandle,
+    SCOREP_IoStatusFlag     statusFlags );
+
+/**
+ * Records a change of the position, e.g., within a file.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param offsetRequest            Requested offset.
+ * @param whence                   Position inside the file from where offsetRequest should be applied (e.g., absolute from the start or end, relative to the current position).
+ * @param offsetResult             Resulting offset, e.g., within the file relative to the beginning of the file.
+ */
+typedef void ( * SCOREP_Substrates_IoSeekCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    int64_t                 offsetRequest,
+    SCOREP_IoSeekOption     whence,
+    uint64_t                offsetResult );
+
+/**
+ * Records a change to the status flags associated with an active I/O handle.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param statusFlags              Set flags (e.g., close-on-exec, append, etc.).
+ */
+typedef void ( * SCOREP_Substrates_IoChangeStatusFlagsCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_IoStatusFlag     statusFlags );
+
+/**
+ * Records the deletion of an I/O file.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param ioParadigm               The I/O paradigm which induced the deletion.
+ * @param ioFile                   File identifier.
+ */
+typedef void ( * SCOREP_Substrates_IoDeleteFileCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoParadigmType   ioParadigm,
+    SCOREP_IoFileHandle     ioFile );
+
+/**
+ * Records the begin of a file operation (read, write, etc.).
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param mode                     Mode of an I/O handle operation (e.g., read or write).
+ * @param operationFlags           Special semantic of this operation.
+ * @param bytesRequest             Requested bytes to write/read.
+ * @param matchingId               Identifier used to correlate associated event records of an I/O operation. This identifier is unique for the referenced I/O handle.
+ */
+typedef void ( * SCOREP_Substrates_IoOperationBeginCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_IoOperationMode  mode,
+    SCOREP_IoOperationFlag  operationFlags,
+    uint64_t                bytesRequest,
+    uint64_t                matchingId );
+
+/**
+ * Records the successful initiation of a non-blocking operation (read, write etc.) on an active I/O handle.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param matchingId               Identifier used to correlate associated event records of an I/O operation. This identifier is unique for the referenced I/O handle.
+ */
+typedef void ( * SCOREP_Substrates_IoOperationIssuedCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    uint64_t                matchingId );
+
+/**
+ * Records an unsuccessful test whether an I/O operation has already finished.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param matchingId               Identifier used to correlate associated event records of an I/O operation. This identifier is unique for the referenced I/O handle.
+ */
+typedef void ( * SCOREP_Substrates_IoOperationTestCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    uint64_t                matchingId );
+
+/**
+ * Records the end of a file operation (read, write etc.) on an active I/O handle.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param mode                     Mode of an I/O handle operation (e.g., read or write).
+ * @param bytesResult              Number of actual transferred bytes.
+ * @param matchingId               Identifier used to correlate associated event records of an I/O operation. This identifier is unique for the referenced I/O handle.
+ */
+typedef void ( * SCOREP_Substrates_IoOperationCompleteCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_IoOperationMode  mode,
+    uint64_t                bytesResult,
+    uint64_t                matchingId );
+
+/**
+ * Records the successful cancellation of a non-blocking operation (read, write etc.) on an active I/O handle.
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param matchingId               Identifier used to correlate associated event records of an I/O operation. This identifier is unique for the referenced I/O handle.
+ */
+typedef void ( * SCOREP_Substrates_IoOperationCancelledCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    uint64_t                matchingId );
+
+/**
+ * Process I/O lock events (e.g., apply or remove a POSIX advisory lock on an open file)
+ *
+ * @param location                 The location where this event happened.
+ * @param timestamp	               The time when this event happened.
+ * @param handle                   An active I/O handle.
+ * @param lockType                 Type of the lock (e.g., exclusive or shared.
+ *
+ * @{
+ */
+typedef void ( * SCOREP_Substrates_IoAcquireLockCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_LockType         lockType );
+
+typedef void ( * SCOREP_Substrates_IoReleaseLockCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_LockType         lockType );
+
+typedef void ( * SCOREP_Substrates_IoTryLockCb )(
+    struct SCOREP_Location* location,
+    uint64_t                timestamp,
+    SCOREP_IoHandleHandle   handle,
+    SCOREP_LockType         lockType );
+
+/**
+ * @}
+ */
 
 #endif /* SCOREP_SUBSTRATE_EVENTS_H */

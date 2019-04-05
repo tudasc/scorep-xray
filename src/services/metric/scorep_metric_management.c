@@ -261,6 +261,10 @@ static bool prevent_async_metrics;
 static bool checked_per_host_and_once_metrics;
 static bool prevent_per_host_and_once_metrics;
 
+/**
+ * Reference to the Score-P location that called 'subsystem_init_mpp'
+ */
+static SCOREP_Location* subsystem_init_mpp_location = NULL;
 
 /* *********************************************************************
  * Function prototypes
@@ -513,8 +517,10 @@ metric_subsystem_init( void )
 static SCOREP_ErrorCode
 metric_subsystem_init_mpp( void )
 {
-    /* Reinitialize each location */
-    SCOREP_Location_ForAll( initialize_location_metric_after_mpp_init_cb, NULL );
+    /* Update reference to calling location */
+    subsystem_init_mpp_location = SCOREP_Location_GetCurrentCPULocation();
+
+    initialize_location_metric_after_mpp_init_cb( subsystem_init_mpp_location, NULL );
 
     return SCOREP_SUCCESS;
 }
@@ -692,7 +698,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                                                       props.base,
                                                                                       props.exponent,
                                                                                       props.unit,
-                                                                                      props.profiling_type );
+                                                                                      props.profiling_type,
+                                                                                      SCOREP_INVALID_METRIC );
                     strictly_synchronous_metrics.metrics[ recent_metric_index ] = metric_handle;
                     recent_metric_index++;
                 }
@@ -793,7 +800,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                                                           props.base,
                                                                                           props.exponent,
                                                                                           props.unit,
-                                                                                          props.profiling_type );
+                                                                                          props.profiling_type,
+                                                                                          SCOREP_INVALID_METRIC );
 
                         if ( metric_type == SCOREP_METRIC_PER_THREAD )
                         {
@@ -958,7 +966,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                                                               props.base,
                                                                                               props.exponent,
                                                                                               props.unit,
-                                                                                              props.profiling_type );
+                                                                                              props.profiling_type,
+                                                                                              SCOREP_INVALID_METRIC );
 
                             /* Write definition of sampling set.
                              * SCOREP_METRIC_STRICTLY_SYNC and SCOREP_METRIC_SYNC
@@ -1357,8 +1366,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                     switch ( metric_type )
                     {
                         case SCOREP_METRIC_PER_HOST:
-                            if ( !SCOREP_Status_IsProcessMasterOnNode()
-                                 || SCOREP_Location_GetId( location ) != 0 )
+                            if ( !SCOREP_Status_IsProcessMasterOnNode() )
                             {
                                 continue;
                             }
@@ -1370,8 +1378,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 continue;
                             }
 
-                            if ( SCOREP_Status_GetRank() != 0
-                                 || SCOREP_Location_GetId( location ) != 0 )
+                            if ( SCOREP_Status_GetRank() != 0 )
                             {
                                 continue;
                             }
@@ -1492,7 +1499,8 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                                                                           props.base,
                                                                                           props.exponent,
                                                                                           props.unit,
-                                                                                          props.profiling_type );
+                                                                                          props.profiling_type,
+                                                                                          SCOREP_INVALID_METRIC );
 
                         /* Write definition of sampling set.
                          * We are only handling synchronous metrics here.
@@ -1656,7 +1664,8 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                                                                               props.base,
                                                                                               props.exponent,
                                                                                               props.unit,
-                                                                                              props.profiling_type );
+                                                                                              props.profiling_type,
+                                                                                              SCOREP_INVALID_METRIC );
 
                             /* Write definition of sampling set.
                              * SCOREP_METRIC_STRICTLY_SYNC and SCOREP_METRIC_SYNC
@@ -1813,7 +1822,17 @@ SCOREP_Metric_Reinitialize( void )
 
     /* Reinitialize each location */
     SCOREP_Location_ForAll( initialize_location_metric_cb, NULL );
-    SCOREP_Location_ForAll( initialize_location_metric_after_mpp_init_cb, NULL );
+
+    /* Check reference to calling location,
+     * print a warning if current location and subsystem_init_mpp_location differ,
+     * Update reference to calling location */
+    SCOREP_Location* location_tmp = SCOREP_Location_GetCurrentCPULocation();
+    if ( location_tmp != subsystem_init_mpp_location )
+    {
+        UTILS_WARNING( "Metrics reinitialized from different locations." );
+    }
+    subsystem_init_mpp_location = location_tmp;
+    initialize_location_metric_after_mpp_init_cb( subsystem_init_mpp_location, NULL );
 
     return SCOREP_SUCCESS;
 }

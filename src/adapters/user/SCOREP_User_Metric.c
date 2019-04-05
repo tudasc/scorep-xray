@@ -105,7 +105,8 @@ SCOREP_User_InitMetric( SCOREP_SamplingSetHandle*    metricHandle,
                                             SCOREP_METRIC_BASE_DECIMAL,
                                             0,
                                             unit,
-                                            SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                            SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                            SCOREP_INVALID_METRIC );
 
         *metricHandle
             = SCOREP_Definitions_NewSamplingSet( 1, &metric,

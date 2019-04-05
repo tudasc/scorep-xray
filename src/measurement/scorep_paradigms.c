@@ -29,12 +29,8 @@
 
 #include "scorep_types.h"
 
-/* The compile time static number of known parallel paradigms */
-#define N_PARALLEL_PARADIGMS \
-    ( SCOREP_INVALID_PARADIGM_TYPE - SCOREP_PARADIGM_MPI )
-
 /* Array of paradigm objects */
-static SCOREP_Paradigm* registered_paradigms[ N_PARALLEL_PARADIGMS ];
+static SCOREP_Paradigm* registered_paradigms[ SCOREP_INVALID_PARADIGM_TYPE ];
 
 void
 SCOREP_Paradigms_Initialize( void )
@@ -48,42 +44,18 @@ SCOREP_Paradigms_RegisterParallelParadigm( SCOREP_ParadigmType  paradigm,
                                            const char*          name,
                                            SCOREP_ParadigmFlags paradigmFlags )
 {
-    UTILS_BUG_ON( paradigm < SCOREP_PARADIGM_MPI,
-                  "Non-parallel paradigm passed to register function: %s",
-                  scorep_paradigm_type_to_string( paradigm ) );
+    UTILS_BUG_ON( paradigm >= SCOREP_INVALID_PARADIGM_TYPE || paradigm < 0,
+                  "Invalid paradigm.: %u", paradigm );
 
-    size_t paradigm_index = paradigm - SCOREP_PARADIGM_MPI;
-
-    UTILS_BUG_ON( paradigm_index >= N_PARALLEL_PARADIGMS,
-                  "Dynamic paradigms not yet supported.: %u", paradigm );
-
-    UTILS_BUG_ON( registered_paradigms[ paradigm_index ],
+    UTILS_BUG_ON( registered_paradigms[ paradigm ] != NULL,
                   "Registering the same paradigm twice: %s",
                   SCOREP_Paradigms_GetParadigmName( paradigm ) );
 
-    registered_paradigms[ paradigm_index ] =
+    registered_paradigms[ paradigm ] =
         SCOREP_Definitions_NewParadigm( paradigm,
                                         paradigmClass,
                                         name,
                                         paradigmFlags );
-}
-
-static size_t
-get_paradigm_index( SCOREP_ParadigmType paradigm )
-{
-    UTILS_BUG_ON( paradigm < SCOREP_PARADIGM_MPI,
-                  "Invalid parallel paradigm: %s",
-                  scorep_paradigm_type_to_string( paradigm ) );
-
-    size_t paradigm_index = paradigm - SCOREP_PARADIGM_MPI;
-
-    /* Parallel paradigms need to be registered first, if not its a BUG */
-    UTILS_BUG_ON( paradigm_index >= N_PARALLEL_PARADIGMS
-                  || registered_paradigms[ paradigm_index ] == NULL,
-                  "Unregistered parallel paradigm: %u",
-                  paradigm );
-
-    return paradigm_index;
 }
 
 
@@ -92,10 +64,15 @@ SCOREP_Paradigms_SetStringProperty( SCOREP_ParadigmType     paradigm,
                                     SCOREP_ParadigmProperty paradigmProperty,
                                     const char*             propertyValue )
 {
-    size_t paradigm_index = get_paradigm_index( paradigm );
+    UTILS_BUG_ON( paradigm >= SCOREP_INVALID_PARADIGM_TYPE || paradigm < 0,
+                  "Invalid paradigm.: %u", paradigm );
+
+    UTILS_BUG_ON( registered_paradigms[ paradigm ] == NULL,
+                  "Unregistered paradigm.",
+                  paradigm );
 
     SCOREP_Definitions_ParadigmSetProperty(
-        registered_paradigms[ paradigm_index ],
+        registered_paradigms[ paradigm ],
         paradigmProperty,
         SCOREP_Definitions_NewString( propertyValue ) );
 }
@@ -104,28 +81,26 @@ SCOREP_Paradigms_SetStringProperty( SCOREP_ParadigmType     paradigm,
 const char*
 SCOREP_Paradigms_GetParadigmName( SCOREP_ParadigmType paradigm )
 {
-    /* For non-parallel paradigms, just return the hard coded one */
-    if ( paradigm < SCOREP_PARADIGM_MPI )
-    {
-        return scorep_paradigm_type_to_string( paradigm );
-    }
+    UTILS_BUG_ON( paradigm >= SCOREP_INVALID_PARADIGM_TYPE || paradigm < 0,
+                  "Invalid paradigm.: %u", paradigm );
 
-    size_t paradigm_index = get_paradigm_index( paradigm );
+    UTILS_BUG_ON( registered_paradigms[ paradigm ] == NULL,
+                  "Unregistered paradigm.",
+                  paradigm );
 
-    return registered_paradigms[ paradigm_index ]->name;
+    return registered_paradigms[ paradigm ]->name;
 }
 
 
 SCOREP_ParadigmClass
 SCOREP_Paradigms_GetParadigmClass( SCOREP_ParadigmType paradigm )
 {
-    /* For non-parallel paradigms, just return INVALID */
-    if ( paradigm < SCOREP_PARADIGM_MPI )
-    {
-        return SCOREP_INVALID_PARADIGM_CLASS;
-    }
+    UTILS_BUG_ON( paradigm >= SCOREP_INVALID_PARADIGM_TYPE || paradigm < 0,
+                  "Invalid paradigm.: %u", paradigm );
 
-    size_t paradigm_index = get_paradigm_index( paradigm );
+    UTILS_BUG_ON( registered_paradigms[ paradigm ] == NULL,
+                  "Unregistered paradigm.",
+                  paradigm );
 
-    return registered_paradigms[ paradigm_index ]->paradigm_class;
+    return registered_paradigms[ paradigm ]->paradigm_class;
 }

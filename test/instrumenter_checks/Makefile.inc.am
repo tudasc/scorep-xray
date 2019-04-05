@@ -100,4 +100,7 @@ EXTRA_DIST += \
     $(INSTALLCHECK_DIR)/memory/calloc-cc.c \
     $(INSTALLCHECK_DIR)/memory/realloc-cc.c \
     $(INSTALLCHECK_DIR)/memory/new-cxx.cpp \
-    $(INSTALLCHECK_DIR)/memory/new_array-cxx.cpp
+    $(INSTALLCHECK_DIR)/memory/new_array-cxx.cpp \
+    $(INSTALLCHECK_DIR)/io/isoc-io-cc.c \
+    $(INSTALLCHECK_DIR)/io/isoc-io-cxx.cpp \
+    $(INSTALLCHECK_DIR)/io/posix-io-cc.c

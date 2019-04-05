@@ -1,0 +1,67 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011, 2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011, 2014,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       test/io_management/Makefile.inc.am
+
+check_LTLIBRARIES                       += libscorep_io_mgmt_subsystems.la
+libscorep_io_mgmt_subsystems_la_SOURCES  = $(SRC_ROOT)test/io_management/scorep_io_mgmt_subsystems.c
+libscorep_io_mgmt_subsystems_la_CPPFLAGS = $(subsystems_paradigm_cppflags)
+
+io_mgmt_libadd = \
+    $(common_event_libadd)                    \
+    libscorep_io_mgmt_subsystems.la           \
+    $(common_mgmt_libadd)                     \
+    $(external_libadd)                        \
+    libscorep_mpp_mockup.la                   \
+    libscorep_thread_mockup.la                \
+    libscorep_mutex_mockup.la                 \
+    libscorep_online_access_spp.la
+
+io_mgmt_ldflags = $(external_ldflags)
+
+
+check_PROGRAMS              += handle_test
+handle_test_SOURCES =  $(SRC_ROOT)test/io_management/handle_test.c \
+                            $(SRC_ROOT)vendor/common/cutest/CuTest.c  \
+                            $(SRC_ROOT)vendor/common/cutest/CuTest.h
+
+handle_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
+                            -I$(PUBLIC_INC_DIR)                  \
+                            -I$(INC_ROOT)src/measurement/include \
+                            -I$(INC_ROOT)src/measurement         \
+                            -I$(INC_DIR_COMMON_HASH)             \
+                            -I$(INC_DIR_COMMON_CUTEST)           \
+                            $(UTILS_CPPFLAGS)                    \
+                            -I$(INC_DIR_DEFINITIONS)
+handle_test_LDADD    = $(io_mgmt_libadd) libscorep_measurement.la
+handle_test_LDFLAGS  = $(io_mgmt_ldflags)
+
+TESTS_SERIAL += handle_test

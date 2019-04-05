@@ -131,7 +131,8 @@ mpiprofile_init_metrics( void )
                                       SCOREP_METRIC_VALUE_INT64,
                                       SCOREP_METRIC_BASE_DECIMAL, 0,
                                       "s",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     mpiprofiling_lateSend = SCOREP_Definitions_NewSamplingSet( 1, &lateSend_metric,
                                                                SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS,
@@ -145,7 +146,8 @@ mpiprofile_init_metrics( void )
                                       SCOREP_METRIC_VALUE_INT64,
                                       SCOREP_METRIC_BASE_DECIMAL, 0,
                                       "s",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     mpiprofiling_lateRecv = SCOREP_Definitions_NewSamplingSet( 1, &lateRecv_metric,
                                                                SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS,

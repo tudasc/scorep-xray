@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -177,6 +177,9 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, SourceCodeLocation, source_code_location );
     UNIFY_DEFINITION( sourceDefinitionManager, CallingContext, calling_context );
     UNIFY_DEFINITION( sourceDefinitionManager, InterruptGenerator, interrupt_generator );
+    UNIFY_DEFINITION( sourceDefinitionManager, IoFile, io_file );
+    UNIFY_DEFINITION( sourceDefinitionManager, IoFileProperty, io_file_property );
+    UNIFY_DEFINITION( sourceDefinitionManager, IoHandle, io_handle );
 }
 
 
@@ -218,6 +221,11 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
         { \
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
             { \
+                if ( definition->unified == SCOREP_MOVABLE_NULL ) \
+                { \
+                    continue; \
+                } \
+                \
                 ( definition_manager )->type.mapping[ definition->sequence_number ] = \
                     SCOREP_UNIFIED_HANDLE_DEREF( definition->unified, Type )->sequence_number; \
             } \
@@ -357,6 +365,7 @@ resolve_interim_definitions( void )
 {
     RESOLVE_INTERIM_COMM_REFERENCE( RmaWindow, rma_window, communicator_handle );
     RESOLVE_INTERIM_COMM_REFERENCE( CartesianTopology, cartesian_topology, communicator_handle );
+    RESOLVE_INTERIM_COMM_REFERENCE( IoHandle, io_handle, scope_handle );
     /* Add here more defintions, which references interim comm definitions. */
 }
 

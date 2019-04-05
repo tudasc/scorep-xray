@@ -541,9 +541,9 @@ public:
      * @param list  Pointer to the list which we want to print.
      * @param entry String that is prepended to the list if the list is not empty.
      */
-    static void
-    printDepList( const SCOREP_Instrumenter_DependencyList& list,
-                  const std::string&                        entry );
+    static std::string
+    getDepList( const SCOREP_Instrumenter_DependencyList& list,
+                const std::string&                        entry );
 
 private:
     /**

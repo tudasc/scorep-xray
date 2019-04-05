@@ -99,6 +99,12 @@ public:
     checkOption( const std::string& arg );
 
     /**
+     * Returns the FQ name of this paradigm.
+     */
+    virtual std::string
+    getName( void );
+
+    /**
      * Returns the name as used for the selection of the scorep-config tool.
      */
     virtual std::string

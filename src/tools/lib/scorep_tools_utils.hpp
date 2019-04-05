@@ -300,4 +300,10 @@ string_to_deque( const std::string& input,
 std::deque<std::string>
 remove_double_entries( const std::deque<std::string>& input );
 
+std::string
+wrap_lines( const std::string& message,
+            size_t             indent,
+            size_t             firstIndent,
+            size_t             width = 80 );
+
 #endif // SCOREP_TOOLS_UTILS_HPP

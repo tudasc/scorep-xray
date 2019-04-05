@@ -432,7 +432,7 @@ create_device( acc_device_t deviceType,
         ( char* )SCOREP_Memory_AllocForMisc( metric_length * sizeof( char ) );
 
     if ( -1 == snprintf( acc_metric_name, metric_length,
-                         "acc_mem_usage %d:%i",
+                         "OpenACC [%d:%i]",
                          deviceType, deviceNumber ) )
     {
         UTILS_WARNING( "[OpenACC] Could not create metric name for device type %d!",

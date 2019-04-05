@@ -113,7 +113,7 @@ scorep_user_add_region( SCOREP_User_RegionHandle region_handle,
 
     SCOREP_Hashtab_InsertPtr( scorep_user_region_table,
                               ( void* )UTILS_CStr_dup( region_name ),
-                              region_handle,
+                              ( void* )region_handle,
                               NULL );
 }
 

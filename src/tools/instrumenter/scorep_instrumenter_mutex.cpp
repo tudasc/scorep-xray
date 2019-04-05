@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2016,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -137,12 +140,12 @@ SCOREP_Instrumenter_MutexPthreadSpinlock::checkCommand( const std::string& curre
  * class SCOREP_Instrumenter_Mutex
  * *************************************************************************************/
 SCOREP_Instrumenter_Mutex::SCOREP_Instrumenter_Mutex()
-    : SCOREP_Instrumenter_Selector( "mutex" )
+    : SCOREP_Instrumenter_Selector( "mutex", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexMockup( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthread( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadWrap( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadSpinlock( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexOmp( this ) );
-    m_current_selection = m_paradigm_list.front();
+    m_current_selection.push_back( m_paradigm_list.front() );
 }

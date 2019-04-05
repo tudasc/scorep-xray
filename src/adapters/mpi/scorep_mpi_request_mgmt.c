@@ -40,6 +40,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <SCOREP_Events.h>
+#include <SCOREP_IoManagement.h>
 
 #include <UTILS_Error.h>
 
@@ -472,6 +473,27 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
 }
 
 void
+scorep_mpi_request_io_create( MPI_Request             request,
+                              scorep_mpi_request_type type,
+                              uint64_t                bytes,
+                              MPI_Datatype            datatype,
+                              MPI_File                fh,
+                              SCOREP_MpiRequestId     id )
+{
+    scorep_mpi_request* req = scorep_mpi_request_create_entry( request, id, type,
+                                                               SCOREP_MPI_REQUEST_FLAG_NONE );
+
+    /* store request information */
+    req->payload.io.bytes = bytes;
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &req->payload.io.datatype );
+#else
+    req->payload.io.datatype = datatype;
+#endif
+    req->payload.io.fh = fh;
+}
+
+void
 scorep_mpi_request_comm_idup_create( MPI_Request request,
                                      MPI_Comm    parentComm,
                                      MPI_Comm*   newComm )
@@ -585,10 +607,30 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 }
 
 void
-scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
+scorep_mpi_test_request( scorep_mpi_request* req )
 {
-    const int event_gen_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P );
-    const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    {
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_MPI,
+                                                                     &( req->payload.io.fh ) );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            SCOREP_IoOperationTest( io_handle, req->id );
+        }
+    }
+    else
+    {
+        SCOREP_MpiRequestTested( req->id );
+    }
+}
+
+void
+scorep_mpi_check_request( scorep_mpi_request* req,
+                          MPI_Status*         status )
+{
+    const int p2p_events_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P );
+    const int io_events_active  = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO );
+    const int xnb_active        = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
 
     if ( !req ||
          ( ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) &&
@@ -611,14 +653,14 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
     }
     else
     {
+        int count, sz;
+
         switch ( req->request_type )
         {
             case SCOREP_MPI_REQUEST_TYPE_RECV:
-                if ( event_gen_active && status->MPI_SOURCE != MPI_PROC_NULL )
+                if ( p2p_events_active && status->MPI_SOURCE != MPI_PROC_NULL )
                 {
                     /* if receive request, write receive trace record */
-
-                    int count, sz;
 
                     PMPI_Type_size( req->payload.p2p.datatype, &sz );
                     PMPI_Get_count( status, req->payload.p2p.datatype, &count );
@@ -637,7 +679,7 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
                 break;
 
             case SCOREP_MPI_REQUEST_TYPE_SEND:
-                if ( event_gen_active && xnb_active )
+                if ( p2p_events_active && xnb_active )
                 {
                     SCOREP_MpiIsendComplete( req->id );
                 }
@@ -646,6 +688,27 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
             case SCOREP_MPI_REQUEST_TYPE_COMM_IDUP:
                 scorep_mpi_comm_create_finalize( *req->payload.comm_idup.new_comm,
                                                  req->payload.comm_idup.parent_comm_handle );
+                break;
+
+            case SCOREP_MPI_REQUEST_TYPE_IO_READ:
+            case SCOREP_MPI_REQUEST_TYPE_IO_WRITE:
+                if ( io_events_active && xnb_active )
+                {
+                    PMPI_Type_size( req->payload.io.datatype, &sz );
+                    PMPI_Get_count( status, req->payload.io.datatype, &count );
+
+                    SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_MPI,
+                                                                                 &( req->payload.io.fh ) );
+                    if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+                    {
+                        SCOREP_IoOperationComplete( io_handle,
+                                                    req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
+                                                    ? SCOREP_IO_OPERATION_MODE_READ
+                                                    : SCOREP_IO_OPERATION_MODE_WRITE,
+                                                    ( uint64_t )sz * count,
+                                                    req->id /* matching id */ );
+                    }
+                }
                 break;
 
             default:

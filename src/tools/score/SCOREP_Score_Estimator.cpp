@@ -494,7 +494,85 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     registerEvent( measurement_on_off_event );
 
 #undef SCOREP_SCORE_EVENT
-
+#define SCOREP_SCORE_EVENT( name ) region_set.insert( name );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_CREATE;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDestroyHandle",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoCreateHandle",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_DELETE;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDestroyHandle",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDeleteFile",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_SEEK;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoSeek",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_BLOCKING_TRANSFER;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationComplete",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationBegin",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_NONBLOCKING_TRANSFER_BEGIN;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationIssued",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationBegin",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_NONBLOCKING_TRANSFER_END;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationComplete",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationTest",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_CLOSE;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDestroyHandle",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_DUPLICATE;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDuplicateHandle",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoDestroyHandle",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_ACQUIRE_LOCK;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoTryLock",
+                                                    region_set,
+                                                    true ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoAcquireLock",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_OPERATION_CANCELLED;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoOperationCancelled",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+    SCOREP_SCORE_EVENT_IO_RELEASE_LOCK;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "IoReleaseLock",
+                                                    region_set,
+                                                    true ) );
+    region_set.clear();
+#undef SCOREP_SCORE_EVENT
     calculate_event_sizes();
     /* One visit to MeasurementOnOff corresponds to two MeasurementOnOff trace events. */
     measurement_on_off_event->setEventSize( 2 * ( measurement_on_off_event->getEventSize() + timestamp_event->getEventSize() ) );

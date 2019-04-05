@@ -445,7 +445,8 @@ scorep_profile_init_num_threads_metric( void )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "threads",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     for ( scorep_profile_node* current = scorep_profile.first_root_node;
           current != NULL;

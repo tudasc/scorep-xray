@@ -25,6 +25,7 @@
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter.hpp"
+#include <scorep_tools_utils.hpp>
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 
@@ -147,23 +148,27 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
             std::cout << space.substr( 0, 14 - m_name.length() );
         }
         std::cout << "Enables " << m_name << " instrumentation.\n";
-        if (  m_use_params )
+        if ( m_use_params )
         {
             std::cout << space << "You may add additional parameters that are passed to "
                       << m_name << ".\n";
         }
 
-        printDepList( m_requires,
-                      space + "It requires and, thus, automatically enables " );
-        printDepList( m_prerequisites,
-                      space + "It cannot be enabled, if not at least one of the "
-                      "following is enabled: " );
-        printDepList( m_conflicts,
-                      space + "It conflicts and, thus, automatically disables " );
-        printDepList( m_default_on,
-                      space + "By default, it enables also " );
-        printDepList( m_default_off,
-                      space + "By default, it disables " );
+        std::cout << wrap_lines( getDepList( m_requires,
+                                             "It requires and, thus, automatically enables" ),
+                                 18, 18 );
+        std::cout << wrap_lines( getDepList( m_prerequisites,
+                                             "It cannot be enabled, if not at least "
+                                             "one of the following is enabled:" ),
+                                 18, 18 );
+        std::cout << wrap_lines( getDepList( m_conflicts,
+                                             "It conflicts and, thus, automatically "
+                                             "disables" ),
+                                 18, 18 );
+        std::cout << wrap_lines( getDepList( m_default_on,
+                                             "By default, it enables also" ), 18, 18 );
+        std::cout << wrap_lines( getDepList( m_default_off,
+                                             "By default, it disables" ), 18, 18 );
     }
     std::cout << "  --no" << m_name;
     if ( m_name.length() > 12 )
@@ -549,48 +554,32 @@ SCOREP_Instrumenter_Adapter::defaultOff( SCOREP_Instrumenter_AdapterId id )
     }
 }
 
-void
-SCOREP_Instrumenter_Adapter::printDepList( const SCOREP_Instrumenter_DependencyList& list,
-                                           const std::string&                        entry )
+std::string
+SCOREP_Instrumenter_Adapter::getDepList( const SCOREP_Instrumenter_DependencyList& list,
+                                         const std::string&                        entry )
 {
-    std::string                                        output;
+    std::stringstream                                  output;
     SCOREP_Instrumenter_DependencyList::const_iterator i;
-    std::string                                        space = entry.substr( 0, entry.find_first_not_of( " " ) - 1 );
     if ( !list.empty() )
     {
-        output = entry;
+        output << entry << " ";
         for ( i = list.begin(); i != list.end(); ++i )
         {
             if ( i != list.begin() )
             {
                 if ( i + 1 == list.end() )
                 {
-                    output += " and ";
+                    output << " and ";
                 }
                 else
                 {
-                    output += ", ";
+                    output << ", ";
                 }
             }
-            output += getAdapter( *i )->m_name;
+            output << getAdapter( *i )->m_name;
         }
-        output += " instrumentation.\n";
+        output << " instrumentation.\n";
     }
 
-    size_t pos      = output.find( ' ' );
-    size_t prev_pos = 0;
-    size_t end      = 80;
-    while ( pos != std::string::npos )
-    {
-        pos = output.find( ' ', pos + 1 );
-        if ( ( pos > end && pos != std::string::npos ) ||
-             ( pos == std::string::npos && output.size() > end ) )
-        {
-            output.insert( prev_pos, "\n" + space, 0, 1 + space.size() );
-            end += 80;
-        }
-        prev_pos = pos;
-    }
-
-    std::cout << output;
+    return output.str();
 }

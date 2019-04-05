@@ -436,9 +436,12 @@ apply_mappings_to_local_manager( void )
               i < scorep_local_definition_manager.type.counter; \
               i++ ) \
         { \
-            scorep_local_definition_manager.type.mapping[ i ] = \
-                scorep_unified_definition_manager->type.mapping[ \
-                    scorep_local_definition_manager.type.mapping[ i ] ]; \
+            if ( scorep_local_definition_manager.type.mapping[ i ] != UINT32_MAX ) \
+            { \
+                scorep_local_definition_manager.type.mapping[ i ] = \
+                    scorep_unified_definition_manager->type.mapping[ \
+                        scorep_local_definition_manager.type.mapping[ i ] ]; \
+            } \
         } \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS

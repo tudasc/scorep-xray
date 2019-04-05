@@ -134,7 +134,8 @@ scorep_cupti_activity_init( void )
                                                   SCOREP_METRIC_BASE_DECIMAL,
                                                   0,
                                                   "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
 
                 scorep_cupti_sampling_set_static_shared_mem =
                     SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
@@ -151,7 +152,8 @@ scorep_cupti_activity_init( void )
                                                   SCOREP_METRIC_BASE_DECIMAL,
                                                   0,
                                                   "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
 
                 scorep_cupti_sampling_set_dynamic_shared_mem =
                     SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
@@ -168,7 +170,8 @@ scorep_cupti_activity_init( void )
                                                   SCOREP_METRIC_BASE_DECIMAL,
                                                   0,
                                                   "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
 
                 scorep_cupti_sampling_set_local_mem_total =
                     SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
@@ -185,7 +188,8 @@ scorep_cupti_activity_init( void )
                                                   SCOREP_METRIC_BASE_DECIMAL,
                                                   0,
                                                   "#",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
 
                 scorep_cupti_sampling_set_registers_per_thread =
                     SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,

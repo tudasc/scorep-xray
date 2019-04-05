@@ -46,6 +46,11 @@ following kinds of events:
     The @scorep measurement system uses GNU linker for instrumentation
     of Pthreads library calls. At the moment only a few library calls are supported.
   </dd>
+
+  <dt>I/O library calls:</dt>
+  <dd>
+    The @scorep measurement system supports instrumentation of calls to POSIX I/O and MPI I/O routines.
+  </dd>
 </dl>
 
 The @scorep instrumenter command <tt>scorep</tt> automatically takes
@@ -233,6 +238,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> all </td>
       <td align="center" valign="middle"> @secref{filtering} </td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> @secref{scorep_io_recording} </td>
+      <td align="center" valign="middle"> \--[no]io[=...] </td>
+      <td align="center" valign="middle"> disabled </td>
+      <td align="center" valign="middle"> configured by install </td>
+      <td align="center" valign="middle"> @secref{scorep_io_recording} </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> @secref{tau_instrumentation} </td>
@@ -1007,6 +1019,20 @@ original function.
 
 You can choose linktime or runtime wrapping manually via the `--libwrap` flag
 by prefixing the wrapper name with either `linktime:` or `runtime:`.
+
+@section scorep_io_recording Recording of I/O activities
+@seclabel{scorep_io_recording}
+
+@scorep checks for availability of several I/O paradigm at configure time.
+Please have a look at the configure summary to get an overview of the detected I/O routines.
+You can provide multiple options to the <tt>scorep</tt> instrumenter to record I/O routines of multiple paradigms at a time.
+In the following example @scorep will instrument calls to POSIX I/O routines.
+
+@verbatim
+    scorep --io=posix mpicc foo.c -o foo
+@endverbatim
+
+In addition calls to MPI I/O routines are automatically instrumented if the MPI programming paradigm is detected by the <tt>scorep</tt> instrumenter.
 
 @section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
 @seclabel{scorep_link_mode}

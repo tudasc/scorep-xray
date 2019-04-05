@@ -38,7 +38,8 @@ libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS) \
                                  $(UTILS_CPPFLAGS) \
                                  -I$(PUBLIC_INC_DIR) \
                                  -I$(INC_ROOT)src/services/include \
-                                 -I$(INC_ROOT)src/measurement/include
+                                 -I$(INC_ROOT)src/measurement/include \
+                                 -I$(INC_DIR_DEFINITIONS)
 
 libscorep_platform_la_SOURCES += \
     $(SRC_ROOT)src/services/platform/scorep_platform_system_tree.c \
@@ -191,3 +192,9 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 endif !HAVE_GETHOSTID
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_MIC
+
+if MOUNT_INFO_SUPPORT
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_mountinfo.c
+else !MOUNT_INFO_SUPPORT
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_mountinfo_mockup.c
+endif !MOUNT_INFO_SUPPORT

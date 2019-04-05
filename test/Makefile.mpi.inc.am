@@ -58,7 +58,8 @@ BACKEND_CHECK_TARGETS += \
 mpi_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_la-scorep_monolithic_subsystems.lo \
     $(LIB_DIR_SCOREP)libscorep_mpi_event.la \
-    $(LIB_DIR_SCOREP)libscorep_mpi_mgmt.la
+    $(LIB_DIR_SCOREP)libscorep_mpi_mgmt.la \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
 mpi_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 ## Hybrid ----------------------------------------------------------------------
@@ -74,7 +75,8 @@ BACKEND_CHECK_TARGETS += \
 mpi_omp_libadd = \
     $(LIB_DIR_SCOREP)libscorep_subsystems_mpi_omp_la-scorep_monolithic_subsystems.lo \
     $(LIB_DIR_SCOREP)libscorep_mpi_omp_event.la \
-    $(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la
+    $(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
 mpi_omp_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 endif HAVE_SCOREP_OMP_TPD

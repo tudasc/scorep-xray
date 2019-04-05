@@ -83,7 +83,7 @@ typedef enum SCOREP_MeasurementPhase
     /** @brief The measurement is initialized and not finalized yet. */
     SCOREP_MEASUREMENT_PHASE_WITHIN = 0,
 
-    /** @briefs The measurement is finalizing or already finalized. */
+    /** @brief The measurement is finalizing or already finalized. */
     SCOREP_MEASUREMENT_PHASE_POST   = 1
 } SCOREP_MeasurementPhase;
 
@@ -111,17 +111,27 @@ typedef enum SCOREP_CPULocationPhase
 
 
 /**
- * Symbolic constant representing an invalid or unknown I/O file group
+ * Symbolic constant representing an unknown number of transferred bytes in I/O operation.
+ */
+#define SCOREP_IO_UNKOWN_TRANSFER_SIZE UINT64_MAX
+
+/**
+ * Symbolic constant representing an invalid or unknown I/O file handle
  * definition.
  */
-#define SCOREP_INVALID_IOFILE_GROUP SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_IO_HANDLE SCOREP_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown I/O file definition.
  */
-#define SCOREP_INVALID_IOFILE SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_IO_FILE SCOREP_MOVABLE_NULL
 
+
+/**
+ * Symbolic constant representing an invalid or unknown I/O file property
+ */
+#define SCOREP_INVALID_IO_FILE_PROPERTY SCOREP_MOVABLE_NULL
 
 /**
  * Symbolic constant representing an invalid or unknown marker group
@@ -585,6 +595,17 @@ typedef enum SCOREP_InterruptGeneratorMode
 } SCOREP_InterruptGeneratorMode;
 
 /**
+ * Types to specify the used file operation mode in calls to @a SCOREP_FileOperationEnd.
+ */
+typedef enum SCOREP_FileOperationType
+{
+    SCOREP_FILE_OPERATION_OPEN,
+    SCOREP_FILE_OPERATION_CLOSE,
+    SCOREP_FILE_OPERATION_READ,
+    SCOREP_FILE_OPERATION_WRITE
+} SCOREP_FileOperationType;
+
+/**
  * Possible cartesian topology types differentiated by their source:
  *  - MPI topologies created by each MPI_Cart_create
     - Process X Threads 2 dimensional topology of used processes and threads
@@ -599,6 +620,63 @@ typedef enum
     SCOREP_TOPOLOGIES_USER,
     SCOREP_TOPOLOGIES_NONE,
 } SCOREP_Topology_Type;
+
+/**
+ * List of I/O paradigm classes.
+ */
+typedef enum SCOREP_IoParadigmClass
+{
+    /** Serial.
+     */
+    SCOREP_IO_PARADIGM_CLASS_SERIAL   = 0,
+    /** Parallel.
+     */
+    SCOREP_IO_PARADIGM_CLASS_PARALLEL = 1
+} SCOREP_IoParadigmClass;
+
+/**
+ * List of I/O paradigm flags.
+ */
+typedef enum SCOREP_IoParadigmFlag
+{
+    /** @brief No flags set.
+     */
+    SCOREP_IO_PARADIGM_FLAG_NONE = 0,
+    /** @brief This I/O paradigm denotes an interface to the operating system. Thus,
+     *  no further I/O paradigms below exists.
+     */
+    SCOREP_IO_PARADIGM_FLAG_OS   = ( 1 << 0 )
+} SCOREP_IoParadigmFlag;
+
+/**
+ * List of I/O paradigm properties.
+ */
+typedef enum SCOREP_IoParadigmProperty
+{
+    /** @brief Version of the implementation.
+     *
+     *  Type: String
+     */
+    SCOREP_IO_PARADIGM_PROPERTY_VERSION = 0,
+
+    SCOREP_INVALID_IO_PARADIGM_PROPERTY
+} SCOREP_IoParadigmProperty;
+
+/**
+ * List of I/O handle flags.
+ */
+typedef enum SCOREP_IoHandleFlag
+{
+    /** @brief No flags set.
+     */
+    SCOREP_IO_HANDLE_FLAG_NONE        = 0,
+    /** @brief This I/O handle was already created by the system.
+     */
+    SCOREP_IO_HANDLE_FLAG_PRE_CREATED = ( 1 << 0 ),
+    /** @brief This I/O handle is a proxy to a group of I/O paradigm specific handles.
+     */
+    SCOREP_IO_HANDLE_FLAG_ALL_PROXY   = ( 1 << 1 )
+} SCOREP_IoHandleFlag;
 
 /*@}*/
 

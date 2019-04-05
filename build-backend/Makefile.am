@@ -239,3 +239,16 @@ clean-local-instrumenter-checks-memory: ../installcheck/instrumenter_checks/memo
 	@$(MAKE) -C ../installcheck/instrumenter_checks/memory clean
 
 endif HAVE_MEMORY_SUPPORT
+
+if HAVE_POSIX_IO_SUPPORT
+
+INSTALLCHECK_LOCAL += instrumenter-checks-io
+instrumenter-checks-io: ../installcheck/instrumenter_checks/io/Makefile \
+                        ../installcheck/instrumenter_checks/check-instrumentation.sh
+	@$(MAKE) -C ../installcheck/instrumenter_checks/io
+
+CLEAN_LOCAL += clean-local-instrumenter-checks-io
+clean-local-instrumenter-checks-io: ../installcheck/instrumenter_checks/io/Makefile
+	@$(MAKE) -C ../installcheck/instrumenter_checks/io clean
+
+endif HAVE_POSIX_IO_SUPPORT

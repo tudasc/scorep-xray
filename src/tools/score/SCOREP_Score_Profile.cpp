@@ -488,6 +488,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     {
         return SCOREP_SCORE_TYPE_LIB;
     }
+    if ( paradigm == "io" )
+    {
+        return SCOREP_SCORE_TYPE_IO;
+    }
     if ( paradigm == "unknown" )
     {
         string name = getRegionName( region );

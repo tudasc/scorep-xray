@@ -83,6 +83,7 @@ struct SCOREP_Profile_LocationData
     SCOREP_Location*                     location_data;            /**< Pointer to the Score-P location */
     scorep_profile_fork_list_node*       fork_list_head;           /**< Pointer to the list head of fork points */
     scorep_profile_fork_list_node*       fork_list_tail;           /**< Pointer to the list tail of fork points */
+    struct scorep_profile_io_paradigm*   current_io_paradigm;
 };
 
 /**

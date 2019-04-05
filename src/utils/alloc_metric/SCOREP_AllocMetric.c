@@ -315,9 +315,11 @@ delete_memory_allocation( SCOREP_AllocMetric* allocMetric,
 }
 
 /* Keep track of the allocated memory per process, not only per SCOREP_AllocMetric */
-static size_t       process_allocated_memory;
-static SCOREP_Mutex process_allocated_memory_mutex;
-static int          n_alloc_metric_objects;
+static size_t              process_allocated_memory;
+static SCOREP_Mutex        process_allocated_memory_mutex;
+static int                 n_alloc_metric_objects;
+static SCOREP_MetricHandle root_metric;
+
 
 SCOREP_ErrorCode
 SCOREP_AllocMetric_New( const char*          name,
@@ -327,6 +329,17 @@ SCOREP_AllocMetric_New( const char*          name,
     if ( n_alloc_metric_objects == 0 )
     {
         SCOREP_MutexCreate( &process_allocated_memory_mutex );
+
+        root_metric = SCOREP_Definitions_NewMetric( "Process memory usage",
+                                                    "Process memory usage",
+                                                    SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                                    SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
+                                                    SCOREP_METRIC_VALUE_UINT64,
+                                                    SCOREP_METRIC_BASE_DECIMAL,
+                                                    0,
+                                                    "bytes",
+                                                    SCOREP_METRIC_PROFILING_TYPE_MAX,
+                                                    SCOREP_INVALID_METRIC );
     }
     n_alloc_metric_objects += 1;
 
@@ -344,7 +357,8 @@ SCOREP_AllocMetric_New( const char*          name,
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_MAX );
+                                      SCOREP_METRIC_PROFILING_TYPE_MAX,
+                                      root_metric );
 
     SCOREP_SamplingSetHandle sampling_set_handle =
         SCOREP_Definitions_NewSamplingSet( 1,

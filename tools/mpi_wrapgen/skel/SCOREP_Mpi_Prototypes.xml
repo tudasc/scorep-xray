@@ -1303,6 +1303,7 @@
 </prototype>
 
 <prototype name="MPI_File_close" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO_METADATA</attribute>
     <param access="b" type_modifier="" type="MPI_File*" name="fh" />
     <version id="2.0" />
 </prototype>
@@ -1314,6 +1315,7 @@
 </prototype>
 
 <prototype name="MPI_File_delete" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO_METADATA</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="filename" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
@@ -1396,12 +1398,15 @@
 </prototype>
 
 <prototype name="MPI_File_iread" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1421,12 +1426,15 @@
 </prototype>
 
 <prototype name="MPI_File_iread_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.1" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1446,6 +1454,7 @@
 </prototype>
 
 <prototype name="MPI_File_iread_at" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="o" type_modifier="" type="void*" name="buf" />
@@ -1453,6 +1462,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1472,6 +1483,7 @@
 </prototype>
 
 <prototype name="MPI_File_iread_at_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="o" type_modifier="" type="void*" name="buf" />
@@ -1479,6 +1491,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.1" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1498,12 +1512,15 @@
 </prototype>
 
 <prototype name="MPI_File_iread_shared" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1523,12 +1540,15 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1548,12 +1568,15 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.1" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1573,6 +1596,7 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_at" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
@@ -1580,6 +1604,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1599,6 +1625,7 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_at_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
@@ -1606,6 +1633,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.1" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1625,12 +1654,15 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_shared" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1650,6 +1682,7 @@
 </prototype>
 
 <prototype name="MPI_File_open" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO_METADATA</attribute>
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="filename" />
     <param access="i" type_modifier="" type="int" name="amode" />
@@ -1665,11 +1698,14 @@
 </prototype>
 
 <prototype name="MPI_File_read" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1703,12 +1739,15 @@
 </prototype>
 
 <prototype name="MPI_File_read_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
     <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1741,11 +1780,14 @@
 </prototype>
 
 <prototype name="MPI_File_read_all_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1765,10 +1807,13 @@
 </prototype>
 
 <prototype name="MPI_File_read_all_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
     <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1801,6 +1846,7 @@
 </prototype>
 
 <prototype name="MPI_File_read_at" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="o" type_modifier="" type="void*" name="buf" />
@@ -1808,6 +1854,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
     <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1840,6 +1888,7 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="o" type_modifier="" type="void*" name="buf" />
@@ -1847,6 +1896,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
     <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1879,12 +1930,15 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1904,10 +1958,13 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1940,12 +1997,15 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -1978,11 +2038,14 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -2002,10 +2065,13 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2038,12 +2104,15 @@
 </prototype>
 
 <prototype name="MPI_File_read_shared" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="o" type_modifier="" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">READ</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2076,6 +2145,7 @@
 </prototype>
 
 <prototype name="MPI_File_seek" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO_METADATA</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="" type="int" name="whence" />
@@ -2083,6 +2153,7 @@
 </prototype>
 
 <prototype name="MPI_File_seek_shared" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO_METADATA</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="" type="int" name="whence" />
@@ -2124,17 +2195,21 @@
 </prototype>
 
 <prototype name="MPI_File_sync" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_write" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2167,12 +2242,15 @@
 </prototype>
 
 <prototype name="MPI_File_write_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2205,11 +2283,14 @@
 </prototype>
 
 <prototype name="MPI_File_write_all_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -2229,10 +2310,13 @@
 </prototype>
 
 <prototype name="MPI_File_write_all_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2265,6 +2349,7 @@
 </prototype>
 
 <prototype name="MPI_File_write_at" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
@@ -2272,6 +2357,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">NON_COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2304,6 +2391,7 @@
 </prototype>
 
 <prototype name="MPI_File_write_at_all" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
@@ -2311,6 +2399,8 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2343,12 +2433,15 @@
 </prototype>
 
 <prototype name="MPI_File_write_at_all_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -2366,11 +2459,15 @@
     #endif
 ]]></xblock>
 </prototype>
+
 <prototype name="MPI_File_write_at_all_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2403,12 +2500,15 @@
 </prototype>
 
 <prototype name="MPI_File_write_ordered" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2439,12 +2539,16 @@
     #endif
 ]]></xblock>
 </prototype>
+
 <prototype name="MPI_File_write_ordered_begin" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -2462,11 +2566,15 @@
     #endif
 ]]></xblock>
 </prototype>
+
 <prototype name="MPI_File_write_ordered_end" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
@@ -2497,13 +2605,17 @@
     #endif
 ]]></xblock>
 </prototype>
+
 <prototype name="MPI_File_write_shared" rtype="int" group="io" guard="io" >
+    <attribute id="kind">FILE_IO</attribute>
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
+    <attribute id="operation_type">WRITE</attribute>
+    <attribute id="collective_type">COLLECTIVE</attribute>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)

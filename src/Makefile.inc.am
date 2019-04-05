@@ -64,6 +64,7 @@ libscorep_measurement_la_LIBADD =        \
     libscorep_bitstring.la               \
     libscorep_allocator.la               \
     libscorep_adapter_utils.la           \
+    libscorep_io_management.la           \
     libutils.la                          \
     libjenkins_hash.la                   \
     @SCOREP_PAPI_LIBS@                   \

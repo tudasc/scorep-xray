@@ -484,6 +484,32 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* I/O recording
+
+  - ISO C I/O support
+    - fsetpos: Seek events provides only the resulting offset
+    - ungetc not supported yet
+
+  - POSIX I/O support
+    - Redirecting stdout/stderr to a file via dup2 will not affect the ISO C I/O.
+      The recorded I/O of e.g. puts will target the stdout instead of the file.
+    - O_NONBLOCK and O_NDELAY flags are not handled in open operations because of
+      the following note (see manpage):
+
+        Note that this flag has no effect for regular files and  block  devices;
+        that is,  I/O  operations  will  (briefly)  block when device activity
+        is required, regardless of whether O_NONBLOCK is set. Since O_NONBLOCK
+        semantics  might eventually be implemented, applications should not
+        depend upon blocking behavior when specifying this flag for regular
+        files and block devices.
+
+    - The mode of an open operation will not be tracked.
+      e.g. open(..., mode_t mode);
+    - putc will not be recorded because on most system it is macro. Furthermore,
+      it is difficult to detect it as a macro on Cray systems.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - Score-P does not support MPMD style programs where the executables

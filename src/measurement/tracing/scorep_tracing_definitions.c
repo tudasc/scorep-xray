@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -68,6 +68,7 @@
 #include <scorep_clock_synchronization.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_IoManagement.h>
 #include <SCOREP_Bitstring.h>
 #include <UTILS_Error.h>
 
@@ -1553,6 +1554,203 @@ scorep_write_interrupt_generator_definitions( void*                     writerHa
 }
 
 
+static void
+scorep_write_io_file_definitions( void*                     writerHandle,
+                                  SCOREP_DefinitionManager* definitionManager,
+                                  bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    typedef OTF2_ErrorCode
+    ( * def_io_file_pointer_t )( void*,
+                                 OTF2_IoFileRef,
+                                 OTF2_StringRef,
+                                 OTF2_SystemTreeNodeRef );
+
+    def_io_file_pointer_t defIoFile =
+        ( def_io_file_pointer_t )OTF2_DefWriter_WriteIoRegularFile;
+
+    typedef OTF2_ErrorCode
+    ( * def_io_file_property_pointer_t )( void*,
+                                          OTF2_IoFileRef,
+                                          OTF2_StringRef,
+                                          OTF2_Type,
+                                          OTF2_AttributeValue );
+    def_io_file_property_pointer_t defIoFileProperty =
+        ( def_io_file_property_pointer_t )OTF2_DefWriter_WriteIoFileProperty;
+
+    if ( isGlobal )
+    {
+        defIoFile =
+            ( def_io_file_pointer_t )OTF2_GlobalDefWriter_WriteIoRegularFile;
+        defIoFileProperty =
+            ( def_io_file_property_pointer_t )OTF2_GlobalDefWriter_WriteIoFileProperty;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, IoFile, io_file )
+    {
+        OTF2_SystemTreeNodeRef scope = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
+        if ( definition->scope != SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            scope = SCOREP_HANDLE_TO_ID(
+                definition->scope,
+                SystemTreeNode,
+                definitionManager->page_manager );
+        }
+
+        /* Write definition */
+        OTF2_ErrorCode status = defIoFile(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->file_name_handle, String, definitionManager->page_manager ),
+            scope );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "IoFile" );
+        }
+
+        SCOREP_IoFilePropertyHandle property_handle = definition->properties;
+        while ( property_handle != SCOREP_INVALID_IO_FILE_PROPERTY )
+        {
+            SCOREP_IoFilePropertyDef* property =
+                SCOREP_HANDLE_DEREF( property_handle,
+                                     IoFileProperty,
+                                     definitionManager->page_manager );
+            property_handle = property->properties_next;
+
+            OTF2_AttributeValue value;
+            value.stringRef = SCOREP_HANDLE_TO_ID(
+                property->property_value_handle,
+                String,
+                definitionManager->page_manager );
+            status = defIoFileProperty(
+                writerHandle,
+                definition->sequence_number,
+                SCOREP_HANDLE_TO_ID(
+                    property->property_name_handle,
+                    String,
+                    definitionManager->page_manager ),
+                OTF2_TYPE_STRING,
+                value );
+            if ( status != OTF2_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "IoFileProperty" );
+            }
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+
+static void
+scorep_write_io_handle_definitions( void*                     writerHandle,
+                                    SCOREP_DefinitionManager* definitionManager,
+                                    bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    typedef OTF2_ErrorCode
+    ( * def_io_handle_pointer_t )( void*,
+                                   OTF2_IoHandleRef,
+                                   OTF2_StringRef,
+                                   OTF2_IoFileRef,
+                                   OTF2_IoParadigmRef,
+                                   OTF2_IoHandleFlag,
+                                   OTF2_CommRef,
+                                   OTF2_IoHandleRef );
+
+    def_io_handle_pointer_t defIoHandle =
+        ( def_io_handle_pointer_t )OTF2_DefWriter_WriteIoHandle;
+
+    if ( isGlobal )
+    {
+        defIoHandle =
+            ( def_io_handle_pointer_t )OTF2_GlobalDefWriter_WriteIoHandle;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, IoHandle, io_handle )
+    {
+        OTF2_IoFileRef otf2_io_file     = OTF2_UNDEFINED_IO_FILE;
+        OTF2_CommRef otf2_comm          = OTF2_UNDEFINED_COMM;
+        OTF2_IoHandleRef otf2_io_handle = OTF2_UNDEFINED_IO_HANDLE;
+
+        /* Determine file id safely */
+        if ( definition->file_handle != SCOREP_INVALID_IO_FILE )
+        {
+            otf2_io_file = SCOREP_HANDLE_TO_ID( definition->file_handle,
+                                                IoFile,
+                                                definitionManager->page_manager );
+        }
+
+        /* Determine communicator id safely */
+        if ( definition->scope_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+        {
+            otf2_comm = SCOREP_HANDLE_TO_ID( definition->scope_handle,
+                                             InterimCommunicator,
+                                             definitionManager->page_manager );
+        }
+
+        /* Determine parent id safely */
+        if ( definition->parent_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            otf2_io_handle = SCOREP_HANDLE_TO_ID( definition->parent_handle,
+                                                  IoHandle,
+                                                  definitionManager->page_manager );
+        }
+
+        /* Write definition */
+        OTF2_ErrorCode status = defIoHandle(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            otf2_io_file,
+            SCOREP_IoMgmt_GetParadigmId( definition->io_paradigm_type ),
+            scorep_tracing_io_handle_flag_to_otf2( definition->flags ),
+            otf2_comm,
+            otf2_io_handle );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "IoHandle" );
+        }
+
+        /*
+         * Check whether I/O handle is a pre-created one.
+         * In this case we will write a supplement definition
+         * to record its access mode and status flags.
+         */
+        if ( definition->flags & SCOREP_IO_HANDLE_FLAG_PRE_CREATED )
+        {
+            typedef OTF2_ErrorCode
+            ( * def_io_pre_created_handle_state_pointer_t )( void*,
+                                                             OTF2_IoHandleRef,
+                                                             OTF2_IoAccessMode,
+                                                             OTF2_IoStatusFlag );
+
+            def_io_pre_created_handle_state_pointer_t defIoPreCreatedHandleState =
+                ( def_io_pre_created_handle_state_pointer_t )OTF2_DefWriter_WriteIoPreCreatedHandleState;
+
+            if ( isGlobal )
+            {
+                defIoPreCreatedHandleState =
+                    ( def_io_pre_created_handle_state_pointer_t )OTF2_GlobalDefWriter_WriteIoPreCreatedHandleState;
+            }
+
+            /* Write supplement definition */
+            status = defIoPreCreatedHandleState(
+                writerHandle,
+                definition->sequence_number,
+                scorep_tracing_io_access_mode_to_otf2( definition->access_mode ),
+                scorep_tracing_io_status_flags_to_otf2( definition->status_flags ) );
+            if ( status != OTF2_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "IoIoPreCreatedHandleState" );
+            }
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+
 /**
  * Generate and write the id mapping for definition type @a type into the
  * OTF2 local definition writer @a definition_writer.
@@ -1605,6 +1803,8 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     WRITE_MAPPING( localDefinitionWriter, 32, source_code_location, SOURCE_CODE_LOCATION );
     WRITE_MAPPING( localDefinitionWriter, 32, calling_context, CALLING_CONTEXT );
     WRITE_MAPPING( localDefinitionWriter, 32, interrupt_generator, INTERRUPT_GENERATOR );
+    WRITE_MAPPING( localDefinitionWriter, 32, io_file, IO_FILE );
+    WRITE_MAPPING( localDefinitionWriter, 32, io_handle, IO_HANDLE );
 
     // do we need Callpath and Parameter mappings for tracing?
     WRITE_MAPPING( localDefinitionWriter, 32, parameter, PARAMETER );
@@ -1656,6 +1856,8 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_interrupt_generator_definitions(  localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_cartesian_topology_definitions(   localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_cartesian_coords_definitions(     localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_io_file_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_io_handle_definitions(            localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 #else
 void
@@ -1767,6 +1969,74 @@ write_paradigms( OTF2_GlobalDefWriter*     globalDefinitionWriter,
     SCOREP_ForAllParadigms( write_paradigm_cb, args );
 }
 
+static void
+write_io_paradigm_cb( SCOREP_IoParadigm* paradigm,
+                      void*              userData )
+{
+    void** args                                  = userData;
+    OTF2_GlobalDefWriter* writer                 = args[ 0 ];
+    SCOREP_DefinitionManager* definition_manager = args[ 1 ];
+
+    /* Collect paradigm properties. */
+    uint8_t number_of_properties = 0;
+    OTF2_IoParadigmProperty properties[ SCOREP_INVALID_PARADIGM_PROPERTY ];
+    OTF2_Type types[ SCOREP_INVALID_PARADIGM_PROPERTY ];
+    OTF2_AttributeValue values[ SCOREP_INVALID_PARADIGM_PROPERTY ];
+    for ( int i = 0; i < SCOREP_INVALID_IO_PARADIGM_PROPERTY; i++ )
+    {
+        if ( paradigm->property_handles[ i ] == SCOREP_MOVABLE_NULL )
+        {
+            continue;
+        }
+
+        switch ( i )
+        {
+            /* For now only String typed properties known. */
+            case SCOREP_IO_PARADIGM_PROPERTY_VERSION:
+                properties[ number_of_properties ]       = scorep_tracing_io_paradigm_property_to_otf2( i );
+                types[ number_of_properties ]            = OTF2_TYPE_STRING;
+                values[ number_of_properties ].stringRef = SCOREP_HANDLE_TO_ID(
+                    SCOREP_LOCAL_HANDLE_DEREF(
+                        paradigm->property_handles[ i ],
+                        String )->unified,
+                    String,
+                    definition_manager->page_manager );
+                break;
+
+            default:
+                UTILS_BUG( "Unhandled I/O paradigm property: %u", i );
+                break;
+        }
+
+        number_of_properties++;
+    }
+
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteIoParadigm(
+        writer,
+        paradigm->sequence_number,
+        SCOREP_HANDLE_TO_ID(
+            SCOREP_LOCAL_HANDLE_DEREF( paradigm->identification_handle, String )->unified,
+            String, definition_manager->page_manager ),
+        SCOREP_HANDLE_TO_ID(
+            SCOREP_LOCAL_HANDLE_DEREF( paradigm->name_handle, String )->unified,
+            String, definition_manager->page_manager ),
+        scorep_tracing_io_paradigm_class_to_otf2( paradigm->paradigm_class ),
+        scorep_tracing_io_paradigm_flags_to_otf2( paradigm->paradigm_flags ),
+        number_of_properties, properties, types, values );
+    UTILS_ASSERT( status == OTF2_SUCCESS );
+}
+
+static void
+write_io_paradigms( OTF2_GlobalDefWriter*     globalDefinitionWriter,
+                    SCOREP_DefinitionManager* definitionManager )
+{
+    void* args[ 2 ] = {
+        globalDefinitionWriter,
+        definitionManager
+    };
+    SCOREP_ForAllIoParadigms( write_io_paradigm_cb, args );
+}
+
 void
 scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
 {
@@ -1778,6 +2048,8 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     /* Write these after the strings, as they reference these already. */
     write_paradigms( global_definition_writer,
                      scorep_unified_definition_manager );
+    write_io_paradigms( global_definition_writer,
+                        scorep_unified_definition_manager );
 
     if ( SCOREP_Env_UseSystemTreeSequence() )
     {
@@ -1804,6 +2076,8 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_interrupt_generator_definitions(  global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_cartesian_topology_definitions(   global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_cartesian_coords_definitions(     global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_io_file_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_io_handle_definitions(            global_definition_writer, scorep_unified_definition_manager, true );
 }
 
 void

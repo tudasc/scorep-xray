@@ -1009,6 +1009,183 @@ SCOREP_RmaOpCompleteRemote( SCOREP_RmaWindowHandle windowHandle,
 
 
 void
+SCOREP_IoCreateHandle( SCOREP_IoHandleHandle handle,
+                       SCOREP_IoAccessMode   mode,
+                       SCOREP_IoCreationFlag creationFlags,
+                       SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoCreateHandle, IO_CREATE_HANDLE,
+                           ( location, timestamp, handle, mode, creationFlags, statusFlags ) );
+}
+
+
+void
+SCOREP_IoDestroyHandle( SCOREP_IoHandleHandle handle )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoDestroyHandle, IO_DESTROY_HANDLE,
+                           ( location, timestamp, handle ) );
+}
+
+
+void
+SCOREP_IoDuplicateHandle( SCOREP_IoHandleHandle oldHandle,
+                          SCOREP_IoHandleHandle newHandle,
+                          SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoDuplicateHandle, IO_DUPLICATE_HANDLE,
+                           ( location, timestamp, oldHandle, newHandle, statusFlags ) );
+}
+
+
+void
+SCOREP_IoSeek( SCOREP_IoHandleHandle handle,
+               int64_t               offsetRequest,
+               SCOREP_IoSeekOption   whence,
+               uint64_t              offsetResult )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoSeek, IO_SEEK,
+                           ( location, timestamp, handle, offsetRequest, whence, offsetResult ) );
+}
+
+
+void
+SCOREP_IoChangeStatusFlags( SCOREP_IoHandleHandle handle,
+                            SCOREP_IoStatusFlag   statusFlags )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoChangeStatusFlags, IO_CHANGE_STATUS_FLAGS,
+                           ( location, timestamp, handle, statusFlags ) );
+}
+
+
+void
+SCOREP_IoDeleteFile( SCOREP_IoParadigmType ioParadigm,
+                     SCOREP_IoFileHandle   ioFile )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoDeleteFile, IO_DELETE_FILE,
+                           ( location, timestamp, ioParadigm, ioFile ) );
+}
+
+
+void
+SCOREP_IoOperationBegin( SCOREP_IoHandleHandle  handle,
+                         SCOREP_IoOperationMode mode,
+                         SCOREP_IoOperationFlag operationFlags,
+                         uint64_t               bytesRequest,
+                         uint64_t               matchingId )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoOperationBegin, IO_OPERATION_BEGIN,
+                           ( location, timestamp, handle, mode, operationFlags, bytesRequest, matchingId ) );
+}
+
+
+void
+SCOREP_IoOperationIssued( SCOREP_IoHandleHandle handle,
+                          uint64_t              matchingId )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoOperationIssued, IO_OPERATION_ISSUED,
+                           ( location, timestamp, handle, matchingId ) );
+}
+
+
+void
+SCOREP_IoOperationTest( SCOREP_IoHandleHandle handle,
+                        uint64_t              matchingId )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoOperationTest, IO_OPERATION_TEST,
+                           ( location, timestamp, handle, matchingId ) );
+}
+
+
+void
+SCOREP_IoOperationComplete( SCOREP_IoHandleHandle  handle,
+                            SCOREP_IoOperationMode mode,
+                            uint64_t               bytesResult,
+                            uint64_t               matchingId )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoOperationComplete, IO_OPERATION_COMPLETE,
+                           ( location, timestamp, handle, mode, bytesResult, matchingId ) );
+}
+
+
+void
+SCOREP_IoOperationCancelled( SCOREP_IoHandleHandle handle,
+                             uint64_t              matchingId )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoOperationCancelled, IO_OPERATION_CANCELLED,
+                           ( location, timestamp, handle, matchingId ) );
+}
+
+
+void
+SCOREP_IoAcquireLock( SCOREP_IoHandleHandle handle,
+                      SCOREP_LockType       lockType )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoAcquireLock, IO_ACQUIRE_LOCK,
+                           ( location, timestamp, handle, lockType ) );
+}
+
+
+void
+SCOREP_IoReleaseLock( SCOREP_IoHandleHandle handle,
+                      SCOREP_LockType       lockType )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoReleaseLock, IO_RELEASE_LOCK,
+                           ( location, timestamp, handle, lockType ) );
+}
+
+
+void
+SCOREP_IoTryLock( SCOREP_IoHandleHandle handle,
+                  SCOREP_LockType       lockType )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_CALL_SUBSTRATE( IoTryLock, IO_TRY_LOCK,
+                           ( location, timestamp, handle, lockType ) );
+}
+
+
+void
 SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
                           uint32_t            lockId,
                           uint32_t            acquisitionOrder )

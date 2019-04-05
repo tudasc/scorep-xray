@@ -62,6 +62,7 @@ class SCOREP_Instrumenter_MemoryAdapter;
 
 class SCOREP_Instrumenter_Thread;
 class SCOREP_Instrumenter_Mpp;
+class SCOREP_Instrumenter_Io;
 
 class SCOREP_Instrumenter_Mutex;
 
@@ -265,6 +266,7 @@ private:
 
     SCOREP_Instrumenter_Thread* m_thread;
     SCOREP_Instrumenter_Mpp*    m_mpp;
+    SCOREP_Instrumenter_Io*     m_io;
 
     SCOREP_Instrumenter_Mutex* m_mutex;
 

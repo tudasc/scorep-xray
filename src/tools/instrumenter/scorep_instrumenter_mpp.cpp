@@ -128,7 +128,7 @@ SCOREP_Instrumenter_Mpi::checkWrapperOption( const std::string& current,
 void
 SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
-    if ( m_selector->getSelection() == this )
+    if ( m_selector->isAlreadySelected( this ) )
     {
         return;
     }
@@ -224,7 +224,7 @@ SCOREP_Instrumenter_Shmem::checkCommand( const std::string& current,
 void
 SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
-    if ( m_selector->getSelection() == this )
+    if ( m_selector->isAlreadySelected( this ) )
     {
         return;
     }
@@ -287,10 +287,10 @@ SCOREP_Instrumenter_Shmem::is_shmem_library( const std::string& libraryName )
  * class SCOREP_Instrumenter_Mpp
  * *************************************************************************************/
 SCOREP_Instrumenter_Mpp::SCOREP_Instrumenter_Mpp()
-    : SCOREP_Instrumenter_Selector( "mpp" )
+    : SCOREP_Instrumenter_Selector( "mpp", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_NoMpp( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Mpi( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Shmem( this ) );
-    m_current_selection = m_paradigm_list.front();
+    m_current_selection.push_back( m_paradigm_list.front() );
 }

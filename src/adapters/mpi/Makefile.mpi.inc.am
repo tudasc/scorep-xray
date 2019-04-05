@@ -46,6 +46,7 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h               \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.c   \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.h
+
 nodist_EXTRA_libscorep_adapter_mpi_mgmt_la_SOURCES = force_link_with_F77LD.f
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
@@ -53,7 +54,11 @@ libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_MUTEX)                   \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_ROOT)src/services/include    \
+    -I$(INC_DIR_DEFINITIONS)			 \
+    @SCOREP_TIMER_CPPFLAGS@
+
+
 libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
     libscorep_adapter_mpi_mgmt_fortran_sub2.la \

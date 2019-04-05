@@ -110,6 +110,15 @@ In addition, @scorep supports event recording for the following programming inte
    <li>@emph{SHMEM}</li>
   </ul>
  </dd>
+ <dt>I/O interfaces:</dt>
+ <dd>\if LATEX <br> \endif
+  <ul>
+   <li>@emph{POSIX I/O} (i.e., @verb{open}/@verb{close})</li>
+   <li>@emph{POSIX asynchronous I/O} (i.e., @verb{aio_read}/@verb{aio_write})</li>
+   <li>@emph{ISO C standard I/O} (i.e., @verb{fopen}/@verb{fclose})</li>
+   <li>@emph{MPI I/O}</li>
+  </ul>
+ </dd>
 </dl>
 
 @section about_doc About this Document
@@ -269,10 +278,11 @@ instrumentation. These are currently:
  <li> compiler instrumentation, </li>
  <li> MPI and SHMEM library interposition, </li>
  <li> source code instrumentation via the TAU instrumenter, </li>
- <li> OpenMP source code instrumentation using Opari2. </li>
- <li> Pthread and OpenCL instrumentation via GNU ld library wrapping. </li>
- <li> CUDA instrumentation via the NVIDIA CUDA Profiling Tools Interface (CUPTI)</li>
- <li> OpenACC instrumentation using the OpenACC Profiling Interface</li>
+ <li> OpenMP source code instrumentation using Opari2, </li>
+ <li> Pthread and OpenCL instrumentation via GNU ld library wrapping, </li>
+ <li> CUDA instrumentation via the NVIDIA CUDA Profiling Tools Interface (CUPTI), </li>
+ <li> OpenACC instrumentation using the OpenACC Profiling Interface, </li>
+ <li> I/O library interposition.</li>
 </ul>
 
 While the first three of these methods are based on using tools

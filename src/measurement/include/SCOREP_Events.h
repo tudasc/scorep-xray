@@ -921,6 +921,208 @@ SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*       location,
                                        uint64_t               matchingId );
 
 
+/** @brief Records an IoCreateHandle event.
+ *
+ * An IoCreateHandle record marks the creation of a new file handle
+ * that will be used by subsequent I/O operations.
+ *
+ * @param handle        The I/O handle which will be activated by this record.
+ * @param mode          Access mode (e.g., read, write).
+ * @param creationFlags Additional flags set while handle creation (e.g., tmpfile).
+ * @param statusFlags   Additional status flags which can be changed during lifetime (e.g., close-on-exec).
+ *
+ */
+void
+SCOREP_IoCreateHandle( SCOREP_IoHandleHandle handle,
+                       SCOREP_IoAccessMode   mode,
+                       SCOREP_IoCreationFlag creationFlags,
+                       SCOREP_IoStatusFlag   statusFlags );
+
+
+/** @brief Records an IoDestroyHandle event.
+ *
+ * An IoDestroyHandle record marks the end of a I/O handle's lifetime.
+ *
+ * @param handle        I/O handle.
+ *
+ */
+void
+SCOREP_IoDestroyHandle( SCOREP_IoHandleHandle handle );
+
+
+/** @brief Records an IoDuplicateHandle event.
+ *
+ * An IoDuplicateHandle record marks the duplication of an already
+ * existing file handle.
+ *
+ * @param oldHandle     Original I/O handle.
+ * @param newHandle     New I/O handle.
+ * @param statusFlags   Additional status flags which can be changed during lifetime (e.g., close-on-exec).
+ *
+ */
+void
+SCOREP_IoDuplicateHandle( SCOREP_IoHandleHandle oldHandle,
+                          SCOREP_IoHandleHandle newHandle,
+                          SCOREP_IoStatusFlag   statusFlags );
+
+
+/** @brief Records an IoSeek event.
+ *
+ * An IoSeek record marks a change of the position, e.g., within a file.
+ *
+ * @param handle        I/O handle.
+ * @param offsetRequest Requested offset.
+ * @param whence        Options for repositioning a offset with I/O seek operations.
+ * @param offsetResult  Resulting offset, e.g., within the file relative to the beginning of the file.
+ *
+ */
+void
+SCOREP_IoSeek( SCOREP_IoHandleHandle handle,
+               int64_t               offsetRequest,
+               SCOREP_IoSeekOption   whence,
+               uint64_t              offsetResult );
+
+
+/** @brief Records an IoChangeFlags event.
+ *
+ * An IoChangeFlags record marks changes to the flags associated with an I/O handle.
+ *
+ * @param handle        I/O handle.
+ * @param statusFlags   Additional status flags which can be changed during lifetime (e.g., close-on-exec).
+ *
+ */
+void
+SCOREP_IoChangeStatusFlags( SCOREP_IoHandleHandle handle,
+                            SCOREP_IoStatusFlag   statusFlags );
+
+
+/** @brief Records an IoDeleteFile event.
+ *
+ * An IoDeleteFile record marks the deletion of an I/O file.
+ *
+ * @param ioParadigm    Specification of the I/O paradigm.
+ * @param ioFile        File identifier.
+ *
+ */
+void
+SCOREP_IoDeleteFile( SCOREP_IoParadigmType ioParadigm,
+                     SCOREP_IoFileHandle   ioFile );
+
+
+/** @brief Records an IoOperationBegin event.
+ *
+ * An IoOperationBegin record marks the begin of a file operation (read, write etc.).
+ *
+ * @param handle             I/O handle.
+ * @param mode               Mode of a file operation (e.g., read or write).
+ * @param operationFlags     Flags indicating specific semantics of the operation (e.g., non-blocking).
+ * @param bytesRequest       Requested bytes to write/read.
+ * @param matchingId         Identifier, used for correlating associated event records of an I/O operation.
+ *
+ */
+void
+SCOREP_IoOperationBegin( SCOREP_IoHandleHandle  handle,
+                         SCOREP_IoOperationMode mode,
+                         SCOREP_IoOperationFlag operationFlags,
+                         uint64_t               bytesRequest,
+                         uint64_t               matchingId );
+
+
+/** @brief Records a IoOperationTest event.
+ *
+ * An IoOperationTest record marks the an unsuccessful test whether
+ * an I/O operation has already finished.
+ *
+ * @param handle             I/O handle.
+ * @param matchingId         Identifier, used for correlating associated event records of an I/O operation.
+ */
+void
+SCOREP_IoOperationTest( SCOREP_IoHandleHandle handle,
+                        uint64_t              matchingId );
+
+
+/** @brief Records an IoOperationIssued event.
+ *
+ * An IoOperationIssued record marks the successful initiation of a
+ * non-blocking file operation (read, write etc.).
+ *
+ * @param handle            I/O handle.
+ * @param matchingId        Identifier, used for correlating associated event records of an I/O operation.
+ */
+void
+SCOREP_IoOperationIssued( SCOREP_IoHandleHandle handle,
+                          uint64_t              matchingId );
+
+
+
+/** @brief Records an IoOperationComplete event.
+ *
+ * An IoOperationComplete record marks the end of a file operation
+ * (read, write etc.). It keeps the necessary information for this
+ * event: file, number of transferred bytes.
+ *
+ * @param handle            I/O handle.
+ * @param mode              Mode of a file operation (e.g., read or write); same as in IoOperationBegin.
+ * @param bytesResult       Number of transferred bytes (interpretation depends on operation).
+ * @param matchingId        Identifier, used for correlating associated event records of an I/O operation.
+ */
+void
+SCOREP_IoOperationComplete( SCOREP_IoHandleHandle  handle,
+                            SCOREP_IoOperationMode mode,
+                            uint64_t               bytesResult,
+                            uint64_t               matchingId );
+
+
+/** @brief Records an IoOperationCancelled event.
+ *
+ * An IoOperationCancelled record marks the successful cancellation of a
+ * non-blocking file operation (read, write etc.).
+ *
+ * @param handle            I/O handle.
+ * @param matchingId        Identifier, used for correlating associated event records of an I/O operation.
+ */
+void
+SCOREP_IoOperationCancelled( SCOREP_IoHandleHandle handle,
+                             uint64_t              matchingId );
+
+
+/** @brief Records an IoAcquireLock event.
+ *
+ * Process the acquisition of an I/O lock (e.g., locking access to a file).
+ *
+ * @param handle            I/O handle.
+ * @param lockType          Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_IoAcquireLock( SCOREP_IoHandleHandle handle,
+                      SCOREP_LockType       lockType );
+
+
+/** @brief Records an IoReleaseLock event.
+ *
+ * Process the release of an I/O lock (e.g., release the lock to access a file).
+ *
+ * @param handle            I/O handle.
+ * @param lockType          Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_IoReleaseLock( SCOREP_IoHandleHandle handle,
+                      SCOREP_LockType       lockType );
+
+
+/** @brief Records an IoTryLock event.
+ *
+ * Process the attempt to acquire an I/O lock (e.g., locking access to a file).
+ * However, this attempt was not succesfully and the lock was not granted.
+ *
+ * @param handle            I/O handle.
+ * @param lockType          Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_IoTryLock( SCOREP_IoHandleHandle handle,
+                  SCOREP_LockType       lockType );
+
+
 /**
  * Process a thread acquire lock event in the measurement system.
  *
@@ -1085,7 +1287,6 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
  */
 uint64_t
 SCOREP_GetLastTimeStamp( void );
-
 
 /*@}*/
 

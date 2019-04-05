@@ -84,7 +84,8 @@ visit_to_switches( scorep_profile_node* node,
                                                         SCOREP_METRIC_BASE_DECIMAL,
                                                         0,
                                                         "",
-                                                        SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                        SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                        SCOREP_INVALID_METRIC );
     }
 
     scorep_profile_trigger_int64( ( SCOREP_Profile_LocationData* )param,

@@ -77,7 +77,8 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
                SCOREP_MetricBase          base,
                int64_t                    exponent,
                SCOREP_StringHandle        unitNameHandle,
-               SCOREP_MetricProfilingType profilingType );
+               SCOREP_MetricProfilingType profilingType,
+               SCOREP_MetricHandle        parentHandle );
 
 
 static void
@@ -91,7 +92,8 @@ initialize_metric( SCOREP_MetricDef*          definition,
                    SCOREP_MetricBase          base,
                    int64_t                    exponent,
                    SCOREP_StringHandle        unitNameHandle,
-                   SCOREP_MetricProfilingType profilingType );
+                   SCOREP_MetricProfilingType profilingType,
+                   SCOREP_MetricHandle        parentHandle );
 
 
 static bool
@@ -111,7 +113,8 @@ SCOREP_Definitions_NewMetric( const char*                name,
                               SCOREP_MetricBase          base,
                               int64_t                    exponent,
                               const char*                unit,
-                              SCOREP_MetricProfilingType profilingType )
+                              SCOREP_MetricProfilingType profilingType,
+                              SCOREP_MetricHandle        parentHandle )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 
@@ -133,7 +136,8 @@ SCOREP_Definitions_NewMetric( const char*                name,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             unit ? unit : "#", NULL ),
-        profilingType );
+        profilingType,
+        parentHandle );
 
     SCOREP_Definitions_Unlock();
 
@@ -148,6 +152,17 @@ scorep_definitions_unify_metric( SCOREP_MetricDef*             definition,
 {
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
+
+    SCOREP_MetricHandle unified_parent_handle = SCOREP_INVALID_METRIC;
+    if ( definition->parent_handle != SCOREP_INVALID_METRIC )
+    {
+        unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->parent_handle,
+            Metric,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_METRIC,
+                      "Invalid unification order of metric definition: parent not yet unified" );
+    }
 
     definition->unified = define_metric(
         scorep_unified_definition_manager,
@@ -168,7 +183,8 @@ scorep_definitions_unify_metric( SCOREP_MetricDef*             definition,
             definition->unit_handle,
             String,
             handlesPageManager ),
-        definition->profiling_type );
+        definition->profiling_type,
+        unified_parent_handle );
 }
 
 
@@ -182,7 +198,8 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
                SCOREP_MetricBase          base,
                int64_t                    exponent,
                SCOREP_StringHandle        unitNameHandle,
-               SCOREP_MetricProfilingType profilingType )
+               SCOREP_MetricProfilingType profilingType,
+               SCOREP_MetricHandle        parentHandle )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -200,7 +217,8 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
                        base,
                        exponent,
                        unitNameHandle,
-                       profilingType );
+                       profilingType,
+                       parentHandle );
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Metric, metric );
@@ -226,7 +244,8 @@ initialize_metric( SCOREP_MetricDef*          definition,
                    SCOREP_MetricBase          base,
                    int64_t                    exponent,
                    SCOREP_StringHandle        unitNameHandle,
-                   SCOREP_MetricProfilingType profilingType )
+                   SCOREP_MetricProfilingType profilingType,
+                   SCOREP_MetricHandle        parentHandle )
 {
     definition->name_handle = metricNameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
@@ -254,6 +273,12 @@ initialize_metric( SCOREP_MetricDef*          definition,
 
     definition->profiling_type = profilingType;
     HASH_ADD_POD( definition, profiling_type );
+
+    definition->parent_handle = parentHandle;
+    if ( definition->parent_handle != SCOREP_INVALID_METRIC )
+    {
+        HASH_ADD_HANDLE( definition, parent_handle, Metric );
+    }
 }
 
 
@@ -268,7 +293,8 @@ equal_metric( const SCOREP_MetricDef* existingDefinition,
            && existingDefinition->value_type == newDefinition->value_type
            && existingDefinition->base == newDefinition->base
            && existingDefinition->exponent == newDefinition->exponent
-           && existingDefinition->unit_handle == newDefinition->unit_handle;
+           && existingDefinition->unit_handle == newDefinition->unit_handle
+           && existingDefinition->parent_handle == newDefinition->parent_handle;
 }
 
 
@@ -324,6 +350,13 @@ SCOREP_MetricProfilingType
 SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->profiling_type;
+}
+
+
+SCOREP_MetricHandle
+SCOREP_MetricHandle_GetParent( SCOREP_MetricHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->parent_handle;
 }
 
 

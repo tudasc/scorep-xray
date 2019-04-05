@@ -57,6 +57,8 @@ libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_metric.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_paradigm.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_paradigm.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_paradigm.c \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_paradigm.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_sampling_set.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set_recorder.c \
@@ -73,10 +75,12 @@ libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_rma_window.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_topology.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_topology.h \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_group.c \
-    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_file_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_file.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_property.c \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_file_property.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_handle.c \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_handle.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_marker_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.c \

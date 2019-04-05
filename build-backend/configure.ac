@@ -189,6 +189,7 @@ SCOREP_SAMPLING
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 SCOREP_OPENCL
+SCOREP_IO_RECORDING
 AC_SCOREP_LINK_FLAGS_CHECK
 
 AFS_SUMMARY_SECTION_BEGIN([OTF2 features])
@@ -280,6 +281,7 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_CRAY_PMI
+SCOREP_MNTENT_CHECK
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
@@ -407,6 +409,8 @@ AM_COND_IF([HAVE_MEMORY_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/memory/Makefile:../test/instrumenter_checks/memory/Makefile.in])])
 AM_COND_IF([HAVE_CUDA_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/cuda/Makefile:../test/instrumenter_checks/cuda/Makefile.in])])
+AM_COND_IF([HAVE_POSIX_IO_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/io/Makefile:../test/instrumenter_checks/io/Makefile.in])])
 
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])
@@ -499,5 +503,8 @@ AS_CASE([${ac_scorep_platform}],
 
 AM_COND_IF([HAVE_OPENCL_SUPPORT],
     [SCOREP_LD_WRAP_FILE([opencl])])
+
+AM_COND_IF([HAVE_POSIX_IO_SUPPORT],
+    [SCOREP_LD_WRAP_FILE([posix_io])])
 
 AC_OUTPUT

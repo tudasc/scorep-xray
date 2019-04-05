@@ -41,6 +41,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 
@@ -460,4 +461,101 @@ remove_double_entries( const deque<string>& input )
     }
 
     return output;
+}
+
+string
+wrap_lines( const string& message,
+            size_t        indent,
+            size_t        firstIndent,
+            size_t        width )
+{
+    size_t            column_width = 0;
+    size_t            reminder;
+    int               nl   = 0;
+    string            sep  = "";
+    string::size_type curr = 0;
+
+    if ( width > indent )
+    {
+        column_width = width - indent;
+    }
+    reminder = column_width;
+
+    stringstream out;
+
+    while ( true )
+    {
+        /* skip any whitespace */
+        curr = message.find_first_not_of( " \t\n\r\v", curr );
+
+        /* stop if we reached the end */
+        if ( curr == string::npos )
+        {
+            break;
+        }
+
+        /* print separator to previous word */
+        switch ( nl )
+        {
+            case 0:
+                if ( firstIndent == 0 )
+                {
+                    out << "\n" << string( indent, ' ' );
+                }
+                else
+                {
+                    out << string( firstIndent, ' ' );
+                }
+                sep = "";
+                break;
+
+            case 3:
+                /* a paragraph, empty line and fall thru to linebreak */
+                out << "\n";
+
+            case 2:
+                out << "\n" << string( indent, ' ' );
+                reminder = column_width;
+                sep      = "";
+                break;
+        }
+
+        /* get length of next word */
+        string::size_type next = message.find_first_of( " \t\n\r\v", curr );
+        if ( next == string::npos )
+        {
+            next = message.length();
+        }
+        string::size_type length = next - curr;
+
+        nl = 1;
+        if ( message[ next ] == '\n' )
+        {
+            nl = 2;
+            if ( ( next + 1 ) < message.length() && message[ next + 1 ] == '\n' )
+            {
+                nl = 3;
+            }
+        }
+
+        if ( length < reminder || reminder == column_width )
+        {
+            out << sep << message.substr( curr, length );
+            curr     += length;
+            reminder -= length + sep.length();
+        }
+        else
+        {
+            /* word does not fit anymore in this line, but it was not the first word */
+            nl = 2;
+        }
+        sep = " ";
+    }
+
+    if ( nl > 1 )
+    {
+        out << "\n";
+    }
+
+    return out.str();
 }

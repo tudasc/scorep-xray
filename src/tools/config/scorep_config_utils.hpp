@@ -18,7 +18,7 @@
  *
  * Utility functions for the config tool.
  */
-
+#include <deque>
 #include <string>
 
 /**

@@ -28,6 +28,7 @@
 #include <string>
 #include <deque>
 #include <set>
+#include <vector>
 #include <stdint.h>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
@@ -492,6 +493,86 @@ public:
 
 private:
     std::set<std::pair<std::string, std::string> > m_wrappers;
+};
+
+/* **************************************************************************************
+ * class SCOREP_IoAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the I/O wrapping adapter.
+ */
+class SCOREP_Config_IoAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_IoAdapter();
+
+    virtual void
+    printHelp( void );
+
+    virtual bool
+    checkArgument( const std::string& arg );
+
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         buildCheck,
+                bool         nvcc );
+
+    virtual void
+    appendInitStructName( std::deque<std::string>& initStructs );
+
+private:
+    struct SCOREP_Config_SupportedIo
+    {
+        SCOREP_Config_SupportedIo( const std::string& subsystem,
+                                   const std::string& lib,
+                                   const std::string& wrap )
+            :   m_subsystem_name( subsystem )
+            ,   m_lib_name( lib )
+        {
+            m_wrap_names.push_back( wrap );
+        }
+
+        SCOREP_Config_SupportedIo( const std::string& subsystem,
+                                   const std::string& lib )
+            :   m_subsystem_name( subsystem )
+            ,   m_lib_name( lib )
+        {
+            m_wrap_names.push_back( lib );
+        }
+
+        SCOREP_Config_SupportedIo( const SCOREP_Config_SupportedIo& other )
+            :   m_subsystem_name( other.m_subsystem_name )
+            ,   m_lib_name( other.m_lib_name )
+            ,   m_wrap_names( other.m_wrap_names )
+        {
+        }
+
+        SCOREP_Config_SupportedIo()
+        {
+        }
+
+        void
+        add_wrap_name( const std::string& wrap )
+        {
+            m_wrap_names.push_back( wrap );
+        }
+
+        std::string              m_subsystem_name;
+        std::string              m_lib_name;
+        std::vector<std::string> m_wrap_names;
+    };
+
+    typedef std::map<std::string, SCOREP_Config_SupportedIo> SCOREP_Config_SupportedIosT;
+    typedef SCOREP_Config_SupportedIosT::const_iterator      SCOREP_Config_SupportedIosCIT;
+    typedef SCOREP_Config_SupportedIosT::value_type          SCOREP_Config_SupportedIosV;
+
+    SCOREP_Config_SupportedIosT        m_supported_ios;
+    std::map<std::string, std::string> m_selected_ios;
 };
 
 #endif // SCOREP_CONFIG_ADAPTER_HPP

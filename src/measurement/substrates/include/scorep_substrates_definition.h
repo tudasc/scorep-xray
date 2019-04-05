@@ -4,7 +4,7 @@
  * Copyright (c) 2015-2016,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015-2016, 2018,
+ * Copyright (c) 2015-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015-2018
@@ -160,6 +160,8 @@ typedef enum SCOREP_Substrates_MgmtType
     SCOREP_MGMT_ADD_ATTRIBUTE,
     SCOREP_MGMT_LEAKED_MEMORY,
     SCOREP_MGMT_GET_REQUIREMENT,
+    SCOREP_MGMT_IO_PARADIGM_ENTER,
+    SCOREP_MGMT_IO_PARADIGM_LEAVE,
 
     SCOREP_SUBSTRATES_NUM_MGMT_EVENTS
 } SCOREP_Substrates_MgmtType;
@@ -408,5 +410,13 @@ typedef void ( * SCOREP_Substrates_DumpManifestCb )(
     FILE*       manifestFile,
     const char* relativeSourceDir,
     const char* targetDir );
+
+typedef void ( * SCOREP_Substrates_IoParadigmEnterCb )(
+    struct SCOREP_Location* location,
+    SCOREP_IoParadigmType   ioParadigm );
+
+typedef void ( * SCOREP_Substrates_IoParadigmLeaveCb )(
+    struct SCOREP_Location* location,
+    SCOREP_IoParadigmType   ioParadigm );
 
 #endif /* SCOREP_SUBSTRATES_DEFINITION_H */

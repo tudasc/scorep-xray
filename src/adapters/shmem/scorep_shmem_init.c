@@ -101,7 +101,7 @@ shmem_subsystem_init( void )
 
     if ( scorep_shmem_memory_recording )
     {
-        SCOREP_AllocMetric_New( "Process memory usage (SHMEM)",
+        SCOREP_AllocMetric_New( "SHMEM",
                                 &scorep_shmem_allocations_metric );
 
         scorep_shmem_memory_alloc_size_attribute =

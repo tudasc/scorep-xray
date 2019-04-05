@@ -77,7 +77,6 @@ SCOREP_AttributeHandle_GetId( SCOREP_AttributeHandle handle );
 SCOREP_AttributeType
 SCOREP_AttributeHandle_GetType( SCOREP_AttributeHandle handle );
 
-
 void
 scorep_definitions_unify_attribute( SCOREP_AttributeDef*                 definition,
                                     struct SCOREP_Allocator_PageManager* handlesPageManager );

@@ -42,8 +42,9 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_IoManagement;
 
-/** @brief a NULL terminated list of linked in subsystems. */
+/** @brief list of linked in subsystems. */
 const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_Substrates,
     &SCOREP_Subsystem_TaskStack,
@@ -61,6 +62,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
 #endif
 #ifdef SCOREP_SUBSYSTEMS_MPI
     &SCOREP_Subsystem_MpiAdapter,
+    &SCOREP_Subsystem_IoManagement,
 #endif
 #ifdef SCOREP_SUBSYSTEMS_SHMEM
     &SCOREP_Subsystem_ShmemAdapter,

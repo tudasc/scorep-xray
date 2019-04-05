@@ -79,6 +79,13 @@ typedef struct
 
 typedef struct
 {
+    uint64_t     bytes;
+    MPI_Datatype datatype;
+    MPI_File     fh;
+} scorep_mpi_request_io_data;
+
+typedef struct
+{
     MPI_Comm*                        new_comm;
     SCOREP_InterimCommunicatorHandle parent_comm_handle;
 } scorep_mpi_request_comm_idup_data;
@@ -92,6 +99,7 @@ typedef struct
     {
         scorep_mpi_request_p2p_data       p2p;
         scorep_mpi_request_comm_idup_data comm_idup;
+        scorep_mpi_request_io_data        io;
     } payload;
     SCOREP_MpiRequestId id;
 } scorep_mpi_request;
@@ -104,7 +112,7 @@ SCOREP_MpiRequestId
 scorep_mpi_get_request_id( void );
 
 /**
- * @brief Create entry for a given MPI request handle
+ * @brief Create entry for a given MPI P2P request handle
  * @param request   MPI request handle
  * @param type      Type of request
  * @param flags     Bitmask containing flags set for this request
@@ -132,6 +140,23 @@ scorep_mpi_request_comm_idup_create( MPI_Request request,
                                      MPI_Comm*   newcomm );
 
 /**
+ * @brief Create entry for a given MPI I/O request handle
+ * @param request   MPI request handle
+ * @param type      Type of request
+ * @param bytes     Number of bytes transfered in request
+ * @param datatype  MPI datatype handle
+ * @param fh        MPI_File handle
+ * @param id        Request id
+ */
+void
+scorep_mpi_request_io_create( MPI_Request             request,
+                              scorep_mpi_request_type type,
+                              uint64_t                bytes,
+                              MPI_Datatype            datatype,
+                              MPI_File                fh,
+                              SCOREP_MpiRequestId     id );
+
+/**
  * @brief  Retrieve internal request entry for an MPI request handle
  * @param  request MPI request handle
  * @return Pointer to corresponding internal request entry
@@ -145,6 +170,10 @@ scorep_mpi_request_get( MPI_Request request );
  */
 void
 scorep_mpi_request_free( scorep_mpi_request* req );
+
+void
+scorep_mpi_test_request( scorep_mpi_request* req );
+
 void
 scorep_mpi_check_request( scorep_mpi_request* req,
                           MPI_Status*         status );

@@ -41,19 +41,27 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Config.h>
+#include <SCOREP_Hashtab.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_AllocMetric.h>
+#include <SCOREP_IoManagement.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request_mgmt.h"
+
 #if !defined( SCOREP_MPI_NO_HOOKS )
 #include "scorep_mpi_oa_profile_mgmt.h"
 #endif // !defined( SCOREP_MPI_NO_HOOKS )
 
 #include <stdlib.h>
+
+/**
+ * MPI-I/O: Hash table size for split operations
+ */
+#define SCOREP_MPI_IO_SPLIT_TABLE_SIZE 10
 
 /**
  * @def SCOREP_FORTRAN_GET_MPI_STATUS_SIZE
@@ -141,9 +149,16 @@ void* scorep_mpi_fortran_unweighted = NULL;
  */
 bool scorep_mpi_generate_events = false;
 
+bool scorep_mpi_mountinfo_exists = false;
+
 SCOREP_AllocMetric*    scorep_mpi_allocations_metric            = NULL;
 SCOREP_AttributeHandle scorep_mpi_memory_alloc_size_attribute   = SCOREP_INVALID_ATTRIBUTE;
 SCOREP_AttributeHandle scorep_mpi_memory_dealloc_size_attribute = SCOREP_INVALID_ATTRIBUTE;
+
+/**
+ * MPI-I/O hashtable for managing I/O split operations.
+ */
+SCOREP_Hashtab* scorep_mpi_io_split_table = NULL;
 
 /**
    External fortran function to retrieve the constant value
@@ -227,6 +242,31 @@ enable_derived_groups( void )
     }
 }
 
+static inline void
+mpi_io_init( void )
+{
+    scorep_mpi_io_split_table = SCOREP_Hashtab_CreateSize( SCOREP_MPI_IO_SPLIT_TABLE_SIZE,
+                                                           &SCOREP_Hashtab_HashInt32,
+                                                           &SCOREP_Hashtab_CompareInt32 );
+
+    SCOREP_IoMgmt_RegisterParadigm( SCOREP_IO_PARADIGM_MPI,
+                                    SCOREP_IO_PARADIGM_CLASS_PARALLEL,
+                                    "MPI-IO",
+                                    SCOREP_IO_PARADIGM_FLAG_NONE,
+                                    sizeof( MPI_File ),
+                                    SCOREP_INVALID_IO_PARADIGM_PROPERTY );
+}
+
+static inline void
+mpi_io_finish( void )
+{
+    SCOREP_Hashtab_FreeAll( scorep_mpi_io_split_table,
+                            &SCOREP_Hashtab_DeleteNone,
+                            &SCOREP_Hashtab_DeleteNone );
+
+    SCOREP_IoMgmt_DeregisterParadigm( SCOREP_IO_PARADIGM_MPI );
+}
+
 /**
    Implementation of the adapter_register function of the @ref
    SCOREP_Subsystem struct for the initialization process of the MPI
@@ -273,7 +313,6 @@ mpi_subsystem_init( void )
     SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_MPI,
                                         SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
                                         "Win ${id}" );
-
     /* Set Fortran constants */
     SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( &scorep_mpi_status_size );
 #if HAVE( MPI_BOTTOM )
@@ -307,7 +346,7 @@ mpi_subsystem_init( void )
 
     if ( scorep_mpi_memory_recording )
     {
-        SCOREP_AllocMetric_New( "Process memory usage (MPI)",
+        SCOREP_AllocMetric_New( "MPI",
                                 &scorep_mpi_allocations_metric );
 
         scorep_mpi_memory_alloc_size_attribute =
@@ -315,6 +354,8 @@ mpi_subsystem_init( void )
         scorep_mpi_memory_dealloc_size_attribute =
             SCOREP_AllocMetric_GetDeallocationSizeAttribute();
     }
+
+    mpi_io_init();
 
     return SCOREP_SUCCESS;
 }
@@ -373,6 +414,8 @@ mpi_subsystem_finalize( void )
     {
         SCOREP_AllocMetric_Destroy( scorep_mpi_allocations_metric );
     }
+
+    mpi_io_finish();
 
     UTILS_DEBUG_EXIT();
 }

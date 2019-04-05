@@ -53,6 +53,17 @@ Common options are:
                   MPI support using library wrapping
               shmem
                   SHMEM support using library wrapping
+  --io=[<wrap-mode>:]<paradigm>[:<variant>](,[<wrap-mode>:]<paradigm>[:<variant>])*
+                  <wrap-mode> may be 'linktime (default) or 'runtime'.
+                  Possible paradigms and variants are:
+              none
+                  No I/O wrapping support.
+              posix
+                  POSIX I/O support using library wrapping. This includes the
+                  file descriptor based POSIX API (i.e., `open`/`close`). The
+                  POSIX asynchronous I/O API (i.e., `aio_read`/`aio_write`), if
+                  available. And the ISO C `FILE` handle based API (i.e.,
+                  `fopen`/`fclose`).
   --mutex=<paradigm>[:<variant>]
                   Possible paradigms and variants are:
               none

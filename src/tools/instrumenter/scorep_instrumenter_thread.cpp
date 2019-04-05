@@ -260,10 +260,10 @@ SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLi
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/
 SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
-    : SCOREP_Instrumenter_Selector( "thread" )
+    : SCOREP_Instrumenter_Selector( "thread", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Omp( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
-    m_current_selection = m_paradigm_list.front();
+    m_current_selection.push_back( m_paradigm_list.front() );
 }

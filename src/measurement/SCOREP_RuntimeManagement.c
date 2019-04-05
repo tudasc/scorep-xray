@@ -486,7 +486,6 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     define_measurement_attributes();
 
     /* == Initialize substrates and subsystems == */
-
     /* Let the filtering service read its filter file early */
     SCOREP_TIME( SCOREP_Filtering_Initialize, ( ) );
 
@@ -522,11 +521,6 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      * @dependsOn measurement_regions
      */
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
-
-    /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
-     * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
-     * called before the MPI one. */
-    SCOREP_RegisterExitHandler();
 
     /*
      * @dependsOn Metric
@@ -570,6 +564,19 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
 
     if ( !SCOREP_Status_IsMpp() )
     {
+        /*
+         * Register finalization handler, also called in SCOREP_InitMppMeasurement() and
+         * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
+         * called before the MPI one.
+         *
+         * Register the exit handler here only for non-mpp programs.
+         * MPP programs register their exit handlers in SCOREP_InitMppMeasurement().
+         * This prevents the exit handler registration for daemon process
+         * which may forked between SCOREP_InitMeasurement and SCOREP_InitMppMeasurement.
+         * Only the process which initializes the MPP will be the Score-P process.
+         */
+        SCOREP_RegisterExitHandler();
+
         SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
 
         init_mpp( SCOREP_SYNCHRONIZATION_MODE_BEGIN );
@@ -626,12 +633,6 @@ SCOREP_InitMppMeasurement( void )
     UTILS_DEBUG_ENTRY();
 
     SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
-
-    if ( SCOREP_Thread_InParallel() )
-    {
-        UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
-        _Exit( EXIT_FAILURE );
-    }
 
     if ( SCOREP_Status_HasOtf2Flushed() )
     {

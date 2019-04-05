@@ -12,6 +12,7 @@ include ../src/measurement/thread/Makefile.inc.am
 include ../src/measurement/thread/fork_join/Makefile.inc.am
 include ../src/measurement/thread/create_wait/Makefile.inc.am
 include ../src/measurement/mutex/Makefile.inc.am
+include ../src/measurement/io/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/opari2/Makefile.inc.am
@@ -23,6 +24,7 @@ include ../src/adapters/opencl/Makefile.inc.am
 include ../src/adapters/openacc/Makefile.inc.am
 include ../src/adapters/pthread/Makefile.inc.am
 include ../src/adapters/memory/Makefile.inc.am
+include ../src/adapters/io/posix/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
 include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am
@@ -73,3 +75,4 @@ include ../test/vector/Makefile.inc.am
 include ../test/hashtab/Makefile.inc.am
 include ../test/rewind/Makefile.inc.am
 include ../test/constructor_checks/Makefile.inc.am
+include ../test/io_management/Makefile.inc.am

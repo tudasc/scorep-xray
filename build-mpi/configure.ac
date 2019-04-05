@@ -209,6 +209,7 @@ SCOREP_SAMPLING
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 SCOREP_OPENCL
+SCOREP_IO_RECORDING
 
 ## Configure internal/external libraries
 scorep_otf2_config_backend_arg=
@@ -245,6 +246,7 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_CRAY_PMI
+SCOREP_MNTENT_CHECK
 
 # On crosscompile machines, install backend/mic stuff into
 # $(bin|lid)dir/(backend|mic).
@@ -288,6 +290,8 @@ AC_CONFIG_FILES([../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh], \
                 [chmod +x ../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh])
 AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
                 [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
+AC_CONFIG_FILES([run_io_mpi_test.sh:../test/io/mpi/run_io_mpi_test.sh.in],
+                [chmod +x run_io_mpi_test.sh])
 
 SCOREP_LIBRARY_WRAPPING_GENERATOR(
     [AC_CONFIG_FILES([../test/tools/libwrap_init/mpi.sh])])

@@ -2308,7 +2308,8 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_BASE_DECIMAL,
                                                       0,
                                                       "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                      SCOREP_INVALID_METRIC );
 
                     scorep_cupti_sampling_set_blocks_per_grid =
                         SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_bpg,
@@ -2325,7 +2326,8 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_BASE_DECIMAL,
                                                       0,
                                                       "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                      SCOREP_INVALID_METRIC );
 
                     scorep_cupti_sampling_set_threads_per_block =
                         SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpb,
@@ -2342,7 +2344,8 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_BASE_DECIMAL,
                                                       0,
                                                       "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                      SCOREP_INVALID_METRIC );
 
                     scorep_cupti_sampling_set_threads_per_kernel =
                         SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpk,

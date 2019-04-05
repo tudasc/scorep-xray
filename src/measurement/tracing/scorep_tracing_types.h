@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -597,7 +597,6 @@ scorep_tracing_paradigm_property_to_otf2( SCOREP_ParadigmProperty paradigmProper
     return OTF2_UNDEFINED_TYPE;
 }
 
-
 static inline OTF2_Type
 scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
 {
@@ -654,6 +653,261 @@ scorep_tracing_interrupt_generator_mode_to_otf2( SCOREP_InterruptGeneratorMode m
 #undef case_return
         default:
             UTILS_BUG( "Invalid interrupt generator mode: %u", mode );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+static inline OTF2_IoParadigmClass
+scorep_tracing_io_paradigm_class_to_otf2( SCOREP_IoParadigmClass class )
+{
+    switch ( class )
+    {
+#define case_return( CLASS ) \
+    case SCOREP_IO_PARADIGM_CLASS_ ## CLASS: \
+        return OTF2_IO_PARADIGM_CLASS_ ## CLASS
+
+        case_return( SERIAL );
+        case_return( PARALLEL );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid I/O paradigm class: %u", class );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+static inline OTF2_IoParadigmFlag
+scorep_tracing_io_paradigm_flags_to_otf2( SCOREP_IoParadigmFlag scorepFlag )
+{
+    OTF2_IoParadigmFlag otf2_flags = OTF2_IO_PARADIGM_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepFlag & SCOREP_IO_PARADIGM_FLAG_ ## name ) \
+        { \
+            otf2_flags |= OTF2_IO_PARADIGM_FLAG_ ## name; \
+            scorepFlag &= ~SCOREP_IO_PARADIGM_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( OS );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepFlag != SCOREP_IO_PARADIGM_FLAG_NONE,
+                  "Unhandled I/O paradigm flag" );
+
+    return otf2_flags;
+}
+
+static inline OTF2_ParadigmProperty
+scorep_tracing_io_paradigm_property_to_otf2( SCOREP_ParadigmProperty paradigmProperty )
+{
+    switch ( paradigmProperty )
+    {
+#define case_return( PROPERTY ) \
+    case SCOREP_IO_PARADIGM_PROPERTY_ ## PROPERTY: \
+        return OTF2_IO_PARADIGM_PROPERTY_ ## PROPERTY
+
+        case_return( VERSION );
+
+#undef case_return
+
+        default:
+            UTILS_BUG( "Invalid paradigm property: %u", paradigmProperty );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_IoHandleFlag
+scorep_tracing_io_handle_flag_to_otf2( SCOREP_IoHandleFlag scorepFlag )
+{
+    OTF2_IoHandleFlag otf2_flags = OTF2_IO_HANDLE_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepFlag & SCOREP_IO_HANDLE_FLAG_ ## name ) \
+        { \
+            otf2_flags |= OTF2_IO_HANDLE_FLAG_ ## name; \
+            scorepFlag &= ~SCOREP_IO_HANDLE_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( PRE_CREATED );
+    if_flag( ALL_PROXY );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepFlag != SCOREP_IO_HANDLE_FLAG_NONE,
+                  "Unhandled I/O handle flag" );
+
+    return otf2_flags;
+}
+
+
+static inline OTF2_IoAccessMode
+scorep_tracing_io_access_mode_to_otf2( SCOREP_IoAccessMode mode )
+{
+    switch ( mode )
+    {
+#define case_return( MODE ) \
+    case SCOREP_IO_ACCESS_MODE_ ## MODE: \
+        return OTF2_IO_ACCESS_MODE_ ## MODE
+
+        case_return( READ_ONLY );
+        case_return( WRITE_ONLY );
+        case_return( READ_WRITE );
+        case_return( EXECUTE_ONLY );
+        case_return( SEARCH_ONLY );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid I/O access mode: %u", mode );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_IoOperationMode
+scorep_tracing_io_operation_mode_to_otf2( SCOREP_IoOperationMode mode )
+{
+    switch ( mode )
+    {
+#define case_return( MODE ) \
+    case SCOREP_IO_OPERATION_MODE_ ## MODE: \
+        return OTF2_IO_OPERATION_MODE_ ## MODE
+
+        case_return( READ );
+        case_return( WRITE );
+        case_return( FLUSH );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid I/O operation mode: %u", mode );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+static inline OTF2_IoCreationFlag
+scorep_tracing_io_creation_flags_to_otf2( SCOREP_IoCreationFlag scorepCreationFlag )
+{
+    OTF2_IoCreationFlag creation_flags = OTF2_IO_CREATION_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepCreationFlag & SCOREP_IO_CREATION_FLAG_ ## name ) \
+        { \
+            creation_flags     |= OTF2_IO_CREATION_FLAG_ ## name; \
+            scorepCreationFlag &= ~SCOREP_IO_CREATION_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( CREATE );
+    if_flag( TRUNCATE );
+    if_flag( DIRECTORY );
+    if_flag( EXCLUSIVE );
+    if_flag( NO_CONTROLLING_TERMINAL );
+    if_flag( NO_FOLLOW );
+    if_flag( PATH );
+    if_flag( TEMPORARY_FILE );
+    if_flag( LARGEFILE );
+    if_flag( NO_SEEK );
+    if_flag( UNIQUE );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepCreationFlag != SCOREP_IO_CREATION_FLAG_NONE,
+                  "Unhandled I/O creation flag" );
+
+    return creation_flags;
+}
+
+static inline OTF2_IoStatusFlag
+scorep_tracing_io_status_flags_to_otf2( SCOREP_IoStatusFlag scorepStatusFlag )
+{
+    OTF2_IoStatusFlag status_flags = OTF2_IO_STATUS_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepStatusFlag & SCOREP_IO_STATUS_FLAG_ ## name ) \
+        { \
+            status_flags     |= OTF2_IO_STATUS_FLAG_ ## name; \
+            scorepStatusFlag &= ~SCOREP_IO_STATUS_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( CLOSE_ON_EXEC );
+    if_flag( APPEND );
+    if_flag( NON_BLOCKING );
+    if_flag( ASYNC );
+    if_flag( SYNC );
+    if_flag( DATA_SYNC );
+    if_flag( AVOID_CACHING );
+    if_flag( NO_ACCESS_TIME );
+    if_flag( DELETE_ON_CLOSE );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepStatusFlag != SCOREP_IO_STATUS_FLAG_NONE,
+                  "Unhandled I/O status flag" );
+
+    return status_flags;
+}
+
+static inline OTF2_IoOperationFlag
+scorep_tracing_io_operation_flag_to_otf2( SCOREP_IoOperationFlag scorepOperationFlag )
+{
+    OTF2_IoOperationFlag operation_flags = OTF2_IO_OPERATION_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepOperationFlag & SCOREP_IO_OPERATION_FLAG_ ## name ) \
+        { \
+            operation_flags     |= OTF2_IO_OPERATION_FLAG_ ## name; \
+            scorepOperationFlag &= ~SCOREP_IO_OPERATION_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( NON_BLOCKING );
+    if_flag( COLLECTIVE );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepOperationFlag != SCOREP_IO_OPERATION_FLAG_NONE,
+                  "Unhandled I/O operation flag" );
+
+    return operation_flags;
+}
+
+static inline OTF2_IoSeekOption
+scorep_tracing_io_seek_option_to_otf2( SCOREP_IoSeekOption option )
+{
+    switch ( option )
+    {
+#define case_return( OPTION ) \
+    case SCOREP_IO_SEEK_ ## OPTION: \
+        return OTF2_IO_SEEK_ ## OPTION
+
+        case_return( FROM_START );
+        case_return( FROM_CURRENT );
+        case_return( FROM_END );
+        case_return( DATA );
+        case_return( HOLE );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid I/O seek option: %u", option );
     }
 
     return OTF2_UNDEFINED_TYPE;

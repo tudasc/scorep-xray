@@ -51,6 +51,7 @@ scorep_backend_info_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_DEFINITIONS) \
     $(UTILS_CPPFLAGS)
 
 scorep_backend_info_LDADD = \

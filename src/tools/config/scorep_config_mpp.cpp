@@ -179,7 +179,9 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
+
     deps.addDependency( "libscorep_adapter_mpi_mgmt", "libscorep_alloc_metric" );
+    deps.addDependency( "libscorep_adapter_mpi_mgmt", "libscorep_adapter_utils" );
 }
 
 void
@@ -196,6 +198,7 @@ SCOREP_Config_MpiMppSystem::addLdFlags( std::string& ldflags,
 void
 SCOREP_Config_MpiMppSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
+    init_structs.push_back( "SCOREP_Subsystem_IoManagement" );
     init_structs.push_back( "SCOREP_Subsystem_MpiAdapter" );
 }
 

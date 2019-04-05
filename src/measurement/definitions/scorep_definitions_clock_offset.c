@@ -87,6 +87,7 @@ SCOREP_AddClockOffset( uint64_t time,
         SCOREP_Memory_AllocForDefinitions( NULL, sizeof( SCOREP_ClockOffset ) );
     SCOREP_ClockOffset* new_clock_offset =
         SCOREP_MEMORY_DEREF_LOCAL( new_handle, SCOREP_ClockOffset* );
+    memset( new_clock_offset, 0, sizeof( *new_clock_offset ) );
     new_clock_offset->next = NULL;
 
     new_clock_offset->time   = time;

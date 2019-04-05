@@ -136,7 +136,8 @@ scorep_profile_task_initialize( void )
                                           SCOREP_METRIC_BASE_DECIMAL,
                                           0,
                                           "",
-                                          SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                          SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                          SCOREP_INVALID_METRIC );
     }
     if ( scorep_profile_migration_win_metric == SCOREP_INVALID_METRIC )
     {
@@ -149,7 +150,8 @@ scorep_profile_task_initialize( void )
                                           SCOREP_METRIC_BASE_DECIMAL,
                                           0,
                                           "",
-                                          SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                          SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                          SCOREP_INVALID_METRIC );
     }
 }
 

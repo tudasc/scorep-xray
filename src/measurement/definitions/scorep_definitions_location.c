@@ -158,6 +158,7 @@ define_location( SCOREP_DefinitionManager* definition_manager,
     size_t payload_offset = SCOREP_Allocator_RoundupToAlignment( sizeof( SCOREP_LocationDef ) );
     new_handle     = SCOREP_Memory_AllocForDefinitions( NULL, payload_offset + sizeOfPayload );
     new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Location );
+    memset( new_definition, 0, payload_offset + sizeOfPayload );
     SCOREP_INIT_DEFINITION_HEADER( new_definition );
 
     /* locations wont be unfied, therefore no hash value needed */

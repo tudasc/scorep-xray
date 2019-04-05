@@ -183,8 +183,9 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, metric );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set_recorder );
-    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_file_group );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_handle );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_file );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_file_property );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, marker_group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, marker );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, parameter );
@@ -212,8 +213,9 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, metric );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set_recorder );
-        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_file_group );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_handle );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_file );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_file_property );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, marker_group );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, marker );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, callpath );
@@ -241,8 +243,9 @@ finalize_definition_manager( SCOREP_DefinitionManager* definitionManager )
     free( definitionManager->metric.hash_table );
     free( definitionManager->sampling_set.hash_table );
     free( definitionManager->sampling_set_recorder.hash_table );
-    free( definitionManager->io_file_group.hash_table );
+    free( definitionManager->io_handle.hash_table );
     free( definitionManager->io_file.hash_table );
+    free( definitionManager->io_file_property.hash_table );
     free( definitionManager->marker_group.hash_table );
     free( definitionManager->marker.hash_table );
     free( definitionManager->parameter.hash_table );

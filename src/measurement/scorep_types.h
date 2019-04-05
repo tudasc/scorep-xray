@@ -81,6 +81,17 @@ scorep_paradigm_property_to_string( SCOREP_ParadigmProperty paradigmProperty );
 
 
 /**
+ * Converts a SCOREP_IoParadigmProperty into a string.
+ *
+ * @param paradigmProperty The I/O paradigm property which should be expressed as a string.
+ *
+ * @return                 A string representation of @a paradigmProperty.
+ */
+extern const char*
+scorep_io_paradigm_property_to_string( SCOREP_IoParadigmProperty paradigmProperty );
+
+
+/**
  * Converts a SCOREP_RegionType into a string.
  *
  * @param regionType    The region type which should be expressed as a string.

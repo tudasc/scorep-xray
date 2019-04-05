@@ -1,0 +1,22 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016-2018,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+
+## file       Makefile.mpi.inc.am
+
+if HAVE_MPI_SUPPORT
+## TODO: do not instrument code with the shell script, it is run in parallel
+##    TESTS_MPI += ./run_io_mpi_test.sh
+endif
+
+EXTRA_DIST += $(SRC_ROOT)test/io/mpi/test_mpi_read_write.c \
+              $(SRC_ROOT)test/io/mpi/run_io_mpi_test.sh.in
+

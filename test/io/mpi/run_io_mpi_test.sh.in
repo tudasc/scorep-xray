@@ -1,0 +1,154 @@
+#!/bin/sh
+
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+
+set -e
+# TODO ${CC-@CC@} ??
+
+SCOREP_BIN="../build-backend/scorep"
+SCOREP_CONFIG_BIN="../build-backend/scorep-config"
+MPICC=$(${SCOREP_CONFIG_BIN} --mpicc)
+
+# Get otf2-print tool
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
+
+# Get SRC_ROOT
+SRC_ROOT="@abs_srcdir@/.."
+
+# Number of processes
+NPROCS=2
+
+# Number of bytes that will be transferred on one I/O operation
+BYTES_PER_IO_OP=128
+
+# Set up directory that will contain experiment results
+RESULT_DIR_PREFIX=$PWD/scorep-test-mpi-io
+
+# Cleans the test space
+cleanup()
+{
+    rm -f test_mpi_read_write
+    rm -rf ${RESULT_DIR_PREFIX}
+}
+
+# Register cleanup on the EXIT signal
+trap cleanup EXIT
+
+# Cleanup on start
+cleanup
+
+# Compiles the MPI I/O tests
+mpi_compile()
+{
+    ${SCOREP_BIN} --build-check \
+        ${MPICC} -std=gnu99\
+        -DNOCROSS_BUILD \
+        -DBACKEND_BUILD_NOMPI \
+        ${SRC_ROOT}/test/io/mpi/test_mpi_read_write.c \
+        -o test_mpi_read_write
+}
+
+# Executes and traces MPI I/O tests
+mpi_run_tracing()
+{
+    SCOREP_ENABLE_PROFILING=false \
+    SCOREP_ENABLE_TRACING=true \
+    SCOREP_EXPERIMENT_DIRECTORY=${RESULT_DIR_PREFIX} \
+        mpiexec -np $NPROCS ./test_mpi_read_write $BYTES_PER_IO_OP
+}
+
+# Find matching ids of a given event $1.
+get_matching_numbers()
+{
+    ids=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | \
+          sed -n "s/.*$1.*Matching Id: \([0-9]\)/\1/p" | uniq)
+
+    echo $ids
+}
+
+# Validates traces
+mpi_validate()
+{
+    # validate create events
+    nevents=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | grep "IO_CREATE_HANDLE.*WRITE_ONLY.*CREAT" | wc -l)
+
+    if [ $nevents -ne $NPROCS ]
+    then
+        echo "Wrong number of I/O-Create-Handle events(creating file)"
+        exit 1
+    fi
+
+    # validate open events(also create events but with no CREAT flag and readonly mode
+    nevents=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | grep "IO_CREATE_HANDLE.*READ_ONLY" | wc -l)
+
+    if [ $nevents -ne $NPROCS ]
+    then
+        echo "Wrong number of I/O-Create-Handle events(opening file)"
+        exit 1
+    fi
+
+    # close events
+    nevents=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | grep "IO_DESTROY_HANDLE" | wc -l)
+
+    if [ $nevents -ne $((NPROCS*2)) ]
+    then
+        echo "Wrong number of I/O-Destroy-Handle events(closing file handle)"
+        exit 1
+    fi
+
+    # validate operation begin events
+    nevents=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | \
+              grep "IO_OPERATION_BEGIN.*Mode: [W|R].*Request: $BYTES_PER_IO_OP" | wc -l)
+
+    if [ $nevents -ne $((NPROCS*2)) ]
+    then
+        echo "Found not the correct OperationBegin events in the trace"
+        exit 1
+    fi
+
+    # Get matching ids from OperationBegin events
+    op_begin_ids=$(get_matching_numbers "IO_OPERATION_BEGIN")
+
+    # validate operation complete events
+    nevents=$($OTF2_PRINT $RESULT_DIR_PREFIX/traces.otf2 | \
+              grep "IO_OPERATION_COMPLETE.*Result: $BYTES_PER_IO_OP" | wc -l)
+
+    if [ $nevents -ne $((NPROCS*2)) ]
+    then
+        echo "Found not the correct OperationComplete events in the trace"
+        exit 1
+    fi
+
+    # Get matching ids from OperationComplete events
+    op_complete_ids=$(get_matching_numbers "IO_OPERATION_COMPLETE")
+
+    # Check whether matching ids are valid
+    for bid in $op_begin_ids
+    do
+        echo $op_complete_ids | grep --quiet $bid
+        if [ $? = 1 ]
+        then
+            printf "Matching id %d: OperationBegin event has no OperationComplete event", bid
+            exit 1
+        fi
+    done
+}
+
+printf "MPI file I/O test: compiling...\n"
+
+mpi_compile
+
+printf "MPI file I/O test: tracing...\n"
+
+mpi_run_tracing
+
+printf "MPI file I/O test: validating...\n"
+
+mpi_validate

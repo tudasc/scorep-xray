@@ -41,6 +41,7 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Types.h>
 #include <UTILS_Error.h>
 
@@ -125,6 +126,48 @@ SCOREP_Platform_GetNodeId( void );
  */
 #define SCOREP_PLATFORM_SYSTEM_TREE_PROPERTY_FORALL( _node, _property ) \
     for ( _property = _node->properties; _property; _property = _property->next )
+
+
+struct SCOREP_MountInfo;
+typedef struct SCOREP_MountInfo SCOREP_MountInfo;
+
+/**
+ * Initializes mount information service and reads the mount table of the system.
+ */
+extern SCOREP_ErrorCode
+SCOREP_Platform_MountInfoInitialize( void );
+
+/**
+ * Finalizes mount information service and destroys internal structures.
+ */
+extern void
+SCOREP_Platform_MountInfoFinalize( void );
+
+/**
+ * Returns an appropriate mount entry for a given file/path.
+ *
+ * @param filename String that contains an absolute path.
+ */
+extern SCOREP_MountInfo*
+SCOREP_Platform_GetMountInfo( const char* filename );
+
+/**
+ * Returns @a SCOREP_SystemTreeNodeHandle that represents the scope of a given mount entry.
+ *
+ * @param mount_entry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
+ */
+extern SCOREP_SystemTreeNodeHandle
+SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mount_entry );
+
+/**
+ * Adds mount information as @a IoFileProperty to a given @a SCOREP_IoFileHandle.
+ *
+ * @param io_file_handle Specifies the @a IoFileHandle where the propertier will be added.
+ * @param mount_entry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
+ */
+extern void
+SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle,
+                                        SCOREP_MountInfo*   mount_entry );
 
 UTILS_END_C_DECLS
 

@@ -69,6 +69,8 @@ SCOREP::Wrapgen::MPIFunc::MPIFunc( const string&      rtype,
 {
     set_family( "mpi" );
     set_attribute( "kind", "NONE" );
+    set_attribute( "operation_type", "" );
+    set_attribute( "collective_type", "" );
 };
 
 string

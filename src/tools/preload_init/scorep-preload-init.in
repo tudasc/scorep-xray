@@ -60,6 +60,9 @@ Options
   - \`--value-only\`      Outputs only the value of \`LD_PRELOAD\` to standard out.
   - \`--\`                Stop parsing arguments for \`scorep-config\`.
 
+See \`scorep-config --help\` for all options. Though not all are supported for
+preloading.
+
 Description
 ===========
 
@@ -121,12 +124,6 @@ do
     (--mpp=*)
         MPP=${1#--mpp=}
     ;;
-    (--opencl|--opencl:runtime)
-        SCOREP_CONFIG="${SCOREP_CONFIG} --opencl:runtime"
-    ;;
-    (--opencl:linktime)
-        die "linktime wrap mode does not work when preloading: '%s'" "${1}"
-    ;;
     (--libwrap=*)
         libwrap=${1#--libwrap=}
         case ${libwrap} in
@@ -168,6 +165,21 @@ do
             IFS=${save0_IFS}
         ;;
         esac
+    ;;
+    (--io=*)
+        io=${1#--io=}
+        case ${io} in
+        (runtime:*)
+            : already with runtime wrap mode prefix
+        ;;
+        (linktime:*)
+            die "linktime wrap mode does not work when preloading: '%s'" "${1}"
+        ;;
+        (*)
+            io="runtime:${io}"
+        ;;
+        esac
+        SCOREP_CONFIG="${SCOREP_CONFIG} --io=${io}"
     ;;
     (--compiler|--user|--pomp|--thread=*|--thread|--mutex=*|--mutex|--memory|--memory=*)
         warn "option not suitable for uninstrumented applications: '%s'" "${1}"

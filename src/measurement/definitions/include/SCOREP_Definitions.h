@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2016, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -84,6 +84,7 @@ struct SCOREP_Allocator_PageManager;
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /**
@@ -278,6 +279,7 @@ scorep_definitions_manager_entry_alloc_mapping( scorep_definitions_manager_entry
     {
         entry->mapping = malloc( entry->counter * sizeof( *entry->mapping ) );
         UTILS_BUG_ON( entry->mapping == 0, "Allocation failed." );
+        memset( entry->mapping, 0xff, entry->counter * sizeof( *entry->mapping ) );
     }
 }
 
@@ -314,8 +316,10 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
 #include "scorep_definitions_property.h"
 #include "scorep_definitions_rma_window.h"
 #include "scorep_definitions_topology.h"
-#include "scorep_definitions_io_file_group.h"
+#include "scorep_definitions_io_handle.h"
 #include "scorep_definitions_io_file.h"
+#include "scorep_definitions_io_file_property.h"
+#include "scorep_definitions_io_paradigm.h"
 #include "scorep_definitions_marker_group.h"
 #include "scorep_definitions_marker.h"
 #include "scorep_definitions_attribute.h"
@@ -353,7 +357,9 @@ SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle );
     DEF_WITH_MAPPING( SourceCodeLocation, source_code_location ) \
     DEF_WITH_MAPPING( CallingContext, calling_context ) \
     DEF_WITH_MAPPING( InterruptGenerator, interrupt_generator ) \
-    DEF_WITH_MAPPING( CartesianTopology, cartesian_topology )
+    DEF_WITH_MAPPING( CartesianTopology, cartesian_topology ) \
+    DEF_WITH_MAPPING( IoFile, io_file ) \
+    DEF_WITH_MAPPING( IoHandle, io_handle )
 
 
 /**
@@ -388,8 +394,9 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( metric );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set_recorder );
-    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file_group );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_handle );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file_property );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( marker_group );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( marker );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( parameter );

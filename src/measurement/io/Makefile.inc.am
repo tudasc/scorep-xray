@@ -1,0 +1,37 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2015,
+## Technische Universitaet Muenchen, Germany
+##
+## Copyright (c) 2017,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/measurement/io/Makefile.inc.am
+
+noinst_LTLIBRARIES += libscorep_io_management.la
+
+libscorep_io_management_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/io/scorep_io_management.c
+
+libscorep_io_management_la_CPPFLAGS =    \
+    $(AM_CPPFLAGS)                       \
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_DEFINITIONS)             \
+    -I$(INC_DIR_SUBSTRATES)              \
+    -I$(INC_DIR_MUTEX)                   \
+    -I$(INC_ROOT)src/measurement         \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/services/include    \
+    -I$(INC_DIR_COMMON_HASH)             \
+    $(UTILS_CPPFLAGS)

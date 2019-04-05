@@ -26,6 +26,7 @@
 #include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter.hpp"
+#include <scorep_tools_utils.hpp>
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_shmem.h>
@@ -104,17 +105,23 @@ SCOREP_Instrumenter_Paradigm::printHelp( void )
 
     if ( !m_unsupported )
     {
-        std::cout << "              " << getConfigName() << std::endl;
-        std::cout << space << m_description << "\n";
+        std::cout << "              " << getName() << "\n";
+        std::cout << wrap_lines( m_description, 18, 18 ) << "\n";
 
-        SCOREP_Instrumenter_Adapter::printDepList( m_requires,
-                                                   space + "It requires and, thus, automatically enables " );
-        SCOREP_Instrumenter_Adapter::printDepList( m_conflicts,
-                                                   space + "It conflicts and, thus, automatically disables " );
-        SCOREP_Instrumenter_Adapter::printDepList( m_default_on,
-                                                   space + "By default, it enables also " );
-        SCOREP_Instrumenter_Adapter::printDepList( m_default_off,
-                                                   space + "By default, it disables " );
+        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                     m_requires, "It requires and, thus, "
+                                     "automatically enables" ),
+                                 18, 18 );
+        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                     m_conflicts, "It conflicts and, thus, "
+                                     "automatically disables" ),
+                                 18, 18 );
+        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                     m_default_on, "By default, it enables also" ),
+                                 18, 18 );
+        std::cout << wrap_lines( SCOREP_Instrumenter_Adapter::getDepList(
+                                     m_default_off, "By default, it disables" ),
+                                 18, 18 );
     }
 }
 
@@ -123,17 +130,17 @@ SCOREP_Instrumenter_Paradigm::checkOption( const std::string& arg )
 {
     if ( isSupported() )
     {
-        if ( ( arg == getConfigName() ) || ( arg == m_name ) )
+        if ( ( arg == getName() ) || ( arg == m_name ) )
         {
             return true;
         }
         return false;
     }
-    else if ( arg == getConfigName() )
+    else if ( arg == getName() )
     {
         // If the user specified this particular variant we can say it is not supported.
         // Otherwise another variant exists that support the paradigm.
-        std::cerr << "[Score-P] ERROR: '" << getConfigName() << "' is not supported by "
+        std::cerr << "[Score-P] ERROR: '" << getName() << "' is not supported by "
                   << "this Score-P installation" << std::endl;
         exit( EXIT_FAILURE );
     }
@@ -142,6 +149,12 @@ SCOREP_Instrumenter_Paradigm::checkOption( const std::string& arg )
 
 std::string
 SCOREP_Instrumenter_Paradigm::getConfigName( void )
+{
+    return getName();
+}
+
+std::string
+SCOREP_Instrumenter_Paradigm::getName( void )
 {
     return m_variant == "" ? m_name : m_name + ":" + m_variant;
 }

@@ -623,6 +623,13 @@ write_metric_definitions( cube_t*                       myCube,
         metric_description = SCOREP_UNIFIED_HANDLE_DEREF( definition->description_handle,
                                                           String )->string_data;
 
+        cube_metric*        parent_handle = NULL;
+        SCOREP_MetricHandle parent        = definition->parent_handle;
+        if ( definition->parent_handle != SCOREP_INVALID_METRIC )
+        {
+            parent_handle = scorep_get_cube4_metric( map, parent );
+        }
+
         free_unit = false;
         if ( definition->exponent != 0 )
         {
@@ -704,9 +711,22 @@ write_metric_definitions( cube_t*                       myCube,
         if ( ( definition->source_type != SCOREP_METRIC_SOURCE_TYPE_TASK ) ||
              ( layout->metric_list & SCOREP_CUBE_METRIC_TASK_METRICS ) )
         {
-            cube_handle = cube_def_met( myCube, metric_name, metric_name, data_type,
-                                        metric_unit, "", "", metric_description, NULL,
+            char* uniq_name = metric_name;
+            if ( parent_handle )
+            {
+                const char* parent_uniq_name = cube_metric_get_uniq_name( parent_handle );
+                size_t      len              = strlen( parent_uniq_name ) + 2 + strlen( metric_name ) + 1;
+                uniq_name = calloc( len + 1, 1 );
+                snprintf( uniq_name, len, "%s::%s", parent_uniq_name, metric_name );
+            }
+            cube_handle = cube_def_met( myCube, metric_name, uniq_name, data_type,
+                                        metric_unit, "", "", metric_description,
+                                        parent_handle,
                                         cube_metric_type );
+            if ( uniq_name != metric_name )
+            {
+                free( uniq_name );
+            }
 
             add_metric_mapping( map, cube_handle, handle );
         }

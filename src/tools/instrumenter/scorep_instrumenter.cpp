@@ -56,6 +56,7 @@
 #include "scorep_instrumenter_compiler.hpp"
 #include "scorep_instrumenter_cuda.hpp"
 #include "scorep_instrumenter_mpp.hpp"
+#include "scorep_instrumenter_io.hpp"
 #include "scorep_instrumenter_online_access.hpp"
 #include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_preprocess.hpp"
@@ -117,6 +118,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     /* Create paradigm groups */
     m_thread = new SCOREP_Instrumenter_Thread();
     m_mpp    = new SCOREP_Instrumenter_Mpp();
+    m_io     = new SCOREP_Instrumenter_Io();
 
     /* Create mutex selector*/
     m_mutex = new SCOREP_Instrumenter_Mutex();
@@ -642,10 +644,14 @@ SCOREP_Instrumenter::link_step( void )
 #endif
     command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
+#if HAVE( LINKER_START_END_GROUP )
+    command << libs_prefix << " -Wl,-start-group `" << m_config_base << " --event-libs`";
+    command << " " << m_command_line.getFlagsAfterInterpositionLib() << " -Wl,-end-group " << libs_suffix;
+#else
     command << libs_prefix << " `" << m_config_base << " --event-libs`" << libs_suffix;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();
+#endif
     command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << libs_suffix;
-
     if ( m_command_line.getOutputName() != "" )
     {
         /* nvcc requires a space between -o and the output name. */

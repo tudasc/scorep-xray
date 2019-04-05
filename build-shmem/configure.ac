@@ -193,6 +193,7 @@ SCOREP_SAMPLING
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 SCOREP_OPENCL
+SCOREP_IO_RECORDING
 
 ## Configure internal/external libraries
 scorep_otf2_config_backend_arg=
@@ -222,6 +223,7 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_CRAY_PMI
+SCOREP_MNTENT_CHECK
 
 # On crosscompile machines, install backend/mic stuff into
 # $(bin|lid)dir/(backend|mic).

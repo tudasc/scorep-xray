@@ -147,7 +147,8 @@ SCOREP_Profile_InitializeMpp( void )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     scorep_bytes_recv_metric =
         SCOREP_Definitions_NewMetric( "bytes_received",
@@ -158,7 +159,8 @@ SCOREP_Profile_InitializeMpp( void )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 }
 
 void
@@ -333,7 +335,8 @@ scorep_profile_init_rma( void )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     scorep_bytes_get_metric =
         SCOREP_Definitions_NewMetric( "bytes_get",
@@ -344,7 +347,8 @@ scorep_profile_init_rma( void )
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
                                       "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                      SCOREP_INVALID_METRIC );
 
     scorep_sync_type_param =
         SCOREP_Definitions_NewParameter( "synchronization type",

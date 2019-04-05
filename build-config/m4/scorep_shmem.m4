@@ -221,28 +221,7 @@ AS_IF([test "x${scorep_shmem_has_pshmem_functions}" = "xyes"],
 
 dnl ----------------------------------------------------------------------------
 
-## _SCOREP_SHMEM_CHECK_SYMBOL( SYMBOL,
-##                             [ACTION-IF-FOUND],
-##                             [ACTION-IF-NOT-FOUND] )
-AC_DEFUN([_SCOREP_SHMEM_CHECK_SYMBOL], [
-AC_MSG_CHECKING([for $1 in SHMEM])
-scorep_shmem_check_symbol_name=$1
-AC_LINK_IFELSE([AC_LANG_CALL([], [$1])],
-               [AC_MSG_RESULT([yes])
-               AC_DEFINE_UNQUOTED(AS_TR_CPP([HAVE_SHMEM_SYMBOL_]$1), [1],
-                                  [Define to 1 if SHMEM has the $1 symbol, 0 if not.])
-               $2],
-               [AC_MSG_RESULT([no])
-               AC_DEFINE_UNQUOTED(AS_TR_CPP([HAVE_SHMEM_SYMBOL_]$1), [0],
-                                  [Define to 1 if SHMEM has the $1 symbol, 0 if not])
-               $3])
-])
-
-dnl ----------------------------------------------------------------------------
-
-## _SCOREP_SHMEM_CHECK_SYMBOLS(PREFIX )
-##                             [PER-SYMBOL-ACTION-IF-FOUND],
-##                             [PER-SYMBOL-ACTION-IF-NOT-FOUND] )
+## _SCOREP_SHMEM_CHECK_SYMBOLS( PREFIX, FOUND-SYMBOL-VARIABLE )
 AC_DEFUN([_SCOREP_SHMEM_CHECK_SYMBOLS], [
 
 ## == currently unsupported SHMEM symbols ==
@@ -334,7 +313,7 @@ AC_DEFUN([_SCOREP_SHMEM_CHECK_SYMBOLS], [
 ##           shmem_stack,
 ##
 
-m4_foreach([func],
+SCOREP_CHECK_SYMBOLS([SHMEM], $1, $2,
            [my_pe,
            _my_pe,
            num_pes,
@@ -529,9 +508,7 @@ m4_foreach([func],
            shmem_wait_event,
            shmem_wait_until,
            shrealloc,
-           start_pes],
-        [_SCOREP_SHMEM_CHECK_SYMBOL($1[]func, $2, $3)])
-
+           start_pes])
 ])
 
 dnl ----------------------------------------------------------------------------
@@ -550,8 +527,7 @@ dnl p symbols or the normal symbols
 AS_IF([test "x${scorep_shmem_has_pshmem_functions}" = "xyes"],
       [_SCOREP_SHMEM_CHECK_SYMBOLS([p])],
       [scorep_shmem_wrap_symbols=""
-       _SCOREP_SHMEM_CHECK_SYMBOLS([],
-        [AS_VAR_APPEND([scorep_shmem_wrap_symbols], [" $scorep_shmem_check_symbol_name"])])
+       _SCOREP_SHMEM_CHECK_SYMBOLS([], [scorep_shmem_wrap_symbols])
        dnl Always ensure to wrap shmem_finalize, if absent from the SHMEM implementation.
        dnl Score-P always provide one.
        AS_CASE([" ${scorep_shmem_wrap_symbols} "],

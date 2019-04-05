@@ -286,8 +286,6 @@ typedef enum SCOREP_ParadigmClass
  * \enum SCOREP_ParadigmType
  * \brief defines paradigms that are be monitored
  *
- * ! Keep MPI first after the non-parallel paradigms
- *
  * Types:
  * - SCOREP_PARADIGM_MEASUREMENT refers to Score-P internals
  * - SCOREP_PARADIGM_USER refers to user instrumentation
@@ -303,6 +301,7 @@ typedef enum SCOREP_ParadigmClass
  * - SCOREP_PARADIGM_CUDA refers to CUDA instrumentation
  * - SCOREP_PARADIGM_OPENCL refers to OpenCL instrumentation
  * - SCOREP_PARADIGM_OPENACC refers to OpenACC instrumentation
+ * - SCOREP_PARADIGM_IO refers to I/O instrumentation
  * - SCOREP_INVALID_PARADIGM_TYPE for internal use only
  */
 #define SCOREP_PARADIGMS \
@@ -319,7 +318,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( ORPHAN_THREAD,      "orphan thread",      UNKNOWN ) \
     SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
     SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
-    SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC )
+    SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC ) \
+    SCOREP_PARADIGM( IO,                 "io",                 NONE )
 
 
 typedef enum SCOREP_ParadigmType
@@ -404,6 +404,8 @@ typedef enum SCOREP_ParameterType
  * - SCOREP_REGION_ALLOCATE Represents a region where memory is allocated, e.g., MPI_Alloc_mem
  * - SCOREP_REGION_DEALLOCATE Represents a region where memory is deallocated
  * - SCOREP_REGION_REALLOCATE Represents a region where memory is reallocated
+ * - SCOREP_REGION_FILE_IO Represents an I/O data operation region
+ * - SCOREP_REGION_FILE_IO_METADATA Represents an I/O metadata operation region (e.g., seek)
  */
 #define SCOREP_REGION_TYPES \
     SCOREP_REGION_TYPE( COLL_ONE2ALL, "one2all" ) \
@@ -437,7 +439,9 @@ typedef enum SCOREP_ParameterType
     SCOREP_REGION_TYPE( THREAD_WAIT,  "thread wait" ) \
     SCOREP_REGION_TYPE( ALLOCATE,     "allocate" ) \
     SCOREP_REGION_TYPE( DEALLOCATE,   "deallocate" ) \
-    SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" )
+    SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" ) \
+    SCOREP_REGION_TYPE( FILE_IO,      "file_io" ) \
+    SCOREP_REGION_TYPE( FILE_IO_METADATA,  "file_io metadata" )
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \
@@ -605,6 +609,170 @@ typedef enum SCOREP_MetricOccurrence
 
     SCOREP_INVALID_METRIC_OCCURRENCE /**< For internal use only. */
 } SCOREP_MetricOccurrence;
+
+#define SCOREP_IO_PARADIGMS \
+    SCOREP_IO_PARADIGM( POSIX,           posix,           "POSIX" ) \
+    SCOREP_IO_PARADIGM( ISOC,            isoc,            "ISOC" ) \
+    SCOREP_IO_PARADIGM( MPI,             mpi,             "MPI-IO" )
+
+/**
+ * I/O paradigm types.
+ */
+typedef enum SCOREP_IoParadigmType
+{
+#define SCOREP_IO_PARADIGM( upper, lower, id_name ) SCOREP_IO_PARADIGM_ ## upper,
+    SCOREP_IO_PARADIGMS
+    #undef SCOREP_IO_PARADIGM
+    SCOREP_INVALID_IO_PARADIGM_TYPE
+} SCOREP_IoParadigmType;
+
+/* The compile time static number of known parallel paradigms */
+#define SCOREP_NUM_IO_PARADIGMS SCOREP_INVALID_IO_PARADIGM_TYPE
+
+/**
+ * Access mode of an I/O handle in subsequent I/O operations.
+ */
+typedef enum SCOREP_IoAccessMode
+{
+    /** @brief Unspecified access mode. */
+    SCOREP_IO_ACCESS_MODE_NONE = 0,
+    /** @brief Read-only access. */
+    SCOREP_IO_ACCESS_MODE_READ_ONLY,
+    /** @brief Write-only access. */
+    SCOREP_IO_ACCESS_MODE_WRITE_ONLY,
+    /** @brief Read-write access. */
+    SCOREP_IO_ACCESS_MODE_READ_WRITE,
+    /** @brief Execute-only access. */
+    SCOREP_IO_ACCESS_MODE_EXECUTE_ONLY,
+    /** @brief Search-only access. */
+    SCOREP_IO_ACCESS_MODE_SEARCH_ONLY,
+} SCOREP_IoAccessMode;
+
+/**
+ * Additional flags specified while creation of an I/O handle.
+ */
+typedef enum SCOREP_IoCreationFlag
+{
+    /** @brief No flag is set. */
+    SCOREP_IO_CREATION_FLAG_NONE                    = 0,
+    /** @brief If the file does not exist, it will be created. */
+    SCOREP_IO_CREATION_FLAG_CREATE                  = ( 1 << 0 ),
+    /** @brief Truncate file to length 0 if possible. */
+    SCOREP_IO_CREATION_FLAG_TRUNCATE                = ( 1 << 1 ),
+    /** @brief Open operation will fail if pathname is not a directory. */
+    SCOREP_IO_CREATION_FLAG_DIRECTORY               = ( 1 << 2 ),
+    /** @brief Ensure that this call creates the file. */
+    SCOREP_IO_CREATION_FLAG_EXCLUSIVE               = ( 1 << 3 ),
+    /** @brief File is a terminal device and should not be promoted
+     *  to a controlling terminal, if none existed before. */
+    SCOREP_IO_CREATION_FLAG_NO_CONTROLLING_TERMINAL = ( 1 << 4 ),
+    /** @brief If pathname is a symbolic link, then the open operation will fail. */
+    SCOREP_IO_CREATION_FLAG_NO_FOLLOW               = ( 1 << 5 ),
+    /** @brief File is only a location in the filesystem tree and
+     *  is not suitable for reading and writing */
+    SCOREP_IO_CREATION_FLAG_PATH                    = ( 1 << 6 ),
+    /** @brief Create an unnamed temporary file. */
+    SCOREP_IO_CREATION_FLAG_TEMPORARY_FILE          = ( 1 << 7 ),
+    /** @brief Ensure that the file size can be represented by a 64-bit datatype. */
+    SCOREP_IO_CREATION_FLAG_LARGEFILE               = ( 1 << 8 ),
+    /** @brief Gives the advice that no reposition will happen on this I/O handle.
+     *  E.g., no seek operation or similar, only sequential read or
+     *  write operations. */
+    SCOREP_IO_CREATION_FLAG_NO_SEEK                 = ( 1 << 9 ),
+    /** @brief Gives the advice that this will be the only @emph{active}
+     *  @eref{IoHandle} of the @eref{IoParadigmType} which will operate on
+     *  the referenced @eref{IoFile} at any time. E.g., no other
+     *  @eref{IoHandle} of the same @eref{IoParadigmType} and the same
+     *  @eref{IoFile} will be @emph{active}. */
+    SCOREP_IO_CREATION_FLAG_UNIQUE                  = ( 1 << 10 )
+} SCOREP_IoCreationFlag;
+
+/**
+ * Additional status flags of an I/O handle. Status flags can be set
+ * when an I/O handle is created and changed during its lifetime.
+ */
+typedef enum SCOREP_IoStatusFlag
+{
+    /** @brief  No flag is set. */
+    SCOREP_IO_STATUS_FLAG_NONE            = 0,
+    /** @brief Enable close-on-exec flag. */
+    SCOREP_IO_STATUS_FLAG_CLOSE_ON_EXEC   = ( 1 << 0 ),
+    /** @brief Open file in append mode which means I/O write operations
+     *  are automatically performed at the end of the file.  */
+    SCOREP_IO_STATUS_FLAG_APPEND          = ( 1 << 1 ),
+    /** @brief I/O operations (including the creation) will fail if they
+     *  would block the issuing process. */
+    SCOREP_IO_STATUS_FLAG_NON_BLOCKING    = ( 1 << 2 ),
+    /** @brief  Enable signal-driven I/O. */
+    SCOREP_IO_STATUS_FLAG_ASYNC           = ( 1 << 3 ),
+    /** @brief Write operations on the file will complete according to the
+     *  requirements of synchronized I/O file integrity completion
+     *  (data and metadata) */
+    SCOREP_IO_STATUS_FLAG_SYNC            = ( 1 << 4 ),
+    /** @brief Write operations on the file will complete according to the
+     *  requirements of synchronized I/O data integrity completion. */
+    SCOREP_IO_STATUS_FLAG_DATA_SYNC       = ( 1 << 5 ),
+    /** @brief Instruct I/O operations to reduce caching effects,
+     *  e.g., direct file I/O. */
+    SCOREP_IO_STATUS_FLAG_AVOID_CACHING   = ( 1 << 6 ),
+    /** @brief Read access to a file won't update its last access time. */
+    SCOREP_IO_STATUS_FLAG_NO_ACCESS_TIME  = ( 1 << 7 ),
+    /** @brief Delete the file when closing the @eref{IoHandle}. */
+    SCOREP_IO_STATUS_FLAG_DELETE_ON_CLOSE = ( 1 << 8 )
+} SCOREP_IoStatusFlag;
+
+/**
+ * Options for repositioning a file offset with file seek operations.
+ */
+typedef enum SCOREP_IoSeekOption
+{
+    /** The offset is set to offset bytes. */
+    SCOREP_IO_SEEK_FROM_START = 0,
+    /** The offset is set to its current location plus offset bytes. */
+    SCOREP_IO_SEEK_FROM_CURRENT,
+    /** The offset is set to the size of the file plus offset bytes. */
+    SCOREP_IO_SEEK_FROM_END,
+    /** The offset is set to the next location in the file greater than or equal to offset containing data. */
+    SCOREP_IO_SEEK_DATA,
+    /** The offset is set to the next hole in the file greater than or equal to offset. */
+    SCOREP_IO_SEEK_HOLE,
+
+    SCOREP_IO_SEEK_INVALID /**< NON-ABI, for internal use only. */
+} SCOREP_IoSeekOption;
+
+/**
+ * Mode of an I/O operation.
+ */
+typedef enum SCOREP_IoOperationMode
+{
+    /** @brief Read operation. */
+    SCOREP_IO_OPERATION_MODE_READ = 0,
+    /** @brief Write operation. */
+    SCOREP_IO_OPERATION_MODE_WRITE,
+    /** @brief Synchronization/flush operation (request and completion). */
+    SCOREP_IO_OPERATION_MODE_FLUSH
+} SCOREP_IoOperationMode;
+
+/**
+ * Flags for I/O operations to indicate specific semantics of the operation.
+ * Per default any I/O operation is assumed as blocking and non-collective.
+ * You can set appropriate flag bits to indicate a deviation from this
+ * default semantic.
+ */
+typedef enum SCOREP_IoOperationFlag
+{
+    /** @brief No special semantics. */
+    SCOREP_IO_OPERATION_FLAG_NONE           = 0,
+    /** @brief The I/O operation was performed in a blocking mode (default). */
+    SCOREP_IO_OPERATION_FLAG_BLOCKING       = 0,
+    /** @brief The I/O operation was performed in a non-blocking mode. */
+    SCOREP_IO_OPERATION_FLAG_NON_BLOCKING   = ( 1 << 0 ),
+    /** @brief The I/O operation was performed collectively over
+     *  the communicator of the referenced @eref{IoHandle} handle. */
+    SCOREP_IO_OPERATION_FLAG_COLLECTIVE     = ( 1 << 1 ),
+    /** @brief The I/O operation was performed in a non-collective mode. (default) */
+    SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE = 0
+} SCOREP_IoOperationFlag;
 
 
 /**

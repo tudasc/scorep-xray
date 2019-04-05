@@ -293,10 +293,11 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
                                                         SCOREP_PARADIGM_MPI,
                                                         sizeof( *comm_payload ),
                                                         ( void** )&comm_payload );
-    comm_payload->comm_size        = size;
-    comm_payload->local_rank       = local_rank;
-    comm_payload->global_root_rank = root;
-    comm_payload->root_id          = id;
+    comm_payload->comm_size         = size;
+    comm_payload->local_rank        = local_rank;
+    comm_payload->global_root_rank  = root;
+    comm_payload->root_id           = id;
+    comm_payload->io_handle_counter = 0;
 
     /* enter comm in scorep_mpi_comms[] array */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
@@ -423,10 +424,11 @@ scorep_mpi_setup_world( void )
                                                    SCOREP_PARADIGM_MPI,
                                                    sizeof( *comm_payload ),
                                                    ( void** )&comm_payload );
-    comm_payload->comm_size        = scorep_mpi_world.size;
-    comm_payload->local_rank       = scorep_mpi_my_global_rank;
-    comm_payload->global_root_rank = 0;
-    comm_payload->root_id          = 0;
+    comm_payload->comm_size         = scorep_mpi_world.size;
+    comm_payload->local_rank        = scorep_mpi_my_global_rank;
+    comm_payload->global_root_rank  = 0;
+    comm_payload->root_id           = 0;
+    comm_payload->io_handle_counter = 0;
 
     if ( scorep_mpi_my_global_rank == 0 )
     {

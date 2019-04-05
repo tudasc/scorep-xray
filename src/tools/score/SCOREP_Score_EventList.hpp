@@ -351,6 +351,136 @@
 #define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_END \
     SCOREP_SCORE_EVENT( "pthread_create" )
 
+#define SCOREP_SCORE_EVENT_IO_CREATE \
+    SCOREP_SCORE_EVENT( "MPI_File_open" ) \
+    SCOREP_SCORE_EVENT( "creat" ) \
+    SCOREP_SCORE_EVENT( "creat64" ) \
+    SCOREP_SCORE_EVENT( "open" ) \
+    SCOREP_SCORE_EVENT( "open64" ) \
+    SCOREP_SCORE_EVENT( "openat" ) \
+    SCOREP_SCORE_EVENT( "fdopen" ) \
+    SCOREP_SCORE_EVENT( "fopen" ) \
+    SCOREP_SCORE_EVENT( "fopen64" ) \
+    SCOREP_SCORE_EVENT( "freopen" )
+
+#define SCOREP_SCORE_EVENT_IO_DELETE \
+    SCOREP_SCORE_EVENT( "MPI_File_close" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_delete" ) \
+    SCOREP_SCORE_EVENT( "unlink" ) \
+    SCOREP_SCORE_EVENT( "unlinkat" )
+
+#define SCOREP_SCORE_EVENT_IO_SEEK \
+    SCOREP_SCORE_EVENT( "MPI_File_seek" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_seek_shared" ) \
+    SCOREP_SCORE_EVENT( "lseek" ) \
+    SCOREP_SCORE_EVENT( "lseek64" ) \
+    SCOREP_SCORE_EVENT( "fseek" ) \
+    SCOREP_SCORE_EVENT( "fseeko" ) \
+    SCOREP_SCORE_EVENT( "fseeko64" ) \
+    SCOREP_SCORE_EVENT( "fsetpos" ) \
+    SCOREP_SCORE_EVENT( "rewind" )
+
+#define SCOREP_SCORE_EVENT_IO_BLOCKING_TRANSFER \
+    SCOREP_SCORE_EVENT( "MPI_File_read" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_at" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_at_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_ordered" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_shared" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_at" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_at_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_ordered" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_shared" ) \
+    SCOREP_SCORE_EVENT( "fdatasync" ) \
+    SCOREP_SCORE_EVENT( "fsync" ) \
+    SCOREP_SCORE_EVENT( "pread" ) \
+    SCOREP_SCORE_EVENT( "pread64" ) \
+    SCOREP_SCORE_EVENT( "pwrite" ) \
+    SCOREP_SCORE_EVENT( "pwrite64" ) \
+    SCOREP_SCORE_EVENT( "read" ) \
+    SCOREP_SCORE_EVENT( "syncfs" ) \
+    SCOREP_SCORE_EVENT( "write" ) \
+    SCOREP_SCORE_EVENT( "preadv" ) \
+    SCOREP_SCORE_EVENT( "pwritev" ) \
+    SCOREP_SCORE_EVENT( "readv" ) \
+    SCOREP_SCORE_EVENT( "writev" ) \
+    SCOREP_SCORE_EVENT( "lio_listio" ) \
+    SCOREP_SCORE_EVENT( "fflush" ) \
+    SCOREP_SCORE_EVENT( "fgetc" ) \
+    SCOREP_SCORE_EVENT( "fgets" ) \
+    SCOREP_SCORE_EVENT( "fputc" ) \
+    SCOREP_SCORE_EVENT( "fprintf" ) \
+    SCOREP_SCORE_EVENT( "fputs" ) \
+    SCOREP_SCORE_EVENT( "fread" ) \
+    SCOREP_SCORE_EVENT( "fscanf" ) \
+    SCOREP_SCORE_EVENT( "fwrite" ) \
+    SCOREP_SCORE_EVENT( "getc" ) \
+    SCOREP_SCORE_EVENT( "getchar" ) \
+    SCOREP_SCORE_EVENT( "gets" ) \
+    SCOREP_SCORE_EVENT( "printf" ) \
+    SCOREP_SCORE_EVENT( "putchar" ) \
+    SCOREP_SCORE_EVENT( "puts" ) \
+    SCOREP_SCORE_EVENT( "scanf" ) \
+    SCOREP_SCORE_EVENT( "vfprintf" ) \
+    SCOREP_SCORE_EVENT( "vfscanf" ) \
+    SCOREP_SCORE_EVENT( "vscanf" ) \
+    SCOREP_SCORE_EVENT( "vprintf" )
+
+#define SCOREP_SCORE_EVENT_IO_NONBLOCKING_TRANSFER_BEGIN \
+    SCOREP_SCORE_EVENT( "MPI_File_iread" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iread_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iread_at" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iread_at_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iread_shared" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iwrite" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iwrite_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iwrite_at" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iwrite_at_all" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_iwrite_shared" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_all_begin" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_at_all_begin" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_ordered_begin" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_all_begin" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_at_all_begin" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_ordered_begin" ) \
+    SCOREP_SCORE_EVENT( "aio_read" ) \
+    SCOREP_SCORE_EVENT( "aio_write" )
+
+#define SCOREP_SCORE_EVENT_IO_NONBLOCKING_TRANSFER_END \
+    SCOREP_SCORE_EVENT( "MPI_File_read_all_end" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_at_all_end" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_read_ordered_end" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_all_end" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_at_all_end" ) \
+    SCOREP_SCORE_EVENT( "MPI_File_write_ordered_end" ) \
+    SCOREP_SCORE_EVENT( "sync" ) \
+    SCOREP_SCORE_EVENT( "aio_error" ) \
+    SCOREP_SCORE_EVENT( "aio_return" )
+
+#define SCOREP_SCORE_EVENT_IO_CLOSE \
+    SCOREP_SCORE_EVENT( "close" ) \
+    SCOREP_SCORE_EVENT( "closedir" ) \
+    SCOREP_SCORE_EVENT( "fclose" )
+
+#define SCOREP_SCORE_EVENT_IO_DUPLICATE \
+    SCOREP_SCORE_EVENT( "dup" ) \
+    SCOREP_SCORE_EVENT( "dup2" ) \
+    SCOREP_SCORE_EVENT( "dup3" ) \
+    SCOREP_SCORE_EVENT( "fcntl" )
+
+#define SCOREP_SCORE_EVENT_IO_ACQUIRE_LOCK \
+    SCOREP_SCORE_EVENT( "lockf" ) \
+    SCOREP_SCORE_EVENT( "flockfile" ) \
+    SCOREP_SCORE_EVENT( "ftrylockfile" )
+
+#define SCOREP_SCORE_EVENT_IO_OPERATION_CANCELLED \
+    SCOREP_SCORE_EVENT( "aio_cancel" )
+
+#define SCOREP_SCORE_EVENT_IO_RELEASE_LOCK \
+    SCOREP_SCORE_EVENT( "funlockfile" )
+
 #define SCOREP_SCORE_EVENT_MEASUREMENT_BUFFER_FLUSH \
     SCOREP_SCORE_EVENT( "TRACE BUFFER FLUSH" )
 

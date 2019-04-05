@@ -94,7 +94,9 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_key_threads.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_post_cluster.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_aggregate.c         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_aggregate.h
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_aggregate.h         \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_io.c                \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_io.h
 
 libscorep_profile_la_CPPFLAGS = \
     $(PROFILE_FLAGS) \

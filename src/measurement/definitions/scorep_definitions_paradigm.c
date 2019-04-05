@@ -53,10 +53,6 @@ SCOREP_Definitions_NewParadigm( SCOREP_ParadigmType  paradigm,
                        name,
                        paradigmFlags );
 
-    UTILS_BUG_ON( paradigm < SCOREP_PARADIGM_MPI,
-                  "Paradigm is not a parallel paradigm: %s",
-                  scorep_paradigm_type_to_string( paradigm ) );
-
     UTILS_BUG_ON( paradigmClass >= SCOREP_INVALID_PARADIGM_CLASS,
                   "Invalid paradigm class: %u", paradigmClass );
 
@@ -66,6 +62,7 @@ SCOREP_Definitions_NewParadigm( SCOREP_ParadigmType  paradigm,
         SCOREP_Memory_AllocForDefinitions( NULL, sizeof( SCOREP_Paradigm ) );
     SCOREP_Paradigm* new_paradigm =
         SCOREP_MEMORY_DEREF_LOCAL( new_handle, SCOREP_Paradigm* );
+    memset( new_paradigm, 0, sizeof( *new_paradigm ) );
     new_paradigm->next = NULL;
 
     new_paradigm->name_handle = scorep_definitions_new_string(

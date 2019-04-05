@@ -1,0 +1,174 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2016,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/adapters/io/posix/Makefile.inc.am
+
+if HAVE_POSIX_IO_SUPPORT
+
+pkgdata_DATA += ../share/posix_io.wrap \
+                ../share/posix_io.nvcc.wrap
+
+DISTCLEANFILES += ../share/posix_io.nvcc.wrap
+
+posix_libwrap_linktime_cppflags = -DSCOREP_LIBWRAP_STATIC
+posix_libwrap_linktime_ldflags  = -Wl,@../share/posix_io.wrap
+posix_libwrap_runtime_cppflags = -DSCOREP_LIBWRAP_SHARED
+
+
+# runtime management library for the POSIX I/O adapter
+
+libscorep_adapter_posix_io_mgmt_common_sources  = \
+    $(SRC_ROOT)src/adapters/io/posix/SCOREP_PosixIo_Init.c \
+    $(SRC_ROOT)src/adapters/io/posix/SCOREP_PosixIo_Init.h \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_regions.c \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_regions.h \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io.h
+
+libscorep_adapter_posix_io_mgmt_common_cppflags = \
+    $(AM_CPPFLAGS)                        \
+    -I$(PUBLIC_INC_DIR)                   \
+    -I$(INC_ROOT)src/measurement          \
+    -I$(INC_ROOT)src/measurement/include  \
+    -I$(INC_ROOT)src/adapters/io/posix    \
+    -I$(INC_ROOT)src/adapters/include     \
+    -I$(INC_ROOT)src/services/include     \
+    $(UTILS_CPPFLAGS)                     \
+    -I$(INC_DIR_MUTEX)                    \
+    -I$(INC_DIR_COMMON_HASH)              \
+    -I$(INC_DIR_DEFINITIONS)
+
+#libscorep_adapter_posix_io_mgmt_common_libadd = \
+#    @SCOREP_POSIX_AIO_LIBS@
+
+libscorep_adapter_posix_io_mgmt_common_ldflags = \
+    $(library_api_version_ldflags)
+
+
+if HAVE_LIBWRAP_LINKTIME_SUPPORT
+
+lib_LTLIBRARIES += libscorep_adapter_posix_io_mgmt_linktime.la
+
+libscorep_adapter_posix_io_mgmt_linktime_la_SOURCES  = \
+    $(libscorep_adapter_posix_io_mgmt_common_sources)
+
+libscorep_adapter_posix_io_mgmt_linktime_la_CPPFLAGS = \
+    $(libscorep_adapter_posix_io_mgmt_common_cppflags) \
+    $(posix_libwrap_linktime_cppflags)
+
+libscorep_adapter_posix_io_mgmt_linktime_la_LIBADD = \
+    $(libscorep_adapter_posix_io_mgmt_common_libadd)
+
+libscorep_adapter_posix_io_mgmt_linktime_la_LDFLAGS = \
+    $(posix_libwrap_linktime_ldflags) \
+    $(libscorep_adapter_posix_io_mgmt_common_ldflags)
+
+endif HAVE_LIBWRAP_LINKTIME_SUPPORT
+
+if HAVE_LIBWRAP_RUNTIME_SUPPORT
+if HAVE_DLFCN_RTLD_NEXT
+
+lib_LTLIBRARIES += libscorep_adapter_posix_io_mgmt_runtime.la
+
+libscorep_adapter_posix_io_mgmt_runtime_la_SOURCES  = \
+    $(libscorep_adapter_posix_io_mgmt_common_sources) \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_function_pointers.c \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_function_pointers.h
+
+libscorep_adapter_posix_io_mgmt_runtime_la_CPPFLAGS = \
+    $(libscorep_adapter_posix_io_mgmt_common_cppflags) \
+    $(posix_libwrap_runtime_cppflags)
+
+libscorep_adapter_posix_io_mgmt_runtime_la_LIBADD = \
+    $(libscorep_adapter_posix_io_mgmt_common_libadd)
+
+libscorep_adapter_posix_io_mgmt_runtime_la_LDFLAGS = \
+    $(libscorep_adapter_posix_io_mgmt_common_ldflags)
+
+endif HAVE_DLFCN_RTLD_NEXT
+endif HAVE_LIBWRAP_RUNTIME_SUPPORT
+
+
+# event library for the POSIX I/O adapter
+
+libscorep_adapter_posix_io_event_common_sources = \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_wrap.c \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_wrap_isoc.c
+
+libscorep_adapter_posix_io_event_common_cppflags = \
+    $(AM_CPPFLAGS)                           \
+    -I$(PUBLIC_INC_DIR)                      \
+    $(UTILS_CPPFLAGS)                        \
+    -I$(INC_ROOT)src/adapters/include        \
+    -I$(INC_ROOT)src/measurement             \
+    -I$(INC_ROOT)src/measurement/include     \
+    -I$(INC_ROOT)src/services/include        \
+    -I$(INC_ROOT)src/adapters/io/posix       \
+    -I$(INC_DIR_COMMON_HASH)                 \
+    -I$(INC_DIR_MUTEX)                       \
+    -I$(INC_DIR_DEFINITIONS)                 \
+    -D_GNU_SOURCE
+
+libscorep_adapter_posix_io_event_common_libadd = \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+libscorep_adapter_posix_io_event_common_ldflags = \
+    $(library_api_version_ldflags)
+
+
+if HAVE_LIBWRAP_LINKTIME_SUPPORT
+
+lib_LTLIBRARIES += libscorep_adapter_posix_io_event_linktime.la
+
+libscorep_adapter_posix_io_event_linktime_la_SOURCES = \
+    $(libscorep_adapter_posix_io_event_common_sources)
+
+libscorep_adapter_posix_io_event_linktime_la_CPPFLAGS = \
+    $(libscorep_adapter_posix_io_event_common_cppflags) \
+    $(posix_libwrap_linktime_cppflags)
+
+libscorep_adapter_posix_io_event_linktime_la_LDFLAGS = \
+    $(posix_libwrap_linktime_ldflags) \
+    $(libscorep_adapter_posix_io_event_common_ldflags)
+
+libscorep_adapter_posix_io_event_linktime_la_LIBADD = \
+    $(libscorep_adapter_posix_io_event_common_libadd)
+
+endif HAVE_LIBWRAP_LINKTIME_SUPPORT
+
+if HAVE_LIBWRAP_RUNTIME_SUPPORT
+if HAVE_DLFCN_RTLD_NEXT
+
+lib_LTLIBRARIES += libscorep_adapter_posix_io_event_runtime.la
+
+libscorep_adapter_posix_io_event_runtime_la_SOURCES = \
+    $(libscorep_adapter_posix_io_event_common_sources)
+
+libscorep_adapter_posix_io_event_runtime_la_CPPFLAGS = \
+    $(libscorep_adapter_posix_io_event_common_cppflags) \
+    $(posix_libwrap_runtime_cppflags)
+
+libscorep_adapter_posix_io_event_runtime_la_LDFLAGS = \
+    $(libscorep_adapter_posix_io_event_common_ldflags) \
+    $(SCOREP_DLFCN_LIBS)
+
+libscorep_adapter_posix_io_event_runtime_la_LIBADD = \
+    $(libscorep_adapter_posix_io_event_common_libadd)
+
+endif HAVE_DLFCN_RTLD_NEXT
+endif HAVE_LIBWRAP_RUNTIME_SUPPORT
+
+endif HAVE_POSIX_IO_SUPPORT
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_function_list.inc \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_wrap_aio.inc.c
