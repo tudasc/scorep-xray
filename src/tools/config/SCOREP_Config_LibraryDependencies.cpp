@@ -216,7 +216,7 @@ SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs,
     {
         if ( m_la_objects.find( deps[ i ] ) == m_la_objects.end() )
         {
-            cerr << "ERROR: Cannot resolve dependency '" << deps[ i ] << "'" << endl;
+            cerr << "[Score-P] ERROR: Cannot resolve dependency '" << deps[ i ] << "'" << endl;
             exit( EXIT_FAILURE );
         }
         const la_object& obj = m_la_objects[ deps[ i ] ];
@@ -240,12 +240,12 @@ SCOREP_Config_LibraryDependencies::addDependency( const std::string& dependentLi
 {
     if ( m_la_objects.find( dependentLib ) == m_la_objects.end() )
     {
-        cerr << "ERROR: Cannot add dependency to '" << dependentLib << "'" << endl;
+        cerr << "[Score-P] ERROR: Cannot add dependency to '" << dependentLib << "'" << endl;
         exit( EXIT_FAILURE );
     }
     if ( m_la_objects.find( dependency ) == m_la_objects.end() )
     {
-        cerr << "ERROR: Cannot add dependency '" << dependency << "'" << endl;
+        cerr << "[Score-P] ERROR: Cannot add dependency '" << dependency << "'" << endl;
         exit( EXIT_FAILURE );
     }
 
