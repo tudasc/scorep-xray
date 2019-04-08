@@ -346,7 +346,7 @@ mpi_subsystem_init( void )
 
     if ( scorep_mpi_memory_recording )
     {
-        SCOREP_AllocMetric_New( "MPI",
+        SCOREP_AllocMetric_New( "Process memory usage (MPI)",
                                 &scorep_mpi_allocations_metric );
 
         scorep_mpi_memory_alloc_size_attribute =
