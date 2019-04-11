@@ -57,6 +57,10 @@ scorep_constructor( int argc, char* argv[] )
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
+        /* argc and argv are unreliable. Pass (0, NULL) to prevent
+         * crashes. See #1167. */
+        argc = 0;
+        argv = NULL;
         SCOREP_InitMeasurementWithArgs( argc, argv );
 
         if ( SCOREP_Env_RunVerbose() )
