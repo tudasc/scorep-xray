@@ -169,8 +169,6 @@ extern void
 SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle,
                                         SCOREP_MountInfo*   mount_entry );
 
-UTILS_END_C_DECLS
-
 /**
  * Returns the number of topology dimensions or 0 if undefined.
  */
@@ -224,5 +222,6 @@ SCOREP_Platform_GetCartCoords( int                     nCoords,
 bool
 SCOREP_Platform_GenerateTopology( void );
 
+UTILS_END_C_DECLS
 
 #endif /* SCOREP_PLATFORM_H */
