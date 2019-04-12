@@ -27,13 +27,13 @@ AC_LINK_IFELSE([AC_LANG_CALL([], [setmntent])],
                 [ac_scorep_mntent_have_set="no"])
 AC_MSG_RESULT([${ac_scorep_mntent_have_set}])
 
-AC_MSG_CHECKING([for setmntent])
+AC_MSG_CHECKING([for getmntent])
 AC_LINK_IFELSE([AC_LANG_CALL([], [getmntent])],
                 [ac_scorep_mntent_have_get="yes"],
                 [ac_scorep_mntent_have_get="no"])
 AC_MSG_RESULT([${ac_scorep_mntent_have_get}])
 
-AC_MSG_CHECKING([for setmntent])
+AC_MSG_CHECKING([for endmntent])
 AC_LINK_IFELSE([AC_LANG_CALL([], [endmntent])],
                 [ac_scorep_mntent_have_end="yes"],
                 [ac_scorep_mntent_have_end="no"])
