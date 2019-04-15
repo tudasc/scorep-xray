@@ -66,7 +66,7 @@ var_build( scorep_plugin_inst_handle* handle )
     TREE_PUBLIC( handle_var )     = 0;
     TREE_USED( handle_var )       = 1;
     DECL_PRESERVE_P( handle_var ) = 1;
-    DECL_ARTIFICIAL( handle_var ) = 0;
+    DECL_ARTIFICIAL( handle_var ) = 1;
     DECL_IGNORED_P( handle_var )  = 0;
     varpool_finalize_decl( handle_var );
     set_decl_section_name( handle_var, region_handles_section );
