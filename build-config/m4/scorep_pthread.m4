@@ -71,8 +71,8 @@ AS_IF([test "x${scorep_have_pthread}" = x1],
      done
      AS_IF([test "x$scorep_pthread_$1" = x0],
          [scorep_pthread_$1_flag=""
-          AC_MSG_RESULT([0])],
-         [AC_MSG_RESULT([1])])
+          AC_MSG_RESULT([no])],
+         [AC_MSG_RESULT([yes])])
      AC_LANG_POP([C])dnl
     ])dnl
 
