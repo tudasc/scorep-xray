@@ -10,9 +10,15 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
+#include <SCOREP_Hashtab.h> 
 #include <SCOREP_IoManagement.h>
 
 #include "scorep_mpi_communicator.h"
+
+/**
+ * MPI-I/O hashtable for managing I/O split operations.
+ */
+extern SCOREP_Hashtab* scorep_mpi_io_split_table;
 
 typedef struct mpi_io_split_op
 {
