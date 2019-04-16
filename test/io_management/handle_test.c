@@ -454,7 +454,7 @@ init( void )
     SCOREP_IoMgmt_RegisterParadigm( SCOREP_IO_PARADIGM_POSIX,
                                     SCOREP_IO_PARADIGM_CLASS_SERIAL,
                                     "POSIX I/O",
-                                    SCOREP_IO_HANDLE_FLAG_NONE,
+                                    SCOREP_IO_PARADIGM_FLAG_NONE,
                                     sizeof( int ),
                                     SCOREP_IO_PARADIGM_PROPERTY_VERSION, "2.3",
                                     SCOREP_INVALID_IO_PARADIGM_PROPERTY );
