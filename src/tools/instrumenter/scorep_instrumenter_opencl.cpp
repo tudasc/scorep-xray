@@ -80,9 +80,9 @@ SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
 {
     if ( arg == "--opencl" )
     {
-        m_usage = enabled;
+        m_usage    = enabled;
+        m_wrapmode = SCOREP_LIBWRAP_DEFAULT_MODE;
 #if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
-        // linktime is the default
         m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
 #endif
         return true;
@@ -98,9 +98,7 @@ SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
             m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
             return true;
         }
-#endif
-
-#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+#elif HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
         if ( m_wrapmode == "runtime" )
         {
             return true;

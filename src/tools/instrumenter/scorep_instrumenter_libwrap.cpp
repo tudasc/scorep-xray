@@ -65,7 +65,8 @@ SCOREP_Instrumenter_LibwrapAdapter::printHelp( void )
         << "\
   --libwrap=[<wrap-mode>:](<wrapper-name>...|<path-to-wrapper>)\n\
                   Enables user library wrapping for specified libraries.\n\
-                  <wrap-mode> may be 'linktime' (default) or 'runtime'.\n\
+                  <wrap-mode> may be 'linktime' or 'runtime'.\n\
+                  The default is the first supported mode in the above order.\n\
                   <wrapper-name>... is a comma-separated list of library wrappers\n\
                   which will be looked up in the paths of the colon-separated\n\
                   'SCOREP_LIBWRAP_PATH' environment variable and in the installation\n\
@@ -195,7 +196,7 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
             exit( EXIT_SUCCESS );
         }
 
-        std::string wrapmode = "linktime";
+        std::string wrapmode = SCOREP_LIBWRAP_DEFAULT_MODE;
         std::string anchor;
         if ( libwrap.compare( 0, 9, "linktime:" ) == 0 )
         {

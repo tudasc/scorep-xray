@@ -475,11 +475,7 @@ SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
  * *************************************************************************************/
 SCOREP_Config_OpenclAdapter::SCOREP_Config_OpenclAdapter()
     : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", true )
-#if HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
-    , m_wrapmode( "linktime" )
-#elif HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
-    , m_wrapmode( "runtime" )
-#endif
+    , m_wrapmode( SCOREP_LIBWRAP_DEFAULT_MODE )
 {
 }
 

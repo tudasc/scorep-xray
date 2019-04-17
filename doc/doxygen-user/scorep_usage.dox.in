@@ -54,7 +54,8 @@ Common options are:
               shmem
                   SHMEM support using library wrapping
   --io=[<wrap-mode>:]<paradigm>[:<variant>](,[<wrap-mode>:]<paradigm>[:<variant>])*
-                  <wrap-mode> may be 'linktime (default) or 'runtime'.
+                  <wrap-mode> may be 'linktime' or 'runtime'.
+                  The default is the first supported mode in the above order.
                   Possible paradigms and variants are:
               none
                   No I/O wrapping support.
@@ -126,7 +127,8 @@ Common options are:
   --nomemory      Disables memory usage instrumentation.
   --libwrap=[<wrap-mode>:](<wrapper-name>...|<path-to-wrapper>)
                   Enables user library wrapping for specified libraries.
-                  <wrap-mode> may be 'linktime' (default) or 'runtime'.
+                  <wrap-mode> may be 'linktime' or 'runtime'.
+                  The default is the first supported mode in the above order.
                   <wrapper-name>... is a comma-separated list of library wrappers
                   which will be looked up in the paths of the colon-separated
                   'SCOREP_LIBWRAP_PATH' environment variable and in the installation
