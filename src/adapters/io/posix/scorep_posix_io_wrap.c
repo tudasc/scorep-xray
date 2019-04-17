@@ -434,7 +434,8 @@ scorep_posix_io_init( void )
                                                    SCOREP_Hashtab_HashPointer,
                                                    SCOREP_Hashtab_ComparePointer );
 
-    UTILS_BUG_ON( SCOREP_MutexCreate( &aio_request_table_mutex ) != SCOREP_SUCCESS,
+    SCOREP_ErrorCode err = SCOREP_MutexCreate( &aio_request_table_mutex );
+    UTILS_BUG_ON( err != SCOREP_SUCCESS,
                   "Mutex could not be created for asynchronous I/O requests" );
 #endif
 }
