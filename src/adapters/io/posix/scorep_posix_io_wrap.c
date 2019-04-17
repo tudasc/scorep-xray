@@ -1970,13 +1970,13 @@ SCOREP_LIBWRAP_FUNC_NAME( sync )( void )
     {
         SCOREP_EnterWrappedRegion( scorep_posix_io_region_sync );
 
+        SCOREP_IoMgmt_PushHandle( io_sync_all_handle );
+
         SCOREP_IoOperationBegin( io_sync_all_handle,
                                  SCOREP_IO_OPERATION_MODE_FLUSH,
                                  SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                  SCOREP_IO_UNKOWN_TRANSFER_SIZE,
                                  SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-
-        SCOREP_IoMgmt_PushHandle( io_sync_all_handle );
 
         SCOREP_ENTER_WRAPPED_REGION();
         SCOREP_LIBWRAP_FUNC_CALL( sync,
