@@ -19,5 +19,5 @@ AC_SCOREP_BACKEND_TEST_RUNS
 AS_IF([test "x${ac_scorep_enable_backend_test_runs}" = xyes \
        && test "x${enableval}" != xrecursive \
        && test "x${afs_externally_triggered}" != xyes],
-      [AC_MSG_WARN([semantics of --enable-backend-test-runs changed in AC_PACKAGE_NAME 6.0. The new behavior is to run backend-test-runs for AC_PACKAGE_NAME only, but not for the sub-packages otf2 and cubew. To restore the old behavior, use `--enable-backend-test-runs=recursive`.])])
+      [AC_MSG_WARN([semantics of --enable-backend-test-runs changed in AC_PACKAGE_NAME 6.0. The new behavior is to run backend-test-runs for AC_PACKAGE_NAME only, but not for sub-packages (currently just otf2). To restore the old behavior, use `--enable-backend-test-runs=recursive`.])])
 ]) # SCOREP_BACKEND_TEST_RUNS
