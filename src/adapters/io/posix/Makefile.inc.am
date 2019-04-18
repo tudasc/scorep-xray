@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2016,
+## Copyright (c) 2016-2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -32,6 +32,8 @@ libscorep_adapter_posix_io_mgmt_common_sources  = \
     $(SRC_ROOT)src/adapters/io/posix/SCOREP_PosixIo_Init.h \
     $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_regions.c \
     $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_regions.h \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_mgmt.c \
+    $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io_mgmt_isoc.c \
     $(SRC_ROOT)src/adapters/io/posix/scorep_posix_io.h
 
 libscorep_adapter_posix_io_mgmt_common_cppflags = \

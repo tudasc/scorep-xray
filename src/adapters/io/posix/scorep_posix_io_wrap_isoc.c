@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -24,17 +24,14 @@
 
 #include <config.h>
 
-#include <inttypes.h>
-#include <limits.h>
-#include <string.h>
+#include "scorep_posix_io.h"
+
 #include <unistd.h>
-#include <stdarg.h>
 
 #include <SCOREP_Events.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_IoManagement.h>
-#include <SCOREP_Mutex.h>
 
 #define SCOREP_DEBUG_MODULE_NAME IO
 #include <UTILS_Debug.h>
@@ -111,11 +108,8 @@
  */
 
 
-/** Artificial I/O handle representing all currently active I/O handles */
-static SCOREP_IoHandleHandle io_flush_all_handle = SCOREP_INVALID_IO_HANDLE;
-
 /* *******************************************************************
- * Translate POSIX types to Score-P representative
+ * Translate ISO C I/O types to Score-P representative
  * ******************************************************************/
 
 /**
@@ -189,114 +183,6 @@ get_scorep_io_access_mode_from_string( const char* mode )
 #undef A_MODE_STRLEN
 #undef A_PLUS_MODE
 #undef A_PLUS_MODE_STRLEN
-}
-
-/**
- * Translate the POSIX seek option to its Score-P equivalent.
- *
- * @param whence        Option of a POSIX seek operation.
- *
- * @return Score-P equivalent of the POSIX mode.
- */
-static inline SCOREP_IoSeekOption
-get_scorep_io_seek_option( int whence )
-{
-    SCOREP_IoSeekOption scorep_seek_option = SCOREP_IO_SEEK_INVALID;
-
-    switch ( whence )
-    {
-        case SEEK_SET:
-            scorep_seek_option = SCOREP_IO_SEEK_FROM_START;
-            break;
-        case SEEK_CUR:
-            scorep_seek_option = SCOREP_IO_SEEK_FROM_CURRENT;
-            break;
-        case SEEK_END:
-            scorep_seek_option = SCOREP_IO_SEEK_FROM_END;
-            break;
-
-#ifdef SEEK_DATA
-        case SEEK_DATA:
-            scorep_seek_option = SCOREP_IO_SEEK_DATA;
-            break;
-#endif
-#ifdef SEEK_HOLE
-        case SEEK_HOLE:
-            scorep_seek_option = SCOREP_IO_SEEK_HOLE;
-            break;
-#endif
-
-        default:
-            UTILS_BUG( "Unsupported seek option (%d) in POSIX I/O call.", whence );
-    }
-    return scorep_seek_option;
-}
-
-/* *******************************************************************
- * Internal management routine
- * ******************************************************************/
-/**
- * Create definition handles for default stdin/stdout/stderr streams.
- */
-void
-scorep_posix_io_isoc_init( void )
-{
-    SCOREP_IoMgmt_RegisterParadigm( SCOREP_IO_PARADIGM_ISOC,
-                                    SCOREP_IO_PARADIGM_CLASS_SERIAL,
-                                    "ISO C I/O",
-                                    SCOREP_IO_PARADIGM_FLAG_NONE,
-                                    sizeof( FILE* ),
-                                    SCOREP_INVALID_IO_PARADIGM_PROPERTY );
-
-    SCOREP_IoMgmt_CreatePreCreatedHandle( SCOREP_IO_PARADIGM_ISOC,
-                                          SCOREP_INVALID_IO_FILE,
-                                          SCOREP_IO_HANDLE_FLAG_PRE_CREATED,
-                                          SCOREP_IO_ACCESS_MODE_READ_ONLY,
-                                          SCOREP_IO_STATUS_FLAG_NONE,
-                                          SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                          1 /* unify all I/O handles into one */,
-                                          "stdin",
-                                          &stdin );
-
-    SCOREP_IoMgmt_CreatePreCreatedHandle( SCOREP_IO_PARADIGM_ISOC,
-                                          SCOREP_INVALID_IO_FILE,
-                                          SCOREP_IO_HANDLE_FLAG_PRE_CREATED,
-                                          SCOREP_IO_ACCESS_MODE_WRITE_ONLY,
-                                          SCOREP_IO_STATUS_FLAG_NONE,
-                                          SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                          1 /* unify all I/O handles into one */,
-                                          "stdout",
-                                          &stdout );
-
-    SCOREP_IoMgmt_CreatePreCreatedHandle( SCOREP_IO_PARADIGM_ISOC,
-                                          SCOREP_INVALID_IO_FILE,
-                                          SCOREP_IO_HANDLE_FLAG_PRE_CREATED,
-                                          SCOREP_IO_ACCESS_MODE_WRITE_ONLY,
-                                          SCOREP_IO_STATUS_FLAG_NONE,
-                                          SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                          1 /* unify all I/O handles into one */,
-                                          "stderr",
-                                          &stderr );
-
-    /* Define proxy handles that aren't associated to a physical file and therefore don't add them to the hash tables */
-    io_flush_all_handle = SCOREP_Definitions_NewIoHandle( "all open output streams",
-                                                          SCOREP_INVALID_IO_FILE,
-                                                          SCOREP_IO_PARADIGM_ISOC,
-                                                          SCOREP_IO_HANDLE_FLAG_PRE_CREATED | SCOREP_IO_HANDLE_FLAG_ALL_PROXY,
-                                                          SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                                          SCOREP_INVALID_IO_HANDLE,
-                                                          1 /* unify all I/O handles into one */,
-                                                          true,
-                                                          0,
-                                                          NULL,
-                                                          SCOREP_IO_ACCESS_MODE_READ_WRITE,
-                                                          SCOREP_IO_STATUS_FLAG_NONE );
-}
-
-void
-scorep_posix_io_isoc_fini( void )
-{
-    SCOREP_IoMgmt_DeregisterParadigm( SCOREP_IO_PARADIGM_ISOC );
 }
 
 /* *******************************************************************
@@ -452,7 +338,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fflush )( FILE* stream )
         SCOREP_IoHandleHandle io_handle;
         if ( stream == NULL )
         {
-            io_handle = io_flush_all_handle;
+            io_handle = scorep_posix_io_flush_all_handle;
         }
         else
         {
@@ -1209,7 +1095,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseek )( FILE* stream, long offset, int whence )
         {
             SCOREP_IoSeek( handle,
                            ( int64_t )offset,
-                           get_scorep_io_seek_option( whence ),
+                           scorep_posix_io_get_scorep_io_seek_option( whence ),
                            ( uint64_t )fp_offset );
         }
 
@@ -1250,7 +1136,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseeko )( FILE* stream, off_t offset, int whence )
         {
             SCOREP_IoSeek( handle,
                            ( int64_t )offset,
-                           get_scorep_io_seek_option( whence ),
+                           scorep_posix_io_get_scorep_io_seek_option( whence ),
                            ( uint64_t )( SCOREP_LIBWRAP_FUNC_CALL( ftello, ( stream ) ) ) );
         }
 
@@ -1291,7 +1177,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseeko64 )( FILE* stream, scorep_off64_t offset, int w
         {
             SCOREP_IoSeek( handle,
                            ( int64_t )offset,
-                           get_scorep_io_seek_option( whence ),
+                           scorep_posix_io_get_scorep_io_seek_option( whence ),
                            ( uint64_t )( SCOREP_LIBWRAP_FUNC_CALL( ftello, ( stream ) ) ) );
         }
 
@@ -1333,7 +1219,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fsetpos )( FILE* stream, const fpos_t* pos )
         {
             SCOREP_IoSeek( handle,
                            0,
-                           get_scorep_io_seek_option( SEEK_SET ),
+                           scorep_posix_io_get_scorep_io_seek_option( SEEK_SET ),
                            fp_offset );
         }
 
@@ -1872,7 +1758,7 @@ SCOREP_LIBWRAP_FUNC_NAME( rewind )( FILE* stream )
         {
             SCOREP_IoSeek( handle,
                            ( int64_t )0,
-                           get_scorep_io_seek_option( SEEK_SET ),
+                           scorep_posix_io_get_scorep_io_seek_option( SEEK_SET ),
                            ( uint64_t )0 );
         }
 

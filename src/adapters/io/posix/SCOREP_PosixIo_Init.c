@@ -24,8 +24,6 @@
 
 #include "SCOREP_PosixIo_Init.h"
 
-#include <SCOREP_Mutex.h>
-
 #define SCOREP_DEBUG_MODULE_NAME IO
 #include <UTILS_Debug.h>
 
@@ -34,8 +32,6 @@
 #ifdef SCOREP_LIBWRAP_SHARED
 #include "scorep_posix_io_function_pointers.h"
 #endif
-
-//#include "scorep_posix_confvars.inc.c"
 
 static size_t subsystem_id = 0;
 
