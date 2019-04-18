@@ -644,7 +644,7 @@ SCOREP_Instrumenter::link_step( void )
 #endif
     command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
-#if HAVE( LINKER_START_END_GROUP )
+#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
     command << libs_prefix << " -Wl,-start-group `" << m_config_base << " --event-libs`";
     command << " " << m_command_line.getFlagsAfterInterpositionLib() << " -Wl,-end-group " << libs_suffix;
 #else
