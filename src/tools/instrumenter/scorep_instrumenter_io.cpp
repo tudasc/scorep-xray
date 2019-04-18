@@ -70,7 +70,7 @@ SCOREP_Instrumenter_IoParadigm::checkOption( const std::string& _arg )
     if ( arg.compare( 0, 9, "linktime:" ) == 0 )
     {
 #if !HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
-        std::cerr << "[Score-P] ERROR: Linktime wrapping not support in '" << arg << "'" << std::endl;
+        std::cerr << "[Score-P] ERROR: Linktime wrapping not support in '" << _arg << "'" << std::endl;
         exit( EXIT_FAILURE );
 #endif
         wrapmode = "linktime";
@@ -78,8 +78,8 @@ SCOREP_Instrumenter_IoParadigm::checkOption( const std::string& _arg )
     }
     else if ( arg.compare( 0, 8, "runtime:" ) == 0 )
     {
-#if !HAVE_BACKEND( LIBWRAP_LINKTIME_SUPPORT )
-        std::cerr << "[Score-P] ERROR: Runtime wrapping not support in '" << arg << "'" << std::endl;
+#if !HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+        std::cerr << "[Score-P] ERROR: Runtime wrapping not support in '" << _arg << "'" << std::endl;
         exit( EXIT_FAILURE );
 #endif
         wrapmode = "runtime";
