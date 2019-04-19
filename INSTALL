@@ -259,14 +259,12 @@ be used to build Score-P are as follows:
   --enable-debug          activate internal debug output [no]
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
-  --enable-backend-test-runs[=recursive]
+  --enable-backend-test-runs
                Enable execution of tests during 'make check' [no]
                (does not affect building of tests, though). If
                disabled, the files 'check-file-*' and/or
-               'skipped_tests', listing the tests, are generated in
-               the corresponding build directory. If 'recursive' is
-               given, execution of tests is enabled for
-               sub-packages as well.
+               'skipped_tests' listing the tests are generated in the
+               corresponding build directory.
   --enable-cuda
                Enable or disable support for CUDA. Fails if support
                cannot be satisfied but was requested.
@@ -522,6 +520,9 @@ variables:
   LIBRCA_INCLUDE
               Path to librca headers.
   LIBRCA_LIB  Path to librca libraries.
+  BACKEND_TEST_RUNS_NON_RECURSIVE
+              Whether to prevent passing --enable-backend-test-runs to
+              sub-packages. Activation values are '1', 'yes', and 'true'.
 
 Building & Installing
 =====================

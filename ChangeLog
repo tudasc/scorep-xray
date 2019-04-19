@@ -16,13 +16,6 @@ Features and improvements:
 
 Bugfixes:
 
-Misc:
-
-- Please note that the semantics of --enable-backend-test-runs changed
-  in Score-P 6.0. The new behavior is to run backend-test-runs for
-  Score-P only, but not for sub-packages (currently just otf2). To
-  restore the old behavior, use `--enable-backend-test-runs=recursive`.
-
 ------------------- Released version 5.0 -----------------------------
 
 Major features:
