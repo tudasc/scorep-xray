@@ -582,7 +582,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fcntl )( int fd, int cmd, ... )
                 if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
                 {
                     old_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
-                    if ( fd != int_arg )
+                    if ( fd != int_arg && old_handle != SCOREP_INVALID_IO_HANDLE )
                     {
                         SCOREP_IoMgmt_BeginHandleDuplication( SCOREP_IO_PARADIGM_POSIX, old_handle, 0 );
                     }
