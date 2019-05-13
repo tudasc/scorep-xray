@@ -304,7 +304,7 @@ define_coords( SCOREP_DefinitionManager*      definition_manager,
 
 
 /* only used during unification, no locking needed*/
-void
+static void
 hash_cartesian_topology( SCOREP_CartesianTopologyDef* definition )
 {
     HASH_ADD_HANDLE( definition, topology_name, String );

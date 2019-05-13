@@ -478,7 +478,7 @@ memory_dump_stats_common( const char* message, bool report )
 }
 
 
-const char*
+static const char*
 memory_type_2_string( int memoryType )
 {
     switch ( memoryType - SCORER_MEMORY_TRACKING_SHIFT  )

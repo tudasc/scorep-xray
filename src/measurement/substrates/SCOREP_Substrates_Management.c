@@ -96,7 +96,7 @@ static size_t substrate_id;
 
 #define CACHE_LINE_SIZE 64
 
-void*
+static void*
 aligned_malloc( size_t size )
 {
     /* includes up to cache line size + 8 byte additional data */
@@ -115,7 +115,7 @@ aligned_malloc( size_t size )
     return aligned;
 }
 
-void
+static void
 aligned_free( void* alignedAdr )
 {
     /* free original address that prepends the aligned one */

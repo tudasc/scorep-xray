@@ -319,7 +319,7 @@ SCOREP_Substrate_Plugins_InitLocationData( SCOREP_Location* location )
 }
 
 
-void
+static void
 initialize_plugins( size_t substrateId )
 {
     substrate_id = substrateId;
@@ -332,7 +332,7 @@ initialize_plugins( size_t substrateId )
     }
 }
 
-size_t
+static size_t
 finalize_plugins( void )
 {
     for ( size_t i = 0; i < nr_registered_plugins; i++ )

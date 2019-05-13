@@ -96,7 +96,7 @@ typedef struct scorep_openacc_device
 } scorep_openacc_device;
 
 /* Global device list. Should be very short in most cases. Needs locking. */
-scorep_openacc_device* device_list;
+static scorep_openacc_device* device_list;
 
 /* User-specified OpenACC recording features */
 bool scorep_openacc_features_initialized = false;
