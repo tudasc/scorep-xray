@@ -17,6 +17,10 @@
  * @brief MGMT for the POSIX I/O adapter
  */
 
+#ifdef __PGI
+#define restrict
+#endif
+
 #include <config.h>
 
 #include "scorep_posix_io.h"

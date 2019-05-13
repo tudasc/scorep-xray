@@ -10,13 +10,16 @@
  *
  */
 
-
 /**
  * @file
  * @ingroup    POSIX_IO_Wrapper
  *
  * @brief MGMT for the ISO C I/O adapter
  */
+
+#ifdef __PGI
+#define restrict
+#endif
 
 #include <config.h>
 
