@@ -55,6 +55,19 @@ SCOREP_ARGS     = --nomemory
 
 SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
 
+scorep__tty_colors = \
+red=; grn=; blu=; mgn=; std=; \
+test "X$(AM_COLOR_TESTS)" != Xno \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  std='[m'; \
+}
+
 #------------------------------------------------------------------------------
 # Instrument possible configurations:
 # If we have a Makefile in PARADIGM_SRCDIR/<code>/<language>, create
@@ -67,7 +80,8 @@ SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
 # Instrumented codes can be found in BINDIR.
 #------------------------------------------------------------------------------
 instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
-	@fail= failcom='exit 1'; \
+	@$(scorep__tty_colors); \
+	fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
 	  case $$f in \
 	    *=* | --[!k]*);; \
@@ -89,7 +103,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             set -x; \
                             options="$$options --verbose"; \
                         else \
-                            echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
+                            echo "  GEN     $${mgn}$(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}$$std"; \
                         fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
@@ -127,7 +141,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             set -x; \
                             options="$$options --verbose"; \
                         else \
-                            echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
+                            echo "  GEN     $${mgn}$(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}$$std"; \
                         fi; \
                         unset POMP_CFLAGS; \
                         unset POMP_FFLAGS; \

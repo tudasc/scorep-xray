@@ -262,11 +262,35 @@ fi
 
 
 # --- Control output ---
+color_enabled=no
+if [ "$AM_COLOR_TESTS" = no ]; then
+    color_enabled=no
+elif [ "$AM_COLOR_TESTS" = always ]; then
+    color_enabled=yes
+elif [ "$TERM" != dumb ] && [ -t 1 ]; then
+    color_enabled=yes
+fi
+
+if test $color_enabled = yes; then
+    # e for ascii escape sequence. Add some prefix to avoid name clashes when being sourced.
+    red='[0;31m'
+    grn='[0;32m'
+    blu='[1;34m'
+    mgn='[0;35m'
+    std='[0m'
+else
+    red=''
+    grn=''
+    blu=''
+    mgn=''
+    std=''
+fi
+
 if test -n "${VERBOSE}"; then
     echo "$CHECK"
     set -x
 else
-    echo "  CHECK   ${EXE}"
+    echo "  CHECK   ${grn}${EXE}${std}"
 fi
 
 
@@ -357,9 +381,9 @@ fi
 
 # --- Compare results ---
 if test "${INST_EXPECTED}" != "${INST_FOUND}"; then
-    echo "ERROR: Instrumentation differs from expected result!" >&2
-    echo "       Expected: ${INST_EXPECTED:-<none>}" >&2
-    echo "       Found   : ${INST_FOUND:-<none>}" >&2
+    echo "${red}ERROR: Instrumentation differs from expected result!${std}" >&2
+    echo "       Expected: ${blu}${INST_EXPECTED:-<none>}${std}" >&2
+    echo "       Found   : ${mag}${INST_FOUND:-<none>}${std}" >&2
     exit 1
 fi
 

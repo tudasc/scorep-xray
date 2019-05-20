@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2019,
+## Copyright (c) 2009-2013, 2019-2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -120,12 +120,13 @@ uninstall-hook: doxygen-uninstall common-uninstall
 dist-hook: doc/doxygen-user/main.dox doxygen-user-generate prohibit-make-dist
 
 prohibit-make-dist:
-	@if test "x$(PROHIBIT_MAKE_DIST)" != "x"; then \
-            echo "ERROR: Cannot create distribution because of disabled components or use of"; \
-            echo "       external packages. Rerun configure with these flags to ensure a"; \
-            echo "       self-contained distribution:"; \
+	@$(am__tty_colors); \
+        if test "x$(PROHIBIT_MAKE_DIST)" != "x"; then \
+            echo "$${red}error: Cannot create distribution because of disabled components or use of$$std"; \
+            echo "       $${red}external packages. Rerun configure with these flags to ensure a$$std"; \
+            echo "       $${red}self-contained distribution:$$std"; \
             echo; \
-            echo "           $(PROHIBIT_MAKE_DIST)"; \
+            echo "           $${blu}$(PROHIBIT_MAKE_DIST)$$std"; \
             echo; \
             exit 1; \
         fi
@@ -329,3 +330,6 @@ else !PLATFORM_MIC
 TARGETS = mic
 
 endif !PLATFORM_MIC
+
+# non-color automake only provides $(am__tty_colors) if tests are in use
+TESTS =

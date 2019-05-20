@@ -55,4 +55,5 @@ $(OBJDIR)/heat.o: $(SRCDIR)/heat.c
 # Generic rules and variables, don't move above OBJECTS and LIBS
 #------------------------------------------------------------------------------
 
+SRP = SHMEM
 include $(INCDIR)/Makefile.common_rules

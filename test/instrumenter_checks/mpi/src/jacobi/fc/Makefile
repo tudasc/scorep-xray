@@ -59,4 +59,5 @@ $(OBJDIR)/VariableDef.o: $(SRCDIR)/VariableDef.f90
 # Generic rules and variables, don't move above OBJECTS and LIBS
 #------------------------------------------------------------------------------
 
+SRP = MPI
 include $(INCDIR)/Makefile.common_rules
