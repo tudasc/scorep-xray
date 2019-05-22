@@ -44,9 +44,9 @@ libscorep_unwinding_la_LDFLAGS = \
 if HAVE_LIBBFD
 libscorep_unwinding_la_CPPFLAGS += \
     @LIBBFD_CPPFLAGS@
-libscorep_unwinding_la_LIBADD += \
+libscorep_measurement_la_LIBADD += \
     @LIBBFD_LIBS@
-libscorep_unwinding_la_LDFLAGS += \
+libscorep_measurement_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
 endif
 
