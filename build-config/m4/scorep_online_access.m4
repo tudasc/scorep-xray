@@ -15,7 +15,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2012, 2017,
+dnl Copyright (c) 2009-2012, 2017, 2019,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012,
@@ -105,4 +105,8 @@ AC_SCOREP_COND_HAVE([ONLINE_ACCESS],
 AC_MSG_CHECKING([for online access possible])
 AC_MSG_RESULT([${ac_scorep_have_online_access}])
 AFS_SUMMARY([Online access support], [${ac_scorep_have_online_access}])
+
+# for OA tests only
+AC_CHECK_PROG([GDB], [gdb], [$(which gdb)], [no])
+AM_CONDITIONAL([HAVE_GDB], [test "x${GDB}" != xno])
 ])
