@@ -66,12 +66,15 @@ scorep_constructor( int argc, char* argv[] )
         if ( SCOREP_Env_RunVerbose() )
         {
             fprintf( stderr, "[Score-P] initialized via constructor\n" );
-            fprintf( stderr, "[Score-P] program: %s", argv[ 0 ] );
-            for ( int i = 1; i < argc; i++ )
+            if ( argc != 0 && argv != NULL )
             {
-                fprintf( stderr, " %s", argv[ i ] );
+                fprintf( stderr, "[Score-P] program: %s", argv[ 0 ] );
+                for ( int i = 1; i < argc; i++ )
+                {
+                    fprintf( stderr, " %s", argv[ i ] );
+                }
+                fprintf( stderr, "\n" );
             }
-            fprintf( stderr, "\n" );
         }
     }
 
