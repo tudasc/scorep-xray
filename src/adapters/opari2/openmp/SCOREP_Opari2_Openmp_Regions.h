@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -123,6 +123,10 @@ typedef struct /* SCOREP_Opari2_Openmp_Region */
 
     SCOREP_Opari2_Openmp_Lock* lock;
 } SCOREP_Opari2_Openmp_Region;
+
+
+void
+scorep_opari2_openmp_criticals_finalize( void );
 
 /** @} */
 

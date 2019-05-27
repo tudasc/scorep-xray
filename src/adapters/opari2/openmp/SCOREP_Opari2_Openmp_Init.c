@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016-2017,
+ * Copyright (c) 2013-2014, 2016-2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013, 2015,
@@ -143,6 +143,7 @@ opari2_openmp_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
+    scorep_opari2_openmp_criticals_finalize();
     scorep_opari2_openmp_lock_finalize();
 
     free( scorep_opari2_openmp_regions );

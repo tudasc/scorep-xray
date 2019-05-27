@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -272,6 +272,14 @@ scorep_opari2_register_openmp_region( SCOREP_Opari2_Openmp_Region* region )
     }
 }
 
+typedef struct criticals_list criticals_list;
+struct criticals_list
+{
+    char*           name;
+    criticals_list* next;
+};
+static criticals_list* criticals_head;
+
 /**
  * parse_openmp_init_string() fills the SCOREP_Opari2_Openmp_Region
  * object with data read from the @a initString. If the initString
@@ -319,12 +327,42 @@ parse_openmp_init_string( const char                   initString[],
                                               ( OPARI2_Region_info* )&regionInfo );
 
     scorep_opari2_init_openmp_region( region );
-    if ( regionInfo.mCriticalName )
+
+    /* Assign criticals a name but reuse the name if it already exists. */
+    if ( regionInfo.mRegionType == POMP2_Critical )
     {
-        region->name = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mCriticalName ) + 12 ) );
-        strcpy( region->name, "critical (" );
-        strcat( region->name, regionInfo.mCriticalName );
-        strcat( region->name, ")" );
+        if ( regionInfo.mCriticalName == NULL )
+        {
+            static char* unnamed_critical = "critical";
+            region->name = unnamed_critical;
+        }
+        else
+        {
+            char name[ sizeof( char ) * ( strlen( regionInfo.mCriticalName ) + 12 ) ];
+            strcpy( &name[ 0 ], "critical (" );
+            strcat( &name[ 0 ], regionInfo.mCriticalName );
+            strcat( &name[ 0 ], ")" );
+
+            criticals_list* critical = criticals_head;
+            while ( critical )
+            {
+                if ( strcmp( &name[ 0 ], critical->name ) == 0 )
+                {
+                    break;
+                }
+                critical = critical->next;
+            }
+            if ( !critical )
+            {
+                criticals_list* new_critical =  malloc( sizeof( criticals_list ) );
+                new_critical->name = malloc( sizeof( char ) * strlen( name ) );
+                strcpy( new_critical->name, &name[ 0 ] );
+                new_critical->next = criticals_head;
+                criticals_head     = new_critical;
+                critical           = criticals_head;
+            }
+            region->name = critical->name;
+        }
     }
     region->numSections = regionInfo.mNumSections;
 
@@ -400,6 +438,18 @@ parse_openmp_init_string( const char                   initString[],
     freePOMP2RegionInfoMembers( &regionInfo );
 }
 
+void
+scorep_opari2_openmp_criticals_finalize( void )
+{
+    criticals_list* critical = criticals_head;
+    while ( critical )
+    {
+        criticals_list* next = critical->next;
+        free( critical->name );
+        free( critical );
+        critical = next;
+    }
+}
 
 /* ***********************************************************************
  *                                           Assign handles
