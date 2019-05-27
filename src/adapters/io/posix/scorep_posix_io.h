@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <sys/uio.h>
+#include <sys/select.h>
 
 #if HAVE( POSIX_AIO_SUPPORT )
 #include <aio.h>

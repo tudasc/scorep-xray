@@ -2,7 +2,7 @@
 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015, 2017,
+## Copyright (c) 2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -13,6 +13,7 @@
 set -e
 
 CC=${CC-@CC@}
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 _append()
 {

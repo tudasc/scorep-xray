@@ -41,7 +41,7 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Mutex.h>
 #include "scorep_environment.h"
-#include "scorep_location.h"
+#include "scorep_location_management.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"
 #include <assert.h>

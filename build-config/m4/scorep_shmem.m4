@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014, 2016-2017,
+## Copyright (c) 2013-2014, 2016-2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -545,8 +545,7 @@ AC_DEFINE_UNQUOTED([SCOREP_SHMEM_NAME], ["${SHMEM_NAME}"],
                    [Name of the implemented SHMEM specification.])
 
 dnl First check for a SHMEM compiler
-AS_IF([test "x${scorep_shmem_c_supported}" = "xyes" &&
-       ( test "x${scorep_shmem_f77_supported}" = "xyes" || test "x${scorep_shmem_f90_supported}" = "xyes" )],
+AS_IF([test "x${scorep_shmem_c_supported}" = "xyes"],
       [scorep_shmem_supported="yes"],
       [scorep_shmem_supported="no"])
 
@@ -594,8 +593,8 @@ AC_SCOREP_COND_HAVE([SHMEM_PROFILING_HEADER],
                     [test "x${scorep_shmem_has_pshmem_header}" = "xyes"],
                     [Defined if SHMEM implementation provides a profiling header file.])
 
-AM_CONDITIONAL([HAVE_SHMEM_SUPPORT], [test "x${scorep_shmem_supported}" = "xyes" && test "x${shmem_interception_summary}" != "xno"])
-AM_CONDITIONAL([HAVE_SHMEMFC],       [test "x${scorep_shmem_f90_supported}" = "xyes" && test "x${shmem_interception_summary}" != "xno"])
+AM_CONDITIONAL([HAVE_SHMEM_SUPPORT],         [test "x${scorep_shmem_supported}" = "xyes" && test "x${shmem_interception_summary}" != "xno"])
+AM_CONDITIONAL([HAVE_SHMEM_FORTRAN_SUPPORT], [test "x${scorep_shmem_f77_supported}" = "xyes" && test "x${shmem_interception_summary}" != "xno"])
 ])
 
 

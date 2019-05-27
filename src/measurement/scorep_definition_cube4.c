@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2018,
+ * Copyright (c) 2009-2013, 2015-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,7 @@
 
 #include "scorep_environment.h"
 #include "scorep_ipc.h"
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 #include <SCOREP_Definitions.h>
 #include <cubew_services.h>
 #include <cubew_location.h>

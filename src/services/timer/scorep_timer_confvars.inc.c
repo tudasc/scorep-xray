@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -65,6 +68,14 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
         "Low overhead AIX read_real_time timer."
     },
 #endif /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+    {
+        "mac",
+        TIMER_MAC,
+        "macOS/Mach absolute time timer."
+    },
+#endif /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
     {

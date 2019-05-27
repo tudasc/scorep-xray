@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -43,9 +43,9 @@ libscorep_online_access_mockup_la_CPPFLAGS = \
 libscorep_online_access_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-lib_LTLIBRARIES += libscorep_online_access_spp.la
-
 if HAVE_ONLINE_ACCESS
+
+lib_LTLIBRARIES += libscorep_online_access_spp.la
 
 BUILT_SOURCES += scorep_oa_scanner.h
 
@@ -86,10 +86,11 @@ libscorep_online_access_spp_la_CPPFLAGS =          \
     -I$(INC_ROOT)src/adapters/user                 \
     -I$(INC_DIR_DEFINITIONS)
 
-CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
-
 if ! PLATFORM_AIX
+#Added MAC to exclude list, it doesn't likes it (if we add it we would need to add -D_DARWIN_C_SOURCE)
+if ! PLATFORM_MAC
 libscorep_online_access_spp_la_CPPFLAGS += -D_POSIX_C_SOURCE=200112L
+endif ! PLATFORM_MAC
 endif ! PLATFORM_AIX
 
 libscorep_online_access_spp_la_LIBADD = \
@@ -99,13 +100,6 @@ libscorep_online_access_spp_la_LIBADD = \
 libscorep_online_access_spp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
+CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
 
-else ! HAVE_ONLINE_ACCESS
-
-libscorep_online_access_spp_la_LIBADD = \
-    libscorep_online_access_mockup.la
-
-libscorep_online_access_spp_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
-endif ! HAVE_ONLINE_ACCESS
+endif HAVE_ONLINE_ACCESS

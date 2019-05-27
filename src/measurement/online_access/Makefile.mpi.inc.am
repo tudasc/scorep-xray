@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -34,22 +34,9 @@
 
 if HAVE_MPI_SUPPORT
 
-lib_LTLIBRARIES += libscorep_online_access_mpi_mockup.la
-libscorep_online_access_mpi_mockup_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c
-libscorep_online_access_mpi_mockup_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    $(UTILS_CPPFLAGS) \
-    -I$(PUBLIC_INC_DIR) \
-    -I$(INC_ROOT)src/measurement/include \
-    -DWITH_MPI
-libscorep_online_access_mpi_mockup_la_LDFLAGS = \
-    @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags)
+if HAVE_ONLINE_ACCESS
 
 lib_LTLIBRARIES += libscorep_online_access_mpp_mpi.la
-
-if HAVE_ONLINE_ACCESS
 
 BUILT_SOURCES += scorep_oa_scanner.h
 
@@ -93,24 +80,19 @@ libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/user \
     -I$(INC_DIR_DEFINITIONS)
 
-CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
-
 if ! PLATFORM_AIX
+#Added MAC to exclude list, it doesn't likes it (if we add it we would need to add -D_DARWIN_C_SOURCE)
+if ! PLATFORM_MAC
 libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_C_SOURCE=200112L
-endif
-
-else #if HAVE_ONLINE_ACCESS
-
-libscorep_online_access_mpp_mpi_la_LIBADD = \
-    libscorep_online_access_mpi_mockup.la \
-    $(LIB_DIR_SCOREP)libutils.la
-
-endif #if HAVE_ONLINE_ACCESS
+endif ! PLATFORM_MAC
+endif ! PLATFORM_AIX
 
 libscorep_online_access_mpp_mpi_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
 
-endif #if HAVE_MPI_SUPPORT
+CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
 
+endif HAVE_ONLINE_ACCESS
 
+endif HAVE_MPI_SUPPORT

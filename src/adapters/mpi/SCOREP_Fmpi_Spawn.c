@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -523,7 +523,7 @@ FSUB( MPI_Close_port )( char* port_name, int* ierr, scorep_fortran_charlen_t por
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -546,7 +546,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* c
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -569,7 +569,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* 
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -651,7 +651,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
     char*  c_service_name  = NULL;
     char*  c_port_name     = NULL;
     size_t c_port_name_len = 0;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
@@ -718,9 +718,9 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, i
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -745,9 +745,9 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -1088,7 +1088,7 @@ FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, scorep_fortran_charlen_
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -1113,7 +1113,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -1139,7 +1139,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_F
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -1232,7 +1232,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
     char*  c_service_name  = NULL;
     char*  c_port_name     = NULL;
     size_t c_port_name_len = 0;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
@@ -1301,9 +1301,9 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, M
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 
@@ -1329,9 +1329,9 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = scorep_f2c_string( service_name, service_name_len );
+    c_service_name = scorep_mpi_f2c_string( service_name, service_name_len );
 
-    c_port_name = scorep_f2c_string( port_name, port_name_len );
+    c_port_name = scorep_mpi_f2c_string( port_name, port_name_len );
 
 
 

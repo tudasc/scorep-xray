@@ -147,7 +147,7 @@ explanation:
 
 <li>
 @code
---with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
+--with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio|clang)
 @endcode
     Specifies the compiler suite to use when not cross-compiling. Selecting
     one of the options sets all relevant variables to their expected names.
@@ -156,7 +156,7 @@ explanation:
 
 <li>
 @code
---with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
+--with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio|clang)
 @endcode
     Similar to the previous configuration flag, but for cross-compiling
     environments.

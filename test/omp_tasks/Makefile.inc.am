@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014-2015,
+## Copyright (c) 2009-2011, 2014-2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -39,10 +39,14 @@ check_PROGRAMS += omp_tasks_uninstrumented
 omp_tasks_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
 omp_tasks_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
+if SCOREP_HAVE_FC
+
 check_PROGRAMS += omp_tasks_untied_uninstrumented
 
 omp_tasks_untied_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.f90
 omp_tasks_untied_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+
+endif SCOREP_HAVE_FC
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -57,6 +61,9 @@ omp_tasks_LDADD    = $(omp_libadd)
 omp_tasks_LDFLAGS  = $(omp_ldflags)
 
 if SCOREP_COMPILER_GNU
+
+if SCOREP_HAVE_FC
+
 # Just use GNU here, makes name mangling easier (see omp_tasks_untied.pomp.c).
 check_PROGRAMS += omp_tasks_untied
 
@@ -67,6 +74,9 @@ omp_tasks_untied_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 omp_tasks_untied_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 omp_tasks_untied_LDADD    = $(omp_libadd)
 omp_tasks_untied_LDFLAGS  = $(omp_ldflags)
+
+endif SCOREP_HAVE_FC
+
 endif SCOREP_COMPILER_GNU
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_tracing.sh

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -892,14 +892,7 @@ get_rpath_struct_data( void )
     // '$wl-R $wl$libdir'
     // For a complete list, check the currently used libtool.m4.
     std::string            rpath_flag = LIBDIR_FLAG_CC;
-    std::string::size_type index      = rpath_flag.find( "$libdir" );
-    UTILS_BUG_ON( index == std::string::npos,
-                  "LIBDIR_FLAG_CC does not contain $libdir. It is likely that "
-                  "something went wrong during configure. Please 'grep "
-                  "HARDCODE_LIBDIR_FLAG_CC <builddir>/build-backend/config.log'"
-                  " and provide the result. Thanks." );
-
-    index = 0;
+    std::string::size_type index      = 0;
     while ( true )
     {
         index = rpath_flag.find( "$wl", index );
@@ -910,8 +903,11 @@ get_rpath_struct_data( void )
         rpath_flag.replace( index, strlen( "$wl" ), LIBDIR_FLAG_WL );
         ++index;
     }
-    index = rpath_flag.find( "$libdir" );
-    rpath_flag.erase( index );
+    index = rpath_flag.find( "$libdir", 0 );
+    if ( index != std::string::npos )
+    {
+        rpath_flag.erase( index );
+    }
 
 #if HAVE( PLATFORM_AIX )
     m_rpath_head      = " " + rpath_flag;

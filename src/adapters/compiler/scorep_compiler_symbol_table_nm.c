@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -108,7 +108,11 @@ create_nm_file( char*       nmfile,
                             strlen( SCOREP_BACKEND_NM ) + 15 );
     UTILS_ASSERT( exefile );
 
+#if HAVE( PLATFORM_MAC )
+    sprintf( command, SCOREP_BACKEND_NM " -A %s 2> %s > %s", exefile, errfile, nmfile );
+#else
     sprintf( command, SCOREP_BACKEND_NM " -l %s 2> %s > %s", exefile, errfile, nmfile );
+#endif /* ! HAVE( PLATFORM_MAC ) */
 
     if ( system( command ) != EXIT_SUCCESS )
     {

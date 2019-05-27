@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,7 +27,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Paradigms.h>
 
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 
 /* Array of paradigm objects */
 static SCOREP_Paradigm* registered_paradigms[ SCOREP_INVALID_PARADIGM_TYPE ];
@@ -57,7 +57,6 @@ SCOREP_Paradigms_RegisterParallelParadigm( SCOREP_ParadigmType  paradigm,
                                         name,
                                         paradigmFlags );
 }
-
 
 void
 SCOREP_Paradigms_SetStringProperty( SCOREP_ParadigmType     paradigm,

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -43,7 +43,7 @@
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <scorep_profile_definition.h>
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 
 #include <stdint.h>
 #include <stdbool.h>

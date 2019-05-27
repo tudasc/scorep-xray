@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,7 +60,7 @@
 #include "scorep_environment.h"
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 
 
 /**

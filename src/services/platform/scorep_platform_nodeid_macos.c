@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,6 +39,11 @@
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <UTILS_Error.h>
 
 #define MIB_LEN 2
 
@@ -58,6 +63,8 @@ SCOREP_Platform_GetNodeId( void )
     len      = sizeof( node_id );
     if ( sysctl( mib, MIB_LEN, &node_id, &len, NULL, 0 ) == -1 )
     {
-        vt_error_msg( "sysctl[KERN_HOSTID] failed: %s", strerror( errno ) );
+        UTILS_FATAL( "sysctl[KERN_HOSTID] failed: %s", strerror( errno ) );
     }
+
+    return node_id;
 }

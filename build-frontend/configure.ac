@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013, 2017-2018,
+dnl Copyright (c) 2009-2013, 2017-2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -66,9 +66,8 @@ AM_SILENT_RULES([yes])
 AM_PROG_AR
 AFS_MAINTAINER_MODE
 
-LT_PREREQ([2.4.6])
-LT_INIT([disable-shared])
-AC_SUBST([LIBTOOL_DEPS])
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AC_PROG_CC
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
@@ -76,6 +75,10 @@ AFS_SUMMARY([C99 compiler used], [$CC])
 AM_PROG_CC_C_O
 
 AC_PROG_CXX
+
+LT_PREREQ([2.4.6])
+LT_INIT([disable-shared])
+AC_SUBST([LIBTOOL_DEPS])
 
 AC_CONFIG_HEADERS([../src/config-frontend.h])
 

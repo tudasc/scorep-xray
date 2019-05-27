@@ -6,7 +6,7 @@
 ## Copyright (c) 2014-2015, 2017-2018,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -45,6 +45,10 @@ if SCOREP_COMPILER_PGI
 # see 'Linking issues with PGI compilers and Open MPI 1.8' #951
 external_ldflags += -pgf90libs
 endif SCOREP_COMPILER_PGI
+
+if HAVE_COMPILER_INSTRUMENTATION
+external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
+endif HAVE_COMPILER_INSTRUMENTATION
 
 ## MPI -------------------------------------------------------------------------
 

@@ -117,6 +117,10 @@ fn_20_two_dim_array__arg( int a[][2], int len );
 static int
 fn_22_skip_body( void )
 {
+    /* TODO: IIRC the idea was to have something which libclang does not accept
+             but other compilers do, but when clang is that 'other' compiler
+             than it already cannot build the target lib */
+    int __builtin_LINE( void );
     return __builtin_LINE();
 }
 

@@ -4,8 +4,8 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
- * Technische Universitaet, Germany
+ * Copyright (c) 2014-2015, 2019,
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
@@ -18,7 +18,7 @@
 
 
 /**
- * @file scorep_io_mgmt_subsystems.c
+ * @file
  */
 
 

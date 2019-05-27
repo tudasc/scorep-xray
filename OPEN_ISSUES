@@ -71,12 +71,22 @@ various Score-P components.
     + IBM XL compiler 16+ on POWER platforms
     + PGI 18+ compilers on OpenPOWER and the 'LLVM Code Generator' on x86
 
+  - Experimental platforms:
+
+    The following platforms are considered experimental and don't get
+    much attention. They may break without notification. Help to
+    maintain these is always welcomed.
+
+    + MinGW
+    + macOS
+      - Building shared/dynamic libraries may not work.
+
 --------------------------------------------------------------------------------
 
 * Automatic compiler instrumentation via "scorep" based on (often
   undocumented) compiler switches
 
-  - GNU    : tested with GCC 4 and higher
+  - GNU    : tested with GCC 4.5 and higher
   - PGI    : tested with version 10.1 and higher
              Note that PGI 13.8 is currently not supported as it is not
              recognized as an PGI compiler anymore. PGI 16 supports
@@ -89,6 +99,7 @@ various Score-P components.
   - Fujitsu: tested with different versions of the language
              environment K-1.2.0 on K computer and compiler version
              1.2.1 on FX-10 systems. Uses the GNU interface
+  - Clang  : tested with Clang 4.0 and higher
 
   - The Intel compiler provides the function name and the source code
     location in one string separated by a colon.  Thus, if the path

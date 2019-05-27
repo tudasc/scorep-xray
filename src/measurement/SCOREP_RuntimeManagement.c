@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,6 +50,16 @@
 #include <string.h>
 #include <inttypes.h>
 
+#if HAVE( PLATFORM_MAC )
+# if HAVE( MACOS_GETEXEC )
+#  include <sys/param.h>
+#  include <mach-o/dyld.h>
+# endif
+# if HAVE( HAVE_MACOS_LIBPROC )
+#  include <libproc.h>
+# endif
+#endif
+
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME CORE
 #include <UTILS_Debug.h>
@@ -73,18 +83,18 @@
 #include <SCOREP_ErrorCallback.h>
 #include <SCOREP_Task.h>
 
-#include "scorep_types.h"
-#include "scorep_subsystem.h"
+#include "scorep_type_utils.h"
+#include "scorep_subsystem_management.h"
 #include "scorep_environment.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"
 #include <SCOREP_Thread_Mgmt.h>
-#include "scorep_location.h"
+#include "scorep_location_management.h"
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"
 #include "scorep_paradigms_management.h"
-#include "scorep_properties.h"
+#include "scorep_properties_management.h"
 #include "scorep_runtime_management_timings.h"
 #include "scorep_libwrap_management.h"
 
@@ -161,25 +171,58 @@ set_executable_name( int argc, char* argv[] )
 {
     if ( executable_name == NULL )
     {
-#if HAVE( POSIX_READLINK )
-        size_t bufsize = 128;
-        while ( 1 )
+#if HAVE( PLATFORM_MAC )
+
+#if HAVE( MACOS_GETEXEC )
+        if ( executable_name == NULL )
         {
-            executable_name = realloc( executable_name, ( bufsize + 1 ) * sizeof( char ) );
-            ssize_t num_bytes = readlink( "/proc/self/exe", executable_name, bufsize );
-            if ( num_bytes == -1 )
+            uint32_t size = MAXPATHLEN;
+            do
             {
-                UTILS_WARNING( "Could not readlink '/proc/self/exe'" );
-                break;
+                executable_name = realloc( executable_name, size + 1 );
             }
-            if ( num_bytes == bufsize )
+            while ( -1 == _NSGetExecutablePath( executable_name, &size ) );
+        }
+#endif  /* MACOS_GETEXEC */
+
+#if HAVE( HAVE_MACOS_LIBPROC )
+        /* Use proc_pidpath (macOS and possibly other BSD variants) */
+        if ( executable_name == NULL )
+        {
+            executable_name = malloc( PROC_PIDPATHINFO_MAXSIZE );
+            if ( 0 >= proc_pidpath( getpid(), executable_name, PROC_PIDPATHINFO_MAXSIZE ) )
             {
-                bufsize *= 2;
+                UTILS_WARNING( "Could could not retrieve exec via proc_pidpath" );
+                free( executable_name );
+                executable_name = NULL;
             }
-            else
+        }
+#endif /* HAVE_MACOS_LIBPROC */
+
+#endif /* PLATFORM_MAC */
+
+#if HAVE( POSIX_READLINK )
+        if ( executable_name == NULL )
+        {
+            size_t bufsize = 128;
+            while ( 1 )
             {
-                executable_name[ num_bytes ] = '\0';
-                break;
+                executable_name = realloc( executable_name, ( bufsize + 1 ) * sizeof( char ) );
+                ssize_t num_bytes = readlink( "/proc/self/exe", executable_name, bufsize );
+                if ( num_bytes == -1 )
+                {
+                    UTILS_WARNING( "Could not readlink '/proc/self/exe'" );
+                    break;
+                }
+                if ( num_bytes == bufsize )
+                {
+                    bufsize *= 2;
+                }
+                else
+                {
+                    executable_name[ num_bytes ] = '\0';
+                    break;
+                }
             }
         }
 #endif  /* POSIX_READLINK */

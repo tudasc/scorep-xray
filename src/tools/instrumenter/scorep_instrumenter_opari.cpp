@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -77,6 +77,13 @@
 #define SCOREP_OPARI_MANGLING_SCHEME "fujitsu"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
+#elif SCOREP_BACKEND_COMPILER_CLANG
+/* No Fortran, thus no mangling, which matches IBM */
+#define SCOREP_OPARI_MANGLING_SCHEME "ibm"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
 #endif
 
 /* **************************************************************************************
@@ -425,6 +432,9 @@ SCOREP_Instrumenter_OpariAdapter::invoke_awk_script( SCOREP_Instrumenter& instru
                                                      const std::string&   output_file )
 {
     std::string command = m_nm + " " + object_files
+#if HAVE( PLATFORM_MAC )
+                          + " | sed -e 's/ _/ /'"
+#endif
                           + " | " + m_opari_script
                           + " > " + output_file;
     instrumenter.executeCommand( command );

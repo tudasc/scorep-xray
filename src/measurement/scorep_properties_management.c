@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,12 +50,12 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_DefinitionHandles.h>
 
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 #include "scorep_status.h"
 
 #include <tracing/SCOREP_Tracing.h>
 
-#include "scorep_properties.h"
+#include "scorep_properties_management.h"
 #include <SCOREP_Memory.h>
 
 static struct scorep_property

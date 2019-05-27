@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2016, 2019,
  * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -24,7 +24,7 @@
 #include <SCOREP_Hashtab.h>
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
-#include <scorep_types.h>
+#include <scorep_type_utils.h>
 #include <scorep_environment.h>
 #define SCOREP_DEBUG_MODULE_NAME UNIFY
 #include <UTILS_Debug.h>
@@ -661,9 +661,9 @@ copy_system_tree_seq( scorep_system_tree_seq* root )
  * @param size   Number of elements in @a array.
  */
 static void
-mergesort( scorep_system_tree_seq** array,
-           scorep_system_tree_seq** buffer,
-           uint64_t                 size )
+internal_mergesort( scorep_system_tree_seq** array,
+                    scorep_system_tree_seq** buffer,
+                    uint64_t                 size )
 {
     if ( size < 2 )
     {
@@ -672,8 +672,8 @@ mergesort( scorep_system_tree_seq** array,
 
     /* Divide and process recursively */
     uint64_t middle = size / 2;
-    mergesort( array, buffer, middle );
-    mergesort( &array[ middle ], &buffer[ middle ], size - middle );
+    internal_mergesort( array, buffer, middle );
+    internal_mergesort( &array[ middle ], &buffer[ middle ], size - middle );
 
     /* Merge */
     uint64_t index_a = 0;
@@ -729,7 +729,7 @@ sort_system_tree_seq( scorep_system_tree_seq* root )
         scorep_system_tree_seq** buffer = calloc( root->num_children,
                                                   sizeof( scorep_system_tree_seq* ) );
         UTILS_ASSERT( buffer );
-        mergesort( root->children, buffer, root->num_children );
+        internal_mergesort( root->children, buffer, root->num_children );
         free( buffer );
     }
 }

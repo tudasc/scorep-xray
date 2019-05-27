@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,7 +37,7 @@
 
 
 #include <config.h>
-#include "scorep_location.h"
+#include "scorep_location_management.h"
 
 #include <inttypes.h>
 #include <signal.h>
@@ -45,7 +45,7 @@
 #include <string.h>
 
 #include <SCOREP_Mutex.h>
-#include "scorep_subsystem.h"
+#include "scorep_subsystem_management.h"
 #include "scorep_substrates_definition.h"
 #include "scorep_status.h"
 #include <SCOREP_Thread_Mgmt.h>

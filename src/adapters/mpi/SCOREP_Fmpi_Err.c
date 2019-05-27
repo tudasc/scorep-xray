@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -184,7 +184,7 @@ FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, scorep_fo
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
-    c_string = scorep_f2c_string( string, string_len );
+    c_string = scorep_mpi_f2c_string( string, string_len );
 
 
 
@@ -302,7 +302,7 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr,
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
-    c_string = scorep_f2c_string( string, string_len );
+    c_string = scorep_mpi_f2c_string( string, string_len );
 
 
 

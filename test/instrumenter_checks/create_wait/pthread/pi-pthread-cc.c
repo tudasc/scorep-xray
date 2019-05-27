@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -41,8 +44,8 @@ number_of_hits_per_thread( void* input )
     double x, y;
     long   i;
     // initialize random seed
-    int rand_seed_x = time( NULL ) + pt_input->thread_id;
-    int rand_seed_y = time( NULL ) + pt_input->thread_id + 1;
+    unsigned rand_seed_x = time( NULL ) + pt_input->thread_id;
+    unsigned rand_seed_y = time( NULL ) + pt_input->thread_id + 1;
 
     for ( i = 0; i < pt_input->number_of_points; i++ )
     {

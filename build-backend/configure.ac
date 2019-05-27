@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2018,
+dnl Copyright (c) 2009-2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -61,10 +61,8 @@ AM_SILENT_RULES([yes])
 AM_PROG_AR
 AFS_MAINTAINER_MODE
 
-LT_PREREQ([2.4.6])
-LT_INIT([disable-shared])
-AC_SUBST([LIBTOOL_DEPS])
-AFS_LINKMODE
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AC_PROG_CC dnl required
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
@@ -76,24 +74,41 @@ AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
 
 AC_PROG_F77 dnl needed for linking if we build mpi fortran wrappers,
             dnl also for tests
-AC_PROG_F77_C_O
-# AC_F*_LIBRARY_LDFLAGS should not be needed as we link the
-# libscorep_* libs with the fortran compiler. Users of libscorep_* use
-# the appropriate compiler anyhow.  Well , these macros are implicitly
-# called by AC_F*_WRAPPERS. On Cray calls to AC_F*_WRAPPERS produce
-# linker errors that can be fixed by removing "-ltcmalloc_minimal"
-# from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
-AC_F77_LIBRARY_LDFLAGS
-AS_CASE([${ac_scorep_platform}],
-        [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
-AC_F77_WRAPPERS
+SCOREP_FORTRAN_F77_WORKS dnl checks whether the Fortran 77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+dnl which renders the if ineffective
+if test "x${scorep_cv_f77_works}" = "xyes"; then
+    AC_PROG_F77_C_O
+    # AC_F*_LIBRARY_LDFLAGS should not be needed as we link the
+    # libscorep_* libs with the fortran compiler. Users of libscorep_* use
+    # the appropriate compiler anyhow.  Well , these macros are implicitly
+    # called by AC_F*_WRAPPERS. On Cray calls to AC_F*_WRAPPERS produce
+    # linker errors that can be fixed by removing "-ltcmalloc_minimal"
+    # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
+    AC_F77_LIBRARY_LDFLAGS
+    AS_CASE([${ac_scorep_platform}],
+            [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
+    AC_F77_WRAPPERS
+fi
 
 AC_PROG_FC dnl needed for tests only
-AC_PROG_FC_C_O
-AC_FC_LIBRARY_LDFLAGS
-AS_CASE([${ac_scorep_platform}],
-        [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
-AC_FC_WRAPPERS
+SCOREP_FORTRAN_FC_WORKS dnl checks whether the Fortran 77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+dnl which renders the if ineffective
+if test "x${scorep_cv_fc_works}" = "xyes"; then
+    AC_PROG_FC_C_O
+    AC_FC_LIBRARY_LDFLAGS
+    AS_CASE([${ac_scorep_platform}],
+            [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
+    AC_FC_WRAPPERS
+fi
+AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${scorep_cv_f77_works}" = "xyes" || test "x${scorep_cv_fc_works}" = "xyes"])
+
+LT_PREREQ([2.4.6])
+LT_INIT([disable-shared])
+AC_SUBST([LIBTOOL_DEPS])
+AFS_LINKMODE
+AFS_SUMMARY([Link mode], [static=$enable_static, shared=$enable_shared])
 
 AM_PROG_AS
 
@@ -310,6 +325,10 @@ SCOREP_IQUOTE_SUPPORT
 AC_SEARCH_LIBS([trunc], [m])
 AC_SEARCH_LIBS([ceil], [m])
 
+AS_IF([test "x${ac_scorep_platform}" = "xmac"],
+      [SCOREP_MACOS_GETEXEC
+       SCOREP_MACOS_LIBPROC])
+
 # assuming that mpi configure already ran
 AC_SCOREP_COND_HAVE([MPI_SUPPORT],
                     [test -f ../build-mpi/Makefile],
@@ -344,8 +363,19 @@ dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only availabl
 AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
 AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}])
+AC_SUBST([SYS_LIB_SEARCH_PATH_VAR],    [${shlibpath_var}])
+AC_SUBST([LT_OBJDIR],                  ["$lt_cv_objdir/"])
 
 scorep_list_of_wrappers=
+
+additional_compiler_list=""
+AM_COND_IF([SCOREP_HAVE_F77], [
+    AS_VAR_APPEND([additional_compiler_list], [" F77"])
+])
+AM_COND_IF([SCOREP_HAVE_FC], [
+    AS_VAR_APPEND([additional_compiler_list], [" FC"])
+])
+
 additional_compiler_prefix_list=
 AM_COND_IF([HAVE_MPI_SUPPORT], [
     AS_VAR_APPEND([additional_compiler_prefix_list], [" MPI"])
@@ -353,8 +383,9 @@ AM_COND_IF([HAVE_MPI_SUPPORT], [
 AM_COND_IF([HAVE_SHMEM_SUPPORT], [
     AS_VAR_APPEND([additional_compiler_prefix_list], [" SHMEM"])
 ])
+
 for compiler_prefix in '' ${additional_compiler_prefix_list}; do
-    for compiler_var in CC CXX F77 FC; do
+    for compiler_var in CC CXX ${additional_compiler_list}; do
         full_compiler_var=${compiler_prefix}${compiler_var}
         if eval test x\${${full_compiler_var}:+set} != xset; then
             continue

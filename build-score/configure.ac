@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013, 2015,
+dnl Copyright (c) 2009-2013, 2015, 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -88,6 +88,7 @@ AS_CASE([${ax_cv_cxx_compiler_vendor}],
     [gnu],      [CC=gcc],
     [sun],      [CC=cc],
     [portland], [CC=pgcc],
+    [clang],    [CC=clang],
     [AC_MSG_WARN([invalid value of CXX vendor (${ax_cv_cxx_compiler_vendor}), cannot determine corresponding CC. Using gcc as fall-back.])
      CC=gcc
      fallback=" (fall-back)"])
@@ -103,12 +104,15 @@ AM_SILENT_RULES([yes])
 AM_PROG_AR
 AFS_MAINTAINER_MODE
 
-LT_PREREQ([2.4.6])
-LT_INIT
-AC_SUBST([LIBTOOL_DEPS])
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AC_PROG_CC
 AC_SCOREP_PROG_CC_C99
+
+LT_PREREQ([2.4.6])
+LT_INIT
+AC_SUBST([LIBTOOL_DEPS])
 
 AFS_SUMMARY([C compiler used],   [${CC}${fallback}])
 AFS_SUMMARY([C++ compiler used], [${CXX}])

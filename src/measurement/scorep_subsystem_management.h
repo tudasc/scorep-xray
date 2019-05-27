@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef SCOREP_INTERNAL_SUBSYSTEM_H
-#define SCOREP_INTERNAL_SUBSYSTEM_H
+#ifndef SCOREP_SUBSYSTEM_MANAGEMENT_H
+#define SCOREP_SUBSYSTEM_MANAGEMENT_H
 
 
 /**
@@ -100,4 +100,4 @@ scorep_subsystems_dump_manifest( FILE*       manifestFile,
                                  const char* relativeSourceDir,
                                  const char* targetDir );
 
-#endif /* SCOREP_INTERNAL_SUBSYSTEM_H */
+#endif /* SCOREP_SUBSYSTEM_MANAGEMENT_H */

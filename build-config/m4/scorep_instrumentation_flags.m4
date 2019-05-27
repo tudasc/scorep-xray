@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2013, 2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2013-2015,
+dnl Copyright (c) 2013-2015, 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2016,
@@ -67,6 +67,15 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  scorep_compiler_instrumentation_needs_symbol_table=yes],
     [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"
                  scorep_compiler_instrumentation_needs_symbol_table="yes"],
+    [clang],    [SCOREP_CC_FLAG_TEST([-g -finstrument-functions])
+                 SCOREP_CC_FLAG_TEST([-g -finstrument-functions-after-inlining])
+                 scorep_compiler_instrumentation_needs_symbol_table="yes"
+                 AS_CASE([${ac_scorep_platform}],
+                         [mac*], [# Disable position independent executable, which
+                                  # also disables address space randomization,
+                                  # which avoids matching addresses between NM and
+                                  # __cyg_profile_func_*
+                                  scorep_compiler_instrumentation_ldflags="-Wl,-no_pie"])],
     [])dnl
 
 AS_IF([test "x${scorep_with_extra_instrumentation_cppflags}" != x || \
@@ -107,6 +116,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                              scorep_instrumentation_ldflags="-dynamic"])],
     [cray],     [],
     [fujitsu],  [scorep_instrumentation_ldflags="-Ntl_notrt"],
+    [clang],    [],
     [])dnl
 
 AS_IF([test "x${scorep_instrumentation_cppflags}" != x],

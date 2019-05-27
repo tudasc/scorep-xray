@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2016,
+## Copyright (c) 2016, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## See the COPYING file in the package base directory for details.
@@ -22,6 +22,8 @@ SRC_ROOT=@abs_top_srcdir@/..
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 
 RESULT_DIR=$PWD/scorep-openacc
+
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 ./scorep -v --build-check --nocompiler --openacc @CC@ @SCOREP_COMPILER_ACC_FLAGS@ $SRC_ROOT/test/adapters/openacc/openacc_test.c -o openacc_test -I.
 

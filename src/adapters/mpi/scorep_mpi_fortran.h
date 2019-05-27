@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018,
+ * Copyright (c) 2009-2011, 2018-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -40,15 +40,8 @@
 
 #include <stddef.h>
 
-/**
- * Converts a Fortran string into a C-string.
- * @param f_string Pointer to the fortran string.
- * @param length   Number of bytes in the fortran string.
- * @returns the trimmed C-string. The allocated memory must be freed by the caller.
- */
-char*
-scorep_f2c_string( const char*              f_string,
-                   scorep_fortran_charlen_t length );
-
+/** @brief Init the MPI Fortran support */
+void
+scorep_mpi_fortran_init( void );
 
 #endif /* SCOERP_FORTRAN_H */

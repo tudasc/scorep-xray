@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -779,7 +779,7 @@ FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, scorep_
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_filename = NULL;
-    c_filename = scorep_f2c_string( filename, filename_len );
+    c_filename = scorep_mpi_f2c_string( filename, filename_len );
 
 
 
@@ -1025,7 +1025,7 @@ FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_filename = NULL;
     MPI_File c_fh;
-    c_filename = scorep_f2c_string( filename, filename_len );
+    c_filename = scorep_mpi_f2c_string( filename, filename_len );
 
 
 
@@ -1183,7 +1183,7 @@ FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh      = PMPI_File_f2c( *fh );
     char*    c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -1230,7 +1230,7 @@ FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* wri
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 

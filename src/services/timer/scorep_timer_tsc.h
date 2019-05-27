@@ -4,6 +4,9 @@
  * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -77,13 +80,6 @@ _compile_time_assert( void )
 #if ( ( ( ( defined( __GNUC__ ) && ( defined( __powerpc__ ) || defined( __ppc__ ) ) ) || ( defined( __MWERKS__ ) && defined( macintosh ) ) ) ) || ( defined( __IBM_GCC_ASM ) && ( defined( __powerpc__ ) || defined( __ppc__ ) ) ) )  && !defined( HAVE_TICK_COUNTER )
 #define HAVE_TICK_COUNTER
 #define HAVE_SCOREP_POWERPC32_TSC 1
-#endif
-
-/* MacOS/Mach (Darwin) time-base register interface (unlike UpTime, */
-/* from Carbon, requires no additional libraries to be linked). */
-#if defined( HAVE_MACH_ABSOLUTE_TIME ) && defined( HAVE_MACH_MACH_TIME_H ) && !defined( HAVE_TICK_COUNTER )
-#define HAVE_TICK_COUNTER
-#define HAVE_SCOREP_DARWIN_TSC 1
 #endif
 
 /* Pentium cycle counter */
@@ -204,10 +200,6 @@ _compile_time_assert( void )
 #endif
 
 #if HAVE( SCOREP_POWERPC32_TSC )
-#endif
-
-#if HAVE( SCOREP_DARWIN_TSC )
-# include <mach/mach_time.h>
 #endif
 
 #if HAVE( SCOREP_X86_32_TSC )

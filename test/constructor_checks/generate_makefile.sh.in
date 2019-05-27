@@ -28,6 +28,9 @@ OPENMP_CFLAGS="@OPENMP_CFLAGS@"
 OPENMP_CXXFLAGS="@OPENMP_CXXFLAGS@"
 OPENMP_FCFLAGS="@OPENMP_FCFLAGS@"
 
+@SCOREP_HAVE_FC_TRUE@have_fortran=true
+@SCOREP_HAVE_FC_FALSE@have_fortran=false
+
 cat <<_EOF
 
 SRCDIR = $SRCDIR
@@ -121,6 +124,11 @@ bin/test_constructor_check_${target}_cxx\$(EXEEXT): \\
     \$(BINDIR)/scorep \$(BINDIR)/scorep-config
 	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(CXXLD) $cflags \$< -o \$@
 
+_EOF
+
+    if $have_fortran; then
+
+    cat <<_EOF
 all: bin/test_constructor_check_${target}_f\$(EXEEXT)
 
 test_constructor_check_${target}_f.\$(OBJEXT): \\
@@ -134,5 +142,7 @@ bin/test_constructor_check_${target}_f\$(EXEEXT): \\
 	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(FCLD) $fcflags \$< -o \$@
 
 _EOF
+
+    fi #have_fortran
 
 done #thread

@@ -4,6 +4,9 @@
  * Copyright (c) 2015-2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -67,10 +70,6 @@
     }
     while ( tbu0 != tbu1 );
     return ( ( ( uint64_t )tbu0 ) << 32 ) | ( uint64_t )tbl;
-#endif
-
-#if HAVE( SCOREP_DARWIN_TSC )
-    return mach_absolute_time();
 #endif
 
 #if HAVE( SCOREP_X86_32_TSC )

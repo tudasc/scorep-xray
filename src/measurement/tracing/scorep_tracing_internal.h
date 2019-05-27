@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -47,7 +47,7 @@
 #include <SCOREP_Definitions.h>
 
 #include "scorep_rewind_stack_management.h"
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 
 extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;

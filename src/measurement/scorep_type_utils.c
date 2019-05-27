@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,7 +39,7 @@
 
 #include <config.h>
 
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 
 /**
  * Converts a SCOREP_ParadigmType into a string.
@@ -128,7 +128,6 @@ scorep_io_paradigm_property_to_string( SCOREP_IoParadigmProperty paradigmPropert
             return "unknown";
     }
 }
-
 
 /**
  * Converts a SCOREP_RegionType into a string.

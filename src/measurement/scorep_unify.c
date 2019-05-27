@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
-#include "scorep_subsystem.h"
+#include "scorep_subsystem_management.h"
 #include "scorep_system_tree_sequence.h"
 
 #include <UTILS_Error.h>

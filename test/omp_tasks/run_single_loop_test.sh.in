@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013, 2015,
+## Copyright (c) 2009-2011, 2013, 2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -53,6 +53,7 @@ cp  @abs_srcdir@/task_single_loop.c task_single_loop.c
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
 @SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
 result_dir_base="scorep_single_loop_"
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 # provide a reasonable default input for running the applications
 if [ ! x$1 = x ]; then
@@ -72,7 +73,7 @@ fi
 #         --build-check \
 #         @CC@ -I. -o task_loop_main task_single_loop.c @OPENMP_CFLAGS@
 #
-#export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
+#export @SYS_LIB_SEARCH_PATH_VAR@=@SCOREP_PAPI_LIBDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 #if [ ! -e task_loop_main ]; then
 #    exit 1
 #fi

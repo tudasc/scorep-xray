@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,7 +41,7 @@
 
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
-#include <scorep_types.h>
+#include <scorep_type_utils.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 

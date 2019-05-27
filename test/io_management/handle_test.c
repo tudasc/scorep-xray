@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -91,7 +91,7 @@ test_open( const char* path )
 
     if ( fd != -1 )
     {
-        SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( path );
+        SCOREP_IoFileHandle   file   = SCOREP_Definitions_NewIoFile( path, SCOREP_INVALID_SYSTEM_TREE_NODE );
         SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
             SCOREP_IO_PARADIGM_POSIX, file, &fd );
     }
@@ -275,7 +275,7 @@ tc_create_handle( CuTest* tc )
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                        0, "" );
-    SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( "/tmp" );
+    SCOREP_IoFileHandle   file   = SCOREP_Definitions_NewIoFile( "/tmp", SCOREP_INVALID_SYSTEM_TREE_NODE );
     SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
         SCOREP_IO_PARADIGM_POSIX, file, &fd );
 
@@ -293,7 +293,7 @@ tc_create_handle( CuTest* tc )
 static void
 tc_recursive_create_handle( CuTest* tc )
 {
-    SCOREP_IoFileHandle file = SCOREP_IoMgmt_GetIoFileHandle( "/tmp" );
+    SCOREP_IoFileHandle file = SCOREP_Definitions_NewIoFile( "/tmp", SCOREP_INVALID_SYSTEM_TREE_NODE );
 
     int fd = 3;
     SCOREP_IoMgmt_BeginHandleCreation( SCOREP_IO_PARADIGM_POSIX,
@@ -332,7 +332,7 @@ tc_insert_handle( CuTest* tc )
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                        0, "" );
-    SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( "/tmp" );
+    SCOREP_IoFileHandle   file   = SCOREP_Definitions_NewIoFile( "/tmp", SCOREP_INVALID_SYSTEM_TREE_NODE );
     SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
         SCOREP_IO_PARADIGM_POSIX, file, &fd );
     CuAssertIntNotEquals( tc, handle, SCOREP_INVALID_IO_HANDLE );
@@ -365,7 +365,7 @@ tc_reinsert_handle( CuTest* tc )
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                        0, "" );
-    SCOREP_IoFileHandle file = SCOREP_IoMgmt_GetIoFileHandle( "/tmp" );
+    SCOREP_IoFileHandle file = SCOREP_Definitions_NewIoFile( "/tmp", SCOREP_INVALID_SYSTEM_TREE_NODE );
 
     SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
         SCOREP_IO_PARADIGM_POSIX, file, &fd );
@@ -396,7 +396,7 @@ tc_remove_handle( CuTest* tc )
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                        0, "" );
-    SCOREP_IoFileHandle   file   = SCOREP_IoMgmt_GetIoFileHandle( path );
+    SCOREP_IoFileHandle   file   = SCOREP_Definitions_NewIoFile( path, SCOREP_INVALID_SYSTEM_TREE_NODE );
     SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_CompleteHandleCreation(
         SCOREP_IO_PARADIGM_POSIX, file, &fd );
 
@@ -423,7 +423,7 @@ tc_duplicate_handle( CuTest* tc )
                                        SCOREP_IO_HANDLE_FLAG_NONE,
                                        SCOREP_INVALID_INTERIM_COMMUNICATOR,
                                        0, "" );
-    SCOREP_IoFileHandle   file       = SCOREP_IoMgmt_GetIoFileHandle( path );
+    SCOREP_IoFileHandle   file       = SCOREP_Definitions_NewIoFile( path, SCOREP_INVALID_SYSTEM_TREE_NODE );
     SCOREP_IoHandleHandle old_handle = SCOREP_IoMgmt_CompleteHandleCreation(
         SCOREP_IO_PARADIGM_POSIX, file, &old_fd );
 

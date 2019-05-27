@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -36,14 +36,14 @@ libscorep_io_mgmt_subsystems_la_SOURCES  = $(SRC_ROOT)test/io_management/scorep_
 libscorep_io_mgmt_subsystems_la_CPPFLAGS = $(subsystems_paradigm_cppflags)
 
 io_mgmt_libadd = \
-    $(common_event_libadd)                    \
-    libscorep_io_mgmt_subsystems.la           \
-    $(common_mgmt_libadd)                     \
-    $(external_libadd)                        \
-    libscorep_mpp_mockup.la                   \
-    libscorep_thread_mockup.la                \
-    libscorep_mutex_mockup.la                 \
-    libscorep_online_access_spp.la
+    $(common_event_libadd) \
+    libscorep_io_mgmt_subsystems_la-scorep_io_mgmt_subsystems.lo \
+    $(common_mgmt_libadd) \
+    $(external_libadd) \
+    libscorep_mpp_mockup.la \
+    libscorep_thread_mockup.la \
+    libscorep_mutex_mockup.la \
+    libscorep_online_access_mockup.la
 
 io_mgmt_ldflags = $(external_ldflags)
 

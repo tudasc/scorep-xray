@@ -4,7 +4,7 @@
  * Copyright (c) 2014, 2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -26,7 +26,7 @@
 #include <scorep_thread_generic.h>
 #include <SCOREP_ThreadCreateWait_Event.h>
 
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>

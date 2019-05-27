@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_PROPERTIES_H
-#define SCOREP_INTERNAL_PROPERTIES_H
+#ifndef SCOREP_PROPERTIES_MANAGEMENT_H
+#define SCOREP_PROPERTIES_MANAGEMENT_H
 
 /**
  * @file
@@ -45,4 +45,4 @@ scorep_properties_get_substrate_mgmt_callbacks( void );
 const SCOREP_Substrates_Callback*
 scorep_properties_get_substrate_callbacks( void );
 
-#endif /* SCOREP_INTERNAL_PROPERTIES_H */
+#endif /* SCOREP_PROPERTIES_MANAGEMENT_H */

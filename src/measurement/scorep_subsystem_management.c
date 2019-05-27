@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,7 +38,7 @@
 
 
 #include <config.h>
-#include "scorep_subsystem.h"
+#include "scorep_subsystem_management.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -293,7 +293,7 @@ scorep_subsystems_finalize_location( SCOREP_Location* locationData )
 
 
 /**
- * Called before the unification process starts.
+ * Called after the unification step.
  */
 void
 scorep_subsystems_pre_unify( void )
@@ -317,7 +317,7 @@ scorep_subsystems_pre_unify( void )
 
 
 /**
- * Called after the unification step.
+ * Called before the unification process starts.
  */
 void
 scorep_subsystems_post_unify( void )

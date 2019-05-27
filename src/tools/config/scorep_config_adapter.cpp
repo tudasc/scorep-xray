@@ -58,6 +58,12 @@
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
 #define SCOREP_COMPILER_TYPE "fujitsu"
+
+#elif SCOREP_BACKEND_COMPILER_CLANG
+#define SCOREP_COMPILER_TYPE "gnu"
+
+#else
+#error "Missing compiler specific handling, extension required."
 #endif
 
 /* **************************************************************************************
@@ -68,7 +74,11 @@ std::deque<SCOREP_Config_Adapter*> SCOREP_Config_Adapter::all;
 void
 SCOREP_Config_Adapter::init( void )
 {
+#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
     all.push_back( new SCOREP_Config_CompilerAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "compiler" ) );
+#endif
     all.push_back( new SCOREP_Config_UserAdapter() );
     all.push_back( new SCOREP_Config_Opari2Adapter() );
 #if HAVE_BACKEND( CUDA_SUPPORT )
@@ -337,6 +347,7 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 bool
 SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
 {
+#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
     if ( SCOREP_Config_Adapter::checkArgument( arg ) )
     {
         return true;
@@ -349,7 +360,8 @@ SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
         m_cflags += "-fplugin-arg-scorep_instrument_function-" + arg.substr( 22 ) + " ";
         return true;
     }
-#endif
+#endif /*HAVE_BACKEND( GCC_PLUGIN_SUPPORT )*/
+#endif /*HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
 
     return false;
 }

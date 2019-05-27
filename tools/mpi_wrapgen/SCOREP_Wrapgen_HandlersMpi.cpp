@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018,
+ * Copyright (c) 2009-2011, 2018-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -824,7 +824,7 @@ SCOREP::Wrapgen::handler::mpi::init_f2c_c2f
             if ( datatype::is_input_param( arg ) )
             {
                 // char* with input need copy and trim
-                str += "c_" + arg_name + " = scorep_f2c_string( " + arg_name
+                str += "c_" + arg_name + " = scorep_mpi_f2c_string( " + arg_name
                        + ", " + arg_name + "_len );\n    ";
             }
             else
@@ -877,7 +877,7 @@ SCOREP::Wrapgen::handler::mpi::init_fortran
             if ( datatype::is_input_param( arg ) )
             {
                 // char* with input need copy and trim
-                str += "c_" + arg_name + " = scorep_f2c_string( " + arg_name
+                str += "c_" + arg_name + " = scorep_mpi_f2c_string( " + arg_name
                        + ", " + arg_name + "_len );\n    ";
             }
             else

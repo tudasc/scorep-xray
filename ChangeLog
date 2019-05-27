@@ -13,6 +13,10 @@ Features and improvements:
   is no longer specific to point-to-point communication.
 - Support for recording I/O activities: Calls to POSIX I/O and MPI-I/O
   are wrapped and meta data about individual I/O operations is recorded.
+- Added support for the Clang compiler suite. Select via
+  `--with-nocross-compiler-suite=clang`. Additionally experimental
+  support for macOS based systems was added, but needs to be enabled
+  with `--enable-experimental-platform` explicitly.
 
 Bugfixes:
 

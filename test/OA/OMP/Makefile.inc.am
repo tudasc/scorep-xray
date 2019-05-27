@@ -46,7 +46,11 @@ oa_omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ \
 oa_omp_test_LDADD    = $(omp_libadd)
 oa_omp_test_LDFLAGS  = $(omp_ldflags)
 
+if HAVE_GDB
+
 TESTS_OMP += ./../test/OA/OMP/run_oa_omp_test.sh
+
+endif HAVE_GDB
 
 endif HAVE_ONLINE_ACCESS
 endif HAVE_SCOREP_OMP_TPD

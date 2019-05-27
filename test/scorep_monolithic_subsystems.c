@@ -4,8 +4,8 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
- * Technische Universitaet, Germany
+ * Copyright (c) 2014-2015, 2019,
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
@@ -35,7 +35,9 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_UnwindingService;
 #if HAVE( SAMPLING_SUPPORT )
 extern const SCOREP_Subsystem SCOREP_Subsystem_SamplingService;
 #endif
+#if HAVE( COMPILER_INSTRUMENTATION )
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
+#endif
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
@@ -55,7 +57,9 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
 #if HAVE( SAMPLING_SUPPORT )
     &SCOREP_Subsystem_SamplingService,
 #endif
+#if HAVE( COMPILER_INSTRUMENTATION )
     &SCOREP_Subsystem_CompilerAdapter,
+#endif
     &SCOREP_Subsystem_UserAdapter,
 #ifdef SCOREP_SUBSYSTEMS_OMP
     &SCOREP_Subsystem_Opari2OpenmpAdapter,

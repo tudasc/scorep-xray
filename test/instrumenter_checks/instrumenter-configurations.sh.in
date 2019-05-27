@@ -13,7 +13,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2014, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -73,8 +73,9 @@ for paradigm in serial omp mpi mpi_omp shmem shmem_omp cuda; do
 done
 
 # create possible configurations, one file per paradigm
-@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in compiler nocompiler; do
-@SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in nocompiler; do
+compilerargs="nocompiler"
+@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@compilerargs="compiler nocompiler"
+for comp_arg in $compilerargs; do
 
     for pomp_user_arg in pomp nopomp; do
 @HAVE_SCOREP_PDT_FALSE@        for user_arg in user nouser; do
@@ -146,7 +147,7 @@ done
 @HAVE_SCOREP_PDT_TRUE@        done
 @HAVE_SCOREP_PDT_FALSE@        done
     done
-@HAVE_COMPILER_INSTRUMENTATION_TRUE@done
+done
 
 # Notify about created files
 

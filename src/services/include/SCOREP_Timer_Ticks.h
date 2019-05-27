@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -59,6 +62,11 @@
 # include <sys/time.h>
 # include <sys/systemcfg.h>
 #endif /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+#include <inttypes.h>
+#include <mach/mach_time.h>
+#endif /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
 # include "../timer/scorep_timer_tsc.h"
@@ -123,6 +131,14 @@ SCOREP_Timer_GetClockTicks( void )
             return ( uint64_t )tmp.tb_high * UINT64_C( 1e9 ) + ( uint64_t )tmp.tb_low;
         }
 #endif  /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+        case TIMER_MAC:
+        {
+            extern double scorep_ticks_to_nsec_mac;
+            return ( uint64_t )( scorep_ticks_to_nsec_mac * mach_absolute_time() );
+        }
+#endif  /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:

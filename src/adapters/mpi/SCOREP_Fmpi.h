@@ -59,8 +59,9 @@
     events are generated as with the C functions.
  */
 
-#include "SCOREP_Fortran_Wrapper.h"
 #include "scorep_mpi_fortran.h"
+#include "SCOREP_Mpi.h"
+#include <SCOREP_Fortran_Wrapper.h>
 #include <SCOREP_InMeasurement.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,7 +71,10 @@
 #  define NEED_F2C_CONV
 #endif
 
-extern int scorep_mpi_status_size;
+char*
+scorep_mpi_f2c_string( const char*              f_string,
+                       scorep_fortran_charlen_t length );
+
 
 #if HAVE( MPI_BOTTOM )
 /** pointer representing the Fortran value for MPI_BOTTOM */

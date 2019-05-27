@@ -22,8 +22,11 @@ scorep_online_access_registry_CPPFLAGS = $(AM_CPPFLAGS) \
     -D__STDC_FORMAT_MACROS
 
 if ! PLATFORM_AIX
+#Added MAC to exclude list, it doesn't likes it (if we add it we would need to add -D_DARWIN_C_SOURCE)
+if ! PLATFORM_MAC
 scorep_online_access_registry_CPPFLAGS += -D_POSIX_C_SOURCE=200112L
-endif
+endif ! PLATFORM_MAC
+endif ! PLATFORM_AIX
 
 scorep_online_access_registry_LDADD = $(LIB_ROOT)libutils.la
 

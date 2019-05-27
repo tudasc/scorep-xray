@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015-2016,
+ * Copyright (c) 2009-2012, 2015-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,8 +29,8 @@
  */
 
 
-#ifndef SCOREP_INTERNAL_TYPES_H
-#define SCOREP_INTERNAL_TYPES_H
+#ifndef SCOREP_TYPE_UTILS_H
+#define SCOREP_TYPE_UTILS_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -146,5 +146,4 @@ scorep_location_type_to_string( SCOREP_LocationType locationType );
 const char*
 scorep_location_group_type_to_string( SCOREP_LocationGroupType locationGroupType );
 
-
-#endif /* SCOREP_INTERNAL_TYPES_H */
+#endif /* SCOREP_TYPE_UTILS_H */

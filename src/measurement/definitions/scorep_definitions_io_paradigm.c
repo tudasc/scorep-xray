@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,7 +33,7 @@
 
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
-#include <scorep_types.h>
+#include <scorep_type_utils.h>
 #include <SCOREP_Memory.h>
 
 

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -46,18 +46,25 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h               \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.c   \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.h
-
-nodist_EXTRA_libscorep_adapter_mpi_mgmt_la_SOURCES = force_link_with_F77LD.f
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
     $(UTILS_CPPFLAGS)                    \
+    -I$(INC_ROOT)src/adapters/include    \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_MUTEX)                   \
     -I$(INC_ROOT)src/services/include    \
-    -I$(INC_DIR_DEFINITIONS)			 \
+    -I$(INC_DIR_DEFINITIONS)             \
     @SCOREP_TIMER_CPPFLAGS@
 
+BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la
+
+if HAVE_MPI_FORTRAN_SUPPORT
+
+libscorep_adapter_mpi_mgmt_la_LINK = $(F77LINK)
+libscorep_adapter_mpi_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.c \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_f2c.c
 
 libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
@@ -66,11 +73,6 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_mgmt_fortran_sub4.la \
     libscorep_adapter_mpi_fortran_conv.la      \
     $(LIB_DIR_SCOREP)libutils.la
-libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
-    @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags)
-
-BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
@@ -133,11 +135,29 @@ if SCOREP_COMPILER_FUJITSU
 libscorep_adapter_mpi_fortran_conv_la_LIBADD = $(FLIBS)
 endif SCOREP_COMPILER_FUJITSU
 
+else !HAVE_MPI_FORTRAN_SUPPORT
+
+libscorep_adapter_mpi_mgmt_la_LINK = $(LINK)
+libscorep_adapter_mpi_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran_mockup.c
+libscorep_adapter_mpi_mgmt_la_LIBADD = \
+    $(LIB_DIR_SCOREP)libutils.la
+
+endif !HAVE_MPI_FORTRAN_SUPPORT
+
+libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
+    @MPILIB_LDFLAGS@ \
+    $(library_api_version_ldflags) \
+    $(SCOREP_UNWINDING_LDFLAGS)
+
 # event library for the MPI adapter
 
 lib_LTLIBRARIES += libscorep_adapter_mpi_event.la
 libscorep_adapter_mpi_event_la_SOURCES =
-nodist_EXTRA_libscorep_adapter_mpi_event_la_SOURCES = force_link_with_F77LD.f
+
+if HAVE_MPI_FORTRAN_SUPPORT
+
+libscorep_adapter_mpi_event_la_LINK = $(F77LINK)
 libscorep_adapter_mpi_event_la_LIBADD = \
     libscorep_adapter_mpi_c_event.la            \
     libscorep_adapter_mpi_event_fortran_sub1.la \
@@ -145,6 +165,16 @@ libscorep_adapter_mpi_event_la_LIBADD = \
     libscorep_adapter_mpi_event_fortran_sub3.la \
     libscorep_adapter_mpi_event_fortran_sub4.la \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+else !HAVE_MPI_FORTRAN_SUPPORT
+
+libscorep_adapter_mpi_event_la_LINK = $(LINK)
+libscorep_adapter_mpi_event_la_LIBADD = \
+    libscorep_adapter_mpi_c_event.la            \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+endif !HAVE_MPI_FORTRAN_SUPPORT
+
 libscorep_adapter_mpi_event_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
@@ -169,7 +199,6 @@ libscorep_adapter_mpi_c_event_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h              \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.c      \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.h      \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c     \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h     \
@@ -190,6 +219,7 @@ libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
 ## Disable mpi profiling hooks
 ##libscorep_adapter_mpi_c_event_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS
 
+if HAVE_MPI_FORTRAN_SUPPORT
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_event_fortran_sub1.la \
@@ -245,5 +275,7 @@ libscorep_adapter_mpi_event_fortran_sub4_la_SOURCES = \
 libscorep_adapter_mpi_event_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
+
+endif HAVE_MPI_FORTRAN_SUPPORT
 
 endif HAVE_MPI_SUPPORT

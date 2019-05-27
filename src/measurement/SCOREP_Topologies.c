@@ -56,7 +56,6 @@
 
 #include <SCOREP_Subsystem.h>
 #include <scorep_status.h>
-#include <scorep_properties.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Platform.h>
 #include <SCOREP_Location.h>

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,7 @@
 #include <UTILS_Error.h>
 
 #include "scorep_rewind_stack_management.h"
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 
 #include <otf2/otf2.h>
 #include "scorep_tracing_internal.h"

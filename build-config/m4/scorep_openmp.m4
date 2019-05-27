@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -48,7 +48,7 @@ AM_CONDITIONAL([HAVE_OPENMP_SUPPORT],
 
 if test "x${enable_openmp}" != "xno"; then
   if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
-    AC_MSG_WARN([no suitable OpenMP compilers found. SCOREP OpenMP and hybrid libraries will not be build.])
+    AC_MSG_WARN([no suitable OpenMP compilers found. OpenMP and hybrid libraries will not be build.])
     AFS_SUMMARY([OpenMP support], [no, no suitable compilers found])
   else
     AFS_SUMMARY([OpenMP support], [yes, using ${ac_cv_prog_c_openmp}])

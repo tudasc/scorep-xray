@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,7 +40,7 @@
 
 #include <config.h>
 
-#include <scorep_subsystem.h>
+#include <scorep_subsystem_management.h>
 
 extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
 extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;

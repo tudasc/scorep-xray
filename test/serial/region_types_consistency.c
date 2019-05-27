@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2019,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -37,7 +37,7 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_types.h>
+#include <scorep_type_utils.h>
 
 #include <string.h>
 #include <stdio.h>

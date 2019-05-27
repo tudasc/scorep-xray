@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -28,6 +28,8 @@
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
+
+if SCOREP_HAVE_FC
 
 check_PROGRAMS += user_f90_test
 
@@ -53,9 +55,10 @@ user_f90_test_LDADD = $(serial_libadd)
 user_f90_test_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += ./user_f90_test
+TESTS_SERIAL += ./../test/adapters/user/Fortran/run_selective_test.sh
+
+endif
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/Fortran/selective.cfg \
     $(SRC_ROOT)test/adapters/user/Fortran/run_selective_test.sh.in
-
-TESTS_SERIAL += ./../test/adapters/user/Fortran/run_selective_test.sh

@@ -7,7 +7,7 @@
  * Copyright (c) 2015, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015-2016,
+ * Copyright (c) 2015-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -30,7 +30,7 @@
 
 #include <SCOREP_Subsystem.h>
 #include <scorep_status.h>
-#include <scorep_properties.h>
+#include <scorep_properties_management.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Definitions.h>

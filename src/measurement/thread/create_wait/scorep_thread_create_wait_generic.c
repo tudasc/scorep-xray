@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -32,7 +32,7 @@
 
 #include <scorep_substrates_definition.h>
 
-#include <scorep_subsystem.h>
+#include <scorep_subsystem_management.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>

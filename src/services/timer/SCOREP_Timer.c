@@ -4,6 +4,9 @@
  * Copyright (c) 2015-2016, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2019,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -63,6 +66,9 @@ static uint64_t timer_cmp_t0;
 static uint64_t timer_cmp_freq;
 #endif  /* HAVE( BACKEND_SCOREP_TIMER_TSC ) && ! HAVE( SCOREP_ARMV8_TSC ) */
 
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+double scorep_ticks_to_nsec_mac;
+#endif  /* BACKEND_SCOREP_TIMER_MAC */
 
 #include "scorep_timer_confvars.inc.c"
 
@@ -122,6 +128,16 @@ SCOREP_Timer_Initialize( void )
         case TIMER_AIX:
             break;
 #endif  /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+        case TIMER_MAC:
+        {
+            mach_timebase_info_data_t timebase;
+            mach_timebase_info( &timebase );
+            scorep_ticks_to_nsec_mac = timebase.numer / ( double )timebase.denom;
+        }
+        break;
+#endif  /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:
@@ -250,6 +266,11 @@ SCOREP_Timer_GetClockResolution( void )
         case TIMER_AIX:
             return UINT64_C( 1000000000 );
 #endif  /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+        case TIMER_MAC:
+            return UINT64_C( 1000000000 );
+#endif  /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:
@@ -430,6 +451,11 @@ SCOREP_Timer_ClockIsGlobal( void )
         case TIMER_AIX:
             return false;
 #endif  /* BACKEND_SCOREP_TIMER_AIX */
+
+#if HAVE( BACKEND_SCOREP_TIMER_MAC )
+        case TIMER_MAC:
+            return false;
+#endif  /* BACKEND_SCOREP_TIMER_MAC */
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:

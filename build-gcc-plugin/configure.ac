@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2012-2015, 2018,
+dnl Copyright (c) 2012-2015, 2018-2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015, 2018,
@@ -92,9 +92,8 @@ AM_SILENT_RULES([yes])
 AM_PROG_AR
 AFS_MAINTAINER_MODE
 
-LT_PREREQ([2.4.6])
-LT_INIT([shared disable-static])
-AC_SUBST([LIBTOOL_DEPS])
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AC_SCOREP_PLATFORM_SETTINGS
 
@@ -123,6 +122,10 @@ AC_PROG_CC
 AC_SCOREP_PROG_CC_C99
 AC_PROG_CXX
 AM_PROG_CC_C_O
+
+LT_PREREQ([2.4.6])
+LT_INIT([shared disable-static])
+AC_SUBST([LIBTOOL_DEPS])
 
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
 AC_SUBST([PKGDATADIR])

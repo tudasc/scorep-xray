@@ -60,7 +60,7 @@
 #include <scorep_system_tree_sequence.h>
 #include <scorep_environment.h>
 #include <scorep_runtime_management.h>
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 
 #define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT32_MAX - 1 )
 

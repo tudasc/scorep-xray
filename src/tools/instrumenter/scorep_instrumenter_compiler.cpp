@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -83,6 +83,10 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 {
 //    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
+
+#if !HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+    unsupported();
+#endif /*!HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
 }
 
 bool

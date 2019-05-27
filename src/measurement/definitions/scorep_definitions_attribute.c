@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -62,8 +62,8 @@
 
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
-#include <scorep_types.h>
-#include <scorep_location.h>
+#include <scorep_type_utils.h>
+#include <scorep_location_management.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 

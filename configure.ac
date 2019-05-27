@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2014, 2017,
+dnl Copyright (c) 2009-2014, 2017, 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -73,6 +73,12 @@ case $afs_scorep_platform_name_sq in
 *\'*) afs_scorep_platform_name_sq="`AS_ECHO(["$afs_scorep_platform_name_sq"]) | sed "s/'/'\\\\\\\\''/g"`" ;;
 esac
 
+AC_ARG_ENABLE([experimental-platform],
+              [AS_HELP_STRING([--enable-experimental-platform],
+                              [Enables builds on platforms that are not officially supported (currently macOS and MinGW).])],
+              [scorep_enable_experimental_platform=$enableval],
+              [scorep_enable_experimental_platform=no])
+
 # don't detect and load defaults in nested configures (e.g. otf2)
 AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
@@ -80,11 +86,13 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        AS_IF([test "x${afs_custom_compilers_given}" = "xno"],
            [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
             AC_SCOREP_WITH_COMPILER_SUITE
-            AS_CASE([${ac_scorep_platform}],
-                [mac|mingw],
-                    [AC_MSG_ERROR([have no suitable defaults to build Score-P on $afs_scorep_platform_name yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
+            AS_CASE([${ac_scorep_platform},${scorep_enable_experimental_platform}],
+                [*,yes],
+                    [AC_MSG_WARN([Attempting an experimental build for platform '${afs_scorep_platform_name}'. Feel free to report bugs or issues to <AC_PACKAGE_BUGREPORT>, but note that this is not a supported platform yet. Namaste.])],
+                [mac,no|mingw,no],
+                    [AC_MSG_ERROR([Platform '${afs_scorep_platform_name}' is not officially supported by ]AC_PACKAGE_NAME[. You can specify "--enable-experimental-platform" to enable an experimental build and report success to <AC_PACKAGE_BUGREPORT>. Thanks.])],
                 [unknown],
-                    [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
+                    [AC_MSG_ERROR([Cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
                 ])
             AC_SCOREP_WITH_MPI_COMPILER_SUITE
             AFS_WITH_SHMEM_COMPILER_SUITE

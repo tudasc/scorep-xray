@@ -26,6 +26,7 @@
 #include "scorep_posix_io.h"
 
 #include <unistd.h>
+#include <limits.h>
 
 #include <SCOREP_Events.h>
 #include <SCOREP_InMeasurement.h>
@@ -1009,7 +1010,8 @@ SCOREP_LIBWRAP_FUNC_NAME( open )( const char* pathname, int flags, ... /* mode_t
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
 
@@ -1054,7 +1056,8 @@ SCOREP_LIBWRAP_FUNC_NAME( open )( const char* pathname, int flags, ... /* mode_t
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
         ret = SCOREP_LIBWRAP_FUNC_CALL( open, ( pathname, flags, mode ) );
@@ -1089,7 +1092,8 @@ SCOREP_LIBWRAP_FUNC_NAME( open64 )( const char* pathname, int flags, ... )
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
 
@@ -1132,7 +1136,8 @@ SCOREP_LIBWRAP_FUNC_NAME( open64 )( const char* pathname, int flags, ... )
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
         ret = SCOREP_LIBWRAP_FUNC_CALL( open64, ( pathname, flags, mode ) );
@@ -1167,7 +1172,8 @@ SCOREP_LIBWRAP_FUNC_NAME( openat )( int dirfd, const char* pathname, int flags, 
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
 
@@ -1225,7 +1231,8 @@ SCOREP_LIBWRAP_FUNC_NAME( openat )( int dirfd, const char* pathname, int flags, 
         {
             va_list va;
             va_start( va, flags );
-            mode = va_arg( va, mode_t );
+            // smaller types are always promoted to int
+            mode = ( mode_t )va_arg( va, int );
             va_end( va );
         }
         ret = SCOREP_LIBWRAP_FUNC_CALL( openat, ( dirfd, pathname, flags, mode ) );

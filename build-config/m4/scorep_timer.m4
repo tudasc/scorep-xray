@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -59,6 +59,7 @@ AS_CASE([${ac_scorep_platform}],
                                                               [-lSPI.cna -lrt])],
     [bgq],   [_SCOREP_TIMER_CHECK([bgq], [_SCOREP_TIMER_BGQ], [-I/bgsys/drivers/ppcfloor])],
     [mingw], [_SCOREP_TIMER_CHECK([mingw], [_SCOREP_TIMER_MINGW])],
+    [mac],   [_SCOREP_TIMER_CHECK([mac], [_SCOREP_TIMER_MAC])],
     [aix],   [_SCOREP_TIMER_CHECK([aix], [_SCOREP_TIMER_AIX])],
     [mic],   [# Do nothing but prevent selection of TSC.
              ],
@@ -299,6 +300,30 @@ AC_MSG_RESULT([$have_timer])
 ])# _SCOREP_TIMER_MINGW
 
 
+# _SCOREP_TIMER_MAC
+# -----------------
+# ...
+AC_DEFUN([_SCOREP_TIMER_MAC],
+[AC_MSG_CHECKING([for macOS/Mach absolute time timer])
+AC_LINK_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[
+        #include <stdint.h>
+        #include <inttypes.h>
+        #include <mach/mach_time.h>
+        ]],
+        [[
+        mach_timebase_info_data_t timebase;
+        mach_timebase_info( &timebase );
+        double ticks_to_nsec_mac = timebase.numer / ( double )timebase.denom;
+        return ( uint64_t )( ticks_to_nsec_mac * mach_absolute_time() );
+        ]])
+    ],
+    [have_timer=yes])
+AC_MSG_RESULT([$have_timer])
+])# _SCOREP_TIMER_MAC
+
+
 # _SCOREP_TIMER_AIX
 # -----------------
 # ...
@@ -330,7 +355,7 @@ AC_MSG_RESULT([$have_timer])
 AC_DEFUN([_SCOREP_TIMER_TSC],
 [# prerequisites (modified) for cycle.h tsc detection, see http://www.fftw.org/cycle.h
 
-AC_CHECK_HEADERS([sys/time.h intrinsics.h mach/mach_time.h])
+AC_CHECK_HEADERS([sys/time.h intrinsics.h])
 
 # This alone would not trigger the generation of the shell function
 # ac_fn_c_check_type, there we added a dummy check at the start of the
@@ -344,7 +369,7 @@ AC_CHECK_TYPE([hrtime_t],
     #endif
     ]])
 
-AC_CHECK_FUNCS([gethrtime read_real_time time_base_to_time mach_absolute_time])
+AC_CHECK_FUNCS([gethrtime read_real_time time_base_to_time])
 
 # Cray UNICOS _rtc() (reaql-time clock) intrinsic
 AC_MSG_CHECKING([for _rtc intrinsic])
@@ -384,7 +409,6 @@ AC_LINK_IFELSE(
         ARMV8 \
         POWERPC32 \
         X86_32 \
-        DARWIN \
         X86_64_MSVC \
         IA64_INTEL \
         IA64_GCC \

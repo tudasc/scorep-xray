@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2017,
+ * Copyright (c) 2009-2014, 2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -698,6 +698,91 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
     return false;
 }
 
+/* *************************************** CLANG */
+/*
+ * @note Clang currently (2019) supports no Fortran and only brings it in
+ *       optional extensions. One such extension uses GCC functionality.
+ */
+#elif SCOREP_BACKEND_COMPILER_CLANG
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
+{
+    return arg == "-shared";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    /* No Fortran support yet */
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    /* No Fortran support yet */
+    return false;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    /* No Fortran support yet */
+    return "";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
+{
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
+{
+    return arg == "-E";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
+                                                 const std::string& next )
+{
+    if ( current == "-x" )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
+{
+    return false;
+}
+
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
 #endif
 
 /* ****************************************************************************

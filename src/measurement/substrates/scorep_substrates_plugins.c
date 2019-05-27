@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015-2018,
+ * Copyright (c) 2015-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2018,
@@ -47,7 +47,7 @@
 
 #include "scorep_substrates_plugins_confvars.inc.c"
 
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 #include <scorep_runtime_management.h>
 #include <SCOREP_Allocator.h>
 

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -42,6 +42,7 @@ cp  @abs_srcdir@/mpi_omp_metric_collection_test.c mpi_omp_metric_collection_test
 
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
 @SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 ../build-backend/scorep --user -v --build-check $extra_flag @CC@ -I. @OPENMP_CFLAGS@ mpi_omp_metric_collection_test.c -o metric_collection_test
 

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2017,
+## Copyright (c) 2009-2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -61,21 +61,21 @@ libscorep_measurement_core_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filtering_Management.h  \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filtering.c             \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c              \
-    $(SRC_ROOT)src/measurement/scorep_subsystem.c                       \
-    $(SRC_ROOT)src/measurement/scorep_subsystem.h                       \
-    $(SRC_ROOT)src/measurement/scorep_types.c                           \
-    $(SRC_ROOT)src/measurement/scorep_types.h                           \
-    $(SRC_ROOT)src/measurement/scorep_location.h                        \
-    $(SRC_ROOT)src/measurement/scorep_location.c                        \
+    $(SRC_ROOT)src/measurement/scorep_subsystem_management.c            \
+    $(SRC_ROOT)src/measurement/scorep_subsystem_management.h            \
+    $(SRC_ROOT)src/measurement/scorep_type_utils.c                      \
+    $(SRC_ROOT)src/measurement/scorep_type_utils.h                      \
+    $(SRC_ROOT)src/measurement/scorep_location_management.h             \
+    $(SRC_ROOT)src/measurement/scorep_location_management.c             \
     $(SRC_ROOT)src/measurement/scorep_libwrap_management.h              \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h              \
     $(SRC_ROOT)src/measurement/scorep_status.c                          \
     $(SRC_ROOT)src/measurement/scorep_status.h                          \
     $(SRC_ROOT)src/measurement/scorep_mpp.h                             \
-    $(SRC_ROOT)src/measurement/scorep_paradigms.c                       \
+    $(SRC_ROOT)src/measurement/scorep_paradigms_management.c            \
     $(SRC_ROOT)src/measurement/scorep_paradigms_management.h            \
-    $(SRC_ROOT)src/measurement/scorep_properties.c                      \
-    $(SRC_ROOT)src/measurement/scorep_properties.h                      \
+    $(SRC_ROOT)src/measurement/scorep_properties_management.c           \
+    $(SRC_ROOT)src/measurement/scorep_properties_management.h           \
     $(SRC_ROOT)src/measurement/scorep_ipc.h                             \
     $(SRC_ROOT)src/measurement/scorep_environment.c                     \
     $(SRC_ROOT)src/measurement/scorep_environment.h                     \

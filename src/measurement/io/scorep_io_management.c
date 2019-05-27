@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,7 +29,7 @@
 #include <SCOREP_Platform.h>
 #include <SCOREP_Events.h>
 #include <jenkins_hash.h>
-#include <scorep_subsystem.h>
+#include <scorep_subsystem_management.h>
 #include <scorep_substrates_definition.h>
 
 #define SCOREP_DEBUG_MODULE_NAME IO_MANAGEMENT

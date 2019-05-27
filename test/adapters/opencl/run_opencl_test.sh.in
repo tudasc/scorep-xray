@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015,
+## Copyright (c) 2014-2015, 2019,
 ##    Technische Universitaet Dresden, Germany
 ##
 ## See the COPYING file in the package base directory for details.
@@ -36,6 +36,8 @@ OPENCL_TEST_SRC_DIR=$SRC_ROOT/test/adapters/opencl
 
 # Copy kernel.cl to current working dir
 cp $OPENCL_TEST_SRC_DIR/kernel.cl .
+
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 ./scorep --static -v --build-check @CC@ $OPENCL_TEST_SRC_DIR/opencl_test.c -o opencl_test @OPENCL_CPPFLAGS@ @OPENCL_LDFLAGS_FOR_TESTS@ @OPENCL_LIBS@
 

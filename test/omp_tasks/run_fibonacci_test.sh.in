@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013, 2015,
+## Copyright (c) 2009-2011, 2013, 2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -53,6 +53,7 @@ cp  @abs_srcdir@/task_fibonacci.c task_fibonacci.c
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
 @SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
 result_dir_base="scorep_fibonacci_"
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 # provide a reasonable default input for running the applications
 if [ ! x$1 = x ]; then
@@ -72,7 +73,7 @@ fi
 #         --build-check \
 #         @CC@ -I. -o fib_main task_fibonacci.c @OPENMP_CFLAGS@
 #
-#export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
+#export @SYS_LIB_SEARCH_PATH_VAR@=@SCOREP_PAPI_LIBDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 #if [ ! -e fib_main ]; then
 #    exit 1
 #fi

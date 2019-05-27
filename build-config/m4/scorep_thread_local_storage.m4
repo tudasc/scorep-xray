@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2017,
+## Copyright (c) 2014-2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -37,8 +37,6 @@ _SCOREP_CHECK_TLS_SPECIFIER([__thread], [[
 #ups_unsupported_gcc_version gcc has this bug: http://gcc.gnu.org/ml/gcc-bugs/2006-09/msg02275.html
 #elif defined(__MINGW32__)
 #ups_unsupported_mingw_version mingw doesnt really support thread local storage
-#elif defined(__APPLE__)
-#ups_unsupported_platform OSX __thread support is known to call malloc which makes it unsafe to use from malloc replacement
 #endif
 ]], [
     scorep_have_thread_local_storage="yes"
@@ -106,25 +104,70 @@ AS_UNSET([scorep_tls_reason])
 # --------------------------------------------------
 # Performs checks whether the compiler supports TLS_SPECIFIER.
 AC_DEFUN([_SCOREP_CHECK_TLS_SPECIFIER], [
+AC_REQUIRE([LT_OUTPUT])
 
 AC_LANG_PUSH([C])
 
 cflags_save="$CFLAGS"
 CFLAGS="$CFLAGS $5"
 
-AC_MSG_CHECKING([for $1])
+dnl check the static case (i.e., linking all into the executable)
+AC_MSG_CHECKING([for $1 (static)])
+scorep_check_tls_result=yes
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
 $2
-$1 int global_thread_private_var = 1;
-], [static $1 int my_thread_private_var = 0])],
-   [AC_MSG_RESULT([yes])
-    $3
-    :],
+$1 volatile int global_thread_private_var = 1;
+], [
+    static $1 volatile int my_thread_private_var = 0;
+    global_thread_private_var++;
+    --my_thread_private_var;
+])],
+   [AC_MSG_RESULT([yes])],
    [AC_MSG_RESULT([no])
-    $4
-    :])
+    scorep_check_tls_result=no])
+
+dnl check the dynamic library case (i.e,. tls is accessed from dynamic lib)
+AS_IF([test "x${scorep_check_tls_result}" = "xyes" && test "x${enable_shared}" = "xyes"], [
+
+AC_LANG_CONFTEST([
+    AC_LANG_SOURCE([[
+extern $1 volatile int confvar;
+
+void conffunc(void)
+{
+    confvar++;
+    --confvar;
+}
+]])])
+
+tls_check_compile='$SHELL ./libtool --mode=compile --tag=_AC_CC [$]_AC_CC $CPPFLAGS [$]_AC_LANG_PREFIX[FLAGS] -c -o conftest.lo conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+tls_check_link='$SHELL ./libtool --mode=link --tag=_AC_CC [$]_AC_CC [$]_AC_LANG_PREFIX[FLAGS] -rpath $PWD/lib -o libconftest.la conftest.lo >&AS_MESSAGE_LOG_FD'
+tls_check_clean='$SHELL ./libtool --mode=clean $RM conftest.lo libconftest.la >&AS_MESSAGE_LOG_FD'
+
+AC_MSG_CHECKING([for $1 (shared)])
+AS_IF([_AC_DO_VAR([tls_check_compile]) &&
+       _AC_DO_VAR([tls_check_link])],
+   [AC_MSG_RESULT([yes])],
+   [_AC_MSG_LOG_CONFTEST
+    AC_MSG_RESULT([no])
+    scorep_check_tls_result=no])
+
+_AC_DO_VAR([tls_check_clean])
+$RM conftest.$ac_ext
+
+AS_UNSET([tls_check_compile])
+AS_UNSET([tls_check_link])
+AS_UNSET([tls_check_compile])
+
+])
 
 CFLAGS="$cflags_save"
+
+AS_IF([test "x${scorep_check_tls_result}" = "xyes"],
+   [$3
+    :],
+   [$4
+    :])
 
 AC_LANG_POP([C])
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016,
+ * Copyright (c) 2009-2011, 2015-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -56,7 +56,7 @@
 
 #include <SCOREP_Hashtab.h>
 
-#include "scorep_types.h"
+#include "scorep_type_utils.h"
 
 static size_t
 hash_variable( const void* key );

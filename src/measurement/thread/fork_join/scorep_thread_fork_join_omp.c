@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -25,7 +25,7 @@
 #include <SCOREP_Thread_Mgmt.h>
 
 #include <SCOREP_Timer_Ticks.h>
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>

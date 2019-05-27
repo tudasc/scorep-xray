@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_LOCATION_H
-#define SCOREP_INTERNAL_LOCATION_H
+#ifndef SCOREP_LOCATION_MANAGEMENT_H
+#define SCOREP_LOCATION_MANAGEMENT_H
 
 
 #include <stdint.h>
@@ -108,4 +108,4 @@ void
 SCOREP_Location_FinalizeLocations( void );
 
 
-#endif /* SCOREP_INTERNAL_LOCATION_H */
+#endif /* SCOREP_LOCATION_MANAGEMENT_H */

@@ -355,6 +355,7 @@ Automatic compiler-based instrumentation has been tested with a
 number of different compilers:
 <ul>
   <li> GCC (UNIX-like operating systems, not tested with Windows)</li>
+  <li> Clang/LLVM (UNIX-like operating systems, not tested with Windows)</li>
   <li> @ibm xlc, xlC (version 7 or later, @ibm @bluegene)</li>
   <li> @ibm xlf (version 9.1 or later, @ibm @bluegene)</li>
   <li> PGI (on Linux)</li>
@@ -363,7 +364,8 @@ number of different compilers:
 </ul>
 In all cases, @scorep supports automatic instrumentation of C, C++ and,
 Fortran codes, except for the SUN Studio compilers which only provide
-appropriate support in their Fortran compiler.
+appropriate support in their Fortran compiler and the Clang compiler which
+provides support for instrumentation of C/C++ codes.
 
 @note
   The automatic compiler instrumentation might create a significant relative

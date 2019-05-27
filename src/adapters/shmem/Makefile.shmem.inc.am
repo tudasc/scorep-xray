@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2015, 2017,
+## Copyright (c) 2013-2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2014, 2017,
@@ -64,17 +64,30 @@ BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la
 
 lib_LTLIBRARIES += libscorep_adapter_shmem_event.la
 libscorep_adapter_shmem_event_la_SOURCES =
-nodist_EXTRA_libscorep_adapter_shmem_event_la_SOURCES = force_link_with_F77LD.f
+
+if HAVE_SHMEM_FORTRAN_SUPPORT
+
 libscorep_adapter_shmem_event_la_LIBADD = \
-    libscorep_adapter_shmem_c_event.la            \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la     \
+    libscorep_adapter_shmem_c_event.la \
     libscorep_adapter_shmem_event_fortran_sub3.la \
-    libscorep_adapter_shmem_event_fortran_sub4.la
+    libscorep_adapter_shmem_event_fortran_sub4.la \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+else !HAVE_SHMEM_FORTRAN_SUPPORT
+
+libscorep_adapter_shmem_event_la_LIBADD = \
+    libscorep_adapter_shmem_c_event.la \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+endif !HAVE_SHMEM_FORTRAN_SUPPORT
+
 libscorep_adapter_shmem_event_la_LDFLAGS = \
     $(shmem_libwrap_ldflags) \
     $(library_api_version_ldflags)
 
 BACKEND_TARGETS += $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+if HAVE_SHMEM_FORTRAN_SUPPORT
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_shmem_event_fortran_sub3.la \
@@ -105,6 +118,8 @@ libscorep_adapter_shmem_event_fortran_sub4_la_SOURCES = \
 libscorep_adapter_shmem_event_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_SHMEM_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
+
+endif HAVE_SHMEM_FORTRAN_SUPPORT
 
 noinst_LTLIBRARIES += libscorep_adapter_shmem_c_event.la
 libscorep_adapter_shmem_c_event_la_SOURCES = \

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2015,
+## Copyright (c) 2009-2012, 2014-2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -52,6 +52,8 @@ TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data/$cuda_gold_file_version
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-cuda
+
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 ./scorep -v --build-check --nocompiler --user nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 

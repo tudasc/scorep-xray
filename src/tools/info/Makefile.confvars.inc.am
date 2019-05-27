@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2012,
+## Copyright (c) 2012, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2013-2014,
@@ -24,9 +24,9 @@ noinst_LTLIBRARIES += libscorep_confvars.la
 
 libscorep_confvars_la_SOURCES = \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c \
-    $(SRC_ROOT)src/measurement/scorep_types.c \
+    $(SRC_ROOT)src/measurement/scorep_type_utils.c \
     $(SRC_ROOT)src/measurement/scorep_environment.c \
-    $(SRC_ROOT)src/measurement/scorep_subsystem.c \
+    $(SRC_ROOT)src/measurement/scorep_subsystem_management.c \
     $(SRC_ROOT)src/tools/info/scorep_confvars_all_subsystems.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_system_tree_sequence_on.c
 

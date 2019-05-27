@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1335,7 +1335,7 @@ FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, scorep_fo
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_comm_name = NULL;
-    c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
+    c_comm_name = scorep_mpi_f2c_string( comm_name, comm_name_len );
 
 
 
@@ -2259,7 +2259,7 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, scor
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );
     char*    c_comm_name = NULL;
-    c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
+    c_comm_name = scorep_mpi_f2c_string( comm_name, comm_name_len );
 
 
 

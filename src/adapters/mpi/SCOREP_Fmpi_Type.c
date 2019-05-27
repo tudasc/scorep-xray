@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -672,7 +672,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatyp
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -703,7 +703,7 @@ FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datat
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -1388,7 +1388,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -1620,7 +1620,7 @@ FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, score
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_type_name = NULL;
-    c_type_name = scorep_f2c_string( type_name, type_name_len );
+    c_type_name = scorep_mpi_f2c_string( type_name, type_name_len );
 
 
 
@@ -1790,7 +1790,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fi
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -1822,7 +1822,7 @@ FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* data
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -2548,7 +2548,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
-    c_datarep = scorep_f2c_string( datarep, datarep_len );
+    c_datarep = scorep_mpi_f2c_string( datarep, datarep_len );
 
 
 
@@ -2798,7 +2798,7 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, scor
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );
     char*        c_type_name = NULL;
-    c_type_name = scorep_f2c_string( type_name, type_name_len );
+    c_type_name = scorep_mpi_f2c_string( type_name, type_name_len );
 
 
 

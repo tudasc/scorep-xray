@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -42,7 +42,7 @@ OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SRC_ROOT=@abs_top_srcdir@/..
 CXX=@CXX@
 OPENMP_CFLAGS=@OPENMP_CFLAGS@
-export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:@SCOREP_PAPI_LIBDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 # Execute test without OpenMP and compiler instrumentation (only user)
 ./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cpp

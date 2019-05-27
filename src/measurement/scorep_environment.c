@@ -50,7 +50,7 @@
 #include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Filtering_Management.h>
 #include <SCOREP_Timer_Utils.h>
-#include "scorep_subsystem.h"
+#include "scorep_subsystem_management.h"
 #include "scorep_system_tree_sequence.h"
 
 #include <stdlib.h>

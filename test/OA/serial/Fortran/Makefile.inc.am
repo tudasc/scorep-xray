@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -30,6 +30,8 @@
 ##
 
 if HAVE_ONLINE_ACCESS
+
+if SCOREP_HAVE_FC
 
 check_PROGRAMS += oa_f_test
 
@@ -60,6 +62,8 @@ if HAVE_GDB
 TESTS_SERIAL += ./../test/OA/serial/Fortran/run_oa_f_test.sh
 
 endif HAVE_GDB
+
+endif SCOREP_HAVE_FC
 
 endif HAVE_ONLINE_ACCESS
 

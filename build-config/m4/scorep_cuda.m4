@@ -95,7 +95,7 @@ AS_IF([test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupt
       [scorep_have_cuda=yes])
 AC_ARG_ENABLE([cuda],
               [AS_HELP_STRING([--enable-cuda],
-                              [Enable or disable support for CUDA. Fail if support cannot be satisfied but was requested.])],
+                              [Enable or disable support for CUDA. Fails if support cannot be satisfied but was requested.])],
               [AS_CASE([$enableval,$scorep_have_cuda],
                        [yes,no],
                        [AC_MSG_ERROR([couldn't fulfill requested support for CUDA.])],

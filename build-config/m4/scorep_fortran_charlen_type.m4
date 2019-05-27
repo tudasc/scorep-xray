@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2018,
+## Copyright (c) 2018-2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -18,7 +18,8 @@
 # -----------------------------------------------------------
 # Determine the type for Fortran character lengths
 AC_DEFUN([SCOREP_CHECK_FORTRAN_CHARLEN_TYPE],
-[AC_LANG_PUSH([Fortran])
+[AS_IF([test "x${scorep_cv_fc_works}" = "xyes"], [
+AC_LANG_PUSH([Fortran])
 # $ac_ext is the current value of $ac_fc_srcext, or his default
 # $ac_fc_srcext is used with parameter expansion for a default value:
 # ${ac_fc_srcext-f}, but that also honors '' as a value, and would not select
@@ -48,4 +49,5 @@ ac_fc_srcext=$scorep_ac_ext_save
 ac_fcflags_srcext_save=$scorep_ac_fcflags_srcext
 AS_UNSET([scorep_ac_ext_save])
 AC_LANG_POP([Fortran])
+])
 ])# SCOREP_CHECK_FORTRAN_CHARLEN_TYPE

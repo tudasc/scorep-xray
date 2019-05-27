@@ -26,7 +26,8 @@
 # Variables set by configure
 GREP="@GREP@"
 NM="@NM@"
-LDD="ldd"
+@PLATFORM_MAC_FALSE@LDD="ldd"
+@PLATFORM_MAC_TRUE@LDD="otool -L"
 
 # Unset some environment variables to avoid surprises...
 unset GREP_OPTIONS
@@ -86,6 +87,8 @@ valid_thread()
 
 # Initialize defaults
 COMP=yes
+@SCOREP_COMPILER_SUN_TRUE@unset COMP
+@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_FALSE@unset COMP
 unset MPP
 unset THREAD
 unset OPARI2_USER
@@ -283,7 +286,7 @@ fi
 
 # Compiler instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_compiler_region_mutex`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }comp"
 fi
@@ -292,14 +295,14 @@ fi
 
 # MPI instrumentation?     (Scalasca check - do not modify without changing Scalasca)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_mpi_status_size`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }mpi"
 fi
 
 # SHMEM instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_Subsystem_ShmemAdapter`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_shmem_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_shmem_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }shmem"
 fi
@@ -308,42 +311,42 @@ fi
 
 # OpenMP full instrumentation?     (Scalasca check - do not modify without changing Scalasca)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Parallel_fork`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_openmp_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_openmp_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }opari2_openmp"
 fi
 
 # Pthread instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_pthread_regions`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pthread_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pthread_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }pthread"
 fi
 
 # POMP user instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Begin`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_user_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_user_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }opari2_user"
 fi
 
 # User instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_user_region_mutex`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }user"
 fi
 
 # Memory instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_memory_regions`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_memory_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_memory_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }memory"
 fi
 
 # CUDA instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_cuda_features`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_cuda_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_cuda_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }cuda"
 fi

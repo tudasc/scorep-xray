@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -103,6 +103,14 @@ process_symbol( long         address,
         UTILS_IO_SimplifyPath( path );
     }
 
+#if HAVE( PLATFORM_MAC )
+    /* Skip these leading underscores on macOS */
+    if ( '_' == funcname[ 0 ] )
+    {
+        funcname++;
+    }
+#endif /*HAVE( PLATFORM_MAC )*/
+
     const char* funcname_demangled = funcname;
 #if HAVE( DEMANGLE )
     /* use demangled name if possible */
@@ -128,7 +136,10 @@ process_symbol( long         address,
                    ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
                    ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
                    ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
-                   ( strncmp( funcname_demangled, "cubew_", 6 ) != 0 );
+                   ( strncmp( funcname_demangled, "cubew_", 6 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, ".omp.", 5 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, ".omp_outlined.", 14 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, ".nondebug_wrapper.", 18 ) != 0 );
 
     use_address &= ( !SCOREP_Filtering_Match( path, funcname_demangled, funcname ) );
 
@@ -202,12 +213,17 @@ scorep_compiler_parse_nm_file( const char*                       nmFilename,
         /* Split line to columns.
          * Expect line to be of type 'addr type funcname filename:line_no',
          * where the fields are whitespace-separated.
+         *
+         * On macOS lines are of type 'binary: addr type funcname'
          */
-        char  delim[ 2 ] = " ";
-        int   col_num    = 0;
-        long  addr       = -1;
-        char* filename   = NULL;
-        char* funcname   = NULL;
+        char delim[ 2 ] = " ";
+#if HAVE( PLATFORM_MAC )
+        char delim_mac_binary_name[ 2 ] = ":";
+#endif
+        int   col_num  = 0;
+        long  addr     = -1;
+        char* filename = NULL;
+        char* funcname = NULL;
 
 #if HAVE( SCOREP_DEBUG )
         char orig_line[ 256 ];
@@ -215,7 +231,13 @@ scorep_compiler_parse_nm_file( const char*                       nmFilename,
         orig_line[ 255 ] = '\0';
 #endif  /* HAVE( SCOREP_DEBUG ) */
 
+#if HAVE( PLATFORM_MAC )
+        /* Skip column containing binary name */
+        char* col = strtok( line, delim_mac_binary_name );
+        col = strtok( NULL, delim );
+#else
         char* col = strtok( line, delim );
+#endif  /* HAVE( PLATFORM_MAC ) */
         do
         {
             col_num++;

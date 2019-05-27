@@ -48,8 +48,8 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Unwinding.h>
-#include <scorep_location.h>
-#include <scorep_types.h>
+#include <scorep_location_management.h>
+#include <scorep_type_utils.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>

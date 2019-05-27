@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -296,7 +296,7 @@ FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, scorep_fortran_ch
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
 
 
@@ -359,7 +359,7 @@ FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int
     char*  c_key       = NULL;
     char*  c_value     = NULL;
     size_t c_value_len = 0;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
     if ( !c_value )
@@ -444,7 +444,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* fl
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
 
 
@@ -468,9 +468,9 @@ FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, scorep_
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key   = NULL;
     char* c_value = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
-    c_value = scorep_f2c_string( value, value_len );
+    c_value = scorep_mpi_f2c_string( value, value_len );
 
 
 
@@ -625,7 +625,7 @@ FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, scorep_fortr
     SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info = PMPI_Info_f2c( *info );
     char*    c_key  = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
 
 
@@ -696,7 +696,7 @@ FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value
     char*  c_key       = NULL;
     char*  c_value     = NULL;
     size_t c_value_len = 0;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
     if ( !c_value )
@@ -784,7 +784,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MP
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
 
 
@@ -810,9 +810,9 @@ FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, sc
     MPI_Info c_info  = PMPI_Info_f2c( *info );
     char*    c_key   = NULL;
     char*    c_value = NULL;
-    c_key = scorep_f2c_string( key, key_len );
+    c_key = scorep_mpi_f2c_string( key, key_len );
 
-    c_value = scorep_f2c_string( value, value_len );
+    c_value = scorep_mpi_f2c_string( value, value_len );
 
 
 

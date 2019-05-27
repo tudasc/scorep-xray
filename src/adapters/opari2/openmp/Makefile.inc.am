@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015, 2017,
+## Copyright (c) 2009-2013, 2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -32,6 +32,78 @@
 ## file       src/adapters/opari2/openmp/Makefile.inc.am
 
 if HAVE_OPENMP_SUPPORT
+
+# --------------------------------------------------------------------
+# runtime management library for the opari2 OpenMP adapter
+
+lib_LTLIBRARIES += libscorep_adapter_opari2_openmp_mgmt.la
+
+libscorep_adapter_opari2_openmp_mgmt_la_SOURCES =                         \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Init.c     \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Lock.c     \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Lock.h     \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Regions.c  \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Regions.h
+
+nodist_libscorep_adapter_opari2_openmp_mgmt_la_SOURCES =    \
+    @OPARI2_REGION_INFO_SRC_DIR@/pomp2_region_info.c        \
+    @OPARI2_REGION_INFO_INC_DIR@/pomp2_region_info.h
+
+libscorep_adapter_opari2_openmp_mgmt_la_CFLAGS = \
+    $(AM_CFLAGS)                                 \
+    $(OPENMP_CFLAGS)
+
+libscorep_adapter_opari2_openmp_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                                 \
+    -I$(INC_ROOT)src/measurement/include           \
+    -I$(INC_ROOT)src/adapters/opari2               \
+    -I$(PUBLIC_INC_DIR)                            \
+    -I$(INC_DIR_DEFINITIONS)                       \
+    $(UTILS_CPPFLAGS)                              \
+    -I$(INC_DIR_MUTEX)                             \
+    -I$(INC_DIR_THREAD)                            \
+    -I@OPARI2_REGION_INFO_INC_DIR@                 \
+    @OPARI2_CPPFLAGS@
+
+libscorep_adapter_opari2_openmp_mgmt_la_LIBADD = \
+    libscorep_adapter_opari2_mgmt.la \
+    libutils.la
+
+libscorep_adapter_opari2_openmp_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+# --------------------------------------------------------------------
+# event library for the opari2 OpenMP adapter
+
+lib_LTLIBRARIES += libscorep_adapter_opari2_openmp_event.la
+
+libscorep_adapter_opari2_openmp_event_la_SOURCES =         \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp.c \
+    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Tpd.h
+
+libscorep_adapter_opari2_openmp_event_la_CFLAGS = \
+    $(AM_CFLAGS)                             \
+    $(OPENMP_CFLAGS)
+
+libscorep_adapter_opari2_openmp_event_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                                  \
+    -I$(INC_ROOT)src/measurement/include            \
+    -I$(INC_ROOT)src/adapters/opari2                \
+    -I$(PUBLIC_INC_DIR)                             \
+    -I$(INC_DIR_DEFINITIONS)                        \
+    $(UTILS_CPPFLAGS)                               \
+    -I$(INC_DIR_THREAD_FORK_JOIN)                   \
+    -I$(INC_DIR_MUTEX)                              \
+    -I@OPARI2_REGION_INFO_INC_DIR@                  \
+    @OPARI2_CPPFLAGS@
+
+libscorep_adapter_opari2_openmp_event_la_LIBADD =   \
+    libscorep_measurement.la
+
+libscorep_adapter_opari2_openmp_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+if HAVE_FORTRAN_SUPPORT
 
 # --------------------------------------------------------------------
 # Fortran binding for the common runtime management library for the
@@ -84,54 +156,16 @@ libscorep_adapter_opari2_openmp_mgmt_fortran_sub4_la_CPPFLAGS = \
     -DFSUB=SCOREP_FORTRAN_SUB4                                  \
     $(SCOREP_OPARI2_OPENMP_MGMT_FORTRAN_FLAGS)
 
-# --------------------------------------------------------------------
-# runtime management library for the opari2 OpenMP adapter
-
-lib_LTLIBRARIES += libscorep_adapter_opari2_openmp_mgmt.la
-
-libscorep_adapter_opari2_openmp_mgmt_la_SOURCES =                         \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Init.c     \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Lock.c     \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Lock.h     \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Regions.c  \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Regions.h
-
-nodist_libscorep_adapter_opari2_openmp_mgmt_la_SOURCES =    \
-    @OPARI2_REGION_INFO_SRC_DIR@/pomp2_region_info.c        \
-    @OPARI2_REGION_INFO_INC_DIR@/pomp2_region_info.h
-
-libscorep_adapter_opari2_openmp_mgmt_la_CFLAGS = \
-    $(AM_CFLAGS)                                 \
-    $(OPENMP_CFLAGS)
-
-libscorep_adapter_opari2_openmp_mgmt_la_CPPFLAGS = \
-    $(AM_CPPFLAGS)                                 \
-    -I$(INC_ROOT)src/measurement/include           \
-    -I$(INC_ROOT)src/adapters/opari2               \
-    -I$(PUBLIC_INC_DIR)                            \
-    -I$(INC_DIR_DEFINITIONS)                       \
-    $(UTILS_CPPFLAGS)                              \
-    -I$(INC_DIR_MUTEX)                             \
-    -I$(INC_DIR_THREAD)                            \
-    -I@OPARI2_REGION_INFO_INC_DIR@                 \
-    @OPARI2_CPPFLAGS@
-
-libscorep_adapter_opari2_openmp_mgmt_la_LIBADD = \
-    libscorep_adapter_opari2_mgmt.la \
+libscorep_adapter_opari2_openmp_mgmt_la_LIBADD += \
     libscorep_adapter_opari2_openmp_mgmt_fortran_sub1.la \
     libscorep_adapter_opari2_openmp_mgmt_fortran_sub2.la \
     libscorep_adapter_opari2_openmp_mgmt_fortran_sub3.la \
-    libscorep_adapter_opari2_openmp_mgmt_fortran_sub4.la \
-    libutils.la
-
-libscorep_adapter_opari2_openmp_mgmt_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
+    libscorep_adapter_opari2_openmp_mgmt_fortran_sub4.la
 
 # --------------------------------------------------------------------
 # Fortran binding for event library of the opari2 OpenMP adapter
 
-noinst_LTLIBRARIES +=                          \
+noinst_LTLIBRARIES +=                               \
     libscorep_adapter_opari2_openmp_fortran_sub1.la \
     libscorep_adapter_opari2_openmp_fortran_sub2.la \
     libscorep_adapter_opari2_openmp_fortran_sub3.la \
@@ -197,40 +231,12 @@ libscorep_adapter_opari2_openmp_fortran_sub4_la_CPPFLAGS = \
     -DFSUB=SCOREP_FORTRAN_SUB4                        \
     $(SCOREP_OPARI2_OPENMP_FORTRAN_FLAGS)
 
-
-# --------------------------------------------------------------------
-# event library for the opari2 OpenMP adapter
-
-lib_LTLIBRARIES += libscorep_adapter_opari2_openmp_event.la
-
-libscorep_adapter_opari2_openmp_event_la_SOURCES =         \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp.c \
-    $(SRC_ROOT)src/adapters/opari2/openmp/SCOREP_Opari2_Openmp_Tpd.h
-
-libscorep_adapter_opari2_openmp_event_la_CFLAGS = \
-    $(AM_CFLAGS)                             \
-    $(OPENMP_CFLAGS)
-
-libscorep_adapter_opari2_openmp_event_la_CPPFLAGS = \
-    $(AM_CPPFLAGS)                                  \
-    -I$(INC_ROOT)src/measurement/include            \
-    -I$(INC_ROOT)src/adapters/opari2                \
-    -I$(PUBLIC_INC_DIR)                             \
-    -I$(INC_DIR_DEFINITIONS)                        \
-    $(UTILS_CPPFLAGS)                               \
-    -I$(INC_DIR_THREAD_FORK_JOIN)                   \
-    -I$(INC_DIR_MUTEX)                              \
-    -I@OPARI2_REGION_INFO_INC_DIR@                  \
-    @OPARI2_CPPFLAGS@
-
-libscorep_adapter_opari2_openmp_event_la_LIBADD =   \
+libscorep_adapter_opari2_openmp_event_la_LIBADD +=  \
     libscorep_adapter_opari2_openmp_fortran_sub1.la \
     libscorep_adapter_opari2_openmp_fortran_sub2.la \
     libscorep_adapter_opari2_openmp_fortran_sub3.la \
-    libscorep_adapter_opari2_openmp_fortran_sub4.la \
-    libscorep_measurement.la
+    libscorep_adapter_opari2_openmp_fortran_sub4.la
 
-libscorep_adapter_opari2_openmp_event_la_LDFLAGS = \
-    $(library_api_version_ldflags)
+endif HAVE_FORTRAN_SUPPORT
 
 endif HAVE_OPENMP_SUPPORT

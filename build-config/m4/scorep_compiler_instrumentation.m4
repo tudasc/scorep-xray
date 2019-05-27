@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2014, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -29,22 +29,7 @@
 ## directory for details.
 ##
 
-AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
-AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])
-
-have_compiler_instrumentation=yes
-AS_CASE([${ax_cv_c_compiler_vendor}],
-    [intel],    [],
-    [sun],      [],
-    [ibm],      [],
-    [portland], [],
-    [gnu],      [],
-    [cray],     [],
-    [fujitsu],  [],
-    [have_compiler_instrumentation=no
-     compiler_instrumentation_result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
-
+AC_DEFUN([SCOREP_LIBBFD], [
 scorep_have_demangle="no"
 AS_CASE([${ac_scorep_platform}],
     [k|fx10|fx100], [_FUJITSU_LIBBFD_CHECK_WORKAROUND],
@@ -56,6 +41,26 @@ AC_SCOREP_COND_HAVE([LIBBFD],
 AC_SCOREP_COND_HAVE([DEMANGLE],
     [test "x${scorep_have_demangle}" = "xyes"],
     [Define if cplus_demangle is available.])
+])
+
+AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
+AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])dnl
+AC_REQUIRE([SCOREP_LIBBFD])dnl
+
+have_compiler_instrumentation=yes
+AS_CASE([${ax_cv_c_compiler_vendor}],
+    [intel],    [],
+    [sun],      [],
+    [ibm],      [],
+    [portland], [],
+    [gnu],      [],
+    [cray],     [],
+    [fujitsu],  [],
+    [clang],    [],
+    [have_compiler_instrumentation=no
+     compiler_instrumentation_result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
+
 
 dnl `which nm` is the correct one for BG and Cray, but
 dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
@@ -93,8 +98,9 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     ])
 AFS_SUMMARY([compiler instrumentation], [${compiler_instrumentation_result}])
 
-AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION],
-    [test "x${have_compiler_instrumentation}" = xyes])
+AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION],
+    [test "x${have_compiler_instrumentation}" = xyes],
+    [Defined if compiler instrumentation is available.])
 
 AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
     [test "x${have_compiler_instrumentation}" = xyes &&

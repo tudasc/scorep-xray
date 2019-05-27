@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013-2014, 2016-2017,
+ * Copyright (c) 2013-2014, 2016-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -139,11 +139,13 @@ SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
                                         bool                               withOnlineAccess )
 {
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
+#if HAVE_BACKEND( ONLINE_ACCESS )
     if ( withOnlineAccess )
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
     }
     else
+#endif /* HAVE_BACKEND( ONLINE_ACCESS ) */
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
@@ -171,11 +173,13 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
     libs.push_back( "libscorep_adapter_mpi_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mpi" );
+#if HAVE_BACKEND( ONLINE_ACCESS )
     if ( withOnlineAccess )
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );
     }
     else
+#endif /* HAVE_BACKEND( ONLINE_ACCESS ) */
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }

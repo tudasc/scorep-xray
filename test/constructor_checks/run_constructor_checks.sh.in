@@ -45,38 +45,32 @@ cleanup()
 }
 trap cleanup EXIT
 
+languages="c cxx"
+@SCOREP_HAVE_FC_TRUE@languages="$languages f"
+
 paradigm_threads="none"
 @HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp"
 
 for thread in $paradigm_threads
 do
-    cleanup
-    printf "Running Score-P constructor check for C ($thread) "
-    $dir/test_constructor_check_${thread}_c$EXEEXT 2>&1 >/dev/null |
-        $GREP -q 'initialized via constructor' &&
-        echo " ok" ||
-        {
-            echo " FAILED"
-            exit 1
-        }
 
-    cleanup
-    printf "Running Score-P constructor check for C++ ($thread) "
-    $dir/test_constructor_check_${thread}_cxx$EXEEXT 2>&1 >/dev/null |
-        $GREP -q 'initialized via constructor' &&
-        echo " ok" ||
-        {
-            echo " FAILED"
-            exit 1
-        }
+    for l in $languages
+    do
+        case $l in
+        (c)   L=C       ;;
+        (cxx) L=C++     ;;
+        (f)   L=Fortran ;;
+        esac
 
-    cleanup
-    printf "Running Score-P constructor check for Fortran ($thread) "
-    $dir/test_constructor_check_${thread}_f$EXEEXT 2>&1 >/dev/null |
-        $GREP -q 'initialized via constructor' &&
-        echo " ok" ||
-        {
-            echo " FAILED"
-            exit 1
-        }
+        cleanup
+        printf "Running Score-P constructor check for $L ($thread) "
+        $dir/test_constructor_check_${thread}_$l$EXEEXT 2>&1 >/dev/null |
+            $GREP -q 'initialized via constructor' &&
+            echo " ok" ||
+            {
+                echo " FAILED"
+                exit 1
+            }
+    done #languages
+
 done #thread

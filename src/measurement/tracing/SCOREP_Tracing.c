@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -46,7 +46,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
 #include <scorep_status.h>
-#include <scorep_location.h>
+#include <scorep_location_management.h>
 #include "scorep_rewind_stack_management.h"
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
