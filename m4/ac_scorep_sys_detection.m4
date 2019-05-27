@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -248,7 +248,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_COND_IF([PLATFORM_SOLARIS],
         [AC_DEFINE([HAVE_PLATFORM_SOLARIS], [1], [Set if we are building for the Solaris platform])])
     AM_COND_IF([PLATFORM_MAC],
-        [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the Mac platform])])
+        [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the macOS platform])])
     AM_COND_IF([PLATFORM_MIC],
         [AC_DEFINE([HAVE_PLATFORM_MIC], [1], [Set if we are building for the Intel MIC platform])])
     AM_COND_IF([PLATFORM_NECSX],

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -73,6 +73,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [ibm],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_IBM],     [test 1 -eq 1], [false])],
     [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],     [test 1 -eq 1], [false])],
     [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_GNU],     [test 1 -eq 1], [false])],
+    [clang],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CLANG],   [test 1 -eq 1], [false])],
     [cray],     [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CRAY],    [test 1 -eq 1], [false])],
     [fujitsu],  [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FUJITSU], [test 1 -eq 1], [false])],
     [unknown],  [AC_MSG_WARN([Could not determine compiler vendor. AC_PACKAGE_NAME might not function properly.])],
@@ -83,6 +84,7 @@ afs_compiler_sun=0
 afs_compiler_ibm=0
 afs_compiler_portland=0
 afs_compiler_gnu=0
+afs_compiler_clang=0
 afs_compiler_cray=0
 afs_compiler_fujitsu=0
 AS_CASE([${ax_cv_c_compiler_vendor}],
@@ -91,6 +93,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [ibm],      [afs_compiler_ibm=1],
     [portland], [afs_compiler_portland=1],
     [gnu],      [afs_compiler_gnu=1],
+    [clang],    [afs_compiler_clang=1],
     [cray],     [afs_compiler_cray=1],
     [fujitsu],  [afs_compiler_fujitsu=1],
     [])
@@ -99,6 +102,7 @@ AC_SUBST([SCOREP_COMPILER_SUN],     [${afs_compiler_sun}])dnl
 AC_SUBST([SCOREP_COMPILER_IBM],     [${afs_compiler_ibm}])dnl
 AC_SUBST([SCOREP_COMPILER_PGI],     [${afs_compiler_portland}])dnl
 AC_SUBST([SCOREP_COMPILER_GNU],     [${afs_compiler_gnu}])dnl
+AC_SUBST([SCOREP_COMPILER_CLANG],   [${afs_compiler_clang}])dnl
 AC_SUBST([SCOREP_COMPILER_CRAY],    [${afs_compiler_cray}])dnl
 AC_SUBST([SCOREP_COMPILER_FUJITSU], [${afs_compiler_fujitsu}])dnl
 ])dnl

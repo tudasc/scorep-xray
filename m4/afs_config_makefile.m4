@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2014,
+dnl Copyright (c) 2014, 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -27,9 +27,11 @@ m4_popdef([_afs_srp])dnl
 AC_DEFUN([AFS_CONFIG_MAKEFILE],
 AC_CONFIG_FILES([Makefile], [
 sed -e '
-s/^\(am__v_\(GEN\|YACC\|LEX\)_0 = @echo "  \)\2/\1\2'"$AFS_SRP_PADDING"'/
+s/^\(am__v_\(GEN\)_0 = @echo "  \)\2/\1\2'"$AFS_SRP_PADDING"'/
+s/^\(am__v_\(YACC\)_0 = @echo "  \)\2/\1\2'"$AFS_SRP_PADDING"'/
+s/^\(am__v_\(LEX\)_0 = @echo "  \)\2/\1\2'"$AFS_SRP_PADDING"'/
 t
-s/^\(am__v_\(@<:@^ @:>@\+\)_0 = @echo "  \)\2/\1'"$AFS_SRP"'\2/' \
+s/^\(am__v_\(@<:@^ @:>@*\)_0 = @echo "  \)\2/\1'"$AFS_SRP"'\2/' \
     Makefile >Makefile.afs && mv -f Makefile.afs Makefile || rm -f Makefile.afs
 ], [
 AFS_SRP='$AFS_SRP'

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,2014
+## Copyright (c) 2009-2011, 2014, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -99,7 +99,7 @@ AS_IF([test "x${ac_scorep_compiler_suite_called}" != "x"],
     [ac_scorep_compiler_suite_called="yes"])
 
 AC_ARG_WITH([nocross-compiler-suite],
-            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio)],
+            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio|clang)],
                             [The compiler suite used to build this package in non cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
                    [ac_scorep_compilers_backend="compiler-nocross-gcc" # default
@@ -109,6 +109,7 @@ AC_ARG_WITH([nocross-compiler-suite],
                             ["intel"],     [ac_scorep_compilers_backend="compiler-nocross-intel"],
                             ["pgi"],       [ac_scorep_compilers_backend="compiler-nocross-pgi"],
                             ["studio"],    [ac_scorep_compilers_backend="compiler-nocross-studio"],
+                            ["clang"],     [ac_scorep_compilers_backend="compiler-nocross-clang"],
                             ["no"],        [AC_MSG_ERROR([option --without-nocross-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-nocross-compiler-suite.])])],
                    [AC_MSG_WARN([option --with-nocross-compiler-suite ignored in cross-compiling mode. You may use --with-frontend-compiler-suite to customize the frontend compiler.])])])
@@ -118,7 +119,7 @@ AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
 
 
 AC_ARG_WITH([frontend-compiler-suite],
-            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio)],
+            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio|clang)],
                             [The compiler suite used to build the frontend parts of this package in cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
                    [ac_scorep_compilers_frontend="compiler-frontend-gcc"
@@ -128,6 +129,7 @@ AC_ARG_WITH([frontend-compiler-suite],
                             ["intel"],     [ac_scorep_compilers_frontend="compiler-frontend-intel"],
                             ["pgi"],       [ac_scorep_compilers_frontend="compiler-frontend-pgi"],
                             ["studio"],    [ac_scorep_compilers_frontend="compiler-frontend-studio"],
+                            ["clang"],     [ac_scorep_compilers_frontend="compiler-frontend-clang"],
                             ["no"],        [AC_MSG_ERROR([option --without-frontend-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-frontend-compiler-suite.])])],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])])

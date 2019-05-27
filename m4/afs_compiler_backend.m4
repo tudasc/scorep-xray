@@ -6,7 +6,7 @@
 ## Copyright (c) 2013
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014
+## Copyright (c) 2014, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -74,7 +74,7 @@ m4_set_foreach([afs_relevant_build_variables_set],
 
 # handle --with-compiler-suite= configure option, overrides platform defaults
 AC_ARG_WITH([compiler-suite],
-    [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pgi|studio)],
+    [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pgi|studio|clang)],
          [The compiler suite used to build this package. Applies currently only to non-cross-compile systems. Compilers need to be in $PATH [gcc].])],
     [# action if given
      AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
@@ -90,6 +90,7 @@ AC_ARG_WITH([compiler-suite],
               ["intel"],  [],
               ["pgi"],    [],
               ["studio"], [],
+              ["clang"],  [],
               [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-compiler-suite.])])
 
           # read relevant variables from compiler vendor file, provides at least CC, CXX, etc.
