@@ -241,8 +241,8 @@ bool
 SCOREP_Instrumenter_Selector::isAlreadySelected( SCOREP_Instrumenter_Paradigm* paradigm )
 {
     SCOREP_Instrumenter_ParadigmList::iterator paradigm_iter;
-    for ( paradigm_iter = m_paradigm_list.begin();
-          paradigm_iter != m_paradigm_list.end();
+    for ( paradigm_iter = m_current_selection.begin();
+          paradigm_iter != m_current_selection.end();
           paradigm_iter++ )
     {
         if ( ( *paradigm_iter ) == paradigm )

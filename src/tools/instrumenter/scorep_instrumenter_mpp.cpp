@@ -151,6 +151,10 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
 
     std::string command = SCOREP_NM " " + all_objects_stream.str() + " 2>/dev/null | "
                           SCOREP_EGREP " -l 'U (MPI|mpi)_' >/dev/null 2>&1";
+    if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
+    {
+        std::cerr << command << std::endl;
+    }
     int return_value = system( command.c_str() );
     if ( return_value == 0 )
     {
@@ -253,6 +257,10 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
 
     std::string command = SCOREP_NM " " + all_objects_stream.str() + " 2>/dev/null | "
                           SCOREP_EGREP " -l 'U (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' >/dev/null 2>&1";
+    if ( instrumenter.getCommandLine().getVerbosity() >= 1 )
+    {
+        std::cerr << command << std::endl;
+    }
     int return_value = system( command.c_str() );
     if ( return_value == 0 )
     {
