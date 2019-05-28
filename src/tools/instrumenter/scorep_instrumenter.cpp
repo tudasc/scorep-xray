@@ -621,14 +621,20 @@ SCOREP_Instrumenter::create_subsystem_initialization( void )
 void
 SCOREP_Instrumenter::link_step( void )
 {
+    std::string linker_prefix = " " LIBDIR_FLAG_WL;
+    if ( m_cuda_adapter->isNvcc() )
+    {
+        linker_prefix = " -Xlinker=";
+    }
+
     std::string libs_prefix;
     std::string libs_suffix;
 #if defined( SCOREP_SHARED_BUILD )
     /* temporary, see ticket:385 */
     if ( m_command_line.getNoAsNeeded() )
     {
-        libs_prefix = " " LIBDIR_FLAG_WL "--no-as-needed";
-        libs_suffix = " " LIBDIR_FLAG_WL "--as-needed";
+        libs_prefix = linker_prefix +  "--no-as-needed";
+        libs_suffix = linker_prefix +  "--as-needed";
     }
 #endif
 
@@ -645,8 +651,8 @@ SCOREP_Instrumenter::link_step( void )
     command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
 #if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
-    command << libs_prefix << " -Wl,-start-group `" << m_config_base << " --event-libs`";
-    command << " " << m_command_line.getFlagsAfterInterpositionLib() << " -Wl,-end-group " << libs_suffix;
+    command << libs_prefix << linker_prefix << "-start-group `" << m_config_base << " --event-libs`";
+    command << " " << m_command_line.getFlagsAfterInterpositionLib() << linker_prefix << "-end-group " << libs_suffix;
 #else
     command << libs_prefix << " `" << m_config_base << " --event-libs`" << libs_suffix;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();

@@ -110,3 +110,9 @@ SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine&
 
     return flags;
 }
+
+bool
+SCOREP_Instrumenter_CudaAdapter::isNvcc( void )
+{
+    return m_nvcc_compiler;
+}

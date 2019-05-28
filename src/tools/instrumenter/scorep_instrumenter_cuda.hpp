@@ -41,6 +41,8 @@ public:
                   const std::string& next );
     virtual std::string
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    bool
+    isNvcc( void );
 
 private:
     /* Is the nvcc compiler used to drive the compilation/linking */
