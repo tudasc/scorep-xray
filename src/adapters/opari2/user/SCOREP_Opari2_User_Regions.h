@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -64,12 +64,7 @@ extern SCOREP_Mutex scorep_opari2_user_assign_lock;
 #define SCOREP_OPARI2_USER_HANDLE_UNINITIALIZED_REGION( handle, ctc_string ) \
     if ( *handle == NULL )                                                 \
     {                                                                      \
-        SCOREP_MutexLock( scorep_opari2_user_assign_lock );                \
-        if ( *handle == NULL )                                             \
-        {                                                                  \
-            POMP2_USER_Assign_handle( handle, ctc_string );                \
-        }                                                                  \
-        SCOREP_MutexUnlock( scorep_opari2_user_assign_lock );              \
+        POMP2_USER_Assign_handle( handle, ctc_string );                    \
     }
 
 /** Struct which contains all data for a user region. */

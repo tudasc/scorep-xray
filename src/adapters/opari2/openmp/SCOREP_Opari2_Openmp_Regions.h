@@ -66,12 +66,7 @@ extern SCOREP_Mutex scorep_opari2_openmp_assign_lock;
 #define SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( handle, ctc_string ) \
     if ( *handle == NULL )                                                   \
     {                                                                        \
-        SCOREP_MutexLock( scorep_opari2_openmp_assign_lock );                \
-        if ( *handle == NULL )                                               \
-        {                                                                    \
-            POMP2_Assign_handle( handle, ctc_string );                       \
-        }                                                                    \
-        SCOREP_MutexUnlock( scorep_opari2_openmp_assign_lock );              \
+        POMP2_Assign_handle( handle, ctc_string );                           \
     }
 
 /* Must be in the same order as the entries in region_type_map in

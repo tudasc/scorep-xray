@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -196,36 +196,41 @@ parse_user_init_string( const char                 initString[],
 extern SCOREP_Opari2_User_Region* scorep_opari2_user_regions;
 
 void
-POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2_handle,
-                          const char                init_string[] )
+POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2Handle,
+                          const char                initString[] )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "In POMP2_USER_Assign_handle" );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "   %s", init_string );
-
-    /* Index counter */
-    static size_t              count       = 0;
-    const size_t               max_regions = POMP2_USER_Get_num_regions();
-    SCOREP_Opari2_User_Region* new_handle  = 0;
-
-    /* If we have on-the-fly registration, we might need to increase the
-       buffer for our regions */
-    if ( count < max_regions )
+    SCOREP_MutexLock( scorep_opari2_user_assign_lock );
+    if ( *opari2Handle == NULL )
     {
-        new_handle = &scorep_opari2_user_regions[ count ];
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "In POMP2_USER_Assign_handle" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "   %s", initString );
+
+        /* Index counter */
+        static size_t              count       = 0;
+        const size_t               max_regions = POMP2_USER_Get_num_regions();
+        SCOREP_Opari2_User_Region* new_handle  = 0;
+
+        /* If we have on-the-fly registration, we might need to increase the
+           buffer for our regions */
+        if ( count < max_regions )
+        {
+            new_handle = &scorep_opari2_user_regions[ count ];
+        }
+        else
+        {
+            new_handle = malloc( sizeof( SCOREP_Opari2_User_Region ) );
+        }
+
+        /* Initialize new region struct */
+        parse_user_init_string( initString, new_handle );
+
+        /* Set return value */
+        *opari2Handle = new_handle;
+
+        /* Increase array index */
+        ++count;
     }
-    else
-    {
-        new_handle = malloc( sizeof( SCOREP_Opari2_User_Region ) );
-    }
-
-    /* Initialize new region struct */
-    parse_user_init_string( init_string, new_handle );
-
-    /* Set return value */
-    *opari2_handle = new_handle;
-
-    /* Increase array index */
-    ++count;
+    SCOREP_MutexUnlock( scorep_opari2_user_assign_lock );
 }
 
 /** @} */
