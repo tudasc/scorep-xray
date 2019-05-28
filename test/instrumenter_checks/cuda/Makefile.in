@@ -15,13 +15,13 @@
 
 ## file       test/instrumenter_checks/cuda/Makefile.in
 
-CXX  = @CXX@
+CXX  = @SCOREP_INSTRUMENTER_CHECK_NVCC_CXX@
 NVCC = nvcc
 LIBS =
 
 # -Ox does not work for all compilers. Use AM_CONDITIONAL here?
 CXXFLAGS = -O3
-CUFLAGS  =
+CUFLAGS  = @SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS@
 
 PARADIGM   = cuda
 CODES      = jacobi

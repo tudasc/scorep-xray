@@ -98,7 +98,7 @@ AC_ARG_ENABLE([cuda],
                               [Enable or disable support for CUDA. Fails if support cannot be satisfied but was requested.])],
               [AS_CASE([$enableval,$scorep_have_cuda],
                        [yes,no],
-                       [AC_MSG_ERROR([couldn't fulfill requested support for CUDA.])],
+                       [AC_MSG_ERROR([couldn''t fulfill requested support for CUDA.])],
                        [no,yes],
                        [scorep_have_cuda="no (disabled by request)"],
                        [yes,yes|no,no],
@@ -133,6 +133,20 @@ AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
 AC_SUBST(SCOREP_CUDA_VERSION,      ["${scorep_cuda_version}"])
 
+# prepare compiler variables for use with nvcc in instrumenter checks
+# all flags are passed as comma-separated list after -Xcompiler
+AM_COND_IF([HAVE_CUDA_SUPPORT], [
+    SCOREP_INSTRUMENTER_CHECK_NVCC_CXX=${CXX%% *}
+    SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=${CXX#* }
+    AS_IF([test "x${INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}" = "x${CXX}"],
+        [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=],
+        [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=`
+            echo $SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS |
+                sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
+         SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS:+-Xcompiler=}${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}"])
+    AC_SUBST([SCOREP_INSTRUMENTER_CHECK_NVCC_CXX])
+    AC_SUBST([SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS])
+])
 ])
 
 dnl ----------------------------------------------------------------------------
