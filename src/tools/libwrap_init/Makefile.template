@@ -8,7 +8,6 @@
 # LDFLAGS
 # LIBS
 # SCOREP_CC
-# SCOREP_CC_WITHOUT_FLAGS
 # LIBTOOL
 # LIBTOOL_LDFLAGS
 # INSTALL
@@ -118,11 +117,11 @@ all-libwrap-runtime: $(LIBWRAP_RUNTIME)
 
 ### main ###
 main: main.$(LW_SRCEXT)
-	$(LW_V_CCLD)$(SCOREP_CC_WITHOUT_FLAGS) -o $@ $< $(CPPFLAGS) $(LDFLAGS) $(LIBS)
+	$(LW_V_CCLD)$(SCOREP_CC) -o $@ $< $(CPPFLAGS) $(LDFLAGS) $(LIBS)
 
 ### preprocess ###
 libwrap.i: libwrap.$(LW_SRCEXT) libwrap.h Makefile
-	$(LW_V_CPP)$(SCOREP_CC_WITHOUT_FLAGS) -E $< $(CPPFLAGS) $(CPPFLAGS_PGI_WORKAROUND) > $@
+	$(LW_V_CPP)$(SCOREP_CC) -E $< $(CPPFLAGS) $(CPPFLAGS_PGI_WORKAROUND) > $@
 
 ### generate ###
 $(WRAP_LIB_SOURCE): libwrap.i $(WRAP_FILTER_FILE)
@@ -157,11 +156,11 @@ quick-check: $(WRAP_LIB_SOURCE)
             echo "}"; \
         ) >symbol_quick_check.$(LW_SRCEXT)
 	@if $(LW_V_P); then \
-            echo "$(SCOREP_CC_WITHOUT_FLAGS) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS)"; \
+            echo "$(SCOREP_CC) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS)"; \
         else \
             echo "  QUICK-CHECK"; \
         fi; \
-        if ! $(SCOREP_CC_WITHOUT_FLAGS) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
+        if ! $(SCOREP_CC) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
             echo >&2 "[Score-P] Error: There is mismatch between functions found in the header files"; \
             echo >&2 "[Score-P]        and the symbols present in the target library."; \
             echo >&2 "[Score-P]        Use 'make check' to get a list of missing symbols and add"; \
@@ -261,10 +260,10 @@ check: $(WRAP_LIB_SOURCE)
                 echo "char $$symbol();"; \
                 echo "int main() { return $$symbol(); }"; \
             ) >symbol_check.$(LW_SRCEXT); \
-            $(LW_V_P) && echo $(SCOREP_CC_WITHOUT_FLAGS) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS); \
-            if $(SCOREP_CC_WITHOUT_FLAGS) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
-                $(LW_V_P) && echo $(SCOREP_CC_WITHOUT_FLAGS) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS); \
-                if $(SCOREP_CC_WITHOUT_FLAGS) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LW_V_devnull); then \
+            $(LW_V_P) && echo $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS); \
+            if $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
+                $(LW_V_P) && echo $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS); \
+                if $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LW_V_devnull); then \
                     echo "  UNCERTAIN $$symbol"; \
                     uncertain_symbols="$$uncertain_symbols $$symbol"; \
                 else \
@@ -345,13 +344,13 @@ install-libwrap-runtime: $(LIBWRAP_RUNTIME)
 main_linktime_wrapped: main.$(LW_SRCEXT) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)
 	$(LW_V_SCOREP)( \
 	    export SCOREP_LIBWRAP_PATH=$(LW_PREFIX); \
-	    $(LW_SCOREP) $(LW_V_scorep) --libwrap=linktime:$(LW_NAME) $(SCOREP_CC_WITHOUT_FLAGS) $(CPPFLAGS) $< $(LDFLAGS) $(LIBS) -o $@; \
+	    $(LW_SCOREP) $(LW_V_scorep) --libwrap=linktime:$(LW_NAME) $(SCOREP_CC) $(CPPFLAGS) $< $(LDFLAGS) $(LIBS) -o $@; \
 	)
 
 main_runtime_wrapped: main.$(LW_SRCEXT) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)
 	$(LW_V_SCOREP)( \
 	    export SCOREP_LIBWRAP_PATH=$(LW_PREFIX); \
-	    $(LW_SCOREP) $(LW_V_scorep) --libwrap=runtime:$(LW_NAME) $(SCOREP_CC_WITHOUT_FLAGS) $(CPPFLAGS) $< $(LDFLAGS) $(LIBS) -o $@; \
+	    $(LW_SCOREP) $(LW_V_scorep) --libwrap=runtime:$(LW_NAME) $(SCOREP_CC) $(CPPFLAGS) $< $(LDFLAGS) $(LIBS) -o $@; \
 	)
 
 .PHONY: installcheck

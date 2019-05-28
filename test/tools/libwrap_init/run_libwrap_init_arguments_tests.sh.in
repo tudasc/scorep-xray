@@ -101,7 +101,6 @@ test_expect_success_all "Makefile and filter is correctly created" \
     "test_grep -q \"LDFLAGS\s*=\s*$ldflags\"             workspace19/Makefile"                \
     "test_grep -q \"LIBS\s*=\s*$libs\"                   workspace19/Makefile"                \
     "test_grep -q \"SCOREP_CC\s*=\s*.\"                  workspace19/Makefile # is not empty" \
-    "test_grep -q \"SCOREP_CC_WITHOUT_FLAGS\s*=\s*.\"    workspace19/Makefile # is not empty" \
     "test_grep -q \"LIBTOOL\s*=\s*.\"                    workspace19/Makefile # is not empty" \
     "test_grep -q \"INSTALL\s*=\s*.\"                    workspace19/Makefile # is not empty" \
     "test_grep -q \"LW_GEN\s*=\s*.\"                     workspace19/Makefile # is not empty" \
@@ -120,7 +119,6 @@ test_expect_success_all "Makefile and filter is correctly created (with = argume
     "test_grep -q \"LDFLAGS\s*=\s*$ldflags\"             workspace22/Makefile"                \
     "test_grep -q \"LIBS\s*=\s*$libs\"                   workspace22/Makefile"                \
     "test_grep -q \"SCOREP_CC\s*=\s*.\"                  workspace22/Makefile # is not empty" \
-    "test_grep -q \"SCOREP_CC_WITHOUT_FLAGS\s*=\s*.\"    workspace22/Makefile # is not empty" \
     "test_grep -q \"LIBTOOL\s*=\s*.\"                    workspace22/Makefile # is not empty" \
     "test_grep -q \"INSTALL\s*=\s*.\"                    workspace22/Makefile # is not empty" \
     "test_grep -q \"LW_GEN\s*=\s*.\"                     workspace22/Makefile # is not empty" \

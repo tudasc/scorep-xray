@@ -11,7 +11,7 @@
 ## directory for details.
 ##
 
-rundir=test_libwrap_init_simple
+rundir=test_libwrap_init_filter
 . "@abs_builddir@/common.sh"
 
 test_init "Score-P $lwi_name filter"

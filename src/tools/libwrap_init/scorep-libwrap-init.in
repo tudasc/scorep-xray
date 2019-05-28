@@ -291,7 +291,6 @@ else # [ $lw_backend = shmem ]; then
 fi
 
 lw_cc=$($scorep_config --${lw_compiler_prefix}${lw_config_compiler_suffix})
-lw_cc_without_flags=${lw_cc%% *}
 lw_libtool=$($scorep_config --${lw_compiler_prefix}libtool)
 
 if [ "$lw_cc" = "not available in this installation" ]; then error_and_exit "Internal: \$lw_cc = \"$lw_cc\". This shouldn't happen."; fi
@@ -451,7 +450,6 @@ fi
     echo "LDFLAGS                 = $lw_ldflags"
     echo "LIBS                    = $lw_libs"
     echo "SCOREP_CC               = $lw_cc"
-    echo "SCOREP_CC_WITHOUT_FLAGS = $lw_cc_without_flags"
     echo "LIBTOOL                 = $lw_libtool"
     echo "LIBTOOL_LDFLAGS         = $lw_libtool_ldflags"
     echo "INSTALL                 = $INSTALL"
@@ -565,6 +563,6 @@ echo ""
 if [ "$lw_prefix" != "$PREFIX" ]; then
     echo "    $ export SCOREP_LIBWRAP_PATH=$lw_prefix${SCOREP_LIBWRAP_PATH:+:\$SCOREP_LIBWRAP_PATH}"
 fi
-echo "    $ scorep --libwrap=$lw_name $lw_cc_without_flags $lw_cppflags app.$lw_srcext $lw_ldflags $lw_libs -o app" # taken from make installcheck in Makefile.template
+echo "    $ scorep --libwrap=$lw_name $lw_cc $lw_cppflags app.$lw_srcext $lw_ldflags $lw_libs -o app" # taken from make installcheck in Makefile.template
 echo ""
 echo "For detailed instructions consult '${readme##*/}'."
