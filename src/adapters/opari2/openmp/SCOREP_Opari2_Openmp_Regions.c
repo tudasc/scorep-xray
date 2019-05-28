@@ -355,7 +355,7 @@ parse_openmp_init_string( const char                   initString[],
             if ( !critical )
             {
                 criticals_list* new_critical =  malloc( sizeof( criticals_list ) );
-                new_critical->name = malloc( sizeof( char ) * strlen( name ) );
+                new_critical->name = malloc( sizeof( char ) * ( strlen( name ) + 1 ) );
                 strcpy( new_critical->name, &name[ 0 ] );
                 new_critical->next = criticals_head;
                 criticals_head     = new_critical;
