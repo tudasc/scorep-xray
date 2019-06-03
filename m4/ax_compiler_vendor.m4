@@ -12,6 +12,9 @@
 #   hp, borland, comeau, dec, cray, kai, lcc, metrowerks, sgi, microsoft,
 #   watcom, etc. The vendor is returned in the cache variable
 #   $ax_cv_c_compiler_vendor for C and $ax_cv_cxx_compiler_vendor for C++.
+#   Try also to determine the variant of a compiler (e.g. Portland ships pgcc
+#   and pgcc-llvm). If there is a variant detected, <vendor>/<variant> is
+#   returned. Use ${ax_cv_c_compiler_vendor%/*} to test only for the <vendor>.
 #
 # LICENSE
 #
@@ -56,6 +59,7 @@ AC_DEFUN([AX_COMPILER_VENDOR],
            clang:     __clang__
            cray:      _CRAYC
            fujitsu:   __FUJITSU
+           portland:  __PGI
            gnu:       __GNUC__
            sun:       __SUNPRO_C,__SUNPRO_CC
            hp:        __HP_cc,__HP_aCC
@@ -68,12 +72,11 @@ AC_DEFUN([AX_COMPILER_VENDOR],
            microsoft: _MSC_VER
            metrowerks: __MWERKS__
            watcom:    __WATCOMC__
-           portland:  __PGI
            tcc:       __TINYC__
            unknown:   UNKNOWN"
   for ventest in $vendors; do
-    case $ventest in
-      *:) vendor=$ventest; continue ;;
+    case $ventest in #(
+      *:) vendor=${ventest%:*}; continue ;; #(
       *)  vencpp="defined("`echo $ventest | sed 's/,/) || defined(/g'`")" ;;
     esac
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM(,[
@@ -82,6 +85,20 @@ AC_DEFUN([AX_COMPILER_VENDOR],
       #endif
     ])], [break])
   done
-  ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor=`echo $vendor | cut -d: -f1`
+  ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor=$vendor
+  portland_variants="llvm: __PGLLVM__"
+  eval variants=\"\$${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor}_variants : NONE\"
+  for vartest in $variants; do
+    case $vartest in #(
+      *:) variant=${vartest%:*}; continue ;; #(
+      *)  varcpp="defined("`echo $vartest | sed 's/,/) && defined(/g'`")" ;;
+    esac
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM(,[
+      #if !($varcpp)
+        thisisanerror;
+      #endif
+    ])], [break])
+  done
+  AS_VAR_APPEND([ax_cv_]_AC_LANG_ABBREV[_compiler_vendor], [${variant:+/$variant}])
  ])
 ])

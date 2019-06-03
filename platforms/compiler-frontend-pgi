@@ -1,7 +1,7 @@
 CC_FOR_BUILD=pgcc
 CXX_FOR_BUILD=pgc++
-F77_FOR_BUILD=pgf77
-FC_FOR_BUILD=pgf90
+F77_FOR_BUILD=pgfortran
+FC_FOR_BUILD=pgfortran
 
 #CPPFLAGS_FOR_BUILD=
 # Provide flags as 16.1 is broken with the default '-O2 -g'.

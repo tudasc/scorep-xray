@@ -58,6 +58,7 @@ dnl ------------------------------------------------------------------
 AC_DEFUN([AC_SCOREP_COMPILER_CHECKS],[
 AC_LANG_PUSH([C])
 AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
 AC_LANG_POP([C])
 
 # Disable default OpenMP support for the Cray compilers
@@ -67,7 +68,7 @@ AS_IF([test "x${ax_cv_c_compiler_vendor}" = xcray],
      F77="${F77} -hnoomp -O2"
      FC="${FC} -hnoomp -O2"])dnl
 
-AS_CASE([${ax_cv_c_compiler_vendor}],
+AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INTEL],   [test 1 -eq 1], [false])],
     [sun],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_SUN],     [test 1 -eq 1], [false])],
     [ibm],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_IBM],     [test 1 -eq 1], [false])],
@@ -87,7 +88,7 @@ afs_compiler_gnu=0
 afs_compiler_clang=0
 afs_compiler_cray=0
 afs_compiler_fujitsu=0
-AS_CASE([${ax_cv_c_compiler_vendor}],
+AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [afs_compiler_intel=1],
     [sun],      [afs_compiler_sun=1],
     [ibm],      [afs_compiler_ibm=1],
@@ -105,4 +106,19 @@ AC_SUBST([SCOREP_COMPILER_GNU],     [${afs_compiler_gnu}])dnl
 AC_SUBST([SCOREP_COMPILER_CLANG],   [${afs_compiler_clang}])dnl
 AC_SUBST([SCOREP_COMPILER_CRAY],    [${afs_compiler_cray}])dnl
 AC_SUBST([SCOREP_COMPILER_FUJITSU], [${afs_compiler_fujitsu}])dnl
+
+dnl strip epoch (Borland only)
+_scorep_compiler_version=${ax_cv_c_compiler_version##*:}
+dnl extract major
+afs_compiler_version_major=${_scorep_compiler_version%%.*}
+dnl fallback to 0
+: ${afs_compiler_version_major:=0}
+_scorep_compiler_version=${_scorep_compiler_version#*.}
+dnl extract minor
+afs_compiler_version_minor=${_scorep_compiler_version%%.*}
+dnl fallback to 0
+: ${afs_compiler_version_minor:=0}
+AS_UNSET([_scorep_compiler_version])
+AC_SUBST([SCOREP_COMPILER_VERSION_MAJOR], [${afs_compiler_version_major}])dnl
+AC_SUBST([SCOREP_COMPILER_VERSION_MINOR], [${afs_compiler_version_minor}])dnl
 ])dnl

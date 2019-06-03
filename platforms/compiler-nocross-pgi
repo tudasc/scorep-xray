@@ -1,7 +1,7 @@
 CC=pgcc
 CXX=pgc++
-F77=pgf77
-FC=pgf90
+F77=pgfortran
+FC=pgfortran
 
 #CPPFLAGS=
 # Provide flags as 16.1 is broken with the default '-O2 -g'.
