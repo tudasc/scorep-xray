@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2015-2017,
+ * Copyright (c) 2013, 2015-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -378,6 +378,13 @@ SCOREP_Libwrap_Parser::AddFunctionDecl( CXCursor      cursor,
     function_decl.functionname = full_name;
     function_decl.symbolname   = symbolName;
     function_decl.linenr       = line;
+
+    /* Do never wrap __builtin_* functions. */
+    string prefix_builtin( "__builtin_" );
+    if ( 0 == function_decl.symbolname.compare( 0, prefix_builtin.size(), prefix_builtin ) )
+    {
+        return;
+    }
 
     /* Check the filter first, so that the user is not confused by the
      * ignore message from the variadic check.

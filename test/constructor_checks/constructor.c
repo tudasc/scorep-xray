@@ -25,23 +25,21 @@
 
 void
 __attribute__( ( constructor ) )
-test_constructor( int   argc,
-                  char* argv[] );
+test_constructor( SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS );
 
 #elif SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_PRAGMA
 
 void
-test_constructor( int   argc,
-                  char* argv[] );
+test_constructor( SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS );
 
 #pragma init(test_constructor)
 
 #endif
 
 void
-test_constructor( int   argc,
-                  char* argv[] )
+test_constructor( SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS )
 {
+#if HAVE( COMPILER_CONSTRUCTOR_ARGS )
     /* inverted expectations */
     if ( argc != 1 )
     {
@@ -59,6 +57,7 @@ test_constructor( int   argc,
     {
         _Exit( EXIT_SUCCESS );
     }
+#endif
 
     /* inverted expectations */
     _Exit( EXIT_FAILURE );

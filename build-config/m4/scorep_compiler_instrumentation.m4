@@ -49,7 +49,7 @@ AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])dnl
 AC_REQUIRE([SCOREP_LIBBFD])dnl
 
 have_compiler_instrumentation=yes
-AS_CASE([${ax_cv_c_compiler_vendor}],
+AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
     [sun],      [],
     [ibm],      [],

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015, 2018,
+ * Copyright (c) 2009-2012, 2015, 2018-2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -227,7 +227,7 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-#ifndef __PGI
+#if !( defined( __PGI ) && __PGIC__ < 18 )
         if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
 #endif
         {
@@ -427,7 +427,7 @@ FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-#ifndef __PGI
+#if !( defined( __PGI ) && __PGIC__ < 18 )
         if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
 #endif
         {

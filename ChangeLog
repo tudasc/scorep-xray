@@ -17,6 +17,8 @@ Features and improvements:
   `--with-nocross-compiler-suite=clang`. Additionally experimental
   support for macOS based systems was added, but needs to be enabled
   with `--enable-experimental-platform` explicitly.
+- Bulding with the PGI compiler suite now selects the 'pgfortran'
+  compiler for F77 and FC. Added support for the PGI/LLVM variant.
 
 Bugfixes:
 

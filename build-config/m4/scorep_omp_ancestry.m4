@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2013, 2016-2017,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
+dnl Copyright (c) 2019,
+dnl Technische Universitaet Dresden, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -44,8 +47,9 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
 
 # PGI's implementation of omp_get_ancestor_thread_num returns
 # 'Error: omp_get_ancestor_thread_num: not implemented'.
-AS_IF([test "x${ax_cv_c_compiler_vendor}" = xportland], 
-    [scorep_have_omp_ancestry=0])
+AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland &&
+       test ${afs_compiler_version_major} -lt 18],
+    [scorep_have_omp_ancestry=1])
 
 AS_IF([test 1 -eq ${scorep_have_omp_ancestry}], 
     [AC_MSG_RESULT([yes])

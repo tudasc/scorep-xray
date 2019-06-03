@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015-2016,
+## Copyright (c) 2015-2016, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -150,7 +150,7 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
 
 AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
       [dnl check for OpenACC compiler flags
-       AS_CASE([${ax_cv_c_compiler_vendor}],
+       AS_CASE([${ax_cv_c_compiler_vendor%/*}],
            [portland], [SCOREP_OPENACC_FLAG_TEST([-acc])],
            [gnu],      [],
            [cray],     [SCOREP_OPENACC_FLAG_TEST([-h pragma=acc])],

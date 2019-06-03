@@ -82,12 +82,12 @@ AC_LANG_PUSH([C++])
 AX_COMPILER_VENDOR
 AC_LANG_POP([C++])
 
-AS_CASE([${ax_cv_cxx_compiler_vendor}],
+AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
     [intel],    [CC=icc],
     [ibm],      [CC=xlc_r],
     [gnu],      [CC=gcc],
     [sun],      [CC=cc],
-    [portland], [CC=pgcc],
+    [portland], [CC=pgcc], # TODO: that may have been 'pgc++ -Mllvm' from the default target, thus 'pgcc' may not be the LLVM variant
     [clang],    [CC=clang],
     [AC_MSG_WARN([invalid value of CXX vendor (${ax_cv_cxx_compiler_vendor}), cannot determine corresponding CC. Using gcc as fall-back.])
      CC=gcc

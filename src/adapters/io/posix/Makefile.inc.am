@@ -47,7 +47,8 @@ libscorep_adapter_posix_io_mgmt_common_cppflags = \
     $(UTILS_CPPFLAGS)                     \
     -I$(INC_DIR_MUTEX)                    \
     -I$(INC_DIR_COMMON_HASH)              \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS)              \
+    -D_GNU_SOURCE
 
 #libscorep_adapter_posix_io_mgmt_common_libadd = \
 #    @SCOREP_POSIX_AIO_LIBS@

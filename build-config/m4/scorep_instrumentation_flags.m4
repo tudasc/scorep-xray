@@ -55,7 +55,11 @@ scorep_compiler_instrumentation_needs_symbol_table="no"
 AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
-    [ibm],      [scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
+    [ibm],      [SCOREP_CC_FLAG_TEST([-qdebug=function_trace])
+                 SCOREP_CC_FLAG_TEST([-qfunctrace])],
+    [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
+                      scorep_compiler_instrumentation_cppflags="-Minstrument=functions"
+                      scorep_compiler_instrumentation_needs_symbol_table="yes"],
     [portland], [SCOREP_CC_FLAG_TEST([-Mprof=func])
                  SCOREP_CC_FLAG_TEST([-Minstrument=functions])],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
@@ -104,7 +108,7 @@ AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 
 AS_UNSET([scorep_instrumentation_cppflags])
 AS_UNSET([scorep_instrumentation_ldflags])
-AS_CASE([${ax_cv_c_compiler_vendor}],
+AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
     [sun],      [],
     [ibm],      [],

@@ -37,7 +37,7 @@ AC_DEFUN([SCOREP_FORTRAN_MANGLED], [
 AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 mangling=
 AS_IF([test "x${scorep_cv_f77_works}" = "xyes"], [
-    AS_CASE([${ax_cv_c_compiler_vendor}],
+    AS_CASE([${ax_cv_c_compiler_vendor%/*}],
         [intel],    [mangling=" [##] _"],
         [sun],      [mangling=" [##] _"],
         [ibm],      [mangling=],

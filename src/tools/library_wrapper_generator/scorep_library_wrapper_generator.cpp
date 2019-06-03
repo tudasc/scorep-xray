@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2015-2017,
+ * Copyright (c) 2013, 2015-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -228,17 +228,12 @@ public:
             << "\n"
             << "#endif\n" << endl;
 
-        out << "static const char* libwrap_" << generator.m_config.wrapper_name << "_libnames[] = {";
+        out << "static const char* libwrap_" << generator.m_config.wrapper_name << "_libnames[" << generator.m_config.library_names.size() << " + 1] = {\n";
         for ( vector<string>::size_type i = 0; i < generator.m_config.library_names.size(); ++i )
         {
-            if ( i > 0 )
-            {
-                out << ",";
-            }
-            out << "\n";
-            out << "    \"" << generator.m_config.library_names[ i ] << "\"";
+            out << "    \"" << generator.m_config.library_names[ i ] << "\",\n";
         }
-        out << "\n};\n"
+        out << "    \"\"\n};\n"
             << "static SCOREP_LibwrapHandle*          libwrap_" << generator.m_config.wrapper_name << "_handle;\n"
             << "static const SCOREP_LibwrapAttributes libwrap_" << generator.m_config.wrapper_name << "_attributes =\n"
             << "{\n"

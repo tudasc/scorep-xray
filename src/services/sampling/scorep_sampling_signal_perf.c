@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015, 2017,
+ * Copyright (c) 2015, 2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -25,7 +25,13 @@
 #include <SCOREP_Events.h>
 #include <UTILS_Error.h>
 
+#if defined( __PGI )
+// work around missing __builtin_constant_p used in swab.h.
+// https://www.pgroup.com/userforum/viewtopic.php?t=6100
+#define __builtin_constant_p( x ) ( 0 )
+#endif
 #include <linux/perf_event.h>
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

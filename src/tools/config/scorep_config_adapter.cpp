@@ -583,9 +583,13 @@ SCOREP_Config_PreprocessAdapter::addCFlags( std::string&           cflags,
                                             SCOREP_Config_Language language,
                                             bool                   nvcc )
 {
+    if ( language == SCOREP_CONFIG_LANGUAGE_C )
+    {
+        cflags += SCOREP_C_NO_PREINCLUDE_FLAG " ";
+    }
     if ( language == SCOREP_CONFIG_LANGUAGE_CXX )
     {
-        cflags += SCOREP_NO_PREINCLUDE_FLAG " ";
+        cflags += SCOREP_CXX_NO_PREINCLUDE_FLAG " ";
     }
 }
 

@@ -24,8 +24,10 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  scorep_compiler_constructor_cflags=""],
     [ibm],      [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
-    [portland], [scorep_compiler_constructor_mode=pragma
-                 scorep_compiler_constructor_cflags=""],
+    [portland],      [scorep_compiler_constructor_mode=pragma
+                      scorep_compiler_constructor_cflags=""],
+    [portland/llvm], [scorep_compiler_constructor_mode=attribute
+                      scorep_compiler_constructor_cflags=""],
     [gnu],      [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
     [clang],    [scorep_compiler_constructor_mode=attribute
@@ -103,6 +105,66 @@ checkconstructor(void)
         CFLAGS=$scorep_compiler_constructor_safe_CFLAGS
     ],
     [scorep_compiler_constructor_summary="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported"])dnl
+
+scorep_compiler_constructor_with_args_support=no
+AS_IF([test "x${scorep_compiler_constructor_mode}" != x], [
+    AC_MSG_CHECKING([whether compiler accepts arguments to constructor])
+    scorep_compiler_constructor_safe_CFLAGS=$CFLAGS
+    CFLAGS="$CFLAGS $scorep_compiler_constructor_cflags"
+    AC_LANG_PUSH([C])
+    AC_LINK_IFELSE([
+        AC_LANG_PROGRAM(
+[[/* argc and argv are unreliable. Pass (0, NULL) to prevent
+ * crashes. See #1167. */
+choke me
+
+#if SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_ATTRIBUTE
+void
+__attribute__( ( constructor ) )
+checkconstructor( int   argc,
+                  char* argv[] );
+
+#elif SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_PRAGMA
+
+void
+scorep_constructor( int   argc,
+                    char* argv[] );
+
+#pragma init(scorep_constructor)
+
+#endif
+
+void
+checkconstructor( int   argc,
+                  char* argv[] )
+{
+}]],
+[])
+    ], [
+        AC_MSG_RESULT([yes])
+        scorep_compiler_constructor_with_args_support=yes
+        AC_DEFINE([HAVE_COMPILER_CONSTRUCTOR_ARGS], [1],
+                      [Whether the compiler accepts argumetns to a constructor.])
+        AC_DEFINE([SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS],
+                  [int argc, char* argv@<:@@:>@],
+                  [Prototype arguments accepts to a constructor.])
+        AC_DEFINE([SCOREP_COMPILER_CONSTRUCTOR_PROXY_ARGS],
+                  [argc, argv],
+                  [Arguments from constructor passing to another function.])
+        AS_VAR_APPEND([scorep_compiler_constructor_summary], [" with arguments"])
+    ], [
+        AC_MSG_RESULT([no])
+        AC_DEFINE([SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS],
+                  [void],
+                  [Prototype arguments accepts to a constructor.])
+        AC_DEFINE([SCOREP_COMPILER_CONSTRUCTOR_PROXY_ARGS],
+                  [0, NULL],
+                  [Arguments from constructor passing to another function.])
+        AS_VAR_APPEND([scorep_compiler_constructor_summary], [" without arguments"])
+    ])
+    AC_LANG_POP([C])
+    CFLAGS=$scorep_compiler_constructor_safe_CFLAGS
+])
 
 AC_SUBST([SCOREP_COMPILER_CONSTRUCTOR_CFLAGS],
          ["${scorep_compiler_constructor_cflags}"])
