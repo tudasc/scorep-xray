@@ -229,6 +229,14 @@ public:
     bool
     isDynamicRegion( uint64_t region ) const;
 
+    /**
+     * Returns a value >= 0 if the number of program arguments is provided by the cube file.
+     * Note: in a future version this function should return independent values per (MPMD) root
+     * region and the entire scoring should be per root region as well.
+     */
+    int64_t
+    getNumberOfProgramArguments() const;
+
 private:
 
 
@@ -325,6 +333,8 @@ private:
      * Set of dynamic regions.
      */
     std::set<uint64_t> m_dynamic_regions;
+
+    int64_t m_num_arguments;
 };
 
 

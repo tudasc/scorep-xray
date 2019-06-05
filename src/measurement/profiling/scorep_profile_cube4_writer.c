@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1120,10 +1120,6 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
         cube_def_mirror( write_set.my_cube, "http://www.vi-hps.org/upload/packages/scorep/" );
 
-        char buffer[ 32 ];
-        sprintf( buffer, "%u", max_number_of_args );
-        cube_def_attr( write_set.my_cube, "Score-P::DefinitionArguments::ProgramBegin::numberOfArguments", buffer );
-
         if ( SCOREP_IsUnwindingEnabled() )
         {
             /*
@@ -1147,7 +1143,8 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
                                        write_set.ranks_number,
                                        write_set.global_items,
                                        write_set.items_per_rank,
-                                       &layout );
+                                       &layout,
+                                       max_number_of_args );
 
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */

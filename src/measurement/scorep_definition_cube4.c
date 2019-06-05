@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -813,7 +813,8 @@ write_region_definitions( cube_t*                       myCube,
 static void
 write_callpath_definitions( cube_t*                       myCube,
                             SCOREP_DefinitionManager*     manager,
-                            scorep_cube4_definitions_map* map )
+                            scorep_cube4_definitions_map* map,
+                            uint32_t                      maxNumberOfProgramArgs )
 {
     cube_cnode*           cnode  = NULL;
     cube_region*          region = NULL;
@@ -835,6 +836,16 @@ write_callpath_definitions( cube_t*                       myCube,
 
         /* Register region to cube */
         cnode = cube_def_cnode( myCube, region, parent );
+
+        /* For program regions, add the number of arguments. Currently, the
+         * maximum is used. Should be per MPMD program regions in conjunction
+         * with a scorep-score improvement. */
+        if ( parent == NULL )
+        {
+            char buffer[ 32 ];
+            sprintf( buffer, "%u", maxNumberOfProgramArgs );
+            cube_region_def_attr( region, "Score-P::DefinitionArguments::ProgramBegin::numberOfArguments", buffer );
+        }
 
         /* Create entry in mapping table */
         add_callpath_mapping( map, cnode, handle );
@@ -1469,7 +1480,8 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    uint32_t                      nRanks,
                                    uint64_t                      nLocations,
                                    uint32_t*                     locationsPerRank,
-                                   const scorep_cube_layout*     layout )
+                                   const scorep_cube_layout*     layout,
+                                   uint32_t                      maxNumberOfProgramArgs )
 {
     cube_location** location_map = NULL;
 
@@ -1484,7 +1496,7 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
 
         write_metric_definitions( myCube, manager, map, layout );
         write_region_definitions( myCube, manager, map );
-        write_callpath_definitions( myCube, manager, map );
+        write_callpath_definitions( myCube, manager, map, maxNumberOfProgramArgs );
 
         if ( SCOREP_Env_UseSystemTreeSequence() )
         {

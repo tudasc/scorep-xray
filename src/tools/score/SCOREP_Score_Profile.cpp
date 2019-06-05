@@ -48,7 +48,7 @@ using namespace std;
 using namespace cube;
 
 
-SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube )
+SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube ), m_num_arguments( -1 )
 {
     m_time   = m_cube->get_met( "time" );
     m_visits = m_cube->get_met( "visits" );
@@ -59,29 +59,15 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
     }
     m_hits = m_cube->get_met( "hits" );
 
-    /* Collect all attributes from the definition counters and arguments */
-    const string               attr_counter_prefix( "Score-P::DefinitionCounters::" );
-    const string               attr_argument_prefix( "Score-P::DefinitionArguments::" );
+
+    /* Collect all attributes from the definition counters */
+    const string               attr_prefix( "Score-P::DefinitionCounters::" );
     const map<string, string>& attributes = m_cube->get_attrs();
     for ( map<string, string>::const_iterator it = attributes.begin();
           it != attributes.end(); ++it )
     {
-        const string&          key = it->first;
-        map<string, uint64_t>* map_to_insert;
-        string                 key_name;
-        if ( key.size() > attr_counter_prefix.size()
-             && 0 == key.compare( 0, attr_counter_prefix.size(), attr_counter_prefix ) )
-        {
-            map_to_insert = &m_definition_counters;
-            key_name      = key.substr( attr_counter_prefix.size() );
-        }
-        else if ( key.size() > attr_argument_prefix.size()
-                  && 0 == key.compare( 0, attr_argument_prefix.size(), attr_argument_prefix ) )
-        {
-            map_to_insert = &m_definition_arguments;
-            key_name      = key.substr( attr_argument_prefix.size() );
-        }
-        else
+        const string& key = it->first;
+        if ( key.size() <= attr_prefix.size() || 0 != key.compare( 0, attr_prefix.size(), attr_prefix ) )
         {
             continue;
         }
@@ -99,7 +85,9 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
             continue;
         }
 
-        map_to_insert->insert( map<string, uint64_t>::value_type( key_name, value ) );
+        m_definition_counters.insert( map<string, uint64_t>::value_type(
+                                          key.substr( attr_prefix.size() ),
+                                          value ) );
     }
 
     m_processes = m_cube->get_procv();
@@ -127,6 +115,30 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
         else if ( getRegionName( i ).find( '=', 0 ) != string::npos )
         {
             m_parameter_regions.insert( i );
+        }
+
+        // process selected region attributes
+        const std::map<std::string, std::string>& attrs = m_regions[ i ]->get_attrs();
+        if ( !attrs.empty() )
+        {
+            for ( std::map<std::string, std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
+            {
+                if ( it->first.find( "ProgramBegin::numberOfArguments" ) != string::npos )
+                {
+                    istringstream num_arguments_as_string( it->second );
+                    int64_t       num_arguments;
+                    try
+                    {
+                        num_arguments_as_string >> num_arguments;
+                    }
+                    catch ( ... )
+                    {
+                        cerr << "WARNING: Cannot parse ProgramBegin::numberOfArguments value as number: "
+                             << "'" << it->second << "'" << endl;
+                    }
+                    m_num_arguments = std::max( m_num_arguments, num_arguments );
+                }
+            }
         }
     }
 
@@ -441,6 +453,11 @@ SCOREP_Score_Profile::isDynamicRegion( uint64_t region ) const
     return m_dynamic_regions.count( region );
 }
 
+int64_t
+SCOREP_Score_Profile::getNumberOfProgramArguments() const
+{
+    return m_num_arguments;
+}
 
 
 /* **************************************************** private members */

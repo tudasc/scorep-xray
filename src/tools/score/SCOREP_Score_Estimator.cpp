@@ -308,11 +308,9 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     }
     registerEvent( new SCOREP_Score_ParameterEvent() );
 
-    const map<string, uint64_t>&                definition_arguments = m_profile->getDefinitionArguments();
-    const map<string, uint64_t>::const_iterator it                   = definition_arguments.find( "ProgramBegin::numberOfArguments" );
-    if ( it != definition_arguments.end() )
+    if ( profile->getNumberOfProgramArguments() >= 0 )
     {
-        registerEvent( new SCOREP_Score_ProgramBeginEvent( it->second ) );
+        registerEvent( new SCOREP_Score_ProgramBeginEvent( profile->getNumberOfProgramArguments() ) );
         registerEvent( new SCOREP_Score_ProgramEndEvent() );
     }
 

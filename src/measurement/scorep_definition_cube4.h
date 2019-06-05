@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013
+ * Copyright (c) 2009-2011, 2013, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014
@@ -116,7 +116,8 @@ typedef struct
    @param nRanks      Number of ranks.
    @param nLocations  Global number of locations.
    @param locationsPerRank List of number of locations per rank.
-   @param layout      Description of teh cube layout
+   @param layout      Description of the cube layout
+   @param maxNumberOfProgramArgs Maximum number of program arguments provided at the command line.
  */
 void
 scorep_write_definitions_to_cube4( cube_t*                       myCube,
@@ -124,7 +125,8 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    uint32_t                      nRanks,
                                    uint64_t                      nLocations,
                                    uint32_t*                     locationsPerRank,
-                                   const scorep_cube_layout*     layout );
+                                   const scorep_cube_layout*     layout,
+                                   uint32_t                      maxNumberOfProgramArgs );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
