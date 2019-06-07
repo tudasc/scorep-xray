@@ -254,7 +254,8 @@ bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
-    if ( current == "-x" )
+    if ( ( current == "-x" ) ||
+         ( current == "-include" ) )
     {
         return true;
     }
