@@ -173,7 +173,7 @@ double
 SCOREP_Score_Profile::getTime( uint64_t region,
                                uint64_t process )
 {
-    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
+    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_INCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
                                         m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
 
@@ -191,30 +191,6 @@ SCOREP_Score_Profile::getTime( uint64_t region,
         return value->getDouble();
     }
 }
-
-double
-SCOREP_Score_Profile::getInclusiveTime( uint64_t region,
-                                        uint64_t process )
-{
-    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_regions[ region ], CUBE_CALCULATE_INCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
-
-    if ( !value )
-    {
-        return 0.0;
-    }
-    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
-    {
-        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
-        return tau_value->getSum().getDouble();
-    }
-    else
-    {
-        return value->getDouble();
-    }
-}
-
 
 
 double

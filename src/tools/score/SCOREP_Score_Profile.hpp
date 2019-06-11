@@ -88,14 +88,6 @@ public:
     getTime( uint64_t regionId,
              uint64_t process );
 
-    /**
-     * Returns the inclusive time that a region spent on a specified process.
-     * @param regionId  ID of the region for which the time is requested.
-     * @param process   The process number fo which the time is requested.
-     */
-    double
-    getInclusiveTime( uint64_t regionId,
-                      uint64_t process );
 
     /**
      * Returns the number of sampling hits to a region on a specified process.
@@ -105,13 +97,6 @@ public:
     uint64_t
     getHits( uint64_t regionId,
              uint64_t process );
-
-    /**
-     * Returns sum of the time that an application spent in a region on all processes.
-     * @param regionId  ID of the region for which the time is requested.
-     */
-    double
-    getTotalTime( uint64_t regionId );
 
     /**
      * Returns sum of the number of visits for an specified region on all processes.
@@ -239,6 +224,12 @@ public:
 
 private:
 
+    /**
+     * Returns sum of the time that an application spent in a region on all processes.
+     * @param regionId  ID of the region for which the time is requested.
+     */
+    double
+    getTotalTime( uint64_t regionId );
 
     /**
      * Calculates recursively whether a node is on a callpath to an MPI or OpenMP
