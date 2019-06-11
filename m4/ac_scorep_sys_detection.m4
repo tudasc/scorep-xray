@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2017,
+## Copyright (c) 2009-2017, 2019,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -99,7 +99,7 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                       [ac_scorep_platform="bgq"],
                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
                       [ac_scorep_platform="bgp"],
-                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/cray],
+                  [(test "x${build_cpu}" = "xx86_64" || test "x${build_cpu}" = "xaarch64") && test -d /opt/cray],
                       [AS_IF([test -L /opt/cray/pmi/default],
                            [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
                                    [ac_scorep_platform="crayxt"],
