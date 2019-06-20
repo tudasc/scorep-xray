@@ -2,7 +2,6 @@
 AC_DEFUN([AC_SCOREP_LINK_FLAGS_CHECK], [
  _AC_SCOREP_LINK_FLAG_CHECK([-Bstatic], [HAVE_LINK_FLAG_BSTATIC])
  _AC_SCOREP_LINK_FLAG_CHECK([-Bdynamic], [HAVE_LINK_FLAG_BDYNAMIC])
- _AC_SCOREP_LINK_FLAG_CHECK([-Wl,-start-group -Wl,-end-group], [HAVE_LINKER_START_END_GROUP])
 ])
 
 dnl ---------------------------------------------------------------------------
