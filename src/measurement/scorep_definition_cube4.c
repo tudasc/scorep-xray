@@ -844,7 +844,7 @@ write_callpath_definitions( cube_t*                       myCube,
         {
             char buffer[ 32 ];
             sprintf( buffer, "%u", maxNumberOfProgramArgs );
-            cube_region_def_attr( region, "Score-P::DefinitionArguments::ProgramBegin::numberOfArguments", buffer );
+            cube_region_def_attr( region, "Score-P::ProgramArguments::numberOfArguments", buffer );
         }
 
         /* Create entry in mapping table */

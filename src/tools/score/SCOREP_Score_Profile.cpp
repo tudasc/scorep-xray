@@ -123,7 +123,7 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
         {
             for ( std::map<std::string, std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
             {
-                if ( it->first.find( "ProgramBegin::numberOfArguments" ) != string::npos )
+                if ( it->first.find( "Score-P::ProgramArguments::numberOfArguments" ) != string::npos )
                 {
                     istringstream num_arguments_as_string( it->second );
                     int64_t       num_arguments;
@@ -133,7 +133,7 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
                     }
                     catch ( ... )
                     {
-                        cerr << "WARNING: Cannot parse ProgramBegin::numberOfArguments value as number: "
+                        cerr << "WARNING: Cannot parse Score-P::ProgramArguments::numberOfArguments value as number: "
                              << "'" << it->second << "'" << endl;
                     }
                     m_num_arguments = std::max( m_num_arguments, num_arguments );
@@ -366,12 +366,6 @@ const map<string, uint64_t>&
 SCOREP_Score_Profile::getDefinitionCounters( void )
 {
     return m_definition_counters;
-}
-
-const map<string, uint64_t>&
-SCOREP_Score_Profile::getDefinitionArguments( void )
-{
-    return m_definition_arguments;
 }
 
 void

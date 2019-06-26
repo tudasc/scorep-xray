@@ -171,12 +171,6 @@ public:
     getDefinitionCounters( void );
 
     /**
-     * Returns the arguments of definitions from the profile.
-     */
-    const std::map<std::string, uint64_t>&
-    getDefinitionArguments( void );
-
-    /**
      * Prints some basic infos on the profile. Used for debug purposes.
      */
     void
