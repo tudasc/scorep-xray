@@ -246,7 +246,8 @@ const char*
 SCOREP_GetExecutableName( bool* executableNameIsFile );
 
 /**
- * Returns the region handle enclosing that represents the application.
+ * Returns the process-local region handle that represents the application.
+ * Note that this handle might not be unique across all ranks for MPMD programs.
  */
 SCOREP_RegionHandle
 SCOREP_GetProgramRegion( void );
