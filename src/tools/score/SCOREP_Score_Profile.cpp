@@ -118,26 +118,22 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
         }
 
         // process selected region attributes
-        const std::map<std::string, std::string>& attrs = m_regions[ i ]->get_attrs();
-        if ( !attrs.empty() )
+        const map<string, string>&          attrs            = m_regions[ i ]->get_attrs();
+        const string                        program_args_key = "Score-P::ProgramArguments::numberOfArguments";
+        map<string, string>::const_iterator program_args_it  = attrs.find( program_args_key );
+        if ( program_args_it != attrs.end() )
         {
-            for ( std::map<std::string, std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
+            istringstream num_arguments_as_string( program_args_it->second );
+            int64_t       num_arguments;
+            try
             {
-                if ( it->first.find( "Score-P::ProgramArguments::numberOfArguments" ) != string::npos )
-                {
-                    istringstream num_arguments_as_string( it->second );
-                    int64_t       num_arguments;
-                    try
-                    {
-                        num_arguments_as_string >> num_arguments;
-                    }
-                    catch ( ... )
-                    {
-                        cerr << "WARNING: Cannot parse Score-P::ProgramArguments::numberOfArguments value as number: "
-                             << "'" << it->second << "'" << endl;
-                    }
-                    m_num_arguments = std::max( m_num_arguments, num_arguments );
-                }
+                num_arguments_as_string >> num_arguments;
+                m_num_arguments = max( m_num_arguments, num_arguments );
+            }
+            catch ( ... )
+            {
+                cerr << "WARNING: Cannot parse " << program_args_key << " value as number: "
+                     << "'" << program_args_it->second << "'" << endl;
             }
         }
     }
