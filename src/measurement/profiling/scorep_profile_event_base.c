@@ -51,6 +51,7 @@
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 
+#include <string.h>
 #include <inttypes.h>
 
 scorep_profile_node*
@@ -63,6 +64,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
 {
     scorep_profile_node*       node;
     scorep_profile_type_data_t node_data;
+    memset( &node_data, 0, sizeof( node_data ) );
 
     /* If we are already in a collapse node -> do nothing more */
     if ( ( current_node != NULL ) &&

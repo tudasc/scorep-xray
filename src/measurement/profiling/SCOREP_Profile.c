@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -358,8 +358,9 @@ on_location_creation( SCOREP_Location* locationData,
     SCOREP_Profile_LocationData* parent_data = NULL;
     SCOREP_Profile_LocationData* thread_data = NULL;
     scorep_profile_node*         node        = NULL;
+    uint64_t                     thread_id   = 0;
     scorep_profile_type_data_t   node_data;
-    uint64_t                     thread_id = 0;
+    memset( &node_data, 0, sizeof( node_data ) );
 
     SCOREP_Profile_LocationData* profile_data =
         scorep_profile_create_location_data( locationData );
@@ -460,6 +461,7 @@ on_location_creation( SCOREP_Location* locationData,
 
             /* Enter the artificial program region */
             scorep_profile_type_data_t program_region_data;
+            memset( &program_region_data, 0, sizeof( program_region_data ) );
             scorep_profile_type_set_region_handle( &program_region_data, SCOREP_GetProgramRegion() );
             scorep_profile_node* program_root;
             program_root = scorep_profile_find_create_child( thread_data,
@@ -470,6 +472,7 @@ on_location_creation( SCOREP_Location* locationData,
 
             /* Enter the artificial metric region */
             scorep_profile_type_data_t type_data;
+            memset( &type_data, 0, sizeof( type_data ) );
             scorep_profile_type_set_region_handle( &type_data, per_process_metrics );
             node = scorep_profile_create_node( thread_data,
                                                program_root,
@@ -562,6 +565,7 @@ on_location_activation( SCOREP_Location* locationData,
     if ( node == NULL )
     {
         scorep_profile_type_data_t data;
+        memset( &data, 0, sizeof( data ) );
         scorep_profile_type_set_fork_node( &data, creation_point );
         node = scorep_profile_create_node( thread_data,
                                            root,
@@ -1323,6 +1327,7 @@ parameter_uint64( SCOREP_Location*       thread,
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
+    memset( &node_data, 0, sizeof( node_data ) );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -1391,6 +1396,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
+    memset( &node_data, 0, sizeof( node_data ) );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 

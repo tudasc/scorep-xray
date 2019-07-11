@@ -54,6 +54,7 @@
 #include <UTILS_Error.h>
 #include <scorep_location_management.h>
 
+#include <string.h>
 #include <assert.h>
 
 /* **************************************************************************************
@@ -84,6 +85,7 @@ create_task_root( SCOREP_Profile_LocationData* location,
 {
     /* Create the data structure */
     scorep_profile_type_data_t specific_data;
+    memset( &specific_data, 0, sizeof( specific_data ) );
     scorep_profile_type_set_region_handle( &specific_data,
                                            regionHandle );
 
@@ -204,6 +206,7 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*                 thread,
     SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
 
     scorep_profile_type_data_t specific_data;
+    memset( &specific_data, 0, sizeof( specific_data ) );
     scorep_profile_type_set_region_handle( &specific_data, regionHandle );
 
     scorep_profile_task* task = get_profile_task_data( taskHandle );

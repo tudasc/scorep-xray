@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 
 #include <config.h>
 #include <stddef.h>
+#include <string.h>
 #include <assert.h>
 
 #include <SCOREP_Memory.h>
@@ -233,6 +234,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
                    SCOREP_Location_AllocForProfile( location->location_data,
                                                     sizeof( scorep_profile_node ) );
     }
+    memset( new_node, 0, sizeof( *new_node ) );
 
     /* Reserve space for dense metrics,
        Since the metric number may vary on reinitialization, allocate it

@@ -49,6 +49,7 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <stdio.h>
+#include <string.h>
 #include <inttypes.h>
 
 static SCOREP_RegionHandle scorep_profile_collapse_region = SCOREP_INVALID_REGION;
@@ -59,6 +60,7 @@ substitute_collapse( scorep_profile_node* node, void* param )
     if ( node->node_type == SCOREP_PROFILE_NODE_COLLAPSE )
     {
         node->node_type = SCOREP_PROFILE_NODE_REGULAR_REGION;
+        memset( &node->type_specific_data, 0, sizeof( node->type_specific_data ) );
         scorep_profile_type_set_region_handle( &node->type_specific_data,
                                                scorep_profile_collapse_region );
     }
