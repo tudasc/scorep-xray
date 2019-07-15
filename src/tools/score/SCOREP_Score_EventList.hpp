@@ -423,7 +423,6 @@
     SCOREP_SCORE_EVENT( "putchar" ) \
     SCOREP_SCORE_EVENT( "puts" ) \
     SCOREP_SCORE_EVENT( "scanf" ) \
-    SCOREP_SCORE_EVENT( "vfprintf" ) \
     SCOREP_SCORE_EVENT( "vfscanf" ) \
     SCOREP_SCORE_EVENT( "vscanf" ) \
     SCOREP_SCORE_EVENT( "vprintf" )

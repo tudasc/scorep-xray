@@ -1866,56 +1866,6 @@ SCOREP_LIBWRAP_FUNC_NAME( ungetc )( int c, FILE* stream )
 }
 #endif
 
-#if HAVE( POSIX_IO_SYMBOL_VFPRINTF )
-int
-SCOREP_LIBWRAP_FUNC_NAME( vfprintf )( FILE* stream, const char* format, va_list ap )
-{
-    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    INITIALIZE_FUNCTION_POINTER( vfprintf );
-    int ret;
-
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_EnterWrappedRegion( scorep_posix_io_region_vfprintf );
-
-        SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_ISOC, &stream );
-
-        if ( handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationBegin( handle,
-                                     SCOREP_IO_OPERATION_MODE_WRITE,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
-        }
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        ret = SCOREP_LIBWRAP_FUNC_CALL( vfprintf,
-                                        ( stream, format, ap ) );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationComplete( handle,
-                                        SCOREP_IO_OPERATION_MODE_WRITE,
-                                        ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
-        }
-
-        SCOREP_IoMgmt_PopHandle( handle );
-
-        SCOREP_ExitRegion( scorep_posix_io_region_vfprintf );
-    }
-    else
-    {
-        ret = SCOREP_LIBWRAP_FUNC_CALL( vfprintf,
-                                        ( stream, format, ap ) );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-    return ret;
-}
-#endif
-
 #if HAVE( POSIX_IO_SYMBOL_VFSCANF )
 int
 SCOREP_LIBWRAP_FUNC_NAME( vfscanf )( FILE* stream, const char* format, va_list ap )
