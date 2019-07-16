@@ -237,6 +237,9 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     scanf,       
 #if HAVE( POSIX_IO_SYMBOL_UNGETC )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     ungetc,       ( int c, FILE* stream ) )
 #endif
+#if HAVE( POSIX_IO_SYMBOL_VFPRINTF )
+SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     vfprintf,     ( FILE* stream, const char* format, va_list ap ) )
+#endif
 #if HAVE( POSIX_IO_SYMBOL_VFSCANF )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     vfscanf,      ( FILE* stream, const char* format, va_list ap ) )
 #endif
