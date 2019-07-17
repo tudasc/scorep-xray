@@ -83,7 +83,6 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
             ungetc,
             unlink,
             unlinkat,
-            vfprintf,
             vfscanf,
             vprintf,
             vscanf,
@@ -112,6 +111,7 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([_SCOREP_IO_RECORDING_POSIX], [
 AC_REQUIRE([SCOREP_THREAD_LOCAL_STORAGE])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
+AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS]) dnl
 
 # will be used for IO and AIO
 scorep_posix_io_wrap_symbols=""
@@ -138,7 +138,12 @@ AS_IF([test x"${scorep_posix_io_support}" = x"yes"],
 AC_SCOREP_COND_HAVE([POSIX_IO_SUPPORT],
                     [test x"${scorep_posix_io_support}" = x"yes"],
                     [Defined if recording calls to POSIX I/O is possible.],
-                    [_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([scorep_posix_io_wrap_symbols])])
+                    [_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([scorep_posix_io_wrap_symbols])
+                     # do not wrap 'vfprintf' on Cray platform
+                     AS_CASE([${ac_scorep_platform}],
+                             [cray*], [# as we do not check for vfprintf corresponding symbol should not be defined
+                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_VFPRINTF], [0])],
+                             [SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1, [vfprintf])])])
 
 AFS_SUMMARY_POP([POSIX I/O support], [${scorep_posix_io_support}${scorep_posix_io_summary_reason}])
 
