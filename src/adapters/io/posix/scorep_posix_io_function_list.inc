@@ -162,7 +162,7 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, FILE*,   fopen,       
 #if HAVE( POSIX_IO_SYMBOL_FOPEN64 )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, FILE*,   fopen64,      ( const char* path, const char* mode ) )
 #endif
-#if HAVE( POSIX_IO_SYMBOL_FPRINTF )
+#if HAVE( POSIX_IO_SYMBOL_FPRINTF ) && HAVE( POSIX_IO_SYMBOL_VFPRINTF )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     fprintf,      ( FILE* stream, const char* format, ... ) )
 #endif
 #if HAVE( POSIX_IO_SYMBOL_FPUTC )
@@ -177,7 +177,7 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          size_t,  fread,       
 #if HAVE( POSIX_IO_SYMBOL_FREOPEN )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, FILE*,   freopen,      ( const char* path, const char* mode, FILE* stream ) )
 #endif
-#if HAVE( POSIX_IO_SYMBOL_FSCANF )
+#if HAVE( POSIX_IO_SYMBOL_FSCANF ) && HAVE( POSIX_IO_SYMBOL_VFSCANF )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     fscanf,       ( FILE* stream, const char* format, ... ) )
 #endif
 #if HAVE( POSIX_IO_SYMBOL_FSEEK )
@@ -219,7 +219,7 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     getchar,     
 #if HAVE( POSIX_IO_SYMBOL_GETS )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          char*,   gets,         ( char* s ) )
 #endif
-#if HAVE( POSIX_IO_SYMBOL_PRINTF )
+#if HAVE( POSIX_IO_SYMBOL_PRINTF ) && HAVE( POSIX_IO_SYMBOL_VPRINTF )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     printf,       ( const char *format, ... ) )
 #endif
 #if HAVE( POSIX_IO_SYMBOL_PUTCHAR )
@@ -231,7 +231,7 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     puts,        
 #if HAVE( POSIX_IO_SYMBOL_REWIND )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, void,    rewind,       ( FILE* stream ) )
 #endif
-#if HAVE( POSIX_IO_SYMBOL_SCANF )
+#if HAVE( POSIX_IO_SYMBOL_SCANF ) && HAVE( POSIX_IO_SYMBOL_VSCANF )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     scanf,        ( const char* format, ... ) )
 #endif
 #if HAVE( POSIX_IO_SYMBOL_UNGETC )
