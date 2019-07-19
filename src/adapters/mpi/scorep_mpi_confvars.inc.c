@@ -171,10 +171,10 @@ uint64_t scorep_mpi_max_windows;
    @internal
    Maximum amount of concurrently active access or exposure epochs per
    process. Can be configured via envrionment variable
-   SCOREP_MPI_MAX_ACCESS_EPOCHS.
+   SCOREP_MPI_MAX_EPOCHS.
  */
 
-uint64_t scorep_mpi_max_access_epochs;
+uint64_t scorep_mpi_max_epochs;
 
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
@@ -219,9 +219,9 @@ static const SCOREP_ConfigVariable scorep_mpi_confvars[] = {
         ""
     },
     {
-        "max_access_epochs",
+        "max_epochs",
         SCOREP_CONFIG_TYPE_NUMBER,
-        &scorep_mpi_max_access_epochs,
+        &scorep_mpi_max_epochs,
         NULL,
         "50",
         "Maximum amount of concurrently active access or exposure epochs per "

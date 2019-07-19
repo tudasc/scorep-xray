@@ -38,19 +38,10 @@
 #ifndef SCOREP_MPI_COMMUNICATOR_H
 #define SCOREP_MPI_COMMUNICATOR_H
 
-/*
- * -----------------------------------------------------------------------------
- *
- *  EPIK Library (Event Processing Interface Kit)
- *
- *  - MPI communicator management
- *
- * -----------------------------------------------------------------------------
- */
-
+#include <SCOREP_DefinitionHandles.h>
 
 #include "scorep_mpi_communicator_mgmt.h"
-#include <SCOREP_DefinitionHandles.h>
+
 #include <mpi.h>
 
 
@@ -65,6 +56,14 @@
  */
 #define SCOREP_INVALID_MPI_GROUP SCOREP_INVALID_GROUP
 
+/**
+ * Epoch type for tracking general active target synchronization
+ */
+enum SCOREP_Mpi_EpochType_enum
+{
+    SCOREP_MPI_RMA_ACCESS_EPOCH,
+    SCOREP_MPI_RMA_EXPOSURE_EPOCH,
+};
 
 /**
  *  @internal
@@ -87,20 +86,37 @@ scorep_mpi_group_create( MPI_Group group );
 extern void
 scorep_mpi_group_free( MPI_Group group );
 
+/**
+ * @internal
+ * @brief Get group SCOREP handle for given MPI group
+ * @param group MPI group handle
+ * @return SCOREP group handle
+ */
+SCOREP_Mpi_GroupHandle
+scorep_mpi_group_handle( MPI_Group group );
+
 #ifndef SCOREP_MPI_NO_RMA
 
 /**
  * @internal
- * Translate a rank to its global rank in reference to a window (and its
- * communicator.
- * @param  rank Local rank to be translated
- * @param  win  Window that implicitly defines the communicator rank
- *              refers to.
- * @return Global rank
+ * Create window handle
+ * @param name Name for window handle
+ * @param win MPI window handle
+ * @param comm MPI communicatior handle
+ * @return SCOREP RMA window handle
  */
-extern SCOREP_MpiRank
-scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
-                           MPI_Win        win );
+SCOREP_RmaWindowHandle
+scorep_mpi_win_create( const char* name,
+                       MPI_Win     win,
+                       MPI_Comm    comm );
+
+/**
+ * @internal
+ * Free window handle
+ * @param win MPI window handle
+ */
+void
+scorep_mpi_win_free( MPI_Win win );
 
 /**
  * @internal
@@ -109,40 +125,51 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
  * @return Internal SCOREP handle for the given window.
  */
 extern SCOREP_RmaWindowHandle
-scorep_mpi_win_id( MPI_Win win );
+scorep_mpi_win_handle( MPI_Win win );
+
+
+/**
+ * @internal
+ * @brief Set the name of the window
+ * @param win   MPI window handle
+ * @param name  New name to be set
+ */
+extern void
+scorep_mpi_win_set_name( MPI_Win     win,
+                         const char* name );
 
 /**
  * @internal
  * @brief Start tracking of epoch.
- * @param win   MPI window handle of related window.
- * @param group MPI group handle of related process group.
- * @param color Type of epoch (exposure=0, access=1).
+ * @param win        MPI window handle of related window.
+ * @param group      MPI group handle of related process group.
+ * @param epoch_type Epoch Type (access vs. exposure)
  */
 extern void
-scorep_mpi_winacc_start( MPI_Win          win,
-                         MPI_Group        group,
-                         SCOREP_Mpi_Color color );
+scorep_mpi_epoch_start( MPI_Win              win,
+                        MPI_Group            group,
+                        SCOREP_Mpi_EpochType epochType );
 
 /**
  * @internal
  * @brief End tracking of epoch.
  * @param win   MPI window handle of related window.
- * @param color Type of epoch (exposure=0, access=1).
+ * @param epoch_type Epoch Type (access vs. exposure)
  */
 extern void
-scorep_mpi_winacc_end( MPI_Win          win,
-                       SCOREP_Mpi_Color color );
+scorep_mpi_epoch_end( MPI_Win              win,
+                      SCOREP_Mpi_EpochType epochType );
 
 /**
  * @internal
  * @brief  Get internal group ID of process group related to an epoch.
  * @param  win   MPI window handle of related window.
- * @param  color Type of epoch (exposure=0, access=1).
+ * @param epoch_type Epoch Type (access vs. exposure)
  * @return Internal process group handle.
  */
 extern SCOREP_Mpi_GroupHandle
-scorep_mpi_winacc_get_gid( MPI_Win          win,
-                           SCOREP_Mpi_Color color );
+scorep_mpi_epoch_get_group_handle( MPI_Win              win,
+                                   SCOREP_Mpi_EpochType epochType );
 
 #endif
 

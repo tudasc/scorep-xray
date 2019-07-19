@@ -837,11 +837,21 @@ rma_request_lock( SCOREP_Location*       location,
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
+    uint32_t remote_rank;
+    if ( remote == SCOREP_ALL_TARGET_RANKS )
+    {
+        remote_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        remote_rank = ( uint32_t )remote;
+    }
+
     OTF2_EvtWriter_RmaRequestLock( evt_writer,
                                    NULL,
                                    timestamp,
                                    SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, RmaWindow ),
-                                   remote,
+                                   remote_rank,
                                    lockId,
                                    scorep_tracing_lock_type_to_otf2( lockType ) );
 
@@ -861,11 +871,21 @@ rma_acquire_lock( SCOREP_Location*       location,
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
+    uint32_t remote_rank;
+    if ( remote == SCOREP_ALL_TARGET_RANKS )
+    {
+        remote_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        remote_rank = ( uint32_t )remote;
+    }
+
     OTF2_EvtWriter_RmaAcquireLock( evt_writer,
                                    NULL,
                                    timestamp,
                                    SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, RmaWindow ),
-                                   remote,
+                                   remote_rank,
                                    lockId,
                                    scorep_tracing_lock_type_to_otf2( lockType ) );
 
@@ -885,11 +905,21 @@ rma_try_lock( SCOREP_Location*       location,
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
+    uint32_t remote_rank;
+    if ( remote == SCOREP_ALL_TARGET_RANKS )
+    {
+        remote_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        remote_rank = ( uint32_t )remote;
+    }
+
     OTF2_EvtWriter_RmaTryLock( evt_writer,
                                NULL,
                                timestamp,
                                SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, RmaWindow ),
-                               remote,
+                               remote_rank,
                                lockId,
                                scorep_tracing_lock_type_to_otf2( lockType ) );
 
@@ -908,11 +938,21 @@ rma_release_lock( SCOREP_Location*       location,
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
+    uint32_t remote_rank;
+    if ( remote == SCOREP_ALL_TARGET_RANKS )
+    {
+        remote_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        remote_rank = ( uint32_t )remote;
+    }
+
     OTF2_EvtWriter_RmaReleaseLock( evt_writer,
                                    NULL,
                                    timestamp,
                                    SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, RmaWindow ),
-                                   remote,
+                                   remote_rank,
                                    lockId );
 
     /*

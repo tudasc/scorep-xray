@@ -1,19 +1,19 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2019
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,6 +50,10 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
 
     SCOREP_StringHandle       name_handle;
     SCOREP_CommunicatorHandle communicator_handle;
+    /* Number identifying this to be the i-th window on this comm */
+    uint32_t creation_id;
+    /* Flag indicating whether default name is still set */
+    bool has_default_name;
 };
 
 
@@ -57,7 +61,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
  * Associate the parameter tuple with a process unique RMA window handle.
  *
  * @param name A meaningful name for the RMA window, e.g. 'MPI window'
- * or 'Gfx Card 1'. The string will be copied.
+ *             or 'Gfx Card 1'. The string will be copied. Or NULL, if 'SetName'
+ *             may be used. Will be set to "", if not done so.
  *
  * @param communicatorHandle Underlying communicator. At creation time, this must
  *                           be a InterimCommunicator handle, but this will
@@ -71,6 +76,10 @@ SCOREP_RmaWindowHandle
 SCOREP_Definitions_NewRmaWindow( const char*                      name,
                                  SCOREP_InterimCommunicatorHandle communicatorHandle );
 
+
+void
+SCOREP_RmaWindowHandle_SetName( SCOREP_RmaWindowHandle rmaWindowHandle,
+                                const char*            name );
 
 void
 scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*                 definition,

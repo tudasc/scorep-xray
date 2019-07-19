@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017,
+ * Copyright (c) 2009-2013, 2017-2019
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -40,6 +40,8 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
 #include <mpi.h>
+
+#include "scorep_mpi_rma_request.h"
 
 typedef enum scorep_mpi_request_type
 {
@@ -92,6 +94,11 @@ typedef struct
 
 typedef struct
 {
+    scorep_mpi_rma_request* request_ptr;
+} scorep_mpi_request_rma_data;
+
+typedef struct
+{
     MPI_Request             request;
     scorep_mpi_request_type request_type;
     scorep_mpi_request_flag flags;
@@ -100,6 +107,7 @@ typedef struct
         scorep_mpi_request_p2p_data       p2p;
         scorep_mpi_request_comm_idup_data comm_idup;
         scorep_mpi_request_io_data        io;
+        scorep_mpi_request_rma_data       rma;
     } payload;
     SCOREP_MpiRequestId id;
 } scorep_mpi_request;
@@ -138,6 +146,15 @@ void
 scorep_mpi_request_comm_idup_create( MPI_Request request,
                                      MPI_Comm    parentComm,
                                      MPI_Comm*   newcomm );
+
+/**
+ * @brief Create entry for an RMA request handle
+ * @param mpiRequest MPI request handle
+ * @param rmaRequest Score-P RMA request handle
+ */
+void
+scorep_mpi_request_win_create( MPI_Request             mpiRequest,
+                               scorep_mpi_rma_request* rmaRequest );
 
 /**
  * @brief Create entry for a given MPI I/O request handle

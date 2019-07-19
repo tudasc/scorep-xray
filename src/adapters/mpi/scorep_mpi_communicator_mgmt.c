@@ -29,6 +29,8 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Memory.h>
 
+#include "scorep_mpi_rma_request.h"
+
 #include <inttypes.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -64,7 +66,7 @@ struct scorep_mpi_win_type* scorep_mpi_windows = NULL;
  *  @internal
  *  Data structure to track active GATS epochs.
  */
-struct scorep_mpi_winacc_type* scorep_mpi_winaccs = NULL;
+struct scorep_mpi_epoch_info_type* scorep_mpi_epochs = NULL;
 
 /**
  *  Contains the data of the MPI_COMM_WORLD definition.
@@ -96,6 +98,15 @@ SCOREP_Mutex scorep_mpi_communicator_mutex = SCOREP_INVALID_MUTEX;
  */
 int scorep_mpi_comm_initialized = 0;
 int scorep_mpi_comm_finalized   = 0;
+
+/**
+ *  @internal
+ *  Internal flag to indicate window initialization. It is set o non-zero if the
+ *  communicator management is initialized. This happens when the function
+ *  scorep_mpi_win_init() is called.
+ */
+static int mpi_win_initialized = 0;
+
 
 typedef uint32_t SCOREP_CommunicatorId;
 
@@ -137,7 +148,7 @@ scorep_mpi_win_init( void )
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexCreate( &scorep_mpi_window_mutex );
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
+    if ( !mpi_win_initialized )
     {
         if ( SCOREP_MPI_MAX_WIN == 0 )
         {
@@ -148,9 +159,9 @@ scorep_mpi_win_init( void )
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
 
-        if ( SCOREP_MPI_MAX_WINACC == 0 )
+        if ( SCOREP_MPI_MAX_EPOCHS == 0 )
         {
-            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
+            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_EPOCHS was set "
                              "to 0, thus, one-sided communication cannot be recorded and is "
                              "disabled. To avoid this warning you can disable one sided "
                              "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
@@ -171,20 +182,25 @@ scorep_mpi_win_init( void )
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
 
-        scorep_mpi_winaccs = ( struct scorep_mpi_winacc_type* )SCOREP_Memory_AllocForMisc
-                                 ( sizeof( struct scorep_mpi_winacc_type ) * SCOREP_MPI_MAX_WINACC );
+        scorep_mpi_epochs = ( struct scorep_mpi_epoch_info_type* )SCOREP_Memory_AllocForMisc
+                                ( sizeof( struct scorep_mpi_epoch_info_type ) * SCOREP_MPI_MAX_EPOCHS );
 
-        if ( scorep_mpi_winaccs == NULL )
+        if ( scorep_mpi_epochs == NULL )
         {
             UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                          "Failed to allocate memory for access epoch tracking.\n"
                          "One-sided communication cannot be recoreded.\n"
                          "Space for %" PRIu64 " access epochs was requested.\n"
                          "You can change this number via environment variable "
-                         "SCOREP_MPI_MAX_ACCESS_EPOCHS.",
-                         SCOREP_MPI_MAX_WINACC );
+                         "SCOREP_MPI_MAX_EPOCHS.",
+                         SCOREP_MPI_MAX_EPOCHS );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
+
+        // Initialize RMA request tracking
+        scorep_mpi_rma_request_init();
+
+        mpi_win_initialized = 1;
     }
 #endif
 }
@@ -194,6 +210,10 @@ scorep_mpi_win_finalize( void )
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexDestroy( &scorep_mpi_window_mutex );
+
+    scorep_mpi_rma_request_finalize();
+
+    mpi_win_initialized = 0;
 #endif
 }
 

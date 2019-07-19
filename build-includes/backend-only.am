@@ -73,6 +73,7 @@ include ../test/instrumenter_checks/Makefile.inc.am
 include ../test/memory/Makefile.inc.am
 include ../test/vector/Makefile.inc.am
 include ../test/hashtab/Makefile.inc.am
+include ../test/skiplist/Makefile.inc.am
 include ../test/rewind/Makefile.inc.am
 include ../test/constructor_checks/Makefile.inc.am
 include ../test/io_management/Makefile.inc.am

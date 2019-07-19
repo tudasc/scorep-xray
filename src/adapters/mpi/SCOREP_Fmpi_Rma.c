@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018-2019,
+ * Copyright (c) 2009-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1118,6 +1118,26 @@ FSUB( MPI_Compare_and_swap )( void* origin_addr, void* compare_addr, void* resul
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( compare_addr == scorep_mpi_fortran_bottom )
+    {
+        compare_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Compare_and_swap( origin_addr, compare_addr, result_addr, *datatype, *target_rank, *target_disp, *win );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1137,6 +1157,20 @@ FSUB( MPI_Fetch_and_op )( void* origin_addr, void* result_addr, MPI_Datatype* da
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Fetch_and_op( origin_addr, result_addr, *datatype, *target_rank, *target_disp, *op, *win );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1154,6 +1188,20 @@ void
 FSUB( MPI_Get_accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* origin_datatype, void* result_addr, int* result_count, MPI_Datatype* result_datatype, int* target_rank, MPI_Aint* target_disp, int* target_count, MPI_Datatype* target_datatype, MPI_Op* op, MPI_Win* win, int* ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
 
 
     *ierr = MPI_Get_accumulate( origin_addr, *origin_count, *origin_datatype, result_addr, *result_count, *result_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win );
@@ -2003,6 +2051,26 @@ FSUB( MPI_Compare_and_swap )( void* origin_addr, void* compare_addr, void* resul
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( compare_addr == scorep_mpi_fortran_bottom )
+    {
+        compare_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Compare_and_swap( origin_addr, compare_addr, result_addr, PMPI_Type_f2c( *datatype ), *target_rank, *target_disp, PMPI_Win_f2c( *win ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2023,6 +2091,20 @@ FSUB( MPI_Fetch_and_op )( void* origin_addr, void* result_addr, MPI_Fint* dataty
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Fetch_and_op( origin_addr, result_addr, PMPI_Type_f2c( *datatype ), *target_rank, *target_disp, PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2041,6 +2123,20 @@ void
 FSUB( MPI_Get_accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_datatype, void* result_addr, MPI_Fint* result_count, MPI_Fint* result_datatype, MPI_Fint* target_rank, MPI_Aint* target_disp, MPI_Fint* target_count, MPI_Fint* target_datatype, MPI_Fint* op, MPI_Fint* win, MPI_Fint* ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    #if HAVE( MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( result_addr == scorep_mpi_fortran_bottom )
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
 
 
     *ierr = MPI_Get_accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), result_addr, *result_count, PMPI_Type_f2c( *result_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );

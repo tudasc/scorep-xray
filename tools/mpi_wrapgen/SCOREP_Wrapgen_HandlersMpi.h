@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016-2017,
  *    Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -330,6 +330,18 @@ rtype
  */
 std::string
 xblock
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+xblock_pre
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+xblock_post
 (
     const SCOREP::Wrapgen::Func& func
 );

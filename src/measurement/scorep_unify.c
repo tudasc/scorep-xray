@@ -391,6 +391,7 @@ assign_empty_string_to_names( SCOREP_StringHandle emptyString )
 {
     ASSIGN_EMPTY_STRING( Group, group, name_handle );
     ASSIGN_EMPTY_STRING( Communicator, communicator, name_handle );
+    ASSIGN_EMPTY_STRING( RmaWindow, rma_window, name_handle );
 }
 
 struct region_group_key

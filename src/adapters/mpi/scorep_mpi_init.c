@@ -247,6 +247,10 @@ mpi_subsystem_init_mpp( void )
     /* initialize communicator management and register MPI_COMM_WORLD*/
     scorep_mpi_comm_init();
 
+#if !defined( SCOREP_MPI_NO_RMA )
+    scorep_mpi_win_init();
+#endif
+
 #if !defined( SCOREP_MPI_NO_HOOKS )
     scorep_mpiprofile_init();
 #endif

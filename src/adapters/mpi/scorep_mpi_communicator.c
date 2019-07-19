@@ -57,6 +57,7 @@
  *
  * ----------------------------------------------------------------------------
  */
+extern uint64_t scorep_mpi_max_windows;
 
 /*
  * ----------------------------------------------------------------------------
@@ -65,6 +66,14 @@
  *
  * ----------------------------------------------------------------------------
  */
+
+
+/**
+ *  @def SCOREP_MPI_MAX_WIN
+ *  @internal
+ *  Maximum number of concurrently defined windows per process.
+ */
+#define SCOREP_MPI_MAX_WIN     scorep_mpi_max_windows
 
 /* ------------------------------------------------ Definitions for MPI Window handling */
 #ifndef SCOREP_MPI_NO_RMA
@@ -122,26 +131,16 @@ extern MPI_Datatype scorep_mpi_id_root_type;
 #ifndef SCOREP_MPI_NO_RMA
 
 /**
- *  @internal exposure epoch
- */
-const SCOREP_Mpi_Color scorep_mpi_exp_epoch = 0;
-
-/**
- *  @internal access epoch
- */
-const SCOREP_Mpi_Color scorep_mpi_acc_epoch = 1;
-
-/**
  *  @internal
  *  Data structure to track active GATS epochs.
  */
-extern struct scorep_mpi_winacc_type* scorep_mpi_winaccs;
+extern struct scorep_mpi_epoch_info_type* scorep_mpi_epochs;
 
 /**
  *  @internal
- *  Index of last valid entry in the scorep_mpi_winaccs array.
+ *  Index of last valid entry in the scorep_mpi_epochs array.
  */
-static int scorep_mpi_last_winacc = 0;
+static int mpi_last_epoch = 0;
 
 #endif // !SCOREP_MPI_NO_RMA
 
@@ -157,25 +156,69 @@ static int scorep_mpi_last_winacc = 0;
 
 #ifndef SCOREP_MPI_NO_RMA
 
-SCOREP_MpiRank
-scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
-                           MPI_Win        win )
+SCOREP_RmaWindowHandle
+scorep_mpi_win_create( const char* name,
+                       MPI_Win     win,
+                       MPI_Comm    comm )
 {
-    MPI_Group      group;
-    SCOREP_MpiRank global_rank;
+    SCOREP_RmaWindowHandle handle = SCOREP_INVALID_RMA_WINDOW;
 
-    /* get group of communicator associated with input window */
-    PMPI_Win_get_group( win, &group );
-    /* translate rank with respect to \a MPI_COMM_WORLD */
-    PMPI_Group_translate_ranks( group, 1, &rank, scorep_mpi_world.group, &global_rank );
-    /* free internal group of input window */
-    PMPI_Group_free( &group );
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
+                     "Hint: Increase SCOREP_MPI_MAX_WINDOWS configuration variable." );
+    }
 
-    return global_rank;
+    /* register mpi window definition */
+    handle = SCOREP_Definitions_NewRmaWindow( name ? name : "MPI Window",
+                                              SCOREP_MPI_COMM_HANDLE( comm ) );
+
+    /* enter win in scorep_mpi_windows[] array */
+    scorep_mpi_windows[ scorep_mpi_last_window ].win    = win;
+    scorep_mpi_windows[ scorep_mpi_last_window ].handle = handle;
+
+    scorep_mpi_last_window++;
+    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+
+    return handle;
+}
+
+void
+scorep_mpi_win_free( MPI_Win win )
+{
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    if ( scorep_mpi_last_window == 1 && scorep_mpi_windows[ 0 ].win == win )
+    {
+        scorep_mpi_last_window = 0;
+    }
+    else if ( scorep_mpi_last_window > 1 )
+    {
+        int i = 0;
+
+        while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )
+        {
+            i++;
+        }
+
+        if ( i < scorep_mpi_last_window-- )
+        {
+            scorep_mpi_windows[ i ] = scorep_mpi_windows[ scorep_mpi_last_window ];
+        }
+        else
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
+        }
+    }
+    else
+    {
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
+    }
+    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
 }
 
 SCOREP_RmaWindowHandle
-scorep_mpi_win_id( MPI_Win win )
+scorep_mpi_win_handle( MPI_Win win )
 {
     int i = 0;
 
@@ -185,18 +228,36 @@ scorep_mpi_win_id( MPI_Win win )
         i++;
     }
 
-    if ( i <= scorep_mpi_last_window )
+    if ( i != scorep_mpi_last_window )
     {
         SCOREP_MutexUnlock( scorep_mpi_window_mutex );
-        return scorep_mpi_windows[ i ].wid;
+        return scorep_mpi_windows[ i ].handle;
     }
     else
     {
         SCOREP_MutexUnlock( scorep_mpi_window_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW,
-                     "Please tell me what you were trying to do!" );
+                     "You are using a window that was not tracked. "
+                     "Please contact the Score-P support team." );
         return SCOREP_INVALID_RMA_WINDOW;
     }
+}
+
+void
+scorep_mpi_win_set_name( MPI_Win win, const char* name )
+{
+    if ( !name )
+    {
+        return;
+    }
+
+    SCOREP_RmaWindowHandle win_handle = scorep_mpi_win_handle( win );
+
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
+
+    SCOREP_RmaWindowHandle_SetName( win_handle, name );
+
+    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
 }
 
 #endif // !SCOREP_MPI_NO_RMA
@@ -391,7 +452,7 @@ scorep_mpi_group_create( MPI_Group group )
 
         /* enter group in scorep_mpi_groups[] array */
         scorep_mpi_groups[ scorep_mpi_last_group ].group  = group;
-        scorep_mpi_groups[ scorep_mpi_last_group ].gid    = handle;
+        scorep_mpi_groups[ scorep_mpi_last_group ].handle = handle;
         scorep_mpi_groups[ scorep_mpi_last_group ].refcnt = 1;
         scorep_mpi_last_group++;
     }
@@ -459,8 +520,8 @@ scorep_mpi_group_free( MPI_Group group )
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
-static SCOREP_Mpi_GroupHandle
-scorep_mpi_group_id( MPI_Group group )
+SCOREP_Mpi_GroupHandle
+scorep_mpi_group_handle( MPI_Group group )
 {
     int32_t i = 0;
 
@@ -473,7 +534,7 @@ scorep_mpi_group_id( MPI_Group group )
     if ( i != scorep_mpi_last_group )
     {
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
-        return scorep_mpi_groups[ i ].gid;
+        return scorep_mpi_groups[ i ].handle;
     }
     else
     {
@@ -514,77 +575,77 @@ scorep_mpi_group_search( MPI_Group group )
 #ifndef SCOREP_MPI_NO_RMA
 
 void
-scorep_mpi_winacc_start( MPI_Win          win,
-                         MPI_Group        group,
-                         SCOREP_Mpi_Color color )
+scorep_mpi_epoch_start( MPI_Win              win,
+                        MPI_Group            group,
+                        SCOREP_Mpi_EpochType epochType )
 {
-    if ( scorep_mpi_last_winacc >= SCOREP_MPI_MAX_WINACC )
+    if ( mpi_last_epoch >= SCOREP_MPI_MAX_EPOCHS )
     {
-        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS,
-                     "Hint: Increase SCOREP_MPI_MAX_ACCESS_EPOCHS "
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_EPOCHS,
+                     "Hint: Increase SCOREP_MPI_MAX_EPOCHS "
                      "configuration variable." );
     }
 
-    scorep_mpi_winaccs[ scorep_mpi_last_winacc ].win   = win;
-    scorep_mpi_winaccs[ scorep_mpi_last_winacc ].gid   = scorep_mpi_group_id( group );
-    scorep_mpi_winaccs[ scorep_mpi_last_winacc ].color = color;
+    scorep_mpi_epochs[ mpi_last_epoch ].win        = win;
+    scorep_mpi_epochs[ mpi_last_epoch ].handle     = scorep_mpi_group_handle( group );
+    scorep_mpi_epochs[ mpi_last_epoch ].epoch_type = epochType;
 
-    scorep_mpi_last_winacc++;
+    mpi_last_epoch++;
 }
 
 void
-scorep_mpi_winacc_end( MPI_Win          win,
-                       SCOREP_Mpi_Color color )
+scorep_mpi_epoch_end( MPI_Win              win,
+                      SCOREP_Mpi_EpochType epochType )
 {
     int i = 0;
     /* only one window inside wingrp */
-    if ( scorep_mpi_last_winacc == 1
-         && scorep_mpi_winaccs[ 0 ].win   == win
-         && scorep_mpi_winaccs[ 0 ].color == color )
+    if ( mpi_last_epoch == 1
+         && scorep_mpi_epochs[ 0 ].win   == win
+         && scorep_mpi_epochs[ 0 ].epoch_type == epochType )
     {
-        scorep_mpi_last_winacc--;
+        mpi_last_epoch--;
     }
     else
     {
-        while ( ( i <= scorep_mpi_last_winacc ) &&
-                ( ( scorep_mpi_winaccs[ i ].win != win ) || ( scorep_mpi_winaccs[ i ].color != color ) ) )
+        while ( ( i <= mpi_last_epoch ) &&
+                ( ( scorep_mpi_epochs[ i ].win != win ) || ( scorep_mpi_epochs[ i ].epoch_type != epochType ) ) )
         {
             i++;
         }
 
-        if ( i != scorep_mpi_last_winacc )
+        if ( i != mpi_last_epoch )
         {
-            scorep_mpi_last_winacc--;
-            scorep_mpi_winaccs[ i ].win   = scorep_mpi_winaccs[ scorep_mpi_last_winacc ].win;
-            scorep_mpi_winaccs[ i ].gid   = scorep_mpi_winaccs[ scorep_mpi_last_winacc ].gid;
-            scorep_mpi_winaccs[ i ].color = scorep_mpi_winaccs[ scorep_mpi_last_winacc ].color;
+            mpi_last_epoch--;
+            scorep_mpi_epochs[ i ].win        = scorep_mpi_epochs[ mpi_last_epoch ].win;
+            scorep_mpi_epochs[ i ].handle     = scorep_mpi_epochs[ mpi_last_epoch ].handle;
+            scorep_mpi_epochs[ i ].epoch_type = scorep_mpi_epochs[ mpi_last_epoch ].epoch_type;
         }
         else
         {
-            UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_EPOCH, "" );
         }
     }
 }
 
 SCOREP_Mpi_GroupHandle
-scorep_mpi_winacc_get_gid( MPI_Win          win,
-                           SCOREP_Mpi_Color color )
+scorep_mpi_epoch_get_group_handle( MPI_Win              win,
+                                   SCOREP_Mpi_EpochType epochType )
 {
     int i = 0;
 
-    while ( ( i <= scorep_mpi_last_winacc ) &&
-            ( ( scorep_mpi_winaccs[ i ].win != win ) || ( scorep_mpi_winaccs[ i ].color != color ) ) )
+    while ( ( i <= mpi_last_epoch ) &&
+            ( ( scorep_mpi_epochs[ i ].win != win ) || ( scorep_mpi_epochs[ i ].epoch_type != epochType ) ) )
     {
         i++;
     }
 
-    if ( i != scorep_mpi_last_winacc )
+    if ( i != mpi_last_epoch )
     {
-        return scorep_mpi_winaccs[ i ].gid;
+        return scorep_mpi_epochs[ i ].handle;
     }
     else
     {
-        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_EPOCH, "" );
         return SCOREP_INVALID_MPI_GROUP;
     }
 }

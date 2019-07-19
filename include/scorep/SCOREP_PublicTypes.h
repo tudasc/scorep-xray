@@ -240,6 +240,13 @@ typedef uint64_t SCOREP_MpiRequestId;
 
 
 /**
+ * Symbolic constant representing an invalid or inapplicable target
+ * rank for a lock event. @see SCOREP_RmaAcquireLock() and similar
+ * calls.
+ */
+#define SCOREP_ALL_TARGET_RANKS -1
+
+/**
  * Symbolic constant representing an invalid or unknown rank.
  * @see SCOREP_MpiCollective()
  */
@@ -549,7 +556,8 @@ typedef enum SCOREP_RmaSyncLevel
     SCOREP_RMA_ATOMIC_TYPE( SWAP, swap, "swap" ) \
     SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_ADD, fetch_and_add, "fetch and add" ) \
     SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_INCREMENT, fetch_and_increment, "fetch and increment" ) \
-    SCOREP_RMA_ATOMIC_TYPE( ADD, add, "add" )
+    SCOREP_RMA_ATOMIC_TYPE( ADD, add, "add" ) \
+    SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_ACCUMULATE, fetch_and_op, "fetch and accumulate with user-specified operator" )
 
 typedef enum SCOREP_RmaAtomicType
 {

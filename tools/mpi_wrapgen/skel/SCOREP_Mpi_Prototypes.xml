@@ -9,6 +9,11 @@
 
 <prototype name="MPI_Accumulate" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">ACCUMULATE</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">origin_count</attribute>
+    <attribute id="get_count">0</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -19,12 +24,10 @@
     <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
-    <xblock><![CDATA[
-      dpid = scorep_mpi_win_rank_to_pe( target_rank, win );
-      wid = scorep_mpi_win_id( win );
-
-      PMPI_Type_size(origin_datatype, &sendsz);
-      esd_mpi_put_1ts( dpid, wid, EPK_NEXT_RMA_ID, origin_count * sendsz);
+<xblock id="pre"><![CDATA[
+    int origin_datatype_size;
+    PMPI_Type_size(origin_datatype, &origin_datatype_size);
+    bytes_put *= origin_datatype_size;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1015,6 +1018,11 @@
 
 <prototype name="MPI_Compare_and_swap" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">COMPARE_AND_SWAP</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">1</attribute>
+    <attribute id="get_count">1</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="compare_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
@@ -1023,6 +1031,52 @@
     <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    int datatype_size;
+    PMPI_Type_size(datatype, &datatype_size);
+    bytes_put *= datatype_size;
+    bytes_get *= datatype_size;
+]]></xblock>
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (compare_addr == scorep_mpi_fortran_bottom)
+    {
+        compare_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (compare_addr == scorep_mpi_fortran_bottom)
+    {
+        compare_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Dims_create" rtype="int" group="topo" guard="extra,topo" >
@@ -1281,6 +1335,11 @@
 
 <prototype name="MPI_Fetch_and_op" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">1</attribute>
+    <attribute id="get_count">1</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="o" type_modifier="" type="void*" name="result_addr" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
@@ -1289,6 +1348,40 @@
     <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    int datatype_size;
+    PMPI_Type_size(datatype, &datatype_size);
+    bytes_put *= datatype_size;
+    bytes_get *= datatype_size;
+]]></xblock>
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_File_c2f" rtype="MPI_Fint" group="io_misc" guard="io,extra,misc" >
@@ -2828,6 +2921,8 @@
 
 <prototype name="MPI_Get" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">RMA</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">COMBINED</attribute>
     <param access="o" type_modifier="" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -2857,6 +2952,11 @@
 
 <prototype name="MPI_Get_accumulate" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">origin_count</attribute>
+    <attribute id="get_count">result_count</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -2870,6 +2970,43 @@
     <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+        int origin_datatype_size;
+        PMPI_Type_size(origin_datatype, &origin_datatype_size);
+        bytes_put *= origin_datatype_size;
+
+        int result_datatype_size;
+        PMPI_Type_size(result_datatype, &result_datatype_size);
+        bytes_get *= result_datatype_size;
+]]></xblock>
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (result_addr == scorep_mpi_fortran_bottom)
+    {
+        result_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Get_address" rtype="int" group="misc" guard="extra,misc" >
@@ -4994,6 +5131,8 @@
 
 <prototype name="MPI_Put" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">RMA</attribute>
+    <attribute id="rma_explicit_handle">false</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5003,13 +5142,6 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
-    <xblock><![CDATA[
-      dpid = scorep_win_rank_to_pe( target_rank, win );
-      wid = scorep_win_id( win );
-
-      PMPI_Type_size(origin_datatype, &sendsz);
-      esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
-]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
@@ -5035,6 +5167,11 @@
 
 <prototype name="MPI_Raccumulate" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">ACCUMULATE</attribute>
+    <attribute id="rma_explicit_handle">true</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">origin_count</attribute>
+    <attribute id="get_count">0</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5046,6 +5183,11 @@
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    int origin_datatype_size;
+    PMPI_Type_size(origin_datatype, &origin_datatype_size);
+    bytes_put *= origin_datatype_size;
+]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
@@ -5418,6 +5560,8 @@
 
 <prototype name="MPI_Rget" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">RMA</attribute>
+    <attribute id="rma_explicit_handle">true</attribute>
+    <attribute id="rma_remote_completion">COMBINED</attribute>
     <param access="o" type_modifier="" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5448,6 +5592,11 @@
 
 <prototype name="MPI_Rget_accumulate" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ATOMIC</attribute>
+    <attribute id="atomic_op">FETCH_AND_ACCUMULATE</attribute>
+    <attribute id="rma_explicit_handle">true</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
+    <attribute id="put_count">origin_count</attribute>
+    <attribute id="get_count">result_count</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -5462,10 +5611,21 @@
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    int origin_datatype_size;
+    PMPI_Type_size(origin_datatype, &origin_datatype_size);
+    bytes_put *= origin_datatype_size;
+
+    int result_datatype_size;
+    PMPI_Type_size(result_datatype, &result_datatype_size);
+    bytes_get *= result_datatype_size;
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Rput" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">RMA</attribute>
+    <attribute id="rma_explicit_handle">true</attribute>
+    <attribute id="rma_remote_completion">SEPARATE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
     <param access="i" type_modifier="" type="int" name="origin_count" />
     <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
@@ -6647,6 +6807,8 @@
 
 <prototype name="MPI_Win_allocate" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ALLOCATE</attribute>
+    <attribute id="window_name">MPI_Win_allocate window</attribute>
+    <attribute id="collective_type">CREATE_HANDLE_AND_ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="int" name="disp_unit" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
@@ -6654,10 +6816,28 @@
     <param access="o" type_modifier="" type="void*" name="baseptr" />
     <param access="o" type_modifier="" type="MPI_Win*" name="win" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    if ( scorep_mpi_memory_recording )
+    {
+        uint64_t size_as_uint64 = size;
+        SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                             &size_as_uint64 );
+    }
+]]></xblock>
+<xblock id="post"><![CDATA[
+    if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+    {
+        SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                        ( uint64_t )( *( void** )baseptr ),
+                                        size );
+    }
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Win_allocate_shared" rtype="int" group="rma" guard="rma" >
     <attribute id="kind">ALLOCATE</attribute>
+    <attribute id="window_name">MPI_Win_allocate_shared window</attribute>
+    <attribute id="collective_type">CREATE_HANDLE_AND_ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="int" name="disp_unit" />
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
@@ -6665,6 +6845,22 @@
     <param access="o" type_modifier="" type="void*" name="baseptr" />
     <param access="o" type_modifier="" type="MPI_Win*" name="win" />
     <version id="3.0" />
+<xblock id="pre"><![CDATA[
+    if ( scorep_mpi_memory_recording )
+    {
+        uint64_t size_as_uint64 = size;
+        SCOREP_AddAttribute( scorep_mpi_memory_alloc_size_attribute,
+                             &size_as_uint64 );
+    }
+]]></xblock>
+<xblock id="post"><![CDATA[
+    if ( scorep_mpi_memory_recording && size > 0 && MPI_SUCCESS == return_val )
+    {
+        SCOREP_AllocMetric_HandleAlloc( scorep_mpi_allocations_metric,
+                                        ( uint64_t )( *( void** )baseptr ),
+                                        size );
+    }
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Win_attach" rtype="int" group="rma" guard="rma" >
@@ -6691,6 +6887,8 @@
 </prototype>
 
 <prototype name="MPI_Win_create" rtype="int" group="rma" guard="rma" >
+    <attribute id="window_name">MPI_Win_create window</attribute>
+    <attribute id="collective_type">CREATE_HANDLE</attribute>
     <param access="i" type_modifier="" type="void*" name="base" />
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
     <param access="i" type_modifier="" type="int" name="disp_unit" />
@@ -6707,6 +6905,8 @@
 </prototype>
 
 <prototype name="MPI_Win_create_dynamic" rtype="int" group="rma" guard="rma" >
+    <attribute id="window_name">MPI_Win_create_dynamic window</attribute>
+    <attribute id="collective_type">CREATE_HANDLE</attribute>
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Win*" name="win" />
@@ -6822,23 +7022,27 @@
 </prototype>
 
 <prototype name="MPI_Win_flush" rtype="int" group="rma" guard="rma" >
+    <attribute id="rma_enforce_remote_completion">true</attribute>
     <param access="i" type_modifier="" type="int" name="rank" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_flush_all" rtype="int" group="rma" guard="rma" >
+    <attribute id="rma_enforce_remote_completion">true</attribute>
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_flush_local" rtype="int" group="rma" guard="rma" >
+    <attribute id="rma_enforce_remote_completion">false</attribute>
     <param access="i" type_modifier="" type="int" name="rank" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_flush_local_all" rtype="int" group="rma" guard="rma" >
+    <attribute id="rma_enforce_remote_completion">false</attribute>
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="3.0" />
 </prototype>

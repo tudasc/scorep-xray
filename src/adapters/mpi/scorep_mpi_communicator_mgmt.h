@@ -27,7 +27,7 @@
 #include <mpi.h>
 #include <stdbool.h>
 
-extern uint64_t scorep_mpi_max_access_epochs;
+extern uint64_t scorep_mpi_max_epochs;
 
 /**
  * @internal
@@ -44,12 +44,12 @@ extern uint32_t scorep_mpi_number_of_root_comms;
 extern uint32_t scorep_mpi_number_of_self_comms;
 
 /**
- *  @def SCOREP_MPI_MAX_WINACC
+ *  @def SCOREP_MPI_MAX_EPOCHS
  *  @internal
  *  Maximum amount of concurrently active access or exposure epochs per
  *  process.
  */
-#define SCOREP_MPI_MAX_WINACC  scorep_mpi_max_access_epochs
+#define SCOREP_MPI_MAX_EPOCHS  scorep_mpi_max_epochs
 
 /**
  * Type of internal SCOREP group handles.
@@ -60,7 +60,7 @@ typedef SCOREP_GroupHandle SCOREP_Mpi_GroupHandle;
  * Type of the different colors for MPI epochs. Its a boolean flag which can have
  * the values scorep_mpi_exp_epoch or scorep_mpi_acc_epoch.
  */
-typedef uint8_t SCOREP_Mpi_Color;
+typedef uint8_t SCOREP_Mpi_EpochType;
 
 /**
  *  @internal
@@ -68,8 +68,8 @@ typedef uint8_t SCOREP_Mpi_Color;
  */
 struct scorep_mpi_win_type
 {
-    MPI_Win                win; /** MPI window handle */
-    SCOREP_RmaWindowHandle wid; /** Internal SCOREP window handle */
+    MPI_Win                win;    /** MPI window handle */
+    SCOREP_RmaWindowHandle handle; /** Internal SCOREP window handle */
 };
 
 /**
@@ -82,11 +82,11 @@ extern struct scorep_mpi_win_type* scorep_mpi_windows;
  * @internal
  *  Entry data structure to track GATS epochs
  */
-struct scorep_mpi_winacc_type
+struct scorep_mpi_epoch_info_type
 {
-    MPI_Win                win;   /* MPI window identifier */
-    SCOREP_Mpi_GroupHandle gid;   /* SCOREP MPI group handle */
-    SCOREP_Mpi_Color       color; /* byte to help distinguish accesses on same window */
+    MPI_Win                win;        /* MPI window identifier */
+    SCOREP_Mpi_GroupHandle handle;     /* SCOREP MPI group handle */
+    SCOREP_Mpi_EpochType   epoch_type; /* flag to help distinguish accesses on same window */
 };
 
 /**
@@ -132,7 +132,7 @@ struct scorep_mpi_communicator_type
 struct scorep_mpi_group_type
 {
     MPI_Group              group;  /**< MPI group handle */
-    SCOREP_Mpi_GroupHandle gid;    /**< Internal SCOREP group handle */
+    SCOREP_Mpi_GroupHandle handle; /**< Internal SCOREP group handle */
     int32_t                refcnt; /**< Number of references to this group */
 };
 

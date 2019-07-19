@@ -513,6 +513,19 @@ scorep_mpi_request_comm_idup_create( MPI_Request request,
     }
 }
 
+void
+scorep_mpi_request_win_create( MPI_Request             mpiRequest,
+                               scorep_mpi_rma_request* rmaRequest )
+{
+    scorep_mpi_request* req = scorep_mpi_request_create_entry( mpiRequest,
+                                                               rmaRequest->matching_id,
+                                                               SCOREP_MPI_REQUEST_TYPE_RMA,
+                                                               SCOREP_MPI_REQUEST_FLAG_NONE );
+
+    /* store request information */
+    req->payload.rma.request_ptr = rmaRequest;
+}
+
 scorep_mpi_request*
 scorep_mpi_request_get( MPI_Request request )
 {
@@ -688,6 +701,33 @@ scorep_mpi_check_request( scorep_mpi_request* req,
             case SCOREP_MPI_REQUEST_TYPE_COMM_IDUP:
                 scorep_mpi_comm_create_finalize( *req->payload.comm_idup.new_comm,
                                                  req->payload.comm_idup.parent_comm_handle );
+                break;
+
+            case SCOREP_MPI_REQUEST_TYPE_RMA:
+                // sanity check for rma_request handle
+                UTILS_BUG_ON( req->payload.rma.request_ptr != NULL,
+                              "No request information associated with MPI request." );
+                UTILS_BUG_ON( req->payload.rma.request_ptr->mpi_handle == req->request,
+                              "Request information inconsistent with associated MPI request" );
+
+                // if request has not yet been completed locally
+                // write an RmaOpCompleteNonBlocking event
+                if ( !req->payload.rma.request_ptr->completed_locally )
+                {
+                    SCOREP_RmaOpCompleteNonBlocking( req->payload.rma.request_ptr->window, req->payload.rma.request_ptr->matching_id );
+                    req->payload.rma.request_ptr->completed_locally = true;
+
+                    if ( !req->payload.rma.request_ptr->schedule_removal
+                         && req->payload.rma.request_ptr->completion_type == SCOREP_MPI_RMA_REQUEST_COMBINED_COMPLETION )
+                    {
+                        SCOREP_RmaOpCompleteRemote( req->payload.rma.request_ptr->window, req->payload.rma.request_ptr->matching_id );
+                        req->payload.rma.request_ptr->schedule_removal = true;
+                    }
+                }
+                if ( req->payload.rma.request_ptr->schedule_removal )
+                {
+                    scorep_mpi_rma_request_remove_by_ptr( req->payload.rma.request_ptr );
+                }
                 break;
 
             case SCOREP_MPI_REQUEST_TYPE_IO_READ:

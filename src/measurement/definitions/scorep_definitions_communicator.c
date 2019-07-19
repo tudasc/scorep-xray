@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2018,
+ * Copyright (c) 2009-2014, 2017-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -339,6 +339,12 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
     return new_handle;
 }
 
+/* Caller needs to hold the definitions lock. */
+uint32_t
+scorep_definitions_interim_communicator_get_rma_window_creation_counter( SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( communicatorHandle, InterimCommunicator )->rma_window_creation_counter++;
+}
 
 static bool
 equal_communicator( const SCOREP_CommunicatorDef* existingDefinition,

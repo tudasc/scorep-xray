@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017,
+ * Copyright (c) 2009-2014, 2016-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -509,6 +509,7 @@ scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
         case_return( SWAP );
         case_return( FETCH_AND_ADD );
         case_return( FETCH_AND_INCREMENT );
+        case_return( FETCH_AND_ACCUMULATE );
 
         default:
             UTILS_BUG( "Invalid RMA atomic type: %u", scorepType );

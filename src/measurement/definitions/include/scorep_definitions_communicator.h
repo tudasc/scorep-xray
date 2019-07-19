@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016-2017,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,6 +50,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( InterimCommunicator )
     SCOREP_StringHandle              name_handle;
     SCOREP_InterimCommunicatorHandle parent_handle;
     SCOREP_ParadigmType              paradigm_type;
+
+    /* counter for RMA windows created with this comm */
+    uint32_t rma_window_creation_counter;
 };
 
 
@@ -70,6 +73,10 @@ scorep_definitions_create_interim_communicator_counter_lock( void );
 
 void
 scorep_definitions_destroy_interim_communicator_counter_lock( void );
+
+
+uint32_t
+scorep_definitions_interim_communicator_get_rma_window_creation_counter( SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
 /**

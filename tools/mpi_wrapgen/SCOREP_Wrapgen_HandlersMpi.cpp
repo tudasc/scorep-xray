@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2016
+ * Copyright (c) 2009-2011, 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -115,6 +115,8 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "proto:f2c_c2f" ]   = handler::mpi::proto_f2c_c2f;
     func_handlers[ "rtype" ]           = handler::mpi::rtype;
     func_handlers[ "xblock" ]          = handler::mpi::xblock;
+    func_handlers[ "xblock:pre" ]      = handler::mpi::xblock_pre;
+    func_handlers[ "xblock:post" ]     = handler::mpi::xblock_post;
     func_handlers[ "xblock:fortran" ]  = handler::mpi::xblock_fortran;
     func_handlers[ "xblock:f2c_c2f" ]  = handler::mpi::xblock_f2c_c2f;
     func_handlers[ "guard:start" ]     = handler::mpi::guard_start;
@@ -1171,6 +1173,18 @@ SCOREP::Wrapgen::handler::mpi::xblock
 )
 {
     return func.get_expr_block();
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::xblock_pre( const Func& func )
+{
+    return func.get_expr_block( "pre" );
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::xblock_post( const Func& func )
+{
+    return func.get_expr_block( "post" );
 }
 
 string
