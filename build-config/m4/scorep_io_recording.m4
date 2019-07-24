@@ -42,7 +42,6 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
             flockfile,
             fopen,
             fopen64,
-            fprintf,
             fputc,
             fputs,
             fread,
@@ -57,7 +56,6 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
             ftrylockfile,
             funlockfile,
             fwrite,
-            getc,
             getchar,
             gets,
             lockf,
@@ -142,8 +140,10 @@ AC_SCOREP_COND_HAVE([POSIX_IO_SUPPORT],
                      # do not wrap 'vfprintf' on Cray platform
                      AS_CASE([${ac_scorep_platform}],
                              [cray*], [# as we do not check for vfprintf corresponding symbol should not be defined
-                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_VFPRINTF], [0])],
-                             [SCOREP_CHECK_SYMBOLS([POSIX I/O], [], [scorep_posix_io_wrap_symbols], [vfprintf])])])
+                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_VFPRINTF], [0]),
+                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_FPRINTF], [0]),
+                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_GETC], [0])],
+                             [SCOREP_CHECK_SYMBOLS([POSIX I/O], [], [scorep_posix_io_wrap_symbols], [vfprintf,fprintf,getc])])])
 
 AFS_SUMMARY_POP([POSIX I/O support], [${scorep_posix_io_support}${scorep_posix_io_summary_reason}])
 
