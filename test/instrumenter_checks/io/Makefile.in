@@ -50,13 +50,12 @@ TESTS = \
     $(BINDIR)/isoc-io-cc-linktime \
     $(BINDIR)/isoc-io-cxx-linktime
 
-@HAVE_LIBWRAP_RUNTIME_SUPPORT_TRUE@TESTS += \
+@PLATFORM_CRAY_FALSE@HAVE_LIBWRAP_RUNTIME_SUPPORT_TRUE@TESTS += \
     $(BINDIR)/posix-io-cc-runtime \
     $(BINDIR)/isoc-io-cc-runtime \
     $(BINDIR)/isoc-io-cxx-runtime
 
 all: $(TESTS)
-
 
 $(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
