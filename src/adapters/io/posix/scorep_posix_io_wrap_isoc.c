@@ -1076,6 +1076,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseek )( FILE* stream, long offset, int whence )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( fseek );
+    INITIALIZE_FUNCTION_POINTER( ftell );
     int ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -1119,6 +1120,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseeko )( FILE* stream, off_t offset, int whence )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( fseeko );
+    INITIALIZE_FUNCTION_POINTER( ftello );
     int ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -1160,6 +1162,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fseeko64 )( FILE* stream, scorep_off64_t offset, int w
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( fseeko64 );
+    INITIALIZE_FUNCTION_POINTER( ftello );
     int ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -1201,6 +1204,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fsetpos )( FILE* stream, const fpos_t* pos )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( fsetpos );
+    INITIALIZE_FUNCTION_POINTER( ftell );
     int ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -1433,7 +1437,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fwrite )( const void* ptr, size_t size, size_t nmemb, 
 #endif
 
 /* getc() might be implemented as a macro */
-#if HAVE( POSIX_IO_SYMBOL_GETC ) /* && !defined getc */
+#if HAVE( POSIX_IO_SYMBOL_GETC )  && !defined getc
 int
 SCOREP_LIBWRAP_FUNC_NAME( getc )( FILE* stream )
 {
