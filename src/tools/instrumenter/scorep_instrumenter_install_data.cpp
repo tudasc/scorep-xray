@@ -432,6 +432,10 @@ bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
+    if ( current == "-include" )
+    {
+        return true;
+    }
     return false;
 }
 
