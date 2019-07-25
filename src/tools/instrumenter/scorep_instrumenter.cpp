@@ -650,14 +650,14 @@ SCOREP_Instrumenter::link_step( void )
 #endif
     command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
-#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
+#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP && !( m_cuda_adapter->isNvcc() )
     command << libs_prefix << linker_prefix << "-start-group `" << m_config_base << " --event-libs`";
     command << " " << m_command_line.getFlagsAfterInterpositionLib() << libs_suffix;
 #else
     command << libs_prefix << " `" << m_config_base << " --event-libs`" << libs_suffix;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();
 #endif
-#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
+#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP && !( m_cuda_adapter->isNvcc() )
     command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << linker_prefix << "-end-group " << libs_suffix;
 #else
     command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << libs_suffix;
