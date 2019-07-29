@@ -13,8 +13,8 @@ various Score-P components.
   - Score-P has been tested on the following platforms:
     + Cray XC (see 'Shared libraries on Cray systems' below)
     + K Computer
-    + various Linux/Intel (x86/x64/Power8/ARM AArch32/AArch64) clusters
-    + Intel Xeon Phi (KNC and KNL), only native mode supported
+    + various Linux/Intel (x86/x64/Power8/ARM AArch64) clusters
+    + Intel Xeon Phi (KNL), only native mode supported
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
 
