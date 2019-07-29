@@ -284,14 +284,20 @@ get_user_readable_byte_no( uint64_t bytes )
 
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
                                                 uint64_t              denseNum )
+    : m_filter( SCOREP_Filter_New() )
+    , m_has_filter( false )
+    , m_profile( profile )
+    , m_groups( 0 )
+    , m_regions( 0 )
+    , m_filtered( 0 )
+    , m_region_num( profile->getNumberOfRegions() )
+    , m_process_num( profile->getNumberOfProcesses() )
+    , m_dense_num( denseNum )
+    , m_show_regions( false ) /* will only be used while in calculate() */
+    , m_bytes_per_num_parameter( 0 )
+    , m_bytes_per_str_parameter( 0 )
+    , m_bytes_per_hit( 0 )
 {
-    m_dense_num   = denseNum;
-    m_profile     = profile;
-    m_region_num  = profile->getNumberOfRegions();
-    m_process_num = profile->getNumberOfProcesses();
-
-    m_filter     = SCOREP_Filter_New();
-    m_has_filter = false;
     SCOREP_Score_Event* timestamp_event = new SCOREP_Score_TimestampEvent();
     registerEvent( timestamp_event );
     registerEvent( new SCOREP_Score_EnterEvent() );
@@ -302,11 +308,12 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
         registerEvent( new SCOREP_Score_CallingContextLeaveEvent() );
         registerEvent( new SCOREP_Score_CallingContextSampleEvent() );
     }
-    if ( denseNum > 0 )
+    if ( m_dense_num > 0 )
     {
-        registerEvent( new SCOREP_Score_MetricEvent( denseNum ) );
+        registerEvent( new SCOREP_Score_MetricEvent( m_dense_num ) );
     }
-    registerEvent( new SCOREP_Score_ParameterEvent() );
+    registerEvent( new SCOREP_Score_ParameterIntEvent() );
+    registerEvent( new SCOREP_Score_ParameterStringEvent() );
 
     if ( profile->getNumberOfProgramArguments() >= 0 )
     {
@@ -575,6 +582,31 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     /* One visit to MeasurementOnOff corresponds to two MeasurementOnOff trace events. */
     measurement_on_off_event->setEventSize( 2 * ( measurement_on_off_event->getEventSize() + timestamp_event->getEventSize() ) );
 
+    m_bytes_per_num_parameter = getEventSize( "ParameterInt" ) +
+                                getEventSize( "Timestamp" );
+
+    m_bytes_per_str_parameter = getEventSize( "ParameterString" ) +
+                                getEventSize( "Timestamp" );
+
+    if ( m_profile->hasHits() )
+    {
+        m_bytes_per_hit = getEventSize( "CallingContextSample" ) +
+                          getEventSize( "Timestamp" );
+    }
+
+    m_bytes_per_visits.resize( m_region_num, 0 );
+    for ( uint64_t region = 0; region < m_region_num; region++ )
+    {
+        m_bytes_per_visits[ region ] = 0;
+
+        /* Calculate bytes per visit, though visits into sampling regions wont
+           be recorded in the trace */
+        if ( m_profile->getRegionParadigm( region ) != "sampling" )
+        {
+            m_bytes_per_visits[ region ] = bytesPerVisit( region );
+        }
+    }
+
     m_filtered = NULL;
     m_regions  = NULL;
     m_groups   = ( SCOREP_Score_Group** )malloc( SCOREP_SCORE_TYPE_NUM * sizeof( SCOREP_Score_Group* ) );
@@ -702,104 +734,17 @@ void
 SCOREP_Score_Estimator::calculate( bool showRegions,
                                    bool useMangled )
 {
-    if ( showRegions )
+    /* we need access to this predicate in our operator() */
+    m_show_regions = showRegions;
+    if ( m_show_regions )
     {
         initialize_regions( useMangled );
     }
 
-    uint64_t bytes_per_hit = 0;
-    if ( m_profile->hasHits() )
+    /* Apply region data for each process */
+    for ( uint64_t process = 0; process < m_process_num; process++ )
     {
-        bytes_per_hit = getEventSize( "CallingContextSample" ) +
-                        getEventSize( "Timestamp" );
-    }
-    for ( uint64_t region = 0; region < m_region_num; region++ )
-    {
-        const string& region_name     = m_profile->getRegionName( region );
-        uint64_t      group           = m_profile->getGroup( region );
-        uint64_t      bytes_per_visit = 0;
-
-        /* Calculate bytes per visit, though visits into sampling regions wont
-           be recorded in the trace */
-        if ( m_profile->getRegionParadigm( region ) != "sampling" )
-        {
-            bytes_per_visit = bytesPerVisit( region );
-            if ( bytes_per_visit == 0 )
-            {
-                continue;
-            }
-        }
-
-        /* Apply region data for each process */
-        for ( uint64_t process = 0; process < m_process_num; process++ )
-        {
-            uint64_t visits = m_profile->getVisits( region, process );
-            double   time   = m_profile->getTime( region, process );
-            uint64_t hits   = m_profile->getHits( region, process );
-
-            if ( visits == 0 && hits == 0 )
-            {
-                continue;
-            }
-
-            m_groups[ group ]->addRegion( visits,
-                                          bytes_per_visit,
-                                          hits,
-                                          bytes_per_hit,
-                                          time,
-                                          process );
-            m_groups[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits,
-                                                          bytes_per_visit,
-                                                          hits,
-                                                          bytes_per_hit,
-                                                          time,
-                                                          process );
-
-            if ( showRegions )
-            {
-                m_regions[ region ]->addRegion( visits,
-                                                bytes_per_visit,
-                                                hits,
-                                                bytes_per_hit,
-                                                time,
-                                                process );
-            }
-
-            if ( m_has_filter )
-            {
-                bool do_filter = match_filter( region );
-                if ( showRegions )
-                {
-                    m_regions[ region ]->doFilter( do_filter ?
-                                                   SCOREP_SCORE_FILTER_YES :
-                                                   SCOREP_SCORE_FILTER_NO );
-                }
-                if ( !do_filter )
-                {
-                    m_filtered[ group ]->addRegion( visits,
-                                                    bytes_per_visit,
-                                                    hits,
-                                                    bytes_per_hit,
-                                                    time,
-                                                    process );
-                    m_filtered[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits,
-                                                                    bytes_per_visit,
-                                                                    hits,
-                                                                    bytes_per_hit,
-                                                                    time,
-                                                                    process );
-                }
-                else
-                {
-                    m_filtered[ SCOREP_SCORE_TYPE_FLT ]->addRegion( visits,
-                                                                    bytes_per_visit,
-                                                                    hits,
-                                                                    bytes_per_hit,
-                                                                    time,
-                                                                    process );
-                }
-            }
-        }
+        m_profile->iterateCalltree( process, *this );
     }
 }
 
@@ -984,6 +929,75 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     remove( out_filename.c_str() );
 
     //dumpEventSizes();
+}
+
+void
+SCOREP_Score_Estimator::operator()( uint64_t process,
+                                    uint64_t region,
+                                    uint64_t parentRegion,
+                                    uint64_t visits,
+                                    double   time,
+                                    uint64_t hits,
+                                    uint32_t numParameters,
+                                    uint32_t strParameters )
+{
+    if ( visits == 0 && hits == 0 )
+    {
+        return;
+    }
+
+    SCOREP_Score_Type group = m_profile->getGroup( region );
+
+    const string& region_name = m_profile->getRegionName( region );
+    if ( m_profile->isDynamicRegion( region ) && parentRegion != -1 )
+    {
+        /* Attribute bytes, visits, and time to parent node. Only parent contributes and
+           can be filtered. Note that parent itself has a visit count of 0 if it has only
+           iteration/instance childs. Note that dynamic regions wont trigger parameters in
+           the trace */
+        uint64_t bytes = visits * ( m_bytes_per_visits[ parentRegion ] );
+        m_groups[ group ]->updateProcess( process, bytes, visits, 0, time );
+        m_groups[ SCOREP_SCORE_TYPE_ALL ]->updateProcess( process, bytes, visits, 0, time );
+        if ( m_show_regions )
+        {
+            m_regions[ parentRegion ]->updateProcess( process, bytes, visits, 0, time );
+        }
+        return;
+    }
+
+    /* Calculate total bytes for this call node */
+    uint64_t bytes = visits * ( m_bytes_per_visits[ region ]
+                                + numParameters * m_bytes_per_num_parameter
+                                + strParameters * m_bytes_per_str_parameter )
+                     + hits * m_bytes_per_hit;
+
+    m_groups[ group ]->updateProcess( process, bytes, visits, hits, time );
+    m_groups[ SCOREP_SCORE_TYPE_ALL ]->updateProcess( process, bytes, visits, hits, time );
+
+    if ( m_show_regions )
+    {
+        m_regions[ region ]->updateProcess( process, bytes, visits, hits, time );
+    }
+
+    if ( m_has_filter )
+    {
+        bool do_filter = match_filter( region );
+        if ( m_show_regions )
+        {
+            m_regions[ region ]->doFilter( do_filter ?
+                                           SCOREP_SCORE_FILTER_YES :
+                                           SCOREP_SCORE_FILTER_NO );
+        }
+        if ( !do_filter )
+        {
+            m_filtered[ group ]->updateProcess( process, bytes, visits, hits, time );
+            m_filtered[ SCOREP_SCORE_TYPE_ALL ]->updateProcess( process, bytes, visits, hits, time );
+        }
+        else
+        {
+            m_filtered[ SCOREP_SCORE_TYPE_FLT ]->updateProcess( process, bytes, visits, hits, time );
+        }
+    }
 }
 
 /* ****************************************************** private methods */

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2018,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -85,7 +85,7 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h            \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c          \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_converter.h         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_substitute_parameter.c \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_parameter.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_init.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_switch.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_switch.h       \

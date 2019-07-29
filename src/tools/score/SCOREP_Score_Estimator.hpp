@@ -39,6 +39,8 @@
  */
 
 #include "SCOREP_Score_Group.hpp"
+#include "SCOREP_Score_Profile.hpp"
+
 
 #include <map>
 #include <stdint.h>
@@ -47,10 +49,12 @@
 class SCOREP_Score_Profile;
 class SCOREP_Score_Event;
 typedef struct SCOREP_Filter SCOREP_Filter;
+
 /**
  * This class implements the estimation logic.
  */
 class SCOREP_Score_Estimator
+    : public SCOREP_Score_CalltreeVisitor
 {
 public:
     /**
@@ -111,6 +115,17 @@ public:
      */
     void
     dumpEventSizes( void );
+
+    // SCOREP_Score_CalltreeVisitor
+    void
+    operator()( uint64_t process,
+                uint64_t region,
+                uint64_t parentRegion,
+                uint64_t visits,
+                double   time,
+                uint64_t hits,
+                uint32_t numParameters,
+                uint32_t strParameters );
 
 private:
     /**
@@ -214,6 +229,18 @@ private:
      * Stores the number of dense metrics that should be taken into account.
      */
     uint64_t m_dense_num;
+
+    /**
+     * Stores the @p showRegions argument from @a calculate(), so that
+     * @a operator() has access to it.
+     */
+    bool m_show_regions;
+
+    /* Data used when traversing the calltree */
+    uint64_t                m_bytes_per_num_parameter;
+    uint64_t                m_bytes_per_str_parameter;
+    uint64_t                m_bytes_per_hit;
+    std::vector< uint64_t > m_bytes_per_visits;
 
     /**
      * Stores all events by its name.

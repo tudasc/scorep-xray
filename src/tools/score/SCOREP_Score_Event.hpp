@@ -217,12 +217,24 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_Score_ParameterEvent
+ * class SCOREP_Score_ParameterIntEvent
  ***************************************************************************************/
-class SCOREP_Score_ParameterEvent : public SCOREP_Score_Event
+class SCOREP_Score_ParameterIntEvent : public SCOREP_Score_Event
 {
 public:
-    SCOREP_Score_ParameterEvent( void );
+    SCOREP_Score_ParameterIntEvent( void );
+    virtual bool
+    contributes( const SCOREP_Score_Profile& profile,
+                 uint64_t                    region );
+};
+
+/* **************************************************************************************
+ * class SCOREP_Score_ParameterStringEvent
+ ***************************************************************************************/
+class SCOREP_Score_ParameterStringEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_ParameterStringEvent( void );
     virtual bool
     contributes( const SCOREP_Score_Profile& profile,
                  uint64_t                    region );

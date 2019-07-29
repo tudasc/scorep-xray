@@ -671,10 +671,10 @@ SCOREP_Profile_Process( void )
     /* Reenumerate clusters */
     scorep_cluster_postprocess();
 
-    /* Substitute parameter entries by regions */
+    /* Reorganize parameter nodes */
     if ( scorep_profile_output_format != SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
     {
-        scorep_profile_substitute_parameter();
+        scorep_profile_process_parameters();
     }
 
     /* Thread start node expansion */

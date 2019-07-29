@@ -53,6 +53,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 /*----------------------------------------------------------------------------------------
    internal helper functions
@@ -82,15 +83,41 @@ scorep_dump_node( FILE* file, scorep_profile_node* node )
         return;
     }
 
-    fprintf( file, "type: %s\t", type_name_map[ node->node_type ] );
+    fprintf( file, "type: %s", type_name_map[ node->node_type ] );
     if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
-        fprintf( file, "name: %s", SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+        fprintf( file, " name: %s", SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+        scorep_profile_callpath_parameters_t* parameters = scorep_profile_type_get_ptr_value( node->type_specific_data );
+        if ( parameters )
+        {
+            fprintf( file, " %u parameter(s):", parameters->number );
+            for ( int i = 0; i < parameters->number; i++ )
+            {
+                if ( SCOREP_ParameterHandle_GetType( parameters->parameters[ i ].parameter_handle ) == SCOREP_PARAMETER_STRING )
+                {
+                    fprintf( file, " %s = %s", SCOREP_ParameterHandle_GetName( parameters->parameters[ i ].parameter_handle ), SCOREP_StringHandle_Get( parameters->parameters[ i ].parameter_value.string_handle ) );
+                }
+                else
+                {
+                    fprintf( file, " %s = %" PRIi64, SCOREP_ParameterHandle_GetName( parameters->parameters[ i ].parameter_handle ), parameters->parameters[ i ].parameter_value.integer_value );
+                }
+            }
+        }
     }
     else if ( node->node_type == SCOREP_PROFILE_NODE_THREAD_START )
     {
-        fprintf( file, "fork node: %p",
+        fprintf( file, " fork node: %p",
                  scorep_profile_type_get_fork_node( node->type_specific_data ) );
+    }
+    else if ( node->node_type == SCOREP_PROFILE_NODE_PARAMETER_INTEGER )
+    {
+        fprintf( file, " value: %" PRIi64,
+                 scorep_profile_type_get_int_value( node->type_specific_data ) );
+    }
+    else if ( node->node_type == SCOREP_PROFILE_NODE_PARAMETER_STRING )
+    {
+        fprintf( file, " value: %s",
+                 SCOREP_StringHandle_Get( scorep_profile_type_get_int_value( node->type_specific_data ) ) );
     }
 }
 

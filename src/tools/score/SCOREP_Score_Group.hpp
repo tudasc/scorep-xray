@@ -119,20 +119,19 @@ public:
     ~SCOREP_Score_Group();
 
     /**
-     * Adds region data for one process to this group.
+     * Updates the scoring metrics for one process in this group.
+     * @param bytes          Number of bytes that are written to the trace.
      * @param numberOfVisits Number of visits for the new region.
-     * @param bytesPerVisit  Number of bytes that are written to the trace for every
-     *                       visit to this region.
+     * @param numberOfHits   Number of hits for the new region.
      * @param time           Sum of time spent in this region in all visits.
      * @param process        The process num for which the data added.
      */
     void
-    addRegion( uint64_t numberOfVisits,
-               uint64_t bytesPerVisit,
-               uint64_t numberOfHits,
-               uint64_t bytesPerHit,
-               double   time,
-               uint64_t process );
+    updateProcess( uint64_t process,
+                   uint64_t bytes,
+                   uint64_t numberOfVisits,
+                   uint64_t numberOfHits,
+                   double   time );
 
     /**
      * Updates the field width to the required values.

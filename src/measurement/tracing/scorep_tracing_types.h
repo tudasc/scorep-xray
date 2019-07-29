@@ -305,6 +305,28 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 }
 
 
+static inline OTF2_Type
+scorep_tracing_parameter_type_to_otf2_type( SCOREP_ParameterType scorepType )
+{
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_PARAMETER_ ## SCOREP: \
+        return OTF2_TYPE_ ## OTF2
+
+        case_return( STRING, STRING );
+        case_return( INT64,  INT64 );
+        case_return( UINT64, UINT64 );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid parameter type: %u", scorepType );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
 static inline OTF2_CollectiveOp
 scorep_tracing_collective_type_to_otf2( SCOREP_CollectiveType scorepType )
 {

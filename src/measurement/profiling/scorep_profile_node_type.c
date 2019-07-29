@@ -407,3 +407,22 @@ scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
 {
     data->value = value;
 }
+
+/**
+   Retrives the pointer value from the type specific data.
+ */
+void*
+scorep_profile_type_get_ptr_value( scorep_profile_type_data_t data )
+{
+    return SCOREP_PROFILE_INT2POINTER( data.value );
+}
+
+/**
+   Stores the pointer value in the type specific data.
+ */
+void
+scorep_profile_type_set_ptr_value( scorep_profile_type_data_t* data,
+                                   void*                       value )
+{
+    data->value = SCOREP_PROFILE_POINTER2INT( value );
+}

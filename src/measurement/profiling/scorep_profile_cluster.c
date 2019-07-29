@@ -2153,7 +2153,8 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
            it = it->next )
     {
         scorep_profile_node* cluster = disjoint_set_get_root( it )->cluster->root;
-        it_map[ it->iteration_id - 1 ] = scorep_profile_type_get_int_value( cluster->type_specific_data );
+        const char*          name    = SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( cluster->type_specific_data ) );
+        it_map[ it->iteration_id - 1 ] = atoi( &name[ 9 ] ); /* Format is 'instance=<number>' */
     }
 
     /* Collect data to rank 0 */

@@ -1167,37 +1167,84 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                                                           OTF2_CallpathRef,
                                                           OTF2_CallpathRef,
                                                           OTF2_RegionRef );
+    typedef  OTF2_ErrorCode ( * def_callpath_parameter_pointer_t )( void*,
+                                                                    OTF2_CallpathRef,
+                                                                    OTF2_ParameterRef,
+                                                                    OTF2_Type,
+                                                                    OTF2_AttributeValue );
     def_callpath_pointer_t defCallpath = ( def_callpath_pointer_t )
                                          OTF2_DefWriter_WriteCallpath;
+    def_callpath_parameter_pointer_t defCallpathParameter = ( def_callpath_parameter_pointer_t )
+                                                            OTF2_DefWriter_WriteCallpathParameter;
     if ( isGlobal )
     {
         defCallpath = ( def_callpath_pointer_t )
                       OTF2_GlobalDefWriter_WriteCallpath;
+        defCallpathParameter = ( def_callpath_parameter_pointer_t )
+                               OTF2_GlobalDefWriter_WriteCallpathParameter;
     }
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
                                                          Callpath,
                                                          callpath )
     {
-        if ( !definition->with_parameter )
+        uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_CALLPATH;
+        if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
         {
-            uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_CALLPATH;
-            if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
+            parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,
+                                                                   Callpath,
+                                                                   definitionManager->page_manager );
+        }
+        OTF2_ErrorCode status = defCallpath(
+            writerHandle,
+            definition->sequence_number,
+            parent_callpath_sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->region_handle,
+                                 Region,
+                                 definitionManager->page_manager ) );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "Callpath" );
+        }
+
+        /* Attach parameters */
+        for ( uint32_t i = 0; i < definition->number_of_parameters; i++ )
+        {
+            SCOREP_ParameterType type =
+                SCOREP_ParameterHandle_GetType( definition->parameters[ i ].parameter_handle );
+
+            OTF2_AttributeValue value;
+            if ( type == SCOREP_PARAMETER_STRING )
             {
-                parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,
-                                                                       Callpath,
-                                                                       definitionManager->page_manager );
+                value.stringRef = SCOREP_HANDLE_TO_ID(
+                    definition->parameters[ i ].parameter_value.string_handle,
+                    String,
+                    definitionManager->page_manager );
             }
-            OTF2_ErrorCode status = defCallpath(
+            else if ( type == SCOREP_PARAMETER_UINT64 )
+            {
+                value.uint64 = definition->parameters[ i ].parameter_value.integer_value;
+            }
+            else if ( type == SCOREP_PARAMETER_INT64 )
+            {
+                value.int64 = definition->parameters[ i ].parameter_value.integer_value;
+            }
+            else
+            {
+                UTILS_BUG( "Unhandled parameter type: %u", type );
+            }
+
+            status = defCallpathParameter(
                 writerHandle,
                 definition->sequence_number,
-                parent_callpath_sequence_number,
-                SCOREP_HANDLE_TO_ID( definition->callpath_argument.region_handle,
-                                     Region,
-                                     definitionManager->page_manager ) );
+                SCOREP_HANDLE_TO_ID( definition->parameters[ i ].parameter_handle,
+                                     Parameter,
+                                     definitionManager->page_manager ),
+                scorep_tracing_parameter_type_to_otf2_type( type ),
+                value );
             if ( status != OTF2_SUCCESS )
             {
-                scorep_handle_definition_writing_error( status, "Callpath" );
+                scorep_handle_definition_writing_error( status, "CallpathParameter" );
             }
         }
     }

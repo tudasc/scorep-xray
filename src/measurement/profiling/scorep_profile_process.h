@@ -7,10 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2015,
- * Technische Universitaet Darmstadt, Germany
- *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2018,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -24,6 +21,9 @@
  *
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
+ *
+ * Copyright (c) 2015-2016,
+ * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
@@ -93,12 +93,10 @@ void
 scorep_profile_process_phases( void );
 
 /**
-   Substitute parameter nodes by regular region nodes. Thus they can be processed like
-   any other regular region and written to a profile which does not yet support
-   parameter profiling.
+   Processes parameter nodes into a parameters array of the region.
  */
 void
-scorep_profile_substitute_parameter( void );
+scorep_profile_process_parameters( void );
 
 /**
    Move the visit count of task pointer metrics to the "number of switches" metric.

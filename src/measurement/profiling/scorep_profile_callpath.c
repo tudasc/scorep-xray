@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -59,6 +59,7 @@
 #include <scorep_profile_definition.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_profile_location.h>
+#include <scorep_profile_converter.h>
 
 static bool
 compare_first_enter_time( scorep_profile_node* node_a,
@@ -111,24 +112,27 @@ assign_callpath( scorep_profile_node* current, void* param )
         {
             case SCOREP_PROFILE_NODE_TASK_ROOT:
             case SCOREP_PROFILE_NODE_REGULAR_REGION:
+            {
+                scorep_profile_callpath_parameters_t* parameters = scorep_profile_type_get_ptr_value( current->type_specific_data );
                 current->callpath_handle =
                     SCOREP_Definitions_NewCallpath( parent_path,
-                                                    scorep_profile_type_get_region_handle( current->type_specific_data ) );
-                break;
+                                                    scorep_profile_type_get_region_handle( current->type_specific_data ),
+                                                    parameters ? parameters->number : 0,
+                                                    parameters ? parameters->parameters : NULL );
+            }
+            break;
             case SCOREP_PROFILE_NODE_PARAMETER_STRING:
-                current->callpath_handle = SCOREP_Definitions_NewCallpathParameterString(
-                    parent_path,
-                    scorep_profile_type_get_parameter_handle( current->type_specific_data ),
-                    scorep_profile_type_get_string_handle( current->type_specific_data ) );
+                UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                             "Creating string parameter callpath." );
+                scorep_profile_on_error( NULL );
                 break;
             case SCOREP_PROFILE_NODE_PARAMETER_INTEGER:
-                current->callpath_handle = SCOREP_Definitions_NewCallpathParameterInteger(
-                    parent_path,
-                    scorep_profile_type_get_parameter_handle( current->type_specific_data ),
-                    scorep_profile_type_get_int_value( current->type_specific_data ) );
+                UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                             "Creating integer parameter callpath." );
+                scorep_profile_on_error( NULL );
                 break;
             case SCOREP_PROFILE_NODE_THREAD_ROOT:
-                /* Do no assign a callpath to the thread root node */
+                /* Do not assign a callpath to the thread root node */
                 break;
             case SCOREP_PROFILE_NODE_THREAD_START:
                 UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,

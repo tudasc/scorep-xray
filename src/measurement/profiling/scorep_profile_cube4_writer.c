@@ -1120,13 +1120,16 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
         cube_def_mirror( write_set.my_cube, "http://www.vi-hps.org/upload/packages/scorep/" );
 
+        char buffer[ 32 ];
+        sprintf( buffer, "%u", scorep_unified_definition_manager->parameter.counter );
+        cube_def_attr( write_set.my_cube, "Score-P::DefinitionCounters::Parameter", buffer );
+
         if ( SCOREP_IsUnwindingEnabled() )
         {
             /*
              * Record the number of sampling related definitions in the profile.
              * The names directly correspond to the OTF2 definition names.
              */
-            char buffer[ 32 ];
             sprintf( buffer, "%u", scorep_unified_definition_manager->calling_context.counter );
             cube_def_attr( write_set.my_cube, "Score-P::DefinitionCounters::CallingContext", buffer );
             sprintf( buffer, "%u", scorep_unified_definition_manager->interrupt_generator.counter );

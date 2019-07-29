@@ -665,6 +665,14 @@ as well as the macro
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
+@note If a region that has parameters triggers a user metric, the metric must
+      be triggered after the parameters are provided.
+
+@note The order of the parameters is important. If the region will have different
+      orders for the same parameters, than only one will survive in the measurement
+      data. Also in Cube, parameters are grouped into numeric and string types,
+      thus the order will may be different than the instrumentation.
+
 @section control_instrumentation Measurement Control Instrumentation
 @seclabel{control_instrumentation}
 

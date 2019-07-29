@@ -24,6 +24,12 @@ Features and improvements:
 - The previously unused environment variable
   `SCOREP_MPI_MAX_ACCESS_EPOCHS` was renamed to `SCOREP_MPI_MAX_EPOCHS`
   and is now used in tracking MPI one-sided communication.
+- Changed the presentation of parameter-based profiling. Instead of
+  nested call tree nodes under the source code region, create multiple
+  nodes for the region on the same level and attach Cube-Parameters to
+  them. In this context, the API of libscorep-estimator (used for
+  scoring profiles, e.g., in scorep-score) changed. Consider this API
+  'experimental'.
 
 Bugfixes:
 

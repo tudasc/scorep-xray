@@ -140,9 +140,7 @@ SCOREP_Score_EnterEvent::contributes( const SCOREP_Score_Profile& profile,
                                       uint64_t                    region )
 {
     if ( profile.hasHits()
-         || profile.omitInTraceEnterLeaveEvents( region )
-         || profile.isParameterRegion( region )
-         || profile.isDynamicRegion( region ) )
+         || profile.omitInTraceEnterLeaveEvents( region ) )
     {
         return false;
     }
@@ -161,9 +159,7 @@ SCOREP_Score_LeaveEvent::contributes( const SCOREP_Score_Profile& profile,
                                       uint64_t                    region )
 {
     if ( profile.hasHits()
-         || profile.omitInTraceEnterLeaveEvents( region )
-         || profile.isParameterRegion( region )
-         || profile.isDynamicRegion( region ) )
+         || profile.omitInTraceEnterLeaveEvents( region ) )
     {
         return false;
     }
@@ -182,7 +178,6 @@ SCOREP_Score_CallingContextEnterEvent::contributes( const SCOREP_Score_Profile& 
                                                     uint64_t                    region )
 {
     if ( !profile.hasHits()
-         || profile.isParameterRegion( region )
          || profile.isDynamicRegion( region ) )
     {
         return false;
@@ -202,7 +197,6 @@ SCOREP_Score_CallingContextLeaveEvent::contributes( const SCOREP_Score_Profile& 
                                                     uint64_t                    region )
 {
     if ( !profile.hasHits()
-         || profile.isParameterRegion( region )
          || profile.isDynamicRegion( region ) )
     {
         return false;
@@ -233,8 +227,7 @@ bool
 SCOREP_Score_MetricEvent::contributes( const SCOREP_Score_Profile& profile,
                                        uint64_t                    region )
 {
-    if ( profile.isParameterRegion( region )
-         || profile.isDynamicRegion( region ) )
+    if ( profile.isDynamicRegion( region ) )
     {
         return false;
     }
@@ -270,18 +263,33 @@ SCOREP_Score_TimestampEvent::hasTimestamp( void ) const
 }
 
 /* **************************************************************************************
- * class SCOREP_Score_ParameterEvent
+ * class SCOREP_Score_ParameterIntEvent
  ***************************************************************************************/
-SCOREP_Score_ParameterEvent::SCOREP_Score_ParameterEvent( void )
+SCOREP_Score_ParameterIntEvent::SCOREP_Score_ParameterIntEvent( void )
     : SCOREP_Score_Event( "ParameterInt" )
 {
 }
 
 bool
-SCOREP_Score_ParameterEvent::contributes( const SCOREP_Score_Profile& profile,
-                                          uint64_t                    region )
+SCOREP_Score_ParameterIntEvent::contributes( const SCOREP_Score_Profile& /* profile */,
+                                             uint64_t /* region */ )
 {
-    return profile.isParameterRegion( region );
+    return false; // parameters are handled separately
+}
+
+/* **************************************************************************************
+ * class SCOREP_Score_ParameterStringEvent
+ ***************************************************************************************/
+SCOREP_Score_ParameterStringEvent::SCOREP_Score_ParameterStringEvent( void )
+    : SCOREP_Score_Event( "ParameterString" )
+{
+}
+
+bool
+SCOREP_Score_ParameterStringEvent::contributes( const SCOREP_Score_Profile& /* profile */,
+                                                uint64_t /* region */ )
+{
+    return false; // parameters are handled separately
 }
 
 /* **************************************************************************************

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015,
+ * Copyright (c) 2009-2012, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,7 +42,7 @@
  */
 
 #include <stdbool.h>
-#include <SCOREP_DefinitionHandles.h>
+#include <SCOREP_Definitions.h>
 #include <scorep_profile_metric.h>
 
 /* ***************************************************************************************
@@ -60,6 +60,16 @@ typedef struct
     uint64_t handle;
     uint64_t value;
 } scorep_profile_type_data_t;
+
+/**
+   Type to store the parameter list in callpath representation after resolving
+   the parameter sub-trees.
+ */
+typedef struct
+{
+    uint32_t                              number;
+    scorep_definitions_callpath_parameter parameters[];
+} scorep_profile_callpath_parameters_t;
 
 /**
    List of profile node types.  Each node has special type and a field where it might
@@ -102,7 +112,8 @@ typedef enum
    Here is a list which data this field contains:
    <dl>
     <dt>SCOREP_PROFILE_NODE_REGULAR_REGION</dt>
-    <dd>The region handle</dd>
+    <dd>The region handle and possible parameters as value (as pointer to
+        scorep_profile_callpath_parameters_t)</dd>
     <dt>SCOREP_PROFILE_NODE_PARAMETER_STRING</dt>
     <dd>The parameter handle and a handle for the string value</dd>
     <dt>SCOREP_PROFILE_NODE_PARAMETER_INTEGER</dt>
@@ -141,7 +152,7 @@ typedef struct scorep_profile_node_struct
 } scorep_profile_node;
 
 /**
-   A type which specifies possibl flags for the scorep_profile_node::flags field.
+   A type which specifies possible flags for the scorep_profile_node::flags field.
  */
 typedef enum
 {
@@ -180,7 +191,7 @@ typedef bool ( scorep_profile_compare_node_t )( scorep_profile_node* node_a,
                    page.
    @param parent   Pointer to the parent node. It is NULL is it is a root node. This
                    function does not insert the child into the parents child list, but sets
-                   the parent pointer ot the new node only.
+                   the parent pointer of the new node only.
    @param type     The type of the node.
    @param data     The type dependent data for this node.
    @param timestamp The timestamp of its first enter event.
@@ -529,7 +540,15 @@ void
 scorep_profile_set_task_context( scorep_profile_node*        node,
                                  scorep_profile_task_context context );
 
-
+/**
+   Subtracts the subtrahend's sum value and the sum2 value of all dense metrics
+   from the minuend.
+   @param minuend    The node from which the values are subtracted.
+   @param subtrahend The node that is subtracted from minuend.
+ */
+void
+scorep_profile_subtract_node( scorep_profile_node* minuend,
+                              scorep_profile_node* subtrahend );
 
 /* ***************************************************************************************
    Getter / Setter functions for type dependent data
@@ -629,6 +648,19 @@ scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
                                    uint64_t                    value );
 
 /**
+   Retrieves the pointer value from the type specific data.
+ */
+void*
+scorep_profile_type_get_ptr_value( scorep_profile_type_data_t data );
+
+/**
+   Stores the pointer value in the type specific data.
+ */
+void
+scorep_profile_type_set_ptr_value( scorep_profile_type_data_t* data,
+                                   void*                       value );
+
+/**
    Provides a hash value for type-dependent data.
    @param data The data to provide a hash value for.
    @param type Specifies the node type in which @a data belongs.
@@ -644,7 +676,7 @@ scorep_profile_hash_for_type_data( scorep_profile_type_data_t data,
    @param data1 The data which is compared to @a data2.
    @param data2 The data which is compared to @a data1.
    @param type Specifies the node type in which @a data1 and @a data2 belong.
-   @return true, iff @a data1 is less than @a data2.
+   @return true, if @a data1 is less than @a data2.
  */
 bool
 scorep_profile_less_than_for_type_data( scorep_profile_type_data_t data1,

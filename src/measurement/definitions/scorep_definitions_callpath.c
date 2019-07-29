@@ -66,26 +66,21 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
-
 static SCOREP_CallpathHandle
-define_callpath( SCOREP_DefinitionManager* definition_manager,
-                 SCOREP_CallpathHandle     parentCallpath,
-                 bool                      withParameter,
-                 SCOREP_RegionHandle       regionHandle,
-                 SCOREP_ParameterHandle    parameterHandle,
-                 int64_t                   integerValue,
-                 SCOREP_StringHandle       stringHandle );
+define_callpath( SCOREP_DefinitionManager*                    definition_manager,
+                 SCOREP_CallpathHandle                        parentCallpath,
+                 SCOREP_RegionHandle                          regionHandle,
+                 uint32_t                                     numberOfParameters,
+                 const scorep_definitions_callpath_parameter* parameters );
 
 
 static void
-initialize_callpath( SCOREP_CallpathDef*       definition,
-                     SCOREP_DefinitionManager* definition_manager,
-                     SCOREP_CallpathHandle     parentCallpath,
-                     bool                      withParameter,
-                     SCOREP_RegionHandle       regionHandle,
-                     SCOREP_ParameterHandle    parameterHandle,
-                     int64_t                   integerValue,
-                     SCOREP_StringHandle       stringHandle );
+initialize_callpath( SCOREP_CallpathDef*                          definition,
+                     SCOREP_DefinitionManager*                    definition_manager,
+                     SCOREP_CallpathHandle                        parentCallpath,
+                     SCOREP_RegionHandle                          regionHandle,
+                     uint32_t                                     numberOfParameters,
+                     const scorep_definitions_callpath_parameter* parameters );
 
 
 static bool
@@ -94,8 +89,10 @@ equal_callpath( const SCOREP_CallpathDef* existingDefinition,
 
 
 SCOREP_CallpathHandle
-SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle parentCallpath,
-                                SCOREP_RegionHandle   region )
+SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle                        parentCallpath,
+                                SCOREP_RegionHandle                          region,
+                                uint32_t                                     numberOfParameters,
+                                const scorep_definitions_callpath_parameter* parameters )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -104,62 +101,12 @@ SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle parentCallpath,
     SCOREP_CallpathHandle new_handle = define_callpath(
         &scorep_local_definition_manager,
         parentCallpath,
-        false,
         region,
-        SCOREP_INVALID_PARAMETER,
-        0,
-        SCOREP_INVALID_STRING );
+        numberOfParameters,
+        parameters );
 
     SCOREP_Definitions_Unlock();
 
-
-    return new_handle;
-}
-
-
-SCOREP_CallpathHandle
-SCOREP_Definitions_NewCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
-                                                SCOREP_ParameterHandle callpathParameter,
-                                                int64_t                integerValue )
-{
-    UTILS_DEBUG_ENTRY();
-
-    SCOREP_Definitions_Lock();
-
-    SCOREP_CallpathHandle new_handle = define_callpath(
-        &scorep_local_definition_manager,
-        parentCallpath,
-        true,
-        SCOREP_INVALID_REGION,
-        callpathParameter,
-        integerValue,
-        SCOREP_INVALID_STRING );
-
-    SCOREP_Definitions_Unlock();
-
-    return new_handle;
-}
-
-
-SCOREP_CallpathHandle
-SCOREP_Definitions_NewCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
-                                               SCOREP_ParameterHandle callpathParameter,
-                                               SCOREP_StringHandle    stringHandle )
-{
-    UTILS_DEBUG_ENTRY();
-
-    SCOREP_Definitions_Lock();
-
-    SCOREP_CallpathHandle new_handle = define_callpath(
-        &scorep_local_definition_manager,
-        parentCallpath,
-        true,
-        SCOREP_INVALID_REGION,
-        callpathParameter,
-        0,
-        stringHandle );
-
-    SCOREP_Definitions_Unlock();
 
     return new_handle;
 }
@@ -183,95 +130,74 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                       "Invalid unification order of callpath definition: parent not yet unified" );
     }
 
-    SCOREP_RegionHandle    unified_region_handle    = SCOREP_INVALID_REGION;
-    SCOREP_ParameterHandle unified_parameter_handle = SCOREP_INVALID_PARAMETER;
-    int64_t                integer_value            = 0;
-    SCOREP_StringHandle    unified_string_handle    = SCOREP_INVALID_STRING;
-
-    if ( !definition->with_parameter )
+    SCOREP_RegionHandle unified_region_handle = SCOREP_INVALID_REGION;
+    if ( definition->region_handle != SCOREP_INVALID_REGION )
     {
-        if ( definition->callpath_argument.region_handle != SCOREP_INVALID_REGION )
-        {
-            unified_region_handle = SCOREP_HANDLE_GET_UNIFIED(
-                definition->callpath_argument.region_handle,
-                Callpath,
-                handlesPageManager );
-            UTILS_BUG_ON( unified_region_handle == SCOREP_INVALID_REGION,
-                          "Invalid unification order of callpath definition: region not yet unified" );
-        }
+        unified_region_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->region_handle,
+            Callpath,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_region_handle == SCOREP_INVALID_REGION,
+                      "Invalid unification order of callpath definition: region not yet unified" );
     }
-    else
+
+    scorep_definitions_callpath_parameter parameters[ definition->number_of_parameters ];
+    /* Init the upper-byte of the string_handle union member to avoid memcmp
+       of uninitialized memory */
+    memset( parameters, 0, definition->number_of_parameters * sizeof( parameters[ 0 ] ) );
+
+    for ( uint32_t i = 0; i < definition->number_of_parameters; i++ )
     {
-        if ( definition->callpath_argument.parameter_handle
-             != SCOREP_INVALID_PARAMETER )
+        SCOREP_ParameterDef* parameter =
+            SCOREP_HANDLE_DEREF( definition->parameters[ i ].parameter_handle,
+                                 Parameter, handlesPageManager );
+        UTILS_BUG_ON( parameter->unified == SCOREP_INVALID_PARAMETER,
+                      "Invalid unification order of callpath definition: parameter not yet unified" );
+        parameters[ i ].parameter_handle = parameter->unified;
+        if ( parameter->parameter_type == SCOREP_PARAMETER_STRING )
         {
-            SCOREP_ParameterDef* parameter = SCOREP_HANDLE_DEREF(
-                definition->callpath_argument.parameter_handle,
-                Parameter,
-                handlesPageManager );
-
-            unified_parameter_handle = parameter->unified;
-            UTILS_BUG_ON( unified_parameter_handle == SCOREP_INVALID_PARAMETER,
-                          "Invalid unification order of callpath definition: parameter not yet unified" );
-
-            if ( ( parameter->parameter_type == SCOREP_PARAMETER_INT64 ) ||
-                 ( parameter->parameter_type == SCOREP_PARAMETER_UINT64 ) )
-            {
-                integer_value = definition->parameter_value.integer_value;
-            }
-            else if ( parameter->parameter_type == SCOREP_PARAMETER_STRING )
-            {
-                if ( definition->parameter_value.string_handle != SCOREP_INVALID_STRING )
-                {
-                    unified_string_handle = SCOREP_HANDLE_GET_UNIFIED(
-                        definition->parameter_value.string_handle,
-                        String,
-                        handlesPageManager );
-                    UTILS_BUG_ON( unified_string_handle == SCOREP_INVALID_STRING,
-                                  "Invalid unification order of callpath definition: string parameter not yet unified" );
-                }
-            }
-            else
-            {
-                UTILS_BUG( "Not a valid parameter type: %u",
-                           parameter->parameter_type );
-            }
+            parameters[ i ].parameter_value.string_handle = SCOREP_HANDLE_GET_UNIFIED(
+                definition->parameters[ i ].parameter_value.string_handle,
+                String, handlesPageManager );
+            UTILS_BUG_ON( parameters[ i ].parameter_value.string_handle == SCOREP_INVALID_STRING,
+                          "Invalid unification order of callpath definition: string not yet unified" );
+        }
+        else
+        {
+            parameters[ i ].parameter_value.integer_value =
+                definition->parameters[ i ].parameter_value.integer_value;
         }
     }
 
     definition->unified = define_callpath(
         scorep_unified_definition_manager,
         unified_parent_callpath_handle,
-        definition->with_parameter,
         unified_region_handle,
-        unified_parameter_handle,
-        integer_value,
-        unified_string_handle );
+        definition->number_of_parameters,
+        parameters );
 }
 
 
 SCOREP_CallpathHandle
-define_callpath( SCOREP_DefinitionManager* definition_manager,
-                 SCOREP_CallpathHandle     parentCallpathHandle,
-                 bool                      withParameter,
-                 SCOREP_RegionHandle       regionHandle,
-                 SCOREP_ParameterHandle    parameterHandle,
-                 int64_t                   integerValue,
-                 SCOREP_StringHandle       stringHandle )
+define_callpath( SCOREP_DefinitionManager*                    definition_manager,
+                 SCOREP_CallpathHandle                        parentCallpathHandle,
+                 SCOREP_RegionHandle                          regionHandle,
+                 uint32_t                                     numberOfParameters,
+                 const scorep_definitions_callpath_parameter* parameters )
 {
     UTILS_ASSERT( definition_manager );
 
     SCOREP_CallpathDef*   new_definition = NULL;
     SCOREP_CallpathHandle new_handle     = SCOREP_INVALID_CALLPATH;
-    SCOREP_DEFINITION_ALLOC( Callpath );
+    SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( Callpath,
+                                            scorep_definitions_callpath_parameter,
+                                            numberOfParameters );
     initialize_callpath( new_definition,
                          definition_manager,
                          parentCallpathHandle,
-                         withParameter,
                          regionHandle,
-                         parameterHandle,
-                         integerValue,
-                         stringHandle );
+                         numberOfParameters,
+                         parameters );
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Callpath, callpath );
@@ -283,14 +209,12 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
 
 
 void
-initialize_callpath( SCOREP_CallpathDef*       definition,
-                     SCOREP_DefinitionManager* definition_manager,
-                     SCOREP_CallpathHandle     parentCallpathHandle,
-                     bool                      withParameter,
-                     SCOREP_RegionHandle       regionHandle,
-                     SCOREP_ParameterHandle    parameterHandle,
-                     int64_t                   integerValue,
-                     SCOREP_StringHandle       stringHandle )
+initialize_callpath( SCOREP_CallpathDef*                          definition,
+                     SCOREP_DefinitionManager*                    definition_manager,
+                     SCOREP_CallpathHandle                        parentCallpathHandle,
+                     SCOREP_RegionHandle                          regionHandle,
+                     uint32_t                                     numberOfParameters,
+                     const scorep_definitions_callpath_parameter* parameters )
 {
     definition->parent_callpath_handle = parentCallpathHandle;
     if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
@@ -298,53 +222,31 @@ initialize_callpath( SCOREP_CallpathDef*       definition,
         HASH_ADD_HANDLE( definition, parent_callpath_handle, Callpath );
     }
 
-    definition->with_parameter = withParameter;
-    HASH_ADD_POD( definition, with_parameter );
-
-    if ( !definition->with_parameter )
+    definition->region_handle = regionHandle;
+    if ( definition->region_handle != SCOREP_INVALID_REGION )
     {
-        definition->callpath_argument.region_handle = regionHandle;
-        if ( definition->callpath_argument.region_handle
-             != SCOREP_INVALID_REGION )
-        {
-            HASH_ADD_HANDLE( definition, callpath_argument.region_handle, Region );
-        }
+        HASH_ADD_HANDLE( definition, region_handle, Region );
     }
-    else
+
+    definition->number_of_parameters = numberOfParameters;
+    HASH_ADD_POD( definition, number_of_parameters );
+    if ( definition->number_of_parameters == 0 )
     {
-        definition->callpath_argument.parameter_handle = parameterHandle;
-        if ( definition->callpath_argument.parameter_handle
-             != SCOREP_INVALID_PARAMETER )
+        return;
+    }
+
+    memcpy( definition->parameters, parameters, numberOfParameters * sizeof( *parameters ) );
+
+    for ( uint32_t i = 0; i < numberOfParameters; i++ )
+    {
+        HASH_ADD_HANDLE( definition, parameters[ i ].parameter_handle, Parameter );
+        if ( SCOREP_ParameterHandle_GetType( parameters[ i ].parameter_handle ) == SCOREP_PARAMETER_STRING )
         {
-            HASH_ADD_HANDLE( definition, callpath_argument.parameter_handle, Parameter );
-
-            SCOREP_ParameterDef* parameter = SCOREP_HANDLE_DEREF(
-                definition->callpath_argument.parameter_handle,
-                Parameter,
-                definition_manager->page_manager );
-
-            if ( ( parameter->parameter_type == SCOREP_PARAMETER_INT64 ) ||
-                 ( parameter->parameter_type == SCOREP_PARAMETER_UINT64 ) )
-            {
-                definition->parameter_value.integer_value = integerValue;
-                HASH_ADD_POD( definition, parameter_value.integer_value );
-            }
-            else if ( parameter->parameter_type == SCOREP_PARAMETER_STRING )
-            {
-                definition->parameter_value.string_handle = stringHandle;
-                if ( definition->parameter_value.string_handle
-                     != SCOREP_INVALID_STRING )
-                {
-                    HASH_ADD_HANDLE( definition,
-                                     parameter_value.string_handle,
-                                     String );
-                }
-            }
-            else
-            {
-                UTILS_BUG( "Not a valid parameter type: %u",
-                           parameter->parameter_type );
-            }
+            HASH_ADD_HANDLE( definition, parameters[ i ].parameter_value.string_handle, String );
+        }
+        else
+        {
+            HASH_ADD_POD( definition, parameters[ i ].parameter_value.integer_value );
         }
     }
 }
@@ -354,31 +256,12 @@ bool
 equal_callpath( const SCOREP_CallpathDef* existingDefinition,
                 const SCOREP_CallpathDef* newDefinition )
 {
-    if ( existingDefinition->parent_callpath_handle != newDefinition->parent_callpath_handle
-         || existingDefinition->with_parameter != newDefinition->with_parameter )
-    {
-        return false;
-    }
-
-    if ( !existingDefinition->with_parameter )
-    {
-        return existingDefinition->callpath_argument.region_handle == newDefinition->callpath_argument.region_handle;
-    }
-
-    if ( existingDefinition->callpath_argument.parameter_handle
-         != newDefinition->callpath_argument.parameter_handle )
-    {
-        return false;
-    }
-
-    /** @note we need to deref parameter_handle to know the type,
-     *        but we don't have the associated page manager
-     *        thus, we use memcmp for comparison
-     *        luckily, the union members have equal size, currently
-     */
-    return 0 == memcmp( &existingDefinition->parameter_value,
-                        &newDefinition->parameter_value,
-                        sizeof( existingDefinition->parameter_value ) );
+    return existingDefinition->parent_callpath_handle == newDefinition->parent_callpath_handle
+           && existingDefinition->region_handle == newDefinition->region_handle
+           && existingDefinition->number_of_parameters == newDefinition->number_of_parameters
+           && 0 == memcmp( existingDefinition->parameters,
+                           newDefinition->parameters,
+                           existingDefinition->number_of_parameters * sizeof( *existingDefinition->parameters ) );
 }
 
 

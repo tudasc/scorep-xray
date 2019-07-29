@@ -829,7 +829,7 @@ write_callpath_definitions( cube_t*                       myCube,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Callpath, callpath )
     {
         /* Collect necessary data */
-        scorep_region   = definition->callpath_argument.region_handle;
+        scorep_region   = definition->region_handle;
         region          = scorep_get_cube4_region( map, scorep_region );
         scorep_callpath = definition->parent_callpath_handle;
         parent          = scorep_get_cube4_callpath( map, scorep_callpath );
@@ -845,6 +845,31 @@ write_callpath_definitions( cube_t*                       myCube,
             char buffer[ 32 ];
             sprintf( buffer, "%u", maxNumberOfProgramArgs );
             cube_region_def_attr( region, "Score-P::ProgramArguments::numberOfArguments", buffer );
+        }
+
+        /* Attach parameters */
+        for ( uint32_t i = 0; i < definition->number_of_parameters; i++ )
+        {
+            const char* parameter_name =
+                SCOREP_ParameterHandle_GetName( definition->parameters[ i ].parameter_handle );
+            SCOREP_ParameterType type =
+                SCOREP_ParameterHandle_GetType( definition->parameters[ i ].parameter_handle );
+
+            if ( type == SCOREP_PARAMETER_STRING )
+            {
+                cube_cnode_add_string_parameter(
+                    cnode,
+                    parameter_name,
+                    SCOREP_StringHandle_Get(
+                        definition->parameters[ i ].parameter_value.string_handle ) );
+            }
+            else
+            {
+                cube_cnode_add_numeric_parameter(
+                    cnode,
+                    parameter_name,
+                    definition->parameters[ i ].parameter_value.integer_value );
+            }
         }
 
         /* Create entry in mapping table */

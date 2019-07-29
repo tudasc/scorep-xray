@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015-2016,
  * Technische Universitaet Darmstadt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -720,11 +720,25 @@ scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
     }
 }
 
+void
+scorep_profile_subtract_node( scorep_profile_node* minuend,
+                              scorep_profile_node* subtrahend )
+{
+    minuend->count                  -= subtrahend->count;
+    minuend->inclusive_time.sum     -= subtrahend->inclusive_time.sum;
+    minuend->inclusive_time.squares -= subtrahend->inclusive_time.squares;
+    for ( uint64_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
+    {
+        minuend->dense_metrics[ i ].sum     -= subtrahend->dense_metrics[ i ].sum;
+        minuend->dense_metrics[ i ].squares -= subtrahend->dense_metrics[ i ].squares;
+    }
+}
+
 /**
    Searches for a a thread start node to a given fork
    in a specific location subtree.
    @param root  The root node of a location subtree.
-   @param fork  The node where the fork happended.
+   @param fork  The node where the fork happened.
    @return The thread start node forked at @a fork if it exists.
            If no matching node is found, the function returns NULL.
  */

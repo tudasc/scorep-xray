@@ -43,6 +43,20 @@
 #include <Cube.h>
 #include "SCOREP_Score_Types.hpp"
 
+class SCOREP_Score_CalltreeVisitor
+{
+public:
+    virtual void
+    operator()( uint64_t process,
+                uint64_t region,
+                uint64_t parentRegion,
+                uint64_t visits,
+                double   time,
+                uint64_t hits,
+                uint32_t numParameters,
+                uint32_t strParameters ) = 0;
+};
+
 /**
  * This class encapsulates the access of the estimator to the CUBE4 profile.
  */
@@ -69,48 +83,12 @@ public:
     bool
     hasHits( void ) const;
 
-
-    /**
-     * Returns the number of visits to a region on a specified process.
-     * @param regionId  ID of the region for which the number of visits are requested.
-     * @param process   The process number fo which the number of visits are requested.
-     */
-    uint64_t
-    getVisits( uint64_t regionId,
-               uint64_t process );
-
-    /**
-     * Returns the time that a region spent on a specified process.
-     * @param regionId  ID of the region for which the time is requested.
-     * @param process   The process number fo which the time is requested.
-     */
-    double
-    getTime( uint64_t regionId,
-             uint64_t process );
-
-
-    /**
-     * Returns the number of sampling hits to a region on a specified process.
-     * @param regionId  ID of the region for which the number of hits are requested.
-     * @param process   The process number fo which the number of hits are requested.
-     */
-    uint64_t
-    getHits( uint64_t regionId,
-             uint64_t process );
-
     /**
      * Returns sum of the number of visits for an specified region on all processes.
      * @param regionId  ID of the region for which the time is requested.
      */
     uint64_t
     getTotalVisits( uint64_t regionId );
-
-    /**
-     * Returns the maximum number of visits to a region on one process over all processes.
-     * @param regionId  ID of the region for which the visits are requested.
-     */
-    uint64_t
-    getMaxVisits( uint64_t regionId );
 
     /**
      * Returns the region name.
@@ -171,12 +149,6 @@ public:
     getDefinitionCounters( void );
 
     /**
-     * Prints some basic infos on the profile. Used for debug purposes.
-     */
-    void
-    print( void );
-
-    /**
      * Returns the group for a region.
      * @param regionID  ID of the region for which the group is requested.
      */
@@ -197,16 +169,17 @@ public:
     omitInTraceEnterLeaveEvents( uint64_t region ) const;
 
     /**
-     * Returns true if @a region is a parameter region.
-     */
-    bool
-    isParameterRegion( uint64_t region ) const;
-
-    /**
      * Returns true if @a region is a dynamic region.
      */
     bool
     isDynamicRegion( uint64_t region ) const;
+
+    /**
+     * Iterator over call tree of process @a process.
+     */
+    void
+    iterateCalltree( uint64_t                      process,
+                     SCOREP_Score_CalltreeVisitor& visitor );
 
     /**
      * Returns a value >= 0 if the number of program arguments is provided by the cube file.
@@ -217,14 +190,6 @@ public:
     getNumberOfProgramArguments() const;
 
 private:
-
-    /**
-     * Returns sum of the time that an application spent in a region on all processes.
-     * @param regionId  ID of the region for which the time is requested.
-     */
-    double
-    getTotalTime( uint64_t regionId );
-
     /**
      * Calculates recursively whether a node is on a callpath to an MPI or OpenMP
      * region.
@@ -233,8 +198,12 @@ private:
      * @returns true if @a node appears on a callpath to a MPI or OpenMP region.
      */
     bool
-    calculate_calltree_types( const std::vector<cube::Cnode*>* cnodes,
-                              cube::Cnode*                     node );
+    calculate_calltree_types( cube::Cnode* node );
+
+    void
+    iterate_calltree_rec( uint64_t                      process,
+                          SCOREP_Score_CalltreeVisitor& visitor,
+                          cube::Cnode*                  node );
 
     /**
      * Checks whether a region is an MPI or OpenMP region.
@@ -252,6 +221,18 @@ private:
     bool
     has_prefix_then_upper( const std::string& str,
                            const std::string& prefix );
+
+    uint64_t
+    get_visits( cube::Cnode* node,
+                uint64_t     process );
+
+    double
+    get_time( cube::Cnode* node,
+              uint64_t     process );
+
+    uint64_t
+    get_hits( cube::Cnode* node,
+              uint64_t     process );
 
 private:
     /**
@@ -302,17 +283,12 @@ private:
     /**
      * Set of (callpath's) root regions, usually just one. MPMD programs might have several.
      */
-    std::set<std::string> m_root_region_names;
+    std::set<uint64_t> m_root_regions;
 
     /**
      * Set of regions that don't contribute to trace enter and leave event.
      */
     std::set<uint64_t> m_regions_to_omit_in_trace_enter_leave_events;
-
-    /**
-     * Set of parameter regions.
-     */
-    std::set<uint64_t> m_parameter_regions;
 
     /**
      * Set of dynamic regions.

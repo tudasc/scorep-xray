@@ -59,7 +59,6 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
     }
     m_hits = m_cube->get_met( "hits" );
 
-
     /* Collect all attributes from the definition counters */
     const string               attr_prefix( "Score-P::DefinitionCounters::" );
     const map<string, string>& attributes = m_cube->get_attrs();
@@ -108,13 +107,18 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
         {
             m_regions_to_omit_in_trace_enter_leave_events.insert( i );
         }
-        else if ( getRegionName( i ).substr( 0, 9 ) == "instance=" )
+        else if ( getRegionParadigm( i ) == "user"
+                  && ( getRegionName( i ).substr( 0, 9 ) == "instance="
+                       || getRegionName( i ).substr( 0, 10 ) == "iteration=" ) )
         {
+            // These are the artificial child regions of a dynamic region.
+            // Only the parent dynamic region is seen in the trace and thus
+            // only this region contributes.
+            // If there is more than one dynamic region, the artificial children
+            // of the first are named iteration=<n> (as provided by cubelib), the
+            // others are named instance=<n>.
+            m_regions_to_omit_in_trace_enter_leave_events.insert( i );
             m_dynamic_regions.insert( i );
-        }
-        else if ( getRegionName( i ).find( '=', 0 ) != string::npos )
-        {
-            m_parameter_regions.insert( i );
         }
 
         // process selected region attributes
@@ -148,8 +152,8 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
     vector<Cnode*> roots =  m_cube->get_root_cnodev();
     for ( uint64_t i = 0; i < roots.size(); i++ )
     {
-        m_root_region_names.insert( roots[ i ]->get_callee()->get_name() );
-        calculate_calltree_types( &m_cube->get_cnodev(), roots[ i ] );
+        m_root_regions.insert( roots[ i ]->get_callee()->get_id() );
+        calculate_calltree_types( roots[ i ] );
     }
 }
 
@@ -165,74 +169,6 @@ SCOREP_Score_Profile::hasHits( void ) const
     return m_hits != 0;
 }
 
-double
-SCOREP_Score_Profile::getTime( uint64_t region,
-                               uint64_t process )
-{
-    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_INCLUSIVE,
-                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
-
-    if ( !value )
-    {
-        return 0.0;
-    }
-    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
-    {
-        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
-        return tau_value->getSum().getDouble();
-    }
-    else
-    {
-        return value->getDouble();
-    }
-}
-
-
-double
-SCOREP_Score_Profile::getTotalTime( uint64_t region )
-{
-    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
-
-    if ( !value )
-    {
-        return 0.0;
-    }
-    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
-    {
-        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
-        return tau_value->getSum().getDouble();
-    }
-    else
-    {
-        return value->getDouble();
-    }
-}
-
-uint64_t
-SCOREP_Score_Profile::getVisits( uint64_t region,
-                                 uint64_t process )
-{
-    Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
-
-    if ( !value )
-    {
-        return 0;
-    }
-    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
-    {
-        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
-        return tau_value->getN().getUnsignedLong();
-    }
-    else
-    {
-        return value->getUnsignedLong();
-    }
-}
-
 uint64_t
 SCOREP_Score_Profile::getTotalVisits( uint64_t region )
 {
@@ -244,49 +180,6 @@ SCOREP_Score_Profile::getTotalVisits( uint64_t region )
         return 0;
     }
     if ( value && value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
-    {
-        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
-        return tau_value->getN().getUnsignedLong();
-    }
-    else
-    {
-        return value->getUnsignedLong();
-    }
-}
-
-uint64_t
-SCOREP_Score_Profile::getMaxVisits( uint64_t region )
-{
-    uint64_t max = 0;
-    uint64_t process;
-    uint64_t value;
-
-    for ( process = 0; process < getNumberOfProcesses(); process++ )
-    {
-        value = getVisits( region, process );
-        max   = value > max ? value : max;
-    }
-    return max;
-}
-
-uint64_t
-SCOREP_Score_Profile::getHits( uint64_t region,
-                               uint64_t process )
-{
-    if ( !m_hits )
-    {
-        return 0;
-    }
-
-    Value* value = m_cube->get_sev_adv( m_hits, CUBE_CALCULATE_EXCLUSIVE,
-                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
-
-    if ( !value )
-    {
-        return 0;
-    }
-    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
     {
         TauAtomicValue* tau_value = ( TauAtomicValue* )value;
         return tau_value->getN().getUnsignedLong();
@@ -364,23 +257,6 @@ SCOREP_Score_Profile::getDefinitionCounters( void )
     return m_definition_counters;
 }
 
-void
-SCOREP_Score_Profile::print()
-{
-    uint64_t region, process;
-
-    cout << "group \t max visits \t total visits \t total time \t region" << endl;
-    for ( region = 0; region < getNumberOfRegions(); region++ )
-    {
-        cout << getGroup( region );
-        cout << "\t" << getMaxVisits( region );
-        cout << "\t" << getTotalVisits( region );
-        cout << "\t" << getTotalTime( region );
-        cout << "\t" << getRegionName( region );
-        cout << endl;
-    }
-}
-
 SCOREP_Score_Type
 SCOREP_Score_Profile::getGroup( uint64_t region )
 {
@@ -398,19 +274,13 @@ SCOREP_Score_Profile::getGroup( uint64_t region )
 bool
 SCOREP_Score_Profile::isRootRegion( uint64_t region ) const
 {
-    return m_root_region_names.count( getRegionName( region ) );
+    return m_root_regions.count( region );
 }
 
 bool
 SCOREP_Score_Profile::omitInTraceEnterLeaveEvents( uint64_t region ) const
 {
     return m_regions_to_omit_in_trace_enter_leave_events.count( region );
-}
-
-bool
-SCOREP_Score_Profile::isParameterRegion( uint64_t region ) const
-{
-    return m_parameter_regions.count( region );
 }
 
 bool
@@ -425,6 +295,43 @@ SCOREP_Score_Profile::getNumberOfProgramArguments() const
     return m_num_arguments;
 }
 
+void
+SCOREP_Score_Profile::iterate_calltree_rec( uint64_t                      process,
+                                            SCOREP_Score_CalltreeVisitor& visitor,
+                                            Cnode*                        node )
+{
+    uint64_t region        = node->get_callee()->get_id();
+    uint64_t parent_region = -1;
+    if ( node->get_parent() )
+    {
+        parent_region = node->get_parent()->get_callee()->get_id();
+    }
+
+    visitor( process,
+             region,
+             parent_region,
+             get_visits( node, process ),
+             get_time( node, process ),
+             get_hits( node, process ),
+             node->get_num_parameters().size(),
+             node->get_str_parameters().size() );
+
+    for ( uint32_t i = 0; i < node->num_children(); i++ )
+    {
+        iterate_calltree_rec( process, visitor, node->get_child( i ) );
+    }
+}
+
+void
+SCOREP_Score_Profile::iterateCalltree( uint64_t                      process,
+                                       SCOREP_Score_CalltreeVisitor& visitor )
+{
+    vector<Cnode*> roots =  m_cube->get_root_cnodev();
+    for ( uint64_t i = 0; i < roots.size(); i++ )
+    {
+        iterate_calltree_rec( process, visitor, roots[ i ] );
+    }
+}
 
 /* **************************************************** private members */
 SCOREP_Score_Type
@@ -508,13 +415,12 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
 }
 
 bool
-SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
-                                                Cnode*                node )
+SCOREP_Score_Profile::calculate_calltree_types( Cnode* node )
 {
     bool is_on_path = false;
     for ( uint32_t i = 0; i < node->num_children(); i++ )
     {
-        is_on_path = calculate_calltree_types( cnodes, node->get_child( i ) ) ?
+        is_on_path = calculate_calltree_types( node->get_child( i ) ) ?
                      true : is_on_path;
     }
 
@@ -545,4 +451,78 @@ SCOREP_Score_Profile::has_prefix_then_upper( const string& str,
         return false;
     }
     return isupper( str[ prefix.size() ] );
+}
+
+uint64_t
+SCOREP_Score_Profile::get_visits( Cnode*   node,
+                                  uint64_t process )
+{
+    Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
+                                        node, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getN().getUnsignedLong();
+    }
+    else
+    {
+        return value->getUnsignedLong();
+    }
+}
+
+double
+SCOREP_Score_Profile::get_time( Cnode*   node,
+                                uint64_t process )
+{
+    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_INCLUSIVE,
+                                        node, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0.0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getSum().getDouble();
+    }
+    else
+    {
+        return value->getDouble();
+    }
+}
+
+uint64_t
+SCOREP_Score_Profile::get_hits( Cnode*   node,
+                                uint64_t process )
+{
+    if ( !m_hits )
+    {
+        return 0;
+    }
+
+    Value* value = m_cube->get_sev_adv( m_hits, CUBE_CALCULATE_EXCLUSIVE,
+                                        node, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getN().getUnsignedLong();
+    }
+    else
+    {
+        return value->getUnsignedLong();
+    }
 }

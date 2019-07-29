@@ -105,19 +105,16 @@ SCOREP_Score_Group::~SCOREP_Score_Group()
 }
 
 void
-SCOREP_Score_Group::addRegion( uint64_t numberOfVisits,
-                               uint64_t bytesPerVisit,
-                               uint64_t numberOfHits,
-                               uint64_t bytesPerHit,
-                               double   time,
-                               uint64_t process )
+SCOREP_Score_Group::updateProcess( uint64_t process,
+                                   uint64_t bytes,
+                                   uint64_t numberOfVisits,
+                                   uint64_t numberOfHits,
+                                   double   time )
 {
+    m_total_buf          += bytes;
+    m_max_buf[ process ] += bytes;
     m_visits             += numberOfVisits;
-    m_total_buf          += numberOfVisits * bytesPerVisit;
-    m_max_buf[ process ] += numberOfVisits * bytesPerVisit;
     m_hits               += numberOfHits;
-    m_total_buf          += numberOfHits * bytesPerHit;
-    m_max_buf[ process ] += numberOfHits * bytesPerHit;
     m_total_time         += time;
 }
 
