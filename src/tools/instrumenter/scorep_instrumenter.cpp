@@ -650,21 +650,26 @@ SCOREP_Instrumenter::link_step( void )
 #endif
     command << " `" << m_config_base << " --ldflags`";
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
-#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
+
+    std::string linker_start_group_flags;
+    std::string linker_end_group_flags;
+    // nvcc uses its own pair of start-/end-group flags,
+    // if scorep adds another one, we might get into trouble with nested groups,
+    // therefore, skip our start-/end-group if the compiler is nvcc
     if ( !( m_cuda_adapter->isNvcc() ) )
     {
-        command << libs_prefix << linker_prefix << "-start-group `" << m_config_base << " --event-libs`";
-        command << " " << m_command_line.getFlagsAfterInterpositionLib() << libs_suffix;
+        linker_start_group_flags = linker_prefix + "-start-group";
+        linker_end_group_flags   = linker_prefix + "-end-group";
     }
+#if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
+    command << libs_prefix << linker_start_group_flags << " `" << m_config_base << " --event-libs`";
+    command << " " << m_command_line.getFlagsAfterInterpositionLib() << libs_suffix;
 #else
     command << libs_prefix << " `" << m_config_base << " --event-libs`" << libs_suffix;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();
 #endif
 #if SCOREP_BACKEND_HAVE_LINKER_START_END_GROUP
-    if ( !( m_cuda_adapter->isNvcc() ) )
-    {
-        command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << linker_prefix << "-end-group " << libs_suffix;
-    }
+    command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << linker_end_group_flags << libs_suffix;
 #else
     command << libs_prefix << " `" << m_config_base << " --mgmt-libs`" << libs_suffix;
 #endif
