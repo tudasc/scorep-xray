@@ -10,10 +10,12 @@ To build Score-P you usually just need to do
   mkdir _build
   cd _build
   ../configure
+  # study configure summary output
   make
   make install
 
 Please have a look at INSTALL for further configure and build options.
+Please consult OPEN_ISSUES for known deficiencies.
 
 After make install you will find html and pdf documentation as well as
 usage examples under $(prefix)/share/doc/scorep.
