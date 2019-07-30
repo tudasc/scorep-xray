@@ -87,6 +87,8 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
                    AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm.])],
                   [have_compiler_instrumentation="no"
                    compiler_instrumentation_result="no, neither libbfd nor nm are available"])])
+          AS_IF([test "x${have_compiler_instrumentation}" = xyes && test "x${ax_cv_c_compiler_vendor%/*}" = xgnu],
+	      [AC_MSG_WARN([Superior instrumentation mechanism for GNU compilers exists. We highly recommend installing files for GNU GCC plugin development, see INSTALL.])])
          ],
          [# compilers which do not need the symbol table
           AS_IF([test "x${ax_cv_c_compiler_vendor}" = xsun],
