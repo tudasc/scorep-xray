@@ -3,7 +3,10 @@
 Major features:
 
 - Support for recording I/O activities: Calls to POSIX I/O and MPI-I/O
-  are wrapped and meta data about individual I/O operations is recorded.
+  are wrapped and meta data about individual I/O operations is
+  recorded. Whereas MPI-I/O events are recorded by default, POSIX I/O
+  recording needs to be activated using the instrumenter option
+  --io=posix.
 
 Features and improvements:
 
