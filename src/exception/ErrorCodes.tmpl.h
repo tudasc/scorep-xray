@@ -114,7 +114,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_EFBIG,
     /** Operation is work in progress */
     @AFS_PACKAGE_NAME@_ERROR_EINPROGRESS,
-    /** Interuption of an operating system call */
+    /** Interruption of an operating system call */
     @AFS_PACKAGE_NAME@_ERROR_EINTR,
     /** Invalid argument */
     @AFS_PACKAGE_NAME@_ERROR_EINVAL,
@@ -210,7 +210,7 @@ typedef enum
     @AFS_PACKAGE_NAME@_ERROR_ESRCH,
     /** Reserved */
     @AFS_PACKAGE_NAME@_ERROR_ESTALE,
-    /** Timout in file stream or IOCTL */
+    /** Timeout in file stream or IOCTL */
     @AFS_PACKAGE_NAME@_ERROR_ETIME,
     /** Connection timed out */
     @AFS_PACKAGE_NAME@_ERROR_ETIMEDOUT,

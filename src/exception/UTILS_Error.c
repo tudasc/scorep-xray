@@ -205,7 +205,7 @@ static const struct utils_error_decl error_decls[] =
         PACKAGE_MANGLE_NAME( ERROR_ ## code ) \
     }
 
-    /* This is the internal implementation of posix error code descriptions. */
+    /* This is the internal implementation of POSIX error code descriptions. */
     _e( E2BIG,           "The list of arguments is too long" ),
     _e( EACCES,          "Not enough rights" ),
     _e( EADDRNOTAVAIL,   "Address is not available" ),
@@ -227,7 +227,7 @@ static const struct utils_error_decl error_decls[] =
     _e( EFAULT,          "Invalid address" ),
     _e( EFBIG,           "File is too large" ),
     _e( EINPROGRESS,     "Operation is work in progress" ),
-    _e( EINTR,           "Interuption of an operating system call" ),
+    _e( EINTR,           "Interruption of an operating system call" ),
     _e( EINVAL,          "Invalid argument" ),
     _e( EIO,             "Generic I/O error" ),
     _e( EISCONN,         "Socket is already connected" ),
@@ -275,7 +275,7 @@ static const struct utils_error_decl error_decls[] =
     _e( ESPIPE,          "This seek is not allowed" ),
     _e( ESRCH,           "No matching process found" ),
     _e( ESTALE,          "Reserved" ),
-    _e( ETIME,           "Timout in file stream or IOCTL" ),
+    _e( ETIME,           "Timeout in file stream or IOCTL" ),
     _e( ETIMEDOUT,       "Connection timed out" ),
     _e( ETXTBSY,         "File could not be executed while it is opened" ),
     _e( EWOULDBLOCK,     "Operation would be blocking" ),
