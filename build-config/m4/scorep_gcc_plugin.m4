@@ -141,7 +141,7 @@ plugin_init( struct plugin_name_args*   plugin_info,
     AS_UNSET([plugin_uninstall])
     AS_UNSET([plugin_rmdir])
 ], [
-    scorep_gcc_plugin_support_reason="no, missing plug-in headers. We highly recommend installing files for GNU GCC plug-in development."
+    scorep_gcc_plugin_support_reason="no, missing plug-in headers. We highly recommend installing files GCC plug-in development."
 ])
 
 CPPFLAGS=$save_CPPFLAGS
