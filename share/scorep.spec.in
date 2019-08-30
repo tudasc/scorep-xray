@@ -1,7 +1,8 @@
 <doc>
     <mirrors>
         <murl>file://@DOCDIR@/profile/</murl>
-        <murl>http://www.vi-hps.org/upload/packages/scorep/</murl>
+	<murl>http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-@PACKAGE_VERSION@/profile/</murl>
+	<murl>http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/latest/profile/</murl>
     </mirrors>
 </doc>
 <metrics>
@@ -11,7 +12,7 @@
         <uniq_name>time</uniq_name>
         <dtype>FLOAT</dtype>
         <uom>sec</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#time</url>
+        <url>@mirror@scorep_metrics.html#time</url>
         <descr>Total CPU allocation time (includes time allocated for idle threads)</descr>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Execution</disp_name>

@@ -102,7 +102,7 @@ doc_DATA = $(srcdir)/OPEN_ISSUES \
 install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
 	$(INSTALL_DATA) $(DOC_SRC_DIR)/profile/scorep_metrics.html \
-                        $(DESTDIR)$(docdir)/profile/scorep_metrics-$(PACKAGE_VERSION).html
+                        $(DESTDIR)$(docdir)/profile/scorep_metrics.html
 
 install-data-hook:
 	$(AM_V_at)for target in $(TARGETS)""; do \
