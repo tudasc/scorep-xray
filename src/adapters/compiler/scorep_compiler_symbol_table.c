@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2018,
+ * Copyright (c) 2009-2015, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -145,8 +145,8 @@ process_symbol( long         address,
 
     if ( path != NULL )
     {
-        static int length = sizeof( SCOREP_ABS_TOPLEVEL_SRCDIR ) - 1;
-        use_address &= ( strncmp( path, SCOREP_ABS_TOPLEVEL_SRCDIR, length ) != 0 );
+        static int length = sizeof( SCOREP_ABS_TOPLEVEL_SRCDIR "/src" ) - 1;
+        use_address &= ( strncmp( path, SCOREP_ABS_TOPLEVEL_SRCDIR "/src", length ) != 0 );
     }
 
     if ( use_address )
