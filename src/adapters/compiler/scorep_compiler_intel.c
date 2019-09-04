@@ -69,16 +69,6 @@ register_region( const char* str )
     {
         file_name_len = region_name - str;
         region_name++;
-        if ( strlen( region_name ) == 0 )
-        {
-            UTILS_WARNING( "The Intel compiler provided \"%s\" as file:region "
-                           "identification. Without the region part we are unable "
-                           "to link to the source code, thus, we filter this region. "
-                           "The Intel compiler shows this behavior for functions "
-                           "declared inside an anonymous namespace.",
-                           str );
-            return SCOREP_FILTERED_REGION;
-        }
     }
     else
     {
@@ -99,6 +89,20 @@ register_region( const char* str )
     /* Filter on file name early to avoid unused SourceFile definitions. */
     if ( SCOREP_Filtering_MatchFile( file_name ) )
     {
+        return SCOREP_FILTERED_REGION;
+    }
+
+    /* Check this after we queried the filter, this way the user is able to
+     * supress this warning by adding the file to an EXCLUDE rule.
+     */
+    if ( strlen( region_name ) == 0 )
+    {
+        UTILS_WARNING( "The Intel compiler provided \"%s\" as file:region "
+                       "identification. Without the region part we are unable "
+                       "to link to the source code, thus, we filter this region. "
+                       "The Intel compiler shows this behavior for functions "
+                       "declared inside an anonymous namespace.",
+                       str );
         return SCOREP_FILTERED_REGION;
     }
 
