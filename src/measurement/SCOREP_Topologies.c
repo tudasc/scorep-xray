@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -595,15 +595,13 @@ define_topology_locations_pre_unify_create_groups( void )
 
             // group exchange allgather
             uint64_t global_location_ids_groups[ num_procs ][ number_global_topology_name_strings ][ max_locations_per_rank ];
+            uint64_t local_location_ids_groups[ number_global_topology_name_strings ][ max_locations_per_rank ];
 
-            for ( uint64_t i = 0; i < num_procs; i++ )
+            for ( uint64_t j = 0; j < number_global_topology_name_strings; j++ )
             {
-                for ( uint64_t j = 0; j < number_global_topology_name_strings; j++ )
+                for ( uint64_t k = 0; k < max_locations_per_rank; k++ )
                 {
-                    for ( uint64_t k = 0; k < max_locations_per_rank; k++ )
-                    {
-                        global_location_ids_groups[ i ][ j ][ k ] = UINT64_MAX;
-                    }
+                    local_location_ids_groups[ j ][ k ] = UINT64_MAX;
                 }
             }
             // init global array with the local group sets
@@ -611,11 +609,11 @@ define_topology_locations_pre_unify_create_groups( void )
             {
                 for ( uint64_t j = 0; j < unique_local_group_members_count[ i ]; j++ )
                 {
-                    global_location_ids_groups[ rank ][ map_to_global[ rank ][ i ] ][ j ] = unique_local_group_members[ i ][ j ];
+                    local_location_ids_groups[ map_to_global[ rank ][ i ] ][ j ] = unique_local_group_members[ i ][ j ];
                 }
             }
 
-            SCOREP_Ipc_Allgather( global_location_ids_groups[ rank ],
+            SCOREP_Ipc_Allgather( local_location_ids_groups,
                                   global_location_ids_groups,
                                   number_global_topology_name_strings * max_locations_per_rank,
                                   SCOREP_IPC_UINT64_T );
