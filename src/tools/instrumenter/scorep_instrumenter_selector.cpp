@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -458,7 +458,10 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
         }
         else
         {
-            m_current_selection.push_back( selection );
+            if ( m_mode == MULTI_SELECTION || m_current_selection.empty() )
+            {
+                m_current_selection.push_back( selection );
+            }
             return;
         }
         /* If we have multiple paradigms that can be applied, use the first one.
