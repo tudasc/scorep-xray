@@ -34,7 +34,7 @@
 #include <UTILS_Error.h>
 
 #define SCOREP_SKIPLIST_TYPE scorep_mpi_rma_request
-#include <scorep_skiplist.h>
+#include <SCOREP_Skiplist.h>
 
 /**
  * @internal

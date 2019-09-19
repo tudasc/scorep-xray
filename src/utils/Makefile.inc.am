@@ -11,4 +11,4 @@
 ## directory for details.
 ##
 
-EXTRA_DIST += $(SRC_ROOT)src/utils/include/scorep_skiplist.h
+EXTRA_DIST += $(SRC_ROOT)src/utils/include/SCOREP_Skiplist.h

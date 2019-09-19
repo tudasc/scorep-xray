@@ -43,7 +43,7 @@ SCOREP_Memory_AllocForMisc( size_t size )
 
 #define SCOREP_SKIPLIST_TYPE unsigned int
 #define SCOREP_SKIPLIST_PREFIX scorep_uint
-#include <scorep_skiplist.h>
+#include <SCOREP_Skiplist.h>
 
 // --- skiplist callbacks
 
