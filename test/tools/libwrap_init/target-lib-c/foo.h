@@ -113,16 +113,20 @@ fn_20_two_dim_array__arg( int a[][2], int len );
 int
 fn_20_two_dim_array__arg( int a[][2], int len );
 
+/* The idea here is to have something which libclang does not accept
+   but other compilers do, but when clang is that 'other' compiler
+   than it already cannot build the target lib, thus exclude this test
+   for Clang. this wont effect the libclang parsing, because we preprocess
+   headers with the backend compiler. */
+#ifndef __clang__
 /* Body is not accepted by Clang in C++, but we skip it anyway. */
 static int
 fn_22_skip_body( void )
 {
-    /* TODO: IIRC the idea was to have something which libclang does not accept
-             but other compilers do, but when clang is that 'other' compiler
-             than it already cannot build the target lib */
     int __builtin_LINE( void );
     return __builtin_LINE();
 }
+#endif
 
 int
 fn_23_ellipsis_without_wrapping_va_list_variant( const char*, ... );
