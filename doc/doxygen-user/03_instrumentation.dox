@@ -172,10 +172,11 @@ disables compiler instrumentation.
 
 @scorep supports a variety of instrumentation types for user-level
 source routines and arbitrary regions, in addition to fully-automatic
-@mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
+@mpi and @openmp instrumentation, as summarized in Table
+@ref tab:instopts "@scorep instrumenter option overview".
 
   <table border=1 cellspacing=0>
-    <caption>@scorep instrumenter option overview</caption>
+    <caption id="tab:instopts">@scorep instrumenter option overview</caption>
     <tr>
       <th align="center" valign="middle" style="width:8em;">Type of instrumentation</th>
       <th align="center" valign="middle" style="width:8em;">Instrumenter switch</th>
