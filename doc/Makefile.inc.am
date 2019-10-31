@@ -120,7 +120,6 @@ doxygen-user-pdf: doxygen-user
 	cat doc/doxygen-user-html.cfg > doc/doxygen-user-pdf.cfg
 	echo "ENABLED_SECTIONS = LATEX" >> doc/doxygen-user-pdf.cfg
 	echo "GENERATE_HTML    = NO"    >> doc/doxygen-user-pdf.cfg
-	cp $(abs_srcdir)/doc/doxygen-user/scorep.sty $(USER_DOC_DIR)/pdf/
 	cp $(DOC_SRC_DIR)/license.tex $(USER_DOC_DIR)/pdf/
 	-cp $(DOC_SRC_DIR)/images/project_logo.pdf $(USER_DOC_DIR)/pdf/
 	$(DOXYGEN) doc/doxygen-user-pdf.cfg
