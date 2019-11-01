@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,6 +61,8 @@
 #include <SCOREP_Task.h>
 
 #include "SCOREP_Compiler_Init.h"
+
+#include "scorep_compiler_demangle.h"
 
 /* **************************************************************************************
  * Typedefs and global variables
@@ -324,14 +326,17 @@ check_region( SCOREP_RegionHandle* region,
         {
             UTILS_IO_SimplifyPath( file_name );
 
-            if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
-                 ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
-                 ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-                 ( strstr( region_name, "SCOREP_User_RegionClass" ) == 0 ) &&
-                 ( !SCOREP_Filtering_Match( file_name, region_name, NULL ) ) )
+            char* region_name_demangled;
+            scorep_compiler_demangle( region_name, region_name_demangled );
+
+            if ( ( strncmp( region_name_demangled, "POMP", 4 ) != 0 ) &&
+                 ( strncmp( region_name_demangled, "Pomp", 4 ) != 0 ) &&
+                 ( strncmp( region_name_demangled, "pomp", 4 ) != 0 ) &&
+                 ( strstr( region_name_demangled, "SCOREP_User_RegionClass" ) == 0 ) &&
+                 ( !SCOREP_Filtering_Match( file_name, region_name_demangled, region_name ) ) )
             {
-                *region = SCOREP_Definitions_NewRegion( region_name,
-                                                        NULL,
+                *region = SCOREP_Definitions_NewRegion( region_name_demangled,
+                                                        region_name,
                                                         SCOREP_Definitions_NewSourceFile( file_name ),
                                                         lineno,
                                                         SCOREP_INVALID_LINE_NO,
@@ -342,6 +347,8 @@ check_region( SCOREP_RegionHandle* region,
             {
                 *region = SCOREP_FILTERED_REGION;
             }
+
+            scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }

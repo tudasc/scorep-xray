@@ -60,31 +60,7 @@
 #include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_compiler_data.h"
-
-/* ***************************************************************************************
-   Demangling declarations
-*****************************************************************************************/
-
-#if HAVE( DEMANGLE )
-/* Declaration of external demangling function */
-/* It is contained in "demangle.h" */
-extern char*
-cplus_demangle( const char* mangled,
-                int         options );
-
-/* cplus_demangle options */
-#define SCOREP_COMPILER_DEMANGLE_NO_OPTS   0
-#define SCOREP_COMPILER_DEMANGLE_PARAMS    ( 1 << 0 )  /* include function arguments */
-#define SCOREP_COMPILER_DEMANGLE_ANSI      ( 1 << 1 )  /* include const, volatile, etc. */
-#define SCOREP_COMPILER_DEMANGLE_VERBOSE   ( 1 << 3 )  /* include implementation details */
-#define SCOREP_COMPILER_DEMANGLE_TYPES     ( 1 << 4 )  /* include type encodings */
-
-/* Demangling style. */
-static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
-                                            SCOREP_COMPILER_DEMANGLE_ANSI    |
-                                            SCOREP_COMPILER_DEMANGLE_VERBOSE |
-                                            SCOREP_COMPILER_DEMANGLE_TYPES;
-#endif /* HAVE( DEMANGLE ) */
+#include "scorep_compiler_demangle.h"
 
 /* ***************************************************************************************
    helper functions for symbol table analysis
@@ -111,20 +87,8 @@ process_symbol( long         address,
     }
 #endif /*HAVE( PLATFORM_MAC )*/
 
-    const char* funcname_demangled = funcname;
-#if HAVE( DEMANGLE )
-    /* use demangled name if possible */
-    if ( scorep_compiler_demangle_style >= 0 )
-    {
-        funcname_demangled = cplus_demangle( funcname,
-                                             scorep_compiler_demangle_style );
-
-        if ( funcname_demangled == NULL )
-        {
-            funcname_demangled = funcname;
-        }
-    }
-#endif /* HAVE( DEMANGLE ) */
+    const char* region_name_demangled;
+    scorep_compiler_demangle( funcname, funcname_demangled );
 
     bool use_address = ( address != 0 );
 
@@ -160,6 +124,7 @@ process_symbol( long         address,
     }
 
     free( path );
+    scorep_compiler_demangle_free( funcname, funcname_demangled );
 }
 
 

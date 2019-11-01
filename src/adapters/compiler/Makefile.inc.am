@@ -317,6 +317,15 @@ else !SCOREP_COMPILER_PGI_LLVM
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
 
+if HAVE_LIBBFD
+
+libscorep_adapter_compiler_event_la_LIBADD += \
+    $(LIBBFD_LIBS)
+libscorep_adapter_compiler_event_la_LDFLAGS += \
+    $(LIBBFD_LDFLAGS)
+
+endif HAVE_LIBBFD
+
 endif !SCOREP_COMPILER_PGI_LLVM
 
 endif SCOREP_COMPILER_PGI
@@ -338,4 +347,5 @@ endif HAVE_COMPILER_INSTRUMENTATION
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.inc.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_demangle.h

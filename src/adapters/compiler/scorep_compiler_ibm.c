@@ -56,27 +56,7 @@
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
-
-#if HAVE( DEMANGLE )
-/* Declaration of external demangling function */
-/* It is contained in "demangle.h" */
-extern char*
-cplus_demangle( const char* mangled,
-                int         options );
-
-/* cplus_demangle options */
-#define SCOREP_COMPILER_DEMANGLE_NO_OPTS   0
-#define SCOREP_COMPILER_DEMANGLE_PARAMS    ( 1 << 0 )  /* include function arguments */
-#define SCOREP_COMPILER_DEMANGLE_ANSI      ( 1 << 1 )  /* include const, volatile, etc. */
-#define SCOREP_COMPILER_DEMANGLE_VERBOSE   ( 1 << 3 )  /* include implementation details */
-#define SCOREP_COMPILER_DEMANGLE_TYPES     ( 1 << 4 )  /* include type encodings */
-
-/* Demangling style. */
-static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
-                                            SCOREP_COMPILER_DEMANGLE_ANSI    |
-                                            SCOREP_COMPILER_DEMANGLE_VERBOSE |
-                                            SCOREP_COMPILER_DEMANGLE_TYPES;
-#endif /* HAVE( DEMANGLE ) */
+#include "scorep_compiler_demangle.h"
 
 /**
  * Looks up the region name in the hash table, registers the region
@@ -110,17 +90,8 @@ get_region_handle( const char* region_name,
             char* file = UTILS_CStr_dup( file_name );
             UTILS_IO_SimplifyPath( file );
 
-            const char* region_name_demangled = NULL;
-#if HAVE( DEMANGLE )
-            /* use demangled name if possible */
-            region_name_demangled = cplus_demangle( region_name,
-                                                    scorep_compiler_demangle_style );
-#endif      /* HAVE( DEMANGLE ) */
-            if ( region_name_demangled == NULL )
-            {
-                region_name_demangled = region_name;
-                region_name           = NULL;
-            }
+            const char* region_name_demangled;
+            scorep_compiler_demangle( region_name, region_name_demangled );
 
             hash_node = scorep_compiler_hash_put( region_key,
                                                   region_name,
@@ -154,6 +125,7 @@ get_region_handle( const char* region_name,
             }
 
             free( file );
+            scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
 #if defined( __IBMC__ ) && __IBMC__ <= 1100
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
