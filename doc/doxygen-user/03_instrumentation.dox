@@ -379,7 +379,7 @@ provides support for instrumentation of C/C++ codes.
 
 @note
   As an exception, the GCC plug-in based function instrumentation supports all
-  filtering features when using the @verb{--instrument-filter} flag to the
+  filtering features when using the @verb{--instrument-filter=<file>} flag to the
   @scorep instrumenter. Though this instrumentation does not instrument
   functions declared as @verb{inline} by default. But one can provide a filter
   file, where functions in an explicit @verb{INCLUDE} rule, nevertheless will be
