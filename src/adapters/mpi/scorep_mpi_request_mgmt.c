@@ -705,9 +705,9 @@ scorep_mpi_check_request( scorep_mpi_request* req,
 
             case SCOREP_MPI_REQUEST_TYPE_RMA:
                 // sanity check for rma_request handle
-                UTILS_BUG_ON( req->payload.rma.request_ptr != NULL,
+                UTILS_BUG_ON( req->payload.rma.request_ptr == NULL,
                               "No request information associated with MPI request." );
-                UTILS_BUG_ON( req->payload.rma.request_ptr->mpi_handle == req->request,
+                UTILS_BUG_ON( req->payload.rma.request_ptr->mpi_handle != req->request,
                               "Request information inconsistent with associated MPI request" );
 
                 // if request has not yet been completed locally
