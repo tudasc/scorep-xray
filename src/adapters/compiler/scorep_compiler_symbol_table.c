@@ -87,7 +87,7 @@ process_symbol( long         address,
     }
 #endif /*HAVE( PLATFORM_MAC )*/
 
-    const char* region_name_demangled;
+    const char* funcname_demangled;
     scorep_compiler_demangle( funcname, funcname_demangled );
 
     bool use_address = ( address != 0 );
