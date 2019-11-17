@@ -22,12 +22,12 @@ dnl file build-config/m4/scorep_instrumentation_flags.m4
 AC_DEFUN([SCOREP_CC_FLAG_TEST],[
     AC_LANG_PUSH([C])
     save_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS $1"
+    CFLAGS="$CFLAGS $2"
 
-    AC_MSG_CHECKING([whether compiler understands $1])
+    AC_MSG_CHECKING([whether compiler understands $2])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
         [AC_MSG_RESULT([yes])
-         scorep_compiler_instrumentation_cppflags="$1"],
+         $1="$2"],
         [AC_MSG_RESULT([no])])
 
    CFLAGS="$save_CFLAGS"
@@ -55,13 +55,13 @@ scorep_compiler_instrumentation_needs_symbol_table="no"
 AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
-    [ibm],      [SCOREP_CC_FLAG_TEST([-qdebug=function_trace])
-                 SCOREP_CC_FLAG_TEST([-qfunctrace])],
+    [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-qdebug=function_trace])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-qfunctrace])],
     [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
                       scorep_compiler_instrumentation_cppflags="-Minstrument=functions"
                       scorep_compiler_instrumentation_needs_symbol_table="yes"],
-    [portland], [SCOREP_CC_FLAG_TEST([-Mprof=func])
-                 SCOREP_CC_FLAG_TEST([-Minstrument=functions])],
+    [portland], [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-Mprof=func])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-Minstrument=functions])],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
                        [scorep_compiler_instrumentation_cppflags=""],
                        [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"
@@ -71,8 +71,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  scorep_compiler_instrumentation_needs_symbol_table=yes],
     [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"
                  scorep_compiler_instrumentation_needs_symbol_table="yes"],
-    [clang],    [SCOREP_CC_FLAG_TEST([-g -finstrument-functions])
-                 SCOREP_CC_FLAG_TEST([-g -finstrument-functions-after-inlining])
+    [clang],    [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-g -finstrument-functions])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-g -finstrument-functions-after-inlining])
                  scorep_compiler_instrumentation_needs_symbol_table="yes"
                  AS_CASE([${ac_scorep_platform}],
                          [mac*], [# Disable position independent executable, which
@@ -117,7 +117,8 @@ AS_CASE([${ax_cv_c_compiler_vendor%/*}],
                      [bg*], [# Link shared variant of (system) libs, if available.
                              # This reduces the nm time and brings the number of
                              # symbols into a reasonable range.
-                             scorep_instrumentation_ldflags="-dynamic"])],
+                             scorep_instrumentation_ldflags="-dynamic"])
+                 SCOREP_CC_FLAG_TEST([scorep_instrumentation_cppflags], [-fno-ipa-icf])],
     [cray],     [],
     [fujitsu],  [scorep_instrumentation_ldflags="-Ntl_notrt"],
     [clang],    [],
