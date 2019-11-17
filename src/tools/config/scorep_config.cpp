@@ -715,7 +715,7 @@ main( int    argc,
         case ACTION_CFLAGS:
             if ( SCOREP_Config_Adapter::isActive() )
             {
-                str += " " SCOREP_INSTRUMENTATION_CPPFLAGS;
+                str += SCOREP_INSTRUMENTATION_CPPFLAGS " ";
             }
             SCOREP_Config_Adapter::addCFlagsAll( str, !install, language, nvcc );
             SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, language, nvcc );
