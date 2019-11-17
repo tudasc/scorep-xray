@@ -276,13 +276,13 @@ sockets_client_connect_retry( char* hostname,
     int              s, sock;
     int              success, i;
 
-    if ( port >= 999999 )
+    if ( port > 999999 || port < 0 )
     {
-        UTILS_WARNING( "Port number %d is too big\n", port );
+        UTILS_WARNING( "Port number out of range: %d\n", port );
         return -1;
     }
 
-    char* port_s = ( char* )malloc( 6 * sizeof( char ) );
+    char* port_s = ( char* )malloc( 7 * sizeof( char ) );
     UTILS_ASSERT( port_s );
     sprintf( port_s, "%d", port );
 
