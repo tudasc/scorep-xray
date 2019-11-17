@@ -28,6 +28,8 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
+#include <ctype.h>
 
 #include "scorep_unwinding_region.h"
 #include "scorep_unwinding_cct.h"
@@ -100,6 +102,23 @@ check_is_fork( SCOREP_Unwinding_CpuLocationData* unwindData,
     return unwindData->start_ip_of_fork == region->start;
 }
 
+/** Check if @a prefix (in lower case) is a prefix of @a str.
+ */
+static bool
+has_prefix_icase( const char* prefix, const char* str )
+{
+    while ( *prefix && *str )
+    {
+        if ( *prefix++ != tolower( *str++ ) )
+        {
+            return false;
+        }
+    }
+
+    /* we consumed the whole prefix */
+    return *prefix == '\0';
+}
+
 /**
  * Checks the function name and returns true if the function should
  * be skipped in the backtrace generation.
@@ -111,9 +130,50 @@ check_is_fork( SCOREP_Unwinding_CpuLocationData* unwindData,
 static bool
 region_to_skip( const char* regionName )
 {
-    if ( 0 == strncmp( "scorep_", regionName, 7 ) ||
-         0 == strncmp( "SCOREP_", regionName, 7 ) ||
-         NULL != strstr( regionName, "._omp_fn." ) )
+    size_t len = strlen( regionName );
+    char   prefix[ 7 ];
+    if ( len >= 6 )
+    {
+        prefix[ 0 ] = tolower( regionName[ 0 ] );
+        prefix[ 1 ] = tolower( regionName[ 1 ] );
+        prefix[ 2 ] = tolower( regionName[ 2 ] );
+        prefix[ 3 ] = tolower( regionName[ 3 ] );
+        prefix[ 4 ] = tolower( regionName[ 4 ] );
+        prefix[ 5 ] = tolower( regionName[ 5 ] );
+
+        if ( 0 == memcmp( "pomp2_", prefix, 6 ) )
+        {
+            /* wrapped regions, not to be filtered out, avoid "init_reg*" */
+            if ( has_prefix_icase( "init_lock", regionName + 6 ) ||
+                 has_prefix_icase( "init_nest_lock", regionName + 6 ) ||
+                 has_prefix_icase( "destroy", regionName + 6 ) ||
+                 has_prefix_icase( "set", regionName + 6 ) ||
+                 has_prefix_icase( "test", regionName + 6 ) ||
+                 has_prefix_icase( "unset", regionName + 6 ) )
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    if ( len >= 7 )
+    {
+        prefix[ 6 ] = tolower( regionName[ 6 ] );
+
+        /* Score-P internals that we don't want to see in the calltree */
+        if ( 0 == memcmp( "scorep_", prefix, 7 ) )
+        {
+            return true;
+        }
+    }
+
+    /* libgomp specific RT functions */
+    if ( len >= 10 &&
+         ( NULL != strstr( regionName, "._omp_fn." ) ||
+           0 == strcmp( regionName, "GOMP_parallel" ) ||
+           0 == strcmp( regionName, "omp_in_final" ) ) )
     {
         return true;
     }
@@ -149,6 +209,10 @@ create_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     region->is_main = check_is_main( unwindData, region );
     region->is_fork = check_is_fork( unwindData, region );
 
+    UTILS_DEBUG_EXIT( "%s, %s, %s",
+                      region->skip ? "skip" : "noskip",
+                      region->is_main ? "main" : "nomain",
+                      region->is_fork ? "fork" : "nofork" );
     return region;
 }
 
