@@ -987,7 +987,7 @@ string_to_lower( char* str )
     }
 }
 
-/** Comapre two strings for equality for a given length.
+/** Compare two strings for equality for a given length.
  *  @a length must less or equal the length of both strings.
  */
 static bool
