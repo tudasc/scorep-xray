@@ -274,11 +274,11 @@ compare_uint64( const void* a, const void* b )
     {
         return -1;
     }
-    if (  *aptr == *bptr )
+    else if (  *aptr == *bptr )
     {
         return 0;
     }
-    if (  *aptr >  *bptr )
+    else /* if (  *aptr >  *bptr ) */
     {
         return 1;
     }
