@@ -288,8 +288,8 @@ AS_IF([test "x${has_syscall_support}" = "xyes"],
                                             #include <sys/syscall.h>
                                           ]],
                                           [[
-                                            #ifndef __NR_sched_setaffinity
-                                            #oops__NR_sched_setaffinity_not_found
+                                            #ifndef __NR_perf_event_open
+                                            #oops__NR_perf_event_open_not_found
                                             #endif
                                           ]])],
                          [AC_MSG_RESULT([yes])],
