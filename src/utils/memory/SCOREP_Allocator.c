@@ -54,24 +54,6 @@
 #include "scorep_bitset.h"
 #include "scorep_page.h"
 
-#if HAVE( SCOREP_VALGRIND )
-#  include <valgrind/memcheck.h>
-
-#else // !HAVE( SCOREP_VALGRIND )
-
-#  define VALGRIND_MAKE_MEM_NOACCESS( x, y )  do { } while ( 0 )
-#  define VALGRIND_MAKE_MEM_UNDEFINED( x, y ) do { } while ( 0 )
-#  define VALGRIND_CREATE_MEMPOOL( x, y, z )  do { } while ( 0 )
-#  define VALGRIND_DESTROY_MEMPOOL( x )       do { } while ( 0 )
-#  define VALGRIND_MEMPOOL_ALLOC( x, y, z )   do { } while ( 0 )
-#  define VALGRIND_MEMPOOL_FREE( x, y )       do { } while ( 0 )
-#  define VALGRIND_MEMPOOL_TRIM( x, y, z )    do { } while ( 0 )
-
-#endif // HAVE( SCOREP_VALGRIND )
-
-#define SCOREP_ALLOCATOR_MOVABLE_PAGE_SHIFT 32
-#define SCOREP_ALLOCATOR_MOVABLE_PAGE_MASK  0xffffffff
-
 /* 8 objects per page should be minimum to be efficient */
 #define MIN_NUMBER_OF_OBJECTS_PER_PAGE 8
 

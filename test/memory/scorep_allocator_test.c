@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014, 2016,
+ * Copyright (c) 2009-2011, 2014, 2016, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -44,10 +44,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#if HAVE( SCOREP_VALGRIND )
-#include <valgrind/memcheck.h>
-#endif // HAVE( SCOREP_VALGRIND )
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -297,92 +293,6 @@ allocator_test_12( CuTest* tc )
 }
 
 
-#if HAVE( SCOREP_VALGRIND )
-#ifndef NVALGRIND
-void
-allocator_test_13( CuTest* tc )
-{
-    uint32_t total_mem = 1024;
-    uint32_t page_size = 512;                    // two pages
-
-    SCOREP_Allocator_Allocator* allocator
-        = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
-    CuAssertPtrNotNull( tc, allocator );
-
-    SCOREP_Allocator_PageManager* page_manager_1
-        = SCOREP_Allocator_CreatePageManager( allocator );
-    CuAssertPtrNotNull( tc, page_manager_1 );
-
-    volatile void* memory = SCOREP_Allocator_Alloc( page_manager_1, 64 );
-
-    if ( RUNNING_ON_VALGRIND )
-    {
-        CuAssertPtrEqualsMsg( tc, "is addressable",
-                              ( ( char* )memory + 64 ),
-                              ( void* )VALGRIND_CHECK_MEM_IS_ADDRESSABLE( memory, 512 ) );
-        CuAssertPtrEqualsMsg( tc, "not defined",
-                              memory,
-                              ( void* )VALGRIND_CHECK_MEM_IS_DEFINED( memory, 512 ) );
-    }
-
-    /* invalid read? */
-    unsigned int invalid_read_4 = *( volatile unsigned int* )memory;
-
-    /* valid write */
-    *( volatile unsigned int* )memory = 23;
-
-    /*  invalid write */
-    *( volatile unsigned int* )( ( char* )memory + 64 ) = 42;
-
-    SCOREP_Allocator_Free( page_manager_1 );
-
-    if ( RUNNING_ON_VALGRIND )
-    {
-        CuAssertPtrEqualsMsg( tc, "not addressable",
-                              memory,
-                              ( void* )VALGRIND_CHECK_MEM_IS_ADDRESSABLE( memory, 512 ) );
-    }
-
-    /* invalid read? */
-    invalid_read_4 = *( volatile unsigned int* )memory;
-
-    /* invalid write */
-    *( volatile unsigned int* )memory = 23;
-
-    /*  invalid write */
-    *( volatile unsigned int* )( ( char* )memory + 64 ) = 42;
-
-    SCOREP_Allocator_DeletePageManager( page_manager_1 );
-
-    if ( RUNNING_ON_VALGRIND )
-    {
-        CuAssertPtrEqualsMsg( tc, "not addressable",
-                              memory,
-                              ( void* )VALGRIND_CHECK_MEM_IS_ADDRESSABLE( memory, 512 ) );
-    }
-
-    /* invalid read */
-    invalid_read_4 = *( volatile unsigned int* )memory;
-
-    /* invalid write */
-    *( volatile unsigned int* )memory = 23;
-
-    /*  invalid write */
-    *( volatile unsigned int* )( ( char* )memory + 64 ) = 42;
-
-    SCOREP_Allocator_DeleteAllocator( allocator );
-
-    if ( RUNNING_ON_VALGRIND )
-    {
-        CuAssertPtrEqualsMsg( tc, "not addressable",
-                              memory,
-                              ( void* )VALGRIND_CHECK_MEM_IS_ADDRESSABLE( memory, 512 ) );
-    }
-}
-#endif // NVALGRIND
-#endif // HAVE( SCOREP_VALGRIND )
-
-
 void
 allocator_test_14( CuTest* tc )
 {
@@ -602,12 +512,6 @@ main()
                          "alloc movable" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_12,
                          "basic page manager functionality" );
-#if HAVE( SCOREP_VALGRIND )
-#ifndef NVALGRIND
-    SUITE_ADD_TEST_NAME( suite, allocator_test_13,
-                         "valgrind" );
-#endif // NVALGRIND
-#endif // HAVE( SCOREP_VALGRIND )
     SUITE_ADD_TEST_NAME( suite, allocator_test_14,
                          "page infos" );
     SUITE_ADD_TEST_NAME( suite, allocator_test_17,
