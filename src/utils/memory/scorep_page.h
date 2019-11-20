@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -108,7 +108,8 @@ init_page( SCOREP_Allocator_Allocator* allocator,
     page->memory_start_address = ( char* )allocator + ( id << allocator->page_shift );
     set_page_usage( page, 0 );
     set_page_order( page, order );
-    page->next = NULL;
+    page->memory_alignment_loss = 0;
+    page->next                  = NULL;
 }
 
 static inline void

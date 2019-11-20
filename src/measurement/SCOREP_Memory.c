@@ -756,6 +756,10 @@ memory_dump_stats_aggr( void )
                      stats_min[ i ].memory_available,
                      stats_mean[ i ].memory_available,
                      stats_max[ i ].memory_available  );
+            fprintf( stderr, "[Score-P] %-55s %-15zu %-15zu %-15zu\n", "Alignment loss [bytes]",
+                     stats_min[ i ].memory_alignment_loss,
+                     stats_mean[ i ].memory_alignment_loss,
+                     stats_max[ i ].memory_alignment_loss  );
             fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 " %-15" PRIu32 " %-15"  PRIu32 "\n", "Number of pages allocated",
                      stats_min[ i ].pages_allocated,
                      stats_mean[ i ].pages_allocated,
@@ -773,6 +777,8 @@ memory_dump_stats_aggr( void )
                      stats[ i ].memory_used );
             fprintf( stderr, "[Score-P] %-55s %-15zu\n", "Memory available [bytes]",
                      stats[ i ].memory_available );
+            fprintf( stderr, "[Score-P] %-55s %-15zu\n", "Alignment loss [bytes]",
+                     stats[ i ].memory_alignment_loss  );
             fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n", "Number of pages allocated",
                      stats[ i ].pages_allocated  );
             fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of pages used",
@@ -804,6 +810,8 @@ memory_dump_stats_full( void )
                  stats[ i ].memory_used );
         fprintf( stderr, "[Score-P] %-55s %-15zu\n", "Memory available [bytes]",
                  stats[ i ].memory_available );
+        fprintf( stderr, "[Score-P] %-55s %-15zu\n", "Alignment loss [bytes]",
+                 stats[ i ].memory_alignment_loss  );
         fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n", "Number of pages allocated",
                  stats[ i ].pages_allocated  );
         fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of pages used",

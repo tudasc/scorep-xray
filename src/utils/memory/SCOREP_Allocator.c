@@ -324,6 +324,7 @@ grab_memory( SCOREP_Allocator_Page* page,
 {
     void* memory = page->memory_current_address;
     page->memory_current_address += roundup( requestedSize );
+    page->memory_alignment_loss  += roundup( requestedSize ) - requestedSize;
     return memory;
 }
 
@@ -843,8 +844,9 @@ update_page_stats( const SCOREP_Allocator_Page*       page,
     stats->pages_allocated  += page_multiple;
     stats->memory_allocated += get_page_length( page );
     uint32_t usage = get_page_usage( page );
-    stats->memory_used      += usage;
-    stats->memory_available += get_page_avail( page );
+    stats->memory_used           += usage;
+    stats->memory_available      += get_page_avail( page );
+    stats->memory_alignment_loss += page->memory_alignment_loss;
     if ( usage )
     {
         stats->pages_used += page_multiple;
