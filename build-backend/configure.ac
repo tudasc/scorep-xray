@@ -150,17 +150,22 @@ AC_SCOREP_DEFINE_REVISIONS
 
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_SCOREP_CHECK_SIZEOF([double])
-if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
-    AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT],
-        [$ac_cv_sizeof_void_p],
-        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
-else
-    AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT],
-        [$ac_cv_sizeof_double],
-        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
-fi
+AS_IF([test $ac_cv_sizeof_void_p -gt $ac_cv_sizeof_double],
+      [scorep_allocator_alignment=$ac_cv_sizeof_void_p],
+      [scorep_allocator_alignment=$ac_cv_sizeof_double])
+AC_MSG_CHECKING([for aligment $scorep_allocator_alignment being a power-of-two])
+AC_COMPILE_IFELSE(
+    [AC_LANG_BOOL_COMPILE_TRY(
+        [],
+        [( $scorep_allocator_alignment & ( $scorep_allocator_alignment - 1 ) ) == 0])],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_ERROR([Unsupported aligmemnt, expected a power-of-two: $scorep_allocator_alignment])])
+
+AC_DEFINE_UNQUOTED(
+    [SCOREP_ALLOCATOR_ALIGNMENT],
+    [$scorep_allocator_alignment],
+    [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 
 AC_SCOREP_ERROR_CODES
 # </AC_SCOREP_COMMON_CHECKS>
