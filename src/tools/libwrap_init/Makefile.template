@@ -81,10 +81,6 @@ LW_V_GEN = $(lw__v_GEN_$(V))
 lw__v_GEN_1 =
 lw__v_GEN_ = @echo "  GEN      " $@;
 
-LW_V_INSTALL = $(lw__v_INSTALL_$(V))
-lw__v_INSTALL_1 =
-lw__v_INSTALL_ = @echo "  INSTALL  " $<;
-
 LW_V_libtool = $(lw__v_libtool_$(V))
 lw__v_libtool_ = --silent
 lw__v_libtool_1 =
@@ -187,7 +183,7 @@ $(LIBWRAP_RUNTIME): $(LIBWRAP_RUNTIME_OBJECT)
 
 $(LIBWRAP_ANCHOR_FILE): Makefile
 	$(LW_V_GEN)( \
-	    printf "LIBWRAP_NAME=%s\n" $(LW_DISPLAY_NAME); \
+	    echo "LIBWRAP_NAME=$(LW_DISPLAY_NAME)"; \
 	    echo "LIBWRAP_CC=$(SCOREP_CC)"; \
 	    echo "LIBWRAP_BACKEND=$(LW_BACKEND)"; \
 	    echo "LIBWRAP_LANGUAGE=$(LW_LANGUAGE)"; \
@@ -310,7 +306,7 @@ install: quick-check $(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_FILTE
 	@data_files='$(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_LD_FLAGS_FILE) $(NVCC_WRAP_LD_FLAGS_FILE) $(WRAP_FILTER_FILE)'; \
 	for data_file in $$data_files; do \
 	    if $(LW_V_P); then echo $(INSTALL) -m 644 "$$data_file" "$(LW_PREFIX)/share/scorep/$$data_file"; \
-	                  else echo "  INSTALL   $$data_file"; \
+	                  else echo "  INSTALL   $(LW_PREFIX)/share/scorep/$$data_file"; \
 	    fi; \
 	    $(INSTALL) -m 644 "$$data_file" "$(LW_PREFIX)/share/scorep/$$data_file"; \
 	done
@@ -318,12 +314,18 @@ install: quick-check $(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_FILTE
 .PHONY: install-libwrap-linktime
 install-libwrap-linktime: $(LIBWRAP_LINKTIME)
 	@mkdir -p $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)
-	$(LW_V_INSTALL)$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)
+	@if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME); \
+	              else echo "  INSTALL   $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)"; \
+	fi; \
+	$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)
 
 .PHONY: install-libwrap-runtime
 install-libwrap-runtime: $(LIBWRAP_RUNTIME)
 	@mkdir -p $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)
-	$(LW_V_INSTALL)$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)
+	@if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME); \
+	              else echo "  INSTALL   $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)"; \
+	fi; \
+	$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)
 	@if test -z "$(LW_LIBLIST)"; then \
             echo "[Score-P] Error: Could not find any shared libraries. I.e., the"; \
             echo "[Score-P]        LW_LIBLIST variable in Makefile is empty!"; \
