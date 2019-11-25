@@ -130,50 +130,38 @@ has_prefix_icase( const char* prefix, const char* str )
 static bool
 region_to_skip( const char* regionName )
 {
-    size_t len = strlen( regionName );
-    char   prefix[ 7 ];
-    if ( len >= 6 )
+    if ( has_prefix_icase( "pomp2_", regionName ) )
     {
-        prefix[ 0 ] = tolower( regionName[ 0 ] );
-        prefix[ 1 ] = tolower( regionName[ 1 ] );
-        prefix[ 2 ] = tolower( regionName[ 2 ] );
-        prefix[ 3 ] = tolower( regionName[ 3 ] );
-        prefix[ 4 ] = tolower( regionName[ 4 ] );
-        prefix[ 5 ] = tolower( regionName[ 5 ] );
-
-        if ( 0 == memcmp( "pomp2_", prefix, 6 ) )
+        /* wrapped regions, not to be filtered out, avoid "init_reg*" */
+        if ( has_prefix_icase( "init_lock", regionName + 6 ) ||
+             has_prefix_icase( "init_nest_lock", regionName + 6 ) ||
+             has_prefix_icase( "destroy", regionName + 6 ) ||
+             has_prefix_icase( "set", regionName + 6 ) ||
+             has_prefix_icase( "test", regionName + 6 ) ||
+             has_prefix_icase( "unset", regionName + 6 ) )
         {
-            /* wrapped regions, not to be filtered out, avoid "init_reg*" */
-            if ( has_prefix_icase( "init_lock", regionName + 6 ) ||
-                 has_prefix_icase( "init_nest_lock", regionName + 6 ) ||
-                 has_prefix_icase( "destroy", regionName + 6 ) ||
-                 has_prefix_icase( "set", regionName + 6 ) ||
-                 has_prefix_icase( "test", regionName + 6 ) ||
-                 has_prefix_icase( "unset", regionName + 6 ) )
-            {
-                return false;
-            }
-
-            return true;
+            return false;
         }
+
+        return true;
     }
 
-    if ( len >= 7 )
+    if ( has_prefix_icase( "scorep_", regionName ) )
     {
-        prefix[ 6 ] = tolower( regionName[ 6 ] );
-
-        /* Score-P internals that we don't want to see in the calltree */
-        if ( 0 == memcmp( "scorep_", prefix, 7 ) )
+        /* SCOREP_Libwrap_EnterRegion and SCOREP_Libwrap_EnterWrapper
+           'belong' to the wrapper, thus they should not be skipped */
+        if ( has_prefix_icase( "libwrap_enter", regionName + 7 ) )
         {
-            return true;
+            return false;
         }
+
+        return true;
     }
 
     /* libgomp specific RT functions */
-    if ( len >= 10 &&
-         ( NULL != strstr( regionName, "._omp_fn." ) ||
-           0 == strcmp( regionName, "GOMP_parallel" ) ||
-           0 == strcmp( regionName, "omp_in_final" ) ) )
+    if ( NULL != strstr( regionName, "._omp_fn." ) ||
+         0 == strcmp( regionName, "GOMP_parallel" ) ||
+         0 == strcmp( regionName, "omp_in_final" ) )
     {
         return true;
     }
