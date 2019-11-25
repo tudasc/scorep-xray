@@ -214,7 +214,7 @@ public:
             << "#include \"" << remove_path( generator.m_config.function_list_file_name ) << "\"\n"
             << "\n"
             << "static void\n"
-            << "libwrap_" << generator.m_config.wrapper_name << "_early_init()\n"
+            << "libwrap_" << generator.m_config.wrapper_name << "_early_init( void )\n"
             << "{\n"
             << "#define SCOREP_LIBWRAP_PROCESS_FUNC( rettype, func, args, prettyname, file, line, ns ) \\\n"
             << "    ns libwrap_" << generator.m_config.wrapper_name << "_early_init__##func();\n"
