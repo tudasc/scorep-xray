@@ -1,4 +1,4 @@
-# See Score-P Manual on Filtering for infos
+# See Score-P Manual on Filtering for more information
 
 SCOREP_FILE_NAMES_BEGIN
   #EXCLUDE */asd?.*
