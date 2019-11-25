@@ -492,7 +492,7 @@ public:
     appendInitStructName( std::deque<std::string>& init_structs );
 
 private:
-    std::set<std::pair<std::string, std::string> > m_wrappers;
+    std::map<std::string, std::pair<std::string, std::string> > m_wrappers;
 };
 
 /* **************************************************************************************

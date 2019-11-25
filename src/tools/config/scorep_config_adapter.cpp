@@ -963,7 +963,15 @@ SCOREP_Config_LibwrapAdapter::checkArgument( const std::string& arg )
             exit( EXIT_FAILURE );
         }
 
-        m_wrappers.insert( std::make_pair( wrapmode, libwrap ) );
+        std::string name = remove_extension( remove_path( libwrap ) );
+
+        if ( m_wrappers.count( name ) != 0 )
+        {
+            std::cerr << "[Score-P] ERROR: Duplicate library wrapper '" << libwrap << "', previous selected wrapper with the same name: '" << m_wrappers[ name ].second << "'" << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+        m_wrappers.insert( std::make_pair( name, std::make_pair( wrapmode, libwrap ) ) );
         m_is_enabled = true;
         return true;
     }
@@ -974,13 +982,13 @@ void
 SCOREP_Config_LibwrapAdapter::addLibs( std::deque<std::string>&           libs,
                                        SCOREP_Config_LibraryDependencies& deps )
 {
-    for ( std::set<std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
+    for ( std::map<std::string, std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
     {
-        const std::string& wrapmode = it->first;
-        const std::string& libwrap  = it->second;
+        const std::string& name     = it->first;
+        const std::string& wrapmode = it->second.first;
+        const std::string& libwrap  = it->second.second;
         /* we point to <prefix>/share/scorep/<name>.libwrap */
         std::string libdir = join_path( extract_path( extract_path( extract_path( libwrap ) ) ), "lib" SCOREP_BACKEND_SUFFIX );
-        std::string name   = remove_extension( remove_path( libwrap ) );
 
         std::deque<std::string> empty;
         std::deque<std::string> dependency_las;
@@ -1029,10 +1037,11 @@ SCOREP_Config_LibwrapAdapter::addLdFlags( std::string& ldflags,
                                           bool /* buildCheck */,
                                           bool         nvcc )
 {
-    for ( std::set<std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
+    for ( std::map<std::string, std::pair<std::string, std::string> >::const_iterator it = m_wrappers.begin(); it != m_wrappers.end(); ++it )
     {
-        const std::string& wrapmode = it->first;
-        const std::string& libwrap  = it->second;
+        const std::string& name     = it->first;
+        const std::string& wrapmode = it->second.first;
+        const std::string& libwrap  = it->second.second;
 
         if ( wrapmode == "linktime" )
         {
