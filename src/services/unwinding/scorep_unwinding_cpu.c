@@ -246,7 +246,7 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     }
 
     UTILS_BUG_ON( proc_info.start_ip > ip || ip >= proc_info.end_ip,
-                  "IP %#" PRIx64 " does not is insie region [%#" PRIx64 ",%#" PRIx64 ")",
+                  "IP %#" PRIx64 " is not inside region [%#" PRIx64 ",%#" PRIx64 ")",
                   ip, proc_info.start_ip, proc_info.end_ip );
 
     // the function name, libunwind can give us
