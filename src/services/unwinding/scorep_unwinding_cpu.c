@@ -197,7 +197,7 @@ create_region( SCOREP_Unwinding_CpuLocationData* unwindData,
                uint64_t                          endIp,
                const char*                       regionName )
 {
-    UTILS_DEBUG_ENTRY( "name=%s@[%p,%p)", regionName, startIp, endIp );
+    UTILS_DEBUG_ENTRY( "name=%s@[%#" PRIx64 ",%#" PRIx64 ")", regionName, startIp, endIp );
 
     scorep_unwinding_region* region =
         scorep_unwinding_region_insert( unwindData,
@@ -228,7 +228,7 @@ create_region( SCOREP_Unwinding_CpuLocationData* unwindData,
 static scorep_unwinding_region*
 get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
             unw_cursor_t*                     cursor,
-            unw_word_t                        ip )
+            uint64_t                          ip )
 {
     /* Look for the region belonging to ip */
     scorep_unwinding_region* region = scorep_unwinding_region_find( unwindData, ip );
@@ -244,7 +244,7 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     int             ret = unw_get_proc_info( cursor, &proc_info );
     if ( ret < 0 )
     {
-        UTILS_DEBUG( "unw_get_proc_info() failed for IP %#tx: %s", ip, unw_strerror( ret ) );
+        UTILS_DEBUG( "unw_get_proc_info() failed for IP %#" PRIx64 ": %s", ip, unw_strerror( ret ) );
         return NULL;
     }
 
@@ -252,12 +252,13 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
     /* This has been introduced by Zoltan, We use it because it might fix something */
     if ( proc_info.end_ip == 0 || proc_info.end_ip == ip )
     {
-        UTILS_DEBUG( "workaround active: proc_info.end_ip == ip: %#tx, start=%#tx", ip, proc_info.start_ip );
+        UTILS_DEBUG( "workaround active: proc_info.end_ip == ip: %#" PRIx64 ", start=%#" PRIx64 "",
+                     ip, proc_info.start_ip );
         return NULL;
     }
 
     UTILS_BUG_ON( proc_info.start_ip > ip || ip >= proc_info.end_ip,
-                  "IP %#tx does not is insie region [%#tx,%#tx)",
+                  "IP %#" PRIx64 " does not is insie region [%#" PRIx64 ",%#" PRIx64 ")",
                   ip, proc_info.start_ip, proc_info.end_ip );
 
     // the function name, libunwind can give us
@@ -271,10 +272,10 @@ get_region( SCOREP_Unwinding_CpuLocationData* unwindData,
                              &offset );
     if ( ret < 0 )
     {
-        UTILS_DEBUG( "error while retrieving function name for IP %#tx: %s",
+        UTILS_DEBUG( "error while retrieving function name for IP %#" PRIx64 ": %s",
                      proc_info.start_ip, unw_strerror( ret ) );
         snprintf( unwindData->region_name_buffer, MAX_FUNC_NAME_LENGTH,
-                  "UNKNOWN@[%#tx,%#tx)", proc_info.start_ip, proc_info.end_ip );
+                  "UNKNOWN@[%#" PRIx64 ",%#" PRIx64 ")", proc_info.start_ip, proc_info.end_ip );
         // ??? return NULL;
     }
 
@@ -322,7 +323,7 @@ static void
 push_stack( SCOREP_Unwinding_CpuLocationData* unwindData,
             scorep_unwinding_frame**          stack,
             scorep_unwinding_region*          region,
-            unw_word_t                        ip )
+            uint64_t                          ip )
 {
     scorep_unwinding_frame* frame = get_unused( unwindData );
     frame->ip     = ip;
@@ -366,7 +367,7 @@ get_current_ip( SCOREP_Unwinding_CpuLocationData* unwindData )
         UTILS_DEBUG( "Could not get IP register (unw_get_reg() returned %s)", unw_strerror( ret ) );
         return 0;
     }
-    UTILS_DEBUG( "unwinding: IP %p", ( void* )ip );
+    UTILS_DEBUG( "unwinding: IP %#" PRIx64 "", ( uint64_t )ip );
     return ip;
 }
 
@@ -442,6 +443,8 @@ pop_skipped_frames( SCOREP_Unwinding_CpuLocationData* unwindData )
     {
         UTILS_DEBUG( "unwinding: unw_step() returned 0" );
     }
+
+    UTILS_DEBUG_ENTRY();
 }
 
 /** Creates the current stack out of the unwind cursor
@@ -594,7 +597,7 @@ resolve_unhandled_wrappers( SCOREP_Unwinding_CpuLocationData* unwindData )
     scorep_unwinding_unhandled_wrapper* wrapper = unwindData->unhandled_wrappers;
     while ( wrapper )
     {
-        UTILS_DEBUG( "Handle wrapper: %p %zu",
+        UTILS_DEBUG( "Handle wrapper: %#" PRIx64 " %zu",
                      wrapper->wrapper_ip,
                      wrapper->n_wrapper_frames );
 
@@ -624,7 +627,7 @@ resolve_unhandled_wrappers( SCOREP_Unwinding_CpuLocationData* unwindData )
                 continue;
             }
 
-            UTILS_DEBUG( "Handle wrapper: region on stack %s@[%p,%p)",
+            UTILS_DEBUG( "Handle wrapper: region on stack %s@[%#" PRIx64 ",%#" PRIx64 ")",
                          region->name,
                          region->start,
                          region->end );
@@ -1153,7 +1156,7 @@ scorep_unwinding_cpu_push_wrapper( SCOREP_Unwinding_CpuLocationData* unwindData,
         return;
     }
 
-    UTILS_DEBUG_ENTRY( "%p regionHandle=%u[%s] %" PRIu64 " %zu",
+    UTILS_DEBUG_ENTRY( "%p regionHandle=%u[%s] %#" PRIx64 " %zu",
                        unwindData->location, regionHandle,
                        SCOREP_RegionHandle_GetName( regionHandle ),
                        wrapperIp, framesToSkip );
@@ -1261,7 +1264,7 @@ scorep_unwinding_cpu_pop_wrapper( SCOREP_Unwinding_CpuLocationData* unwindData,
 
     scorep_unwinding_unhandled_wrapper* top_wrapper = unwindData->unhandled_wrappers;
     unwindData->unhandled_wrappers = top_wrapper->next;
-    UTILS_DEBUG( "%p top => %u[%s] %p",
+    UTILS_DEBUG( "%p top => %u[%s] %#" PRIx64,
                  unwindData->location, top_wrapper->wrappee_handle,
                  SCOREP_RegionHandle_GetName( top_wrapper->wrappee_handle ),
                  top_wrapper->wrapper_ip );
