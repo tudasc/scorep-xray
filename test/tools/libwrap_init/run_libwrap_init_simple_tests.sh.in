@@ -187,7 +187,7 @@ if [ "$run_binaries" = true ]; then
         "cd wrapper-lib-c"                                                            \
         "LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main"                \
         "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
-        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped; fi"
 fi
 
 # ### multi lib with dependencies ###
@@ -232,7 +232,7 @@ if [ "$run_binaries" = true ]; then
         "cd wrapper-lib-cdeps"                    \
         "LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main" \
         "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
-        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cdeps/lib:../target-lib-c/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped; fi"
 fi
 
 test_expect_success_all "cdeps: uninstall and clean target library and wrapper" \
@@ -320,7 +320,7 @@ if [ "$mpi_support" = true ]; then
             "cd wrapper-lib-mpi"                                                                       \
             "LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main"              \
             "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_linktime_wrapped; fi" \
-            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_runtime_wrapped || ! $libtool_shared; fi"
+            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-mpi/lib:\$LD_LIBRARY_PATH mpirun -np 2 ./main_runtime_wrapped; fi"
     fi
 
     test_expect_success_all "mpi:   uninstall and clean target library and wrapper" \
@@ -374,7 +374,7 @@ if [ "$shmem_support" = true ]; then
             "cd wrapper-lib-shmem"                                                          \
             "LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main" \
             "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main_linktime_wrapped; fi" \
-            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main_runtime_wrapped || ! $libtool_shared; fi"
+            "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-shmem/lib:\$LD_LIBRARY_PATH oshrun -np 2 ./main_runtime_wrapped; fi"
     fi
 
     test_expect_success_all "shmem: uninstall and clean shmem-based target and wrapper library" \
@@ -487,7 +487,7 @@ if [ "$run_binaries" = true ]; then
         "cd wrapper-lib-cc"                                             \
         "LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main" \
         "if [ "$linktime_support" = true ]; then LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main_linktime_wrapped; fi" \
-        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped || ! $libtool_shared; fi"
+        "if [ "$runtime_support"  = true ]; then LD_LIBRARY_PATH=../target-lib-cc/lib:\$LD_LIBRARY_PATH ./main_runtime_wrapped; fi"
 fi
 
 test_expect_success_all "c++:   uninstall and clean target library and wrapper " \
