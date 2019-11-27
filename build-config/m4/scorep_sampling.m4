@@ -98,6 +98,11 @@ AS_IF([test "x${scorep_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+=", missing TLS support"])
 
+SCOREP_CHECK_SYSCALL([SYS_gettid],
+                     [],
+                     [scorep_unwinding_support=no
+                      scorep_unwinding_summary_reason+=", missing gettid() support"])
+
 # Covers: GNU, Intel, IBM, Cray, Clang
 scorep_return_address=0
 AS_IF([test "x${scorep_unwinding_support}" = "xyes"],

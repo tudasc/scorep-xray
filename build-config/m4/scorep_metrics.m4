@@ -237,74 +237,11 @@ AC_CHECK_DECLS([PERF_COUNT_HW_STALLED_CYCLES_FRONTEND,
                [], [], [[#include <linux/perf_event.h>]])
 
 ##
-## Check for syscall
+## Check for syscall perf_event_open
 ##
-has_syscall_support="yes"
-AC_CHECK_HEADERS([unistd.h sys/syscall.h],
-                 [],
-                 [has_syscall_support="no"])
-AS_IF([test "x${has_syscall_support}" = "xyes"],
-      [AC_CHECK_DECL([syscall],[],[],[[
-        #include <unistd.h>
-        #include <sys/syscall.h>
-      ]])])
-AS_IF([test "x${has_syscall_support}" = "xyes"],
-      [AC_CHECK_FUNC([syscall],
-                     [],
-                     [has_syscall_support="no"])])
-## (1) Try to link 'int syscall( int, ...)'
-## (2) If this fails, try to link 'long int syscall( long int, ...)'
-AS_IF([test "x${has_syscall_support}" = "xyes"],
-      [AC_MSG_CHECKING([for 'int syscall( int, ...)'])
-       AC_LINK_IFELSE([AC_LANG_SOURCE([
-                        #include <unistd.h>
-                        #include <sys/syscall.h>
-
-                        #if !HAVE_DECL_syscall
-                        int syscall(int number, ...);
-                        #endif
-
-                        int main()
-                        {
-                            int result = syscall(0);
-                            return 0;
-                        }
-                      ])],
-                      [AC_MSG_RESULT([yes])],
-                      [AC_MSG_RESULT([no])
-                       AC_MSG_CHECKING([for 'long int syscall( long int, ...)'])
-                       AC_LINK_IFELSE([AC_LANG_SOURCE([
-                                        #include <unistd.h>
-                                        #include <sys/syscall.h>
-
-                                        #if !HAVE_DECL_syscall
-                                        long int syscall(long int number, ...);
-                                        #endif
-
-                                        int main()
-                                        {
-                                            int result = syscall(0);
-                                            return 0;
-                                        }
-                                      ])],
-                                      [AC_MSG_RESULT([yes])],
-                                      [AC_MSG_RESULT([no])
-                                       has_syscall_support="no"])],
-                      [has_syscall_support="no"])])
-AS_IF([test "x${has_syscall_support}" = "xyes"],
-      [AC_MSG_CHECKING([for __NR_perf_event_open])
-       AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-                                            #include <unistd.h>
-                                            #include <sys/syscall.h>
-                                          ]],
-                                          [[
-                                            #ifndef __NR_perf_event_open
-                                            #oops__NR_perf_event_open_not_found
-                                            #endif
-                                          ]])],
-                         [AC_MSG_RESULT([yes])],
-                         [AC_MSG_RESULT([no])
-                          has_syscall_support="no"])])
+SCOREP_CHECK_SYSCALL([__NR_perf_event_open],
+                     [has_syscall_perf_event_open="yes"],
+                     [has_syscall_perf_event_open="no"])
 
 ##
 ## Check for ioctl
@@ -348,16 +285,16 @@ AM_COND_IF([HAVE_CLOSE],
 
 scorep_have_perf_support="no"
 metric_perf_summary_reason=
-AS_IF([test "x${has_metric_perf_headers}" = "xyes" &&
-       test "x${has_syscall_support}"     = "xyes" &&
-       test "x${has_ioctl_support}"       = "xyes" &&
-       test "x${has_posix_functions}"     = "xyes" ], [
+AS_IF([test "x${has_metric_perf_headers}"     = "xyes" &&
+       test "x${has_syscall_perf_event_open}" = "xyes" &&
+       test "x${has_ioctl_support}"           = "xyes" &&
+       test "x${has_posix_functions}"         = "xyes" ], [
     AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
           [metric_perf_summary_reason=", not supported on BG/Q"],
           [scorep_have_perf_support="yes"])
 ])
 AS_UNSET([has_metric_perf_headers])
-AS_UNSET([has_syscall_support])
+AS_UNSET([has_syscall_perf_event_open])
 AS_UNSET([has_ioctl_support])
 AS_UNSET([has_posix_functions])
 
