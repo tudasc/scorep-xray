@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -337,21 +337,20 @@ AM_COND_IF([HAVE_CLOSE],
            [has_posix_functions="no"])
 
 ac_scorep_have_perf="no"
+metric_perf_summary_reason=
 if    test "x${has_metric_perf_headers}" = "xyes" \
    && test "x${has_syscall_support}" = "xyes"     \
    && test "x${has_ioctl_support}" = "xyes"       \
    && test "x${has_posix_functions}" = "xyes"; then
-    ac_scorep_have_perf="yes"
+    AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
+          [metric_perf_summary_reason=", not supported on BG/Q"],
+          [ac_scorep_have_perf="yes"])
 fi
 
 AC_SCOREP_COND_HAVE([METRIC_PERF],
-                    [test "x${ac_scorep_have_perf}" = "xyes" && \
-                     test "x${ac_scorep_platform}" != "xbgq"],
-                    [Defined if metric perf support is available.],
-                    [metric_perf_summary="yes"],
-                    [AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
-                           [metric_perf_summary="no, not supported on BG/Q"]
-                           [metric_perf_summary="no"])])
+                    [test "x${ac_scorep_have_perf}" = "xyes"],
+                    [Defined if metric perf support is available.])
 
-AFS_SUMMARY([metric perf support], [${metric_perf_summary}])
+AFS_SUMMARY([metric perf support], [${ac_scorep_have_perf}${metric_perf_summary_reason}])
+AS_UNSET([metric_perf_summary_reason])
 ])
