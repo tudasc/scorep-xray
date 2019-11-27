@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2017,
+## Copyright (c) 2009-2012, 2014-2017, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -82,8 +82,8 @@ AFS_SUMMARY_PUSH
 AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_GNU_SOURCE])
 
 # check that we have at least one interrupt generator
-AS_IF([test "x${ac_scorep_have_papi}" = "xyes" ||
-       test "x${ac_scorep_have_perf}" = "xyes" ||
+AS_IF([test "x${scorep_have_papi_support}" = "xyes" ||
+       test "x${scorep_have_perf_support}" = "xyes" ||
        ( test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" && test "x${has_sampling_siginfo_t}" = "xyes" )],
       [have_interrupt_generators=yes],
       [have_interrupt_generators=no])
