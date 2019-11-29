@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015, 2017,
+## Copyright (c) 2009-2011, 2015, 2017, 2019,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -85,21 +85,6 @@ beautify-clean:
 
 endif # HAVE_UNCRUSTIFY
 endif # SVN_CONTROLLED
-                                                                             ##
-                                                                             ##
-###############################################################################
-
-
-###############################################################################
-## bitten targets, intended to be used from bitten only
-##
-
-bitten-copy-tarball-to-prefix: $(distdir).tar.gz
-	$(MKDIR_P) $(DESTDIR)$(prefix)
-	$(INSTALL_DATA) $(distdir).tar.gz $(DESTDIR)$(prefix)/$(PACKAGE)-latest.tar.gz
-
-bitten-print-environment:
-	env
                                                                              ##
                                                                              ##
 ###############################################################################
