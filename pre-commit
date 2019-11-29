@@ -26,7 +26,7 @@
 #     pre-commit.tmpl in the same directory
 #
 # AUTHORS
-#     Christian Roessel <c.roessel@fz-juelich.de>
+#     Christian Feld <c.feld@fz-juelich.de>
 #     Markus Geimer <m.geimer@fz.juelich.de>
 
 REPOS="$1"
@@ -101,7 +101,8 @@ if [ -s $COMMIT_CANDIDATES ]; then
 
         # Only check common source code files
         case "$cand" in
-        (*.c | *.h | *.cpp | *.hpp) : accept ;;
+        (*.c | *.h | *.cc | *.hh | *.cpp | *.hpp | *.java) : accept ;;
+        (*.c.in | *.h.in | *.cc.in | *.hh.in | *.cpp.in | *.hpp.in | *.java.in) : accept ;;
         (*) continue ;;
         esac
 
