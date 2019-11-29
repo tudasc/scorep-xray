@@ -101,11 +101,11 @@ if [ ! -f "$BEAUTIFY_CONFIG" ]; then
 fi
 
 # Check for matching beautifier/config version
-exe_version=$($BEAUTIFY --version)
-cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | sed -e 's/^# *//')
+exe_version=$($BEAUTIFY --version | tr '[a-z]' '[A-Z]' | sed -e 's/UNCRUSTIFY *//')
+cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | tr '[a-z]' '[A-Z]' | sed -e 's/^# *UNCRUSTIFY *//')
 if [ "$exe_version" != "$cfg_version" ]; then
-    echo "Beautifying aborted: Configuration file expects '$cfgversion',"
-    echo "                     but found beautifier '$exe_version'."
+    echo "Beautifying aborted: Configuration file expects v$cfgversion,"
+    echo "                     but found beautifier v$exe_version."
     exit 1
 fi
 
