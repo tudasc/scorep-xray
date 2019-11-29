@@ -23,7 +23,8 @@
 #     Call beautify from anywhere in your svn working copy.
 #
 # AUTHOR
-#     Christian Roessel <c.roessel@fz-juelich.de>
+#     Christian Feld <c.feld@fz-juelich.de>
+#     Markus Geimer <m.geimer@fz-juelich.de>
 
 AWK=awk
 BEAUTIFY=uncrustify
@@ -96,6 +97,15 @@ fi
 if [ ! -f "$BEAUTIFY_CONFIG" ]; then
     echo "Beautifying aborted: Can't find file \"$BEAUTIFY_CONFIG\" under"
     echo "                     \"`pwd`/\"."
+    exit 1
+fi
+
+# Check for matching beautifier/config version
+exe_version=$($BEAUTIFY --version)
+cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | sed -e 's/^# *//')
+if [ "$exe_version" != "$cfg_version" ]; then
+    echo "Beautifying aborted: Configuration file expects '$cfgversion',"
+    echo "                     but found beautifier '$exe_version'."
     exit 1
 fi
 
