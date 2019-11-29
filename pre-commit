@@ -27,7 +27,7 @@
 #
 # AUTHORS
 #     Christian Feld <c.feld@fz-juelich.de>
-#     Markus Geimer <m.geimer@fz.juelich.de>
+#     Markus Geimer <m.geimer@fz-juelich.de>
 
 REPOS="$1"
 TXN="$2"
