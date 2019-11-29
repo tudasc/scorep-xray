@@ -102,6 +102,18 @@ check_is_fork( SCOREP_Unwinding_CpuLocationData* unwindData,
     return unwindData->start_ip_of_fork == region->start;
 }
 
+/** ASCII/"C"-locale only tolower */
+static int
+ascii_tolower( int ch )
+{
+    if ( ( ch >= 65 ) && ( ch <= 90 ) )
+    {
+        /* its upper case, set bit to make it lower */
+        return ch | 0x20;
+    }
+    return ch;
+}
+
 /** Check if @a prefix (in lower case) is a prefix of @a str.
  */
 static bool
@@ -109,7 +121,7 @@ has_prefix_icase( const char* prefix, const char* str )
 {
     while ( *prefix && *str )
     {
-        if ( *prefix++ != tolower( *str++ ) )
+        if ( *prefix++ != ascii_tolower( *str++ ) )
         {
             return false;
         }
