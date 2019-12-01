@@ -137,4 +137,25 @@ SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clEnqueueSVMMap,                
 SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clEnqueueSVMUnmap,                          ( cl_command_queue, void *, cl_uint, const cl_event *, cl_event * ) )
 #endif
 
+/*
+ * OpenCL API Version 2.1 Routines
+ */
+#if HAVE( OPENCL_VERSION_2_1_SUPPORT )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clGetKernelSubGroupInfo,                    ( cl_kernel, cl_device_id, cl_kernel_sub_group_info, size_t, const void *, size_t, void *, size_t * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_program,         clCreateProgramWithIL,                      ( cl_context, const void *, size_t, cl_int * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clGetHostTimer,                             ( cl_device_id, cl_ulong * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clGetDeviceAndHostTimer,                    ( cl_device_id, cl_ulong *, cl_ulong * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clEnqueueSVMMigrateMem,                     ( cl_command_queue, cl_uint, const void **, const size_t *, cl_mem_migration_flags, cl_uint, const cl_event *, cl_event * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_kernel,          clCloneKernel,                              ( cl_kernel, cl_int * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetDefaultDeviceCommandQueue,             ( cl_context, cl_device_id, cl_command_queue ) )
+#endif
+
+/*
+ * OpenCL API Version 2.2 Routines
+ */
+#if HAVE( OPENCL_VERSION_2_2_SUPPORT )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetProgramSpecializationConstant,         ( cl_program, cl_uint, size_t, const void * ) )
+SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetProgramReleaseCallback,                ( cl_program, void (CL_CALLBACK*)(cl_program, void * ), void * ) )
+#endif
+
 #undef SCOREP_OPENCL_PROCESS_FUNC

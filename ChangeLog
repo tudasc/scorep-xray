@@ -4,6 +4,8 @@ Major features:
 
 Features and improvements:
 
+- Added support for recording calls to OpenCL 2.1/2.2 functions.
+
 Bugfixes:
 
 ------------------- Released version 6.0 -----------------------------
