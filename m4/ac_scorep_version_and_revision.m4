@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2014, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -42,29 +42,16 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 # are provided.
 
 component_revision="invalid"
-common_revision="invalid"
-which svnversion 2>&1 >/dev/null
-AS_IF([test $? -eq 0],
-      [component_revision=`svnversion -c $srcdir | cut -d ':' -f 2`
-       common_revision=`svnversion -c $srcdir/vendor/common | cut -d ':' -f 2`
-       # If we are in a working copy, update the REVISION* files.
-       AS_IF([test "x$component_revision" != "xexported" && \
-              test "x$component_revision" != "xUnversioned directory"],
-             [echo $component_revision > $srcdir/build-config/REVISION])
-       AS_IF([test "x$common_revision" != "xexported" && \
-              test "x$component_revision" != "xUnversioned directory"],
-             [echo $common_revision > $srcdir/build-config/REVISION_COMMON])])
+AS_IF([component_revision=`git -C ${srcdir} describe --always --dirty --exclude '*' 2>/dev/null`],
+      [echo "$component_revision" >$srcdir/build-config/REVISION],
+      [component_revision=external])
 
-# Warn if the REVISION* files contain anything but plain numbers.
-AS_IF([grep -E [[A-Z]] $srcdir/build-config/REVISION > /dev/null || \
-       grep ":" $srcdir/build-config/REVISION > /dev/null || \
-       grep -E [[A-Z]] $srcdir/build-config/REVISION_COMMON > /dev/null || \
-       grep ":" $srcdir/build-config/REVISION_COMMON > /dev/null],
-      [component_revision=`cat $srcdir/build-config/REVISION`
-       common_revision=`cat $srcdir/build-config/REVISION_COMMON`
-       AC_MSG_WARN([distribution does not match a single, unmodified revision, but $component_revision (${PACKAGE_NAME}) and $common_revision (common).])])
+# Warn if the REVISION files contain -dirty prefix or is external.
+AS_CASE([`cat $srcdir/build-config/REVISION`],
+        [*-dirty|external|invalid],
+        [component_revision=`cat $srcdir/build-config/REVISION`
+         AC_MSG_WARN([distribution does not match a single, unmodified revision, but $component_revision.])])
 ])
-
 
 AC_DEFUN([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION],
 [
@@ -90,14 +77,9 @@ AC_DEFUN([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION],
 
 AC_DEFUN([AC_SCOREP_DEFINE_REVISIONS],
 [
-    for i in REVISION REVISION_COMMON; do
-        if test ! -e ${srcdir}/../build-config/${i}; then
-            AC_MSG_ERROR([File ${srcdir}/../build-config/${i} must exist.])
-        fi
-    done
+    AS_IF([test ! -e ${srcdir}/../build-config/REVISION],
+          [AC_MSG_ERROR([File ${srcdir}/../build-config/REVISION must exist.])])
 
     component_revision=`cat ${srcdir}/../build-config/REVISION`
-    common_revision=`cat ${srcdir}/../build-config/REVISION_COMMON`
     AC_DEFINE_UNQUOTED([SCOREP_COMPONENT_REVISION], ["${component_revision}"], [Revision of ]AC_PACKAGE_NAME)
-    AC_DEFINE_UNQUOTED([SCOREP_COMMON_REVISION],    ["${common_revision}"], [Revision of common repository])
 ])
