@@ -1,0 +1,19 @@
+## -*- mode: makefile -*-
+
+noinst_LTLIBRARIES += libutils_exception.la
+libutils_exception_la_SOURCES = \
+    $(SRC_ROOT)common/utils/src/exception/UTILS_Debug.c \
+    $(SRC_ROOT)common/utils/src/exception/UTILS_Error.c \
+    $(SRC_ROOT)common/utils/src/exception/normalize_file.h \
+    $(SRC_ROOT)common/utils/include/UTILS_Debug.h \
+    $(SRC_ROOT)common/utils/include/UTILS_DebugStream.hpp \
+    $(SRC_ROOT)common/utils/include/UTILS_Error.h \
+    $(SRC_ROOT)common/utils/include/UTILS_Portability.h
+libutils_exception_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PACKAGE_ERROR_CODES_INCDIR) \
+    -I$(INC_DIR_COMMON_UTILS)
+
+EXTRA_DIST += \
+    $(SRC_ROOT)common/utils/src/exception/ErrorCodes.tmpl.h \
+    $(SRC_ROOT)common/utils/src/exception/finalize_error_codes.sh
