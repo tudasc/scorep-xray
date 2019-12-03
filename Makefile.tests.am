@@ -46,9 +46,9 @@
 
 TEST_EXTENSIONS = .login .compute .compute_mpi
 
-LOGIN_LOG_COMPILER       = $(srcdir)/../vendor/common/build-config/test-runner-plain.sh
-COMPUTE_LOG_COMPILER     = $(srcdir)/../vendor/common/build-config/test-runner-plain.sh
-COMPUTE_MPI_LOG_COMPILER = $(srcdir)/../vendor/common/build-config/test-runner-mpi.sh
+LOGIN_LOG_COMPILER       = $(srcdir)/../build-config/common/test-runner-plain.sh
+COMPUTE_LOG_COMPILER     = $(srcdir)/../build-config/common/test-runner-plain.sh
+COMPUTE_MPI_LOG_COMPILER = $(srcdir)/../build-config/common/test-runner-mpi.sh
 
 if !BACKEND_TEST_RUNS
 

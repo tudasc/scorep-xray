@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file  vendor/common/build-config/common.am
+## file  build-config/common/common.am
 ##       Intended to be included by the component's
 ##       build-includes/common.am. Defines "common" entities that all
 ##       components rely on.
@@ -68,13 +68,13 @@ INC_ROOT = $(srcdir)/../
 PUBLIC_INC_DIR = $(INC_ROOT)include
 
 # The include path to the common utils headers.
-INC_DIR_COMMON_UTILS = $(INC_ROOT)vendor/common/src/utils/include
+INC_DIR_COMMON_UTILS = $(INC_ROOT)common/utils/include
 
 ##  Where to find the Jenkins' hash headers.
-INC_DIR_COMMON_HASH = $(INC_ROOT)vendor/common/hash
+INC_DIR_COMMON_HASH = $(INC_ROOT)common/hash
 
 ##  Where to find the Jenkins' hash headers.
-INC_DIR_COMMON_CUTEST = $(INC_ROOT)vendor/common/cutest
+INC_DIR_COMMON_CUTEST = $(INC_ROOT)common/utils/test/cutest
 
 ## Not really needed but already in use.
 LIB_ROOT =
@@ -124,6 +124,6 @@ check-build: $(BUILT_SOURCES) all-am $(check_PROGRAMS) $(check_LTLIBRARIES)
 
 DISTCLEANFILES += $(builddir)/config.summary
 
-# this propagates changes to vendor/common/build-config/config-common.h
-../src/config-common.h: $(srcdir)/../vendor/common/build-config/config-common.h
+# this propagates changes to build-config/common/config-common.h
+../src/config-common.h: $(srcdir)/../build-config/common/config-common.h
 	@$(am__cd) .. && $(MAKE) $(AM_MAKEFLAGS) src/config-common.h

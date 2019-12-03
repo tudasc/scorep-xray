@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file  vendor/common/build-config/Makefile.tests-mpi.inc.am
+## file  build-config/common/Makefile.tests-mpi.inc.am
 ##       Intended to be included by the component's
 ##       build-(front|back|mpi)end/Makefile.am. Defines targets and
 ##       variablec for OpenMP tests.

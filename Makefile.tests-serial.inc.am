@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file  vendor/common/build-config/Makefile.tests-serial.inc.am
+## file  build-config/common/Makefile.tests-serial.inc.am
 ##       Intended to be included by the component's
 ##       build-(front|back|mpi)end/Makefile.am. Defines targets and
 ##       variablec for OpenMP tests.

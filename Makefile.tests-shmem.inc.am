@@ -14,7 +14,7 @@
 ## directory for details.
 ##
 
-## file  vendor/common/build-config/Makefile.tests-shmem.inc.am
+## file  build-config/common/Makefile.tests-shmem.inc.am
 ##
 
 

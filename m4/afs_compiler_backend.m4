@@ -57,7 +57,7 @@ m4_set_add([afs_relevant_build_variables_set], [CPPFLAGS])
 m4_set_add([afs_relevant_build_variables_set], [LDFLAGS])
 m4_set_add([afs_relevant_build_variables_set], [LIBS])
 
-afs_compiler_files="$srcdir/vendor/common/build-config/platforms/backend-"
+afs_compiler_files="$srcdir/build-config/common/platforms/backend-"
 
 # clear all variables
 m4_foreach([afs_tmp_var],
@@ -260,7 +260,7 @@ AC_DEFUN([AFS_CUSTOM_COMPILERS],
 
     AC_ARG_WITH([custom-compilers],
         [AS_HELP_STRING([--with-custom-compilers],
-             [Customize compiler settings by 1. copying the files <srcdir>/vendor/common/build-config/platforms/platform-*-user-provided to the directory where you run configure <builddir>, 2. editing those files to your needs, and 3. running configure. Alternatively, edit the files under <srcdir> directly. Files in <builddir> take precedence. You are entering unsupported terrain. Namaste, and good luck!])
+             [Customize compiler settings by 1. copying the files <srcdir>/build-config/common/platforms/platform-*-user-provided to the directory where you run configure <builddir>, 2. editing those files to your needs, and 3. running configure. Alternatively, edit the files under <srcdir> directly. Files in <builddir> take precedence. You are entering unsupported terrain. Namaste, and good luck!])
         ],
         [afs_custom_compilers_given="yes"
          AS_CASE([${withval}],
@@ -291,7 +291,7 @@ dnl ----------------------------------------------------------------------------
 # -----------------------------------
 # Use AFS_COMPILER_FILES_* as alias for $srcdir/[vendor/common/]build-config/platforms
 # for setting paths to compiler files.
-m4_define([AFS_COMPILER_FILES_COMMON], [$srcdir/vendor/common/build-config/platforms])
+m4_define([AFS_COMPILER_FILES_COMMON], [$srcdir/build-config/common/platforms])
 m4_define([AFS_COMPILER_FILES_PACKAGE], [$srcdir/build-config/platforms])
 
 dnl ----------------------------------------------------------------------------

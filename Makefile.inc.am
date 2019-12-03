@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       vendor/common/build-config/Makefile.inc.am
+## file       build-config/common/Makefile.inc.am
 
 EXTRA_DIST =
 BUILT_SOURCES =
@@ -37,15 +37,15 @@ CLEANFILES =
 DISTCLEANFILES =
 
 # Testing framework
-EXTRA_DIST += $(srcdir)/vendor/common/build-config/generate-config-backend-for-frontend.sh \
-              $(srcdir)/vendor/common/build-config/generate-library-dependencies.sh \
-              $(srcdir)/vendor/common/build-config/generate-library-dependencies-la-object.hpp \
-              $(srcdir)/vendor/common/build-config/generate-library-version.sh \
-              $(srcdir)/vendor/common/build-config/generate-package-version.sh \
-              $(srcdir)/vendor/common/cutest/CuTest.c \
-              $(srcdir)/vendor/common/cutest/CuTest.h \
-              $(srcdir)/vendor/common/cutest/license.txt \
-              $(srcdir)/vendor/common/cutest/README.txt
+EXTRA_DIST += $(srcdir)/build-config/common/generate-config-backend-for-frontend.sh \
+              $(srcdir)/build-config/common/generate-library-dependencies.sh \
+              $(srcdir)/build-config/common/generate-library-dependencies-la-object.hpp \
+              $(srcdir)/build-config/common/generate-library-version.sh \
+              $(srcdir)/build-config/common/generate-package-version.sh \
+              $(srcdir)/common/utils/test/cutest/CuTest.c \
+              $(srcdir)/common/utils/test/cutest/CuTest.h \
+              $(srcdir)/common/utils/test/cutest/license.txt \
+              $(srcdir)/common/utils/test/cutest/README.txt
 
 DISTCLEANFILES += $(builddir)/config.summary
 DISTCLEANFILES += $(builddir)/@PACKAGE@.summary
@@ -77,7 +77,7 @@ if SVN_CONTROLLED
 if HAVE_UNCRUSTIFY
 
 beautify-sp:
-	@$(am__cd) $(srcdir) && ./vendor/common/beautifier/beautify
+	@$(am__cd) $(srcdir) && ./common/beautifier/beautify
 beautify: beautify-recursive
 SCOREP_RECURSIVE_TARGETS += beautify-recursive
 
