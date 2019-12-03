@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -78,9 +78,9 @@ AS_IF([test "x${with_$1}" != "xno"],
                # get 'age'
                $1_provided_age=`echo ${interface_version} | awk -F ":" '{print $[]3}'`
               AS_IF([test ${$1_max_provided_interface_version} -eq 0 && test ${$1_provided_age} -eq 0],
-                  [# by convention, trunk is 0:0:0
-                   AC_MSG_WARN([external $1 built from trunk, version checks disabled, might produce compile and link errors.])
-                   AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin} (built from trunk, version checks disabled, might produce compile and link errors.)])],
+                  [# by convention, master is 0:0:0
+                   AC_MSG_WARN([external $1 built from master, version checks disabled, might produce compile and link errors.])
+                   AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin} (built from master, version checks disabled, might produce compile and link errors.)])],
                   [# calc 'current - age'
                    AS_VAR_ARITH([$1_min_provided_interface_version], [${$1_max_provided_interface_version} - ${$1_provided_age}])
                    # this is the version check:
