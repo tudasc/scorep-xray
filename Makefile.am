@@ -117,7 +117,7 @@ install-data-hook:
 
 uninstall-hook: doxygen-uninstall common-uninstall
 
-dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-generate
+dist-hook: doc/doxygen-user/main.dox doxygen-user-generate
 
 clean-local: doxygen-user-clean
 
