@@ -1,0 +1,73 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2013-2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## Parallel Testing Framework
+## --------------------------
+## The possibility of defining custom test runners for automake's parallel
+## test harness can be used to simplify execution of tests in a parallel
+## context.  Here, we define three custom file extensions for tests:
+##     .login          for testing code on the login node
+##     .compute        for testing code on the compute node
+##     .compute_mpi    for testing code on the compute node in an MPI context
+##
+## Depending on the file extension of a test executable specified in the
+## TESTS variable, an appropriate test runner is automatically chosen.  It
+## then executes the test using a default number of OpenMP threads and/or
+## MPI processes (see the corresponding shell scripts for details and how
+## to overwrite the defaults).  Tests for compute nodes are only executed
+## if '--enable-backend-test-runs' was provided to configure.  Otherwise,
+## they are skipped and automake's test harness is notified accordingly.
+##
+## Requirements:
+##     - Automake needs to be initialized with the 'parallel-tests' option.
+##     - The automake conditional 'BACKEND_TEST_RUNS' needs to be defined
+##       (either by using AC_SCOREP_BACKEND_TEST_RUNS or by manual definition).
+##     - If a list of skipped tests should be generated, let your 'check-local'
+##       rule depend on the 'skipped_tests' target.
+##
+## NOTE:
+##     Tests need to have a unique prefix, i.e., it is not possible to have
+##     a plain test called 'foo' and, for example, a test 'foo.compute' using
+##     the custom test runner listed in the same TESTS variable.  In this case,
+##     only one of the two tests will be executed!
+
+TEST_EXTENSIONS = .login .compute .compute_mpi
+
+LOGIN_LOG_COMPILER       = $(srcdir)/../build-config/common/test-runner-plain.sh
+COMPUTE_LOG_COMPILER     = $(srcdir)/../build-config/common/test-runner-plain.sh
+COMPUTE_MPI_LOG_COMPILER = $(srcdir)/../build-config/common/test-runner-mpi.sh
+
+if !BACKEND_TEST_RUNS
+
+AM_COMPUTE_LOG_FLAGS     = --skip
+AM_COMPUTE_MPI_LOG_FLAGS = --skip
+
+endif !BACKEND_TEST_RUNS
+
+CLEANFILES += \
+    skipped_tests
+skipped_tests: $(TEST_SUITE_LOG)
+	@$(am__tty_colors);                                                                            \
+	grep '^##EXEC## ' $(TEST_SUITE_LOG) | sed 's/##EXEC## //' > $@;                                \
+	skip=`cat $@ | wc -l`;                                                                         \
+	if test $$skip -gt 0; then                                                                     \
+	  echo "$${blu}=============================================================================$${std}"; \
+	  echo "$${blu}The file 'skipped_tests' contains a list of all tests that have been skipped.$${std}"; \
+	  echo "$${blu}Either re-configure using the '--enable-backend-test-runs' option if backend$${std}";  \
+	  echo "$${blu}executables can be executed directly (using 'mpiexec' if necessary) or run$${std}";    \
+	  echo "$${blu}them manually using appropriate launchers/batch scripts.$${std}";                      \
+	  echo "$${blu}=============================================================================$${std}"; \
+	fi

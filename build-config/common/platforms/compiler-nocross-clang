@@ -1,0 +1,12 @@
+CC=clang
+CXX=clang++
+F77=flang
+FC=flang
+
+#CPPFLAGS=
+#CFLAGS=
+#CXXFLAGS=
+#FFLAGS=
+#FCFLAGS=
+#LDFLAGS=
+#LIBS=
