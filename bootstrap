@@ -49,7 +49,7 @@ build-backend/configure: configure
 	@: >src/config-backend-for-frontend.h.in
 	cd build-backend; $(AUTORECONF) --install $(AUTORECONFFLAGS)
 	@echo "scorep-autoheader: \`src/config-backend-for-frontend.h.in' is created"; \
-            vendor/common/build-config/generate-config-backend-for-frontend.sh \
+            build-config/common/generate-config-backend-for-frontend.sh \
                 src/config-backend.h.in \
                 >src/config-backend-for-frontend.h.in
 

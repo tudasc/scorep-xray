@@ -30,7 +30,7 @@ include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am
 include ../src/services/sampling/Makefile.inc.am
 include ../src/services/unwinding/Makefile.inc.am
-include ../vendor/common/hash/Makefile.inc.am
+include ../common/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
 include ../src/tools/instrumenter/Makefile.backend-only.inc.am
 include ../src/tools/config/Makefile.la_dependencies.inc.am

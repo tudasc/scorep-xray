@@ -28,7 +28,7 @@ dnl directory for details.
 dnl
 
 AC_PREREQ([2.69])
-AC_INIT([Score-P], m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION]), [support@score-p.org], [scorep])
+AC_INIT([Score-P], m4_esyscmd([build-config/common/generate-package-version.sh build-config/VERSION]), [support@score-p.org], [scorep])
 
 AFS_PACKAGE_INIT
 AFS_SUMMARY_INIT
@@ -45,7 +45,7 @@ SCOREP_TOPLEVEL_ARGS
 ## in this directory.
 AC_CONFIG_AUX_DIR([build-config])
 ## See also ACLOCAL_AMFLAGS in Makefile.am.
-AC_CONFIG_MACRO_DIRS([build-config/m4 vendor/common/build-config/m4])
+AC_CONFIG_MACRO_DIRS([build-config/m4 build-config/common/m4])
 
 ## Set the default installation prefix to /opt/scorep instead of /usr/local
 AC_PREFIX_DEFAULT([/opt/scorep])
@@ -127,14 +127,14 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
 
        AS_IF([test -f ${ac_scorep_compilers_shmem}],
              [# determine arguments for subdir configures with handling SHMEM compiler
-              args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
+              args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk \
                      ${ac_scorep_compilers_mpi}                                       \
                      ${ac_scorep_compilers_shmem}                                     \
                      ${ac_scorep_compilers_frontend}                                  \
                      ${ac_scorep_compilers_backend}                                   \
                      user_provided_configure_args`"],
              [# determine arguments for subdir configures without handling SHMEM compiler
-              args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
+              args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk \
                      ${ac_scorep_compilers_mpi}                                       \
                      ${ac_scorep_compilers_frontend}                                  \
                      ${ac_scorep_compilers_backend}                                   \
@@ -143,7 +143,7 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
       ],
       [AC_MSG_NOTICE([platform data provided by toplevel configure.])
        # determine arguments for subdir configures
-       args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
+       args="`${AWK} -f $srcdir/build-config/common/process_arguments.awk \
               user_provided_configure_args`"
        AS_IF([test $? -ne 0], [AC_MSG_ERROR([cannot process provided arguments. Please contact <AC_PACKAGE_BUGREPORT> and provide the above output. Thanks.])])
       ])
@@ -199,14 +199,14 @@ AS_IF([test -n "${scorep_cubew_config_bin}" && \
 
 # handle external package's subdir configures
 
-user_args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk user_provided_configure_args`"
+user_args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk user_provided_configure_args`"
 AS_IF([test "x${scorep_have_cubew_config}" = xno],
     [AX_CONFIG_SUBDIR([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])])
 
 
 AC_SCOREP_HAVE_CONFIG_TOOL([cubelib],   [7])
 
-user_args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk user_provided_configure_args`"
+user_args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk user_provided_configure_args`"
 AS_IF([test "x${scorep_have_cubelib_config}" = xno],
     [AX_CONFIG_SUBDIR([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])])
 
@@ -251,7 +251,7 @@ AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
 AM_CONDITIONAL([HAVE_SCOREP_SHMEM],
                [test "x${scorep_shmem_user_disabled}" != "xyes" && \
                 ( test "x${ac_scorep_platform}" = "xlinux" || \
-                  test -f "${srcdir}/vendor/common/build-config/platforms/platform-shmem-${ac_scorep_platform}" )])
+                  test -f "${srcdir}/build-config/common/platforms/platform-shmem-${ac_scorep_platform}" )])
 AM_COND_IF([HAVE_SCOREP_SHMEM],
     [AX_CONFIG_SUBDIR([build-shmem], [${args} ${backend_args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg}])
     ],
@@ -272,13 +272,13 @@ AC_SUBST([DOCDIR])
 
 AC_CONFIG_FILES([
     Makefile
-    src/config-common.h:vendor/common/build-config/config-common.h
+    src/config-common.h:build-config/common/config-common.h
 ])
 
 # generate the Score-P error codes header
 AC_CONFIG_FILES(
-    [src/utils/include/SCOREP_ErrorCodes.h:vendor/common/src/utils/exception/ErrorCodes.tmpl.h],
-    [$srcdir/vendor/common/src/utils/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_ErrorCodes.h src/utils/include/scorep_error_decls.gen.h])
+    [src/utils/include/SCOREP_ErrorCodes.h:common/utils/src/exception/ErrorCodes.tmpl.h],
+    [$srcdir/common/utils/src/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_ErrorCodes.h src/utils/include/scorep_error_decls.gen.h])
 
 # generate remapper specification file
 AC_CONFIG_FILES([share/scorep.spec])

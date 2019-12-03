@@ -49,39 +49,39 @@ test_scorep_config_ldadd    = $(serial_libadd)
 test_scorep_config_ldflags  = $(serial_ldflags)
 
 test_scorep_config_bool_SOURCES  = $(SRC_ROOT)test/measurement/config/bool.c \
-                                   $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                   $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_bool_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_bool_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_bool_LDFLAGS  = $(test_scorep_config_ldflags)
 
 test_scorep_config_number_SOURCES  = $(SRC_ROOT)test/measurement/config/number.c \
                                      $(SRC_ROOT)test/measurement/config/error_callback.c \
-                                     $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                     $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_number_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_number_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_number_LDFLAGS  = $(test_scorep_config_ldflags)
 
 test_scorep_config_size_SOURCES  = $(SRC_ROOT)test/measurement/config/size.c \
                                    $(SRC_ROOT)test/measurement/config/error_callback.c \
-                                   $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                   $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_size_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_size_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_size_LDFLAGS  = $(test_scorep_config_ldflags)
 
 test_scorep_config_string_SOURCES  = $(SRC_ROOT)test/measurement/config/string.c \
-                                     $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                     $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_string_LDFLAGS  = $(test_scorep_config_ldflags)
 
 test_scorep_config_bitset_SOURCES  = $(SRC_ROOT)test/measurement/config/bitset.c \
-                                     $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                     $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_bitset_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_bitset_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_bitset_LDFLAGS  = $(test_scorep_config_ldflags)
 
 test_scorep_config_optionset_SOURCES  = $(SRC_ROOT)test/measurement/config/optionset.c \
-                                        $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                                        $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 test_scorep_config_optionset_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_optionset_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_optionset_LDFLAGS  = $(test_scorep_config_ldflags)

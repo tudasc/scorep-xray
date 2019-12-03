@@ -34,8 +34,8 @@
 
 check_PROGRAMS              += unification_test
 unification_test_SOURCES =  $(SRC_ROOT)test/unification/unification_test.c \
-                            $(SRC_ROOT)vendor/common/cutest/CuTest.c       \
-                            $(SRC_ROOT)vendor/common/cutest/CuTest.h
+                            $(SRC_ROOT)common/utils/test/cutest/CuTest.c       \
+                            $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(PUBLIC_INC_DIR)                  \
                             -I$(INC_ROOT)src/measurement/include \

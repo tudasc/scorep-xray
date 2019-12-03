@@ -133,13 +133,13 @@ using the configure option:
 
 If a particular system requires to use compilers different to those
 Score-P currently supports, please edit the three files
-vendor/common/build-config/platforms/platform-*-user-provided to your
+build-config/common/platforms/platform-*-user-provided to your
 needs and use the following configure option:
 
   --with-custom-compilers
                Customize compiler settings by 1. copying the three
                files
-               <srcdir>/vendor/common/build-config/platforms/platform-*-user-provided
+               <srcdir>/build-config/common/platforms/platform-*-user-provided
                to the directory where you run configure <builddir>,
                2. editing those files to your needs, and 3. running
                configure. Alternatively, edit the files under <srcdir>

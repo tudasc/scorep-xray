@@ -45,7 +45,7 @@
 ## make dist. When creating a distribution, the developer should make sure
 ## that she has doxygen and related tools e.g. pdflatex in PATH in order to
 ## generate a complete documentation, see also
-## vendor/common/build-config/m4/ac_scorep_doxygen.m4.
+## build-config/common/m4/ac_scorep_doxygen.m4.
 ##
 ## make install is ignorant of documentation issues in developer mode.
 ##

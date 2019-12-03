@@ -35,7 +35,7 @@
 ##       that all build-* Makefiles rely on.
 
 
-include ../vendor/common/build-config/common.am
+include ../build-config/common/common.am
 
 ## Convenience variable for referencing public headers that will be
 ## installed. Use e.g. with the primary nobase_include_HEADERS

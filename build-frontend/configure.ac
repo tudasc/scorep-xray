@@ -28,16 +28,16 @@ dnl directory for details.
 dnl
 
 AC_PREREQ([2.69])
-AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
+AC_INIT([Score-P], m4_esyscmd([../build-config/common/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
 AFS_PACKAGE_BUILD_INIT([frontend])
 AFS_SUMMARY_INIT
 
-AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
+AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../build-config/common/generate-library-version.sh ../build-config/VERSION]))
 
 AC_CONFIG_AUX_DIR([../build-config])
 ## See also ACLOCAL_AMFLAGS in Makefile.am.
-AC_CONFIG_MACRO_DIRS([../build-config/m4 ../vendor/common/build-config/m4])
+AC_CONFIG_MACRO_DIRS([../build-config/m4 ../build-config/common/m4])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
 

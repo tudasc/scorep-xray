@@ -28,10 +28,10 @@ include ../src/utils/Makefile.inc.am
 include ../src/utils/filter/Makefile.inc.am
 include ../src/utils/vector/Makefile.inc.am
 include ../src/utils/hashtab/Makefile.inc.am
-include ../vendor/common/src/utils/cstr/Makefile.inc.am
-include ../vendor/common/src/utils/io/Makefile.inc.am
-include ../vendor/common/src/utils/exception/Makefile.inc.am
-include ../vendor/common/src/utils/Makefile.inc.am
+include ../common/utils/src/cstr/Makefile.inc.am
+include ../common/utils/src/io/Makefile.inc.am
+include ../common/utils/src/exception/Makefile.inc.am
+include ../common/utils/src/Makefile.inc.am
 
 ## include tests
 #include ../test/exception/Makefile.inc.am
@@ -40,5 +40,5 @@ include ../vendor/common/src/utils/Makefile.inc.am
 
 # the following two use SCOREP_TESTS which is TESTS_SERIAL in scorep
 # but build in otf2 where SCOREP_TESTS exists
-#include ../vendor/common/test/utils/io/Makefile.inc.am
-#include ../vendor/common/test/utils/exception/Makefile.inc.am
+#include ../common/utils/test/io/Makefile.inc.am
+#include ../common/utils/test/exception/Makefile.inc.am

@@ -57,7 +57,7 @@ scorep_config_CXXFLAGS = -DPKGLIBEXECDIR=\"$(pkglibexecdir)\" \
 
 scorep_config_CPPFLAGS = $(AM_CPPFLAGS) \
                          $(UTILS_CPPFLAGS) \
-                         -I$(INC_ROOT)vendor/common/build-config \
+                         -I$(INC_ROOT)build-config/common \
                          -I$(INC_ROOT)src/tools/lib
 
 SCOREP_CONFIG_LIBRARY_DEPS += $(LIB_DIR_SCOREP)../src/scorep_config_library_dependencies_backend_inc.hpp

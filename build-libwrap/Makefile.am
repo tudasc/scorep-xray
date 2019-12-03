@@ -17,7 +17,7 @@
 ## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
 ## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
 ## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
-ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
+ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../build-config/common/m4
 
 include ../build-includes/common.am
 
@@ -38,9 +38,9 @@ if HAVE_LIBRARY_WRAPPING_GENERATOR
 
 include ../src/tools/lib/Makefile.inc.am
 include ../src/utils/filter/Makefile.inc.am
-include ../vendor/common/src/utils/cstr/Makefile.inc.am
-include ../vendor/common/src/utils/io/Makefile.inc.am
-include ../vendor/common/src/utils/exception/Makefile.inc.am
-include ../vendor/common/src/utils/Makefile.inc.am
+include ../common/utils/src/cstr/Makefile.inc.am
+include ../common/utils/src/io/Makefile.inc.am
+include ../common/utils/src/exception/Makefile.inc.am
+include ../common/utils/src/Makefile.inc.am
 
 endif HAVE_LIBRARY_WRAPPING_GENERATOR

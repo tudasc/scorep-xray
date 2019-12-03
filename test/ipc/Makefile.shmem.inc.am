@@ -26,8 +26,8 @@ test_ipc_shmem_SOURCES = \
     $(SRC_ROOT)test/ipc/tests/ipc_send_recive.c  \
     $(SRC_ROOT)test/ipc/tests/ipc_tests.h        \
     $(SRC_ROOT)test/ipc/tests/ipc_test_utils.h   \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.c     \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.h
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c     \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 
 test_ipc_shmem_CPPFLAGS = \
     $(AM_CPPFLAGS)                         \

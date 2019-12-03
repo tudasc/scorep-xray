@@ -96,7 +96,7 @@ compile()
             -I${SRC_ROOT}/src/services/include \
             -I${SRC_ROOT}/include \
             -I${SRC_ROOT}/src/utils/include \
-            -I${SRC_ROOT}/vendor/common/src/utils/include \
+            -I${SRC_ROOT}/common/utils/include \
             -o test_cct_${1}
 }
 

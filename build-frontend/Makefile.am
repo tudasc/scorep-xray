@@ -35,11 +35,11 @@
 ## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
 ## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
 ## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
-ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
+ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../build-config/common/m4
 
 include ../build-includes/common.am
-include ../vendor/common/build-config/Makefile.tests-serial.inc.am
-#include ../vendor/common/build-config/Makefile.tests-omp.inc.am
+include ../build-config/common/Makefile.tests-serial.inc.am
+#include ../build-config/common/Makefile.tests-omp.inc.am
 check-run-omp:
 check-file-omp:
 

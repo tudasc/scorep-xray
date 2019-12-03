@@ -79,7 +79,7 @@ self_contained_scorep_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contain
 self_contained_scorep_types_c_CPPFLAGS = $(self_contained_cppflags)
 
 definitions_test_c_SOURCES  = $(SRC_ROOT)test/measurement/definitions_test.c \
-                              $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                              $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_DIR_COMMON_CUTEST) \
                               -I$(INC_ROOT)src/measurement \
@@ -94,7 +94,7 @@ definitions_test_c_LDFLAGS  = $(serial_ldflags)
 TESTS_SERIAL += definitions_test_c
 
 string_duplicates_c_SOURCES  = $(SRC_ROOT)test/measurement/string_duplicates.c \
-                               $(SRC_ROOT)vendor/common/cutest/CuTest.c
+                               $(SRC_ROOT)common/utils/test/cutest/CuTest.c
 string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_CUTEST) \
                                -I$(INC_ROOT)src/measurement \

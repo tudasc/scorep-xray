@@ -21,10 +21,10 @@
 ## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
 ## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
 ## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
-ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
+ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../build-config/common/m4
 
 include ../build-includes/common.am
-include ../vendor/common/build-config/Makefile.tests-shmem.inc.am
+include ../build-config/common/Makefile.tests-shmem.inc.am
 AM_TESTS_ENVIRONMENT_SHMEM = export SCOREP_EXPERIMENT_DIRECTORY=make_check_experiment_shmem;
 CLEAN_LOCAL += clean-local-experiment-directories
 clean-local-experiment-directories:

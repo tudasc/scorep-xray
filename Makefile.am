@@ -37,11 +37,11 @@ SUBDIRS = $(subdirs) $(ax_config_subdirs)
 ## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
 ## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
 ## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
-ACLOCAL_AMFLAGS = -I build-config/m4 -I vendor/common/build-config/m4
+ACLOCAL_AMFLAGS = -I build-config/m4 -I build-config/common/m4
 
-include vendor/common/build-config/Makefile.inc.am
+include build-config/common/Makefile.inc.am
 include doc/Makefile.inc.am
-include vendor/common/build-config/platforms.am
+include build-config/common/platforms.am
 
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the

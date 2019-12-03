@@ -33,8 +33,8 @@
 
 check_PROGRAMS += allocator_test
 allocator_test_SOURCES = $(SRC_ROOT)test/memory/scorep_allocator_test.c \
-                         $(SRC_ROOT)vendor/common/cutest/CuTest.c            \
-                         $(SRC_ROOT)vendor/common/cutest/CuTest.h
+                         $(SRC_ROOT)common/utils/test/cutest/CuTest.c            \
+                         $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 allocator_test_LDADD = \
     $(LIB_ROOT)libscorep_allocator.la \
     $(LIB_ROOT)libutils.la
@@ -48,8 +48,8 @@ TESTS_SERIAL += allocator_test
 
 check_PROGRAMS += bitset_test
 bitset_test_SOURCES = $(SRC_ROOT)test/memory/scorep_bitset_test.c \
-                      $(SRC_ROOT)vendor/common/cutest/CuTest.c            \
-                      $(SRC_ROOT)vendor/common/cutest/CuTest.h
+                      $(SRC_ROOT)common/utils/test/cutest/CuTest.c            \
+                      $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 bitset_test_CPPFLAGS = $(AM_CPPFLAGS) \
                        -I$(INC_ROOT)src/utils \
                        -I$(INC_DIR_COMMON_CUTEST) \

@@ -50,8 +50,8 @@ io_mgmt_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 check_PROGRAMS              += handle_test
 handle_test_SOURCES =  $(SRC_ROOT)test/io_management/handle_test.c \
-                            $(SRC_ROOT)vendor/common/cutest/CuTest.c  \
-                            $(SRC_ROOT)vendor/common/cutest/CuTest.h
+                            $(SRC_ROOT)common/utils/test/cutest/CuTest.c  \
+                            $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 
 handle_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(PUBLIC_INC_DIR)                  \

@@ -33,7 +33,7 @@
 
 CLEANFILES += ../src/scorep_config_library_dependencies_@AFS_PACKAGE_BUILD_name@_inc.hpp
 ../src/scorep_config_library_dependencies_@AFS_PACKAGE_BUILD_name@_inc.hpp: $(lib_LTLIBRARIES)
-	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh @AFS_PACKAGE_BUILD_name@ $^ >$@.t && \
+	$(AM_V_GEN)$(srcdir)/../build-config/common/generate-library-dependencies.sh @AFS_PACKAGE_BUILD_name@ $^ >$@.t && \
             if test -e $@; then \
                 if cmp --silent $@ $@.t; then \
                     $(RM) $@.t; \

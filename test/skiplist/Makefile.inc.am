@@ -16,8 +16,8 @@ check_PROGRAMS += skiplist_test
 
 skiplist_test_SOURCES = \
     $(SRC_ROOT)test/skiplist/skiplist_test.c \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.c \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.h
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 
 skiplist_test_LDADD = \
     $(LIB_ROOT)libscorep_allocator.la \
