@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -123,7 +123,7 @@ clean-local: doxygen-user-clean
 
 CLEANFILES += doc/doxygen-user/main.dox
 
-if SVN_CONTROLLED
+if GIT_CONTROLLED
 
 if CROSS_BUILD
 INFO_TOOL_BUILD=build-frontend
@@ -190,13 +190,13 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	cat $^ >$@
 
-else !SVN_CONTROLLED
+else !GIT_CONTROLLED
 
 doc/doxygen-user/main.dox:
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	touch $@
 
-endif !SVN_CONTROLLED
+endif !GIT_CONTROLLED
 
 
 if CROSS_BUILD

@@ -121,7 +121,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
 
 m4_include(../build-includes/compute-node-shmem.m4)
 
-AC_SCOREP_SVN_CONTROLLED
+AC_SCOREP_GIT_CONTROLLED
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])

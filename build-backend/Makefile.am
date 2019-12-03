@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013-2017,
+## Copyright (c) 2009-2011, 2013-2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -116,12 +116,12 @@ endif !CROSS_BUILD
 
 # src/config-backend-for-frontend.h dependencies
 if CROSS_BUILD
-if SVN_CONTROLLED
+if GIT_CONTROLLED
 
 $(srcdir)/../src/config-backend-for-frontend.h.in: $(srcdir)/../src/config-backend.h.in
 	$(AM_V_GEN)$(srcdir)/../build-config/common/generate-config-backend-for-frontend.sh $< >$@
 
-endif SVN_CONTROLLED
+endif GIT_CONTROLLED
 endif CROSS_BUILD
 
 

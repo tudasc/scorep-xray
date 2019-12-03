@@ -50,7 +50,7 @@ AC_CONFIG_MACRO_DIRS([build-config/m4 build-config/common/m4])
 ## Set the default installation prefix to /opt/scorep instead of /usr/local
 AC_PREFIX_DEFAULT([/opt/scorep])
 
-AC_SCOREP_SVN_CONTROLLED
+AC_SCOREP_GIT_CONTROLLED
 
 ## Call not before AC_CONFIG_MACRO_DIR
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
@@ -151,7 +151,7 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
 AC_SCOREP_UNCRUSTIFY
 
 AC_SCOREP_DOXYGEN
-AS_IF([test "x${ac_scorep_svn_controlled}" = xyes],
+AS_IF([test "x${ac_scorep_git_controlled}" = xyes],
     [AC_CONFIG_FILES([doc/doxygen-user.cfg:doc/doxygen-user/doxygen-user.cfg.in])
      AC_CONFIG_FILES([doc/doxygen-dev.cfg:doc/doxygen-dev/doxygen-dev.cfg.in])])
 

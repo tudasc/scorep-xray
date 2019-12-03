@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -58,7 +58,7 @@ DOC_SRC_DIR = $(srcdir)/doc
 doxygen-uninstall:
 	rm -rf $(DESTDIR)$(docdir)
 
-if SVN_CONTROLLED
+if GIT_CONTROLLED
 
 USER_DOC_DIR = $(top_distdir)$(ac_scorep_doxygen_distdir)/doc
 
@@ -137,7 +137,7 @@ doxygen-user-pdf: doxygen-user
 
 endif !HAVE_DOXYGEN_LATEX
 
-else !SVN_CONTROLLED
+else !GIT_CONTROLLED
 
 doxygen-user-clean:
 
@@ -172,7 +172,7 @@ doxygen-user-install:
 
 copy-revision-file-to-dist:
 
-endif !SVN_CONTROLLED
+endif !GIT_CONTROLLED
                                                                              ##
                                                                              ##
 ###############################################################################
