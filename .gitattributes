@@ -1,0 +1,4 @@
+# Unmodified download from http://www.fftw.org/cycle.h for reference. Extracts will be used for timer implementation.
+/src/services/timer/cycle.h -hook-beautifier
+# Function envelop missing on purpose.
+/src/services/timer/scorep_timer_tsc.inc.c -hook-beautifier
