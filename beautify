@@ -4,34 +4,35 @@
 #     beautify
 #
 # DESCRIPTION
-#     Beautify all modified and added source files in your svn working copy.
-#     Without beautification, a svn commit may be rejected. Currently, the
+#     Beautify all modified and added source files in your working copy.
+#     Without beautification, a commit may be rejected. Currently, the
 #     beautification is performed by "uncrustify" using the configuration
 #     file "tools/beautifier/beautify.cfg".
-#
-# PRECONDITION
-#     Your working copy must contain everything under trunk, branches/FOO or
-#     tags/BAR, i.e. you checkout was one of
-#       "svn co $REPOSITORY_ROOT/project/trunk"
-#       "svn co $REPOSITORY_ROOT/project/branches/<FOO>"
-#       "svn co $REPOSITORY_ROOT/project/tags/<BAR>"
 #
 # OPTIONS/ARGUMENTS
 #     beautify does not take any options and/or arguments.
 #
 # USAGE
-#     Call beautify from anywhere in your svn working copy.
+#     Call beautify from anywhere in your working copy by relative path.
 #
 # AUTHOR
 #     Christian Feld <c.feld@fz-juelich.de>
 #     Markus Geimer <m.geimer@fz-juelich.de>
+#     Bert Wesarg <bert.wesarg@tu-dresden.de>
 
-AWK=awk
+argv0=${0##*/}
+BEAUTIFY_ROOT=${0%/*}
+: ${BEAUTIFY_ROOT:=.}
+BEAUTIFY_ROOT=$(cd $BEAUTIFY_ROOT && pwd)
+
 BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=beautifier/beautify.cfg
-GREP=grep
-SED=sed
-SVN=svn
+BEAUTIFY_CONFIG=$BEAUTIFY_ROOT/beautify.cfg
+GIT=git
+
+SUBDIRECTORY_OK=Yes
+. $(git --exec-path)/git-sh-setup
+require_work_tree
+cd_to_toplevel
 
 export LC_ALL=
 export LANG=C
@@ -40,63 +41,14 @@ export LANG=C
 # should the given path in $1 be ignored by the beautifier
 is_ignored()
 {
-    # we redirect stderr because svn complains about missing properties
-    test -n "$($SVN propget --strict "silc:ignore:beautifier" "$1" 2> /dev/null)"
+    local result=$($GIT check-attr hook-beautifier -- "$1")
+    test "${result#*: hook-beautifier: }" = "unset"
 }
-
-################################################################################
-# General idea:
-# - cd to the top-level directory of your svn working copy in order to find
-#   all modified and added source files and to get access to the beautifier's
-#   config file.
-# - beautify these files (unless they have zero size) in place and make a
-#   backup.
-
-# cd to top-level directory, i.e. something svn controlled at a equivalent level
-# to (trunk|branches/<FOO>|tags/<BAR>). Count "/"s in path therefore.
-
-if $SVN info | $GREP "^Repository Root: " >/dev/null; then
-    REPOS_ROOT_LEVEL=`$SVN info |
-                      $AWK -F "/" '/^Repository Root: / {print NF}'`
-else
-    # pre subversion 1.2 has no Repository Root line, use the URL line
-    # because all repositories roots end with '-root', we use that for the
-    # matching, to strip of paths inside the repository
-    REPOS_ROOT_LEVEL=`$SVN info |
-                      $SED -e 's@-root/.*@-root@g' |
-                      $AWK -F "/" '/^URL: / {print NF}'`
-fi
-CURRENT_LEVEL=`$SVN info | $AWK -F "/" '/^URL: / {print NF}'`
-OFFSET=1
-if $SVN info | $GREP "^URL: " | $GREP -e '/\(branches\|tags\)/' >/dev/null; then
-    OFFSET=2
-fi
-let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
-#echo "REPOS_ROOT_LEVEL $REPOS_ROOT_LEVEL"
-#echo "CURRENT_LEVEL $CURRENT_LEVEL"
-#echo "OFFSET $OFFSET"
-#echo `pwd`
-if [ $N_DIRS_UP -gt 0 ]; then
-    for i in `seq $N_DIRS_UP`; do
-        cd ..
-        echo `pwd`
-        if [ ! -d ".svn" ]; then
-            # Can happen if you checked out just a subdir of (trunk|
-            # branch/<FOO>|tag/<BAR>). $BEAUTIFY will not find it's cfg file.
-            echo "Beautifying aborted: It seems that you are working on a partial working copy only as I can't find the top level directory."
-            exit 1
-        fi
-    done
-fi
-
-if [ ! -f "$BEAUTIFY_CONFIG" ]; then
-    BEAUTIFY_CONFIG="vendor/common/$BEAUTIFY_CONFIG"
-fi
 
 # Top-level directory reached, check if beautify's config file is available.
 if [ ! -f "$BEAUTIFY_CONFIG" ]; then
     echo "Beautifying aborted: Can't find file \"$BEAUTIFY_CONFIG\" under"
-    echo "                     \"`pwd`/\"."
+    echo "                     \"$BEAUTIFY_ROOT/\"."
     exit 1
 fi
 
@@ -110,7 +62,13 @@ if [ "$exe_version" != "$cfg_version" ]; then
 fi
 
 # Find and beautify modified and added source files.
-RELEVANT_FILES="$($SVN status | $AWK '/^(R|M|A).*\.(c|h|cc|hh|cpp|hpp|java)(.in)?$/ {print substr($0, 9)}')"
+RELEVANT_FILES="$(
+    (
+        $GIT diff-files --name-only --ignore-submodules               -- '*.c' '*.h' '*.cc' '*.hh' '*.cpp' '*.hpp' '*.java' '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in'
+        $GIT diff-index --name-only --ignore-submodules --cached HEAD -- '*.c' '*.h' '*.cc' '*.hh' '*.cpp' '*.hpp' '*.java' '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in'
+    ) |
+        sort | uniq
+)"
 if [ -n "$RELEVANT_FILES" ]; then
     printf "Beautifying modified source files using %s:\n" \
         "$($BEAUTIFY --version)"
