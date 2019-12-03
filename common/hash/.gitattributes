@@ -1,0 +1,4 @@
+# Imported from http://www.burtleburtle.net/bob/hash/doobs.html
+/jenkins_hash.c -hook-beautifier
+# Imported from http://www.burtleburtle.net/bob/hash/doobs.html
+/jenkins_hash.h -hook-beautifier
