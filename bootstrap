@@ -119,7 +119,7 @@ clean-local:
 	@for build in $(sub_builds); do \
 	    ( cd build-$$build; rm -rf $(clean_files); ); \
 	done
-	@rm -f build-config/REVISION build-config/REVISION_COMMON
+	@rm -f build-config/REVISION
 	@for header in $(config_headers); do \
 	    rm -f src/config-$$header.h.in src/config-$$header.h; \
 	done

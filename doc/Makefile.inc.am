@@ -67,18 +67,14 @@ doxygen-user-install:
 doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision-file-to-dist
 
 update-revision:
-	svnversion -c $(srcdir) | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION"
-	svnversion -c $(srcdir)/vendor/common | cut -d ':' -f 2 > "$(srcdir)/build-config/REVISION_COMMON"
+	git -C $(srcdir) describe --always --dirty --exclude '*' > "$(srcdir)/build-config/REVISION"
 
 copy-revision-file-to-dist:
-	$(MKDIR_P) "$(distdir)/build-config/"
-	for i in REVISION REVISION_COMMON; do                                                   \
-	    cp -p "$(srcdir)/build-config/$$i" "$(distdir)/build-config/";                      \
-	    if grep -E [A-Z] "$(srcdir)/build-config/$$i" ||                                    \
-                grep "-" "$(srcdir)/build-config/$$i"; then                                     \
-                echo "WARNING: distribution does not match a single, unmodified revision." >&2; \
-            fi                                                                                  \
-        done
+	@$(MKDIR_P) "$(distdir)/build-config/"
+	@cp -p "$(srcdir)/build-config/REVISION" "$(distdir)/build-config/"
+	@case `cat "$(distdir)/build-config/REVISION"` in *-dirty)                           \
+            echo >&2 "WARNING: distribution does not match a single, unmodified revision.";; \
+        esac
 
 doxygen-user-html-compress:
 	if test -d "$(USER_DOC_DIR)/html"; then                               \

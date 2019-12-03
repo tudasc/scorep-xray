@@ -137,10 +137,7 @@ enum
     "              SHMEM libraries.\n" \
     "   --help     Prints this usage information.\n" \
     "   --version  Prints the version number of the Score-P package.\n" \
-    "   --scorep-revision\n" \
-    "              Prints the revision number of the Score-P package.\n" \
-    "   --common-revision\n" \
-    "              Prints the revision number of the common package.\n" \
+    "   --revision Prints the revision number of the Score-P package.\n" \
     "   --remap-specfile\n" \
     "              Prints the path to the remapper specification file.\n" \
     "   --adapter-init\n" \
@@ -281,14 +278,16 @@ main( int    argc,
             std::cout.flush();
             exit( EXIT_SUCCESS );
         }
-        else if ( strcmp( argv[ i ], "--scorep-revision" ) == 0 )
+        else if ( strcmp( argv[ i ], "--revision" ) == 0 )
         {
             std::cout << SCOREP_COMPONENT_REVISION << std::endl;
             exit( EXIT_SUCCESS );
         }
-        else if ( strcmp( argv[ i ], "--common-revision" ) == 0 )
+        else if ( strcmp( argv[ i ], "--scorep-revision" ) == 0 ||
+                  strcmp( argv[ i ], "--common-revision" ) == 0 )
         {
-            std::cout << SCOREP_COMMON_REVISION << std::endl;
+            std::cerr << "[Score-P] warning: " << argv[ i ] << " is deprecated" << std::endl;
+            std::cout << SCOREP_COMPONENT_REVISION << std::endl;
             exit( EXIT_SUCCESS );
         }
         else if ( strcmp( argv[ i ], "--remap-specfile" ) == 0 )
