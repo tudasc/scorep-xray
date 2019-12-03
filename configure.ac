@@ -171,7 +171,7 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [9])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2], [9])
 AS_IF([test -n "${scorep_otf2_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_otf2_have_mic=no
@@ -184,7 +184,7 @@ AS_IF([test -n "${scorep_otf2_config_bin}" && \
              [AC_MSG_ERROR([cannot detect MIC support for external OTF2 installation. Either provide a suitable OTF2 library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-otf2' option to use the included OTF2 copy.])])
       ])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [3])
-AC_SCOREP_HAVE_CONFIG_TOOL([cubew],   [7])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubew], [7])
 AS_IF([test -n "${scorep_cubew_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_cubew_have_mic=no
@@ -196,25 +196,37 @@ AS_IF([test -n "${scorep_cubew_config_bin}" && \
        AS_IF([test "x${scorep_cubew_have_mic}" = "xno"],
              [AC_MSG_ERROR([cannot detect MIC support for external Cube Writer installation. Either provide a suitable Cube library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-cubew' option to use the included Cube Writer copy.])])
       ])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubelib], [7])
 
 # handle external package's subdir configures
 
-user_args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk user_provided_configure_args`"
-AS_IF([test "x${scorep_have_cubew_config}" = xno],
-    [AX_CONFIG_SUBDIR([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])])
-
-
-AC_SCOREP_HAVE_CONFIG_TOOL([cubelib],   [7])
+PROHIBIT_MAKE_DIST=
 
 user_args="`${AWK} -f ${srcdir}/build-config/common/process_arguments.awk user_provided_configure_args`"
-AS_IF([test "x${scorep_have_cubelib_config}" = xno],
-    [AX_CONFIG_SUBDIR([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])])
+AS_IF([test "x${scorep_have_cubew_config}" = "xyes"],
+    [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-cubew"])],
+    [test -x ${srcdir}/vendor/cubew/configure],
+    [AX_CONFIG_SUBDIR([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])],
+    [AC_MSG_ERROR([No CubeW component available. Either provide the internal package at 'vendor/cubew' or an external installation with '--with-cubew'.])])
 
-AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
-      [AX_CONFIG_SUBDIR([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])])
+AS_IF([test "x${scorep_have_cubelib_config}" = "xyes"],
+    [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-cubelib"])],
+    [test -x ${srcdir}/vendor/cubelib/configure],
+    [AX_CONFIG_SUBDIR([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])],
+    [AC_MSG_ERROR([No CubeLib component available. Either provide the internal package at 'vendor/cubelib' or an external installation with '--with-cubelib'.])])
 
-AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
-      [AX_CONFIG_SUBDIR([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])])
+AS_IF([test "x${scorep_have_opari2_config}" = "xyes"],
+    [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-opari2"])],
+    [test -x ${srcdir}/vendor/opari2/configure],
+    [AX_CONFIG_SUBDIR([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])],
+    [AC_MSG_ERROR([No OPARI2 component available. Either provide the internal package at 'vendor/opari2' or an external installation with '--with-opari2'.])])
+
+
+AS_IF([test "x${scorep_have_otf2_config}" = "xyes"],
+    [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-otf2"])],
+    [test -x ${srcdir}/vendor/otf2/configure],
+    [AX_CONFIG_SUBDIR([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])],
+    [AC_MSG_ERROR([No OTF2 component available. Either provide the internal package at 'vendor/otf2' or an external installation with '--with-otf2'.])])
 
 # handle own package's subdir configures
 
@@ -246,6 +258,7 @@ AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
     ],
     [AFS_SUMMARY([MPI support], [no, explicitly disabled via --without-mpi])
      AC_CONFIG_FILES([src/scorep_config_tool_mpi.h:src/tools/config/scorep_config_tool_without_mpi.h.in])
+     AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --with-mpi"])
     ])
 
 AM_CONDITIONAL([HAVE_SCOREP_SHMEM],
@@ -259,7 +272,10 @@ AM_COND_IF([HAVE_SCOREP_SHMEM],
         [AFS_SUMMARY([SHMEM support], [no, explicitly disabled via --without-shmem])],
         [AFS_SUMMARY([SHMEM support], [no, platform not supported])])
      AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
+     AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --with-shmem"])
     ])
+
+AC_SUBST([PROHIBIT_MAKE_DIST])
 
 AX_CONFIG_SUBDIR([build-backend], [${args} ${backend_args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cubew_config_arg} ${scorep_cubelib_config_arg}])
 

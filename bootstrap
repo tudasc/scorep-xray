@@ -16,28 +16,19 @@ LOCAL_CONFIGURES = \
 	build-score/configure \
 	build-libwrap/configure
 
-SUB_CONFIGURES = \
-	vendor/opari2/configure \
-	vendor/otf2/configure \
-	vendor/cubelib/configure\
-	vendor/cubew/configure
+EXTERNAL_COMPONENTS = \
+	vendor/opari2 \
+	vendor/otf2 \
+	vendor/cubelib\
+	vendor/cubew
 
-.PHONY: all local $(LOCAL_CONFIGURES) $(SUB_CONFIGURES) clean clean-local
-all: local $(SUB_CONFIGURES)
+.PHONY: all local $(LOCAL_CONFIGURES) $(EXTERNAL_COMPONENTS) clean clean-local clean-externals
+all: local $(EXTERNAL_COMPONENTS)
 local: $(LOCAL_CONFIGURES)
 $(LOCAL_CONFIGURES): clean-local
 
-vendor/opari2/configure:
-	@$(MAKE) -C vendor/opari2 -f bootstrap AUTORECONF=$(AUTORECONF)
-
-vendor/otf2/configure:
-	@$(MAKE) -C vendor/otf2 -f bootstrap AUTORECONF=$(AUTORECONF)
-
-vendor/cubew/configure:
-	@$(MAKE) -C vendor/cubew -f bootstrap AUTORECONF=$(AUTORECONF)
-
-vendor/cubelib/configure:
-	@$(MAKE) -C vendor/cubelib -f bootstrap AUTORECONF=$(AUTORECONF)
+$(EXTERNAL_COMPONENTS):
+	@test -x $@/bootstrap && $(MAKE) -C $@ -f bootstrap AUTORECONF=$(AUTORECONF) || :
 
 configure:
 	$(AUTORECONF) --install $(AUTORECONFFLAGS) .
@@ -71,11 +62,12 @@ build-score/configure: build-backend/configure
 build-libwrap/configure: build-backend/configure
 	cd build-libwrap; $(AUTORECONF) $(AUTORECONFFLAGS)
 
-clean: clean-local
-	@$(MAKE) -C vendor/opari2  -f bootstrap clean
-	@$(MAKE) -C vendor/otf2    -f bootstrap clean
-	@$(MAKE) -C vendor/cubew   -f bootstrap clean
-	@$(MAKE) -C vendor/cubelib -f bootstrap clean
+clean: clean-local clean-externals
+
+clean-externals:
+	@list="$(EXTERNAL_COMPONENTS)"; for build in $$list; do \
+	    test -x $$build/bootstrap && $(MAKE) -C $$build  -f bootstrap clean; \
+	done
 
 clean_files = \
 	autom4te.cache/ \

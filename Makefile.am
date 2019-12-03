@@ -117,7 +117,18 @@ install-data-hook:
 
 uninstall-hook: doxygen-uninstall common-uninstall
 
-dist-hook: doc/doxygen-user/main.dox doxygen-user-generate
+dist-hook: doc/doxygen-user/main.dox doxygen-user-generate prohibit-make-dist
+
+prohibit-make-dist:
+	@if test "x$(PROHIBIT_MAKE_DIST)" != "x"; then \
+            echo "ERROR: Cannot create distribution because of disabled components or use of"; \
+            echo "       external packages. Rerun configure with these flags to ensure a"; \
+            echo "       self-contained distribution:"; \
+            echo; \
+            echo "           $(PROHIBIT_MAKE_DIST)"; \
+            echo; \
+            exit 1; \
+        fi
 
 clean-local: doxygen-user-clean
 
