@@ -34,14 +34,14 @@
 
 noinst_LTLIBRARIES += libjenkins_hash.la
 libjenkins_hash_la_SOURCES = \
-    $(SRC_ROOT)vendor/common/hash/jenkins_hash.c \
-    $(SRC_ROOT)vendor/common/hash/jenkins_hash.h
+    $(SRC_ROOT)common/hash/jenkins_hash.c \
+    $(SRC_ROOT)common/hash/jenkins_hash.h
 libjenkins_hash_la_CPPFLAGS = \
     $(AM_CPPFLAGS)
 
 check_PROGRAMS += test_jenkins_hash
 test_jenkins_hash_SOURCES = \
-    $(SRC_ROOT)vendor/common/hash/jenkins_hash.c
+    $(SRC_ROOT)common/hash/jenkins_hash.c
 test_jenkins_hash_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -DSELF_TEST
