@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -73,7 +73,7 @@ SCOREP_RECURSIVE_TARGETS=
 ###############################################################################
 ## code beautification targets
 ##
-if SVN_CONTROLLED
+if GIT_CONTROLLED
 if HAVE_UNCRUSTIFY
 
 beautify-sp:
@@ -84,7 +84,7 @@ SCOREP_RECURSIVE_TARGETS += beautify-recursive
 beautify-clean:
 
 endif # HAVE_UNCRUSTIFY
-endif # SVN_CONTROLLED
+endif # GIT_CONTROLLED
                                                                              ##
                                                                              ##
 ###############################################################################
