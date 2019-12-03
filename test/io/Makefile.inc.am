@@ -33,9 +33,9 @@
 
 check_PROGRAMS += io_test
 io_test_SOURCES = \
-    $(SRC_ROOT)vendor/common/test/utils/io/utils_io_test.c \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.c \
-    $(SRC_ROOT)vendor/common/cutest/CuTest.h
+    $(SRC_ROOT)common/utils/test/io/utils_io_test.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
 io_test_LDFLAGS = \
     $(AM_LDFLAGS) \
     $(LINKMODE_FLAGS)

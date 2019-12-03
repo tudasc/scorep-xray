@@ -34,7 +34,7 @@
 
 check_PROGRAMS += error_test
 error_test_SOURCES = \
-    $(SRC_ROOT)vendor/common/test/utils/exception/utils_error_test.c
+    $(SRC_ROOT)common/utils/test/exception/utils_error_test.c
 error_test_LDADD = \
     libutils.la
 error_test_LDFLAGS = \

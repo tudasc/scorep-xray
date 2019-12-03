@@ -9,4 +9,4 @@ libutils_la_LIBADD = \
     libutils_io.la
 
 EXTRA_DIST += \
-    $(SRC_ROOT)vendor/common/src/utils/include/utils_package.h
+    $(SRC_ROOT)common/utils/include/utils_package.h
