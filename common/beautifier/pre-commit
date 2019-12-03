@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# NAME
+#     pre-commit
+#
+# DESCRIPTION
+#     Score-P beautifier Git pre-commit hook.
+#
+# AUTHORS
+#     Christian Feld <c.feld@fz-juelich.de>
+#     Markus Geimer <m.geimer@fz-juelich.de>
+#     Bert Wesarg <bert.wesarg@tu-dresden.de>
+
+set -e
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit: diff against an empty tree object
+    against=$(git hash-object -t tree /dev/null)
+fi
+
+is_ignored()
+{
+    local result="$(git check-attr --cached hook-beautifier -- "$1")"
+    test "${result#*: hook-beautifier: }" = "unset"
+}
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Setup temp dir
+gitdir=$(git rev-parse --git-dir)
+tmpdir=$gitdir/hooks/pre-commit.tmp.$$
+mkdir -p "$tmpdir"
+trap "rm -rf $tmpdir" 0
+
+# Setup uncrustify
+BEAUTIFY=uncrustify
+BEAUTIFY_CONFIG=common/beautifier/beautify.cfg
+if [ ! -f "$BEAUTIFY_CONFIG" ]; then
+    exit 0
+fi
+
+# Iterate over all (A)dded/(C)opied/(M)odified/(R)enamed files in the index
+git diff-index --name-only --cached --diff-filter=ACMR $against -- \
+    '*.c'    '*.h'    '*.cc'    '*.hh'    '*.cpp'    '*.hpp'    '*.java' \
+    '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in' |
+while read path
+do
+    # Check hook-beautifier attribute, but only the state in the index
+    if is_ignored "${path}"
+    then # file should be ignored
+        echo "  IGNORED  ${path}"
+        continue
+    fi
+
+    # Extract extension, ignore '.in' for for candidate file
+    ext=${path##*.}
+    if test "${ext}" = "in"
+    then
+        ext=${path%.in}
+        ext=${path##*.}
+    fi
+
+    # Extract candidate from the index
+    candidate="${tmpdir}/candidate.${ext}"
+    git show ":${path}" >"${candidate}"
+
+    # Beautify the candidate
+    result="${tmpdir}/result.${ext}"
+    $BEAUTIFY -q -c $BEAUTIFY_CONFIG -f "${candidate}" -o "${result}"
+    if test $? -ne 0
+    then
+        echo "  ERROR    ${path}"
+        exit 1
+    fi
+
+    # Check the result
+    if ! diff -u --label "${path} (unbeautified)" --label "${path} (beautified)" "${candidate}" "${result}"
+    then
+        echo "  REJECTED ${path}"
+        : >"${tmpdir}/reject"
+    else
+        echo "  ACCEPTED ${path}"
+    fi
+
+    rm "${candidate}" "${result}"
+done
+
+# Reject commit if at least one path was rejected
+test ! -f "${tmpdir}/reject"

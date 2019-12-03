@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# NAME
+#     beautify
+#
+# DESCRIPTION
+#     Beautify all modified and added source files in your working copy.
+#     Without beautification, a commit may be rejected. Currently, the
+#     beautification is performed by "uncrustify" using the configuration
+#     file "tools/beautifier/beautify.cfg".
+#
+# OPTIONS/ARGUMENTS
+#     beautify does not take any options and/or arguments.
+#
+# USAGE
+#     Call beautify from anywhere in your working copy by relative path.
+#
+# AUTHOR
+#     Christian Feld <c.feld@fz-juelich.de>
+#     Markus Geimer <m.geimer@fz-juelich.de>
+#     Bert Wesarg <bert.wesarg@tu-dresden.de>
+
+argv0=${0##*/}
+BEAUTIFY_ROOT=${0%/*}
+: ${BEAUTIFY_ROOT:=.}
+BEAUTIFY_ROOT=$(cd $BEAUTIFY_ROOT && pwd)
+
+BEAUTIFY=uncrustify
+BEAUTIFY_CONFIG=$BEAUTIFY_ROOT/beautify.cfg
+GIT=git
+
+SUBDIRECTORY_OK=Yes
+. $(git --exec-path)/git-sh-setup
+require_work_tree
+cd_to_toplevel
+
+export LC_ALL=
+export LANG=C
+
+# for blacklisting
+# should the given path in $1 be ignored by the beautifier
+is_ignored()
+{
+    local result=$($GIT check-attr hook-beautifier -- "$1")
+    test "${result#*: hook-beautifier: }" = "unset"
+}
+
+# Top-level directory reached, check if beautify's config file is available.
+if [ ! -f "$BEAUTIFY_CONFIG" ]; then
+    echo "Beautifying aborted: Can't find file \"$BEAUTIFY_CONFIG\" under"
+    echo "                     \"$BEAUTIFY_ROOT/\"."
+    exit 1
+fi
+
+# Check for matching beautifier/config version
+exe_version=$($BEAUTIFY --version | tr '[a-z]' '[A-Z]' | sed -e 's/UNCRUSTIFY *//')
+cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | tr '[a-z]' '[A-Z]' | sed -e 's/^# *UNCRUSTIFY *//')
+if [ "$exe_version" != "$cfg_version" ]; then
+    echo "Beautifying aborted: Configuration file expects v$cfgversion,"
+    echo "                     but found beautifier v$exe_version."
+    exit 1
+fi
+
+# Find and beautify modified and added source files.
+RELEVANT_FILES="$(
+    (
+        $GIT diff-files --name-only --ignore-submodules               -- '*.c' '*.h' '*.cc' '*.hh' '*.cpp' '*.hpp' '*.java' '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in'
+        $GIT diff-index --name-only --ignore-submodules --cached HEAD -- '*.c' '*.h' '*.cc' '*.hh' '*.cpp' '*.hpp' '*.java' '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in'
+    ) |
+        sort | uniq
+)"
+if [ -n "$RELEVANT_FILES" ]; then
+    printf "Beautifying modified source files using %s:\n" \
+        "$($BEAUTIFY --version)"
+    for FILE in $RELEVANT_FILES; do
+        if is_ignored "$FILE"; then # file should be ignored
+            echo "Beautifying skipped for file \"$FILE\" (explicitly ignored)."
+            continue
+        fi
+        if [ ! -s $FILE ]; then # file is zero size
+            echo "Beautifying skipped for file \"$FILE\" (empty file)."
+            continue
+        fi
+        echo "Beautifying $FILE:"
+        $BEAUTIFY -c $BEAUTIFY_CONFIG --no-backup -q $FILE
+        if [ $? -ne 0 ]; then
+            printf "Beautifying aborted: %s (%s) failed on file \"%s\".\n" \
+                "$($BEAUTIFY --version)" \
+                "$(command -v $BEAUTIFY)" \
+                "$FILE"
+            exit 1
+        fi
+    done
+fi
+echo "Beautifying successful. Ready for commit."
+echo
+exit 0
