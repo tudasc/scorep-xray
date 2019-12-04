@@ -1,0 +1,7 @@
+include:
+  - project: 'perftools/common-ci'
+    file: gitlab-ci.yml
+
+variables:
+  MAILINGLIST: "devel@score-p.org"
+  CONNECTOR_BRANCH: master
