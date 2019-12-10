@@ -42,7 +42,7 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 # are provided.
 
 component_revision="invalid"
-AS_IF([component_revision=`git -C ${srcdir} describe --always --dirty 2>/dev/null`],
+AS_IF([component_revision=`cd ${srcdir} && git describe --always --dirty 2>/dev/null`],
       [echo "$component_revision" >$srcdir/build-config/REVISION],
       [component_revision=external])
 
