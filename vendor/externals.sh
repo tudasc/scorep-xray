@@ -38,8 +38,8 @@ cmd_update()
             eval 'svn '"${EXTERNALS_SVN_OPTIONS-}"' update --quiet "$external"'
         ;;
         git)
-            echo "git -C $bindir/$external pull"
-            eval 'git '"${EXTERNALS_GIT_OPTIONS-}"' -C "$external" pull --quiet'
+            echo "cd $bindir/$external && git pull"
+            eval '( cd "$external" && git '"${EXTERNALS_GIT_OPTIONS-}"' pull --quiet )'
         ;;
         esac
     }
