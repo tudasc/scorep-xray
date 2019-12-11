@@ -66,8 +66,8 @@ clean: clean-local clean-externals
 
 clean-externals:
 	@list="$(EXTERNAL_COMPONENTS)"; for build in $$list; do \
-	    test -x $$build/bootstrap && $(MAKE) -C $$build  -f bootstrap clean; \
-	done
+        test -x $$build/bootstrap && $(MAKE) -C $$build -f bootstrap clean || :; \
+    done
 
 clean_files = \
 	autom4te.cache/ \
@@ -109,10 +109,10 @@ clean-local:
 	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing ylwrap ar-lib test-driver
 	@cd build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
 	@for build in $(sub_builds); do \
-	    ( cd build-$$build; rm -rf $(clean_files); ); \
-	done
+        ( cd build-$$build; rm -rf $(clean_files); ); \
+    done
 	@rm -f build-config/REVISION
 	@for header in $(config_headers); do \
-	    rm -f src/config-$$header.h.in src/config-$$header.h; \
-	done
+        rm -f src/config-$$header.h.in src/config-$$header.h; \
+    done
 	@rm -f src/config-common.h
