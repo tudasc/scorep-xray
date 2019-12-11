@@ -67,7 +67,7 @@ doxygen-user-install:
 doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision-file-to-dist
 
 update-revision:
-	cd $(srcdir) && git describe --always --dirty > "$(srcdir)/build-config/REVISION"
+	cd $(srcdir) && git describe --always --dirty > "build-config/REVISION"
 
 copy-revision-file-to-dist:
 	@$(MKDIR_P) "$(distdir)/build-config/"
