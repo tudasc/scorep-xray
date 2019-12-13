@@ -1,10 +1,11 @@
 #!/bin/sh
 
 # NAME
-#     pre-commit
+#     pre-commit [--on-commit=<commit>]
 #
 # DESCRIPTION
-#     Score-P beautifier Git pre-commit hook.
+#     Score-P beautifier Git pre-commit hook. Either run on the index or on the
+#     commit specified by `--on-commit`.
 #
 # AUTHORS
 #     Christian Feld <c.feld@fz-juelich.de>
@@ -13,10 +14,28 @@
 
 set -e
 
-if git rev-parse --verify HEAD >/dev/null 2>&1
+# Setup temp dir
+gitdir=$(git rev-parse --git-dir)
+tmpdir=$gitdir/hooks/pre-commit.tmp.$$
+mkdir -p "$tmpdir/.git"
+trap "rm -rf $tmpdir" 0
+
+against=HEAD
+case "${1-}" in
+--on-commit=*)
+    oid=${1#--on-commit=}
+    # We need to load the commit into an index. This way 'git check-attr --cached'
+    # honors the value of .gitattributes from that index only
+    git read-tree --index-out=$tmpdir/.git/index $oid
+    GIT_INDEX_FILE=$tmpdir/.git/index
+    export GIT_INDEX_FILE
+    # Compare against the parent
+    against=$oid^
+esac
+
+# Compare against HEAD/parent or the empty tree
+if ! git rev-parse --verify $against >/dev/null 2>&1
 then
-    against=HEAD
-else
     # Initial commit: diff against an empty tree object
     against=$(git hash-object -t tree /dev/null)
 fi
@@ -29,12 +48,6 @@ is_ignored()
 
 # Redirect output to stderr.
 exec 1>&2
-
-# Setup temp dir
-gitdir=$(git rev-parse --git-dir)
-tmpdir=$gitdir/hooks/pre-commit.tmp.$$
-mkdir -p "$tmpdir"
-trap "rm -rf $tmpdir" 0
 
 # Setup uncrustify
 BEAUTIFY=uncrustify
