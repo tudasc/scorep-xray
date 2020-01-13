@@ -67,10 +67,6 @@ various Score-P components.
     you need to pass the '-dynamic' flag to the compiler wrapper;
     static is the default linking mode on Cray systems.
 
-  - Known compilers currently *not* to work with Score-P:
-    + IBM XL compiler 16+ on POWER platforms
-    + PGI 18+ compilers on OpenPOWER and the 'LLVM Code Generator' on x86
-
   - Experimental platforms:
 
     The following platforms are considered experimental and don't get
