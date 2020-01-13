@@ -245,6 +245,8 @@ various Score-P components.
 
 * OpenMP support
 
+  - Device directives, introduced with OpenMP 4, are not supported.
+
   - Function instrumentation using the Intel compiler version 11.1 for
     codes using OpenMP tasking is erroneous. You might try PDT
     instrumentation instead.
