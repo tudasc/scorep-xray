@@ -54,7 +54,6 @@ class SCOREP_Instrumenter_OpariAdapter;
 class SCOREP_Instrumenter_PreprocessAdapter;
 class SCOREP_Instrumenter_PdtAdapter;
 class SCOREP_Instrumenter_UserAdapter;
-class SCOREP_Instrumenter_PthreadAdapter;
 class SCOREP_Instrumenter_OpenCLAdapter;
 class SCOREP_Instrumenter_OpenACCAdapter;
 class SCOREP_Instrumenter_MemoryAdapter;
@@ -249,7 +248,6 @@ private:
     SCOREP_Instrumenter_PreprocessAdapter* m_preprocess_adapter;
     SCOREP_Instrumenter_PdtAdapter*        m_pdt_adapter;
     SCOREP_Instrumenter_UserAdapter*       m_user_adapter;
-    SCOREP_Instrumenter_PthreadAdapter*    m_pthread_adapter;
     SCOREP_Instrumenter_OpenACCAdapter*    m_openacc_adapter;
     SCOREP_Instrumenter_OpenCLAdapter*     m_opencl_adapter;
     SCOREP_Instrumenter_MemoryAdapter*     m_memory_adapter;

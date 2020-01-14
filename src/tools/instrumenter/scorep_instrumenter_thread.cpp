@@ -168,7 +168,6 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     m_pthread_cflag( SCOREP_BACKEND_PTHREAD_CFLAGS ),
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD );
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
 #if !SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
@@ -212,27 +211,6 @@ SCOREP_Instrumenter_Pthread::is_pthread_library( const std::string& libraryName 
     return check_lib_name( libraryName, std::string( "pthread" ) ) ||
            check_lib_name( libraryName, std::string( "pthreads" ) ) ||
            check_lib_name( libraryName, std::string( "lthread" ) );
-}
-
-/* *****************************************************************************
- * class SCOREP_Instrumenter_PthreadAdapter
- * ****************************************************************************/
-SCOREP_Instrumenter_PthreadAdapter::SCOREP_Instrumenter_PthreadAdapter( void )
-    : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD, "pthread" )
-{
-}
-
-void
-SCOREP_Instrumenter_PthreadAdapter::printHelp( void )
-{
-    return;
-}
-
-std::string
-SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
-                                                       const std::string& /* inputFile */ )
-{
-    return "";
 }
 
 /* **************************************************************************************
