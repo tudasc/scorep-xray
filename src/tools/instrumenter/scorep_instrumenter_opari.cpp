@@ -103,7 +103,6 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_parallel     = detect;
     m_pomp         = detect;
     m_use_tpd      = false;
-    m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
 #if SCOREP_BACKEND_COMPILER_INTEL
     m_mmic_set = false;
 #endif  /* SCOREP_BACKEND_COMPILER_INTEL */

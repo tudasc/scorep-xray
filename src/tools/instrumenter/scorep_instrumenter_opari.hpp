@@ -172,11 +172,6 @@ private:
      */
     bool m_use_tpd;
 
-    /**
-     * Specifies the OpenMP compiler flag.
-     */
-    std::string m_openmp_cflag;
-
 #if SCOREP_BACKEND_COMPILER_INTEL
     /**
      * Specifies whether -mmic was given on the command line.
