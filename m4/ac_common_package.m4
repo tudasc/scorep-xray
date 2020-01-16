@@ -40,9 +40,7 @@
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_name`::       The tarname of the package in lower case
 #  `AFS_PACKAGE_NAME`::       The tarname of the package in upper case
-#  `AFS_PACKAGE_TO_TOP`::     The relative path to the top-level configure
-#                             including a trailing slash (empty for the
-#                             top-level configure itself)
+#  `AFS_PACKAGE_TO_TOP`::     Empty
 # List of provided automake substitutions:
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
 #  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_NAME
@@ -84,13 +82,14 @@ AC_SUBST([afs_srcdir])
 #  `AFS_PACKAGE_BUILD`::      The normalized name of the build (e.g., 'backend',
 #                             'MPI backend')
 #  `AFS_PACKAGE_BUILD_name`:: The build name usable as a symbol in lower case
-#                             (e.g., backend, mpi_backend)
-#  `AFS_PACKAGE_BUILD_NAME`:: The build name usable as a symbol in upper case
+#                             (i.e., only alnum characters and underscore, e.g.,
+#                             backend, mpi_backend)
+#  `AFS_PACKAGE_BUILD_NAME`:: The value of AFS_PACKAGE_BUILD_name in upper case
 #                             (e.g., BACKEND, MPI_BACKEND)
 # List of provided automake substitutions:
 #  'AFS_PACKAGE_BUILD_name'   The value of AFS_PACKAGE_BUILD_name
 #  'AFS_PACKAGE_BUILD_NAME'   The value of AFS_PACKAGE_BUILD_NAME
-#  `AFS_PACKAGE_TO_TOP`::     The value of AFS_PACKAGE_TO_TOP
+#  `AFS_PACKAGE_TO_TOP`::     The value of TO-TOP
 #  'afs_srcdir'::             $srcdir joined with AFS_PACKAGE_TO_TOP (i.e.,
 #                             full path to the top-level source)
 # List of provided config header defines:
