@@ -282,8 +282,6 @@ be used to build Score-P are as follows:
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.
-  --with-extra-instrumentation-flags=flags
-               Add additional instrumentation flags.
   --with-sionlib[=<sionlib-bindir>]
                Use an already installed sionlib. Provide path to
                sionconfig. Auto-detected if already in $PATH. This
