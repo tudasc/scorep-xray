@@ -38,8 +38,10 @@
 # `AFS_PACKAGE_BUILD_INIT`.
 #
 # List of defined autoconf macros:
-#  `AFS_PACKAGE_name`::       The tarname of the package in lower case
-#  `AFS_PACKAGE_NAME`::       The tarname of the package in upper case
+#  `AFS_PACKAGE_name`::       The tarname of the package in lower case and
+#                             runs of non-alnum's converted to a single
+#                             undersore
+#  `AFS_PACKAGE_NAME`::       Tha value of AFS_PACKAGE_name in upper case
 #  `AFS_PACKAGE_TO_TOP`::     Empty
 # List of provided automake substitutions:
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
@@ -53,7 +55,8 @@ m4_case([$#],
     [1], [m4_ifnblank($1, [m4_fatal([$0: too many arguments: $@])])],
     [m4_fatal([$0: too many arguments: $@])])dnl
 
-m4_pushdef([_afs_package_tmp], m4_tolower(AC_PACKAGE_TARNAME))dnl
+m4_pushdef([_afs_package_tmp],
+    m4_bpatsubst(m4_tolower(AC_PACKAGE_TARNAME), [[^a-z0-9]+], [_]))dnl
 AC_SUBST([AFS_PACKAGE_name], _afs_package_tmp)
 m4_define([AFS_PACKAGE_name], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
