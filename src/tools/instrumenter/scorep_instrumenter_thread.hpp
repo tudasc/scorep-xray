@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2017,
@@ -26,6 +26,7 @@
  */
 
 #include "scorep_instrumenter_selector.hpp"
+#include <set>
 
 /* **************************************************************************************
  * class SCOREP_Instrumenter_SingleThreaded
@@ -53,7 +54,8 @@ public:
     checkDependencies( void );
 
 protected:
-    std::string m_openmp_cflag;
+    std::string           m_openmp_cflag;
+    std::set<std::string> m_openmp_flags; // provided by scorep_config_tool_backend.h
 
 private:
     bool
