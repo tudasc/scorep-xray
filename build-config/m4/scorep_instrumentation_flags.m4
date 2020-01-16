@@ -50,27 +50,29 @@ AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
                     [scorep_compiler_gnu_with_plugin=no])
 
 scorep_compiler_instrumentation_needs_symbol_table="no"
+scorep_compiler_instrumentation_cflags=
+scorep_compiler_instrumentation_cxxflags=
+scorep_compiler_instrumentation_fflags=
 AS_CASE([${ax_cv_c_compiler_vendor}],
-    [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
-    [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
-    [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-qdebug=function_trace])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-qfunctrace])],
+    [intel],    [scorep_compiler_instrumentation_cflags="-tcollect"],
+    [sun],      [scorep_compiler_instrumentation_cflags="-O -Qoption f90comp -phat"],
+    [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qdebug=function_trace])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qfunctrace])],
     [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
-                      scorep_compiler_instrumentation_cppflags="-Minstrument=functions"
+                      scorep_compiler_instrumentation_cflags="-Minstrument=functions"
                       scorep_compiler_instrumentation_needs_symbol_table="yes"],
-    [portland], [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-Mprof=func])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-Minstrument=functions])],
-    [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
-                       [scorep_compiler_instrumentation_cppflags=""],
-                       [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"
+    [portland], [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Mprof=func])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Minstrument=functions])],
+    [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xno"],
+                       [scorep_compiler_instrumentation_cflags="-g -finstrument-functions"
                         scorep_compiler_instrumentation_needs_symbol_table="yes"])],
-    [cray],     [scorep_compiler_instrumentation_cppflags="-hfunc_trace"
+    [cray],     [scorep_compiler_instrumentation_cflags="-hfunc_trace"
                  scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"
                  scorep_compiler_instrumentation_needs_symbol_table=yes],
-    [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"
+    [fujitsu],  [scorep_compiler_instrumentation_cflags="-g -Ntl_vtrc -Ntl_notrt"
                  scorep_compiler_instrumentation_needs_symbol_table="yes"],
-    [clang],    [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-g -finstrument-functions])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cppflags], [-g -finstrument-functions-after-inlining])
+    [clang],    [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions])
+                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions-after-inlining])
                  scorep_compiler_instrumentation_needs_symbol_table="yes"
                  AS_CASE([${ac_scorep_platform}],
                          [mac*], [# Disable position independent executable, which
@@ -80,17 +82,36 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                                   scorep_compiler_instrumentation_ldflags="-Wl,-no_pie"])],
     [])dnl
 
-AS_IF([test "x${scorep_compiler_instrumentation_cppflags}" != x],
-    [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${scorep_compiler_instrumentation_cppflags}])
-     AFS_SUMMARY_VERBOSE([compiler instrumentation cppflags], [${scorep_compiler_instrumentation_cppflags}])
-     AS_IF([test "x${scorep_compiler_instrumentation_ldflags}" != x],
-         [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${scorep_compiler_instrumentation_ldflags}])
-          AFS_SUMMARY_VERBOSE([compiler instrumentation ldflags], [${scorep_compiler_instrumentation_ldflags}])
-         ])
-    ])
+AS_IF([test "x${scorep_compiler_instrumentation_cflags}" != x],
+    [# Use cflags also for C++ and Fortran if not already set
+     AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" = x],
+         [scorep_compiler_instrumentation_cxxflags="${scorep_compiler_instrumentation_cflags}"])
+     AS_IF([test "x${scorep_compiler_instrumentation_fflags}" = x],
+         [scorep_compiler_instrumentation_fflags="${scorep_compiler_instrumentation_cflags}"])
 
-AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS],
-    ["${scorep_compiler_instrumentation_cppflags}"])
+     AC_MSG_NOTICE([using C compiler instrumentation flags: ${scorep_compiler_instrumentation_cflags}])
+     AFS_SUMMARY_VERBOSE([C compiler instrumentation flags], [${scorep_compiler_instrumentation_cflags}])
+])
+
+AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" != x],
+    [AC_MSG_NOTICE([using C++ compiler instrumentation flags: ${scorep_compiler_instrumentation_cxxflags}])
+     AFS_SUMMARY_VERBOSE([C++ compiler instrumentation flags], [${scorep_compiler_instrumentation_cxxflags}])
+])
+
+AS_IF([test "x${scorep_compiler_instrumentation_fflags}" != x],
+    [AC_MSG_NOTICE([using Fortran compiler instrumentation flags: ${scorep_compiler_instrumentation_fflags}])
+     AFS_SUMMARY_VERBOSE([Fortran compiler instrumentation flags], [${scorep_compiler_instrumentation_fflags}])
+])
+
+AS_IF([test "x${scorep_compiler_instrumentation_ldflags}" != x],
+    [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${scorep_compiler_instrumentation_ldflags}])
+     AFS_SUMMARY_VERBOSE([compiler instrumentation ldflags], [${scorep_compiler_instrumentation_ldflags}])
+])
+
+AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CFLAGS], ["${scorep_compiler_instrumentation_cflags}"])
+AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS], ["${scorep_compiler_instrumentation_cxxflags}"])
+AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_FFLAGS], ["${scorep_compiler_instrumentation_fflags}"])
+
 AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS], ["${scorep_compiler_instrumentation_ldflags}"])
 ])
 

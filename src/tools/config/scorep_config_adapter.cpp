@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017,
+ * Copyright (c) 2013-2014, 2017, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2019,
@@ -372,7 +372,21 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
                                           SCOREP_Config_Language language,
                                           bool /* nvcc */ )
 {
-    cflags += SCOREP_COMPILER_INSTRUMENTATION_CFLAGS " ";
+    switch ( language )
+    {
+        case SCOREP_CONFIG_LANGUAGE_C:
+            cflags += SCOREP_COMPILER_INSTRUMENTATION_CFLAGS;
+            break;
+        case SCOREP_CONFIG_LANGUAGE_CXX:
+            cflags += SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS;
+            break;
+        case SCOREP_CONFIG_LANGUAGE_FORTRAN:
+            cflags += SCOREP_COMPILER_INSTRUMENTATION_FFLAGS;
+            break;
+        default:
+            break;
+    }
+    cflags += " ";
 
 #if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
     if ( build_check )
