@@ -32,6 +32,7 @@
 
 AC_DEFUN([AC_SCOREP_REVISION],
 [
+AC_REQUIRE([AC_SCOREP_GIT_CONTROLLED])
 AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 
 # When in a working copy, write REVISION* files. The REVISION* files
@@ -42,14 +43,15 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 # are provided.
 
 component_revision="invalid"
-AS_IF([component_revision=`cd ${srcdir} && git describe --always --dirty 2>/dev/null`],
-      [echo "$component_revision" >$srcdir/build-config/REVISION],
+AS_IF([test "x${ac_scorep_git_controlled}" = xyes &&
+       component_revision=`cd ${afs_srcdir} && git describe --always --dirty 2>/dev/null`],
+      [echo "$component_revision" >${afs_srcdir}/build-config/REVISION],
       [component_revision=external])
 
 # Warn if the REVISION files contain -dirty prefix or is external.
-AS_CASE([`cat $srcdir/build-config/REVISION`],
+AS_CASE([`cat ${afs_srcdir}/build-config/REVISION`],
         [*-dirty|external|invalid],
-        [component_revision=`cat $srcdir/build-config/REVISION`
+        [component_revision=`cat ${afs_srcdir}/build-config/REVISION`
          AC_MSG_WARN([distribution does not match a single, unmodified revision, but $component_revision.])])
 ])
 
@@ -77,9 +79,9 @@ AC_DEFUN([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION],
 
 AC_DEFUN([AC_SCOREP_DEFINE_REVISIONS],
 [
-    AS_IF([test ! -e ${srcdir}/../build-config/REVISION],
-          [AC_MSG_ERROR([File ${srcdir}/../build-config/REVISION must exist.])])
+    AS_IF([test ! -e ${afs_srcdir}/build-config/REVISION],
+          [AC_MSG_ERROR([File ${afs_srcdir}/build-config/REVISION must exist.])])
 
-    component_revision=`cat ${srcdir}/../build-config/REVISION`
+    component_revision=`cat ${afs_srcdir}/build-config/REVISION`
     AC_DEFINE_UNQUOTED([SCOREP_COMPONENT_REVISION], ["${component_revision}"], [Revision of ]AC_PACKAGE_NAME)
 ])

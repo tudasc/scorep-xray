@@ -38,14 +38,15 @@
 # `AFS_PACKAGE_BUILD_INIT`.
 #
 # List of defined autoconf macros:
-#  `AFS_PACKAGE_name`::       The tarname of the package in lower case
-#  `AFS_PACKAGE_NAME`::       The tarname of the package in upper case
-#  `AFS_PACKAGE_TO_TOP`::     The relative path to the top-level configure
-#                             including a trailing slash (empty for the
-#                             top-level configure itself)
+#  `AFS_PACKAGE_name`::       The tarname of the package in lower case and
+#                             runs of non-alnum's converted to a single
+#                             undersore
+#  `AFS_PACKAGE_NAME`::       Tha value of AFS_PACKAGE_name in upper case
+#  `AFS_PACKAGE_TO_TOP`::     Empty
 # List of provided automake substitutions:
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
 #  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_NAME
+#  'afs_srcdir'::             Same as $srcdir
 #
 AC_DEFUN_ONCE([AFS_PACKAGE_INIT], [
 
@@ -54,7 +55,8 @@ m4_case([$#],
     [1], [m4_ifnblank($1, [m4_fatal([$0: too many arguments: $@])])],
     [m4_fatal([$0: too many arguments: $@])])dnl
 
-m4_pushdef([_afs_package_tmp], m4_tolower(AC_PACKAGE_TARNAME))dnl
+m4_pushdef([_afs_package_tmp],
+    m4_bpatsubst(m4_tolower(AC_PACKAGE_TARNAME), [[^a-z0-9]+], [_]))dnl
 AC_SUBST([AFS_PACKAGE_name], _afs_package_tmp)
 m4_define([AFS_PACKAGE_name], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
@@ -66,6 +68,9 @@ m4_popdef([_afs_package_tmp])dnl
 
 dnl May be redefined by AFS_PACKAGE_BUILD_INIT
 m4_define([AFS_PACKAGE_TO_TOP], [])dnl
+
+afs_srcdir=$srcdir
+AC_SUBST([afs_srcdir])
 ])
 
 # AFS_PACKAGE_BUILD_INIT(BUILD-NAME, [TO-TOP])
@@ -80,15 +85,16 @@ m4_define([AFS_PACKAGE_TO_TOP], [])dnl
 #  `AFS_PACKAGE_BUILD`::      The normalized name of the build (e.g., 'backend',
 #                             'MPI backend')
 #  `AFS_PACKAGE_BUILD_name`:: The build name usable as a symbol in lower case
-#                             (e.g., backend, mpi_backend)
-#  `AFS_PACKAGE_BUILD_NAME`:: The build name usable as a symbol in upper case
+#                             (i.e., only alnum characters and underscore, e.g.,
+#                             backend, mpi_backend)
+#  `AFS_PACKAGE_BUILD_NAME`:: The value of AFS_PACKAGE_BUILD_name in upper case
 #                             (e.g., BACKEND, MPI_BACKEND)
 # List of provided automake substitutions:
 #  'AFS_PACKAGE_BUILD_name'   The value of AFS_PACKAGE_BUILD_name
 #  'AFS_PACKAGE_BUILD_NAME'   The value of AFS_PACKAGE_BUILD_NAME
-#  `AFS_PACKAGE_TO_TOP`::     The value of AFS_PACKAGE_TO_TOP
-#  'afs_srcdir'               The relative path to the source directory (i.e.,
-#                             where the top-level configure resides)
+#  `AFS_PACKAGE_TO_TOP`::     The value of TO-TOP
+#  'afs_srcdir'::             $srcdir joined with AFS_PACKAGE_TO_TOP (i.e.,
+#                             full path to the top-level source)
 # List of provided config header defines:
 #  `AFS_PACKAGE_BUILD`::      The value of AFS_PACKAGE_BUILD as a string
 #                             constant
@@ -125,12 +131,12 @@ m4_if(m4_substr(AFS_PACKAGE_TO_TOP, decr(len(AFS_PACKAGE_TO_TOP))), [/],
 m4_popdef([_afs_package_tmp])dnl
 
 # when building inplace, $srcdir equals ., ignore $srcdir than
+# AC_SUBST already in AFS_PACKAGE_INIT
 AS_CASE([$srcdir],
     [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],
     [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])dnl
 AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
     ["${afs_srcdir}"], [Relative path to the top-level source directory.])
-AC_SUBST([afs_srcdir])
 
 m4_pushdef([_afs_package_tmp],
     m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
