@@ -71,10 +71,6 @@ public:
     virtual void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
