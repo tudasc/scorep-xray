@@ -48,10 +48,6 @@ public:
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
 
     virtual void
     checkDependencies( void );
@@ -75,10 +71,6 @@ public:
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
-
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
 
 private:
     std::string m_pthread_cflag;
