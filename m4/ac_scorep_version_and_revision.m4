@@ -44,7 +44,10 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 
 component_revision="invalid"
 AS_IF([test "x${ac_scorep_git_controlled}" = xyes &&
-       component_revision=`cd ${afs_srcdir} && git describe --always --dirty 2>/dev/null`],
+       component_revision=$(
+            unset $(git rev-parse --local-env-vars 2>/dev/null) &&
+            cd ${afs_srcdir} &&
+            git describe --always --dirty 2>/dev/null)],
       [echo "$component_revision" >${afs_srcdir}/build-config/REVISION],
       [component_revision=external])
 

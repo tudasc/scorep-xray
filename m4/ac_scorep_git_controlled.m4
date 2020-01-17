@@ -41,7 +41,10 @@ ac_scorep_git_controlled="no"
 # * if git could not find any top-level, it prints an error to stderr and stop,
 #   we catch this error, which makes the test also fail (e.g., we operate in a
 #   tarball which is *not* below any top-level)
-AS_IF([test -z "$(cd ${afs_srcdir} && git rev-parse --show-prefix 2>&1)"],
+AS_IF([test -z "$(
+    unset $(git rev-parse --local-env-vars 2>/dev/null) &&
+    cd ${afs_srcdir} &&
+    git rev-parse --show-prefix 2>&1)"],
       [ac_scorep_git_controlled="yes"
        AC_DEFINE([SCOREP_IN_DEVELOPEMENT], [], [Defined if we are working from git.])],
       [AC_DEFINE([SCOREP_IN_PRODUCTION], [], [Defined if we are working from a make dist generated tarball.])])
