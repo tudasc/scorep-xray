@@ -39,9 +39,9 @@
 #
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_name`::       The tarname of the package in lower case and
-#                             runs of non-alnum's converted to a single
-#                             undersore
-#  `AFS_PACKAGE_NAME`::       Tha value of AFS_PACKAGE_name in upper case
+#                             runs of non-alphanumeric characters are converted
+#                             to a single underscore
+#  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_name in upper case
 #  `AFS_PACKAGE_TO_TOP`::     Empty
 # List of provided automake substitutions:
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
@@ -78,15 +78,16 @@ AC_SUBST([afs_srcdir])
 # Initializes an sub-build configure. It is sufficient to call
 # `AFS_PACKAGE_BUILD_INIT`, `AFS_PACKAGE_INIT` will be called automatically.
 #
-# The relative path to the top-level configure to this configure
-# can be specified with TO-TOP, defaulting to `../`.
+# The relative path to the top-level configure from this configure
+# can be specified with TO-TOP, it must contain a trailing slash,
+# defaulting to `../`.
 #
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_BUILD`::      The normalized name of the build (e.g., 'backend',
 #                             'MPI backend')
 #  `AFS_PACKAGE_BUILD_name`:: The build name usable as a symbol in lower case
-#                             (i.e., only alnum characters and underscore, e.g.,
-#                             backend, mpi_backend)
+#                             (i.e., only alphanumeric characters and underscore,
+#                             e.g., backend, mpi_backend)
 #  `AFS_PACKAGE_BUILD_NAME`:: The value of AFS_PACKAGE_BUILD_name in upper case
 #                             (e.g., BACKEND, MPI_BACKEND)
 # List of provided automake substitutions:
