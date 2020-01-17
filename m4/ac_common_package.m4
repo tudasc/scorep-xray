@@ -94,8 +94,9 @@ AC_SUBST([afs_srcdir])
 #  'AFS_PACKAGE_BUILD_name'   The value of AFS_PACKAGE_BUILD_name
 #  'AFS_PACKAGE_BUILD_NAME'   The value of AFS_PACKAGE_BUILD_NAME
 #  `AFS_PACKAGE_TO_TOP`::     The value of TO-TOP
-#  'afs_srcdir'::             $srcdir joined with AFS_PACKAGE_TO_TOP (i.e.,
-#                             full path to the top-level source)
+#  'afs_srcdir'::             $srcdir joined with AFS_PACKAGE_TO_TOP without
+#                             trailing slash (i.e., full path to the top-level
+#                             source)
 # List of provided config header defines:
 #  `AFS_PACKAGE_BUILD`::      The value of AFS_PACKAGE_BUILD as a string
 #                             constant
@@ -122,22 +123,26 @@ m4_define([AFS_PACKAGE_BUILD], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
 
 dnl Overwrites AFS_PACKAGE_TO_TOP defined in AFS_PACKAGE_INIT.
-m4_pushdef([_afs_package_tmp], m4_default([$2], [../]))dnl
+m4_pushdef([_afs_package_tmp],
+    m4_bpatsubst(m4_default([$2], [../]), [/+], [/]))dnl
+m4_if(m4_substr(_afs_package_tmp, decr(len(_afs_package_tmp))), [/],
+    [], [m4_fatal([$0: no trailing slash in TO-TOP argument: ]$2)])
 dnl undefine previously defined by AFS_PACKAGE_INIT
 m4_undefine([AFS_PACKAGE_TO_TOP])
 AC_SUBST([AFS_PACKAGE_TO_TOP], _afs_package_tmp)
 m4_define([AFS_PACKAGE_TO_TOP], _afs_package_tmp)dnl
-m4_if(m4_substr(AFS_PACKAGE_TO_TOP, decr(len(AFS_PACKAGE_TO_TOP))), [/],
-    [], [m4_fatal([$0: no trailing slash in TO-TOP argument: ]AFS_PACKAGE_TO_TOP)])
 m4_popdef([_afs_package_tmp])dnl
 
-# when building inplace, $srcdir equals ., ignore $srcdir than
-# AC_SUBST already in AFS_PACKAGE_INIT
+dnl when building inplace, $srcdir equals ., ignore $srcdir than
+dnl AC_SUBST already in AFS_PACKAGE_INIT
 AS_CASE([$srcdir],
     [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],
-    [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])dnl
+    [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])
+dnl AFS_PACKAGE_SRCDIR still has the trailing slash
 AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
     ["${afs_srcdir}"], [Relative path to the top-level source directory.])
+dnl Now remove the trailing slash
+afs_srcdir=${afs_srcdir%/}
 
 m4_pushdef([_afs_package_tmp],
     m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
