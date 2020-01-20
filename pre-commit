@@ -50,8 +50,8 @@ is_ignored()
 exec 1>&2
 
 # Setup uncrustify
-BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=common/beautifier/beautify.cfg
+: ${BEAUTIFY:=uncrustify}
+: ${BEAUTIFY_CONFIG:=common/beautifier/beautify.cfg}
 if [ ! -f "$BEAUTIFY_CONFIG" ]; then
     exit 0
 fi
