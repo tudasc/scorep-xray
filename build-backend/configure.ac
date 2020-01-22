@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2019,
+dnl Copyright (c) 2009-2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -357,8 +357,12 @@ dnl Flag to hardcode libdir into a binary during linking, F77 version.
 AC_SUBST([HARDCODE_LIBDIR_FLAG_F77], [${hardcode_libdir_flag_spec_F77}])
 dnl Flag to hardcode libdir into a binary during linking, Fortran version.
 AC_SUBST([HARDCODE_LIBDIR_FLAG_FC], [${hardcode_libdir_flag_spec_FC}])
-dnl The ${wl} part of the HARDCODE_LIBDIR_FLAG_* defines.
-AC_SUBST([HARDCODE_LIBDIR_WL], [${wl}])
+dnl Use wl of the C compiler and assume it is the same for C++ and
+dnl Fortran, instead of using $wl (wl is set by CC, CXX, F77, and FC in
+dnl that order. If a compiler isn't recognized by libtool (e.g. flang in
+dnl 2020-01), wl's previous value will be set to "", although
+dnl lt_prog_compiler_wl usually works).
+AC_SUBST([HARDCODE_LIBDIR_WL], [${lt_prog_compiler_wl}])
 dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
 AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
