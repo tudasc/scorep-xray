@@ -32,7 +32,7 @@
 
 AC_DEFUN([AC_SCOREP_REVISION],
 [
-AC_REQUIRE([AC_SCOREP_GIT_CONTROLLED])
+AC_REQUIRE([_AC_SCOREP_GIT_CONTROLLED])
 AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 
 # When in a working copy, write REVISION* files. The REVISION* files
@@ -44,7 +44,10 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 
 component_revision="invalid"
 AS_IF([test "x${ac_scorep_git_controlled}" = xyes &&
-       component_revision=`cd ${afs_srcdir} && git describe --always --dirty 2>/dev/null`],
+       component_revision=$(
+            unset $(git rev-parse --local-env-vars 2>/dev/null) &&
+            cd ${afs_srcdir} &&
+            git describe --always --dirty 2>/dev/null)],
       [echo "$component_revision" >${afs_srcdir}/build-config/REVISION],
       [component_revision=external])
 
