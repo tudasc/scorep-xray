@@ -391,6 +391,9 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     UTILS_DEBUG_ENTRY();
     *pageSize = npot( *pageSize );
 
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "0: m=%u p=%u",
+                        *totalMemory, *pageSize );
+
     if ( *totalMemory <= *pageSize || *totalMemory == 0 || *pageSize == 0 )
     {
         return 0;
@@ -407,9 +410,17 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
         page_shift++;
     }
 
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "1: m=%u p=%u ps=%u",
+                        *totalMemory, *pageSize,
+                        page_shift );
+
     uint32_t n_pages = ( *totalMemory ) / ( *pageSize );
     /* round the total memory down to a multiple of pageSize */
     *totalMemory = n_pages * ( *pageSize );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "2: m=%u p=%u ps=%u np=%u",
+                        *totalMemory, *pageSize,
+                        page_shift, n_pages );
 
     uint32_t maint_memory_needed = union_size() + bitset_size( n_pages );
     maint_memory_needed = roundupto( maint_memory_needed, 64 ); // why 64?
@@ -419,6 +430,11 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
         return 0;
     }
 
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "3: m=%u p=%u ps=%u np=%u mm=%u",
+                        *totalMemory, *pageSize,
+                        page_shift, n_pages,
+                        maint_memory_needed );
+
     /* mark the pages used we need for our own maintenance
      * (i.e. this object and the page_map)
      */
@@ -427,8 +443,9 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     already_used_pages++;
     uint32_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "0: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
-                        totalMemory, page_shift, n_pages,
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "4: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u puor=%f",
+                        *totalMemory, *pageSize,
+                        page_shift, n_pages,
                         maint_memory_needed,
                         free_memory_in_last_page,
                         already_used_pages,
@@ -445,8 +462,9 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
         return 0;
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "1: m=%zu ps=%u np=%zu mm=%zu fm=%zu aup=%zu puor=%f",
-                        totalMemory, page_shift, n_pages,
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "5: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u puor=%f",
+                        *totalMemory, *pageSize,
+                        page_shift, n_pages,
                         maint_memory_needed,
                         free_memory_in_last_page,
                         already_used_pages,
