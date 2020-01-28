@@ -58,7 +58,8 @@
 #define MIN_NUMBER_OF_OBJECTS_PER_PAGE 8
 
 
-#define roundupto( x, to ) ( ( x ) + ( ( to ) - 1 ) - ( ( ( x ) - 1 ) % ( to ) ) )
+/* requirement: roundupto( n * x, x ) == n * x */
+#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
 
 
 #define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
@@ -394,7 +395,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "0: m=%u p=%u",
                         *totalMemory, *pageSize );
 
-    if ( *totalMemory <= *pageSize || *totalMemory == 0 || *pageSize == 0 )
+    if ( *totalMemory <= *pageSize || *totalMemory == 0 || *pageSize == 0 || *pageSize < SCOREP_ALLOCATOR_ALIGNMENT )
     {
         return 0;
     }
@@ -457,7 +458,8 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
         already_used_pages++;
         free_memory_in_last_page += ( *pageSize );
     }
-    if ( already_used_pages >= n_pages )
+    /* we may loose one page because of alignment */
+    if ( already_used_pages >= ( n_pages - 1 ) )
     {
         return 0;
     }
@@ -470,13 +472,20 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                         already_used_pages,
                         ( double )( free_memory_in_last_page / union_size() ) / n_pages );
 
-    SCOREP_Allocator_Allocator* allocator = calloc( 1, *totalMemory );
-    if ( !allocator )
+    void* raw = calloc( 1, *totalMemory );
+    if ( !raw )
     {
         return 0;
     }
-    allocator->page_shift          = page_shift;
-    allocator->n_pages_capacity    = n_pages;
+    SCOREP_Allocator_Allocator* allocator = ( void* )roundupto( raw, *pageSize );
+    allocator->allocated_memory = raw;
+    allocator->page_shift       = page_shift;
+    allocator->n_pages_capacity = n_pages;
+    if ( allocator != allocator->allocated_memory )
+    {
+        /* we already ensured that we can loose one page */
+        allocator->n_pages_capacity--;
+    }
     allocator->n_pages_maintenance = already_used_pages;
     allocator->free_objects        = NULL;
 
@@ -507,7 +516,10 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
 void
 SCOREP_Allocator_DeleteAllocator( SCOREP_Allocator_Allocator* allocator )
 {
-    free( allocator );
+    if ( allocator )
+    {
+        free( allocator->allocated_memory );
+    }
 }
 
 

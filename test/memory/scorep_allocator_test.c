@@ -139,8 +139,8 @@ allocator_test_6( CuTest* tc )
 void
 allocator_test_7( CuTest* tc )
 {
-    uint32_t total_mem = 2048;
-    uint32_t page_size = 1024;                    // two page
+    uint32_t total_mem = 4096;
+    uint32_t page_size = 1024;                    // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -158,8 +158,8 @@ allocator_test_7( CuTest* tc )
 void
 allocator_test_8( CuTest* tc )
 {
-    uint32_t total_mem = 1024;
-    uint32_t page_size =  512;                    // two page
+    uint32_t total_mem = 1536;
+    uint32_t page_size =  512;                    // three pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -190,8 +190,8 @@ allocator_test_8( CuTest* tc )
 void
 allocator_test_10( CuTest* tc )
 {
-    uint32_t total_mem = 1536;
-    uint32_t page_size = 512;                    // three pages
+    uint32_t total_mem = 2048;
+    uint32_t page_size = 512;                    // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -244,8 +244,8 @@ allocator_test_10( CuTest* tc )
 void
 allocator_test_11( CuTest* tc )
 {
-    uint32_t total_mem = 1024;
-    uint32_t page_size = 512;                    // two pages
+    uint32_t total_mem = 2048;
+    uint32_t page_size = 512;                    // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -274,8 +274,8 @@ allocator_test_11( CuTest* tc )
 void
 allocator_test_12( CuTest* tc )
 {
-    uint32_t total_mem = 1024;
-    uint32_t page_size = 512;                    // two pages
+    uint32_t total_mem = 2048;
+    uint32_t page_size = 512;                    // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );

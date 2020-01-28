@@ -68,6 +68,7 @@ struct SCOREP_Allocator_Page
 
 struct SCOREP_Allocator_Allocator
 {
+    void*    allocated_memory;
     uint32_t page_shift;
     uint32_t n_pages_capacity;
     uint32_t n_pages_maintenance;
