@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,4 +42,10 @@
 
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION < 7000
 #define SET_DECL_ALIGN( decl, x ) DECL_ALIGN( decl ) = ( x )
+#endif
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 10000
+#define cgraph_inlined_to( node ) ( node )->global.inlined_to
+#else
+#define cgraph_inlined_to( node ) ( node )->inlined_to
 #endif
