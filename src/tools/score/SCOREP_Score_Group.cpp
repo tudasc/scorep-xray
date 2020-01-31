@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -87,17 +87,40 @@ SCOREP_Score_Group::SCOREP_Score_Group( uint64_t      type,
                                         uint64_t      processes,
                                         const string& name )
 {
-    m_type       = type;
-    m_processes  = processes;
-    m_max_buf    = ( uint64_t* )calloc( processes, sizeof( uint64_t ) );
-    m_total_buf  = 0;
-    m_total_time = 0;
-    m_name       = name;
-    m_filter     = SCOREP_SCORE_FILTER_UNSPECIFIED;
-    m_visits     = 0;
-    m_hits       = 0;
+    m_type         = type;
+    m_processes    = processes;
+    m_max_buf      = ( uint64_t* )calloc( processes, sizeof( uint64_t ) );
+    m_total_buf    = 0;
+    m_total_time   = 0;
+    m_name         = name;
+    m_mangled_name = name;
+    m_file_name    = "";
+    m_use_mangled  = false;
+    m_filter       = SCOREP_SCORE_FILTER_UNSPECIFIED;
+    m_visits       = 0;
+    m_hits         = 0;
 }
 
+SCOREP_Score_Group::SCOREP_Score_Group( uint64_t           type,
+                                        uint64_t           processes,
+                                        const std::string& name,
+                                        const std::string& mangledName,
+                                        const std::string& fileName,
+                                        bool               useMangled )
+{
+    m_type         = type;
+    m_processes    = processes;
+    m_max_buf      = ( uint64_t* )calloc( processes, sizeof( uint64_t ) );
+    m_total_buf    = 0;
+    m_total_time   = 0;
+    m_name         = name;
+    m_mangled_name = mangledName;
+    m_file_name    = fileName;
+    m_use_mangled  = useMangled;
+    m_filter       = SCOREP_SCORE_FILTER_UNSPECIFIED;
+    m_visits       = 0;
+    m_hits         = 0;
+}
 
 SCOREP_Score_Group::~SCOREP_Score_Group()
 {
@@ -169,8 +192,61 @@ SCOREP_Score_Group::print( double                   totalTime,
              << " " << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
              << " " << setw( widths.m_time_per_visit ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
              << left
-             << "  " << m_name << endl;
+             << "  " << getDisplayName() << endl;
     }
+}
+
+std::string
+SCOREP_Score_Group::getDisplayName()
+{
+    if ( m_use_mangled )
+    {
+        return m_mangled_name;
+    }
+    return m_name;
+}
+
+std::string
+SCOREP_Score_Group::cleanName()
+{
+    std::string temp = m_mangled_name;
+    // make the name string fit our regex semantic, in particular for C++
+    std::replace( temp.begin(), temp.end(), ' ', '?' );
+    std::replace( temp.begin(), temp.end(), ']', '?' );
+    std::replace( temp.begin(), temp.end(), '[', '?' );
+    std::replace( temp.begin(), temp.end(), '*', '?' );
+    std::replace( temp.begin(), temp.end(), '!', '?' );
+    return temp;
+}
+
+std::string
+SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTotalBufferSize,
+                                        uint64_t                 maxBuffer,
+                                        double                   thresholdTimePerVisits,
+                                        double                   totalTime,
+                                        SCOREP_Score_FieldWidths widths )
+{
+    double buffer_ratio = ( ( double )getMaxTraceBufferSize() / ( double )maxBuffer ) * 100;
+    if (   buffer_ratio >= percentageOfTotalBufferSize
+           && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
+           && m_type == SCOREP_SCORE_TYPE_USR )
+    {
+        string clean_name = cleanName();
+
+        std::ostringstream temp;
+        temp.setf( ios::fixed, ios::floatfield );
+        temp.setf( ios::showpoint );
+        temp << "# visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits ) << ", time="
+             << setw( widths.m_time ) << setprecision( 2 ) << m_total_time << "s ("
+             << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)";
+        int length = 10 + widths.m_visits + 7 + widths.m_time + 3 + 5 + 2;
+
+        return "    " + temp.str() + "\n"
+               + "    # name='" + m_name + "'\n"
+               + "    # file='" + m_file_name + "'\n"
+               + "    MANGLED " + clean_name + "\n";
+    }
+    return "";
 }
 
 double

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -155,8 +155,38 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( cube::Cube* cube   ) : m_cube( cube 
         m_root_regions.insert( roots[ i ]->get_callee()->get_id() );
         calculate_calltree_types( roots[ i ] );
     }
+
+    m_longest_common_path = "";
+    for ( uint32_t i = 0; i < getNumberOfRegions(); i++ )
+    {
+        if ( ( ( get_definition_type( i ) !=  SCOREP_SCORE_TYPE_USR ) &&
+               ( get_definition_type( i ) !=  SCOREP_SCORE_TYPE_COM ) ) ||
+             (  getFileName( i ).length() == 0 ) )
+        {
+            // only interesting for real paths
+            continue;
+        }
+
+        if ( m_longest_common_path.length() == 0 )
+        {
+            // initial value
+            m_longest_common_path = getFileName( i );
+        }
+        else
+        {
+            m_longest_common_path = string( m_longest_common_path.begin(),
+                                            mismatch( m_longest_common_path.begin(),
+                                                      m_longest_common_path.end(),
+                                                      getFileName( i ).begin() ).first );
+        }
+    }
 }
 
+std::string
+SCOREP_Score_Profile::getPathPrefix()
+{
+    return m_longest_common_path;
+}
 
 SCOREP_Score_Profile::~SCOREP_Score_Profile()
 {
@@ -217,6 +247,21 @@ string
 SCOREP_Score_Profile::getFileName( uint64_t region )
 {
     return m_regions[ region ]->get_mod();
+}
+
+string
+SCOREP_Score_Profile::getShortFileName( uint64_t region )
+{
+    string mod = m_regions[ region ]->get_mod();
+    auto   res = mismatch( m_longest_common_path.begin(),
+                           m_longest_common_path.end(),
+                           mod.begin() );
+
+    if ( res.first == m_longest_common_path.end() )
+    {
+        return string( res.second, mod.end() );
+    }
+    return mod;
 }
 
 uint64_t

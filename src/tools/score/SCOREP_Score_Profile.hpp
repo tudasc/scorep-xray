@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -117,6 +117,21 @@ public:
      */
     std::string
     getFileName( uint64_t regionId );
+
+    /**
+     * Returns the name of the source file, shortened by removing a common prefix
+     * of all used file names. When using widely spread out sources, this can
+     * degenerate to the complete path.
+     * @param regionId  ID of the region for which the source file is requested.
+     */
+    std::string
+    getShortFileName( uint64_t region );
+
+    /**
+     * Returns the common path prefix of all referenced files.
+     */
+    std::string
+    getPathPrefix();
 
     /**
      * Returns the number of region definitions.
@@ -296,6 +311,11 @@ private:
     std::set<uint64_t> m_dynamic_regions;
 
     int64_t m_num_arguments;
+
+    /**
+     * String containing the common path prefix of all referenced files.
+     */
+    std::string m_longest_common_path;
 };
 
 
