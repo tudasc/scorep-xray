@@ -20,6 +20,9 @@ User tools and API improvements and changes:
   size" and "time per visit" parameters.
 - Compile-time filtering via `scorep --instrument-filter` is now
   also available for builds using Intel compilers.
+- Added additional scorep-score sorting modes `name`, `totaltime`,
+  `timepervisit`, and `visits`, besides the default `maxbuffer`.
+  Select a sorting mode via `-s <mode>`.
 
 Bugfixes:
 

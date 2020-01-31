@@ -50,6 +50,7 @@
 #include <iomanip>
 #include <deque>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 
@@ -59,96 +60,6 @@ using namespace std;
                                                                        internal functions
 ****************************************************************************************/
 
-/**
- * Swaps the items on @a pos1 and @a pos2 from the group list.
- * Needed for the quicksort.
- * @param item  List of groups that is sorted.
- * @param pos1  Position of an element that is swapped with the element at @a pos2.
- * @param pos2  Position of an element that is swapped with the element at @a pos1.
- */
-static void
-swap( SCOREP_Score_Group** items,
-      uint64_t             pos1,
-      uint64_t             pos2 )
-{
-    SCOREP_Score_Group* helper = items[ pos1 ];
-    items[ pos1 ] = items[ pos2 ];
-    items[ pos2 ] = helper;
-}
-
-/**
- * Sorts an array of pointers to groups using the quicksort algorithm.
- * @param items  Array of groups that are sorted.
- * @param size   Number of groups in @a items.
- */
-static void
-quicksort( SCOREP_Score_Group** items,
-           uint64_t             size )
-{
-    if ( size < 2 )
-    {
-        return;
-    }
-    if ( size == 2 )
-    {
-        if ( items[ 0 ]->getMaxTraceBufferSize() <
-             items[ 1 ]->getMaxTraceBufferSize() )
-        {
-            swap( items, 0, 1 );
-        }
-        return;
-    }
-
-    uint64_t beg       = 0;
-    uint64_t end       = size - 1;
-    uint64_t pos       = size / 2;
-    uint64_t threshold = items[ pos ]->getMaxTraceBufferSize();
-
-    while ( beg < end )
-    {
-        while ( ( beg < end ) &&
-                ( items[ beg ]->getMaxTraceBufferSize() > threshold ) )
-        {
-            beg++;
-        }
-
-        while ( ( beg < end ) &&
-                ( items[ end ]->getMaxTraceBufferSize() <= threshold ) )
-        {
-            end--;
-        }
-        if ( beg < end )
-        {
-            swap( items, beg, end );
-
-            // Maintain position of our threshold item
-            // Needed for special handling of equal values
-            if ( beg == pos )
-            {
-                pos = end;
-            }
-            else if ( end == pos )
-            {
-                pos = beg;
-            }
-        }
-    }
-
-    // Special handling if we have many entries with the same value
-    // Otherwise,lots of equal values might lead to infinite recursion.
-    if ( items[ end ]->getMaxTraceBufferSize() < threshold )
-    {
-        swap( items, end, pos );
-    }
-    while ( ( end < size ) &&
-            ( items[ end ]->getMaxTraceBufferSize() == threshold ) )
-    {
-        end++;
-    }
-
-    quicksort( items, beg );
-    quicksort( &items[ end ], size - end );
-}
 
 static bool
 is_writable_file_creatable( string filename )
@@ -277,13 +188,45 @@ get_user_readable_byte_no( uint64_t bytes )
     return result.str();
 }
 
+// Compare functions for the stable sort depending on sorting type
+static bool
+compare_maxbuffer( SCOREP_Score_Group* const& a, SCOREP_Score_Group* const& b )
+{
+    return a->getMaxTraceBufferSize() >  b->getMaxTraceBufferSize();
+}
+
+static bool
+compare_totaltime( SCOREP_Score_Group* const& a, SCOREP_Score_Group* const& b )
+{
+    return a->getTotalTime() >  b->getTotalTime();
+}
+
+static bool
+compare_timepervisit( SCOREP_Score_Group* const& a, SCOREP_Score_Group* const& b )
+{
+    return a->getTimePerVisit() <  b->getTimePerVisit();
+}
+
+static bool
+compare_visits( SCOREP_Score_Group* const& a, SCOREP_Score_Group* const& b )
+{
+    return a->getVisits() >  b->getVisits();
+}
+
+static bool
+compare_name( SCOREP_Score_Group* const& a, SCOREP_Score_Group* const& b )
+{
+    return a->getName() <  b->getName();
+}
+
 
 /* **************************************************************************************
                                                              class SCOREP_Score_Estimator
 ****************************************************************************************/
 
-SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                                                uint64_t              denseNum )
+SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile*    profile,
+                                                uint64_t                 denseNum,
+                                                SCOREP_Score_SortingType sortType )
     : m_filter( SCOREP_Filter_New() )
     , m_has_filter( false )
     , m_profile( profile )
@@ -297,8 +240,10 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     , m_bytes_per_num_parameter( 0 )
     , m_bytes_per_str_parameter( 0 )
     , m_bytes_per_hit( 0 )
+    , m_total_time( 0 )
     , m_max_buf( 0 )
     , m_total_buf( 0 )
+    , m_sort_type( sortType )
 {
     SCOREP_Score_Event* timestamp_event = new SCOREP_Score_TimestampEvent();
     registerEvent( timestamp_event );
@@ -640,6 +585,37 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
 }
 
 void
+SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
+                                     uint64_t             size )
+{
+    switch ( m_sort_type )
+    {
+        case SCOREP_SCORE_SORTING_TYPE_MAXBUFFER:
+            std::stable_sort( items, items + size, compare_maxbuffer );
+            break;
+        case SCOREP_SCORE_SORTING_TYPE_TOTALTIME:
+            std::stable_sort( items, items + size, compare_totaltime );
+            break;
+        case SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT:
+            std::stable_sort( items, items + size, compare_timepervisit );
+            break;
+        case SCOREP_SCORE_SORTING_TYPE_VISITS:
+            std::stable_sort( items, items + size, compare_visits );
+            break;
+        case SCOREP_SCORE_SORTING_TYPE_NAME:
+            std::stable_sort( items, items + size, compare_name );
+            break;
+        default:
+            // In normal use this should not happen.
+            cerr << "[Score-P] Error: unknown sorting type!";
+            exit( EXIT_FAILURE );
+    }
+    ;
+
+    return;
+}
+
+void
 SCOREP_Score_Estimator::registerEvent( SCOREP_Score_Event* event )
 {
     m_events.insert( pair< string, SCOREP_Score_Event* >( event->getName(), event ) );
@@ -794,10 +770,9 @@ SCOREP_Score_Estimator::printGroups( void )
              << endl << endl;
     }
 
-    quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
+    m_groups[ SCOREP_SCORE_TYPE_ALL ]->updateWidths( m_widths );
+    sortEntries( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    // The first group is "ALL"
-    m_groups[ 0 ]->updateWidths( m_widths );
     cout << "flt"
          << " " << setw( m_widths.m_type ) << "type"
          << " " << setw( m_widths.m_bytes ) << "max_buf[B]"
@@ -818,7 +793,7 @@ SCOREP_Score_Estimator::printGroups( void )
 
     if ( m_has_filter )
     {
-        quicksort( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
+        sortEntries( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
 
         cout << endl;
         for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
@@ -831,9 +806,8 @@ SCOREP_Score_Estimator::printGroups( void )
 void
 SCOREP_Score_Estimator::printRegions( void )
 {
-    quicksort( m_regions, m_region_num );
+    sortEntries( m_regions, m_region_num );
 
-    double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTime();
     cout << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
@@ -845,7 +819,7 @@ void
 SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
                                             double maxTimePerVisits )
 {
-    quicksort( m_regions, m_region_num );
+    sortEntries( m_regions, m_region_num );
 
     string filter_file_name = "initial_scorep.filter";
 

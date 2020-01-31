@@ -9,6 +9,8 @@ Options:
              specify the number of hardware counters. Otherwise, scorep-score
              may underestimate the required space.
  -m          Prints mangled region names instead of demangled names.
+ -s <choice> Sorting of entries. Possible choices are totaltime, timepervisit,
+              maxbuffer, visits and name (default=maxbuffer).
  -g          Generation of an initial filter file, has to be adapted to the
              application requirements. The name is 'initial_scorep.filter'.
  -b <%>      Only consider regions for the filter file that contribute more

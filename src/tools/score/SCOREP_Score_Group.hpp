@@ -185,6 +185,18 @@ public:
     getTotalTime( void );
 
     /**
+     * Returns the name.
+     */
+    const std::string&
+    getName( void );
+
+    /**
+     * Returns the time per visit.
+     */
+    double
+    getTimePerVisit( void );
+
+    /**
      * Returns the trace buffer requirements for the regions in this
      * group on the process that required the largest buffer.
      */
@@ -197,6 +209,12 @@ public:
      */
     uint64_t
     getTotalTraceBufferSize( void );
+
+    /**
+     * Returns the visits.
+     */
+    uint64_t
+    getVisits( void );
 
     /**
      * Configures whether filters are used and how this group is affected.

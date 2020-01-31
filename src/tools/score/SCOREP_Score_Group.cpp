@@ -255,6 +255,28 @@ SCOREP_Score_Group::getTotalTime( void )
     return m_total_time;
 }
 
+const std::string&
+SCOREP_Score_Group::getName( void )
+{
+    return m_name;
+}
+
+double
+SCOREP_Score_Group::getTimePerVisit( void )
+{
+    if ( m_visits == 0 )
+    {
+        return 0;
+    }
+    return m_total_time / m_visits * 1000000;
+}
+
+uint64_t
+SCOREP_Score_Group::getVisits( void )
+{
+    return m_visits;
+}
+
 uint64_t
 SCOREP_Score_Group::getMaxTraceBufferSize( void )
 {

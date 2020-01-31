@@ -46,6 +46,19 @@
 #include <stdint.h>
 #include <string>
 
+/**
+ * Possible sorting options for the region display.
+ * Covers all numerical columns.
+ */
+typedef enum
+{
+    SCOREP_SCORE_SORTING_TYPE_TOTALTIME,
+    SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT,
+    SCOREP_SCORE_SORTING_TYPE_MAXBUFFER,
+    SCOREP_SCORE_SORTING_TYPE_VISITS,
+    SCOREP_SCORE_SORTING_TYPE_NAME
+} SCOREP_Score_SortingType;
+
 class SCOREP_Score_Profile;
 class SCOREP_Score_Event;
 typedef struct SCOREP_Filter SCOREP_Filter;
@@ -61,9 +74,11 @@ public:
      * Creates an instance of SCOREP_Score_Estimator.
      * @param profile   A pointer to the profile.
      * @param denseNum  Number of dense metrics that should be recorded in the trace.
+     * @param sortType  Type to sort regions by.
      */
-    SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                            uint64_t              denseNum );
+    SCOREP_Score_Estimator( SCOREP_Score_Profile*    profile,
+                            uint64_t                 denseNum,
+                            SCOREP_Score_SortingType sortType );
 
     /**
      * Destructor.
@@ -186,7 +201,20 @@ private:
     setEventSize( const std::string& name,
                   uint32_t           size );
 
+    /**
+     * Sorts table entries by previously chosen m_sort_type.
+     * Employs std::stable_sort as sorting algorithm.
+     */
+    void
+    sortEntries( SCOREP_Score_Group** items,
+                 uint64_t             size );
+
 private:
+    /**
+     * The chosen column type for sorting, default max buffer.
+     */
+    SCOREP_Score_SortingType m_sort_type;
+
     /**
      * True, if a filter is used.
      */
