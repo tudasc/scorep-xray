@@ -51,18 +51,16 @@
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
+/* requirement: roundupto( n * x, x ) == n * x */
+#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
+
+#define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
+
 #include "scorep_bitset.h"
 #include "scorep_page.h"
 
 /* 8 objects per page should be minimum to be efficient */
 #define MIN_NUMBER_OF_OBJECTS_PER_PAGE 8
-
-
-/* requirement: roundupto( n * x, x ) == n * x */
-#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-
-
-#define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
 
 /**
  * Calculate the smallest power-of-two number which is greater/equal to @a v.
@@ -319,24 +317,17 @@ page_manager_get_new_page( SCOREP_Allocator_PageManager* pageManager,
 }
 
 
-static inline void*
-grab_memory( SCOREP_Allocator_Page* page,
-             size_t                 requestedSize )
-{
-    void* memory = page->memory_current_address;
-    page->memory_current_address += roundup( requestedSize );
-    page->memory_alignment_loss  += roundup( requestedSize ) - requestedSize;
-    return memory;
-}
-
-
+/** @a alignment needs to be a power-of-two */
 static void*
 page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
-                    size_t                        requestedSize )
+                    size_t                        requestedSize,
+                    size_t                        alignment )
 {
     assert( pageManager );
     assert( pageManager->moved_page_id_mapping_page == 0 );
     assert( requestedSize > 0 );
+    assert( ( alignment & ( alignment - 1 ) ) == 0 );
+    assert( alignment <= page_size( pageManager->allocator ) );
 
     /* do not try to allocate more than the allocator has memory */
     if ( requestedSize > total_memory( pageManager->allocator ) )
@@ -346,23 +337,21 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
     }
 
     /* search in all pages for space */
-    SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
+    SCOREP_Allocator_Page* page   = pageManager->pages_in_use_list;
+    void*                  memory = NULL;
     while ( page )
     {
-        if ( roundup( requestedSize ) <= get_page_avail( page ) )
+        if ( grab_page_memory( page, requestedSize, alignment, &memory ) )
         {
-            break;
+            return memory;
         }
         page = page->next;
     }
 
     /* no page found, request new one */
-    if ( !page )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "requesting new page ..." );
-        page = page_manager_get_new_page( pageManager, requestedSize );
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "... got page %p.", page );
-    }
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "requesting new page ..." );
+    page = page_manager_get_new_page( pageManager, requestedSize );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "... got page %p.", page );
 
     /* still no page, out of memory */
     if ( !page )
@@ -371,7 +360,9 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
         return 0;
     }
 
-    return grab_memory( page, requestedSize );
+    /* memory stays NULL, if page cannot satisfy request */
+    grab_page_memory( page, requestedSize, alignment, &memory );
+    return memory;
 }
 
 
@@ -601,7 +592,9 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
     unlock_allocator( allocator );
 
     /* Allocate what we need for the mapping, should not fail */
-    void* mapping = grab_memory( page_manager->moved_page_id_mapping_page, mapping_size );
+    void* mapping;
+    grab_page_memory( page_manager->moved_page_id_mapping_page,
+                      mapping_size, SCOREP_ALLOCATOR_ALIGNMENT, &mapping );
     memset( mapping, 0, mapping_size );
 
     UTILS_DEBUG_EXIT();
@@ -641,7 +634,7 @@ void*
 SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
                         size_t                        memorySize )
 {
-    return page_manager_alloc( pageManager, memorySize );
+    return page_manager_alloc( pageManager, memorySize, SCOREP_ALLOCATOR_ALIGNMENT );
 }
 
 
@@ -677,7 +670,7 @@ SCOREP_Allocator_AllocMovable( SCOREP_Allocator_PageManager* pageManager,
                                size_t                        memorySize )
 {
     /// @todo padding?
-    void* memory = page_manager_alloc( pageManager, memorySize );
+    void* memory = page_manager_alloc( pageManager, memorySize, SCOREP_ALLOCATOR_ALIGNMENT );
     if ( !memory )
     {
         UTILS_DEBUG_EXIT( "out-of-memory" );
@@ -768,6 +761,7 @@ SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManage
         if ( page->memory_start_address <= memory
              && memory < page->memory_current_address )
         {
+            /* This may leak memory due to alignment */
             page->memory_current_address = memory;
             pageManager->last_allocation = 0;
             return;

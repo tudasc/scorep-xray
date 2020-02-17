@@ -153,4 +153,23 @@ get_page_avail( const SCOREP_Allocator_Page* page )
     return avail;
 }
 
+static inline bool
+grab_page_memory( SCOREP_Allocator_Page* page,
+                  size_t                 requestedSize,
+                  size_t                 alignment,
+                  void**                 memoryOut )
+{
+    void*     memory = ( void* )roundupto( page->memory_current_address, alignment );
+    ptrdiff_t avail  = ( intptr_t )page->memory_end_address - ( intptr_t )memory;
+    if ( avail < 0 || requestedSize > ( size_t )avail )
+    {
+        return false;
+    }
+
+    page->memory_alignment_loss += ( char* )memory - ( char* )page->memory_current_address;
+    page->memory_current_address = memory + requestedSize;
+    *memoryOut                   = memory;
+    return true;
+}
+
 #endif /* SCOREP_INTERNAL_PAGE_H */
