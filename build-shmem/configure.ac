@@ -107,7 +107,6 @@ SCOREP_SHMEM_WORKING(
     [scorep_shmem_c_supported="no"])
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
-cross_compiling=${ac_scorep_cross_compiling}
 AFS_SUMMARY([C99 compiler works], [${scorep_shmem_c_supported}${scorep_shmem_c_summary_tail}])
 
 # C++ SHMEM is needed for the jacobi C++ tests only.
