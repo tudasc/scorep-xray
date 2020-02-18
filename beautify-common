@@ -1,0 +1,66 @@
+# Common code for beautifier. To be used by pre-commit hook, (make) beautify,
+# and the merge-request's beautification.
+# Needs BEAUTIFY_CONFIG to be set and point to configuration file.
+
+
+# sed and sort might be affected, so be consistent
+export LC_ALL=
+export LANG=C
+
+: ${BEAUTIFY:=uncrustify}
+
+# Consider (A)dded/(C)opied/(M)odified/(R)enamed files only
+filter=ACMR
+
+# Consider these file extensions only
+extensions="'*.c' '*.h' '*.cc' '*.hh' '*.cpp' '*.hpp' '*.java' '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in'"
+
+# A path is ignored if the 'hook-beautifier' attribute is 'unset', i.e., the
+# attribute name is prefixed with a dash '-'.
+# $2 git options [optional]
+is_ignored()
+{
+    local result="$(git check-attr ${2-} hook-beautifier -- "$1")"
+    test "${result#*: hook-beautifier: }" = "unset"
+}
+
+# Beautify path, modifies working copy
+# $1: path
+beautify_candidate()
+{
+    # Check hook-beautifier attribute
+    if is_ignored "$1"
+    then
+        echo "  IGNORED  ${1}"
+        continue
+    fi
+
+    # Beautify the candidate
+    echo "  BEAUTIFY ${1}"
+    $BEAUTIFY -c $BEAUTIFY_CONFIG --no-backup -q "$1"
+    if test $? -ne 0
+    then
+        echo "  ERROR    ${1}"
+        exit 1
+    fi
+}
+
+# Check if beautify's config file is available.
+if [ "x$BEAUTIFY_CONFIG" = x ]
+then
+    echo "  ABORT    variable BEAUTIFY_CONFIG not set."
+    exit 1
+fi
+if [ ! -f "$BEAUTIFY_CONFIG" ]
+then
+    echo "  ABORT    Can't find file \"$BEAUTIFY_CONFIG\."
+    exit 1
+fi
+# Check for matching beautifier/config version
+exe_version=$($BEAUTIFY --version | tr '[a-z]' '[A-Z]' | sed -e 's/UNCRUSTIFY *//')
+cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | tr '[a-z]' '[A-Z]' | sed -e 's/^# *UNCRUSTIFY *//')
+if [ "$exe_version" != "$cfg_version" ]
+then
+    echo "  ABORT    Configuration file expects v$cfgversion, but found beautifier v$exe_version."
+    exit 1
+fi

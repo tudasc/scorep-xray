@@ -40,49 +40,37 @@ then
     against=$(git hash-object -t tree /dev/null)
 fi
 
-is_ignored()
-{
-    local result="$(git check-attr --cached hook-beautifier -- "$1")"
-    test "${result#*: hook-beautifier: }" = "unset"
-}
-
 # Redirect output to stderr.
 exec 1>&2
 
-# Setup uncrustify
-: ${BEAUTIFY:=uncrustify}
+# Setup and use common beautification code
 : ${BEAUTIFY_CONFIG:=common/beautifier/beautify.cfg}
-if [ ! -f "$BEAUTIFY_CONFIG" ]; then
-    exit 0
+BEAUTIFY_COMMON=common/beautifier/beautify-common
+if [ ! -f $BEAUTIFY_COMMON ]
+then
+    echo "  ABORT    Could not find $BEAUTIFY_COMMON"
+    exit 1
 fi
+. $BEAUTIFY_COMMON
 
-# Iterate over all (A)dded/(C)opied/(M)odified/(R)enamed files in the index
-git diff-index --name-only --cached --diff-filter=ACMR $against -- \
-    '*.c'    '*.h'    '*.cc'    '*.hh'    '*.cpp'    '*.hpp'    '*.java' \
-    '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in' |
+# Iterate over candidate files in the index, doesn't modify the working copy
+eval git diff-index --name-only --cached --diff-filter=$filter $against -- $extensions |
 while read path
 do
     # Check hook-beautifier attribute, but only the state in the index
-    if is_ignored "${path}"
-    then # file should be ignored
+    if is_ignored "${path}" "--cached"
+    then
         echo "  IGNORED  ${path}"
         continue
     fi
 
-    # Extract extension, ignore '.in' for for candidate file
-    ext=${path##*.}
-    if test "${ext}" = "in"
-    then
-        ext=${path%.in}
-        ext=${path##*.}
-    fi
-
     # Extract candidate from the index
-    candidate="${tmpdir}/candidate.${ext}"
+    file="${path##*/}"
+    candidate="${tmpdir}/${file}"
     git show ":${path}" >"${candidate}"
 
     # Beautify the candidate
-    result="${tmpdir}/result.${ext}"
+    result="${tmpdir}/${file}"
     $BEAUTIFY -q -c $BEAUTIFY_CONFIG -f "${candidate}" -o "${result}"
     if test $? -ne 0
     then
