@@ -55,7 +55,7 @@
 
 function evaluate_placeholder(compiler)
 {
-  # e.g. transform MPICC="mpiicc -cc=${CC}" to MPICC="mpiicc -cc=gcc",
+  # e.g. transform MPICC="mpiicc -cc={CC}" to MPICC="mpiicc -cc=gcc",
   # assuming that CC=gcc
   mpi_compiler = "MPI" compiler
   pattern = "{" compiler "}"
