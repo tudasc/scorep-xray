@@ -618,7 +618,7 @@ static void
 memory_dump_stats_aggr( void )
 {
     /* get stat's min/max/mean */
-    for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 0; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         memory_reduce_stats( &( stats[ i ] ),
                              &( stats_min[ i ] ),
@@ -659,7 +659,7 @@ memory_dump_stats_aggr( void )
     }
 
     /* maintenance, definitions, location-memory */
-    for ( int i = 1; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 1; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         /* header */
         fprintf( stderr, "[Score-P] Memory: %s\n", memory_type_2_string( i ) );
@@ -715,7 +715,7 @@ memory_dump_stats_full( void )
              stats[ SCORER_MEMORY_TRACKING_TOTAL ].pages_used );
 
     /* maintenance, definitions, location-memory */
-    for ( int i = 1; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 1; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         /* header */
         fprintf( stderr, "[Score-P] Memory: %s\n", memory_type_2_string( i ) );
