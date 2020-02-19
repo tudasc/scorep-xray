@@ -317,18 +317,17 @@ page_manager_get_new_page( SCOREP_Allocator_PageManager* pageManager,
     SCOREP_Allocator_Page* page = get_page( pageManager->allocator, order );
     unlock_allocator( pageManager->allocator );
 
-    if ( page )
-    {
-        page->next                     = pageManager->pages_in_use_list;
-        pageManager->pages_in_use_list = page;
-        UTILS_DEBUG_EXIT( "new page = %p", page );
-        return page;
-    }
-    else
+    if ( !page )
     {
         UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
         return 0;
     }
+
+    page->next                     = pageManager->pages_in_use_list;
+    pageManager->pages_in_use_list = page;
+
+    UTILS_DEBUG_EXIT( "new page = %p", page );
+    return page;
 }
 
 
