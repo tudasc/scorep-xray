@@ -208,7 +208,7 @@ SCOREP_Memory_HandleOutOfMemory( void )
 }
 
 SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreateTracingPageManager( void )
+SCOREP_Memory_CreatePageManager( void )
 {
     SCOREP_Allocator_PageManager* page_manager =
         SCOREP_Allocator_CreatePageManager( allocator );
@@ -222,14 +222,9 @@ SCOREP_Memory_CreateTracingPageManager( void )
 
 
 SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreatePageManager( void )
+SCOREP_Memory_CreateTracingPageManager( void )
 {
-    SCOREP_Allocator_PageManager* page_manager = SCOREP_Allocator_CreatePageManager( allocator );
-    if ( !page_manager )
-    {
-        SCOREP_Memory_HandleOutOfMemory();
-    }
-    return page_manager;
+    return SCOREP_Memory_CreatePageManager();
 }
 
 

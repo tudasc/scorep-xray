@@ -110,13 +110,6 @@ SCOREP_Memory_Finalize( void );
 
 
 /**
- * Creates a page manager for the tracing event writer.
- */
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreateTracingPageManager( void );
-
-
-/**
  * Create a page manager on the fly. Triggers SCOREP_Memory_HandleOutOfMemory()
  * if creation fails.
  * By creation on the fly we will only create the least amount of page managers,
@@ -124,6 +117,13 @@ SCOREP_Memory_CreateTracingPageManager( void );
  */
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreatePageManager( void );
+
+
+/**
+ * Creates a page manager for the tracing event writer.
+ */
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateTracingPageManager( void );
 
 
 void
