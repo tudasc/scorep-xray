@@ -283,8 +283,13 @@ static bool
 free_memory_type_for_location( SCOREP_Location* location,
                                void*            arg )
 {
-    SCOREP_MemoryType type = *( SCOREP_MemoryType* )arg;
-    SCOREP_Allocator_Free( SCOREP_Location_GetOrCreateMemoryPageManager( location, type ) );
+    SCOREP_MemoryType             type         = *( SCOREP_MemoryType* )arg;
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Location_GetMemoryPageManager( location, type );
+    if ( page_manager )
+    {
+        SCOREP_Allocator_Free( page_manager );
+    }
     return false;
 }
 
