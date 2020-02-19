@@ -1,10 +1,11 @@
 #!/bin/sh
 
 # NAME
-#     pre-commit
+#     pre-commit [--on-commit=<commit>]
 #
 # DESCRIPTION
-#     Score-P beautifier Git pre-commit hook.
+#     Score-P beautifier Git pre-commit hook. Either run on the index or on the
+#     commit specified by `--on-commit`.
 #
 # AUTHORS
 #     Christian Feld <c.feld@fz-juelich.de>
@@ -13,63 +14,63 @@
 
 set -e
 
-if git rev-parse --verify HEAD >/dev/null 2>&1
+# Setup temp dir
+gitdir=$(git rev-parse --git-dir)
+tmpdir=$gitdir/hooks/pre-commit.tmp.$$
+mkdir -p "$tmpdir/.git"
+trap "rm -rf $tmpdir" 0
+
+against=HEAD
+case "${1-}" in
+--on-commit=*)
+    oid=${1#--on-commit=}
+    # We need to load the commit into an index. This way 'git check-attr --cached'
+    # honors the value of .gitattributes from that index only
+    git read-tree --index-out=$tmpdir/.git/index $oid
+    GIT_INDEX_FILE=$tmpdir/.git/index
+    export GIT_INDEX_FILE
+    # Compare against the parent
+    against=$oid^
+esac
+
+# Compare against HEAD/parent or the empty tree
+if ! git rev-parse --verify $against >/dev/null 2>&1
 then
-    against=HEAD
-else
     # Initial commit: diff against an empty tree object
     against=$(git hash-object -t tree /dev/null)
 fi
 
-is_ignored()
-{
-    local result="$(git check-attr --cached hook-beautifier -- "$1")"
-    test "${result#*: hook-beautifier: }" = "unset"
-}
-
 # Redirect output to stderr.
 exec 1>&2
 
-# Setup temp dir
-gitdir=$(git rev-parse --git-dir)
-tmpdir=$gitdir/hooks/pre-commit.tmp.$$
-mkdir -p "$tmpdir"
-trap "rm -rf $tmpdir" 0
-
-# Setup uncrustify
-BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=common/beautifier/beautify.cfg
-if [ ! -f "$BEAUTIFY_CONFIG" ]; then
-    exit 0
+# Setup and use common beautification code
+: ${BEAUTIFY_CONFIG:=common/beautifier/beautify.cfg}
+BEAUTIFY_COMMON=common/beautifier/beautify-common
+if [ ! -f $BEAUTIFY_COMMON ]
+then
+    echo "  ABORT    Could not find $BEAUTIFY_COMMON"
+    exit 1
 fi
+. $BEAUTIFY_COMMON
 
-# Iterate over all (A)dded/(C)opied/(M)odified/(R)enamed files in the index
-git diff-index --name-only --cached --diff-filter=ACMR $against -- \
-    '*.c'    '*.h'    '*.cc'    '*.hh'    '*.cpp'    '*.hpp'    '*.java' \
-    '*.c.in' '*.h.in' '*.cc.in' '*.hh.in' '*.cpp.in' '*.hpp.in' '*.java.in' |
+# Iterate over candidate files in the index, doesn't modify the working copy
+eval git diff-index --name-only --cached --diff-filter=$filter $against -- $extensions |
 while read path
 do
     # Check hook-beautifier attribute, but only the state in the index
-    if is_ignored "${path}"
-    then # file should be ignored
+    if is_ignored "${path}" "--cached"
+    then
         echo "  IGNORED  ${path}"
         continue
     fi
 
-    # Extract extension, ignore '.in' for for candidate file
-    ext=${path##*.}
-    if test "${ext}" = "in"
-    then
-        ext=${path%.in}
-        ext=${path##*.}
-    fi
-
     # Extract candidate from the index
-    candidate="${tmpdir}/candidate.${ext}"
+    file="${path##*/}"
+    candidate="${tmpdir}/${file}"
     git show ":${path}" >"${candidate}"
 
     # Beautify the candidate
-    result="${tmpdir}/result.${ext}"
+    result="${tmpdir}/${file}"
     $BEAUTIFY -q -c $BEAUTIFY_CONFIG -f "${candidate}" -o "${result}"
     if test $? -ne 0
     then
