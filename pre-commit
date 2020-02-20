@@ -18,6 +18,7 @@ set -e
 gitdir=$(git rev-parse --git-dir)
 tmpdir=$gitdir/hooks/pre-commit.tmp.$$
 mkdir -p "$tmpdir/.git"
+mkdir -p "$tmpdir/.results"
 trap "rm -rf $tmpdir" 0
 
 against=HEAD
@@ -70,7 +71,7 @@ do
     git show ":${path}" >"${candidate}"
 
     # Beautify the candidate
-    result="${tmpdir}/${file}"
+    result="${tmpdir}/.results/${file}"
     $BEAUTIFY -q -c $BEAUTIFY_CONFIG -f "${candidate}" -o "${result}"
     if test $? -ne 0
     then
