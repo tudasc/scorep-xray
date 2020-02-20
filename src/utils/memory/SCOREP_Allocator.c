@@ -346,7 +346,7 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
                     size_t                        requestedSize )
 {
     assert( pageManager );
-    assert( pageManager->moved_page_id_mapping == 0 );
+    assert( pageManager->moved_page_id_mapping_page == 0 );
     assert( requestedSize > 0 );
 
     /* do not try to allocate more than the allocator has memory */
@@ -524,10 +524,10 @@ get_page_manager( SCOREP_Allocator_Allocator* allocator )
         return 0;
     }
 
-    page_manager->allocator             = allocator;
-    page_manager->pages_in_use_list     = 0;
-    page_manager->moved_page_id_mapping = 0;
-    page_manager->last_allocation       = 0;
+    page_manager->allocator                  = allocator;
+    page_manager->pages_in_use_list          = 0;
+    page_manager->moved_page_id_mapping_page = 0;
+    page_manager->last_allocation            = 0;
 
     return page_manager;
 }
@@ -567,13 +567,12 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
         return 0;
     }
 
-    uint32_t order = get_order( allocator,
-                                sizeof( *page_manager->moved_page_id_mapping )
-                                * allocator->n_pages_capacity );
+    size_t   mapping_size = sizeof( uint32_t ) * allocator->n_pages_capacity;
+    uint32_t order        = get_order( allocator, mapping_size );
 
     lock_allocator( allocator );
-    SCOREP_Allocator_Page* page = get_page( allocator, order );
-    if ( !page )
+    page_manager->moved_page_id_mapping_page = get_page( allocator, order );
+    if ( !page_manager->moved_page_id_mapping_page )
     {
         put_union_object( allocator, page_manager );
         unlock_allocator( allocator );
@@ -583,8 +582,9 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
     }
     unlock_allocator( allocator );
 
-    page_manager->moved_page_id_mapping = ( uint32_t* )page->memory_start_address;
-    memset( page_manager->moved_page_id_mapping, 0, order << allocator->page_shift );
+    /* Allocate what we need for the mapping, should not fail */
+    void* mapping = grab_memory( page_manager->moved_page_id_mapping_page, mapping_size );
+    memset( mapping, 0, mapping_size );
 
     UTILS_DEBUG_EXIT();
     return page_manager;
@@ -607,22 +607,9 @@ SCOREP_Allocator_DeletePageManager( SCOREP_Allocator_PageManager* pageManager )
         page = next_page;
     }
 
-    if ( pageManager->moved_page_id_mapping )
+    if ( pageManager->moved_page_id_mapping_page )
     {
-        /* put the page used for the mapping */
-        intptr_t offset  = ( char* )pageManager->moved_page_id_mapping - ( char* )allocator;
-        uint32_t page_id = offset >> allocator->page_shift;
-        uint32_t order   = get_order( allocator,
-                                      sizeof( *pageManager->moved_page_id_mapping )
-                                      * allocator->n_pages_capacity );
-        if ( order == 1 )
-        {
-            track_bitset_clear( allocator, page_id );
-        }
-        else
-        {
-            track_bitset_clear_range( allocator, page_id, order );
-        }
+        put_page( allocator, pageManager->moved_page_id_mapping_page );
     }
 
     put_union_object( allocator, pageManager );
@@ -656,12 +643,10 @@ SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager )
     }
     unlock_allocator( pageManager->allocator );
 
-    if ( pageManager->moved_page_id_mapping )
+    if ( pageManager->moved_page_id_mapping_page )
     {
-        memset( pageManager->moved_page_id_mapping,
-                0,
-                sizeof( *pageManager->moved_page_id_mapping )
-                * pageManager->allocator->n_pages_capacity );
+        memset( pageManager->moved_page_id_mapping_page->memory_start_address,
+                0, get_page_usage( pageManager->moved_page_id_mapping_page ) );
     }
 
     pageManager->last_allocation = 0;
@@ -693,10 +678,13 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
 {
     UTILS_DEBUG_ENTRY();
     assert( movedPageManager );
-    assert( movedPageManager->moved_page_id_mapping != 0 );
+    assert( movedPageManager->moved_page_id_mapping_page != 0 );
     assert( moved_page_id != 0 );
     assert( moved_page_id < movedPageManager->allocator->n_pages_capacity );
-    assert( movedPageManager->moved_page_id_mapping[ moved_page_id ] == 0 );
+
+    uint32_t* moved_page_id_mapping =
+        ( uint32_t* )movedPageManager->moved_page_id_mapping_page->memory_start_address;
+    assert( moved_page_id_mapping[ moved_page_id ] == 0 );
 
     SCOREP_Allocator_Page* page = page_manager_get_new_page( movedPageManager,
                                                              page_usage );
@@ -710,8 +698,7 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
     uint32_t order         = get_page_order( page );
     while ( order )
     {
-        movedPageManager->moved_page_id_mapping[ moved_page_id++ ] =
-            local_page_id++;
+        moved_page_id_mapping[ moved_page_id++ ] = local_page_id++;
         order--;
     }
     set_page_usage( page, page_usage );
@@ -730,12 +717,14 @@ SCOREP_Allocator_GetAddressFromMovableMemory(
     assert( movableMemory >= page_size( pageManager->allocator ) );
     assert( movableMemory < total_memory( pageManager->allocator ) );
 
-    if ( pageManager->moved_page_id_mapping )
+    if ( pageManager->moved_page_id_mapping_page )
     {
+        uint32_t* moved_page_id_mapping =
+            ( uint32_t* )pageManager->moved_page_id_mapping_page->memory_start_address;
         uint32_t page_id     = movableMemory >> pageManager->allocator->page_shift;
         uint32_t page_offset = movableMemory & page_mask( pageManager->allocator );
-        assert( pageManager->moved_page_id_mapping[ page_id ] != 0 );
-        page_id       = pageManager->moved_page_id_mapping[ page_id ];
+        assert( moved_page_id_mapping[ page_id ] != 0 );
+        page_id       = moved_page_id_mapping[ page_id ];
         movableMemory = ( page_id << pageManager->allocator->page_shift )
                         | page_offset;
     }
@@ -749,7 +738,7 @@ SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManage
                                        SCOREP_Allocator_MovableMemory movableMemory )
 {
     assert( pageManager );
-    assert( !pageManager->moved_page_id_mapping );
+    assert( !pageManager->moved_page_id_mapping_page );
     assert( movableMemory >= page_size( pageManager->allocator ) );
     assert( pageManager->last_allocation == movableMemory );
 
@@ -855,6 +844,27 @@ SCOREP_Allocator_GetStats( SCOREP_Allocator_Allocator*        allocator,
 }
 
 
+static inline void
+update_page_stats( const SCOREP_Allocator_Page*       page,
+                   SCOREP_Allocator_PageManagerStats* stats )
+{
+    assert( page );
+    assert( stats );
+
+    uint32_t page_multiple = get_order( page->allocator, get_page_length( page ) );
+    assert( page_multiple > 0 );
+    stats->pages_allocated  += page_multiple;
+    stats->memory_allocated += get_page_length( page );
+    uint32_t usage = get_page_usage( page );
+    stats->memory_used      += usage;
+    stats->memory_available += get_page_avail( page );
+    if ( usage )
+    {
+        stats->pages_used += page_multiple;
+    }
+}
+
+
 void
 SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageManager,
                                       SCOREP_Allocator_PageManagerStats* stats )
@@ -867,26 +877,13 @@ SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageMan
     const SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
     while ( page )
     {
-        uint32_t page_multiple = get_order( page->allocator, get_page_length( page ) );
-        assert( page_multiple > 0 );
-        stats->pages_allocated  += page_multiple;
-        stats->memory_allocated += get_page_length( page );
-        uint32_t usage = get_page_usage( page );
-        stats->memory_used      += usage;
-        stats->memory_available += get_page_avail( page );
-        if ( usage )
-        {
-            stats->pages_used += page_multiple;
-        }
+        update_page_stats( page, stats );
         page = page->next;
     }
 
-    if ( pageManager->moved_page_id_mapping ) /* moved page manager */
+    if ( pageManager->moved_page_id_mapping_page ) /* moved page manager */
     {
-        uint32_t order = get_order( pageManager->allocator,
-                                    sizeof( *pageManager->moved_page_id_mapping )
-                                    * pageManager->allocator->n_pages_capacity );
-        stats->pages_allocated += order;
+        update_page_stats( pageManager->moved_page_id_mapping_page, stats );
     }
 
     unlock_allocator( pageManager->allocator );
