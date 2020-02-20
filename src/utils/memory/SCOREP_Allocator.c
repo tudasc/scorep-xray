@@ -573,13 +573,15 @@ SCOREP_Allocator_CreateMovedPageManager( SCOREP_Allocator_Allocator* allocator )
 
     lock_allocator( allocator );
     SCOREP_Allocator_Page* page = get_page( allocator, order );
-    unlock_allocator( allocator );
-
     if ( !page )
     {
+        put_union_object( allocator, page_manager );
+        unlock_allocator( allocator );
+
         UTILS_DEBUG_EXIT( "out-of-memory: no free page" );
         return 0;
     }
+    unlock_allocator( allocator );
 
     page_manager->moved_page_id_mapping = ( uint32_t* )page->memory_start_address;
     memset( page_manager->moved_page_id_mapping, 0, order << allocator->page_shift );
