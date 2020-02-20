@@ -27,7 +27,6 @@
 #  `HAVE_MIC_SUPPORT`:: Defined if a native MIC build was detected
 #
 AC_DEFUN([SCOREP_DETECT_MIC_BUILD], [
-AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 # search for scorep-config-mic only during non-mic configure runs, see #1095.
 AS_IF([test "x${ac_scorep_platform}" != xmic], [
     AC_MSG_CHECKING([for native Intel MIC build])
