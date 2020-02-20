@@ -234,9 +234,9 @@ SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
  * or from the @a allocator's maintenance pages (pageManager == 0 && allocator != 0).
  */
 void
-SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageManager,
-                                      const SCOREP_Allocator_Allocator*   allocator,
-                                      SCOREP_Allocator_PageManagerStats*  stats );
+SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageManager,
+                                      SCOREP_Allocator_Allocator*        allocator,
+                                      SCOREP_Allocator_PageManagerStats* stats );
 
 /**
  * Get the number of used pages for this page manager.

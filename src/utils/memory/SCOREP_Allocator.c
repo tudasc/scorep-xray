@@ -828,6 +828,9 @@ void
 SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
                                SCOREP_Allocator_PageManagerStats* stats )
 {
+    assert( allocator );
+    assert( stats );
+
     lock_allocator( allocator );
     stats->pages_allocated = allocator->n_pages_high_watermark;
     stats->pages_used      = allocator->n_pages_allocated;
@@ -836,15 +839,17 @@ SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
 
 
 void
-SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageManager,
-                                      const SCOREP_Allocator_Allocator*   allocator,
-                                      SCOREP_Allocator_PageManagerStats*  stats )
+SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageManager,
+                                      SCOREP_Allocator_Allocator*        allocator,
+                                      SCOREP_Allocator_PageManagerStats* stats )
 {
     assert( stats );
 
     if ( pageManager )
     {
         assert( allocator == 0 );
+        lock_allocator( pageManager->allocator );
+
         const SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
         while ( page )
         {
@@ -869,10 +874,14 @@ SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageMa
                                         * pageManager->allocator->n_pages_capacity );
             stats->pages_allocated += order;
         }
+
+        unlock_allocator( pageManager->allocator );
     }
     else /* maintenance pages */
     {
         assert( allocator );
+        lock_allocator( allocator );
+
         stats->pages_allocated  = allocator->n_pages_maintenance;
         stats->pages_used       = stats->pages_allocated;
         stats->memory_allocated = stats->pages_allocated * page_size( allocator );
@@ -883,5 +892,7 @@ SCOREP_Allocator_GetPageManagerStats( const SCOREP_Allocator_PageManager* pageMa
             free_obj                 = free_obj->next;
         }
         stats->memory_used = stats->memory_allocated - stats->memory_available;
+
+        lock_allocator( allocator );
     }
 }

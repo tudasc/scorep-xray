@@ -426,7 +426,7 @@ memory_dump_for_location( SCOREP_Location* location,
 {
     for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
     {
-        const SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Allocator_PageManager* page_manager =
             SCOREP_Location_GetMemoryPageManager( location, i );
         if ( !page_manager )
         {
