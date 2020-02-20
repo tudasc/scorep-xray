@@ -193,10 +193,8 @@ AC_MSG_RESULT([$ac_scorep_cross_compiling])
 # This macro is called by the build-backend/frontend/mpi configures only.
 AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
-    AC_REQUIRE([AC_CANONICAL_BUILD])
-
     AM_CONDITIONAL([PLATFORM_ALTIX],   [test "x${ac_scorep_platform}" = "xaltix"])
-    AM_CONDITIONAL([PLATFORM_AIX],     [test "x${ac_scorep_platform}" = "xaix" && test "x${build_cpu}" = "xpowerpc"])
+    AM_CONDITIONAL([PLATFORM_AIX],     [test "x${ac_scorep_platform}" = "xaix"])
     AM_CONDITIONAL([PLATFORM_BGL],     [test "x${ac_scorep_platform}" = "xbgl"])
     AM_CONDITIONAL([PLATFORM_BGP],     [test "x${ac_scorep_platform}" = "xbgp"])
     AM_CONDITIONAL([PLATFORM_BGQ],     [test "x${ac_scorep_platform}" = "xbgq"])
