@@ -825,74 +825,67 @@ SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
 
 
 void
-SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
-                               SCOREP_Allocator_PageManagerStats* stats )
+SCOREP_Allocator_GetStats( SCOREP_Allocator_Allocator*        allocator,
+                           SCOREP_Allocator_PageManagerStats* pageStats,
+                           SCOREP_Allocator_PageManagerStats* maintStats )
 {
     assert( allocator );
-    assert( stats );
+    assert( pageStats );
+    assert( maintStats );
 
     lock_allocator( allocator );
-    stats->pages_allocated = allocator->n_pages_high_watermark;
-    stats->pages_used      = allocator->n_pages_allocated;
+
+    pageStats->pages_allocated = allocator->n_pages_high_watermark;
+    pageStats->pages_used      = allocator->n_pages_allocated;
+
+    maintStats->pages_allocated  = allocator->n_pages_maintenance;
+    maintStats->pages_used       = maintStats->pages_allocated;
+    maintStats->memory_allocated = maintStats->pages_allocated * page_size( allocator );
+    SCOREP_Allocator_Object* free_obj = allocator->free_objects;
+    while ( free_obj )
+    {
+        maintStats->memory_available += union_size();
+        free_obj                      = free_obj->next;
+    }
+    maintStats->memory_used = maintStats->memory_allocated - maintStats->memory_available;
+
     unlock_allocator( allocator );
 }
 
 
 void
 SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageManager,
-                                      SCOREP_Allocator_Allocator*        allocator,
                                       SCOREP_Allocator_PageManagerStats* stats )
 {
     assert( stats );
+    assert( pageManager );
 
-    if ( pageManager )
+    lock_allocator( pageManager->allocator );
+
+    const SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
+    while ( page )
     {
-        assert( allocator == 0 );
-        lock_allocator( pageManager->allocator );
-
-        const SCOREP_Allocator_Page* page = pageManager->pages_in_use_list;
-        while ( page )
+        uint32_t page_multiple = get_order( page->allocator, get_page_length( page ) );
+        assert( page_multiple > 0 );
+        stats->pages_allocated  += page_multiple;
+        stats->memory_allocated += get_page_length( page );
+        uint32_t usage = get_page_usage( page );
+        stats->memory_used      += usage;
+        stats->memory_available += get_page_avail( page );
+        if ( usage )
         {
-            uint32_t page_multiple = get_order( page->allocator, get_page_length( page ) );
-            assert( page_multiple > 0 );
-            stats->pages_allocated  += page_multiple;
-            stats->memory_allocated += get_page_length( page );
-            uint32_t usage = get_page_usage( page );
-            stats->memory_used      += usage;
-            stats->memory_available += get_page_avail( page );
-            if ( usage )
-            {
-                stats->pages_used += page_multiple;
-            }
-            page = page->next;
+            stats->pages_used += page_multiple;
         }
-
-        if ( pageManager->moved_page_id_mapping ) /* moved page manager */
-        {
-            uint32_t order = get_order( pageManager->allocator,
-                                        sizeof( *pageManager->moved_page_id_mapping )
-                                        * pageManager->allocator->n_pages_capacity );
-            stats->pages_allocated += order;
-        }
-
-        unlock_allocator( pageManager->allocator );
+        page = page->next;
     }
-    else /* maintenance pages */
+
+    if ( pageManager->moved_page_id_mapping ) /* moved page manager */
     {
-        assert( allocator );
-        lock_allocator( allocator );
-
-        stats->pages_allocated  = allocator->n_pages_maintenance;
-        stats->pages_used       = stats->pages_allocated;
-        stats->memory_allocated = stats->pages_allocated * page_size( allocator );
-        SCOREP_Allocator_Object* free_obj = allocator->free_objects;
-        while ( free_obj )
-        {
-            stats->memory_available += union_size();
-            free_obj                 = free_obj->next;
-        }
-        stats->memory_used = stats->memory_allocated - stats->memory_available;
-
-        lock_allocator( allocator );
+        uint32_t order = get_order( pageManager->allocator,
+                                    sizeof( *pageManager->moved_page_id_mapping )
+                                    * pageManager->allocator->n_pages_capacity );
+        stats->pages_allocated += order;
     }
+
+    unlock_allocator( pageManager->allocator );
 }

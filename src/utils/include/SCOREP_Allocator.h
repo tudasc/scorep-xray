@@ -220,22 +220,21 @@ SCOREP_Allocator_GetMaxNumberOfPages( const SCOREP_Allocator_Allocator* allocato
 
 
 /**
- * Fill @a stats partially with the maximum number of pages used at a time
- * (high watermark) and the current number of allocated pages, w.r.t.
- * @a allocator.
+ * Fill @a pageStats partially with the maximum number of pages used at a time
+ * (high watermark) and the current number of allocated pages, w.r.t. @a allocator.
+ * Fill @a maintStats with stats for the allocator's maintenance pages.
  */
 void
-SCOREP_Allocator_GetPageStats( SCOREP_Allocator_Allocator*        allocator,
-                               SCOREP_Allocator_PageManagerStats* stats );
+SCOREP_Allocator_GetStats( SCOREP_Allocator_Allocator*        allocator,
+                           SCOREP_Allocator_PageManagerStats* pageStats,
+                           SCOREP_Allocator_PageManagerStats* maintStats );
 
 
 /**
- * Fill @a stats either with data from the @a pageManager's pages (pageManager != 0)
- * or from the @a allocator's maintenance pages (pageManager == 0 && allocator != 0).
+ * Fill @a stats with data from the @a pageManager's pages.
  */
 void
 SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageManager,
-                                      SCOREP_Allocator_Allocator*        allocator,
                                       SCOREP_Allocator_PageManagerStats* stats );
 
 /**

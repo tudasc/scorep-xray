@@ -432,7 +432,7 @@ memory_dump_for_location( SCOREP_Location* location,
         {
             continue;
         }
-        SCOREP_Allocator_GetPageManagerStats( page_manager, 0, &stats[ i + SCORER_MEMORY_TRACKING_SHIFT ] );
+        SCOREP_Allocator_GetPageManagerStats( page_manager, &stats[ i + SCORER_MEMORY_TRACKING_SHIFT ] );
     }
     return false;
 }
@@ -455,11 +455,12 @@ memory_dump_stats_common( const char* message, bool report )
     memset( stats, 0, sizeof( struct SCOREP_Allocator_PageManagerStats ) * (  SCORER_MEMORY_STATS_SIZE ) );
 
     /* collect stats[i] */
-    SCOREP_Allocator_GetPageStats( allocator, &stats[ SCORER_MEMORY_TRACKING_TOTAL ] );
-    SCOREP_Allocator_GetPageManagerStats( 0, allocator, &stats[ SCORER_MEMORY_TRACKING_MAINTENANCE ] );
+    SCOREP_Allocator_GetStats( allocator,
+                               &stats[ SCORER_MEMORY_TRACKING_TOTAL ],
+                               &stats[ SCORER_MEMORY_TRACKING_MAINTENANCE ] );
     if ( definitions_page_manager )
     {
-        SCOREP_Allocator_GetPageManagerStats( definitions_page_manager, 0, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
+        SCOREP_Allocator_GetPageManagerStats( definitions_page_manager, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
     }
     SCOREP_Location_ForAll( memory_dump_for_location, NULL );
 
