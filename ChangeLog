@@ -8,6 +8,8 @@ Features and improvements:
 
 Bugfixes:
 
+- Support changed BFD API. Changes introduced by binutils-2.34.
+
 ------------------- Released version 6.0 -----------------------------
 
 Major features:
