@@ -176,6 +176,8 @@ AC_ARG_WITH([mpi],
                    ["spectrum"], [ac_scorep_compilers_mpi="compiler-mpi-spectrum"],
                    ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
                    [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
+              ],
+              [AC_MSG_ERROR([Option --with-mpi ignored on cross-compiling platforms. MPI compiler suite automatically selected.])
               ])
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure.
@@ -251,6 +253,8 @@ AC_ARG_WITH([shmem],
                    ["sgimptwrapper"], [ac_scorep_compilers_shmem="compiler-shmem-sgimptwrapper"],
                    ["spectrum"], [ac_scorep_compilers_shmem="compiler-shmem-spectrum"],
                    [AC_MSG_ERROR([SHMEM compiler suite "${withval}" not supported by --with-shmem.])])
+              ],
+              [AC_MSG_ERROR([Option --with-shmem ignored on cross-compiling platforms. SHMEM compiler suite automatically selected.])
               ])
          ])
      # omit check "if in PATH" for now.
