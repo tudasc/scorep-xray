@@ -235,7 +235,7 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
                 std::vector<std::string>::size_type j;
                 for ( j = 0; j < m_path.size(); ++j )
                 {
-                    std::string full_path = join_path( join_path( join_path( m_path[ i ], "share" ), "scorep" ), libwrap + ".libwrap" );
+                    std::string full_path = join_path( join_path( join_path( m_path[ j ], "share" ), "scorep" ), libwrap + ".libwrap" );
                     if ( exists_file( full_path ) )
                     {
                         add_libwrap( wrapmode, libwrap, full_path );
