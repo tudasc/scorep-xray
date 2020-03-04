@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2017,
+ * Copyright (c) 2014, 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -132,9 +132,15 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
 }
 
 void
-SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
+SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
                        const SCOREP_LibwrapAttributes* attributes )
 {
+    if ( !outHandle || !attributes )
+    {
+        UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "NULL arguments" );
+        return;
+    }
+
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
         SCOREP_InitMeasurement();
@@ -154,39 +160,40 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
 
     SCOREP_MutexLock( libwrap_object_lock );
 
-    if ( *handle != NULL )
+    if ( *outHandle != NULL )
     {
         SCOREP_MutexUnlock( libwrap_object_lock );
         return;
     }
 
-    /* Get new library wrapper handle */
-    *handle = malloc( sizeof( SCOREP_LibwrapHandle ) + attributes->number_of_shared_libs * sizeof( void* ) );
-    UTILS_ASSERT( *handle );
-
-    /* Enqueue new library wrapper handle */
-    ( *handle )->next = libwrap_handles;
-    libwrap_handles   = *handle;
+    /*
+     * Get new library wrapper handle. Do not yet assign it to outHandle,
+     * only after it is finished. This prevents a race if multiple thredas try
+     * to create the wrapper. Other threads may call SCOREP_Libwrap_Create
+     * only if the handle is still NULL.
+     */
+    SCOREP_LibwrapHandle* handle = malloc( sizeof( SCOREP_LibwrapHandle ) + attributes->number_of_shared_libs * sizeof( void* ) );
+    UTILS_ASSERT( handle );
 
     /* Initialize the new library wrapper handle */
-    SCOREP_MutexCreate( &( ( *handle )->region_definition_lock ) );
-    ( *handle )->attributes = attributes;
+    SCOREP_MutexCreate( &handle->region_definition_lock );
+    handle->attributes = attributes;
 
     /* Initialize number_of_shared_lib_handles */
-    ( *handle )->number_of_shared_lib_handles = 0;
+    handle->number_of_shared_lib_handles = 0;
 
-    if ( ( *handle )->attributes->mode == SCOREP_LIBWRAP_MODE_SHARED )
+    if ( handle->attributes->mode == SCOREP_LIBWRAP_MODE_SHARED )
     {
 #if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
 
         /* clear any recent errors */
         ( void )dlerror();
-        if ( ( *handle )->attributes->number_of_shared_libs == 0 )
+        if ( handle->attributes->number_of_shared_libs == 0 )
         {
             UTILS_FATAL( "Empty library list. Runtime wrapping not supported for library wrapper '%s'", attributes->name );
         }
 
-        for ( int i = 0; i < ( *handle )->attributes->number_of_shared_libs; i++ )
+        for ( int i = 0; i < handle->attributes->number_of_shared_libs; i++ )
         {
             const char* lib_name = attributes->shared_libs[ i ];
 #if HAVE( GNU_LIB_NAMES_H )
@@ -207,9 +214,9 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
             }
 #endif
 
-            ( *handle )->shared_lib_handles[ ( *handle )->number_of_shared_lib_handles ] =
+            handle->shared_lib_handles[ handle->number_of_shared_lib_handles ] =
                 dlopen( lib_name, RTLD_LAZY | RTLD_LOCAL );
-            if ( ( *handle )->shared_lib_handles[ ( *handle )->number_of_shared_lib_handles ] == NULL )
+            if ( handle->shared_lib_handles[ handle->number_of_shared_lib_handles ] == NULL )
             {
                 char* error = dlerror();
                 if ( !error )
@@ -218,11 +225,11 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
                 }
                 UTILS_ERROR( SCOREP_ERROR_DLOPEN_FAILED,
                              "unable to open library %s: %s",
-                             ( *handle )->attributes->shared_libs[ i ], error );
+                             handle->attributes->shared_libs[ i ], error );
                 continue;
             }
 
-            ( *handle )->number_of_shared_lib_handles++;
+            handle->number_of_shared_lib_handles++;
         }
 
 #else
@@ -234,8 +241,15 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,
 
     if ( attributes->init )
     {
-        attributes->init( *handle );
+        attributes->init( handle );
     }
+
+    /* Enqueue new library wrapper handle */
+    handle->next    = libwrap_handles;
+    libwrap_handles = handle;
+
+    /* Wrapper was successfuly created, make the result visible to others. */
+    *outHandle = handle;
 
     SCOREP_MutexUnlock( libwrap_object_lock );
 

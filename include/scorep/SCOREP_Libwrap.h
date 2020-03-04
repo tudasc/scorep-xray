@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015, 2017,
+ * Copyright (c) 2013-2015, 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -84,8 +84,8 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
  * the wrapper object with the associated library handles. In all modes
  * it will build the wrapper object and fill the attributes structure.
  *
- * @param handle            Score-P library wrapper object
- * @param attributes        Attributes of the Score-P library wrapper object
+ * @param[out] handle       Score-P library wrapper object
+ * @param      attributes   Attributes of the Score-P library wrapper object
  */
 extern void
 SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          handle,

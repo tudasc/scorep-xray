@@ -13,6 +13,9 @@ Bugfixes:
 
 - Support changed BFD API. Changes introduced by binutils-2.34.
 
+- Fix aborts when user library wrapper were first called in a thread
+  parallel context.
+
 ------------------- Released version 6.0 -----------------------------
 
 Major features:
