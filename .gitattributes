@@ -21,6 +21,8 @@
 # Not a compilation unit.
 /src/adapters/shmem/scorep_shmem_confvars.inc.c -hook-config
 # Not a compilation unit.
+/src/adapters/kokkos/scorep_kokkos_confvars.inc.c -hook-config
+# Not a compilation unit.
 /src/measurement/filtering/scorep_filtering_confvars.inc.c -hook-config
 # Not a compilation unit.
 /src/measurement/online_access/scorep_oa_confvars.inc.c -hook-config

@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2017, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2019,
+ * Copyright (c) 2014-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -63,6 +63,11 @@ SCOREP_Config_Adapter::init( void )
     all.push_back( new SCOREP_Config_OpenclAdapter() );
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "opencl" ) );
+#endif
+#if HAVE_BACKEND( KOKKOS_SUPPORT )
+    all.push_back( new SCOREP_Config_KokkosAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "kokkos" ) );
 #endif
     all.push_back( new SCOREP_Config_PreprocessAdapter() );
 #if HAVE_BACKEND( MEMORY_SUPPORT )
@@ -465,7 +470,6 @@ SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
     deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
-
 /* **************************************************************************************
  * OpenCL adapter
  * *************************************************************************************/
@@ -554,6 +558,21 @@ SCOREP_Config_OpenclAdapter::addLdFlags( std::string& ldflags,
 }
 
 /* **************************************************************************************
+ * Kokkos adapter
+ * *************************************************************************************/
+SCOREP_Config_KokkosAdapter::SCOREP_Config_KokkosAdapter()
+    : SCOREP_Config_Adapter( "kokkos", "scorep_adapter_kokkos", true )
+{
+}
+
+void
+SCOREP_Config_KokkosAdapter::addLibs( std::deque<std::string>&           libs,
+                                      SCOREP_Config_LibraryDependencies& deps )
+{
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+}
+
+/* **************************************************************************************
  * Preprocess adapter
  * *************************************************************************************/
 SCOREP_Config_PreprocessAdapter::SCOREP_Config_PreprocessAdapter()
@@ -588,7 +607,6 @@ SCOREP_Config_PreprocessAdapter::appendInitStructName( std::deque<std::string>& 
 {
     // Do nothing here as PreprocessAdapter is no SCOREP_Subsystem.
 }
-
 
 /* **************************************************************************************
  * Opari2 adapter
@@ -1077,6 +1095,7 @@ void
 SCOREP_Config_LibwrapAdapter::appendInitStructName( std::deque<std::string>& init_structs )
 {
 }
+
 /* **************************************************************************************
  * I/O wrapping adapter
  * *************************************************************************************/

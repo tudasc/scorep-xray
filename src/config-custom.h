@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -73,6 +73,7 @@
     UTILS_DEFINE_DEBUG_MODULE( TOPOLOGIES,         28 ), \
     UTILS_DEFINE_DEBUG_MODULE( IO,                 29 ), \
     UTILS_DEFINE_DEBUG_MODULE( IO_MANAGEMENT,      30 ), \
-    UTILS_DEFINE_DEBUG_MODULE( MOUNTINFO,          31 )
+    UTILS_DEFINE_DEBUG_MODULE( MOUNTINFO,          31 ), \
+    UTILS_DEFINE_DEBUG_MODULE( KOKKOS,             32 )
 
 #endif /* CONFIG_CUSTOM_H */

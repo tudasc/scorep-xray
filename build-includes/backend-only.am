@@ -22,6 +22,7 @@ include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am
 include ../src/adapters/opencl/Makefile.inc.am
 include ../src/adapters/openacc/Makefile.inc.am
+include ../src/adapters/kokkos/Makefile.inc.am
 include ../src/adapters/pthread/Makefile.inc.am
 include ../src/adapters/memory/Makefile.inc.am
 include ../src/adapters/io/posix/Makefile.inc.am

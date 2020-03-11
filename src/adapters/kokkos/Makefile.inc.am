@@ -1,0 +1,40 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2020,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       /scorep/src/adapters/kokkos/Makefile.inc.am
+
+if HAVE_KOKKOS_SUPPORT
+
+kokkos_common_cppflags = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/services/include \
+    @SCOREP_TIMER_CPPFLAGS@
+
+# runtime management library for the kokkos adapter
+
+lib_LTLIBRARIES += libscorep_adapter_kokkos_mgmt.la
+
+libscorep_adapter_kokkos_mgmt_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/kokkos/scorep_kokkos_mgmt.c
+
+libscorep_adapter_kokkos_mgmt_la_CPPFLAGS = $(kokkos_common_cppflags)
+
+libscorep_adapter_kokkos_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+endif HAVE_KOKKOS_SUPPORT
