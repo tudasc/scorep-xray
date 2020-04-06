@@ -590,7 +590,14 @@ various Score-P components.
     library) is important for your use case, please contact
     support@score-p.org for help.
 
+--------------------------------------------------------------------------------
 
+* HIP support
+
+  - Score-P is only able to use one compiler suite for one installation.
+    Because `hipcc` is Clang based, it also only accepts the Clang compiler
+    instrumentation. Thus Score-P must be build with a Clang-based compiler
+    suite.
 
 --------------------------------------------------------------------------------
 

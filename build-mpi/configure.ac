@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2020,
+dnl Copyright (c) 2009-2020, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -203,6 +203,7 @@ AM_CONDITIONAL([SCOREP_MPI_OPENMPI], [test $? -eq 0])
 
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
+SCOREP_HIP
 SCOREP_OPENACC
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI

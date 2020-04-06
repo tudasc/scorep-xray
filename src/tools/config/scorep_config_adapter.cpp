@@ -54,6 +54,11 @@ SCOREP_Config_Adapter::init( void )
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "cuda" ) );
 #endif
+#if HAVE_BACKEND( HIP_SUPPORT )
+    all.push_back( new SCOREP_Config_HipAdapter() );
+#else
+    all.push_back( new SCOREP_Config_MockupAdapter( "hip" ) );
+#endif
 #if HAVE_BACKEND( OPENACC_SUPPORT )
     all.push_back( new SCOREP_Config_OpenaccAdapter() );
 #else
@@ -458,6 +463,24 @@ SCOREP_Config_CudaAdapter::appendInitStructName( std::deque<std::string>& initSt
 {
     initStructs.push_back( "SCOREP_Subsystem_AcceleratorManagement" );
     SCOREP_Config_Adapter::appendInitStructName( initStructs );
+}
+
+/* **************************************************************************************
+ * HIP adapter
+ * *************************************************************************************/
+SCOREP_Config_HipAdapter::SCOREP_Config_HipAdapter()
+    : SCOREP_Config_Adapter( "hip", "scorep_adapter_hip", false )
+{
+}
+
+void
+SCOREP_Config_HipAdapter::addLibs( std::deque<std::string>&           libs,
+                                   SCOREP_Config_LibraryDependencies& deps )
+{
+    /* there is no libscorep_adapter_hip_event.la, thus in case this is the
+       only adapter, we need to add libscorep_measurement.la to the needed libs. */
+    libs.push_back( "libscorep_measurement" );
+    deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
 /* **************************************************************************************

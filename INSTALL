@@ -247,6 +247,47 @@ can specify its location via:
   --with-libnvidia-ml-include=<Path to libnvidia-ml headers: nvml.h>
   --with-libnvidia-ml-lib=<Path to libnvidia-ml libraries>
 
+To enable support for HIP measurement via ROCm configure with
+--with-rocm=<path-to-ROCm-installation>. If an argument is missing the value
+from $ROCM_PATH is used.
+
+  --with-rocm=<path-to-ROCm-installation>
+               Location of the ROCm installation (e.g., /opt/rocm)
+
+If your installation differs from the default layout, you can provide paths via
+the following configure arguments:
+
+  --with-libamdhip64=(yes|no|<Path to libamdhip64 installation>)
+               If you want to build with libamdhip64 support but do
+               not have a libamdhip64 in a standard location, you
+               need to explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search
+               the system include and lib paths per default [yes];
+               on cross-compile systems, however, you have to
+               specify a path [no]. --with-libamdhip64 is a
+               shorthand for
+               --with-libamdhip64-include=<Path/include> and
+               --with-libamdhip64-lib=<Path/lib>. If these
+               shorthand assumptions are not correct, you can use
+               the explicit include and lib options directly.
+  --with-libamdhip64-include=<Path to libamdhip64 headers: hip/hip_runtime.h>
+  --with-libamdhip64-lib=<Path to libamdhip64 libraries>
+  --with-libroctracer64=(yes|no|<Path to libroctracer64 installation>)
+               If you want to build with libroctracer64 support but
+               do not have a libroctracer64 in a standard location,
+               you need to explicitly specify the directory where
+               it is installed. On non-cross-compile systems we
+               search the system include and lib paths per default
+               [yes]; on cross-compile systems, however, you have
+               to specify a path [no]. --with-libroctracer64 is a
+               shorthand for
+               --with-libroctracer64-include=<Path/include> and
+               --with-libroctracer64-lib=<Path/lib>. If these
+               shorthand assumptions are not correct, you can use
+               the explicit include and lib options directly.
+  --with-libroctracer64-include=<Path to libroctracer64 headers: roctracer_hip.h>
+  --with-libroctracer64-lib=<Path to libroctracer64 libraries>
+
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
 
@@ -549,6 +590,15 @@ variables:
               Path to openacc.h header.
   OPENACC_PROFILING_INCLUDE
               Path to acc_prof.h header.
+  ROCM_PATH   Base directory of the AMD ROCm installation
+  LIBAMDHIP64_INCLUDE
+              Path to libamdhip64 headers: hip/hip_runtime.h
+  LIBAMDHIP64_LIB
+              Path to libamdhip64 libraries.
+  LIBROCTRACER64_INCLUDE
+              Path to libroctracer64 headers: roctracer_hip.h
+  LIBROCTRACER64_LIB
+              Path to libroctracer64 libraries.
   LIBPMI_INCLUDE
               Path to libpmi headers: pmi.h
   LIBPMI_LIB  Path to libpmi libraries.

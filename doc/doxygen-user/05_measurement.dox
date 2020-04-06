@@ -261,7 +261,8 @@ A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
 from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
-activities (see Section @secref{cuda_adapter}), and Kokkos activities (see
+activities (see Section @secref{cuda_adapter}), HIP device and host
+activities (see Section @secref{hip_adapter}), and Kokkos activities (see
 Section @secref{kokkos_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
 <tt>\--disable</tt> to restrict instrumentation of @openmp directives. This
@@ -851,7 +852,7 @@ There are ways around this problem:
   You can query <tt><SCOREP_COMPILER></tt> and the entire command using <tt>scorep-info config.summary | grep 'nvcc works'</tt>.
   E.g., if the <tt>.cu</tt> file does neither contain MPI nor SHMEM and @scorep uses an Intel compiler suite, the command could be <tt>nvcc -ccbin icpc -Xcompiler=-std=c++11</tt>.
   By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc</tt> invocations. </li>
-  <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>--nocompiler</tt>. </li>
+  <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>\--nocompiler</tt>. </li>
   <li> Use a @scorep installation that is based on the GNU compiler tool chain. </li>
 </ul>
 
@@ -920,6 +921,17 @@ The following resource naming APIs are supported:
   <dt><tt>nvtxNameCuContext{A,W}</tt></dt>
     <dd>Name of GPU location group</dd>
 </dl>
+
+@section hip_adapter HIP Performance Measurement
+@seclabel{hip_adapter}
+
+If @scorep has been built with HIP support it is capable of recording ROCm API function calls and GPU activities.
+The measurement is based on AMD's ROCm API.
+
+@scorep can wrap the AMD's <b><tt>hipcc</tt></b> compiler like any other compiler by either prefixing (<b><tt>scorep hipcc</tt></b>) or by replacing it with (<b><tt>scorep-hipcc</tt></b>) to instrument single-source HIP files.
+
+Setting the environment variable \confvar{SCOREP_HIP_ENABLE} to <b><tt>yes</tt></b> enables HIP measurement.
+Please refer to the description of this variable to enable a particular combination of HIP measurement features.
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}

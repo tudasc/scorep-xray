@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2021,
+dnl Copyright (c) 2009-2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -271,11 +271,13 @@ AFS_POSIX_REALPATH
 
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
+SCOREP_HIP
 SCOREP_OPENACC
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI
 SCOREP_MNTENT_CHECK
 SCOREP_LUSTREAPI_CHECK
+
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
@@ -395,6 +397,16 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
     (*" scorep-nvcc "*) : ignore duplicate ;;
     (*)
         AS_VAR_APPEND([scorep_list_of_wrappers], ["scorep-nvcc "])
+    ;;
+    esac
+])
+
+# add hipcc wrapper
+AM_COND_IF([HAVE_HIP_SUPPORT], [
+    case " ${scorep_list_of_wrappers} " in
+    (*" scorep-hipcc "*) : ignore duplicate ;;
+    (*)
+        AS_VAR_APPEND([scorep_list_of_wrappers], ["scorep-hipcc "])
     ;;
     esac
 ])

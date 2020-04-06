@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020-2021,
+ * Copyright (c) 2009-2017, 2020-2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,6 +63,7 @@
 #include "scorep_instrumenter_user.hpp"
 #include "scorep_instrumenter_openacc.hpp"
 #include "scorep_instrumenter_opencl.hpp"
+#include "scorep_instrumenter_hip.hpp"
 #include "scorep_instrumenter_memory.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_linktime_wrapping.hpp"
@@ -91,6 +92,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
     m_openacc_adapter    = new SCOREP_Instrumenter_OpenACCAdapter();
     m_opencl_adapter     = new SCOREP_Instrumenter_OpenCLAdapter();
+    m_hip_adapter        = new SCOREP_Instrumenter_HipAdapter();
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     m_kokkos_adapter     = new SCOREP_Instrumenter_KokkosAdapter();
     new SCOREP_Instrumenter_LinktimeWrappingAdapter();

@@ -95,7 +95,7 @@ MPI_SUPPORT=false
 SHMEM_SUPPORT=false
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_SHMEM_PROFILING_INTERFACE_TRUE@SHMEM_SUPPORT=true
 
-SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --thread=none"
+SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --nohip --thread=none"
 
 SCOREP_LIBWRAP_PATH="${SCOREP_LIBWRAP_PATH:+${SCOREP_LIBWRAP_PATH}:}@PREFIX@"
 

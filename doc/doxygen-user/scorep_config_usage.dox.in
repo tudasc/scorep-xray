@@ -78,6 +78,9 @@ scorep-config <command> [<options>]
    --openacc|--noopenacc
               Specifies whether openacc instrumentation is used.
               On default openacc instrumentation is enabled.
+   --hip|--nohip
+              Specifies whether hip instrumentation is used.
+              On default hip instrumentation is enabled.
    --opencl[:<wrapping mode>]|--noopencl
               Specifies whether opencl instrumentation is used.
               On default opencl instrumentation is enabled.

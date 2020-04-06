@@ -422,6 +422,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     {
         return SCOREP_SCORE_TYPE_KOKKOS;
     }
+    if ( paradigm == "hip" || 0 == paradigm.compare( 0, 4, "hip:" ) )
+    {
+        return SCOREP_SCORE_TYPE_HIP;
+    }
     if ( paradigm == "io" )
     {
         return SCOREP_SCORE_TYPE_IO;
