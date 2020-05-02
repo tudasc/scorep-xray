@@ -216,7 +216,12 @@ AS_IF([test "x${verbose}" = "xyes"], [
 AC_DEFUN([_AFS_SUMMARY_SHOW], [
 
 AS_ECHO([""])
-cat AC_PACKAGE_TARNAME.summary
+if test ${as__color-no} = yes ||
+   { { test "${CLICOLOR-1}" != "0" && test -t 1; } || test "${CLICOLOR_FORCE:-0}" != "0"; }; then
+    cat
+else
+    $SED -e 's/'"$(printf "\033")"'\@<:@@<:@0-9;@:>@*m//g'
+fi <AC_PACKAGE_TARNAME.summary
 ])
 
 # AFS_SUMMARY_COLLECT( [SHOW-COND] )
@@ -278,11 +283,52 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
         while read summary
     do
         AS_ECHO(["${_afs_summary_sep}"])
-        if test -r $summary-master
+        if ! test -r $summary-master
         then
-            $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary        >$summary.sub
-            $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary-master >$summary-master.sub
-            LC_ALL=C $AWK '
+            touch $summary-master
+        fi
+        $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary        >$summary.sub
+        $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary-master >$summary-master.sub
+        LC_ALL=C $AWK '
+function printsummary(summary) {
+    match(summary, ": *")
+    descr = substr(summary, 1, RSTART+RLENGTH-1)
+    value = substr(summary, RSTART+RLENGTH)
+    value_res = ""
+    pre  = ""
+    post = ""
+    firstword = 0
+    while (value != "") {
+        start = 1
+        if (0 != match(value, " *\\\\\032 *")) {
+            chunk = substr(value, 1, RSTART - 1)
+            sep   = substr(value, RSTART, RLENGTH)
+            value = substr(value, RSTART + RLENGTH)
+        } else {
+            # last chunk
+            chunk = value
+            sep   = ""
+            value = ""
+        }
+        if (!firstword && length(chunk) > 0) {
+            if (match(chunk, "^@<:@a-z@:>@*"))
+                word = substr(chunk, RSTART, RLENGTH)
+            else
+                word = chunk
+            if (word == "yes")
+                pre  = "\033@<:@0;32m"
+            else if (word == "no")
+                pre  = "\033@<:@0;31m"
+            else
+                pre  = "\033@<:@1;34m"
+            post = "\033@<:@m"
+            firstword = 1
+        }
+        value_res = value_res "" pre "" chunk "" post "" sep
+    }
+    print descr "" value_res
+}
+
 BEGIN {
     sectionstack@<:@0@:>@ = ""
     sectionstackprinted@<:@0@:>@ = 0
@@ -316,20 +362,21 @@ BEGIN {
     if (!(descr in refsections) || refsections@<:@descr@:>@ != value) {
         for (i = 1; i < sectionestacklen; i++) {
             if (!sectionstackprinted@<:@i-1@:>@) {
-                print sectionstack@<:@i-1@:>@
+                printsummary(sectionstack@<:@i-1@:>@)
                 sectionstackprinted@<:@i-1@:>@ = 1
             }
         }
-        print descr value
+        if (descr in refsections) {
+            # we are here, because the values differ
+            descr = "\033@<:@0;31m" descr "\033@<:@m"
+        }
+        printsummary(descr "" value)
         sectionstackprinted@<:@depth@:>@ = 1
     }
 }
 ' \
-                $summary-master.sub $summary.sub | $SED -e 's/'"$_afs_summary_sub"'/'"\\$as_nl"'/g'
-            rm -f $summary.sub $summary-master $summary-master.sub
-        else
-            cat $summary
-        fi
+            $summary-master.sub $summary.sub | $SED -e 's/'"$_afs_summary_sub"'/'"\\$as_nl"'/g'
+        rm -f $summary.sub $summary-master $summary-master.sub
         _afs_summary_sep=""
     done
 ) >AC_PACKAGE_TARNAME.summary
