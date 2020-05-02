@@ -99,10 +99,10 @@ pkgdata_DATA = @PACKAGE@.summary \
 doc_DATA = $(srcdir)/OPEN_ISSUES \
            $(srcdir)/ChangeLog
 
+profiledocdir = $(docdir)/profile
+profiledoc_DATA = $(DOC_SRC_DIR)/profile/scorep_metrics.html
+
 install-data-local: doxygen-user-install
-	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
-	$(INSTALL_DATA) $(DOC_SRC_DIR)/profile/scorep_metrics.html \
-                        $(DESTDIR)$(docdir)/profile/scorep_metrics.html
 
 install-data-hook:
 	$(AM_V_at)for target in $(TARGETS)""; do \
