@@ -21,6 +21,9 @@ cmd_get()
         git)
             echo "git clone $* $bindir/$external"
             eval 'git '"${EXTERNALS_GIT_OPTIONS-}"' clone --quiet "$@" "$external"'
+            if [ -x "$external"/vendor/externals.sh ]; then
+                "$external"/vendor/externals.sh get
+            fi
         ;;
         esac
     }
@@ -40,6 +43,9 @@ cmd_update()
         git)
             echo "cd $bindir/$external && git pull"
             eval '( cd "$external" && git '"${EXTERNALS_GIT_OPTIONS-}"' pull --quiet )'
+            if [ -x "$external"/vendor/externals.sh ]; then
+                "$external"/vendor/externals.sh update
+            fi
         ;;
         esac
     }
