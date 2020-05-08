@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014, 2016, 2018,
+ * Copyright (c) 2012-2014, 2016, 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -83,7 +83,7 @@ is_instrumentable( const char* assemblerName )
         return "in system header";
     }
 
-    if ( node->global.inlined_to )
+    if ( cgraph_inlined_to( node ) )
     {
         return "was inlined";
     }
