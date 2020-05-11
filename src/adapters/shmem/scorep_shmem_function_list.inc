@@ -327,7 +327,7 @@ SCOREP_SHMEM_PROCESS_FUNC( RMA,          void,        shmem_iget128, ( void* , c
  * Atomic operations
  */
 /* Atomic swap */
-#if SHMEM_HAVE_DECL( SHMEM_SWAP )
+#if SHMEM_HAVE_DECL( SHMEM_SWAP ) && !defined( shmem_swap )
 SCOREP_SHMEM_PROCESS_FUNC( ATOMIC,       long,        shmem_swap, ( long* , long , int ) )
 #endif
 #if SHMEM_HAVE_DECL( SHMEM_SHORT_SWAP )
