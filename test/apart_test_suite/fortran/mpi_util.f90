@@ -3,8 +3,8 @@ MODULE MPI_UTIL
 USE DISTRIBUTION
 USE WORK
 
+USE MPI
 IMPLICIT NONE
-INCLUDE 'mpif.h'
 
 PUBLIC :: par_do_mpi_work, alloc_mpi_buf, free_mpi_buf, alloc_mpi_vbuf
 PUBLIC :: free_mpi_vbuf, mpi_commpattern_sendrecv, mpi_commpattern_shift

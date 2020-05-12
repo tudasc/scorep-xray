@@ -28,8 +28,8 @@ program MAIN
 
     use VariableDef
     use JacobiMod
+    use mpi
     implicit none
-    include 'mpif.h'
 
       include 'main.F90.opari.inc'
 #line 32 "main.F90"
@@ -71,8 +71,8 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
       include 'main.F90.opari.inc'
 #line 72 "main.F90"
     type(JacobiData), intent(inout) :: myData
@@ -336,8 +336,8 @@ end subroutine PrintResults
 
 subroutine CheckError(myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
 
       include 'main.F90.opari.inc'
 #line 306 "main.F90"
