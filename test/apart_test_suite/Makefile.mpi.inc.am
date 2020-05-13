@@ -33,7 +33,7 @@
 
 if HAVE_MPI_SUPPORT
 
-if SCOREP_HAVE_FC
+if HAVE_MPIFC
 
 if HAVE_ONLINE_ACCESS
 
@@ -90,7 +90,7 @@ TESTS_MPI += mpi_patt_all_test_f90
 
 CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod distribution.mod
 
-endif SCOREP_HAVE_FC
+endif HAVE_MPIFC
 
 endif HAVE_MPI_SUPPORT
 
