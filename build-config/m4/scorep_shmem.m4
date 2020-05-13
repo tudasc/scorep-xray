@@ -1024,6 +1024,13 @@ AC_DEFUN([_SCOREP_SHMEM_COMPLIANCE], [
          [shmem_wait_until],          [( long *addr, int cmp, long value )],
          [VOLATILE],                  [( volatile long *addr, int cmp, long value )])
 
+    dnl _SHMEM_CMP_EQ was the old name, replaced with SHMEM_CMP_EQ in 1.3
+    AC_CHECK_DECL([SHMEM_CMP_EQ], [], [
+        AC_CHECK_DECL([_SHMEM_CMP_EQ],
+            [AC_DEFINE([SHMEM_CMP_EQ], [_SHMEM_CMP_EQ], [Legacy SHMEM declaration.])], [],
+            [@%:@include <shmem.h>])],
+        [@%:@include <shmem.h>])
+
     AC_LANG_POP([C])
 ])
 
