@@ -27,8 +27,8 @@ program MAIN
 
     use VariableDef
     use JacobiMod
+    use mpi
     implicit none
-    include 'mpif.h'
 
     TYPE(JacobiData) :: myData
 
@@ -68,8 +68,8 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
     integer :: ITERATIONS = 1000
@@ -84,8 +84,8 @@ subroutine Init (myData)
 #endif
     SCOREP_USER_CARTESIAN_TOPOLOGY_DEFINE(mytopo)
     integer, dimension(2) :: coords
-    integer old_comm, new_comm, ndims, reorder
-    integer dim_size(2), periods(2)
+    integer old_comm, new_comm, ndims, dim_size(2)
+    logical periods(2), reorder
 
 !    /* MPI Initialization */
     call MPI_Init(iErr)
@@ -103,9 +103,9 @@ subroutine Init (myData)
     ndims = 2
     dim_size(1) = 1
     dim_size(2) = myData%iNumProcs
-    periods(1) = 1
-    periods(2) = 0
-    reorder = 1
+    periods(1) = .TRUE.
+    periods(2) = .FALSE.
+    reorder = .TRUE.
 
     call MPI_Cart_create(old_comm,ndims,dim_size,periods,reorder,new_comm,ierr)
 
@@ -273,8 +273,8 @@ end subroutine PrintResults
 
 subroutine CheckError(myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
 
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..

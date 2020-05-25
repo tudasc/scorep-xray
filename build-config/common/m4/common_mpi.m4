@@ -117,13 +117,13 @@ fi],
 		AC_MSG_RESULT(no)])
 fi],
 [Fortran 77], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpif.h (F77)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
+	AC_MSG_CHECKING([for use mpi (F77)])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi],
 [Fortran], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpif.h (FC)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
+	AC_MSG_CHECKING([for use mpi (FC)])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
 		AC_MSG_RESULT(no)])
 fi])
 

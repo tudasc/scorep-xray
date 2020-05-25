@@ -26,8 +26,8 @@ program MAIN
 
     use VariableDef
     use JacobiMod
+    use mpi
     implicit none
-    include 'mpif.h'
 
     TYPE(JacobiData) :: myData
 
@@ -67,8 +67,8 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
     integer :: ITERATIONS = 5
@@ -251,8 +251,8 @@ end subroutine PrintResults
 
 subroutine CheckError(myData)
     use VariableDef
+    use mpi
     implicit none
-    include 'mpif.h'
 
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..

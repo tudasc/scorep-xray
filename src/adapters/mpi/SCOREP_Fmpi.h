@@ -97,7 +97,7 @@ extern void* scorep_mpi_fortran_statuses_ignore;
 #endif
 
 #if HAVE( MPI_UNWEIGHTED )
-/** pointer representing the Fortran value for MPI_STATUSES_IGNORE */
+/** pointer representing the Fortran value for MPI_UNWEIGHTED */
 extern void* scorep_mpi_fortran_unweighted;
 #endif
 

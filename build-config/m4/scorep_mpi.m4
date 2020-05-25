@@ -45,8 +45,8 @@ AC_COMPILE_IFELSE([
       END SUBROUTINE foo
 
       PROGRAM test
+      USE MPI
       IMPLICIT NONE
-      INCLUDE  'mpif.h'
       call foo( MPI_BOTTOM )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes)
@@ -61,8 +61,8 @@ AC_COMPILE_IFELSE([
       END SUBROUTINE foo
 
       PROGRAM test
+      USE MPI
       IMPLICIT NONE
-      INCLUDE  'mpif.h'
       call foo( MPI_IN_PLACE )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes)
@@ -71,20 +71,36 @@ AC_COMPILE_IFELSE([
 ) # AC_COMPILE_IF_ELSE
 
 AC_MSG_CHECKING([for MPI_STATUS_IGNORE])
+scorep_has_status_ignore="no"
 AC_COMPILE_IFELSE([
       SUBROUTINE foo( i )
       integer :: i
       END SUBROUTINE foo
 
       PROGRAM test
+      USE MPI
       IMPLICIT NONE
-      INCLUDE  'mpif.h'
       call foo( MPI_STATUS_IGNORE )
       END PROGRAM test
-], [AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_MPI_STATUS_IGNORE, 1, [Fortran MPI defines MPI_STATUS_IGNORE])
-], [AC_MSG_RESULT(no)]
+], [scorep_has_status_ignore="yes"], [
+    AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i( MPI_STATUS_SIZE )
+      END SUBROUTINE foo
+
+      PROGRAM test
+      USE MPI
+      IMPLICIT NONE
+      call foo( MPI_STATUS_IGNORE )
+      END PROGRAM test
+    ], [scorep_has_status_ignore="yes"], [])]
 ) # AC_COMPILE_IF_ELSE
+AS_IF([test "x${scorep_has_status_ignore}" = "xyes"], [
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_MPI_STATUS_IGNORE, 1, [Fortran MPI defines MPI_STATUS_IGNORE])
+], [
+    AC_MSG_RESULT(no)
+])
 
 AC_MSG_CHECKING([for MPI_STATUSES_IGNORE])
 scorep_has_statuses_ignore="no"
@@ -94,35 +110,61 @@ AC_COMPILE_IFELSE([
       END SUBROUTINE foo
 
       PROGRAM test
+      USE MPI
       IMPLICIT NONE
-      INCLUDE  'mpif.h'
       call foo( MPI_STATUSES_IGNORE )
       END PROGRAM test
-], [scorep_has_statuses_ignore="yes"], []
-) # AC_COMPILE_IF_ELSE
+], [scorep_has_statuses_ignore="yes"], [
+    AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i( MPI_STATUS_SIZE, * )
+      END SUBROUTINE foo
 
-if test "x${scorep_has_statuses_ignore}" = "xyes"; then
-   AC_MSG_RESULT(yes);
-   AC_DEFINE(HAVE_MPI_STATUSES_IGNORE, 1, [Fortran MPI defines MPI_STATUSES_IGNORE])
-else
-   AC_MSG_RESULT(no)
-fi
+      PROGRAM test
+      USE MPI
+      IMPLICIT NONE
+      call foo( MPI_STATUSES_IGNORE )
+      END PROGRAM test
+   ], [scorep_has_statuses_ignore="yes"], [])]
+) # AC_COMPILE_IF_ELSE
+AS_IF([test "x${scorep_has_statuses_ignore}" = "xyes"], [
+    AC_MSG_RESULT(yes);
+    AC_DEFINE(HAVE_MPI_STATUSES_IGNORE, 1, [Fortran MPI defines MPI_STATUSES_IGNORE])
+], [
+    AC_MSG_RESULT(no)
+])
 
 AC_MSG_CHECKING([for MPI_UNWEIGHTED])
+scorep_has_unweighted="no"
 AC_COMPILE_IFELSE([
       SUBROUTINE foo( i )
       integer :: i
       END SUBROUTINE foo
 
       PROGRAM test
+      USE MPI
       IMPLICIT NONE
-      INCLUDE  'mpif.h'
       call foo( MPI_UNWEIGHTED )
       END PROGRAM test
-], [AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_UNWEIGHTED, 1, [Fortran MPI defines MPI_UNWEIGHTED])
-], [AC_MSG_RESULT(no)]
+], [scorep_has_unweighted="yes"], [
+    AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i( 1 )
+      END SUBROUTINE foo
+
+      PROGRAM test
+      USE MPI
+      IMPLICIT NONE
+      call foo( MPI_UNWEIGHTED )
+      END PROGRAM test
+], [scorep_has_unweighted="yes"], [])]
 ) # AC_COMPILE_IF_ELSE
+AS_IF([test "x${scorep_has_unweighted}" = "xyes"], [
+    AC_MSG_RESULT(yes);
+    AC_DEFINE(HAVE_MPI_UNWEIGHTED, 1, [Fortran MPI defines MPI_UNWEIGHTED])
+], [
+    AC_MSG_RESULT(no)
+])
 
 AC_LANG_POP(Fortran)
 ]) # AC_DEFUN(AC_SCOREP_MPI_FORTRAN_CONSTANTS)

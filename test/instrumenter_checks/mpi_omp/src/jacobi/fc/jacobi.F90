@@ -6,8 +6,8 @@ module JacobiMod
     contains
 
     subroutine Jacobi(myData)
+        use mpi
         implicit none
-        include 'mpif.h'
         !********************************************************************
         ! Subroutine HelmholtzJ                                             *
         ! Solves poisson equation on rectangular grid assuming :            *
@@ -115,8 +115,8 @@ module JacobiMod
 
     subroutine ExchangeJacobiMpiData (myData, uold)
     !    use VariableDef
+        use mpi
         implicit none
-        include 'mpif.h'
         type(JacobiData), intent(inout) :: myData
         double precision, intent(inout) :: uold(0: myData%iCols -1, myData%iRowFirst : myData%iRowLast)
         integer :: request(4), status(MPI_STATUS_SIZE, 4)
