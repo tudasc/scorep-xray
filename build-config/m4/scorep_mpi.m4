@@ -403,7 +403,7 @@ AC_DEFINE([OMPI_OMIT_MPI1_COMPAT_DECLS],     [0], [Possibly expose deprecated MP
 
 if test "x${scorep_mpi_c_supported}" = "xyes"; then
   scorep_mpi_supported="yes"
-  if test "x${scorep_mpi_f77_supported}" = "xyes" -o "x${scorep_mpi_f90_supported}" = "xyes"; then
+  if test "x${scorep_mpi_f77_supported}" = "xyes" && test "x${scorep_mpi_f90_supported}" = "xyes"; then
     scorep_mpi_fortran_supported="yes"
   else
     scorep_mpi_fortran_supported="no"
