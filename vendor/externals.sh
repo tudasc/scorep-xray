@@ -21,6 +21,9 @@ cmd_get()
         git)
             echo "git clone $* $bindir/$external"
             eval 'git '"${EXTERNALS_GIT_OPTIONS-}"' clone --quiet "$@" "$external"'
+            if [ -x "$external"/vendor/externals.sh ]; then
+                "$external"/vendor/externals.sh get
+            fi
         ;;
         esac
     }
@@ -40,6 +43,9 @@ cmd_update()
         git)
             echo "cd $bindir/$external && git pull"
             eval '( cd "$external" && git '"${EXTERNALS_GIT_OPTIONS-}"' pull --quiet )'
+            if [ -x "$external"/vendor/externals.sh ]; then
+                "$external"/vendor/externals.sh update
+            fi
         ;;
         esac
     }
@@ -62,7 +68,7 @@ cmd_help()
 
 cmd=cmd_${1:-get}
 
-${cmd} svn otf2 https://silc.zih.tu-dresden.de/svn/otf2-root/tags/REL-2.2
-${cmd} svn opari2 https://silc.zih.tu-dresden.de/svn/opari2-root/tags/REL-2.0.5
-${cmd} svn cubew https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeW/tags/release-4.4.3
-${cmd} svn cubelib https://svn.version.fz-juelich.de/scalasca_soft/Cube2.0/CubeLib/tags/release-4.4.4
+${cmd} git otf2 -b master https://gitlab.version.fz-juelich.de/perftools/otf2.git
+${cmd} git opari2 -b master https://gitlab.version.fz-juelich.de/perftools/opari2.git
+${cmd} git cubew -b master https://gitlab.version.fz-juelich.de/perftools/cubew.git
+${cmd} git cubelib -b master https://gitlab.version.fz-juelich.de/perftools/cubelib.git

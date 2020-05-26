@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2015-2016, 2018,
+dnl Copyright (c) 2009-2013, 2015-2016, 2018, 2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -66,15 +66,18 @@ AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_set}" = xset],
 
 AC_PROG_AWK
 AC_PROG_GREP
+AC_PROG_SED
 
-# Get CXX that was used to build cube reader libraries.
+# Get CXX (without leading whitespace) that was used to build cube
+# reader libraries. Might contain language and architecture options
+# like '-std=c++11' or '-q64'.
 AS_IF([test -n "${scorep_cubelib_bindir}"],
     [# Get from external cube installation
-     CXX="`${scorep_cubelib_bindir}/cubelib-config --cxx | ${AWK} '{print $1}'`"
+     CXX="`${scorep_cubelib_bindir}/cubelib-config --cxx | ${SED} 's/^[ \t]*//'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 1])],
     [# Get from internal cube. cube's build-backend defines FRONTEND_CXX
      # in cross and non-cross mode.
-     CXX="`GREP_OPTIONS= ${GREP} ^FRONTEND_CXX ../vendor/cubelib/build-frontend/config.log | awk -F\' '{print $2}'`"
+     CXX="`GREP_OPTIONS= ${GREP} ^CXX= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
 AC_PROG_CXX
@@ -94,8 +97,13 @@ AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
      fallback=" (fall-back)"])
 
 # Use CXX arguments like -q64 on CC as well to prevent build errors relating
-# to incompatible architectures if we are not using the fall-back.
-CXX_ARGS="`echo ${CXX} | ${AWK} '{$1 = ""; print $0}'`"
+# to incompatible architectures if we are not using the fall-back. Omit C++
+# language options though:
+# -h std=<option>   # Cray
+# -std=<option>     # GNU, Intel, PGI/NVIDIA
+# -qlangvl=<option> # IBM
+# --c++<option>     # PGI
+CXX_ARGS="`echo $CXX_FULL | ${SED} -E -e 's/-h +std=\S+( |$)//g' -e 's/-std=\S+( |$)//g' -e 's/-qlangvl=\S+( |$)//g' -e 's/--c++\S+( |$)//g' | ${AWK} '{$1 = ""; print $0}'`"
 AS_IF([test "x${fallback}" = x],
     [CC="${CC} ${CXX_ARGS}"])
 
