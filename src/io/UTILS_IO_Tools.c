@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -399,19 +399,13 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
     name[ effective_name_len ] = '\0';
     return PACKAGE_SUCCESS;
 #else
-
     char* hostname = getenv( "HOST" );
     if ( ( hostname == NULL ) || ( *hostname == '\0' ) )
     {
         return PACKAGE_ABORT;
     }
 
-    size_t len = strlen( hostname ) + 1; /* For terminating zero */
-    if ( len > namelen )
-    {
-        len = namelen;
-    }
-    strncpy( name, hostname, len );
+    strncpy( name, hostname, namelen );
     return PACKAGE_SUCCESS;
 #endif
 }
