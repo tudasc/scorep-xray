@@ -61,6 +61,6 @@ exe_version=$($BEAUTIFY --version | tr '[a-z]' '[A-Z]' | sed -e 's/UNCRUSTIFY */
 cfg_version=$(head -n 1 $BEAUTIFY_CONFIG | tr '[a-z]' '[A-Z]' | sed -e 's/^# *UNCRUSTIFY *//')
 if [ "$exe_version" != "$cfg_version" ]
 then
-    echo "  ABORT    Configuration file expects v$cfgversion, but found beautifier v$exe_version."
+    echo "  ABORT    Configuration file expects v$cfg_version, but found beautifier v$exe_version."
     exit 1
 fi
