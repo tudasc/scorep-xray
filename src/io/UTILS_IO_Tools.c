@@ -391,12 +391,13 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
     return gethostname( name, namelen );
 #elif HAVE( PLATFORM_MINGW )
     TCHAR computer_name[ MAX_COMPUTERNAME_LENGTH + 1 ];
-    DWORD computer_name_len;
-    GetComputerName( computer_name, &computer_name_len );
-    size_t effective_name_len = namelen >= ( size_t )computer_name_len ?
-                                ( size_t )computer_name_len : namelen - 1;
-    strncpy( name, computer_name, effective_name_len );
-    name[ effective_name_len ] = '\0';
+    DWORD computer_name_len = sizeof( computer_name ) / sizeof( computer_name[0] );
+    if ( !GetComputerName( computer_name, &computer_name_len ) )
+    {
+        return PACKAGE_ABORT;
+    }
+
+    strncpy( name, computer_name, namelen );
     return PACKAGE_SUCCESS;
 #else
     char* hostname = getenv( "HOST" );
