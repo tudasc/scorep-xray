@@ -388,7 +388,12 @@ PACKAGE_ErrorCode
 UTILS_IO_GetHostname( char* name, size_t namelen )
 {
 #if HAVE( GETHOSTNAME )
-    return gethostname( name, namelen );
+    if ( gethostname( name, namelen ) )
+    {
+        return PACKAGE_ABORT;
+    }
+
+    return PACKAGE_SUCCESS;
 #elif HAVE( PLATFORM_MINGW )
     TCHAR computer_name[ MAX_COMPUTERNAME_LENGTH + 1 ];
     DWORD computer_name_len = sizeof( computer_name ) / sizeof( computer_name[0] );
