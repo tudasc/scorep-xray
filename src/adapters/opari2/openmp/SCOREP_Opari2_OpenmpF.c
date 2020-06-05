@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -359,7 +359,7 @@ FSUB( POMP2_Task_create_begin )( POMP2_Region_handle_fortran* region_handle,
                              SCOREP_POMP_F2C_TASK( pomp2_new_task ),
                              SCOREP_POMP_F2C_TASK( pomp2_old_task ),
                              *pomp2_if,
-                             NULL );
+                             ctc_string );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
