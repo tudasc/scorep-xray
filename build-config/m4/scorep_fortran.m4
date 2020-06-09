@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012, 2014,
@@ -32,26 +32,6 @@
 ## file build-config/m4/scorep_fortran.m4
 
 dnl ------------------------------------------------------------------
-
-AC_DEFUN([SCOREP_FORTRAN_MANGLED], [
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
-mangling=
-AS_IF([test "x${scorep_cv_f77_works}" = "xyes"], [
-    AS_CASE([${ax_cv_c_compiler_vendor%/*}],
-        [intel],    [mangling=" [##] _"],
-        [sun],      [mangling=" [##] _"],
-        [ibm],      [mangling=],
-        [portland], [mangling=" [##] _"],
-        [gnu],      [mangling=" [##] _"],
-        [cray],     [mangling=" [##] _"],
-        [fujitsu],  [mangling=" [##] _"],
-        [])dnl
-])
-AC_DEFINE_UNQUOTED([FORTRAN_MANGLED(var)],
-    [var${mangling}],
-    [Name of var after mangled by the Fortran compiler.])dnl
-])
-
 
 AC_DEFUN([SCOREP_FORTRAN_F77_WORKS],[
     AC_REQUIRE([AC_PROG_F77])
