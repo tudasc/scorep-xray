@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,7 +27,7 @@
 #define SCOREP_PRAGMA_OMP( omp_pragma ) SCOREP_PRAGMA( omp omp_pragma )
 
 /* Take care of name mangling the Fortran compiler might perform. */
-#define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
+#define POMP_TPD_MANGLED F77_FUNC_( pomp_tpd, POMP_TPD )
 
 /* The pomp_tpd[_] variable that gets instrumented by OPARI2 to maintain
  * parent-child relationship if the --tpd option is given. Will be used by

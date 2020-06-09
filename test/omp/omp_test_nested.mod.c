@@ -17,7 +17,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
 #line 75 "omp_test_nested.c"
-#pragma omp parallel                POMP2_DLIST_00001 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                POMP2_DLIST_00001 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_1 );
 #line 76 "omp_test_nested.c"
       {
@@ -93,7 +93,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_2, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_2 );
 #line 78 "omp_test_nested.c"
-#pragma omp parallel                copyin(outer) POMP2_DLIST_00002 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                copyin(outer) POMP2_DLIST_00002 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_2 );
 #line 79 "omp_test_nested.c"
         {
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_3, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_3 );
 #line 81 "omp_test_nested.c"
-#pragma omp parallel                copyin(outer, middle) POMP2_DLIST_00003 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                copyin(outer, middle) POMP2_DLIST_00003 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_3 );
 #line 82 "omp_test_nested.c"
           {
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_5, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_5 );
 #line 94 "omp_test_nested.c"
-#pragma omp parallel                POMP2_DLIST_00005 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                POMP2_DLIST_00005 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_5 );
 #line 95 "omp_test_nested.c"
       {
@@ -162,7 +162,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_6, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_6 );
 #line 97 "omp_test_nested.c"
-#pragma omp parallel                copyin(outer) POMP2_DLIST_00006 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                copyin(outer) POMP2_DLIST_00006 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_6 );
 #line 98 "omp_test_nested.c"
         {
@@ -202,7 +202,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_8, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_8 );
 #line 110 "omp_test_nested.c"
-#pragma omp parallel                POMP2_DLIST_00008 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                POMP2_DLIST_00008 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_8 );
 #line 111 "omp_test_nested.c"
       {
@@ -213,7 +213,7 @@ int main(int argc, char* argv[]){
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_9, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_9 );
 #line 113 "omp_test_nested.c"
-#pragma omp parallel                copyin(outer) POMP2_DLIST_00009 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED( pomp_tpd ))
+#pragma omp parallel                copyin(outer) POMP2_DLIST_00009 firstprivate(pomp2_old_task) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_9 );
 #line 114 "omp_test_nested.c"
         {

@@ -7,15 +7,17 @@ extern "C"
 #include <stddef.h>
 
 extern void
-FORTRAN_MANGLED( pomp2_init_reg_kh6l759tlp3ei_3 ) ();
+F77_FUNC_( pomp2_init_reg_kh6l759tlp3ei_3,
+           POMP2_INIT_REG_KH6L759TLP3EI_3 ) ();
 extern void
-FORTRAN_MANGLED( pomp2_init_reg_hh6l759tl8jhi_1 ) ();
+F77_FUNC_( pomp2_init_reg_hh6l759tl8jhi_1,
+           POMP2_INIT_REG_HH6L759TL8JHI_1 ) ();
 
 void
 POMP2_Init_regions()
 {
-    FORTRAN_MANGLED( pomp2_init_reg_kh6l759tlp3ei_3 ) ();
-    FORTRAN_MANGLED( pomp2_init_reg_hh6l759tl8jhi_1 ) ();
+    F77_FUNC_( pomp2_init_reg_kh6l759tlp3ei_3, POMP2_INIT_REG_KH6L759TLP3EI_3 ) ();
+    F77_FUNC_( pomp2_init_reg_hh6l759tl8jhi_1, POMP2_INIT_REG_HH6L759TL8JHI_1 ) ();
 }
 
 size_t
