@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -789,26 +789,3 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 #else
 #error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
 #endif
-
-/* ****************************************************************************
-   Private methods
-******************************************************************************/
-
-void
-SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
-                                            const std::string& value )
-{
-    if ( key == "CC"  && value != "" )
-    {
-        m_c_compiler = value;
-    }
-    else if ( key == "SCOREP_CONFIG" && value != "" )
-    {
-        m_scorep_config = value;
-    }
-    else
-    {
-        SCOREP_Instrumenter_Adapter::setAllConfigValue( key, value );
-        SCOREP_Instrumenter_Selector::setAllConfigValue( key, value );
-    }
-}

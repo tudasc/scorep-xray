@@ -4,7 +4,6 @@ scorep <options> <original command>
 
 Common options are:
   --help, -h      Show help output. Does not execute any other command.
-  --config=<file> Specifies file for the instrumentation configuration.
   -v, --verbose[=<value>] Specifies the verbosity level. The following
                   levels are available:
                   0 = No output

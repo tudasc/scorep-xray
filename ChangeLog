@@ -15,6 +15,8 @@ User tools and API improvements and changes:
   removed. It was introduced to work around GCC compiler
   instrumentation issues that vanished with the advent of the
   recommended GCC compiler instrumentation plug-in.
+- The scorep instrumenter option --config=<file> was removed as it
+  was considered of little use.
 
 Bugfixes:
 

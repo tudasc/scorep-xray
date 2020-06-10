@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -171,12 +171,6 @@ SCOREP_Instrumenter_Paradigm::checkWrapperOption( const std::string& current,
                                                   const std::string& next )
 {
     return false;
-}
-
-void
-SCOREP_Instrumenter_Paradigm::setConfigValue( const std::string& key,
-                                              const std::string& value )
-{
 }
 
 bool

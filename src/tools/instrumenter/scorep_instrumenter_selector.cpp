@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2019,
+ * Copyright (c) 2013, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -185,19 +185,6 @@ SCOREP_Instrumenter_Selector::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /*
 }
 
 void
-SCOREP_Instrumenter_Selector::setConfigValue( const std::string& key,
-                                              const std::string& value )
-{
-    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
-    for ( paradigm = m_paradigm_list.begin();
-          paradigm != m_paradigm_list.end();
-          paradigm++ )
-    {
-        ( *paradigm )->setConfigValue( key, value );
-    }
-}
-
-void
 SCOREP_Instrumenter_Selector::checkCompilerName( const std::string& compiler )
 {
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
@@ -351,19 +338,6 @@ SCOREP_Instrumenter_Selector::checkAllWrapperOption( const std::string& current,
         is_wrapper_option |= ( *selector )->checkWrapperOption( current, next );
     }
     return is_wrapper_option;
-}
-
-void
-SCOREP_Instrumenter_Selector::setAllConfigValue( const std::string& key,
-                                                 const std::string& value )
-{
-    SCOREP_Instrumenter_SelectorList::iterator selector;
-    for ( selector = m_selector_list.begin();
-          selector != m_selector_list.end();
-          selector++ )
-    {
-        ( *selector )->setConfigValue( key, value );
-    }
 }
 
 void

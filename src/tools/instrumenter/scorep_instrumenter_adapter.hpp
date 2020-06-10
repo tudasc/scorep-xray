@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -254,18 +254,6 @@ public:
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
-     * Processes a key value pair from a config file. The default implementation
-     * does nothing.
-     * Overwrite this function if your adapter can be configured by a config
-     * file that a user passes in via the '--config' option.
-     * @param key   The key that is specified.
-     * @param value The value of this key.
-     */
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
-    /**
      * This function is called during command line parsing during parsing of the
      * user command. The default implementation ignores all arguments.
      * Overwrite this function if the adapter's behavior is influenced by options
@@ -448,15 +436,6 @@ public:
      */
     static void
     setAllBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
-
-    /**
-     * Let all adapters check for the @a key/@a value pair.
-     * @param key   The key that is specified.
-     * @param value The value of this key.
-     */
-    static void
-    setAllConfigValue( const std::string& key,
-                       const std::string& value );
 
     /**
      * Let all adapters evaluate an argument form the command.

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2017,
@@ -256,12 +256,6 @@ SCOREP_Instrumenter_Adapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine
 {
 }
 
-void
-SCOREP_Instrumenter_Adapter::setConfigValue( const std::string& key,
-                                             const std::string& value )
-{
-}
-
 bool
 SCOREP_Instrumenter_Adapter::checkCommand( const std::string& current,
                                            const std::string& next )
@@ -419,17 +413,6 @@ SCOREP_Instrumenter_Adapter::setAllBuildCheck( SCOREP_Instrumenter_CmdLine& cmdL
     for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
     {
         adapter->second->setBuildCheck( cmdLine );
-    }
-}
-
-void
-SCOREP_Instrumenter_Adapter::setAllConfigValue( const std::string& key,
-                                                const std::string& value )
-{
-    SCOREP_Instrumenter_AdapterList::iterator adapter;
-    for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
-    {
-        adapter->second->setConfigValue( key, value );
     }
 }
 
