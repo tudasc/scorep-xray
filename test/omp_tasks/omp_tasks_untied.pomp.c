@@ -7,12 +7,13 @@ extern "C"
 #include <stddef.h>
 
 extern void
-FORTRAN_MANGLED( pomp2_init_reg_sjwin65ixa08_3 )();
+F77_FUNC_( pomp2_init_reg_sjwin65ixa08_3,
+           POMP2_INIT_REG_SJWIN65IXA08_3 )();
 
 void
 POMP2_Init_regions()
 {
-    FORTRAN_MANGLED( pomp2_init_reg_sjwin65ixa08_3 )();
+    F77_FUNC_( pomp2_init_reg_sjwin65ixa08_3, POMP2_INIT_REG_SJWIN65IXA08_3 )();
 }
 
 size_t

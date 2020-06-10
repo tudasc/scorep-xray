@@ -49,6 +49,11 @@
    Compiler specific defines
 ******************************************************************************/
 
+/*
+ * SCOREP_OPARI_MANGLING_SCHEME is used in opari2 option --omp-tpd-mangling.
+ * This option is only used if the compiler doesn't support OpenMP ancestry
+ * functions. These functions were introduced in OpenMP 3.0.
+ */
 #if SCOREP_BACKEND_COMPILER_CRAY
 #define SCOREP_OPARI_MANGLING_SCHEME "cray"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " --nosrc "
@@ -78,8 +83,10 @@
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
 #elif SCOREP_BACKEND_COMPILER_CLANG
-/* No Fortran, thus no mangling, which matches IBM */
-#define SCOREP_OPARI_MANGLING_SCHEME "ibm"
+/* --omp-tpd-mangling=clang is not implemented in opari2. But as ancestry
+ * is the default since scorep 4.0 and supported by clang, tpd options
+ * wont get used. */
+#define SCOREP_OPARI_MANGLING_SCHEME "clang"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
 #else

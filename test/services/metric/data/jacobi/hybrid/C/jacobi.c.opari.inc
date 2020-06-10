@@ -1,8 +1,8 @@
 #include <opari2/pomp2_lib.h>
 
 #include <stdint.h>
-extern int64_t __attribute__((aligned (16))) FORTRAN_MANGLED(pomp_tpd);
-#pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))
+extern int64_t __attribute__((aligned (16))) F77_FUNC_(pomp_tpd,POMP_TPD);
+#pragma omp threadprivate(F77_FUNC_(pomp_tpd,POMP_TPD))
 #define POMP2_DLIST_00001 shared(pomp2_region_1,pomp2_region_2)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 #define pomp2_ctc_1 "281*regionType=parallel*sscl=jacobi.c:67:67*escl=jacobi.c:86:86**"

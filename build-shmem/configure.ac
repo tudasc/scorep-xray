@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2013-2018,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015-2016, 2018-2019,
+dnl Copyright (c) 2015-2016, 2018-2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -169,7 +169,6 @@ AS_IF([test "x$scorep_shmem_c_supported$scorep_shmem_cxx_supported$scorep_shmem_
 
 # <AC_SCOREP_COMMON_CHECKS>
 AC_SCOREP_COMPILER_CHECKS
-SCOREP_FORTRAN_MANGLED
 SCOREP_CHECK_FORTRAN_CHARLEN_TYPE
 
 AC_C_BIGENDIAN

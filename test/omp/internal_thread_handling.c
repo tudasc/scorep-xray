@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
+#define POMP_TPD_MANGLED F77_FUNC_( pomp_tpd, POMP_TPD )
 #define SCOREP_PRAGMA_STR_( str ) #str
 #define SCOREP_PRAGMA_STR( str ) SCOREP_PRAGMA_STR_( str )
 #define PRAGMA_OP( x ) _Pragma( x )
@@ -73,28 +73,28 @@ void
 foo( void )
 {
     SCOREP_Location_GetCurrentCPULocation();
-    printf( "thread %d in foo.      pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
+    printf( "thread %d in foo.      pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
 }
 
 
 int
 main()
 {
-    printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
+    printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
     int               pomp_num_threads = omp_get_max_threads();
     POMP2_Task_handle pomp2_old_task;
     POMP2_Parallel_fork( &pomp_region_1, 1, pomp_num_threads, &pomp2_old_task,  pomp2_ctc );
-    printf( "thread %d after fork.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
-    SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 firstprivate( pomp2_old_task ) num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
+    printf( "thread %d after fork.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
+    SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 firstprivate( pomp2_old_task ) num_threads( pomp_num_threads ) copyin( F77_FUNC_( pomp_tpd, POMP_TPD ) ) )
     {
         POMP2_Parallel_begin( &pomp_region_1 );
-        printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
+        printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
         foo();
         POMP2_Parallel_end( &pomp_region_1 );
     }
-    printf( "thread %d before join. pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
+    printf( "thread %d before join. pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
     POMP2_Parallel_join( &pomp_region_1, pomp2_old_task );
-    printf( "thread %d after join.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
+    printf( "thread %d after join.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), F77_FUNC_( pomp_tpd, POMP_TPD ) );
 
     return 0;
 }

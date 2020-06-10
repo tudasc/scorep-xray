@@ -17,7 +17,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -233,7 +233,7 @@ InitializeMatrix( struct JacobiData* data )
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
 #line 198 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(F77_FUNC_(pomp_tpd,POMP_TPD))
 {   POMP2_Parallel_begin( &pomp2_region_1 );
 {   POMP2_For_enter( &pomp2_region_1, pomp2_ctc_1  );
 #line 198 "main.c"
