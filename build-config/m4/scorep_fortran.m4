@@ -33,8 +33,32 @@
 
 dnl ------------------------------------------------------------------
 
-AC_DEFUN([SCOREP_FORTRAN_F77_WORKS],[
-    AC_REQUIRE([AC_PROG_F77])
+#  Checks whether the F77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+dnl Do not use AC_DEFUN to prevent AC_F77_LIBRARY_LDFLAGS was expanded before it was required warnings
+m4_define([SCOREP_FORTRAN_F77],[
+    SCOREP_FORTRAN_F77_WORKS
+    dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+    dnl which renders the if ineffective
+    if test "x${scorep_cv_f77_works}" = "xyes"; then
+        AC_PROG_F77_C_O
+        # AC_F*_LIBRARY_LDFLAGS should not be needed as we link the
+        # libscorep_* libs with the fortran compiler. Users of libscorep_* use
+        # the appropriate compiler anyhow.  Well , these macros are implicitly
+        # called by AC_F*_WRAPPERS. On Cray calls to AC_F*_WRAPPERS produce
+        # linker errors that can be fixed by removing "-ltcmalloc_minimal"
+        # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
+        AC_F77_LIBRARY_LDFLAGS
+        AS_CASE([${ac_scorep_platform}],
+            [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
+        AC_F77_WRAPPERS
+    else
+        AC_DEFINE([F77_FUNC(name,NAME)], [name])
+        AC_DEFINE([F77_FUNC_(name,NAME)], [name])
+    fi
+])
+
+AC_DEFUN([SCOREP_FORTRAN_F77_WORKS], [
+    AC_REQUIRE([AC_PROG_F77]) dnl needed for linking if we build mpi fortran wrappers, also for tests
     AC_CACHE_CHECK([whether the Fortran 77 compiler works],
                [scorep_cv_f77_works],
                [AC_LANG_PUSH([Fortran 77])
@@ -46,8 +70,26 @@ AC_DEFUN([SCOREP_FORTRAN_F77_WORKS],[
     AM_CONDITIONAL([SCOREP_HAVE_F77], [test "x${scorep_cv_f77_works}" = "xyes"])
 ])
 
-AC_DEFUN([SCOREP_FORTRAN_FC_WORKS],[
-    AC_REQUIRE([AC_PROG_FC])
+#  Checks whether the FC compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+dnl Do not use AC_DEFUN to prevent AC_FC_LIBRARY_LDFLAGS was expanded before it was required warnings
+m4_define([SCOREP_FORTRAN_FC],[
+    SCOREP_FORTRAN_FC_WORKS
+    dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
+    dnl which renders the if ineffective
+    if test "x${scorep_cv_fc_works}" = "xyes"; then
+        AC_PROG_FC_C_O
+        AC_FC_LIBRARY_LDFLAGS
+        AS_CASE([${ac_scorep_platform}],
+            [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
+        AC_FC_WRAPPERS
+    else
+        AC_DEFINE([FC_FUNC(name,NAME)], [name])
+        AC_DEFINE([FC_FUNC_(name,NAME)], [name])
+    fi
+])
+
+AC_DEFUN([SCOREP_FORTRAN_FC_WORKS], [
+    AC_REQUIRE([AC_PROG_FC]) dnl needed for tests only
     AC_CACHE_CHECK([whether the Fortran compiler works (FC)],
                [scorep_cv_fc_works],
                [AC_LANG_PUSH([Fortran])
