@@ -110,13 +110,3 @@ SCOREP_Instrumenter_CobiAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
 {
     m_cobi_config_dir = cmdLine.getPathToBinary() + "../share";
 }
-
-void
-SCOREP_Instrumenter_CobiAdapter::setConfigValue( const std::string& key,
-                                                 const std::string& value )
-{
-    if ( key == "COBI_CONFIG_DIR" && value != "" )
-    {
-        m_cobi_config_dir = value;
-    }
-}
