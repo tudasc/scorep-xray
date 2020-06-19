@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2017, 2019,
+## Copyright (c) 2009-2017, 2019-2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -120,8 +120,6 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                                [ac_scorep_platform="crayxc"])])
                        AS_IF([test "x${ac_scorep_platform}" = "x"],
                            [AC_MSG_ERROR([Unknown Cray platform.])])],
-                  [test "x${build_cpu}" = "xarmv7l" || test "x${build_cpu}" = "xarmv7hl" || test "x${build_cpu}" = "xaarch64" ],
-                      [ac_scorep_platform="arm"],
                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
                       [ac_scorep_platform="k"],
                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
@@ -166,7 +164,6 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [crayxe],  [ac_scorep_cross_compiling="yes"],
          [crayxk],  [ac_scorep_cross_compiling="yes"],
          [crayxc],  [ac_scorep_cross_compiling="yes"],
-         [arm],     [ac_scorep_cross_compiling="no"],
          [k],       [ac_scorep_cross_compiling="yes"],
          [fx10],    [ac_scorep_cross_compiling="yes"],
          [fx100],   [ac_scorep_cross_compiling="yes"],
@@ -212,7 +209,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
     AM_CONDITIONAL([PLATFORM_MIC],     [test "x${ac_scorep_platform}" = "xmic"])
     AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
-    AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
     AM_CONDITIONAL([PLATFORM_MINGW],   [test "x${ac_scorep_platform}" = "xmingw"])
     AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
     AM_CONDITIONAL([PLATFORM_FX10],    [test "x${ac_scorep_platform}" = "xfx10"])
@@ -253,8 +249,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_MIC], [1], [Set if we are building for the Intel MIC platform])])
     AM_COND_IF([PLATFORM_NECSX],
         [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
-    AM_COND_IF([PLATFORM_ARM],
-        [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
     AM_COND_IF([PLATFORM_MINGW],
         [AC_DEFINE([HAVE_PLATFORM_MINGW], [1], [Set if we are building for the MinGW platform])])
     AM_COND_IF([PLATFORM_K],
