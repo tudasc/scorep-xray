@@ -72,36 +72,8 @@ AM_PROG_CC_C_O
 AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
             dnl mode also for frontend tools
 
-AC_PROG_F77 dnl needed for linking if we build mpi fortran wrappers,
-            dnl also for tests
-SCOREP_FORTRAN_F77_WORKS dnl checks whether the Fortran 77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
-dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
-dnl which renders the if ineffective
-if test "x${scorep_cv_f77_works}" = "xyes"; then
-    AC_PROG_F77_C_O
-    # AC_F*_LIBRARY_LDFLAGS should not be needed as we link the
-    # libscorep_* libs with the fortran compiler. Users of libscorep_* use
-    # the appropriate compiler anyhow.  Well , these macros are implicitly
-    # called by AC_F*_WRAPPERS. On Cray calls to AC_F*_WRAPPERS produce
-    # linker errors that can be fixed by removing "-ltcmalloc_minimal"
-    # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
-    AC_F77_LIBRARY_LDFLAGS
-    AS_CASE([${ac_scorep_platform}],
-            [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
-    AC_F77_WRAPPERS
-fi
-
-AC_PROG_FC dnl needed for tests only
-SCOREP_FORTRAN_FC_WORKS dnl checks whether the Fortran 77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
-dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
-dnl which renders the if ineffective
-if test "x${scorep_cv_fc_works}" = "xyes"; then
-    AC_PROG_FC_C_O
-    AC_FC_LIBRARY_LDFLAGS
-    AS_CASE([${ac_scorep_platform}],
-            [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
-    AC_FC_WRAPPERS
-fi
+SCOREP_FORTRAN_F77
+SCOREP_FORTRAN_FC
 AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${scorep_cv_f77_works}" = "xyes" || test "x${scorep_cv_fc_works}" = "xyes"])
 
 LT_PREREQ([2.4.6])
