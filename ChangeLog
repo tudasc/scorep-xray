@@ -9,6 +9,13 @@ Features and improvements:
 - Score-P now requires an MPI implementation which provides the
   `USE mpi` Fortran bindings, instead of the `INCLUDE 'mpif.h'`.
 
+User tools and API improvements and changes:
+
+- The configure option --with-extra-instrumentation-flags was
+  removed. It was introduced to work around GCC compiler
+  instrumentation issues that vanished with the advent of the
+  recommended GCC compiler instrumentation plug-in.
+
 Bugfixes:
 
 - Support changed BFD API. Changes introduced by binutils-2.34.

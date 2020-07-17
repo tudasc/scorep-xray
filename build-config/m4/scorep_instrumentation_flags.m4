@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013, 2015,
+dnl Copyright (c) 2013, 2015, 2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013-2015, 2019,
@@ -33,17 +33,15 @@ AC_DEFUN([SCOREP_CC_FLAG_TEST],[
    CFLAGS="$save_CFLAGS"
    AC_LANG_POP([C])
 ])
-    
+
 
 AC_DEFUN([SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
 AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 
-dnl Is there a use case for extra-instrumentation-flags?
 AC_ARG_WITH([extra-instrumentation-flags],
-            [AS_HELP_STRING([--with-extra-instrumentation-flags=flags],
-                            [Add additional instrumentation flags.])],
-            [scorep_with_extra_instrumentation_cppflags=$withval],
-            [scorep_with_extra_instrumentation_cppflags=""])dnl
+    [],
+    [AC_MSG_WARN([ignoring --with-extra-instrumentation-flags, functionality got removed])],
+    [])dnl
 
 AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
                     [test -f ../build-gcc-plugin/gcc_plugin_supported],
@@ -82,10 +80,9 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                                   scorep_compiler_instrumentation_ldflags="-Wl,-no_pie"])],
     [])dnl
 
-AS_IF([test "x${scorep_with_extra_instrumentation_cppflags}" != x || \
-       test "x${scorep_compiler_instrumentation_cppflags}" != x],
-    [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${scorep_compiler_instrumentation_cppflags} ${scorep_with_extra_instrumentation_cppflags}])
-     AFS_SUMMARY_VERBOSE([compiler instrumentation cppflags], [${scorep_compiler_instrumentation_cppflags} ${scorep_with_extra_instrumentation_cppflags}])
+AS_IF([test "x${scorep_compiler_instrumentation_cppflags}" != x],
+    [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${scorep_compiler_instrumentation_cppflags}])
+     AFS_SUMMARY_VERBOSE([compiler instrumentation cppflags], [${scorep_compiler_instrumentation_cppflags}])
      AS_IF([test "x${scorep_compiler_instrumentation_ldflags}" != x],
          [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${scorep_compiler_instrumentation_ldflags}])
           AFS_SUMMARY_VERBOSE([compiler instrumentation ldflags], [${scorep_compiler_instrumentation_ldflags}])
@@ -93,7 +90,7 @@ AS_IF([test "x${scorep_with_extra_instrumentation_cppflags}" != x || \
     ])
 
 AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS],
-    ["${scorep_compiler_instrumentation_cppflags} ${scorep_with_extra_instrumentation_cppflags}"])
+    ["${scorep_compiler_instrumentation_cppflags}"])
 AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS], ["${scorep_compiler_instrumentation_ldflags}"])
 ])
 

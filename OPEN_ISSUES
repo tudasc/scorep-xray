@@ -113,12 +113,8 @@ various Score-P components.
 
       -finstrument-functions-exclude-file-list=intrin.h
 
-    as flag to GCC on the command line, or pass it as configure option
-    to Score-P with
-
-      --with-extra-instrumentation-flags=-finstrument-functions-exclude-file-list=intrin.h
-
-    to make it permanently inside the Score-P installation.
+    as flag to GCC on the command line. This issue does not apply if the
+    GNU compiler plug-in based instrumentation is used.
 
   - Because the compiler instrumentation interface of the XL compiler
     series changed with xlc 11.1/xlf 13.1. You need a separate
