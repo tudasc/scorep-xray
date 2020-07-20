@@ -275,22 +275,6 @@ SCOREP_Instrumenter_OpariAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cm
     m_opari_script = "`" + m_opari_config + " --region-initialization`";
 }
 
-void
-SCOREP_Instrumenter_OpariAdapter::setConfigValue( const std::string& key,
-                                                  const std::string& value )
-{
-    if ( key == "OPARI_CONFIG" && value != "" )
-    {
-        m_nm           = "`" + value + " --nm`";
-        m_opari_script = "`" + value + " --region-initialization`";
-        m_opari_config = value;
-    }
-    else if ( key == "OPARI" && value != "" )
-    {
-        m_opari = value;
-    }
-}
-
 bool
 SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
                                                 const std::string& next )

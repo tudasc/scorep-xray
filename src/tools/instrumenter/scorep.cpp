@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -74,7 +74,6 @@ print_help( void )
               << toolname << " <options> <original command>\n\n"
               << "Common options are:\n"
               << "  --help, -h      Show help output. Does not execute any other command.\n"
-              << "  --config=<file> Specifies file for the instrumentation configuration.\n"
               << "  -v, --verbose[=<value>] Specifies the verbosity level. The following\n"
               << "                  levels are available:\n"
               << "                  0 = No output\n"

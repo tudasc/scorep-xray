@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2018,
+ * Copyright (c) 2009-2013, 2015, 2018, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -502,22 +502,6 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     {
         std::cout << PACKAGE_STRING << std::endl;
         exit( EXIT_SUCCESS );
-    }
-    else if ( ( arg.length() >= 9 ) && ( arg.substr( 0, 9 ) == "--config=" ) )
-    {
-        if ( arg.length() < 10 )
-        {
-            std::cerr << "[Score-P] ERROR: No config file specified" << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        std::string config_file = arg.substr( 9 );
-        if ( m_install_data.readConfigFile( config_file ) != SCOREP_SUCCESS )
-        {
-            std::cerr << "[Score-P] ERROR: Failed to read config file "
-                      << "'" << config_file << "'" << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        return scorep_parse_mode_param;
     }
     else if ( arg == "--verbose" )
     {

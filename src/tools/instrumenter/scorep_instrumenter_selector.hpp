@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -136,16 +136,6 @@ public:
                         const std::string& next );
 
     /**
-     * Processes a key value pair from a config file. The default implementation
-     * invokes the check for all paradigms of this group.
-     * @param key   The key that is specified.
-     * @param value The value of this key.
-     */
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
-    /**
      * Let all paradigms check the compiler name, which might affect the
      * automatic paradigm selection or paradigm configuration.
      * @param compiler  The name of the compiler as it appears in the user command.
@@ -250,15 +240,6 @@ public:
      */
     static bool
     checkAllOption( const std::string& arg );
-
-    /**
-     * Processes a key value pair from a config file for all selectors.
-     * @param key   The key that is specified.
-     * @param value The value of this key.
-     */
-    static void
-    setAllConfigValue( const std::string& key,
-                       const std::string& value );
 
     /**
      * Let all paradigm groups check the compiler name, which might affect the

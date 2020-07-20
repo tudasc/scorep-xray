@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -52,14 +52,6 @@ public:
 
     virtual void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
-
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
-private:
-    void
-    set_pdt_path( const std::string& pdt );
 
 private:
     std::string m_pdt_bin_path;

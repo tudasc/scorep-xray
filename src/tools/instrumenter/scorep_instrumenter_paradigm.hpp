@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2017,
@@ -127,18 +127,6 @@ public:
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
-
-    /**
-     * Processes a key value pair from a config file. The default implementation
-     * does nothing.
-     * Overwrite this function if your paradigm can be configured by a config
-     * file that a user passes in via the '--config' option.
-     * @param key   The key that is specified.
-     * @param value The value of this key.
-     */
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
 
     /**
      * Checks the compiler name, which might affect the automatic paradigm selection

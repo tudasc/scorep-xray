@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,7 +56,6 @@ class SCOREP_Instrumenter_CmdLine;
  * However, it may read-in data from a config file.
  */
 class SCOREP_Instrumenter_InstallData
-    : public SCOREP_Tools_ConfigParser
 {
     /* ****************************************************** Public methods */
 public:
@@ -174,27 +173,6 @@ public:
      */
     static bool
     conflictsWithLinktimeWrapping( const std::string& arg );
-
-    /* ***************************************************** Private methods */
-private:
-    /**
-       This function gives a (key, value) pair found in a configuration file
-       and not processed by one of the former functions.
-       @param key   The key
-       @param value The value
-     */
-    void
-    set_value( const std::string& key,
-               const std::string& value );
-
-
-    /**
-       This function processes a setting of the PDT path from config file.
-       @param pdt A string containing the binary directory of the PDT
-       installation.
-     */
-    void
-    set_pdt_path( const std::string& pdt );
 
     /* ***************************************************** Private members */
 private:

@@ -52,10 +52,6 @@ public:
     virtual void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
-    virtual void
-    setConfigValue( const std::string& key,
-                    const std::string& value );
-
 private:
     std::string m_cobi;
     std::string m_cobi_config_dir;

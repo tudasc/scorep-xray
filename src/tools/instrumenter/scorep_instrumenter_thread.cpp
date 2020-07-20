@@ -93,16 +93,6 @@ SCOREP_Instrumenter_Omp::checkCommand( const std::string& current,
     return false;
 }
 
-void
-SCOREP_Instrumenter_Omp::setConfigValue( const std::string& key,
-                                         const std::string& value )
-{
-    if ( key == "OPENMP_CFLAGS" && value != "" )
-    {
-        m_openmp_cflag = value;
-    }
-}
-
 /**
  * Checks whether the current argument is indicates whether OpenMP is used.
  * @param current     The current argument.
@@ -216,16 +206,6 @@ SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
     }
 
     return false;
-}
-
-void
-SCOREP_Instrumenter_Pthread::setConfigValue( const std::string& key,
-                                             const std::string& value )
-{
-    if ( key == "PTHREAD_CFLAGS" && value != "" )
-    {
-        m_pthread_cflag = value;
-    }
 }
 
 bool

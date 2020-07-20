@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2015,
+ * Copyright (c) 2013, 2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2016-2017,
@@ -151,45 +151,4 @@ void
 SCOREP_Instrumenter_PdtAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     m_pdt_config_file = cmdLine.getPathToSrc() + "share/SCOREP_Pdt_Instrumentation.conf";
-}
-
-void
-SCOREP_Instrumenter_PdtAdapter::setConfigValue( const std::string& key,
-                                                const std::string& value )
-{
-    if ( key == "PDT_CONFIG" && value != "" )
-    {
-        m_pdt_config_file = value;
-    }
-    else if ( key == "PDT" && value != "" )
-    {
-        set_pdt_path( value );
-    }
-}
-
-void
-SCOREP_Instrumenter_PdtAdapter::set_pdt_path( const std::string& pdt )
-{
-    if ( pdt == "yes" )
-    {
-        char* path = UTILS_IO_GetExecutablePath( "tau_instrumentor" );
-        if ( path != NULL )
-        {
-            m_pdt_bin_path = path;
-            free( path );
-        }
-        else
-        {
-            std::cerr << "[Score-P] ERROR: Unable to find PDT binaries" << std::endl;
-            exit( EXIT_FAILURE );
-        }
-    }
-    else if ( pdt == "no" )
-    {
-        return;
-    }
-    else
-    {
-        m_pdt_bin_path = pdt;
-    }
 }
