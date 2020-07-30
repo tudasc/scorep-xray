@@ -343,7 +343,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
     SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC ) \
     SCOREP_PARADIGM( IO,                 "io",                 NONE ) \
-    SCOREP_PARADIGM( KOKKOS,             "kokkos",             KOKKOS )
+    SCOREP_PARADIGM( KOKKOS,             "kokkos",             KOKKOS ) \
+    SCOREP_PARADIGM( HIP,                "hip",                HIP )
 
 
 typedef enum SCOREP_ParadigmType

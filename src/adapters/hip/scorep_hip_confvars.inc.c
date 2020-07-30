@@ -26,6 +26,11 @@ uint64_t scorep_hip_features;
 static const SCOREP_ConfigType_SetEntry hip_enable_groups[] =
 {
     {
+        "api",
+        SCOREP_HIP_FEATURE_API,
+        "All HIP API calls"
+    },
+    {
         "default/yes/1/true",
         SCOREP_HIP_FEATURES_DEFAULT,
         "HIP tracing"

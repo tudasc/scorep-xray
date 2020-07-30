@@ -34,6 +34,8 @@ libscorep_adapter_hip_mgmt_la_CPPFLAGS = \
     -I$(INC_DIR_MEASUREMENT) \
     -I$(INC_DIR_SERVICES) \
     -I$(INC_ROOT)src/measurement \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_DIR_COMMON_HASH) \
     $(HIP_CPPFLAGS)
 
 libscorep_adapter_hip_mgmt_la_LIBADD = \

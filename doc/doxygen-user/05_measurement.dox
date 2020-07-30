@@ -933,6 +933,11 @@ The measurement is based on AMD's ROCm API.
 Setting the environment variable \confvar{SCOREP_HIP_ENABLE} to <b><tt>yes</tt></b> enables HIP measurement.
 Please refer to the description of this variable to enable a particular combination of HIP measurement features.
 
+Host API calls can be filtered by name at runtime using the @scorep filter file (see Section @secref{filtering}).
+Filtering does not apply to API functions which are enabled by settings in \confvar{SCOREP_HIP_ENABLE} other than <a><tt>api</tt><a>.
+For example, the API <tt>hipLaunchKernel</tt> can be filtered if <b><tt>api</tt></b> is the only setting in \confvar{SCOREP_HIP_ENABLE}.
+If <b><tt>kernels</tt></b> is set additionally, then it is not allowed to filter this call anymore.
+
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}
 
