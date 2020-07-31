@@ -67,6 +67,7 @@ typedef enum memory_tracking
     SCORER_MEMORY_TRACKING_TOTAL = 0,
     SCORER_MEMORY_TRACKING_MAINTENANCE,
     SCORER_MEMORY_TRACKING_DEFINITIONS,
+    SCORER_MEMORY_TRACKING_TRACING_EVENTS,
     SCORER_MEMORY_TRACKING_SHIFT
 } memory_tracking;
 
@@ -93,6 +94,18 @@ static bool is_initialized;
 static bool out_of_memory;
 
 static SCOREP_Allocator_PageManager* definitions_page_manager;
+
+/*
+ * All tracing event page managers. Memory stats needs to access these,
+ * but they cannot be assigned reliable to the location.
+ */
+struct tracing_page_manager_list
+{
+    struct tracing_page_manager_list* next;
+    SCOREP_Allocator_PageManager*     page_manager;
+};
+/* protected by memory_lock */
+static struct tracing_page_manager_list* tracing_page_managers_head;
 
 void
 SCOREP_Memory_Initialize( uint64_t totalMemory,
@@ -208,7 +221,7 @@ SCOREP_Memory_HandleOutOfMemory( void )
 }
 
 SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreateTracingPageManager( void )
+SCOREP_Memory_CreatePageManager( void )
 {
     SCOREP_Allocator_PageManager* page_manager =
         SCOREP_Allocator_CreatePageManager( allocator );
@@ -222,13 +235,25 @@ SCOREP_Memory_CreateTracingPageManager( void )
 
 
 SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreatePageManager( void )
+SCOREP_Memory_CreateTracingPageManager( bool forEvents )
 {
-    SCOREP_Allocator_PageManager* page_manager = SCOREP_Allocator_CreatePageManager( allocator );
-    if ( !page_manager )
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Memory_CreatePageManager();
+
+    if ( forEvents )
     {
-        SCOREP_Memory_HandleOutOfMemory();
+        /* do not allocate under the memory_lock */
+        struct tracing_page_manager_list* new_entry =
+            SCOREP_Memory_AllocForMisc( sizeof( *new_entry ) );
+
+        new_entry->page_manager = page_manager;
+
+        SCOREP_MutexLock( memory_lock );
+        new_entry->next            = tracing_page_managers_head;
+        tracing_page_managers_head = new_entry;
+        SCOREP_MutexUnlock( memory_lock );
     }
+
     return page_manager;
 }
 
@@ -252,6 +277,44 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 #endif
         }
     }
+}
+
+
+void
+SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManager,
+                                        bool                          forEvents )
+{
+    if ( forEvents )
+    {
+        /* only called once per location at pre-unify, thus no reuse possible */
+
+        SCOREP_MutexLock( memory_lock );
+        struct tracing_page_manager_list** it = &tracing_page_managers_head;
+        while ( *it )
+        {
+            if ( ( *it )->page_manager == pageManager )
+            {
+                break;
+            }
+            it = &( *it )->next;
+        }
+        if ( *it )
+        {
+            /* Remove element from list */
+            *it = ( *it )->next;
+        }
+        SCOREP_MutexUnlock( memory_lock );
+    }
+
+#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
+    // function, so omp_set/unset_lock, which is called after the end
+    // of main from the atexit handler, causes segmentation fault. The
+    // problem will be fixed in  Intel Compiler 11.1 update 6.
+    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
+#else
+    SCOREP_Allocator_DeletePageManager( pageManager );
+#endif
 }
 
 
@@ -288,8 +351,13 @@ static bool
 free_memory_type_for_location( SCOREP_Location* location,
                                void*            arg )
 {
-    SCOREP_MemoryType type = *( SCOREP_MemoryType* )arg;
-    SCOREP_Allocator_Free( SCOREP_Location_GetOrCreateMemoryPageManager( location, type ) );
+    SCOREP_MemoryType             type         = *( SCOREP_MemoryType* )arg;
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Location_GetMemoryPageManager( location, type );
+    if ( page_manager )
+    {
+        SCOREP_Allocator_Free( page_manager );
+    }
     return false;
 }
 
@@ -426,13 +494,13 @@ memory_dump_for_location( SCOREP_Location* location,
 {
     for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
     {
-        const SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Allocator_PageManager* page_manager =
             SCOREP_Location_GetMemoryPageManager( location, i );
         if ( !page_manager )
         {
             continue;
         }
-        SCOREP_Allocator_GetPageManagerStats( page_manager, 0, &stats[ i + SCORER_MEMORY_TRACKING_SHIFT ] );
+        SCOREP_Allocator_GetPageManagerStats( page_manager, &stats[ i + SCORER_MEMORY_TRACKING_SHIFT ] );
     }
     return false;
 }
@@ -455,13 +523,23 @@ memory_dump_stats_common( const char* message, bool report )
     memset( stats, 0, sizeof( struct SCOREP_Allocator_PageManagerStats ) * (  SCORER_MEMORY_STATS_SIZE ) );
 
     /* collect stats[i] */
-    SCOREP_Allocator_GetPageStats( allocator, &stats[ SCORER_MEMORY_TRACKING_TOTAL ] );
-    SCOREP_Allocator_GetPageManagerStats( 0, allocator, &stats[ SCORER_MEMORY_TRACKING_MAINTENANCE ] );
+    SCOREP_Allocator_GetStats( allocator,
+                               &stats[ SCORER_MEMORY_TRACKING_TOTAL ],
+                               &stats[ SCORER_MEMORY_TRACKING_MAINTENANCE ] );
     if ( definitions_page_manager )
     {
-        SCOREP_Allocator_GetPageManagerStats( definitions_page_manager, 0, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
+        SCOREP_Allocator_GetPageManagerStats( definitions_page_manager, &stats[ SCORER_MEMORY_TRACKING_DEFINITIONS ] );
     }
     SCOREP_Location_ForAll( memory_dump_for_location, NULL );
+
+    /* Tracing page managers are collected separately */
+    struct tracing_page_manager_list* tracing_page_manager = tracing_page_managers_head;
+    while ( tracing_page_manager )
+    {
+        SCOREP_Allocator_GetPageManagerStats( tracing_page_manager->page_manager,
+                                              &stats[ SCORER_MEMORY_TRACKING_TRACING_EVENTS ] );
+        tracing_page_manager = tracing_page_manager->next;
+    }
 
     if ( report )
     {
@@ -487,14 +565,14 @@ memory_type_2_string( int memoryType )
             return "Maintenance";
         case -( SCORER_MEMORY_TRACKING_SHIFT - SCORER_MEMORY_TRACKING_DEFINITIONS ):
             return "Definitions";
+        case -( SCORER_MEMORY_TRACKING_SHIFT - SCORER_MEMORY_TRACKING_TRACING_EVENTS ):
+            return "Tracing (events)";
         case SCOREP_MEMORY_TYPE_MISC:
             return "Location-Misc";
         case SCOREP_MEMORY_TYPE_DEFINITIONS:
             return "Location-Definitions";
         case SCOREP_MEMORY_TYPE_PROFILING:
             return "Location-Profiling";
-        case SCOREP_MEMORY_TYPE_TRACING_EVENTS:
-            return "Location-Tracing (events)";
         default:
             UTILS_FATAL( "Unknown memory type." );
             return "Silence compiler warning";
@@ -617,7 +695,7 @@ static void
 memory_dump_stats_aggr( void )
 {
     /* get stat's min/max/mean */
-    for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 0; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         memory_reduce_stats( &( stats[ i ] ),
                              &( stats_min[ i ] ),
@@ -658,7 +736,7 @@ memory_dump_stats_aggr( void )
     }
 
     /* maintenance, definitions, location-memory */
-    for ( int i = 1; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 1; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         /* header */
         fprintf( stderr, "[Score-P] Memory: %s\n", memory_type_2_string( i ) );
@@ -714,7 +792,7 @@ memory_dump_stats_full( void )
              stats[ SCORER_MEMORY_TRACKING_TOTAL ].pages_used );
 
     /* maintenance, definitions, location-memory */
-    for ( int i = 1; i < SCOREP_NUMBER_OF_MEMORY_TYPES + SCORER_MEMORY_TRACKING_SHIFT; ++i )
+    for ( int i = 1; i < SCORER_MEMORY_STATS_SIZE; ++i )
     {
         /* header */
         fprintf( stderr, "[Score-P] Memory: %s\n", memory_type_2_string( i ) );

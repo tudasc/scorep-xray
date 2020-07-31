@@ -65,9 +65,6 @@ typedef enum SCOREP_MemoryType
     /** separate because we might clear them for periscope from time to time */
     SCOREP_MEMORY_TYPE_PROFILING,
 
-    /** separate because we need to flush these independently */
-    SCOREP_MEMORY_TYPE_TRACING_EVENTS,
-
     SCOREP_NUMBER_OF_MEMORY_TYPES
 } SCOREP_MemoryType;
 
@@ -110,13 +107,6 @@ SCOREP_Memory_Finalize( void );
 
 
 /**
- * Creates a page manager for the tracing event writer.
- */
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreateTracingPageManager( void );
-
-
-/**
  * Create a page manager on the fly. Triggers SCOREP_Memory_HandleOutOfMemory()
  * if creation fails.
  * By creation on the fly we will only create the least amount of page managers,
@@ -126,8 +116,22 @@ SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreatePageManager( void );
 
 
+/**
+ * Creates a page manager for the tracing event writer.
+ *
+ * @param forEvents  Pass true, if this page memory is used for events.
+ */
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateTracingPageManager( bool forEvents );
+
+
 void
 SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
+
+
+void
+SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManager,
+                                        bool                          forEvents );
 
 
 /**
