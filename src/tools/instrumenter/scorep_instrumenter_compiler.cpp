@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013-2016, 2019,
@@ -25,10 +25,13 @@
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter.hpp"
+#include <scorep_tools_utils.hpp>
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+#include <SCOREP_Filter.h>
 
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <algorithm>
@@ -92,12 +95,56 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
     return true;
 #else
     return false;
 #endif
 }
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+// Converts a Score-P filter regex expression by the Intel tcollect format
+static std::string
+convert_regex_to_tcollect2( std::string rule )
+{
+    rule = replace_all( "*", ".*", rule );
+    rule = replace_all( "?", ".", rule  );
+    rule = replace_all( "[!", "[^", rule  );
+
+    return rule;
+}
+
+// Callback to write tcollect function rule to file
+static void
+write_tcollect_function_rules( void*       userData,
+                               const char* pattern,
+                               bool        isExclude,
+                               bool        isMangled )
+{
+    UTILS_BUG_ON( userData == NULL, "userData is NULL!" );
+    UTILS_BUG_ON( pattern == NULL, "pattern is NULL!" );
+
+    std::ofstream* stream = static_cast<std::ofstream*>( userData );
+    *stream << " ':" << convert_regex_to_tcollect2( pattern )
+            << "$' " << ( isExclude  ? "OFF" : "ON" ) << std::endl;
+}
+
+// Callback to write tcollect file rule to file
+static void
+write_tcollect_file_rules( void*       userData,
+                           const char* pattern,
+                           bool        isExclude,
+                           bool        isMangled )
+{
+    UTILS_BUG_ON( userData == NULL, "userData is NULL!" );
+    UTILS_BUG_ON( pattern == NULL, "pattern is NULL!" );
+
+    std::ofstream* stream = static_cast<std::ofstream*>( userData );
+    *stream << " '" << convert_regex_to_tcollect2( pattern )
+            << ":' " << ( isExclude  ? "OFF" : "ON" ) << std::endl;
+}
+#endif // SCOREP_BACKEND_COMPILER_INTEL
+
 
 std::string
 SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine )
@@ -113,7 +160,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
     if ( cmdLine.getVerbosity() >= 1 )
     {
         std::ostringstream verbosity_arg;
-        verbosity_arg << " --compiler-plugin-arg=verbosity=";
+        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity=";
         verbosity_arg << cmdLine.getVerbosity();
         flags += verbosity_arg.str();
     }
@@ -122,10 +169,50 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
           file_it != filter_files.end();
           ++file_it )
     {
-        flags += " --compiler-plugin-arg=filter=" + *file_it;
+        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it;
     }
-#endif // HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#elif SCOREP_BACKEND_COMPILER_INTEL
+    SCOREP_Filter* filter = SCOREP_Filter_New();
+    std::string    outfname;
 
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
+          file_it != filter_files.end();
+          ++file_it )
+    {
+        std::string fname = *file_it;
+        /* Parsing filter files. */
+        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( filter,  fname.c_str() );
+        if ( err != SCOREP_SUCCESS )
+        {
+            std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl;
+        }
+        outfname += fname + ".";
+    }
+
+    /* Using an unique temp file to avoid data races when calling scorep multiple times. */
+    outfname += create_random_string() +  ".tcollect";
+    /* Converting the aggregated filter data to tcollect format. */
+    std::ofstream filter_file( outfname );
+    if ( filter_file.is_open() )
+    {
+        SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
+        SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file );
+        filter_file.close();
+    }
+    else
+    {
+        UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'",
+                            outfname.c_str() );
+    }
+
+    cmdLine.addTempFile( outfname );
+    flags += " --compiler-arg=-tcollect-filter";
+    flags += " --compiler-arg=" + outfname;
+    /* Add tcollect reporting flags. */
+    flags += " --compiler-arg=-qopt-report-file=stderr";
+    flags += " --compiler-arg=-qopt-report-phase=tcollect";
+#endif
     return flags;
 }
 

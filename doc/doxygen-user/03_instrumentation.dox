@@ -378,13 +378,16 @@ provides support for instrumentation of C/C++ codes.
   platforms when using automatic compiler instrumentation.
 
 @note
-  As an exception, the GCC plug-in based function instrumentation supports all
-  filtering features when using the @verb{--instrument-filter=<file>} flag to the
-  @scorep instrumenter. Though this instrumentation does not instrument
-  functions declared as @verb{inline} by default. But one can provide a filter
-  file, where functions in an explicit @verb{INCLUDE} rule, nevertheless will be
-  instrumented. This @verb{INCLUDE} is not allowed to be the @emph{match-all}
-  rule @verb{INCLUDE *} (see Sec. @secref{filtering}).
+  As an exception, instrumentation via the GCC plug-in or Intel
+  compilers support all filtering features when using the @scorep
+  option @verb{--instrument-filter=<file>}`. Note that the GCC
+  plug-in instrumentation by default does not instrument functions
+  declared as @verb{inline}. By providing a filter that matches
+  @verb{inline} functions in an explicit @verb{INCLUDE} rule, the
+  default behavior can be overridden. This @verb{INCLUDE} is not
+  allowed to be the @emph{match-all} rule @verb{INCLUDE *} (see
+  Sec. @secref{filtering}).
+
 
 Names provided for instrumented routines depend on the compiler, which may
 add underscores and other decorations to Fortran and C++ routine names, and

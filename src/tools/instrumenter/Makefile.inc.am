@@ -67,6 +67,7 @@ scorep_CPPFLAGS = \
     -I$(INC_ROOT)src/tools/lib
 
 scorep_LDADD = \
+    libscorep_filter.la \
     libscorep_tools.la \
     libutils.la \
     libscorep_openmp_version.la

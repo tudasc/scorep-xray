@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017, 2020,
+ * Copyright (c) 2013-2014, 2017, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2019,
@@ -353,14 +353,14 @@ SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
         return true;
     }
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
     /* Catch any compiler plug-in args */
-    if ( arg.substr( 0, 22 ) == "--compiler-plugin-arg=" )
+    if ( arg.substr( 0, 15 ) == "--compiler-arg=" )
     {
-        m_cflags += "-fplugin-arg-scorep_instrument_function-" + arg.substr( 22 ) + " ";
+        m_cflags += arg.substr( 15 ) + " ";
         return true;
     }
-#endif /*HAVE_BACKEND( GCC_PLUGIN_SUPPORT )*/
+#endif /*HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL*/
 #endif /*HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
 
     return false;
@@ -399,7 +399,9 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
         cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function.so ";
     }
     cflags += m_cflags;
-#endif
+#elif SCOREP_BACKEND_COMPILER_INTEL
+    cflags += m_cflags;
+#endif /*SCOREP_BACKEND_COMPILER_INTEL*/
 }
 
 void
