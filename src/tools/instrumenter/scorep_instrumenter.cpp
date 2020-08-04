@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -399,15 +399,19 @@ SCOREP_Instrumenter::create_object_name( const std::string& sourceFile )
 void
 SCOREP_Instrumenter::addTempFile( const std::string& filename )
 {
-    m_temp_files.push_back( filename );
+    m_command_line.addTempFile( filename );
 }
 
 void
 SCOREP_Instrumenter::clean_temp_files( void )
 {
-    if ( ( !m_command_line.hasKeepFiles() ) && ( !m_temp_files.empty() ) )
+    if ( !m_command_line.hasKeepFiles() )
     {
-        executeCommand( scorep_vector_to_string( m_temp_files, "rm ", "", " " ) );
+        const std::vector<std::string>& cmd_line_files = m_command_line.getTempFiles();
+        if ( !cmd_line_files.empty() )
+        {
+            executeCommand( scorep_vector_to_string( cmd_line_files, "rm ", "", " " ) );
+        }
     }
 }
 

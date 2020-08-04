@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -235,12 +235,6 @@ private:
        they are then substituted by the OPARI output.
      */
     std::vector<std::string> m_input_files;
-
-    /**
-       A list of temporarily created files that are deleted at the end of a
-       successful execution, if @a keep_files is false.
-     */
-    std::vector<std::string> m_temp_files;
 
     /**
        The base config call without action parameter.
