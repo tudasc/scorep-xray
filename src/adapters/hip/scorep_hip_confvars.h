@@ -40,4 +40,9 @@
  */
 extern uint64_t scorep_hip_features;
 
+/*
+ * Size of the device activity buffer
+ */
+extern uint64_t scorep_hip_activity_buffer_size;
+
 #endif  /* SCOREP_HIP_CONFVARS_H */

@@ -23,6 +23,7 @@
 #include <scorep/SCOREP_PublicTypes.h>
 
 #include <SCOREP_InMeasurement.h>
+#include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Filtering.h>
@@ -34,6 +35,7 @@
 #include <scorep_system_tree.h>
 
 #include <UTILS_Atomic.h>
+#include <UTILS_Mutex.h>
 #define SCOREP_DEBUG_MODULE_NAME HIP
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
@@ -78,11 +80,21 @@ SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle;
 uint64_t  scorep_hip_global_location_count = 0;
 uint64_t* scorep_hip_global_location_ids   = NULL;
 
+static uint64_t previous_activity_scorep_time;
+static uint64_t previous_activity_hip_time;
+
+/* Our own event phase, whiche goes until subsystem_end to flush the activity buffers */
+static volatile sig_atomic_t event_phase;
+
 /************************** Forward declarations ******************************/
 
 /* Assign the current host location a rank inside the HIP specific RMA window/communicator */
 static void
 activate_host_location( void );
+
+static void
+get_synced_timestamps( uint64_t* scorepTime,
+                       uint64_t* hipTime );
 
 /************************** HIP API function table ****************************/
 
@@ -1313,6 +1325,99 @@ free_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+// Activity tracing callback
+//
+// Called on activity buffer flush. Executes in a dedicated roctracer thread.
+// Hence, do not trigger any callpath to SCOREP_Location_GetCurrentCPULocation()
+// (i.e., do not trigger host events). But be aware that allocating memory
+// could also trigger this.
+static void
+activity_cb( const char* begin,
+             const char* end,
+             void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !event_phase )
+    {
+        UTILS_WARN_ONCE( "HIP activity buffer flush past event phase." );
+
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    uint64_t current_activity_scorep_time;
+    uint64_t current_activity_hip_time;
+    get_synced_timestamps( &current_activity_scorep_time, &current_activity_hip_time );
+    UTILS_ASSERT( previous_activity_scorep_time < current_activity_scorep_time );
+    UTILS_ASSERT( previous_activity_hip_time < current_activity_hip_time );
+
+    double slope =   ( double )( current_activity_scorep_time - previous_activity_scorep_time )
+                   / ( double )( current_activity_hip_time    - previous_activity_hip_time );
+
+#define CONVERT_TO_SCOREP_TIMESTAMP( hipTimestamp ) \
+    ( uint64_t )( ( ( ( double )( hipTimestamp ) - ( double )previous_activity_hip_time ) * slope ) + ( double )previous_activity_scorep_time )
+
+    for ( const roctracer_record_t* record = ( const roctracer_record_t* )begin;
+          record != ( const roctracer_record_t* )end;
+          roctracer_next_record( record, &record ) )
+    {
+        if ( record->domain != ACTIVITY_DOMAIN_HIP_OPS )
+        {
+            UTILS_WARNING( "Unexpected activity record not in HIP_OPS domain: %s",
+                           roctracer_op_string( record->domain, record->op, record->kind ) );
+            continue;
+        }
+
+        correlation_entry* e = get_correlation_entry( record->correlation_id );
+        if ( !e )
+        {
+            UTILS_WARNING( "No correlation entry for activity record, discarding" );
+            continue;
+        }
+
+        uint64_t begin_time = CONVERT_TO_SCOREP_TIMESTAMP( record->begin_ns );
+        uint64_t end_time   = CONVERT_TO_SCOREP_TIMESTAMP( record->end_ns );
+        switch ( e->cid )
+        {
+            default:
+                break;
+        }
+
+        correlation_table_remove( record->correlation_id );
+    }
+
+#undef CONVERT_TO_SCOREP_TIMESTAMP
+
+    previous_activity_scorep_time = current_activity_scorep_time;
+    previous_activity_hip_time    = current_activity_hip_time;
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+#if ROCTRACER_VERSION_MAJOR > 4 || ( ROCTRACER_VERSION_MAJOR == 4 && ROCTRACER_VERSION_MINOR >= 1 )
+static void
+activity_alloc_cb( char** ptr, size_t size, void* arg )
+{
+    // alloc
+    if ( *ptr == NULL )
+    {
+        *ptr = SCOREP_Memory_AllocForMisc( size );
+        return;
+    }
+
+    // realloc
+    if ( *ptr != NULL && size != 0 )
+    {
+        // leak memory
+        *ptr = SCOREP_Memory_AllocForMisc( size );
+        return;
+    }
+
+    // free
+    // leak memory
+}
+#endif
+
 // Init tracing routine
 void
 scorep_hip_callbacks_init( void )
@@ -1332,12 +1437,32 @@ scorep_hip_callbacks_init( void )
         attribute_allocation_size   = SCOREP_AllocMetric_GetAllocationSizeAttribute();
         attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
     }
+
+    // Must be called at least once on one of HIP_API, HCC_OPS, or its alias
+    // HIP_OPS in order to initialize any HIP domain recording properly
+    SCOREP_ROCTRACER_CALL( roctracer_set_properties( ACTIVITY_DOMAIN_HIP_API, NULL ) );
+    // Second call is redundant given the current state of roctracer
+    // but hurts nothing to leave in
+    SCOREP_ROCTRACER_CALL( roctracer_set_properties( ACTIVITY_DOMAIN_HIP_OPS, NULL ) );
+
+    // Allocating tracing pool
+    // cannot use the Score-P allocatorbecause of:
+    // https://github.com/ROCm-Developer-Tools/roctracer/issues/54
+    // fixed in 5.3, roctracer 4.1 is included in ROCm 5.3
+    roctracer_properties_t properties = { 0 };
+#if ROCTRACER_VERSION_MAJOR > 4 || ( ROCTRACER_VERSION_MAJOR == 4 && ROCTRACER_VERSION_MINOR >= 1 )
+    properties.alloc_fun = activity_alloc_cb;
+#endif
+    properties.buffer_size         = scorep_hip_activity_buffer_size;
+    properties.buffer_callback_fun = activity_cb;
+    SCOREP_ROCTRACER_CALL( roctracer_open_pool( &properties ) );
 }
 
 void
 scorep_hip_callbacks_finalize( void )
 {
     UTILS_DEBUG( "######################### Finalize ROC tracer" );
+    SCOREP_ROCTRACER_CALL( roctracer_close_pool() );
 }
 
 #define ENABLE_TRACING( fn, callback )      \
@@ -1355,6 +1480,13 @@ scorep_hip_callbacks_enable( void )
 {
     UTILS_DEBUG( "############################## Start HIP tracing" );
 
+    /* need to call any HIP API to init HSA before calling roctracer_get_timestamp
+     * see: https://github.com/ROCm-Developer-Tools/roctracer/issues/65 */
+    int dummy_device_id;
+    hipGetDevice( &dummy_device_id );
+
+    get_synced_timestamps( &previous_activity_scorep_time, &previous_activity_hip_time );
+
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_API )
     {
         /* These are all allowed to be filtered, thus setting callback arg to !NULL */
@@ -1362,6 +1494,7 @@ scorep_hip_callbacks_enable( void )
     }
 
     bool need_stream_api_tracing = false;
+    bool need_activity_tracing   = false;
 
     /* Kernel launches. */
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNELS )
@@ -1434,6 +1567,15 @@ scorep_hip_callbacks_enable( void )
         ENABLE_TRACING( hipStreamDestroy, api_cb );
         ENABLE_TRACING( hipSetDevice, api_cb );
     }
+
+    if ( need_activity_tracing )
+    {
+        SCOREP_ROCTRACER_CALL( roctracer_enable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
+    }
+
+    /* Enable adapter internal event phase which lasts till scorep_hip_callbacks_disable,
+     * thus extending WITHIN */
+    event_phase = 1;
 }
 
 #if HAVE( UTILS_DEBUG )
@@ -1459,6 +1601,8 @@ void
 scorep_hip_callbacks_disable( void )
 {
     SCOREP_ROCTRACER_CALL( roctracer_disable_domain_callback( ACTIVITY_DOMAIN_HIP_API ) );
+    SCOREP_ROCTRACER_CALL( roctracer_disable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
+    SCOREP_ROCTRACER_CALL( roctracer_flush_activity() );
     UTILS_DEBUG( "############################## Stop HIP tracing" );
 #if HAVE( UTILS_DEBUG )
     correlation_table_iterate_key_value_pairs( &print_orphan, NULL );
@@ -1469,6 +1613,9 @@ scorep_hip_callbacks_disable( void )
         SCOREP_AllocMetric_ReportLeaked( host_alloc_metric );
         device_table_iterate_key_value_pairs( &report_leaked, NULL );
     }
+
+    /* Now that all buffers are flushed, we can disable the event phase again */
+    event_phase = 0;
 }
 
 static bool
@@ -1542,4 +1689,21 @@ activate_host_location( void )
             &local_rank_counter, 1,
             UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
+}
+
+void
+get_synced_timestamps( uint64_t* scorepTime,
+                       uint64_t* hipTime )
+{
+    uint64_t before = SCOREP_Timer_GetClockTicks();
+
+    SCOREP_ROCTRACER_CALL( roctracer_get_timestamp( hipTime ) );
+
+    uint64_t after = SCOREP_Timer_GetClockTicks();
+
+    /* Update the time once and only once
+     * We remain careful of overflow, so add the
+     * averaged *difference* to the timestamp.
+     */
+    *scorepTime = before + ( after - before ) / 2;
 }

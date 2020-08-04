@@ -37,6 +37,7 @@ libscorep_adapter_hip_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_COMMON_HASH) \
+    $(SCOREP_TIMER_CPPFLAGS) \
     $(HIP_CPPFLAGS)
 
 libscorep_adapter_hip_mgmt_la_LIBADD = \

@@ -17,6 +17,7 @@
 #include <SCOREP_Config.h>
 
 uint64_t scorep_hip_features;
+uint64_t scorep_hip_activity_buffer_size;
 
 
 /*
@@ -62,6 +63,15 @@ static SCOREP_ConfigVariable scorep_hip_confvars[] =
         "yes",                     /* default value */
         "HIP measurement features",
         "Sets the HIP measurement mode to capture:"
+    },
+    {
+        "activity_buffer_size",
+        SCOREP_CONFIG_TYPE_SIZE,          /* type */
+        &scorep_hip_activity_buffer_size, /* pointer to target variable */
+        NULL,
+        "4096",                           /* default value */
+        "HIP device activity buffer size",
+        "Buffer size for device activity events. Must be a power-of-2."
     },
     SCOREP_CONFIG_TERMINATOR
 };

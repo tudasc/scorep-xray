@@ -34,6 +34,7 @@ typedef struct scorep_hip_cpu_location_data
 extern size_t scorep_hip_subsystem_id;
 
 extern uint64_t                         scorep_hip_features;
+extern uint64_t                         scorep_hip_activity_buffer_size;
 extern uint64_t                         scorep_hip_global_location_count;
 extern uint64_t*                        scorep_hip_global_location_ids;
 extern SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle;
