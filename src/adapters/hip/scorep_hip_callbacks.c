@@ -29,6 +29,7 @@
 #include <SCOREP_AcceleratorManagement.h>
 #include <SCOREP_FastHashtab.h>
 #include <SCOREP_Demangle.h>
+#include <SCOREP_AllocMetric.h>
 
 #include <scorep_system_tree.h>
 
@@ -63,6 +64,10 @@
     } while ( 0 )
 
 static SCOREP_SourceFileHandle hip_file_handle;
+
+static SCOREP_AllocMetric*    host_alloc_metric;
+static SCOREP_AttributeHandle attribute_allocation_size;
+static SCOREP_AttributeHandle attribute_deallocation_size;
 
 /************************** HIP API function table ****************************/
 
@@ -262,6 +267,7 @@ typedef struct
     SCOREP_SystemTreeNodeHandle system_tree_node;
     SCOREP_LocationGroupHandle  location_group;
     uint32_t                    stream_counter;
+    SCOREP_AllocMetric*         alloc_metric;
 } scorep_hip_device;
 
 typedef int                device_table_key_t;
@@ -452,6 +458,12 @@ device_table_value_ctor( device_table_key_t* key,
         device->system_tree_node,
         buffer );
 
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        snprintf( buffer, 80, "HIP Context %d Memory", *key );
+        SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
+    }
+
     return device;
 }
 
@@ -459,6 +471,14 @@ device_table_value_ctor( device_table_key_t* key,
 SCOREP_HASH_TABLE_MONOTONIC( device_table,
                              10,
                              hashsize( DEVICE_TABLE_HASH_EXPONENT ) );
+
+static scorep_hip_device*
+get_device( device_table_key_t deviceId )
+{
+    device_table_value_t device = NULL;
+    device_table_get_and_insert( deviceId, NULL, &device );
+    return device;
+}
 
 /************************** HIP streams ***************************************/
 
@@ -714,6 +734,11 @@ typedef struct
             scorep_hip_stream*  stream;
             SCOREP_RegionHandle kernel_region;
         } launch;
+        struct
+        {
+            SCOREP_AllocMetric* metric;
+            void*               allocation;
+        } free;
     } payload;
 } correlation_entry;
 
@@ -1017,6 +1042,241 @@ kernel_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static void
+handle_alloc( const void* ptr,
+              size_t      size )
+{
+    hipPointerAttribute_t attributes = { 0, };
+    hipError_t            err        = hipPointerGetAttributes( &attributes, ptr );
+    if ( err != hipSuccess )
+    {
+        UTILS_WARNING( "Invalid HIP pointer to alloc: %s", hipGetErrorString( err ) );
+        return;
+    }
+
+    SCOREP_AllocMetric* metric = host_alloc_metric;
+    switch ( attributes.memoryType )
+    {
+        case hipMemoryTypeDevice:
+        case hipMemoryTypeArray:
+        case hipMemoryTypeUnified:
+            metric = get_device( attributes.device )->alloc_metric;
+            break;
+
+        case hipMemoryTypeHost:
+        default:
+            break;
+    }
+
+    SCOREP_AllocMetric_HandleAlloc( metric, ( uint64_t )ptr, size );
+}
+
+static void
+malloc_cb( uint32_t    domain,
+           uint32_t    cid,
+           const void* callbackData,
+           void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( domain != ACTIVITY_DOMAIN_HIP_API, "Only HIP domain handled." );
+
+    const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
+
+    if ( data->phase == ACTIVITY_API_PHASE_ENTER )
+    {
+        uint64_t alloc_size;
+        switch ( cid )
+        {
+            case HIP_API_ID_hipMalloc:
+                alloc_size = data->args.hipMalloc.size;
+                break;
+
+            case HIP_API_ID_hipHostMalloc:
+                alloc_size = data->args.hipHostMalloc.size;
+                break;
+
+            case HIP_API_ID_hipMallocManaged:
+                alloc_size = data->args.hipMallocManaged.size;
+                break;
+
+            case HIP_API_ID_hipExtMallocWithFlags:
+                alloc_size = data->args.hipExtMallocWithFlags.sizeBytes;
+                break;
+
+#if HAVE( DECL_HIP_API_ID_HIPMALLOCHOST )
+            case HIP_API_ID_hipMallocHost:
+                alloc_size = data->args.hipMallocHost.size;
+                break;
+#endif
+
+#if HAVE( DECL_HIP_API_ID_HIPHOSTALLOC )
+            case HIP_API_ID_hipHostAlloc:
+                alloc_size = data->args.hipHostAlloc.size;
+                break;
+#endif
+
+            default:
+                UTILS_BUG( "Unhandled malloc category call '%s'", hip_api_name( cid ) );
+        }
+
+        SCOREP_AddAttribute( attribute_allocation_size, &alloc_size );
+        api_region_enter( cid, SCOREP_REGION_ALLOCATE, "HIP_MALLOC", false );
+    }
+
+    if ( data->phase == ACTIVITY_API_PHASE_EXIT )
+    {
+        switch ( cid )
+        {
+            case HIP_API_ID_hipMalloc:
+                handle_alloc( *data->args.hipMalloc.ptr,
+                              data->args.hipMalloc.size );
+                break;
+
+            case HIP_API_ID_hipHostMalloc:
+                handle_alloc( *data->args.hipHostMalloc.ptr,
+                              data->args.hipHostMalloc.size );
+                break;
+
+            case HIP_API_ID_hipMallocManaged:
+                handle_alloc( *data->args.hipMallocManaged.dev_ptr,
+                              data->args.hipMallocManaged.size );
+                break;
+
+            case HIP_API_ID_hipExtMallocWithFlags:
+                handle_alloc( *data->args.hipExtMallocWithFlags.ptr,
+                              data->args.hipExtMallocWithFlags.sizeBytes );
+                break;
+
+#if HAVE( DECL_HIP_API_ID_HIPMALLOCHOST )
+            case HIP_API_ID_hipMallocHost:
+                handle_alloc( *data->args.hipMallocHost.ptr,
+                              data->args.hipMallocHost.size );
+                break;
+#endif
+
+#if HAVE( DECL_HIP_API_ID_HIPHOSTALLOC )
+            case HIP_API_ID_hipHostAlloc:
+                handle_alloc( *data->args.hipHostAlloc.ptr,
+                              data->args.hipHostAlloc.size );
+                break;
+#endif
+
+            default:
+                UTILS_BUG( "Unhandled malloc category call '%s'", hip_api_name( cid ) );
+        }
+
+        api_region_exit( cid );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+static void
+handle_free( uint64_t    correlationId,
+             uint32_t    cid,
+             const void* ptr )
+{
+    hipPointerAttribute_t attributes = { 0, };
+    hipError_t            err        = hipPointerGetAttributes( &attributes, ptr );
+    if ( err != hipSuccess )
+    {
+        UTILS_WARNING( "Invalid HIP pointer to free: %s", hipGetErrorString( err ) );
+        return;
+    }
+
+    SCOREP_AllocMetric* metric = host_alloc_metric;
+    switch ( attributes.memoryType )
+    {
+        case hipMemoryTypeDevice:
+        case hipMemoryTypeArray:
+        case hipMemoryTypeUnified:
+            metric = get_device( attributes.device )->alloc_metric;
+            break;
+
+        case hipMemoryTypeHost:
+        default:
+            break;
+    }
+
+    void* allocation = NULL;
+    SCOREP_AllocMetric_AcquireAlloc( metric, ( uint64_t )ptr, &allocation );
+    if ( allocation )
+    {
+        correlation_entry* e = create_correlation_entry( correlationId, cid );
+        e->payload.free.metric     = metric;
+        e->payload.free.allocation = allocation;
+    }
+}
+
+static void
+free_cb( uint32_t    domain,
+         uint32_t    cid,
+         const void* callbackData,
+         void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( domain != ACTIVITY_DOMAIN_HIP_API, "Only HIP domain handled." );
+
+    const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
+
+    if ( data->phase == ACTIVITY_API_PHASE_ENTER )
+    {
+        api_region_enter( cid, SCOREP_REGION_DEALLOCATE, "HIP_MALLOC", false );
+
+        switch ( cid )
+        {
+            case HIP_API_ID_hipFree:
+                handle_free( data->correlation_id, cid, data->args.hipFree.ptr );
+                break;
+
+            case HIP_API_ID_hipHostFree:
+                handle_free( data->correlation_id, cid, data->args.hipHostFree.ptr );
+                break;
+
+#if HAVE( DECL_HIP_API_ID_HIPFREEHOST )
+            case HIP_API_ID_hipFreeHost:
+                handle_free( data->correlation_id, cid, data->args.hipFreeHost.ptr );
+                break;
+#endif
+
+            default:
+                UTILS_BUG( "Unhandled free category call '%s'", hip_api_name( cid ) );
+                break;
+        }
+    }
+
+    if ( data->phase == ACTIVITY_API_PHASE_EXIT )
+    {
+        correlation_entry* e = get_correlation_entry( data->correlation_id );
+        if ( e )
+        {
+            uint64_t dealloc_size;
+            SCOREP_AllocMetric_HandleFree( e->payload.free.metric,
+                                           e->payload.free.allocation,
+                                           &dealloc_size );
+            correlation_table_remove( data->correlation_id );
+
+            SCOREP_AddAttribute( attribute_deallocation_size, &dealloc_size );
+        }
+
+        api_region_exit( cid );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 // Init tracing routine
 void
 scorep_hip_callbacks_init( void )
@@ -1027,6 +1287,15 @@ scorep_hip_callbacks_init( void )
     enumerate_smi_devices();
 
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        const char* host_name = "HIP Host Memory";
+        SCOREP_AllocMetric_New( host_name, &host_alloc_metric );
+
+        attribute_allocation_size   = SCOREP_AllocMetric_GetAllocationSizeAttribute();
+        attribute_deallocation_size = SCOREP_AllocMetric_GetDeallocationSizeAttribute();
+    }
 }
 
 void
@@ -1072,6 +1341,49 @@ scorep_hip_callbacks_enable( void )
         /* ENABLE_TRACING( hipLaunchByPtr, kernel_cb ); */
     }
 
+    /* Basic host and device mallocs */
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        need_stream_api_tracing = true;
+
+        /* Host and device allocs */
+        ENABLE_TRACING( hipMalloc, malloc_cb );
+        ENABLE_TRACING( hipHostMalloc, malloc_cb );
+        ENABLE_TRACING( hipMallocManaged, malloc_cb );
+        ENABLE_TRACING( hipExtMallocWithFlags, malloc_cb );
+
+        /* Host and device frees */
+        ENABLE_TRACING( hipFree, free_cb );
+        ENABLE_TRACING( hipHostFree, free_cb );
+
+        /* These are deprecated. */
+#if HAVE( DECL_HIP_API_ID_HIPMALLOCHOST )
+        ENABLE_TRACING( hipMallocHost, malloc_cb );
+#endif
+#if HAVE( DECL_HIP_API_ID_HIPHOSTALLOC )
+        ENABLE_TRACING( hipHostAlloc, malloc_cb );
+#endif
+#if HAVE( DECL_HIP_API_ID_HIPFREEHOST )
+        ENABLE_TRACING( hipFreeHost, free_cb );
+#endif
+
+        /* The below are graphics-oriented allocs/frees that don't
+         * give an easy way to compute their size and don't show
+         * up in HPC codes I've found. */
+
+        /* ENABLE_TRACING( hipMalloc3D, malloc_cb ); */
+        /* ENABLE_TRACING( hipMalloc3DArray, malloc_cb ); */
+        /* ENABLE_TRACING( hipMallocArray, malloc_cb ); */
+        /* ENABLE_TRACING( hipMallocMipmappedArray, malloc_cb ); */
+        /* ENABLE_TRACING( hipMallocPitch, malloc_cb ); */
+        /* ENABLE_TRACING( hipMemAllocHost, malloc_cb ); */
+        /* ENABLE_TRACING( hipMemAllocPitch, malloc_cb ); */
+
+        /* ENABLE_TRACING( hipFreeArray, free_cb ); */
+        /* ENABLE_TRACING( hipFreeMipmappedArray, free_cb ); */
+        /* ENABLE_TRACING( hipFreeAsync, free_cb ); */
+    }
+
     if ( need_stream_api_tracing )
     {
         /* Should all our static setup move here? In principle sure but
@@ -1098,6 +1410,14 @@ print_orphan( correlation_table_key_t   k,
 }
 #endif
 
+static void
+report_leaked( device_table_key_t   k,
+               device_table_value_t v,
+               void*                unused )
+{
+    SCOREP_AllocMetric_ReportLeaked( v->alloc_metric );
+}
+
 // Stop tracing routine
 void
 scorep_hip_callbacks_disable( void )
@@ -1107,4 +1427,10 @@ scorep_hip_callbacks_disable( void )
 #if HAVE( UTILS_DEBUG )
     correlation_table_iterate_key_value_pairs( &print_orphan, NULL );
 #endif
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
+    {
+        SCOREP_AllocMetric_ReportLeaked( host_alloc_metric );
+        device_table_iterate_key_value_pairs( &report_leaked, NULL );
+    }
 }

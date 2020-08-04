@@ -496,6 +496,7 @@ SCOREP_Config_HipAdapter::addLibs( std::deque<std::string>&           libs,
        only adapter, we need to add libscorep_measurement.la to the needed libs. */
     libs.push_back( "libscorep_measurement" );
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
 void
