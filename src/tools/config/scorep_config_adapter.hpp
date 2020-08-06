@@ -366,6 +366,8 @@ public:
     void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps ) override;
+    void
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* **************************************************************************************

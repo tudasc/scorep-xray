@@ -498,6 +498,13 @@ SCOREP_Config_HipAdapter::addLibs( std::deque<std::string>&           libs,
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
+void
+SCOREP_Config_HipAdapter::appendInitStructName( std::deque<std::string>& initStructs )
+{
+    initStructs.push_back( "SCOREP_Subsystem_AcceleratorManagement" );
+    SCOREP_Config_Adapter::appendInitStructName( initStructs );
+}
+
 /* **************************************************************************************
  * OpenACC adapter
  * *************************************************************************************/
