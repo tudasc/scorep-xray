@@ -22,12 +22,16 @@
 #include "scorep_hip_init.h"
 
 #include <SCOREP_Location.h>
+#include <SCOREP_Paradigms.h>
+#include <SCOREP_Memory.h>
 
 #define SCOREP_DEBUG_MODULE_NAME HIP
 #include <UTILS_Debug.h>
 
 #include "scorep_hip.h"
 #include "scorep_hip_callbacks.h"
+
+#include <string.h>
 
 #include "scorep_hip_confvars.inc.c"
 
@@ -59,7 +63,14 @@ subsystem_register( size_t subsystemId )
 static SCOREP_ErrorCode
 subsystem_init( void )
 {
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_HIP,
+        SCOREP_PARADIGM_CLASS_ACCELERATOR,
+        "HIP",
+        SCOREP_PARADIGM_FLAG_RMA_ONLY );
+
     scorep_hip_callbacks_init();
+
     return SCOREP_SUCCESS;
 }
 
@@ -86,18 +97,34 @@ static SCOREP_ErrorCode
 subsystem_init_location( SCOREP_Location* location,
                          SCOREP_Location* parent )
 {
+    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        scorep_hip_cpu_location_data* data = SCOREP_Memory_AllocForMisc( sizeof( *data ) );
+        memset( data, 0, sizeof( *data ) );
+        data->local_rank = SCOREP_HIP_NO_RANK;
+        SCOREP_Location_SetSubsystemData( location, scorep_hip_subsystem_id, data );
+    }
+
     return SCOREP_SUCCESS;
 }
 
 static SCOREP_ErrorCode
 subsystem_pre_unify( void )
 {
+    // @todo: only with memcpy enabled
+    scorep_hip_collect_comm_locations();
+
+    // @todo: only with memcpy enabled
+    scorep_hip_unify_pre();
+
     return SCOREP_SUCCESS;
 }
 
 static SCOREP_ErrorCode
 subsystem_post_unify( void )
 {
+    scorep_hip_unify_post();
+
     return SCOREP_SUCCESS;
 }
 

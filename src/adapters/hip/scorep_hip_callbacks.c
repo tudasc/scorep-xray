@@ -69,6 +69,21 @@ static SCOREP_AllocMetric*    host_alloc_metric;
 static SCOREP_AttributeHandle attribute_allocation_size;
 static SCOREP_AttributeHandle attribute_deallocation_size;
 
+static uint32_t local_rank_counter;
+
+/* will be defined when the first device will be created */
+SCOREP_RmaWindowHandle           scorep_hip_window_handle;
+SCOREP_InterimCommunicatorHandle scorep_hip_interim_communicator_handle;
+
+uint64_t  scorep_hip_global_location_count = 0;
+uint64_t* scorep_hip_global_location_ids   = NULL;
+
+/************************** Forward declarations ******************************/
+
+/* Assign the current host location a rank inside the HIP specific RMA window/communicator */
+static void
+activate_host_location( void );
+
 /************************** HIP API function table ****************************/
 
 typedef uint32_t            api_region_table_key_t;
@@ -464,6 +479,21 @@ device_table_value_ctor( device_table_key_t* key,
         SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
     }
 
+    if ( scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
+    {
+        // @todo: only with memcpy enabled
+        /* create interim communicator once for a process */
+        scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
+            SCOREP_INVALID_INTERIM_COMMUNICATOR,
+            SCOREP_PARADIGM_HIP,
+            0,
+            NULL );
+        scorep_hip_window_handle = SCOREP_Definitions_NewRmaWindow(
+            "HIP_WINDOW",
+            scorep_hip_interim_communicator_handle,
+            SCOREP_RMA_WINDOW_FLAG_NONE );
+    }
+
     return device;
 }
 
@@ -488,6 +518,7 @@ typedef struct
     uint64_t         stream_id;
     uint32_t         stream_seq;
     SCOREP_Location* device_location;
+    uint32_t         local_rank;
 } scorep_hip_stream;
 
 typedef struct
@@ -557,6 +588,11 @@ stream_table_value_ctor( stream_table_key_t* key,
                                               SCOREP_PARADIGM_HIP,
                                               thread_name,
                                               device->location_group );
+
+    /* streams will have a lower rank than threads, is this ok? */
+    stream->local_rank = UTILS_Atomic_FetchAdd_uint32(
+        &local_rank_counter, 1,
+        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     /* Only valid for non-NULL-streams */
     if ( key->stream_id != 0 )
@@ -1432,5 +1468,78 @@ scorep_hip_callbacks_disable( void )
     {
         SCOREP_AllocMetric_ReportLeaked( host_alloc_metric );
         device_table_iterate_key_value_pairs( &report_leaked, NULL );
+    }
+}
+
+static bool
+assign_cpu_locations( SCOREP_Location* location,
+                      void*            arg )
+{
+    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
+            location, scorep_hip_subsystem_id );
+        if ( location_data->local_rank != SCOREP_HIP_NO_RANK )
+        {
+            UTILS_BUG_ON( location_data->local_rank >= scorep_hip_global_location_count,
+                          "HIP rank exceeds total number of assigned ranks." );
+
+            scorep_hip_global_location_ids[ location_data->local_rank ] =
+                SCOREP_Location_GetGlobalId( location );
+        }
+    }
+
+    return false;
+}
+
+static void
+assign_gpu_locations( stream_table_key_t   key,
+                      stream_table_value_t value,
+                      void*                arg )
+{
+    scorep_hip_stream* stream = value;
+
+    UTILS_BUG_ON( stream->local_rank == SCOREP_HIP_NO_RANK,
+                  "HIP stream without assigned rank." );
+
+    UTILS_BUG_ON( stream->local_rank >= scorep_hip_global_location_count,
+                  "HIP rank exceeds total number of assigned ranks." );
+
+    scorep_hip_global_location_ids[ stream->local_rank ] =
+        SCOREP_Location_GetGlobalId( stream->device_location );
+}
+
+void
+scorep_hip_collect_comm_locations( void )
+{
+    scorep_hip_global_location_count = UTILS_Atomic_LoadN_uint32(
+        &local_rank_counter, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+
+    if ( scorep_hip_global_location_count == 0 )
+    {
+        return;
+    }
+
+    /* allocate the HIP communication group array */
+    scorep_hip_global_location_ids = calloc( scorep_hip_global_location_count,
+                                             sizeof( *scorep_hip_global_location_ids ) );
+
+    /* Assign CPU locations */
+    SCOREP_Location_ForAll( assign_cpu_locations, NULL );
+
+    /* Assign GPU locations */
+    stream_table_iterate_key_value_pairs( assign_gpu_locations, NULL );
+}
+
+void
+activate_host_location( void )
+{
+    scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
+        SCOREP_Location_GetCurrentCPULocation(), scorep_hip_subsystem_id );
+    if ( location_data->local_rank == SCOREP_HIP_NO_RANK )
+    {
+        location_data->local_rank = UTILS_Atomic_FetchAdd_uint32(
+            &local_rank_counter, 1,
+            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
 }

@@ -365,6 +365,9 @@ typedef enum SCOREP_GroupType
     SCOREP_GROUP_KOKKOS_LOCATIONS            = 24,
     SCOREP_GROUP_KOKKOS_GROUP                = 25,
 
+    SCOREP_GROUP_HIP_LOCATIONS               = 26,
+    SCOREP_GROUP_HIP_GROUP                   = 27,
+
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
 
