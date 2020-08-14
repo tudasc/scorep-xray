@@ -607,6 +607,9 @@ various Score-P components.
     then the heuristic to detect the usage of `hipcc` failed and must be
     enabled explicity with `scorep --hip`.
 
+  - Device-to-device data transfers are only recorded on the API level, not
+    as a device activity.
+
 --------------------------------------------------------------------------------
 
 * Score-P misc.

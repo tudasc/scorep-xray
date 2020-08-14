@@ -111,11 +111,12 @@ subsystem_init_location( SCOREP_Location* location,
 static SCOREP_ErrorCode
 subsystem_pre_unify( void )
 {
-    // @todo: only with memcpy enabled
-    scorep_hip_collect_comm_locations();
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+    {
+        scorep_hip_collect_comm_locations();
 
-    // @todo: only with memcpy enabled
-    scorep_hip_unify_pre();
+        scorep_hip_unify_pre();
+    }
 
     return SCOREP_SUCCESS;
 }

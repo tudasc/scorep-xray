@@ -92,6 +92,9 @@ static volatile sig_atomic_t event_phase;
 static void
 activate_host_location( void );
 
+static uint32_t
+get_host_rank( SCOREP_Location* hostLocation );
+
 static void
 get_synced_timestamps( uint64_t* scorepTime,
                        uint64_t* hipTime );
@@ -491,9 +494,9 @@ device_table_value_ctor( device_table_key_t* key,
         SCOREP_AllocMetric_NewScoped( buffer, device->location_group, &device->alloc_metric );
     }
 
-    if ( scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY
+         && scorep_hip_interim_communicator_handle == SCOREP_INVALID_INTERIM_COMMUNICATOR )
     {
-        // @todo: only with memcpy enabled
         /* create interim communicator once for a process */
         scorep_hip_interim_communicator_handle = SCOREP_Definitions_NewInterimCommunicator(
             SCOREP_INVALID_INTERIM_COMMUNICATOR,
@@ -787,6 +790,12 @@ typedef struct
             SCOREP_AllocMetric* metric;
             void*               allocation;
         } free;
+        struct
+        {
+            scorep_hip_stream* stream;
+            uint64_t           size;
+            hipMemcpyKind      kind;
+        } memcpy;
     } payload;
 } correlation_entry;
 
@@ -1325,6 +1334,111 @@ free_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static void
+memcpy_cb( uint32_t    domain,
+           uint32_t    cid,
+           const void* callbackData,
+           void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( domain != ACTIVITY_DOMAIN_HIP_API, "Only HIP domain handled." );
+
+    const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
+
+    uint64_t      stream_id = 0;
+    hipMemcpyKind kind;
+    uint64_t      size;
+    bool          is_sync;
+    switch ( cid )
+    {
+        case HIP_API_ID_hipMemcpy:
+            kind    = data->args.hipMemcpy.kind;
+            size    = data->args.hipMemcpy.sizeBytes;
+            is_sync = true;
+            break;
+        case HIP_API_ID_hipMemcpyWithStream:
+            stream_id = ( uint64_t )data->args.hipMemcpyWithStream.stream;
+            kind      = data->args.hipMemcpyWithStream.kind;
+            size      = data->args.hipMemcpyWithStream.sizeBytes;
+            is_sync   = true;
+            break;
+        case HIP_API_ID_hipMemcpyHtoD:
+            kind    = hipMemcpyHostToDevice;
+            size    = data->args.hipMemcpyHtoD.sizeBytes;
+            is_sync = true;
+            break;
+        case HIP_API_ID_hipMemcpyDtoH:
+            kind    = hipMemcpyDeviceToHost;
+            size    = data->args.hipMemcpyDtoH.sizeBytes;
+            is_sync = true;
+            break;
+        case HIP_API_ID_hipMemcpyDtoD:
+            kind    = hipMemcpyDeviceToDevice;
+            size    = data->args.hipMemcpyDtoD.sizeBytes;
+            is_sync = true;
+            break;
+        case HIP_API_ID_hipMemcpyFromSymbol:
+            kind    = data->args.hipMemcpyFromSymbol.kind;
+            size    = data->args.hipMemcpyFromSymbol.sizeBytes;
+            is_sync = true;
+            break;
+        case HIP_API_ID_hipMemcpyAsync:
+            kind    = data->args.hipMemcpyAsync.kind;
+            size    = data->args.hipMemcpyAsync.sizeBytes;
+            is_sync = false;
+            break;
+        case HIP_API_ID_hipMemcpyHtoDAsync:
+            kind    = hipMemcpyHostToDevice;
+            size    = data->args.hipMemcpyHtoDAsync.sizeBytes;
+            is_sync = false;
+            break;
+        case HIP_API_ID_hipMemcpyDtoHAsync:
+            kind    = hipMemcpyDeviceToHost;
+            size    = data->args.hipMemcpyDtoHAsync.sizeBytes;
+            is_sync = false;
+            break;
+        case HIP_API_ID_hipMemcpyDtoDAsync:
+            kind    = hipMemcpyDeviceToDevice;
+            size    = data->args.hipMemcpyDtoDAsync.sizeBytes;
+            is_sync = false;
+            break;
+        case HIP_API_ID_hipMemcpyFromSymbolAsync:
+            kind    = data->args.hipMemcpyFromSymbolAsync.kind;
+            size    = data->args.hipMemcpyFromSymbolAsync.sizeBytes;
+            is_sync = false;
+            break;
+
+        default:
+            UTILS_BUG( "Unhandled memcpy callback" );
+            break;
+    }
+
+    if ( data->phase == ACTIVITY_API_PHASE_ENTER )
+    {
+        api_region_enter( cid, SCOREP_REGION_RMA, "HIP_MEMCPY", false );
+
+        correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
+        e->payload.memcpy.stream = get_stream( stream_id );
+        e->payload.memcpy.kind   = kind;
+        e->payload.memcpy.size   = size;
+
+        activate_host_location();
+    }
+
+    if ( data->phase == ACTIVITY_API_PHASE_EXIT )
+    {
+        api_region_exit( cid );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 // Activity tracing callback
 //
 // Called on activity buffer flush. Executes in a dedicated roctracer thread.
@@ -1397,6 +1511,50 @@ activity_cb( const char* begin,
                 SCOREP_Location_ExitRegion( e->payload.launch.stream->device_location,
                                             end_time,
                                             e->payload.launch.kernel_region );
+                break;
+
+            case HIP_API_ID_hipMemcpyAsync:
+            case HIP_API_ID_hipMemcpyFromSymbolAsync:
+            case HIP_API_ID_hipMemcpyHtoDAsync:
+            case HIP_API_ID_hipMemcpyDtoHAsync:
+            case HIP_API_ID_hipMemcpy:
+            case HIP_API_ID_hipMemcpyWithStream:
+            case HIP_API_ID_hipMemcpyFromSymbol:
+            case HIP_API_ID_hipMemcpyHtoD:
+            case HIP_API_ID_hipMemcpyDtoH:
+            case HIP_API_ID_hipMemcpyDtoD:
+                UTILS_DEBUG( "Recording RMA completion from correlation id %d, %" PRIu64 ":%" PRIu64,
+                             record->correlation_id,
+                             begin_time, end_time );
+
+                if ( e->payload.memcpy.kind == hipMemcpyHostToDevice )
+                {
+                    SCOREP_Location_RmaGet( e->payload.memcpy.stream->device_location,
+                                            begin_time,
+                                            scorep_hip_window_handle,
+                                            get_host_rank( e->host_origin_location ),
+                                            e->payload.memcpy.size,
+                                            record->correlation_id );
+                }
+                else if ( e->payload.memcpy.kind == hipMemcpyDeviceToHost )
+                {
+                    SCOREP_Location_RmaPut( e->payload.memcpy.stream->device_location,
+                                            begin_time,
+                                            scorep_hip_window_handle,
+                                            get_host_rank( e->host_origin_location ),
+                                            e->payload.memcpy.size,
+                                            record->correlation_id );
+                }
+
+                if ( e->payload.memcpy.kind == hipMemcpyHostToDevice
+                     || e->payload.memcpy.kind == hipMemcpyDeviceToHost )
+                {
+                    SCOREP_Location_RmaOpCompleteBlocking( e->payload.memcpy.stream->device_location,
+                                                           end_time,
+                                                           scorep_hip_window_handle,
+                                                           record->correlation_id );
+                }
+
                 break;
 
             default:
@@ -1574,6 +1732,43 @@ scorep_hip_callbacks_enable( void )
         /* ENABLE_TRACING( hipFreeAsync, free_cb ); */
     }
 
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_MEMCPY )
+    {
+        need_stream_api_tracing = true;
+        need_activity_tracing   = true;
+
+        /* Synchronous memory copies needs both callback and activity handling */
+        ENABLE_TRACING( hipMemcpy, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyWithStream, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyHtoD, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyFromSymbol, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyDtoH, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyDtoD, memcpy_cb ); /* host side only */
+
+        /* Array memcpy has the same issues (and lack of HPC use) as
+         * array malloc, so defer these */
+        /* ENABLE_TRACING( hipMemcpyHtoA, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpyAtoH, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpy2DToArray, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpy2DFromArray, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpy3D, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpy2D, memcpy_cb ); */
+
+        /* Async memcpy needs both callback and activity handling */
+        ENABLE_TRACING( hipMemcpyAsync, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyHtoDAsync, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyFromSymbolAsync, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyDtoHAsync, memcpy_cb );
+        ENABLE_TRACING( hipMemcpyDtoDAsync, memcpy_cb ); /* host side only */
+
+        /* Peer is multi-device, deferred */
+        /* ENABLE_TRACING( hipMemcpyPeerAsync, memcpy_cb ); */
+        /* And the async array memcpys are also deferred */
+        /* ENABLE_TRACING( hipMemcpy3DAsync, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpy2DAsync, memcpy_cb ); */
+        /* ENABLE_TRACING( hipMemcpyParam2DAsync, memcpy_cb ); */
+    }
+
     if ( need_stream_api_tracing )
     {
         /* Should all our static setup move here? In principle sure but
@@ -1710,6 +1905,14 @@ activate_host_location( void )
             &local_rank_counter, 1,
             UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
+}
+
+uint32_t
+get_host_rank( SCOREP_Location* location )
+{
+    scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
+        location, scorep_hip_subsystem_id );
+    return location_data->local_rank;
 }
 
 void

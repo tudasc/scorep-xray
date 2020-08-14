@@ -202,7 +202,18 @@
     SCOREP_SCORE_EVENT( "shmem_iget16" ) \
     SCOREP_SCORE_EVENT( "shmem_iget32" ) \
     SCOREP_SCORE_EVENT( "shmem_iget64" ) \
-    SCOREP_SCORE_EVENT( "shmem_iget128" )
+    SCOREP_SCORE_EVENT( "shmem_iget128" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpy" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyWithStream" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyHtoD" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyFromSymbol" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyDtoH" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyDtoD" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyAsync" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyHtoDAsync" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyFromSymbolAsync" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyDtoHAsync" ) \
+    SCOREP_SCORE_EVENT( "hipMemcpyDtoDAsync" )
 
 /*
  * Regions which trigger an an RmaOpCompleteRemote event.
