@@ -563,7 +563,8 @@ hash_get_acc_region( int         lineNo,
     while ( curr )
     {
         if ( curr->line == lineNo && curr->type == regionType &&
-             strcmp( curr->file, srcFile ) == 0 )
+             ( ( srcFile && strcmp( curr->file, srcFile ) == 0 )
+               || ( !srcFile && strcmp( curr->file, "" ) == 0 ) ) )
         {
             return curr->region;
         }
