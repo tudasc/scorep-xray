@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,6 +42,7 @@
  */
 
 #include <SCOREP_ErrorCodes.h>
+#include <stdbool.h>
 
 UTILS_BEGIN_C_DECLS
 
@@ -77,6 +78,31 @@ SCOREP_ErrorCode
 SCOREP_Filter_ParseFile( SCOREP_Filter* filter,
                          const char*    fileName );
 
+/**
+ * Iterates over all function rules of a given filter and calls the callback
+ * function.
+ *
+ * @param filter        The input filter.
+ * @param cb            Callback function.
+ * @param userData      Void pointer to user parameter.
+ */
+void
+SCOREP_Filter_ForAllFunctionRules( const SCOREP_Filter* filter,
+                                   void ( * cb )( void* userData, const char* pattern, bool isExclude, bool isMangled ),
+                                   void* userData );
+
+/**
+ * Iterates over all file rules of a given filter and calls the callback
+ * function.
+ *
+ * @param filter        The input filter.
+ * @param cb            Callback function.
+ * @param userData      Void pointer to user parameter.
+ */
+void
+SCOREP_Filter_ForAllFileRules( const SCOREP_Filter* filter,
+                               void ( * cb )( void* userData, const char* pattern, bool isExclude, bool isMangled ),
+                               void* userData );
 
 /**
  * Checks whether a file/function combination is filtered.

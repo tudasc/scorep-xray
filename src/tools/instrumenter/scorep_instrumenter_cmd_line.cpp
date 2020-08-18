@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2018, 2020,
+ * Copyright (c) 2009-2013, 2015, 2018-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -352,6 +352,18 @@ SCOREP_Instrumenter_CmdLine::removeUserArg( const std::string& arg )
     //Remove all instances after the interposition lib
     m_flags_after_interposition_lib =
         remove_string_from_list( m_flags_after_interposition_lib, arg, ' ' );
+}
+
+void
+SCOREP_Instrumenter_CmdLine::addTempFile( const std::string& filename )
+{
+    m_temp_files.push_back( filename );
+}
+
+const std::vector<std::string>&
+SCOREP_Instrumenter_CmdLine::getTempFiles( void )
+{
+    return m_temp_files;
 }
 
 /* ****************************************************************************

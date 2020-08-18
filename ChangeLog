@@ -18,7 +18,8 @@ User tools and API improvements and changes:
   was considered of little use.
 - Added ability to generate an initial filter file based on "max buffer
   size" and "time per visit" parameters.
-
+- Compile-time filtering via `scorep --instrument-filter` is now
+  also available for builds using Intel compilers.
 
 Bugfixes:
 

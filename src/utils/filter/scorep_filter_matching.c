@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -345,4 +345,30 @@ scorep_filter_include_function( const scorep_filter_rule_t* functionRules,
     }
 
     return !excluded && explicitly_included;
+}
+
+void
+SCOREP_Filter_ForAllFunctionRules( const SCOREP_Filter* filter,
+                                   void ( * cb )( void* userData, const char* pattern, bool isExclude, bool isMangled ),
+                                   void* userData )
+{
+    scorep_filter_rule_t* function_rules = filter->function_rules;
+    while ( function_rules )
+    {
+        cb( userData, function_rules->pattern, function_rules->is_exclude, function_rules->is_mangled );
+        function_rules = function_rules->next;
+    }
+}
+
+void
+SCOREP_Filter_ForAllFileRules( const SCOREP_Filter* filter,
+                               void ( * cb )( void* userData, const char* pattern, bool isExclude, bool isMangled ),
+                               void* userData )
+{
+    scorep_filter_rule_t* file_rules = filter->file_rules;
+    while ( file_rules )
+    {
+        cb( userData, file_rules->pattern, file_rules->is_exclude, file_rules->is_mangled );
+        file_rules = file_rules->next;
+    }
 }

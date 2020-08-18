@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -250,6 +250,19 @@ public:
      */
     void
     checkParameter( void );
+
+    /**
+     * Adds a file to a local list of temp files that get deleted depending on
+     * the keep-files option.
+     */
+    void
+    addTempFile( const std::string& filename );
+
+    /**
+     * Return list of temp files.
+     */
+    const std::vector<std::string>&
+    getTempFiles( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -509,6 +522,11 @@ private:
      */
     bool m_no_as_needed;
 #endif
+    /**
+       A list of temporarily created files that are deleted at the end of a
+       successful execution, if @a keep_files is false.
+     */
+    std::vector<std::string> m_temp_files;
 };
 
 #endif // SCOREP_INSTRUMENTER_COMMAND_LINE_HPP
