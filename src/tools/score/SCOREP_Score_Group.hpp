@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -113,6 +113,22 @@ public:
                         uint64_t           processes,
                         const std::string& name );
     /**
+     * Creates an instance of SCOREP_Score_Group with additional data
+     * for regions.
+     * @param type        Specifies the group type (ALL, FLT, OMP, ... ).
+     * @param processes   Specifies the number processes.
+     * @param name        The name of the region.
+     * @param mangledName The mangled name of a region.
+     * @param fileName    The file associated with a region.
+     * @param useMangled  The choice for the display name style.
+     */
+    SCOREP_Score_Group( uint64_t           type,
+                        uint64_t           processes,
+                        const std::string& name,
+                        const std::string& mangledName,
+                        const std::string& fileName,
+                        bool               useMangled );
+    /**
      * Destructor.
      */
     virtual
@@ -151,6 +167,18 @@ public:
            bool                     withHits );
 
     /**
+     * Returns the region name if the entry fullfills the
+     * total buffer size and time per visit constraints.
+     * Otherwise, it returns an empty string.
+     */
+    std::string
+    getFilterCandidate( double                   percentageOfTotalBufferSize,
+                        uint64_t                 maxBuffer,
+                        double                   thresholdTimePerVisits,
+                        double                   totalTime,
+                        SCOREP_Score_FieldWidths widths );
+
+    /**
      * Returns the time spend in this group on all processes.
      */
     double
@@ -176,6 +204,12 @@ public:
      */
     void
     doFilter( SCOREP_Score_FilterState state );
+
+    /**
+     * Returns the name depending on the choice of m_use_mangled.
+     */
+    std::string
+    getDisplayName();
 
 private:
     /**
@@ -219,9 +253,32 @@ private:
     std::string m_name;
 
     /**
+     * Stores optional mangled name.
+     */
+    std::string m_mangled_name;
+
+    /**
+     * Stores optional file name.
+     */
+    std::string m_file_name;
+
+    /**
+     * Stores the choice if the default display name uses
+     * the mangled representation.
+     */
+    bool m_use_mangled;
+
+    /**
      * Stores the filter state.
      */
     SCOREP_Score_FilterState m_filter;
+
+    /**
+     * Formats the group name to a clean name according to the unix filename
+     * pattern matching based on fnmatch.
+     */
+    std::string
+    cleanName();
 };
 
 #endif // SCOREP_SCORE_GROUP_HPP

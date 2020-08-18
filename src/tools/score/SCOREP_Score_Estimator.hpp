@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016,2019,
+ * Copyright (c) 2009-2014, 2016, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -104,6 +104,15 @@ public:
     printRegions( void );
 
     /**
+     * Generates an initial filter file with USR regions that have at least a
+     * percentage of the the total buffer size and a maximal time per visits
+     * in us.
+     */
+    void
+    generateFilterFile( double minBufferPercentage,
+                        double maxTimePerVisits );
+
+    /**
      * Reads and evaluates a filter file.
      * @param filterFile  The name of the filter file.
      */
@@ -182,6 +191,21 @@ private:
      * True, if a filter is used.
      */
     bool m_has_filter;
+
+    /**
+     * Total time for all groups.
+     */
+    double m_total_time;
+
+    /**
+     * Max buffer for all groups.
+     */
+    uint64_t m_max_buf;
+
+    /**
+     * Total trace buffer requirements for all groups.
+     */
+    uint64_t m_total_buf;
 
     /**
      * Filter rules.

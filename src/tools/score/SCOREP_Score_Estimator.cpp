@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -297,6 +297,8 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     , m_bytes_per_num_parameter( 0 )
     , m_bytes_per_str_parameter( 0 )
     , m_bytes_per_hit( 0 )
+    , m_max_buf( 0 )
+    , m_total_buf( 0 )
 {
     SCOREP_Score_Event* timestamp_event = new SCOREP_Score_TimestampEvent();
     registerEvent( timestamp_event );
@@ -751,31 +753,30 @@ SCOREP_Score_Estimator::calculate( bool showRegions,
 void
 SCOREP_Score_Estimator::printGroups( void )
 {
-    double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTime();
-    uint64_t max_buf;
-    uint64_t total_buf;
+    m_total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTime();
+
     uint64_t memory_req;
     uint64_t value = 2 * 1024 * 1024;
     if ( m_has_filter )
     {
-        max_buf   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
-        total_buf = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
+        m_max_buf   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
+        m_total_buf = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
     else
     {
-        max_buf   = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
-        total_buf = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
+        m_max_buf   = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
+        m_total_buf = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
 
-    memory_req = max_buf;
+    memory_req = m_max_buf;
     memory_req = value > memory_req ? value : memory_req;
     memory_req = memory_req + value *  m_profile->getMaxNumberOfLocationsPerProcess();
 
     cout << endl;
     cout << "Estimated aggregate size of event trace:                   "
-         << get_user_readable_byte_no( total_buf ) << endl;
+         << get_user_readable_byte_no( m_total_buf ) << endl;
     cout << "Estimated requirements for largest trace buffer (max_buf): "
-         << get_user_readable_byte_no( max_buf ) << endl;
+         << get_user_readable_byte_no( m_max_buf ) << endl;
     cout << "Estimated memory requirements (SCOREP_TOTAL_MEMORY):       "
          << get_user_readable_byte_no( memory_req ) << endl;
     if ( memory_req > numeric_limits<uint32_t>::max() )
@@ -812,7 +813,7 @@ SCOREP_Score_Estimator::printGroups( void )
          << endl;
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ]->print( total_time, m_widths, m_profile->hasHits() );
+        m_groups[ i ]->print( m_total_time, m_widths, m_profile->hasHits() );
     }
 
     if ( m_has_filter )
@@ -822,7 +823,7 @@ SCOREP_Score_Estimator::printGroups( void )
         cout << endl;
         for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
         {
-            m_filtered[ i ]->print( total_time, m_widths, m_profile->hasHits() );
+            m_filtered[ i ]->print( m_total_time, m_widths, m_profile->hasHits() );
         }
     }
 }
@@ -836,8 +837,72 @@ SCOREP_Score_Estimator::printRegions( void )
     cout << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        m_regions[ i ]->print( total_time, m_widths, m_profile->hasHits() );
+        m_regions[ i ]->print( m_total_time, m_widths, m_profile->hasHits() );
     }
+}
+
+void
+SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
+                                            double maxTimePerVisits )
+{
+    quicksort( m_regions, m_region_num );
+
+    string filter_file_name = "initial_scorep.filter";
+
+    ofstream filter_file;
+    filter_file.open( filter_file_name );
+
+    if ( !filter_file.is_open() )
+    {
+        cerr << "[Score-P] Error: Cannot create filter file\n!";
+        exit( EXIT_FAILURE );
+        return;
+    }
+
+    filter_file << "# Initial filter file, starting point for further adaptation.\n"
+                << "#\n"
+                << "# Considerations:\n"
+                << "#  - check possible wildcard options\n"
+                << "#  - check selected functions for relevancy\n"
+                << "#    (w.r.t. your knowledge of the application)\n"
+                << "#\n"
+                << "# Generated with the following parameters:\n"
+                << "#  - a region has to use at least " << minBufferPercentage << "% of the estimated trace buffer (-b <%>)\n"
+                << "#  - a region has to have a time/visits value of less than " << maxTimePerVisits << " us (-t <us>)\n"
+                << "#\n"
+                << "# The file contains comments for each region providing additional\n"
+                << "# information regarding the respective region (visits, absolute time in seconds,\n"
+                << "# percentage of total time, region name and associated file).\n"
+                << "# The common prefix for the files is:\n"
+                << "# '" << m_profile->getPathPrefix() << "'\n"
+                << "#\n"
+                << "# Please refer to the Score-P user guide for more options on filtering.\n"
+                << "SCOREP_REGION_NAMES_BEGIN\n"
+                << "  EXCLUDE" << endl;
+    for ( uint64_t i = 0; i < m_region_num; i++ )
+    {
+        string temp = m_regions[ i ]->getFilterCandidate( minBufferPercentage, m_max_buf, maxTimePerVisits, m_total_time, m_widths );
+        if ( temp.length() > 0 )
+        {
+            filter_file << temp << endl;
+        }
+    }
+    filter_file << "SCOREP_REGION_NAMES_END" << endl;
+    filter_file.close();
+    if ( filter_file.bad() )
+    {
+        cerr << "[Score-P] Error while closing filter file\n!";
+        exit( EXIT_FAILURE );
+        return;
+    }
+    cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n"
+         << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
+         << "    SCOREP_FILTERING_FILE=" << filter_file_name << "\n\n"
+         << "For compile-time filtering 'scorep' has to be provided with the '--instrument-filter' option:\n\n"
+         << "    $ scorep --instrument-filter=" << filter_file_name << "\n\n"
+         << "Compile-time filtering depends on support in the used Score-P installation.\n\n"
+         << "The filter file is annotated with comments, please check if the selection is\n"
+         << "suitable for your purposes and add or remove functions if needed.\n" << endl;
 }
 
 void
@@ -1022,12 +1087,12 @@ SCOREP_Score_Estimator::initialize_regions( bool useMangled )
     m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
-        string name = ( useMangled ?
-                        m_profile->getMangledName( region ) :
-                        m_profile->getRegionName( region ) );
         m_regions[ region ] = new SCOREP_Score_Group( m_profile->getGroup( region ),
                                                       m_process_num,
-                                                      name );
+                                                      m_profile->getRegionName( region ),
+                                                      m_profile->getMangledName( region ),
+                                                      m_profile->getShortFileName( region ),
+                                                      useMangled );
     }
 }
 

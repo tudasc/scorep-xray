@@ -5,7 +5,6 @@ Major features:
 Features and improvements:
 
 - Added support for recording calls to OpenCL 2.1/2.2 functions.
-
 - Score-P now requires an MPI implementation which provides the
   `USE mpi` Fortran bindings, instead of the `INCLUDE 'mpif.h'`.
 
@@ -17,6 +16,9 @@ User tools and API improvements and changes:
   recommended GCC compiler instrumentation plug-in.
 - The scorep instrumenter option --config=<file> was removed as it
   was considered of little use.
+- Added ability to generate an initial filter file based on "max buffer
+  size" and "time per visit" parameters.
+
 
 Bugfixes:
 

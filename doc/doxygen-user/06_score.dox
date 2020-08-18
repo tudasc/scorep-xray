@@ -220,4 +220,23 @@ scorep-score profile.cubex -c 3
 would mean that @verb{scorep-score} estimates the disk and memory requirements
 for the case that you record 3 additional metrics.
 
+@section score_gen Generating initial filter files
+
+With the @verb{-g} option @verb{scorep-score} can generate an initial filter file
+in Score-P filter file format. It provides a starting point for the user to adapt
+and change the filter file to his requirements.
+
+
+The selection of regions, that are included in this file, is based on a percentage
+of the max buffer requirements and a threshold for the time/visit for regions of
+type @verb{USR}.
+The first can be set via @verb{-b <%>} and targets the overall
+relevancy in terms of used memory for that region, as only regions with relevant
+impact need to be filtered. The default value is 1% of the estimated memory
+requirements. The second parameter time/visits, used by 
+@verb{-t <us>}, is a measure for the run-time overhead per visit,
+with removing too small regions as a selection criteria, with a default of 1us.
+If not set, the respective default values will be used.
+The used values are described in the comment section of that filter file.
+
 */

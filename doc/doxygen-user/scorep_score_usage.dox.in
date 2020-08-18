@@ -9,3 +9,10 @@ Options:
              specify the number of hardware counters. Otherwise, scorep-score
              may underestimate the required space.
  -m          Prints mangled region names instead of demangled names.
+ -g          Generation of an initial filter file, has to be adapted to the
+             application requirements. The name is 'initial_scorep.filter'.
+ -b <%>      Only consider regions for the filter file that contribute more
+             than <%> to the estimated memory requirements (SCOREP_TOTAL_MEMORY)
+             (default 1%).
+ -t <us>     Maximum 'time per visit' value in us that a region has to be below
+             of to be included in the the filter file suggestion (default 1us).
