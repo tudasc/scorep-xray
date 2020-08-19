@@ -193,7 +193,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
     /* Using an unique temp file to avoid data races when calling scorep multiple times. */
     outfname += create_random_string() +  ".tcollect";
     /* Converting the aggregated filter data to tcollect format. */
-    std::ofstream filter_file( outfname );
+    std::ofstream filter_file( outfname.c_str() );
     if ( filter_file.is_open() )
     {
         SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
