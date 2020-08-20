@@ -55,15 +55,16 @@ int
 main( int    argc,
       char** argv )
 {
-    string  file_name;
-    string  filter_file;
-    int64_t dense_num                   = 0;
-    bool    show_regions                = false;
-    bool    use_mangled                 = false;
-    bool    produce_initial_filter_file = false;
-    bool    filter_file_options_set     = false;
-    double  min_percentage_from_max_buf = 1;
-    double  max_time_per_visit          = 1;
+    string                   file_name;
+    string                   filter_file;
+    int64_t                  dense_num                   = 0;
+    bool                     show_regions                = false;
+    bool                     use_mangled                 = false;
+    SCOREP_Score_SortingType sortingby                   = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
+    bool                     produce_initial_filter_file = false;
+    bool                     filter_file_options_set     = false;
+    double                   min_percentage_from_max_buf = 1;
+    double                   max_time_per_visit          = 1;
     //--------------------------------------- Parameter options parsing
 
     for ( int i = 1; i < argc; i++ )
@@ -173,6 +174,46 @@ main( int    argc,
                 }
                 filter_file_options_set = true;
             }
+            else if ( arg == "-s" )
+            {
+                if ( i + 1 < argc )
+                {
+                    std::string choice = argv[ i + 1 ];
+                    if ( choice == "totaltime" )
+                    {
+                        sortingby = SCOREP_SCORE_SORTING_TYPE_TOTALTIME;
+                    }
+                    else if ( choice == "timepervisit" )
+                    {
+                        sortingby = SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT;
+                    }
+                    else if ( choice == "maxbuffer" )
+                    {
+                        sortingby = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
+                    }
+                    else if ( choice == "visits" )
+                    {
+                        sortingby = SCOREP_SCORE_SORTING_TYPE_VISITS;
+                    }
+                    else if ( choice == "name" )
+                    {
+                        sortingby = SCOREP_SCORE_SORTING_TYPE_NAME;
+                    }
+                    else
+                    {
+                        cerr << "ERROR: Unknown sorting choice" << endl;
+                        print_help();
+                        exit( EXIT_FAILURE );
+                    }
+                    i++;
+                }
+                else
+                {
+                    cerr << "ERROR: No sorting mode specified" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+            }
             else
             {
                 cerr << "ERROR: Unknown argment: '" << arg << "'" << endl;
@@ -226,7 +267,7 @@ main( int    argc,
              << "         Without enabling the generation (-g) these will have no effect!" << endl;
     }
 
-    SCOREP_Score_Estimator estimator( profile, dense_num );
+    SCOREP_Score_Estimator estimator( profile, dense_num, sortingby );
 
     if ( filter_file != "" )
     {

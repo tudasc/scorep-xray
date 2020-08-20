@@ -125,8 +125,11 @@ flt type      max_buf[B]        visits      time[s]  time[%]  time/visit[us]  re
 The region name is displayed in the column named @verb{region}.
 The column @verb{type} shows to which group this region belongs.
 In the example above the function main belongs to group @verb{COM}
-required 24 bytes per process and used 0 s execution time. The
+required 24 bytes per process and used 0 s execution time. By default, the
 regions are sorted by their buffer requirements.
+With the option @verb{-s <choice>} a different sorting mode can be chosen.
+Available options are @verb{totaltime},  @verb{timepervisit}, @verb{maxbuffer},
+@verb{visits} and @verb{name}.
 
 By default @verb{scorep-score} uses demangled function names. However, if you want to
 map data to tools which use mangled names you might want to display mangled names.
