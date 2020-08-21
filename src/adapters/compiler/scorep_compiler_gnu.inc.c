@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -80,11 +80,10 @@ SCOREP_COMPILER_GNU_FUNC_ENTER( void* func,
      * to calculate function addresses if measurement was not initialized
      */
 
-    /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
-       Thus, thumb code address differ from the real function address that we
-       get from libbfd or nm by 1 */
-#if HAVE( PLATFORM_ARM )
-    /* Clear least significant bit */
+#if ( defined __ARM_ARCH && __ARM_ARCH <= 7 ) || ( defined __arm__ )
+    /* On ARMv7 and earlier, the LSB of an address indicates whether it is thumb
+       code or arm code.  That is, thumb code addresses differ from the real
+       function address that we get from libbfd or nm by 1.  Thus, clear LSB. */
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
@@ -128,11 +127,10 @@ SCOREP_COMPILER_GNU_FUNC_EXIT( void* func,
 
     UTILS_DEBUG_ENTRY( "%p, %p", func, callsite );
 
-    /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
-       Thus, thumb code address differ from the real function address that we
-       get from libbfd or nm by 1 */
-#if HAVE( PLATFORM_ARM )
-    /* Clear least significant bit */
+#if ( defined __ARM_ARCH && __ARM_ARCH <= 7 ) || ( defined __arm__ )
+    /* On ARMv7 and earlier, the LSB of an address indicates whether it is thumb
+       code or arm code.  That is, thumb code addresses differ from the real
+       function address that we get from libbfd or nm by 1.  Thus, clear LSB. */
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
