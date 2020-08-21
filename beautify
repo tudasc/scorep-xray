@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # NAME
-#     beautify
+#     beautify [--on-committed] [--no-commit]
 #
 # DESCRIPTION
 #     Beautify all modified and added source files in your working copy.
@@ -12,6 +12,10 @@
 #
 # USAGE
 #     Call beautify from anywhere in your working copy by relative path.
+#     Can be used to automatically beautify each commit of a feature branch
+#     with 'git rebase'
+#
+#         $ git rebase --reschedule-failed-exec --exec './common/beautifier/beautify --on-committed'
 #
 # AUTHORS
 #     Christian Feld <c.feld@fz-juelich.de>
@@ -26,9 +30,38 @@ BEAUTIFY_ROOT=${0%/*}
 BEAUTIFY_ROOT=$(cd $BEAUTIFY_ROOT && pwd)
 
 SUBDIRECTORY_OK=Yes
+OPTIONS_SPEC="\
+beautify [--on-committed] [--no-commit]
+--
+on-committed Honor also files in the last commit for beautification and amend commits the result, useful for 'git rebase --exec'
+no-commit    Do not commit the result in case of --on-committed"
 . $(git --exec-path)/git-sh-setup
 require_work_tree
 cd_to_toplevel
+
+against=HEAD
+do_commit=false
+while test $# != 0
+do
+    case "$1" in
+    (--on-committed)
+        against=HEAD^1
+        do_commit=true
+        shift
+        ;;
+    (--no-commit)
+        do_commit=false
+        shift
+        ;;
+    (--)
+        shift
+        break;;
+    (*)
+        usage
+        ;;
+    esac
+    shift
+done
 
 # Setup and use common beautification code
 : ${BEAUTIFY_CONFIG:=$BEAUTIFY_ROOT/beautify.cfg}
@@ -42,10 +75,19 @@ fi
 # Iterate over candidate files in the index and the working copy, modifies
 # the working copy
 (
-    eval git diff-files --name-only --ignore-submodules               -- $extensions
-    eval git diff-index --name-only --ignore-submodules --cached HEAD -- $extensions
+    eval git diff-files --name-only --ignore-submodules                   -- $extensions
+    eval git diff-index --name-only --ignore-submodules --cached $against -- $extensions
 ) | sort -u |
 while read path
 do
     beautify_candidate "$path"
+    if $do_commit
+    then
+        git add -- "$path"
+    fi
 done
+
+if $do_commit && git diff-files --quiet --ignore-submodules
+then
+    git commit --amend --no-edit
+fi
