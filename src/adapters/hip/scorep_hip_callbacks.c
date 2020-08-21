@@ -1439,6 +1439,36 @@ memcpy_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static void
+sync_cb( uint32_t    domain,
+         uint32_t    cid,
+         const void* callbackData,
+         void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( domain != ACTIVITY_DOMAIN_HIP_API, "Only HIP domain handled." );
+
+    const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
+
+    if ( data->phase == ACTIVITY_API_PHASE_ENTER )
+    {
+        api_region_enter( cid, SCOREP_REGION_WRAPPER, "HIP_SYNC", false );
+    }
+
+    if ( data->phase == ACTIVITY_API_PHASE_EXIT )
+    {
+        api_region_exit( cid );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 // Activity tracing callback
 //
 // Called on activity buffer flush. Executes in a dedicated roctracer thread.
@@ -1767,6 +1797,13 @@ scorep_hip_callbacks_enable( void )
         /* ENABLE_TRACING( hipMemcpy3DAsync, memcpy_cb ); */
         /* ENABLE_TRACING( hipMemcpy2DAsync, memcpy_cb ); */
         /* ENABLE_TRACING( hipMemcpyParam2DAsync, memcpy_cb ); */
+    }
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_SYNC )
+    {
+        /* Record time we spend in device or stream synchronizes */
+        ENABLE_TRACING( hipDeviceSynchronize, sync_cb );
+        ENABLE_TRACING( hipStreamSynchronize, sync_cb );
     }
 
     if ( need_stream_api_tracing )
