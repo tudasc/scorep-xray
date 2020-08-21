@@ -1,0 +1,28 @@
+## -*- mode: makefile -*-
+
+# This file is part of the Score-P software (http://www.score-p.org)
+#
+# Copyright (c) 2019,
+# Forschungszentrum Juelich GmbH, Germany
+#
+# This software may be modified and distributed under the terms of
+# a BSD-style license. See the COPYING file in the package base
+# directory for details.
+
+## file       src/utils/atomic/Makefile.inc.am
+
+## For additional documentation, see src/utils/atomic/SCOREP_Atomic.inc.c.
+
+
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+noinst_LTLIBRARIES += libscorep_atomic.la
+nodist_libscorep_atomic_la_SOURCES = \
+    $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.@SCOREP_CPU_INSTRUCTION_SET@.s
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/utils/include/SCOREP_Atomic.h \
+    $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.c \
+    $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.ppc64.s \
+    $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.x86_64.s \
+    $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.aarch64.s

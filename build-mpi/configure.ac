@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2016, 2018, 2020,
+dnl Copyright (c) 2009-2016, 2018-2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -259,6 +259,7 @@ AC_SCOREP_COMPILER_INSTRUMENTATION
 AC_SCOREP_ONLINE_ACCESS
 
 SCOREP_MEMORY_SUPPORT
+SCOREP_GCC_ATOMIC_BUILTINS
 
 AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
