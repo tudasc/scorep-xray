@@ -1,18 +1,11 @@
-MPICC=mpixlc
+MPICC=mpicc
 #MPI_CFLAGS
-MPICXX=mpixlC
+MPICXX=mpic++
 #MPI_CXXFLAGS=
-MPIF77=mpixlf
+MPIF77=mpifort
 #MPI_FFLAGS=
-MPIFC=mpixlf
+MPIFC=mpifort
 #MPI_FCFLAGS=
 #MPI_CPPFLAGS=
 #MPI_LDFLAGS=
 #MPI_LIBS=
-
-# # Scalasca1 settings
-# MPILIB    = -lmpi_ibm
-# PMPILIB   =
-# FMPILIB   = -lmpi_ibm_usempi -lmpi_ibm_mpifh
-# FMPIOBJ   =
-# MPIEXTRA  =
