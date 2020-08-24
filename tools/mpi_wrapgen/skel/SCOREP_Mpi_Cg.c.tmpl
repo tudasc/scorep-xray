@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -257,7 +257,7 @@ int MPI_Group_free(MPI_Group* group)
  * @{
  */
 
-#pragma wrapgen multiple regex((Intercomm|Comm|Group)_(compare|rank|ranks|size|test_inter)$) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple regex((Intercomm|Comm|Group)_(compare|rank|ranks|remote_size|size|test_inter|translate_ranks)$) skel/SCOREP_Mpi_Std.w
 
 /**
  * @}
