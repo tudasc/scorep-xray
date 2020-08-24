@@ -23,7 +23,7 @@
  * (1) adapt SCOREP_CPU_INSTRUCTION_SETS to detect this new instruction set,
  * (2) provide SCOREP_Atomic.inc.<new_instruction_set>.s by compiling it using
  *     a gcc compiler that generates code for <new_instruction_set>, e.g.,
- *     gcc -Wall -S -O3 SCOREP_Atomic.inc.c -o SCOREP_Atomic.inc.<new_instruction_set>.s
+ *     gcc -Wall -march=<portable-arch> -mtune=generic -S -O3 SCOREP_Atomic.inc.c -o SCOREP_Atomic.inc.<new_instruction_set>.s
  * (3) Add SCOREP_Atomic.inc.<new_instruction_set>.s to EXTRA_DIST in
  *     src/utils/atomic/Makefile.inc.am
  *
