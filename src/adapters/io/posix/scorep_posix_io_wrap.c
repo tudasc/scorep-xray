@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019,
+ * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -55,6 +55,55 @@
 #define INITIALIZE_FUNCTION_POINTER( func ) do { } while ( 0 )
 #endif
 /* *INDENT-ON* */
+
+/**
+ * @brief Issues one IoOperationBegin event per vector entry.
+ */
+static inline void
+posix_io_vector_begin( SCOREP_IoFileHandle    handle,
+                       SCOREP_IoOperationMode mode,
+                       const struct iovec*    iov,
+                       int                    iovCnt )
+{
+    for ( int i = 0; i < iovCnt; i++ )
+    {
+        SCOREP_IoOperationBegin( handle,
+                                 mode,
+                                 SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
+                                 iov[ i ].iov_len,
+                                 SCOREP_INVALID_BLOCKING_IO_OPERATION_MATCHING_ID + i + 1 );
+    }
+}
+
+/**
+ * @brief Issues one IoOperationComplete event per vector entry.
+ *        The transfer size per vector is decompsosed from the total
+ *        number of transferred bytes.
+ */
+static inline void
+posix_io_vector_complete( SCOREP_IoFileHandle    handle,
+                          SCOREP_IoOperationMode mode,
+                          const struct iovec*    iov,
+                          int                    iovCnt,
+                          ssize_t                transferredBytes )
+{
+    for ( int i = 0; i < iovCnt; i++ )
+    {
+        ssize_t request_size = iov[ i ].iov_len;
+
+        if ( request_size > transferredBytes )
+        {
+            request_size = transferredBytes;
+        }
+
+        SCOREP_IoOperationComplete( handle,
+                                    mode,
+                                    ( uint64_t )request_size,
+                                    SCOREP_INVALID_BLOCKING_IO_OPERATION_MATCHING_ID + i + 1 );
+
+        transferredBytes -= request_size;
+    }
+}
 
 /* *******************************************************************
  * Function wrappers
@@ -1814,32 +1863,20 @@ SCOREP_LIBWRAP_FUNC_NAME( preadv )( int fd, const struct iovec* iov, int iovcnt,
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( preadv );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
+    ssize_t ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv );
 
-        /*
-         * Reads up to 'count' bytes from file descriptor 'fd' at offset 'offset' (from the start of the file) into the buffer starting at 'buf'.
-         * The file offset is not changed.
-         *
-         * @todo: how to represent offset?
-         */
         SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
                                                                           &fd );
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_READ,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1849,10 +1886,11 @@ SCOREP_LIBWRAP_FUNC_NAME( preadv )( int fd, const struct iovec* iov, int iovcnt,
 
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_READ,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
         }
 
         SCOREP_IoMgmt_PopHandle( io_handle );
@@ -1875,32 +1913,20 @@ SCOREP_LIBWRAP_FUNC_NAME( pwritev )( int fd, const struct iovec* iov, int iovcnt
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( pwritev );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
+    ssize_t ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev );
 
-        /*
-         * Writes up to 'count' bytes from the buffer starting at 'buf' to the file descriptor 'fd' at offset 'offset'.
-         * The file offset is not changed.
-         *
-         * @todo: how to represent offset?
-         */
         SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
                                                                           &fd );
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_WRITE,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1910,10 +1936,11 @@ SCOREP_LIBWRAP_FUNC_NAME( pwritev )( int fd, const struct iovec* iov, int iovcnt
 
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_WRITE,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
         }
 
         SCOREP_IoMgmt_PopHandle( io_handle );
@@ -1936,12 +1963,7 @@ SCOREP_LIBWRAP_FUNC_NAME( readv )( int fd, const struct iovec* iov, int iovcnt )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( readv );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
+    ssize_t ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -1951,11 +1973,10 @@ SCOREP_LIBWRAP_FUNC_NAME( readv )( int fd, const struct iovec* iov, int iovcnt )
                                                                           &fd );
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_READ,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1965,10 +1986,11 @@ SCOREP_LIBWRAP_FUNC_NAME( readv )( int fd, const struct iovec* iov, int iovcnt )
 
         if ( io_handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_READ,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
         }
 
         SCOREP_IoMgmt_PopHandle( io_handle );
@@ -1991,12 +2013,7 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( writev );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
+    ssize_t ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -2006,12 +2023,12 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
                                                                      &fd );
         if ( handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationBegin( handle,
-                                     SCOREP_IO_OPERATION_MODE_WRITE,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_begin( handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt );
         }
+
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( writev,
                                         ( fd, iov, iovcnt ) );
@@ -2019,10 +2036,11 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
 
         if ( handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationComplete( handle,
-                                        SCOREP_IO_OPERATION_MODE_WRITE,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_complete( handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
         }
 
         SCOREP_IoMgmt_PopHandle( handle );

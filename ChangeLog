@@ -23,6 +23,7 @@ User tools and API improvements and changes:
 - Added additional scorep-score sorting modes `name`, `totaltime`,
   `timepervisit`, and `visits`, besides the default `maxbuffer`.
   Select a sorting mode via `-s <mode>`.
+- Issue individual I/O events in POSIX vectorized I/O operations.
 
 Bugfixes:
 
