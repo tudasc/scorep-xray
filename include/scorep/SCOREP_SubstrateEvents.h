@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2018,
+ * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015-2016,
@@ -1544,7 +1544,8 @@ typedef void ( * SCOREP_Substrates_IoOperationBeginCb )(
     SCOREP_IoOperationMode  mode,
     SCOREP_IoOperationFlag  operationFlags,
     uint64_t                bytesRequest,
-    uint64_t                matchingId );
+    uint64_t                matchingId,
+    uint64_t                offset );
 
 /**
  * Records the successful initiation of a non-blocking operation (read, write etc.) on an active I/O handle.

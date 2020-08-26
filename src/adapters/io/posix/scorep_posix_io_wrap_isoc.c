@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019,
+ * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -350,7 +350,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fflush )( FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_FLUSH,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_IoMgmt_PushHandle( io_handle );
@@ -401,7 +402,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fgetc )( FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 1 /* one character == one byte */ ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -479,7 +481,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fgets )( char* s, int size, FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( size ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -749,7 +752,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fputc )( int c, FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 1 /* one character == one byte */ ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -798,7 +802,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fprintf )( FILE* stream, const char* format, ... )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         va_list args;
@@ -856,7 +861,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fputs )( const char* s, FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      length,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -905,7 +911,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fread )( void* ptr, size_t size, size_t nmemb, FILE* s
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( size * nmemb ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1032,7 +1039,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fscanf )( FILE* stream, const char* format, ... )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1406,7 +1414,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fwrite )( const void* ptr, size_t size, size_t nmemb, 
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( size * nmemb ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1456,7 +1465,8 @@ SCOREP_LIBWRAP_FUNC_NAME( getc )( FILE* stream )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 1 /* one character == one byte */ ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1505,7 +1515,8 @@ SCOREP_LIBWRAP_FUNC_NAME( getchar )( void )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 1 /* one character == one byte */ ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1554,7 +1565,8 @@ SCOREP_LIBWRAP_FUNC_NAME( gets )( char* s )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 0 ) /* What's the requested size of transferred bytes of a gets operation? */,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1603,7 +1615,8 @@ SCOREP_LIBWRAP_FUNC_NAME( printf )( const char* format, ... )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         va_list args;
@@ -1658,7 +1671,8 @@ SCOREP_LIBWRAP_FUNC_NAME( putchar )( int c )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )( 1 /* one character == one byte */ ),
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1710,7 +1724,8 @@ SCOREP_LIBWRAP_FUNC_NAME( puts )( const char* s )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      length,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1799,7 +1814,8 @@ SCOREP_LIBWRAP_FUNC_NAME( scanf )( const char* format, ... )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1890,7 +1906,8 @@ SCOREP_LIBWRAP_FUNC_NAME( vfprintf )( FILE* stream, const char* format, va_list 
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1940,7 +1957,8 @@ SCOREP_LIBWRAP_FUNC_NAME( vfscanf )( FILE* stream, const char* format, va_list a
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1990,7 +2008,8 @@ SCOREP_LIBWRAP_FUNC_NAME( vscanf )( const char* format, va_list ap )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -2039,7 +2058,8 @@ SCOREP_LIBWRAP_FUNC_NAME( vprintf )( const char* format, va_list ap )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_ISOC /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();

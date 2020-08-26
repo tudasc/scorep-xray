@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018,
+ * Copyright (c) 2009-2011, 2018, 2020,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -151,7 +151,10 @@ typedef SCOREP_AnyHandle SCOREP_ParadigmHandle;
  */
 #define SCOREP_INVALID_PARADIGM SCOREP_MOVABLE_NULL
 
-
+/**
+ * Symbolic constant representing the offset that is unknown.
+ */
+#define SCOREP_IO_UNKNOWN_OFFSET UINT64_MAX
 
 /**
  * Task Handle

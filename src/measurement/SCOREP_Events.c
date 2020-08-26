@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1089,13 +1089,14 @@ SCOREP_IoOperationBegin( SCOREP_IoHandleHandle  handle,
                          SCOREP_IoOperationMode mode,
                          SCOREP_IoOperationFlag operationFlags,
                          uint64_t               bytesRequest,
-                         uint64_t               matchingId )
+                         uint64_t               matchingId,
+                         uint64_t               offset )
 {
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( IoOperationBegin, IO_OPERATION_BEGIN,
-                           ( location, timestamp, handle, mode, operationFlags, bytesRequest, matchingId ) );
+                           ( location, timestamp, handle, mode, operationFlags, bytesRequest, matchingId, offset ) );
 }
 
 

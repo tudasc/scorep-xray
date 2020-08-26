@@ -1031,7 +1031,8 @@ SCOREP_IoOperationBegin( SCOREP_IoHandleHandle  handle,
                          SCOREP_IoOperationMode mode,
                          SCOREP_IoOperationFlag operationFlags,
                          uint64_t               bytesRequest,
-                         uint64_t               matchingId );
+                         uint64_t               matchingId,
+                         uint64_t               offset );
 
 
 /** @brief Records a IoOperationTest event.

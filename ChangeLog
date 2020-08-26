@@ -24,6 +24,7 @@ User tools and API improvements and changes:
   `timepervisit`, and `visits`, besides the default `maxbuffer`.
   Select a sorting mode via `-s <mode>`.
 - Issue individual I/O events in POSIX vectorized I/O operations.
+- Added recording of transfer offsets of POSIX I/O operations.
 
 Bugfixes:
 

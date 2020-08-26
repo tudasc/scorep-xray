@@ -256,7 +256,8 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_read )( struct aiocb* aiocbp )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                      ( uint64_t )aiocbp->aio_nbytes,
-                                     ( uint64_t )aiocbp );
+                                     ( uint64_t )aiocbp,
+                                     aiocbp->aio_offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -379,7 +380,8 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_write )( struct aiocb* aiocbp )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                      ( uint64_t )aiocbp->aio_nbytes,
-                                     ( uint64_t )aiocbp );
+                                     ( uint64_t )aiocbp,
+                                     aiocbp->aio_offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -442,7 +444,8 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
                                          io_mode,
                                          SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )aiocbp->aio_nbytes,
-                                         ( uint64_t )aiocbp );
+                                         ( uint64_t )aiocbp,
+                                         aiocbp->aio_offset );
             }
         }
 
