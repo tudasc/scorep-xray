@@ -25,6 +25,9 @@ User tools and API improvements and changes:
   Select a sorting mode via `-s <mode>`.
 - Issue individual I/O events in POSIX vectorized I/O operations.
 - Added recording of transfer offsets of POSIX I/O operations.
+- Added wrapping of more vectorized I/O operations:
+  - `preadv2`,  `preadv64`,  `preadv64v2`
+  - `pwritev2`, `pwritev64`, `pwritev64v2`
 
 Bugfixes:
 

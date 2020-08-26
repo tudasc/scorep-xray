@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015-2017,
+## Copyright (c) 2015-2017, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -66,12 +66,18 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
             openat,
             pread,
             pread64,
+            preadv2,
+            preadv64,
+            preadv64v2,
             printf,
             pselect,
             putchar,
             puts,
             pwrite,
             pwrite64,
+            pwritev2,
+            pwritev64,
+            pwritev64v2,
             read,
             rewind,
             scanf,

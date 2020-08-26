@@ -60,6 +60,15 @@ SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pread64,     
 #if HAVE( POSIX_IO_SYMBOL_PREADV )
 SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, preadv,       ( int fd, const struct iovec* iov, int iovcnt, off_t offset ) )
 #endif
+#if HAVE( POSIX_IO_SYMBOL_PREADV2 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, preadv2,       ( int fd, const struct iovec* iov, int iovcnt, off_t offset, int flags ) )
+#endif
+#if HAVE( POSIX_IO_SYMBOL_PREADV64 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, preadv64,       ( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset ) )
+#endif
+#if HAVE( POSIX_IO_SYMBOL_PREADV64V2 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, preadv64v2,       ( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset, int flags ) )
+#endif
 #if HAVE( POSIX_IO_SYMBOL_PSELECT )
 SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, WRAPPER,     int,     pselect,      ( int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, const struct timespec *timeout, const sigset_t *sigmask ) )
 #endif
@@ -71,6 +80,15 @@ SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pwrite64,    
 #endif
 #if HAVE( POSIX_IO_SYMBOL_PWRITEV )
 SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pwritev,      ( int fd, const struct iovec* iov, int iovcnt, off_t offset ) )
+#endif
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV2 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pwritev2,      ( int fd, const struct iovec* iov, int iovcnt, off_t offset, int flags ) )
+#endif
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV64 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pwritev64,      ( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset ) )
+#endif
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV64V2 )
+SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, pwritev64v2,      ( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset, int flags ) )
 #endif
 #if HAVE( POSIX_IO_SYMBOL_READ )
 SCOREP_POSIX_IO_PROCESS_FUNC( POSIX_IO, FILE_IO,          ssize_t, read,         ( int fd, void *buf, size_t count ) )
