@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -208,6 +208,7 @@ typedef struct SCOREP_Allocator_PageManagerStats
     size_t   memory_allocated;
     size_t   memory_used;
     size_t   memory_available;
+    size_t   memory_alignment_loss;
 } SCOREP_Allocator_PageManagerStats;
 
 

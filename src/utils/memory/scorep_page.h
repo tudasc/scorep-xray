@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -108,7 +108,8 @@ init_page( SCOREP_Allocator_Allocator* allocator,
     page->memory_start_address = ( char* )allocator + ( id << allocator->page_shift );
     set_page_usage( page, 0 );
     set_page_order( page, order );
-    page->next = NULL;
+    page->memory_alignment_loss = 0;
+    page->next                  = NULL;
 }
 
 static inline void
@@ -150,6 +151,25 @@ get_page_avail( const SCOREP_Allocator_Page* page )
     ptrdiff_t avail = page->memory_end_address - page->memory_current_address;
 
     return avail;
+}
+
+static inline bool
+grab_page_memory( SCOREP_Allocator_Page* page,
+                  size_t                 requestedSize,
+                  size_t                 alignment,
+                  void**                 memoryOut )
+{
+    void*     memory = ( void* )roundupto( page->memory_current_address, alignment );
+    ptrdiff_t avail  = ( intptr_t )page->memory_end_address - ( intptr_t )memory;
+    if ( avail < 0 || requestedSize > ( size_t )avail )
+    {
+        return false;
+    }
+
+    page->memory_alignment_loss += ( char* )memory - ( char* )page->memory_current_address;
+    page->memory_current_address = memory + requestedSize;
+    *memoryOut                   = memory;
+    return true;
 }
 
 #endif /* SCOREP_INTERNAL_PAGE_H */

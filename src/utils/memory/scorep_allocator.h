@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2019,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -58,6 +58,8 @@ struct SCOREP_Allocator_Page
                                                         // but not beyond
     char*                       memory_current_address; // internal use only!
 
+    size_t                      memory_alignment_loss;  // bytes lost because of alignment, size_t to have no hole in struct
+
     // SCOREP_Allocator_PageManager and SCOREP_Allocator_Allocator store pages in lists.
     // For internal use only
     SCOREP_Allocator_Page* next;
@@ -66,6 +68,7 @@ struct SCOREP_Allocator_Page
 
 struct SCOREP_Allocator_Allocator
 {
+    void*    allocated_memory;
     uint32_t page_shift;
     uint32_t n_pages_capacity;
     uint32_t n_pages_maintenance;
@@ -114,7 +117,7 @@ struct SCOREP_Allocator_ObjectManager
 union SCOREP_Allocator_Object
 {
     union SCOREP_Allocator_Object*        next;
-    /* 32: 24, 64: 40 */
+    /* 32: 28, 64: 48 */
     struct SCOREP_Allocator_Page          page;
     /* 32: 16, 64: 32 */
     struct SCOREP_Allocator_PageManager   page_manager;

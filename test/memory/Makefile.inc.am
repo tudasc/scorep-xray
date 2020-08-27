@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -41,8 +41,7 @@ allocator_test_LDADD = \
 allocator_test_CPPFLAGS = $(AM_CPPFLAGS) \
                           -I$(PUBLIC_INC_DIR) \
                           $(UTILS_CPPFLAGS) \
-                          -I$(INC_DIR_COMMON_CUTEST) \
-                          -I$(INC_DIR_VENDOR_VALGRIND)
+                          -I$(INC_DIR_COMMON_CUTEST)
 
 TESTS_SERIAL += allocator_test
 
