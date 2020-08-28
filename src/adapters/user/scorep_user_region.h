@@ -36,13 +36,5 @@
 #ifndef SCOREP_USER_REGION_H
 #define SCOREP_USER_REGION_H
 
-void
-scorep_selective_init( void );
-
-SCOREP_ErrorCode
-scorep_selective_register( void );
-
-void
-scorep_selective_finalize( void );
 
 #endif /* SCOREP_USER_REGION_H */
