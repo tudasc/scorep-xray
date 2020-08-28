@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017,
+ * Copyright (c) 2009-2015, 2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,7 @@
 #include <SCOREP_Location.h>
 
 
-#include "scorep_user.h"
+#include "scorep_user_region.h"
 #include "scorep_selective_region.h"
 
 #include "scorep_user_topology_confvars.inc.c"

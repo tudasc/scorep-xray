@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -33,8 +33,8 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_USER_H
-#define SCOREP_INTERNAL_USER_H
+#ifndef SCOREP_USER_REGION_H
+#define SCOREP_USER_REGION_H
 
 void
 scorep_user_init_regions( void );
@@ -57,4 +57,4 @@ scorep_selective_register( void );
 void
 scorep_selective_finalize( void );
 
-#endif /* SCOREP_INTERNAL_USER_H */
+#endif /* SCOREP_USER_REGION_H */
