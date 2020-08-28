@@ -40,7 +40,6 @@
 
 #include <config.h>
 #include <string.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -108,8 +107,8 @@ static inline void
 add_region( SCOREP_User_RegionHandle region_handle,
             char*                    region_name )
 {
-    assert( region_handle != SCOREP_USER_INVALID_REGION );
-    assert( region_name );
+    UTILS_BUG_ON( region_handle == SCOREP_USER_INVALID_REGION );
+    UTILS_BUG_ON( region_name == NULL );
 
     SCOREP_Hashtab_InsertPtr( scorep_user_region_table,
                               ( void* )UTILS_CStr_dup( region_name ),
@@ -396,12 +395,9 @@ FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )
     {
         if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
         {
-            fprintf( stderr,
-                     "ERROR: Enter for uninitialized region handle.\n"
-                     "Use SCOREP_USER_BEGIN instead of SCOREP_USER_ENTER "
-                     "to ensure that handles are initialized.\n" );
-            SCOREP_IN_MEASUREMENT_DECREMENT();
-            abort();
+            UTILS_FATAL( "Enter for uninitialized region handle. Use "
+                         "SCOREP_USER_REGION_INIT or SCOREP_USER_BEGIN "
+                         "to ensure that handles are initialized." );
         }
         SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *regionHandle ) );
     }

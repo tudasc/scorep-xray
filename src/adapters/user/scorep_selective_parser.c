@@ -38,9 +38,7 @@
 #include <config.h>
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 #include <SCOREP_Vector.h>
 #include "scorep_selective_region.h"
@@ -214,7 +212,7 @@ add( const char* name,
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                         "Add recorded region %s %d:%d\n", name, first, last );
-    assert( scorep_selected_regions != NULL );
+    UTILS_BUG_ON( scorep_selected_regions == NULL );
 
     size_t index = 0;
 
@@ -264,7 +262,7 @@ parse_file( FILE* file )
     SCOREP_ErrorCode err         = SCOREP_SUCCESS;
 
     /* Validity assertions */
-    assert( file );
+    UTILS_BUG_ON( file == NULL );
 
     /* Read file line by line */
     while ( !feof( file ) )
