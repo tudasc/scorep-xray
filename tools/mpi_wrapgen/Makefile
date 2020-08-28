@@ -20,7 +20,7 @@ DOC_INSTALLDIR  = ../../../doc/doxygen-user/
 MPI_PROTOTYPES  = $(MPI_TMPL_DIR)/SCOREP_Mpi_Prototypes.xml
 
 WRAPGEN         = ./wrapgen
-WFLAGS          = -b -p $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_Mpi_Header.txt
+WFLAGS          = -b -p $(MPI_PROTOTYPES)
 INSTALL         = /usr/bin/install
 
 DOXYGEN         = doxygen
@@ -83,11 +83,11 @@ install-files: all-files
 
 # Auto-gerenation targets for MPI wrappers
 
-$(MPI_OUTPUTDIR)/SCOREP_%: $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_%.tmpl $(MPI_TMPL_DIR)/*.w wrapgen $(MPI_TMPL_DIR)/SCOREP_Mpi_Header.txt
+$(MPI_OUTPUTDIR)/SCOREP_%: $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_%.tmpl $(MPI_TMPL_DIR)/*.w wrapgen
 	@if [ ! -d $(MPI_OUTPUTDIR) ]; then mkdir -p $(MPI_OUTPUTDIR); fi
 	@echo "  GEN   " $@; $(WRAPGEN) $(WFLAGS) $(MPI_TMPL_DIR)/$(notdir $@).tmpl > $@
 
-$(DOC_OUTPUTDIR)/%: $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/%.tmpl $(DOC_TMPL_DIR)/*.w wrapgen $(MPI_TMPL_DIR)/SCOREP_Mpi_Header.txt
+$(DOC_OUTPUTDIR)/%: $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/%.tmpl $(DOC_TMPL_DIR)/*.w wrapgen
 	@if [ ! -d $(DOC_OUTPUTDIR) ]; then mkdir -p $(DOC_OUTPUTDIR); fi
 	@echo "  GEN   " $@; $(WRAPGEN) -p $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/$(notdir $@).tmpl > $@
 
