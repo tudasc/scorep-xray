@@ -53,6 +53,18 @@
 
 static size_t user_subsystem_id;
 
+static void
+init_regions( void );
+
+static void
+finalize_regions( void );
+
+static void
+init_metrics( void );
+
+static void
+finalize_metrics( void );
+
 
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
@@ -74,8 +86,8 @@ static SCOREP_ErrorCode
 user_subsystem_init( void )
 {
     scorep_selective_init();
-    scorep_user_init_regions();
-    scorep_user_init_metrics();
+    init_regions();
+    init_metrics();
 
     return SCOREP_SUCCESS;
 }
@@ -93,8 +105,8 @@ user_subsystem_init_location( SCOREP_Location* locationData,
 static void
 user_subsystem_finalize( void )
 {
-    scorep_user_finalize_metrics();
-    scorep_user_finalize_regions();
+    finalize_metrics();
+    finalize_regions();
     scorep_selective_finalize();
 }
 
@@ -121,15 +133,15 @@ SCOREP_Mutex scorep_user_metric_mutex = SCOREP_INVALID_MUTEX;
 SCOREP_Mutex scorep_user_topo_mutex = SCOREP_INVALID_MUTEX;
 
 
-void
-scorep_user_init_metrics( void )
+static void
+init_metrics( void )
 {
     SCOREP_MutexCreate( &scorep_user_metric_mutex );
     SCOREP_MutexCreate( &scorep_user_topo_mutex );
 }
 
-void
-scorep_user_finalize_metrics( void )
+static void
+finalize_metrics( void )
 {
     SCOREP_MutexDestroy( &scorep_user_metric_mutex );
     SCOREP_MutexDestroy( &scorep_user_topo_mutex );
@@ -161,8 +173,8 @@ SCOREP_Hashtab* scorep_user_region_table = NULL;
  */
 SCOREP_Hashtab* scorep_user_region_by_name_hash_table = NULL;
 
-void
-scorep_user_init_regions( void )
+static void
+init_regions( void )
 {
     SCOREP_MutexCreate( &scorep_user_region_mutex );
     SCOREP_MutexCreate( &scorep_user_region_by_name_mutex );
@@ -175,8 +187,8 @@ scorep_user_init_regions( void )
                                                                        &SCOREP_Hashtab_CompareStrings );
 }
 
-void
-scorep_user_finalize_regions( void )
+static void
+finalize_regions( void )
 {
     /* the value entry is stored in a structure that is allocated with the scorep
        memory management system. Thus, it must not free the value. */

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014, 2017-2018,
+ * Copyright (c) 2009-2011, 2014, 2017-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014
@@ -73,8 +73,8 @@ static SCOREP_Vector* scorep_selected_regions = NULL;
 /**
    Frees the memory for an interval entry.
  */
-static void
-scorep_selectiv_delete_interval( void* item )
+static inline void
+delete_interval( void* item )
 {
     free( item );
 }
@@ -82,11 +82,11 @@ scorep_selectiv_delete_interval( void* item )
 /**
    Frees the memory for an selected region entry.
  */
-static void
-scorep_selective_delete_selected_region( void* item )
+static inline void
+delete_selected_region( void* item )
 {
     scorep_selected_region* region = ( scorep_selected_region* )item;
-    SCOREP_Vector_Foreach( region->intervals, &scorep_selectiv_delete_interval );
+    SCOREP_Vector_Foreach( region->intervals, &delete_interval );
     SCOREP_Vector_Free( region->intervals );
     free( region );
 }
@@ -94,9 +94,9 @@ scorep_selective_delete_selected_region( void* item )
 /**
    Compares a pointer to a 64 bit integer with the first entry of an interval.
  */
-static int8_t
-scorep_selective_compare_intervals( const void* value,
-                                    const void* item )
+static inline int8_t
+compare_intervals( const void* value,
+                   const void* item )
 {
     return *( uint64_t* )value - ( ( scorep_selected_interval* )item )->first;
 }
@@ -104,9 +104,9 @@ scorep_selective_compare_intervals( const void* value,
 /**
    Compares an string to the region name of a selected region.
  */
-static int8_t
-scorep_selective_compare_regions( const void* value,
-                                  const void* item )
+static inline int8_t
+compare_regions( const void* value,
+                 const void* item )
 {
     return strcmp( ( const char* )value, ( ( scorep_selected_region* )item )->region_name );
 }
@@ -114,8 +114,8 @@ scorep_selective_compare_regions( const void* value,
 /**
    Initializes the recorded region list
  */
-static SCOREP_ErrorCode
-scorep_selective_init_region_list( void )
+static inline SCOREP_ErrorCode
+init_region_list( void )
 {
     scorep_selected_regions = SCOREP_Vector_CreateSize( 4 );
     if ( scorep_selected_regions == NULL )
@@ -137,9 +137,9 @@ scorep_selective_init_region_list( void )
    @param last   Last instance number of the new interval.
  */
 static void
-scorep_selective_add_interval( scorep_selected_region* region,
-                               uint64_t                first,
-                               uint64_t                last )
+add_interval( scorep_selected_region* region,
+              uint64_t                first,
+              uint64_t                last )
 {
     size_t pos = 0;
 
@@ -151,7 +151,7 @@ scorep_selective_add_interval( scorep_selected_region* region,
 
     SCOREP_Vector_LowerBound( region->intervals,
                               &first,
-                              scorep_selective_compare_intervals,
+                              compare_intervals,
                               &pos );
     SCOREP_Vector_Insert( region->intervals, pos, new_interval );
 }
@@ -164,10 +164,10 @@ scorep_selective_add_interval( scorep_selected_region* region,
    @param index  Index in the list where the new entry is inserted.
  */
 static SCOREP_ErrorCode
-scorep_selective_insert_new_region( const char* region,
-                                    int         first,
-                                    int         last,
-                                    size_t      index )
+insert_new_region( const char* region,
+                   int         first,
+                   int         last,
+                   size_t      index )
 {
     /* Create region */
     scorep_selected_region* new_region =
@@ -196,7 +196,7 @@ scorep_selective_insert_new_region( const char* region,
     SCOREP_Vector_Insert( scorep_selected_regions, index, new_region );
 
     /* Insert initial interval */
-    scorep_selective_add_interval( new_region, first, last );
+    add_interval( new_region, first, last );
 
     return SCOREP_SUCCESS;
 }
@@ -208,9 +208,9 @@ scorep_selective_insert_new_region( const char* region,
    @param last    The last instance number of the recorded interval of instances.
  */
 static void
-scorep_selective_add( const char* name,
-                      int         first,
-                      int         last )
+add( const char* name,
+     int         first,
+     int         last )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                         "Add recorded region %s %d:%d\n", name, first, last );
@@ -221,27 +221,27 @@ scorep_selective_add( const char* name,
     /* Region does already exist */
     if ( SCOREP_Vector_Find( scorep_selected_regions,
                              name,
-                             scorep_selective_compare_regions,
+                             compare_regions,
                              &index ) )
     {
         scorep_selected_region* region =
             ( scorep_selected_region* )SCOREP_Vector_At( scorep_selected_regions, index );
-        scorep_selective_add_interval( region, first, last );
+        add_interval( region, first, last );
         return;
     }
 
     /* It is a new region */
     if ( SCOREP_Vector_UpperBound( scorep_selected_regions,
                                    name,
-                                   scorep_selective_compare_regions,
+                                   compare_regions,
                                    &index ) )
     {
-        scorep_selective_insert_new_region( name, first, last, index );
+        insert_new_region( name, first, last, index );
     }
     else
     {
         index = SCOREP_Vector_Size( scorep_selected_regions );
-        scorep_selective_insert_new_region( name, first, last, index );
+        insert_new_region( name, first, last, index );
     }
 }
 
@@ -257,7 +257,7 @@ scorep_selective_add( const char* name,
             SCOREP_ERROR_FILE_INTERACTION.
  */
 static SCOREP_ErrorCode
-scorep_selective_parse_file( FILE* file )
+parse_file( FILE* file )
 {
     size_t           buffer_size = 0;
     char*            buffer      = NULL;
@@ -291,7 +291,7 @@ scorep_selective_parse_file( FILE* file )
         /* If no instances are specified register whole run */
         if ( interval == NULL )
         {
-            scorep_selective_add( region_name, start, end );
+            add( region_name, start, end );
         }
         /* Process instance selection */
         else
@@ -326,7 +326,7 @@ scorep_selective_parse_file( FILE* file )
                         sscanf( interval, "%d", &start );
                         sscanf( &interval[ pos + 1 ], "%d", &end );
                     }
-                    scorep_selective_add( region_name, start, end );
+                    add( region_name, start, end );
                 }
                 interval = strtok( NULL, " \t\n," );
             }
@@ -351,7 +351,7 @@ scorep_selective_get_region( const char* name )
 {
     size_t index = 0;
     if ( SCOREP_Vector_Find( scorep_selected_regions, name,
-                             scorep_selective_compare_regions, &index ) )
+                             compare_regions, &index ) )
     {
         return ( scorep_selected_region* )SCOREP_Vector_At( scorep_selected_regions, index );
     }
@@ -374,7 +374,7 @@ scorep_selective_init( void )
                         "Initialize selective recording" );
 
     /* Initialize data structures */
-    if ( scorep_selective_init_region_list() != SCOREP_SUCCESS )
+    if ( init_region_list() != SCOREP_SUCCESS )
     {
         UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                      "Failed to create recorded region list" );
@@ -405,7 +405,7 @@ scorep_selective_init( void )
                         "Reading selective recording file %s.",
                         scorep_selective_file_name );
 
-    SCOREP_ErrorCode err = scorep_selective_parse_file( config_file );
+    SCOREP_ErrorCode err = parse_file( config_file );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err,
@@ -440,7 +440,7 @@ void
 scorep_selective_finalize( void )
 {
     SCOREP_Vector_Foreach( scorep_selected_regions,
-                           scorep_selective_delete_selected_region );
+                           delete_selected_region );
     SCOREP_Vector_Free( scorep_selected_regions );
     scorep_selected_regions = NULL;
 }

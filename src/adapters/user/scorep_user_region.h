@@ -37,18 +37,6 @@
 #define SCOREP_USER_REGION_H
 
 void
-scorep_user_init_regions( void );
-
-void
-scorep_user_finalize_regions( void );
-
-void
-scorep_user_init_metrics( void );
-
-void
-scorep_user_finalize_metrics( void );
-
-void
 scorep_selective_init( void );
 
 SCOREP_ErrorCode

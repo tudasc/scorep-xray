@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -92,7 +92,7 @@ extern SCOREP_RegionType
 scorep_user_to_scorep_region_type( const SCOREP_User_RegionType user_type );
 
 static inline SCOREP_User_RegionHandle
-scorep_user_find_region( char* region_name )
+find_region( char* region_name )
 {
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( scorep_user_region_table,
                                                        region_name, NULL );
@@ -104,9 +104,9 @@ scorep_user_find_region( char* region_name )
     return ( SCOREP_User_RegionHandle )entry->value.ptr;
 }
 
-static void
-scorep_user_add_region( SCOREP_User_RegionHandle region_handle,
-                        char*                    region_name )
+static inline void
+add_region( SCOREP_User_RegionHandle region_handle,
+            char*                    region_name )
 {
     assert( region_handle != SCOREP_USER_INVALID_REGION );
     assert( region_name );
@@ -161,7 +161,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
     SCOREP_MutexLock( scorep_user_region_mutex );
 
     /* Lookup the region name in the region table */
-    SCOREP_User_RegionHandle region = scorep_user_find_region( region_name );
+    SCOREP_User_RegionHandle region = find_region( region_name );
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean
        time. If the handle is invalid, register a new region */
@@ -177,7 +177,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
              ( strncmp( region_name, "pomp", 4 ) == 0 ) )
         {
             region = SCOREP_FILTERED_USER_REGION;
-            scorep_user_add_region( region, region_name );
+            add_region( region, region_name );
         }
         else
         {
@@ -193,7 +193,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
                                                                SCOREP_PARADIGM_USER,
                                                                region_type );
 
-                scorep_user_add_region( region, region_name );
+                add_region( region, region_name );
             }
         }
     }

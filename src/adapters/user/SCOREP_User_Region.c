@@ -60,9 +60,9 @@
 
 
 static SCOREP_SourceFileHandle
-scorep_user_get_file( const char*              file,
-                      const char**             lastFileName,
-                      SCOREP_SourceFileHandle* lastFile )
+get_file( const char*              file,
+          const char**             lastFileName,
+          SCOREP_SourceFileHandle* lastFile )
 {
     /* Hashtable access must be mutual exclusive */
     SCOREP_MutexLock( scorep_user_file_table_mutex );
@@ -362,9 +362,9 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
     }
 
     /* Get source file handle */
-    SCOREP_SourceFileHandle file = scorep_user_get_file( fileName,
-                                                         lastFileName,
-                                                         lastFile );
+    SCOREP_SourceFileHandle file = get_file( fileName,
+                                             lastFileName,
+                                             lastFile );
 
     /* Lock region definition */
     SCOREP_MutexLock( scorep_user_region_mutex );
