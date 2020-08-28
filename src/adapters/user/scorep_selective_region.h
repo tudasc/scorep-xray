@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -27,6 +27,11 @@
  * directory for details.
  *
  */
+
+
+#ifndef SCOREP_SELECTIVE_REGION_H
+#define SCOREP_SELECTIVE_REGION_H
+
 
 /**
  *  @file
@@ -112,3 +117,5 @@ scorep_selective_check_exit( SCOREP_User_RegionHandle region );
  */
 scorep_selected_region*
 scorep_selective_get_region( const char* name );
+
+#endif /* SCOREP_SELECTIVE_REGION_H */
