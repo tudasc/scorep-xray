@@ -36,5 +36,47 @@
 #ifndef SCOREP_USER_REGION_H
 #define SCOREP_USER_REGION_H
 
+#include <scorep/SCOREP_User_Types.h>
+
+#include <stdint.h>
+#include <stdbool.h>
+
+UTILS_BEGIN_C_DECLS
+
+#define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
+
+void
+scorep_user_region_init_c_cxx( SCOREP_User_RegionHandle*    handle,
+                               const char**                 lastFileName,
+                               SCOREP_SourceFileHandle*     lastFile,
+                               const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo );
+
+void
+scorep_user_region_enter( const SCOREP_User_RegionHandle handle );
+
+void
+scorep_user_region_exit( const SCOREP_User_RegionHandle handle );
+
+void
+scorep_user_rewind_region_enter( const SCOREP_User_RegionHandle handle );
+
+void
+scorep_user_rewind_region_exit( const SCOREP_User_RegionHandle handle,
+                                bool                           value );
+
+void
+scorep_user_region_by_name_begin( const char*                  name,
+                                  const SCOREP_User_RegionType regionType,
+                                  const char*                  fileName,
+                                  const uint32_t               lineNo );
+
+void
+scorep_user_region_by_name_end( const char* name );
+
+
+UTILS_END_C_DECLS
 
 #endif /* SCOREP_USER_REGION_H */

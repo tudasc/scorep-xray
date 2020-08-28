@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,6 +36,7 @@
  */
 
 #include <config.h>
+#include "scorep_user_region.h"
 #include <scorep/SCOREP_User_Functions.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
@@ -55,8 +56,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
-#define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
 
 static SCOREP_SourceFileHandle
@@ -168,12 +167,12 @@ SCOREP_User_RegionBegin( SCOREP_User_RegionHandle*    handle,
         /* Make sure that the region is initialized */
         if ( *handle == SCOREP_USER_INVALID_REGION )
         {
-            SCOREP_User_RegionInit( handle, lastFileName, lastFile,
-                                    name, regionType, fileName, lineNo );
+            scorep_user_region_init_c_cxx( handle, lastFileName, lastFile,
+                                           name, regionType, fileName, lineNo );
         }
 
         /* Generate region event */
-        SCOREP_User_RegionEnter( *handle );
+        scorep_user_region_enter( *handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -192,13 +191,7 @@ SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle )
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        /* Generate exit event */
-        if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
-             ( handle != SCOREP_FILTERED_USER_REGION ) )
-        {
-            SCOREP_ExitRegion( handle->handle );
-            scorep_selective_check_exit( handle );
-        }
+        scorep_user_region_exit( handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -247,57 +240,7 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
         return;
     }
 
-    /* Abort if name is NULL */
-    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
-
-    UTILS_DEBUG_ENTRY( "begin region by name: %s", name );
-
-    SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
-    SCOREP_Hashtab_Entry*    result;
-
-    /* search handle in the hashtab */
-    result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
-
-    /* if it's an invalid handle, or added by mistake (==NULL) create new, valid handle */
-    if ( result == NULL )
-    {
-        SCOREP_MutexLock( scorep_user_region_by_name_mutex );
-        size_t hash_hint;
-        result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, &hash_hint );
-        if ( result == NULL )
-        {
-            SCOREP_User_RegionInit( &handle, NULL, NULL,
-                                    name, regionType, fileName, lineNo );
-
-            if ( handle == SCOREP_FILTERED_USER_REGION )
-            {
-                char* saved_name = SCOREP_Memory_AllocForMisc( sizeof( char ) * ( strlen( name ) + 1 ) );
-                saved_name[ strlen( name ) ] = '\0';
-                strncpy( saved_name, name, strlen( name ) );
-
-                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
-                                                   ( void* )saved_name,
-                                                   ( void* )handle,
-                                                   &hash_hint );
-            }
-            else
-            {
-                /* insert handle into hashtab, handle is only a ptr hence we can cast to void* */
-                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
-                                                   ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
-                                                   ( void* )handle,
-                                                   &hash_hint );
-            }
-        }
-        SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
-    }
-    UTILS_BUG_ON( result == NULL, "Could not create region-by-name: '%s'", name );
-
-    /* handle is now valid, we can just use it */
-    handle = ( SCOREP_User_RegionHandle )result->value.ptr;
-
-    UTILS_ASSERT( handle != SCOREP_USER_INVALID_REGION );
-    SCOREP_User_RegionEnter( handle );
+    scorep_user_region_by_name_begin( name, regionType, fileName, lineNo );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -319,22 +262,7 @@ SCOREP_User_RegionByNameEnd( const char* name )
         return;
     }
 
-    /* Abort if name is NULL */
-    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
-
-    UTILS_DEBUG_ENTRY( "end region by name: %s", name );
-
-    /* search for handle in hashtab */
-    SCOREP_Hashtab_Entry* result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
-
-    /* if handle not found, end-region without begin-region */
-    UTILS_BUG_ON( !result, "Trying to leave a region-by-name never entered: '%s'", name ); /* Error */
-
-    SCOREP_User_RegionHandle handle = result->value.ptr;
-
-    UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to leave an uninitialized region-by-name: '%s'", name );
-
-    SCOREP_User_RegionEnd( handle );
+    scorep_user_region_by_name_end( name );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -361,6 +289,167 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
         return;
     }
 
+    scorep_user_region_init_c_cxx( handle, lastFileName, lastFile, name,
+                                   regionType, fileName, lineNo );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        if ( handle == SCOREP_USER_INVALID_REGION )
+        {
+            UTILS_FATAL( "Enter for uninitialized region handle. Use "
+                         "SCOREP_USER_REGION_INIT or SCOREP_USER_BEGIN "
+                         "to ensure that handles are initialized." );
+        }
+        scorep_user_region_enter( handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_RewindRegionBegin( SCOREP_User_RegionHandle*    handle,
+                               const char**                 lastFileName,
+                               SCOREP_SourceFileHandle*     lastFile,
+                               const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        /* Make sure that the rewind region is initialized */
+        if ( *handle == SCOREP_USER_INVALID_REGION )
+        {
+            scorep_user_region_init_c_cxx( handle, lastFileName, lastFile,
+                                           name, regionType, fileName, lineNo );
+        }
+
+        scorep_user_rewind_region_enter( *handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_RewindRegionEnd( const SCOREP_User_RegionHandle handle,
+                             bool                           value )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        scorep_user_rewind_region_exit( handle, value );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        scorep_user_rewind_region_enter( handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_OaPhaseBegin( SCOREP_User_RegionHandle*    handle,
+                          const char**                 lastFileName,
+                          SCOREP_SourceFileHandle*     lastFile,
+                          const char*                  name,
+                          const SCOREP_User_RegionType regionType,
+                          const char*                  fileName,
+                          const uint32_t               lineNo )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        /* Make sure that the region is initialized */
+        if ( *handle == SCOREP_USER_INVALID_REGION )
+        {
+            scorep_user_region_init_c_cxx( handle, lastFileName, lastFile, name,
+                                           regionType, fileName, lineNo );
+        }
+
+        SCOREP_OA_PhaseBegin( ( *handle )->handle );
+
+        scorep_user_region_enter( *handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        scorep_user_region_exit( handle );
+
+        SCOREP_OA_PhaseEnd( handle->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+void
+scorep_user_region_init_c_cxx( SCOREP_User_RegionHandle*    handle,
+                               const char**                 lastFileName,
+                               SCOREP_SourceFileHandle*     lastFile,
+                               const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo )
+{
     /* Get source file handle */
     SCOREP_SourceFileHandle file = get_file( fileName,
                                              lastFileName,
@@ -369,7 +458,7 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
     /* Lock region definition */
     SCOREP_MutexLock( scorep_user_region_mutex );
 
-    /* Test wether the handle is still invalid, or if it was initialized in the mean time.
+    /* Test whether the handle is still invalid, or if it was initialized in the mean time.
        If the handle is invalid, register a new region */
     if ( *handle == SCOREP_USER_INVALID_REGION )
     {
@@ -407,160 +496,136 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
     }
     /* Release lock */
     SCOREP_MutexUnlock( scorep_user_region_mutex );
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+
 void
-SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle )
+scorep_user_region_enter( const SCOREP_User_RegionHandle handle )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    /* Generate enter event */
+    if ( handle != SCOREP_FILTERED_USER_REGION )
     {
-        SCOREP_InitMeasurement();
+        scorep_selective_check_enter( handle );
+        SCOREP_EnterRegion( handle->handle );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        /* Generate enter event */
-        if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
-             ( handle != SCOREP_FILTERED_USER_REGION ) )
-        {
-            scorep_selective_check_enter( handle );
-            SCOREP_EnterRegion( handle->handle );
-        }
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+
 void
-SCOREP_User_RewindRegionBegin( SCOREP_User_RegionHandle*    handle,
-                               const char**                 lastFileName,
-                               SCOREP_SourceFileHandle*     lastFile,
-                               const char*                  name,
-                               const SCOREP_User_RegionType regionType,
-                               const char*                  fileName,
-                               const uint32_t               lineNo )
+scorep_user_region_exit( const SCOREP_User_RegionHandle handle )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    /* Generate exit event */
+    if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
+         ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
-        SCOREP_InitMeasurement();
+        SCOREP_ExitRegion( handle->handle );
+        scorep_selective_check_exit( handle );
     }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        /* Make sure that the rewind region is initialized */
-        if ( *handle == SCOREP_USER_INVALID_REGION )
-        {
-            SCOREP_User_RegionInit( handle, lastFileName, lastFile,
-                                    name, regionType, fileName, lineNo );
-        }
-
-        /* Generate rewind point */
-        SCOREP_User_RewindRegionEnter( *handle );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
-void
-SCOREP_User_RewindRegionEnd( const SCOREP_User_RegionHandle handle,
-                             bool                           value )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        /* Make rewind and generate exit event for this region */
-        if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
-             ( handle != SCOREP_FILTERED_USER_REGION ) )
-        {
-            SCOREP_ExitRewindRegion( handle->handle, value );
-            scorep_selective_check_exit( handle );
-        }
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
 
 void
-SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle )
+scorep_user_rewind_region_enter( const SCOREP_User_RegionHandle handle )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    /* Generate rewind point and enter event for this region */
+    if ( handle != SCOREP_FILTERED_USER_REGION )
     {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        /* Generate rewind point and enter event for this region */
         scorep_selective_check_enter( handle );
         SCOREP_EnterRewindRegion( handle->handle );
     }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+
 void
-SCOREP_User_OaPhaseBegin( SCOREP_User_RegionHandle*    handle,
-                          const char**                 lastFileName,
-                          SCOREP_SourceFileHandle*     lastFile,
-                          const char*                  name,
-                          const SCOREP_User_RegionType regionType,
-                          const char*                  fileName,
-                          const uint32_t               lineNo )
+scorep_user_rewind_region_exit( const SCOREP_User_RegionHandle handle, bool value )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    /* Make rewind and generate exit event for this region */
+    if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
+         ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
-        SCOREP_InitMeasurement();
+        SCOREP_ExitRewindRegion( handle->handle, value );
+        scorep_selective_check_exit( handle );
     }
+}
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+
+void
+scorep_user_region_by_name_begin( const char*                  name,
+                                  const SCOREP_User_RegionType regionType,
+                                  const char*                  fileName,
+                                  const uint32_t               lineNo )
+{
+    /* Abort if name is NULL */
+    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
+
+    UTILS_DEBUG_ENTRY( "begin region by name: %s", name );
+
+    SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
+    SCOREP_Hashtab_Entry*    result;
+
+    /* search handle in the hashtab */
+    result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
+
+    /* if it's an invalid handle, or added by mistake (==NULL) create new, valid handle */
+    if ( result == NULL )
     {
-        /* Make sure that the region is initialized */
-        if ( *handle == SCOREP_USER_INVALID_REGION )
+        SCOREP_MutexLock( scorep_user_region_by_name_mutex );
+        size_t hash_hint;
+        result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, &hash_hint );
+        if ( result == NULL )
         {
-            SCOREP_User_RegionInit( handle, lastFileName, lastFile, name,
-                                    regionType, fileName, lineNo );
+            scorep_user_region_init_c_cxx( &handle, NULL, NULL,
+                                           name, regionType, fileName, lineNo );
+
+            if ( handle == SCOREP_FILTERED_USER_REGION )
+            {
+                char* saved_name = SCOREP_Memory_AllocForMisc( sizeof( char ) * ( strlen( name ) + 1 ) );
+                saved_name[ strlen( name ) ] = '\0';
+                strncpy( saved_name, name, strlen( name ) );
+
+                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
+                                                   ( void* )saved_name,
+                                                   ( void* )handle,
+                                                   &hash_hint );
+            }
+            else
+            {
+                /* insert handle into hashtab, handle is only a ptr hence we can cast to void* */
+                result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
+                                                   ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
+                                                   ( void* )handle,
+                                                   &hash_hint );
+            }
         }
-
-        SCOREP_OA_PhaseBegin( ( *handle )->handle );
-
-        SCOREP_User_RegionEnter( *handle );
+        SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
     }
+    UTILS_BUG_ON( result == NULL, "Could not create region-by-name: '%s'", name );
 
-    SCOREP_IN_MEASUREMENT_DECREMENT();
+    /* handle is now valid, we can just use it */
+    handle = ( SCOREP_User_RegionHandle )result->value.ptr;
+
+    UTILS_ASSERT( handle != SCOREP_USER_INVALID_REGION );
+    scorep_user_region_enter( handle );
 }
 
+
 void
-SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle )
+scorep_user_region_by_name_end( const char* name )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
+    /* Abort if name is NULL */
+    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
+    UTILS_DEBUG_ENTRY( "end region by name: %s", name );
 
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_User_RegionEnd( handle );
+    /* search for handle in hashtab */
+    SCOREP_Hashtab_Entry* result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
 
-        SCOREP_OA_PhaseEnd( handle->handle );
-    }
+    /* if handle not found, end-region without begin-region */
+    UTILS_BUG_ON( !result, "Trying to leave a region-by-name never entered: '%s'", name ); /* Error */
 
-    SCOREP_IN_MEASUREMENT_DECREMENT();
+    SCOREP_User_RegionHandle handle = result->value.ptr;
+
+    UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to leave an uninitialized region-by-name: '%s'", name );
+
+    scorep_user_region_exit( handle );
 }
