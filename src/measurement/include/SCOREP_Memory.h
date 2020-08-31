@@ -156,11 +156,11 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
 
 /**
  * The malloc function for miscellaneous data. It reserves a
- * contiguous memory block whose size in bytes it at least @a size. The
+ * contiguous memory block whose size in bytes is at least @a size. The
  * contents of the memory block is undetermined.
  *
  * @note @a SCOREP_Location_AllocForMisc is not thread safe. This function is
- *       only useful when called in a init_location subsystem callback.
+ *       only useful when the caller has exclusive access to @a locationData.
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
