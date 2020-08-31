@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017,
+ * Copyright (c) 2009-2011, 2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -326,7 +326,6 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
     assert( pageManager );
     assert( pageManager->moved_page_id_mapping_page == 0 );
     assert( requestedSize > 0 );
-    assert( ( alignment & ( alignment - 1 ) ) == 0 );
     assert( alignment <= page_size( pageManager->allocator ) );
 
     /* do not try to allocate more than the allocator has memory */
