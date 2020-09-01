@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017, 2019,
+ * Copyright (c) 2009-2011, 2017, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,21 +38,17 @@
  */
 
 #include <config.h>
-#include "scorep_allocator.h"
 #include <SCOREP_Allocator.h>
+#include "scorep_allocator.h"
 
 #include <assert.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define SCOREP_DEBUG_MODULE_NAME ALLOCATOR
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-
-/* requirement: roundupto( n * x, x ) == n * x */
-#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
 
 #define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
 

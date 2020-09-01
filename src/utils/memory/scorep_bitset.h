@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017,
+ * Copyright (c) 2009-2011, 2017, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -42,11 +42,13 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <stdio.h>
 
 #if HAVE( SCOREP_DEBUG )
 #include <inttypes.h>
 #endif
+
+#define SCOREP_DEBUG_MODULE_NAME ALLOCATOR
+#include <UTILS_Debug.h>
 
 /* Don't set module name and don't include here but require that the user
  * of scorep_bitset.h does so .*/
