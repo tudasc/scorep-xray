@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017,
+ * Copyright (c) 2009-2011, 2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -150,6 +150,24 @@ SCOREP_Allocator_DeletePageManager( SCOREP_Allocator_PageManager* pageManager );
 void*
 SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
                         size_t                        memorySize );
+
+
+/**
+ * Returns the start address of an aligned memory chunk of at least @a memorySize
+ * bytes from a @a pageManager's page. The contents of the memory block is undetermined.
+ * Returns NULL if the allocation failed; this indicates a out-of-memory situation.
+ * Requires that @a memorySize > 0, @a alignment >= SCOREP_ALLOCATOR_ALIGNMENT and
+ * @a alignment is a power of two.
+ *
+ * @param pageManager A valid SCOREP_Allocator_PageManager object.
+ * @param alignment alignment, needs to be >= SCOREP_ALLOCATOR_ALIGNMENT,
+ *        and a power of two.
+ * @param memorySize Size of the memory block, must be > 0.
+ */
+void*
+SCOREP_Allocator_AlignedAlloc( SCOREP_Allocator_PageManager* pageManager,
+                               size_t                        alignment,
+                               size_t                        memorySize );
 
 
 void

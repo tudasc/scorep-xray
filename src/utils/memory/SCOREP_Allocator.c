@@ -633,6 +633,18 @@ SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
 }
 
 
+void*
+SCOREP_Allocator_AlignedAlloc( SCOREP_Allocator_PageManager* pageManager,
+                               size_t                        alignment,
+                               size_t                        memorySize )
+{
+    assert( alignment >= SCOREP_ALLOCATOR_ALIGNMENT );
+    assert( ( alignment & ( alignment - 1 ) ) == 0 ); /* power of two */
+
+    return page_manager_alloc( pageManager, memorySize, alignment );
+}
+
+
 void
 SCOREP_Allocator_Free( SCOREP_Allocator_PageManager* pageManager )
 {
