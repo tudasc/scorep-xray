@@ -848,9 +848,10 @@ SCOREP_Allocator_GetStats( SCOREP_Allocator_Allocator*        allocator,
     pageStats->pages_allocated = allocator->n_pages_high_watermark;
     pageStats->pages_used      = allocator->n_pages_allocated;
 
-    maintStats->pages_allocated  = allocator->n_pages_maintenance;
-    maintStats->pages_used       = maintStats->pages_allocated;
-    maintStats->memory_allocated = maintStats->pages_allocated * page_size( allocator );
+    maintStats->pages_allocated       = allocator->n_pages_maintenance;
+    maintStats->pages_used            = maintStats->pages_allocated;
+    maintStats->memory_allocated      = maintStats->pages_allocated * page_size( allocator );
+    maintStats->memory_alignment_loss = ( char* )allocator - ( char* )allocator->allocated_memory;
     SCOREP_Allocator_Object* free_obj = allocator->free_objects;
     while ( free_obj )
     {
