@@ -62,7 +62,7 @@ void
 allocator_test_1( CuTest* tc )
 {
     uint32_t total_mem = 1024;
-    uint32_t page_size = 2048;                    // page_size > total_mem
+    uint32_t page_size = 2048;                  // page_size > total_mem
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -88,7 +88,7 @@ void
 allocator_test_3( CuTest* tc )
 {
     uint32_t total_mem = 0;
-    uint32_t page_size = 0;                    // no pages
+    uint32_t page_size = 0;                     // no pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -100,7 +100,7 @@ void
 allocator_test_4( CuTest* tc )
 {
     uint32_t total_mem = 42;
-    uint32_t page_size = 0;                    // invalid page size
+    uint32_t page_size = 0;                     // invalid page size
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -112,7 +112,7 @@ void
 allocator_test_5( CuTest* tc )
 {
     uint32_t total_mem = 1024 * 1024;
-    uint32_t page_size = 512;                    // 2048 pages
+    uint32_t page_size = 512;                   // 2048 pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -126,7 +126,7 @@ void
 allocator_test_6( CuTest* tc )
 {
     uint32_t total_mem = 1024 * 1024;
-    uint32_t page_size = 511;                    // 2052.0078 pages
+    uint32_t page_size = 511;                   // 2052.0078 pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -140,7 +140,7 @@ void
 allocator_test_7( CuTest* tc )
 {
     uint32_t total_mem = 4096;
-    uint32_t page_size = 1024;                    // four pages
+    uint32_t page_size = 1024;                  // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -159,11 +159,18 @@ void
 allocator_test_8( CuTest* tc )
 {
     uint32_t total_mem = 1536;
-    uint32_t page_size =  512;                    // three pages
+    uint32_t page_size =  512;                  // at most three pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
+
+    /* we expect 2 pages in total (1 lost due to alignment) */
+    if ( 3 == SCOREP_Allocator_GetMaxNumberOfPages( allocator ) )
+    {
+        /* create a page manager to consume this extra page */
+        ( void )SCOREP_Allocator_CreatePageManager( allocator );
+    }
 
     SCOREP_Allocator_PageManager* page_manager_1
         = SCOREP_Allocator_CreatePageManager( allocator );
@@ -191,11 +198,18 @@ void
 allocator_test_10( CuTest* tc )
 {
     uint32_t total_mem = 2048;
-    uint32_t page_size = 512;                    // four pages
+    uint32_t page_size = 512;                   // at most four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
+
+    /* we expect 3 pages in total (1 lost due to alignment) */
+    if ( 4 == SCOREP_Allocator_GetMaxNumberOfPages( allocator ) )
+    {
+        /* create a page manager to consume this extra page */
+        ( void )SCOREP_Allocator_CreatePageManager( allocator );
+    }
 
     SCOREP_Allocator_PageManager* page_manager_1
         = SCOREP_Allocator_CreatePageManager( allocator );
@@ -245,7 +259,7 @@ void
 allocator_test_11( CuTest* tc )
 {
     uint32_t total_mem = 2048;
-    uint32_t page_size = 512;                    // four pages
+    uint32_t page_size = 512;                   // four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -275,7 +289,7 @@ void
 allocator_test_12( CuTest* tc )
 {
     uint32_t total_mem = 2048;
-    uint32_t page_size = 512;                    // four pages
+    uint32_t page_size = 512;                   // at most four pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
@@ -297,7 +311,7 @@ void
 allocator_test_14( CuTest* tc )
 {
     uint32_t total_mem = 4608;
-    uint32_t page_size = 512; // eight pages
+    uint32_t page_size = 512;                   // at most eight pages
     uint32_t page_ids[ total_mem / page_size ];
     uint32_t page_usage[ total_mem / page_size ];
     void*    page_start[ total_mem / page_size ];
@@ -453,7 +467,7 @@ void
 allocator_test_18( CuTest* tc )
 {
     uint32_t total_mem = 10240;
-    uint32_t page_size = 512;                    // twenty pages
+    uint32_t page_size = 512;                   // twenty pages
 
     SCOREP_Allocator_Allocator* allocator
         = SCOREP_Allocator_CreateAllocator( &total_mem, &page_size, 0, 0, 0 );
