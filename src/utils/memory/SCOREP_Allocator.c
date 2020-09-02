@@ -475,6 +475,9 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     allocator->n_pages_maintenance = already_used_pages;
     allocator->free_objects        = NULL;
 
+    /* announce the final usable total memory back to the caller */
+    *totalMemory = allocator->n_pages_capacity << page_shift;
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "6: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u",
                         *totalMemory, *pageSize,
                         page_shift, allocator->n_pages_capacity,
