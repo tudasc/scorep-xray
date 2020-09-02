@@ -422,12 +422,11 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                         page_shift, n_pages,
                         maint_memory_needed );
 
-    /* mark the pages used we need for our own maintenance
-     * (i.e. this object and the page_map)
+    /* determine the pages used we need for our own maintenance
+     * (i.e., this object and the page_map plus the union-object pool)
      */
-    uint32_t already_used_pages = maint_memory_needed >> page_shift;
-    /* always use one more page for the allocator union object */
-    already_used_pages++;
+    uint32_t already_used_pages = ( maint_memory_needed >> page_shift ) +
+                                  !!( maint_memory_needed & ( *pageSize - 1 ) );
     uint32_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "4: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u puor=%f",
