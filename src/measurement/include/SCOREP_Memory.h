@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015, 2017-2018,
+ * Copyright (c) 2009-2011, 2015, 2017-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -156,11 +156,11 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
 
 /**
  * The malloc function for miscellaneous data. It reserves a
- * contiguous memory block whose size in bytes it at least @a size. The
+ * contiguous memory block whose size in bytes is at least @a size. The
  * contents of the memory block is undetermined.
  *
  * @note @a SCOREP_Location_AllocForMisc is not thread safe. This function is
- *       only useful when called in a init_location subsystem callback.
+ *       only useful when the caller has exclusive access to @a locationData.
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
@@ -178,6 +178,45 @@ SCOREP_Memory_AllocForMisc( size_t size );
 void*
 SCOREP_Location_AllocForMisc( SCOREP_Location* locationData,
                               size_t           size );
+
+/**
+ * @}
+ */
+
+/**
+ * The malloc function for miscellaneous aligned data. It reserves a
+ * contiguous memory block whose size in bytes is at least @a size and
+ * whose address is a multiple of @a alignment. The contents of the
+ * memory block is undetermined.
+ *
+ * @note @a SCOREP_Location_AlignedAllocForMisc is not thread safe. This
+ *        function is only useful when the caller has exclusive access
+ *        to @a locationData.
+ *
+ * @param alignment The alignment of the returned block of memory, i.e., the
+ * returned address is a multiple of alignment. alignment needs to
+ * be >= SCOREP_ALLOCATOR_ALIGNMENT and a power of two; otherwise, NULL is
+ *  returned.
+ *
+ * @param size The size of the requested memory block in bytes. It might be
+ * useful to have a @a size that is an integral multiple of alignment, e.g.,
+ * if you align to cacheline-size and require exclusive access to the
+ * allocated cacheline(s). Return NULL if @a size == 0.
+ *
+ * @return The address of the first byte in the memory block allocated, aligned
+ * to @a alignement. If prerequisites are not fulfilled, NULL is returned. If
+ * the size request could no be handled, we abort.
+ *
+ * @{
+ */
+void*
+SCOREP_Memory_AlignedAllocForMisc( size_t alignment,
+                                   size_t size );
+
+void*
+SCOREP_Location_AlignedAllocForMisc( SCOREP_Location* locationData,
+                                     size_t           alignment,
+                                     size_t           size );
 
 /**
  * @}

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017,
+ * Copyright (c) 2009-2011, 2017, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,21 +38,17 @@
  */
 
 #include <config.h>
-#include "scorep_allocator.h"
 #include <SCOREP_Allocator.h>
+#include "scorep_allocator.h"
 
 #include <assert.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define SCOREP_DEBUG_MODULE_NAME ALLOCATOR
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-
-/* requirement: roundupto( n * x, x ) == n * x */
-#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
 
 #define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
 
@@ -326,7 +322,6 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
     assert( pageManager );
     assert( pageManager->moved_page_id_mapping_page == 0 );
     assert( requestedSize > 0 );
-    assert( ( alignment & ( alignment - 1 ) ) == 0 );
     assert( alignment <= page_size( pageManager->allocator ) );
 
     /* do not try to allocate more than the allocator has memory */
@@ -635,6 +630,18 @@ SCOREP_Allocator_Alloc( SCOREP_Allocator_PageManager* pageManager,
                         size_t                        memorySize )
 {
     return page_manager_alloc( pageManager, memorySize, SCOREP_ALLOCATOR_ALIGNMENT );
+}
+
+
+void*
+SCOREP_Allocator_AlignedAlloc( SCOREP_Allocator_PageManager* pageManager,
+                               size_t                        alignment,
+                               size_t                        memorySize )
+{
+    assert( alignment >= SCOREP_ALLOCATOR_ALIGNMENT );
+    assert( ( alignment & ( alignment - 1 ) ) == 0 ); /* power of two */
+
+    return page_manager_alloc( pageManager, memorySize, alignment );
 }
 
 

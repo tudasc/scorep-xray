@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017,
+ * Copyright (c) 2009-2011, 2017, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -39,11 +39,13 @@
  *
  */
 
-#include <assert.h>
 #include <stdint.h>
-#include <stdio.h>
 
 #include "scorep_allocator.h"
+
+/* requirement: roundupto( n * x, x ) == n * x */
+#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
+
 
 static inline uint32_t
 page_size( const SCOREP_Allocator_Allocator* allocator )

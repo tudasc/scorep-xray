@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2015, 2017-2018,
+ * Copyright (c) 2009-2012, 2015, 2017-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -346,6 +346,47 @@ SCOREP_Memory_AllocForMisc( size_t size )
     return SCOREP_Location_AllocForMisc( SCOREP_Location_GetCurrentCPULocation(),
                                          size );
 }
+
+
+void*
+SCOREP_Location_AlignedAllocForMisc( SCOREP_Location* locationData, size_t alignment, size_t size )
+{
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+    if ( alignment < SCOREP_ALLOCATOR_ALIGNMENT )
+    {
+        return NULL;
+    }
+    /* alignment power of two */
+    if ( ( alignment & ( alignment - 1 ) ) != 0 )
+    {
+        return NULL;
+    }
+
+    void* mem = SCOREP_Allocator_AlignedAlloc(
+        SCOREP_Location_GetMemoryPageManager( locationData,
+                                              SCOREP_MEMORY_TYPE_MISC ),
+        alignment,
+        size );
+    if ( !mem )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    return mem;
+}
+
+
+void*
+SCOREP_Memory_AlignedAllocForMisc( size_t alignment, size_t size )
+{
+    return SCOREP_Location_AlignedAllocForMisc( SCOREP_Location_GetCurrentCPULocation(),
+                                                alignment,
+                                                size );
+}
+
 
 static bool
 free_memory_type_for_location( SCOREP_Location* location,
