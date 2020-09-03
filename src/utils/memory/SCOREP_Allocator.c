@@ -422,12 +422,11 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                         page_shift, n_pages,
                         maint_memory_needed );
 
-    /* mark the pages used we need for our own maintenance
-     * (i.e. this object and the page_map)
+    /* determine the pages used we need for our own maintenance
+     * (i.e., this object and the page_map plus the union-object pool)
      */
-    uint32_t already_used_pages = maint_memory_needed >> page_shift;
-    /* always use one more page for the allocator union object */
-    already_used_pages++;
+    uint32_t already_used_pages = ( maint_memory_needed >> page_shift ) +
+                                  !!( maint_memory_needed & ( *pageSize - 1 ) );
     uint32_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "4: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u puor=%f",
@@ -475,6 +474,16 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     allocator->n_pages_maintenance = already_used_pages;
     allocator->free_objects        = NULL;
 
+    /* announce the final usable total memory back to the caller */
+    *totalMemory = allocator->n_pages_capacity << page_shift;
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "6: m=%u p=%u ps=%u np=%u mm=%u fm=%u aup=%u",
+                        *totalMemory, *pageSize,
+                        page_shift, allocator->n_pages_capacity,
+                        maint_memory_needed,
+                        free_memory_in_last_page,
+                        allocator->n_pages_maintenance );
+
     allocator->lock        = null_guard;
     allocator->unlock      = null_guard;
     allocator->lock_object = 0;
@@ -491,7 +500,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
 
     char* start_addr = ( char* )allocator + maint_memory_needed;
     fill_with_union_objects( allocator, free_memory_in_last_page, start_addr );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "\'allocated\' %" PRIu32 " maintenance page(s).",
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "'allocated' %" PRIu32 " maintenance page(s).",
                         allocator->n_pages_maintenance );
 
     UTILS_DEBUG_EXIT();
@@ -848,9 +857,10 @@ SCOREP_Allocator_GetStats( SCOREP_Allocator_Allocator*        allocator,
     pageStats->pages_allocated = allocator->n_pages_high_watermark;
     pageStats->pages_used      = allocator->n_pages_allocated;
 
-    maintStats->pages_allocated  = allocator->n_pages_maintenance;
-    maintStats->pages_used       = maintStats->pages_allocated;
-    maintStats->memory_allocated = maintStats->pages_allocated * page_size( allocator );
+    maintStats->pages_allocated       = allocator->n_pages_maintenance;
+    maintStats->pages_used            = maintStats->pages_allocated;
+    maintStats->memory_allocated      = maintStats->pages_allocated * page_size( allocator );
+    maintStats->memory_alignment_loss = ( char* )allocator - ( char* )allocator->allocated_memory;
     SCOREP_Allocator_Object* free_obj = allocator->free_objects;
     while ( free_obj )
     {
