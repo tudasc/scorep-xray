@@ -132,6 +132,9 @@ Examples
    environment of the \`cmake\` command.  Subsequent calls to \`make\` are not
    affected and will instrument the application as expected.
 
+   Please note, that CMake 3.18.0 and 3.18.1 broke this workflow. But it was
+   reinstated with 3.18.2.
+
    [CMake]: https://gitlab.kitware.com/cmake/community/wikis/FAQ#i-change-cmake_c_compiler-in-the-gui-but-it-changes-back-on-the-next-configure-step-why
 
  - For autotools based build systems it is recommended to configure in the
