@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -81,11 +81,12 @@
 
 
 /**
- * Notify the measurement that a wrappers was entered.
+ * Notify the measurement that a wrapper was entered.
  *
  * Needs always be called for wrapped functions. Regardless, whether the
- * function will be filterred or not. Consider using the
+ * function will be filtered or not. Consider using the
  * @a SCOREP_EnterWrappedRegion function, if the function is not filtered.
+ *
  * This function must directly be called by the wrapper function.
  *
  * This function should only be called if unwinding is enabled.
@@ -97,7 +98,7 @@ SCOREP_EnterWrapper( SCOREP_RegionHandle regionHandle );
 
 
 /**
- * Notify the measurement that a wrappers will be left in case the region as filterred.
+ * Notify the measurement that a wrapper will be left in case the region as filtered.
  *
  * Needs only be called for wrapped functions where the enter event was filtered.
  *
@@ -130,6 +131,10 @@ SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
 /**
  * Process a region enter event in the measurement system.
  *
+ * All functions on the call-path to this function, which should be ignored by
+ * the unwinding, must either be annotated with SCOREP_IN_MEASUREMENT_INCREMENT()
+ * or must have a `scorep_` prefix.
+ *
  * @param regionHandle The corresponding region for the enter event.
  */
 void
@@ -137,7 +142,8 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 
 /**
  * A convenience call for a combined SCOREP_EnterWrapper/SCOREP_EnterRegion
- * I.e., the region is not filtered
+ * I.e., the region is not filtered.
+ *
  * This function must directly be called by the wrapper function.
  */
 void

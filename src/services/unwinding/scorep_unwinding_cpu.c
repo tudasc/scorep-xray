@@ -1197,7 +1197,7 @@ scorep_unwinding_cpu_push_wrapper( SCOREP_Unwinding_CpuLocationData* unwindData,
                 break;
             }
 
-            /* lock-up the region by the IP */
+            /* lookup the region by the IP */
             region = get_region( unwindData, &unwindData->cursor, wrapperIp );
 
             /* if we could not recognize a region (because it has been in kernel space for example)
