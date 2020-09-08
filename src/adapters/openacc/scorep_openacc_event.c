@@ -29,6 +29,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 
 #include "scorep_openacc.h"
 #include "scorep_openacc_confvars.h"
@@ -47,8 +48,17 @@ scorep_openacc_handle_enter_region( acc_prof_info*  profInfo,
                                     acc_event_info* eventInfo,
                                     acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     if ( profInfo == NULL || !scorep_openacc_features_initialized )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -123,6 +133,8 @@ scorep_openacc_handle_enter_region( acc_prof_info*  profInfo,
     }
 
     SCOREP_EnterRegion( region_handle );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -140,6 +152,14 @@ handle_leave_region( acc_prof_info*  profInfo,
                      acc_event_info* eventInfo,
                      acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     SCOREP_RegionHandle regionHandle = SCOREP_INVALID_REGION;
 
     if ( eventInfo )
@@ -171,6 +191,8 @@ handle_leave_region( acc_prof_info*  profInfo,
                            ( profInfo && profInfo->line_no ) ? profInfo->line_no : SCOREP_INVALID_LINE_NO );
         }
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -185,6 +207,14 @@ handle_alloc( acc_prof_info*  profInfo,
               acc_event_info* eventInfo,
               acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     acc_data_event_info data_info = eventInfo->data_event;
 
     if ( data_info.bytes )
@@ -231,6 +261,8 @@ handle_alloc( acc_prof_info*  profInfo,
             SCOREP_AddAttribute( scorep_openacc_attribute_variable_name, &string_handle );
            }*/
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -247,12 +279,19 @@ acc_register_library( acc_prof_reg    accRegister,
                       acc_prof_reg    accUnregister,
                       acc_prof_lookup lookup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     UTILS_DEBUG( "[OpenACC] Register profiling library." );
 
     // Initialize the measurement system, if necessary
-    if ( !SCOREP_IsInitialized() )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     if ( scorep_openacc_record_regions )
@@ -300,4 +339,6 @@ acc_register_library( acc_prof_reg    accRegister,
         accRegister( acc_ev_alloc, handle_alloc, 0 );
         accRegister( acc_ev_free, handle_alloc, 0 );
     }
-} // END: acc_register_library
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
