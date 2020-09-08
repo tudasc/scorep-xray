@@ -36,14 +36,16 @@
 /**
  * Handle OpenACC start events.
  *
+ * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix.
+ *
  * @param profInfo
  * @param eventInfo     Information about the specific OpenACC event
  * @param apiInfo
  */
 static void
-handle_enter_region( acc_prof_info*  profInfo,
-                     acc_event_info* eventInfo,
-                     acc_api_info*   apiInfo )
+scorep_openacc_handle_enter_region( acc_prof_info*  profInfo,
+                                    acc_event_info* eventInfo,
+                                    acc_api_info*   apiInfo )
 {
     if ( profInfo == NULL || !scorep_openacc_features_initialized )
     {
@@ -256,16 +258,16 @@ acc_register_library( acc_prof_reg    accRegister,
     if ( scorep_openacc_record_regions )
     {
         //register OpenACC device initialization and shutdown
-        accRegister( acc_ev_device_init_start, handle_enter_region, 0 );
+        accRegister( acc_ev_device_init_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_device_init_end, handle_leave_region, 0 );
-        accRegister( acc_ev_device_shutdown_start, handle_enter_region, 0 );
+        accRegister( acc_ev_device_shutdown_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_device_shutdown_end, handle_leave_region, 0 );
 
         //register OpenACC regions
-        accRegister( acc_ev_compute_construct_start, handle_enter_region, 0 );
-        accRegister( acc_ev_update_start, handle_enter_region, 0 );
-        accRegister( acc_ev_enter_data_start, handle_enter_region, 0 );
-        accRegister( acc_ev_exit_data_start, handle_enter_region, 0 );
+        accRegister( acc_ev_compute_construct_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_update_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_enter_data_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_exit_data_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_compute_construct_end, handle_leave_region, 0 );
         accRegister( acc_ev_update_end, handle_leave_region, 0 );
         accRegister( acc_ev_enter_data_end, handle_leave_region, 0 );
@@ -275,20 +277,20 @@ acc_register_library( acc_prof_reg    accRegister,
     if ( scorep_openacc_record_enqueue )
     {
         // register kernel launch
-        accRegister( acc_ev_enqueue_launch_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_launch_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_launch_end, handle_leave_region, 0 );
 
         // register data transfers
-        accRegister( acc_ev_enqueue_upload_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_upload_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_upload_end, handle_leave_region, 0 );
-        accRegister( acc_ev_enqueue_download_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_download_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_download_end, handle_leave_region, 0 );
     }
 
     if ( scorep_openacc_record_wait )
     {
         // register wait handlers
-        accRegister( acc_ev_wait_start, handle_enter_region, 0 );
+        accRegister( acc_ev_wait_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_wait_end, handle_leave_region, 0 );
     }
 
