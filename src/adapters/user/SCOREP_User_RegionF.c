@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,10 +39,8 @@
  */
 
 #include <config.h>
-#include <string.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "scorep_user_region.h"
+
 #include <string.h>
 
 #include <scorep/SCOREP_User_Functions.h>
@@ -83,7 +81,6 @@
 #define SCOREP_F_OaBegin_L scorep_f_oabegin
 #define SCOREP_F_OaEnd_L scorep_f_oaend
 
-#define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
 extern SCOREP_Mutex    scorep_user_region_mutex;
 extern SCOREP_Hashtab* scorep_user_region_table;
@@ -91,8 +88,12 @@ extern SCOREP_Hashtab* scorep_user_region_table;
 extern SCOREP_RegionType
 scorep_user_to_scorep_region_type( const SCOREP_User_RegionType user_type );
 
+/* *INDENT-OFF* */
+static void region_init_fortran( SCOREP_Fortran_RegionHandle*, char*, int32_t*, char*, int32_t*, scorep_fortran_charlen_t, scorep_fortran_charlen_t );
+/* *INDENT-ON* */
+
 static inline SCOREP_User_RegionHandle
-scorep_user_find_region( char* region_name )
+find_region( char* region_name )
 {
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( scorep_user_region_table,
                                                        region_name, NULL );
@@ -104,12 +105,12 @@ scorep_user_find_region( char* region_name )
     return ( SCOREP_User_RegionHandle )entry->value.ptr;
 }
 
-static void
-scorep_user_add_region( SCOREP_User_RegionHandle region_handle,
-                        char*                    region_name )
+static inline void
+add_region( SCOREP_User_RegionHandle region_handle,
+            char*                    region_name )
 {
-    assert( region_handle != SCOREP_USER_INVALID_REGION );
-    assert( region_name );
+    UTILS_BUG_ON( region_handle == SCOREP_USER_INVALID_REGION );
+    UTILS_BUG_ON( region_name == NULL );
 
     SCOREP_Hashtab_InsertPtr( scorep_user_region_table,
                               ( void* )UTILS_CStr_dup( region_name ),
@@ -140,71 +141,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
         return;
     }
 
-    char*                   region_name;
-    char*                   file_name;
-    SCOREP_SourceFileHandle file_handle;
-
-    /* Copy strings */
-    region_name = ( char* )malloc( ( regionNameLen + 1 ) * sizeof( char ) );
-    strncpy( region_name, regionNameF, regionNameLen );
-    region_name[ regionNameLen ] = '\0';
-
-    file_name = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
-    strncpy( file_name, fileNameF, fileNameLen );
-    file_name[ fileNameLen ] = '\0';
-
-    /* Get source file handle.
-       The definitions check for double entries. */
-    file_handle = SCOREP_Definitions_NewSourceFile( file_name );
-
-    /* Lock region definition */
-    SCOREP_MutexLock( scorep_user_region_mutex );
-
-    /* Lookup the region name in the region table */
-    SCOREP_User_RegionHandle region = scorep_user_find_region( region_name );
-
-    /* Test wether the handle is still invalid, or if it was initialized in the mean
-       time. If the handle is invalid, register a new region */
-    if ( region == SCOREP_USER_INVALID_REGION )
-    {
-        /* Translate region type from user adapter type to SCOREP measurement type */
-        SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *regionType );
-
-        /* Check for filters */
-        if ( SCOREP_Filtering_Match( file_name, region_name, NULL ) ||
-             ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
-             ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
-             ( strncmp( region_name, "pomp", 4 ) == 0 ) )
-        {
-            region = SCOREP_FILTERED_USER_REGION;
-            scorep_user_add_region( region, region_name );
-        }
-        else
-        {
-            region = scorep_user_create_region( region_name );
-
-            if ( region != SCOREP_USER_INVALID_REGION )
-            {
-                region->handle = SCOREP_Definitions_NewRegion( region_name,
-                                                               NULL,
-                                                               file_handle,
-                                                               *lineNo,
-                                                               SCOREP_INVALID_LINE_NO,
-                                                               SCOREP_PARADIGM_USER,
-                                                               region_type );
-
-                scorep_user_add_region( region, region_name );
-            }
-        }
-    }
-    *regionHandle = SCOREP_C2F_REGION( region );
-
-    /* Unlock region definition */
-    SCOREP_MutexUnlock( scorep_user_region_mutex );
-
-    /* Cleanup */
-    free( region_name );
-    free( file_name );
+    region_init_fortran( regionHandle, regionNameF, regionType, fileNameF, lineNo, regionNameLen, fileNameLen );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -232,16 +169,16 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 #endif
         {
             /* Make sure the handle is initialized */
-            FSUB( SCOREP_F_Init )( regionHandle,
-                                   regionNameF,
-                                   regionType,
-                                   fileNameF,
-                                   lineNo,
-                                   regionNameLen,
-                                   fileNameLen );
+            region_init_fortran( regionHandle,
+                                 regionNameF,
+                                 regionType,
+                                 fileNameF,
+                                 lineNo,
+                                 regionNameLen,
+                                 fileNameLen );
         }
         /* Generate region event */
-        SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *regionHandle ) );
+        scorep_user_region_enter( SCOREP_F2C_REGION( *regionHandle ) );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -278,10 +215,10 @@ FSUB( SCOREP_F_RegionByNameBegin )( char*                    regionNameF,
     file_name[ fileNameLen ] = '\0';
     UTILS_IO_SimplifyPath( file_name );
 
-    SCOREP_User_RegionByNameBegin( region_name,
-                                   ( SCOREP_User_RegionType )( *regionType ),
-                                   file_name,
-                                   ( uint32_t )*lineNo );
+    scorep_user_region_by_name_begin( region_name,
+                                      ( SCOREP_User_RegionType )( *regionType ),
+                                      file_name,
+                                      ( uint32_t )*lineNo );
 
     /* Cleanup */
     free( region_name );
@@ -308,12 +245,16 @@ FSUB( SCOREP_F_RewindBegin )( SCOREP_Fortran_RegionHandle* handle,
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        /* Make sure the handle is initialized */
-        FSUB( SCOREP_F_Init )( handle, name_f, type, fileName_f,
-                               lineNo, nameLen, fileNameLen );
-
+#if !( defined( __PGI ) && __PGIC__ < 18 )
+        if ( *handle == SCOREP_FORTRAN_INVALID_REGION )
+#endif
+        {
+            /* Make sure the handle is initialized */
+            region_init_fortran( handle, name_f, type, fileName_f,
+                                 lineNo, nameLen, fileNameLen );
+        }
         /* Generate rewind point */
-        SCOREP_User_RewindRegionEnter( SCOREP_F2C_REGION( *handle ) );
+        scorep_user_rewind_region_enter( SCOREP_F2C_REGION( *handle ) );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -331,7 +272,7 @@ FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_User_RegionEnd( SCOREP_F2C_REGION( *regionHandle ) );
+        scorep_user_region_exit( SCOREP_F2C_REGION( *regionHandle ) );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -356,7 +297,7 @@ FSUB( SCOREP_F_RegionByNameEnd )( char*                    regionNameF,
         strncpy( region_name, regionNameF, regionNameLen );
         region_name[ regionNameLen ] = '\0';
 
-        SCOREP_User_RegionByNameEnd( region_name );
+        scorep_user_region_by_name_end( region_name );
 
         free( region_name );
     }
@@ -376,7 +317,7 @@ FSUB( SCOREP_F_RewindRegionEnd )( SCOREP_Fortran_RegionHandle* handle, int* valu
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_User_RewindRegionEnd( SCOREP_F2C_REGION( *handle ), *value == 1 );
+        scorep_user_rewind_region_exit( SCOREP_F2C_REGION( *handle ), *value == 1 );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -396,14 +337,11 @@ FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )
     {
         if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
         {
-            fprintf( stderr,
-                     "ERROR: Enter for uninitialized region handle.\n"
-                     "Use SCOREP_USER_BEGIN instead of SCOREP_USER_ENTER "
-                     "to ensure that handles are initialized.\n" );
-            SCOREP_IN_MEASUREMENT_DECREMENT();
-            abort();
+            UTILS_FATAL( "Enter for uninitialized region handle. Use "
+                         "SCOREP_USER_REGION_INIT or SCOREP_USER_BEGIN "
+                         "to ensure that handles are initialized." );
         }
-        SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *regionHandle ) );
+        scorep_user_region_enter( SCOREP_F2C_REGION( *regionHandle ) );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -432,13 +370,13 @@ FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
 #endif
         {
             /* Make sure the handle is initialized */
-            FSUB( SCOREP_F_Init )( regionHandle,
-                                   regionNameF,
-                                   regionType,
-                                   fileNameF,
-                                   lineNo,
-                                   regionNameLen,
-                                   fileNameLen );
+            region_init_fortran( regionHandle,
+                                 regionNameF,
+                                 regionType,
+                                 fileNameF,
+                                 lineNo,
+                                 regionNameLen,
+                                 fileNameLen );
         }
 
         SCOREP_User_RegionHandle handle = SCOREP_F2C_REGION( *regionHandle );
@@ -447,7 +385,7 @@ FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
         SCOREP_OA_PhaseBegin( handle->handle );
 
         /* Generate region event */
-        SCOREP_User_RegionEnter( handle );
+        scorep_user_region_enter( handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -467,9 +405,82 @@ FSUB( SCOREP_F_OaEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
     {
         SCOREP_User_RegionHandle handle = SCOREP_F2C_REGION( *regionHandle );
 
-        SCOREP_User_RegionEnd( handle );
+        scorep_user_region_exit( handle );
         SCOREP_OA_PhaseEnd( handle->handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static void
+region_init_fortran( SCOREP_Fortran_RegionHandle* regionHandle,
+                     char*                        regionNameF,
+                     int32_t*                     regionType,
+                     char*                        fileNameF,
+                     int32_t*                     lineNo,
+                     scorep_fortran_charlen_t     regionNameLen,
+                     scorep_fortran_charlen_t     fileNameLen )
+{
+    /* Copy strings */
+    char* region_name = ( char* )malloc( ( regionNameLen + 1 ) * sizeof( char ) );
+    strncpy( region_name, regionNameF, regionNameLen );
+    region_name[ regionNameLen ] = '\0';
+
+    char* file_name = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
+    strncpy( file_name, fileNameF, fileNameLen );
+    file_name[ fileNameLen ] = '\0';
+
+    /* Get source file handle.
+       The definitions check for double entries. */
+    SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
+
+    /* Lock region definition */
+    SCOREP_MutexLock( scorep_user_region_mutex );
+
+    /* Lookup the region name in the region table */
+    SCOREP_User_RegionHandle region = find_region( region_name );
+
+    /* Test whether the handle is still invalid, or if it was initialized in the mean
+       time. If the handle is invalid, register a new region */
+    if ( region == SCOREP_USER_INVALID_REGION )
+    {
+        /* Translate region type from user adapter type to SCOREP measurement type */
+        SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *regionType );
+
+        /* Check for filters */
+        if ( SCOREP_Filtering_Match( file_name, region_name, NULL ) ||
+             ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
+             ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
+             ( strncmp( region_name, "pomp", 4 ) == 0 ) )
+        {
+            region = SCOREP_FILTERED_USER_REGION;
+            add_region( region, region_name );
+        }
+        else
+        {
+            region = scorep_user_create_region( region_name );
+
+            if ( region != SCOREP_USER_INVALID_REGION )
+            {
+                region->handle = SCOREP_Definitions_NewRegion( region_name,
+                                                               NULL,
+                                                               file_handle,
+                                                               *lineNo,
+                                                               SCOREP_INVALID_LINE_NO,
+                                                               SCOREP_PARADIGM_USER,
+                                                               region_type );
+
+                add_region( region, region_name );
+            }
+        }
+    }
+    *regionHandle = SCOREP_C2F_REGION( region );
+
+    /* Unlock region definition */
+    SCOREP_MutexUnlock( scorep_user_region_mutex );
+
+    /* Cleanup */
+    free( region_name );
+    free( file_name );
 }

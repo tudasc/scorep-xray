@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014
@@ -36,6 +36,7 @@
  */
 
 #include <config.h>
+#include "scorep_user_region.h"
 #include <scorep/SCOREP_User_Functions.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
@@ -58,13 +59,15 @@ SCOREP_User_RegionClass::SCOREP_User_RegionClass(
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_User_RegionBegin( regionHandle,
-                                 lastFileName,
-                                 lastFileHandle,
-                                 regionName,
-                                 regionType,
-                                 fileName,
-                                 lineNo );
+        /* Make sure that the region is initialized */
+        if ( *regionHandle == SCOREP_USER_INVALID_REGION )
+        {
+            scorep_user_region_init_c_cxx( regionHandle, lastFileName, lastFileHandle,
+                                           regionName, regionType, fileName, lineNo );
+        }
+
+        /* Generate region event */
+        scorep_user_region_enter( *regionHandle );
 
         region_handle = *regionHandle;
     }
@@ -83,7 +86,7 @@ SCOREP_User_RegionClass::~SCOREP_User_RegionClass()
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_User_RegionEnd( region_handle );
+        scorep_user_region_exit( region_handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

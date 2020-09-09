@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -27,6 +27,11 @@
  * directory for details.
  *
  */
+
+
+#ifndef SCOREP_SELECTIVE_REGION_H
+#define SCOREP_SELECTIVE_REGION_H
+
 
 /**
  *  @file
@@ -48,6 +53,7 @@
 #include <stdbool.h>
 #include <scorep/SCOREP_User_Types.h>
 #include <SCOREP_Vector.h>
+#include <UTILS_Error.h>
 
 /* **************************************************************************************
    Type definitions
@@ -112,3 +118,14 @@ scorep_selective_check_exit( SCOREP_User_RegionHandle region );
  */
 scorep_selected_region*
 scorep_selective_get_region( const char* name );
+
+void
+scorep_selective_init( void );
+
+SCOREP_ErrorCode
+scorep_selective_register( void );
+
+void
+scorep_selective_finalize( void );
+
+#endif /* SCOREP_SELECTIVE_REGION_H */
