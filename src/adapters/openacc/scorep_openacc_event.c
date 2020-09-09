@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016, 2018,
+ * Copyright (c) 2014-2016, 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -111,7 +111,7 @@ handle_enter_region( acc_prof_info*  profInfo,
 
     // pass Score-P region handle to corresponding leave
     // causes compiler warning!!!
-    eventInfo->other_event.tool_info = ( void* )region_handle;
+    eventInfo->other_event.tool_info = ( void* )( long )region_handle;
 
     // add an attribute, if this is an implicit region
     if ( eventInfo->other_event.implicit )
