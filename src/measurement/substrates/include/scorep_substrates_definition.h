@@ -50,7 +50,7 @@
 /**
  * Macro initializing substrate callback
  */
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && !defined( __PGI )
 #define SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Event, EVENT, cb ) \
     [ SCOREP_EVENT_##EVENT ] = \
         __builtin_choose_expr( \
@@ -65,7 +65,7 @@
 /**
  * Macro initializing substrate callback
  */
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && !defined( __PGI )
 #define SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( Event, EVENT, cb ) \
     [ SCOREP_MGMT_##EVENT ] = \
         __builtin_choose_expr( \
