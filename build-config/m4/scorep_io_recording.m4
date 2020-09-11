@@ -109,7 +109,6 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([_SCOREP_IO_RECORDING_POSIX], [
 AC_REQUIRE([SCOREP_THREAD_LOCAL_STORAGE])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
-AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS]) dnl
 
 # will be used for IO and AIO
 scorep_posix_io_wrap_symbols=""

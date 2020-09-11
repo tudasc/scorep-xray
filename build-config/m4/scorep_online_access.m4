@@ -46,8 +46,7 @@ AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h arp
                   scorep_online_access_reason=", missing $ac_header header"])
 
 AS_IF([test "x${ac_scorep_have_online_access}" = "xyes"], [
-AS_CASE([${build_os}],
-         [aix*],
+AM_COND_IF([PLATFORM_AIX],
          [AC_CHECK_DECL([getaddrinfo],
 	                     [],
 	                     [ac_scorep_have_online_access="no"
@@ -111,12 +110,6 @@ AC_ARG_ENABLE([online-access],
                        [:],
                        [AC_MSG_ERROR([invalid argument for --online-access: $enableval])])])
 
-
-dnl case ${build_os} in
-dnl             aix*)
-dnl                 ac_scorep_have_online_access="no"
-dnl             ;;
-dnl esac
 
 AC_SCOREP_COND_HAVE([ONLINE_ACCESS],
                     [test "x${ac_scorep_have_online_access}" = "xyes" ],
