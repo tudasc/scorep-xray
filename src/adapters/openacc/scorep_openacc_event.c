@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016, 2018,
+ * Copyright (c) 2014-2016, 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -29,6 +29,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 
 #include "scorep_openacc.h"
 #include "scorep_openacc_confvars.h"
@@ -36,17 +37,28 @@
 /**
  * Handle OpenACC start events.
  *
+ * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix.
+ *
  * @param profInfo
  * @param eventInfo     Information about the specific OpenACC event
  * @param apiInfo
  */
 static void
-handle_enter_region( acc_prof_info*  profInfo,
-                     acc_event_info* eventInfo,
-                     acc_api_info*   apiInfo )
+scorep_openacc_handle_enter_region( acc_prof_info*  profInfo,
+                                    acc_event_info* eventInfo,
+                                    acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     if ( profInfo == NULL || !scorep_openacc_features_initialized )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -111,7 +123,7 @@ handle_enter_region( acc_prof_info*  profInfo,
 
     // pass Score-P region handle to corresponding leave
     // causes compiler warning!!!
-    eventInfo->other_event.tool_info = ( void* )region_handle;
+    eventInfo->other_event.tool_info = ( void* )( long )region_handle;
 
     // add an attribute, if this is an implicit region
     if ( eventInfo->other_event.implicit )
@@ -121,6 +133,8 @@ handle_enter_region( acc_prof_info*  profInfo,
     }
 
     SCOREP_EnterRegion( region_handle );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -138,6 +152,14 @@ handle_leave_region( acc_prof_info*  profInfo,
                      acc_event_info* eventInfo,
                      acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     SCOREP_RegionHandle regionHandle = SCOREP_INVALID_REGION;
 
     if ( eventInfo )
@@ -169,6 +191,8 @@ handle_leave_region( acc_prof_info*  profInfo,
                            ( profInfo && profInfo->line_no ) ? profInfo->line_no : SCOREP_INVALID_LINE_NO );
         }
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -183,6 +207,14 @@ handle_alloc( acc_prof_info*  profInfo,
               acc_event_info* eventInfo,
               acc_api_info*   apiInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     acc_data_event_info data_info = eventInfo->data_event;
 
     if ( data_info.bytes )
@@ -229,6 +261,8 @@ handle_alloc( acc_prof_info*  profInfo,
             SCOREP_AddAttribute( scorep_openacc_attribute_variable_name, &string_handle );
            }*/
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -245,27 +279,34 @@ acc_register_library( acc_prof_reg    accRegister,
                       acc_prof_reg    accUnregister,
                       acc_prof_lookup lookup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     UTILS_DEBUG( "[OpenACC] Register profiling library." );
 
     // Initialize the measurement system, if necessary
-    if ( !SCOREP_IsInitialized() )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     if ( scorep_openacc_record_regions )
     {
         //register OpenACC device initialization and shutdown
-        accRegister( acc_ev_device_init_start, handle_enter_region, 0 );
+        accRegister( acc_ev_device_init_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_device_init_end, handle_leave_region, 0 );
-        accRegister( acc_ev_device_shutdown_start, handle_enter_region, 0 );
+        accRegister( acc_ev_device_shutdown_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_device_shutdown_end, handle_leave_region, 0 );
 
         //register OpenACC regions
-        accRegister( acc_ev_compute_construct_start, handle_enter_region, 0 );
-        accRegister( acc_ev_update_start, handle_enter_region, 0 );
-        accRegister( acc_ev_enter_data_start, handle_enter_region, 0 );
-        accRegister( acc_ev_exit_data_start, handle_enter_region, 0 );
+        accRegister( acc_ev_compute_construct_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_update_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_enter_data_start, scorep_openacc_handle_enter_region, 0 );
+        accRegister( acc_ev_exit_data_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_compute_construct_end, handle_leave_region, 0 );
         accRegister( acc_ev_update_end, handle_leave_region, 0 );
         accRegister( acc_ev_enter_data_end, handle_leave_region, 0 );
@@ -275,20 +316,20 @@ acc_register_library( acc_prof_reg    accRegister,
     if ( scorep_openacc_record_enqueue )
     {
         // register kernel launch
-        accRegister( acc_ev_enqueue_launch_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_launch_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_launch_end, handle_leave_region, 0 );
 
         // register data transfers
-        accRegister( acc_ev_enqueue_upload_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_upload_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_upload_end, handle_leave_region, 0 );
-        accRegister( acc_ev_enqueue_download_start, handle_enter_region, 0 );
+        accRegister( acc_ev_enqueue_download_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_enqueue_download_end, handle_leave_region, 0 );
     }
 
     if ( scorep_openacc_record_wait )
     {
         // register wait handlers
-        accRegister( acc_ev_wait_start, handle_enter_region, 0 );
+        accRegister( acc_ev_wait_start, scorep_openacc_handle_enter_region, 0 );
         accRegister( acc_ev_wait_end, handle_leave_region, 0 );
     }
 
@@ -298,4 +339,6 @@ acc_register_library( acc_prof_reg    accRegister,
         accRegister( acc_ev_alloc, handle_alloc, 0 );
         accRegister( acc_ev_free, handle_alloc, 0 );
     }
-} // END: acc_register_library
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}

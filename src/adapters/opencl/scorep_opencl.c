@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2017,
+ * Copyright (c) 2014-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -168,7 +168,7 @@ static SCOREP_SourceFileHandle opencl_kernel_file_handle  = SCOREP_INVALID_SOURC
 /* ****************************************************************** */
 
 static bool
-set_synchronization_point( scorep_opencl_queue* queue );
+scorep_opencl_set_synchronization_point( scorep_opencl_queue* queue );
 
 static bool
 add_synchronization_event( scorep_opencl_queue* queue );
@@ -532,10 +532,12 @@ opencl_set_cpu_location_id( SCOREP_Location* hostLocation )
  * flushed, if the buffer limit was exceeded.
  * The given given command queue has to be locked!
  *
+ * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix.
+ *
  * @param queue Score-P OpenCL command queue (has to be locked for thread-safety)
  */
 static inline void
-guarantee_buffer( scorep_opencl_queue* queue )
+scorep_opencl_guarantee_buffer( scorep_opencl_queue* queue )
 {
     /* check if there is enough buffer space for this kernel */
     if ( queue->buf_pos + 1 > queue->buffer + queue_max_buffer_entries )
@@ -566,7 +568,7 @@ scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
     // lock work on the queue's buffer
     SCOREP_MutexLock( queue->mutex );
 
-    guarantee_buffer( queue );
+    scorep_opencl_guarantee_buffer( queue );
 
     scorep_opencl_buffer_entry* entry = queue->buf_pos;
 
@@ -710,12 +712,14 @@ add_synchronization_event( scorep_opencl_queue* queue )
  * Uses the last activity in the internal buffer if possible, otherwise it calls
  * add_synchronization_event(queue) to create the synchronization point.
  *
+ * On call-path to SCOREP_EnterRegion(), thus needs a `scorep_` prefix.
+ *
  * @param queue             Score-P OpenCL command queue
  *
  * @return true on success, false on failure
  */
 static bool
-set_synchronization_point( scorep_opencl_queue* queue )
+scorep_opencl_set_synchronization_point( scorep_opencl_queue* queue )
 {
     /* TODO: NVIDIA bug */
     cl_event tmpEvt[ 2 ] = { NULL, NULL };
@@ -819,7 +823,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
 
     sync_start = queue->sync;
 
-    if ( !set_synchronization_point( queue ) )
+    if ( !scorep_opencl_set_synchronization_point( queue ) )
     {
         UTILS_WARNING( "[OpenCL] Skip current buffer content." );
 
