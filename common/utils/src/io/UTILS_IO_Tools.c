@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -388,30 +388,30 @@ PACKAGE_ErrorCode
 UTILS_IO_GetHostname( char* name, size_t namelen )
 {
 #if HAVE( GETHOSTNAME )
-    return gethostname( name, namelen );
+    if ( gethostname( name, namelen ) )
+    {
+        return PACKAGE_ABORT;
+    }
+
+    return PACKAGE_SUCCESS;
 #elif HAVE( PLATFORM_MINGW )
     TCHAR computer_name[ MAX_COMPUTERNAME_LENGTH + 1 ];
-    DWORD computer_name_len;
-    GetComputerName( computer_name, &computer_name_len );
-    size_t effective_name_len = namelen >= ( size_t )computer_name_len ?
-                                ( size_t )computer_name_len : namelen - 1;
-    strncpy( name, computer_name, effective_name_len );
-    name[ effective_name_len ] = '\0';
+    DWORD computer_name_len = sizeof( computer_name ) / sizeof( computer_name[0] );
+    if ( !GetComputerName( computer_name, &computer_name_len ) )
+    {
+        return PACKAGE_ABORT;
+    }
+
+    strncpy( name, computer_name, namelen );
     return PACKAGE_SUCCESS;
 #else
-
     char* hostname = getenv( "HOST" );
     if ( ( hostname == NULL ) || ( *hostname == '\0' ) )
     {
         return PACKAGE_ABORT;
     }
 
-    size_t len = strlen( hostname ) + 1; /* For terminating zero */
-    if ( len > namelen )
-    {
-        len = namelen;
-    }
-    strncpy( name, hostname, len );
+    strncpy( name, hostname, namelen );
     return PACKAGE_SUCCESS;
 #endif
 }
