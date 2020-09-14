@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -30,7 +30,6 @@
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
 #include "scorep_config_types.hpp"
-#include "scorep_config_mutex.hpp"
 
 /* **************************************************************************************
  * enum SCOREP_Config_ThreadSystemId
@@ -93,14 +92,11 @@ public:
      * @param variant  The name of the measurement approach or threading system variant.
      * @param library  The name of the Score-P threading library. Please omit
      *                 the leading 'lib' which is prefixed automatically if needed.
-     * @param mutexlib The name of the Score-P mutex implementation library. Please omit
-     *                 the leading 'lib' which is prefixed automatically if needed.
      * @param id       The identifier of the threading system.
      */
     SCOREP_Config_ThreadSystem( const std::string&           name,
                                 const std::string&           variant,
                                 const std::string&           library,
-                                SCOREP_Config_MutexId        mutexId,
                                 SCOREP_Config_ThreadSystemId id );
 
     /**
@@ -163,17 +159,6 @@ public:
                 bool         nvcc );
 
     /**
-     * Checks if an explicit choice has been made for the locking mechanism
-     *  - If the mutex selection has been explicitly changed from the default mockup,
-     *    the choice stays valid
-     *  - If either "none" is chosen explicitly or is still the default, the threading
-     *    system changes it to its own default, ensuring a valid locking for a threading
-     *    case.
-     */
-    virtual SCOREP_Config_MutexId
-    validateDependencies();
-
-    /**
      * Returns the threading system identifier.
      */
     SCOREP_Config_ThreadSystemId
@@ -210,11 +195,6 @@ protected:
      * The library name.
      */
     std::string m_library;
-
-    /**
-     * The name of the default parameter for the mutex choice.
-     */
-    SCOREP_Config_MutexId m_mutexId;
 
 private:
     /**
