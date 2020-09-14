@@ -67,7 +67,6 @@
 #include "scorep_instrumenter_opencl.hpp"
 #include "scorep_instrumenter_memory.hpp"
 #include "scorep_instrumenter_utils.hpp"
-#include "scorep_instrumenter_mutex.hpp"
 #include "scorep_instrumenter_linktime_wrapping.hpp"
 #include "scorep_instrumenter_libwrap.hpp"
 
@@ -119,9 +118,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_thread = new SCOREP_Instrumenter_Thread();
     m_mpp    = new SCOREP_Instrumenter_Mpp();
     m_io     = new SCOREP_Instrumenter_Io();
-
-    /* Create mutex selector*/
-    m_mutex = new SCOREP_Instrumenter_Mutex();
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()

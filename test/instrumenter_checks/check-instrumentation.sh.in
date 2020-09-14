@@ -5,7 +5,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2014, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014, 2016, 2019,
@@ -190,10 +190,6 @@ while test $# -ne 0; do
                 echo "ERROR: Unknown thread paradigm in $1!" >&2
                 exit 1
             fi
-            ;;
-
-        --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock|--mutex=pthread:wrap)
-            THREAD=opari2_openmp
             ;;
 
         --user)

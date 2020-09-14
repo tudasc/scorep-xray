@@ -555,6 +555,12 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
                   << "builds and will be ignored" << std::endl;
 #endif
     }
+    else if ( arg.substr( 0, 7 ) == "--mutex" )
+    {
+        std::cerr << "[Score-P] ERROR: Option '--mutex=<implementation>' no longer exists. An implementation\n"
+            "                 based on atomic intrinsics replaces the former variants." << std::endl;
+        exit( EXIT_FAILURE );
+    }
     else
     {
         std::cerr << "[Score-P] ERROR: Unknown parameter: '" << arg << "'" << std::endl;

@@ -181,7 +181,7 @@ do
         esac
         SCOREP_CONFIG="${SCOREP_CONFIG} --io=${io}"
     ;;
-    (--compiler|--user|--pomp|--thread=*|--thread|--mutex=*|--mutex|--memory|--memory=*)
+    (--compiler|--user|--pomp|--thread=*|--thread|--memory|--memory=*)
         warn "option not suitable for uninstrumented applications: '%s'" "${1}"
         SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
     ;;

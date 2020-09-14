@@ -29,6 +29,9 @@ User tools and API improvements and changes:
   - `preadv2`,  `preadv64`,  `preadv64v2`
   - `pwritev2`, `pwritev64`, `pwritev64v2`
 - Add stripe count/size for recorded files on the Lustre file system.
+- A new mutex implementation based on atomic intrinsics replaces all
+  existing mutex implementations. Therefore the `--mutex` option to
+  scorep and scorep-config was removed.
 
 Bugfixes:
 

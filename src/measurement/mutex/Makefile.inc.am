@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2014, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2017,
@@ -114,3 +114,18 @@ libscorep_mutex_mockup_la_LIBADD = \
     libutils.la
 libscorep_mutex_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)
+
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+lib_LTLIBRARIES += libscorep_mutex.la
+nodist_libscorep_mutex_la_SOURCES = $(SRC_ROOT)src/measurement/mutex/scorep_mutex.c
+libscorep_mutex_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_MUTEX) \
+    $(UTILS_CPPFLAGS)
+libscorep_mutex_la_LIBADD = libscorep_atomic.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/measurement/mutex/scorep_mutex.inc.c \
+    $(SRC_ROOT)src/measurement/mutex/scorep_mutex.c

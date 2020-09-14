@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -91,6 +91,13 @@ libscorep_measurement_la_LIBADD += \
     libscorep_sampling.la
 
 endif HAVE_SAMPLING_SUPPORT
+
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+
+libscorep_measurement_la_LIBADD += \
+    libscorep_mutex_la
+
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 
 if !HAVE_SCOREP_EXTERNAL_OTF2
 
