@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2018,
+## Copyright (c) 2014-2018, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2016, 2019,
@@ -117,8 +117,11 @@ libscorep_mpi_mgmt_la_LIBADD   = \
     libscorep_alloc_metric.la                               \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(external_libadd)                                      \
-    libscorep_thread_mockup.la                              \
-    libscorep_mutex_mockup.la
+    libscorep_thread_mockup.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+libscorep_mpi_mgmt_la_LIBADD += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+
 libscorep_mpi_mgmt_la_LDFLAGS              = $(external_ldflags)
 
 if HAVE_ONLINE_ACCESS
@@ -161,8 +164,10 @@ libscorep_shmem_mgmt_la_LIBADD   = \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
     $(external_libadd)                                     \
-    libscorep_thread_mockup.la                             \
-    libscorep_mutex_mockup.la
+    libscorep_thread_mockup.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+libscorep_shmem_mgmt_la_LIBADD += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 libscorep_shmem_mgmt_la_LDFLAGS              = $(external_ldflags)
 
 endif HAVE_SHMEM_SUPPORT
@@ -175,8 +180,10 @@ serial_libadd = \
     $(common_mgmt_libadd) \
     $(external_libadd) \
     libscorep_mpp_mockup.la \
-    libscorep_thread_mockup.la \
-    libscorep_mutex_mockup.la
+    libscorep_thread_mockup.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+serial_libadd += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 
 if HAVE_ONLINE_ACCESS
 
@@ -206,8 +213,10 @@ omp_libadd = \
     $(external_libadd) \
     libscorep_adapter_opari2_openmp_mgmt.la \
     libscorep_mpp_mockup.la \
-    libscorep_thread_fork_join_omp.la \
-    libscorep_mutex_omp.la
+    libscorep_thread_fork_join_omp.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+omp_libadd += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 
 if HAVE_ONLINE_ACCESS
 
@@ -254,8 +263,10 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     libscorep_alloc_metric.la                               \
     libscorep_adapter_opari2_openmp_mgmt.la                 \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
-    libscorep_thread_fork_join_omp.la                       \
-    libscorep_mutex_omp.la
+    libscorep_thread_fork_join_omp.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+libscorep_mpi_omp_mgmt_la_LIBADD += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
 if HAVE_ONLINE_ACCESS
@@ -300,8 +311,10 @@ libscorep_shmem_omp_mgmt_la_LIBADD   = \
     libscorep_adapter_opari2_user_mgmt.la                  \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
-    libscorep_thread_fork_join_omp.la                      \
-    libscorep_mutex_omp.la
+    libscorep_thread_fork_join_omp.la
+if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+libscorep_shmem_omp_mgmt_la_LIBADD += libscorep_mutex.la
+endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 libscorep_shmem_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
 endif HAVE_OPENMP_SUPPORT
