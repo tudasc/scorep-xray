@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2018,
+ * Copyright (c) 2016-2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2018,
@@ -127,7 +127,7 @@
 
 
 /** Current version of Score-P substrate plugin interface */
-#define SCOREP_SUBSTRATE_PLUGIN_VERSION 2
+#define SCOREP_SUBSTRATE_PLUGIN_VERSION 3
 
 /** This should be reduced by 1 for each new function added to SCOREP_SubstratePluginInfo */
 #define SCOREP_SUBSTRATE_PLUGIN_UNDEFINED_MANAGEMENT_FUNCTIONS 99

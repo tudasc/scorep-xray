@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019,
+ * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -55,6 +55,62 @@
 #define INITIALIZE_FUNCTION_POINTER( func ) do { } while ( 0 )
 #endif
 /* *INDENT-ON* */
+
+/**
+ * @brief Issues one IoOperationBegin event per vector entry.
+ */
+static inline void
+posix_io_vector_begin( SCOREP_IoFileHandle    handle,
+                       SCOREP_IoOperationMode mode,
+                       const struct iovec*    iov,
+                       int                    iovCnt,
+                       uint64_t               offset )
+{
+    for ( int i = 0; i < iovCnt; i++ )
+    {
+        SCOREP_IoOperationBegin( handle,
+                                 mode,
+                                 SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
+                                 iov[ i ].iov_len,
+                                 SCOREP_INVALID_BLOCKING_IO_OPERATION_MATCHING_ID + i + 1,
+                                 offset );
+
+        if ( offset != SCOREP_IO_UNKNOWN_OFFSET )
+        {
+            offset += iov[ i ].iov_len;
+        }
+    }
+}
+
+/**
+ * @brief Issues one IoOperationComplete event per vector entry.
+ *        The transfer size per vector is decompsosed from the total
+ *        number of transferred bytes.
+ */
+static inline void
+posix_io_vector_complete( SCOREP_IoFileHandle    handle,
+                          SCOREP_IoOperationMode mode,
+                          const struct iovec*    iov,
+                          int                    iovCnt,
+                          ssize_t                transferredBytes )
+{
+    for ( int i = 0; i < iovCnt; i++ )
+    {
+        ssize_t request_size = iov[ i ].iov_len;
+
+        if ( request_size > transferredBytes )
+        {
+            request_size = transferredBytes;
+        }
+
+        SCOREP_IoOperationComplete( handle,
+                                    mode,
+                                    ( uint64_t )request_size,
+                                    SCOREP_INVALID_BLOCKING_IO_OPERATION_MATCHING_ID + i + 1 );
+
+        transferredBytes -= request_size;
+    }
+}
 
 /* *******************************************************************
  * Function wrappers
@@ -767,7 +823,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fdatasync )( int fd )
                                      SCOREP_IO_OPERATION_MODE_FLUSH,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -816,7 +873,8 @@ SCOREP_LIBWRAP_FUNC_NAME( fsync )( int fd )
                                      SCOREP_IO_OPERATION_MODE_FLUSH,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1268,7 +1326,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pread )( int fd, void* buf, size_t count, off_t offset
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1324,7 +1383,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pread64 )( int fd, void* buf, size_t count, scorep_off
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1348,6 +1408,210 @@ SCOREP_LIBWRAP_FUNC_NAME( pread64 )( int fd, void* buf, size_t count, scorep_off
     {
         ret = SCOREP_LIBWRAP_FUNC_CALL( pread64,
                                         ( fd, buf, count, offset ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PREADV )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( preadv )( int fd, const struct iovec* iov, int iovcnt, off_t offset )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( preadv );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt,
+                                   offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv,
+                                        ( fd, iov, iovcnt, offset ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_preadv );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv,
+                                        ( fd, iov, iovcnt, offset ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PREADV2 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( preadv2 )( int fd, const struct iovec* iov, int iovcnt, off_t offset, int flags )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( preadv2 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv2 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt,
+                                   ( offset == -1 ) ? SCOREP_IO_UNKNOWN_OFFSET : offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_preadv2 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PREADV64 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( preadv64 )( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( preadv64 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv64 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt,
+                                   offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv64,
+                                        ( fd, iov, iovcnt, offset ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_preadv64 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv64,
+                                        ( fd, iov, iovcnt, offset ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PREADV64V2 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( preadv64v2 )( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset, int flags )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( preadv64v2 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv64v2 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt,
+                                   ( offset == -1 ) ? SCOREP_IO_UNKNOWN_OFFSET : offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv64v2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_preadv64v2 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv64v2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
     }
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return ret;
@@ -1407,7 +1671,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pwrite )( int fd, const void* buf, size_t count, off_t
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1463,7 +1728,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pwrite64 )( int fd, const void* buf, size_t count, sco
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     offset );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1493,6 +1759,226 @@ SCOREP_LIBWRAP_FUNC_NAME( pwrite64 )( int fd, const void* buf, size_t count, sco
 }
 #endif
 
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( pwritev )( int fd, const struct iovec* iov, int iovcnt, off_t offset )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( pwritev );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt,
+                                   offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev,
+                                        ( fd, iov, iovcnt, offset ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_pwritev );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev,
+                                        ( fd, iov, iovcnt, offset ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV2 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( pwritev2 )( int fd, const struct iovec* iov, int iovcnt, off_t offset, int flags )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( pwritev2 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev2 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            uint64_t event_offset = offset;
+            #ifdef RWF_APPEND
+            if ( flags & RWF_APPEND )
+            {
+                event_offset = SCOREP_IO_UNKNOWN_OFFSET;
+            }
+            #endif
+
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt,
+                                   ( offset == -1 ) ? SCOREP_IO_UNKNOWN_OFFSET : event_offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_pwritev2 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV64 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( pwritev64 )( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( pwritev64 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev64 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt,
+                                   offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev64,
+                                        ( fd, iov, iovcnt, offset ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_pwritev64 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev64,
+                                        ( fd, iov, iovcnt, offset ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_PWRITEV64V2 )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( pwritev64v2 )( int fd, const struct iovec* iov, int iovcnt, scorep_off64_t offset, int flags )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( pwritev64v2 );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev64v2 );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            uint64_t event_offset = offset;
+            #ifdef RWF_APPEND
+            if ( flags & RWF_APPEND )
+            {
+                event_offset = SCOREP_IO_UNKNOWN_OFFSET;
+            }
+            #endif
+
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt,
+                                   ( offset == -1 ) ? SCOREP_IO_UNKNOWN_OFFSET : event_offset );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev64v2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_pwritev64v2 );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev64v2,
+                                        ( fd, iov, iovcnt, offset, flags ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
 #if HAVE( POSIX_IO_SYMBOL_READ )
 ssize_t
 SCOREP_LIBWRAP_FUNC_NAME( read )( int fd, void* buf, size_t count )
@@ -1513,7 +1999,8 @@ SCOREP_LIBWRAP_FUNC_NAME( read )( int fd, void* buf, size_t count )
                                      SCOREP_IO_OPERATION_MODE_READ,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1537,6 +2024,57 @@ SCOREP_LIBWRAP_FUNC_NAME( read )( int fd, void* buf, size_t count )
     {
         ret = SCOREP_LIBWRAP_FUNC_CALL( read,
                                         ( fd, buf, count ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
+#if HAVE( POSIX_IO_SYMBOL_READV )
+ssize_t
+SCOREP_LIBWRAP_FUNC_NAME( readv )( int fd, const struct iovec* iov, int iovcnt )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( readv );
+    ssize_t ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_readv );
+
+        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
+                                                                          &fd );
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_begin( io_handle,
+                                   SCOREP_IO_OPERATION_MODE_READ,
+                                   iov,
+                                   iovcnt,
+                                   SCOREP_IO_UNKNOWN_OFFSET );
+        }
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( readv,
+                                        ( fd, iov, iovcnt ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+        {
+            posix_io_vector_complete( io_handle,
+                                      SCOREP_IO_OPERATION_MODE_READ,
+                                      iov,
+                                      iovcnt,
+                                      ret );
+        }
+
+        SCOREP_IoMgmt_PopHandle( io_handle );
+
+        SCOREP_ExitRegion( scorep_posix_io_region_readv );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( readv,
+                                        ( fd, iov, iovcnt ) );
     }
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return ret;
@@ -1587,7 +2125,8 @@ SCOREP_LIBWRAP_FUNC_NAME( sync )( void )
                                  SCOREP_IO_OPERATION_MODE_FLUSH,
                                  SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                  SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                 SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                 SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                 SCOREP_IO_UNKNOWN_OFFSET );
 
         SCOREP_ENTER_WRAPPED_REGION();
         SCOREP_LIBWRAP_FUNC_CALL( sync,
@@ -1632,7 +2171,8 @@ SCOREP_LIBWRAP_FUNC_NAME( syncfs )( int fd )
                                      SCOREP_IO_OPERATION_MODE_FLUSH,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
 
         SCOREP_ENTER_WRAPPED_REGION();
@@ -1779,7 +2319,8 @@ SCOREP_LIBWRAP_FUNC_NAME( write )( int fd, const void* buf, size_t count )
                                      SCOREP_IO_OPERATION_MODE_WRITE,
                                      SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                      ( uint64_t )count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */,
+                                     SCOREP_IO_UNKNOWN_OFFSET );
         }
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( write,
@@ -1808,195 +2349,13 @@ SCOREP_LIBWRAP_FUNC_NAME( write )( int fd, const void* buf, size_t count )
 }
 #endif
 
-#if HAVE( POSIX_IO_SYMBOL_PREADV )
-ssize_t
-SCOREP_LIBWRAP_FUNC_NAME( preadv )( int fd, const struct iovec* iov, int iovcnt, off_t offset )
-{
-    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    INITIALIZE_FUNCTION_POINTER( preadv );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
-
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_EnterWrappedRegion( scorep_posix_io_region_preadv );
-
-        /*
-         * Reads up to 'count' bytes from file descriptor 'fd' at offset 'offset' (from the start of the file) into the buffer starting at 'buf'.
-         * The file offset is not changed.
-         *
-         * @todo: how to represent offset?
-         */
-        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
-                                                                          &fd );
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_READ,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv,
-                                        ( fd, iov, iovcnt, offset ) );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_READ,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_IoMgmt_PopHandle( io_handle );
-
-        SCOREP_ExitRegion( scorep_posix_io_region_preadv );
-    }
-    else
-    {
-        ret = SCOREP_LIBWRAP_FUNC_CALL( preadv,
-                                        ( fd, iov, iovcnt, offset ) );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-    return ret;
-}
-#endif
-
-#if HAVE( POSIX_IO_SYMBOL_PWRITEV )
-ssize_t
-SCOREP_LIBWRAP_FUNC_NAME( pwritev )( int fd, const struct iovec* iov, int iovcnt, off_t offset )
-{
-    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    INITIALIZE_FUNCTION_POINTER( pwritev );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
-
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_EnterWrappedRegion( scorep_posix_io_region_pwritev );
-
-        /*
-         * Writes up to 'count' bytes from the buffer starting at 'buf' to the file descriptor 'fd' at offset 'offset'.
-         * The file offset is not changed.
-         *
-         * @todo: how to represent offset?
-         */
-        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
-                                                                          &fd );
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_WRITE,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev,
-                                        ( fd, iov, iovcnt, offset ) );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_WRITE,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_IoMgmt_PopHandle( io_handle );
-
-        SCOREP_ExitRegion( scorep_posix_io_region_pwritev );
-    }
-    else
-    {
-        ret = SCOREP_LIBWRAP_FUNC_CALL( pwritev,
-                                        ( fd, iov, iovcnt, offset ) );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-    return ret;
-}
-#endif
-
-#if HAVE( POSIX_IO_SYMBOL_READV )
-ssize_t
-SCOREP_LIBWRAP_FUNC_NAME( readv )( int fd, const struct iovec* iov, int iovcnt )
-{
-    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
-    INITIALIZE_FUNCTION_POINTER( readv );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
-
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_EnterWrappedRegion( scorep_posix_io_region_readv );
-
-        SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_POSIX,
-                                                                          &fd );
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationBegin( io_handle,
-                                     SCOREP_IO_OPERATION_MODE_READ,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_ENTER_WRAPPED_REGION();
-        ret = SCOREP_LIBWRAP_FUNC_CALL( readv,
-                                        ( fd, iov, iovcnt ) );
-        SCOREP_EXIT_WRAPPED_REGION();
-
-        if ( io_handle != SCOREP_INVALID_IO_HANDLE )
-        {
-            SCOREP_IoOperationComplete( io_handle,
-                                        SCOREP_IO_OPERATION_MODE_READ,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
-        }
-
-        SCOREP_IoMgmt_PopHandle( io_handle );
-
-        SCOREP_ExitRegion( scorep_posix_io_region_readv );
-    }
-    else
-    {
-        ret = SCOREP_LIBWRAP_FUNC_CALL( readv,
-                                        ( fd, iov, iovcnt ) );
-    }
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-    return ret;
-}
-#endif
-
 #if HAVE( POSIX_IO_SYMBOL_WRITEV )
 ssize_t
 SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     INITIALIZE_FUNCTION_POINTER( writev );
-    ssize_t  ret;
-    uint64_t count = 0;
-    for ( int i = 0; i < iovcnt; i++ )
-    {
-        count += iov[ i ].iov_len;
-    }
+    ssize_t ret;
 
     if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -2006,12 +2365,13 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
                                                                      &fd );
         if ( handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationBegin( handle,
-                                     SCOREP_IO_OPERATION_MODE_WRITE,
-                                     SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
-                                     count,
-                                     SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_begin( handle,
+                                   SCOREP_IO_OPERATION_MODE_WRITE,
+                                   iov,
+                                   iovcnt,
+                                   SCOREP_IO_UNKNOWN_OFFSET );
         }
+
         SCOREP_ENTER_WRAPPED_REGION();
         ret = SCOREP_LIBWRAP_FUNC_CALL( writev,
                                         ( fd, iov, iovcnt ) );
@@ -2019,10 +2379,11 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
 
         if ( handle != SCOREP_INVALID_IO_HANDLE )
         {
-            SCOREP_IoOperationComplete( handle,
-                                        SCOREP_IO_OPERATION_MODE_WRITE,
-                                        ( uint64_t )ret,
-                                        SCOREP_BLOCKING_IO_OPERATION_MATCHING_ID_POSIX /* matching id */ );
+            posix_io_vector_complete( handle,
+                                      SCOREP_IO_OPERATION_MODE_WRITE,
+                                      iov,
+                                      iovcnt,
+                                      ret );
         }
 
         SCOREP_IoMgmt_PopHandle( handle );
@@ -2038,7 +2399,6 @@ SCOREP_LIBWRAP_FUNC_NAME( writev )( int fd, const struct iovec* iov, int iovcnt 
     return ret;
 }
 #endif
-
 
 #if HAVE( POSIX_AIO_SUPPORT )
 #include "scorep_posix_io_wrap_aio.inc.c"

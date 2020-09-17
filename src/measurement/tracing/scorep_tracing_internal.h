@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2019,
+ * Copyright (c) 2009-2015, 2019, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,6 +52,12 @@
 extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;
 extern bool     scorep_tracing_convert_calling_context;
+
+/**
+ * Attribute that represents the absolute offset within a file where an I/O operation
+ * reads or writes data.
+ */
+extern SCOREP_AttributeHandle scorep_tracing_offset_attribute;
 
 /**
  * Stores the substrate id of the tracing substrate. Set during initialization.

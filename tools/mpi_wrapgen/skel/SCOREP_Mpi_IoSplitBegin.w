@@ -34,7 +34,8 @@ ${proto:c}
                                   SCOREP_IO_OPERATION_MODE_${attribute(operation_type)},
                                   SCOREP_IO_OPERATION_FLAG_${attribute(collective_type)} | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                   ( uint64_t ) count * type_size,
-                                  req_id );
+                                  req_id,
+                                  SCOREP_IO_UNKNOWN_OFFSET );
       }
     }
     else if ( SCOREP_IsUnwindingEnabled() )

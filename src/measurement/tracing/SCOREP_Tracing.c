@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -86,6 +86,16 @@ size_t scorep_tracing_substrate_id;
 SCOREP_StringHandle scorep_tracing_cct_file      = SCOREP_INVALID_STRING;
 SCOREP_StringHandle scorep_tracing_cct_ip_offset = SCOREP_INVALID_STRING;
 SCOREP_StringHandle scorep_tracing_cct_ip        = SCOREP_INVALID_STRING;
+
+SCOREP_AttributeHandle scorep_tracing_offset_attribute = SCOREP_INVALID_ATTRIBUTE;
+
+static inline void
+tracing_init_attributes( void )
+{
+    scorep_tracing_offset_attribute = SCOREP_Definitions_NewAttribute(
+        "Offset", "Absolute read/write offset within a file.",
+        SCOREP_ATTRIBUTE_TYPE_UINT64 );
+}
 
 
 static OTF2_FileSubstrate
@@ -342,6 +352,8 @@ SCOREP_Tracing_Initialize( size_t substrateId )
         scorep_tracing_cct_ip_offset = SCOREP_Definitions_NewString( "INSTRUCTION OFFSET" );
         scorep_tracing_cct_ip        = SCOREP_Definitions_NewString( "INSTRUCTION ADDRESS" );
     }
+
+    tracing_init_attributes();
 }
 
 

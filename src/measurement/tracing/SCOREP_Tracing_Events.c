@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2018,
+ * Copyright (c) 2009-2013, 2015-2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1280,11 +1280,17 @@ io_operation_begin( SCOREP_Location*       location,
                     SCOREP_IoOperationMode mode,
                     SCOREP_IoOperationFlag operationFlags,
                     uint64_t               bytesRequest,
-                    uint64_t               matchingId )
+                    uint64_t               matchingId,
+                    uint64_t               offset )
 {
     SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
     OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
     OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+
+    if ( offset != SCOREP_IO_UNKNOWN_OFFSET )
+    {
+        add_attribute( location, scorep_tracing_offset_attribute, &offset );
+    }
 
     if ( bytesRequest == SCOREP_IO_UNKOWN_TRANSFER_SIZE )
     {
