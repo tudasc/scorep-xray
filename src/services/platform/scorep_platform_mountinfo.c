@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -9,7 +9,19 @@
  * directory for details.
  *
  */
+
+/**
+ * @file
+ *
+ */
+
 #include <config.h>
+
+#include <SCOREP_Platform.h>
+#include <SCOREP_Definitions.h>
+
+#include <SCOREP_ErrorCodes.h>
+#include <UTILS_CStr.h>
 
 #include <mntent.h>
 #include <libgen.h>
@@ -19,12 +31,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
-#include <SCOREP_Platform.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Vector.h>
-#include <UTILS_CStr.h>
-#include <SCOREP_ErrorCodes.h>
 
 #define MOUNT_SRC  "/proc/self/mounts"
 
@@ -247,5 +253,10 @@ SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
         SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Point", mountEntry->mount_point );
         SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Source", mountEntry->mount_src );
         SCOREP_IoFileHandle_AddProperty( ioFileHandle, "File system", mountEntry->fstype );
+
+        if ( strstr( mountEntry->fstype, "lustre" ) != NULL )
+        {
+            SCOREP_Platform_AddLustreProperties( ioFileHandle );
+        }
     }
 }

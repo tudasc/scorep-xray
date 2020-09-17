@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -168,6 +168,15 @@ SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mountEntry );
 extern void
 SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
                                         SCOREP_MountInfo*   mountEntry );
+
+/**
+ * Adds Lustre file system information as @a IoFileProperty to a given
+ * @a SCOREP_IoFileHandle.
+ *
+ * @param ioFile Specifies the @a IoFileHandle where the property will be added.
+ */
+extern void
+SCOREP_Platform_AddLustreProperties( SCOREP_IoFileHandle ioFileHandle );
 
 /**
  * Returns the number of topology dimensions or 0 if undefined.

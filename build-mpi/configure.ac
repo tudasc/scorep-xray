@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2019,
+dnl Copyright (c) 2009-2020,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -219,6 +219,7 @@ AC_SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_CRAY_PMI
 SCOREP_MNTENT_CHECK
+SCOREP_LUSTREAPI_CHECK
 
 # On crosscompile machines, install backend/mic stuff into
 # $(bin|lid)dir/(backend|mic).
