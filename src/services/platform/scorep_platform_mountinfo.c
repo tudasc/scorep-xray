@@ -215,36 +215,37 @@ SCOREP_Platform_MountInfoInitialize( void )
 }
 
 SCOREP_MountInfo*
-SCOREP_Platform_GetMountInfo( const char* filename )
+SCOREP_Platform_GetMountInfo( const char* fileName )
 {
     SCOREP_MountInfo* found_entry = NULL;
 
-    if ( filename != NULL )
+    if ( fileName != NULL )
     {
-        found_entry = mountinfo_find_mount( filename );
+        found_entry = mountinfo_find_mount( fileName );
     }
 
     return found_entry;
 }
 
 SCOREP_SystemTreeNodeHandle
-SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mount_entry )
+SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mountEntry )
 {
-    if ( mount_entry != NULL )
+    if ( mountEntry != NULL )
     {
-        return mountinfo_get_tree_node_handle( mount_entry );
+        return mountinfo_get_tree_node_handle( mountEntry );
     }
 
     return SCOREP_INVALID_SYSTEM_TREE_NODE;
 }
 
 void
-SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle, SCOREP_MountInfo* mnt_entry )
+SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
+                                        SCOREP_MountInfo*   mountEntry )
 {
-    if ( mnt_entry != NULL )
+    if ( mountEntry != NULL )
     {
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "Mount Point", mnt_entry->mount_point );
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "Mount Source", mnt_entry->mount_src );
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "File system", mnt_entry->fstype );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Point", mountEntry->mount_point );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Source", mountEntry->mount_src );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "File system", mountEntry->fstype );
     }
 }

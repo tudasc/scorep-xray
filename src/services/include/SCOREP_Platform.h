@@ -146,28 +146,28 @@ SCOREP_Platform_MountInfoFinalize( void );
 /**
  * Returns an appropriate mount entry for a given file/path.
  *
- * @param filename String that contains an absolute path.
+ * @param fileName String that contains an absolute path.
  */
 extern SCOREP_MountInfo*
-SCOREP_Platform_GetMountInfo( const char* filename );
+SCOREP_Platform_GetMountInfo( const char* fileName );
 
 /**
  * Returns @a SCOREP_SystemTreeNodeHandle that represents the scope of a given mount entry.
  *
- * @param mount_entry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
+ * @param mountEntry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
  */
 extern SCOREP_SystemTreeNodeHandle
-SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mount_entry );
+SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mountEntry );
 
 /**
  * Adds mount information as @a IoFileProperty to a given @a SCOREP_IoFileHandle.
  *
- * @param io_file_handle Specifies the @a IoFileHandle where the propertier will be added.
- * @param mount_entry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
+ * @param ioFileHandle Specifies the @a IoFileHandle where the propertier will be added.
+ * @param mountEntry Mount entry that was returned by @a SCOREP_Platform_GetMountInfo.
  */
 extern void
-SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle,
-                                        SCOREP_MountInfo*   mount_entry );
+SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
+                                        SCOREP_MountInfo*   mountEntry );
 
 /**
  * Returns the number of topology dimensions or 0 if undefined.

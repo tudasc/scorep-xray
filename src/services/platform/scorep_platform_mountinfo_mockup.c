@@ -30,18 +30,19 @@ SCOREP_Platform_MountInfoFinalize( void )
 }
 
 SCOREP_MountInfo*
-SCOREP_Platform_GetMountInfo( const char* filename )
+SCOREP_Platform_GetMountInfo( const char* fileName )
 {
     return NULL;
 }
 
 SCOREP_SystemTreeNodeHandle
-SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mount_entry )
+SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mountEntry )
 {
     return SCOREP_INVALID_SYSTEM_TREE_NODE;
 }
 
 void
-SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle, SCOREP_MountInfo* mnt_entry )
+SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
+                                        SCOREP_MountInfo*   mountEntry )
 {
 }
