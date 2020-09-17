@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -356,6 +356,18 @@ begin_epoch( int argc, char* argv[] )
         args[ i ] = SCOREP_Definitions_NewString( argv[ i ] );
     }
 
+    uint64_t pid = getpid();
+    uint64_t tid = SCOREP_Thread_GetOSId();
+#if HAVE( PLATFORM_MAC ) /* This is not true on macOS */
+    if ( pid != SCOREP_INVALID_TID
+         && tid != SCOREP_INVALID_TID
+         && pid != tid )
+    {
+        UTILS_WARNING( "Initialization not on master thread %" PRIu64 " but on thread %" PRIu64 ".",
+                       pid, tid );
+    }
+#endif /*HAVE( PLATFORM_MAC )*/
+
     main_thread_location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE( ProgramBegin, PROGRAM_BEGIN,
                            ( main_thread_location,
@@ -363,7 +375,9 @@ begin_epoch( int argc, char* argv[] )
                              program,
                              argc,
                              args,
-                             program_region ) );
+                             program_region,
+                             pid,
+                             tid ) );
     SCOREP_TIME_STOP_TIMING( SCOREP_BeginEpoch );
 }
 

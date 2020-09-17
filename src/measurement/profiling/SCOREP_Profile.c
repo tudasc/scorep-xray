@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016, 2019,
+ * Copyright (c) 2009-2013, 2015-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -827,7 +827,9 @@ program_begin( SCOREP_Location*     location,
                SCOREP_StringHandle  programName,
                uint32_t             numberOfProgramArgs,
                SCOREP_StringHandle* programArguments,
-               SCOREP_RegionHandle  programRegionHandle )
+               SCOREP_RegionHandle  programRegionHandle,
+               uint64_t             pid,
+               uint64_t             tid )
 {
     uint64_t* metric_values = SCOREP_Metric_Read( location );
     SCOREP_Profile_Enter( location,

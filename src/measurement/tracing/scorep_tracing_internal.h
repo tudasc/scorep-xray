@@ -53,6 +53,9 @@ extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;
 extern bool     scorep_tracing_convert_calling_context;
 
+extern SCOREP_AttributeHandle scorep_tracing_pid_attribute;
+extern SCOREP_AttributeHandle scorep_tracing_tid_attribute;
+
 /**
  * Attribute that represents the absolute offset within a file where an I/O operation
  * reads or writes data.

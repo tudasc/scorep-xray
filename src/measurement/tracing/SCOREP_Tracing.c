@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019, 2020,
+ * Copyright (c) 2009-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -88,6 +88,8 @@ SCOREP_StringHandle scorep_tracing_cct_ip_offset = SCOREP_INVALID_STRING;
 SCOREP_StringHandle scorep_tracing_cct_ip        = SCOREP_INVALID_STRING;
 
 SCOREP_AttributeHandle scorep_tracing_offset_attribute = SCOREP_INVALID_ATTRIBUTE;
+SCOREP_AttributeHandle scorep_tracing_pid_attribute    = SCOREP_INVALID_ATTRIBUTE;
+SCOREP_AttributeHandle scorep_tracing_tid_attribute    = SCOREP_INVALID_ATTRIBUTE;
 
 static inline void
 tracing_init_attributes( void )
@@ -95,6 +97,10 @@ tracing_init_attributes( void )
     scorep_tracing_offset_attribute = SCOREP_Definitions_NewAttribute(
         "Offset", "Absolute read/write offset within a file.",
         SCOREP_ATTRIBUTE_TYPE_UINT64 );
+    scorep_tracing_pid_attribute = SCOREP_Definitions_NewAttribute(
+        "ProcessId", "Process identifier", SCOREP_ATTRIBUTE_TYPE_UINT64 );
+    scorep_tracing_tid_attribute = SCOREP_Definitions_NewAttribute(
+        "ThreadId", "Thread identifier", SCOREP_ATTRIBUTE_TYPE_UINT64 );
 }
 
 

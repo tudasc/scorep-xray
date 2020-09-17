@@ -521,4 +521,14 @@ AM_COND_IF([HAVE_OPENCL_SUPPORT],
 AM_COND_IF([HAVE_POSIX_IO_SUPPORT],
     [SCOREP_LD_WRAP_FILE([posix_io])])
 
+dnl Linux
+SCOREP_CHECK_SYSCALL([SYS_gettid],
+                     [],
+                     [])
+
+dnl macOS +10.5
+SCOREP_CHECK_SYSCALL([SYS_thread_selfid],
+                     [],
+                     [])
+
 AC_OUTPUT

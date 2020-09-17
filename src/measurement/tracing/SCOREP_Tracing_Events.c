@@ -72,6 +72,11 @@
 #include "scorep_tracing_types.h"
 
 
+static void
+add_attribute( SCOREP_Location*       location,
+               SCOREP_AttributeHandle attributeHandle,
+               void*                  value );
+
 /**
  * Enables tracing recording. This function activates tracing recording.
  * @ref enable_recording.
@@ -169,9 +174,23 @@ program_begin( SCOREP_Location*     location,
                SCOREP_StringHandle  programName,
                uint32_t             numberOfProgramArgs,
                SCOREP_StringHandle* programArguments,
-               SCOREP_RegionHandle  regionHandle )
+               SCOREP_RegionHandle  regionHandle,
+               uint64_t             processId,
+               uint64_t             threadId )
 {
-    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( processId != SCOREP_INVALID_PID )
+    {
+        add_attribute( location, scorep_tracing_pid_attribute, &processId );
+
+        if ( threadId != SCOREP_INVALID_TID && processId != threadId )
+        {
+            add_attribute( location, scorep_tracing_tid_attribute, &threadId );
+        }
+    }
 
     OTF2_StringRef args[ numberOfProgramArgs ];
     for ( uint32_t i = 0; i < numberOfProgramArgs; i++ )
@@ -179,7 +198,7 @@ program_begin( SCOREP_Location*     location,
         args[ i ] = SCOREP_LOCAL_HANDLE_TO_ID( programArguments[ i ], String );
     }
     OTF2_EvtWriter_ProgramBegin( evt_writer,
-                                 NULL,
+                                 attribute_list,
                                  timestamp,
                                  SCOREP_LOCAL_HANDLE_TO_ID( programName, String ),
                                  numberOfProgramArgs,
@@ -381,7 +400,7 @@ sample( SCOREP_Location*                location,
 }
 
 
-static void
+void
 add_attribute( SCOREP_Location*       location,
                SCOREP_AttributeHandle attributeHandle,
                void*                  value )
@@ -1487,12 +1506,20 @@ static void
 thread_team_begin( SCOREP_Location*                 location,
                    uint64_t                         timestamp,
                    SCOREP_ParadigmType              paradigm,
-                   SCOREP_InterimCommunicatorHandle threadTeam )
+                   SCOREP_InterimCommunicatorHandle threadTeam,
+                   uint64_t                         threadId )
 {
-    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( threadId != SCOREP_INVALID_TID )
+    {
+        add_attribute( location, scorep_tracing_tid_attribute, &threadId );
+    }
 
     OTF2_EvtWriter_ThreadTeamBegin( evt_writer,
-                                    NULL,
+                                    attribute_list,
                                     timestamp,
                                     SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ) );
 
@@ -1578,12 +1605,20 @@ thread_begin( SCOREP_Location*                 location,
               uint64_t                         timestamp,
               SCOREP_ParadigmType              paradigm,
               SCOREP_InterimCommunicatorHandle threadTeam,
-              uint32_t                         createSequenceCount )
+              uint32_t                         createSequenceCount,
+              uint64_t                         threadId )
 {
-    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( threadId != SCOREP_INVALID_TID )
+    {
+        add_attribute( location, scorep_tracing_tid_attribute, &threadId );
+    }
 
     OTF2_EvtWriter_ThreadBegin( evt_writer,
-                                NULL,
+                                attribute_list,
                                 timestamp,
                                 SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
                                                            InterimCommunicator ),

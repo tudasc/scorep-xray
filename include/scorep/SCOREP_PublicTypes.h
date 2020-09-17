@@ -45,6 +45,16 @@
 /*@{*/
 
 /**
+ * Symbolic constant representing an invalid or unknown process identifier.
+ */
+#define SCOREP_INVALID_PID 0
+
+/**
+ * Symbolic constant representing an invalid or unknown thread identifier.
+ */
+#define SCOREP_INVALID_TID 0
+
+/**
  * Type used in specify the exit status of the program.
  * @see ProgramEnd event
  */

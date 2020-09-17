@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,6 +37,9 @@
 #include <config.h>
 
 #include <SCOREP_Thread_Mgmt.h>
+
+#include <scorep/SCOREP_PublicTypes.h>
+
 #include <scorep_location_management.h>
 #include <scorep_subsystem_management.h>
 
@@ -91,4 +94,10 @@ bool
 SCOREP_Thread_IsIntialThread( void )
 {
     return true;
+}
+
+uint64_t
+SCOREP_Thread_GetOSId( void )
+{
+    return SCOREP_INVALID_TID;
 }

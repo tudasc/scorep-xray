@@ -32,6 +32,8 @@ User tools and API improvements and changes:
 - A new mutex implementation based on atomic intrinsics replaces all
   existing mutex implementations. Therefore the `--mutex` option to
   scorep and scorep-config was removed.
+- Add process ID (PID) and thread ID (TID) as attributes on program
+  begin or thread creation events respectivly.
 
 Bugfixes:
 

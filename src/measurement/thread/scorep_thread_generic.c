@@ -36,6 +36,7 @@
 #include <scorep_thread_generic.h>
 #include <scorep_thread_model_specific.h>
 
+#include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Mutex.h>
 #include <scorep_location_management.h>
 #include <scorep_subsystem_management.h>
@@ -48,6 +49,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
+
+#if HAVE( SYS_SYSCALL_H )
+#include <sys/syscall.h>
+#include <unistd.h>
+#endif
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -281,4 +287,16 @@ scorep_thread_set_team( struct scorep_thread_private_data* tpd,
     UTILS_DEBUG_ENTRY();
     UTILS_ASSERT( tpd );
     tpd->thread_team = team;
+}
+
+uint64_t
+SCOREP_Thread_GetOSId( void )
+{
+#if HAVE( DECL_SYS_GETTID )
+    return syscall( SYS_gettid );
+#elif HAVE( DECL_SYS_THREAD_SELFID )
+    return syscall( SYS_thread_selfid );
+#else
+    return SCOREP_INVALID_TID;
+#endif
 }

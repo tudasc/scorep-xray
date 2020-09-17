@@ -215,14 +215,46 @@ typedef void ( * SCOREP_Substrates_OnTracingBufferFlushEndCb )(
     SCOREP_RegionHandle     regionHandle,
     uint64_t*               metricValues );
 
+/**
+ * called on each process when the application starts
+ *
+ * @param location location which creates this event
+ *
+ * @param timestamp timestamp for this event
+ *
+ * @param programName name of the application
+ *
+ * @param numberOfProgramArgs number of arguments of the application
+ *
+ * @param programArguments the list of arguments
+ *
+ * @param programRegionHandle the program region that is entered
+ *
+ * @param processId process identifier of the operating system
+ * If processId is not set, it has the value SCOREP_INVALID_PID.
+ *
+ * @param threadId thread identifier of the operating system
+ */
 typedef void ( * SCOREP_Substrates_ProgramBeginCb )(
     struct SCOREP_Location* location,
     uint64_t                timestamp,
     SCOREP_StringHandle     programName,
     uint32_t                numberOfProgramArgs,
     SCOREP_StringHandle*    programArguments,
-    SCOREP_RegionHandle     programRegionHandle );
-
+    SCOREP_RegionHandle     programRegionHandle,
+    uint64_t                processId,
+    uint64_t                threadId );
+/**
+ * called on each process when the application ends
+ *
+ * @param location location which creates this event
+ *
+ * @param timestamp timestamp for this event
+ *
+ * @param exitStatus exit status of the application
+ *
+ * @param programRegionHandle the program region that is entered
+ */
 typedef void ( * SCOREP_Substrates_ProgramEndCb )(
     struct SCOREP_Location* location,
     uint64_t                timestamp,
@@ -1141,13 +1173,16 @@ typedef void ( * SCOREP_Substrates_ThreadForkJoinJoinCb )(
  *
  * @param threadTeam previously defined thread team
  *
+ * @param threadId thread identifier of the operating system
+ * If threadId is not set, it has the value SCOREP_INVALID_TID.
  * @{
  */
 typedef void ( * SCOREP_Substrates_ThreadForkJoinTeamBeginCb )(
     struct SCOREP_Location*          location,
     uint64_t                         timestamp,
     SCOREP_ParadigmType              paradigm,
-    SCOREP_InterimCommunicatorHandle threadTeam );
+    SCOREP_InterimCommunicatorHandle threadTeam,
+    uint64_t                         threadId );
 
 typedef void ( * SCOREP_Substrates_ThreadForkJoinTeamEndCb )(
     struct SCOREP_Location*          location,
@@ -1288,6 +1323,8 @@ typedef void ( * SCOREP_Substrates_ThreadForkJoinTaskEndCb )(
  * @param createSequenceCount a process unique increasing number that is increased at every
  * SCOREP_Substrates_ThreadCreateWaitCreateCb and SCOREP_Substrates_ThreadForkJoinForkCb
  *
+ * @param threadId thread identifier of the operating system
+ * If threadId is not set, it has the value SCOREP_INVALID_TID.
  * @{
  */
 
@@ -1310,7 +1347,8 @@ typedef void ( * SCOREP_Substrates_ThreadCreateWaitBeginCb )(
     uint64_t                         timestamp,
     SCOREP_ParadigmType              paradigm,
     SCOREP_InterimCommunicatorHandle threadTeam,
-    uint32_t                         createSequenceCount );
+    uint32_t                         createSequenceCount,
+    uint64_t                         threadId );
 
 typedef void ( * SCOREP_Substrates_ThreadCreateWaitEndCb )(
     struct SCOREP_Location*          location,
