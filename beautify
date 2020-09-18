@@ -75,8 +75,8 @@ fi
 # Iterate over candidate files in the index and the working copy, modifies
 # the working copy
 (
-    eval git diff-files --name-only --ignore-submodules                   -- $extensions
-    eval git diff-index --name-only --ignore-submodules --cached $against -- $extensions
+    eval git diff-files --name-only --ignore-submodules --diff-filter=$filter                   -- $extensions
+    eval git diff-index --name-only --ignore-submodules --diff-filter=$filter --cached $against -- $extensions
 ) | sort -u |
 while read path
 do
