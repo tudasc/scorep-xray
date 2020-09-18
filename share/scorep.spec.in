@@ -87,6 +87,12 @@
                 global(pthread_sync_mutex);
                 global(pthread_sync_condition);
 
+                global(openacc);
+                global(openacc_setup);
+                global(openacc_comm);
+                global(openacc_sync);
+                global(openacc_kernel_launches);
+
                 global(opencl);
                 global(opencl_setup);
                 global(opencl_comm);
@@ -107,6 +113,7 @@
                 ${includesSHMEM}    = 0;
                 ${includesOpenMP}   = 0;
                 ${includesPthread}  = 0;
+                ${includesOpenACC}  = 0;
                 ${includesOpenCL}   = 0;
                 ${includesCUDA}     = 0;
                 ${includesIdleGPUs} = 0;
@@ -358,6 +365,33 @@
                         };
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openacc" )
+                    {
+                        ${includesOpenACC} = 1;
+
+                        ${openacc}[${i}] = 1;
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(init|shutdown)(@.*)?$/ )
+                        {
+                            ${openacc_setup}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(upload|download)(@.*)?$/ )
+                        {
+                            ${openacc_comm}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_wait(@.*)?$/ )
+                        {
+                            ${openacc_sync}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_launch_kernel(@.*)?$/ )
+                        {
+                            ${openacc_kernel_launches}[${i}] = 1;
+                        };
+                    };
+
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "opencl" )
                     {
                         ${includesOpenCL} = 1;
@@ -587,6 +621,15 @@
                     cube::metric::set::pthread_conditional("value", "VOID");
                 };
 
+                if ( ${includesOpenACC} == 0 )
+                {
+                    cube::metric::set::openacc_time("value", "VOID");
+                    cube::metric::set::openacc_setup("value", "VOID");
+                    cube::metric::set::openacc_comm("value", "VOID");
+                    cube::metric::set::openacc_sync("value", "VOID");
+                    cube::metric::set::openacc_kernel_launches("value", "VOID");
+                };
+
                 if ( ${includesOpenCL} == 0 )
                 {
                     cube::metric::set::opencl_time("value", "VOID");
@@ -628,7 +671,7 @@
                 <url>@mirror@scorep_metrics.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
-                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
+                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::openacc_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>OpenCL kernels</disp_name>
@@ -1564,6 +1607,96 @@
                         }
                         </cubepl>
                     </metric>
+                </metric>
+            </metric>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>OpenACC</disp_name>
+                <uniq_name>openacc_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scorep_metrics.html#openacc_time</url>
+                <descr>Time spent in the OpenACC run-time system and API</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${openacc}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Initialization and Finalization</disp_name>
+                    <uniq_name>openacc_setup</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_setup</url>
+                    <descr>Time needed to initialize and finalize OpenACC</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_setup}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Memory management</disp_name>
+                    <uniq_name>openacc_comm</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_comm</url>
+                    <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_comm}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Synchronization</disp_name>
+                    <uniq_name>openacc_sync</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_sync</url>
+                    <descr>Time spent on OpenACC synchronization</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_sync}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Kernel launches</disp_name>
+                    <uniq_name>openacc_kernel_launches</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_kernel_launches</url>
+                    <descr>Time needed to launch OpenACC kernels</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_kernel_launches}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
                 </metric>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
