@@ -4,7 +4,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019,
+ * Copyright (c) 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -1102,6 +1102,7 @@ SCOREP_Atomic_FetchNand_intptr( intptr_t*              ptr,
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
 #include "../atomic/SCOREP_Atomic.inc.c"
 #endif /* SCOREP_GCC_ATOMIC_BUILTINS */
+#undef STATIC_INLINE
 #endif /* defined( HAVE_CONFIG_H ) */
 
 #endif /* SCOREP_ATOMIC_H */

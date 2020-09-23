@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019,
+ * Copyright (c) 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -1268,3 +1268,7 @@ SCOREP_Atomic_FetchNand_intptr( intptr_t* ptr, intptr_t val, SCOREP_Atomic_Memor
 #undef PTR_PTR_TO_INT_PTR
 #undef PTR_TO_INT
 #undef INT_TO_PTR
+
+#if !defined( HAVE_CONFIG_H )
+#undef STATIC_INLINE
+#endif /* !defined( HAVE_CONFIG_H ) */
