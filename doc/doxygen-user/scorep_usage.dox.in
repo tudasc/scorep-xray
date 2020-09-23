@@ -64,16 +64,6 @@ Common options are:
                   POSIX asynchronous I/O API (i.e., `aio_read`/`aio_write`), if
                   available. And the ISO C `FILE` handle based API (i.e.,
                   `fopen`/`fclose`).
-  --mutex=<paradigm>[:<variant>]
-                  Possible paradigms and variants are:
-              none
-                  serial case, no locking
-              pthread
-                  Pthread mutex locks
-              pthread:spinlock
-                  Pthread spinlocks
-              omp
-                  OpenMP locks
   --compiler      Enables compiler instrumentation.
                   By default, it disables pdt instrumentation.
   --nocompiler    Disables compiler instrumentation.
