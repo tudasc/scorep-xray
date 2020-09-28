@@ -124,6 +124,7 @@
                 ${includesIdleGPUs} = 0;
                 ${includesLIBWRAP}  = 0;
                 ${includesFILEIO}   = 0;
+                ${includesMEMORY}   = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -566,6 +567,10 @@
                         };
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "memory" )
+                    {
+                        ${includesMEMORY} = 1;
+                    };
 
                     ${i} = ${i} + 1;
                 };
@@ -696,6 +701,14 @@
                     cube::metric::set::io_writing_time("value", "VOID");
                     cube::metric::set::io_bytes_read("value", "VOID");
                     cube::metric::set::io_bytes_written("value", "VOID");
+                };
+
+                if ( ${includesMEMORY} == 0 )
+                {
+                    cube::metric::set::ALLOCATION_SIZE("value", "VOID");
+                    cube::metric::set::DEALLOCATION_SIZE("value", "VOID");
+                    cube::metric::set::bytes_leaked("value", "VOID");
+                    cube::metric::set::maximum_heap_memory_allocated("value", "VOID");
                 };
 
                 return 0;
