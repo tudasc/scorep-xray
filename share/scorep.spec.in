@@ -107,6 +107,11 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                global(fileio);
+                global(fileio_meta);
+                global(fileio_reading);
+                global(fileio_writing);
+
                 global(libwrap);
 
                 ${includesMPI}      = 0;
@@ -118,6 +123,7 @@
                 ${includesCUDA}     = 0;
                 ${includesIdleGPUs} = 0;
                 ${includesLIBWRAP}  = 0;
+                ${includesFILEIO}   = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -539,6 +545,28 @@
                         ${libwrap}[${i}] = 1;
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "io" )
+                    {
+                        ${includesFILEIO} = 1;
+                        ${fileio}[${i}]   = 1;
+
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] seq "file_io metadata" )
+                        {
+                            ${fileio_meta}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_read|fgetc|fgets|fread|fscanf|getc|getchar|gets|pread|pread64|preadv|preadv2|preadv64|preadv64v2|read|readv|scanf|vfscanf|vscanf)$/ )
+                        {
+                            ${fileio_reading}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_write|fflush|fprintf|fputc|fputs|fwrite|printf|putchar|puts|pwrite|pwrite64|pwritev|pwritev2|pwritev64|pwritev64v2|vfprintf|vprintf|write|writev)$/ )
+                        {
+                            ${fileio_writing}[${i}] = 1;
+                        };
+                    };
+
+
                     ${i} = ${i} + 1;
                 };
 
@@ -660,6 +688,16 @@
                     cube::metric::set::libwrap_time("value", "VOID");
                 };
 
+                if ( ${includesFILEIO} == 0 )
+                {
+                    cube::metric::set::io_time("value", "VOID");
+                    cube::metric::set::io_meta_time("value", "VOID");
+                    cube::metric::set::io_reading_time("value", "VOID");
+                    cube::metric::set::io_writing_time("value", "VOID");
+                    cube::metric::set::io_bytes_read("value", "VOID");
+                    cube::metric::set::io_bytes_written("value", "VOID");
+                };
+
                 return 0;
             }
             </cubeplinit>
@@ -673,6 +711,78 @@
                 <cubepl>
                     metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::openacc_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
                 </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>File I/O</disp_name>
+                    <uniq_name>io_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#io_time</url>
+                    <descr>Time spent in file I/O</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${fileio}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Handling</disp_name>
+                        <uniq_name>io_meta_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_meta_time</url>
+                        <descr>Time spent in file I/O handling metadata</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_meta}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Reading</disp_name>
+                        <uniq_name>io_reading_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_reading_time</url>
+                        <descr>Time spent in file I/O reading operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_reading}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Writing</disp_name>
+                        <uniq_name>io_writing_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_writing_time</url>
+                        <descr>Time spent in file I/O writing operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_writing}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>OpenCL kernels</disp_name>
                     <uniq_name>opencl_kernel_executions</uniq_name>
