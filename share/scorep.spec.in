@@ -2179,12 +2179,12 @@
             </metric>
         </metric>
         <metric type="POSTDERIVED">
-            <disp_name>Remote Memory Access</disp_name>
+            <disp_name>One-sided</disp_name>
             <uniq_name>bytes_rma</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
             <url>@mirror@scorep_metrics.html#bytes_rma</url>
-            <descr>Number of bytes transferred in remote memory access operations</descr>
+            <descr>Number of bytes transferred in one-sided remote memory access operations</descr>
             <cubepl>
                 metric::bytes_put() + metric::bytes_get()
             </cubepl>
@@ -2195,7 +2195,7 @@
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
                 <url>@mirror@scorep_metrics.html#bytes_put</url>
-                <descr>Number of bytes sent in remote memory access operations</descr>
+                <descr>Number of bytes sent in one-sided remote memory access operations</descr>
             </metric>
             <metric>
                 <!-- This metric is copied from the summary profile -->
@@ -2204,7 +2204,7 @@
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
                 <url>@mirror@scorep_metrics.html#bytes_get</url>
-                <descr>Number of bytes received in remote memory access operations</descr>
+                <descr>Number of bytes received in one-sided remote memory access operations</descr>
             </metric>
         </metric>
         <metric type="POSTDERIVED">
