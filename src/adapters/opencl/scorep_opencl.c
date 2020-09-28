@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,6 +33,7 @@
 
 #include <string.h>
 #include <inttypes.h>
+#include <stdio.h>
 
 
 /** @def KERNEL_STRING_LENGTH
@@ -380,6 +381,44 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
         queue->host_location,
         SCOREP_LOCATION_TYPE_GPU, thread_name );
 
+    /* Use Nvidia OpenCL extension to query PCI bus/slot id for node-leve unique
+       identification of the used GPU analog to CUDA */
+    cl_int vendor_id;
+    SCOREP_OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                           CL_DEVICE_VENDOR_ID,
+                                           sizeof( cl_int ),
+                                           &vendor_id,
+                                           NULL ) );
+    if ( vendor_id == 0x10de )
+    {
+        #define CL_DEVICE_PCI_DOMAIN_ID_NV                  0x400a
+        #define CL_DEVICE_PCI_BUS_ID_NV                     0x4008
+        #define CL_DEVICE_PCI_SLOT_ID_NV                    0x4009
+        cl_int domain_id, bus_id, slot_id;
+        cl_int error_domain = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                              CL_DEVICE_PCI_DOMAIN_ID_NV,
+                                                              sizeof( cl_int ),
+                                                              &domain_id,
+                                                              NULL ) );
+        cl_int error_bus = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                           CL_DEVICE_PCI_BUS_ID_NV,
+                                                           sizeof( cl_int ),
+                                                           &bus_id,
+                                                           NULL ) );
+        cl_int error_device = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                              CL_DEVICE_PCI_SLOT_ID_NV,
+                                                              sizeof( cl_int ),
+                                                              &slot_id,
+                                                              NULL ) );
+        if ( error_domain == CL_SUCCESS  &&  error_bus == CL_SUCCESS && error_device == CL_SUCCESS )
+        {
+            SCOREP_Location_AddPCIProperties( queue->device_location,
+                                              domain_id,
+                                              bus_id,
+                                              slot_id,
+                                              UINT8_MAX );
+        }
+    }
     SCOREP_OPENCL_CALL( clRetainCommandQueue, ( clQueue ) );
 
     /* Get vendor before first call to scorep_opencl_synchronize_event()! */
