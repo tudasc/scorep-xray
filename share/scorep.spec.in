@@ -2082,7 +2082,7 @@
         <url>@mirror@scorep_metrics.html#bytes</url>
         <descr>Number of bytes transferred</descr>
         <cubepl>
-            metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma()
+            metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma() + metric::bytes_other()
         </cubepl>
         <metric type="POSTDERIVED">
             <disp_name>Point-to-point</disp_name>
@@ -2205,6 +2205,53 @@
                 <uom>bytes</uom>
                 <url>@mirror@scorep_metrics.html#bytes_get</url>
                 <descr>Number of bytes received in remote memory access operations</descr>
+            </metric>
+        </metric>
+        <metric type="POSTDERIVED">
+            <disp_name>Undetermined</disp_name>
+            <uniq_name>bytes_other</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics.html#bytes_other</url>
+            <descr>Number of bytes transferred in undetermined operations</descr>
+            <cubepl>
+                metric::bytes_sent_other() + metric::bytes_received_other()
+            </cubepl>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Sent</disp_name>
+                <uniq_name>bytes_sent_other</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics.html#bytes_sent_other</url>
+                <descr>Number of bytes sent in undetermined operations</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::bytes_sent(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+            </metric>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Received</disp_name>
+                <uniq_name>bytes_received_other</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics.html#bytes_received_other</url>
+                <descr>Number of bytes received in undetermined operations</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::bytes_received(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
             </metric>
         </metric>
     </metric>
