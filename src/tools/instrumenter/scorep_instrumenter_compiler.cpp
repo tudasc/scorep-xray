@@ -256,34 +256,41 @@ SCOREP_Instrumenter_CompilerAdapter::precompile( SCOREP_Instrumenter&         in
     /* For the XL compiler we have two interfaces. Check whether the version
        of the compilers match the used interface. */
 #if SCOREP_BACKEND_COMPILER_IBM && HAVE( POPEN )
-    int major, minor, scorep_version, app_version;
-    scorep_get_ibm_compiler_version( cmdLine.getInstallData()->getCC(), major, minor );
-    scorep_version = major * 100 + minor;
-    scorep_get_ibm_compiler_version( cmdLine.getCompilerName(), major, minor );
-    app_version =  major * 100 + minor;
+    /* When using nvcc with XL, the application and the Score-P
+       installation are using at least XL 13.1.1. Thus, we don't need
+       to check for an interface version mismatch. The check would fail
+       as -qversion is passed to nvcc. */
+    if ( cmdLine.getCompilerName().find( "nvcc" ) == std::string::npos )
+    {
+        int major, minor, scorep_version, app_version;
+        scorep_get_ibm_compiler_version( cmdLine.getInstallData()->getCC(), major, minor );
+        scorep_version = major * 100 + minor;
+        scorep_get_ibm_compiler_version( cmdLine.getCompilerName(), major, minor );
+        app_version =  major * 100 + minor;
 
-    if ( scorep_version > 1100 )
-    {
-        if ( app_version <= 1100 ||
-             ( is_fortran_file( input_file ) && app_version <= 1300 ) )
+        if ( scorep_version > 1100 )
         {
-            std::cerr << "[Score-P] ERROR: This compiler version is too old to be used with this "
-                      << "Score-P installation\n"
-                      << "                 You need to use a Score-P installation that was compiled"
-                      << " with XLC 11.0 or earlier" << std::endl;
-            exit( EXIT_FAILURE );
+            if ( app_version <= 1100 ||
+                 ( is_fortran_file( input_file ) && app_version <= 1300 ) )
+            {
+                std::cerr << "[Score-P] ERROR: This compiler version is too old to be used with this "
+                          << "Score-P installation\n"
+                          << "                 You need to use a Score-P installation that was compiled"
+                          << " with XLC 11.0 or earlier" << std::endl;
+                exit( EXIT_FAILURE );
+            }
         }
-    }
-    else
-    {
-        if ( app_version > 1300 ||
-             ( !is_fortran_file( input_file ) && app_version > 1100 ) )
+        else
         {
-            std::cerr << "[Score-P] ERROR: This compiler version is too new to be used with this "
-                      << "Score-P installation\n"
-                      << "                 You need to use a Score-P installation that was compiled"
-                      << " with XLC 11.1 or higher" << std::endl;
-            exit( EXIT_FAILURE );
+            if ( app_version > 1300 ||
+                 ( !is_fortran_file( input_file ) && app_version > 1100 ) )
+            {
+                std::cerr << "[Score-P] ERROR: This compiler version is too new to be used with this "
+                          << "Score-P installation\n"
+                          << "                 You need to use a Score-P installation that was compiled"
+                          << " with XLC 11.1 or higher" << std::endl;
+                exit( EXIT_FAILURE );
+            }
         }
     }
 
