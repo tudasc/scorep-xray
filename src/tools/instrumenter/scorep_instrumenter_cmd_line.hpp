@@ -264,6 +264,10 @@ public:
     const std::vector<std::string>&
     getTempFiles( void );
 
+    static bool
+    isNvcc( const std::string& compiler );
+
+
     /* ***************************************************** Private methods */
 private:
 
@@ -354,6 +358,15 @@ private:
      */
     bool
     is_interposition_library( const std::string& libraryName );
+
+    /**
+       Checks whether a flag should be treated as a compilation flag.
+       Will look up compiler name to see if it's nvcc.
+       @param flag The flag
+     */
+
+    bool
+    is_nvcc_compile_flag( const std::string& flag );
 
     /* ***************************************************** Private members */
 private:

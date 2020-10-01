@@ -66,7 +66,7 @@ SCOREP_Instrumenter_CudaAdapter::printHelp( void )
 void
 SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler )
 {
-    if ( remove_path( compiler ).substr( 0, 2 ) == "nv" )
+    if ( SCOREP_Instrumenter_CmdLine::isNvcc( compiler ) )
     {
         if ( m_usage == detect )
         {
