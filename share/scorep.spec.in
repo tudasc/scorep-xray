@@ -19,7 +19,7 @@
             <uniq_name>execution</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#execution</url>
+            <url>@mirror@scorep_metrics.html#execution</url>
             <descr>Execution time (does not include time allocated for idle threads)</descr>
             <cubepl>
             {
@@ -592,7 +592,7 @@
                 <uniq_name>comp</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
+                <url>@mirror@scorep_metrics.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
                     metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
@@ -602,7 +602,7 @@
                     <uniq_name>opencl_kernel_executions</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_executions</url>
+                    <url>@mirror@scorep_metrics.html#opencl_kernel_executions</url>
                     <descr>Time spent executing OpenCL kernels</descr>
                     <cubepl>
                     {
@@ -620,7 +620,7 @@
                     <uniq_name>cuda_kernel_executions</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_executions</url>
+                    <url>@mirror@scorep_metrics.html#cuda_kernel_executions</url>
                     <descr>Time spent executing CUDA kernels</descr>
                     <cubepl>
                     {
@@ -640,7 +640,7 @@
                 <uniq_name>mpi</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi</url>
+                <url>@mirror@scorep_metrics.html#mpi</url>
                 <descr>Time spent in MPI calls</descr>
                 <cubepl>
                 {
@@ -657,7 +657,7 @@
                     <uniq_name>mpi_management</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_management</url>
+                    <url>@mirror@scorep_metrics.html#mpi_management</url>
                     <descr>Time spent in MPI management operations</descr>
                     <cubepl>
                         metric::mpi_init_exit() + metric::mpi_mgmt_comm() + metric::mpi_mgmt_file() + metric::mpi_mgmt_win()
@@ -667,7 +667,7 @@
                         <uniq_name>mpi_init_exit</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_init_exit</url>
+                        <url>@mirror@scorep_metrics.html#mpi_init_exit</url>
                         <descr>Time spent in MPI initialization/finalization calls</descr>
                         <cubepl>
                         {
@@ -685,7 +685,7 @@
                         <uniq_name>mpi_mgmt_comm</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_comm</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_comm</url>
                         <descr>Time spent in MPI communicator management calls</descr>
                         <cubepl>
                         {
@@ -703,7 +703,7 @@
                         <uniq_name>mpi_mgmt_file</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_file</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_file</url>
                         <descr>Time spent in MPI file management calls</descr>
                         <cubepl>
                         {
@@ -721,7 +721,7 @@
                         <uniq_name>mpi_mgmt_win</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_win</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_win</url>
                         <descr>Time spent in MPI window management calls</descr>
                         <cubepl>
                         {
@@ -740,7 +740,7 @@
                     <uniq_name>mpi_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#mpi_synchronization</url>
                     <descr>Time spent in MPI synchronization calls</descr>
                     <cubepl>
                         metric::mpi_sync_collective() + metric::mpi_rma_synchronization()
@@ -750,7 +750,7 @@
                         <uniq_name>mpi_sync_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_sync_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_sync_collective</url>
                         <descr>Time spent in MPI barriers</descr>
                         <cubepl>
                         {
@@ -768,7 +768,7 @@
                         <uniq_name>mpi_rma_synchronization</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_synchronization</url>
+                        <url>@mirror@scorep_metrics.html#mpi_rma_synchronization</url>
                         <descr>Time spent in MPI one-sided synchronization calls</descr>
                         <cubepl>
                             metric::mpi_rma_sync_active() + metric::mpi_rma_sync_passive()
@@ -778,7 +778,7 @@
                             <uniq_name>mpi_rma_sync_active</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_active</url>
+                            <url>@mirror@scorep_metrics.html#mpi_rma_sync_active</url>
                             <descr>Time spent in MPI one-sided active target synchronization calls</descr>
                             <cubepl>
                             {
@@ -796,7 +796,7 @@
                             <uniq_name>mpi_rma_sync_passive</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_passive</url>
+                            <url>@mirror@scorep_metrics.html#mpi_rma_sync_passive</url>
                             <descr>Time spent in MPI one-sided passive target synchronization calls</descr>
                             <cubepl>
                             {
@@ -816,7 +816,7 @@
                     <uniq_name>mpi_communication</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_communication</url>
+                    <url>@mirror@scorep_metrics.html#mpi_communication</url>
                     <descr>Time spent in MPI communication calls</descr>
                     <cubepl>
                         metric::mpi_point2point() + metric::mpi_collective() + metric::mpi_rma_communication()
@@ -826,7 +826,7 @@
                         <uniq_name>mpi_point2point</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_point2point</url>
+                        <url>@mirror@scorep_metrics.html#mpi_point2point</url>
                         <descr>Time spent in MPI point-to-point communication</descr>
                         <cubepl>
                         {
@@ -844,7 +844,7 @@
                         <uniq_name>mpi_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_collective</url>
                         <descr>Time spent in MPI collective communication</descr>
                         <cubepl>
                         {
@@ -862,7 +862,7 @@
                         <uniq_name>mpi_rma_communication</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_communication</url>
+                        <url>@mirror@scorep_metrics.html#mpi_rma_communication</url>
                         <descr>Time spent in MPI one-sided communication</descr>
                         <cubepl>
                         {
@@ -881,7 +881,7 @@
                     <uniq_name>mpi_io</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io</url>
+                    <url>@mirror@scorep_metrics.html#mpi_io</url>
                     <descr>Time spent in MPI file I/O calls</descr>
                     <cubepl>
                         metric::mpi_io_individual() + metric::mpi_io_collective()
@@ -891,7 +891,7 @@
                         <uniq_name>mpi_io_individual</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_individual</url>
+                        <url>@mirror@scorep_metrics.html#mpi_io_individual</url>
                         <descr>Time spent in individual MPI file I/O calls</descr>
                         <cubepl>
                         {
@@ -909,7 +909,7 @@
                         <uniq_name>mpi_io_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_io_collective</url>
                         <descr>Time spent in collective MPI file I/O calls</descr>
                         <cubepl>
                         {
@@ -928,7 +928,7 @@
                     <uniq_name>mpi_request_handling</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_handling</url>
+                    <url>@mirror@scorep_metrics.html#mpi_request_handling</url>
                     <descr>Time spent handling requests</descr>
                     <cubepl>
                         {
@@ -945,7 +945,7 @@
                         <uniq_name>mpi_request_start</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_start</url>
+                        <url>@mirror@scorep_metrics.html#mpi_request_start</url>
                         <descr>Time spent starting persistent requests</descr>
                         <cubepl>
                             {
@@ -963,7 +963,7 @@
                         <uniq_name>mpi_request_completion</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_completion</url>
+                        <url>@mirror@scorep_metrics.html#mpi_request_completion</url>
                         <descr>Time spent completing requests.</descr>
                         <cubepl>
                             {
@@ -984,7 +984,7 @@
                 <uniq_name>shmem_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem</url>
+                <url>@mirror@scorep_metrics.html#shmem</url>
                 <descr>Time spent in SHMEM calls</descr>
                 <cubepl>
                 {
@@ -1002,7 +1002,7 @@
                     <uniq_name>shmem_mgmt_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt</url>
+                    <url>@mirror@scorep_metrics.html#shmem_mgmt</url>
                     <descr>Time spent in SHMEM management operations</descr>
                     <cubepl>
                         metric::shmem_mgmt_initfini_time() + metric::shmem_mgmt_activesets_time() + metric::shmem_mgmt_query_time()
@@ -1013,7 +1013,7 @@
                         <uniq_name>shmem_mgmt_initfini_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_initfini</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_initfini</url>
                         <descr>Time spent in SHMEM initialization/finalization calls</descr>
                         <cubepl>
                         {
@@ -1032,7 +1032,7 @@
                         <uniq_name>shmem_mgmt_activesets_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_activesets</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_activesets</url>
                         <descr>Time spent in SHMEM active sets/teams management calls</descr>
                         <cubepl>
                         {
@@ -1051,7 +1051,7 @@
                         <uniq_name>shmem_mgmt_query_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_query</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_query</url>
                         <descr>Time spent in SHMEM query calls</descr>
                         <cubepl>
                         {
@@ -1072,7 +1072,7 @@
                     <uniq_name>shmem_comm_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm</url>
+                    <url>@mirror@scorep_metrics.html#shmem_comm</url>
                     <descr>Time spent in SHMEM communication operations</descr>
                     <cubepl>
                         metric::shmem_comm_rma_time() + metric::shmem_comm_atomic_time() + metric::shmem_comm_coll_time()
@@ -1083,7 +1083,7 @@
                         <uniq_name>shmem_comm_rma_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_rma</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_rma</url>
                         <descr>Time spent in SHMEM RMA operations</descr>
                         <cubepl>
                         {
@@ -1102,7 +1102,7 @@
                         <uniq_name>shmem_comm_atomic_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_atomic</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_atomic</url>
                         <descr>Time spent in SHMEM atomic operations</descr>
                         <cubepl>
                         {
@@ -1121,7 +1121,7 @@
                         <uniq_name>shmem_comm_coll_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_coll</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_coll</url>
                         <descr>Time spent in SHMEM collective operations</descr>
                         <cubepl>
                         {
@@ -1142,7 +1142,7 @@
                     <uniq_name>shmem_sync_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <url>@mirror@scorep_metrics.html#shmem_sync</url>
                     <descr>Time spent in SHMEM synchronization calls</descr>
                     <cubepl>
                         metric::shmem_sync_rma_time() + metric::shmem_sync_coll_time() + metric::shmem_sync_locking_time()
@@ -1153,7 +1153,7 @@
                         <uniq_name>shmem_sync_rma_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_rma</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_rma</url>
                         <descr>Time spent in SHMEM RMA synchronizations</descr>
                         <cubepl>
                         {
@@ -1172,7 +1172,7 @@
                         <uniq_name>shmem_sync_coll_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_coll</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_coll</url>
                         <descr>Time spent in SHMEM collective synchronizations</descr>
                         <cubepl>
                         {
@@ -1191,7 +1191,7 @@
                         <uniq_name>shmem_sync_locking_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_locking</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_locking</url>
                         <descr>Time spent in SHMEM locking operations</descr>
                         <cubepl>
                         {
@@ -1212,7 +1212,7 @@
                     <uniq_name>shmem_memory_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <url>@mirror@scorep_metrics.html#shmem_sync</url>
                     <descr>Time spent in SHMEM memory calls</descr>
                     <cubepl>
                         metric::shmem_memory_mgmt_time() + metric::shmem_memory_ordering_time()
@@ -1223,7 +1223,7 @@
                         <uniq_name>shmem_memory_mgmt_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_mgmt</url>
+                        <url>@mirror@scorep_metrics.html#shmem_memory_mgmt</url>
                         <descr>Time spent in SHMEM memory management calls</descr>
                         <cubepl>
                         {
@@ -1242,7 +1242,7 @@
                         <uniq_name>shmem_memory_ordering_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_ordering</url>
+                        <url>@mirror@scorep_metrics.html#shmem_memory_ordering</url>
                         <descr>Time spent in SHMEM memory orderings</descr>
                         <cubepl>
                         {
@@ -1263,7 +1263,7 @@
                     <uniq_name>shmem_event_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_event</url>
+                    <url>@mirror@scorep_metrics.html#shmem_event</url>
                     <descr>Time spent in SHMEM event calls</descr>
                     <cubepl>
                     {
@@ -1282,7 +1282,7 @@
                     <uniq_name>shmem_cache_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_cache</url>
+                    <url>@mirror@scorep_metrics.html#shmem_cache</url>
                     <descr>Time spent in SHMEM cache calls</descr>
                     <cubepl>
                     {
@@ -1303,7 +1303,7 @@
                 <uniq_name>omp_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_time</url>
+                <url>@mirror@scorep_metrics.html#omp_time</url>
                 <descr>Time spent in the OpenMP run-time system and API</descr>
                 <cubepl>
                     metric::omp_synchronization() + metric::omp_flush()
@@ -1313,7 +1313,7 @@
                     <uniq_name>omp_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#omp_synchronization</url>
                     <descr>Time spent on OpenMP synchronization</descr>
                     <cubepl>
                         metric::omp_barrier() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered() + metric::omp_taskwait()
@@ -1323,7 +1323,7 @@
                         <uniq_name>omp_barrier</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_barrier</url>
+                        <url>@mirror@scorep_metrics.html#omp_barrier</url>
                         <descr>Time spent in OpenMP barrier synchronization</descr>
                         <cubepl>
                             metric::omp_ebarrier() + metric::omp_ibarrier()
@@ -1333,7 +1333,7 @@
                             <uniq_name>omp_ebarrier</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ebarrier</url>
+                            <url>@mirror@scorep_metrics.html#omp_ebarrier</url>
                             <descr>Time spent in explicit OpenMP barrier synchronization</descr>
                             <cubepl>
                             {
@@ -1351,7 +1351,7 @@
                             <uniq_name>omp_ibarrier</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ibarrier</url>
+                            <url>@mirror@scorep_metrics.html#omp_ibarrier</url>
                             <descr>Time spent in implicit OpenMP barrier synchronization</descr>
                             <cubepl>
                             {
@@ -1370,7 +1370,7 @@
                         <uniq_name>omp_critical</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_critical</url>
+                        <url>@mirror@scorep_metrics.html#omp_critical</url>
                         <descr>Time spent waiting at OpenMP critical sections</descr>
                         <cubepl>
                         {
@@ -1388,7 +1388,7 @@
                         <uniq_name>omp_lock_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_lock_api</url>
+                        <url>@mirror@scorep_metrics.html#omp_lock_api</url>
                         <descr>Time spent in OpenMP lock API calls</descr>
                         <cubepl>
                         {
@@ -1406,7 +1406,7 @@
                         <uniq_name>omp_ordered</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ordered</url>
+                        <url>@mirror@scorep_metrics.html#omp_ordered</url>
                         <descr>Time spent waiting at OpenMP ordered regions</descr>
                         <cubepl>
                         {
@@ -1424,7 +1424,7 @@
                         <uniq_name>omp_taskwait</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_taskwait</url>
+                        <url>@mirror@scorep_metrics.html#omp_taskwait</url>
                         <descr>Time spent waiting in OpenMP taskwait directives</descr>
                         <cubepl>
                         {
@@ -1443,7 +1443,7 @@
                     <uniq_name>omp_flush</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_flush</url>
+                    <url>@mirror@scorep_metrics.html#omp_flush</url>
                     <descr>Time spent in OpenMP flush directives</descr>
                     <cubepl>
                     {
@@ -1462,7 +1462,7 @@
                 <uniq_name>pthread_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_time</url>
+                <url>@mirror@scorep_metrics.html#pthread_time</url>
                 <descr>Time spent in the POSIX threads API</descr>
                 <cubepl>
                     metric::pthread_management() + metric::pthread_synchronization()
@@ -1472,7 +1472,7 @@
                     <uniq_name>pthread_management</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_management</url>
+                    <url>@mirror@scorep_metrics.html#pthread_management</url>
                     <descr>Time spent in POSIX threads management</descr>
                     <cubepl>
                     {
@@ -1490,7 +1490,7 @@
                     <uniq_name>pthread_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#pthread_synchronization</url>
                     <descr>Time spent on Pthread synchronization</descr>
                     <cubepl>
                         metric::pthread_lock_api() + metric::pthread_conditional()
@@ -1500,7 +1500,7 @@
                         <uniq_name>pthread_lock_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_lock_api</url>
+                        <url>@mirror@scorep_metrics.html#pthread_lock_api</url>
                         <descr>Time spent in POSIX threads mutex API calls</descr>
                         <cubepl>
                         {
@@ -1518,7 +1518,7 @@
                         <uniq_name>pthread_conditional</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_conditional</url>
+                        <url>@mirror@scorep_metrics.html#pthread_conditional</url>
                         <descr>Time spent in POSIX threads condition API calls</descr>
                         <cubepl>
                         {
@@ -1538,7 +1538,7 @@
                 <uniq_name>opencl_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_time</url>
+                <url>@mirror@scorep_metrics.html#opencl_time</url>
                 <descr>Time spent in the OpenCL run-time system, API and on device</descr>
                 <cubepl>
                 {
@@ -1555,7 +1555,7 @@
                     <uniq_name>opencl_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_setup</url>
+                    <url>@mirror@scorep_metrics.html#opencl_setup</url>
                     <descr>Time needed to initialize and finalize OpenCL and OpenCL kernels</descr>
                     <cubepl>
                     {
@@ -1573,7 +1573,7 @@
                     <uniq_name>opencl_comm</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_comm</url>
+                    <url>@mirror@scorep_metrics.html#opencl_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
                     {
@@ -1591,7 +1591,7 @@
                     <uniq_name>opencl_sync</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_sync</url>
+                    <url>@mirror@scorep_metrics.html#opencl_sync</url>
                     <descr>Time spent on OpenCL synchronization</descr>
                     <cubepl>
                     {
@@ -1609,7 +1609,7 @@
                     <uniq_name>opencl_kernel_launches</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_launches</url>
+                    <url>@mirror@scorep_metrics.html#opencl_kernel_launches</url>
                     <descr>Time needed to launch OpenCL kernels</descr>
                     <cubepl>
                     {
@@ -1628,7 +1628,7 @@
                 <uniq_name>cuda_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_time</url>
+                <url>@mirror@scorep_metrics.html#cuda_time</url>
                 <descr>Time spent in the CUDA run-time system, API and on device</descr>
                 <cubepl>
                 {
@@ -1645,7 +1645,7 @@
                     <uniq_name>cuda_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_setup</url>
+                    <url>@mirror@scorep_metrics.html#cuda_setup</url>
                     <descr>Time needed to initialize and finalize CUDA and CUDA kernels</descr>
                     <cubepl>
                     {
@@ -1663,7 +1663,7 @@
                     <uniq_name>cuda_comm</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_comm</url>
+                    <url>@mirror@scorep_metrics.html#cuda_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
                     {
@@ -1681,7 +1681,7 @@
                     <uniq_name>cuda_sync</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_sync</url>
+                    <url>@mirror@scorep_metrics.html#cuda_sync</url>
                     <descr>Time spent on CUDA synchronization</descr>
                     <cubepl>
                     {
@@ -1699,7 +1699,7 @@
                     <uniq_name>cuda_kernel_launches</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_launches</url>
+                    <url>@mirror@scorep_metrics.html#cuda_kernel_launches</url>
                     <descr>Time spent to launch CUDA kernels</descr>
                     <cubepl>
                     {
@@ -1719,7 +1719,7 @@
                 <uniq_name>libwrap_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#libwrap_time</url>
+                <url>@mirror@scorep_metrics.html#libwrap_time</url>
                 <descr>Time spent in wrapped libraries</descr>
                 <cubepl>
                 {
@@ -1739,7 +1739,7 @@
             <uniq_name>overhead</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#overhead</url>
+            <url>@mirror@scorep_metrics.html#overhead</url>
             <descr>Time spent performing tasks related to trace generation</descr>
             <cubepl>
             {
@@ -1758,7 +1758,7 @@
             <uniq_name>omp_idle_threads</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_idle_threads</url>
+            <url>@mirror@scorep_metrics.html#omp_idle_threads</url>
             <descr>Unused CPU reservation time</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -1766,7 +1766,7 @@
                 <uniq_name>omp_limited_parallelism</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_limited_parallelism</url>
+                <url>@mirror@scorep_metrics.html#omp_limited_parallelism</url>
                 <descr>Unused CPU reservation time in parallel regions due to limited parallelism</descr>
             </metric>
         </metric>
@@ -1777,7 +1777,7 @@
         <uniq_name>visits</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#visits</url>
+        <url>@mirror@scorep_metrics.html#visits</url>
         <descr>Number of visits</descr>
     </metric>
     <metric type="POSTDERIVED">
@@ -1785,7 +1785,7 @@
         <uniq_name>bytes</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes</url>
+        <url>@mirror@scorep_metrics.html#bytes</url>
         <descr>Number of bytes transferred</descr>
         <cubepl>
             metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma()
@@ -1795,7 +1795,7 @@
             <uniq_name>bytes_p2p</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
             <descr>Number of bytes transferred in point-to-point communication operations</descr>
             <cubepl>
                 metric::bytes_sent_p2p() + metric::bytes_received_p2p()
@@ -1805,7 +1805,7 @@
                 <uniq_name>bytes_sent_p2p</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_p2p</url>
+                <url>@mirror@scorep_metrics.html#bytes_sent_p2p</url>
                 <descr>Number of bytes sent in point-to-point communication operations</descr>
                 <cubepl>
                 {
@@ -1823,7 +1823,7 @@
                 <uniq_name>bytes_received_p2p</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
+                <url>@mirror@scorep_metrics.html#bytes_received_p2p</url>
                 <descr>Number of bytes received in point-to-point communication operations</descr>
                 <cubepl>
                 {
@@ -1842,7 +1842,7 @@
             <uniq_name>bytes_coll</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
             <descr>Number of bytes transferred in collective communication operations</descr>
             <cubepl>
                 metric::bytes_sent_coll() + metric::bytes_received_coll()
@@ -1852,7 +1852,7 @@
                 <uniq_name>bytes_sent_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_coll</url>
+                <url>@mirror@scorep_metrics.html#bytes_sent_coll</url>
                 <descr>Number of bytes sent in collective communication operations</descr>
                 <cubepl>
                 {
@@ -1870,7 +1870,7 @@
                 <uniq_name>bytes_received_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_coll</url>
+                <url>@mirror@scorep_metrics.html#bytes_received_coll</url>
                 <descr>Number of bytes received in collective communication operations</descr>
                 <cubepl>
                 {
@@ -1889,7 +1889,7 @@
             <uniq_name>bytes_rma</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rma</url>
+            <url>@mirror@scorep_metrics.html#bytes_rma</url>
             <descr>Number of bytes transferred in remote memory access operations</descr>
             <cubepl>
                 metric::bytes_put() + metric::bytes_get()
@@ -1900,7 +1900,7 @@
                 <uniq_name>bytes_put</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_put</url>
+                <url>@mirror@scorep_metrics.html#bytes_put</url>
                 <descr>Number of bytes sent in remote memory access operations</descr>
             </metric>
             <metric>
@@ -1909,7 +1909,7 @@
                 <uniq_name>bytes_get</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_get</url>
+                <url>@mirror@scorep_metrics.html#bytes_get</url>
                 <descr>Number of bytes received in remote memory access operations</descr>
             </metric>
         </metric>
@@ -1919,7 +1919,7 @@
         <uniq_name>mpi_file_ops</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_ops</url>
+        <url>@mirror@scorep_metrics.html#mpi_file_ops</url>
         <descr>Number of MPI file operations</descr>
         <cubepl>
             metric::mpi_file_iops() + metric::mpi_file_cops()
@@ -1929,7 +1929,7 @@
             <uniq_name>mpi_file_iops</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iops</url>
+            <url>@mirror@scorep_metrics.html#mpi_file_iops</url>
             <descr>Number of individual MPI file operations</descr>
             <cubepl>
             {
@@ -1946,7 +1946,7 @@
                 <uniq_name>mpi_file_irops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_irops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_irops</url>
                 <descr>Number of individual MPI file read operations</descr>
                 <cubepl>
                 {
@@ -1964,7 +1964,7 @@
                 <uniq_name>mpi_file_iwops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iwops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_iwops</url>
                 <descr>Number of individual MPI file write operations</descr>
                 <cubepl>
                 {
@@ -1983,7 +1983,7 @@
             <uniq_name>mpi_file_cops</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cops</url>
+            <url>@mirror@scorep_metrics.html#mpi_file_cops</url>
             <descr>Number of collective MPI file operations</descr>
             <cubepl>
             {
@@ -2000,7 +2000,7 @@
                 <uniq_name>mpi_file_crops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_crops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_crops</url>
                 <descr>Number of collective MPI file read operations</descr>
                 <cubepl>
                 {
@@ -2018,7 +2018,7 @@
                 <uniq_name>mpi_file_cwops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cwops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_cwops</url>
                 <descr>Number of collective MPI file write operations</descr>
                 <cubepl>
                 {
@@ -2038,7 +2038,7 @@
         <uniq_name>imbalance</uniq_name>
         <dtype>FLOAT</dtype>
         <uom>sec</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance</url>
+        <url>@mirror@scorep_metrics.html#imbalance</url>
         <descr>Computational load imbalance heuristic (see Online Description for details)</descr>
         <metric>
             <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2046,7 +2046,7 @@
             <uniq_name>imbalance_above</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_above</url>
+            <url>@mirror@scorep_metrics.html#imbalance_above</url>
             <descr>Computational load imbalance heuristic (overload)</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2054,7 +2054,7 @@
                 <uniq_name>imbalance_above_single</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_above_single</url>
+                <url>@mirror@scorep_metrics.html#imbalance_above_single</url>
                 <descr>Computational load imbalance heuristic (single participant)</descr>
             </metric>
         </metric>
@@ -2064,7 +2064,7 @@
             <uniq_name>imbalance_below</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below</url>
+            <url>@mirror@scorep_metrics.html#imbalance_below</url>
             <descr>Computational load imbalance heuristic (underload)</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2072,7 +2072,7 @@
                 <uniq_name>imbalance_below_bypass</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below_bypass</url>
+                <url>@mirror@scorep_metrics.html#imbalance_below_bypass</url>
                 <descr>Computational load imbalance heuristic (non-participation)</descr>
                 <metric>
                     <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2080,7 +2080,7 @@
                     <uniq_name>imbalance_below_singularity</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below_singularity</url>
+                    <url>@mirror@scorep_metrics.html#imbalance_below_singularity</url>
                     <descr>Computational load imbalance heuristic (non-participation in singularity)</descr>
                 </metric>
             </metric>
@@ -2091,7 +2091,7 @@
         <uniq_name>bytes_sent</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
+        <url>@mirror@scorep_metrics.html#bytes_sent</url>
         <descr>Number of bytes sent in point-to-point communication operations</descr>
     </metric>
     <metric viztype="GHOST">
@@ -2099,7 +2099,7 @@
         <uniq_name>bytes_received</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
+        <url>@mirror@scorep_metrics.html#bytes_rcvd</url>
         <descr>Number of bytes received in point-to-point communication operations</descr>
     </metric>
 </metrics>
