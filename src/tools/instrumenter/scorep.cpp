@@ -89,7 +89,7 @@ print_help( void )
               << "                  Specifies the filter file for filtering functions during\n"
               << "                  compile-time. Not supported by all instrumentation methods.\n"
               << "                  It applies the same syntax, as the one used by Score-P during\n"
-              << "                  run-time.\n"
+              << "                  run-time. May require the use of an absolute file path.\n"
               << "  --version       Prints the Score-P version and exits.\n"
               << "  --disable-preprocessing\n"
               << "                  Tells scorep to skip all preprocessing related steps,\n"

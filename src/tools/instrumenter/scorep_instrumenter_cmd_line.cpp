@@ -455,10 +455,16 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         {
             std::cerr << "[Score-P] ERROR: Filter file does not exists: "
                       << "'" << filter_file_name << "'" << std::endl;
+            if ( !is_absolute_path( filter_file_name ) )
+            {
+                std::cerr << "[Score-P] The filter file has a relative path. "
+                          << "An absolute path might be required for this build setup."
+                          << std::endl;
+            }
             exit( EXIT_FAILURE );
         }
 
-        m_filters.push_back( filter_file_name );
+        m_filters.push_back( canonicalize_path( filter_file_name ) );
         return scorep_parse_mode_param;
     }
 
