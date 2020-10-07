@@ -85,6 +85,7 @@ struct SCOREP_Allocator_PageManager;
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 
 /**

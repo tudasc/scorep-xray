@@ -274,7 +274,7 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
             /* add a location property marking CUDA NULL streams */
             SCOREP_Location_AddLocationProperty( stream->scorep_location,
                                                  SCOREP_CUPTI_LOCATION_NULL_STREAM,
-                                                 "yes" );
+                                                 0, "yes" );
         }
 #endif
 

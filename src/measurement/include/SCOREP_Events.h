@@ -270,27 +270,44 @@ SCOREP_Location_AddSourceCodeLocation( SCOREP_Location* location,
 /**
  * Adds a location property to the current location. A property consists of a
  * key/value pair.
- * @param name   the key of the property.
- * @param value  the property value.
+ *
+ * @param name      The key of the property.
+ * @param valueLen  Strict upper bound for the length of the value of this
+ *                  property, not including the trailing NUL.
+ *                  As a special case, if @a valueLen equals zero, then
+ *                  @a valueFmt is taken verbatim and the length is taken
+ *                  from @a valueFmt.
+ * @param valueFmt  A @a printf-like format string which forms the value of
+ *                  the property.
+ * @param ...       Arguments for use in @a valueFmt.
  */
 void
 SCOREP_AddLocationProperty( const char* name,
-                            const char* value );
+                            size_t      valueLen,
+                            const char* valueFmt,
+                            ... );
 
 
 /**
  * Add a location property to a location.
  *
- * @param location Location.
- *
- * @param name Property name.
- *
- * @param value Property value.
+ * @param location  Location.
+ * @param name      The key of the property.
+ * @param valueLen  Strict upper bound for the length of the vaule of this
+ *                  property, not including the trailing NUL.
+ *                  As a special case, if @a valueLen equals zero, then
+ *                  @a valueFmt is taken verbatim and the length is taken
+ *                  from @a valueFmt.
+ * @param valueFmt  A @a printf-like format string which forms the value of
+ *                  the property.
+ * @param ...       Arguments for use in @a valueFmt.
  */
 void
 SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
                                      const char*      name,
-                                     const char*      value );
+                                     size_t           valueLen,
+                                     const char*      valueFmt,
+                                     ... );
 
 
 /**
