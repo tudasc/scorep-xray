@@ -436,21 +436,27 @@
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCrate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|MemFree|MemFreeHost|MemHostAlloc)$/ )
+                        // CUDA Driver API: general CUDA management, e.g. initialization, version, device,
+                        // primary context, context, streams, events, occupancy
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCreate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|MemFree|MemFreeHost|MemHostAlloc)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
+                        // CUDA Driver API: memory management, incl. virtual memory, unified addressing
+                        // (memset functions considered in kernel launch section)
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|MipmappedArrayCreate|MipmappedArrayDestroy)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
+                        // CUDA Driver API: synchronization
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
+                        // CUDA Driver API: kernel launches
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
