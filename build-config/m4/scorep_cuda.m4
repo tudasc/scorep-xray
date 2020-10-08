@@ -211,11 +211,11 @@ AS_IF([test "x$scorep_cudart_error" = "xno"],
 
 dnl final check for errors
 if test "x${scorep_cudart_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_cudart_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_cudart_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])
 
@@ -279,11 +279,11 @@ cuptiActivityRegisterCallbacks(funcBufferRequested, funcBufferCompleted);
 
 dnl final check for errors
 if test "x${scorep_cupti_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_cupti_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_cupti_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])
 
@@ -317,10 +317,10 @@ AS_IF([test "x$scorep_cuda_error" != xyes],
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_cuda_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_cuda_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])

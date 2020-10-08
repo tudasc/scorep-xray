@@ -177,8 +177,8 @@ AS_IF([test "x${have_libunwind}" = "xno"],
       [LIBS="${LIBS} -llzma";
        _AC_SCOREP_LIBUNWIND_LINK_TEST])
 
-with_$1_lib_checks_successful=${have_libunwind}
-with_$1_libs=${LIBS}
+with_[]lib_name[]_lib_checks_successful=${have_libunwind}
+with_[]lib_name[]_libs=${LIBS}
 ])
 
 dnl ----------------------------------------------------------------------------

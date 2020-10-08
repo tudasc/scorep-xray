@@ -157,8 +157,8 @@ AS_IF([test "x${have_libbfd}" = "xyes"],
                       [scorep_have_demangle="no"])
        AC_MSG_RESULT([${scorep_have_demangle}])])
 
-with_$1_lib_checks_successful=${have_libbfd}
-with_$1_libs=${LIBS}
+with_[]lib_name[]_lib_checks_successful=${have_libbfd}
+with_[]lib_name[]_libs=${LIBS}
 ])
 
 dnl ----------------------------------------------------------------------------
