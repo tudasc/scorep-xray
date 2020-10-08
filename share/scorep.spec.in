@@ -413,13 +413,13 @@
                         };
 
                         // CUDA Runtime API: general CUDA management, e.g. device, stream, event, execution, occupancy
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig|CtxResetPersistingL2Cache|DeviceGetNvSciSyncAttributes|DeviceGetP2PAttribute|DeviceGetTexture1DLinearMaxWidth|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlags|FuncGetAttributes|FuncSetAttribute|FuncSetSharedMemConfig|GetParameterBuffer|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|SetDoubleForDevice|SetDoubleForHost|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
                         // CUDA Runtime API: memory management (memset functions considered in kernel launch section)
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync|ArrayGetInfo|ArrayGetSparseProperties|GetMipmappedArrayLevel|GetSymbolAddress|GetSymbolSize|HostGetDevicePointer|HostGetFlags|HostRegister|HostUnregister|MemAdvise|MemGetInfo|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|Memcpy3DPeer|Memcpy3DPeerAsync|MipmappedArrayGetSparseProperties|PointerGetAttributes)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
@@ -431,7 +431,7 @@
                         };
 
                         // CUDA Runtime API: kernel launches
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
