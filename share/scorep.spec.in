@@ -419,7 +419,7 @@
                         };
 
                         // CUDA Runtime API: memory management (memset functions considered in kernel launch section)
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyFromPeer|MemcpyFromPeerAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
