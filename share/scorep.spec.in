@@ -35,6 +35,7 @@
             {
                 global(execution);
                 global(overhead);
+                global(idle_gpus);
 
                 global(mpi);
                 global(mpi_mgmt_startup);
@@ -102,13 +103,14 @@
 
                 global(libwrap);
 
-                ${includesMPI}     = 0;
-                ${includesSHMEM}   = 0;
-                ${includesOpenMP}  = 0;
-                ${includesPthread} = 0;
-                ${includesOpenCL}  = 0;
-                ${includesCUDA}    = 0;
-                ${includesLIBWRAP} = 0;
+                ${includesMPI}      = 0;
+                ${includesSHMEM}    = 0;
+                ${includesOpenMP}   = 0;
+                ${includesPthread}  = 0;
+                ${includesOpenCL}   = 0;
+                ${includesCUDA}     = 0;
+                ${includesIdleGPUs} = 0;
+                ${includesLIBWRAP}  = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -478,6 +480,14 @@
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "COMPUTE IDLE" )
+                        {
+                            ${includesIdleGPUs} = 1;
+                            ${cuda}[${i}]       = 0;
+                            ${execution}[${i}]  = 0;
+                            ${idle_gpus}[${i}]  = 1;
+                        };
                     };
 
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
@@ -595,6 +605,11 @@
                     cube::metric::set::cuda_sync("value", "VOID");
                     cube::metric::set::cuda_kernel_launches("value", "VOID");
                     cube::metric::set::cuda_kernel_executions("value", "VOID");
+                };
+
+                if ( ${includesIdleGPUs} == 0 )
+                {
+                    cube::metric::set::idle_gpus("value", "VOID");
                 };
 
                 if ( ${includesLIBWRAP} == 0 )
@@ -1787,6 +1802,24 @@
                 <url>@mirror@scorep_metrics.html#omp_limited_parallelism</url>
                 <descr>Unused CPU reservation time in parallel regions due to limited parallelism</descr>
             </metric>
+        </metric>
+        <metric type="PREDERIVED_EXCLUSIVE">
+            <disp_name>Idle GPUs</disp_name>
+            <uniq_name>idle_gpus</uniq_name>
+            <dtype>FLOAT</dtype>
+            <uom>sec</uom>
+            <url>@mirror@scorep_metrics.html#idle_gpus</url>
+            <descr>Unused GPU reservation time</descr>
+            <cubepl>
+            {
+                ${tmp} = 0;
+                if ( ${idle_gpus}[${calculation::callpath::id}] == 1 )
+                {
+                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                };
+                return ${tmp};
+            }
+            </cubepl>
         </metric>
     </metric>
     <metric>
