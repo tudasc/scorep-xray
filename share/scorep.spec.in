@@ -412,21 +412,25 @@
                             ${cuda}[${i}] = 1;
                         };
 
+                        // CUDA Runtime API: general CUDA management, e.g. device, stream, event, execution, occupancy
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
+                        // CUDA Runtime API: memory management (memset functions considered in kernel launch section)
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyFromPeer|MemcpyFromPeerAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
+                        // CUDA Runtime API: synchronization
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
+                        // CUDA Runtime API: kernel launches
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
