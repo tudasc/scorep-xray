@@ -705,8 +705,8 @@
 
                 if ( ${includesMEMORY} == 0 )
                 {
-                    cube::metric::set::ALLOCATION_SIZE("value", "VOID");
-                    cube::metric::set::DEALLOCATION_SIZE("value", "VOID");
+                    cube::metric::set::allocation_size("value", "VOID");
+                    cube::metric::set::deallocation_size("value", "VOID");
                     cube::metric::set::bytes_leaked("value", "VOID");
                     cube::metric::set::maximum_heap_memory_allocated("value", "VOID");
                 };

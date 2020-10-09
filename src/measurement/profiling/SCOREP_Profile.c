@@ -185,7 +185,7 @@ SCOREP_Profile_Initialize( size_t substrateId )
     UTILS_ASSERT( scorep_profile_param_instance );
 
     bytes_allocated_metric =
-        SCOREP_Definitions_NewMetric( "ALLOCATION_SIZE",
+        SCOREP_Definitions_NewMetric( "allocation_size",
                                       "Size of allocated heap memory",
                                       SCOREP_METRIC_SOURCE_TYPE_OTHER,
                                       SCOREP_METRIC_MODE_ABSOLUTE_POINT,
@@ -197,7 +197,7 @@ SCOREP_Profile_Initialize( size_t substrateId )
                                       SCOREP_INVALID_METRIC );
 
     bytes_freed_metric =
-        SCOREP_Definitions_NewMetric( "DEALLOCATION_SIZE",
+        SCOREP_Definitions_NewMetric( "deallocation_size",
                                       "Size of released heap memory",
                                       SCOREP_METRIC_SOURCE_TYPE_OTHER,
                                       SCOREP_METRIC_MODE_ABSOLUTE_POINT,
