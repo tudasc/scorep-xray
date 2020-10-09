@@ -1895,7 +1895,7 @@
                 metric::bytes_put() + metric::bytes_get()
             </cubepl>
             <metric>
-                <!-- This metric is copied from the trace analysis -->
+                <!-- This metric is copied from the summary profile -->
                 <disp_name>Sent</disp_name>
                 <uniq_name>bytes_put</uniq_name>
                 <dtype>INTEGER</dtype>
@@ -1904,7 +1904,7 @@
                 <descr>Number of bytes sent in remote memory access operations</descr>
             </metric>
             <metric>
-                <!-- This metric is copied from the trace analysis -->
+                <!-- This metric is copied from the summary profile -->
                 <disp_name>Received</disp_name>
                 <uniq_name>bytes_get</uniq_name>
                 <dtype>INTEGER</dtype>
