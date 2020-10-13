@@ -34,6 +34,9 @@ User tools and API improvements and changes:
   scorep and scorep-config was removed.
 - Add process ID (PID) and thread ID (TID) as attributes on program
   begin or thread creation events respectivly.
+- Show node-level unique identifiers for NVIDIA and AMD GPUs as
+  CUDA and OpenCL location properties to separate devices in a
+  multi-gpu environment.
 
 Bugfixes:
 
