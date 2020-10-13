@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -267,6 +267,12 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         stream->scorep_location =
             SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
                                                   SCOREP_LOCATION_TYPE_GPU, thread_name );
+
+        SCOREP_Location_AddPCIProperties( stream->scorep_location,
+                                          context->pci_domain_id,
+                                          context->pci_bus_id,
+                                          context->pci_device_id,
+                                          UINT8_MAX );
 
 #if defined( SCOREP_CUPTI_ACTIVITY )
         if ( context->activity && ( stream->stream_id == context->activity->default_strm_id ) )
@@ -523,6 +529,10 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
     context->device_id   = deviceId;
     context->cuda_device = cudaDevice;
+
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_domain_id, cudaDevAttrPciDomainId, cudaDevice ) );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_bus_id, cudaDevAttrPciBusId, cudaDevice ) );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_device_id, cudaDevAttrPciDeviceId, cudaDevice ) );
 
     /* get the current CUDA context, if it is not given */
     if ( cudaContext == NULL )
