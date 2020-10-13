@@ -174,6 +174,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 #elif SCOREP_BACKEND_COMPILER_INTEL
     SCOREP_Filter* filter = SCOREP_Filter_New();
     std::string    outfname;
+    bool           have_usable_filter = false;
 
     const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
     for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
@@ -187,31 +188,38 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
         {
             std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl;
         }
-        outfname += fname + ".";
+        else
+        {
+            outfname          += fname + ".";
+            have_usable_filter = true;
+        }
     }
 
-    /* Using an unique temp file to avoid data races when calling scorep multiple times. */
-    outfname += create_random_string() +  ".tcollect";
-    /* Converting the aggregated filter data to tcollect format. */
-    std::ofstream filter_file( outfname.c_str() );
-    if ( filter_file.is_open() )
+    if ( have_usable_filter )
     {
-        SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
-        SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file );
-        filter_file.close();
-    }
-    else
-    {
-        UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'",
-                            outfname.c_str() );
-    }
+        /* Using an unique temp file to avoid data races when calling scorep multiple times. */
+        outfname += create_random_string() +  ".tcollect";
+        /* Converting the aggregated filter data to tcollect format. */
+        std::ofstream filter_file( outfname.c_str() );
+        if ( filter_file.is_open() )
+        {
+            SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
+            SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file );
+            filter_file.close();
+        }
+        else
+        {
+            UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'",
+                                outfname.c_str() );
+        }
 
-    cmdLine.addTempFile( outfname );
-    flags += " --compiler-arg=-tcollect-filter";
-    flags += " --compiler-arg=" + outfname;
-    /* Add tcollect reporting flags. */
-    flags += " --compiler-arg=-qopt-report-file=stderr";
-    flags += " --compiler-arg=-qopt-report-phase=tcollect";
+        cmdLine.addTempFile( outfname );
+        flags += " --compiler-arg=-tcollect-filter";
+        flags += " --compiler-arg=" + outfname;
+        /* Add tcollect reporting flags. */
+        flags += " --compiler-arg=-qopt-report-file=stderr";
+        flags += " --compiler-arg=-qopt-report-phase=tcollect";
+    }
 #endif
     return flags;
 }

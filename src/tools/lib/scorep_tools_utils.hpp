@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -130,6 +130,15 @@ replace_all( const std::string& pattern,
  */
 bool
 exists_file( const std::string& filename );
+
+
+/**
+   Tests if a path is specified in absolute form.
+   @param path Path to be tested.
+   @return true, if the path is absolute
+ */
+bool
+is_absolute_path( const std::string& path );
 
 /**
    Searches for a library in a list of path.

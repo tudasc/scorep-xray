@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
@@ -263,6 +263,16 @@ exists_file( const string& filename )
 {
     ifstream ifile( filename.c_str() );
     return ( bool )ifile;
+}
+
+bool
+is_absolute_path( const std::string& path )
+{
+    if ( ( path.length() > 0 ) && ( path[ 0 ] == '/' ) )
+    {
+        return true;
+    }
+    return false;
 }
 
 string
