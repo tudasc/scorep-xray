@@ -236,10 +236,11 @@ SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTot
         std::ostringstream temp;
         temp.setf( ios::fixed, ios::floatfield );
         temp.setf( ios::showpoint );
-        temp << "# visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits ) << ", time="
-             << setw( widths.m_time ) << setprecision( 2 ) << m_total_time << "s ("
-             << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)";
-        int length = 10 + widths.m_visits + 7 + widths.m_time + 3 + 5 + 2;
+        temp << "# max_buf=" << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
+             << " visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits )
+             << ", time="   << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
+             << "s ("  << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)"
+             << ", time/visit= " << setw( 7 ) << setprecision( 2 ) << getTimePerVisit() << "us";
 
         return "    " + temp.str() + "\n"
                + "    # name='" + m_name + "'\n"
