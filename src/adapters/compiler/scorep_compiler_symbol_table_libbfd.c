@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -42,6 +42,10 @@
 #include <string.h>
 
 #include <bfd.h>
+
+#ifndef bfd_get_section
+#define bfd_get_section( asymbol ) bfd_asymbol_section( asymbol )
+#endif
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
