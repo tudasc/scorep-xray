@@ -684,7 +684,6 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
 #endif
 
         std::string opari_config = "`" OPARI_CONFIG " --cflags";
-#if ( !defined HAVE_BACKEND_OPARI2_REVISION ) || ( HAVE_BACKEND_OPARI2_REVISION < 1068 )
         if ( with_cflags )
         {
             opari_config += "=" SCOREP_COMPILER_TYPE;
@@ -694,7 +693,6 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
                 opari_config += " --fortran";
             }
         }
-#endif
         opari_config += "` ";
 
         if ( nvcc )
