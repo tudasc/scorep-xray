@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -57,7 +57,6 @@ scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
 scorep_cuda_version="unknown"
-scorep_cuda_version_greater_equal_60="no"
 
 ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
@@ -120,14 +119,7 @@ AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
                     [Defined if CUPTI activity asynchronous buffer handling is available.]
                    )
 
-AC_SCOREP_COND_HAVE([CUDA_VERSION_GREATER_EQUAL_60],
-                    [test "x${scorep_cuda_version_greater_equal_60}" = "xyes"],
-                    [Defined if CUDA version is greater or equal 6.0.]
-                   )
-
 AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
-
-AFS_SUMMARY([CUDA version >= 6.0], [${scorep_cuda_version_greater_equal_60}])
 
 AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
@@ -316,14 +308,6 @@ dnl check for CUDA version >= 6.0
 AS_IF([test "x$scorep_cuda_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
         [[
-#if CUDA_VERSION < 6000
-#  ups__cuda_version_lt_6000
-#endif
-        ]])],
-        [scorep_cuda_version_greater_equal_60="yes"],
-        [AC_MSG_NOTICE([CUDA driver API version is less than 6.0.
-                        See 'config.log' for more details.])
-         scorep_cuda_version_greater_equal_60="no"])])
 
 dnl check for CUDA version 6.0.x
 AS_IF([test "x$scorep_cuda_error" = "xno"],
