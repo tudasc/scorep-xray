@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2018, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -80,8 +80,6 @@
    Mutex for exclusive execution when adding a new location to the profile.
  */
 static SCOREP_Mutex scorep_profile_location_mutex;
-
-static SCOREP_RegionHandle thread_create_wait_regions;
 
 static SCOREP_MetricHandle bytes_allocated_metric           = SCOREP_INVALID_METRIC;
 static SCOREP_MetricHandle bytes_freed_metric               = SCOREP_INVALID_METRIC;
@@ -185,16 +183,6 @@ SCOREP_Profile_Initialize( size_t substrateId )
     }
 
     UTILS_ASSERT( scorep_profile_param_instance );
-
-    SCOREP_SourceFileHandle file = SCOREP_Definitions_NewSourceFile( "THREADS" );
-    thread_create_wait_regions = SCOREP_Definitions_NewRegion(
-        "THREADS",
-        NULL,
-        file,
-        SCOREP_INVALID_LINE_NO,
-        SCOREP_INVALID_LINE_NO,
-        SCOREP_PARADIGM_MEASUREMENT,
-        SCOREP_REGION_ARTIFICIAL /* SCOREP_REGION_PARALLEL ? */ );
 
     bytes_allocated_metric =
         SCOREP_Definitions_NewMetric( "ALLOCATION_SIZE",
@@ -1504,66 +1492,6 @@ thread_join( SCOREP_Location*    locationData,
 }
 
 
-/**
- * Called when a thread begins its execution.
- *
- * @param location            A pointer to the thread location data of the thread that executed
- *                            the event.
- * @param timestamp           The timestamp, when the thread begin event occurred.
- * @param paradigm            Unused.
- * @param threadTeam          Unused.
- * @param createSequenceCount Unused.
- */
-static void
-thread_begin( SCOREP_Location*                 location,
-              uint64_t                         timestamp,
-              SCOREP_ParadigmType              paradigm,
-              SCOREP_InterimCommunicatorHandle threadTeam,
-              uint32_t                         createSequenceCount )
-{
-    uint64_t* metric_values = SCOREP_Metric_Read( location );
-
-    SCOREP_Profile_Enter( location,
-                          timestamp,
-                          SCOREP_GetProgramRegion(),
-                          metric_values );
-    SCOREP_Profile_Enter( location,
-                          timestamp,
-                          thread_create_wait_regions,
-                          metric_values );
-}
-
-
-/**
- * Called when the thread finishes its execution.
- *
- * @param locationData        A pointer to the thread location data of the thread that executed
- *                            the event.
- * @param timestamp           The timestamp, when the thread begin event occurred.
- * @param paradigm            Unused.
- * @param threadTeam          Unused.
- * @param createSequenceCount Unused.
- */
-static void
-thread_end( SCOREP_Location*                 location,
-            uint64_t                         timestamp,
-            SCOREP_ParadigmType              paradigm,
-            SCOREP_InterimCommunicatorHandle threadTeam,
-            uint32_t                         createSequenceCount )
-{
-    uint64_t* metric_values = SCOREP_Metric_Read( location );
-
-    SCOREP_Profile_Exit( location,
-                         timestamp,
-                         thread_create_wait_regions,
-                         metric_values );
-    SCOREP_Profile_Exit( location,
-                         timestamp,
-                         SCOREP_GetProgramRegion(),
-                         metric_values );
-}
-
-
 typedef struct leaked_memory_memento leaked_memory_memento;
 struct leaked_memory_memento
 {
@@ -1780,8 +1708,6 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch,  THREAD_FORK_JOIN_TASK_SWITCH,  SCOREP_Profile_TaskSwitch ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,   THREAD_FORK_JOIN_TASK_BEGIN,   SCOREP_Profile_TaskBegin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,     THREAD_FORK_JOIN_TASK_END,     SCOREP_Profile_TaskEnd ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackAlloc,                TRACK_ALLOC,                   track_alloc ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackRealloc,              TRACK_REALLOC,                 track_realloc ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TrackFree,                 TRACK_FREE,                    track_free ),
@@ -1792,8 +1718,6 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end ),
     }
 };
 
