@@ -135,6 +135,34 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
             echo $SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS |
                 sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
          SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS:+-Xcompiler=}${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}"])
+
+    # nvcc 10.x in conjunction with g++-8.4 and later on powerpc64le:
+    # need to set '-std=c++11' or '-Xcompiler -mno-float128' to
+    # prevent 'identifier "__ieee128" is undefined' errors. See #21.
+    AC_LANG_PUSH([C++])
+    CXX_save="${CXX}"
+    CXX="nvcc -ccbin ${CXX}"
+    CXXFLAGS_save="${CXXFLAGS}"
+    ac_ext_save="${ac_ext}"
+    ac_ext=cu
+    for CXXFLAGS in "" "-Xcompiler=-mno-float128"; do
+        AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main() {return 0;}]])],
+            [nvcc_failure=no
+             flag=$(echo $CXXFLAGS | cut -d '=' -f 2)
+             AS_IF([test "x${flag}" != x],
+                 [AS_IF([test "x${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}" = x],
+                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="-Xcompiler=${flag}"],
+                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS},${flag}"])])
+             break],
+            [nvcc_failure=yes])
+    done
+    AS_IF([test "x${nvcc_failure}" = xyes],
+        [AC_MSG_WARN([nvcc compilation failed, make installcheck might fail.])])
+    ac_ext="${ac_ext_save}"
+    CXXFLAGS="${CXXFLAGS_save}"
+    CXX="${CXX_save}"
+    AC_LANG_POP([C++])
+
     AC_SUBST([SCOREP_INSTRUMENTER_CHECK_NVCC_CXX])
     AC_SUBST([SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS])
 ])
