@@ -122,7 +122,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_MSG_CHECKING([for gethostname])
     AC_LINK_IFELSE([
         AC_LANG_SOURCE([
-            #include <stddef.h>
+            #include <unistd.h>
 
             #if !HAVE_DECL_GETHOSTNAME
             int gethostname(char *name, size_t namelen);
