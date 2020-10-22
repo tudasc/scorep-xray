@@ -312,6 +312,16 @@ various Score-P components.
     correct though. This situation will be improved in a future
     release of Score-P and/or Cube.
 
+  - In C++, OpenMP clauses like private, firstprivate, and lastprivate
+    call constructors, copy-constructors, and destructors for list
+    elements of class type. Given OPARI2 instrumentation, if these
+    functions trigger any event, Score-P will/might fail. For
+    constructors and destructors we might see `TPD == 0` errors, for
+    destructors it will be `Assertion 'parent != ((void *)0)' failed`.
+    Preventing all events from these functions by runtime/compile-time
+    filtering is a workaround. Future OpenMP instrumentation based on
+    OMPT instead of OPARI2 does not show this problems.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
