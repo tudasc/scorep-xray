@@ -100,7 +100,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_MSG_CHECKING([for gethostid])
     AC_LINK_IFELSE([
         AC_LANG_SOURCE([
-            #include <stddef.h>
+            #include <unistd.h>
 
             #if !HAVE_DECL_GETHOSTID
             long gethostid(void);
