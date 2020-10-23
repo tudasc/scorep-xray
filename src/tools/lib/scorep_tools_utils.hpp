@@ -131,6 +131,15 @@ replace_all( const std::string& pattern,
 bool
 exists_file( const std::string& filename );
 
+/**
+   Backups a file, if it exists, by renaming it with a time stamp analog
+   to the directory renaming scheme.
+   @param filename Name of the file to be renamed.
+   @return Returns as string the name of the moved file
+ */
+std::string
+backup_existing_file( const std::string& filename );
+
 
 /**
    Tests if a path is specified in absolute form.

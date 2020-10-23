@@ -45,6 +45,7 @@
 #include "SCOREP_Score_EventList.hpp"
 #include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
+#include <scorep_tools_utils.hpp>
 #include <math.h>
 #include <fstream>
 #include <iomanip>
@@ -823,6 +824,10 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
 
     string filter_file_name = "initial_scorep.filter";
 
+    // avoid overwriting existing file by using the renaming scheme also used
+    // for experiment directories.
+    string moved_existing_file = backup_existing_file( filter_file_name );
+
     ofstream filter_file;
     filter_file.open( filter_file_name );
 
@@ -869,8 +874,12 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
         exit( EXIT_FAILURE );
         return;
     }
-    cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n"
-         << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
+    cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n";
+    if ( moved_existing_file != "" )
+    {
+        cout << "Moved existing filter file to: '" << moved_existing_file << "'\n\n";
+    }
+    cout << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
          << "    SCOREP_FILTERING_FILE=" << filter_file_name << "\n\n"
          << "For compile-time filtering 'scorep' has to be provided with the '--instrument-filter' option:\n\n"
          << "    $ scorep --instrument-filter=" << filter_file_name << "\n\n"

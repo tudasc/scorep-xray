@@ -41,6 +41,7 @@ libscorep_estimator_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/utils/include \
+    -I$(INC_ROOT)src/tools/lib \
     @CUBELIB_CPPFLAGS@
 libscorep_estimator_la_LDFLAGS =\
     $(AM_LDFLAGS) \
@@ -48,10 +49,12 @@ libscorep_estimator_la_LDFLAGS =\
 libscorep_estimator_la_LIBADD = \
     libscorep_filter.la \
     libutils.la \
+    libscorep_tools.la \
     @CUBELIB_LIBS@
 libscorep_estimator_la_DEPENDENCIES = \
     libscorep_filter.la \
-    libutils.la
+    libutils.la \
+    libscorep_tools.la
 
 bin_PROGRAMS += scorep-score
 
