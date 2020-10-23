@@ -396,7 +396,7 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
     return PACKAGE_SUCCESS;
 #elif HAVE( PLATFORM_MINGW )
     TCHAR computer_name[ MAX_COMPUTERNAME_LENGTH + 1 ];
-    DWORD computer_name_len = sizeof( computer_name ) / sizeof( computer_name[0] );
+    DWORD computer_name_len = sizeof( computer_name ) / sizeof( computer_name[ 0 ] );
     if ( !GetComputerName( computer_name, &computer_name_len ) )
     {
         return PACKAGE_ABORT;
@@ -449,7 +449,7 @@ UTILS_IO_GetCwd( char* buf, size_t size )
     }
 
     size_t len = strlen( cwd );
-    if ( len + 1 < size )
+    if ( len + 1 > size )
     {
         errno = ERANGE;
         return NULL;
