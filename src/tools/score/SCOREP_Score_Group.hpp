@@ -167,7 +167,7 @@ public:
            bool                     withHits );
 
     /**
-     * Returns the region name if the entry fullfills the
+     * Returns the region information if the entry fullfills the
      * total buffer size and time per visit constraints.
      * Otherwise, it returns an empty string.
      */
@@ -177,6 +177,14 @@ public:
                         double                   thresholdTimePerVisits,
                         double                   totalTime,
                         SCOREP_Score_FieldWidths widths );
+
+    /**
+     * Returns abbreviated region information if the entry is a filtered
+     * region as provided via file by `-f`.
+     * Otherwise, it returns an empty string.
+     */
+    std::string
+    getPreviouslyFiltered();
 
     /**
      * Returns the time spend in this group on all processes.

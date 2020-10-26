@@ -249,4 +249,10 @@ with removing too small regions as a selection criteria, with a default of 1us.
 If not set, the respective default values will be used.
 The used values are described in the comment section of that filter file.
 
+@note If the file name already exists, the previous file will be renamed instead
+      overwritten to safeguard against unintentional deletion and to allow being
+      used in an iterative use of the the filter file generation. To that end,
+      filtered regions from a file specified via @verb{-f} will be included at
+      the end of the newly generated file. Those regions are marked and added
+      'as is' without being checked against the inclusion heuristics.
 */

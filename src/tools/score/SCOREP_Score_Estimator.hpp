@@ -220,6 +220,10 @@ private:
      */
     bool m_has_filter;
 
+    /** Name of the provided filter file.
+     */
+    std::string m_filter_file_name;
+
     /**
      * Total time for all groups.
      */

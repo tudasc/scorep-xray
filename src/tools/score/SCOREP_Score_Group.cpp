@@ -227,9 +227,10 @@ SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTot
                                         SCOREP_Score_FieldWidths widths )
 {
     double buffer_ratio = ( ( double )getMaxTraceBufferSize() / ( double )maxBuffer ) * 100;
-    if (   buffer_ratio >= percentageOfTotalBufferSize
-           && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
-           && m_type == SCOREP_SCORE_TYPE_USR )
+    if ( ( m_filter != SCOREP_SCORE_FILTER_YES ) &&
+         (   buffer_ratio >= percentageOfTotalBufferSize
+             && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
+             && m_type == SCOREP_SCORE_TYPE_USR ) )
     {
         string clean_name = cleanName();
 
@@ -246,6 +247,18 @@ SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTot
                + "    # name='" + m_name + "'\n"
                + "    # file='" + m_file_name + "'\n"
                + "    MANGLED " + clean_name + "\n";
+    }
+    return "";
+}
+
+std::string
+SCOREP_Score_Group::getPreviouslyFiltered()
+{
+    if ( m_filter == SCOREP_SCORE_FILTER_YES )
+    {
+        return "    # name='" + m_name + "'\n"
+               + "    # file='" + m_file_name + "'\n"
+               + "    MANGLED " + cleanName() + "\n\n";
     }
     return "";
 }

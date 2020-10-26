@@ -657,6 +657,7 @@ SCOREP_Score_Estimator::initializeFilter( const string& filterFile )
         cerr << "ERROR: Failed to open '" << filterFile << "'" << endl;
         exit( EXIT_FAILURE );
     }
+    m_filter_file_name = filterFile;
 
     /* Initialize filter groups */
     m_filtered = ( SCOREP_Score_Group** )
@@ -864,6 +865,28 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;
+        }
+    }
+
+    if ( m_has_filter )
+    {
+        filter_file << "\n\n    #==========================================================================\n"
+                    << "    # Regions directly included from filter file provided by `-f`:\n";
+        if ( m_filter_file_name == "initial_scorep.filter" &&  moved_existing_file != "" )
+        {
+            filter_file << "    # '" << m_filter_file_name << "' moved to '" << moved_existing_file << "'\n\n";
+        }
+        else
+        {
+            filter_file << "    # '" << m_filter_file_name << "'\n\n";
+        }
+        for ( uint64_t i = 0; i < m_region_num; i++ )
+        {
+            string temp = m_regions[ i ]->getPreviouslyFiltered();
+            if ( temp.length() > 0 )
+            {
+                filter_file << temp << endl;
+            }
         }
     }
     filter_file << "SCOREP_REGION_NAMES_END" << endl;
