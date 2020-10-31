@@ -250,7 +250,15 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         }
         else
         {
-            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", context->device_id, streamId ) )
+            /* CUDA_VISIBLE_DEVICES may be used to change the order and thus
+             * the device ID visible from the outside, use it to map the device ID
+             */
+            uint32_t device_id = context->device_id;
+            if ( device_id < scorep_cuda_visible_devices_len )
+            {
+                device_id = scorep_cuda_visible_devices_map[ device_id ];
+            }
+            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", device_id, streamId ) )
             {
                 UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
             }

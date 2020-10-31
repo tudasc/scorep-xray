@@ -46,6 +46,8 @@
 #include "SCOREP_Cuda_Init.h"
 #include "SCOREP_Memory.h"
 
+#include <UTILS_CStr.h>
+
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME CUDA
 #include <UTILS_Debug.h>
@@ -58,6 +60,44 @@
 #include "scorep_cuda_confvars.inc.c"
 #include "scorep_cupti.h"
 
+#if HAVE( NVML_SUPPORT )
+
+#include <nvml.h>
+
+#define NVML_CALL( function, args, ... ) \
+    do \
+    { \
+        nvmlReturn_t ret = function args; \
+        if ( ret != NVML_SUCCESS ) \
+        { \
+            UTILS_WARNING( "[CUDA/NVML] Call to '%s' failed: %s", #function, nvmlErrorString( ret ) ); \
+            __VA_ARGS__ \
+        } \
+    } \
+    while ( 0 )
+
+#define CUDART_CALL( function, args, ... ) \
+    do \
+    { \
+        cudaError_t ret = function args; \
+        if ( ret != cudaSuccess ) { \
+            UTILS_WARNING( "[CUDA] Call to '%s' failed: %s", #function, cudaGetErrorString( ret ) ); \
+            __VA_ARGS__ \
+        } \
+    } \
+    while ( 0 )
+
+#endif
+
+/**
+ * Map of CUDA Toolkit device index to NVIDIA Driver device index.
+ *
+ * Build-up using NVML library. Parsing CUDA_VISIBLE_DEVICES got complicated,
+ * as it can also include GPU UUIDs, which would need to be converted to
+ * NVIDIA Driver device index anyway.
+ */
+uint32_t* scorep_cuda_visible_devices_map = NULL;
+size_t    scorep_cuda_visible_devices_len = 0;
 
 /** Registers the required configuration variables of the CUDA adapter
     to the measurement system.
@@ -103,6 +143,61 @@ cuda_subsystem_init( void )
     {
         scorep_cupti_callbacks_init();
     }
+
+#if HAVE( NVML_SUPPORT )
+    /* Build-up CUDA Toolkit device index to NVIDIA Driver device index.
+     * Will give us correct device IDs in multi-GPU/multi-process */
+
+    NVML_CALL( nvmlInit, ( ),
+               return SCOREP_SUCCESS;
+               );
+
+    unsigned int nvidia_device_count;
+    NVML_CALL( nvmlDeviceGetCount, ( &nvidia_device_count ),
+               return SCOREP_SUCCESS;
+               );
+
+    int cuda_device_count;
+    CUDART_CALL( cudaGetDeviceCount, ( &cuda_device_count ),
+                 return SCOREP_SUCCESS;
+                 );
+
+    scorep_cuda_visible_devices_map = calloc( cuda_device_count, sizeof( *scorep_cuda_visible_devices_map ) );
+    UTILS_ASSERT( scorep_cuda_visible_devices_map );
+
+    int device;
+    for ( device = 0; device < cuda_device_count; ++device )
+    {
+        struct cudaDeviceProp device_properties;
+        CUDART_CALL( cudaGetDeviceProperties, ( &device_properties, device ),
+                     continue;
+                     );
+        char* uuid_bytes = device_properties.uuid.bytes;
+        char  uuid[ NVML_DEVICE_UUID_BUFFER_SIZE ];
+
+        snprintf( uuid, sizeof( uuid ),
+                  "GPU-%02hhx%02hhx%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
+                  uuid_bytes[  0 ], uuid_bytes[  1 ], uuid_bytes[  2 ], uuid_bytes[  3 ],
+                  uuid_bytes[  4 ], uuid_bytes[  5 ],
+                  uuid_bytes[  6 ], uuid_bytes[  7 ],
+                  uuid_bytes[  8 ], uuid_bytes[  9 ],
+                  uuid_bytes[ 10 ], uuid_bytes[ 11 ], uuid_bytes[ 12 ], uuid_bytes[ 13 ], uuid_bytes[ 14 ], uuid_bytes[ 15 ] );
+
+        nvmlDevice_t nvml_devices;
+        NVML_CALL( nvmlDeviceGetHandleByUUID, ( uuid, &nvml_devices ),
+                   continue;
+                   );
+
+        unsigned int nvml_device_index;
+        NVML_CALL( nvmlDeviceGetIndex, ( nvml_devices, &nvml_device_index ),
+                   continue;
+                   );
+
+        scorep_cuda_visible_devices_map[ device ] = nvml_device_index;
+    }
+
+    NVML_CALL( nvmlShutdown, ( ) );
+#endif
 
     return SCOREP_SUCCESS;
 }

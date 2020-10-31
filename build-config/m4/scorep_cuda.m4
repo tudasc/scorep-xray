@@ -86,12 +86,15 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
              [cupti_root="${with_libcudart}/extras/CUPTI"])])
 
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
+AC_SCOREP_BACKEND_LIB([libnvidia-ml], [nvml.h], [${with_libcudart_cppflags}])
 
 CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
 LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
 LIBS=$ac_scorep_cuda_safe_LIBS
 
-AS_IF([test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
+AS_IF([test "x${scorep_have_libcudart}" = "xyes" &&
+       test "x${scorep_have_libcupti}"  = "xyes" &&
+       test "x${scorep_have_libcuda}"   = "xyes"],
       [scorep_have_cuda=yes])
 AC_ARG_ENABLE([cuda],
               [AS_HELP_STRING([--enable-cuda],
@@ -108,9 +111,9 @@ AC_ARG_ENABLE([cuda],
 AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                     [test "x${scorep_have_cuda}" = "xyes"],
                     [Defined if cuda is available.],
-                    [AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
-                     AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags} ${with_libcuda_rpathflag} ${with_libcudart_rpathflag} ${with_libcupti_rpathflag}"])
-                     AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],
+                    [AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags} ${with_libnvidia_ml_cppflags}"])
+                     AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags} ${with_libnvidia_ml_ldflags} ${with_libcuda_rpathflag} ${with_libcudart_rpathflag} ${with_libcupti_rpathflag} ${with_libnvidia_ml_rpathflag}"])
+                     AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs} ${with_libnvidia_ml_libs}"])],
                     [AC_SUBST(CUDA_CPPFLAGS, [""])
                      AC_SUBST(CUDA_LDFLAGS,  [""])
                      AC_SUBST(CUDA_LIBS,     [""])])
@@ -119,6 +122,10 @@ AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
                     [test "x${scorep_have_cupti_activity_async}" = "xyes"],
                     [Defined if CUPTI activity asynchronous buffer handling is available.]
                    )
+
+AC_SCOREP_COND_HAVE([NVML_SUPPORT],
+                    [test "x${scorep_have_libnvidia_ml}" = "xyes"],
+                    [Defined if NVIDIA NVML is available.])
 
 dnl run_cuda_test.sh: test sources only available for scorep_cuda_version 5000, 5050, 6000, 6050
 AM_CONDITIONAL([HAVE_CUDA_TESTS],
@@ -319,6 +326,35 @@ dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
     with_[]lib_name[]_lib_checks_successful="yes"
     with_[]lib_name[]_libs="-l${scorep_cuda_lib_name}"
+else
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
+fi
+])
+
+
+dnl ----------------------------------------------------------------------------
+
+
+AC_DEFUN([_AC_SCOREP_LIBNVIDIA_ML_LIB_CHECK], [
+scorep_nvidia_ml_error="no"
+scorep_nvidia_ml_lib_name="nvidia-ml"
+
+dnl checking for NVML library
+AS_IF([test "x$scorep_nvidia_ml_error" = "xno"],
+      [scorep_nvidia_ml_save_libs="${LIBS}"
+       AC_SEARCH_LIBS([nvmlInit],
+                      [$scorep_nvidia_ml_lib_name],
+                      [],
+                      [AS_IF([test "x${with_libnvidia_ml}" != xnot_set || test "x${with_libnvidia_ml_lib}" != xnot_set],
+                             [AC_MSG_NOTICE([no libnvidia-ml found; check path to NVML library ...])])
+                       scorep_nvidia_ml_error="yes" ])
+       LIBS="${scorep_nvidia_ml_save_libs}"])
+
+dnl final check for errors
+if test "x${scorep_nvidia_ml_error}" = "xno"; then
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_nvidia_ml_lib_name}"
 else
     with_[]lib_name[]_lib_checks_successful="no"
     with_[]lib_name[]_libs=""

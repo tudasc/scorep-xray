@@ -43,6 +43,7 @@ Bugfixes:
 - Unify and fix representation of artificial root nodes for threads,
   GPU kernels, and OpenMP tasks in profiling.
 - Allocation metrics were lost on MPI RMA window allocation functions.
+- Honor `CUDA_VISIBLE_DEVICES` when creating CUDA location names.
 
 ------------------- Released version 6.0 -----------------------------
 
