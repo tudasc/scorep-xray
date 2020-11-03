@@ -138,18 +138,18 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
                                                          SystemTreeNode,
                                                          system_tree_node )
-
-    if ( is_shared_fs
-         && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_MACHINE )
     {
-        return handle;
+        if ( is_shared_fs
+             && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_MACHINE )
+        {
+            return handle;
+        }
+        if ( !is_shared_fs
+             && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY )
+        {
+            return handle;
+        }
     }
-    if ( !is_shared_fs
-         && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY )
-    {
-        return handle;
-    }
-
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
 
