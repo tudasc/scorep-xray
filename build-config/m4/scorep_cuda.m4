@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -56,8 +56,6 @@ AFS_SUMMARY_PUSH
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
-scorep_cuda_version="unknown"
-scorep_cuda_version_greater_equal_60="no"
 
 ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
@@ -120,18 +118,11 @@ AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
                     [Defined if CUPTI activity asynchronous buffer handling is available.]
                    )
 
-AC_SCOREP_COND_HAVE([CUDA_VERSION_GREATER_EQUAL_60],
-                    [test "x${scorep_cuda_version_greater_equal_60}" = "xyes"],
-                    [Defined if CUDA version is greater or equal 6.0.]
-                   )
-
 AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
 
-AFS_SUMMARY([CUDA version >= 6.0], [${scorep_cuda_version_greater_equal_60}])
+AFS_SUMMARY([CUDA version], [${cuda_version}])
 
 AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
-
-AC_SUBST(SCOREP_CUDA_VERSION,      ["${scorep_cuda_version}"])
 
 # prepare compiler variables for use with nvcc in instrumenter checks
 # all flags are passed as comma-separated list after -Xcompiler
@@ -144,6 +135,34 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
             echo $SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS |
                 sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
          SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS:+-Xcompiler=}${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}"])
+
+    # nvcc 10.x in conjunction with g++-8.4 and later on powerpc64le:
+    # need to set '-std=c++11' or '-Xcompiler -mno-float128' to
+    # prevent 'identifier "__ieee128" is undefined' errors. See #21.
+    AC_LANG_PUSH([C++])
+    CXX_save="${CXX}"
+    CXX="nvcc -ccbin ${CXX}"
+    CXXFLAGS_save="${CXXFLAGS}"
+    ac_ext_save="${ac_ext}"
+    ac_ext=cu
+    for CXXFLAGS in "" "-Xcompiler=-mno-float128"; do
+        AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main() {return 0;}]])],
+            [nvcc_failure=no
+             flag=$(echo $CXXFLAGS | cut -d '=' -f 2)
+             AS_IF([test "x${flag}" != x],
+                 [AS_IF([test "x${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}" = x],
+                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="-Xcompiler=${flag}"],
+                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS},${flag}"])])
+             break],
+            [nvcc_failure=yes])
+    done
+    AS_IF([test "x${nvcc_failure}" = xyes],
+        [AC_MSG_WARN([nvcc compilation failed, make installcheck might fail.])])
+    ac_ext="${ac_ext_save}"
+    CXXFLAGS="${CXXFLAGS_save}"
+    CXX="${CXX_save}"
+    AC_LANG_POP([C++])
+
     AC_SUBST([SCOREP_INSTRUMENTER_CHECK_NVCC_CXX])
     AC_SUBST([SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS])
 ])
@@ -273,81 +292,28 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
                              [AC_MSG_NOTICE([no libcuda found; check path to CUDA library ...])])
                        scorep_cuda_error="yes"])])
 
-dnl check the version of the CUDA Driver API
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#ifndef CUDA_VERSION
-#  ups__cuda_version_not_defined
-#elif CUDA_VERSION < 4010
-#  ups__cuda_version_lt_4010
-#endif
-        ]])],
-        [],
-        [AC_MSG_NOTICE([CUDA driver API version could not be determined and/or is
-                        incompatible (< 4.1). See 'config.log' for more details.])
-         scorep_cuda_error="yes" ])])
+dnl determine cuda version
+cuda_version="unknown"
+AS_IF([test "x$scorep_cuda_error" != xyes],
+    [AC_COMPUTE_INT([cuda_version],
+        [CUDA_VERSION],
+        [#include <cuda.h>],
+        [scorep_cuda_error=yes])
+    AS_IF([test "x${scorep_cuda_error}" = xyes],
+        [AC_MSG_WARN([CUDA driver API version could not be determined.])],
+        [AS_IF([test ${cuda_version} -lt 4010],
+            [AC_MSG_WARN([CUDA driver API version is incompatible (< 4010)])
+             scorep_cuda_error=yes],
+            [AC_MSG_NOTICE([CUDA driver API version is ${cuda_version}.])])])])
+AC_SUBST([SCOREP_CUDA_VERSION], [${cuda_version}])
 
-dnl check for CUDA version 5.0.x
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#if ( CUDA_VERSION != 5000 )
-#  ups__cuda_version_is_not_5_0_x
-#endif
-        ]])],
-        [AC_MSG_NOTICE([CUDA driver API version is 5.0.])
-         scorep_cuda_version="50"],
-        [])])
-
-dnl check for CUDA version 5.5.x
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#if ( CUDA_VERSION != 5050 )
-#  ups__cuda_version_is_not_5_5_x
-#endif
-        ]])],
-        [AC_MSG_NOTICE([CUDA driver API version is 5.5.])
-         scorep_cuda_version="55"],
-        [])])
-
-dnl check for CUDA version >= 6.0
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#if CUDA_VERSION < 6000
-#  ups__cuda_version_lt_6000
-#endif
-        ]])],
-        [scorep_cuda_version_greater_equal_60="yes"],
-        [AC_MSG_NOTICE([CUDA driver API version is less than 6.0.
-                        See 'config.log' for more details.])
-         scorep_cuda_version_greater_equal_60="no"])])
-
-dnl check for CUDA version 6.0.x
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#if ( CUDA_VERSION != 6000 )
-#  ups__cuda_version_is_not_6_0_x
-#endif
-        ]])],
-        [AC_MSG_NOTICE([CUDA driver API version is 6.0.])
-         scorep_cuda_version="60"],
-        [])])
-
-dnl check for CUDA version 6.5.x
-AS_IF([test "x$scorep_cuda_error" = "xno"],
-      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
-        [[
-#if ( CUDA_VERSION != 6050 )
-#  ups__cuda_version_is_not_6_5_x
-#endif
-        ]])],
-        [AC_MSG_NOTICE([CUDA driver API version is 6.5.])
-         scorep_cuda_version="65"],
-        [])])
+dnl run_cuda_test.sh: test sources only available for cuda_version 5000, 5050, 6000, 6050
+AM_CONDITIONAL([HAVE_CUDA_TESTS],
+    [test "x${scorep_cuda_error}" != xyes \
+     && (test ${cuda_version} -eq 5000 \
+         || test ${cuda_version} -eq 5050 \
+         || test ${cuda_version} -eq 6000 \
+         || test ${cuda_version} -eq 6050)])
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
