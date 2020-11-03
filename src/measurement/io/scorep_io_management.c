@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019,
+ * Copyright (c) 2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,7 +41,8 @@
 #define SCOREP_IO_HANDLE_HASHTABLE_MASK hashmask( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 #define SCOREP_IO_HANDLE_HASHTABLE_SIZE hashsize( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 
-static SCOREP_Hashtab* io_file_handle_hashtable = NULL;
+static SCOREP_Hashtab* io_file_handle_hashtable       = NULL;
+static SCOREP_Mutex    io_file_handle_hashtable_mutex = SCOREP_INVALID_MUTEX;
 
 /** @brief Payload in every IoHandleHandle definition. */
 typedef struct io_handle_payload
@@ -691,6 +692,8 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
 
     UTILS_BUG_ON( !io_file_handle_hashtable, "Hashtable is not initialized for storing %s", pathname );
 
+    SCOREP_MutexLock( io_file_handle_hashtable_mutex );
+
     size_t                hash_hint;
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( io_file_handle_hashtable,
                                                        ( void* )resolved_filename,
@@ -698,7 +701,9 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
     if ( entry != NULL )
     {
         free( resolved_filename );
-        return entry->value.handle;
+        SCOREP_IoFileHandle file_handle = entry->value.handle;
+        SCOREP_MutexUnlock( io_file_handle_hashtable_mutex );
+        return file_handle;
     }
 
     SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( resolved_filename,
@@ -708,6 +713,8 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
                                  ( void* )resolved_filename,
                                  file_handle,
                                  &hash_hint );
+
+    SCOREP_MutexUnlock( io_file_handle_hashtable_mutex );
 
     return file_handle;
 }
@@ -750,6 +757,7 @@ io_mgmt_subsystem_register( size_t subsystemId )
 static SCOREP_ErrorCode
 io_mgmt_subsystem_init( void )
 {
+    SCOREP_MutexCreate( &io_file_handle_hashtable_mutex );
     io_file_handle_hashtable = SCOREP_Hashtab_CreateSize( SCOREP_IO_FILE_HASHTABLE_SIZE,
                                                           &SCOREP_Hashtab_HashString,
                                                           &SCOREP_Hashtab_CompareStrings );
@@ -763,6 +771,7 @@ io_mgmt_subsystem_finalize( void )
     SCOREP_Hashtab_FreeAll( io_file_handle_hashtable,
                             &SCOREP_Hashtab_DeleteFree,
                             &SCOREP_Hashtab_DeleteNone );
+    SCOREP_MutexDestroy( &io_file_handle_hashtable_mutex );
 
     SCOREP_Platform_MountInfoFinalize();
 }
