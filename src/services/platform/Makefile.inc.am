@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -44,8 +44,8 @@ libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS) \
 libscorep_platform_la_SOURCES += \
     $(SRC_ROOT)src/services/platform/scorep_platform_system_tree.c \
     $(SRC_ROOT)src/services/platform/scorep_platform_system_tree.h
-
-
+libscorep_platform_la_LDFLAGS =
+libscorep_platform_la_LIBADD =
 
 if PLATFORM_BGP
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgp.c
@@ -55,10 +55,10 @@ endif PLATFORM_BGP
 
 if PLATFORM_BGQ
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
-libscorep_platform_la_LDFLAGS = \
+libscorep_platform_la_LDFLAGS += \
     $(AM_LDFLAGS)               \
     @SCOREP_PAMI_LDFLAGS@
-libscorep_platform_la_LIBADD = @SCOREP_PAMI_LIBS@
+libscorep_platform_la_LIBADD += @SCOREP_PAMI_LIBS@
 libscorep_platform_la_CPPFLAGS += @SCOREP_PAMI_CPPFLAGS@ \
                                   -I/bgsys/drivers/ppcfloor \
                                   -I/bgsys/drivers/ppcfloor/spi/include/kernel/cnk
@@ -98,8 +98,8 @@ endif PLATFORM_BGL
 if PLATFORM_CRAY
 if HAVE_PMI
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_cray.c
-libscorep_platform_la_LIBADD = $(PMI_LIBS)
-libscorep_platform_la_LDFLAGS = $(AM_LDFLAGS) $(PMI_LDFLAGS)
+libscorep_platform_la_LIBADD += $(PMI_LIBS)
+libscorep_platform_la_LDFLAGS += $(AM_LDFLAGS) $(PMI_LDFLAGS)
 libscorep_platform_la_CPPFLAGS += $(PMI_CPPFLAGS)
 else !HAVE_PMI
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
@@ -188,3 +188,12 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 else !MOUNT_INFO_SUPPORT
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_mountinfo_mockup.c
 endif !MOUNT_INFO_SUPPORT
+
+if HAVE_LUSTRE_API_SUPPORT
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_lustre.c
+libscorep_platform_la_LDFLAGS += $(SCOREP_LUSTRE_LDFLAGS)
+libscorep_platform_la_LIBADD += $(SCOREP_LUSTRE_LIBS)
+libscorep_platform_la_CPPFLAGS += $(SCOREP_LUSTRE_CPPFLAGS)
+else !HAVE_LUSTRE_API_SUPPORT
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_lustre_mockup.c
+endif !HAVE_LUSTRE_API_SUPPORT

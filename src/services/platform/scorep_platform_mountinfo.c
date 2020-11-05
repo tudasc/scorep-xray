@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -9,7 +9,19 @@
  * directory for details.
  *
  */
+
+/**
+ * @file
+ *
+ */
+
 #include <config.h>
+
+#include <SCOREP_Platform.h>
+#include <SCOREP_Definitions.h>
+
+#include <SCOREP_ErrorCodes.h>
+#include <UTILS_CStr.h>
 
 #include <mntent.h>
 #include <libgen.h>
@@ -19,12 +31,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
-#include <SCOREP_Platform.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Vector.h>
-#include <UTILS_CStr.h>
-#include <SCOREP_ErrorCodes.h>
 
 #define MOUNT_SRC  "/proc/self/mounts"
 
@@ -138,18 +144,18 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
                                                          SystemTreeNode,
                                                          system_tree_node )
-
-    if ( is_shared_fs
-         && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_MACHINE )
     {
-        return handle;
+        if ( is_shared_fs
+             && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_MACHINE )
+        {
+            return handle;
+        }
+        if ( !is_shared_fs
+             && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY )
+        {
+            return handle;
+        }
     }
-    if ( !is_shared_fs
-         && definition->domains & SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY )
-    {
-        return handle;
-    }
-
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
 
@@ -215,36 +221,42 @@ SCOREP_Platform_MountInfoInitialize( void )
 }
 
 SCOREP_MountInfo*
-SCOREP_Platform_GetMountInfo( const char* filename )
+SCOREP_Platform_GetMountInfo( const char* fileName )
 {
     SCOREP_MountInfo* found_entry = NULL;
 
-    if ( filename != NULL )
+    if ( fileName != NULL )
     {
-        found_entry = mountinfo_find_mount( filename );
+        found_entry = mountinfo_find_mount( fileName );
     }
 
     return found_entry;
 }
 
 SCOREP_SystemTreeNodeHandle
-SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mount_entry )
+SCOREP_Platform_GetTreeNodeHandle( SCOREP_MountInfo* mountEntry )
 {
-    if ( mount_entry != NULL )
+    if ( mountEntry != NULL )
     {
-        return mountinfo_get_tree_node_handle( mount_entry );
+        return mountinfo_get_tree_node_handle( mountEntry );
     }
 
     return SCOREP_INVALID_SYSTEM_TREE_NODE;
 }
 
 void
-SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle io_file_handle, SCOREP_MountInfo* mnt_entry )
+SCOREP_Platform_AddMountInfoProperties( SCOREP_IoFileHandle ioFileHandle,
+                                        SCOREP_MountInfo*   mountEntry )
 {
-    if ( mnt_entry != NULL )
+    if ( mountEntry != NULL )
     {
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "Mount Point", mnt_entry->mount_point );
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "Mount Source", mnt_entry->mount_src );
-        SCOREP_IoFileHandle_AddProperty( io_file_handle, "File system", mnt_entry->fstype );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Point", mountEntry->mount_point );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "Mount Source", mountEntry->mount_src );
+        SCOREP_IoFileHandle_AddProperty( ioFileHandle, "File system", mountEntry->fstype );
+
+        if ( strstr( mountEntry->fstype, "lustre" ) != NULL )
+        {
+            SCOREP_Platform_AddLustreProperties( ioFileHandle );
+        }
     }
 }

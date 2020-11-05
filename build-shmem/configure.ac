@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2018,
+dnl Copyright (c) 2013-2018, 2020,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015-2016, 2018-2020,
@@ -195,6 +195,7 @@ AC_SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_CRAY_PMI
 SCOREP_MNTENT_CHECK
+SCOREP_LUSTREAPI_CHECK
 
 # On crosscompile machines, install backend/mic stuff into
 # $(bin|lid)dir/(backend|mic).

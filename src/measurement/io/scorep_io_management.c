@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019,
+ * Copyright (c) 2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,7 +41,8 @@
 #define SCOREP_IO_HANDLE_HASHTABLE_MASK hashmask( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 #define SCOREP_IO_HANDLE_HASHTABLE_SIZE hashsize( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 
-static SCOREP_Hashtab* io_file_handle_hashtable = NULL;
+static SCOREP_Hashtab* io_file_handle_hashtable       = NULL;
+static SCOREP_Mutex    io_file_handle_hashtable_mutex = SCOREP_INVALID_MUTEX;
 
 /** @brief Payload in every IoHandleHandle definition. */
 typedef struct io_handle_payload
@@ -691,6 +692,8 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
 
     UTILS_BUG_ON( !io_file_handle_hashtable, "Hashtable is not initialized for storing %s", pathname );
 
+    SCOREP_MutexLock( io_file_handle_hashtable_mutex );
+
     size_t                hash_hint;
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( io_file_handle_hashtable,
                                                        ( void* )resolved_filename,
@@ -698,16 +701,23 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
     if ( entry != NULL )
     {
         free( resolved_filename );
-        return entry->value.handle;
+        SCOREP_IoFileHandle file_handle = entry->value.handle;
+        SCOREP_MutexUnlock( io_file_handle_hashtable_mutex );
+        return file_handle;
     }
 
+    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( resolved_filename );
     SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( resolved_filename,
-                                                                    SCOREP_INVALID_SYSTEM_TREE_NODE );
+                                                                    SCOREP_Platform_GetTreeNodeHandle( mnt_info ) );
+
+    SCOREP_Platform_AddMountInfoProperties( file_handle, mnt_info );
 
     SCOREP_Hashtab_InsertHandle( io_file_handle_hashtable,
                                  ( void* )resolved_filename,
                                  file_handle,
                                  &hash_hint );
+
+    SCOREP_MutexUnlock( io_file_handle_hashtable_mutex );
 
     return file_handle;
 }
@@ -717,26 +727,6 @@ SCOREP_IoMgmt_GetIoFile( SCOREP_IoHandleHandle handle )
 {
     SCOREP_IoFileHandle fh = SCOREP_IoHandleHandle_GetIoFile( handle );
     return SCOREP_Definitions_GetIoFileName( fh );
-}
-
-static SCOREP_ErrorCode
-io_mgmt_subsystem_pre_unify( void )
-{
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
-                                                         IoFile,
-                                                         io_file )
-    {
-        const char* filename = SCOREP_StringHandle_Get( definition->file_name_handle );
-
-        SCOREP_MountInfo* mnt_info = SCOREP_Platform_GetMountInfo( filename );
-
-        definition->scope = SCOREP_Platform_GetTreeNodeHandle( mnt_info );
-
-        SCOREP_Platform_AddMountInfoProperties( handle, mnt_info );
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-
-    return SCOREP_SUCCESS;
 }
 
 static SCOREP_ErrorCode
@@ -750,6 +740,7 @@ io_mgmt_subsystem_register( size_t subsystemId )
 static SCOREP_ErrorCode
 io_mgmt_subsystem_init( void )
 {
+    SCOREP_MutexCreate( &io_file_handle_hashtable_mutex );
     io_file_handle_hashtable = SCOREP_Hashtab_CreateSize( SCOREP_IO_FILE_HASHTABLE_SIZE,
                                                           &SCOREP_Hashtab_HashString,
                                                           &SCOREP_Hashtab_CompareStrings );
@@ -763,6 +754,7 @@ io_mgmt_subsystem_finalize( void )
     SCOREP_Hashtab_FreeAll( io_file_handle_hashtable,
                             &SCOREP_Hashtab_DeleteFree,
                             &SCOREP_Hashtab_DeleteNone );
+    SCOREP_MutexDestroy( &io_file_handle_hashtable_mutex );
 
     SCOREP_Platform_MountInfoFinalize();
 }
@@ -793,7 +785,6 @@ const SCOREP_Subsystem SCOREP_Subsystem_IoManagement =
     .subsystem_name          = "I/O Management",
     .subsystem_register      = &io_mgmt_subsystem_register,
     .subsystem_init          = &io_mgmt_subsystem_init,
-    .subsystem_pre_unify     = &io_mgmt_subsystem_pre_unify,
     .subsystem_finalize      = &io_mgmt_subsystem_finalize,
     .subsystem_init_location = &io_mgmt_subsystem_init_location,
 };
