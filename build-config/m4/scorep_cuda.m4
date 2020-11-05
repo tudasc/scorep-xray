@@ -66,10 +66,12 @@ CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
 LDFLAGS="$LDFLAGS ${with_libcudart_ldflags}"
 LIBS="$LIBS ${with_libcudart_libs}"
 
+scorep_cuda_version="unknown"
 AC_SCOREP_BACKEND_LIB([libcuda])
 CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
 LDFLAGS="$LDFLAGS ${with_libcuda_ldflags}"
 LIBS="$LIBS ${with_libcuda_libs}"
+AC_SUBST([SCOREP_CUDA_VERSION], [${scorep_cuda_version}])
 
 AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
@@ -118,9 +120,17 @@ AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
                     [Defined if CUPTI activity asynchronous buffer handling is available.]
                    )
 
+dnl run_cuda_test.sh: test sources only available for scorep_cuda_version 5000, 5050, 6000, 6050
+AM_CONDITIONAL([HAVE_CUDA_TESTS],
+    [test "x${scorep_have_cuda}" = xyes \
+     && (test ${scorep_cuda_version} -eq 5000 \
+         || test ${scorep_cuda_version} -eq 5050 \
+         || test ${scorep_cuda_version} -eq 6000 \
+         || test ${scorep_cuda_version} -eq 6050)])
+
 AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
 
-AFS_SUMMARY([CUDA version], [${cuda_version}])
+AFS_SUMMARY([CUDA version], [${scorep_cuda_version}])
 
 AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
@@ -293,27 +303,17 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
                        scorep_cuda_error="yes"])])
 
 dnl determine cuda version
-cuda_version="unknown"
 AS_IF([test "x$scorep_cuda_error" != xyes],
-    [AC_COMPUTE_INT([cuda_version],
+    [AC_COMPUTE_INT([scorep_cuda_version],
         [CUDA_VERSION],
         [#include <cuda.h>],
         [scorep_cuda_error=yes])
     AS_IF([test "x${scorep_cuda_error}" = xyes],
         [AC_MSG_WARN([CUDA driver API version could not be determined.])],
-        [AS_IF([test ${cuda_version} -lt 4010],
+        [AS_IF([test ${scorep_cuda_version} -lt 4010],
             [AC_MSG_WARN([CUDA driver API version is incompatible (< 4010)])
              scorep_cuda_error=yes],
-            [AC_MSG_NOTICE([CUDA driver API version is ${cuda_version}.])])])])
-AC_SUBST([SCOREP_CUDA_VERSION], [${cuda_version}])
-
-dnl run_cuda_test.sh: test sources only available for cuda_version 5000, 5050, 6000, 6050
-AM_CONDITIONAL([HAVE_CUDA_TESTS],
-    [test "x${scorep_cuda_error}" != xyes \
-     && (test ${cuda_version} -eq 5000 \
-         || test ${cuda_version} -eq 5050 \
-         || test ${cuda_version} -eq 6000 \
-         || test ${cuda_version} -eq 6050)])
+            [AC_MSG_NOTICE([CUDA driver API version is ${scorep_cuda_version}.])])])])
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
