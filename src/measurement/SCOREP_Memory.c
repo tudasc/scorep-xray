@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014, 2019,
+ * Copyright (c) 2009-2012, 2014, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -165,15 +165,7 @@ SCOREP_Memory_Finalize( void )
     is_initialized = false;
 
     assert( definitions_page_manager );
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-    // function, so omp_set/unset_lock, which is called after the end
-    // of main from the atexit handler, causes segmentation fault. The
-    // problem will be fixed in  Intel Compiler 11.1 update 6.
-    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
     SCOREP_Allocator_DeletePageManager( definitions_page_manager );
-#endif
     definitions_page_manager = 0;
 
     assert( allocator );
@@ -266,15 +258,7 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
     {
         if ( pageManagers[ i ] )
         {
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-            // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-            // function, so omp_set/unset_lock, which is called after the end
-            // of main from the atexit handler, causes segmentation fault. The
-            // problem will be fixed in  Intel Compiler 11.1 update 6.
-            // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
             SCOREP_Allocator_DeletePageManager( pageManagers[ i ] );
-#endif
         }
     }
 }
@@ -306,15 +290,7 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
         SCOREP_MutexUnlock( memory_lock );
     }
 
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-    // function, so omp_set/unset_lock, which is called after the end
-    // of main from the atexit handler, causes segmentation fault. The
-    // problem will be fixed in  Intel Compiler 11.1 update 6.
-    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
     SCOREP_Allocator_DeletePageManager( pageManager );
-#endif
 }
 
 
