@@ -616,10 +616,13 @@ typedef void ( * SCOREP_Substrates_RmaWinDestroyCb )(
  * @param location location which creates this event
  *
  * @param timestamp timestamp for this event
+ *
+ * @param syncLevel synchronization level
  */
 typedef void ( * SCOREP_Substrates_RmaCollectiveBeginCb )(
     struct SCOREP_Location* location,
-    uint64_t                timestamp );
+    uint64_t                timestamp,
+    SCOREP_RmaSyncLevel     syncLevel );
 
 /**
  * end a collective operation on an MPI remote memory access window

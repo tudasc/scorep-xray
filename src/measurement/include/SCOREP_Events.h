@@ -509,7 +509,7 @@ SCOREP_RmaWinDestroy( SCOREP_RmaWindowHandle windowHandle );
  * @{
  */
 void
-SCOREP_RmaCollectiveBegin( void );
+SCOREP_RmaCollectiveBegin( SCOREP_RmaSyncLevel syncLevel );
 
 
 /**

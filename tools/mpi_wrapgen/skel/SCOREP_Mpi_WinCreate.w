@@ -26,7 +26,7 @@ ${proto:c}
       ${xblock:pre}
 
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
-      SCOREP_RmaCollectiveBegin();
+      SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
     }
     else if ( SCOREP_IsUnwindingEnabled() )
     {

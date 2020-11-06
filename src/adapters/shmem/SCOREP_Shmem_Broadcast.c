@@ -48,7 +48,7 @@
                                                                                                                                 \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );                                                     \
                                                                                                                                 \
-            SCOREP_RmaCollectiveBegin();                                                                                        \
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY );                          \
         }                                                                                                                       \
                                                                                                                                 \
         SCOREP_ENTER_WRAPPED_REGION();                                                                                          \
