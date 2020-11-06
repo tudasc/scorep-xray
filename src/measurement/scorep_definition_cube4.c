@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -711,22 +711,30 @@ write_metric_definitions( cube_t*                       myCube,
         if ( ( definition->source_type != SCOREP_METRIC_SOURCE_TYPE_TASK ) ||
              ( layout->metric_list & SCOREP_CUBE_METRIC_TASK_METRICS ) )
         {
-            char* uniq_name = metric_name;
+            /* construct uniq_name from [<parent_name>::]<metric_name>. We
+               always need a copy from <metric_name> as uniq_name potentially
+               gets modified. */
+            size_t parent_len = 0;
             if ( parent_handle )
             {
-                const char* parent_uniq_name = cube_metric_get_uniq_name( parent_handle );
-                size_t      len              = strlen( parent_uniq_name ) + 2 + strlen( metric_name ) + 1;
-                uniq_name = calloc( len + 1, 1 );
-                snprintf( uniq_name, len, "%s::%s", parent_uniq_name, metric_name );
+                parent_len = strlen( cube_metric_get_uniq_name( parent_handle ) );
             }
+            size_t prepend_len = parent_len ? parent_len + 2 : 0;
+            size_t len         = strlen( metric_name );
+            char   uniq_name[ prepend_len + len + 1 ];
+            if ( parent_handle )
+            {
+                /* Prepend '<parent_name>::' */
+                memcpy( &uniq_name[ 0 ], cube_metric_get_uniq_name( parent_handle ), parent_len );
+                memset( &uniq_name[ parent_len ], ':', 2 );
+            }
+            memcpy( &uniq_name[ prepend_len ], metric_name, len );
+            uniq_name[ prepend_len + len ] = '\0';
+
             cube_handle = cube_def_met( myCube, metric_name, uniq_name, data_type,
                                         metric_unit, "", "", metric_description,
                                         parent_handle,
                                         cube_metric_type );
-            if ( uniq_name != metric_name )
-            {
-                free( uniq_name );
-            }
 
             add_metric_mapping( map, cube_handle, handle );
         }
