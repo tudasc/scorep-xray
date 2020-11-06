@@ -144,7 +144,6 @@ SCOREP_Profile_Initialize( size_t substrateId )
 
     scorep_cluster_initialize();
     scorep_profile_init_definition();
-    scorep_profile_initialize_exchange();
     scorep_profile_task_initialize();
     scorep_profile_init_rma();
     scorep_profile_io_init();
@@ -226,8 +225,6 @@ SCOREP_Profile_Finalize( void )
 
     /* Finalize sub-systems */
     scorep_cluster_finalize();
-    scorep_profile_finalize_exchange();
-    scorep_profile_io_finalize();
 
     return scorep_profile_substrate_id;
 }

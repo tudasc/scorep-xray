@@ -546,11 +546,6 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     /* Let the filtering service read its filter file early */
     SCOREP_TIME( SCOREP_Filtering_Initialize, ( ) );
 
-    /*
-     * @dependsOn Mutex
-     */
-    SCOREP_TIME( SCOREP_Location_Initialize, ( ) );
-
     /* == initialize threading system and create the master thread == */
 
     /*

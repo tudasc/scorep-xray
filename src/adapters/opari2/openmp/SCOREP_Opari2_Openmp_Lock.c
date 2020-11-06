@@ -62,11 +62,6 @@ static SCOREP_Opari2_Openmp_Lock_HandleType current_lock_handle = 0;
 SCOREP_Mutex scorep_opari2_openmp_lock = SCOREP_MUTEX_INIT;
 
 void
-scorep_opari2_openmp_lock_initialize( void )
-{
-}
-
-void
 scorep_opari2_openmp_lock_finalize( void )
 {
     struct lock_block* block;

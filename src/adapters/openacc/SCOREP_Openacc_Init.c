@@ -74,11 +74,6 @@ openacc_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
-static void
-openacc_subsystem_finalize( void )
-{
-}
-
 SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
 {
     .subsystem_name          = "OPENACC",
@@ -86,7 +81,7 @@ SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
     .subsystem_end           = NULL,
     .subsystem_init          = &openacc_subsystem_init,
     .subsystem_init_location = NULL,
-    .subsystem_finalize      = &openacc_subsystem_finalize,
+    .subsystem_finalize      = NULL,
     .subsystem_pre_unify     = NULL,
     .subsystem_post_unify    = NULL
 };

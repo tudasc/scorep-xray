@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,9 +27,6 @@
  */
 void
 scorep_profile_io_init( void );
-
-void
-scorep_profile_io_finalize( void );
 
 struct SCOREP_Profile_LocationData;
 void

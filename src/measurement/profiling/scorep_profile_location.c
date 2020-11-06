@@ -90,18 +90,6 @@ scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
  * *************************************************************************************/
 
 void
-scorep_profile_initialize_exchange( void )
-{
-    scorep_profile_task_exchange = NULL;
-    scorep_profile_stub_exchange = NULL;
-}
-
-void
-scorep_profile_finalize_exchange( void )
-{
-}
-
-void
 scorep_profile_reinitialize_location( SCOREP_Profile_LocationData* location )
 {
     SCOREP_Location*  location_data = location->location_data;

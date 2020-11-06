@@ -78,11 +78,6 @@ scorep_profile_io_init( void )
 }
 
 void
-scorep_profile_io_finalize( void )
-{
-}
-
-void
 scorep_profile_io_init_location( SCOREP_Profile_LocationData* location )
 {
     location->current_io_paradigm = &io_paradigm_root;

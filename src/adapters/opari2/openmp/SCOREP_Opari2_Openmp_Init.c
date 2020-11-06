@@ -107,8 +107,6 @@ opari2_openmp_subsystem_init( void )
                                         SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
                                         "Thread team ${id}" );
 
-    scorep_opari2_openmp_lock_initialize();
-
     size_t n = POMP2_Get_num_regions();
 
     scorep_opari2_openmp_regions = calloc( n, sizeof( SCOREP_Opari2_Openmp_Region ) );

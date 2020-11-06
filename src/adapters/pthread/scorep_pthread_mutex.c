@@ -52,18 +52,6 @@ static scorep_pthread_mutex* hash_table[ hashsize( HASH_TABLE_SIZE_EXP ) ];
 static int32_t               mutex_id = 0;
 static scorep_pthread_mutex* free_list_head;
 
-void
-scorep_pthread_mutex_init( void )
-{
-}
-
-
-void
-scorep_pthread_mutex_finalize( void )
-{
-}
-
-
 scorep_pthread_mutex*
 scorep_pthread_mutex_hash_put( pthread_mutex_t* pthreadMutex )
 {

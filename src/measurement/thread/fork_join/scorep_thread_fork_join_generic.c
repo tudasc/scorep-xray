@@ -69,18 +69,6 @@ static SCOREP_Location** first_fork_locations;
 static SCOREP_Mutex      first_fork_locations_mutex;
 
 
-void
-scorep_thread_create_mutexes( void )
-{
-}
-
-
-void
-scorep_thread_destroy_mutexes( void )
-{
-}
-
-
 bool
 SCOREP_Thread_InParallel( void )
 {

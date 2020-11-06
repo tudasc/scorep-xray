@@ -59,13 +59,6 @@ init_regions( void );
 static void
 finalize_regions( void );
 
-static void
-init_metrics( void );
-
-static void
-finalize_metrics( void );
-
-
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
  */
@@ -87,7 +80,6 @@ user_subsystem_init( void )
 {
     scorep_selective_init();
     init_regions();
-    init_metrics();
 
     return SCOREP_SUCCESS;
 }
@@ -105,7 +97,6 @@ user_subsystem_init_location( SCOREP_Location* locationData,
 static void
 user_subsystem_finalize( void )
 {
-    finalize_metrics();
     finalize_regions();
     scorep_selective_finalize();
 }
@@ -131,17 +122,6 @@ SCOREP_Mutex scorep_user_metric_mutex = SCOREP_MUTEX_INIT;
 /** Mutex to avoid parallel allocation of local topology data
  */
 SCOREP_Mutex scorep_user_topo_mutex = SCOREP_MUTEX_INIT;
-
-
-static void
-init_metrics( void )
-{
-}
-
-static void
-finalize_metrics( void )
-{
-}
 
 
 /**

@@ -71,18 +71,6 @@
 static SCOREP_Mutex interim_communicator_definition_counter_lock;
 
 
-void
-scorep_definitions_create_interim_communicator_counter_lock( void )
-{
-}
-
-
-void
-scorep_definitions_destroy_interim_communicator_counter_lock( void )
-{
-}
-
-
 static uint32_t
 get_new_interim_communicator_id( void )
 {

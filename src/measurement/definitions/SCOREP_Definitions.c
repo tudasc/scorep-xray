@@ -90,8 +90,6 @@ SCOREP_Definitions_Initialize( void )
     }
     definitions_initialized = true;
 
-    scorep_definitions_create_interim_communicator_counter_lock();
-
     SCOREP_DefinitionManager* local_definition_manager = &scorep_local_definition_manager;
     SCOREP_Definitions_InitializeDefinitionManager( &local_definition_manager,
                                                     SCOREP_Memory_GetLocalDefinitionPageManager(),
@@ -275,7 +273,6 @@ SCOREP_Definitions_Finalize( void )
     // SCOREP_Memory_AllocForDefinitions, so we don't need to free it
     // explicitly.
 
-    scorep_definitions_destroy_interim_communicator_counter_lock();
     scorep_system_tree_seq_free();
 
     definitions_initialized = false;

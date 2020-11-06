@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2020,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,14 +40,6 @@ struct scorep_pthread_mutex
     uint32_t nesting_level;
     bool     process_shared;
 };
-
-
-void
-scorep_pthread_mutex_init( void );
-
-
-void
-scorep_pthread_mutex_finalize( void );
 
 
 scorep_pthread_mutex*

@@ -102,11 +102,6 @@ static bool defer_init_locations = true;
 static SCOREP_Mutex scorep_location_list_mutex;
 static SCOREP_Mutex per_process_metrics_location_mutex;
 
-void
-SCOREP_Location_Initialize( void )
-{
-}
-
 
 SCOREP_Location*
 scorep_location_create_location( SCOREP_LocationType type,
