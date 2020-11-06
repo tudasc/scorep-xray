@@ -115,15 +115,6 @@ scorep-config <command> [<options>]
                none (default)
                omp
                pthread
-   --mutex=<locking system>[:<variant>]
-              Available locking systems are:
-               none
-               omp
-               pthread:default
-               pthread:wrap
-               pthread:spinlock
-              If no variant is specified the default for the respective
-              threading system is used.
    --mpp=<multi-process paradigm>
               Available multi-process paradigms are:
                none (default)

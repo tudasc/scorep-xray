@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -57,6 +57,16 @@
 
 #include <SCOREP_ErrorCodes.h>
 
+#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#include <SCOREP_Atomic.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <UTILS_Error.h>
+#define STATIC_INLINE static inline
+#else /* !SCOREP_GCC_ATOMIC_BUILTINS */
+#define STATIC_INLINE
+#endif /* !SCOREP_GCC_ATOMIC_BUILTINS */
+
 /**
  * We use an opaque pointer type for the lock object.
  */
@@ -67,16 +77,24 @@ typedef void* SCOREP_Mutex;
  */
 #define SCOREP_INVALID_MUTEX NULL
 
-SCOREP_ErrorCode
+
+STATIC_INLINE SCOREP_ErrorCode
 SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex );
 
-SCOREP_ErrorCode
+STATIC_INLINE SCOREP_ErrorCode
 SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex );
 
-SCOREP_ErrorCode
+STATIC_INLINE SCOREP_ErrorCode
 SCOREP_MutexLock( SCOREP_Mutex scorepMutex );
 
-SCOREP_ErrorCode
+STATIC_INLINE SCOREP_ErrorCode
 SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex );
+
+
+#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#include "../scorep_mutex.inc.c"
+#endif /* SCOREP_GCC_ATOMIC_BUILTINS */
+
+#undef STATIC_INLINE
 
 #endif /* SCOREP_MUTEX_H */

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2017,
@@ -27,7 +27,6 @@
 #include <scorep_config_tool_mpi.h>
 #include "scorep_config_thread.hpp"
 #include "scorep_config_adapter.hpp"
-#include "scorep_config_mutex.hpp"
 #include <iostream>
 
 /* **************************************************************************************
@@ -120,12 +119,10 @@ SCOREP_Config_ThreadSystem::checkAll( const std::string& arg )
 SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( const std::string&           name,
                                                         const std::string&           variant,
                                                         const std::string&           library,
-                                                        SCOREP_Config_MutexId        mutexId,
                                                         SCOREP_Config_ThreadSystemId id )
     : m_name( name ),
     m_variant( variant ),
     m_library( library ),
-    m_mutexId( mutexId ),
     m_id( id )
 {
 }
@@ -154,7 +151,6 @@ SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string>&           libs,
                                      SCOREP_Config_LibraryDependencies& deps )
 {
     deps.addDependency( "libscorep_measurement", "lib" + m_library );
-    //  deps.addDependency( "libscorep_measurement", "lib" + m_mutexlib );
 }
 
 void
@@ -169,16 +165,6 @@ void
 SCOREP_Config_ThreadSystem::addLdFlags( std::string& ldflags,
                                         bool         nvcc )
 {
-}
-
-SCOREP_Config_MutexId
-SCOREP_Config_ThreadSystem::validateDependencies()
-{
-    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_NONE )
-    {
-        return m_mutexId;
-    }
-    return SCOREP_Config_Mutex::current->getId();
 }
 
 void
@@ -201,7 +187,7 @@ SCOREP_Config_ThreadSystem::getId( void )
 
 SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
     : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_mockup",
-                                  SCOREP_CONFIG_MUTEX_ID_NONE, SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
+                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
 {
 }
 
@@ -216,7 +202,7 @@ SCOREP_Config_MockupThreadSystem::getInitStructName( std::deque<std::string>& in
 
 SCOREP_Config_OmpThreadSystem::SCOREP_Config_OmpThreadSystem()
     : SCOREP_Config_ThreadSystem( "omp", "", "scorep_thread_fork_join_omp",
-                                  SCOREP_CONFIG_MUTEX_ID_OMP, SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP )
+                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP )
 {
 }
 
@@ -275,7 +261,6 @@ SCOREP_Config_PthreadThreadSystem::SCOREP_Config_PthreadThreadSystem()
     : SCOREP_Config_ThreadSystem( "pthread",
                                   "",
                                   "scorep_thread_create_wait_pthread",
-                                  SCOREP_CONFIG_MUTEX_ID_PTHREAD_WRAP,
                                   SCOREP_CONFIG_THREAD_SYSTEM_ID_PTHREAD )
 {
 }

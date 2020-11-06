@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -51,7 +51,6 @@
 #include "scorep_config_adapter.hpp"
 #include "scorep_config_mpp.hpp"
 #include "scorep_config_thread.hpp"
-#include "scorep_config_mutex.hpp"
 
 #include <scorep_tools_utils.hpp>
 
@@ -172,7 +171,6 @@ print_help( void )
     std::cout << HELPTEXT;
     SCOREP_Config_Adapter::printAll();
     SCOREP_Config_ThreadSystem::printAll();
-    SCOREP_Config_Mutex::printAll();
     SCOREP_Config_MppSystem::printAll();
     std::cout << std::endl;
     std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
@@ -217,7 +215,6 @@ delegate( int                argc,
 static inline void
 clean_up()
 {
-    SCOREP_Config_Mutex::fini();
     SCOREP_Config_ThreadSystem::fini();
     SCOREP_Config_MppSystem::fini();
     SCOREP_Config_Adapter::fini();
@@ -251,7 +248,6 @@ main( int    argc,
     SCOREP_Config_Adapter::init();
     SCOREP_Config_MppSystem::init();
     SCOREP_Config_ThreadSystem::init();
-    SCOREP_Config_Mutex::init();
 
     std::string            binary( argv[ 0 ] );
     std::string::size_type last_slash = binary.find_last_of( "/" );
@@ -493,17 +489,6 @@ main( int    argc,
                 exit( EXIT_FAILURE );
             }
         }
-        else if ( strncmp( argv[ i ], "--mutex=", 8 ) == 0 )
-        {
-            std::string arg( &argv[ i ][ 8 ] );
-            bool        known_arg = SCOREP_Config_Mutex::checkAll( arg );
-            if ( !known_arg )
-            {
-                std::cerr << "[Score-P] ERROR: Unknown locking system: '" << arg << "'" << std::endl;
-                clean_up();
-                exit( EXIT_FAILURE );
-            }
-        }
         else if ( strncmp( argv[ i ], "--target", 8 ) == 0 )
         {
             if ( argv[ i ][ 8 ] == '=' )
@@ -536,6 +521,12 @@ main( int    argc,
                 clean_up();
                 exit( EXIT_FAILURE );
             }
+        }
+        else if ( strncmp( argv[ i ], "--mutex", 7 ) == 0 )
+        {
+            std::cerr << "[Score-P] WARNING: Option '--mutex=<implementation>' no longer exists. An implementation\n"
+                      << "                   based on atomic intrinsics replaces all former variants."
+                      << std::endl;
         }
         else
         {
@@ -638,10 +629,7 @@ main( int    argc,
 
     SCOREP_Config_Adapter::addLibsAll( libs, deps );
     SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
-    SCOREP_Config_MutexId newMutexId = SCOREP_Config_ThreadSystem::current->validateDependencies();
     SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
-    SCOREP_Config_Mutex::select( newMutexId );
-    SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
 #if defined( SCOREP_SHARED_BUILD )
     if ( preload_libs )

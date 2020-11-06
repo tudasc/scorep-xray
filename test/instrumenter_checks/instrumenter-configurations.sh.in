@@ -19,7 +19,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2016,
+## Copyright (c) 2009-2016, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -60,11 +60,6 @@ omp_instrumenter_args=
 omp_backend_args=
 @HAVE_OPENMP_SUPPORT_TRUE@omp_backend_args="${omp_backend_args} thread=omp "
 
-mutex_args=
-@HAVE_OPENMP_SUPPORT_TRUE@mutex_args="${mutex_args} mutex=omp"
-@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="${mutex_args} mutex=pthread"
-@HAVE_PTHREAD_SPINLOCK_TRUE@mutex_args="${mutex_args} mutex=pthread:spinlock"
-
 cd @abs_top_builddir@
 
 # remove files from previous invocation
@@ -97,9 +92,7 @@ for comp_arg in $compilerargs; do
                     # omp -------------------------------#
 @HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
 @HAVE_OPENMP_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                              for mutex_arg in $mutex_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                                   echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_i_arg $omp_b_arg $mutex_arg" >> ${file_prefix}omp
-@HAVE_OPENMP_SUPPORT_TRUE@                              done
+@HAVE_OPENMP_SUPPORT_TRUE@                              echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_i_arg $omp_b_arg " >> ${file_prefix}omp
 @HAVE_OPENMP_SUPPORT_TRUE@                         done
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
