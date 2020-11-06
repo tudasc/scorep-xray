@@ -19,8 +19,10 @@ User tools and API improvements and changes:
   recommended GCC compiler instrumentation plug-in.
 - The scorep instrumenter option --config=<file> was removed as it
   was considered of little use.
-- Added ability to generate an initial filter file based on "max buffer
-  size" and "time per visit" parameters.
+- Added ability to generate an initial filter file with optional
+  control parameters using buffer values, visits and region types.
+  This includes the ability to iteratively refine the generated filter
+  file using existing filters.
 - Compile-time filtering via `scorep --instrument-filter` is now
   also available for builds using Intel compilers.
 - Added additional scorep-score sorting modes `name`, `totaltime`,
