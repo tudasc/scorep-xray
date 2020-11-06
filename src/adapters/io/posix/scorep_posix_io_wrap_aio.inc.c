@@ -6,20 +6,20 @@ static inline void
 aio_add_request( struct aiocb*          aiocbp,
                  SCOREP_IoOperationMode mode )
 {
-    SCOREP_MutexLock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexLock( &scorep_posix_io_aio_request_table_mutex );
 
     SCOREP_Hashtab_InsertUint64( scorep_posix_io_aio_request_table,
                                  ( void* )aiocbp,
                                  mode,
                                  NULL );
 
-    SCOREP_MutexUnlock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 }
 
 static inline void
 aio_delete_request( const struct aiocb* aiocbp )
 {
-    SCOREP_MutexLock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexLock( &scorep_posix_io_aio_request_table_mutex );
 
     SCOREP_Hashtab_Remove( scorep_posix_io_aio_request_table,
                            ( const void* )aiocbp,
@@ -27,14 +27,14 @@ aio_delete_request( const struct aiocb* aiocbp )
                            SCOREP_Hashtab_DeleteNone,
                            NULL );
 
-    SCOREP_MutexUnlock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 }
 
 static inline int
 aio_find_request( const struct aiocb*     aiocbp,
                   SCOREP_IoOperationMode* mode )
 {
-    SCOREP_MutexLock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexLock( &scorep_posix_io_aio_request_table_mutex );
     SCOREP_Hashtab_Entry* e = SCOREP_Hashtab_Find( scorep_posix_io_aio_request_table,
                                                    aiocbp,
                                                    NULL );
@@ -42,7 +42,7 @@ aio_find_request( const struct aiocb*     aiocbp,
     {
         *mode = e->value.uint64;
     }
-    SCOREP_MutexUnlock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 
     return ( e != NULL ) ? 0 : -1;
 }
@@ -51,7 +51,7 @@ static inline void
 aio_cancel_all_requests_of_fd( int                   fd,
                                SCOREP_IoHandleHandle handle )
 {
-    SCOREP_MutexLock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexLock( &scorep_posix_io_aio_request_table_mutex );
     SCOREP_Hashtab_Iterator* iter  = SCOREP_Hashtab_IteratorCreate( scorep_posix_io_aio_request_table );
     SCOREP_Hashtab_Entry*    entry = SCOREP_Hashtab_IteratorFirst( iter );
     while ( entry )
@@ -71,7 +71,7 @@ aio_cancel_all_requests_of_fd( int                   fd,
         entry = SCOREP_Hashtab_IteratorNext( iter );
     }
     SCOREP_Hashtab_IteratorFree( iter );
-    SCOREP_MutexUnlock( scorep_posix_io_aio_request_table_mutex );
+    SCOREP_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 }
 
 static inline int

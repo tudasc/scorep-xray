@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -42,14 +42,11 @@
  *
  * Usage:
  * @code
- *     SCOREP_Mutex lock = SCOREP_INVALID_MUTEX;
- *     SCOREP_MutexCreate( &lock );
+ *     SCOREP_Mutex lock = SCOREP_MUTEX_INIT;
  *     :
- *     SCOREP_MutexLock( lock );
+ *     SCOREP_MutexLock( &lock );
  *     : <critical section>
- *     SCOREP_MutexUnlock( lock );
- *     :
- *     SCOREP_MutexDestroy( &lock );
+ *     SCOREP_MutexUnlock( &lock );
  * @endcode
  *
  */
@@ -57,9 +54,10 @@
 
 #include <SCOREP_ErrorCodes.h>
 
+#include <stdbool.h>
+
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
 #include <SCOREP_Atomic.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <UTILS_Error.h>
 #define STATIC_INLINE static inline
@@ -68,27 +66,21 @@
 #endif /* !SCOREP_GCC_ATOMIC_BUILTINS */
 
 /**
- * We use an opaque pointer type for the lock object.
+ * A lock object is just a bool. Should be 0-initialized if allocated.
  */
-typedef void* SCOREP_Mutex;
+typedef bool SCOREP_Mutex;
 
 /**
- * Initialize an mutex variable to an invalid value.
+ * Initialize an mutex variable to the unlocked state.
  */
-#define SCOREP_INVALID_MUTEX NULL
+#define SCOREP_MUTEX_INIT false
 
 
 STATIC_INLINE SCOREP_ErrorCode
-SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex );
+SCOREP_MutexLock( SCOREP_Mutex* scorepMutex );
 
 STATIC_INLINE SCOREP_ErrorCode
-SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex );
-
-STATIC_INLINE SCOREP_ErrorCode
-SCOREP_MutexLock( SCOREP_Mutex scorepMutex );
-
-STATIC_INLINE SCOREP_ErrorCode
-SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex );
+SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
 
 
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014-2015, 2017,
+ * Copyright (c) 2009-2011, 2014-2015, 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -1161,10 +1161,10 @@ POMP2_Set_lock( omp_lock_t* s )
 
     if ( scorep_opari2_recording_on )
     {
-        SCOREP_MutexLock( scorep_opari2_openmp_lock );
+        SCOREP_MutexLock( &scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireLock( s );
         SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-        SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+        SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_LOCK ] );
     }
@@ -1194,10 +1194,10 @@ POMP2_Unset_lock( omp_lock_t* s )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_LOCK ] );
 
-        SCOREP_MutexLock( scorep_opari2_openmp_lock );
+        SCOREP_MutexLock( &scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetReleaseLock( s );
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-        SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+        SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
     }
     else if ( SCOREP_IsUnwindingEnabled() )
     {
@@ -1250,10 +1250,10 @@ POMP2_Test_lock( omp_lock_t* s )
     {
         if ( result )
         {
-            SCOREP_MutexLock( scorep_opari2_openmp_lock );
+            SCOREP_MutexLock( &scorep_opari2_openmp_lock );
             SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireLock( s );
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-            SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+            SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
         }
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_LOCK ] );
     }
@@ -1376,10 +1376,10 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
 
     if ( scorep_opari2_recording_on )
     {
-        SCOREP_MutexLock( scorep_opari2_openmp_lock );
+        SCOREP_MutexLock( &scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireNestLock( s );
         SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-        SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+        SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_SET_NEST_LOCK ] );
     }
     else if ( SCOREP_IsUnwindingEnabled() )
@@ -1407,10 +1407,10 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     if ( scorep_opari2_recording_on )
     {
         SCOREP_EnterWrappedRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_UNSET_NEST_LOCK ] );
-        SCOREP_MutexLock( scorep_opari2_openmp_lock );
+        SCOREP_MutexLock( &scorep_opari2_openmp_lock );
         SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetReleaseNestLock( s );
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-        SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+        SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
     }
     else if ( SCOREP_IsUnwindingEnabled() )
     {
@@ -1463,10 +1463,10 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
     {
         if ( result )
         {
-            SCOREP_MutexLock( scorep_opari2_openmp_lock );
+            SCOREP_MutexLock( &scorep_opari2_openmp_lock );
             SCOREP_Opari2_Openmp_Lock* lock = SCOREP_Opari2_Openmp_GetAcquireNestLock( s );
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, lock->handle, lock->acquisition_order );
-            SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+            SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
         }
 
         SCOREP_ExitRegion( scorep_opari2_openmp_lock_region_handles[ SCOREP_OPARI2_OPENMP_TEST_NEST_LOCK ] );

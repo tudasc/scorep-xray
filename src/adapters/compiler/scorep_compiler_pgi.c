@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015, 2019,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -321,7 +321,7 @@ check_region( SCOREP_RegionHandle* region,
     /* Register new regions */
     if ( !*region )
     {
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( !*region )
         {
             UTILS_IO_SimplifyPath( file_name );
@@ -356,7 +356,7 @@ check_region( SCOREP_RegionHandle* region,
 
             scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
 }
 

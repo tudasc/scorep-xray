@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,11 +58,11 @@ struct scorep_profile_fork_list_node
     scorep_profile_fork_list_node* next;
 };
 
-static scorep_profile_task* scorep_profile_task_exchange = NULL;
+static scorep_profile_task* scorep_profile_task_exchange;
 
 static SCOREP_Mutex scorep_task_object_exchange_lock;
 
-static scorep_profile_node* scorep_profile_stub_exchange = NULL;
+static scorep_profile_node* scorep_profile_stub_exchange;
 
 static SCOREP_Mutex scorep_stub_exchange_lock;
 
@@ -92,8 +92,6 @@ scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
 void
 scorep_profile_initialize_exchange( void )
 {
-    SCOREP_MutexCreate( &scorep_task_object_exchange_lock );
-    SCOREP_MutexCreate( &scorep_stub_exchange_lock );
     scorep_profile_task_exchange = NULL;
     scorep_profile_stub_exchange = NULL;
 }
@@ -101,8 +99,6 @@ scorep_profile_initialize_exchange( void )
 void
 scorep_profile_finalize_exchange( void )
 {
-    SCOREP_MutexDestroy( &scorep_task_object_exchange_lock );
-    SCOREP_MutexDestroy( &scorep_stub_exchange_lock );
 }
 
 void
@@ -353,13 +349,13 @@ scorep_profile_release_stubs( SCOREP_Profile_LocationData* location,
             {
                 current = current->first_child;
             }
-            SCOREP_MutexLock( scorep_stub_exchange_lock );
+            SCOREP_MutexLock( &scorep_stub_exchange_lock );
             if ( scorep_profile_stub_exchange != NULL )
             {
                 scorep_profile_add_child( current, scorep_profile_stub_exchange );
             }
             scorep_profile_stub_exchange = root;
-            SCOREP_MutexUnlock( scorep_stub_exchange_lock );
+            SCOREP_MutexUnlock( &scorep_stub_exchange_lock );
 
             location->foreign_stubs     = NULL;
             location->num_foreign_stubs = 0;
@@ -387,13 +383,13 @@ scorep_profile_recycle_stub( SCOREP_Profile_LocationData* location )
     }
     if ( scorep_profile_stub_exchange != NULL )
     {
-        SCOREP_MutexLock( scorep_stub_exchange_lock );
+        SCOREP_MutexLock( &scorep_stub_exchange_lock );
         if ( scorep_profile_stub_exchange != NULL )
         {
             location->free_stubs         = scorep_profile_stub_exchange;
             scorep_profile_stub_exchange = NULL;
         }
-        SCOREP_MutexUnlock( scorep_stub_exchange_lock );
+        SCOREP_MutexUnlock( &scorep_stub_exchange_lock );
         if ( location->free_stubs != NULL )
         {
             new_stub             = location->free_stubs;
@@ -435,10 +431,10 @@ scorep_profile_release_task( SCOREP_Profile_LocationData* location,
             {
                 current = current->next;
             }
-            SCOREP_MutexLock( scorep_task_object_exchange_lock );
+            SCOREP_MutexLock( &scorep_task_object_exchange_lock );
             current->next                = scorep_profile_task_exchange;
             scorep_profile_task_exchange = task;
-            SCOREP_MutexUnlock( scorep_task_object_exchange_lock );
+            SCOREP_MutexUnlock( &scorep_task_object_exchange_lock );
 
             location->foreign_tasks     = NULL;
             location->num_foreign_tasks = 0;
@@ -465,13 +461,13 @@ scorep_profile_recycle_task( SCOREP_Profile_LocationData* location )
     }
     else if ( scorep_profile_task_exchange != NULL )
     {
-        SCOREP_MutexLock( scorep_task_object_exchange_lock );
+        SCOREP_MutexLock( &scorep_task_object_exchange_lock );
         if ( scorep_profile_task_exchange != NULL )
         {
             new_task                     = scorep_profile_task_exchange;
             scorep_profile_task_exchange = NULL;
         }
-        SCOREP_MutexUnlock( scorep_task_object_exchange_lock );
+        SCOREP_MutexUnlock( &scorep_task_object_exchange_lock );
         if ( new_task != NULL )
         {
             location->free_tasks = new_task->next;

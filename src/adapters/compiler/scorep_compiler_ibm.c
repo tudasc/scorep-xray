@@ -78,7 +78,7 @@ get_region_handle( const char* region_name,
     long                       region_key = ( long )region_name;
     if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
     {
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
         {
             char* file = UTILS_CStr_dup( file_name );
@@ -127,7 +127,7 @@ get_region_handle( const char* region_name,
             free( file );
             scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
     return hash_node->region_handle;
 }
@@ -162,7 +162,7 @@ __func_trace_enter( const char*          region_name,
 
     if ( *handle == 0 )
     {
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( *handle == 0 )
         {
             SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
@@ -175,7 +175,7 @@ __func_trace_enter( const char*          region_name,
                 *handle = region;
             }
         }
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
     if ( *handle != SCOREP_FILTERED_REGION )
     {

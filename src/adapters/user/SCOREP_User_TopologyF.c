@@ -4,7 +4,7 @@
  * Copyright (c) 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2018,
+ * Copyright (c) 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -66,7 +66,7 @@ FSUB( SCOREP_F_CartTopologyCreate )( SCOREP_Fortran_TopologyHandle* topologyHand
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_MutexLock( scorep_user_topo_mutex );
+        SCOREP_MutexLock( &scorep_user_topo_mutex );
         if ( *topologyHandle == SCOREP_USER_INVALID_TOPOLOGY )
         {
             /* Convert name to C-String, like in SCOREP_User_RegionF.c */
@@ -97,7 +97,7 @@ FSUB( SCOREP_F_CartTopologyCreate )( SCOREP_Fortran_TopologyHandle* topologyHand
         {
             UTILS_WARNING( "Initializing a non empty topology!" );
         }
-        SCOREP_MutexUnlock( scorep_user_topo_mutex );
+        SCOREP_MutexUnlock( &scorep_user_topo_mutex );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

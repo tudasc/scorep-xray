@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -36,15 +36,17 @@
 #include <SCOREP_Mutex.h>
 
 
+struct OTF2_LockObject
+{
+    SCOREP_Mutex mutex;
+};
+
+
 static OTF2_CallbackCode
 lock_create( void*      userData,
              OTF2_Lock* lock )
 {
-    SCOREP_Mutex mutex;
-
-    SCOREP_MutexCreate( &mutex );
-
-    *lock = ( OTF2_Lock )mutex;
+    *lock = calloc( 1, sizeof( **lock ) );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -54,9 +56,7 @@ static OTF2_CallbackCode
 lock_destroy( void*     userData,
               OTF2_Lock lock )
 {
-    SCOREP_Mutex mutex = lock;
-
-    SCOREP_MutexDestroy( &mutex );
+    free( lock );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -66,9 +66,7 @@ static OTF2_CallbackCode
 lock_lock( void*     userData,
            OTF2_Lock lock )
 {
-    SCOREP_Mutex mutex = lock;
-
-    SCOREP_MutexLock( mutex );
+    SCOREP_MutexLock( &lock->mutex );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -78,9 +76,7 @@ static OTF2_CallbackCode
 lock_unlock( void*     userData,
              OTF2_Lock lock )
 {
-    SCOREP_Mutex mutex = lock;
-
-    SCOREP_MutexUnlock( mutex );
+    SCOREP_MutexUnlock( &lock->mutex );
 
     return OTF2_CALLBACK_SUCCESS;
 }

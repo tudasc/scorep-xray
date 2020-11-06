@@ -554,7 +554,6 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     /* == initialize threading system and create the master thread == */
 
     /*
-     * @dependsOn Mutex
      * @dependsOn Memory
      * @dependsOn Status
      * @dependsOn Location
@@ -565,7 +564,6 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
     SCOREP_TIME( SCOREP_Thread_Initialize, ( ) );
 
     /*
-     * @dependsOn Mutex
      * @dependsOn Definitions
      */
     SCOREP_TIME( SCOREP_Libwrap_Initialize, ( ) );

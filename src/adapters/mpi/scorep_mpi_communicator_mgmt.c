@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2018,
+ * Copyright (c) 2018, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -54,7 +54,7 @@ uint32_t scorep_mpi_number_of_root_comms = 0;
  *  @internal
  *  Mutex for mpi window definitions.
  */
-SCOREP_Mutex scorep_mpi_window_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_mpi_window_mutex = SCOREP_MUTEX_INIT;
 
 /**
  *  @internal
@@ -88,7 +88,7 @@ MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
  *  @internal
  *  Mutex for communicator definition.
  */
-SCOREP_Mutex scorep_mpi_communicator_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_mpi_communicator_mutex = SCOREP_MUTEX_INIT;
 
 /**
  *  @internal
@@ -146,8 +146,6 @@ void
 scorep_mpi_win_init( void )
 {
 #ifndef SCOREP_MPI_NO_RMA
-    SCOREP_MutexCreate( &scorep_mpi_window_mutex );
-
     if ( !mpi_win_initialized )
     {
         if ( SCOREP_MPI_MAX_WIN == 0 )
@@ -209,8 +207,6 @@ void
 scorep_mpi_win_finalize( void )
 {
 #ifndef SCOREP_MPI_NO_RMA
-    SCOREP_MutexDestroy( &scorep_mpi_window_mutex );
-
     scorep_mpi_rma_request_finalize();
 
     mpi_win_initialized = 0;
@@ -234,8 +230,6 @@ scorep_mpi_comm_finalize( void )
 
     /* free created MPI data types */
     PMPI_Type_free( &scorep_mpi_id_root_type );
-
-    SCOREP_MutexDestroy( &scorep_mpi_communicator_mutex );
 }
 
 /**
@@ -288,12 +282,12 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
     SCOREP_InterimCommunicatorHandle handle;     /* Score-P handle for the communicator */
 
     /* Lock communicator definition */
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     /* is storage available */
     if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
     {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
                      "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
                      "configuration variable" );
@@ -325,7 +319,7 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
     scorep_mpi_last_comm++;
 
     /* clean up */
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 }
 
 void
@@ -466,8 +460,6 @@ scorep_mpi_setup_world( void )
 void
 scorep_mpi_comm_init( void )
 {
-    SCOREP_MutexCreate( &scorep_mpi_communicator_mutex );
-
     /* check, if we already initialized the data structures */
     if ( !scorep_mpi_comm_initialized )
     {
@@ -515,7 +507,7 @@ scorep_mpi_comm_handle( MPI_Comm comm )
     int i = 0;
 
     /* Lock communicator definition */
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     while ( i < scorep_mpi_last_comm && scorep_mpi_comms[ i ].comm != comm )
     {
@@ -525,14 +517,14 @@ scorep_mpi_comm_handle( MPI_Comm comm )
     if ( i != scorep_mpi_last_comm )
     {
         /* Unlock communicator definition */
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 
         return scorep_mpi_comms[ i ].cid;
     }
     else
     {
         /* Unlock communicator definition */
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 
         if ( comm == MPI_COMM_WORLD )
         {

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,9 +54,6 @@ scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize PGI compiler adapter!" );
 
-    /* Initialize region mutex */
-    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
     return SCOREP_SUCCESS;
 }
 
@@ -75,9 +72,6 @@ scorep_compiler_subsystem_end( void )
 void
 scorep_compiler_subsystem_finalize( void )
 {
-    /* Delete region mutex */
-    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-
     UTILS_DEBUG( "finalize PGI compiler adapter!" );
 }
 

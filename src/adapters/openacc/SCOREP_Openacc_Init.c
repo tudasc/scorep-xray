@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -32,7 +32,7 @@
 #include "scorep_openacc_confvars.inc.c"
 
 /* OpenACC mutex */
-SCOREP_Mutex scorep_openacc_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_openacc_mutex = SCOREP_MUTEX_INIT;
 
 /**
  * Registers the required configuration variables of the OpenACC adapter to the
@@ -66,8 +66,6 @@ openacc_subsystem_init( void )
         "OpenACC",
         SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
-    SCOREP_MutexCreate( &scorep_openacc_mutex );
-
     if ( scorep_openacc_features > 0 )
     {
         scorep_openacc_setup_features();
@@ -79,7 +77,6 @@ openacc_subsystem_init( void )
 static void
 openacc_subsystem_finalize( void )
 {
-    SCOREP_MutexDestroy( &scorep_openacc_mutex );
 }
 
 SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =

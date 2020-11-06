@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -86,9 +86,6 @@ sampling_subsystem_init( void )
     {
         return SCOREP_SUCCESS;
     }
-
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &init_sampling_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "init_sampling_mutex could not be created" );
 
     /** Content of environment variable SCOREP_SAMPLING_EVENTS */
     char* env_sampling;
@@ -210,7 +207,7 @@ sampling_subsystem_init_location( SCOREP_Location* location,
 
     if ( ( sampling_sources != NULL ) && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
-        SCOREP_MutexLock( init_sampling_mutex );
+        SCOREP_MutexLock( &init_sampling_mutex );
         SCOREP_Sampling_LocationData* sampling_data =
             SCOREP_Location_AllocForMisc( location,
                                           sizeof( *sampling_data ) );
@@ -228,7 +225,7 @@ sampling_subsystem_init_location( SCOREP_Location* location,
         scorep_create_interrupt_sources( sampling_data, sampling_sources, num_sampling_sources );
         sampling_data->nr_data = num_sampling_sources;
 
-        SCOREP_MutexUnlock( init_sampling_mutex );
+        SCOREP_MutexUnlock( &init_sampling_mutex );
 
         sig_atomic_t touch = scorep_sampling_is_known_pthread;
     }
@@ -346,9 +343,6 @@ sampling_subsystem_finalize( void )
     {
         return;
     }
-
-    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &init_sampling_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "init_sampling_mutex could not be destroyed" );
 }
 
 

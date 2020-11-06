@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -163,7 +163,7 @@ scorep_mpi_win_create( const char* name,
 {
     SCOREP_RmaWindowHandle handle = SCOREP_INVALID_RMA_WINDOW;
 
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    SCOREP_MutexLock( &scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
     {
         UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
@@ -179,7 +179,7 @@ scorep_mpi_win_create( const char* name,
     scorep_mpi_windows[ scorep_mpi_last_window ].handle = handle;
 
     scorep_mpi_last_window++;
-    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_window_mutex );
 
     return handle;
 }
@@ -187,7 +187,7 @@ scorep_mpi_win_create( const char* name,
 void
 scorep_mpi_win_free( MPI_Win win )
 {
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    SCOREP_MutexLock( &scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window == 1 && scorep_mpi_windows[ 0 ].win == win )
     {
         scorep_mpi_last_window = 0;
@@ -214,7 +214,7 @@ scorep_mpi_win_free( MPI_Win win )
     {
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
     }
-    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_window_mutex );
 }
 
 SCOREP_RmaWindowHandle
@@ -222,7 +222,7 @@ scorep_mpi_win_handle( MPI_Win win )
 {
     int i = 0;
 
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    SCOREP_MutexLock( &scorep_mpi_window_mutex );
     while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )
     {
         i++;
@@ -230,12 +230,12 @@ scorep_mpi_win_handle( MPI_Win win )
 
     if ( i != scorep_mpi_last_window )
     {
-        SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_window_mutex );
         return scorep_mpi_windows[ i ].handle;
     }
     else
     {
-        SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_window_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW,
                      "You are using a window that was not tracked. "
                      "Please contact the Score-P support team." );
@@ -253,11 +253,11 @@ scorep_mpi_win_set_name( MPI_Win win, const char* name )
 
     SCOREP_RmaWindowHandle win_handle = scorep_mpi_win_handle( win );
 
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
+    SCOREP_MutexLock( &scorep_mpi_window_mutex );
 
     SCOREP_RmaWindowHandle_SetName( win_handle, name );
 
-    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_window_mutex );
 }
 
 #endif // !SCOREP_MPI_NO_RMA
@@ -309,7 +309,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     }
 
     /* Lock communicator definition */
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     /* if only one communicator exists, we just need to decrease \a
      * scorep_mpi_last_comm */
@@ -344,7 +344,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     }
 
     /* Unlock communicator definition */
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 }
 
 void
@@ -359,7 +359,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
     scorep_mpi_comm_definition_payload* comm_payload =
         SCOREP_InterimCommunicatorHandle_GetPayload( comm_handle );
 
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     /*
      * Set the name only for the root rank in the communicator and
@@ -373,7 +373,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
         SCOREP_InterimCommunicatorHandle_SetName( comm_handle, name );
     }
 
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 }
 
 void
@@ -427,7 +427,7 @@ scorep_mpi_group_create( MPI_Group group )
     }
 
     /* Lock communicator definition */
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     /* check if group already exists */
     if ( ( i = scorep_mpi_group_search( group ) ) == -1 )
@@ -436,7 +436,7 @@ scorep_mpi_group_create( MPI_Group group )
         {
             UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
                          "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
-            SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+            SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
             return;
         }
 
@@ -463,7 +463,7 @@ scorep_mpi_group_create( MPI_Group group )
     }
 
     /* Unlock communicator definition */
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 }
 
 void
@@ -481,7 +481,7 @@ scorep_mpi_group_free( MPI_Group group )
         return;
     }
 
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
 
     if ( scorep_mpi_last_group == 1 && scorep_mpi_groups[ 0 ].group == group )
     {
@@ -517,7 +517,7 @@ scorep_mpi_group_free( MPI_Group group )
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
     }
 
-    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
 }
 
 SCOREP_Mpi_GroupHandle
@@ -525,7 +525,7 @@ scorep_mpi_group_handle( MPI_Group group )
 {
     int32_t i = 0;
 
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+    SCOREP_MutexLock( &scorep_mpi_communicator_mutex );
     while ( ( i < scorep_mpi_last_group ) && ( scorep_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -533,12 +533,12 @@ scorep_mpi_group_handle( MPI_Group group )
 
     if ( i != scorep_mpi_last_group )
     {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
         return scorep_mpi_groups[ i ].handle;
     }
     else
     {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+        SCOREP_MutexUnlock( &scorep_mpi_communicator_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
         return SCOREP_INVALID_MPI_GROUP;
     }

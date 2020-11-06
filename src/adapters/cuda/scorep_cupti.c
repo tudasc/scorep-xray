@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,7 +58,7 @@
 static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KERNEL_HASHTABLE_SIZE ];
 
 /* mutex for locking the CUPTI environment */
-SCOREP_Mutex scorep_cupti_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_cupti_mutex = SCOREP_MUTEX_INIT;
 
 /* attribute handles for CUDA references */
 scorep_cupti_attribute_handles scorep_cupti_attributes;
@@ -104,8 +104,6 @@ scorep_cupti_init( void )
     if ( !scorep_cupti_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI] Initializing ..." );
-
-        SCOREP_MutexCreate( &scorep_cupti_mutex );
 
         /* GPU idle time */
         if ( scorep_cuda_record_idle )
@@ -198,8 +196,6 @@ scorep_cupti_finalize( void )
         }
 
         scorep_cupti_finalized = true;
-
-        SCOREP_MutexDestroy( &scorep_cupti_mutex );
     }
 }
 

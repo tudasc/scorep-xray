@@ -7,6 +7,9 @@
  * Copyright (c) 2019,
  * RWTH Aachen University, Germany
  *
+ * Copyright (c) 2020,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -92,14 +95,13 @@ scorep_mpi_rma_request_print_payload( const char* prefix, const scorep_mpi_rma_r
 void
 scorep_mpi_rma_request_init( void )
 {
-    SCOREP_MutexCreate( &rma_request_mutex );
     unsigned int height = 6;
 
     // Create a skiplist for 2^6 elements
     rma_requests = scorep_mpi_rma_request_create_list( height,
                                                        ( SCOREP_Skiplist_Guard )SCOREP_MutexLock,
                                                        ( SCOREP_Skiplist_Guard )SCOREP_MutexUnlock,
-                                                       ( SCOREP_Skiplist_GuardObject )rma_request_mutex );
+                                                       ( SCOREP_Skiplist_GuardObject )( &rma_request_mutex ) );
 }
 
 void
@@ -110,8 +112,6 @@ scorep_mpi_rma_request_finalize( void )
         UTILS_WARNING( "Request tracking not completed successfully for all RMA operations." );
     }
     scorep_mpi_rma_request_destroy_list( rma_requests );
-
-    SCOREP_MutexDestroy( &rma_request_mutex );
 }
 
 static int

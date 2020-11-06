@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -59,12 +59,11 @@ static int                               last_index      = SCOREP_OPARI2_OPENMP_
 
 static SCOREP_Opari2_Openmp_Lock_HandleType current_lock_handle = 0;
 
-SCOREP_Mutex scorep_opari2_openmp_lock = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_opari2_openmp_lock = SCOREP_MUTEX_INIT;
 
 void
 scorep_opari2_openmp_lock_initialize( void )
 {
-    SCOREP_MutexCreate( &scorep_opari2_openmp_lock );
 }
 
 void
@@ -80,8 +79,6 @@ scorep_opari2_openmp_lock_finalize( void )
         lock_head_block = lock_head_block->next;
         free( block );
     }
-
-    SCOREP_MutexDestroy( &scorep_opari2_openmp_lock );
 }
 
 SCOREP_Opari2_Openmp_Lock*
@@ -89,7 +86,7 @@ scorep_opari2_openmp_lock_init( const void* lock )
 {
     struct lock_block* new_block;
 
-    SCOREP_MutexLock( scorep_opari2_openmp_lock );
+    SCOREP_MutexLock( &scorep_opari2_openmp_lock );
     last_index++;
     if ( last_index >= SCOREP_OPARI2_OPENMP_LOCKBLOCK_SIZE )
     {
@@ -132,7 +129,7 @@ scorep_opari2_openmp_lock_init( const void* lock )
     last_lock->acquisition_order = 0;
     last_lock->nest_level        = 0;
 
-    SCOREP_MutexUnlock( scorep_opari2_openmp_lock );
+    SCOREP_MutexUnlock( &scorep_opari2_openmp_lock );
     return last_lock;
 }
 

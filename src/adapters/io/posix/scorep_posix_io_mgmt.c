@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019,
+ * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -44,7 +44,7 @@ SCOREP_IoHandleHandle scorep_posix_io_sync_all_handle = SCOREP_INVALID_IO_HANDLE
 #define AIO_REQUEST_TABLE_SIZE 16
 
 SCOREP_Hashtab* scorep_posix_io_aio_request_table       = NULL;
-SCOREP_Mutex    scorep_posix_io_aio_request_table_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex    scorep_posix_io_aio_request_table_mutex = SCOREP_MUTEX_INIT;
 
 #endif
 
@@ -384,10 +384,6 @@ scorep_posix_io_init( void )
         SCOREP_Hashtab_CreateSize( AIO_REQUEST_TABLE_SIZE,
                                    SCOREP_Hashtab_HashPointer,
                                    SCOREP_Hashtab_ComparePointer );
-
-    SCOREP_ErrorCode err = SCOREP_MutexCreate( &scorep_posix_io_aio_request_table_mutex );
-    UTILS_BUG_ON( err != SCOREP_SUCCESS,
-                  "Mutex could not be created for asynchronous I/O requests" );
 #endif
 }
 
@@ -398,6 +394,5 @@ scorep_posix_io_fini( void )
 
 #if HAVE( POSIX_AIO_SUPPORT )
     SCOREP_Hashtab_Free( scorep_posix_io_aio_request_table );
-    SCOREP_MutexDestroy( &scorep_posix_io_aio_request_table_mutex );
 #endif
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -74,14 +74,12 @@ static SCOREP_Mutex interim_communicator_definition_counter_lock;
 void
 scorep_definitions_create_interim_communicator_counter_lock( void )
 {
-    SCOREP_MutexCreate( &interim_communicator_definition_counter_lock );
 }
 
 
 void
 scorep_definitions_destroy_interim_communicator_counter_lock( void )
 {
-    SCOREP_MutexDestroy( &interim_communicator_definition_counter_lock );
 }
 
 
@@ -89,9 +87,9 @@ static uint32_t
 get_new_interim_communicator_id( void )
 {
     uint32_t new_id;
-    SCOREP_MutexLock( interim_communicator_definition_counter_lock );
+    SCOREP_MutexLock( &interim_communicator_definition_counter_lock );
     new_id = scorep_local_definition_manager.interim_communicator.counter++;
-    SCOREP_MutexUnlock( interim_communicator_definition_counter_lock );
+    SCOREP_MutexUnlock( &interim_communicator_definition_counter_lock );
     return new_id;
 }
 

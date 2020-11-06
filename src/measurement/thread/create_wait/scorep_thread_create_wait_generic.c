@@ -125,11 +125,6 @@ create_wait_subsystem_init( void )
     }
     is_initialized = true;
 
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &thread_create_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Failed to create mutex." );
-    result = SCOREP_MutexCreate( &thread_subsystem_data_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Failed to create mutex." );
-
     thread_team = SCOREP_Definitions_NewInterimCommunicator(
         SCOREP_INVALID_INTERIM_COMMUNICATOR,
         scorep_thread_get_paradigm(),
@@ -253,11 +248,6 @@ create_wait_subsystem_finalize( void )
         return;
     }
     is_finalized = true;
-
-    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &thread_create_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Failed to destroy mutex." );
-    result = SCOREP_MutexDestroy( &thread_subsystem_data_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Failed to destroy mutex." );
 }
 
 
@@ -270,9 +260,9 @@ SCOREP_Thread_InParallel( void )
         return false;
     }
 
-    SCOREP_MutexLock( thread_create_mutex );
+    SCOREP_MutexLock( &thread_create_mutex );
     bool in_parallel = ( active_locations > 1 );
-    SCOREP_MutexUnlock( thread_create_mutex );
+    SCOREP_MutexUnlock( &thread_create_mutex );
     return in_parallel;
 }
 
@@ -402,10 +392,10 @@ init_thread( SCOREP_InterimCommunicatorHandle team,
              SCOREP_Location*                 parentLocation,
              SCOREP_ParadigmType              paradigm )
 {
-    SCOREP_MutexLock( thread_create_mutex );
+    SCOREP_MutexLock( &thread_create_mutex );
     active_locations++;
     subsystem_data* data = get_subsystem_data_from_pool();
-    SCOREP_MutexUnlock( thread_create_mutex );
+    SCOREP_MutexUnlock( &thread_create_mutex );
 
     data->thread_team    = team;
     data->sequence_count = sequenceCount;
@@ -413,9 +403,9 @@ init_thread( SCOREP_InterimCommunicatorHandle team,
     data->paradigm       = paradigm;
 
     /* Locking here probably unnecessary */
-    SCOREP_MutexLock( thread_subsystem_data_mutex );
+    SCOREP_MutexLock( &thread_subsystem_data_mutex );
     SCOREP_Location_SetSubsystemData( location, subsystem_id, ( void* )data );
-    SCOREP_MutexUnlock( thread_subsystem_data_mutex );
+    SCOREP_MutexUnlock( &thread_subsystem_data_mutex );
 }
 
 
@@ -479,10 +469,10 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 static void
 terminate_thread( void* data )
 {
-    SCOREP_MutexLock( thread_create_mutex );
+    SCOREP_MutexLock( &thread_create_mutex );
     active_locations--;
     release_subsystem_data_to_pool( data );
-    SCOREP_MutexUnlock( thread_create_mutex );
+    SCOREP_MutexUnlock( &thread_create_mutex );
 }
 
 
@@ -536,10 +526,10 @@ SCOREP_ThreadCreateWait_TryTerminate( struct SCOREP_Location* location )
     UTILS_BUG_ON( is_finalized,
                   "Illegal call to SCOREP_ThreadCreateWait_TryTerminate. Measurement system has already terminated." );
 
-    SCOREP_MutexLock( thread_subsystem_data_mutex );
+    SCOREP_MutexLock( &thread_subsystem_data_mutex );
     void* terminate = SCOREP_Location_GetSubsystemData( location, subsystem_id );
     SCOREP_Location_SetSubsystemData( location, subsystem_id, NULL );
-    SCOREP_MutexUnlock( thread_subsystem_data_mutex );
+    SCOREP_MutexUnlock( &thread_subsystem_data_mutex );
     return terminate;
 }
 

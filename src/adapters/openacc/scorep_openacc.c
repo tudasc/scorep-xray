@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016,
+ * Copyright (c) 2014-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -31,8 +31,8 @@
 #include <string.h>
 
 /****************************** OpenACC mutex *********************************/
-#define ACC_LOCK() SCOREP_MutexLock( scorep_openacc_mutex )
-#define ACC_UNLOCK() SCOREP_MutexUnlock( scorep_openacc_mutex )
+#define ACC_LOCK() SCOREP_MutexLock( &scorep_openacc_mutex )
+#define ACC_UNLOCK() SCOREP_MutexUnlock( &scorep_openacc_mutex )
 /**************************** END: OpenACC mutex ******************************/
 
 /************************* Hashing of OpenACC regions *************************/

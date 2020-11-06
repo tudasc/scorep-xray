@@ -4,7 +4,7 @@
  * Copyright (c) 2014, 2016, 2018-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014, 2019,
+ * Copyright (c) 2014, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -166,15 +166,6 @@ scorep_thread_on_initialize( struct scorep_thread_private_data* initialTpd )
 
     status = pthread_setspecific( orphan_key, NULL );
     UTILS_BUG_ON( status != 0, "Failed to store Pthread thread specific data." );
-
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &tpd_reuse_pool_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for location reuse pool." );
-
-    result = SCOREP_MutexCreate( &pthread_location_count_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for pthread location count." );
-
-    result = SCOREP_MutexCreate( &orphan_location_count_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Can't create mutex for orphan location count." );
 }
 
 
@@ -250,10 +241,6 @@ scorep_thread_on_finalize( struct scorep_thread_private_data* tpd )
     UTILS_DEBUG_ENTRY();
     int status = pthread_key_delete( tpd_key );
     UTILS_BUG_ON( status != 0, "Failed to delete a pthread_key_t." );
-
-    SCOREP_MutexDestroy( &tpd_reuse_pool_mutex );
-    SCOREP_MutexDestroy( &pthread_location_count_mutex );
-    SCOREP_MutexDestroy( &orphan_location_count_mutex );
 }
 
 
@@ -312,9 +299,9 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        SCOREP_MutexLock( pthread_location_count_mutex );
+        SCOREP_MutexLock( &pthread_location_count_mutex );
         unsigned location_count = ++pthread_location_count;
-        SCOREP_MutexUnlock( pthread_location_count_mutex );
+        SCOREP_MutexUnlock( &pthread_location_count_mutex );
 
         const int provided_length = 80;
         char      location_name[ provided_length ];
@@ -350,7 +337,7 @@ pop_from_tpd_reuse_pool( uintptr_t reuseKey )
     struct scorep_thread_private_data* tpd_to_reuse = NULL;
     if ( reuseKey )
     {
-        SCOREP_MutexLock( tpd_reuse_pool_mutex );
+        SCOREP_MutexLock( &tpd_reuse_pool_mutex );
 
         /* find a tpd to reuse */
         size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuseKey );
@@ -382,7 +369,7 @@ pop_from_tpd_reuse_pool( uintptr_t reuseKey )
 
             pool = pool->next;
         }
-        SCOREP_MutexUnlock( tpd_reuse_pool_mutex );
+        SCOREP_MutexUnlock( &tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
     return tpd_to_reuse;
@@ -417,7 +404,7 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
     if ( reuse_key )
     {
         /* Returning the tpd into the pool identified by reuse_key */
-        SCOREP_MutexLock( tpd_reuse_pool_mutex );
+        SCOREP_MutexLock( &tpd_reuse_pool_mutex );
 
         size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuse_key );
         size_t                 hash_bucket = hash & TPD_REUSE_POOL_MASK;
@@ -471,7 +458,7 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
         pool_tpd->next    = pool->unused_tpds;
         pool->unused_tpds = pool_tpd;
 
-        SCOREP_MutexUnlock( tpd_reuse_pool_mutex );
+        SCOREP_MutexUnlock( &tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
 }
@@ -492,9 +479,9 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        SCOREP_MutexLock( orphan_location_count_mutex );
+        SCOREP_MutexLock( &orphan_location_count_mutex );
         unsigned location_count = ++orphan_location_count;
-        SCOREP_MutexUnlock( orphan_location_count_mutex );
+        SCOREP_MutexUnlock( &orphan_location_count_mutex );
 
         char location_name[ 80 ];
         int  length = snprintf( location_name, 80, "Orphan thread %d", location_count );

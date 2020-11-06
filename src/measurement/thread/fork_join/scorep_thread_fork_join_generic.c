@@ -72,16 +72,12 @@ static SCOREP_Mutex      first_fork_locations_mutex;
 void
 scorep_thread_create_mutexes( void )
 {
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &first_fork_locations_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 }
 
 
 void
 scorep_thread_destroy_mutexes( void )
 {
-    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &first_fork_locations_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 }
 
 
@@ -187,7 +183,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
 
     if ( sequence_count == 1 && teamSize > 1 )
     {
-        SCOREP_MutexLock( first_fork_locations_mutex );
+        SCOREP_MutexLock( &first_fork_locations_mutex );
         if ( !first_fork_locations[ 0 ] )
         {
             char location_name[ 80 ];
@@ -197,7 +193,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
                 first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( location_name );
             }
         }
-        SCOREP_MutexUnlock( first_fork_locations_mutex );
+        SCOREP_MutexUnlock( &first_fork_locations_mutex );
     }
 
     *newTpd = NULL;

@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016-2017, 2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013, 2015,
+ * Copyright (c) 2013, 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -107,7 +107,6 @@ opari2_openmp_subsystem_init( void )
                                         SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
                                         "Thread team ${id}" );
 
-    SCOREP_MutexCreate( &scorep_opari2_openmp_assign_lock );
     scorep_opari2_openmp_lock_initialize();
 
     size_t n = POMP2_Get_num_regions();
@@ -147,7 +146,6 @@ opari2_openmp_subsystem_finalize( void )
     scorep_opari2_openmp_lock_finalize();
 
     free( scorep_opari2_openmp_regions );
-    SCOREP_MutexDestroy( &scorep_opari2_openmp_assign_lock );
 
     UTILS_DEBUG_EXIT();
 }

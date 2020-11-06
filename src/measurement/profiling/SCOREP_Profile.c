@@ -142,8 +142,6 @@ SCOREP_Profile_Initialize( size_t substrateId )
     }
     scorep_profile_substrate_id = substrateId;
 
-    SCOREP_MutexCreate( &scorep_profile_location_mutex );
-
     scorep_cluster_initialize();
     scorep_profile_init_definition();
     scorep_profile_initialize_exchange();
@@ -231,8 +229,6 @@ SCOREP_Profile_Finalize( void )
     scorep_profile_finalize_exchange();
     scorep_profile_io_finalize();
 
-    /* Delete mutex */
-    SCOREP_MutexDestroy( &scorep_profile_location_mutex );
     return scorep_profile_substrate_id;
 }
 
@@ -352,18 +348,18 @@ on_location_creation( SCOREP_Location* locationData,
         /* It is the initial thread. Insert as first new root node. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
 
-        SCOREP_MutexLock( scorep_profile_location_mutex );
+        SCOREP_MutexLock( &scorep_profile_location_mutex );
         node->next_sibling             = scorep_profile.first_root_node;
         scorep_profile.first_root_node = node;
-        SCOREP_MutexUnlock( scorep_profile_location_mutex );
+        SCOREP_MutexUnlock( &scorep_profile_location_mutex );
     }
     else
     {
         /* Append after parent root node */
-        SCOREP_MutexLock( scorep_profile_location_mutex );
+        SCOREP_MutexLock( &scorep_profile_location_mutex );
         node->next_sibling                   = parent_data->root_node->next_sibling;
         parent_data->root_node->next_sibling = node;
-        SCOREP_MutexUnlock( scorep_profile_location_mutex );
+        SCOREP_MutexUnlock( &scorep_profile_location_mutex );
     }
 
     /* Make the root node the current node of the location.
