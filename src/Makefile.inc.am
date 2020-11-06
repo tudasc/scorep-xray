@@ -95,7 +95,7 @@ endif HAVE_SAMPLING_SUPPORT
 if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 
 libscorep_measurement_la_LIBADD += \
-    libscorep_mutex_la
+    libscorep_mutex.la
 
 endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 
