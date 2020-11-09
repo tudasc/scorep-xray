@@ -18,7 +18,7 @@
 
 
 if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
-lib_LTLIBRARIES += libscorep_mutex.la
+noinst_LTLIBRARIES += libscorep_mutex.la
 nodist_libscorep_mutex_la_SOURCES = $(SRC_ROOT)src/measurement/mutex/scorep_mutex.c
 libscorep_mutex_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
