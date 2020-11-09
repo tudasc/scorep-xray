@@ -43,11 +43,11 @@
 
 /* define SCOREP_CPU_RELAX to be a 'PAUSE' instruction to improve the performance of spin-wait loops, if available. */
 #if defined( ASM_INLINE )
-#if ( SCOREP_CPU_INSTRUCTION_SET == x86_64 )
+#if HAVE( SCOREP_CPU_INSTRUCTION_SET_X86_64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "pause" )
-#elif ( SCOREP_CPU_INSTRUCTION_SET == aarch_64 )
+#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_AARCH_64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "yield" )
-#endif /* SCOREP_CPU_INSTRUCTION_SET */
+#endif
 #endif /* defined( ASM_INLINE ) */
 
 #if !defined( SCOREP_CPU_RELAX )

@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2019,
+dnl Copyright (c) 2019-2020,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -44,7 +44,10 @@ AC_MSG_RESULT([${instruction_set}])
 AS_IF([test "x${instruction_set}" = xunknown],
     [AC_MSG_ERROR([cannot determine instruction set. Please report this to <AC_PACKAGE_BUGREPORT>.])])
 AC_SUBST([SCOREP_CPU_INSTRUCTION_SET], [${instruction_set}])
-AC_DEFINE_UNQUOTED([SCOREP_CPU_INSTRUCTION_SET], ${instruction_set}, [Instruction set to build for, either ppc64, x86_64, or aarch_64])
+# AC_DEFINE_UNQUOTED([$var], ...) does not work with AC_CONFIG_HEADERS, thus define all possible instruction sets
+AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_PPC64], $(if test "x${instruction_set}" = xppc64; then echo 1; else echo 0; fi), [Instruction set ppc64])
+AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_X86_64], $(if test "x${instruction_set}" = xx86_64; then echo 1; else echo 0; fi), [Instruction set x86_64])
+AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction_set}" = xaarch64; then echo 1; else echo 0; fi), [Instruction set aarch_64])
 ]) # SCOREP_CPU_INSTRUCTION_SETS
 
 
