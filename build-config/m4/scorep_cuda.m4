@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -107,6 +107,11 @@ AC_ARG_ENABLE([cuda],
                        [yes,yes|no,no],
                        [:],
                        [AC_MSG_ERROR([Invalid argument for --enable-cuda: $enableval])])])
+
+AS_CASE(["/${with_libcuda_lib}/"],
+        [*/stubs/*], [AS_UNSET([with_libcuda_rpathflag])])
+AS_CASE(["/${with_libnvidia_ml_lib}/"],
+        [*/stubs/*], [AS_UNSET([with_libnvidia_ml_rpathflag])])
 
 AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                     [test "x${scorep_have_cuda}" = "xyes"],
