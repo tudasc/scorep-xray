@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014-2015,
+ * Copyright (c) 2009-2011, 2014-2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -41,6 +41,7 @@
 #include <SCOREP_Timer_Ticks.h>
 
 #include <assert.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -132,9 +133,16 @@ scorep_interpolate_epoch( uint64_t* epochBegin, uint64_t* epochEnd )
 static uint64_t
 scorep_interpolate( uint64_t workerTime, int64_t offset1, uint64_t workerTime1, int64_t offset2, uint64_t workerTime2 )
 {
-    // Without the casts we get non-deterministic results from time to time.
-    // There might be a better way to do it though.
-    double interpolated_time = workerTime + ( offset2 - offset1 ) / ( double )( workerTime2 - workerTime1 ) * ( ( double )workerTime - workerTime1 ) + offset1;
-    assert( interpolated_time > 0 );
-    return interpolated_time;
+    /* Linear offset interpolation. Use same implementation as in OTF2
+     * to have identical rounding issues, see OTF2 commits
+     * otf2@c6f313f1 and otf2@765cc684. See #20.
+     * Once OTF2 exposes a timestamp interpolation function, use this
+     * one instead. See otf2:#8 */
+    const double diff = workerTime >= workerTime1
+                        ? ( workerTime - workerTime1 )
+                        : -( double )( workerTime1 - workerTime );
+    const double  slope               = ( double )( offset2 - offset1 ) / ( double )( workerTime2 - workerTime1 );
+    const double  interpolated_offset = slope * diff;
+    const int64_t offset              = offset1 + ( int64_t )rint( interpolated_offset );
+    return workerTime + ( uint64_t )offset;
 }
