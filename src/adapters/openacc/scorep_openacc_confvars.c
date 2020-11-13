@@ -39,7 +39,7 @@ scorep_openacc_register( size_t subsystemId )
     UTILS_DEBUG( "Register environment variables" );
 
     return SCOREP_ConfigRegisterCond( "openacc",
-                                      scorep_openacc_configs,
+                                      scorep_openacc_confvars,
                                       HAVE_BACKEND_OPENACC_SUPPORT );
 }
 
