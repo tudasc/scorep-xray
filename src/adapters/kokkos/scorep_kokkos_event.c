@@ -72,7 +72,8 @@ typedef enum
     scorep_kokkos_parallel_for,
     scorep_kokkos_parallel_scan,
     scorep_kokkos_parallel_reduce,
-    scorep_kokkos_profile_region
+    scorep_kokkos_profile_region,
+    scorep_kokkos_profile_section
 } scorep_kokkos_group;
 
 /*
@@ -107,6 +108,8 @@ scorep_kokkos_group_name( scorep_kokkos_group group )
             return "Kokkos parallel_reduce";
         case scorep_kokkos_profile_region:
             return "Kokkos profile regions";
+        case scorep_kokkos_profile_section:
+            return "Kokkos profile sections";
         default:
             return "UNKNOWN KOKKOS GROUP";
     }
@@ -123,6 +126,8 @@ scorep_kokkos_group_region_type( scorep_kokkos_group group )
             return SCOREP_REGION_PARALLEL;
         case scorep_kokkos_profile_region:
             return SCOREP_REGION_USER;
+        case scorep_kokkos_profile_section:
+            return SCOREP_REGION_PHASE;
         default:
             return SCOREP_REGION_UNKNOWN;
     }
@@ -728,6 +733,20 @@ kokkosp_create_profile_section( const char* name,
                                 uint32_t*   sectionId )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_user_region )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( SCOREP_Filtering_MatchFunction( name, NULL ) )
+    {
+        *sectionId = SCOREP_FILTERED_REGION;
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    *sectionId = get_region( scorep_kokkos_profile_section, name, NULL );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -742,6 +761,8 @@ kokkosp_destroy_profile_section( uint32_t sectionId )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
+    /* we can reuse section IDs, thus no need to dispose anything here */
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -754,6 +775,16 @@ void
 kokkosp_start_profile_section( uint32_t sectionId )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_user_region )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( sectionId != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( sectionId );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -767,6 +798,16 @@ void
 kokkosp_stop_profile_section( uint32_t sectionId )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_user_region )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( sectionId != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( sectionId );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
