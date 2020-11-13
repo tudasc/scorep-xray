@@ -260,8 +260,9 @@ functions, methods and subroutines.
 A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
-from @opari2 (see section @secref{pomp_instrumentation}), and CUDA device and host
-activities (see Section @secref{cuda_adapter}). See section @secref{mpi_groups}
+from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
+activities (see Section @secref{cuda_adapter}), and Kokkos activities (see
+Section @secref{kokkos_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
 <tt>\--disable</tt> to restrict instrumentation of @openmp directives. This
 <tt>\--disable</tt> flag can than be passed on to the @opari2 invocation with the
@@ -906,6 +907,27 @@ To enable OpenACC measurement in Score-P the user has to:
 implements the OpenACC profiling interface that is part of the OpenACC standard
 since version 2.5. Make sure that the @scorep installation has configured
 OpenACC support. The configure summary should contain the line: <pre>OpenACC support: yes</pre>
+
+@section kokkos_adapter Kokkos Performance Measurement
+@seclabel{kokkos_adapter}
+
+@scorep is capable of recording information from the Kokkos performance
+portability framework's tools interface, including parallel regions, user
+regions, memory allocation, and memory copies. As with OpenACC, the user must
+perform the following steps:
+
+<ul>
+  <li> Build and install shared libraries of Score-P (use <tt>\--enable-shared</tt> option when configuring Score-P).
+  <li> Set the environment variable <tt>KOKKOS_PROFILE_LIBRARY</tt> to specify the Kokkos profiling library.<br>
+       Example: <pre>export KOKKOS_PROFILE_LIBRARY=<path_to_scorep_installation>/lib/libscorep_adapter_kokkos_event.so</pre>
+  <li> Set the environment variable \confvar{SCOREP_KOKKOS_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular combination of Kokkos measurement features.
+</ul>
+
+Kokkos events can be filtered by name at runtime using the @scorep filter file (see Section @secref{filtering}).
+This applies to all types of Kokkos events. Users should note that the Kokkos
+tools interface allows explicit naming of parallel regions, and those names,
+if provided, will be the names used for filtering.
+
 
 @section online_access_measurement Online Access Interface
 @seclabel{online_access_measurement}
