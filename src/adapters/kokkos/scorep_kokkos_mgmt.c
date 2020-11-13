@@ -19,6 +19,8 @@
 
 #include <config.h>
 
+#include "scorep_kokkos.h"
+
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Definitions.h>
@@ -26,6 +28,8 @@
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
+
+#include <inttypes.h>
 
 #include "scorep_kokkos_confvars.inc.c"
 
@@ -54,6 +58,7 @@ static SCOREP_ErrorCode
 kokkos_subsystem_init( void )
 {
     UTILS_DEBUG( "Kokkos init" );
+    UTILS_DEBUG( "Selected options: %" PRIu64, scorep_kokkos_features );
 
     SCOREP_Paradigms_RegisterParallelParadigm(
         SCOREP_PARADIGM_KOKKOS,

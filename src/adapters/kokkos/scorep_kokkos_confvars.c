@@ -12,6 +12,8 @@
 
 #include <config.h>
 
+#include "scorep_kokkos.h"
+
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
 
