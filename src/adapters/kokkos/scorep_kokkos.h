@@ -21,6 +21,7 @@
 
 #include <UTILS_Error.h>
 
+#include <stddef.h>
 #include <stdint.h>
 
 /*
@@ -36,5 +37,17 @@
  * See SCOREP_ConfigType_SetEntry of Kokkos adapter.
  */
 extern uint64_t scorep_kokkos_features;
+
+extern size_t scorep_kokkos_subsystem_id;
+
+typedef struct scorep_kokkos_gpu_location_data
+{
+    uint32_t rma_win_rank;
+} scorep_kokkos_gpu_location_data;
+
+struct SCOREP_Location;
+
+struct SCOREP_Location*
+scorep_kokkos_get_device_location( void );
 
 #endif  /* SCOREP_KOKKOS_H */
