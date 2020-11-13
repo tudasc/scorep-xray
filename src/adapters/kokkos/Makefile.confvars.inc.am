@@ -22,6 +22,7 @@ libscorep_kokkos_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS) \
     $(UTILS_CPPFLAGS)
 
 libscorep_confvars_la_LIBADD += libscorep_kokkos_confvars.la

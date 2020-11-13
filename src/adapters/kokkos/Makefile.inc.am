@@ -22,8 +22,7 @@ kokkos_common_cppflags = \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/services/include \
-    @SCOREP_TIMER_CPPFLAGS@
+    -I$(INC_ROOT)src/services/include
 
 # runtime management library for the kokkos adapter
 
@@ -35,6 +34,21 @@ libscorep_adapter_kokkos_mgmt_la_SOURCES = \
 libscorep_adapter_kokkos_mgmt_la_CPPFLAGS = $(kokkos_common_cppflags)
 
 libscorep_adapter_kokkos_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+# event library for the kokkos adapter
+
+lib_LTLIBRARIES += libscorep_adapter_kokkos_event.la
+
+libscorep_adapter_kokkos_event_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/kokkos/scorep_kokkos_event.c
+
+libscorep_adapter_kokkos_event_la_CPPFLAGS = $(kokkos_common_cppflags)
+
+libscorep_adapter_kokkos_event_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_kokkos_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
 endif HAVE_KOKKOS_SUPPORT
