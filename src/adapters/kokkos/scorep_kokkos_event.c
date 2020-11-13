@@ -25,6 +25,7 @@
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Task.h>
+#include <SCOREP_AllocMetric.h>
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
@@ -59,6 +60,7 @@ typedef struct SpaceHandle
 static bool kokkos_initialized;
 static bool kokkos_record_parallel_region;
 static bool kokkos_record_user_region;
+static bool kokkos_record_malloc;
 
 /* source file handle for all Kokkos regions */
 static SCOREP_SourceFileHandle kokkos_file_handle = SCOREP_INVALID_SOURCE_FILE;
@@ -181,6 +183,49 @@ get_region( scorep_kokkos_group group,
     return region;
 }
 
+/**
+ * Keep an AllocMetric per SpaceHandle (see above).
+ *
+ */
+typedef struct scorep_kokkos_metric_entry
+{
+    char                               kokkos_space[ KOKKOSP_SPACE_NAME_LENGTH ];
+    SCOREP_AllocMetric*                metric;
+    struct scorep_kokkos_metric_entry* next;
+} scorep_kokkos_metric_entry;
+
+static scorep_kokkos_metric_entry* kokkos_alloc_metrics;
+static SCOREP_Mutex                kokkos_alloc_metrics_mutex;
+
+static SCOREP_AllocMetric*
+get_metric( const char* name )
+{
+    SCOREP_MutexLock( kokkos_alloc_metrics_mutex );
+
+    scorep_kokkos_metric_entry* current = kokkos_alloc_metrics;
+    while ( current && strcmp( current->kokkos_space, name ) )
+    {
+        current = current->next;
+    }
+    if ( current )
+    {
+        SCOREP_MutexUnlock( kokkos_alloc_metrics_mutex );
+        return current->metric;
+    }
+
+    scorep_kokkos_metric_entry* new_entry = SCOREP_Memory_AllocForMisc( sizeof( *new_entry ) );
+    new_entry->next      = kokkos_alloc_metrics;
+    kokkos_alloc_metrics = new_entry;
+    memcpy( new_entry->kokkos_space, name, KOKKOSP_SPACE_NAME_LENGTH );
+    struct SCOREP_AllocMetric* allocMetric = NULL;
+    SCOREP_AllocMetric_New( name, &allocMetric );
+    new_entry->metric = allocMetric;
+
+    SCOREP_MutexUnlock( kokkos_alloc_metrics_mutex );
+
+    return allocMetric;
+}
+
 #if HAVE( DEMANGLE )
 extern char*
 cplus_demangle( const char* mangled,
@@ -261,8 +306,10 @@ recording_setup( void )
 {
     kokkos_record_parallel_region = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_REGIONS );
     kokkos_record_user_region     = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_USER    );
+    kokkos_record_malloc          = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_MALLOC  );
     UTILS_DEBUG( "Record parallel region is %s", kokkos_record_parallel_region ? "on" : "off" );
     UTILS_DEBUG( "Record user region is %s",     kokkos_record_user_region     ? "on" : "off" );
+    UTILS_DEBUG( "Record malloc is %s",          kokkos_record_malloc          ? "on" : "off" );
 }
 
 static void
@@ -275,6 +322,7 @@ init_kokkos( void )
         kokkos_file_handle = SCOREP_Definitions_NewSourceFile( "KOKKOS" );
 
         SCOREP_MutexCreate( &kokkos_regions_hashtab_mutex );
+        SCOREP_MutexCreate( &kokkos_alloc_metrics_mutex );
 
         kokkos_initialized = true;
     }
@@ -332,6 +380,7 @@ kokkosp_finalize_library( void )
     UTILS_DEBUG( "[Kokkos] Finalize library" );
 
     SCOREP_MutexDestroy( &kokkos_regions_hashtab_mutex );
+    SCOREP_MutexDestroy( &kokkos_alloc_metrics_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -612,6 +661,14 @@ kokkosp_allocate_data( SpaceHandle handle,
                        uint64_t    size )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_malloc )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_AllocMetric* metric = get_metric( handle.name );
+    SCOREP_AllocMetric_HandleAlloc( metric, ( uint64_t )( ptr ), size );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -631,6 +688,16 @@ kokkosp_deallocate_data( SpaceHandle handle,
                          uint64_t    size )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_malloc )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_AllocMetric* metric     = get_metric( handle.name );
+    void*               allocation = NULL;
+    SCOREP_AllocMetric_AcquireAlloc( metric, ( uint64_t )( ptr ), &allocation );
+    SCOREP_AllocMetric_HandleFree( metric, allocation, NULL );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

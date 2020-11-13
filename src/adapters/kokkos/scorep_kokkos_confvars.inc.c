@@ -29,6 +29,11 @@ static const SCOREP_ConfigType_SetEntry kokkos_enable_groups[] =
         "Kokkos user regions"
     },
     {
+        "malloc",
+        SCOREP_KOKKOS_FEATURE_MALLOC,
+        "Kokkos memory allocation"
+    },
+    {
         "default/yes/1",
         SCOREP_KOKKOS_FEATURES_DEFAULT,
         "Kokkos parallel regions, user regions, and allocations"

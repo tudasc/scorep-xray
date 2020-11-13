@@ -572,6 +572,7 @@ SCOREP_Config_KokkosAdapter::addLibs( std::deque<std::string>&           libs,
     /* the Kokkos event library is loaded by the Kokkos runtime via
        KOKKOS_PROFILE_LIBRARY */
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
 /* **************************************************************************************
