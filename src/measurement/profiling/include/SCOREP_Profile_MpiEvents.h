@@ -105,6 +105,18 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
  * Process a collective RMA communication event in the profile.
  * @param location      Location object for the thread where the event occurred.
  * @param timestamp     Unused.
+ * @param syncLevel     Synchronization level.
+ */
+void
+SCOREP_Profile_RmaCollectiveBegin( SCOREP_Location*    location,
+                                   uint64_t            timestamp,
+                                   SCOREP_RmaSyncLevel syncLevel );
+
+
+/**
+ * Process a collective RMA communication event in the profile.
+ * @param location      Location object for the thread where the event occurred.
+ * @param timestamp     Unused.
  * @param collectiveOp  Unused.
  * @param syncLevel     Synchronization level.
  * @param windowHandle  Unused.

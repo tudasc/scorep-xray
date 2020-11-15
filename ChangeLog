@@ -36,12 +36,11 @@ User tools and API improvements and changes:
 Bugfixes:
 
 - Support changed BFD API. Changes introduced by binutils-2.34.
-
 - Fix aborts when user library wrapper were first called in a thread
   parallel context.
-
 - Unify and fix representation of artificial root nodes for threads,
   GPU kernels, and OpenMP tasks in profiling.
+- Allocation metrics were lost on MPI RMA window allocation functions.
 
 ------------------- Released version 6.0 -----------------------------
 

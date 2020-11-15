@@ -170,7 +170,7 @@ P2P_WAIT_UNTIL( shmem_wait_until,          SCOREP_SHMEM_WAIT_UNTIL_PROTO_ARGS )
                                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );                             \
                                                                                                         \
-            SCOREP_RmaCollectiveBegin();                                                                \
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY );  \
         }                                                                                               \
                                                                                                         \
         SCOREP_ENTER_WRAPPED_REGION();                                                                  \
@@ -227,7 +227,7 @@ SHMEM_BARRIER_ALL( shmem_barrier_all )
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                               \
                                                                                                         \
             SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME );                             \
-            SCOREP_RmaCollectiveBegin();                                                                \
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY );  \
         }                                                                                               \
                                                                                                         \
         SCOREP_ENTER_WRAPPED_REGION();                                                                  \

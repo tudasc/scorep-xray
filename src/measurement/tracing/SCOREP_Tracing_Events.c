@@ -762,8 +762,9 @@ rma_win_destroy( SCOREP_Location*       location,
 
 
 static void
-rma_collective_begin( SCOREP_Location* location,
-                      uint64_t         timestamp )
+rma_collective_begin( SCOREP_Location*    location,
+                      uint64_t            timestamp,
+                      SCOREP_RmaSyncLevel syncLevel )
 {
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 

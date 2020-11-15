@@ -741,13 +741,13 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*       location,
 
 
 void
-SCOREP_RmaCollectiveBegin( void )
+SCOREP_RmaCollectiveBegin( SCOREP_RmaSyncLevel syncLevel )
 {
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_CALL_SUBSTRATE( RmaCollectiveBegin, RMA_COLLECTIVE_BEGIN,
-                           ( location, timestamp ) );
+                           ( location, timestamp, syncLevel ) );
 }
 
 

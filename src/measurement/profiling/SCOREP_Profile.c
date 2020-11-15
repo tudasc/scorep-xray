@@ -1691,6 +1691,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,          MPI_COLLECTIVE_END,            SCOREP_Profile_CollectiveEnd ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                  MPI_ISEND,                     SCOREP_Profile_MpiIsend ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                  MPI_IRECV,                     SCOREP_Profile_MpiIrecv ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveBegin,        RMA_COLLECTIVE_BEGIN,          SCOREP_Profile_RmaCollectiveBegin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveEnd,          RMA_COLLECTIVE_END,            SCOREP_Profile_RmaCollectiveEnd ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaSync,                   RMA_SYNC,                      SCOREP_Profile_RmaSync ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGroupSync,              RMA_GROUP_SYNC,                SCOREP_Profile_RmaGroupSync ),

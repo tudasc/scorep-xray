@@ -200,6 +200,15 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
 }
 
 void
+SCOREP_Profile_RmaCollectiveBegin( SCOREP_Location*    location,
+                                   uint64_t            timestamp,
+                                   SCOREP_RmaSyncLevel syncLevel )
+{
+    SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
+                                    get_sync_level_name( syncLevel ) );
+}
+
+void
 SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*       location,
                                  uint64_t               timestamp,
                                  SCOREP_CollectiveType  collectiveOp,
@@ -209,9 +218,6 @@ SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*       location,
                                  uint64_t               bytesSent,
                                  uint64_t               bytesReceived )
 {
-    SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
-                                    get_sync_level_name( syncLevel ) );
-
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_put_metric, bytesSent );
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_get_metric, bytesReceived );
 }

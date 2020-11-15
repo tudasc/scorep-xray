@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1325,7 +1325,7 @@ MPI_Win_allocate( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, vo
 
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -1407,7 +1407,7 @@ MPI_Win_allocate_shared( MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm c
 
 
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -1533,7 +1533,7 @@ MPI_Win_create( void* base, MPI_Aint size, int disp_unit, MPI_Info info, MPI_Com
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -1599,7 +1599,7 @@ MPI_Win_create_dynamic( MPI_Info info, MPI_Comm comm, MPI_Win* win )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -1718,7 +1718,7 @@ MPI_Win_free( MPI_Win* win )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_PROCESS );
 
       #if ( MPI_VERSION >= 3 )
             // determine collective type of operation
@@ -1926,7 +1926,8 @@ MPI_Win_fence( int     assert,
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] );
-            SCOREP_RmaCollectiveBegin();
+            SCOREP_RmaCollectiveBegin( SCOREP_RMA_SYNC_LEVEL_MEMORY |
+                                       SCOREP_RMA_SYNC_LEVEL_PROCESS );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
