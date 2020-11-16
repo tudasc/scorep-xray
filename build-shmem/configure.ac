@@ -254,4 +254,14 @@ AS_CASE([${ac_scorep_platform}],
                libtool > libtool.fix && mv libtool.fix libtool])
          ])
 
+dnl Linux
+SCOREP_CHECK_SYSCALL([SYS_gettid],
+                     [],
+                     [])
+
+dnl macOS +10.5
+SCOREP_CHECK_SYSCALL([SYS_thread_selfid],
+                     [],
+                     [])
+
 AC_OUTPUT

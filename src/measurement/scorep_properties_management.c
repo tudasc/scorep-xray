@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -270,7 +270,8 @@ static void
 thread_team_begin( struct SCOREP_Location*          location,
                    uint64_t                         timestamp,
                    SCOREP_ParadigmType              paradigm,
-                   SCOREP_InterimCommunicatorHandle threadTeam )
+                   SCOREP_InterimCommunicatorHandle threadTeam,
+                   uint64_t                         threadId )
 {
     SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
 }
@@ -369,7 +370,8 @@ thread_begin( struct SCOREP_Location*          location,
               uint64_t                         timestamp,
               SCOREP_ParadigmType              paradigm,
               SCOREP_InterimCommunicatorHandle threadTeam,
-              uint32_t                         createSequenceCount )
+              uint32_t                         createSequenceCount,
+              uint64_t                         threadId )
 {
     SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
 }

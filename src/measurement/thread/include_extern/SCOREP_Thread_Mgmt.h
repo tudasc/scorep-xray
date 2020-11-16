@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014, 2016,
+ * Copyright (c) 2014, 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -22,6 +22,7 @@
 
 
 #include <stdbool.h>
+#include <stdint.h>
 
 
 struct SCOREP_Location;
@@ -76,6 +77,13 @@ SCOREP_Thread_GetInitialTpd( void );
  */
 bool
 SCOREP_Thread_IsIntialThread( void );
+
+
+/**
+ * Get an OS dependent thread identifier.
+ */
+uint64_t
+SCOREP_Thread_GetOSId( void );
 
 
 #endif /* SCOREP_THREAD_MGMT_H */

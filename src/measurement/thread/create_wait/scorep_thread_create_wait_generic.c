@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016, 2019,
+ * Copyright (c) 2014-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -463,10 +463,12 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
                                              sequenceCount,
                                              SCOREP_CPU_LOCATION_PHASE_MGMT );
 
+    uint64_t tid = SCOREP_Thread_GetOSId();
+
     /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
                            ( *location, timestamp, paradigm,
-                             thread_team, sequenceCount ) );
+                             thread_team, sequenceCount, tid ) );
 
     /* lastly notify the subsystems that the location can create events */
     scorep_subsystems_activate_cpu_location( *location, NULL, 0,
@@ -576,10 +578,12 @@ scorep_thread_create_wait_orphan_begin( SCOREP_Location** location )
                                              SCOREP_THREAD_INVALID_SEQUENCE_COUNT,
                                              SCOREP_CPU_LOCATION_PHASE_MGMT );
 
+    uint64_t tid = SCOREP_Thread_GetOSId();
+
     /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
                            ( *location, timestamp, SCOREP_PARADIGM_ORPHAN_THREAD,
-                             thread_team, SCOREP_THREAD_INVALID_SEQUENCE_COUNT ) );
+                             thread_team, SCOREP_THREAD_INVALID_SEQUENCE_COUNT, tid ) );
 
     /* lastly notify the subsystems that the location can create events */
     scorep_subsystems_activate_cpu_location( *location, NULL, 0,
