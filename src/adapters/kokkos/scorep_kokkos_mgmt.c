@@ -54,6 +54,13 @@ static SCOREP_ErrorCode
 kokkos_subsystem_init( void )
 {
     UTILS_DEBUG( "Kokkos init" );
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_KOKKOS,
+        SCOREP_PARADIGM_CLASS_ACCELERATOR,
+        "KOKKOS",
+        SCOREP_PARADIGM_FLAG_NONE );
+
     return SCOREP_SUCCESS;
 }
 
