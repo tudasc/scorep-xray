@@ -26,6 +26,7 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_AllocMetric.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
@@ -35,6 +36,7 @@
 #include <jenkins_hash.h>
 
 #include <stdbool.h>
+#include <string.h>
 
 /* Kokkos Tools Interface definitions */
 
@@ -61,9 +63,16 @@ static bool kokkos_initialized;
 static bool kokkos_record_parallel_region;
 static bool kokkos_record_user_region;
 static bool kokkos_record_malloc;
+static bool kokkos_record_memcpy;
 
 /* source file handle for all Kokkos regions */
 static SCOREP_SourceFileHandle kokkos_file_handle = SCOREP_INVALID_SOURCE_FILE;
+
+static SCOREP_RegionHandle kokkos_deep_copy_region = SCOREP_INVALID_REGION;
+
+// declarations for event lib
+static SCOREP_RmaWindowHandle kokkos_rma_window;
+#define KOKKOS_RMA_MAGIC 0xDEADBEEF
 
 /*
  * Enum for region groups
@@ -307,9 +316,11 @@ recording_setup( void )
     kokkos_record_parallel_region = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_REGIONS );
     kokkos_record_user_region     = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_USER    );
     kokkos_record_malloc          = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_MALLOC  );
+    kokkos_record_memcpy          = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_MEMCPY  );
     UTILS_DEBUG( "Record parallel region is %s", kokkos_record_parallel_region ? "on" : "off" );
     UTILS_DEBUG( "Record user region is %s",     kokkos_record_user_region     ? "on" : "off" );
     UTILS_DEBUG( "Record malloc is %s",          kokkos_record_malloc          ? "on" : "off" );
+    UTILS_DEBUG( "Record memcpy is %s",          kokkos_record_memcpy          ? "on" : "off" );
 }
 
 static void
@@ -324,8 +335,45 @@ init_kokkos( void )
         SCOREP_MutexCreate( &kokkos_regions_hashtab_mutex );
         SCOREP_MutexCreate( &kokkos_alloc_metrics_mutex );
 
+        if ( kokkos_record_memcpy )
+        {
+            kokkos_deep_copy_region = SCOREP_Definitions_NewRegion(
+                "kokkos_deep_copy", NULL,
+                kokkos_file_handle,
+                SCOREP_INVALID_LINE_NO,
+                SCOREP_INVALID_LINE_NO,
+                SCOREP_PARADIGM_KOKKOS,
+                SCOREP_REGION_RMA );
+            SCOREP_RegionHandle_SetGroup( kokkos_deep_copy_region, "Kokkos deep copy" );
+
+            kokkos_rma_window = scorep_kokkos_define_rma_win();
+
+            UTILS_DEBUG( "Creating host-side RMA window" );
+            SCOREP_RmaWinCreate( kokkos_rma_window );
+        }
         kokkos_initialized = true;
     }
+}
+
+/*
+ * should be called at first use, to ensure that the GPU device was already
+ * created by the lower adapter
+ */
+static uint32_t
+get_device_location_rank( void )
+{
+    SCOREP_Location*                 location = scorep_kokkos_get_device_location();
+    scorep_kokkos_gpu_location_data* data     =
+        SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
+    if ( !data->rma_win_created )
+    {
+        UTILS_DEBUG( "Creating device-side RMA window [rank %u]", data->rma_win_rank );
+        SCOREP_Location_RmaWinCreate( location,
+                                      SCOREP_Timer_GetClockTicks(),
+                                      kokkos_rma_window );
+        data->rma_win_created = true;
+    }
+    return data->rma_win_rank;
 }
 
 /* Kokkos Tools Interface implementation */
@@ -381,6 +429,22 @@ kokkosp_finalize_library( void )
 
     SCOREP_MutexDestroy( &kokkos_regions_hashtab_mutex );
     SCOREP_MutexDestroy( &kokkos_alloc_metrics_mutex );
+
+    if ( kokkos_record_memcpy )
+    {
+        SCOREP_Location*                 location = scorep_kokkos_get_device_location();
+        scorep_kokkos_gpu_location_data* data     =
+            SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
+        if ( data->rma_win_created )
+        {
+            UTILS_DEBUG( "Destroying device-side RMA window [rank %u]", data->rma_win_rank );
+            SCOREP_Location_RmaWinDestroy( location,
+                                           SCOREP_Timer_GetClockTicks(),
+                                           kokkos_rma_window );
+        }
+        UTILS_DEBUG( "Destroying host-side RMA window" );
+        SCOREP_RmaWinDestroy( kokkos_rma_window );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -607,6 +671,25 @@ kokkosp_end_parallel_reduce( const uint64_t kID )
 }
 
 /**
+ * Relies on Kokkos naming conventions
+ * to determine whether a SpaceHandle refers to
+ * host or device memory. Note that CudaUVM could
+ * refer to both, and may need to be broken out
+ * for special handling.
+ */
+static bool
+is_spacehandle_device( const char* name )
+{
+    if ( strcmp( name, "Cuda" ) == 0 ||
+         strcmp( name, "CudaUVM" ) == 0 ||
+         strcmp( name, "HIP" ) == 0 )
+    {
+        return true;
+    }
+    return false;
+}
+
+/**
  * @bried Start a deep-copy operation.
  *
  * @param dstHandle  Destination of the deep copy
@@ -627,6 +710,58 @@ kokkosp_begin_deep_copy( SpaceHandle dstHandle,
                          uint64_t    size )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_memcpy )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_Location*                 location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_kokkos_cpu_location_data* data     =
+        SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
+
+    if ( data->active_deep_copy )
+    {
+        UTILS_WARNING( "[Kokkos] Nested deep-copy detected" );
+    }
+
+    SCOREP_EnterRegion( kokkos_deep_copy_region );
+
+    // Host to host deep copy: no RMA
+    if ( !is_spacehandle_device( dstHandle.name ) && !is_spacehandle_device( srcHandle.name ) )
+    {
+        UTILS_DEBUG( "Skipping host to host deep copy: %s to %s", srcHandle.name, dstHandle.name );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    // if device to device, then src/target are both device and it's a get
+    if ( is_spacehandle_device( dstHandle.name ) && is_spacehandle_device( srcHandle.name ) )
+    {
+        UTILS_DEBUG( "Skipping deep copy, device to device must rely on offloading adapter" );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    // Do the RMA
+    uint32_t target_rank = get_device_location_rank();
+
+    if ( !is_spacehandle_device( dstHandle.name ) )
+    {
+        // dest is host, so a host-perspective get is forced
+        SCOREP_RmaGet( kokkos_rma_window,
+                       target_rank,
+                       size,
+                       KOKKOS_RMA_MAGIC );
+    }
+    else
+    {
+        SCOREP_RmaPut( kokkos_rma_window,
+                       target_rank,
+                       size,
+                       KOKKOS_RMA_MAGIC );
+    }
+    data->active_deep_copy = true;
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -642,6 +777,24 @@ void
 kokkosp_end_deep_copy( void )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_memcpy )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_Location*                 location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_kokkos_cpu_location_data* data     =
+        SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
+
+    /* We ignore host->host or device->device transfers */
+    if ( data->active_deep_copy )
+    {
+        SCOREP_RmaOpCompleteBlocking( kokkos_rma_window,
+                                      KOKKOS_RMA_MAGIC );
+        data->active_deep_copy = false;
+    }
+    SCOREP_ExitRegion( kokkos_deep_copy_region );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

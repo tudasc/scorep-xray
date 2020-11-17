@@ -24,7 +24,8 @@ kokkos_common_cppflags = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_MUTEX) \
-    -I$(INC_DIR_COMMON_HASH)
+    -I$(INC_DIR_COMMON_HASH) \
+    @SCOREP_TIMER_CPPFLAGS@
 
 # runtime management library for the kokkos adapter
 

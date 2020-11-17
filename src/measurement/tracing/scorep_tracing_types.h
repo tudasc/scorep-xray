@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -108,6 +108,10 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         // OpenCL
         case_return( OPENCL_LOCATIONS,   COMM_LOCATIONS );
         case_return( OPENCL_GROUP,       COMM_GROUP );
+
+        // Kokkos
+        case_return( KOKKOS_LOCATIONS,     COMM_LOCATIONS );
+        case_return( KOKKOS_GROUP,         COMM_GROUP );
 
         // SHMEM
         case_return( SHMEM_LOCATIONS,    COMM_LOCATIONS );
