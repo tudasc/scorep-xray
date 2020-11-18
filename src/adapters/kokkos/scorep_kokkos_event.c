@@ -24,6 +24,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Task.h>
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
@@ -57,6 +58,7 @@ typedef struct SpaceHandle
 
 static bool kokkos_initialized;
 static bool kokkos_record_parallel_region;
+static bool kokkos_record_user_region;
 
 /* source file handle for all Kokkos regions */
 static SCOREP_SourceFileHandle kokkos_file_handle = SCOREP_INVALID_SOURCE_FILE;
@@ -69,7 +71,8 @@ typedef enum
 {
     scorep_kokkos_parallel_for,
     scorep_kokkos_parallel_scan,
-    scorep_kokkos_parallel_reduce
+    scorep_kokkos_parallel_reduce,
+    scorep_kokkos_profile_region
 } scorep_kokkos_group;
 
 /*
@@ -102,6 +105,8 @@ scorep_kokkos_group_name( scorep_kokkos_group group )
             return "Kokkos parallel_scan";
         case scorep_kokkos_parallel_reduce:
             return "Kokkos parallel_reduce";
+        case scorep_kokkos_profile_region:
+            return "Kokkos profile regions";
         default:
             return "UNKNOWN KOKKOS GROUP";
     }
@@ -116,6 +121,8 @@ scorep_kokkos_group_region_type( scorep_kokkos_group group )
         case scorep_kokkos_parallel_scan:
         case scorep_kokkos_parallel_reduce:
             return SCOREP_REGION_PARALLEL;
+        case scorep_kokkos_profile_region:
+            return SCOREP_REGION_USER;
         default:
             return SCOREP_REGION_UNKNOWN;
     }
@@ -248,7 +255,9 @@ static void
 recording_setup( void )
 {
     kokkos_record_parallel_region = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_REGIONS );
+    kokkos_record_user_region     = ( scorep_kokkos_features & SCOREP_KOKKOS_FEATURE_USER    );
     UTILS_DEBUG( "Record parallel region is %s", kokkos_record_parallel_region ? "on" : "off" );
+    UTILS_DEBUG( "Record user region is %s",     kokkos_record_user_region     ? "on" : "off" );
 }
 
 static void
@@ -630,6 +639,23 @@ void
 kokkosp_push_profile_region( const char* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_user_region )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    if ( SCOREP_Filtering_MatchFunction( name, NULL ) )
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), SCOREP_FILTERED_REGION );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_RegionHandle region = get_region( scorep_kokkos_profile_region,
+                                             name, NULL );
+
+    SCOREP_EnterRegion( region );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -641,6 +667,27 @@ void
 kokkosp_pop_profile_region( void )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !kokkos_record_user_region )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    UTILS_ASSERT( location != NULL );
+
+    SCOREP_RegionHandle region_handle =
+        SCOREP_Task_GetTopRegion( SCOREP_Task_GetCurrentTask( location ) );
+    UTILS_ASSERT( region_handle != SCOREP_INVALID_REGION );
+
+    if ( region_handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( region_handle );
+    }
+    else
+    {
+        SCOREP_Task_Exit( location );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

@@ -27,7 +27,8 @@
  * Kokkos features (to be enabled/disabled via environment variables)
  */
 #define SCOREP_KOKKOS_FEATURE_REGIONS  ( 1 << 0 )
-#define SCOREP_KOKKOS_FEATURES_DEFAULT SCOREP_KOKKOS_FEATURE_REGIONS
+#define SCOREP_KOKKOS_FEATURE_USER     ( 1 << 1 )
+#define SCOREP_KOKKOS_FEATURES_DEFAULT SCOREP_KOKKOS_FEATURE_REGIONS | SCOREP_KOKKOS_FEATURE_USER
 
 /*
  * Specifies the Kokkos tracing mode with a bit mask.

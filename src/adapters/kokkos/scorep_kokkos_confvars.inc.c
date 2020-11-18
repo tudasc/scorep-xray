@@ -24,6 +24,11 @@ static const SCOREP_ConfigType_SetEntry kokkos_enable_groups[] =
         "Kokkos parallel regions"
     },
     {
+        "user",
+        SCOREP_KOKKOS_FEATURE_USER,
+        "Kokkos user regions"
+    },
+    {
         "default/yes/1",
         SCOREP_KOKKOS_FEATURES_DEFAULT,
         "Kokkos parallel regions, user regions, and allocations"
