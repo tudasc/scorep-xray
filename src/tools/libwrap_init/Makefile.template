@@ -3,6 +3,7 @@
 # LW_DISPLAY_NAME
 # LW_PREFIX
 # LW_BACKEND
+# LW_SRP
 # LW_BACKEND_SUFFIX
 # CPPFLAGS
 # LDFLAGS
@@ -55,23 +56,37 @@ NVCC_WRAP_LD_FLAGS_FILE = $(LW_NAME).nvcc.wrap
 WRAP_FILTER_FILE        = $(LW_NAME).filter
 
 ### silent rules ###
+lw__tty_colors = \
+red=; grn=; blu=; mgn=; yel=; std=; \
+test "X$${CLICOLOR-1}" = X1 \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$${CLICOLOR_FORCE:-0}" = X1 || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  yel='[33m'; \
+  std='[m'; \
+}
+
 LW_V_CC = $(lw__v_CC_$(V))
 lw__v_CC_1 =
-lw__v_CC_ = @echo "  CC       " $@;
+lw__v_CC_ = @$(lw__tty_colors); echo "  $(LW_SRP)CC       $${blu}$@$$std";
 LW_V_CCLD = $(lw__v_CCLD_$(V))
 lw__v_CCLD_1 =
-lw__v_CCLD_ = @echo "  CCLD     " $@;
+lw__v_CCLD_ = @$(lw__tty_colors); echo "  $(LW_SRP)CCLD     $${grn}$@$$std";
 
 LW_V_CXX = $(lw__v_CXX_$(V))
 lw__v_CXX_1 =
-lw__v_CXX_ = @echo "  CXX      " $@;
+lw__v_CXX_ = @$(lw__tty_colors); echo "  $(LW_SRP)CXX      $${blu}$@$$std";
 LW_V_CXXLD = $(lw__v_CXXLD_$(V))
 lw__v_CXXLD_1 =
-lw__v_CXXLD_ = @echo "  CXXLD    " $@;
+lw__v_CXXLD_ = @$(lw__tty_colors); echo "  $(LW_SRP)CXXLD    $${grn}$@$$std";
 
 LW_V_CPP = $(lw__v_CPP_$(V))
 lw__v_CPP_1 =
-lw__v_CPP_ = @echo "  CPP      " $@;
+lw__v_CPP_ = @$(lw__tty_colors); echo "  $(LW_SRP)CPP      $${mgn}$@$$std";
 
 LW_V_P = $(lw__v_P_$(V))
 lw__v_P_ = false
@@ -79,7 +94,7 @@ lw__v_P_1 = :
 
 LW_V_GEN = $(lw__v_GEN_$(V))
 lw__v_GEN_1 =
-lw__v_GEN_ = @echo "  GEN      " $@;
+lw__v_GEN_ = @$(lw__tty_colors); echo "  GEN      $${mgn}$@$$std";
 
 LW_V_libtool = $(lw__v_libtool_$(V))
 lw__v_libtool_ = --silent
@@ -91,7 +106,7 @@ lw__v_devnull_1 =
 
 LW_V_SCOREP = $(lw__v_SCOREP_$(V))
 lw__v_SCOREP_1 =
-lw__v_SCOREP_ = @echo "  SCOREP   " $@;
+lw__v_SCOREP_ = @$(lw__tty_colors); echo "  SCOREP   $${grn}$@$$std";
 
 LW_V_scorep = $(lw__v_scorep_$(V))
 lw__v_scorep_1 = --verbose --keep-files
@@ -151,16 +166,17 @@ quick-check: $(WRAP_LIB_SOURCE)
             echo "    return a;"; \
             echo "}"; \
         ) >symbol_quick_check.$(LW_SRCEXT)
-	@if $(LW_V_P); then \
+	@$(lw__tty_colors); \
+        if $(LW_V_P); then \
             echo "$(SCOREP_CC) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS)"; \
         else \
             echo "  QUICK-CHECK"; \
         fi; \
         if ! $(SCOREP_CC) -o symbol_quick_check symbol_quick_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
-            echo >&2 "[Score-P] Error: There is mismatch between functions found in the header files"; \
-            echo >&2 "[Score-P]        and the symbols present in the target library."; \
-            echo >&2 "[Score-P]        Use 'make check' to get a list of missing symbols and add"; \
-            echo >&2 "[Score-P]        them to $(WRAP_FILTER_FILE). After that repeat this step."; \
+            echo >&2 "[Score-P] $${red}Error: There is mismatch between functions found in the header files$$std"; \
+            echo >&2 "[Score-P]        $${red}and the symbols present in the target library.$$std"; \
+            echo >&2 "[Score-P]        $${red}Use 'make check' to get a list of missing symbols and add$$std"; \
+            echo >&2 "[Score-P]        $${red}them to $(WRAP_FILTER_FILE). After that repeat this step.$$std"; \
             rm -f symbol_quick_check symbol_quick_check.$(LW_SRCEXT); \
             exit 1; \
         else \
@@ -240,9 +256,10 @@ $(LIBWRAP_SUMMARY_FILE): Makefile
 # TODO maybe open the executable(s) with ldd and check whether all libraries (perhaps this should rather be part of the main target) can be found
 .PHONY: check
 check: $(WRAP_LIB_SOURCE)
-	@wrap_count=$$(cat $(WRAP_LD_FLAGS_FILE) | wc -l); \
+	@$(lw__tty_colors); \
+        wrap_count=$$(cat $(WRAP_LD_FLAGS_FILE) | wc -l); \
         if test $$wrap_count -ge 1000; then \
-            echo >&2 "[Score-P] Warning: Checking $$wrap_count symbols. This may take a while."; \
+            echo >&2 "[Score-P] $${yel}Warning: Checking $$wrap_count symbols. This may take a while.$$std"; \
         fi; \
         missing_symbols=""; \
         uncertain_symbols=""; \
@@ -260,25 +277,25 @@ check: $(WRAP_LIB_SOURCE)
             if $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(LW_V_devnull); then \
                 $(LW_V_P) && echo $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS); \
                 if $(SCOREP_CC) -o symbol_check symbol_check.$(LW_SRCEXT) $(CPPFLAGS) $(LW_V_devnull); then \
-                    echo "  UNCERTAIN $$symbol"; \
+                    echo "  UNCERTAIN $${yel}$$symbol$$std"; \
                     uncertain_symbols="$$uncertain_symbols $$symbol"; \
                 else \
-                    echo "  FOUND     $$symbol"; \
+                    echo "  FOUND     $${grn}$$symbol$$std"; \
                 fi; \
             else \
-                echo "  MISSING   $$symbol"; \
+                echo "  MISSING   $${red}$$symbol$$std"; \
                 missing_symbols="$$missing_symbols $$symbol"; \
             fi; \
             rm -f symbol_check symbol_check.$(LW_SRCEXT); \
         done <$(WRAP_LD_FLAGS_FILE); \
         if test -n "$$uncertain_symbols"; then \
-            echo >&2 "[Score-P] Warning: Symbols that are present without linking against the target"; \
-            echo >&2 "[Score-P]          library and its dependencies have been wrapped. It is uncertain"; \
-            echo >&2 "[Score-P]          whether calls to them can be intercepted, or perhaps you did"; \
-            echo >&2 "[Score-P]          not intend to wrap them. The filter file 'uncertain.filter'"; \
-            echo >&2 "[Score-P]          containing these symbols has been created. Maybe you want to"; \
-            echo >&2 "[Score-P]          add all or some of these symbols to $(WRAP_FILTER_FILE)."; \
-            echo >&2 "[Score-P]          Then repeat 'make' and 'make check'."; \
+            echo >&2 "[Score-P] $${yel}Warning: Symbols that are present without linking against the target$$std"; \
+            echo >&2 "[Score-P]          $${yel}library and its dependencies have been wrapped. It is uncertain$$std"; \
+            echo >&2 "[Score-P]          $${yel}whether calls to them can be intercepted, or perhaps you did$$std"; \
+            echo >&2 "[Score-P]          $${yel}not intend to wrap them. The filter file 'uncertain.filter'$$std"; \
+            echo >&2 "[Score-P]          $${yel}containing these symbols has been created. Maybe you want to$$std"; \
+            echo >&2 "[Score-P]          $${yel}add all or some of these symbols to $(WRAP_FILTER_FILE).$$std"; \
+            echo >&2 "[Score-P]          $${yel}Then repeat 'make' and 'make check'.$$std"; \
             ( \
                 echo "SCOREP_REGION_NAMES_BEGIN"; \
                 printf "  EXCLUDE MANGLED %s\n" $$uncertain_symbols; \
@@ -286,11 +303,11 @@ check: $(WRAP_LIB_SOURCE)
             ) >uncertain.filter; \
         fi; \
         if test -n "$$missing_symbols"; then \
-            echo >&2 "[Score-P] Error: Symbols that are not present in the target library have been"; \
-            echo >&2 "[Score-P]        wrapped. The filter file 'missing.filter' containing these"; \
-            echo >&2 "[Score-P]        symbols has been created. Reconsider your wrapper settings, or"; \
-            echo >&2 "[Score-P]        add these symbols to $(WRAP_FILTER_FILE) if they should not be"; \
-            echo >&2 "[Score-P]        wrapped. Then repeat 'make' and 'make check'."; \
+            echo >&2 "[Score-P] $${red}Error: Symbols that are not present in the target library have been$$std"; \
+            echo >&2 "[Score-P]        $${red}wrapped. The filter file 'missing.filter' containing these$$std"; \
+            echo >&2 "[Score-P]        $${red}symbols has been created. Reconsider your wrapper settings, or$$std"; \
+            echo >&2 "[Score-P]        $${red}add these symbols to $(WRAP_FILTER_FILE) if they should not be$$std"; \
+            echo >&2 "[Score-P]        $${red}wrapped. Then repeat 'make' and 'make check'.$$std"; \
             ( \
                 echo "SCOREP_REGION_NAMES_BEGIN"; \
                 printf "  EXCLUDE MANGLED %s\n" $$missing_symbols; \
@@ -303,10 +320,11 @@ check: $(WRAP_LIB_SOURCE)
 .PHONY: install
 install: quick-check $(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_FILTER_FILE) $(INSTALL_LIBWRAP_LINKTIME) $(INSTALL_LIBWRAP_RUNTIME)
 	@mkdir -p $(LW_PREFIX)/share/scorep
-	@data_files='$(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_LD_FLAGS_FILE) $(NVCC_WRAP_LD_FLAGS_FILE) $(WRAP_FILTER_FILE)'; \
+	@$(lw__tty_colors); \
+	data_files='$(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_LD_FLAGS_FILE) $(NVCC_WRAP_LD_FLAGS_FILE) $(WRAP_FILTER_FILE)'; \
 	for data_file in $$data_files; do \
 	    if $(LW_V_P); then echo $(INSTALL) -m 644 "$$data_file" "$(LW_PREFIX)/share/scorep/$$data_file"; \
-	                  else echo "  INSTALL   $(LW_PREFIX)/share/scorep/$$data_file"; \
+	                  else echo "  INSTALL   $${blu}$(LW_PREFIX)/share/scorep/$$data_file$$std"; \
 	    fi; \
 	    $(INSTALL) -m 644 "$$data_file" "$(LW_PREFIX)/share/scorep/$$data_file"; \
 	done
@@ -314,30 +332,33 @@ install: quick-check $(LIBWRAP_ANCHOR_FILE) $(LIBWRAP_SUMMARY_FILE) $(WRAP_FILTE
 .PHONY: install-libwrap-linktime
 install-libwrap-linktime: $(LIBWRAP_LINKTIME)
 	@mkdir -p $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)
-	@if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME); \
-	              else echo "  INSTALL   $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)"; \
+	@$(lw__tty_colors); \
+	if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME); \
+	              else echo "  INSTALL   $${grn}$(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)$$std"; \
 	fi; \
 	$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_LINKTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_LINKTIME)
 
 .PHONY: install-libwrap-runtime
 install-libwrap-runtime: $(LIBWRAP_RUNTIME)
 	@mkdir -p $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)
-	@if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME); \
-	              else echo "  INSTALL   $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)"; \
+	@$(lw__tty_colors); \
+	if $(LW_V_P); then echo $(LIBTOOL) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME); \
+	              else echo "  INSTALL   $${grn}$(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)$$std"; \
 	fi; \
 	$(LIBTOOL) $(LW_V_libtool) --mode=install $(INSTALL) $(LIBWRAP_RUNTIME) $(LW_PREFIX)/lib$(LW_BACKEND_SUFFIX)/$(LIBWRAP_RUNTIME)
-	@if test -z "$(LW_LIBLIST)"; then \
-            echo "[Score-P] Error: Could not find any shared libraries. I.e., the"; \
-            echo "[Score-P]        LW_LIBLIST variable in Makefile is empty!"; \
-            echo "[Score-P]        This can lead to a broken runtime library wrapper."; \
-            echo "[Score-P]        If one of the libraries specified via '--libs'"; \
-            echo "[Score-P]        (Which is the same as the LIBS variable in Makefile)"; \
-            echo "[Score-P]        is not installed as a shared library, you should"; \
-            echo "[Score-P]        switch off runtime wrapping by first running"; \
-            echo "[Score-P]        'make uninstall clean', and then reinitializing the"; \
-            echo "[Score-P]        working directory by adding"; \
-            echo "[Score-P]        '--update --static-only-target-library' to your"; \
-            echo "[Score-P]        'scorep-libwrap-init'-command line."; \
+	@$(lw__tty_colors); \
+        if test -z "$(LW_LIBLIST)"; then \
+            echo "[Score-P] $${red}Error: Could not find any shared libraries. I.e., the$$std"; \
+            echo "[Score-P]        $${red}LW_LIBLIST variable in Makefile is empty!$$std"; \
+            echo "[Score-P]        $${red}This can lead to a broken runtime library wrapper.$$std"; \
+            echo "[Score-P]        $${red}If one of the libraries specified via '--libs'$$std"; \
+            echo "[Score-P]        $${red}(Which is the same as the LIBS variable in Makefile)$$std"; \
+            echo "[Score-P]        $${red}is not installed as a shared library, you should$$std"; \
+            echo "[Score-P]        $${red}switch off runtime wrapping by first running$$std"; \
+            echo "[Score-P]        $${red}'make uninstall clean', and then reinitializing the$$std"; \
+            echo "[Score-P]        $${red}working directory by adding$$std"; \
+            echo "[Score-P]        $${red}'--update --static-only-target-library' to your$$std"; \
+            echo "[Score-P]        $${red}'scorep-libwrap-init'-command line.$$std"; \
             exit 1; \
         fi
 

@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015, 2017,
+## Copyright (c) 2015, 2017, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -17,9 +17,18 @@ frontend_bin_SCRIPTS += scorep-wrapper
 INSTALL_EXEC_HOOK += install-scorep-wrappers
 install-scorep-wrappers:
 	@$(NORMAL_INSTALL)
-	@test -z "$(frontend_bindir)" || $(MKDIR_P) "$(DESTDIR)$(frontend_bindir)" || exit 1; \
+	@$(am__tty_colors); \
+	test -z "$(frontend_bindir)" || { \
+	  if $(AM_V_P); then echo " $(MKDIR_P) '$(DESTDIR)$(frontend_bindir)'"; \
+	                else echo "  MKDIR     $${mgn}$(DESTDIR)$(frontend_bindir)$$std"; \
+	  fi; \
+	  $(MKDIR_P) "$(DESTDIR)$(frontend_bindir)" || exit 1; \
+	}; \
 	list='$(SCOREP_WRAPPER_NAMES)'; test -n "$(frontend_bindir)" || list=; \
 	for p in $$list; do \
+	    if $(AM_V_P); then echo "cd $(DESTDIR)$(frontend_bindir); rm -f $$p; $(LN_S) scorep-wrapper '$$p'"; \
+	                  else echo "  LN_S      $${grn}$(DESTDIR)$(frontend_bindir)/$$p$$std"; \
+	    fi; \
 	    (cd $(DESTDIR)$(frontend_bindir); rm -f "$$p"; $(LN_S) "scorep-wrapper" "$$p") || exit $$?; \
 	done
 

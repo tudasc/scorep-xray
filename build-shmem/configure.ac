@@ -16,7 +16,7 @@ AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([../build-config/common/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
 AFS_PACKAGE_BUILD_INIT([SHMEM backend])
-AFS_SUMMARY_INIT
+AFS_SUMMARY_INIT([../build-backend])
 
 # Not all SHMEMs support executing SHMEM programs without a startup
 # command like oshrun. Therefore prevent executing configure

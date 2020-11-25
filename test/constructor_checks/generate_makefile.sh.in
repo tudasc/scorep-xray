@@ -45,36 +45,49 @@ CXXLD = $CXX
 FC = $FC
 FCLD = $FC
 
+scorep__tty_colors = \
+red=; grn=; blu=; mgn=; std=; \
+test "X\$(AM_COLOR_TESTS)" != Xno \
+&& test "X\$\$TERM" != Xdumb \
+&& { test "X\$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  std='[m'; \
+}
+
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 
 SCOREP_V_CC = \$(scorep__v_CC_\$(V))
 scorep__v_CC_ = \$(scorep__v_CC_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_CC_0 = @echo "  SCOREP CC    " \$@;
+scorep__v_CC_0 = @\$(scorep__tty_colors); echo "  SCOREP CC     \$\${blu}\$@\$\$std";
 SCOREP_V_CCLD = \$(scorep__v_CCLD_\$(V))
 scorep__v_CCLD_ = \$(scorep__v_CCLD_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_CCLD_0 = @echo "  SCOREP CCLD  " \$@;
+scorep__v_CCLD_0 = @\$(scorep__tty_colors); echo "  SCOREP CCLD   \$\${grn}\$@\$\$std";
 
 SCOREP_V_CXX = \$(scorep__v_CXX_\$(V))
 scorep__v_CXX_ = \$(scorep__v_CXX_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_CXX_0 = @echo "  SCOREP CXX   " \$@;
+scorep__v_CXX_0 = @\$(scorep__tty_colors); echo "  SCOREP CXX    \$\${blu}\$@\$\$std";
 SCOREP_V_CXXLD = \$(scorep__v_CXXLD_\$(V))
 scorep__v_CXXLD_ = \$(scorep__v_CXXLD_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_CXXLD_0 = @echo "  SCOREP CXXLD " \$@;
+scorep__v_CXXLD_0 = @\$(scorep__tty_colors); echo "  SCOREP CXXLD  \$\${grn}\$@\$\$std";
 
 SCOREP_V_FC = \$(scorep__v_FC_\$(V))
 scorep__v_FC_ = \$(scorep__v_FC_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_FC_0 = @echo "  SCOREP FC    " \$@;
+scorep__v_FC_0 = @\$(scorep__tty_colors); echo "  SCOREP FC     \$\${blu}\$@\$\$std";
 SCOREP_V_FCLD = \$(scorep__v_FCLD_\$(V))
 scorep__v_FCLD_ = \$(scorep__v_FCLD_\$(AM_DEFAULT_VERBOSITY))
-scorep__v_FCLD_0 = @echo "  SCOREP FCLD  " \$@;
+scorep__v_FCLD_0 = @\$(scorep__tty_colors); echo "  SCOREP FCLD   \$\${grn}\$@\$\$std";
 
-SCOREP_V_scorep = \$(scorep__v_scorep_\$(V))
-scorep__v_scorep_ =
-scorep__v_scorep_1 = --verbose
-scorep__v_scorep_2 = --verbose=2
+SCOREP_V_verbose = \$(scorep__v_verbose_\$(V))
+scorep__v_verbose_ =
+scorep__v_verbose_1 = --verbose
+scorep__v_verbose_2 = --verbose=2
 
 # we need at least one active adapter, else scorep-config wont spill out any libs
-SCOREP=\$(BINDIR)/scorep \$(SCOREP_V_scorep) --user --nocompiler --mpp=none
+SCOREP=\$(BINDIR)/scorep \$(SCOREP_V_verbose) --user --nocompiler --mpp=none
 
 all:
 

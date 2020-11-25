@@ -29,17 +29,30 @@ INCDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
 TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config $(INCDIR)/check-instrumentation.sh
 PREP   = "@BINDIR@/scorep"
 
-SCOREP_INSTRUMENTING_VERBOSE_CC = $(scorep_instrumenting_verbose_cc_$(V))
-scorep_instrumenting_verbose_cc_ = $(scorep_instrumenting_verbose_cc_0)
-scorep_instrumenting_verbose_cc_0 = @echo "  SCOREP CC " $@;
+scorep__tty_colors = \
+red=; grn=; blu=; mgn=; std=; \
+test "X$(AM_COLOR_TESTS)" != Xno \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  std='[m'; \
+}
 
-SCOREP_INSTRUMENTING_VERBOSE_CXX = $(scorep_instrumenting_verbose_cxx_$(V))
-scorep_instrumenting_verbose_cxx_ = $(scorep_instrumenting_verbose_cxx_0)
-scorep_instrumenting_verbose_cxx_0 = @echo "  SCOREP CXX " $@;
+SCOREP_V_CC = $(scorep__v_cc_$(V))
+scorep__v_cc_ = $(scorep__v_cc_0)
+scorep__v_cc_0 = @$(scorep__tty_colors); echo "  SCOREP CC    $${blu}$@$$std";
 
-SCOREP_INSTRUMENTING_VERBOSE2 = $(scorep_instrumenting_verbose2_$(V))
-scorep_instrumenting_verbose2_ =
-scorep_instrumenting_verbose2_1 = --verbose
+SCOREP_V_CXX = $(scorep__v_cxx_$(V))
+scorep__v_cxx_ = $(scorep__v_cxx_0)
+scorep__v_cxx_0 = @$(scorep__tty_colors); echo "  SCOREP CXX  $${blu}$@$$std";
+
+SCOREP_V_verbose = $(scorep__v_verbose_$(V))
+scorep__v_verbose_ =
+scorep__v_verbose_1 = --verbose
 
 
 TESTS = \
@@ -54,13 +67,13 @@ all: $(TESTS)
 
 $(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
-	$(SCOREP_INSTRUMENTING_VERBOSE_CC)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_INSTRUMENTING_VERBOSE2)
+	$(SCOREP_V_CC)$(PREP) $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $<
+	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
 
 $(BINDIR)/%: $(SRCDIR)/%.cpp $(TOOLS)
 	@mkdir -p $(BINDIR)
-	$(SCOREP_INSTRUMENTING_VERBOSE_CXX)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CXX) $(CXXFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_INSTRUMENTING_VERBOSE2)
+	$(SCOREP_V_CXX)$(PREP) $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $<
+	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
 
 clean:
 	@rm -f $(TESTS)

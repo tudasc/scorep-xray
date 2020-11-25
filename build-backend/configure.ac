@@ -405,7 +405,7 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
 AC_CONFIG_FILES([scorep-wrapper:../src/tools/wrapper/scorep-wrapper.in],
                 [chmod +x scorep-wrapper])
 AC_SUBST([SCOREP_WRAPPER_NAMES], [${scorep_list_of_wrappers}])
-AFS_SUMMARY([Compiler wrappers], [${scorep_list_of_wrappers}])
+AFS_SUMMARY([Compiler wrappers], [${scorep_list_of_wrappers}], 0)
 
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [AFS_SET_SILENT_RULE_PREFIX([BE])])

@@ -5,7 +5,7 @@
 /libtool
 /config.log
 /config.status
-/config.summary
+/config.summary*
 /.deps
 /Makefile
 /scorep_have_pshmem_support.txt

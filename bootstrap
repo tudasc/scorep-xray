@@ -79,7 +79,7 @@ clean_files = \
 	confdefs.h \
 	config.log \
 	config.status \
-	config.summary \
+	config.summary* \
 	scorep.summary \
 	libtool \
 	.deps/ \

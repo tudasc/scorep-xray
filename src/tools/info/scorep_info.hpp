@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,13 +27,23 @@
 extern const std::string toolname;
 
 /* *INDENT-OFF* */
+/* see https://bixense.com/clicolors/ for the use of CLICOLOR */
 #define PAGER_COMMAND \
-    "if test -t 1; " \
-    "then " \
-        "${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}; " \
-    "else " \
-        "cat; " \
-    "fi"
+    "( " \
+        "test -t 1; " \
+        "istty=$?; " \
+        "if { { test \"${CLICOLOR-1}\" != \"0\" && test $istty -eq 0; } || test \"${CLICOLOR_FORCE:-0}\" != \"0\"; }; " \
+        "then " \
+           "cat; " \
+        "else " \
+           "sed -e 's/'\"$(printf \"\033\")\"'\\[[0-9;]*m//g'; " \
+        "fi | if test $istty -eq 0 && test -n \"${PAGER:=$(which less || :)}\"; " \
+        "then " \
+           "LESS=${LESS:-FRX} ${PAGER}; " \
+        "else " \
+           "cat; " \
+        "fi " \
+    ")"
 /* *INDENT-ON* */
 
 #endif // SCOREP_INFO_HPP

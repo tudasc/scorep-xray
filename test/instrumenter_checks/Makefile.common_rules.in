@@ -43,50 +43,99 @@ EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANGUAGE)$(SUFFIX)
 
 TOOLS = @BINDIR@/scorep @BINDIR@/scorep-config
 
-SCOREP_INSTRUMENTING_VERBOSE = $(scorep_instrumenting_verbose_$(V))
-scorep_instrumenting_verbose_ = $(scorep_instrumenting_verbose_0)
-scorep_instrumenting_verbose_0 = @echo "  SCOREP " $@;
+scorep__tty_colors = \
+red=; grn=; blu=; mgn=; std=; \
+test "X$(AM_COLOR_TESTS)" != Xno \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  std='[m'; \
+}
 
-SCOREP_INSTRUMENTING_VERBOSE2 = $(scorep_instrumenting_verbose2_$(V))
-scorep_instrumenting_verbose2_ =
-scorep_instrumenting_verbose2_1 = --verbose
+SCOREP_V_CC = $(scorep__v_cc_$(V))
+scorep__v_cc_ = $(scorep__v_cc_0)
+scorep__v_cc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CC      $${blu}$@$$std";
+
+SCOREP_V_CCLD = $(scorep__v_ccld_$(V))
+scorep__v_ccld_ = $(scorep__v_ccld_0)
+scorep__v_ccld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CCLD    $${grn}$@$$std";
+
+SCOREP_V_CXX = $(scorep__v_cxx_$(V))
+scorep__v_cxx_ = $(scorep__v_cxx_0)
+scorep__v_cxx_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CXX     $${blu}$@$$std";
+
+SCOREP_V_CXXLD = $(scorep__v_cxxld_$(V))
+scorep__v_cxxld_ = $(scorep__v_cxxld_0)
+scorep__v_cxxld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CXXLD   $${grn}$@$$std";
+
+SCOREP_V_F77 = $(scorep__v_f77_$(V))
+scorep__v_f77_ = $(scorep__v_f77_0)
+scorep__v_f77_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)F77     $${blu}$@$$std";
+
+SCOREP_V_F77LD = $(scorep__v_f77ld_$(V))
+scorep__v_f77ld_ = $(scorep__v_f77ld_0)
+scorep__v_f77ld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)F77LD   $${grn}$@$$std";
+
+SCOREP_V_FC = $(scorep__v_fc_$(V))
+scorep__v_fc_ = $(scorep__v_fc_0)
+scorep__v_fc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)FC      $${blu}$@$$std";
+
+SCOREP_V_FCLD = $(scorep__v_fcld_$(V))
+scorep__v_fcld_ = $(scorep__v_fcld_0)
+scorep__v_fcld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)FCLD    $${grn}$@$$std";
+
+SCOREP_V_NVCC = $(scorep__v_nvcc_$(V))
+scorep__v_nvcc_ = $(scorep__v_nvcc_0)
+scorep__v_nvcc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)NVCC    $${blu}$@$$std";
+
+SCOREP_V_NVCCLD = $(scorep__v_nvccld_$(V))
+scorep__v_nvccld_ = $(scorep__v_nvccld_0)
+scorep__v_nvccld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)NVCCLD  $${grn}$@$$std";
+
+SCOREP_V_verbose = $(scorep__v_verbose_$(V))
+scorep__v_verbose_ =
+scorep__v_verbose_1 = --verbose
 
 all:
 
 $(CODE): $(EXE)
 
 $(BINDIR)/$(CODE)-$(PARADIGM)-cc$(SUFFIX): $(OBJECTS) $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
+	$(SCOREP_V_CCLD)$(PREP) $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(BINDIR)/$(CODE)-$(PARADIGM)-cxx$(SUFFIX): $(OBJECTS) $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
+	$(SCOREP_V_CXXLD)$(PREP) $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(BINDIR)/$(CODE)-$(PARADIGM)-f77$(SUFFIX): $(OBJECTS) $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(F77) $(F77FLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
+	$(SCOREP_V_F77LD)$(PREP) $(SCOREP_V_verbose) $(F77) $(F77FLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS) $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
+	$(SCOREP_V_FCLD)$(PREP) $(SCOREP_V_verbose) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(BINDIR)/$(CODE)-$(PARADIGM)-cu$(SUFFIX): $(OBJECTS) $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(NVCC) -ccbin $(CXX) $(CUFLAGS) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
+	$(SCOREP_V_NVCCLD)$(PREP) $(SCOREP_V_verbose) $(NVCC) -ccbin $(CXX) $(CUFLAGS) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ -c $<
+	$(SCOREP_V_CC)$(PREP) $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(SCOREP_V_CXX)$(PREP) $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.f77 $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(F77) $(F77FLAGS) -o $@ -c $<
+	$(SCOREP_V_F77)$(PREP) $(SCOREP_V_verbose) $(F77) $(F77FLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.f90 $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(FC) $(FCFLAGS) -o $@ -c $<
+	$(SCOREP_V_FC)$(PREP) $(SCOREP_V_verbose) $(FC) $(FCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.F90 $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(FC) $(FCFLAGS) -o $@ -c $<
+	$(SCOREP_V_FC)$(PREP) $(SCOREP_V_verbose) $(FC) $(FCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cu $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(NVCC) -ccbin $(CXX) $(CUFLAGS) $(CXXFLAGS) -o $@ -c $<
+	$(SCOREP_V_NVCC)$(PREP) $(SCOREP_V_verbose) $(NVCC) -ccbin $(CXX) $(CUFLAGS) $(CXXFLAGS) -o $@ -c $<
 
 clean:
 	rm -f $(EXE) $(OBJECTS)
