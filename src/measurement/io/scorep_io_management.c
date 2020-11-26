@@ -683,11 +683,20 @@ SCOREP_IoMgmt_GetIoHandle( SCOREP_IoParadigmType paradigm,
 SCOREP_IoFileHandle
 SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
 {
-    char* resolved_filename = realpath( pathname, NULL );
+    char  buf[ PATH_MAX ];
+    char* res = NULL;
 
-    if ( !resolved_filename )
+#if HAVE( REALPATH )
+    res = realpath( pathname, buf );
+#endif
+
+    if ( !res )
     {
-        return SCOREP_INVALID_IO_FILE;
+        /*
+         * Provide given pathname if either realpath is not available
+         * or failed to determine canonicalized absolute pathname
+         */
+        res = ( char* )pathname;
     }
 
     UTILS_BUG_ON( !io_file_handle_hashtable, "Hashtable is not initialized for storing %s", pathname );
@@ -696,24 +705,29 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
 
     size_t                hash_hint;
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( io_file_handle_hashtable,
-                                                       ( void* )resolved_filename,
+                                                       ( void* )res,
                                                        &hash_hint );
     if ( entry != NULL )
     {
-        free( resolved_filename );
         SCOREP_IoFileHandle file_handle = entry->value.handle;
         SCOREP_MutexUnlock( io_file_handle_hashtable_mutex );
         return file_handle;
     }
 
-    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( resolved_filename );
-    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( resolved_filename,
+    /* Make a copy of pathname in Score-P memory */
+    size_t len               = strlen( res );
+    char*  buf_in_scorep_mem = SCOREP_Memory_AllocForMisc( ( len + 1 ) * sizeof( char ) );
+    strncpy( buf_in_scorep_mem, res, len );
+    buf_in_scorep_mem[ len ] = '\0';
+
+    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( buf_in_scorep_mem );
+    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( buf_in_scorep_mem,
                                                                     SCOREP_Platform_GetTreeNodeHandle( mnt_info ) );
 
     SCOREP_Platform_AddMountInfoProperties( file_handle, mnt_info );
 
     SCOREP_Hashtab_InsertHandle( io_file_handle_hashtable,
-                                 ( void* )resolved_filename,
+                                 ( void* )buf_in_scorep_mem,
                                  file_handle,
                                  &hash_hint );
 
@@ -752,7 +766,7 @@ static void
 io_mgmt_subsystem_finalize( void )
 {
     SCOREP_Hashtab_FreeAll( io_file_handle_hashtable,
-                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteNone,
                             &SCOREP_Hashtab_DeleteNone );
     SCOREP_MutexDestroy( &io_file_handle_hashtable_mutex );
 
