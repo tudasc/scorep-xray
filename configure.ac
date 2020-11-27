@@ -207,26 +207,26 @@ AS_IF([test "x${scorep_have_cubew_config}" = "xyes"],
     [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-cubew"])],
     [test -x ${srcdir}/vendor/cubew/configure],
     [AX_CONFIG_SUBDIR([vendor/cubew], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubew])],
-    [AC_MSG_ERROR([No CubeW component available. Either provide the internal package at 'vendor/cubew' or an external installation with '--with-cubew'.])])
+    [AC_MSG_ERROR([No CubeW component available. Either provide the internal package at '${srcdir}/vendor/cubew' or an external installation with '--with-cubew'.])])
 
 AS_IF([test "x${scorep_have_cubelib_config}" = "xyes"],
     [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-cubelib"])],
     [test -x ${srcdir}/vendor/cubelib/configure],
     [AX_CONFIG_SUBDIR([vendor/cubelib], [${user_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cubelib])],
-    [AC_MSG_ERROR([No CubeLib component available. Either provide the internal package at 'vendor/cubelib' or an external installation with '--with-cubelib'.])])
+    [AC_MSG_ERROR([No CubeLib component available. Either provide the internal package at '${srcdir}/vendor/cubelib' or an external installation with '--with-cubelib'.])])
 
 AS_IF([test "x${scorep_have_opari2_config}" = "xyes"],
     [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-opari2"])],
     [test -x ${srcdir}/vendor/opari2/configure],
     [AX_CONFIG_SUBDIR([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])],
-    [AC_MSG_ERROR([No OPARI2 component available. Either provide the internal package at 'vendor/opari2' or an external installation with '--with-opari2'.])])
+    [AC_MSG_ERROR([No OPARI2 component available. Either provide the internal package at '${srcdir}/vendor/opari2' or an external installation with '--with-opari2'.])])
 
 
 AS_IF([test "x${scorep_have_otf2_config}" = "xyes"],
     [AS_VAR_APPEND([PROHIBIT_MAKE_DIST], [" --without-otf2"])],
     [test -x ${srcdir}/vendor/otf2/configure],
     [AX_CONFIG_SUBDIR([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])],
-    [AC_MSG_ERROR([No OTF2 component available. Either provide the internal package at 'vendor/otf2' or an external installation with '--with-otf2'.])])
+    [AC_MSG_ERROR([No OTF2 component available. Either provide the internal package at '${srcdir}/vendor/otf2' or an external installation with '--with-otf2'.])])
 
 # handle own package's subdir configures
 
