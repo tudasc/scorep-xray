@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019-2020,
+ * Copyright (c) 2009-2016, 2019-2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,7 +37,7 @@
 #include <scorep_thread_model_specific.h>
 
 #include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
 #include <scorep_location_management.h>
 #include <scorep_subsystem_management.h>
 
@@ -59,7 +59,6 @@
 /* *INDENT-ON*  */
 
 
-
 typedef struct scorep_thread_private_data scorep_thread_private_data;
 struct scorep_thread_private_data
 {
@@ -77,11 +76,8 @@ struct scorep_thread_private_data
 
 static uint32_t sequence_count = 0;
 
-static SCOREP_Mutex sequence_count_lock;
-
 
 static scorep_thread_private_data* initial_tpd;
-
 
 
 void
@@ -136,10 +132,8 @@ uint32_t
 scorep_thread_get_next_sequence_count( void )
 {
     UTILS_DEBUG_ENTRY();
-    SCOREP_MutexLock( &sequence_count_lock );
-    uint32_t tmp = sequence_count++;
-    SCOREP_MutexUnlock( &sequence_count_lock );
-    return tmp;
+    return SCOREP_Atomic_FetchAdd_uint32( &sequence_count, 1,
+                                          SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 
