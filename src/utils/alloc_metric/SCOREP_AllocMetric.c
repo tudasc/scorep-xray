@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2018, 2020,
+ * Copyright (c) 2016-2018, 2020-2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -34,6 +34,7 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Events.h>
@@ -315,8 +316,7 @@ delete_memory_allocation( SCOREP_AllocMetric* allocMetric,
 }
 
 /* Keep track of the allocated memory per process, not only per SCOREP_AllocMetric */
-static size_t       process_allocated_memory;
-static SCOREP_Mutex process_allocated_memory_mutex;
+static uint64_t process_allocated_memory;
 
 SCOREP_ErrorCode
 SCOREP_AllocMetric_New( const char*          name,
@@ -399,10 +399,8 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
 
     UTILS_DEBUG_ENTRY( "%p , %zu", ( void* )resultAddr, size );
 
-    SCOREP_MutexLock( &process_allocated_memory_mutex );
-    process_allocated_memory += size;
-    uint64_t process_allocated_memory_save = process_allocated_memory;
-    SCOREP_MutexUnlock( &process_allocated_memory_mutex );
+    uint64_t process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
+        &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     allocMetric->total_allocated_memory += size;
     allocation_item* allocation =
@@ -458,10 +456,9 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
          * the new size to the handle. */
         if ( allocation->address == resultAddr )
         {
-            SCOREP_MutexLock( &process_allocated_memory_mutex );
-            process_allocated_memory     += ( size - allocation->size );
-            process_allocated_memory_save = process_allocated_memory;
-            SCOREP_MutexUnlock( &process_allocated_memory_mutex );
+            process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
+                &process_allocated_memory, size - allocation->size,
+                SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
             allocMetric->total_allocated_memory += ( size - allocation->size );
             total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -480,11 +477,11 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
          * about freed_mem. */
         else
         {
-            SCOREP_MutexLock( &process_allocated_memory_mutex );
-            process_allocated_memory     += size;
-            process_allocated_memory_save = process_allocated_memory;
-            process_allocated_memory     -= allocation->size;
-            SCOREP_MutexUnlock( &process_allocated_memory_mutex );
+            process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
+                &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            SCOREP_Atomic_SubFetch_uint64( &process_allocated_memory,
+                                           allocation->size,
+                                           SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
             allocMetric->total_allocated_memory += size;
             total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -509,10 +506,8 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
             *prevSize = 0;
         }
 
-        SCOREP_MutexLock( &process_allocated_memory_mutex );
-        process_allocated_memory     += size;
-        process_allocated_memory_save = process_allocated_memory;
-        SCOREP_MutexUnlock( &process_allocated_memory_mutex );
+        process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
+            &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         allocMetric->total_allocated_memory += size;
         total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -566,10 +561,9 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
     uint64_t allocation_addr   = allocation->address;
     uint64_t deallocation_size = allocation->size;
 
-    SCOREP_MutexLock( &process_allocated_memory_mutex );
-    process_allocated_memory -= deallocation_size;
-    uint64_t process_allocated_memory_save = process_allocated_memory;
-    SCOREP_MutexUnlock( &process_allocated_memory_mutex );
+    uint64_t process_allocated_memory_save = SCOREP_Atomic_SubFetch_uint64(
+        &process_allocated_memory, deallocation_size,
+        SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     allocMetric->total_allocated_memory -= deallocation_size;
 
