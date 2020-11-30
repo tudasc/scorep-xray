@@ -2444,7 +2444,7 @@
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
         <url>@mirror@scorep_metrics.html#bytes_sent</url>
-        <descr>Number of bytes sent in point-to-point communication operations</descr>
+        <descr>Number of bytes sent in point-to-point and collective communication operations</descr>
     </metric>
     <metric viztype="GHOST">
         <disp_name>Bytes received</disp_name>
@@ -2452,6 +2452,6 @@
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
         <url>@mirror@scorep_metrics.html#bytes_rcvd</url>
-        <descr>Number of bytes received in point-to-point communication operations</descr>
+        <descr>Number of bytes received in point-to-point and collective communication operations</descr>
     </metric>
 </metrics>
