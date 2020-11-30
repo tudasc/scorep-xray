@@ -33,6 +33,14 @@ Expand the call tree to identify important callpaths and routines where
 most time is spent, and examine the times for each process or thread to
 locate load imbalance.
 </dd>
+<dt><b>Parent metric:</b></dt>
+<dd>None</dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#execution">Execution Time</a><br/>
+    <a href="#overhead">Overhead Time</a><br/>
+    <a href="#omp_idle_threads">OpenMP Idle Threads Time</a>
+</dd>
 </dl>
 
 <hr width="75%" align="center">
@@ -73,6 +81,2241 @@ thereby remove all measurement impact.  In both cases, uninstrumented
 and filtered routines will not appear in the measurement and analysis,
 much as if they had been "in-lined" into their calling routine.
 </dd>
+<dt><b>Parent metric:</b></dt>
+<dd>None</dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="execution"><h3>Execution Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on program execution but without the idle times of worker
+threads during OpenMP sequential execution and time spent on tasks
+related to trace generation.  Includes time blocked in system calls
+(e.g., waiting for I/O to complete) and processor stalls (e.g.,
+memory accesses).
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+A low fraction of execution time indicates a suboptimal measurement
+configuration leading to trace buffer flushes (see <a href="#overhead">Overhead Time</a>) or
+inefficient usage of the available hardware resources (see
+<a href="#omp_idle_threads">OpenMP Idle Threads Time</a>).
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#time">Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#comp">Computation Time</a><br/>
+    <a href="#mpi">MPI Time</a><br/>
+    <a href="#omp_time">OpenMP Time</a><br/>
+    <a href="#pthread_time">POSIX Threads Time</a><br/>
+    <a href="#openacc_time">OpenACC Time</a><br/>
+    <a href="#opencl_time">OpenCL Time</a><br/>
+    <a href="#cuda_time">CUDA Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="overhead"><h3>Overhead Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent performing major tasks related to measurement, such as
+creation of the experiment archive directory, clock synchronization, or
+dumping trace buffer contents to a file.  Note that normal per-event
+overheads &ndash; such as event acquisition, reading timers and
+hardware counters, runtime call-path summarization, and storage in trace
+buffers &ndash; is <em>not</em> included.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Significant measurement overheads are typically incurred when
+measurement is initialized (e.g., in the program <tt>main</tt> routine
+or <tt>MPI_Init</tt>) and finalized (e.g., in <tt>MPI_Finalize</tt>),
+and are generally unavoidable.  While they extend the total (wallclock)
+time for measurement, when they occur before parallel execution starts
+or after it completes, the quality of measurement of the parallel
+execution is not degraded.  Trace file writing overhead time can be
+kept to a minimum by specifying an efficient parallel filesystem (when
+provided) for the experiment archive (e.g.,
+<tt>SCOREP_EXPERIMENT_DIRECTORY=/work/mydir</tt>).
+</dd><p><dd>
+When measurement overhead is reported for other call paths, especially
+during parallel execution, measurement perturbation is considerable and
+interpretation of the resulting analysis much more difficult.  A common
+cause of measurement overhead during parallel execution is the flushing
+of full trace buffers to disk: warnings issued by the measurement
+system indicate when this occurs.  When flushing occurs simultaneously
+for all processes and threads, the associated perturbation is
+localized in time.  More usually, buffer filling and flushing occurs
+independently at different times on each process/thread and the
+resulting perturbation is extremely disruptive, often forming a
+catastrophic chain reaction.  It is highly advisable to avoid
+intermediate trace buffer flushes by appropriate instrumentation and
+measurement configuration, such as specifying a <em>filter</em> file
+listing purely computational routines (classified as type USR by
+<em>scorep-score&nbsp;-r</em>&nbsp;) or an adequate trace buffer size
+(<tt>SCOREP_TOTAL_MEMORY</tt> larger than max_buf reported by
+<em>scorep-score</em>).  If the maximum trace buffer capacity requirement
+remains too large for a full-size measurement, it may be necessary to
+configure the subject application with a smaller problem size or to
+perform fewer iterations/timesteps to shorten the measurement (and
+thereby reduce the size of the trace).
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#time">Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="comp"><h3>Computation Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in computational parts of the application, excluding
+communication and synchronization overheads of parallelization
+libaries/language extensions such as MPI, OpenMP, or POSIX threads.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the call tree to determine important callpaths and routines
+where most computation time is spent, and examine the time for
+each process or thread on those callpaths looking for significant
+variations which might indicate the origin of load imbalance.
+</dd><p><dd>
+Where computation time on each process/thread is unexpectedly
+slow, profiling with PAPI preset or platform-specific hardware counters
+may help to understand the origin.  Serial program profiling tools
+(e.g., gprof) may also be helpful.  Generally, compiler optimization
+flags and optimized libraries should be investigated to improve serial
+performance, and where necessary alternative algorithms employed.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#opencl_kernel_executions">OpenCL Kernel Time</a><br/>
+    <a href="#cuda_kernel_executions">CUDA Kernel Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi"><h3>MPI Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in (instrumented) MPI calls.  Note that depending on the
+setting of the <tt>SCOREP_MPI_ENABLE_GROUPS</tt> environment variable,
+certain classes of MPI calls may have been excluded from measurement and
+therefore do not show up in the analysis report.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to determine which classes of MPI operation
+contribute the most time.  Typically the remaining (exclusive) MPI Time,
+corresponding to instrumented MPI routines that are not in one of the
+child classes, will be negligible.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_management">MPI Management Time</a><br/>
+    <a href="#mpi_synchronization">MPI Synchronization Time</a><br/>
+    <a href="#mpi_communication">MPI Communication Time</a><br/>
+    <a href="#mpi_io">MPI File I/O Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_management"><h3>MPI Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI calls related to management operations, such as MPI
+initialization and finalization, opening/closing of files used for MPI
+file I/O, or creation/deletion of various handles (e.g., communicators
+or RMA windows).
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to determine which classes of MPI management
+operation contribute the most time.  While some management costs are
+unavoidable, others can be decreased by improving load balance or reusing
+existing handles rather than repeatedly creating and deleting them.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi">MPI Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_init_exit">MPI Init/Finalize Time</a><br/>
+    <a href="#mpi_mgmt_comm">MPI Communicator Management Time</a><br/>
+    <a href="#mpi_mgmt_file">MPI File Management Time</a><br/>
+    <a href="#mpi_mgmt_win">MPI Window Management Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_init_exit"><h3>MPI Init/Finalize Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI initialization and finalization calls, i.e.,
+<tt>MPI_Init</tt> or <tt>MPI_Init_thread</tt> and
+<tt>MPI_Finalize</tt>.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+These are unavoidable one-off costs for MPI parallel programs, which
+can be expected to increase for larger numbers of processes.  Some
+applications may not use all of the processes provided (or not use some
+of them for the entire execution), such that unused and wasted
+processes wait in <tt>MPI_Finalize</tt> for the others to finish.  If
+the proportion of time in these calls is significant, it is probably
+more effective to use a smaller number of processes (or a larger amount
+of computation).
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_management">MPI Management Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_mgmt_comm"><h3>MPI Communicator Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI Communicator management routines such as creating and
+freeing communicators, Cartesian and graph topologies, and getting or
+setting communicator attributes.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+There can be significant time in collective operations such as
+<tt>MPI_Comm_create</tt>, <tt>MPI_Comm_free</tt> and
+<tt>MPI_Cart_create</tt> that are considered neither explicit
+synchronization nor communication, but result in implicit barrier
+synchronization of participating processes.  Avoidable waiting time
+for these operations will be reduced if all processes execute them
+simultaneously.  If these are repeated operations, e.g., in a loop,
+it is worth investigating whether their frequency can be reduced by
+re-use.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_management">MPI Management Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_mgmt_file"><h3>MPI File Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI file management routines such as opening, closing,
+deleting, or resizing files, seeking, syncing, and setting or retrieving
+file parameters or the process's view of the data in the file.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Collective file management calls (see <a href="#mpi_file_cops">MPI Collective File Operations</a>) may suffer from
+wait states due to load imbalance.  Examine the times spent in collective
+management routines for each process and try to distribute the preceding
+computation from processes with the shortest times to those with the
+longest times.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_management">MPI Management Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_mgmt_win"><h3>MPI Window Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI window management routines such as creating and freeing
+memory windows and getting or setting window attributes.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_management">MPI Management Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_synchronization"><h3>MPI Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI explicit synchronization calls, such as barriers and
+remote memory access window synchronization.  Time in point-to-point
+message transfers with no payload data used for coordination is currently
+part of <a href="#mpi_point2point">MPI Point-to-point Communication Time</a>.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree further to determine the proportion of time in
+different classes of MPI synchronization operations.  Expand the
+calltree to identify which callpaths are responsible for the most
+synchronization time.  Also examine the distribution of synchronization
+time on each participating process for indication of load imbalance in
+preceding code.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi">MPI Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_sync_collective">MPI Collective Synchronization Time</a><br/>
+    <a href="#mpi_rma_synchronization">MPI One-sided Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_sync_collective"><h3>MPI Collective Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Total time spent in MPI barriers.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+When the time for MPI explicit barrier synchronization is significant,
+expand the call tree to determine which <tt>MPI_Barrier</tt> calls are
+responsible, and compare with their <a href="#visits">Visits</a> count to see how
+frequently they were executed.  Barrier synchronizations which are not
+necessary for correctness should be removed.  It may also be appropriate
+to use a communicator containing fewer processes, or a number of
+point-to-point messages for coordination instead.  Also examine the
+distribution of time on each participating process for indication of
+load imbalance in preceding code.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_synchronization">MPI Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_communication"><h3>MPI Communication Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI communication calls, including point-to-point,
+collective, and one-sided communication.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree further to determine the proportion of time in
+different classes of MPI communication operations.  Expand the calltree
+to identify which callpaths are responsible for the most communication
+time.  Also examine the distribution of communication time on each
+participating process for indication of communication imbalance or load
+imbalance in preceding code.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi">MPI Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_point2point">MPI Point-to-point Communication Time</a><br/>
+    <a href="#mpi_collective">MPI Collective Communication Time</a><br/>
+    <a href="#mpi_rma_communication">MPI One-sided Communication Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_point2point"><h3>MPI Point-to-point Communication Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Total time spent in MPI point-to-point communication calls.  Note that
+this is only the respective times for the sending and receiving calls,
+and <em>not</em> message transmission time.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Investigate whether communication time is commensurate with the number
+of <a href="#bytes">MPI Bytes Transferred</a>.  Consider replacing blocking
+communication with non-blocking communication that can potentially be
+overlapped with computation, or using persistent communication to
+amortize message setup costs for common transfers.  Also consider the
+mapping of processes onto compute resources, especially if there are
+notable differences in communication time for particular processes,
+which might indicate longer/slower transmission routes or network
+congestion.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_communication">MPI Communication Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_collective"><h3>MPI Collective Communication Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Total time spent in MPI collective communication calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+As the number of participating MPI processes
+increase (i.e., ranks in <tt>MPI_COMM_WORLD</tt> or a subcommunicator),
+time in collective communication can be expected to increase
+correspondingly.  Part of the increase will be due to additional data
+transmission requirements, which are generally similar for all
+participants.  A significant part is typically time some (often many)
+processes are blocked waiting for the last of the required participants
+to reach the collective operation.  This may be indicated by significant
+variation in collective communication time across processes, but is
+most conclusively quantified from the child metrics determinable via
+automatic trace pattern analysis.
+</dd><p><dd>
+Since basic transmission cost per byte for collectives can be relatively high,
+combining several collective operations of the same type each with small amounts of data
+(e.g., a single value per rank) into fewer operations with larger payloads
+using either a vector/array of values or aggregate datatype may be beneficial.
+(Overdoing this and aggregating very large message payloads is counter-productive
+due to explicit and implicit memory requirements, and MPI protocol switches
+for messages larger than an eager transmission threshold.)
+</dd><p><dd>
+MPI implementations generally provide optimized collective communication operations,
+however, in rare cases, it may be appropriate to replace a collective
+communication operation provided by the MPI implementation with a
+customized implementation of your own using point-to-point operations.
+For example, certain MPI implementations of <tt>MPI_Scan</tt> include
+unnecessary synchronization of all participating processes, or
+asynchronous variants of collective operations may be preferable to
+fully synchronous ones where they permit overlapping of computation.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_communication">MPI Communication Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_io"><h3>MPI File I/O Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI file I/O calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree further to determine the proportion of time in
+different classes of MPI file I/O operations.  Expand the calltree to
+identify which callpaths are responsible for the most file I/O time.
+Also examine the distribution of MPI file I/O time on each process for
+indication of load imbalance.  Use a parallel filesystem (such as
+<tt>/work</tt>) when possible, and check that appropriate hints values
+have been associated with the <tt>MPI_Info</tt> object of MPI files.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi">MPI Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_io_individual">MPI Individual File I/O Time</a><br/>
+    <a href="#mpi_io_collective">MPI Collective File I/O Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_io_individual"><h3>MPI Individual File I/O Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in individual MPI file I/O calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to identify which callpaths are responsible for the
+most individual file I/O time.  When multiple processes read and write
+to files, MPI collective file reads and writes can be more efficient.
+Examine the number of <a href="#mpi_file_irops">MPI Individual File Read Operations</a> and <a href="#mpi_file_iwops">MPI Individual File Write Operations</a> to
+locate potential opportunities for collective I/O.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_io">MPI File I/O Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_io_collective"><h3>MPI Collective File I/O Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in collective MPI file I/O calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to identify which callpaths are responsible for the
+most collective file I/O time.  Examine the distribution of times on
+each participating process for indication of imbalance in the operation
+itself or in preceding code.  Examine the number of <a href="#mpi_file_crops">MPI Collective File Read Operations</a>
+and <a href="#mpi_file_cwops">MPI Collective File Write Operations</a> done by each process as a possible origin of
+imbalance.  Where asychrony or imbalance prevents effective use of
+collective file I/O, individual (i.e., non-collective) file I/O may be
+preferable.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_io">MPI File I/O Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_idle_threads"><h3>OpenMP Idle Threads Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Idle time on CPUs that may be reserved for teams of threads when the
+process is executing sequentially before and after OpenMP parallel
+regions, or with less than the full team within OpenMP parallel
+regions.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="OMPIdle.png" alt="OMP Idle Threads Example">
+</div>
+<br>
+
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+On shared compute resources, unused threads may simply sleep and allow
+the resources to be used by other applications, however, on dedicated
+compute resources (or where unused threads busy-wait and thereby occupy
+the resources) their idle time is charged to the application.
+According to Amdahl's Law, the fraction of inherently serial execution
+time limits the effectiveness of employing additional threads to reduce
+the execution time of parallel regions.  Where the Idle Threads Time is
+significant, total <a href="#time">Time</a> (and wall-clock execution time) may be
+reduced by effective parallelization of sections of code which execute
+serially.  Alternatively, the proportion of wasted Idle Threads Time
+will be reduced by running with fewer threads, albeit resulting in a
+longer wall-clock execution time but more effective usage of the
+allocated compute resources.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#time">Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#omp_limited_parallelism">OpenMP Limited Parallelism Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_limited_parallelism"><h3>OpenMP Limited Parallelism Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Idle time on CPUs that may be reserved for threads within OpenMP
+parallel regions where not all of the thread team participates.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="OMPLimitedParallelism.png" alt="OMP Limited parallelism Example">
+</div>
+<br>
+
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Code sections marked as OpenMP parallel regions which are executed
+serially (i.e., only by the master thread) or by less than the full
+team of threads, can result in allocated but unused compute resources
+being wasted.  Typically this arises from insufficient work being
+available within the marked parallel region to productively employ all
+threads.  This may be because the loop contains too few iterations or
+the OpenMP runtime has determined that additional threads would not be
+productive.  Alternatively, the OpenMP <tt>omp_set_num_threads</tt> API
+or <tt>num_threads</tt> or <tt>if</tt> clauses may have been explicitly
+specified, e.g., to reduce parallel execution overheads such as
+<a href="#omp_synchronization">OpenMP Synchronization Time</a>.  If the proportion of
+OpenMP Limited Parallelism Time is significant, it may be more
+efficient to run with fewer threads for that problem size.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_idle_threads">OpenMP Idle Threads Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_time"><h3>OpenMP Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in OpenMP API calls and code generated by the OpenMP compiler.
+In particular, this includes thread team management and synchronization
+activities.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to determine which classes of OpenMP activities
+contribute the most time.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#omp_synchronization">OpenMP Synchronization Time</a><br/>
+    <a href="#omp_flush">OpenMP Flush Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_synchronization"><h3>OpenMP Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in OpenMP synchronization, whether barriers or mutual exclusion
+via ordered sequentialization, critical sections, atomics or lock API calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_time">OpenMP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#omp_barrier">OpenMP Barrier Synchronization Time</a><br/>
+    <a href="#omp_critical">OpenMP Critical Synchronization Time</a><br/>
+    <a href="#omp_lock_api">OpenMP Lock API Synchronization Time</a><br/>
+    <a href="#omp_ordered">OpenMP Ordered Synchronization Time</a><br/>
+    <a href="#omp_taskwait">OpenMP Taskwait Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_barrier"><h3>OpenMP Barrier Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in implicit (compiler-generated) or explicit (user-specified)
+OpenMP barrier synchronization.  Note that during measurement implicit
+barriers are treated similar to explicit ones.  The instrumentation
+procedure replaces an implicit barrier with an explicit barrier enclosed
+by the parallel construct.  This is done by adding a <tt>nowait</tt>
+clause and a barrier directive as the last statement of the parallel
+construct.  In cases where the implicit barrier cannot be removed (i.e.,
+parallel region), the explicit barrier is executed in front of the
+implicit barrier, which will then be negligible because the thread team
+will already be synchronized when reaching it.  The synthetic explicit
+barrier appears as a special implicit barrier construct.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_synchronization">OpenMP Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#omp_ebarrier">OpenMP Explicit Barrier Synchronization Time</a><br/>
+    <a href="#omp_ibarrier">OpenMP Implicit Barrier Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_ebarrier"><h3>OpenMP Explicit Barrier Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in explicit (i.e., user-specified) OpenMP <tt>barrier</tt>
+synchronization, both waiting for other threads
+and inherent barrier processing overhead.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly barrier synchronizations and determine whether
+they are necessary to ensure correctness or could be safely removed
+(based on algorithm analysis).  Consider replacing an explicit barrier
+with a potentially more efficient construct, such as a critical section
+or atomic, or use explicit locks.  Examine the time that each thread
+spends waiting at each explicit barrier, and try to re-distribute
+preceding work to improve load balance.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_barrier">OpenMP Barrier Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_ibarrier"><h3>OpenMP Implicit Barrier Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in implicit (i.e., compiler-generated) OpenMP barrier
+synchronization, both waiting for other threads
+and inherent barrier processing overhead.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the time that each thread spends waiting at each implicit
+barrier, and if there is a significant imbalance then investigate
+whether a <tt>schedule</tt> clause is appropriate. Consider whether
+it is possible to employ the <tt>nowait</tt> clause to reduce the
+number of implicit barrier synchronizations.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_barrier">OpenMP Barrier Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_critical"><h3>OpenMP Critical Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent waiting to enter OpenMP critical sections and in atomics,
+where mutual exclusion restricts access to a single thread at a time.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly critical sections and atomics and determine
+whether they are necessary to ensure correctness or could be safely
+removed (based on algorithm analysis).
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_synchronization">OpenMP Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_lock_api"><h3>OpenMP Lock API Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in OpenMP lock API calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly usage of locks and determine whether they are
+necessary to ensure correctness or could be safely removed (based on
+algorithm analysis).  Consider re-writing the algorithm to use lock-free
+data structures.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_synchronization">OpenMP Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_ordered"><h3>OpenMP Ordered Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent waiting to enter OpenMP <tt>ordered</tt> regions due to enforced
+sequentialization of loop iteration execution order in the region.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly <tt>ordered</tt> regions and determine
+whether they are necessary to ensure correctness or could be safely
+removed (based on algorithm analysis).
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_synchronization">OpenMP Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_taskwait"><h3>OpenMP Taskwait Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in OpenMP <tt>taskwait</tt> directives, waiting for child tasks
+to finish.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_synchronization">OpenMP Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="omp_flush"><h3>OpenMP Flush Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in OpenMP <tt>flush</tt> directives.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#omp_time">OpenMP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="pthread_time"><h3>POSIX Threads Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in instrumented POSIX threads API calls.  In particular, this
+includes thread management and synchronization activities.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to determine which classes of POSIX thread
+activities contribute the most time.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#pthread_management">POSIX Threads Management Time</a><br/>
+    <a href="#pthread_synchronization">POSIX Threads Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="pthread_management"><h3>POSIX Threads Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent managing (i.e., creating, joining, cancelling, etc.) POSIX
+threads.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Excessive POSIX threads management time in <tt>pthread_join</tt>
+indicates load imbalance which causes wait states in the joining
+threads waiting for the other thread to finish.  Examine the join
+times and try to re-distribute the computation in the corresponding
+worker threads to achieve a better load balance.
+</dd><p><dd>
+Also, correlate the thread management time to the <a href="#visits">Visits</a> of
+management routines.  If visit counts are high, consider using a
+thread pool to reduce the number of thread management operations.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#pthread_time">POSIX Threads Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="pthread_synchronization"><h3>POSIX Threads Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in POSIX threads synchronization calls, i.e., mutex and
+condition variable operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree further to determine the proportion of time in
+different classes of POSIX thread synchronization operations.  Expand the
+calltree to identify which callpaths are responsible for the most
+synchronization time.  Also examine the distribution of synchronization
+time on each participating thread for indication of lock contention
+effects.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#pthread_time">POSIX Threads Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#pthread_lock_api">POSIX Threads Mutex API Synchronization Time</a><br/>
+    <a href="#pthread_conditional">POSIX Threads Condition API Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="pthread_lock_api"><h3>POSIX Threads Mutex API Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in POSIX threads mutex API calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly usage of mutex operations and determine whether
+they are necessary to ensure correctness or could be safely removed
+(based on algorithm analysis).  Consider re-writing the algorithm to
+use lock-free data structures.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#pthread_synchronization">POSIX Threads Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="pthread_conditional"><h3>POSIX Threads Condition API Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in POSIX threads condition API calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Locate the most costly usage of condition operations and determine whether
+they are necessary to ensure correctness or could be safely removed (based
+on algorithm analysis).  Consider re-writing the algorithm to use data
+structures without the need for condition variables.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#pthread_synchronization">POSIX Threads Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="openacc_time"><h3>OpenACC Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in the OpenACC run-time system, API calls and on device.
+If the OpenACC implementation is based on CUDA, and OpenACC and CUDA
+support are both enabled during measurement, the CUDA activities from
+within OpenACC will be accounted separately (just like CUDA calls
+within MPI and other metric hierarchies).
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#openacc_setup">OpenACC Initialization/Finalization Time</a><br/>
+    <a href="#openacc_comm">OpenACC Memory Management Time</a><br/>
+    <a href="#openacc_sync">OpenACC Synchronization Time</a><br/>
+    <a href="#openacc_kernel_launches">OpenACC Kernel Launch Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="openacc_setup"><h3>OpenACC Initialization/Finalization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed to initialize and finalize OpenACC and OpenACC kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#openacc_time">OpenACC Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="openacc_comm"><h3>OpenACC Memory Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on memory management including data transfer from host to
+device and vice versa.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#openacc_time">OpenACC Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="openacc_sync"><h3>OpenACC Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on OpenACC synchronization.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#openacc_time">OpenACC Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="openacc_kernel_launches"><h3>OpenACC Kernel Launch Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent to launch OpenACC kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#openacc_time">OpenACC Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_kernel_executions"><h3>OpenCL Kernel Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent executing OpenCL kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#comp">Computation Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_time"><h3>OpenCL Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in the OpenCL run-time system, API and on device.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#opencl_setup">OpenCL General Management Time</a><br/>
+    <a href="#opencl_comm">OpenCL Memory Management Time</a><br/>
+    <a href="#opencl_sync">OpenCL Synchronization Time</a><br/>
+    <a href="#opencl_kernel_launches">OpenCL Kernel Launch Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_setup"><h3>OpenCL General Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed for general OpenCL setup, e.g. initialization, device and
+event control, etc.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#opencl_time">OpenCL Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_comm"><h3>OpenCL Memory Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on memory management including data transfer from host to
+device and vice versa.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#opencl_time">OpenCL Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_sync"><h3>OpenCL Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on OpenCL synchronization.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#opencl_time">OpenCL Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="opencl_kernel_launches"><h3>OpenCL Kernel Launch Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent to launch OpenCL kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#opencl_time">OpenCL Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_kernel_executions"><h3>CUDA Kernel Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent executing CUDA kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#comp">Computation Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_time"><h3>CUDA Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in the CUDA run-time system, API calls and on device.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#cuda_setup">CUDA General Management Time</a><br/>
+    <a href="#cuda_comm">CUDA Memory Management Time</a><br/>
+    <a href="#cuda_sync">CUDA Synchronization Time</a><br/>
+    <a href="#cuda_kernel_launches">CUDA Kernel Launch Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_setup"><h3>CUDA General Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed for general CUDA setup, e.g. initialization, control of
+version, device, primary context, context, streams, events, occupancy,
+etc.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#cuda_time">CUDA Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_comm"><h3>CUDA Memory Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on memory management including data transfer from host to
+device and vice versa. Note that "memset" operations are considered
+in <a href="#cuda_kernel_launches">CUDA Kernel Launch Time</a>.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#cuda_time">CUDA Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_sync"><h3>CUDA Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on CUDA synchronization.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#cuda_time">CUDA Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="cuda_kernel_launches"><h3>CUDA Kernel Launch Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent to launch CUDA kernels, including "memset" operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#cuda_time">CUDA Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes"><h3>MPI Bytes Transferred</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The total number of bytes that were notionally processed in MPI
+communication and synchronization operations (i.e., the sum of the bytes
+that were sent and received).  Note that the actual number of bytes
+transferred is typically not determinable, as this is dependant on the MPI
+internal implementation, including message transfer and failed delivery
+recovery protocols.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to break down the bytes transferred into
+constituent classes.  Expand the call tree to identify where most data
+is transferred and examine the distribution of data transferred by each
+process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd>None</dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#bytes_p2p">MPI Point-to-point Bytes Transferred</a><br/>
+    <a href="#bytes_coll">MPI Collective Bytes Transferred</a><br/>
+    <a href="#bytes_rma">MPI One-Sided Bytes Transferred</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_p2p"><h3>MPI Point-to-point Bytes Transferred</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The total number of bytes that were notionally processed by
+MPI point-to-point communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to identify where the most data is transferred
+using point-to-point communication and examine the distribution of data
+transferred by each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes">MPI Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#bytes_sent_p2p">MPI Point-to-point Bytes Sent</a><br/>
+    <a href="#bytes_received_p2p">MPI Point-to-point Bytes Received</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_sent_p2p"><h3>MPI Point-to-point Bytes Sent</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally sent using MPI
+point-to-point communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is sent using
+point-to-point communication operations and examine the distribution of
+data sent by each process.
+</dd><p><dd>
+If the <em>aggregate</em> <a href="#bytes_received_p2p">MPI Point-to-point Bytes Received</a> is less than the amount
+sent, some messages were cancelled, received into buffers which were
+too small, or simply not received at all.  (Generally only aggregate
+values can be compared, since sends and receives take place on
+different callpaths and on different processes.)  Sending more data than
+is received wastes network bandwidth.  Applications do not conform to
+the MPI standard when they do not receive all messages that are sent,
+and the unreceived messages degrade performance by consuming network
+bandwidth and/or occupying message buffers.  Cancelling send operations
+is typically expensive, since it usually generates one or more internal
+messages.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_p2p">MPI Point-to-point Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_received_p2p"><h3>MPI Point-to-point Bytes Received</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally received using MPI
+point-to-point communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is received using
+point-to-point communication and examine the distribution of data
+received by each process.
+</dd><p><dd>
+If the <em>aggregate</em> <a href="#bytes_sent_p2p">MPI Point-to-point Bytes Sent</a> is greater than the amount
+received, some messages were cancelled, received into buffers which
+were too small, or simply not received at all.  (Generally only
+aggregate values can be compared, since sends and receives take place
+on different callpaths and on different processes.)  Applications do
+not conform to the MPI standard when they do not receive all messages
+that are sent, and the unreceived messages degrade performance by
+consuming network bandwidth and/or occupying message buffers.
+Cancelling receive operations may be necessary where speculative
+asynchronous receives are employed, however, managing the associated
+requests also involves some overhead.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_p2p">MPI Point-to-point Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_coll"><h3>MPI Collective Bytes Transferred</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The total number of bytes that were notionally processed in
+MPI collective communication operations.  This assumes that collective
+communications are implemented naively using point-to-point
+communications, e.g., a broadcast being implemented as sends to each
+member of the communicator (including the root itself).  Note that
+effective MPI implementations use optimized algorithms and/or special
+hardware, such that the actual number of bytes transferred may be very
+different.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+collective communication and examine the distribution of data
+transferred by each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes">MPI Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#bytes_sent_coll">MPI Collective Bytes Outgoing</a><br/>
+    <a href="#bytes_received_coll">MPI Collective Bytes Incoming</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_sent_coll"><h3>MPI Collective Bytes Outgoing</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally sent by MPI collective
+communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+collective communication and examine the distribution of data outgoing
+from each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_coll">MPI Collective Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_received_coll"><h3>MPI Collective Bytes Incoming</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally received by MPI collective
+communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+collective communication and examine the distribution of data incoming
+to each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_coll">MPI Collective Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_rma"><h3>MPI One-Sided Bytes Transferred</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally processed in MPI one-sided
+communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+one-sided communication and examine the distribution of data transferred
+by each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes">MPI Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#bytes_put">MPI One-sided Bytes Sent</a><br/>
+    <a href="#bytes_get">MPI One-sided Bytes Received</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_put"><h3>MPI One-sided Bytes Sent</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally sent in MPI one-sided
+communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+one-sided communication and examine the distribution of data sent by
+each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_rma">MPI One-Sided Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="bytes_get"><h3>MPI One-sided Bytes Received</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+The number of bytes that were notionally received in MPI one-sided
+communication operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Bytes</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the calltree to see where the most data is transferred using
+one-sided communication and examine the distribution of data received by
+each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#bytes_rma">MPI One-Sided Bytes Transferred</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_ops"><h3>MPI File Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of MPI file operations of any type.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Expand the metric tree to see the breakdown of different classes of MPI
+file operation, expand the calltree to see where they occur, and look
+at the distribution of operations done by each process.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd>None</dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_file_iops">MPI Individual File Operations</a><br/>
+    <a href="#mpi_file_cops">MPI Collective File Operations</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_iops"><h3>MPI Individual File Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of individual MPI file operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the distribution of individual MPI file operations done by each
+process and compare with the corresponding <a href="#mpi_mgmt_file">MPI File Management Time</a> and
+<a href="#mpi_io_individual">MPI Individual File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_ops">MPI File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_file_irops">MPI Individual File Read Operations</a><br/>
+    <a href="#mpi_file_iwops">MPI Individual File Write Operations</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_irops"><h3>MPI Individual File Read Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of individual MPI file read operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the callpaths where individual MPI file reads occur and the
+distribution of operations done by each process in them, and compare
+with the corresponding <a href="#mpi_io_individual">MPI Individual File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_iops">MPI Individual File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_iwops"><h3>MPI Individual File Write Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of individual MPI file write operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the callpaths where individual MPI file writes occur and the
+distribution of operations done by each process in them, and compare
+with the corresponding <a href="#mpi_io_individual">MPI Individual File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_iops">MPI Individual File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_cops"><h3>MPI Collective File Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of collective MPI file operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the distribution of collective MPI file operations done by each
+process and compare with the corresponding <a href="#mpi_mgmt_file">MPI File Management Time</a> and
+<a href="#mpi_io_collective">MPI Collective File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_ops">MPI File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_file_crops">MPI Collective File Read Operations</a><br/>
+    <a href="#mpi_file_cwops">MPI Collective File Write Operations</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_crops"><h3>MPI Collective File Read Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of collective MPI file read operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the callpaths where collective MPI file reads occur and the
+distribution of operations done by each process in them, and compare
+with the corresponding <a href="#mpi_io_collective">MPI Collective File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_cops">MPI Collective File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_file_cwops"><h3>MPI Collective File Write Operations</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Number of collective MPI file write operations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Examine the callpaths where collective MPI file writes occur and the
+distribution of operations done by each process in them, and compare
+with the corresponding <a href="#mpi_io_collective">MPI Collective File I/O Time</a>.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_file_cops">MPI Collective File Operations</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_rma_synchronization"><h3>MPI One-sided Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI one-sided synchronization calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_synchronization">MPI Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#mpi_rma_sync_active">MPI Active Target Synchronization Time</a><br/>
+    <a href="#mpi_rma_sync_passive">MPI One-sided Passive Target Synchronization Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_rma_sync_active"><h3>MPI Active Target Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI one-sided active target synchronization calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_rma_synchronization">MPI One-sided Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_rma_sync_passive"><h3>MPI One-sided Passive Target Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI one-sided passive target synchronization calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_rma_synchronization">MPI One-sided Synchronization Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="mpi_rma_communication"><h3>MPI One-sided Communication Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in MPI one-sided communication operations, for example,
+<tt>MPI_Accumulate</tt>, <tt>MPI_Put</tt>, or <tt>MPI_Get</tt>.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#mpi_communication">MPI Communication Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance"><h3>Computational Load Imbalance Heuristic</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This simple heuristic allows to identify computational load imbalances and
+is calculated for each (call-path, process/thread) pair.  Its value
+represents the absolute difference to the average computation time.  This
+average value is the aggregated exclusive time spent by all
+processes/threads in this call-path, divided by the number of
+processes/threads visiting it.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbalance.png" alt="Computational load imbalance Example">
+</div>
+<br>
+
+</dd><p><dd>
+<b>Note:</b>
+A high value for a collapsed call tree node does not necessarily mean that
+there is a load imbalance in this particular node, but the imbalance can
+also be somewhere in the subtree underneath.  Unused threads outside
+of OpenMP parallel regions are considered to constitute <a href="#omp_idle_threads">OpenMP Idle Threads Time</a>
+and expressly excluded from the computational load imbalance heuristic.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+Total load imbalance comprises both above average computation time
+and below average computation time, therefore at most half of it could
+potentially be recovered with perfect (zero-overhead) load balance
+that distributed the excess from overloaded to unloaded
+processes/threads, such that all took exactly the same time.
+</dd><p><dd>
+Computation imbalance is often the origin of communication and
+synchronization inefficiencies, where processes/threads block and
+must wait idle for partners, however, work partitioning and
+parallelization overheads may be prohibitive for complex computations
+or unproductive for short computations.  Replicating computation on
+all processes/threads will eliminate imbalance, but would typically
+not result in recover of this imbalance time (though it may reduce
+associated communication and synchronization requirements).
+</dd><p><dd>
+Call paths with significant amounts of computational imbalance should
+be examined, along with processes/threads with above/below-average
+computation time, to identify parallelization inefficiencies.  Call paths
+executed by a subset of processes/threads may relate to parallelization
+that hasn't been fully realized (<a href="#imbalance_below_bypass">Computational Load Imbalance Heuristic: Non-participation</a>), whereas
+call-paths executed only by a single process/thread
+(<a href="#imbalance_above_single">Computational Load Imbalance Heuristic: Single Participant</a>) often represent unparallelized serial code,
+which will be scalability impediments as the number of processes/threads
+increase.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd>None</dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#imbalance_above">Computational Load Imbalance Heuristic: Overload</a><br/>
+    <a href="#imbalance_below">Computational Load Imbalance Heuristic: Underload</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance_above"><h3>Computational Load Imbalance Heuristic: Overload</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This metric identifies processes/threads where the exclusive execution
+time spent for a particular call-path was above the average value.
+It is a complement to <a href="#imbalance_below">Computational Load Imbalance Heuristic: Underload</a>.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbal_Overload.png" alt="Overload Example">
+</div>
+<br>
+
+</dd><p><dd>
+See <a href="#imbalance">Computational Load Imbalance Heuristic</a> for details on how this heuristic is calculated.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+The CPU time which is above the average time for computation is the
+maximum that could potentially be recovered with perfect (zero-overhead)
+load balance that distributed the excess from overloaded to underloaded
+processes/threads.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#imbalance">Computational Load Imbalance Heuristic</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#imbalance_above_single">Computational Load Imbalance Heuristic: Single Participant</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance_above_single"><h3>Computational Load Imbalance Heuristic: Single Participant</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This heuristic distinguishes the execution time for call-paths executed
+by single processes/threads that potentially could be recovered with
+perfect parallelization using all available processes/threads.
+</dd><p><dd>
+It is the <a href="#imbalance_above">Computational Load Imbalance Heuristic: Overload</a> time for call-paths that only have
+non-zero <a href="#visits">Visits</a> for one process or thread, and complements
+<a href="#imbalance_below_singularity">Computational Load Imbalance Heuristic: Non-participation in Singularity</a>.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbal_Single.png" alt="Single participant Example">
+</div>
+<br>
+
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+This time is often associated with activities done exclusively by a
+"Master" process/thread (often rank 0) such as initialization,
+finalization or I/O, but can apply to any process/thread that
+performs computation that none of its peers do (or that does its
+computation on a call-path that differs from the others).
+</dd><p><dd>
+The CPU time for singular execution of the particular call path
+typically presents a serial bottleneck impeding scalability as none of
+the other available processes/threads are being used, and
+they may well wait idling until the result of this computation becomes
+available.  (Check the MPI communication and synchronization times,
+particularly waiting times, for proximate call paths.)
+In such cases, even small amounts of singular execution can
+have substantial impact on overall performance and parallel efficiency.
+With perfect partitioning and (zero-overhead) parallel
+execution of the computation, it would be possible to recover this time.
+</dd><p><dd>
+When the amount of time is small compared to the total execution time,
+or when the cost of parallelization is prohibitive, it may not be
+worth trying to eliminate this inefficiency.  As the number of
+processes/threads are increased and/or total execution time decreases,
+however, the relative impact of this inefficiency can be expected to grow.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#imbalance_above">Computational Load Imbalance Heuristic: Overload</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance_below"><h3>Computational Load Imbalance Heuristic: Underload</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This metric identifies processes/threads where the computation time spent
+for a particular call-path was below the average value.  It is a complement
+to <a href="#imbalance_above">Computational Load Imbalance Heuristic: Overload</a>.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbal_Underload.png" alt="Underload Example">
+</div>
+<br>
+
+</dd><p><dd>
+See <a href="#imbalance">Computational Load Imbalance Heuristic</a> for details on how this heuristic is calculated.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+The CPU time which is below the average time for computation could
+potentially be used to reduce the excess from overloaded processes/threads
+with perfect (zero-overhead) load balancing.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#imbalance">Computational Load Imbalance Heuristic</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#imbalance_below_bypass">Computational Load Imbalance Heuristic: Non-participation</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance_below_bypass"><h3>Computational Load Imbalance Heuristic: Non-participation</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This heuristic distinguishes the execution time for call paths not executed
+by a subset of processes/threads that potentially could be used with
+perfect parallelization using all available processes/threads.
+</dd><p><dd>
+It is the <a href="#imbalance_below">Computational Load Imbalance Heuristic: Underload</a> time for call paths which have zero
+<a href="#visits">Visits</a> and were therefore not executed by this process/thread.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbal_Bypass.png" alt="Non-participation Example">
+</div>
+<br>
+
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+The CPU time used for call paths where not all processes or threads
+are exploited typically presents an ineffective parallelization that
+limits scalability, if the unused processes/threads wait idling for
+the result of this computation to become available.  With perfect
+partitioning and (zero-overhead) parallel execution of the computation,
+it would be possible to recover this time.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#imbalance_below">Computational Load Imbalance Heuristic: Underload</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#imbalance_below_singularity">Computational Load Imbalance Heuristic: Non-participation in Singularity</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="imbalance_below_singularity"><h3>Computational Load Imbalance Heuristic: Non-participation in Singularity</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+This heuristic distinguishes the execution time for call paths not executed
+by all but a single process/thread that potentially could be recovered with
+perfect parallelization using all available processes/threads.
+</dd><p><dd>
+It is the <a href="#imbalance_below">Computational Load Imbalance Heuristic: Underload</a> time for call paths that only have
+non-zero <a href="#visits">Visits</a> for one process/thread, and complements
+<a href="#imbalance_above_single">Computational Load Imbalance Heuristic: Single Participant</a>.
+</dd><p><dd>
+<br>
+<div align="center">
+<img src="Imbal_Singularity.png" alt="Singularity Example">
+</div>
+<br>
+
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+The CPU time for singular execution of the particular call path
+typically presents a serial bottleneck impeding scalability as none of
+the other processes/threads that are available are being used, and
+they may well wait idling until the result of this computation becomes
+available.  With perfect partitioning and (zero-overhead) parallel
+execution of the computation, it would be possible to recover this time.
+</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#imbalance_below_bypass">Computational Load Imbalance Heuristic: Non-participation</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
 </dl>
 
 <hr width="75%" align="center">
@@ -112,13 +2355,13 @@ experiment archive is examined.  Thus, it should be transparent to users
 following the recommended workflow as described in the
 <a href="http://apps.fz-juelich.de/scalasca/releases/scalasca/latest/docs/manual/">Scalasca User Guide</a>.
 <p>
-However, the remapping process can also be performed manually using the Cube
-command-line tool <tt>cube_remap2</tt> if necessary.  This tool reads an
-input Cube file as well as a remapping specification, and generates a
-corresponding output Cube file.  Note that the remapping specification has to
-be different for postprocessing runtime summaries and trace analysis reports,
-though.  To postprocess a Score-P runtime summary report <tt>profile.cubex</tt>
-and create a <tt>summary.cubex</tt> report, use
+However, the remapping process can also be performed manually using the
+command-line tool <tt>cube_remap2</tt> from the CubeLib package if necessary.
+This tool reads an input Cube file and generates a corresponding output Cube
+file according to a remapping specification.  Note that this remapping
+specification has to be different for postprocessing runtime summaries and
+trace analysis reports, though.  To postprocess a Score-P runtime summary
+report <tt>profile.cubex</tt> and create a <tt>summary.cubex</tt> report, use
 <pre>
     cube_remap2 -d -r `scorep-config --remap-specfile` -o summary.cubex profile.cubex
 </pre>
@@ -127,6 +2370,13 @@ and create a <tt>trace.cubex</tt> report, use
 <pre>
     cube_remap2 -d -r `scalasca --remap-specfile` -o trace.cubex scout.cubex
 </pre>
+Note that as of Score-P v5.0 and Scalasca v2.6, respectively, the remapping
+specification is embedded in the runtime summary and trace analysis reports
+if the specification file can be read from the installation directory at
+measurement/analysis time.  In this case, the <tt>-r &lt;file&gt;</tt> option
+can be omitted from the commands above.  However, this embedded specification
+is dropped during any Cube algebra operation (e.g., <tt>cube_cut</tt> or
+<tt>cube_merge</tt>).
 
 <h4>IMPORTANT NOTE:</h4>
 Remapping specifications are typically targeted towards a particular version
