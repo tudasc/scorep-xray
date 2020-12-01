@@ -155,6 +155,42 @@ scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_mana
 }
 
 
+SCOREP_StringHandle
+scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
+                                  size_t                    strLen,
+                                  const char*               strFmt,
+                                  va_list                   va )
+{
+    UTILS_ASSERT( definition_manager );
+
+    SCOREP_StringDef*   new_definition = NULL;
+    SCOREP_StringHandle new_handle     = SCOREP_INVALID_STRING;
+
+    SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( String,
+                                            char,
+                                            strLen + 1 );
+
+    vsnprintf( new_definition->string_data, strLen + 1, strFmt, va );
+    new_definition->string_length = strLen;
+    new_definition->hash_value    = jenkins_hash( new_definition->string_data, strLen, 0 );
+
+    /*
+     * 3) search in existing definitions and return found
+     *    - discard new if an old one was found
+     *    - if not, link new one into the hash chain and into definition list
+     */
+    /* Does return if it is a duplicate */
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( String, string );
+
+    if ( definition_manager == &scorep_local_definition_manager )
+    {
+        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
+                                    ( new_handle, SCOREP_HANDLE_TYPE_STRING ) );
+    }
+
+    return new_handle;
+}
+
 const char*
 SCOREP_StringHandle_Get( SCOREP_StringHandle handle )
 {

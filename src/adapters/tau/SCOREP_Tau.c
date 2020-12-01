@@ -328,7 +328,7 @@ void
 SCOREP_Tau_AddLocationProperty( const char* name, const char* value )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    SCOREP_AddLocationProperty( name, value );
+    SCOREP_AddLocationProperty( name, 0, value );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 

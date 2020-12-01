@@ -61,7 +61,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
  * @param node_class     Name of the class for this node.
  * @param node_name_len  Strict upper bound for the length of the name of this
  *                       node, including the trailing NUL.
- *                       As a special case, if @a node_name_len is zero, than @a
+ *                       As a special case, if @a node_name_len is zero, then @a
  *                       node_name_fmt should not have format specifiers
  *                       and the length is taken from the @a node_name_fmt.
  * @param node_name_fmt  A @a printf-like format string which forms the name of
@@ -86,7 +86,7 @@ scorep_platform_system_tree_top_down_add(
  * @param node_class     Name of the class for this node.
  * @param node_name_len  Strict upper bound for the length of the name of this
  *                       node, including the trailing NUL.
- *                       As a special case, if @a node_name_len is zero, than @a
+ *                       As a special case, if @a node_name_len is zero, then @a
  *                       node_name_fmt should not have format specifiers
  *                       and the length is taken from the @a node_name_fmt.
  * @param node_name_fmt  A @a printf-like format string which forms the name of

@@ -74,5 +74,11 @@ scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_mana
                                const char*                       str,
                                scorep_string_definition_modifier modifier );
 
+SCOREP_StringHandle
+scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
+                                  size_t                    strLen,
+                                  const char*               strFmt,
+                                  va_list                   va );
+
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_STRING_H */

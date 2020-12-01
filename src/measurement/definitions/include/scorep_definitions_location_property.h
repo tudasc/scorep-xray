@@ -38,7 +38,9 @@ struct SCOREP_Location;
 SCOREP_LocationPropertyHandle
 SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
                                         const char*           name,
-                                        const char*           value );
+                                        size_t                valueLen,
+                                        const char*           valueFmt,
+                                        va_list               va );
 
 
 void

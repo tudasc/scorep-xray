@@ -61,7 +61,9 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
 SCOREP_LocationPropertyHandle
 SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
                                         const char*           name,
-                                        const char*           value )
+                                        size_t                valueLen,
+                                        const char*           valueFmt,
+                                        va_list               va )
 {
     SCOREP_Definitions_Lock();
 
@@ -71,9 +73,9 @@ SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "", NULL ),
-        scorep_definitions_new_string(
+        scorep_definitions_new_string_va(
             &scorep_local_definition_manager,
-            value ? value : "", NULL ) );
+            valueLen, valueFmt, va ) );
 
     SCOREP_Definitions_Unlock();
 

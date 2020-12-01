@@ -76,11 +76,11 @@ AS_IF([test "x$scorep_pmi_error" = "xno"],
 
 dnl final check for errors
 if test "x${scorep_pmi_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_pmi_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_pmi_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])
 
@@ -105,10 +105,10 @@ AS_IF([test "x$scorep_rca_error" = "xno"],
 
 dnl final check for errors
 if test "x${scorep_rca_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_rca_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_rca_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])

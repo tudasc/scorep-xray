@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,6 +33,7 @@
 
 #include <string.h>
 #include <inttypes.h>
+#include <stdio.h>
 
 
 /** @def KERNEL_STRING_LENGTH
@@ -379,6 +380,95 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
     queue->device_location = SCOREP_Location_CreateNonCPULocation(
         queue->host_location,
         SCOREP_LOCATION_TYPE_GPU, thread_name );
+
+    /* Use NVIDIA OpenCL extension to query PCI domain/bus/device IDs for
+       node-level unique identification of the used GPU analog to CUDA
+
+       https://www.khronos.org/registry/OpenCL/extensions/nv/cl_nv_device_attribute_query.txt
+       PC vendor ID reference for NVIDIA
+       https://pci-ids.ucw.cz/read/PC/10de */
+    cl_int vendor_id;
+    SCOREP_OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                           CL_DEVICE_VENDOR_ID,
+                                           sizeof( cl_int ),
+                                           &vendor_id,
+                                           NULL ) );
+    if ( vendor_id == 0x10de )
+    {
+        #define CL_DEVICE_PCI_DOMAIN_ID_NV                  0x400a
+        #define CL_DEVICE_PCI_BUS_ID_NV                     0x4008
+        #define CL_DEVICE_PCI_SLOT_ID_NV                    0x4009
+        cl_int domain_id, bus_id, slot_id;
+        cl_int error_domain = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                              CL_DEVICE_PCI_DOMAIN_ID_NV,
+                                                              sizeof( cl_int ),
+                                                              &domain_id,
+                                                              NULL ) );
+        cl_int error_bus = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                           CL_DEVICE_PCI_BUS_ID_NV,
+                                                           sizeof( cl_int ),
+                                                           &bus_id,
+                                                           NULL ) );
+        cl_int error_device = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                              CL_DEVICE_PCI_SLOT_ID_NV,
+                                                              sizeof( cl_int ),
+                                                              &slot_id,
+                                                              NULL ) );
+        if ( error_domain == CL_SUCCESS  &&  error_bus == CL_SUCCESS && error_device == CL_SUCCESS )
+        {
+            SCOREP_Location_AddPCIProperties( queue->device_location,
+                                              domain_id,
+                                              bus_id,
+                                              slot_id,
+                                              UINT8_MAX );
+        }
+    }
+
+    /* Using AMD extension for AMD GPUs
+
+       https://www.khronos.org/registry/OpenCL/extensions/amd/cl_amd_device_attribute_query.txt
+       Based on OpenCL header:
+       https://github.com/RadeonOpenCompute/ROCm-OpenCL-Runtime/blob/master/khronos/headers/opencl2.2/CL/cl_ext.h#L272
+       PC vendor ID reference for AMD
+       https://pci-ids.ucw.cz/read/PC/1002 */
+    if ( vendor_id == 0x1002 )
+    {
+#define CL_DEVICE_PCIE_ID_AMD                       0x4034
+#define CL_DEVICE_TOPOLOGY_AMD                      0x4037
+#define CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD            1
+        typedef union
+        {
+            struct
+            {
+                cl_uint type;
+                cl_uint data[ 5 ];
+            } raw;
+            struct
+            {
+                cl_uint  type;
+                cl_uchar unused[ 17 ];
+                cl_uchar bus;
+                cl_uchar device;
+                cl_uchar function;
+            } pcie;
+        } cl_device_topology_amd;
+
+        cl_device_topology_amd topology;
+        memset( &topology, 0xff, sizeof( topology ) );
+        cl_int err = OPENCL_CALL( clGetDeviceInfo, ( clDeviceID,
+                                                     CL_DEVICE_TOPOLOGY_AMD,
+                                                     sizeof( cl_device_topology_amd ),
+                                                     &topology,
+                                                     NULL ) );
+        if ( CL_SUCCESS == err && topology.raw.type == CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD )
+        {
+            SCOREP_Location_AddPCIProperties( queue->device_location,
+                                              UINT16_MAX,
+                                              topology.pcie.bus,
+                                              topology.pcie.device,
+                                              topology.pcie.function );
+        }
+    }
 
     SCOREP_OPENCL_CALL( clRetainCommandQueue, ( clQueue ) );
 

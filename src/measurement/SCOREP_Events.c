@@ -45,6 +45,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
+#include <inttypes.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -483,12 +485,28 @@ SCOREP_Location_AddSourceCodeLocation( SCOREP_Location* location,
 
 
 static inline void
-add_location_property( SCOREP_Location* location,
-                       const char*      name,
-                       const char*      value )
+add_location_property_va( SCOREP_Location* location,
+                          const char*      name,
+                          size_t           valueLen,
+                          const char*      valueFmt,
+                          va_list          va )
 {
     SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
-    SCOREP_Definitions_NewLocationProperty( handle, name, value );
+    SCOREP_Definitions_NewLocationProperty( handle, name, valueLen, valueFmt, va );
+}
+
+
+static inline void
+add_location_property( SCOREP_Location* location,
+                       const char*      name,
+                       size_t           valueLen,
+                       const char*      valueFmt,
+                       ... )
+{
+    va_list va;
+    va_start( va, valueFmt );
+    add_location_property_va( location, name, valueLen, valueFmt, va );
+    va_end( va );
 }
 
 
@@ -497,10 +515,23 @@ add_location_property( SCOREP_Location* location,
  */
 void
 SCOREP_AddLocationProperty( const char* name,
-                            const char* value )
+                            size_t      valueLen,
+                            const char* valueFmt,
+                            ... )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    add_location_property( location, name, value );
+
+    if ( valueLen == 0 )
+    {
+        // convert to 'strlen(value), "%s", value'
+        add_location_property( location, name, strlen( valueFmt ), "%s", valueFmt );
+        return;
+    }
+
+    va_list va;
+    va_start( va, valueFmt );
+    add_location_property_va( location, name, valueLen, valueFmt, va );
+    va_end( va );
 }
 
 
@@ -510,9 +541,41 @@ SCOREP_AddLocationProperty( const char* name,
 void
 SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
                                      const char*      name,
-                                     const char*      value )
+                                     size_t           valueLen,
+                                     const char*      valueFmt,
+                                     ... )
 {
-    add_location_property( location, name, value );
+    if ( valueLen == 0 )
+    {
+        // convert to 'strlen(value), "%s", value'
+        add_location_property( location, name, strlen( valueFmt ), "%s", valueFmt );
+        return;
+    }
+
+    va_list va;
+    va_start( va, valueFmt );
+    add_location_property_va( location, name, valueLen, valueFmt, va );
+    va_end( va );
+}
+
+
+void
+SCOREP_Location_AddPCIProperties( SCOREP_Location* location,
+                                  uint16_t         domain,
+                                  uint8_t          bus,
+                                  uint8_t          device,
+                                  uint8_t          function )
+{
+    if ( UINT16_MAX != domain )
+    {
+        SCOREP_Location_AddLocationProperty( location, "PCI Domain ID", 16, "%" PRIu16, domain );
+    }
+    SCOREP_Location_AddLocationProperty( location, "PCI Bus ID", 8, "%" PRIu8, bus );
+    SCOREP_Location_AddLocationProperty( location, "PCI Device ID", 8, "%" PRIu8, device );
+    if ( UINT8_MAX != function )
+    {
+        SCOREP_Location_AddLocationProperty( location, "PCI Function", 8, "%" PRIu8, function );
+    }
 }
 
 

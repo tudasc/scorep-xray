@@ -160,6 +160,9 @@ extern uint64_t* scorep_cuda_global_location_ids;
 extern SCOREP_InterimCommunicatorHandle scorep_cuda_interim_communicator_handle;
 extern SCOREP_RmaWindowHandle           scorep_cuda_window_handle;
 
+extern uint32_t* scorep_cuda_visible_devices_map;
+extern size_t    scorep_cuda_visible_devices_len;
+
 void
 scorep_cuda_set_features( void );
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -250,7 +250,15 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         }
         else
         {
-            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", context->device_id, streamId ) )
+            /* CUDA_VISIBLE_DEVICES may be used to change the order and thus
+             * the device ID visible from the outside, use it to map the device ID
+             */
+            uint32_t device_id = context->device_id;
+            if ( device_id < scorep_cuda_visible_devices_len )
+            {
+                device_id = scorep_cuda_visible_devices_map[ device_id ];
+            }
+            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", device_id, streamId ) )
             {
                 UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
             }
@@ -260,13 +268,19 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
             SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
                                                   SCOREP_LOCATION_TYPE_GPU, thread_name );
 
+        SCOREP_Location_AddPCIProperties( stream->scorep_location,
+                                          context->pci_domain_id,
+                                          context->pci_bus_id,
+                                          context->pci_device_id,
+                                          UINT8_MAX );
+
 #if defined( SCOREP_CUPTI_ACTIVITY )
         if ( context->activity && ( stream->stream_id == context->activity->default_strm_id ) )
         {
             /* add a location property marking CUDA NULL streams */
             SCOREP_Location_AddLocationProperty( stream->scorep_location,
                                                  SCOREP_CUPTI_LOCATION_NULL_STREAM,
-                                                 "yes" );
+                                                 0, "yes" );
         }
 #endif
 
@@ -515,6 +529,10 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
     context->device_id   = deviceId;
     context->cuda_device = cudaDevice;
+
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_domain_id, cudaDevAttrPciDomainId, cudaDevice ) );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_bus_id, cudaDevAttrPciBusId, cudaDevice ) );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_device_id, cudaDevAttrPciDeviceId, cudaDevice ) );
 
     /* get the current CUDA context, if it is not given */
     if ( cudaContext == NULL )

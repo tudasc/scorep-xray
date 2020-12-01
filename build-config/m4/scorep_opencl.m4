@@ -260,7 +260,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
       [AC_SEARCH_LIBS([clGetPlatformIDs],
                       [$scorep_opencl_lib_name],
                       [],
-                      [AS_IF([test "x${with_libopencl}" != xnot_set || test "x${with_libopencl_lib}" != xnot_set],
+                      [AS_IF([test "x${with_libOpenCL}" != xnot_set || test "x${with_libOpenCL_lib}" != xnot_set],
                              [AC_MSG_NOTICE([no libOpenCL found; check path to OpenCL library ...])])
                        scorep_opencl_error="yes"])])
 
@@ -389,10 +389,10 @@ AS_IF([ test "x${scorep_opencl_version_1_0}" = "xno" && \
 
 dnl final check for errors
 if test "x${scorep_opencl_error}" = "xno"; then
-    with_$1_lib_checks_successful="yes"
-    with_$1_libs="-l${scorep_opencl_lib_name}"
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_opencl_lib_name}"
 else
-    with_$1_lib_checks_successful="no"
-    with_$1_libs=""
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
 fi
 ])
