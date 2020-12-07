@@ -51,6 +51,8 @@ libscorep_adapter_cuda_mgmt_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity_internal.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cuda_nvtx_mgmt.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cuda_nvtx_mgmt.c \
     $(SRC_ROOT)src/measurement/paradigm/cuda/scorep_cuda_unify.c
 
 libscorep_adapter_cuda_mgmt_la_SOURCES  += \

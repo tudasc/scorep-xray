@@ -18,6 +18,8 @@
 
 #include <config.h>
 
+#include "scorep_cuda_nvtx_mgmt.h"
+
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_RuntimeManagement.h>
 
