@@ -440,11 +440,20 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 }
 
 void
+SCOREP_Config_CudaAdapter::addCFlags( std::string& cflags,
+                                      bool /* build_check */,
+                                      SCOREP_Config_Language /* language */,
+                                      bool /* nvcc */ )
+{
+    cflags += "-DNVTX_NO_IMPL ";
+}
+
+void
 SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    /* there is no libscorep_adapter_cuda_event.la, thus in case this is the
-       only adapter, we need to add libscorep_measurement.la to the needed libs. */
+    /* The event library is presently only NVTX callbacks */
+    libs.push_back( "lib" + m_library + "_event" );
     libs.push_back( "libscorep_measurement" );
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }

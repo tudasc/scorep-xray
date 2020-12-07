@@ -892,6 +892,11 @@ Filtering does not remove CUDA activities inserted by @scorep or CUDA data trans
 If a kernel is filtered, no kernel launch properties activated in \confvar{SCOREP_CUDA_ENABLE} using <tt>kernel_counter</tt> are inserted for this kernel.
 GPU idle time is not affected by kernel filtering.
 
+@subsection cuda_adapter_nvtx CUDA NVTX Measurement
+@seclabel{cuda_adapter_nvtx}
+
+NVTX intrumentation is enabled if instrumented with <tt>\--cuda</tt>.
+
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}
