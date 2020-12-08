@@ -245,6 +245,26 @@ need to specify its location via:
   --with-libcuda-include=<Path to libcuda headers>
   --with-libcuda-lib=<Path to libcuda libraries>
 
+If libnvidia-ml, which is used to determine correct device-IDs in a
+multi-GPU/multi-process environment, isn't detected automatically, you
+can specify its location via:
+
+  --with-libnvidia-ml=(yes|no|<Path to libnvidia-ml installation>)
+               If you want to build with libnvidia-ml support but
+               do not have a libnvidia-ml in a standard location,
+               you need to explicitly specify the directory where
+               it is installed. On non-cross-compile systems we
+               search the system include and lib paths per default
+               [yes]; on cross-compile systems, however, you have
+               to specify a path [no]. --with-libnvidia-ml is a
+               shorthand for
+               --with-libnvidia-ml-include=<Path/include> and
+               --with-libnvidia-ml-lib=<Path/lib>. If these
+               shorthand assumptions are not correct, you can use
+               the explicit include and lib options directly.
+  --with-libnvidia-ml-include=<Path to libnvidia-ml headers>
+  --with-libnvidia-ml-lib=<Path to libnvidia-ml libraries>
+
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
 
@@ -520,6 +540,10 @@ variables:
               Path to libcupti headers.
   LIBCUPTI_LIB
               Path to libcupti libraries.
+  LIBNVIDIA_ML_INCLUDE
+              Path to libnvidia-ml headers.
+  LIBNVIDIA_ML_LIB
+              Path to libnvidia-ml libraries.
   LIBOPENCL_INCLUDE
               Path to libOpenCL headers.
   LIBLUSTREAPI_INCLUDE
