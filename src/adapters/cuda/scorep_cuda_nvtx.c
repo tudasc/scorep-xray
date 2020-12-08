@@ -22,6 +22,10 @@
 
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_Filtering.h>
+#include <SCOREP_Task.h>
 
 #include <nvToolsExt.h>
 
@@ -79,7 +83,17 @@ nvtxDomainMarkEx( nvtxDomainHandle_t           domain,
         return;
     }
 
-    // Push/pop region
+    const char* name = scorep_cuda_nvtx_get_name_from_attributes( eventAttrib );
+    if ( SCOREP_Filtering_MatchFunction( name, NULL ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_RegionHandle region_handle = scorep_cuda_nvtx_get_user_region( domain, eventAttrib );
+
+    SCOREP_EnterRegion( region_handle );
+    SCOREP_ExitRegion( region_handle );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -88,7 +102,7 @@ NVTX_DECLSPEC void NVTX_API
 nvtxMarkEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    nvtxDomainMarkEx( NULL, eventAttrib );
+    nvtxDomainMarkEx( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -139,7 +153,7 @@ NVTX_DECLSPEC nvtxRangeId_t NVTX_API
 nvtxRangeStartEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    nvtxRangeId_t result = nvtxDomainRangeStartEx( NULL, eventAttrib );
+    nvtxRangeId_t result = nvtxDomainRangeStartEx( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return result;
 }
@@ -184,7 +198,7 @@ NVTX_DECLSPEC void NVTX_API
 nvtxRangeEnd( nvtxRangeId_t id )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    nvtxDomainRangeEnd( NULL, id );
+    nvtxDomainRangeEnd( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, id );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -205,10 +219,19 @@ nvtxDomainRangePushEx( nvtxDomainHandle_t           domain,
         return 0;
     }
 
-    // Enter region
+    const char* name = scorep_cuda_nvtx_get_name_from_attributes( eventAttrib );
+    if ( SCOREP_Filtering_MatchFunction( name, NULL ) )
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), SCOREP_FILTERED_REGION );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return 0;
+    }
+
+    SCOREP_RegionHandle region_handle = scorep_cuda_nvtx_get_user_region( domain, eventAttrib );
+
+    SCOREP_EnterRegion( region_handle );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
-
     // Return 0 on success, negative on error (compatible with SCOREP_Error values?)
     return 0;
 }
@@ -217,7 +240,7 @@ NVTX_DECLSPEC int NVTX_API
 nvtxRangePushEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int result = nvtxDomainRangePushEx( NULL, eventAttrib );
+    int result = nvtxDomainRangePushEx( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return result;
 }
@@ -247,7 +270,21 @@ nvtxDomainRangePop( nvtxDomainHandle_t domain )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    // Exit/pop region
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    UTILS_ASSERT( location != NULL );
+
+    SCOREP_RegionHandle region_handle =
+        SCOREP_Task_GetTopRegion( SCOREP_Task_GetCurrentTask( location ) );
+    UTILS_ASSERT( region_handle != SCOREP_INVALID_REGION );
+
+    if ( region_handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( region_handle );
+    }
+    else
+    {
+        SCOREP_Task_Exit( location );
+    }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 
@@ -259,7 +296,7 @@ NVTX_DECLSPEC int NVTX_API
 nvtxRangePop( void )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    int result = nvtxDomainRangePop( NULL );
+    int result = nvtxDomainRangePop( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN );
     SCOREP_IN_MEASUREMENT_DECREMENT();
     return result;
 }
@@ -272,6 +309,7 @@ nvtxDomainCreateA( const char* name )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
+        /* scorep_cuda_nvtx_create_domain needs Score-P memory */
         SCOREP_InitMeasurement();
     }
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -280,11 +318,10 @@ nvtxDomainCreateA( const char* name )
         return NULL;
     }
 
-    // Create a domain handle with a name
-    // Names here will get used for region group name(?)
+    nvtxDomainHandle_t result = scorep_cuda_nvtx_create_domain( name );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return NULL;
+    return result;
 }
 
 NVTX_DECLSPEC nvtxDomainHandle_t NVTX_API
@@ -312,9 +349,6 @@ NVTX_DECLSPEC void NVTX_API
 nvtxDomainDestroy( nvtxDomainHandle_t domain )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    // Remove from list of handles/invalidate/free
-
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -388,7 +422,7 @@ nvtxNameCategoryA( uint32_t    category,
                    const char* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    nvtxDomainNameCategoryA( NULL, category, name );
+    nvtxDomainNameCategoryA( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, category, name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -397,7 +431,7 @@ nvtxNameCategoryW( uint32_t       category,
                    const wchar_t* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    nvtxDomainNameCategoryW( NULL, category, name );
+    nvtxDomainNameCategoryW( SCOREP_CUDA_NVTX_DEFAULT_DOMAIN, category, name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -440,9 +474,21 @@ nvtxDomainRegisterStringA( nvtxDomainHandle_t domain,
                            const char*        string )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Wrap a SCOREP_StringHandle
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_create_string needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return NULL;
+    }
+
+    nvtxStringHandle_t result = scorep_cuda_nvtx_create_string( string );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return NULL;
+    return result;
 }
 
 NVTX_DECLSPEC nvtxStringHandle_t NVTX_API

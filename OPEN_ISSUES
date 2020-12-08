@@ -380,6 +380,12 @@ various Score-P components.
     likely fail. In this case, ensure that the library path is provided
     to configure via the `--with-libcuda-lib=<cuda-sdk>/lib64/stubs` flag and
     includes a `stubs`-directory component.
+  - Score-P's NVTX implementation does not support RangeStart/Stop APIs.
+    They are supposed to cross locations and can overlap, which does not fit
+    into Score-P's event model.
+  - NVTX does consider different domains as disjoint range stacks, thus
+    this does not fit into Score-P's event model as well. Score-P expect
+    that regions from disjoint domains are properly nested.
 
 --------------------------------------------------------------------------------
 

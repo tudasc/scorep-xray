@@ -896,6 +896,12 @@ GPU idle time is not affected by kernel filtering.
 @seclabel{cuda_adapter_nvtx}
 
 NVTX intrumentation is enabled if instrumented with <tt>\--cuda</tt>.
+The Start/Stop Range events are not supported, because they allow to span different threads and do not need to be nested.
+NVTX Mark events are modelled as a short sequence of Enter and Leave events.
+NVTX user regions are grouped by the NVTX domain.
+The region group name for the default domain is <tt>"NVTX"</tt>, for user defined domains it is <tt>"NVTX Domain '<DOMAIN-NAME>'"</tt>.
+
+@note While NVTX considers different domains as disjoint range stacks, @scorep does not support overlapping ranges.
 
 
 @section opencl_adapter OpenCL Performance Measurement

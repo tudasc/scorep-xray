@@ -17,7 +17,16 @@
 #ifndef SCOREP_CUDA_NVTX_MGMT_H
 #define SCOREP_CUDA_NVTX_MGMT_H
 
+
 #include <wchar.h>
+
+#include <nvToolsExt.h>
+
+#include <SCOREP_Definitions.h>
+
+/*************** Variables ****************************************************/
+
+#define SCOREP_CUDA_NVTX_DEFAULT_DOMAIN NULL
 
 /*************** Functions ****************************************************/
 
@@ -26,5 +35,18 @@ scorep_cuda_nvtx_init( void );
 
 const char*
 scorep_cuda_nvtx_unicode_to_ascii( const wchar_t* wide );
+
+nvtxDomainHandle_t
+scorep_cuda_nvtx_create_domain( const char* name );
+
+nvtxStringHandle_t
+scorep_cuda_nvtx_create_string( const char* string );
+
+const char*
+scorep_cuda_nvtx_get_name_from_attributes( const nvtxEventAttributes_t* eventAttrib );
+
+SCOREP_RegionHandle
+scorep_cuda_nvtx_get_user_region( nvtxDomainHandle_t           domain,
+                                  const nvtxEventAttributes_t* eventAttrib );
 
 #endif /* SCOREP_CUDA_NVTX_MGMT_H */

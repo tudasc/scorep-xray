@@ -25,7 +25,35 @@
 
 #include <jenkins_hash.h>
 
+#include <stdio.h>
 #include <wchar.h>
+
+/*************** Types ********************************************************/
+
+/* We provide an implementation for NVTX, thus we also need to declare the
+   opaque types used in the NVTX API */
+
+/* NVTX API: typedef struct nvtxStringHandle* nvtxStringHandle_t; */
+struct nvtxStringHandle
+{
+    SCOREP_StringHandle str;
+};
+
+/* NVTX API: typedef struct nvtxDomainHandle* nvtxDomainHandle_t; */
+struct nvtxDomainHandle
+{
+    nvtxStringHandle_t name;
+};
+
+/* NVTX API: typedef struct nvtxResourceHandle* nvtxResourceHandle_t; */
+struct nvtxResourceHandle
+{
+    nvtxStringHandle_t name;
+};
+
+/*************** Variables ****************************************************/
+
+static nvtxDomainHandle_t default_domain = NULL;
 
 /*************** Widestring table *********************************************/
 
@@ -97,11 +125,77 @@ SCOREP_HASH_TABLE_MONOTONIC( widestring_table,
 
 #undef WIDESTRING_TABLE_HASH_EXPONENT
 
+/*************** Domain specific region table *********************************/
+
+typedef struct
+{
+    uint32_t           hash_value;
+    nvtxDomainHandle_t domain;
+    const char*        region_name;
+} region_table_key_t;
+typedef SCOREP_RegionHandle region_table_value_t;
+
+#define REGION_TABLE_HASH_EXPONENT 8
+
+static inline uint32_t
+region_table_bucket_idx( region_table_key_t key )
+{
+    return key.hash_value & hashmask( REGION_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+region_table_equals( region_table_key_t key1,
+                     region_table_key_t key2 )
+{
+    return key1.hash_value == key2.hash_value
+           && key1.domain == key2.domain
+           && strcmp( key1.region_name, key2.region_name ) == 0;
+}
+
+static inline void*
+region_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+region_table_free_chunk( void* chunk )
+{
+}
+
+static inline region_table_value_t
+region_table_value_ctor( region_table_key_t* key,
+                         void*               ctorData )
+{
+    SCOREP_RegionHandle new_region =
+        SCOREP_Definitions_NewRegion( key->region_name,
+                                      NULL,
+                                      SCOREP_INVALID_SOURCE_FILE,
+                                      0, 0,
+                                      SCOREP_PARADIGM_CUDA,
+                                      SCOREP_REGION_USER );
+
+    SCOREP_RegionHandle_SetGroup( new_region,
+                                  SCOREP_StringHandle_Get( key->domain->name->str ) );
+
+    key->region_name = SCOREP_RegionHandle_GetName( new_region );
+
+    return new_region;
+}
+
+/* nPairsPerChunk: 24+4 bytes per pair, 8 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( region_table,
+                             4,
+                             hashsize( REGION_TABLE_HASH_EXPONENT ) );
+
+#undef REGION_TABLE_HASH_EXPONENT
+
 /*************** Functions ****************************************************/
 
 void
 scorep_cuda_nvtx_init( void )
 {
+    default_domain = scorep_cuda_nvtx_create_domain( NULL );
 }
 
 const char*
@@ -117,4 +211,85 @@ scorep_cuda_nvtx_unicode_to_ascii( const wchar_t* wide )
     SCOREP_StringHandle string = widestring_table_get_and_insert( key, &bytes, &ignored );
 
     return SCOREP_StringHandle_Get( string );
+}
+
+static nvtxStringHandle_t
+create_nvtx_string_handle( SCOREP_StringHandle string )
+{
+    nvtxStringHandle_t result = SCOREP_Memory_AllocForMisc( sizeof( struct nvtxStringHandle ) );
+    result->str = string;
+    return result;
+}
+
+static void
+domain_name_generator( size_t stringLength,
+                       char*  string,
+                       void*  arg )
+{
+    snprintf( string, stringLength, "NVTX Domain '%s'", ( const char* )arg );
+}
+
+nvtxDomainHandle_t
+scorep_cuda_nvtx_create_domain( const char* name )
+{
+    nvtxDomainHandle_t new_domain =
+        SCOREP_Memory_AllocForMisc( sizeof( struct nvtxDomainHandle ) );
+
+    if ( name )
+    {
+        new_domain->name = create_nvtx_string_handle(
+            SCOREP_Definitions_NewStringGenerator( strlen( "NVTX Domain ''" ) + strlen( name ),
+                                                   domain_name_generator, ( void* )name ) );
+    }
+    else
+    {
+        new_domain->name = scorep_cuda_nvtx_create_string( "NVTX" );
+    }
+
+    return new_domain;
+}
+
+nvtxStringHandle_t
+scorep_cuda_nvtx_create_string( const char* string )
+{
+    return create_nvtx_string_handle( SCOREP_Definitions_NewString( string ) );
+}
+
+const char*
+scorep_cuda_nvtx_get_name_from_attributes( const nvtxEventAttributes_t* eventAttrib )
+{
+    UTILS_ASSERT( eventAttrib );
+    switch ( eventAttrib->messageType )
+    {
+        case NVTX_MESSAGE_TYPE_ASCII:
+            return eventAttrib->message.ascii;
+        case NVTX_MESSAGE_TYPE_UNICODE:
+            return scorep_cuda_nvtx_unicode_to_ascii( eventAttrib->message.unicode );
+        case NVTX_MESSAGE_TYPE_REGISTERED:
+            return SCOREP_StringHandle_Get( eventAttrib->message.registered->str );
+        default:
+            break;
+    }
+
+    return "<unknown>";
+}
+
+SCOREP_RegionHandle
+scorep_cuda_nvtx_get_user_region( nvtxDomainHandle_t           domain,
+                                  const nvtxEventAttributes_t* eventAttrib )
+{
+    if ( domain == SCOREP_CUDA_NVTX_DEFAULT_DOMAIN )
+    {
+        domain = default_domain;
+    }
+
+    const char*        name = scorep_cuda_nvtx_get_name_from_attributes( eventAttrib );
+    region_table_key_t key  = {
+        .hash_value  = jenkins_hash( name, strlen( name ), jenkins_hash( &domain, sizeof( domain ), 0 ) ),
+        .domain      = domain,
+        .region_name = name
+    };
+
+    bool ignored;
+    return region_table_get_and_insert( key, NULL, &ignored );
 }
