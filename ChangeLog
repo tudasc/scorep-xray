@@ -7,6 +7,8 @@ Features and improvements:
 - Added support for recording calls to OpenCL 2.1/2.2 functions.
 - Score-P now requires an MPI implementation which provides the
   `USE mpi` Fortran bindings, instead of the `INCLUDE 'mpif.h'`.
+  Note that `USE mpi_f08` is not yet supported and Score-P will
+  abort during MPI initilaization is this is detected.
 
 User tools and API improvements and changes:
 

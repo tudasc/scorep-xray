@@ -237,6 +237,10 @@ various Score-P components.
     accidentally removed deprecated-only MPI functions, without
     removing the prototypes in `mpi.h`.
 
+  - Score-P does not yet support the `USE mpi_f08` Fortran language
+    binding. On detection of the use of this binding, Score-P aborts
+    during MPI initialization.
+
 --------------------------------------------------------------------------------
 
 * OpenMP support
