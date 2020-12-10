@@ -45,9 +45,7 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_rma_request.c       \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_rma_request.h       \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h               \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.c   \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile_mgmt.h
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
     $(UTILS_CPPFLAGS)                    \
@@ -211,18 +209,13 @@ libscorep_adapter_mpi_c_event_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h              \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.h      \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c     \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h     \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.c   \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.h
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.h
 
 libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
     $(UTILS_CPPFLAGS)                          \
     -I$(INC_ROOT)src/adapters/include          \
     -I$(INC_ROOT)src/measurement/include       \
-    -I$(INC_ROOT)src/measurement/online_access \
     -I$(INC_ROOT)src/services/include          \
     -I$(PUBLIC_INC_DIR)                        \
     -I$(INC_DIR_MUTEX)                         \
@@ -259,7 +252,6 @@ SCOREP_MPI_EVENT_FORTRAN_SOURCES = \
 SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
     -I$(INC_ROOT)src/adapters/include          \
-    -I$(INC_ROOT)src/measurement/online_access \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_DIR_DEFINITIONS)                   \
     -I$(PUBLIC_INC_DIR)                        \

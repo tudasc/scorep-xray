@@ -268,9 +268,6 @@ be used to build Score-P are as follows:
                instrumentation. Default is to determine support
                automatically. This disables it by request and fails
                if support cannot be satisfied but was requested.
-  --disable-online-access
-               Enable or disable Online Access. Fails if support
-               cannot be satisfied but was requested.
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.
@@ -483,12 +480,6 @@ variables:
   SHMEM_NAME  name of the implemented SHMEM specification
   CXXFLAGS_FOR_BUILD_SCORE
               C++ compiler flags for building scorep-score
-  YACC        The `Yet Another Compiler Compiler' implementation to use.
-              Defaults to the first program found out of: `bison -y', `byacc',
-              `yacc'.
-  YFLAGS      The list of arguments that will be passed by default to $YACC.
-              This script will default YFLAGS to the empty string to avoid a
-              default value of `-d' given by some make applications.
   PTHREAD_CFLAGS
               CFLAGS used to compile Pthread programs
   PTHREAD_LIBS

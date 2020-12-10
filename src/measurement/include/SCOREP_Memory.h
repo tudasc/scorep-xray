@@ -62,7 +62,7 @@ typedef enum SCOREP_MemoryType
     /* For per-location definitions */
     SCOREP_MEMORY_TYPE_DEFINITIONS,
 
-    /** separate because we might clear them for periscope from time to time */
+    /** separate to be able to better distinguish memory types when generating memory statistics */
     SCOREP_MEMORY_TYPE_PROFILING,
 
     SCOREP_NUMBER_OF_MEMORY_TYPES
@@ -70,8 +70,8 @@ typedef enum SCOREP_MemoryType
 
 
 /**
- * Initialize the memory system for the measurement core, the adapters and the
- * online interface, i.e. everything except otf2.
+ * Initialize the memory system for the measurement core and the adapters,
+ * i.e. everything except otf2.
  *
  * @param totalMemory total amount of memory in bytes the measurement system
  * should use.

@@ -25,8 +25,6 @@
 # Not a compilation unit.
 /src/measurement/filtering/scorep_filtering_confvars.inc.c -hook-config
 # Not a compilation unit.
-/src/measurement/online_access/scorep_oa_confvars.inc.c -hook-config
-# Not a compilation unit.
 /src/measurement/profiling/scorep_profile_confvars.inc.c -hook-config
 # inc.c files do not need config.h
 /src/measurement/substrates/scorep_substrates_plugins_confvars.inc.c -hook-config
@@ -40,8 +38,6 @@
 /src/services/timer/scorep_timer_confvars.inc.c -hook-config
 # config.h provided by user of this snippet.
 /src/services/timer/scorep_timer_tsc.inc.c -hook-config
-# test file compiled with scorep
-/test/OA/serial/C/oa_test.c -hook-config
 # test file compiled with scorep
 /test/adapters/cuda/cuda_test.cu -hook-config
 # test file compiled with scorep

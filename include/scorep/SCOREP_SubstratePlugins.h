@@ -804,8 +804,6 @@ typedef struct SCOREP_SubstratePluginInfo
      * This function assigns a specific ID to the plugin that can be used for accessing thread local storage.
      * However, most of the internal functionality is not available at the time this function is called. Therefore, only the id should be stored for now.
      *
-     * The function might be called multiple times when the Online Access interface is used and re-initializes Score-P.
-     *
      * @param plugin_id a specific ID that is assigned to the plugin and can be used to access thread local storages.
      * (see also SCOREP_Location_SetData and SCOREP_Location_GetData)
      * This ID is only valid for the current Score-P run.

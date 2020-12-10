@@ -53,7 +53,6 @@
 #include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
-#include <SCOREP_OA_Functions.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
@@ -67,8 +66,6 @@
 #define SCOREP_F_RegionByNameEnd_U SCOREP_F_REGIONBYNAMEEND
 #define SCOREP_F_RewindRegionEnd_U SCOREP_F_REWINDREGIONEND
 #define SCOREP_F_RegionEnter_U SCOREP_F_REGIONENTER
-#define SCOREP_F_OaBegin_U SCOREP_F_OABEGIN
-#define SCOREP_F_OaEnd_U SCOREP_F_OAEND
 
 #define SCOREP_F_Begin_L scorep_f_begin
 #define SCOREP_F_RegionByNameBegin_L scorep_f_regionbynamebegin
@@ -78,8 +75,6 @@
 #define SCOREP_F_RegionByNameEnd_L scorep_f_regionbynameend
 #define SCOREP_F_RewindRegionEnd_L scorep_f_rewindregionend
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
-#define SCOREP_F_OaBegin_L scorep_f_oabegin
-#define SCOREP_F_OaEnd_L scorep_f_oaend
 
 
 extern SCOREP_Mutex    scorep_user_region_mutex;
@@ -342,71 +337,6 @@ FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )
                          "to ensure that handles are initialized." );
         }
         scorep_user_region_enter( SCOREP_F2C_REGION( *regionHandle ) );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-
-void
-FSUB( SCOREP_F_OaBegin )( SCOREP_Fortran_RegionHandle* regionHandle,
-                          char*                        regionNameF,
-                          int32_t*                     regionType,
-                          char*                        fileNameF,
-                          int32_t*                     lineNo,
-                          scorep_fortran_charlen_t     regionNameLen,
-                          scorep_fortran_charlen_t     fileNameLen )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-#if !( defined( __PGI ) && __PGIC__ < 18 )
-        if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
-#endif
-        {
-            /* Make sure the handle is initialized */
-            region_init_fortran( regionHandle,
-                                 regionNameF,
-                                 regionType,
-                                 fileNameF,
-                                 lineNo,
-                                 regionNameLen,
-                                 fileNameLen );
-        }
-
-        SCOREP_User_RegionHandle handle = SCOREP_F2C_REGION( *regionHandle );
-
-        /* Special phase logic */
-        SCOREP_OA_PhaseBegin( handle->handle );
-
-        /* Generate region event */
-        scorep_user_region_enter( handle );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-
-void
-FSUB( SCOREP_F_OaEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_User_RegionHandle handle = SCOREP_F2C_REGION( *regionHandle );
-
-        scorep_user_region_exit( handle );
-        SCOREP_OA_PhaseEnd( handle->handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

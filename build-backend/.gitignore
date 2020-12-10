@@ -8,15 +8,10 @@
 /config.summary
 /.deps
 /Makefile
-/online-access-registry
 /scorep
 /scorep-config
 /scorep-info
 /scorep-backend-info
-/scorep_oa_parser.c
-/scorep_oa_scanner.c
-/scorep_oa_scanner.h
 /run_cct_tests.sh
-/scorep-online-access-registry
 /scorep-wrapper
 /scorep-libwrap-init

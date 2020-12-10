@@ -360,11 +360,6 @@ information, and the corresponding components of the
 \href{http://www.cs.uoregon.edu/Research/tau/home.php,TAU}
 toolsuite.
 
-Alternatively, the \href{http://www.lrr.in.tum.de/periscope,Periscope}
-system may be used to analyze the behaviour of the code on-line during
-its run time, i.e. (in contrast to the approaches mentioned above)
-\emph{before} the end of the program run.
-
 
 
 @section quick_example Simple Example

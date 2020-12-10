@@ -184,9 +184,6 @@ uint64_t scorep_mpi_enabled = 0;
 bool scorep_mpi_memory_recording = false;
 
 
-bool scorep_mpi_hooks_on = false;
-
-
 /**
    Stores whether recording of MPI topologies is enabled
  */
@@ -258,17 +255,6 @@ static const SCOREP_ConfigVariable scorep_mpi_confvars[] = {
         "and MPI_FREE_MEM",
         "Requires that the MISC group is also recorded."
     },
-    #if !defined( SCOREP_MPI_NO_HOOKS )
-    {
-        "online_analysis",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_mpi_hooks_on,
-        NULL,
-        "false",
-        "Enable online mpi wait states analysis",
-        ""
-    },
-    #endif
     SCOREP_CONFIG_TERMINATOR
 };
 

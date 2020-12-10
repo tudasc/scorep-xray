@@ -90,31 +90,6 @@ call_pmpi
     const SCOREP::Wrapgen::Func& func
 );
 
-/** Function handler to create a post communication hook call.
- */
-std::string
-call_posthook
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-/** Function handler to create a pre communication hook call.
- */
-std::string
-call_prehook
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-/** Function handler to declare variables needed by hooks.
- */
-std::string
-declare_hooks
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-
 std::string
 attribute
 (
@@ -295,25 +270,6 @@ guard_start
  */
 std::string
 guard_end
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-/** Returns the opening statement of the hooks guard.
-    The guard prevents the building of MPI Porfiling Hooks.
-    It inserts #if ! defined(SCOREP_MPI_NO_HOOKS).
- */
-std::string
-guard_hooks
-(
-    const SCOREP::Wrapgen::Func& func
-);
-
-/** Returns the if statement to check whether hooks are enabled.
-    It inserts if(SCOREP_IS_MPI_HOOKS_ON).
- */
-std::string
-check_hooks
 (
     const SCOREP::Wrapgen::Func& func
 );

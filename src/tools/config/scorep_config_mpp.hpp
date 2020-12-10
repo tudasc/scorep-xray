@@ -88,12 +88,10 @@ public:
      * a customized class.
      * @param libs The list of libs to which you may add other libs.
      * @param deps The library dependencies information structure.
-     * @param withOnlineAccess Specifies whether online access is enabled or not
      */
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps,
-             bool                               withOnlineAccess );
+             SCOREP_Config_LibraryDependencies& deps );
 
     /**
      * Adds required linker flags of this paradigm to the list of flags.
@@ -156,8 +154,7 @@ public:
     SCOREP_Config_MockupMppSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps,
-             bool                               withOnlineAccess );
+             SCOREP_Config_LibraryDependencies& deps );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };
@@ -175,8 +172,7 @@ public:
     SCOREP_Config_MpiMppSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps,
-             bool                               withOnlineAccess );
+             SCOREP_Config_LibraryDependencies& deps );
     virtual void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
@@ -198,8 +194,7 @@ public:
     SCOREP_Config_ShmemMppSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps,
-             bool                               withOnlineAccess );
+             SCOREP_Config_LibraryDependencies& deps );
     virtual void
     addLdFlags( std::string& ldflags,
                 bool         build_check,

@@ -277,11 +277,6 @@ SCOREP_ConfigHelp( bool  full,
         NULL  \
 }
 
-/**
- * @ToDo how can the online measurement system change configs?
- * This interface will be private to the measurement system.
- */
-
 
 /*
  * @}

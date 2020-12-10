@@ -76,7 +76,6 @@ typedef struct
     uint64_t                         bytes;
     MPI_Datatype                     datatype;
     SCOREP_InterimCommunicatorHandle comm_handle;
-    void*                            online_analysis_pod;
 } scorep_mpi_request_p2p_data;
 
 typedef struct

@@ -17,10 +17,6 @@ ${proto:c}
   const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
 
-${guard:hooks}
-  ${declarehooks};
-${guard:end}
-
   int sz;
   if (event_gen_active)
   {
@@ -29,11 +25,6 @@ ${guard:end}
     if (event_gen_active_for_group)
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
-
-  ${guard:hooks}
-      ${check:hooks}
-        ${call:prehook};
-   ${guard:end}
 
       if (dest != MPI_PROC_NULL)
       {
@@ -56,11 +47,6 @@ ${guard:end}
   {
     if (event_gen_active_for_group)
     {
-${guard:hooks}
-      ${check:hooks}
-        ${call:posthook};
-${guard:end}
-
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
     else if ( SCOREP_IsUnwindingEnabled() )

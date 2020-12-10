@@ -213,8 +213,6 @@ AFS_SUMMARY_SECTION_END
 SCOREP_SHMEM
 AC_SCOREP_COMPILER_INSTRUMENTATION
 
-#AC_SCOREP_ONLINE_ACCESS
-
 SCOREP_MEMORY_SUPPORT
 SCOREP_GCC_ATOMIC_BUILTINS
 
@@ -229,8 +227,6 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/shmem/Makefile:../test/inst
                  ../src/scorep_config_tool_shmem.h:../src/tools/config/scorep_config_tool_shmem.h.in])
 ##AC_CONFIG_FILES([../test/shmem_omp/run_metric_collection_test.sh], \
 ##                [chmod +x ../test/shmem_omp/run_metric_collection_test.sh])
-##AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
-##                [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
 
 SCOREP_LIBRARY_WRAPPING_GENERATOR(
     [AC_CONFIG_FILES([../test/tools/libwrap_init/shmem.sh])])

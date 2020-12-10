@@ -156,13 +156,6 @@ MPI_Wait( MPI_Request* request,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( status == MPI_STATUS_IGNORE )
     {
         status = &mystatus;
@@ -172,13 +165,6 @@ MPI_Wait( MPI_Request* request,
     SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Wait( request, status );
     SCOREP_EXIT_WRAPPED_REGION();
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, status, start_time_stamp );
-    }
-  #endif
 
     scorep_mpi_check_request( orig_req, status );
 
@@ -237,13 +223,6 @@ MPI_Waitall( int          count,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
@@ -259,13 +238,6 @@ MPI_Waitall( int          count,
     for ( i = 0; i < count; i++ )
     {
         orig_req = scorep_mpi_saved_request_get( i );
-
-    #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, &( array_of_statuses[ i ] ), start_time_stamp );
-        }
-    #endif
 
         scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
     }
@@ -326,13 +298,6 @@ MPI_Waitany( int          count,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( status == MPI_STATUS_IGNORE )
     {
         status = &mystatus;
@@ -353,12 +318,6 @@ MPI_Waitany( int          count,
 
             if ( i == *index )
             {
-                  #if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, status, start_time_stamp );
-                }
-          #endif
                 scorep_mpi_check_request( orig_req, status );
             }
             else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
@@ -370,12 +329,6 @@ MPI_Waitany( int          count,
     else
     {
         orig_req = scorep_mpi_saved_request_get( *index );
-      #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, status, start_time_stamp );
-        }
-      #endif
         scorep_mpi_check_request( orig_req, status );
     }
 
@@ -437,13 +390,6 @@ MPI_Waitsome( int          incount,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
@@ -477,12 +423,6 @@ MPI_Waitsome( int          incount,
                 if ( j < *outcount )
                 {
                     tmpstat = array_of_statuses[ cur ];
-                  #if !defined( SCOREP_MPI_NO_HOOKS )
-                    if ( SCOREP_IS_MPI_HOOKS_ON )
-                    {
-                        SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, &( array_of_statuses[ cur ] ), start_time_stamp );
-                    }
-                          #endif
                     scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
                     array_of_statuses[ j ] = tmpstat;
 
@@ -504,12 +444,6 @@ MPI_Waitsome( int          incount,
         for ( i = 0; i < *outcount; ++i )
         {
             orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
-                  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( orig_req, &( array_of_statuses[ i ] ), start_time_stamp );
-            }
-          #endif
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
@@ -576,13 +510,6 @@ MPI_Test( MPI_Request* request,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( status == MPI_STATUS_IGNORE )
     {
         status = &mystatus;
@@ -593,12 +520,6 @@ MPI_Test( MPI_Request* request,
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *flag )
     {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, status, start_time_stamp );
-        }
-      #endif
         scorep_mpi_check_request( orig_req, status );
     }
     else if ( orig_req && event_gen_active_for_group && xtest_active )
@@ -664,13 +585,6 @@ MPI_Testany( int          count,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( status == MPI_STATUS_IGNORE )
     {
         status = &mystatus;
@@ -690,12 +604,6 @@ MPI_Testany( int          count,
 
             if ( *index == i )
             {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, status, start_time_stamp );
-                }
-          #endif
                 scorep_mpi_check_request( orig_req, status );
             }
             else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
@@ -707,12 +615,6 @@ MPI_Testany( int          count,
     else if ( *flag && *index != MPI_UNDEFINED )
     {
         orig_req = scorep_mpi_saved_request_get( *index );
-      #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, status, start_time_stamp );
-        }
-      #endif
         scorep_mpi_check_request( orig_req, status );
     }
     if ( event_gen_active )
@@ -772,13 +674,6 @@ MPI_Testall( int          count,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
@@ -796,12 +691,6 @@ MPI_Testall( int          count,
         for ( i = 0; i < count; i++ )
         {
             orig_req = scorep_mpi_saved_request_get( i );
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, &( array_of_statuses[ i ] ), start_time_stamp );
-            }
-          #endif
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
@@ -876,13 +765,6 @@ MPI_Testsome( int          incount,
         }
     }
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-    }
-  #endif
-
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
@@ -916,12 +798,6 @@ MPI_Testsome( int          incount,
                 if ( j < *outcount )
                 {
                     tmpstat = array_of_statuses[ cur ];
-                  #if !defined( SCOREP_MPI_NO_HOOKS )
-                    if ( SCOREP_IS_MPI_HOOKS_ON )
-                    {
-                        SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, &( array_of_statuses[ cur ] ), start_time_stamp );
-                    }
-                          #endif
                     scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
                     array_of_statuses[ j ] = tmpstat;
 
@@ -943,12 +819,6 @@ MPI_Testsome( int          incount,
         for ( i = 0; i < *outcount; ++i )
         {
             orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
-                  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Asynch_Complete( orig_req, &( array_of_statuses[ i ] ), start_time_stamp );
-            }
-          #endif
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
@@ -1013,13 +883,6 @@ MPI_Start( MPI_Request* request )
 
     if ( event_gen_active_for_group )
     {
-        #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            start_time_stamp = SCOREP_GetLastTimeStamp();
-        }
-    #endif
-
         scorep_mpi_request* req = scorep_mpi_request_get( *request );
         if ( req && ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) )
         {
@@ -1048,12 +911,6 @@ MPI_Start( MPI_Request* request )
     return_val = PMPI_Start( request );
     SCOREP_EXIT_WRAPPED_REGION();
 
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        SCOREP_Hooks_Post_MPI_Start( request, start_time_stamp, return_val );
-    }
-  #endif
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
@@ -1110,13 +967,6 @@ MPI_Startall( int          count,
 
     if ( event_gen_active_for_group )
     {
-        #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            start_time_stamp = SCOREP_GetLastTimeStamp();
-        }
-    #endif
-
         for ( i = 0; i < count; i++ )
         {
             scorep_mpi_request* req = scorep_mpi_request_get( array_of_requests[ i ] );
@@ -1140,16 +990,6 @@ MPI_Startall( int          count,
     SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Startall( count, array_of_requests );
     SCOREP_EXIT_WRAPPED_REGION();
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        for ( i = 0; i < count; i++ )
-        {
-            SCOREP_Hooks_Post_MPI_Start( &array_of_requests[ i ], start_time_stamp, return_val );
-        }
-    }
-  #endif
 
     if ( event_gen_active )
     {
@@ -1211,12 +1051,6 @@ MPI_Request_free( MPI_Request* request )
     }
 
     req = scorep_mpi_request_get( *request );
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        SCOREP_Hooks_Pre_MPI_Request_free( req );
-    }
-  #endif
     if ( req )
     {
         if ( req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active_for_group && xnb_active )
@@ -1332,13 +1166,6 @@ MPI_Cancel( MPI_Request* request )
     SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Cancel( request );
     SCOREP_EXIT_WRAPPED_REGION();
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        SCOREP_Hooks_Post_MPI_Cancel( req );
-    }
-  #endif
 
     if ( event_gen_active )
     {

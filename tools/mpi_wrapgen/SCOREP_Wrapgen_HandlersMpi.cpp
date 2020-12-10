@@ -92,9 +92,6 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "call:f2c_c2f" ]    = handler::mpi::call_f2c_c2f;
     func_handlers[ "call:fortran" ]    = handler::mpi::call_fortran;
     func_handlers[ "call:pmpi" ]       = handler::mpi::call_pmpi;
-    func_handlers[ "call:posthook" ]   = handler::mpi::call_posthook;
-    func_handlers[ "call:prehook" ]    = handler::mpi::call_prehook;
-    func_handlers[ "declarehooks" ]    = handler::mpi::declare_hooks;
     func_handlers[ "cleanup" ]         = handler::mpi::cleanup;
     func_handlers[ "cleanup:f2c_c2f" ] = handler::mpi::cleanup_f2c_c2f;
     func_handlers[ "cleanup:fortran" ] = handler::mpi::cleanup_fortran;
@@ -121,8 +118,6 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "xblock:f2c_c2f" ]  = handler::mpi::xblock_f2c_c2f;
     func_handlers[ "guard:start" ]     = handler::mpi::guard_start;
     func_handlers[ "guard:end" ]       = handler::mpi::guard_end;
-    func_handlers[ "guard:hooks" ]     = handler::mpi::guard_hooks;
-    func_handlers[ "check:hooks" ]     = handler::mpi::check_hooks;
     func_handlers[ "comm:new" ]        = handler::mpi::comm_new;
     func_handlers[ "comm:parent" ]     = handler::mpi::comm_parent;
 
@@ -381,82 +376,6 @@ SCOREP::Wrapgen::handler::mpi::call_pmpi
     str += ")";
 
     return str;
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::call_posthook
-(
-    const Func& func
-)
-{
-    string str = "SCOREP_Hooks_Post_" + func.get_name() + "(";
-
-    for ( size_t i = 0; i < func.get_param_count(); ++i )
-    {
-        const Funcparam& arg = func.get_param( i );
-
-        if ( i )
-        {
-            str += ", ";
-        }
-
-        str += arg.get_name();
-    }
-    str += ", start_time_stamp, return_val)";
-
-    return str;
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::call_prehook
-(
-    const Func& func
-)
-{
-    string str = "start_time_stamp = SCOREP_GetLastTimeStamp()";
-    return str;
-    /* string str = "SCOREP_Hooks_Post_" + func.get_name() + "(";
-
-       for ( size_t i = 0; i < func.get_param_count(); ++i )
-       {
-         const Funcparam& arg = func.get_param( i );
-
-         if ( i )
-         {
-             str += ", ";
-         }
-
-         str += arg.get_name();
-       }
-       str += ", start_time_stamp, return_val)";
-
-       return str;*/
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::declare_hooks
-(
-    const Func& func
-)
-{
-    string str = "uint64_t start_time_stamp";
-    return str;
-    /* string str = "SCOREP_Hooks_Post_" + func.get_name() + "(";
-
-       for ( size_t i = 0; i < func.get_param_count(); ++i )
-       {
-         const Funcparam& arg = func.get_param( i );
-
-         if ( i )
-         {
-             str += ", ";
-         }
-
-         str += arg.get_name();
-       }
-       str += ", start_time_stamp, return_val)";
-
-       return str;*/
 }
 
 string
@@ -1233,30 +1152,6 @@ SCOREP::Wrapgen::handler::mpi::guard_start
     }
 
     return guard;
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::guard_hooks
-(
-    const Func& func
-)
-{
-    string guard = "#if ";
-
-
-    // global guard for all hooks
-    guard += "! defined(SCOREP_MPI_NO_HOOKS)";
-
-    return guard;
-}
-
-string
-SCOREP::Wrapgen::handler::mpi::check_hooks
-(
-    const Func& func
-)
-{
-    return "if(SCOREP_IS_MPI_HOOKS_ON)";
 }
 
 string

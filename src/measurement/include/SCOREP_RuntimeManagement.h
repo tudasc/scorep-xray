@@ -53,10 +53,7 @@ UTILS_BEGIN_C_DECLS
  * SCOREP_InitMeasurement(). There the initialization of all adapter in use is
  * triggered. Adapters may also explicitly finalize the measurement system by
  * calling SCOREP_FinalizeMeasurement() which is usually implicitly done. During
- * measurement the recording of events can be dis- or enabled or temporarily
- * interrupted (see the todos).
- *
- * @todo Periscope interface function. Milestone 2
+ * measurement the recording of events can be dis- or enabled (see the todos).
  *
  * @todo SCOREP_EnableRecording() and SCOREP_DisableRecording(). Specify what will
  * happen internally. Will the dis/enabling be proccess-wise or will there be

@@ -112,8 +112,7 @@ SCOREP_Config_MppSystem::printHelp( void )
 
 void
 SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
-                                  SCOREP_Config_LibraryDependencies& deps,
-                                  bool                               withOnlineAccess )
+                                  SCOREP_Config_LibraryDependencies& deps )
 {
 }
 
@@ -135,20 +134,9 @@ SCOREP_Config_MockupMppSystem::SCOREP_Config_MockupMppSystem()
 
 void
 SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
-                                        SCOREP_Config_LibraryDependencies& deps,
-                                        bool                               withOnlineAccess )
+                                        SCOREP_Config_LibraryDependencies& deps )
 {
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
-#if HAVE_BACKEND( ONLINE_ACCESS )
-    if ( withOnlineAccess )
-    {
-        deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
-    }
-    else
-#endif /* HAVE_BACKEND( ONLINE_ACCESS ) */
-    {
-        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
-    }
 }
 
 void
@@ -167,22 +155,11 @@ SCOREP_Config_MpiMppSystem::SCOREP_Config_MpiMppSystem()
 
 void
 SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
-                                     SCOREP_Config_LibraryDependencies& deps,
-                                     bool                               withOnlineAccess )
+                                     SCOREP_Config_LibraryDependencies& deps )
 {
     libs.push_back( "libscorep_adapter_mpi_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mpi" );
-#if HAVE_BACKEND( ONLINE_ACCESS )
-    if ( withOnlineAccess )
-    {
-        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );
-    }
-    else
-#endif /* HAVE_BACKEND( ONLINE_ACCESS ) */
-    {
-        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
-    }
 
     deps.addDependency( "libscorep_adapter_mpi_mgmt", "libscorep_alloc_metric" );
     deps.addDependency( "libscorep_adapter_mpi_mgmt", "libscorep_adapter_utils" );
@@ -217,13 +194,11 @@ SCOREP_Config_ShmemMppSystem::SCOREP_Config_ShmemMppSystem()
 
 void
 SCOREP_Config_ShmemMppSystem::addLibs( std::deque<std::string>&           libs,
-                                       SCOREP_Config_LibraryDependencies& deps,
-                                       bool                               withOnlineAccess )
+                                       SCOREP_Config_LibraryDependencies& deps )
 {
     libs.push_back( "libscorep_adapter_shmem_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_shmem_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_shmem" );
-    deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     deps.addDependency( "libscorep_adapter_shmem_mgmt", "libscorep_alloc_metric" );
 }
 

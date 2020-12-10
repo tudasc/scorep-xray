@@ -105,11 +105,6 @@ int MPI_Recv( void* buf,
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
 
-#if !defined(SCOREP_MPI_NO_HOOKS)
-      if(SCOREP_IS_MPI_HOOKS_ON)
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-#endif
-
       if (status == MPI_STATUS_IGNORE)
         status = &mystatus;
     }
@@ -127,11 +122,6 @@ int MPI_Recv( void* buf,
   {
     if (event_gen_active_for_group)
     {
-#if ! defined(SCOREP_MPI_NO_HOOKS)
-      if(SCOREP_IS_MPI_HOOKS_ON)
-        SCOREP_Hooks_Post_MPI_Recv(buf, count, datatype, source, tag, comm, status, start_time_stamp, return_val);
-#endif
-
       if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
       {
         PMPI_Type_size(datatype, &sz);
@@ -207,11 +197,6 @@ int MPI_Irecv(void* buf,
     if (event_gen_active_for_group)
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
-
-#if !defined(SCOREP_MPI_NO_HOOKS)
-      if(SCOREP_IS_MPI_HOOKS_ON)
-        start_time_stamp = SCOREP_GetLastTimeStamp();
-#endif
     }
     else if ( SCOREP_IsUnwindingEnabled() )
     {
@@ -234,10 +219,6 @@ int MPI_Irecv(void* buf,
 
     scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_NONE,
                        tag, 0, (uint64_t)count * sz, datatype, comm, reqid);
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    if (event_gen_active_for_group && SCOREP_IS_MPI_HOOKS_ON)
-      SCOREP_Hooks_Post_MPI_Irecv( buf, count, datatype, source, tag, comm, request, start_time_stamp, return_val );
-#endif
   }
 
   if (event_gen_active)
@@ -315,11 +296,6 @@ int MPI_Recv_init(void* buf,
     scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
                        tag, source, (uint64_t)count * sz, datatype, comm,
                        scorep_mpi_get_request_id());
-
-	#if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-	  SCOREP_Hooks_Post_MPI_Recv_init(buf, count, datatype, source, tag, comm, request,0,return_val);
-    #endif
   }
 
   if (event_gen_active)

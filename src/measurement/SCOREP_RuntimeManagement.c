@@ -77,7 +77,6 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Filtering_Management.h>
 #include <scorep_unify.h>
-#include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Substrates_Management.h>
 #include <scorep_substrates_definition.h>
 #include <SCOREP_ErrorCallback.h>
@@ -890,8 +889,6 @@ scorep_finalize( void )
     finalized = true;
 
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-
-    SCOREP_OA_Finalize();
 
     SCOREP_TIME( synchronize, ( SCOREP_SYNCHRONIZATION_MODE_END ) );
 

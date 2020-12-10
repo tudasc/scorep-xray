@@ -68,7 +68,6 @@ struct scorep_status
     bool is_process_master_on_node;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
-    bool is_oa_enabled;
     bool otf2_has_flushed;
 };
 
@@ -82,7 +81,6 @@ static scorep_status scorep_process_local_status = {
     .is_process_master_on_node = false,
     .is_profiling_enabled      = true,
     .is_tracing_enabled        = true,
-    .is_oa_enabled             = true,
     .otf2_has_flushed          = false
 };
 
@@ -224,12 +222,6 @@ bool
 SCOREP_IsProfilingEnabled( void )
 {
     return scorep_process_local_status.is_profiling_enabled;
-}
-
-bool
-SCOREP_IsOAEnabled( void )
-{
-    return scorep_process_local_status.is_oa_enabled;
 }
 
 void

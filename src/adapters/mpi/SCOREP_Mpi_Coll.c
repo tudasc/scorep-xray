@@ -58,6 +58,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include "scorep_mpi_request_mgmt.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
@@ -130,13 +131,6 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLGATHER,
@@ -231,13 +225,6 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLGATHERV,
@@ -318,13 +305,6 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Allreduce( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLREDUCE,
@@ -404,13 +384,6 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALL,
@@ -504,13 +477,6 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLV,
@@ -608,13 +574,6 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLW,
@@ -678,13 +637,6 @@ MPI_Barrier( MPI_Comm comm )
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Barrier( comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_BARRIER,
@@ -767,13 +719,6 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Bcast( buffer, count, datatype, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_BCAST,
@@ -849,13 +794,6 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Exscan( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_EXSCAN,
@@ -943,13 +881,6 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Gather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_GATHER,
@@ -1042,13 +973,6 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Gatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_GATHERV,
@@ -1135,13 +1059,6 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Reduce( sendbuf, recvbuf, count, datatype, op, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE,
@@ -1230,13 +1147,6 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER,
@@ -1316,13 +1226,6 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Reduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER_BLOCK,
@@ -1406,13 +1309,6 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Scan( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_SCAN,
@@ -1503,13 +1399,6 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Scatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_SCATTER,
@@ -1603,13 +1492,6 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
     {
         if ( event_gen_active_for_group )
         {
-          #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Scatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
-            }
-          #endif
-
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      root_loc,
                                      SCOREP_MPI_COLLECTIVE__MPI_SCATTERV,

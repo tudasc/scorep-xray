@@ -57,8 +57,8 @@
 uint64_t*
 SCOREP_Metric_Read( SCOREP_Location* location );
 
-/** @brief  Reinitialize metric management. This functionality is used by
- *          Score-P Online Access to change recorded metrics between
+/** @brief  Reinitialize metric management. This functionality can be used by
+ *          online monitoring tools to change recorded metrics between
  *          separate phases of program execution.
  */
 SCOREP_ErrorCode

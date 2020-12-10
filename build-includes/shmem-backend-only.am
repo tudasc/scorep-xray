@@ -2,7 +2,6 @@
 
 include ../src/adapters/shmem/Makefile.shmem.inc.am
 include ../src/measurement/Makefile.shmem.inc.am
-include ../src/measurement/online_access/Makefile.shmem.inc.am
 include ../src/tools/config/Makefile.la_dependencies.inc.am
 
 ## include tests

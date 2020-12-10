@@ -88,10 +88,6 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -100,13 +96,6 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BSEND ] );
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-   #endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -129,13 +118,6 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         if ( event_gen_active_for_group )
         {
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Bsend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
-            }
-#endif
-
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BSEND ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -169,10 +151,6 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -181,13 +159,6 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RSEND ] );
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-   #endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -210,13 +181,6 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         if ( event_gen_active_for_group )
         {
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Rsend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
-            }
-#endif
-
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RSEND ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -250,10 +214,6 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -262,13 +222,6 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SEND ] );
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-   #endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -291,13 +244,6 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
     {
         if ( event_gen_active_for_group )
         {
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Send( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
-            }
-#endif
-
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SEND ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -331,10 +277,6 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -343,13 +285,6 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SSEND ] );
-
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-   #endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -372,13 +307,6 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         if ( event_gen_active_for_group )
         {
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Ssend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
-            }
-#endif
-
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SSEND ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -429,13 +357,6 @@ MPI_Recv( void* buf,
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RECV ] );
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
-
             if ( status == MPI_STATUS_IGNORE )
             {
                 status = &mystatus;
@@ -455,13 +376,6 @@ MPI_Recv( void* buf,
     {
         if ( event_gen_active_for_group )
         {
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                SCOREP_Hooks_Post_MPI_Recv( buf, count, datatype, source, tag, comm, status, start_time_stamp, return_val );
-            }
-#endif
-
             if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
             {
                 PMPI_Type_size( datatype, &sz );
@@ -933,10 +847,6 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -946,13 +856,6 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBSEND ] );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -987,13 +890,6 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             {
                 scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                                                tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Ibsend( buf, count, datatype, dest, tag, comm, request, start_time_stamp, return_val );
-                }
-#endif
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBSEND ] );
@@ -1027,10 +923,6 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -1040,13 +932,6 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IRSEND ] );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -1081,13 +966,6 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             {
                 scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                                                tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Irsend( buf, count, datatype, dest, tag, comm, request, start_time_stamp, return_val );
-                }
-#endif
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IRSEND ] );
@@ -1121,10 +999,6 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -1134,13 +1008,6 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISEND ] );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -1175,13 +1042,6 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
             {
                 scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                                                tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Isend( buf, count, datatype, dest, tag, comm, request, start_time_stamp, return_val );
-                }
-#endif
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISEND ] );
@@ -1215,10 +1075,6 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     int                 return_val;
     SCOREP_MpiRequestId reqid;
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    uint64_t start_time_stamp;
-#endif
-
     int sz;
     if ( event_gen_active )
     {
@@ -1228,13 +1084,6 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISSEND ] );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
 
             if ( dest != MPI_PROC_NULL )
             {
@@ -1269,13 +1118,6 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             {
                 scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                                                tag, dest, ( uint64_t )count * sz, datatype, comm, reqid );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-                if ( SCOREP_IS_MPI_HOOKS_ON )
-                {
-                    SCOREP_Hooks_Post_MPI_Issend( buf, count, datatype, dest, tag, comm, request, start_time_stamp, return_val );
-                }
-#endif
             }
 
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISSEND ] );
@@ -1324,13 +1166,6 @@ MPI_Irecv( void*        buf,
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IRECV ] );
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-            if ( SCOREP_IS_MPI_HOOKS_ON )
-            {
-                start_time_stamp = SCOREP_GetLastTimeStamp();
-            }
-#endif
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -1355,12 +1190,6 @@ MPI_Irecv( void*        buf,
 
         scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_NONE,
                                        tag, 0, ( uint64_t )count * sz, datatype, comm, reqid );
-#if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( event_gen_active_for_group && SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Irecv( buf, count, datatype, source, tag, comm, request, start_time_stamp, return_val );
-        }
-#endif
     }
 
     if ( event_gen_active )
@@ -1737,13 +1566,6 @@ MPI_Recv_init( void*        buf,
         scorep_mpi_request_p2p_create( *request, SCOREP_MPI_REQUEST_TYPE_RECV, SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT,
                                        tag, source, ( uint64_t )count * sz, datatype, comm,
                                        scorep_mpi_get_request_id() );
-
-        #if !defined( SCOREP_MPI_NO_HOOKS )
-        if ( SCOREP_IS_MPI_HOOKS_ON )
-        {
-            SCOREP_Hooks_Post_MPI_Recv_init( buf, count, datatype, source, tag, comm, request, 0, return_val );
-        }
-    #endif
     }
 
     if ( event_gen_active )
