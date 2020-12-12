@@ -169,19 +169,9 @@ scorep_mpi_fortran_init( void )
     /* Set Fortran constants */
     /* The ifdef guard makes sure we skip the Fortran things in case we have no Fortran */
     SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( &scorep_mpi_status_size );
-#if HAVE( MPI_BOTTOM )
     SCOREP_FORTRAN_GET_MPI_BOTTOM();
-#endif
-#if HAVE( MPI_IN_PLACE )
     SCOREP_FORTRAN_GET_MPI_IN_PLACE();
-#endif
-#if HAVE( MPI_STATUS_IGNORE )
     SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE();
-#endif
-#if HAVE( MPI_STATUSES_IGNORE )
     SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE();
-#endif
-#if HAVE( MPI_UNWEIGHTED )
     SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
-#endif
 }

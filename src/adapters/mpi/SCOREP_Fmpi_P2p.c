@@ -382,12 +382,10 @@ FSUB( MPI_Bsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Bsend( buf, *count, *datatype, *dest, *tag, *comm );
@@ -466,12 +464,10 @@ FSUB( MPI_Ibsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ibsend( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -493,12 +489,10 @@ FSUB( MPI_Improbe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Messa
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Improbe( *source, *tag, *comm, flag, message, status );
@@ -520,12 +514,10 @@ FSUB( MPI_Imrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* 
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Imrecv( buf, *count, *datatype, message, request );
@@ -547,12 +539,10 @@ FSUB( MPI_Iprobe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Status
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Iprobe( *source, *tag, *comm, flag, status );
@@ -574,12 +564,10 @@ FSUB( MPI_Irecv )( void* buf, int* count, MPI_Datatype* datatype, int* source, i
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Irecv( buf, *count, *datatype, *source, *tag, *comm, request );
@@ -601,12 +589,10 @@ FSUB( MPI_Irsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Irsend( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -628,12 +614,10 @@ FSUB( MPI_Isend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Isend( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -655,12 +639,10 @@ FSUB( MPI_Issend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Issend( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -682,12 +664,10 @@ FSUB( MPI_Mprobe )( int* source, int* tag, MPI_Comm* comm, MPI_Message* message,
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Mprobe( *source, *tag, *comm, message, status );
@@ -709,18 +689,14 @@ FSUB( MPI_Mrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* m
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Mrecv( buf, *count, *datatype, message, status );
@@ -742,12 +718,10 @@ FSUB( MPI_Probe )( int* source, int* tag, MPI_Comm* comm, MPI_Status* status, in
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Probe( *source, *tag, *comm, status );
@@ -769,18 +743,14 @@ FSUB( MPI_Recv )( void* buf, int* count, MPI_Datatype* datatype, int* source, in
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Recv( buf, *count, *datatype, *source, *tag, *comm, status );
@@ -802,12 +772,10 @@ FSUB( MPI_Recv_init )( void* buf, int* count, MPI_Datatype* datatype, int* sourc
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Recv_init( buf, *count, *datatype, *source, *tag, *comm, request );
@@ -829,12 +797,10 @@ FSUB( MPI_Rsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rsend( buf, *count, *datatype, *dest, *tag, *comm );
@@ -856,12 +822,10 @@ FSUB( MPI_Rsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rsend_init( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -883,12 +847,10 @@ FSUB( MPI_Send )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int*
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Send( buf, *count, *datatype, *dest, *tag, *comm );
@@ -910,12 +872,10 @@ FSUB( MPI_Send_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest,
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Send_init( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -937,24 +897,18 @@ FSUB( MPI_Sendrecv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( recvbuf == scorep_mpi_fortran_bottom )
     {
         recvbuf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Sendrecv( sendbuf, *sendcount, *sendtype, *dest, *sendtag, recvbuf, *recvcount, *recvtype, *source, *recvtag, *comm, status );
@@ -976,18 +930,14 @@ FSUB( MPI_Sendrecv_replace )( void* buf, int* count, MPI_Datatype* datatype, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Sendrecv_replace( buf, *count, *datatype, *dest, *sendtag, *source, *recvtag, *comm, status );
@@ -1009,12 +959,10 @@ FSUB( MPI_Ssend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ssend( buf, *count, *datatype, *dest, *tag, *comm );
@@ -1036,12 +984,10 @@ FSUB( MPI_Ssend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ssend_init( buf, *count, *datatype, *dest, *tag, *comm, request );
@@ -1067,12 +1013,10 @@ FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Bsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
@@ -1158,12 +1102,10 @@ FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ibsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1190,21 +1132,17 @@ FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* 
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Improbe( *source, *tag, PMPI_Comm_f2c( *comm ), flag, &c_message, c_status_ptr );
 
     *message = PMPI_Message_c2f( c_message );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1229,12 +1167,10 @@ FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* me
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Imrecv( buf, *count, PMPI_Type_f2c( *datatype ), &c_message, &c_request );
@@ -1261,20 +1197,16 @@ FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* f
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Iprobe( *source, *tag, PMPI_Comm_f2c( *comm ), flag, c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1298,12 +1230,10 @@ FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sou
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Irecv( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1328,12 +1258,10 @@ FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Irsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1358,12 +1286,10 @@ FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Isend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1388,12 +1314,10 @@ FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Issend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1420,21 +1344,17 @@ FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* m
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Mprobe( *source, *tag, PMPI_Comm_f2c( *comm ), &c_message, c_status_ptr );
 
     *message = PMPI_Message_c2f( c_message );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1460,27 +1380,21 @@ FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* mes
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Mrecv( buf, *count, PMPI_Type_f2c( *datatype ), &c_message, c_status_ptr );
 
     *message = PMPI_Message_c2f( c_message );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1505,20 +1419,16 @@ FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* st
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Probe( *source, *tag, PMPI_Comm_f2c( *comm ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1543,26 +1453,20 @@ FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sour
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Recv( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1586,12 +1490,10 @@ FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Recv_init( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1615,12 +1517,10 @@ FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
@@ -1644,12 +1544,10 @@ FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rsend_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1673,12 +1571,10 @@ FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Send( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
@@ -1702,12 +1598,10 @@ FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Send_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
@@ -1733,32 +1627,24 @@ FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MP
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
         sendbuf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( recvbuf == scorep_mpi_fortran_bottom )
     {
         recvbuf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Sendrecv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), *dest, *sendtag, recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *source, *recvtag, PMPI_Comm_f2c( *comm ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1783,26 +1669,20 @@ FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MP
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Sendrecv_replace( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *sendtag, *source, *recvtag, PMPI_Comm_f2c( *comm ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1825,12 +1705,10 @@ FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ssend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
@@ -1854,12 +1732,10 @@ FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Ssend_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );

@@ -244,13 +244,11 @@ MPI_Waitall( int          count,
     }
   #endif
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
         array_of_statuses = scorep_mpi_get_status_array( count );
     }
-  #endif
 
     scorep_mpi_save_request_array( requests, count );
 
@@ -446,13 +444,11 @@ MPI_Waitsome( int          incount,
     }
   #endif
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
         array_of_statuses = scorep_mpi_get_status_array( incount );
     }
-  #endif
 
     scorep_mpi_save_request_array( array_of_requests, incount );
 
@@ -783,13 +779,11 @@ MPI_Testall( int          count,
     }
   #endif
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
         array_of_statuses = scorep_mpi_get_status_array( count );
     }
-  #endif
 
     scorep_mpi_save_request_array( array_of_requests, count );
 
@@ -889,13 +883,11 @@ MPI_Testsome( int          incount,
     }
   #endif
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
         /* allocate status array for internal use */
         array_of_statuses = scorep_mpi_get_status_array( incount );
     }
-  #endif
 
     scorep_mpi_save_request_array( array_of_requests, incount );
     SCOREP_ENTER_WRAPPED_REGION();

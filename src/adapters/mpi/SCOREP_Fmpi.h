@@ -76,30 +76,20 @@ scorep_mpi_f2c_string( const char*              f_string,
                        scorep_fortran_charlen_t length );
 
 
-#if HAVE( MPI_BOTTOM )
 /** pointer representing the Fortran value for MPI_BOTTOM */
 extern void* scorep_mpi_fortran_bottom;
-#endif
 
-#if HAVE( MPI_IN_PLACE )
 /** pointer representing the Fortran value for MPI_IN_PLACE */
 extern void* scorep_mpi_fortran_in_place;
-#endif
 
-#if HAVE( MPI_STATUS_IGNORE )
 /** pointer representing the Fortran value for MPI_STATUS_IGNORE */
 extern void* scorep_mpi_fortran_status_ignore;
-#endif
 
-#if HAVE( MPI_STATUSES_IGNORE )
 /** pointer representing the Fortran value for MPI_STATUSES_IGNORE */
 extern void* scorep_mpi_fortran_statuses_ignore;
-#endif
 
-#if HAVE( MPI_UNWEIGHTED )
 /** pointer representing the Fortran value for MPI_UNWEIGHTED */
 extern void* scorep_mpi_fortran_unweighted;
-#endif
 
 #if !( HAVE( DECL_PMPI_STATUS_F2C ) )
 #define PMPI_Status_f2c( f, c ) memcpy( ( c ), ( f ), scorep_mpi_status_size )
