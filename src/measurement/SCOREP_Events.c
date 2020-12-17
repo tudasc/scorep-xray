@@ -423,7 +423,7 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
  */
 void
 SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
-                     void*                  value )
+                     const void*            value )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
@@ -437,7 +437,7 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
 void
 SCOREP_Location_AddAttribute( SCOREP_Location*       location,
                               SCOREP_AttributeHandle attributeHandle,
-                              void*                  value )
+                              const void*            value )
 {
     SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
                                 ( location, attributeHandle, value ) );
