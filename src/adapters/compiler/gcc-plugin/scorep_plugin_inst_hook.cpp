@@ -21,6 +21,8 @@
 
 #include <config.h>
 
+#include <string>
+
 #include "tree.h"
 
 #include "libiberty.h"
@@ -81,6 +83,10 @@ build_inst_function( scorep_gcc_plugin_hook_type hook_type,
         case EXIT:
             func_decl = build_fn_decl( exit_hook_name, func_type_list );
             break;
+#if HAVE( BUILTIN_UNREACHABLE )
+        default:
+            __builtin_unreachable();
+#endif  /* HAVE( BUILTIN_UNREACHABLE ) */
     }
 
     TREE_PUBLIC( func_decl ) = 1;
@@ -111,6 +117,10 @@ build_condition( scorep_gcc_plugin_hook_type hook_type,
                                                      -1 /* SCOREP_FILTERED_REGION */ ),
                                       NULL_TREE,
                                       NULL_TREE );
+#if HAVE( BUILTIN_UNREACHABLE )
+        default:
+            __builtin_unreachable();
+#endif  /* HAVE( BUILTIN_UNREACHABLE ) */
     }
 } /* build_condition */
 
@@ -132,6 +142,10 @@ build_fn_call( scorep_gcc_plugin_hook_type hook_type,
             return gimple_build_call( hook->fn_decl,
                                       1,
                                       gimple_assign_lhs( tmp_assignment ) );
+#if HAVE( BUILTIN_UNREACHABLE )
+        default:
+            __builtin_unreachable();
+#endif  /* HAVE( BUILTIN_UNREACHABLE ) */
     }
 } /* build_fn_call */
 

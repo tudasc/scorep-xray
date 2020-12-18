@@ -44,3 +44,9 @@
 #else
 #define cgraph_inlined_to( node ) ( node )->inlined_to
 #endif
+
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 11000
+/* DECL_IS_UNDECLARED_BUILTIN was named DECL_IS_BUILTIN prior to GCC 11. */
+#define DECL_IS_UNDECLARED_BUILTIN( decl ) DECL_IS_BUILTIN( decl )
+#endif

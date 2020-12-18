@@ -21,6 +21,8 @@
 
 #include <config.h>
 
+#include <string>
+
 #include "tree.h"
 
 #include <stdarg.h>
@@ -95,7 +97,7 @@ is_instrumentable( const char* assemblerName )
         return "is artificial";
     }
 
-    if ( DECL_IS_BUILTIN( current_function_decl ) )
+    if ( DECL_IS_UNDECLARED_BUILTIN( current_function_decl ) )
     {
         return "is built-in";
     }

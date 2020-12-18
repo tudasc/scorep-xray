@@ -21,6 +21,8 @@
 
 #include <config.h>
 
+#include <string>
+
 #include "tree.h"
 #include "plugin.h"
 

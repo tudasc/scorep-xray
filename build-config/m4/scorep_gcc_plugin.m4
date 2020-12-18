@@ -225,6 +225,10 @@ class B : A { void m( int, double ) override {} };
             [: nothing worked
              CXX="$save_CXX"])])
 
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
+        __builtin_unreachable();
+]])], [AC_DEFINE([HAVE_BUILTIN_UNREACHABLE], [1], [Compiler provides __builtin_unreachable()])])
+
     AC_LANG_POP([C++])
     AFS_SUMMARY([Compiler used], [$CXX])])
 ])
