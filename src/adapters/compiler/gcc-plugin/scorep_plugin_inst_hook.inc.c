@@ -120,7 +120,6 @@ build_fn_call( scorep_gcc_plugin_hook_type hook_type,
     switch ( hook_type )
     {
         case REGISTER:
-            add_referenced_var( region_descr_var );
             return gimple_build_call( hook->fn_decl,
                                       1,
                                       build_fold_addr_expr( region_descr_var ) );

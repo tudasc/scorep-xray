@@ -17,11 +17,6 @@
  *
  */
 
-/* bool add_referenced_var( tree ) */
-#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4008
-#define add_referenced_var( t ) do { } while ( 0 )
-#endif
-
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION < 5000
 #define set_decl_section_name( decl, section ) \
     DECL_SECTION_NAME( decl ) = build_string( strlen( section ), section )

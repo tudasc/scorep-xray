@@ -44,10 +44,8 @@
 #include "plugin.h"
 #include "gimple.h"
 #include "tree-pass.h"
-#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
 #include "stringpool.h"
 #include "attribs.h"
-#endif
 
 #include <SCOREP_Filter.h>
 
@@ -135,9 +133,6 @@ has_no_instrument_attribute( void )
 } /* has_no_instrument_attribute */
 
 
-#ifdef __cplusplus
-extern "C"
-#endif /* ifdef __cplusplus */
 unsigned int
 scorep_plugin_pass_instrument_function( void )
 {
