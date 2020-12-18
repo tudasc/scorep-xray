@@ -210,11 +210,21 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
     [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
     AC_LANG_PUSH([C++])
-    save_CXX="$CXX"
-    CXX="$CXX -std=c++11"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
-        [],
-        [CXX="$save_CXX"])
+
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+class A { virtual void m( int, double ); };
+class B : A { void m( int, double ) override {} };
+]], [])], [: no flag needed], [
+        save_CXX="$CXX"
+        CXX="$CXX -std=c++11"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+class A { virtual void m( int, double ); };
+class B : A { void m( int, double ) override {} };
+]], [])],
+            [],
+            [: nothing worked
+             CXX="$save_CXX"])])
+
     AC_LANG_POP([C++])
     AFS_SUMMARY([Compiler used], [$CXX])])
 ])
