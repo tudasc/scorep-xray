@@ -20,7 +20,6 @@
 !<
 
       SUBROUTINE MPI_Init_f08( ierror )
-      USE mpi_f08, my_anon => MPI_Init_f08
       INTEGER, OPTIONAL, INTENT(OUT) :: ierror
       write(*,*) "[Score-P] 'USE mpi_f08' not supported yet, "//
      & "consider switching to 'USE mpi'."
@@ -28,7 +27,6 @@
       END SUBROUTINE
 
       SUBROUTINE MPI_Init_thread_f08( required, provided, ierror )
-      USE mpi_f08, my_anon => MPI_Init_thread_f08
       INTEGER, INTENT(IN) :: required
       INTEGER, INTENT(OUT) :: provided
       INTEGER, OPTIONAL, INTENT(OUT) :: ierror
