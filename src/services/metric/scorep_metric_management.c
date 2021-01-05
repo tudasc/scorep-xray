@@ -508,7 +508,20 @@ metric_subsystem_init( void )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of metric management done." );
     }
 
-    return SCOREP_SUCCESS;
+
+    /*
+     * Currently, a sampling set can contain only up to 255 metrics.
+     * Therefore, overall_number_of_metrics should not be greater than 255.
+     * Check this limit and return with appropriate exit code.
+     */
+    if ( strictly_synchronous_metrics.overall_number_of_metrics > 255 )
+    {
+        return SCOREP_ERROR_INVALID_SIZE_GIVEN;
+    }
+    else
+    {
+        return SCOREP_SUCCESS;
+    }
 }
 
 /** @brief Runs initialization task which has to be executed after multi
@@ -705,6 +718,9 @@ initialize_location_metric_cb( SCOREP_Location* location,
                 }
             }
 
+            /* Currently, a sampling set can contain only up to 255 metrics */
+            UTILS_BUG_ON( strictly_synchronous_metrics.overall_number_of_metrics > 255,
+                          "Request of more than 255 strictly synchronous metrics cannot be fulfilled" );
             /* Write definition of sampling set */
             strictly_synchronous_metrics.sampling_set = SCOREP_Definitions_NewSamplingSet( ( uint8_t )strictly_synchronous_metrics.overall_number_of_metrics,
                                                                                            strictly_synchronous_metrics.metrics,
