@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2017,
+## Copyright (c) 2009-2014, 2017, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -166,6 +166,7 @@ libscorep_adapter_mpi_event_la_LIBADD = \
     libscorep_adapter_mpi_event_fortran_sub2.la \
     libscorep_adapter_mpi_event_fortran_sub3.la \
     libscorep_adapter_mpi_event_fortran_sub4.la \
+    libscorep_adapter_mpi_event_fortran_f08_abort.la \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
 
 else !HAVE_MPI_FORTRAN_SUPPORT
@@ -227,7 +228,8 @@ noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_event_fortran_sub1.la \
     libscorep_adapter_mpi_event_fortran_sub2.la \
     libscorep_adapter_mpi_event_fortran_sub3.la \
-    libscorep_adapter_mpi_event_fortran_sub4.la
+    libscorep_adapter_mpi_event_fortran_sub4.la \
+    libscorep_adapter_mpi_event_fortran_f08_abort.la
 
 SCOREP_MPI_EVENT_FORTRAN_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c     \
@@ -277,6 +279,9 @@ libscorep_adapter_mpi_event_fortran_sub4_la_SOURCES = \
 libscorep_adapter_mpi_event_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
+
+libscorep_adapter_mpi_event_fortran_f08_abort_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.f
 
 endif HAVE_MPI_FORTRAN_SUPPORT
 
