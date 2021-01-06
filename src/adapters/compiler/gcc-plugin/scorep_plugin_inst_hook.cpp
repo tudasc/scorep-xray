@@ -17,6 +17,10 @@
  *
  */
 
+#include "scorep_plugin_gcc-plugin.h"
+
+#include <config.h>
+
 #include "tree.h"
 
 #include "libiberty.h"

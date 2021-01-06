@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014, 2016,
+ * Copyright (c) 2012-2014, 2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -16,6 +16,10 @@
  * @brief  The definition for inserting the GCC plugin instrumentation descriptors.
  *
  */
+
+#include "scorep_plugin_gcc-plugin.h"
+
+#include <config.h>
 
 #include "tree.h"
 
