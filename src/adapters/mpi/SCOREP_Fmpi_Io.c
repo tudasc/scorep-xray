@@ -1264,12 +1264,10 @@ FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iread( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1296,12 +1294,10 @@ FSUB( MPI_File_iread_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iread_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1327,12 +1323,10 @@ FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iread_at( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1357,12 +1351,10 @@ FSUB( MPI_File_iread_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iread_at_all( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1388,12 +1380,10 @@ FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iread_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1420,12 +1410,10 @@ FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* dat
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iwrite( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1452,12 +1440,10 @@ FSUB( MPI_File_iwrite_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint*
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iwrite_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1484,12 +1470,10 @@ FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fin
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iwrite_at( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1516,12 +1500,10 @@ FSUB( MPI_File_iwrite_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iwrite_at_all( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1548,12 +1530,10 @@ FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_iwrite_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
@@ -1581,27 +1561,21 @@ FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datat
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1627,27 +1601,21 @@ FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* d
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1671,12 +1639,10 @@ FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_F
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_all_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -1703,27 +1669,21 @@ FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fi
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_all_end( c_fh, buf, c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1748,26 +1708,20 @@ FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint*
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_at( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1792,26 +1746,20 @@ FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_F
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_at_all( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1834,12 +1782,10 @@ FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf,
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_at_all_begin( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -1864,26 +1810,20 @@ FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_at_all_end( PMPI_File_f2c( *fh ), buf, c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1909,27 +1849,21 @@ FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_ordered( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -1953,12 +1887,10 @@ FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, M
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_ordered_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -1985,27 +1917,21 @@ FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_ordered_end( c_fh, buf, c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2031,27 +1957,21 @@ FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_read_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2077,27 +1997,21 @@ FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2123,27 +2037,21 @@ FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2167,12 +2075,10 @@ FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_all_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -2199,27 +2105,21 @@ FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_F
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_all_end( c_fh, buf, c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2245,27 +2145,21 @@ FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_at( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2291,27 +2185,21 @@ FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_at_all( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2335,12 +2223,10 @@ FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_at_all_begin( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -2367,27 +2253,21 @@ FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_at_all_end( c_fh, buf, c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2413,27 +2293,21 @@ FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_ordered( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2457,12 +2331,10 @@ FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, 
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_ordered_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
@@ -2489,27 +2361,21 @@ FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, M
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_ordered_end( c_fh, buf, c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -2535,27 +2401,21 @@ FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
         buf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_File_write_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), c_status_ptr );
 
     *fh = PMPI_File_c2f( c_fh );
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }

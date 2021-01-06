@@ -551,12 +551,10 @@ FSUB( MPI_Request_get_status )( MPI_Request* request, int* flag, MPI_Status* sta
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Request_get_status( *request, flag, status );
@@ -904,20 +902,16 @@ FSUB( MPI_Request_get_status )( MPI_Fint* request, MPI_Fint* flag, MPI_Fint* sta
     MPI_Status* c_status_ptr = &c_status;
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         /* hardcoded c_status_ptr needs to be reset */
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Request_get_status( PMPI_Request_f2c( *request ), flag, c_status_ptr );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }

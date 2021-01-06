@@ -92,9 +92,7 @@
 void
 FSUB( scorep_mpi_fortran_init_bottom )( MPI_Fint* bottom )
 {
-#if HAVE( MPI_BOTTOM )
     scorep_mpi_fortran_bottom = bottom;
-#endif
 }
 
 /** initialization function for fortran MPI_IN_PLACE
@@ -103,9 +101,7 @@ FSUB( scorep_mpi_fortran_init_bottom )( MPI_Fint* bottom )
 void
 FSUB( scorep_mpi_fortran_init_in_place )( MPI_Fint* in_place )
 {
-#if HAVE( MPI_IN_PLACE )
     scorep_mpi_fortran_in_place = in_place;
-#endif
 }
 
 /** initialization function for fortran MPI_STATUS_IGNORE
@@ -114,9 +110,7 @@ FSUB( scorep_mpi_fortran_init_in_place )( MPI_Fint* in_place )
 void
 FSUB( scorep_mpi_fortran_init_status_ignore )( MPI_Fint* status_ignore )
 {
-#if HAVE( MPI_STATUS_IGNORE )
     scorep_mpi_fortran_status_ignore = status_ignore;
-#endif
 }
 
 /** initialization function for fortran MPI_STATUSES_IGNORE
@@ -125,9 +119,7 @@ FSUB( scorep_mpi_fortran_init_status_ignore )( MPI_Fint* status_ignore )
 void
 FSUB( scorep_mpi_fortran_init_statuses_ignore )( MPI_Fint* statuses_ignore )
 {
-#if HAVE( MPI_STATUSES_IGNORE )
     scorep_mpi_fortran_statuses_ignore = statuses_ignore;
-#endif
 }
 
 /** initialization function for fortran MPI_UNWEIGHTED
@@ -136,9 +128,7 @@ FSUB( scorep_mpi_fortran_init_statuses_ignore )( MPI_Fint* statuses_ignore )
 void
 FSUB( scorep_mpi_fortran_init_unweighted )( MPI_Fint* unweighted )
 {
-#if HAVE( MPI_UNWEIGHTED )
     scorep_mpi_fortran_unweighted = unweighted;
-#endif
 }
 
 /**

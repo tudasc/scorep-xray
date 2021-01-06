@@ -240,12 +240,10 @@ FSUB( MPI_Waitany )( int*         count,
                      int*         ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Waitany( *count, array, index, status );
 
@@ -275,12 +273,10 @@ FSUB( MPI_Waitsome )( int*         incount,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     int i;
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
         array_of_statuses = MPI_STATUSES_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Waitsome( *incount, array_of_requests, outcount,
                           array_of_indices, array_of_statuses );
@@ -314,12 +310,10 @@ FSUB( MPI_Testany )( int*         count,
                      int*         ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Testany( *count, array_of_requests, index, flag, status );
 
@@ -353,12 +347,10 @@ FSUB( MPI_Testsome )( int*         incount,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     int i;
 
-  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
         array_of_statuses = MPI_STATUSES_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Testsome( *incount, array_of_requests, outcount, array_of_indices,
                           array_of_statuses );
@@ -468,12 +460,10 @@ FSUB( MPI_Test )( MPI_Request* request, int* flag, MPI_Status* status, int* ierr
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Test( request, flag, status );
@@ -514,12 +504,10 @@ FSUB( MPI_Testall )( int* count, MPI_Request* array_of_requests, int* flag, MPI_
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
         array_of_statuses = MPI_STATUSES_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Testall( *count, array_of_requests, flag, array_of_statuses );
@@ -541,12 +529,10 @@ FSUB( MPI_Wait )( MPI_Request* request, MPI_Status* status, int* ierr )
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         status = MPI_STATUS_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Wait( request, status );
@@ -568,12 +554,10 @@ FSUB( MPI_Waitall )( int* count, MPI_Request* array_of_requests, MPI_Status* arr
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
         array_of_statuses = MPI_STATUSES_IGNORE;
     }
-    #endif
 
 
     *ierr = MPI_Waitall( *count, array_of_requests, array_of_statuses );
@@ -655,20 +639,16 @@ FSUB( MPI_Wait )( MPI_Fint* request,
     lrequest = PMPI_Request_f2c( *request );
     *request = PMPI_Request_c2f( lrequest );
 
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Wait( &lrequest, c_status_ptr );
 
     if ( *ierr == MPI_SUCCESS )
     {
-    #if HAVE( MPI_STATUS_IGNORE )
         if ( status != scorep_mpi_fortran_status_ignore )
-    #endif
         {
             PMPI_Status_c2f( c_status_ptr, status );
         }
@@ -698,18 +678,14 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
     {
         lrequest = alloc_request_array( *count );
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             c_status = alloc_status_array( *count );
         }
-    #if HAVE( MPI_STATUSES_IGNORE )
         else
         {
             c_status = MPI_STATUSES_IGNORE;
         }
-    #endif
 
         for ( i = 0; i < *count; i++ )
         {
@@ -725,9 +701,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
     }
     if ( *ierr == MPI_SUCCESS )
     {
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             for ( i = 0; i < *count; i++ )
             {
@@ -769,12 +743,10 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
         }
     }
 
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Waitany( *count, lrequest, index, c_status_ptr );
 
@@ -788,9 +760,7 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
                the Fortran index ranges are from 1, not zero */
             ( *index )++;
         }
-    #if HAVE( MPI_STATUS_IGNORE )
         if ( status != scorep_mpi_fortran_status_ignore )
-    #endif
         {
             PMPI_Status_c2f( &c_status, status );
         }
@@ -825,18 +795,14 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
     {
         lrequest = alloc_request_array( *incount );
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             c_status = alloc_status_array( *incount );
         }
-    #if HAVE( MPI_STATUSES_IGNORE )
         else
         {
             c_status = MPI_STATUSES_IGNORE;
         }
-    #endif
 
         for ( i = 0; i < *incount; i++ )
         {
@@ -877,9 +843,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
             }
         }
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             for ( i = 0; i < *outcount; i++ )
             {
@@ -914,12 +878,10 @@ FSUB( MPI_Test )( MPI_Fint* request,
     MPI_Status* c_status_ptr = &c_status;
     MPI_Request lrequest     = PMPI_Request_f2c( *request );
 
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Test( &lrequest, flag, c_status_ptr );
 
@@ -930,9 +892,7 @@ FSUB( MPI_Test )( MPI_Fint* request,
     *request = PMPI_Request_c2f( lrequest );
     if ( flag )
     {
-    #if HAVE( MPI_STATUS_IGNORE )
         if ( status != scorep_mpi_fortran_status_ignore )
-    #endif
         {
             PMPI_Status_c2f( &c_status, status );
         }
@@ -972,12 +932,10 @@ FSUB( MPI_Testany )( MPI_Fint* count,
         }
     }
 
-  #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
         c_status_ptr = MPI_STATUS_IGNORE;
     }
-  #endif
 
     *ierr = MPI_Testany( *count, lrequest, index, flag, c_status_ptr );
 
@@ -993,9 +951,7 @@ FSUB( MPI_Testany )( MPI_Fint* count,
             ( *index )++;
         }
 
-    #if HAVE( MPI_STATUS_IGNORE )
         if ( status != scorep_mpi_fortran_status_ignore )
-    #endif
         {
             PMPI_Status_c2f( &c_status, status );
         }
@@ -1027,18 +983,14 @@ FSUB( MPI_Testall )( MPI_Fint* count,
     {
         lrequest = alloc_request_array( *count );
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             c_status = alloc_status_array( *count );
         }
-    #if HAVE( MPI_STATUSES_IGNORE )
         else
         {
             c_status = MPI_STATUSES_IGNORE;
         }
-    #endif
 
         for ( i = 0; i < *count; i++ )
         {
@@ -1054,9 +1006,7 @@ FSUB( MPI_Testall )( MPI_Fint* count,
     }
     if ( *ierr == MPI_SUCCESS && *flag )
     {
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             for ( i = 0; i < *count; i++ )
             {
@@ -1093,18 +1043,14 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
     {
         lrequest = alloc_request_array( *incount );
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             c_status = alloc_status_array( *incount );
         }
-    #if HAVE( MPI_STATUSES_IGNORE )
         else
         {
             c_status = MPI_STATUSES_IGNORE;
         }
-    #endif
 
         for ( i = 0; i < *incount; i++ )
         {
@@ -1139,9 +1085,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
             }
         }
 
-    #if HAVE( MPI_STATUSES_IGNORE )
         if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
-    #endif
         {
             for ( i = 0; i < *outcount; i++ )
             {

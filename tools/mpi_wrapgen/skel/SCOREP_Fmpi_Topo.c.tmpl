@@ -104,24 +104,18 @@ void FSUB(MPI_Neighbor_alltoallw)(void*     sendbuf,
   MPI_Comm      ccomm;
   int           size;
 
-  #if HAVE(MPI_IN_PLACE)
   if (sendbuf == scorep_mpi_fortran_in_place)
   {
     sendbuf = MPI_IN_PLACE;
   }
-  #endif
-  #if HAVE(MPI_BOTTOM)
   if (sendbuf == scorep_mpi_fortran_bottom)
   {
     sendbuf = MPI_BOTTOM;
   }
-  #endif
-  #if HAVE(MPI_BOTTOM)
   if (recvbuf == scorep_mpi_fortran_bottom)
   {
     recvbuf = MPI_BOTTOM;
   }
-  #endif
 
   ccomm = PMPI_Comm_f2c(*comm);
   PMPI_Comm_size(ccomm, &size);
@@ -172,24 +166,18 @@ void FSUB(MPI_INeighbor_alltoallw)(void*     sendbuf,
   MPI_Request   crequest;
   int           size;
 
-  #if HAVE(MPI_IN_PLACE)
   if (sendbuf == scorep_mpi_fortran_in_place)
   {
     sendbuf = MPI_IN_PLACE;
   }
-  #endif
-  #if HAVE(MPI_BOTTOM)
   if (sendbuf == scorep_mpi_fortran_bottom)
   {
     sendbuf = MPI_BOTTOM;
   }
-  #endif
-  #if HAVE(MPI_BOTTOM)
   if (recvbuf == scorep_mpi_fortran_bottom)
   {
     recvbuf = MPI_BOTTOM;
   }
-  #endif
 
   ccomm = PMPI_Comm_f2c(*comm);
   PMPI_Comm_size(ccomm, &size);

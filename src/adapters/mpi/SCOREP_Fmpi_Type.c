@@ -646,12 +646,10 @@ FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbu
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Pack( inbuf, *incount, *datatype, outbuf, *outsize, position, *comm );
@@ -676,12 +674,10 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatyp
 
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, *datatype, outbuf, *outsize, position );
@@ -1362,12 +1358,10 @@ FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* 
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, *datatype, *comm );
@@ -1392,12 +1386,10 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, *datatype );
@@ -1763,12 +1755,10 @@ FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outb
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Pack( inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position, PMPI_Comm_f2c( *comm ) );
@@ -1794,12 +1784,10 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fi
 
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position );
@@ -2521,12 +2509,10 @@ FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* out
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ), PMPI_Comm_f2c( *comm ) );
@@ -2552,12 +2538,10 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ) );

@@ -610,9 +610,7 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ie
 
     *ierr = MPI_Status_set_cancelled( c_status_ptr, *flag );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -640,9 +638,7 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint*
 
     *ierr = MPI_Status_set_elements( c_status_ptr, PMPI_Type_f2c( *datatype ), *count );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
@@ -670,9 +666,7 @@ FSUB( MPI_Status_set_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Cou
 
     *ierr = MPI_Status_set_elements_x( c_status_ptr, PMPI_Type_f2c( *datatype ), *count );
 
-    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
-#endif
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }

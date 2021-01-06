@@ -606,12 +606,10 @@ FSUB( MPI_Accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* orig
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Accumulate( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win );
@@ -633,12 +631,10 @@ FSUB( MPI_Get )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Get( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
@@ -660,12 +656,10 @@ FSUB( MPI_Put )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Put( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
@@ -1117,24 +1111,18 @@ FSUB( MPI_Compare_and_swap )( void* origin_addr, void* compare_addr, void* resul
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( compare_addr == scorep_mpi_fortran_bottom )
     {
         compare_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Compare_and_swap( origin_addr, compare_addr, result_addr, *datatype, *target_rank, *target_disp, *win );
@@ -1156,18 +1144,14 @@ FSUB( MPI_Fetch_and_op )( void* origin_addr, void* result_addr, MPI_Datatype* da
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Fetch_and_op( origin_addr, result_addr, *datatype, *target_rank, *target_disp, *op, *win );
@@ -1189,18 +1173,14 @@ FSUB( MPI_Get_accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* 
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Get_accumulate( origin_addr, *origin_count, *origin_datatype, result_addr, *result_count, *result_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win );
@@ -1222,12 +1202,10 @@ FSUB( MPI_Raccumulate )( void* origin_addr, int* origin_count, MPI_Datatype* ori
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Raccumulate( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win, request );
@@ -1249,12 +1227,10 @@ FSUB( MPI_Rget )( void* origin_addr, int* origin_count, MPI_Datatype* origin_dat
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rget( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win, request );
@@ -1295,12 +1271,10 @@ FSUB( MPI_Rput )( void* origin_addr, int* origin_count, MPI_Datatype* origin_dat
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rput( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win, request );
@@ -1501,12 +1475,10 @@ FSUB( MPI_Accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* ori
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
@@ -1529,12 +1501,10 @@ FSUB( MPI_Get )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Get( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
@@ -1557,12 +1527,10 @@ FSUB( MPI_Put )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Put( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
@@ -2050,24 +2018,18 @@ FSUB( MPI_Compare_and_swap )( void* origin_addr, void* compare_addr, void* resul
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( compare_addr == scorep_mpi_fortran_bottom )
     {
         compare_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Compare_and_swap( origin_addr, compare_addr, result_addr, PMPI_Type_f2c( *datatype ), *target_rank, *target_disp, PMPI_Win_f2c( *win ) );
@@ -2090,18 +2052,14 @@ FSUB( MPI_Fetch_and_op )( void* origin_addr, void* result_addr, MPI_Fint* dataty
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Fetch_and_op( origin_addr, result_addr, PMPI_Type_f2c( *datatype ), *target_rank, *target_disp, PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
@@ -2124,18 +2082,14 @@ FSUB( MPI_Get_accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint*
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
-    #if HAVE( MPI_BOTTOM )
     if ( result_addr == scorep_mpi_fortran_bottom )
     {
         result_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Get_accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), result_addr, *result_count, PMPI_Type_f2c( *result_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
@@ -2159,12 +2113,10 @@ FSUB( MPI_Raccumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* or
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Raccumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ), &c_request );
@@ -2189,12 +2141,10 @@ FSUB( MPI_Rget )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_da
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rget( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ), &c_request );
@@ -2241,12 +2191,10 @@ FSUB( MPI_Rput )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_da
     MPI_Request c_request;
 
 
-    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
     }
-    #endif
 
 
     *ierr = MPI_Rput( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ), &c_request );
