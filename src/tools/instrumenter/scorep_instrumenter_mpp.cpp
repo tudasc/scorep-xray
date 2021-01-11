@@ -200,7 +200,7 @@ void
 SCOREP_Instrumenter_Shmem::checkCompilerName( const std::string& compiler )
 {
     /* Adapt for other SHMEM compilers than OpenSHMEM (osh**) */
-    if ( compiler.substr( 0, 3 ) == "osh" )
+    if ( remove_path( compiler ).substr( 0, 3 ) == "osh" )
     {
         m_selector->select( this, false );
     }
