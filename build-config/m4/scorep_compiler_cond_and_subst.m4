@@ -29,6 +29,25 @@
 ## directory for details.
 ##
 
+m4_define(_SCOREP_COMPILER_SUBST, [
+AS_CASE(${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor},
+    [intel],              SCOREP_COMPILER_[]_AC_CC[]_INTEL=1,
+    [ibm],                SCOREP_COMPILER_[]_AC_CC[]_IBM=1,
+    [nvhpc|pgi|pgi/llvm], SCOREP_COMPILER_[]_AC_CC[]_PGI=1,
+    [gnu],                SCOREP_COMPILER_[]_AC_CC[]_GNU=1,
+    [clang|flang],        SCOREP_COMPILER_[]_AC_CC[]_CLANG=1,
+    [cray],               SCOREP_COMPILER_[]_AC_CC[]_CRAY=1,
+    [fujitsu],            SCOREP_COMPILER_[]_AC_CC[]_FUJITSU=1)
+
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL,   ${SCOREP_COMPILER_[]_AC_CC[]_INTEL-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_IBM,     ${SCOREP_COMPILER_[]_AC_CC[]_IBM-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_PGI,     ${SCOREP_COMPILER_[]_AC_CC[]_PGI-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_GNU,     ${SCOREP_COMPILER_[]_AC_CC[]_GNU-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CLANG,   ${SCOREP_COMPILER_[]_AC_CC[]_CLANG-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CRAY,    ${SCOREP_COMPILER_[]_AC_CC[]_CRAY-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_FUJITSU, ${SCOREP_COMPILER_[]_AC_CC[]_FUJITSU-0})
+])
+
 AC_DEFUN([SCOREP_COMPILER_COND_AND_SUBST],[
 dnl Cannot easily require AFS_PROG_CC|CXX|FC
 
@@ -72,39 +91,24 @@ AS_IF([test x$afs_cv_prog_fc_works = xyes], [
         [unknown],     [AC_MSG_WARN([Could not determine Fortran compiler vendor. AC_PACKAGE_NAME might not function properly.])],
         [AC_MSG_WARN([Fortran compiler vendor '${ax_cv_fc_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])])
 
-cc_compiler="${ax_cv_c_compiler_vendor%/*}"
-AC_SUBST([SCOREP_COMPILER_CC_INTEL],   $(if test "x${cc_compiler}" = xintel; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_IBM],     $(if test "x${cc_compiler}" = xibm; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_PGI],     $(if test "x${cc_compiler}" = xnvhpc || test "x${cc_compiler}" = xpgi; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_GNU],     $(if test "x${cc_compiler}" = xgnu; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_CLANG],   $(if test "x${cc_compiler}" = xclang; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_CRAY],    $(if test "x${cc_compiler}" = xcray; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CC_FUJITSU], $(if test "x${cc_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
+AC_LANG_PUSH([C])
+_SCOREP_COMPILER_SUBST
+AC_LANG_POP([C])
 
-cxx_compiler="${ax_cv_cxx_compiler_vendor%/*}"
-AC_SUBST([SCOREP_COMPILER_CXX_INTEL],   $(if test "x${cxx_compiler}" = xintel; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_IBM],     $(if test "x${cxx_compiler}" = xibm; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_PGI],     $(if test "x${cxx_compiler}" = xnvhpc || test "x${cxx_compiler}" = xpgi; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_GNU],     $(if test "x${cxx_compiler}" = xgnu; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_CLANG],   $(if test "x${cxx_compiler}" = xclang; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_CRAY],    $(if test "x${cxx_compiler}" = xcray; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_CXX_FUJITSU], $(if test "x${cxx_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
+AC_LANG_PUSH([C++])
+_SCOREP_COMPILER_SUBST
+AC_LANG_POP([C++])
 
-fc_compiler="${ax_cv_fc_compiler_vendor%/*}"
-AC_SUBST([SCOREP_COMPILER_FC_INTEL],   $(if test "x${fc_compiler}" = xintel; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_IBM],     $(if test "x${fc_compiler}" = xibm; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_PGI],     $(if test "x${fc_compiler}" = xnvhpc || test "x${fc_compiler}" = xpgi; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_GNU],     $(if test "x${fc_compiler}" = xgnu; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_CLANG],   $(if test "x${fc_compiler}" = xclang || test "x${fc_compiler}" = xflang; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_CRAY],    $(if test "x${fc_compiler}" = xcray; then echo 1; else echo 0; fi))
-AC_SUBST([SCOREP_COMPILER_FC_FUJITSU], $(if test "x${fc_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
+AC_LANG_PUSH([Fortran])
+_SCOREP_COMPILER_SUBST
+AC_LANG_POP([Fortran])
 
 # Keep -mmic support for a while. Assumption: for HAVE( PLATFORM_MIC )
 # || HAVE( MIC_SUPPORT ), if intel is used, then it is used for all
 # languages. If this is not the case, the instrumenter will not provide
 # MIC support. As # MIC will be removed in scorep-9, we are not going to
 # make this rock-solid.
-AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${cc_compiler}" = xintel && test "x${cxx_compiler}" = xintel && test "x${fc_compiler}" = xintel; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${ax_cv_c_compiler_vendor%/*}" = xintel && test "x${ax_cv_cxx_compiler_vendor%/*}" = xintel && test "x${ax_cv_fc_compiler_vendor%/*}" = xintel; then echo 1; else echo 0; fi))
 
 dnl strip epoch (Borland only)
 _scorep_compiler_version=${ax_cv_c_compiler_version##*:}
