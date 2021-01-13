@@ -1551,12 +1551,12 @@
                 }
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Initialization and finalization</disp_name>
+                    <disp_name>General management</disp_name>
                     <uniq_name>opencl_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics.html#opencl_setup</url>
-                    <descr>Time needed to initialize and finalize OpenCL and OpenCL kernels</descr>
+                    <descr>Time needed for general OpenCL setup, e.g. initialization, device and event control, etc.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
