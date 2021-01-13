@@ -1645,12 +1645,12 @@
                 }
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Initialization and Finalization</disp_name>
+                    <disp_name>General management</disp_name>
                     <uniq_name>cuda_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics.html#cuda_setup</url>
-                    <descr>Time needed to initialize and finalize CUDA and CUDA kernels</descr>
+                    <descr>Time needed for general CUDA setup, e.g. initialization, control of version, device, primary context, context, streams, events, occupancy, etc.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1668,7 +1668,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics.html#cuda_comm</url>
-                    <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
+                    <descr>Time spent on memory management including data transfer from host to device and vice versa. (Note: 'memset' operations are considered in 'Kernel launches').</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1704,7 +1704,7 @@
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
                     <url>@mirror@scorep_metrics.html#cuda_kernel_launches</url>
-                    <descr>Time spent to launch CUDA kernels</descr>
+                    <descr>Time spent to launch CUDA kernels, including 'memset' operations.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
