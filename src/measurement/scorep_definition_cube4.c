@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -39,6 +39,7 @@
  */
 
 #include <config.h>
+#include <ctype.h>
 #include <inttypes.h>
 #include "scorep_definition_cube4.h"
 #include "scorep_system_tree_sequence.h"
@@ -528,6 +529,34 @@ scorep_get_num_threads_handle( void )
  * Internal definition writer functions
  *****************************************************************************/
 
+/* temporary: cubew expects the uniq_name parameter to cube_def_met() to
+ * contain only a specific but undocumented set of characters. The following
+ * function creates a uniq_name parameter from an arbitrary string. Note
+ * that the resulting string may not be unique, the function just guarantees
+ * that the resulting string contains only valid characters. In a future
+ * version of cubew, cube_def_met() will perform this conversion itself.
+ * See #29 */
+static void
+scorep_correct_uniq_name_for_cubew( char* name )
+{
+    int i = 0;
+    for ( i = 0; i < strlen( name ); ++i )
+    {
+        /* most probable char processed first */
+        if ( isalnum( name[ i ] ) )
+        {
+            continue;
+        }
+        /* least probable char processed */
+        if ( ':' == name[ i ] || '_' == name[ i ] || '=' == name[ i ] )
+        {
+            continue;
+        }
+        /* char correction is least probable action */
+        name[ i ] = '_';
+    }
+}
+
 /**
    Writes metric definitions to Cube. The new Cube definitions are added to the
    mapping table @a map.
@@ -711,22 +740,33 @@ write_metric_definitions( cube_t*                       myCube,
         if ( ( definition->source_type != SCOREP_METRIC_SOURCE_TYPE_TASK ) ||
              ( layout->metric_list & SCOREP_CUBE_METRIC_TASK_METRICS ) )
         {
-            char* uniq_name = metric_name;
+            /* construct uniq_name from [<parent_name>::]<metric_name>. We
+               always need a copy from <metric_name> as uniq_name potentially
+               gets modified. */
+            size_t parent_len = 0;
             if ( parent_handle )
             {
-                const char* parent_uniq_name = cube_metric_get_uniq_name( parent_handle );
-                size_t      len              = strlen( parent_uniq_name ) + 2 + strlen( metric_name ) + 1;
-                uniq_name = calloc( len + 1, 1 );
-                snprintf( uniq_name, len, "%s::%s", parent_uniq_name, metric_name );
+                parent_len = strlen( cube_metric_get_uniq_name( parent_handle ) );
             }
+            size_t prepend_len = parent_len ? parent_len + 2 : 0;
+            size_t len         = strlen( metric_name );
+            char   uniq_name[ prepend_len + len + 1 ];
+            if ( parent_handle )
+            {
+                /* Prepend '<parent_name>::' */
+                memcpy( &uniq_name[ 0 ], cube_metric_get_uniq_name( parent_handle ), parent_len );
+                memset( &uniq_name[ parent_len ], ':', 2 );
+            }
+            memcpy( &uniq_name[ prepend_len ], metric_name, len );
+            uniq_name[ prepend_len + len ] = '\0';
+
+            /* temporary until cubew handles this itself, see #29 */
+            scorep_correct_uniq_name_for_cubew( uniq_name );
+
             cube_handle = cube_def_met( myCube, metric_name, uniq_name, data_type,
                                         metric_unit, "", "", metric_description,
                                         parent_handle,
                                         cube_metric_type );
-            if ( uniq_name != metric_name )
-            {
-                free( uniq_name );
-            }
 
             add_metric_mapping( map, cube_handle, handle );
         }
