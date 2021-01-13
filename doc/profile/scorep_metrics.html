@@ -1,27 +1,37 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>Score-P metrics</title>
+<title>Performance properties</title>
 </head>
 <body>
-<h2>Score-P metrics</h2>
+<h2>Performance properties</h2>
 
 <a name="time"><h3>Time</h3></a>
 <dl>
 <dt><b>Description:</b></dt>
 <dd>
-    Total time spent for program execution including the idle times of CPUs
-    reserved for slave threads during OpenMP sequential execution. This
-    pattern assumes that every thread of a process allocated a separate CPU
-    during the entire runtime of the process.
+Total time spent for program execution including the idle times of CPUs
+reserved for worker threads during OpenMP sequential execution.  This
+pattern assumes that every thread of a process allocated a separate CPU
+during the entire runtime of the process.  Executions in a time-shared environment
+will also include time slices used by other processes.  Over-subscription
+of processor cores (e.g., exploiting hardware threads) will also manifest
+as additional CPU allocation time.
 </dd>
 <dt><b>Unit:</b></dt>
 <dd>Seconds</dd>
 <dt><b>Diagnosis:</b></dt>
 <dd>
-    Expand the call tree to identify important callpaths and routines where
-    most time is spent, and examine the times for each process or thread to
-    locate load imbalance.
+Expand the metric tree hierarchy to break down total time into
+constituent parts which will help determine how much of it is due to
+local/serial computation versus MPI, OpenMP, or POSIX thread parallelization
+costs, and how much of that time is wasted waiting for other processes
+or threads due to ineffective load balance or due to insufficient
+parallelism.
+</dd><p><dd>
+Expand the call tree to identify important callpaths and routines where
+most time is spent, and examine the times for each process or thread to
+locate load imbalance.
 </dd>
 </dl>
 
@@ -31,39 +41,41 @@
 <dl>
 <dt><b>Description:</b></dt>
 <dd>
-    Number of times a call path has been visited. Visit counts for MPI routine
-    call paths directly relate to the number of MPI communications and
-    synchronizations. Visit counts for OpenMP operations and parallel regions
-    (loops) directly relate to the number of times they were executed.
-    Routines which were not instrumented, or were filtered during measurement,
-    do not appear on recorded call paths. Similarly, routines are not shown if
-    the compiler optimizer successfully in-lined them prior to automatic
-    instrumentation.
+Number of times a call path has been visited.  Visit counts for MPI
+routine call paths directly relate to the number of MPI Communication Operations and
+MPI Synchronization Operations.  Visit counts for OpenMP operations and parallel regions
+(loops) directly relate to the number of times they were executed.
+Routines which were not instrumented, or were filtered during measurement,
+do not appear on recorded call paths.  Similarly, routines are not shown
+if the compiler optimizer successfully in-lined them prior to automatic
+instrumentation.
 </dd>
 <dt><b>Unit:</b></dt>
 <dd>Counts</dd>
 <dt><b>Diagnosis:</b></dt>
 <dd>
-    Call paths that are frequently visited (and thereby have high exclusive
-    Visit counts) can be expected to have an important role in application
-    execution performance (e.g., <a href="#time">Time</a>). Very frequently
-    executed routines, which are relatively short and quick to execute, may
-    have an adverse impact on measurement quality. This can be due to
-    instrumentation preventing in-lining and other compiler optimizations
-    and/or overheads associated with measurement such as reading timers and
-    hardware counters on routine entry and exit. When such routines consist
-    solely of local/sequential computation (i.e., neither communication nor
-    synchronization), they should be eliminated to improve the quality of the
-    parallel measurement and analysis. One approach is to specify the names of
-    such routines in a <em>filter</em> file for subsequent measurements to
-    ignore, and thereby considerably reduce their measurement impact.
-    Alternatively, <em>selective instrumentation</em> can be employed to
-    entirely avoid instrumenting such routines and thereby remove all
-    measurement impact. In both cases, uninstrumented and filtered routines
-    will not appear in the measurement and analysis, much as if they had been
-    "in-lined" into their calling routine.
+Call paths that are frequently visited (and thereby have high exclusive
+Visit counts) can be expected to have an important role in application
+execution performance (e.g., <a href="#execution">Execution Time</a>).  Very frequently executed
+routines, which are relatively short and quick to execute, may have an
+adverse impact on measurement quality.  This can be due to
+instrumentation preventing in-lining and other compiler optimizations
+and/or overheads associated with measurement such as reading timers and
+hardware counters on routine entry and exit.  When such routines consist
+solely of local/sequential computation (i.e., neither communication nor
+synchronization), they should be eliminated to improve the quality of
+the parallel measurement and analysis.  One approach is to specify the
+names of such routines in a <em>filter</em> file for subsequent
+measurements to ignore, and thereby considerably reduce their
+measurement impact.  Alternatively, <em>selective instrumentation</em>
+can be employed to entirely avoid instrumenting such routines and
+thereby remove all measurement impact.  In both cases, uninstrumented
+and filtered routines will not appear in the measurement and analysis,
+much as if they had been "in-lined" into their calling routine.
 </dd>
 </dl>
+
+<hr width="75%" align="center">
 
 <a name="hits"><h3>Hits</h3></a>
 <dl>
@@ -75,6 +87,8 @@
 <dd>Counts</dd>
 </dl>
 
+<hr width="75%" align="center">
+
 <a name="libwrap_time"><h3>Wrapped libraries</h3></a>
 <dl>
 <dt><b>Description:</b></dt>
@@ -85,7 +99,52 @@
 <dd>Seconds</dd>
 </dl>
 
-<hr>
+<hr style="border-top: 1px solid #004a6e">
+<a name="remapping_info"><h3>What is remapping?</h3>
 
-</body>
+A number of additional metrics can be calculated during an analysis report
+postprocessing step called <em>remapping</em>.  In addition, remapping also
+organizes the performance properties in a hierarchical way, which allows to
+examine analysis reports at different levels of granularity.  The remapping
+step is automatically performed by the Scalasca convenience command
+<tt>scalasca -examine</tt> (or short <tt>square</tt>) the first time an
+experiment archive is examined.  Thus, it should be transparent to users
+following the recommended workflow as described in the
+<a href="http://apps.fz-juelich.de/scalasca/releases/scalasca/latest/docs/manual/">Scalasca User Guide</a>.
+<p>
+However, the remapping process can also be performed manually using the Cube
+command-line tool <tt>cube_remap2</tt> if necessary.  This tool reads an
+input Cube file as well as a remapping specification, and generates a
+corresponding output Cube file.  Note that the remapping specification has to
+be different for postprocessing runtime summaries and trace analysis reports,
+though.  To postprocess a Score-P runtime summary report <tt>profile.cubex</tt>
+and create a <tt>summary.cubex</tt> report, use
+<pre>
+    cube_remap2 -d -r `scorep-config --remap-specfile` -o summary.cubex profile.cubex
+</pre>
+Likewise, to postprocess a Scalasca trace analysis report <tt>scout.cubex</tt>
+and create a <tt>trace.cubex</tt> report, use
+<pre>
+    cube_remap2 -d -r `scalasca --remap-specfile` -o trace.cubex scout.cubex
+</pre>
+
+<h4>IMPORTANT NOTE:</h4>
+Remapping specifications are typically targeted towards a particular version
+of Score-P or Scalasca.  Thus, it is <em>highly recommended</em> to use the
+remapping specification distributed with the Score-P/Scalasca version that was
+used to generate the input report.  Otherwise the remapping may produce
+unexpected results.
+    <hr style="border-top: 1px solid #004a6e">
+    <table border="0" cellspacing="2" cellpadding="0">
+      <tr>
+        <td><img src="project_logo.svg" alt="Score-P"></td>
+        <td>&nbsp;&nbsp;</td>
+        <td>
+          Copyright &copy; 2012, 2020, Forschungszentrum J&uuml;lich GmbH, Germany
+          <br>
+          Copyright &copy; 2015, 2018, Technische Universit&auml;t Dresden, Germany
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
