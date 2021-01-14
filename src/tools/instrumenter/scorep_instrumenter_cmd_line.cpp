@@ -366,6 +366,14 @@ SCOREP_Instrumenter_CmdLine::getTempFiles( void )
     return m_temp_files;
 }
 
+bool
+SCOREP_Instrumenter_CmdLine::isNvcc( const std::string& compiler )
+{
+    return remove_path( compiler ).substr( 0, 4 ) == "nvcc";
+}
+
+
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -634,6 +642,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
            a missing -c do harm.
          */
     }
+    else if ( is_nvcc_compile_flag( current ) )
+    {
+        m_is_linking = false;
+    }
     else if ( m_install_data.isPreprocessFlag( current ) )
     {
         m_preprocess_mode = EXPLICIT_STEP;
@@ -880,4 +892,22 @@ SCOREP_Instrumenter_CmdLine::is_interposition_library( const std::string& librar
 {
     return SCOREP_Instrumenter_Adapter::isAllInterpositionLibrary( libraryName )
            || SCOREP_Instrumenter_Selector::isAllInterpositionLibrary( libraryName );
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::is_nvcc_compile_flag( const std::string& flag )
+{
+    if ( !isNvcc( getCompilerName() ) )
+    {
+        return false;
+    }
+    return flag == "--compile" ||
+           flag == "-dc" ||
+           flag == "--device-c" ||
+           flag == "-dw" ||
+           flag == "--device-w" ||
+           flag == "-fatbin" ||
+           flag == "--fatbin" ||
+           flag == "-cuda" ||
+           flag == "--cuda";
 }
