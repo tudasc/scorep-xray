@@ -17,11 +17,6 @@
  *
  */
 
-/* bool add_referenced_var( tree ) */
-#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4008
-#define add_referenced_var( t ) do { } while ( 0 )
-#endif
-
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION < 5000
 #define set_decl_section_name( decl, section ) \
     DECL_SECTION_NAME( decl ) = build_string( strlen( section ), section )
@@ -48,4 +43,10 @@
 #define cgraph_inlined_to( node ) ( node )->global.inlined_to
 #else
 #define cgraph_inlined_to( node ) ( node )->inlined_to
+#endif
+
+
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 11000
+/* DECL_IS_UNDECLARED_BUILTIN was named DECL_IS_BUILTIN prior to GCC 11. */
+#define DECL_IS_UNDECLARED_BUILTIN( decl ) DECL_IS_BUILTIN( decl )
 #endif

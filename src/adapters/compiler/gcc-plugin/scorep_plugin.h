@@ -22,11 +22,6 @@
 
 #include <SCOREP_Filter.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 extern int scorep_plugin_verbosity;
 extern int scorep_plugin_symbol_verbosity;
 
@@ -40,9 +35,5 @@ scorep_register_attributes( void* event_data,
                             void* data );
 
 extern SCOREP_Filter* scorep_instrument_filter;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* SCOREP_PLUGIN_H */

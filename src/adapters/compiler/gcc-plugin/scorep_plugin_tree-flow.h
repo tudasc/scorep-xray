@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -16,9 +16,6 @@
  * @brief  A GCC 4.9.0 compatible version of the tree-flow header.
  *
  */
-
-/* Test for GCC >= 4.9.0 */
-#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
 
 #include "stringpool.h"
 #include "basic-block.h"
@@ -38,10 +35,4 @@
 #include "varasm.h"
 
 #define FOR_EACH_BB( BB ) FOR_EACH_BB_FN( BB, cfun )
-#define ENTRY_BLOCK_PTR ENTRY_BLOCK_PTR_FOR_FN( cfun )
-
-#else /* #if (GCC >= 4.9.0) */
-
-#include "tree-flow.h"
-
-#endif /* #if (GCC >= 4.9.0) */
+#define ENTRY_BLOCK_PTR   ENTRY_BLOCK_PTR_FOR_FN( cfun )

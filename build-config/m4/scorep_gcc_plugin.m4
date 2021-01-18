@@ -198,45 +198,39 @@ scorep_gcc_plugin_includedir=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/inc
 
 AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
     [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is too old, no plug-in support"],
-    [test ${scorep_gcc_plugin_target_version} -lt 4007],
-    [# GCC 4.5 and 4.6 are always built with the C compiler
-    _SCOREP_GCC_PLUGIN_CHECK([C],
-        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
-         scorep_gcc_plugin_support="yes"])],
-    [test ${scorep_gcc_plugin_target_version} -eq 4007],
-    [# GCC 4.7 can either be build with the C or the C++ compiler
-    _SCOREP_GCC_PLUGIN_CHECK([C],
-        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
-         scorep_gcc_plugin_support="yes"],
-        [AS_UNSET([ac_cv_header_gcc_plugin_h])
-         AS_UNSET([ac_cv_header_tree_h])
-         _SCOREP_GCC_PLUGIN_CHECK([C++],
-            [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
-             scorep_gcc_plugin_support="yes"])])],
-    [# GCC 4.8 and onwards are compiled with the C++ compiler
-    _SCOREP_GCC_PLUGIN_CHECK([C++],
-        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
-         scorep_gcc_plugin_support="yes"])])
+    [test ${scorep_gcc_plugin_target_version} -lt 4009],
+    [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is unsupport"],
+    [# GCC 4.9 and onwards are always compiled with the C++ compiler
+    _SCOREP_GCC_PLUGIN_CHECK([C++], [scorep_gcc_plugin_support="yes"])])
 
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test "x${scorep_gcc_plugin_support}" = "xyes"], [false])
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [AFS_AM_CONDITIONAL([SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49],
-        [test ${scorep_gcc_plugin_target_version} -ge 4009], [false])
-    AM_COND_IF([SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49],
-        [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
+    [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
-    AM_COND_IF([GCC_COMPILED_WITH_CXX],
-        [AC_LANG_PUSH([C++])
+    AC_LANG_PUSH([C++])
+
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+class A { virtual void m( int, double ); };
+class B : A { void m( int, double ) override {} };
+]], [])], [: no flag needed], [
         save_CXX="$CXX"
         CXX="$CXX -std=c++11"
-        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+class A { virtual void m( int, double ); };
+class B : A { void m( int, double ) override {} };
+]], [])],
             [],
-            [CXX="$save_CXX"])
-        AC_LANG_POP([C++])
-        AFS_SUMMARY([Compiler used], [$CXX])],
-        [AFS_SUMMARY([Compiler used], [$CC])])
+            [: nothing worked
+             CXX="$save_CXX"])])
+
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
+        __builtin_unreachable();
+]])], [AC_DEFINE([HAVE_BUILTIN_UNREACHABLE], [1], [Compiler provides __builtin_unreachable()])])
+
+    AC_LANG_POP([C++])
+    AFS_SUMMARY([Compiler used], [$CXX])])
 ])
 
 AS_UNSET([scorep_gcc_plugin_includedir])
