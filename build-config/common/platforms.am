@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2017, 2020,
+## Copyright (c) 2009-2014, 2017, 2020-2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -86,6 +86,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-backend-crayxe  \
               $(srcdir)/build-config/common/platforms/platform-backend-crayxk  \
               $(srcdir)/build-config/common/platforms/platform-backend-crayxc  \
+              $(srcdir)/build-config/common/platforms/platform-backend-crayunknown  \
               $(srcdir)/build-config/common/platforms/platform-backend-aix  \
               $(srcdir)/build-config/common/platforms/platform-backend-linux  \
               $(srcdir)/build-config/common/platforms/platform-backend-mac  \
@@ -105,6 +106,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-frontend-crayxe  \
               $(srcdir)/build-config/common/platforms/platform-frontend-crayxk  \
               $(srcdir)/build-config/common/platforms/platform-frontend-crayxc  \
+              $(srcdir)/build-config/common/platforms/platform-frontend-crayunknown  \
               $(srcdir)/build-config/common/platforms/platform-frontend-aix  \
               $(srcdir)/build-config/common/platforms/platform-frontend-linux  \
               $(srcdir)/build-config/common/platforms/platform-frontend-mac  \
@@ -124,6 +126,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-mpi-crayxe  \
               $(srcdir)/build-config/common/platforms/platform-mpi-crayxk  \
               $(srcdir)/build-config/common/platforms/platform-mpi-crayxc  \
+              $(srcdir)/build-config/common/platforms/platform-mpi-crayunknown  \
               $(srcdir)/build-config/common/platforms/platform-mpi-aix  \
               $(srcdir)/build-config/common/platforms/platform-mpi-linux  \
               $(srcdir)/build-config/common/platforms/platform-mpi-mac  \
@@ -134,6 +137,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-shmem-crayxe  \
               $(srcdir)/build-config/common/platforms/platform-shmem-crayxt  \
               $(srcdir)/build-config/common/platforms/platform-shmem-crayxc  \
+              $(srcdir)/build-config/common/platforms/platform-shmem-crayunknown  \
               $(srcdir)/build-config/common/platforms/platform-shmem-user-provided  \
               $(srcdir)/build-config/common/platforms/platform-mpi-k  \
               $(srcdir)/build-config/common/platforms/platform-mpi-fx10  \

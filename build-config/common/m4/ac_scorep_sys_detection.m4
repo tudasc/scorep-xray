@@ -99,7 +99,8 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                    [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
                         [ac_scorep_platform="bgp"],
                    [(test "x${build_cpu}" = "xx86_64" || test "x${build_cpu}" = "xaarch64") && test -d /opt/cray],
-                        [AS_IF([test -L /opt/cray/pmi/default],
+                        [ac_scorep_platform="crayunknown"
+                         AS_IF([test -L /opt/cray/pmi/default],
                              [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
                                        [ac_scorep_platform="crayxt"],
                                   [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
@@ -117,8 +118,16 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                              [test -L /opt/cray/pe/pmi/default],
                                   [AS_IF([test -d /opt/cray/ari/modulefiles],
                                        [ac_scorep_platform="crayxc"])])
-                         AS_IF([test "x${ac_scorep_platform}" = "x"],
-                             [AC_MSG_ERROR([Unknown Cray platform.])])],
+                         AS_IF([test "x${ac_scorep_platform}" = "xcrayunknown"],
+                             [AC_CHECK_PROG([has_cc], [cc], [yes], [no])
+                              AC_CHECK_PROG([has_CC], [CC], [yes], [no])
+                              AC_CHECK_PROG([has_ftn], [ftn], [yes], [no])
+                              AS_IF([test "${has_cc}${has_CC}${has_ftn}" != yesyesyes],
+                                  [# System seems to be a Cray, but doensn't provide
+                                   # compiler wrappers cc, CC, ftn. Try 'linux' as fallback.
+                                   ac_scorep_platform=linux
+                                   AC_MSG_WARN([Unknown Cray platform, no compiler wrappers provided, assume linux. Please contact <AC_PACKAGE_BUGREPORT>.])],
+                                  [AC_MSG_WARN([Unknown Cray platform, please contact <AC_PACKAGE_BUGREPORT>.])])])],
                    [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
                         [ac_scorep_platform="k"],
                    [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
@@ -166,6 +175,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [crayxe],  [ac_scorep_cross_compiling="yes"],
          [crayxk],  [ac_scorep_cross_compiling="yes"],
          [crayxc],  [ac_scorep_cross_compiling="yes"],
+         [crayunknown], [ac_scorep_cross_compiling="yes"],
          [k],       [ac_scorep_cross_compiling="yes"],
          [fx10],    [ac_scorep_cross_compiling="yes"],
          [fx100],   [ac_scorep_cross_compiling="yes"],
@@ -204,6 +214,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_CRAYXE],  [test "x${ac_scorep_platform}" = "xcrayxe"])
     AM_CONDITIONAL([PLATFORM_CRAYXK],  [test "x${ac_scorep_platform}" = "xcrayxk"])
     AM_CONDITIONAL([PLATFORM_CRAYXC],  [test "x${ac_scorep_platform}" = "xcrayxc"])
+    AM_CONDITIONAL([PLATFORM_CRAYUNKNOWN], [test "x${ac_scorep_platform}" = "xcrayunknown"])
     AM_CONDITIONAL([PLATFORM_LINUX],   [test "x${ac_scorep_platform}" = "xlinux"])
     AM_CONDITIONAL([PLATFORM_SOLARIS], [test "x${ac_scorep_platform}" = "xsolaris"])
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
@@ -215,7 +226,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_FX100],   [test "x${ac_scorep_platform}" = "xfx100"])
 
     AS_CASE([${ac_scorep_platform}],
-        [crayx*], [afs_platform_cray="yes"],
+        [cray*], [afs_platform_cray="yes"],
         [afs_platform_cray="no"])
     AM_CONDITIONAL([PLATFORM_CRAY],[ test "x${afs_platform_cray}" = "xyes" ])
 
@@ -239,6 +250,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_CRAYXK], [1], [Set if we are building for the Cray XK platform])])
     AM_COND_IF([PLATFORM_CRAYXC],
         [AC_DEFINE([HAVE_PLATFORM_CRAYXC], [1], [Set if we are building for the Cray XC platform])])
+    AM_COND_IF([PLATFORM_CRAYUNKNOWN],
+        [AC_DEFINE([HAVE_PLATFORM_CRAYUNKNOWN], [1], [Set if we are building for an unknown Cray])])
     AM_COND_IF([PLATFORM_LINUX],
         [AC_DEFINE([HAVE_PLATFORM_LINUX], [1], [Set if we are building for the Linux platform])])
     AM_COND_IF([PLATFORM_SOLARIS],
