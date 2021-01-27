@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2017, 2019-2020,
+## Copyright (c) 2009-2017, 2019-2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -70,7 +70,6 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 # /opt/cray/pe/pmi/default. They still provide the network via
 # /opt/cray/ari/modulefiles.
 #
-AC_MSG_CHECKING([for platform])
 AC_ARG_ENABLE([platform-mic],
     [AS_HELP_STRING([--enable-platform-mic],
                     [Force build for Intel Xeon Phi co-processors [no].
@@ -139,12 +138,15 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
               [ac_scorep_platform="mingw"],
          [ac_scorep_platform="unknown"])
 
+     # Keep 'checking' and 'result' close to each other in oder to not interfere with CICD platform check
+     AC_MSG_CHECKING([for platform])
      AS_IF([test "x${ac_scorep_platform}" = "xunknown"],
          [AC_MSG_RESULT([$ac_scorep_platform, please contact <AC_PACKAGE_BUGREPORT> if you encounter any problems.])],
          [AC_MSG_RESULT([$ac_scorep_platform (auto detected)])
           AFS_SUMMARY([Platform], [$ac_scorep_platform (auto detected)])])
     ],
-    [AC_MSG_RESULT([$ac_scorep_platform (provided)])
+    [AC_MSG_CHECKING([for platform])
+     AC_MSG_RESULT([$ac_scorep_platform (provided)])
      AFS_SUMMARY([Platform], [$ac_scorep_platform (provided)])])
 ])# AC_SCOREP_DETECT_PLATFORMS
 
