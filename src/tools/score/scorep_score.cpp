@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017, 2019-2020,
+ * Copyright (c) 2009-2013, 2017, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -38,6 +38,7 @@
 #include <config.h>
 #include "SCOREP_Score_Profile.hpp"
 #include "SCOREP_Score_Estimator.hpp"
+#include <scorep_tools_utils.hpp>
 
 using namespace std;
 
@@ -67,173 +68,191 @@ main( int    argc,
     double                   max_time_per_visit          = 1;
     //--------------------------------------- Parameter options parsing
 
+    // if 'help' is part of the parameters or there are no parameters, print
+    // usage info and exit
+    bool get_help = false;
+    for ( int i = 1; i < argc; i++ )
+    {
+        string arg = argv[ i ];
+        if ( ( arg == "-h" ) || ( arg == "--help" ) )
+        {
+            get_help = true;
+            break;
+        }
+    }
+    if ( argc == 1 || get_help )
+    {
+        print_help();
+        exit( EXIT_SUCCESS );
+    }
+
+    // all other cases require a cube file and that it is the last parameter
+    file_name = argv[ argc - 1 ];
+    if ( !exists_file( file_name ) )
+    {
+        cerr << "ERROR: Input file '" << file_name << "' does not exist!" << endl;
+        if ( file_name[ 0 ] == '-' )
+        {
+            cerr << "       Note, '-' parameters other than '-h' require a cube file as input\n"
+                 << "       and the file has to be the last parameter of the command line." << endl;
+        }
+        print_help();
+        exit( EXIT_FAILURE );
+    }
+    argc--;
+
     for ( int i = 1; i < argc; i++ )
     {
         string arg = argv[ i ];
 
-        // Options start with a dash
-        if ( argv[ i ][ 0 ] == '-' )
+        if ( arg == "-r" )
         {
-            if ( arg == "-r" )
+            show_regions = true;
+        }
+        else if ( arg == "-f" )
+        {
+            if ( i + 1 < argc )
             {
-                show_regions = true;
-            }
-            else if ( ( arg == "-h" ) ||
-                      ( arg == "--help" ) )
-            {
-                print_help();
-                exit( EXIT_SUCCESS );
-            }
-            else if ( arg == "-f" )
-            {
-                if ( i + 1 < argc )
-                {
-                    filter_file = argv[ i + 1 ];
-                    i++;
-                }
-                else
-                {
-                    cerr << "ERROR: No filter file specified" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-            }
-            else if ( arg == "-c" )
-            {
-                if ( i + 1 < argc )
-                {
-                    dense_num = atoi( argv[ i + 1 ] );
-                    i++;
-                }
-                else
-                {
-                    cerr << "ERROR: Missing number of hardware counters" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-            }
-            else if ( arg == "-m" )
-            {
-                use_mangled = true;
-            }
-            else if ( arg == "-g" )
-            {
-                produce_initial_filter_file = true;
-                // force mangled names when generation is active
-                // use_mangled = true;
-            }
-            else if ( arg == "-b" )
-            {
-                if ( i + 1 < argc )
-                {
-                    char* p;
-                    min_percentage_from_max_buf = strtod( argv[ i + 1 ], &p );
-                    if ( *p )
-                    {
-                        cerr << "ERROR: Parameter value for buffer percentage is not a number!" << endl;
-                        exit( EXIT_FAILURE );
-                    }
-                    if ( min_percentage_from_max_buf < 0 || min_percentage_from_max_buf > 100 )
-                    {
-                        cerr << "ERROR: The buffer percentage has to be in the range 0-100!" << endl;
-                        exit( EXIT_FAILURE );
-                    }
-                    i++;
-                }
-                else
-                {
-                    cerr << "ERROR: Missing parameter value for the buffer percent!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-                filter_file_options_set = true;
-            }
-            else if ( arg == "-t" )
-            {
-                if ( i + 1 < argc )
-                {
-                    char* p;
-                    max_time_per_visit = strtod( argv[ i + 1 ], &p );
-                    if ( *p )
-                    {
-                        cerr << "ERROR: Parameter value for max time per visit is not a number!" << endl;
-                        exit( EXIT_FAILURE );
-                    }
-                    if ( max_time_per_visit < 0 )
-                    {
-                        cerr << "ERROR: The max time per visit has to be positive!" << endl;
-                        exit( EXIT_FAILURE );
-                    }
-                    i++;
-                }
-                else
-                {
-                    cerr << "ERROR: Missing parameter value for max time per visit!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-                filter_file_options_set = true;
-            }
-            else if ( arg == "-s" )
-            {
-                if ( i + 1 < argc )
-                {
-                    std::string choice = argv[ i + 1 ];
-                    if ( choice == "totaltime" )
-                    {
-                        sortingby = SCOREP_SCORE_SORTING_TYPE_TOTALTIME;
-                    }
-                    else if ( choice == "timepervisit" )
-                    {
-                        sortingby = SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT;
-                    }
-                    else if ( choice == "maxbuffer" )
-                    {
-                        sortingby = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
-                    }
-                    else if ( choice == "visits" )
-                    {
-                        sortingby = SCOREP_SCORE_SORTING_TYPE_VISITS;
-                    }
-                    else if ( choice == "name" )
-                    {
-                        sortingby = SCOREP_SCORE_SORTING_TYPE_NAME;
-                    }
-                    else
-                    {
-                        cerr << "ERROR: Unknown sorting choice" << endl;
-                        print_help();
-                        exit( EXIT_FAILURE );
-                    }
-                    i++;
-                }
-                else
-                {
-                    cerr << "ERROR: No sorting mode specified" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
+                filter_file = argv[ i + 1 ];
+                i++;
             }
             else
             {
-                cerr << "ERROR: Unknown argment: '" << arg << "'" << endl;
+                cerr << "ERROR: No filter file specified" << endl;
                 print_help();
                 exit( EXIT_FAILURE );
             }
         }
-
-        // Everything without a dash is a input file name.
+        else if ( arg == "-c" )
+        {
+            if ( i + 1 < argc )
+            {
+                dense_num = atoi( argv[ i + 1 ] );
+                i++;
+            }
+            else
+            {
+                cerr << "ERROR: Missing number of hardware counters" << endl;
+                print_help();
+                exit( EXIT_FAILURE );
+            }
+        }
+        else if ( arg == "-m" )
+        {
+            use_mangled = true;
+        }
+        else if ( arg == "-g" )
+        {
+            produce_initial_filter_file = true;
+            // force mangled names when generation is active
+            // use_mangled = true;
+        }
+        else if ( arg == "-b" )
+        {
+            if ( i + 1 < argc )
+            {
+                char* p;
+                min_percentage_from_max_buf = strtod( argv[ i + 1 ], &p );
+                if ( *p )
+                {
+                    cerr << "ERROR: Parameter value for buffer percentage is not a number!" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+                if ( min_percentage_from_max_buf < 0 || min_percentage_from_max_buf > 100 )
+                {
+                    cerr << "ERROR: The buffer percentage has to be in the range 0-100!" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+                i++;
+            }
+            else
+            {
+                cerr << "ERROR: Missing parameter value for the buffer percent!" << endl;
+                print_help();
+                exit( EXIT_FAILURE );
+            }
+            filter_file_options_set = true;
+        }
+        else if ( arg == "-t" )
+        {
+            if ( i + 1 < argc )
+            {
+                char* p;
+                max_time_per_visit = strtod( argv[ i + 1 ], &p );
+                if ( *p )
+                {
+                    cerr << "ERROR: Parameter value for max time per visit is not a number!" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+                if ( max_time_per_visit < 0 )
+                {
+                    cerr << "ERROR: The max time per visit has to be positive!" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+                i++;
+            }
+            else
+            {
+                cerr << "ERROR: Missing parameter value for max time per visit!" << endl;
+                print_help();
+                exit( EXIT_FAILURE );
+            }
+            filter_file_options_set = true;
+        }
+        else if ( arg == "-s" )
+        {
+            if ( i + 1 < argc )
+            {
+                std::string choice = argv[ i + 1 ];
+                if ( choice == "totaltime" )
+                {
+                    sortingby = SCOREP_SCORE_SORTING_TYPE_TOTALTIME;
+                }
+                else if ( choice == "timepervisit" )
+                {
+                    sortingby = SCOREP_SCORE_SORTING_TYPE_TIMEPERVISIT;
+                }
+                else if ( choice == "maxbuffer" )
+                {
+                    sortingby = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
+                }
+                else if ( choice == "visits" )
+                {
+                    sortingby = SCOREP_SCORE_SORTING_TYPE_VISITS;
+                }
+                else if ( choice == "name" )
+                {
+                    sortingby = SCOREP_SCORE_SORTING_TYPE_NAME;
+                }
+                else
+                {
+                    cerr << "ERROR: Unknown sorting choice" << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+                i++;
+            }
+            else
+            {
+                cerr << "ERROR: No sorting mode specified" << endl;
+                print_help();
+                exit( EXIT_FAILURE );
+            }
+        }
         else
         {
-            file_name = argv[ i ];
+            cerr << "ERROR: Unknown argument: '" << arg << "'" << endl;
+            if ( exists_file( arg ) && ( get_extension( arg ) == ".cubex" ) )
+            {
+                cerr << "       Note, the input file has to be the last parameter of the command line." << endl;
+            }
+            print_help();
+            exit( EXIT_FAILURE );
         }
-    }
-
-    if ( file_name == "" )
-    {
-        cerr << "ERROR: No input profile" << endl;
-        print_help();
-        exit( EXIT_FAILURE );
     }
 
     //-------------------------------------- Sanity checks

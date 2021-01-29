@@ -1,4 +1,4 @@
-Usage: scorep-score <profile> [options]
+Usage: scorep-score [options] <profile>
 Options:
  -r          Show all regions.
  -h, --help  Show this help and exit.

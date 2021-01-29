@@ -70,13 +70,16 @@ scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/utils/include \
+    -I$(INC_ROOT)src/tools/lib \
     @CUBELIB_CPPFLAGS@
 
 scorep_score_LDFLAGS =
 scorep_score_LDADD = \
-    libscorep_estimator.la
+    libscorep_estimator.la \
+    libscorep_tools.la
 scorep_score_DEPENDENCIES = \
-    libscorep_estimator.la
+    libscorep_estimator.la \
+    libscorep_tools.la
 
 if !HAVE_SCOREP_EXTERNAL_CUBELIB
 
