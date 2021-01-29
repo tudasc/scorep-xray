@@ -68,7 +68,9 @@ main( int    argc,
     double min_percentage_from_max_buf = 1;
     double max_time_per_visit          = 1;
     // optional manual option for more fine control
-    uint64_t min_visits = 0;
+    uint64_t min_visits           = 0;
+    double   min_max_buf_absolute = 0;
+
     //--------------------------------------- Parameter options parsing
 
     // if 'help' is part of the parameters or there are no parameters, print
@@ -228,6 +230,23 @@ main( int    argc,
                                 exit( EXIT_FAILURE );
                             }
                         }
+                        else if ( key == "bufferabsolute" )
+                        {
+                            char* p;
+                            min_max_buf_absolute = strtod( value.c_str(), &p );
+                            if ( *p )
+                            {
+                                cerr << "ERROR: Parameter value for absolute minimum buffer is not a number!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                            if ( min_max_buf_absolute < 0 )
+                            {
+                                cerr << "ERROR: The buffer value has to be larger than 0!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                        }
                         else
                         {
                             cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
@@ -339,7 +358,8 @@ main( int    argc,
     {
         estimator.generateFilterFile( min_percentage_from_max_buf,
                                       max_time_per_visit,
-                                      min_visits );
+                                      min_visits,
+                                      min_max_buf_absolute );
     }
 
     delete ( profile );

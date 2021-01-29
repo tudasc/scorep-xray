@@ -31,6 +31,8 @@ Options:
              - `bufferpercent`       : estimated memory requirements exceed the
                                        given threshold in percent of the total
                                        estimated trace buffer requirements
+             - `bufferabsolute`      : estimated memory requirements exceed
+                                       the given absolute threshold in MB
              - `visits`              : number of visits exceeds the given
                                        threshold
              - `timepervisit`        : time per visit value is below the given

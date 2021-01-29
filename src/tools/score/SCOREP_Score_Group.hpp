@@ -168,7 +168,8 @@ public:
 
     /**
      * Returns the region information if the entry fullfills the
-     * total buffer size, time per visit, and visits constraints.
+     * total buffer size, time per visit, visits, and absolute memory
+     * constraints.
      * Otherwise, it returns an empty string.
      */
     std::string
@@ -177,7 +178,8 @@ public:
                         SCOREP_Score_FieldWidths widths,
                         double                   percentageOfTotalBufferSize,
                         double                   thresholdTimePerVisits,
-                        uint64_t                 minVisits  );
+                        uint64_t                 minVisits,
+                        double                   minBufferAbsolute );
 
     /**
      * Returns abbreviated region information if the entry is a filtered

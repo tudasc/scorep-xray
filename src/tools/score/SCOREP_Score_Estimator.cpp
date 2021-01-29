@@ -820,7 +820,8 @@ SCOREP_Score_Estimator::printRegions( void )
 void
 SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                                             double   maxTimePerVisits,
-                                            uint64_t minVisits )
+                                            uint64_t minVisits,
+                                            double   minBufferAbsolute )
 {
     sortEntries( m_regions, m_region_num );
 
@@ -855,6 +856,10 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     {
         filter_file << "#  - A region has to have at least " << minVisits << " visits.\n";
     }
+    if ( minBufferAbsolute > 0 )
+    {
+        filter_file << "#  - A region has to use at least " << minBufferAbsolute << "M of memory.\n";
+    }
     filter_file << "#\n"
                 << "# The file contains comments for each region providing additional information\n"
                 << "# regarding the respective region.\n"
@@ -871,7 +876,8 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                                                           m_widths,
                                                           minBufferPercentage,
                                                           maxTimePerVisits,
-                                                          minVisits );
+                                                          minVisits,
+                                                          minBufferAbsolute );
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;

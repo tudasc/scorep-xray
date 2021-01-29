@@ -121,12 +121,13 @@ public:
     /**
      * Generates an initial filter file with USR regions that have at least a
      * percentage of the the total buffer size, a maximal time per visits
-     * in us, and a minimum number of visits.
+     * in us, a minimum number of visits, and an absolute buffer value in MB.
      */
     void
     generateFilterFile( double   minBufferPercentage,
                         double   maxTimePerVisits,
-                        uint64_t minVisits );
+                        uint64_t minVisits,
+                        double   minBufferAbsolute );
 
     /**
      * Reads and evaluates a filter file.

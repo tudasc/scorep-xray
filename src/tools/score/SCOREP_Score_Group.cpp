@@ -225,13 +225,16 @@ SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
                                         SCOREP_Score_FieldWidths widths,
                                         double                   percentageOfTotalBufferSize,
                                         double                   thresholdTimePerVisits,
-                                        uint64_t                 minVisits )
+                                        uint64_t                 minVisits,
+                                        double                   minBufferAbsolute )
 {
     double buffer_ratio = ( ( double )getMaxTraceBufferSize() / ( double )maxBuffer ) * 100;
+    double buffer_in_M  = ( double )getMaxTraceBufferSize() / ( 1024 * 1024 );
     if ( ( m_filter != SCOREP_SCORE_FILTER_YES ) &&
          (   buffer_ratio >= percentageOfTotalBufferSize
              && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
              && m_visits >= minVisits
+             && buffer_in_M >= minBufferAbsolute
              && m_type == SCOREP_SCORE_TYPE_USR ) )
     {
         string clean_name = cleanName();

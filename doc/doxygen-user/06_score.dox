@@ -251,6 +251,8 @@ matches all of the given conditions, with the following keys:
        threshold in percent of the total estimated trace buffer requirements.
        This limits the inclusion to relevant regions based on total memory
        impact.</li>
+  <li> @verb{bufferabsolute}: The estimated memory requirements exceed the given
+       absolute threshold in MB.</li>
   <li> @verb{visits}: The number of visits exceeds the given threshold.</li>
   <li> @verb{timepervisit}: The time per visit value is below the given
        threshold in microseconds. This limits the inclusion to relevant regions
