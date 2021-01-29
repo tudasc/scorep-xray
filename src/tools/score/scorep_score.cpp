@@ -144,64 +144,79 @@ main( int    argc,
         else if ( arg == "-g" )
         {
             produce_initial_filter_file = true;
-            // force mangled names when generation is active
-            // use_mangled = true;
-        }
-        else if ( arg == "-b" )
-        {
-            if ( i + 1 < argc )
+
+            // check if there is optional parameter for this option
+            if ( ( i + 1 < argc ) && ( argv[ i + 1 ][ 0 ] != '-' ) )
             {
-                char* p;
-                min_percentage_from_max_buf = strtod( argv[ i + 1 ], &p );
-                if ( *p )
-                {
-                    cerr << "ERROR: Parameter value for buffer percentage is not a number!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-                if ( min_percentage_from_max_buf < 0 || min_percentage_from_max_buf > 100 )
-                {
-                    cerr << "ERROR: The buffer percentage has to be in the range 0-100!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
+                // parse optional control parameters for filter generation
+                vector <string> arguments;
+                stringstream    tokenize( argv[ i + 1 ] );
                 i++;
-            }
-            else
-            {
-                cerr << "ERROR: Missing parameter value for the buffer percent!" << endl;
-                print_help();
-                exit( EXIT_FAILURE );
-            }
-            filter_file_options_set = true;
-        }
-        else if ( arg == "-t" )
-        {
-            if ( i + 1 < argc )
-            {
-                char* p;
-                max_time_per_visit = strtod( argv[ i + 1 ], &p );
-                if ( *p )
+                string token;
+                while ( getline( tokenize, token, ',' ) )
                 {
-                    cerr << "ERROR: Parameter value for max time per visit is not a number!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
+                    // simplify token string to allow for common typing errors
+                    string original_token = token;
+                    token = scorep_tolower( token );
+                    token = replace_all( " ", "", token );
+                    if ( token.length() == 0 )
+                    {
+                        continue;
+                    }
+                    std::string::size_type pos = token.find( "=" );
+                    if ( pos == std::string::npos )
+                    {
+                        cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
+                        print_help();
+                        exit( EXIT_FAILURE );
+                    }
+                    else
+                    {
+                        string key   = token.substr( 0, pos );
+                        string value = token.substr( pos + 1, token.length() - pos - 1 );
+                        if ( key == "bufferpercent" )
+                        {
+                            char* p;
+                            min_percentage_from_max_buf = strtod( value.c_str(), &p );
+                            if ( *p )
+                            {
+                                cerr << "ERROR: Parameter value for buffer percentage is not a number!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                            if ( min_percentage_from_max_buf < 0 || min_percentage_from_max_buf > 100 )
+                            {
+                                cerr << "ERROR: The buffer percentage has to be in the range 0-100!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                        }
+                        else if (  key == "timepervisit" )
+                        {
+                            char* p;
+                            max_time_per_visit = strtod( value.c_str(), &p );
+                            if ( *p )
+                            {
+                                cerr << "ERROR: Parameter value for max time per visit is not a number!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                            if ( max_time_per_visit < 0 )
+                            {
+                                cerr << "ERROR: The max time per visit has to be positive!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                        }
+                        else
+                        {
+                            cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
+                            print_help();
+                            exit( EXIT_FAILURE );
+                        }
+                    }
                 }
-                if ( max_time_per_visit < 0 )
-                {
-                    cerr << "ERROR: The max time per visit has to be positive!" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
-                }
-                i++;
             }
-            else
-            {
-                cerr << "ERROR: Missing parameter value for max time per visit!" << endl;
-                print_help();
-                exit( EXIT_FAILURE );
-            }
-            filter_file_options_set = true;
         }
         else if ( arg == "-s" )
         {

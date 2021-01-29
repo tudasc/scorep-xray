@@ -18,3 +18,18 @@ Options:
              (default 1%).
  -t <us>     Maximum 'time per visit' value in us that a region has to be below
              of to be included in the the filter file suggestion (default 1us).
+ -g [<list>] Generation of an initial filter file with the name
+             'initial_scorep.filter'. A valid parameter list has the form 
+             KEY=VALUE[,KEY=VALUE]*. By default, uses the following control
+             parameters:
+
+                 `bufferpercent=1,timepervisit=1`
+
+             A region is included in the filter file (i.e., excluded from
+             measurement) if it matches all of the given conditions, with the
+             following keys:
+             - `bufferpercent`       : estimated memory requirements exceed the
+                                       given threshold in percent of the total
+                                       estimated trace buffer requirements
+             - `timepervisit`        : time per visit value is below the given
+                                       threshold in microseconds
