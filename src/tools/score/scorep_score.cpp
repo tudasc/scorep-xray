@@ -67,9 +67,11 @@ main( int    argc,
     // default options for automatic selection
     double min_percentage_from_max_buf = 1;
     double max_time_per_visit          = 1;
+    bool   filter_usr                  = true;
     // optional manual option for more fine control
     uint64_t min_visits           = 0;
     double   min_max_buf_absolute = 0;
+    bool     filter_com           = false;
 
     //--------------------------------------- Parameter options parsing
 
@@ -247,6 +249,31 @@ main( int    argc,
                                 exit( EXIT_FAILURE );
                             }
                         }
+                        else if ( key == "type" )
+                        {
+                            if ( value == "usr" )
+                            {
+                                // the default case
+                                filter_usr = true;
+                                filter_com = false;
+                            }
+                            else if ( value == "com" )
+                            {
+                                filter_usr = false;
+                                filter_com = true;
+                            }
+                            else if ( value == "both" )
+                            {
+                                filter_usr = true;
+                                filter_com = true;
+                            }
+                            else
+                            {
+                                cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                        }
                         else
                         {
                             cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
@@ -359,7 +386,9 @@ main( int    argc,
         estimator.generateFilterFile( min_percentage_from_max_buf,
                                       max_time_per_visit,
                                       min_visits,
-                                      min_max_buf_absolute );
+                                      min_max_buf_absolute,
+                                      filter_usr,
+                                      filter_com );
     }
 
     delete ( profile );

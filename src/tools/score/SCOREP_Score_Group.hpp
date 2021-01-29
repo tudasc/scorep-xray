@@ -168,7 +168,7 @@ public:
 
     /**
      * Returns the region information if the entry fullfills the
-     * total buffer size, time per visit, visits, and absolute memory
+     * total buffer size, time per visit, visits, absolute memory, and type
      * constraints.
      * Otherwise, it returns an empty string.
      */
@@ -179,7 +179,9 @@ public:
                         double                   percentageOfTotalBufferSize,
                         double                   thresholdTimePerVisits,
                         uint64_t                 minVisits,
-                        double                   minBufferAbsolute );
+                        double                   minBufferAbsolute,
+                        bool                     filterUSR,
+                        bool                     filterCOM );
 
     /**
      * Returns abbreviated region information if the entry is a filtered

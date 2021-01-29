@@ -37,3 +37,5 @@ Options:
                                        threshold
              - `timepervisit`        : time per visit value is below the given
                                        threshold in microseconds
+             - `type`                : region type matches the given value
+                                       (allowed: 'usr', 'com', 'both')

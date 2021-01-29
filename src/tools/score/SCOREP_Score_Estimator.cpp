@@ -821,7 +821,10 @@ void
 SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                                             double   maxTimePerVisits,
                                             uint64_t minVisits,
-                                            double   minBufferAbsolute )
+                                            double   minBufferAbsolute,
+                                            bool     filterUSR,
+                                            bool     filterCOM )
+
 {
     sortEntries( m_regions, m_region_num );
 
@@ -860,6 +863,21 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     {
         filter_file << "#  - A region has to use at least " << minBufferAbsolute << "M of memory.\n";
     }
+    if ( filterUSR && filterCOM )
+    {
+        filter_file << "#  - A region that is of type COM or USR.\n";
+    }
+    else
+    {
+        if ( filterUSR )
+        {
+            filter_file << "#  - A region that is of type USR.\n";
+        }
+        if ( filterCOM )
+        {
+            filter_file << "#  - A region that is of type COM.\n";
+        }
+    }
     filter_file << "#\n"
                 << "# The file contains comments for each region providing additional information\n"
                 << "# regarding the respective region.\n"
@@ -877,7 +895,9 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
                                                           minBufferPercentage,
                                                           maxTimePerVisits,
                                                           minVisits,
-                                                          minBufferAbsolute );
+                                                          minBufferAbsolute,
+                                                          filterUSR,
+                                                          filterCOM );
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;

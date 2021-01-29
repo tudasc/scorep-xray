@@ -257,6 +257,8 @@ matches all of the given conditions, with the following keys:
   <li> @verb{timepervisit}: The time per visit value is below the given
        threshold in microseconds. This limits the inclusion to relevant regions
        based on per visit time overhead.</li>
+  <li> @verb{type}: The region type matches the given value. Allowed values are
+       'usr', 'com', and 'both'.</li>
 </ol>
 
 @note If the file name already exists, the previous file will be renamed instead
