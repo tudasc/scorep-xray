@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016, 2019-2020,
+ * Copyright (c) 2009-2014, 2016, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -120,12 +120,13 @@ public:
 
     /**
      * Generates an initial filter file with USR regions that have at least a
-     * percentage of the the total buffer size and a maximal time per visits
-     * in us.
+     * percentage of the the total buffer size, a maximal time per visits
+     * in us, and a minimum number of visits.
      */
     void
-    generateFilterFile( double minBufferPercentage,
-                        double maxTimePerVisits );
+    generateFilterFile( double   minBufferPercentage,
+                        double   maxTimePerVisits,
+                        uint64_t minVisits );
 
     /**
      * Reads and evaluates a filter file.

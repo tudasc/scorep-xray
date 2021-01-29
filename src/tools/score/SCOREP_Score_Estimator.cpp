@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2019-2020,
+ * Copyright (c) 2009-2016, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -818,8 +818,9 @@ SCOREP_Score_Estimator::printRegions( void )
 }
 
 void
-SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
-                                            double maxTimePerVisits )
+SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
+                                            double   maxTimePerVisits,
+                                            uint64_t minVisits )
 {
     sortEntries( m_regions, m_region_num );
 
@@ -848,8 +849,13 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
                 << "#\n"
                 << "# Generated with the following parameters:\n"
                 << "#  - A region has to use at least " << minBufferPercentage << "% of the estimated trace buffer.\n"
-                << "#  - A region has to have a time/visits value of less than " << maxTimePerVisits << " us.\n"
-                << "#\n"
+                << "#  - A region has to have a time/visits value of less than " << maxTimePerVisits << " us.\n";
+    // Add the following lines if the parameters are explicitly set
+    if ( minVisits > 0 )
+    {
+        filter_file << "#  - A region has to have at least " << minVisits << " visits.\n";
+    }
+    filter_file << "#\n"
                 << "# The file contains comments for each region providing additional information\n"
                 << "# regarding the respective region.\n"
                 << "# The common prefix for the files is:\n"
@@ -860,7 +866,12 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
                 << "  EXCLUDE" << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        string temp = m_regions[ i ]->getFilterCandidate( minBufferPercentage, m_max_buf, maxTimePerVisits, m_total_time, m_widths );
+        string temp = m_regions[ i ]->getFilterCandidate( m_max_buf,
+                                                          m_total_time,
+                                                          m_widths,
+                                                          minBufferPercentage,
+                                                          maxTimePerVisits,
+                                                          minVisits );
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;

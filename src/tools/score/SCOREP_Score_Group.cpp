@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2020,
+ * Copyright (c) 2009-2014, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -220,16 +220,18 @@ SCOREP_Score_Group::cleanName()
 }
 
 std::string
-SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTotalBufferSize,
-                                        uint64_t                 maxBuffer,
-                                        double                   thresholdTimePerVisits,
+SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
                                         double                   totalTime,
-                                        SCOREP_Score_FieldWidths widths )
+                                        SCOREP_Score_FieldWidths widths,
+                                        double                   percentageOfTotalBufferSize,
+                                        double                   thresholdTimePerVisits,
+                                        uint64_t                 minVisits )
 {
     double buffer_ratio = ( ( double )getMaxTraceBufferSize() / ( double )maxBuffer ) * 100;
     if ( ( m_filter != SCOREP_SCORE_FILTER_YES ) &&
          (   buffer_ratio >= percentageOfTotalBufferSize
              && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
+             && m_visits >= minVisits
              && m_type == SCOREP_SCORE_TYPE_USR ) )
     {
         string clean_name = cleanName();

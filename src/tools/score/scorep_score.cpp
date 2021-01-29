@@ -64,8 +64,11 @@ main( int    argc,
     SCOREP_Score_SortingType sortingby                   = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
     bool                     produce_initial_filter_file = false;
     bool                     filter_file_options_set     = false;
-    double                   min_percentage_from_max_buf = 1;
-    double                   max_time_per_visit          = 1;
+    // default options for automatic selection
+    double min_percentage_from_max_buf = 1;
+    double max_time_per_visit          = 1;
+    // optional manual option for more fine control
+    uint64_t min_visits = 0;
     //--------------------------------------- Parameter options parsing
 
     // if 'help' is part of the parameters or there are no parameters, print
@@ -208,6 +211,23 @@ main( int    argc,
                                 exit( EXIT_FAILURE );
                             }
                         }
+                        else if (  key == "visits" )
+                        {
+                            char* p;
+                            min_visits = strtoul( value.c_str(), &p, 10 );
+                            if ( *p )
+                            {
+                                cerr << "ERROR: Parameter value for visits is not a number!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                            if ( min_visits < 0 )
+                            {
+                                cerr << "ERROR: The visits count has to be positive!" << endl;
+                                print_help();
+                                exit( EXIT_FAILURE );
+                            }
+                        }
                         else
                         {
                             cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
@@ -318,7 +338,8 @@ main( int    argc,
     if ( produce_initial_filter_file )
     {
         estimator.generateFilterFile( min_percentage_from_max_buf,
-                                      max_time_per_visit );
+                                      max_time_per_visit,
+                                      min_visits );
     }
 
     delete ( profile );
