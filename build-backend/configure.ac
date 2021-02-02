@@ -64,14 +64,8 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC dnl required
-AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AFS_SUMMARY([C99 compiler used], [$CC])
-AM_PROG_CC_C_O
-
-AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
-            dnl mode also for frontend tools
-
+SCOREP_COMPUTENODE_CC
+SCOREP_COMPUTENODE_CXX
 SCOREP_COMPUTENODE_F77
 SCOREP_COMPUTENODE_FC
 AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${scorep_cv_f77_works}" = "xyes" || test "x${scorep_cv_fc_works}" = "xyes"])
