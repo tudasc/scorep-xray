@@ -1,10 +1,13 @@
-## -*- mode: makefile -*-
+## -*- mode: autoconf -*-
 
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2015, 2019,
 ## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2021,
+## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license. See the COPYING file in the package base
@@ -14,7 +17,7 @@
 ## file scorep_compiler_constructor.m4
 
 AC_DEFUN([SCOREP_COMPILER_CONSTRUCTOR], [
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 
 scorep_compiler_constructor_mode=
 AS_CASE([${ax_cv_c_compiler_vendor}],

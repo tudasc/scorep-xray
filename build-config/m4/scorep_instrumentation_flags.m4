@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013, 2015, 2020,
+dnl Copyright (c) 2013, 2015, 2020-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013-2015, 2019,
@@ -36,7 +36,7 @@ AC_DEFUN([SCOREP_CC_FLAG_TEST],[
 
 
 AC_DEFUN([SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 
 AC_ARG_WITH([extra-instrumentation-flags],
     [],
@@ -122,7 +122,7 @@ dnl ------------------------------------------------------------------
 # to add -Ntl_notrt on K, independent on the instrumentation method
 # used. Different from compiler instrumentation flags.
 AC_DEFUN([SCOREP_INSTRUMENTATION_FLAGS], [
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+#AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 
 AS_UNSET([scorep_instrumentation_cppflags])
 AS_UNSET([scorep_instrumentation_ldflags])
