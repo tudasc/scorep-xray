@@ -104,6 +104,10 @@ m4_define([SCOREP_COMPUTENODE_FC],[
     dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${scorep_cv_fc_works}" = "xyes"; then
+        AC_LANG_PUSH([Fortran])
+        AC_FC_PP_SRCEXT([F])
+        AX_COMPILER_VENDOR
+        AC_LANG_POP([Fortran])
         AC_PROG_FC_C_O
         AC_FC_LIBRARY_LDFLAGS
         AS_CASE([${ac_scorep_platform}],
