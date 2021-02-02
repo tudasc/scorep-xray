@@ -42,8 +42,13 @@ AC_LANG_POP([C])
 
 
 AC_DEFUN([SCOREP_COMPUTENODE_CXX],[
-AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
-            dnl mode also for frontend tools
+AC_REQUIRE([AC_PROG_CXX]) dnl in cross mode, needed just for tests; in non-cross
+                          dnl mode also for frontend tools
+
+AC_LANG_PUSH([C++])
+AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
+AC_LANG_POP([C++])
 ])
 
 
