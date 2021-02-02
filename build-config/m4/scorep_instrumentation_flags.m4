@@ -37,7 +37,9 @@ AC_DEFUN([SCOREP_CC_FLAG_TEST],[
 
 AC_DEFUN([SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
-
+dnl SCOREP_COMPUTENODE_FC cannot be AC_REQUIREd due to Fortan macro
+dnl dependencies that lead to configure errors if FC is defunct.
+dnl AC_REQUIRE([SCOREP_COMPUTENODE_FC])dnl
 AC_ARG_WITH([extra-instrumentation-flags],
     [],
     [AC_MSG_WARN([ignoring --with-extra-instrumentation-flags, functionality got removed])],
@@ -82,6 +84,13 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                                   scorep_compiler_instrumentation_ldflags="-Wl,-no_pie"])],
     [])dnl
 
+AS_IF([test "x${ax_cv_c_compiler_vendor}" != "x${ax_cv_fc_compiler_vendor}"],
+    [AS_CASE([${ax_cv_fc_compiler_vendor}],
+         [cray], [scorep_compiler_instrumentation_fflags="-hfunc_trace"
+                  scorep_compiler_instrumentation_ldflags="$scorep_compiler_instrumentation_ldflags -Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
+         [scorep_compiler_instrumentation_fflags=unsupported])dnl
+    ])
+
 AS_IF([test "x${scorep_compiler_instrumentation_cflags}" != x],
     [# Use cflags also for C++ and Fortran if not already set
      AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" = x],
@@ -98,7 +107,10 @@ AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" != x],
      AFS_SUMMARY_VERBOSE([C++ compiler instrumentation flags], [${scorep_compiler_instrumentation_cxxflags}])
 ])
 
-AS_IF([test "x${scorep_compiler_instrumentation_fflags}" != x],
+AS_IF([test "x${scorep_compiler_instrumentation_fflags}" = xunsupported],
+    [AC_MSG_WARN([Fortran compiler instrumentation not supported yet. Please contact <AC_PACKAGE_BUGREPORT>.])
+     AFS_SUMMARY_VERBOSE([Fortran compiler instrumentation not supported yet])],
+    [test "x${scorep_compiler_instrumentation_fflags}" != x],
     [AC_MSG_NOTICE([using Fortran compiler instrumentation flags: ${scorep_compiler_instrumentation_fflags}])
      AFS_SUMMARY_VERBOSE([Fortran compiler instrumentation flags], [${scorep_compiler_instrumentation_fflags}])
 ])

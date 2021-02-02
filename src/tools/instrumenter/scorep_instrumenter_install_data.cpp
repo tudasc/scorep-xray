@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020,
+ * Copyright (c) 2009-2013, 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -106,18 +106,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-shared";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -130,15 +118,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-eP && mv "
-           + remove_extension( remove_path( input_file ) ) + ".i "
-           + output_file;
 }
 
 std::string
@@ -199,18 +178,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-shared";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree-form";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed-form";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -223,13 +190,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-cpp -E -o " + output_file;
 }
 
 std::string
@@ -276,18 +236,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-qmkshrobj";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-qfree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-qfixed";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -300,17 +248,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    std::string basename      = remove_extension( remove_path( input_file ) );
-    std::string prep_file_v13 = "F" + basename + ".f";
-    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
-
-    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
 }
 
 std::string
@@ -355,18 +292,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-nofree";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -379,13 +304,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
 }
 
 std::string
@@ -453,18 +371,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-shared";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Mfree" || arg == "-Mfreeform";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Mnofree" || arg == "-Mnofreeform";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -477,13 +383,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
 }
 
 std::string
@@ -529,18 +428,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-G";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-fixed";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -565,30 +452,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                + remove_extension( remove_path( output_file ) ) + ".i && mv "
                + remove_extension( remove_path( output_file ) ) + ".i "
                + output_file;
-    }
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    std::string basename = remove_extension( remove_path( output_file ) );
-
-    if ( get_extension( output_file ) == ".f90" )
-    {
-        return "-fpp -F -o " + basename
-               + ".i && grep -v \\# "
-               + basename + ".i > "
-               + output_file;
-    }
-    else
-    {
-        return "-fpp -F -o " + basename
-               + ".f90 && grep -v \\# "
-               + basename + ".f90 > "
-               + output_file
-               + " && rm -f "
-               + basename + ".f90";
     }
 }
 
@@ -635,18 +498,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-shared";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Fixed";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -657,13 +508,6 @@ SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& inpu
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
 {
     return "-E > " + output_file;
 }
@@ -715,20 +559,6 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return arg == "-shared";
 }
 
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    /* No Fortran support yet */
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    /* No Fortran support yet */
-    return false;
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -741,14 +571,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    /* No Fortran support yet */
-    return "";
 }
 
 std::string
@@ -787,5 +609,201 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 }
 
 #else
-#error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
+#error "Missing OPARI specific OpenMP C/C++ compiler handling for your compiler, extension required."
 #endif
+
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-ffree";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-ffixed";
+}
+
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-eP && mv "
+           + remove_extension( remove_path( input_file ) ) + ".i "
+           + output_file;
+}
+
+#else // !SCOREP_BACKEND_COMPILER_FC_CRAY
+
+#if SCOREP_BACKEND_COMPILER_GNU
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-ffree-form";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-ffixed-form";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-cpp -E -o " + output_file;
+}
+
+#elif SCOREP_BACKEND_COMPILER_IBM
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-qfree";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-qfixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    std::string basename      = remove_extension( remove_path( input_file ) );
+    std::string prep_file_v13 = "F" + basename + ".f";
+    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
+
+    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
+}
+
+#elif SCOREP_BACKEND_COMPILER_INTEL
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-nofree";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+#elif SCOREP_BACKEND_COMPILER_PGI
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-Mfree" || arg == "-Mfreeform";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-Mnofree" || arg == "-Mnofreeform";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+#elif SCOREP_BACKEND_COMPILER_STUDIO
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-fixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    std::string basename = remove_extension( remove_path( output_file ) );
+
+    if ( get_extension( output_file ) == ".f90" )
+    {
+        return "-fpp -F -o " + basename
+               + ".i && grep -v \\# "
+               + basename + ".i > "
+               + output_file;
+    }
+    else
+    {
+        return "-fpp -F -o " + basename
+               + ".f90 && grep -v \\# "
+               + basename + ".f90 > "
+               + output_file
+               + " && rm -f "
+               + basename + ".f90";
+    }
+}
+
+#elif SCOREP_BACKEND_COMPILER_FUJITSU
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-Free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-Fixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+#elif SCOREP_BACKEND_COMPILER_CLANG
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    /* No Fortran support yet */
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    /* No Fortran support yet */
+    return false;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    /* No Fortran support yet */
+    return "";
+}
+
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your Fortran compiler, extension required."
+#endif
+
+#endif // !SCOREP_BACKEND_COMPILER_FC_CRAY

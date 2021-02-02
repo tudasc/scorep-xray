@@ -146,6 +146,11 @@ if HAVE_MPIFC
 if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
+if PLATFORM_CRAY
+if SCOREP_COMPILER_CLANG
+variabledef.mod: VariableDef.$(OBJEXT)
+endif SCOREP_COMPILER_CLANG
+endif PLATFORM_CRAY
 jacobi_mpi_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_mpi_f90-main.$(OBJEXT): variabledef.mod
 

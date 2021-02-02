@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017, 2019-2020,
+ * Copyright (c) 2013-2014, 2017, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2019,
@@ -33,38 +33,6 @@
 
 #include <iostream>
 #include <stdlib.h>
-
-/* ****************************************************************************
-   Compiler specific defines
-******************************************************************************/
-
-#if SCOREP_BACKEND_COMPILER_CRAY
-#define SCOREP_COMPILER_TYPE "cray"
-
-#elif SCOREP_BACKEND_COMPILER_GNU
-#define SCOREP_COMPILER_TYPE "gnu"
-
-#elif SCOREP_BACKEND_COMPILER_IBM
-#define SCOREP_COMPILER_TYPE "ibm"
-
-#elif SCOREP_BACKEND_COMPILER_INTEL
-#define SCOREP_COMPILER_TYPE "intel"
-
-#elif SCOREP_BACKEND_COMPILER_PGI
-#define SCOREP_COMPILER_TYPE "pgi"
-
-#elif SCOREP_BACKEND_COMPILER_STUDIO
-#define SCOREP_COMPILER_TYPE "sun"
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-#define SCOREP_COMPILER_TYPE "fujitsu"
-
-#elif SCOREP_BACKEND_COMPILER_CLANG
-#define SCOREP_COMPILER_TYPE "gnu"
-
-#else
-#error "Missing compiler specific handling, extension required."
-#endif
 
 /* **************************************************************************************
  * class SCOREP_Config_Adapter
@@ -668,6 +636,35 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
                                                SCOREP_Config_Language language,
                                                bool                   nvcc )
 {
+    #if SCOREP_BACKEND_COMPILER_CRAY
+    #define SCOREP_COMPILER_TYPE "cray"
+
+    #elif SCOREP_BACKEND_COMPILER_GNU
+    #define SCOREP_COMPILER_TYPE "gnu"
+
+    #elif SCOREP_BACKEND_COMPILER_IBM
+    #define SCOREP_COMPILER_TYPE "ibm"
+
+    #elif SCOREP_BACKEND_COMPILER_INTEL
+    #define SCOREP_COMPILER_TYPE "intel"
+
+    #elif SCOREP_BACKEND_COMPILER_PGI
+    #define SCOREP_COMPILER_TYPE "pgi"
+
+    #elif SCOREP_BACKEND_COMPILER_STUDIO
+    #define SCOREP_COMPILER_TYPE "sun"
+
+    #elif SCOREP_BACKEND_COMPILER_FUJITSU
+    #define SCOREP_COMPILER_TYPE "fujitsu"
+
+    #elif SCOREP_BACKEND_COMPILER_CLANG
+    #define SCOREP_COMPILER_TYPE "gnu"
+
+    #else
+    #error "Missing compiler specific handling, extension required."
+    #endif
+
+
     static bool printed_once = false;
     if ( !printed_once )
     {
@@ -686,11 +683,18 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::string opari_config = "`" OPARI_CONFIG " --cflags";
         if ( with_cflags )
         {
-            opari_config += "=" SCOREP_COMPILER_TYPE;
-
             if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
             {
+                #ifdef SCOREP_BACKEND_COMPILER_FC_CRAY
+                opari_config += "=cray";
+                #else
+                opari_config += "=" SCOREP_COMPILER_TYPE;
+                #endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
                 opari_config += " --fortran";
+            }
+            else
+            {
+                opari_config += "=" SCOREP_COMPILER_TYPE;
             }
         }
         opari_config += "` ";
@@ -713,6 +717,7 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::cout << " ";
         std::cout.flush();
     }
+    #undef SCOREP_COMPILER_TYPE
 }
 
 /* **************************************************************************************
@@ -837,7 +842,10 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                                          bool         build_check,
                                          bool         nvcc )
 {
-#if SCOREP_BACKEND_COMPILER_CRAY
+#if SCOREP_BACKEND_COMPILER_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
+    // For clang-based cc/CC '-h system_alloc' issues a warning (argument
+    // unused during compilation). To prevent the warning, we would need to
+    // take the linking-language into account. Addressed in #16.
     ldflags += " -h system_alloc";
 #endif
 

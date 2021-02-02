@@ -101,6 +101,7 @@ dnl come with complex dependencies, AC_DEFUN leads to configure failures
 dnl if FC is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_FC],[
     SCOREP_COMPUTENODE_FC_WORKS
+    afs_compiler_fc_cray=0
     dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${scorep_cv_fc_works}" = "xyes"; then
@@ -113,10 +114,14 @@ m4_define([SCOREP_COMPUTENODE_FC],[
         AS_CASE([${ac_scorep_platform}],
             [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
         AC_FC_WRAPPERS
+        # Provide SCOREP_COMPILER_FC_CRAY to resurrect PrgEnv-cray. This temporary solution will be replaced with #16.
+        AS_IF([test "x$ax_cv_fc_compiler_vendor" = xcray],
+            [afs_compiler_fc_cray=1])
     else
         AC_DEFINE([FC_FUNC(name,NAME)], [name])
         AC_DEFINE([FC_FUNC_(name,NAME)], [name])
     fi
+    AC_SUBST([SCOREP_COMPILER_FC_CRAY], [${afs_compiler_fc_cray}])
 ])
 
 AC_DEFUN([SCOREP_COMPUTENODE_FC_WORKS], [

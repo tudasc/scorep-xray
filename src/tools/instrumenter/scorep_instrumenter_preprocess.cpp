@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -67,6 +67,11 @@ SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         
     // Remove problematic arguments from command line
 #if SCOREP_BACKEND_COMPILER_CRAY
     cmdLine.removeUserArg( "-eZ" );
+#elif SCOREP_BACKEND_COMPILER_FC_CRAY
+    if ( is_fortran_file( source_file ) )
+    {
+        cmdLine.removeUserArg( "-eZ" );
+    }
 #endif
 
     // Prepare file for preprocessing
@@ -96,7 +101,7 @@ SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         
                       + scorep_toupper( orig_ext );
 
         command = "echo \"#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
-        #if SCOREP_BACKEND_COMPILER_CRAY
+        #if SCOREP_BACKEND_COMPILER_FC_CRAY
         // Cray ftn does chokes on '#line number' but accepts
         // '# number'. If the semantics is the same is investigated.
         command = "echo \"# 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
