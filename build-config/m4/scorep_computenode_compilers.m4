@@ -32,6 +32,11 @@ AC_PROG_CC dnl required
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
 AFS_SUMMARY([C99 compiler used], [$CC])
 AM_PROG_CC_C_O
+
+AC_LANG_PUSH([C])
+AX_COMPILER_VENDOR
+AX_COMPILER_VERSION
+AC_LANG_POP([C])
 ])
 
 
