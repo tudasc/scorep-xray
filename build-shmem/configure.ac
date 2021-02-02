@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2013-2018, 2020,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015-2016, 2018-2020,
+dnl Copyright (c) 2015-2016, 2018-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -68,8 +68,8 @@ AM_PROG_CC_C_O
 
 AC_PROG_CXX dnl needed for tests only
 
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])

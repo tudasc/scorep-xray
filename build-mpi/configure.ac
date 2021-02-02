@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2016, 2018-2020,
+dnl Copyright (c) 2009-2016, 2018-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -90,8 +90,8 @@ AM_PROG_CC_C_O
 
 AC_PROG_CXX dnl needed for tests only
 
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 
 SCOREP_FORTRAN_ARGUMENT_MISMATCH
 

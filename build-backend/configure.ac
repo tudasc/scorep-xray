@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2020,
+dnl Copyright (c) 2009-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -72,8 +72,8 @@ AM_PROG_CC_C_O
 AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
             dnl mode also for frontend tools
 
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${scorep_cv_f77_works}" = "xyes" || test "x${scorep_cv_fc_works}" = "xyes"])
 
 LT_PREREQ([2.4.6])

@@ -35,8 +35,8 @@ dnl ------------------------------------------------------------------
 
 #  Checks whether the F77 compiler actually is functional, Open MPI can install empty shells for the compiler wrappers
 dnl Do not use AC_DEFUN to prevent AC_F77_LIBRARY_LDFLAGS was expanded before it was required warnings
-m4_define([SCOREP_FORTRAN_F77],[
-    SCOREP_FORTRAN_F77_WORKS
+m4_define([SCOREP_COMPUTENODE_F77],[
+    SCOREP_COMPUTENODE_F77_WORKS
     dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${scorep_cv_f77_works}" = "xyes"; then
@@ -57,7 +57,7 @@ m4_define([SCOREP_FORTRAN_F77],[
     fi
 ])
 
-AC_DEFUN([SCOREP_FORTRAN_F77_WORKS], [
+AC_DEFUN([SCOREP_COMPUTENODE_F77_WORKS], [
     AC_REQUIRE([AC_PROG_F77]) dnl needed for linking if we build mpi fortran wrappers, also for tests
     AC_CACHE_CHECK([whether the Fortran 77 compiler works],
                [scorep_cv_f77_works],
@@ -72,8 +72,8 @@ AC_DEFUN([SCOREP_FORTRAN_F77_WORKS], [
 
 #  Checks whether the FC compiler actually is functional, Open MPI can install empty shells for the compiler wrappers
 dnl Do not use AC_DEFUN to prevent AC_FC_LIBRARY_LDFLAGS was expanded before it was required warnings
-m4_define([SCOREP_FORTRAN_FC],[
-    SCOREP_FORTRAN_FC_WORKS
+m4_define([SCOREP_COMPUTENODE_FC],[
+    SCOREP_COMPUTENODE_FC_WORKS
     dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${scorep_cv_fc_works}" = "xyes"; then
@@ -88,7 +88,7 @@ m4_define([SCOREP_FORTRAN_FC],[
     fi
 ])
 
-AC_DEFUN([SCOREP_FORTRAN_FC_WORKS], [
+AC_DEFUN([SCOREP_COMPUTENODE_FC_WORKS], [
     AC_REQUIRE([AC_PROG_FC]) dnl needed for tests only
     AC_CACHE_CHECK([whether the Fortran compiler works (FC)],
                [scorep_cv_fc_works],
