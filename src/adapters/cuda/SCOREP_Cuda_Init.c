@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -139,10 +139,6 @@ cuda_subsystem_init( void )
         "CUDA",
         SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
-    if ( scorep_cuda_features > 0 )
-    {
-        scorep_cupti_callbacks_init();
-    }
 
 #if HAVE( NVML_SUPPORT )
     /* Build-up CUDA Toolkit device index to NVIDIA Driver device index.
@@ -198,6 +194,11 @@ cuda_subsystem_init( void )
 
     NVML_CALL( nvmlShutdown, ( ) );
 #endif
+
+    if ( scorep_cuda_features > 0 )
+    {
+        scorep_cupti_callbacks_init();
+    }
 
     return SCOREP_SUCCESS;
 }
