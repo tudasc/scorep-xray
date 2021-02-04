@@ -106,7 +106,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [ac_scorep_frontend="no"],
       [ac_scorep_frontend="yes"])
 
-m4_include(../build-includes/compute-node-mpi.m4)
+m4_include(../build-includes/computenode-mpi.m4)
 
 AC_SCOREP_GIT_CONTROLLED
 

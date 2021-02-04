@@ -97,9 +97,9 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       ])
 AC_SUBST([backend_suffix])
 
-m4_include(../build-includes/compute-node.m4)
+m4_include(../build-includes/computenode.m4)
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
-    [m4_include(../build-includes/login-node.m4)])
+    [m4_include(../build-includes/loginnode.m4)])
 
 adl_RECURSIVE_EVAL([${prefix}], [PREFIX])
 AC_SUBST([PREFIX])

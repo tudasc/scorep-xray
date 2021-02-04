@@ -87,7 +87,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [ac_scorep_frontend="no"],
       [ac_scorep_frontend="yes"])
 
-m4_include(../build-includes/compute-node-shmem.m4)
+m4_include(../build-includes/computenode-shmem.m4)
 
 AC_SCOREP_GIT_CONTROLLED
 

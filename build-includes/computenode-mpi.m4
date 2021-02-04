@@ -14,7 +14,7 @@ dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
 dnl
 
-dnl file build-includes/compute-node-shmem.m4
+dnl file build-includes/computenode-mpi.m4
 
 AFS_GNU_LINKER
 

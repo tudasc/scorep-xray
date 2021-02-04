@@ -86,7 +86,7 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 
-m4_include(../build-includes/login-node.m4)
+m4_include(../build-includes/loginnode.m4)
 
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
 AC_SUBST([BINDIR])
