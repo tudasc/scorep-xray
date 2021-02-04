@@ -608,7 +608,7 @@ SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
             break;
         default:
             // In normal use this should not happen.
-            cerr << "[Score-P] Error: unknown sorting type!";
+            cerr << "ERROR: Unknown sorting type!\n";
             exit( EXIT_FAILURE );
     }
     ;
@@ -839,7 +839,7 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
 
     if ( !filter_file.is_open() )
     {
-        cerr << "[Score-P] Error: Cannot create filter file\n!";
+        cerr << "ERROR: Cannot create filter file!\n";
         exit( EXIT_FAILURE );
         return;
     }
@@ -929,7 +929,7 @@ SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
     filter_file.close();
     if ( filter_file.bad() )
     {
-        cerr << "[Score-P] Error while closing filter file\n!";
+        cerr << "ERROR: Cannot close filter file!\n";
         exit( EXIT_FAILURE );
         return;
     }
