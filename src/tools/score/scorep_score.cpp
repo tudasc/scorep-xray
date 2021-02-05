@@ -43,6 +43,15 @@
 using namespace std;
 
 void
+exit_fail()
+{
+    cout <<     "\nUsage:\nscorep-score [options] <profile>\n\n"
+         <<     "To print out more detailed help information on available parameters, type\n"
+         <<     "scorep-score --help\n" << endl;
+    exit( EXIT_FAILURE );
+}
+
+void
 print_help()
 {
     string usage =
@@ -50,6 +59,7 @@ print_help()
     ;
     cout << usage.c_str() << endl;
     cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << endl;
+    exit( EXIT_SUCCESS );
 }
 
 int
@@ -90,7 +100,6 @@ main( int    argc,
     if ( argc == 1 || get_help )
     {
         print_help();
-        exit( EXIT_SUCCESS );
     }
 
     // all other cases require a cube file and that it is the last parameter
@@ -103,8 +112,7 @@ main( int    argc,
             cerr << "       Note, '-' parameters other than '-h' require a cube file as input\n"
                  << "       and the file has to be the last parameter of the command line." << endl;
         }
-        print_help();
-        exit( EXIT_FAILURE );
+        exit_fail();
     }
     argc--;
 
@@ -126,8 +134,7 @@ main( int    argc,
             else
             {
                 cerr << "ERROR: No filter file specified" << endl;
-                print_help();
-                exit( EXIT_FAILURE );
+                exit_fail();
             }
         }
         else if ( arg == "-c" )
@@ -140,8 +147,7 @@ main( int    argc,
             else
             {
                 cerr << "ERROR: Missing number of hardware counters" << endl;
-                print_help();
-                exit( EXIT_FAILURE );
+                exit_fail();
             }
         }
         else if ( arg == "-m" )
@@ -174,8 +180,7 @@ main( int    argc,
                     if ( pos == std::string::npos )
                     {
                         cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
-                        print_help();
-                        exit( EXIT_FAILURE );
+                        exit_fail();
                     }
                     else
                     {
@@ -188,14 +193,12 @@ main( int    argc,
                             if ( *p )
                             {
                                 cerr << "ERROR: Parameter value for buffer percentage is not a number!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                             if ( min_percentage_from_max_buf < 0 || min_percentage_from_max_buf > 100 )
                             {
                                 cerr << "ERROR: The buffer percentage has to be in the range 0-100!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                         }
                         else if (  key == "timepervisit" )
@@ -205,14 +208,12 @@ main( int    argc,
                             if ( *p )
                             {
                                 cerr << "ERROR: Parameter value for max time per visit is not a number!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                             if ( max_time_per_visit < 0 )
                             {
                                 cerr << "ERROR: The max time per visit has to be positive!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                         }
                         else if (  key == "visits" )
@@ -222,14 +223,12 @@ main( int    argc,
                             if ( *p )
                             {
                                 cerr << "ERROR: Parameter value for visits is not a number!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                             if ( min_visits < 0 )
                             {
                                 cerr << "ERROR: The visits count has to be positive!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                         }
                         else if ( key == "bufferabsolute" )
@@ -239,14 +238,12 @@ main( int    argc,
                             if ( *p )
                             {
                                 cerr << "ERROR: Parameter value for absolute minimum buffer is not a number!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                             if ( min_max_buf_absolute < 0 )
                             {
                                 cerr << "ERROR: The buffer value has to be larger than 0!" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                         }
                         else if ( key == "type" )
@@ -270,15 +267,13 @@ main( int    argc,
                             else
                             {
                                 cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
-                                print_help();
-                                exit( EXIT_FAILURE );
+                                exit_fail();
                             }
                         }
                         else
                         {
                             cerr << "ERROR: Invalid filter generation option:\"" << original_token << "\"" << endl;
-                            print_help();
-                            exit( EXIT_FAILURE );
+                            exit_fail();
                         }
                     }
                 }
@@ -312,16 +307,14 @@ main( int    argc,
                 else
                 {
                     cerr << "ERROR: Unknown sorting choice" << endl;
-                    print_help();
-                    exit( EXIT_FAILURE );
+                    exit_fail();
                 }
                 i++;
             }
             else
             {
                 cerr << "ERROR: No sorting mode specified" << endl;
-                print_help();
-                exit( EXIT_FAILURE );
+                exit_fail();
             }
         }
         else
@@ -331,8 +324,7 @@ main( int    argc,
             {
                 cerr << "       Note, the input file has to be the last parameter of the command line." << endl;
             }
-            print_help();
-            exit( EXIT_FAILURE );
+            exit_fail();
         }
     }
 
@@ -341,8 +333,7 @@ main( int    argc,
     {
         cerr << "ERROR: The number of hardware counters cannot be less than zero: "
              << "'" << dense_num << "'" << endl;
-        print_help();
-        exit( EXIT_FAILURE );
+        exit_fail();
     }
 
     //-------------------------------------- Scoreing
@@ -358,7 +349,7 @@ main( int    argc,
     catch ( ... )
     {
         cerr << "ERROR: Cannot open Cube report '" << file_name << "'" << endl;
-        exit( EXIT_FAILURE );
+        exit_fail();
     }
 
     if ( filter_file_options_set && !produce_initial_filter_file )
