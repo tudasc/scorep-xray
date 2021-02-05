@@ -146,7 +146,6 @@ if HAVE_MPIFC
 if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
-variabledef.mod: VariableDef.$(OBJEXT)
 jacobi_mpi_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_mpi_f90-main.$(OBJEXT): variabledef.mod
 
@@ -155,13 +154,13 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_CPPFLAGS =
+jacobi_mpi_f90_FCFLAGS  = $(AM_FCFLAGS) $(SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH)
 jacobi_mpi_f90_LDADD    = $(mpi_libadd)
 jacobi_mpi_f90_LDFLAGS  = $(mpi_ldflags)
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_uninstrumented_CPPFLAGS =
+jacobi_mpi_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH)
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
 
 TESTS_MPI += jacobi_mpi_f90
@@ -190,7 +189,7 @@ jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.F90.opari.inc \
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.mod.F90         \
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90.opari.inc
-jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS) $(SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH)
 jacobi_mpi_omp_f90_CPPFLAGS = @OPARI2_CPPFLAGS@ \
                               -I$(INC_ROOT)test/jacobi/hybrid/Fortran
 jacobi_mpi_omp_f90_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_f90.la
@@ -200,7 +199,7 @@ check_PROGRAMS                             += jacobi_mpi_omp_f90_uninstrumented
 jacobi_mpi_omp_f90_uninstrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \
                                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.F90      \
                                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
-jacobi_mpi_omp_f90_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+jacobi_mpi_omp_f90_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS) $(SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH)
 jacobi_mpi_omp_f90_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_f90
