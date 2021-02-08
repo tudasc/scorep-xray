@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2018,
+## Copyright (c) 2018, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -46,12 +46,23 @@ AC_DEFUN([AFS_LINKMODE], [
 AC_MSG_CHECKING([for platform-specific libtool link flags])
 AS_ECHO(["library link mode: static=$enable_static, shared=$enable_shared"]) >&AS_MESSAGE_LOG_FD
 AS_CASE([$ac_scorep_platform],
-    [crayx*],
-        [AS_ECHO(["executable link mode: ${CRAYPE_LINK_TYPE:-static} (CRAYPE_LINK_TYPE)"]) >&AS_MESSAGE_LOG_FD
-         AS_IF([test "x$CRAYPE_LINK_TYPE" = x || test "x$CRAYPE_LINK_TYPE" = xstatic],
+    [cray*],
+        [AS_IF([test "x$CRAYPE_LINK_TYPE" = x],
+            [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>]],
+                                             [[printf("Hello world!");]])],
+                [AS_CASE([`/usr/bin/file conftest$EXEEXT`],
+                         [*"statically linked"*],  [afs_link_type=static],
+                         [*"dynamically linked"*], [afs_link_type=dynamic],
+                         [AC_MSG_FAILURE([unable to determine executable link mode])])
+                 AS_ECHO(["executable link mode: $afs_link_type (auto-detected)"]) >&AS_MESSAGE_LOG_FD])],
+            [afs_link_type=$CRAYPE_LINK_TYPE
+             AS_ECHO(["executable link mode: $afs_link_type (CRAYPE_LINK_TYPE)"]) >&AS_MESSAGE_LOG_FD
+            ])
+         AS_IF([test "x$afs_link_type" = xstatic],
             [AS_IF([test "x$enable_shared" = xyes && test "x$enable_static" = xno],
                 [AC_MSG_FAILURE([static linking with only shared libraries not possible])])
-             afs_linkmode_LDFLAGS="-all-static"])],
+             afs_linkmode_LDFLAGS="-all-static"])
+         AS_UNSET([afs_link_type])],
     [bgq|k|fx10*],
         [AS_ECHO(["executable link mode: static"]) >&AS_MESSAGE_LOG_FD
          AS_IF([test "x$enable_shared" = xyes && test "x$enable_static" = xno],
