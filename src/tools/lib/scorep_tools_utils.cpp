@@ -273,7 +273,7 @@ backup_existing_file( const string& filename )
     if ( exists_file( absolute_path ) )
     {
         static char local_time_buf[ 128 ];
-        std::time_t t          = std::time( nullptr );
+        std::time_t t          = std::time( NULL );
         std::tm*    local_time = localtime( &t );
         if ( local_time == NULL )
         {
