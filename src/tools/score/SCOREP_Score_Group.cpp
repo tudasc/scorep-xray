@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2020,
+ * Copyright (c) 2009-2014, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -220,31 +220,54 @@ SCOREP_Score_Group::cleanName()
 }
 
 std::string
-SCOREP_Score_Group::getFilterCandidate( double                   percentageOfTotalBufferSize,
-                                        uint64_t                 maxBuffer,
-                                        double                   thresholdTimePerVisits,
+SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
                                         double                   totalTime,
-                                        SCOREP_Score_FieldWidths widths )
+                                        SCOREP_Score_FieldWidths widths,
+                                        double                   percentageOfTotalBufferSize,
+                                        double                   thresholdTimePerVisits,
+                                        uint64_t                 minVisits,
+                                        double                   minBufferAbsolute,
+                                        bool                     filterUSR,
+                                        bool                     filterCOM )
 {
     double buffer_ratio = ( ( double )getMaxTraceBufferSize() / ( double )maxBuffer ) * 100;
-    if (   buffer_ratio >= percentageOfTotalBufferSize
-           && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
-           && m_type == SCOREP_SCORE_TYPE_USR )
+    double buffer_in_M  = ( double )getMaxTraceBufferSize() / ( 1024 * 1024 );
+    if ( ( m_filter != SCOREP_SCORE_FILTER_YES ) &&
+         (   buffer_ratio >= percentageOfTotalBufferSize
+             && ( m_total_time / m_visits * 1000000 )   <= thresholdTimePerVisits
+             && m_visits >= minVisits
+             && buffer_in_M >= minBufferAbsolute
+             && ( ( filterUSR && m_type == SCOREP_SCORE_TYPE_USR ) ||
+                  ( filterCOM && m_type == SCOREP_SCORE_TYPE_COM ) ) ) )
     {
         string clean_name = cleanName();
 
         std::ostringstream temp;
         temp.setf( ios::fixed, ios::floatfield );
         temp.setf( ios::showpoint );
-        temp << "# visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits ) << ", time="
-             << setw( widths.m_time ) << setprecision( 2 ) << m_total_time << "s ("
-             << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)";
-        int length = 10 + widths.m_visits + 7 + widths.m_time + 3 + 5 + 2;
+        temp << "# type=" << setw( 3 ) << SCOREP_Score_getTypeName( m_type )
+             << " max_buf=" << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
+             << " visits=" << setw( widths.m_visits ) << get_number_with_comma( m_visits )
+             << ", time="   << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
+             << "s ("  << setw( 5 )  << setprecision( 1 ) << ( m_total_time / totalTime ) * 100 << "%)"
+             << ", time/visit= " << setw( 7 ) << setprecision( 2 ) << getTimePerVisit() << "us";
 
         return "    " + temp.str() + "\n"
                + "    # name='" + m_name + "'\n"
                + "    # file='" + m_file_name + "'\n"
                + "    MANGLED " + clean_name + "\n";
+    }
+    return "";
+}
+
+std::string
+SCOREP_Score_Group::getPreviouslyFiltered()
+{
+    if ( m_filter == SCOREP_SCORE_FILTER_YES )
+    {
+        return "    # name='" + m_name + "'\n"
+               + "    # file='" + m_file_name + "'\n"
+               + "    MANGLED " + cleanName() + "\n\n";
     }
     return "";
 }

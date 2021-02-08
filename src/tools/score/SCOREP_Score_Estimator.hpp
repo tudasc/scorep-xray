@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016, 2019-2020,
+ * Copyright (c) 2009-2014, 2016, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2015,
@@ -120,12 +120,17 @@ public:
 
     /**
      * Generates an initial filter file with USR regions that have at least a
-     * percentage of the the total buffer size and a maximal time per visits
-     * in us.
+     * percentage of the the total buffer size, a maximal time per visits
+     * in us, a minimum number of visits, an absolute buffer value in MB, and
+     * type choices.
      */
     void
-    generateFilterFile( double minBufferPercentage,
-                        double maxTimePerVisits );
+    generateFilterFile( double   minBufferPercentage,
+                        double   maxTimePerVisits,
+                        uint64_t minVisits,
+                        double   minBufferAbsolute,
+                        bool     filterUSR,
+                        bool     filterCOM );
 
     /**
      * Reads and evaluates a filter file.
@@ -219,6 +224,10 @@ private:
      * True, if a filter is used.
      */
     bool m_has_filter;
+
+    /** Name of the provided filter file.
+     */
+    std::string m_filter_file_name;
 
     /**
      * Total time for all groups.

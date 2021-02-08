@@ -44,6 +44,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 using std::string;
 using std::vector;
@@ -263,6 +264,35 @@ exists_file( const string& filename )
 {
     ifstream ifile( filename.c_str() );
     return ( bool )ifile;
+}
+
+string
+backup_existing_file( const string& filename )
+{
+    string absolute_path = canonicalize_path( filename );
+    if ( exists_file( absolute_path ) )
+    {
+        static char local_time_buf[ 128 ];
+        std::time_t t          = std::time( nullptr );
+        std::tm*    local_time = localtime( &t );
+        if ( local_time == NULL )
+        {
+            perror( "localtime should not fail." );
+            _Exit( EXIT_FAILURE );
+        }
+        strftime( local_time_buf, 127, "_%Y%m%d_%H%M", local_time );
+        string target_filename = filename + local_time_buf;
+        if ( rename( absolute_path.c_str(),  canonicalize_path( target_filename ).c_str() ) != 0 )
+        {
+            UTILS_ERROR_POSIX( "Cannot rename existing filter file from \"%s\" to \"%s\".",
+                               filename.c_str(), target_filename.c_str() );
+            _Exit( EXIT_FAILURE );
+        }
+
+        return target_filename;
+    }
+
+    return "";
 }
 
 bool

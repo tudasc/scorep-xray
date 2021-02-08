@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2019-2020,
+ * Copyright (c) 2009-2016, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -45,6 +45,7 @@
 #include "SCOREP_Score_EventList.hpp"
 #include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
+#include <scorep_tools_utils.hpp>
 #include <math.h>
 #include <fstream>
 #include <iomanip>
@@ -607,7 +608,7 @@ SCOREP_Score_Estimator::sortEntries( SCOREP_Score_Group** items,
             break;
         default:
             // In normal use this should not happen.
-            cerr << "[Score-P] Error: unknown sorting type!";
+            cerr << "ERROR: Unknown sorting type!\n";
             exit( EXIT_FAILURE );
     }
     ;
@@ -656,6 +657,7 @@ SCOREP_Score_Estimator::initializeFilter( const string& filterFile )
         cerr << "ERROR: Failed to open '" << filterFile << "'" << endl;
         exit( EXIT_FAILURE );
     }
+    m_filter_file_name = filterFile;
 
     /* Initialize filter groups */
     m_filtered = ( SCOREP_Score_Group** )
@@ -816,19 +818,28 @@ SCOREP_Score_Estimator::printRegions( void )
 }
 
 void
-SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
-                                            double maxTimePerVisits )
+SCOREP_Score_Estimator::generateFilterFile( double   minBufferPercentage,
+                                            double   maxTimePerVisits,
+                                            uint64_t minVisits,
+                                            double   minBufferAbsolute,
+                                            bool     filterUSR,
+                                            bool     filterCOM )
+
 {
     sortEntries( m_regions, m_region_num );
 
     string filter_file_name = "initial_scorep.filter";
+
+    // avoid overwriting existing file by using the renaming scheme also used
+    // for experiment directories.
+    string moved_existing_file = backup_existing_file( filter_file_name );
 
     ofstream filter_file;
     filter_file.open( filter_file_name );
 
     if ( !filter_file.is_open() )
     {
-        cerr << "[Score-P] Error: Cannot create filter file\n!";
+        cerr << "ERROR: Cannot create filter file!\n";
         exit( EXIT_FAILURE );
         return;
     }
@@ -841,12 +852,35 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
                 << "#    (w.r.t. your knowledge of the application)\n"
                 << "#\n"
                 << "# Generated with the following parameters:\n"
-                << "#  - a region has to use at least " << minBufferPercentage << "% of the estimated trace buffer (-b <%>)\n"
-                << "#  - a region has to have a time/visits value of less than " << maxTimePerVisits << " us (-t <us>)\n"
-                << "#\n"
-                << "# The file contains comments for each region providing additional\n"
-                << "# information regarding the respective region (visits, absolute time in seconds,\n"
-                << "# percentage of total time, region name and associated file).\n"
+                << "#  - A region has to use at least " << minBufferPercentage << "% of the estimated trace buffer.\n"
+                << "#  - A region has to have a time/visits value of less than " << maxTimePerVisits << " us.\n";
+    // Add the following lines if the parameters are explicitly set
+    if ( minVisits > 0 )
+    {
+        filter_file << "#  - A region has to have at least " << minVisits << " visits.\n";
+    }
+    if ( minBufferAbsolute > 0 )
+    {
+        filter_file << "#  - A region has to use at least " << minBufferAbsolute << "M of memory.\n";
+    }
+    if ( filterUSR && filterCOM )
+    {
+        filter_file << "#  - A region that is of type COM or USR.\n";
+    }
+    else
+    {
+        if ( filterUSR )
+        {
+            filter_file << "#  - A region that is of type USR.\n";
+        }
+        if ( filterCOM )
+        {
+            filter_file << "#  - A region that is of type COM.\n";
+        }
+    }
+    filter_file << "#\n"
+                << "# The file contains comments for each region providing additional information\n"
+                << "# regarding the respective region.\n"
                 << "# The common prefix for the files is:\n"
                 << "# '" << m_profile->getPathPrefix() << "'\n"
                 << "#\n"
@@ -855,22 +889,56 @@ SCOREP_Score_Estimator::generateFilterFile( double minBufferPercentage,
                 << "  EXCLUDE" << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        string temp = m_regions[ i ]->getFilterCandidate( minBufferPercentage, m_max_buf, maxTimePerVisits, m_total_time, m_widths );
+        string temp = m_regions[ i ]->getFilterCandidate( m_max_buf,
+                                                          m_total_time,
+                                                          m_widths,
+                                                          minBufferPercentage,
+                                                          maxTimePerVisits,
+                                                          minVisits,
+                                                          minBufferAbsolute,
+                                                          filterUSR,
+                                                          filterCOM );
         if ( temp.length() > 0 )
         {
             filter_file << temp << endl;
+        }
+    }
+
+    if ( m_has_filter )
+    {
+        filter_file << "\n\n    #==========================================================================\n"
+                    << "    # Regions directly included from filter file provided by `-f`:\n";
+        if ( m_filter_file_name == "initial_scorep.filter" &&  moved_existing_file != "" )
+        {
+            filter_file << "    # '" << m_filter_file_name << "' moved to '" << moved_existing_file << "'\n\n";
+        }
+        else
+        {
+            filter_file << "    # '" << m_filter_file_name << "'\n\n";
+        }
+        for ( uint64_t i = 0; i < m_region_num; i++ )
+        {
+            string temp = m_regions[ i ]->getPreviouslyFiltered();
+            if ( temp.length() > 0 )
+            {
+                filter_file << temp << endl;
+            }
         }
     }
     filter_file << "SCOREP_REGION_NAMES_END" << endl;
     filter_file.close();
     if ( filter_file.bad() )
     {
-        cerr << "[Score-P] Error while closing filter file\n!";
+        cerr << "ERROR: Cannot close filter file!\n";
         exit( EXIT_FAILURE );
         return;
     }
-    cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n"
-         << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
+    cout << "\n\nAn initial filter file template has been generated: '" << filter_file_name << "'\n\n";
+    if ( moved_existing_file != "" )
+    {
+        cout << "Moved existing filter file to: '" << moved_existing_file << "'\n\n";
+    }
+    cout << "To use this file for filtering at run-time, set the respective Score-P variable:\n\n"
          << "    SCOREP_FILTERING_FILE=" << filter_file_name << "\n\n"
          << "For compile-time filtering 'scorep' has to be provided with the '--instrument-filter' option:\n\n"
          << "    $ scorep --instrument-filter=" << filter_file_name << "\n\n"

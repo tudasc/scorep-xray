@@ -237,16 +237,34 @@ in Score-P filter file format. It provides a starting point for the user to adap
 and change the filter file to his requirements.
 
 
-The selection of regions, that are included in this file, is based on a percentage
-of the max buffer requirements and a threshold for the time/visit for regions of
-type @verb{USR}.
-The first can be set via @verb{-b <%>} and targets the overall
-relevancy in terms of used memory for that region, as only regions with relevant
-impact need to be filtered. The default value is 1% of the estimated memory
-requirements. The second parameter time/visits, used by 
-@verb{-t <us>}, is a measure for the run-time overhead per visit,
-with removing too small regions as a selection criteria, with a default of 1us.
-If not set, the respective default values will be used.
-The used values are described in the comment section of that filter file.
+The user can provide an optional list of parameters to control the inclusion heuristic
+of the filter file generation. A valid parameter list has the form
+@verb{KEY=VALUE[,KEY=VALUE]*}. By default, the following control parameters are
+used:
 
+@verb{bufferpercent=1,timepervisit=1}
+
+A region is included in the filter file (i.e., excluded from measurement) if it
+matches all of the given conditions, with the following keys:
+<ol>
+  <li> @verb{bufferpercent}: The estimated memory requirements exceed the given
+       threshold in percent of the total estimated trace buffer requirements.
+       This limits the inclusion to relevant regions based on total memory
+       impact.</li>
+  <li> @verb{bufferabsolute}: The estimated memory requirements exceed the given
+       absolute threshold in MB.</li>
+  <li> @verb{visits}: The number of visits exceeds the given threshold.</li>
+  <li> @verb{timepervisit}: The time per visit value is below the given
+       threshold in microseconds. This limits the inclusion to relevant regions
+       based on per visit time overhead.</li>
+  <li> @verb{type}: The region type matches the given value. Allowed values are
+       'usr', 'com', and 'both'.</li>
+</ol>
+
+@note If the file name already exists, the previous file will be renamed instead
+      overwritten to safeguard against unintentional deletion and to allow being
+      used in an iterative use of the the filter file generation. To that end,
+      filtered regions from a file specified via @verb{-f} will be included at
+      the end of the newly generated file. Those regions are marked and added
+      'as is' without being checked against the inclusion heuristics.
 */
