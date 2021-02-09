@@ -578,8 +578,7 @@ write_metric_definitions( cube_t*                       myCube,
     if ( layout->metric_list & SCOREP_CUBE_METRIC_VISITS )
     {
         visits_handle = cube_def_met( myCube, "Visits", "visits", data_type, "occ", "",
-                                      "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                      ".html#visits",
+                                      "@mirror@scorep_metrics.html#visits",
                                       "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
     }
 
@@ -587,50 +586,47 @@ write_metric_definitions( cube_t*                       myCube,
     {
         num_threads_handle = cube_def_met( myCube, "number of threads",
                                            "num_threads", "UINT64", "threads", "",
-                                           "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                           ".html#visits",
+                                           "@mirror@scorep_metrics.html#num_threads",
                                            "Number of threads", NULL, CUBE_METRIC_EXCLUSIVE );
     }
 
     if ( layout->dense_metric_type == SCOREP_CUBE_DATA_SCALAR )
     {
         time_sum_handle = cube_def_met( myCube, "Time", "time", "DOUBLE", "sec", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                        ".html#time",
+                                        "@mirror@scorep_metrics.html#time",
                                         "Total CPU allocation time", NULL,
                                         CUBE_METRIC_INCLUSIVE );
 
         time_min_handle = cube_def_met( myCube, "Minimum Inclusive Time", "min_time",
                                         "MINDOUBLE", "sec", "",
-                                        "", "Minimum inclusive CPU allocation time",
+                                        "@mirror@scorep_metrics.html#time_min_incl",
+                                        "Minimum inclusive CPU allocation time",
                                         NULL, CUBE_METRIC_EXCLUSIVE );
 
         time_max_handle = cube_def_met( myCube, "Maximum Inclusive Time", "max_time",
                                         "MAXDOUBLE", "sec", "",
-                                        "", "Maximum inclusive CPU allocation time",
+                                        "@mirror@scorep_metrics.html#time_max_incl",
+                                        "Maximum inclusive CPU allocation time",
                                         NULL, CUBE_METRIC_EXCLUSIVE );
 
         if ( SCOREP_IsUnwindingEnabled() )
         {
             hits_handle = cube_def_met( myCube, "Hits", "hits", "UINT64", "occ", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                        ".html#hits",
+                                        "@mirror@scorep_metrics.html#hits",
                                         "Number of hits", NULL, CUBE_METRIC_EXCLUSIVE );
         }
     }
     else
     {
         time_sum_handle = cube_def_met( myCube, "Time", "time", "TAU_ATOMIC", "sec", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                        ".html#time",
+                                        "@mirror@scorep_metrics.html#time",
                                         "Total CPU allocation time", NULL,
                                         CUBE_METRIC_EXCLUSIVE );
 
         if ( SCOREP_IsUnwindingEnabled() )
         {
             hits_handle = cube_def_met( myCube, "Hits", "hits", "TAU_ATOMIC", "occ", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION
-                                        ".html#hits",
+                                        "@mirror@scorep_metrics.html#hits",
                                         "Number of hits", NULL, CUBE_METRIC_EXCLUSIVE );
         }
     }

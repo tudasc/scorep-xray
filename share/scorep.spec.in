@@ -1,8 +1,8 @@
 <doc>
     <mirrors>
         <murl>file://@DOCDIR@/profile/</murl>
-	<murl>http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-@PACKAGE_VERSION@/profile/</murl>
-	<murl>http://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/latest/profile/</murl>
+        <murl>http://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/scorep-@PACKAGE_VERSION@/profile/</murl>
+        <murl>http://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/latest/profile/</murl>
     </mirrors>
 </doc>
 <metrics>
@@ -19,7 +19,7 @@
             <uniq_name>execution</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#execution</url>
+            <url>@mirror@scorep_metrics.html#execution</url>
             <descr>Execution time (does not include time allocated for idle threads)</descr>
             <cubepl>
             {
@@ -35,6 +35,7 @@
             {
                 global(execution);
                 global(overhead);
+                global(idle_gpus);
 
                 global(mpi);
                 global(mpi_mgmt_startup);
@@ -86,6 +87,12 @@
                 global(pthread_sync_mutex);
                 global(pthread_sync_condition);
 
+                global(openacc);
+                global(openacc_setup);
+                global(openacc_comm);
+                global(openacc_sync);
+                global(openacc_kernel_launches);
+
                 global(opencl);
                 global(opencl_setup);
                 global(opencl_comm);
@@ -100,15 +107,24 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                global(fileio);
+                global(fileio_meta);
+                global(fileio_reading);
+                global(fileio_writing);
+
                 global(libwrap);
 
-                ${includesMPI}     = 0;
-                ${includesSHMEM}   = 0;
-                ${includesOpenMP}  = 0;
-                ${includesPthread} = 0;
-                ${includesOpenCL}  = 0;
-                ${includesCUDA}    = 0;
-                ${includesLIBWRAP} = 0;
+                ${includesMPI}      = 0;
+                ${includesSHMEM}    = 0;
+                ${includesOpenMP}   = 0;
+                ${includesPthread}  = 0;
+                ${includesOpenACC}  = 0;
+                ${includesOpenCL}   = 0;
+                ${includesCUDA}     = 0;
+                ${includesIdleGPUs} = 0;
+                ${includesLIBWRAP}  = 0;
+                ${includesFILEIO}   = 0;
+                ${includesMEMORY}   = 0;
 
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
@@ -356,6 +372,33 @@
                         };
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openacc" )
+                    {
+                        ${includesOpenACC} = 1;
+
+                        ${openacc}[${i}] = 1;
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(init|shutdown)(@.*)?$/ )
+                        {
+                            ${openacc_setup}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(upload|download)(@.*)?$/ )
+                        {
+                            ${openacc_comm}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_wait(@.*)?$/ )
+                        {
+                            ${openacc_sync}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_launch_kernel(@.*)?$/ )
+                        {
+                            ${openacc_kernel_launches}[${i}] = 1;
+                        };
+                    };
+
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "opencl" )
                     {
                         ${includesOpenCL} = 1;
@@ -365,17 +408,17 @@
                             ${opencl}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuildInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|Retainkernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserInfo|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuiltInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|RetainKernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserEvent|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo|CreateProgramWithIL|GetKernelSubGroupInfo|GetHostTimer|GetDeviceAndHostTimer|CloneKernel|SetDefaultDeviceCommandQueue|SetProgramReleaseCallback|SetProgramSpecializationConstant)$/ )
                         {
                             ${opencl_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObjectCopy|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObject|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject|EnqueueSVMMigrateMem)$/ )
                         {
                             ${opencl_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(clFinish|clWaitForEvents|clEnqueueWaitForEvents|clEnqueueBarrier|clEnqueueMarker|clEnqueueMarkerWithWaitList|clEnqueueBarrierWithWaitList)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(Finish|WaitForEvents|EnqueueWaitForEvents|EnqueueBarrier|EnqueueMarker|EnqueueMarkerWithWaitList|EnqueueBarrierWithWaitList)$/ )
                         {
                             ${opencl_sync}[${i}] = 1;
                         };
@@ -385,7 +428,7 @@
                             ${opencl_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask)$/ )
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask|EnqueueNativeKernel)$/ )
                         {
                             ${opencl_kernel_launches}[${i}] = 1;
                         };
@@ -412,42 +455,52 @@
                             ${cuda}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig)$/ )
+                        // CUDA Runtime API: general CUDA management, e.g. device, stream, event, execution, occupancy
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig|CtxResetPersistingL2Cache|DeviceGetNvSciSyncAttributes|DeviceGetP2PAttribute|DeviceGetTexture1DLinearMaxWidth|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlags|FuncGetAttributes|FuncSetAttribute|FuncSetSharedMemConfig|GetParameterBuffer|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|SetDoubleForDevice|SetDoubleForHost|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyFromPeer|MemcpyFromPeerAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
+                        // CUDA Runtime API: memory management (memset functions considered in kernel launch section)
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync|ArrayGetInfo|ArrayGetSparseProperties|GetMipmappedArrayLevel|GetSymbolAddress|GetSymbolSize|HostGetDevicePointer|HostGetFlags|HostRegister|HostUnregister|MemAdvise|MemGetInfo|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|Memcpy3DPeer|Memcpy3DPeerAsync|MipmappedArrayGetSparseProperties|PointerGetAttributes)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
+                        // CUDA Runtime API: synchronization
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync)$/ )
+                        // CUDA Runtime API: kernel launches
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCrate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|MemFree|MemFreeHost|MemHostAlloc)$/ )
+                        // CUDA Driver API: general CUDA management, e.g. initialization, version, device,
+                        // primary context, context, streams, events, occupancy
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCreate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|CtxResetPersistingL2Cache|DeviceGetLuid|DeviceGetNvSciSyncAttributes|DeviceGetTexture1DLinearMaxWidth|DeviceGetUuid|DriverGetVersion|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlagsFuncGetAttribute|FuncSetAttribute|FuncSetBlockShape|FuncSetCacheConfig|FuncSetSharedMemConfig|FuncSetSharedSize|LinkAddData|LinkAddFile|LinkComplete|ModuleGetFunction|ModuleGetGlobal|ModuleGetSurfRef|ModuleGetTexRef|ModuleLoad|ModuleLoadData|ModuleLoadDataEx|ModuleLoadFatBinary|ModuleUnload|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|OccupancyMaxPotentialBlockSize|OccupancyMaxPotentialBlockSizeWithFlags|ParamSetSize|ParamSetTexRef|ParamSetf|ParamSeti|ParamSetv|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetCtx|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)(_v[0-9]+)?$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|MipmappedArrayCreate|MipmappedArrayDestroy)$/ )
+                        // CUDA Driver API: memory management, incl. virtual memory, unified addressing
+                        // (memset functions considered in kernel launch section)
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MipmappedArrayCreate|MipmappedArrayDestroy|MemFree|MemFreeHost|MemHostAlloc|Array3DGetDescriptor|ArrayGetDescriptor|ArrayGetSparseProperties|DeviceGetByPCIBusId|DeviceGetPCIBusId|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|MemAddressFree|MemAddressReserve|MemAdvise|MemCreate|MemExportToShareableHandle|MemGetAccess|MemGetAddressRange|MemGetAllocationGranularity|MemGetAllocationPropertiesFromHandle|MemGetInfo|MemHostGetDevicePointer|MemHostGetFlags|MemHostRegister|MemHostUnregister|MemImportFromShareableHandle|MemMap|MemMapArrayAsync|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|MemRelease|MemRetainAllocationHandle|MemSetAccess|MemUnmap|MipmappedArrayGetLevel|MipmappedArrayGetSparseProperties|PointerGetAttribute|PointerGetAttributes|PointerSetAttribute)(_v[0-9]+)?$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)$/ )
+                        // CUDA Driver API: synchronization
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)(_v[0-9]+)?$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync)$/ )
+                        // CUDA Driver API: kernel launches
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)(_v[0-9]+)?$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
@@ -468,6 +521,14 @@
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "COMPUTE IDLE" )
+                        {
+                            ${includesIdleGPUs} = 1;
+                            ${cuda}[${i}]       = 0;
+                            ${execution}[${i}]  = 0;
+                            ${idle_gpus}[${i}]  = 1;
+                        };
                     };
 
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
@@ -483,6 +544,32 @@
                     {
                         ${includesLIBWRAP} = 1;
                         ${libwrap}[${i}] = 1;
+                    };
+
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "io" )
+                    {
+                        ${includesFILEIO} = 1;
+                        ${fileio}[${i}]   = 1;
+
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] seq "file_io metadata" )
+                        {
+                            ${fileio_meta}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_read|fgetc|fgets|fread|fscanf|getc|getchar|gets|pread|pread64|preadv|preadv2|preadv64|preadv64v2|read|readv|scanf|vfscanf|vscanf)$/ )
+                        {
+                            ${fileio_reading}[${i}] = 1;
+                        };
+
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_write|fflush|fprintf|fputc|fputs|fwrite|printf|putchar|puts|pwrite|pwrite64|pwritev|pwritev2|pwritev64|pwritev64v2|vfprintf|vprintf|write|writev)$/ )
+                        {
+                            ${fileio_writing}[${i}] = 1;
+                        };
+                    };
+
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "memory" )
+                    {
+                        ${includesMEMORY} = 1;
                     };
 
                     ${i} = ${i} + 1;
@@ -567,21 +654,61 @@
                     cube::metric::set::pthread_conditional("value", "VOID");
                 };
 
+                if ( ${includesOpenACC} == 0 )
+                {
+                    cube::metric::set::openacc_time("value", "VOID");
+                    cube::metric::set::openacc_setup("value", "VOID");
+                    cube::metric::set::openacc_comm("value", "VOID");
+                    cube::metric::set::openacc_sync("value", "VOID");
+                    cube::metric::set::openacc_kernel_launches("value", "VOID");
+                };
+
                 if ( ${includesOpenCL} == 0 )
                 {
                     cube::metric::set::opencl_time("value", "VOID");
+                    cube::metric::set::opencl_setup("value", "VOID");
+                    cube::metric::set::opencl_comm("value", "VOID");
+                    cube::metric::set::opencl_sync("value", "VOID");
+                    cube::metric::set::opencl_kernel_launches("value", "VOID");
                     cube::metric::set::opencl_kernel_executions("value", "VOID");
                 };
 
                 if ( ${includesCUDA} == 0 )
                 {
                     cube::metric::set::cuda_time("value", "VOID");
+                    cube::metric::set::cuda_setup("value", "VOID");
+                    cube::metric::set::cuda_comm("value", "VOID");
+                    cube::metric::set::cuda_sync("value", "VOID");
+                    cube::metric::set::cuda_kernel_launches("value", "VOID");
                     cube::metric::set::cuda_kernel_executions("value", "VOID");
+                };
+
+                if ( ${includesIdleGPUs} == 0 )
+                {
+                    cube::metric::set::idle_gpus("value", "VOID");
                 };
 
                 if ( ${includesLIBWRAP} == 0 )
                 {
                     cube::metric::set::libwrap_time("value", "VOID");
+                };
+
+                if ( ${includesFILEIO} == 0 )
+                {
+                    cube::metric::set::io_time("value", "VOID");
+                    cube::metric::set::io_meta_time("value", "VOID");
+                    cube::metric::set::io_reading_time("value", "VOID");
+                    cube::metric::set::io_writing_time("value", "VOID");
+                    cube::metric::set::io_bytes_read("value", "VOID");
+                    cube::metric::set::io_bytes_written("value", "VOID");
+                };
+
+                if ( ${includesMEMORY} == 0 )
+                {
+                    cube::metric::set::allocation_size("value", "VOID");
+                    cube::metric::set::deallocation_size("value", "VOID");
+                    cube::metric::set::bytes_leaked("value", "VOID");
+                    cube::metric::set::maximum_heap_memory_allocated("value", "VOID");
                 };
 
                 return 0;
@@ -592,17 +719,107 @@
                 <uniq_name>comp</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comp</url>
+                <url>@mirror@scorep_metrics.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
-                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::opencl_time() - metric::cuda_time() - metric::libwrap_time()
+                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::openacc_time() - metric::opencl_time() - metric::cuda_time()
                 </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>File I/O</disp_name>
+                    <uniq_name>io_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#io_time</url>
+                    <descr>Time spent in file I/O</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${fileio}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Handling</disp_name>
+                        <uniq_name>io_meta_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_meta_time</url>
+                        <descr>Time spent in file I/O handling metadata</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_meta}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Reading</disp_name>
+                        <uniq_name>io_reading_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_reading_time</url>
+                        <descr>Time spent in file I/O reading operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_reading}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Writing</disp_name>
+                        <uniq_name>io_writing_time</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scorep_metrics.html#io_writing_time</url>
+                        <descr>Time spent in file I/O writing operations</descr>
+                        <cubepl>
+                        {
+                            ${tmp} = 0;
+                            if ( ${fileio_writing}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${tmp};
+                        }
+                        </cubepl>
+                    </metric>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Wrapped libraries</disp_name>
+                    <uniq_name>libwrap_time</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#libwrap_time</url>
+                    <descr>Time spent in wrapped libraries</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${libwrap}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>OpenCL kernels</disp_name>
                     <uniq_name>opencl_kernel_executions</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_executions</url>
+                    <url>@mirror@scorep_metrics.html#opencl_kernel_executions</url>
                     <descr>Time spent executing OpenCL kernels</descr>
                     <cubepl>
                     {
@@ -620,7 +837,7 @@
                     <uniq_name>cuda_kernel_executions</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_executions</url>
+                    <url>@mirror@scorep_metrics.html#cuda_kernel_executions</url>
                     <descr>Time spent executing CUDA kernels</descr>
                     <cubepl>
                     {
@@ -640,7 +857,7 @@
                 <uniq_name>mpi</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi</url>
+                <url>@mirror@scorep_metrics.html#mpi</url>
                 <descr>Time spent in MPI calls</descr>
                 <cubepl>
                 {
@@ -657,7 +874,7 @@
                     <uniq_name>mpi_management</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_management</url>
+                    <url>@mirror@scorep_metrics.html#mpi_management</url>
                     <descr>Time spent in MPI management operations</descr>
                     <cubepl>
                         metric::mpi_init_exit() + metric::mpi_mgmt_comm() + metric::mpi_mgmt_file() + metric::mpi_mgmt_win()
@@ -667,7 +884,7 @@
                         <uniq_name>mpi_init_exit</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_init_exit</url>
+                        <url>@mirror@scorep_metrics.html#mpi_init_exit</url>
                         <descr>Time spent in MPI initialization/finalization calls</descr>
                         <cubepl>
                         {
@@ -685,7 +902,7 @@
                         <uniq_name>mpi_mgmt_comm</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_comm</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_comm</url>
                         <descr>Time spent in MPI communicator management calls</descr>
                         <cubepl>
                         {
@@ -703,7 +920,7 @@
                         <uniq_name>mpi_mgmt_file</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_file</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_file</url>
                         <descr>Time spent in MPI file management calls</descr>
                         <cubepl>
                         {
@@ -721,7 +938,7 @@
                         <uniq_name>mpi_mgmt_win</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_mgmt_win</url>
+                        <url>@mirror@scorep_metrics.html#mpi_mgmt_win</url>
                         <descr>Time spent in MPI window management calls</descr>
                         <cubepl>
                         {
@@ -740,7 +957,7 @@
                     <uniq_name>mpi_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#mpi_synchronization</url>
                     <descr>Time spent in MPI synchronization calls</descr>
                     <cubepl>
                         metric::mpi_sync_collective() + metric::mpi_rma_synchronization()
@@ -750,7 +967,7 @@
                         <uniq_name>mpi_sync_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_sync_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_sync_collective</url>
                         <descr>Time spent in MPI barriers</descr>
                         <cubepl>
                         {
@@ -768,7 +985,7 @@
                         <uniq_name>mpi_rma_synchronization</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_synchronization</url>
+                        <url>@mirror@scorep_metrics.html#mpi_rma_synchronization</url>
                         <descr>Time spent in MPI one-sided synchronization calls</descr>
                         <cubepl>
                             metric::mpi_rma_sync_active() + metric::mpi_rma_sync_passive()
@@ -778,7 +995,7 @@
                             <uniq_name>mpi_rma_sync_active</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_active</url>
+                            <url>@mirror@scorep_metrics.html#mpi_rma_sync_active</url>
                             <descr>Time spent in MPI one-sided active target synchronization calls</descr>
                             <cubepl>
                             {
@@ -796,7 +1013,7 @@
                             <uniq_name>mpi_rma_sync_passive</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_passive</url>
+                            <url>@mirror@scorep_metrics.html#mpi_rma_sync_passive</url>
                             <descr>Time spent in MPI one-sided passive target synchronization calls</descr>
                             <cubepl>
                             {
@@ -816,7 +1033,7 @@
                     <uniq_name>mpi_communication</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_communication</url>
+                    <url>@mirror@scorep_metrics.html#mpi_communication</url>
                     <descr>Time spent in MPI communication calls</descr>
                     <cubepl>
                         metric::mpi_point2point() + metric::mpi_collective() + metric::mpi_rma_communication()
@@ -826,7 +1043,7 @@
                         <uniq_name>mpi_point2point</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_point2point</url>
+                        <url>@mirror@scorep_metrics.html#mpi_point2point</url>
                         <descr>Time spent in MPI point-to-point communication</descr>
                         <cubepl>
                         {
@@ -844,7 +1061,7 @@
                         <uniq_name>mpi_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_collective</url>
                         <descr>Time spent in MPI collective communication</descr>
                         <cubepl>
                         {
@@ -862,7 +1079,7 @@
                         <uniq_name>mpi_rma_communication</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_communication</url>
+                        <url>@mirror@scorep_metrics.html#mpi_rma_communication</url>
                         <descr>Time spent in MPI one-sided communication</descr>
                         <cubepl>
                         {
@@ -881,7 +1098,7 @@
                     <uniq_name>mpi_io</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io</url>
+                    <url>@mirror@scorep_metrics.html#mpi_io</url>
                     <descr>Time spent in MPI file I/O calls</descr>
                     <cubepl>
                         metric::mpi_io_individual() + metric::mpi_io_collective()
@@ -891,7 +1108,7 @@
                         <uniq_name>mpi_io_individual</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_individual</url>
+                        <url>@mirror@scorep_metrics.html#mpi_io_individual</url>
                         <descr>Time spent in individual MPI file I/O calls</descr>
                         <cubepl>
                         {
@@ -909,7 +1126,7 @@
                         <uniq_name>mpi_io_collective</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_collective</url>
+                        <url>@mirror@scorep_metrics.html#mpi_io_collective</url>
                         <descr>Time spent in collective MPI file I/O calls</descr>
                         <cubepl>
                         {
@@ -928,7 +1145,7 @@
                     <uniq_name>mpi_request_handling</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_handling</url>
+                    <url>@mirror@scorep_metrics.html#mpi_request_handling</url>
                     <descr>Time spent handling requests</descr>
                     <cubepl>
                         {
@@ -945,7 +1162,7 @@
                         <uniq_name>mpi_request_start</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_start</url>
+                        <url>@mirror@scorep_metrics.html#mpi_request_start</url>
                         <descr>Time spent starting persistent requests</descr>
                         <cubepl>
                             {
@@ -963,7 +1180,7 @@
                         <uniq_name>mpi_request_completion</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_request_completion</url>
+                        <url>@mirror@scorep_metrics.html#mpi_request_completion</url>
                         <descr>Time spent completing requests.</descr>
                         <cubepl>
                             {
@@ -984,7 +1201,7 @@
                 <uniq_name>shmem_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem</url>
+                <url>@mirror@scorep_metrics.html#shmem</url>
                 <descr>Time spent in SHMEM calls</descr>
                 <cubepl>
                 {
@@ -1002,7 +1219,7 @@
                     <uniq_name>shmem_mgmt_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt</url>
+                    <url>@mirror@scorep_metrics.html#shmem_mgmt</url>
                     <descr>Time spent in SHMEM management operations</descr>
                     <cubepl>
                         metric::shmem_mgmt_initfini_time() + metric::shmem_mgmt_activesets_time() + metric::shmem_mgmt_query_time()
@@ -1013,7 +1230,7 @@
                         <uniq_name>shmem_mgmt_initfini_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_initfini</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_initfini</url>
                         <descr>Time spent in SHMEM initialization/finalization calls</descr>
                         <cubepl>
                         {
@@ -1032,7 +1249,7 @@
                         <uniq_name>shmem_mgmt_activesets_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_activesets</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_activesets</url>
                         <descr>Time spent in SHMEM active sets/teams management calls</descr>
                         <cubepl>
                         {
@@ -1051,7 +1268,7 @@
                         <uniq_name>shmem_mgmt_query_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_mgmt_query</url>
+                        <url>@mirror@scorep_metrics.html#shmem_mgmt_query</url>
                         <descr>Time spent in SHMEM query calls</descr>
                         <cubepl>
                         {
@@ -1072,7 +1289,7 @@
                     <uniq_name>shmem_comm_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm</url>
+                    <url>@mirror@scorep_metrics.html#shmem_comm</url>
                     <descr>Time spent in SHMEM communication operations</descr>
                     <cubepl>
                         metric::shmem_comm_rma_time() + metric::shmem_comm_atomic_time() + metric::shmem_comm_coll_time()
@@ -1083,7 +1300,7 @@
                         <uniq_name>shmem_comm_rma_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_rma</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_rma</url>
                         <descr>Time spent in SHMEM RMA operations</descr>
                         <cubepl>
                         {
@@ -1102,7 +1319,7 @@
                         <uniq_name>shmem_comm_atomic_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_atomic</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_atomic</url>
                         <descr>Time spent in SHMEM atomic operations</descr>
                         <cubepl>
                         {
@@ -1121,7 +1338,7 @@
                         <uniq_name>shmem_comm_coll_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_comm_coll</url>
+                        <url>@mirror@scorep_metrics.html#shmem_comm_coll</url>
                         <descr>Time spent in SHMEM collective operations</descr>
                         <cubepl>
                         {
@@ -1142,7 +1359,7 @@
                     <uniq_name>shmem_sync_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <url>@mirror@scorep_metrics.html#shmem_sync</url>
                     <descr>Time spent in SHMEM synchronization calls</descr>
                     <cubepl>
                         metric::shmem_sync_rma_time() + metric::shmem_sync_coll_time() + metric::shmem_sync_locking_time()
@@ -1153,7 +1370,7 @@
                         <uniq_name>shmem_sync_rma_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_rma</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_rma</url>
                         <descr>Time spent in SHMEM RMA synchronizations</descr>
                         <cubepl>
                         {
@@ -1172,7 +1389,7 @@
                         <uniq_name>shmem_sync_coll_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_coll</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_coll</url>
                         <descr>Time spent in SHMEM collective synchronizations</descr>
                         <cubepl>
                         {
@@ -1191,7 +1408,7 @@
                         <uniq_name>shmem_sync_locking_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync_locking</url>
+                        <url>@mirror@scorep_metrics.html#shmem_sync_locking</url>
                         <descr>Time spent in SHMEM locking operations</descr>
                         <cubepl>
                         {
@@ -1212,7 +1429,7 @@
                     <uniq_name>shmem_memory_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_sync</url>
+                    <url>@mirror@scorep_metrics.html#shmem_sync</url>
                     <descr>Time spent in SHMEM memory calls</descr>
                     <cubepl>
                         metric::shmem_memory_mgmt_time() + metric::shmem_memory_ordering_time()
@@ -1223,7 +1440,7 @@
                         <uniq_name>shmem_memory_mgmt_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_mgmt</url>
+                        <url>@mirror@scorep_metrics.html#shmem_memory_mgmt</url>
                         <descr>Time spent in SHMEM memory management calls</descr>
                         <cubepl>
                         {
@@ -1242,7 +1459,7 @@
                         <uniq_name>shmem_memory_ordering_time</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_memory_ordering</url>
+                        <url>@mirror@scorep_metrics.html#shmem_memory_ordering</url>
                         <descr>Time spent in SHMEM memory orderings</descr>
                         <cubepl>
                         {
@@ -1263,7 +1480,7 @@
                     <uniq_name>shmem_event_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_event</url>
+                    <url>@mirror@scorep_metrics.html#shmem_event</url>
                     <descr>Time spent in SHMEM event calls</descr>
                     <cubepl>
                     {
@@ -1282,7 +1499,7 @@
                     <uniq_name>shmem_cache_time</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#shmem_cache</url>
+                    <url>@mirror@scorep_metrics.html#shmem_cache</url>
                     <descr>Time spent in SHMEM cache calls</descr>
                     <cubepl>
                     {
@@ -1303,7 +1520,7 @@
                 <uniq_name>omp_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_time</url>
+                <url>@mirror@scorep_metrics.html#omp_time</url>
                 <descr>Time spent in the OpenMP run-time system and API</descr>
                 <cubepl>
                     metric::omp_synchronization() + metric::omp_flush()
@@ -1313,7 +1530,7 @@
                     <uniq_name>omp_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#omp_synchronization</url>
                     <descr>Time spent on OpenMP synchronization</descr>
                     <cubepl>
                         metric::omp_barrier() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered() + metric::omp_taskwait()
@@ -1323,7 +1540,7 @@
                         <uniq_name>omp_barrier</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_barrier</url>
+                        <url>@mirror@scorep_metrics.html#omp_barrier</url>
                         <descr>Time spent in OpenMP barrier synchronization</descr>
                         <cubepl>
                             metric::omp_ebarrier() + metric::omp_ibarrier()
@@ -1333,7 +1550,7 @@
                             <uniq_name>omp_ebarrier</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ebarrier</url>
+                            <url>@mirror@scorep_metrics.html#omp_ebarrier</url>
                             <descr>Time spent in explicit OpenMP barrier synchronization</descr>
                             <cubepl>
                             {
@@ -1351,7 +1568,7 @@
                             <uniq_name>omp_ibarrier</uniq_name>
                             <dtype>FLOAT</dtype>
                             <uom>sec</uom>
-                            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ibarrier</url>
+                            <url>@mirror@scorep_metrics.html#omp_ibarrier</url>
                             <descr>Time spent in implicit OpenMP barrier synchronization</descr>
                             <cubepl>
                             {
@@ -1370,7 +1587,7 @@
                         <uniq_name>omp_critical</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_critical</url>
+                        <url>@mirror@scorep_metrics.html#omp_critical</url>
                         <descr>Time spent waiting at OpenMP critical sections</descr>
                         <cubepl>
                         {
@@ -1388,7 +1605,7 @@
                         <uniq_name>omp_lock_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_lock_api</url>
+                        <url>@mirror@scorep_metrics.html#omp_lock_api</url>
                         <descr>Time spent in OpenMP lock API calls</descr>
                         <cubepl>
                         {
@@ -1406,7 +1623,7 @@
                         <uniq_name>omp_ordered</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ordered</url>
+                        <url>@mirror@scorep_metrics.html#omp_ordered</url>
                         <descr>Time spent waiting at OpenMP ordered regions</descr>
                         <cubepl>
                         {
@@ -1424,7 +1641,7 @@
                         <uniq_name>omp_taskwait</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_taskwait</url>
+                        <url>@mirror@scorep_metrics.html#omp_taskwait</url>
                         <descr>Time spent waiting in OpenMP taskwait directives</descr>
                         <cubepl>
                         {
@@ -1443,7 +1660,7 @@
                     <uniq_name>omp_flush</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_flush</url>
+                    <url>@mirror@scorep_metrics.html#omp_flush</url>
                     <descr>Time spent in OpenMP flush directives</descr>
                     <cubepl>
                     {
@@ -1462,7 +1679,7 @@
                 <uniq_name>pthread_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_time</url>
+                <url>@mirror@scorep_metrics.html#pthread_time</url>
                 <descr>Time spent in the POSIX threads API</descr>
                 <cubepl>
                     metric::pthread_management() + metric::pthread_synchronization()
@@ -1472,7 +1689,7 @@
                     <uniq_name>pthread_management</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_management</url>
+                    <url>@mirror@scorep_metrics.html#pthread_management</url>
                     <descr>Time spent in POSIX threads management</descr>
                     <cubepl>
                     {
@@ -1490,7 +1707,7 @@
                     <uniq_name>pthread_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_synchronization</url>
+                    <url>@mirror@scorep_metrics.html#pthread_synchronization</url>
                     <descr>Time spent on Pthread synchronization</descr>
                     <cubepl>
                         metric::pthread_lock_api() + metric::pthread_conditional()
@@ -1500,7 +1717,7 @@
                         <uniq_name>pthread_lock_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_lock_api</url>
+                        <url>@mirror@scorep_metrics.html#pthread_lock_api</url>
                         <descr>Time spent in POSIX threads mutex API calls</descr>
                         <cubepl>
                         {
@@ -1518,7 +1735,7 @@
                         <uniq_name>pthread_conditional</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_conditional</url>
+                        <url>@mirror@scorep_metrics.html#pthread_conditional</url>
                         <descr>Time spent in POSIX threads condition API calls</descr>
                         <cubepl>
                         {
@@ -1534,11 +1751,101 @@
                 </metric>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>OpenACC</disp_name>
+                <uniq_name>openacc_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scorep_metrics.html#openacc_time</url>
+                <descr>Time spent in the OpenACC run-time system and API</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${openacc}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Initialization and Finalization</disp_name>
+                    <uniq_name>openacc_setup</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_setup</url>
+                    <descr>Time needed to initialize and finalize OpenACC</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_setup}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Memory management</disp_name>
+                    <uniq_name>openacc_comm</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_comm</url>
+                    <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_comm}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Synchronization</disp_name>
+                    <uniq_name>openacc_sync</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_sync</url>
+                    <descr>Time spent on OpenACC synchronization</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_sync}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Kernel launches</disp_name>
+                    <uniq_name>openacc_kernel_launches</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#openacc_kernel_launches</url>
+                    <descr>Time needed to launch OpenACC kernels</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${openacc_kernel_launches}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+            </metric>
+            <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>OpenCL</disp_name>
                 <uniq_name>opencl_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_time</url>
+                <url>@mirror@scorep_metrics.html#opencl_time</url>
                 <descr>Time spent in the OpenCL run-time system, API and on device</descr>
                 <cubepl>
                 {
@@ -1551,12 +1858,12 @@
                 }
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Initialization and finalization</disp_name>
+                    <disp_name>General management</disp_name>
                     <uniq_name>opencl_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_setup</url>
-                    <descr>Time needed to initialize and finalize OpenCL and OpenCL kernels</descr>
+                    <url>@mirror@scorep_metrics.html#opencl_setup</url>
+                    <descr>Time needed for general OpenCL setup, e.g. initialization, device and event control, etc.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1573,7 +1880,7 @@
                     <uniq_name>opencl_comm</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_comm</url>
+                    <url>@mirror@scorep_metrics.html#opencl_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
                     {
@@ -1591,7 +1898,7 @@
                     <uniq_name>opencl_sync</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_sync</url>
+                    <url>@mirror@scorep_metrics.html#opencl_sync</url>
                     <descr>Time spent on OpenCL synchronization</descr>
                     <cubepl>
                     {
@@ -1609,7 +1916,7 @@
                     <uniq_name>opencl_kernel_launches</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_launches</url>
+                    <url>@mirror@scorep_metrics.html#opencl_kernel_launches</url>
                     <descr>Time needed to launch OpenCL kernels</descr>
                     <cubepl>
                     {
@@ -1628,7 +1935,7 @@
                 <uniq_name>cuda_time</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_time</url>
+                <url>@mirror@scorep_metrics.html#cuda_time</url>
                 <descr>Time spent in the CUDA run-time system, API and on device</descr>
                 <cubepl>
                 {
@@ -1641,12 +1948,12 @@
                 }
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
-                    <disp_name>Initialization and Finalization</disp_name>
+                    <disp_name>General management</disp_name>
                     <uniq_name>cuda_setup</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_setup</url>
-                    <descr>Time needed to initialize and finalize CUDA and CUDA kernels</descr>
+                    <url>@mirror@scorep_metrics.html#cuda_setup</url>
+                    <descr>Time needed for general CUDA setup, e.g. initialization, control of version, device, primary context, context, streams, events, occupancy, etc.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1663,8 +1970,8 @@
                     <uniq_name>cuda_comm</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_comm</url>
-                    <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
+                    <url>@mirror@scorep_metrics.html#cuda_comm</url>
+                    <descr>Time spent on memory management including data transfer from host to device and vice versa. (Note: 'memset' operations are considered in 'Kernel launches').</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1681,7 +1988,7 @@
                     <uniq_name>cuda_sync</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_sync</url>
+                    <url>@mirror@scorep_metrics.html#cuda_sync</url>
                     <descr>Time spent on CUDA synchronization</descr>
                     <cubepl>
                     {
@@ -1699,8 +2006,8 @@
                     <uniq_name>cuda_kernel_launches</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_launches</url>
-                    <descr>Time spent to launch CUDA kernels</descr>
+                    <url>@mirror@scorep_metrics.html#cuda_kernel_launches</url>
+                    <descr>Time spent to launch CUDA kernels, including 'memset' operations.</descr>
                     <cubepl>
                     {
                         ${tmp} = 0;
@@ -1713,33 +2020,13 @@
                     </cubepl>
                 </metric>
             </metric>
-
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Wrapped libraries</disp_name>
-                <uniq_name>libwrap_time</uniq_name>
-                <dtype>FLOAT</dtype>
-                <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#libwrap_time</url>
-                <descr>Time spent in wrapped libraries</descr>
-                <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${libwrap}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e);
-                    };
-                    return ${tmp};
-                }
-                </cubepl>
-            </metric>
-
         </metric>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Overhead</disp_name>
             <uniq_name>overhead</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#overhead</url>
+            <url>@mirror@scorep_metrics.html#overhead</url>
             <descr>Time spent performing tasks related to trace generation</descr>
             <cubepl>
             {
@@ -1758,7 +2045,7 @@
             <uniq_name>omp_idle_threads</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_idle_threads</url>
+            <url>@mirror@scorep_metrics.html#omp_idle_threads</url>
             <descr>Unused CPU reservation time</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -1766,9 +2053,27 @@
                 <uniq_name>omp_limited_parallelism</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_limited_parallelism</url>
+                <url>@mirror@scorep_metrics.html#omp_limited_parallelism</url>
                 <descr>Unused CPU reservation time in parallel regions due to limited parallelism</descr>
             </metric>
+        </metric>
+        <metric type="PREDERIVED_EXCLUSIVE">
+            <disp_name>Idle GPUs</disp_name>
+            <uniq_name>idle_gpus</uniq_name>
+            <dtype>FLOAT</dtype>
+            <uom>sec</uom>
+            <url>@mirror@scorep_metrics.html#idle_gpus</url>
+            <descr>Unused GPU reservation time</descr>
+            <cubepl>
+            {
+                ${tmp} = 0;
+                if ( ${idle_gpus}[${calculation::callpath::id}] == 1 )
+                {
+                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                };
+                return ${tmp};
+            }
+            </cubepl>
         </metric>
     </metric>
     <metric>
@@ -1777,7 +2082,7 @@
         <uniq_name>visits</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#visits</url>
+        <url>@mirror@scorep_metrics.html#visits</url>
         <descr>Number of visits</descr>
     </metric>
     <metric type="POSTDERIVED">
@@ -1785,17 +2090,17 @@
         <uniq_name>bytes</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes</url>
+        <url>@mirror@scorep_metrics.html#bytes</url>
         <descr>Number of bytes transferred</descr>
         <cubepl>
-            metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma()
+            metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma() + metric::bytes_other()
         </cubepl>
         <metric type="POSTDERIVED">
             <disp_name>Point-to-point</disp_name>
             <uniq_name>bytes_p2p</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
             <descr>Number of bytes transferred in point-to-point communication operations</descr>
             <cubepl>
                 metric::bytes_sent_p2p() + metric::bytes_received_p2p()
@@ -1805,7 +2110,7 @@
                 <uniq_name>bytes_sent_p2p</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_p2p</url>
+                <url>@mirror@scorep_metrics.html#bytes_sent_p2p</url>
                 <descr>Number of bytes sent in point-to-point communication operations</descr>
                 <cubepl>
                 {
@@ -1823,7 +2128,7 @@
                 <uniq_name>bytes_received_p2p</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
+                <url>@mirror@scorep_metrics.html#bytes_received_p2p</url>
                 <descr>Number of bytes received in point-to-point communication operations</descr>
                 <cubepl>
                 {
@@ -1842,7 +2147,7 @@
             <uniq_name>bytes_coll</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <url>@mirror@scorep_metrics.html#bytes_p2p</url>
             <descr>Number of bytes transferred in collective communication operations</descr>
             <cubepl>
                 metric::bytes_sent_coll() + metric::bytes_received_coll()
@@ -1852,7 +2157,7 @@
                 <uniq_name>bytes_sent_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_coll</url>
+                <url>@mirror@scorep_metrics.html#bytes_sent_coll</url>
                 <descr>Number of bytes sent in collective communication operations</descr>
                 <cubepl>
                 {
@@ -1870,7 +2175,7 @@
                 <uniq_name>bytes_received_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_coll</url>
+                <url>@mirror@scorep_metrics.html#bytes_received_coll</url>
                 <descr>Number of bytes received in collective communication operations</descr>
                 <cubepl>
                 {
@@ -1885,32 +2190,79 @@
             </metric>
         </metric>
         <metric type="POSTDERIVED">
-            <disp_name>Remote Memory Access</disp_name>
+            <disp_name>One-sided</disp_name>
             <uniq_name>bytes_rma</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rma</url>
-            <descr>Number of bytes transferred in remote memory access operations</descr>
+            <url>@mirror@scorep_metrics.html#bytes_rma</url>
+            <descr>Number of bytes transferred in one-sided remote memory access operations</descr>
             <cubepl>
                 metric::bytes_put() + metric::bytes_get()
             </cubepl>
             <metric>
-                <!-- This metric is copied from the trace analysis -->
+                <!-- This metric is copied from the summary profile -->
                 <disp_name>Sent</disp_name>
                 <uniq_name>bytes_put</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_put</url>
-                <descr>Number of bytes sent in remote memory access operations</descr>
+                <url>@mirror@scorep_metrics.html#bytes_put</url>
+                <descr>Number of bytes sent in one-sided remote memory access operations</descr>
             </metric>
             <metric>
-                <!-- This metric is copied from the trace analysis -->
+                <!-- This metric is copied from the summary profile -->
                 <disp_name>Received</disp_name>
                 <uniq_name>bytes_get</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_get</url>
-                <descr>Number of bytes received in remote memory access operations</descr>
+                <url>@mirror@scorep_metrics.html#bytes_get</url>
+                <descr>Number of bytes received in one-sided remote memory access operations</descr>
+            </metric>
+        </metric>
+        <metric type="POSTDERIVED">
+            <disp_name>Undetermined</disp_name>
+            <uniq_name>bytes_other</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics.html#bytes_other</url>
+            <descr>Number of bytes transferred in undetermined operations</descr>
+            <cubepl>
+                metric::bytes_sent_other() + metric::bytes_received_other()
+            </cubepl>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Sent</disp_name>
+                <uniq_name>bytes_sent_other</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics.html#bytes_sent_other</url>
+                <descr>Number of bytes sent in undetermined operations</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::bytes_sent(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+            </metric>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Received</disp_name>
+                <uniq_name>bytes_received_other</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics.html#bytes_received_other</url>
+                <descr>Number of bytes received in undetermined operations</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${mpi_request_handling}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::bytes_received(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
             </metric>
         </metric>
     </metric>
@@ -1919,7 +2271,7 @@
         <uniq_name>mpi_file_ops</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>occ</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_ops</url>
+        <url>@mirror@scorep_metrics.html#mpi_file_ops</url>
         <descr>Number of MPI file operations</descr>
         <cubepl>
             metric::mpi_file_iops() + metric::mpi_file_cops()
@@ -1929,7 +2281,7 @@
             <uniq_name>mpi_file_iops</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iops</url>
+            <url>@mirror@scorep_metrics.html#mpi_file_iops</url>
             <descr>Number of individual MPI file operations</descr>
             <cubepl>
             {
@@ -1946,7 +2298,7 @@
                 <uniq_name>mpi_file_irops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_irops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_irops</url>
                 <descr>Number of individual MPI file read operations</descr>
                 <cubepl>
                 {
@@ -1964,7 +2316,7 @@
                 <uniq_name>mpi_file_iwops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iwops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_iwops</url>
                 <descr>Number of individual MPI file write operations</descr>
                 <cubepl>
                 {
@@ -1983,7 +2335,7 @@
             <uniq_name>mpi_file_cops</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>occ</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cops</url>
+            <url>@mirror@scorep_metrics.html#mpi_file_cops</url>
             <descr>Number of collective MPI file operations</descr>
             <cubepl>
             {
@@ -2000,7 +2352,7 @@
                 <uniq_name>mpi_file_crops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_crops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_crops</url>
                 <descr>Number of collective MPI file read operations</descr>
                 <cubepl>
                 {
@@ -2018,7 +2370,7 @@
                 <uniq_name>mpi_file_cwops</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cwops</url>
+                <url>@mirror@scorep_metrics.html#mpi_file_cwops</url>
                 <descr>Number of collective MPI file write operations</descr>
                 <cubepl>
                 {
@@ -2038,7 +2390,7 @@
         <uniq_name>imbalance</uniq_name>
         <dtype>FLOAT</dtype>
         <uom>sec</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance</url>
+        <url>@mirror@scorep_metrics.html#imbalance</url>
         <descr>Computational load imbalance heuristic (see Online Description for details)</descr>
         <metric>
             <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2046,7 +2398,7 @@
             <uniq_name>imbalance_above</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_above</url>
+            <url>@mirror@scorep_metrics.html#imbalance_above</url>
             <descr>Computational load imbalance heuristic (overload)</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2054,7 +2406,7 @@
                 <uniq_name>imbalance_above_single</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_above_single</url>
+                <url>@mirror@scorep_metrics.html#imbalance_above_single</url>
                 <descr>Computational load imbalance heuristic (single participant)</descr>
             </metric>
         </metric>
@@ -2064,7 +2416,7 @@
             <uniq_name>imbalance_below</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below</url>
+            <url>@mirror@scorep_metrics.html#imbalance_below</url>
             <descr>Computational load imbalance heuristic (underload)</descr>
             <metric>
                 <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2072,7 +2424,7 @@
                 <uniq_name>imbalance_below_bypass</uniq_name>
                 <dtype>FLOAT</dtype>
                 <uom>sec</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below_bypass</url>
+                <url>@mirror@scorep_metrics.html#imbalance_below_bypass</url>
                 <descr>Computational load imbalance heuristic (non-participation)</descr>
                 <metric>
                     <!-- This metric is still hard-coded in the Cube remapper -->
@@ -2080,7 +2432,7 @@
                     <uniq_name>imbalance_below_singularity</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#imbalance_below_singularity</url>
+                    <url>@mirror@scorep_metrics.html#imbalance_below_singularity</url>
                     <descr>Computational load imbalance heuristic (non-participation in singularity)</descr>
                 </metric>
             </metric>
@@ -2091,15 +2443,15 @@
         <uniq_name>bytes_sent</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
-        <descr>Number of bytes sent in point-to-point communication operations</descr>
+        <url>@mirror@scorep_metrics.html#bytes_sent</url>
+        <descr>Number of bytes sent in point-to-point and collective communication operations</descr>
     </metric>
     <metric viztype="GHOST">
         <disp_name>Bytes received</disp_name>
         <uniq_name>bytes_received</uniq_name>
         <dtype>INTEGER</dtype>
         <uom>bytes</uom>
-        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
-        <descr>Number of bytes received in point-to-point communication operations</descr>
+        <url>@mirror@scorep_metrics.html#bytes_rcvd</url>
+        <descr>Number of bytes received in point-to-point and collective communication operations</descr>
     </metric>
 </metrics>

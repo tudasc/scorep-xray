@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017, 2020,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -70,7 +70,7 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/doxygen-user/main_10.dox.in                   \
               $(srcdir)/doc/doxygen-user/main_11.dox.in                   \
               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md     \
-              $(srcdir)/doc/profile/scorep_metrics.html                   \
+              $(srcdir)/doc/images/project_logo.svg                       \
               $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
               $(srcdir)/share/scorep.errors                               \
               $(srcdir)/share/bg-gnu/platform-frontend-user-provided      \
@@ -100,9 +100,20 @@ doc_DATA = $(srcdir)/OPEN_ISSUES \
            $(srcdir)/ChangeLog
 
 profiledocdir = $(docdir)/profile
-profiledoc_DATA = $(DOC_SRC_DIR)/profile/scorep_metrics.html
+dist_profiledoc_DATA = $(DOC_SRC_DIR)/profile/scorep_metrics.html \
+                       $(DOC_SRC_DIR)/profile/Imbalance.png \
+                       $(DOC_SRC_DIR)/profile/Imbal_Bypass.png \
+                       $(DOC_SRC_DIR)/profile/Imbal_Overload.png \
+                       $(DOC_SRC_DIR)/profile/Imbal_Single.png \
+                       $(DOC_SRC_DIR)/profile/Imbal_Singularity.png \
+                       $(DOC_SRC_DIR)/profile/Imbal_Underload.png \
+                       $(DOC_SRC_DIR)/profile/OMPIdle.png \
+                       $(DOC_SRC_DIR)/profile/OMPLimitedParallelism.png
 
 install-data-local: doxygen-user-install
+	$(AM_V_at)$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
+        $(INSTALL_DATA) $(DOC_SRC_DIR)/images/project_logo.svg \
+                        $(DESTDIR)$(docdir)/profile/project_logo.svg
 
 install-data-hook:
 	$(AM_V_at)for target in $(TARGETS)""; do \
