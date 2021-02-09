@@ -570,6 +570,10 @@
                 if ( ${includesOpenCL} == 0 )
                 {
                     cube::metric::set::opencl_time("value", "VOID");
+                    cube::metric::set::opencl_setup("value", "VOID");
+                    cube::metric::set::opencl_comm("value", "VOID");
+                    cube::metric::set::opencl_sync("value", "VOID");
+                    cube::metric::set::opencl_kernel_launches("value", "VOID");
                     cube::metric::set::opencl_kernel_executions("value", "VOID");
                 };
 
