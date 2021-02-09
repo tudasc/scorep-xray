@@ -590,6 +590,10 @@
                 if ( ${includesCUDA} == 0 )
                 {
                     cube::metric::set::cuda_time("value", "VOID");
+                    cube::metric::set::cuda_setup("value", "VOID");
+                    cube::metric::set::cuda_comm("value", "VOID");
+                    cube::metric::set::cuda_sync("value", "VOID");
+                    cube::metric::set::cuda_kernel_launches("value", "VOID");
                     cube::metric::set::cuda_kernel_executions("value", "VOID");
                 };
 
