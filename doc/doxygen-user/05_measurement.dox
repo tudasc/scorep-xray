@@ -844,7 +844,7 @@ If @scorep has been built with CUDA support it is capable of recording CUDA API 
  Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default.
 
 Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement.
-Please refer to the description of this variable to enable a particular composition of CUDA measurement features.
+Please refer to the description of this variable to enable a particular combination of CUDA measurement features.
 
 CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
@@ -878,7 +878,7 @@ GPU idle time is not affected by kernel filtering.
 If @scorep has been built with OpenCL support it is capable of recording OpenCL API function calls.
 
 Setting the environment variable \confvar{SCOREP_OPENCL_ENABLE} to <b><tt>yes</tt></b> enables OpenCL measurement.
-Please refer to the description of this variable to enable a particular composition of OpenCL measurement features.
+Please refer to the description of this variable to enable a particular combination of OpenCL measurement features.
 
 OpenCL measurement uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
@@ -899,7 +899,7 @@ To enable OpenACC measurement in Score-P the user has to:
   <li> Build and install shared libraries of Score-P (use <tt>\--enable-shared</tt> option when configuring Score-P).
   <li> Set the environment variable <tt>ACC_PROFLIB</tt> to specify the OpenACC profiling library.<br>
        Example: <pre>export ACC_PROFLIB=<path_to_scorep_installation>/lib/libscorep_adapter_openacc_event.so</pre>
-  <li> Set the environment variable \confvar{SCOREP_OPENACC_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular composition of OpenACC measurement features.
+  <li> Set the environment variable \confvar{SCOREP_OPENACC_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular combination of OpenACC measurement features.
 </ul>
 
 @note @scorep supports OpenACC monitoring, if the respective OpenACC compiler
