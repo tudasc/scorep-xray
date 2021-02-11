@@ -183,54 +183,6 @@ SCOREP_Profile_Initialize( size_t substrateId )
     }
 
     UTILS_ASSERT( scorep_profile_param_instance );
-
-    bytes_allocated_metric =
-        SCOREP_Definitions_NewMetric( "allocation_size",
-                                      "Size of allocated heap memory",
-                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                                      SCOREP_METRIC_VALUE_UINT64,
-                                      SCOREP_METRIC_BASE_DECIMAL,
-                                      0,
-                                      "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                      SCOREP_INVALID_METRIC );
-
-    bytes_freed_metric =
-        SCOREP_Definitions_NewMetric( "deallocation_size",
-                                      "Size of released heap memory",
-                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                                      SCOREP_METRIC_VALUE_UINT64,
-                                      SCOREP_METRIC_BASE_DECIMAL,
-                                      0,
-                                      "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                      SCOREP_INVALID_METRIC );
-
-    bytes_leaked_metric =
-        SCOREP_Definitions_NewMetric( "bytes_leaked",
-                                      "Size of allocated heap memory that was not released",
-                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                                      SCOREP_METRIC_VALUE_UINT64,
-                                      SCOREP_METRIC_BASE_DECIMAL,
-                                      0,
-                                      "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                      SCOREP_INVALID_METRIC );
-
-    max_heap_memory_allocated_metric =
-        SCOREP_Definitions_NewMetric( "maximum_heap_memory_allocated",
-                                      "Maximum amount of heap memory allocated at a time",
-                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                                      SCOREP_METRIC_VALUE_UINT64,
-                                      SCOREP_METRIC_BASE_DECIMAL,
-                                      0,
-                                      "bytes",
-                                      SCOREP_METRIC_PROFILING_TYPE_MAX,
-                                      SCOREP_INVALID_METRIC );
 }
 
 
@@ -419,10 +371,13 @@ on_location_creation( SCOREP_Location* locationData,
        for non-CPU-locations. */
     scorep_profile_set_current_node( thread_data, node );
 
-    /* Hack: To display MIN/MAX Cube metrics from the unique per-process-metrics
-     * location (see SCOREP_Location_AcquirePerProcessMetricsLocation()) we need
-     * to enter an artificial region. Identify the location by comparing type
-     * and name. */
+    /* Hack: For SCOREP_MEMORY_RECORDING=true we need to enter an artificial
+     * region on the unique per-process-metrics location (see
+     * SCOREP_Location_AcquirePerProcessMetricsLocation()) to display MIN/MAX
+     * Cube metrics. In addition, memory metrics only available if
+     * SCOREP_MEMORY_RECORDING=true need to be defined.
+     * If SCOREP_MEMORY_RECORDING=true a location of type SCOREP_LOCATION_TYPE_METRIC
+     * and name scorep_per_process_metrics_location_name gets defined. */
     if ( SCOREP_Location_GetType( locationData ) == SCOREP_LOCATION_TYPE_METRIC )
     {
         extern char scorep_per_process_metrics_location_name[];
@@ -434,7 +389,7 @@ on_location_creation( SCOREP_Location* locationData,
             static bool                first_visit = true;
             if ( first_visit )
             {
-                /* Define the artificial region only once */
+                /* Define the artificial region and the metrics only once */
                 first_visit = false;
                 SCOREP_SourceFileHandle file = SCOREP_Definitions_NewSourceFile( "PER PROCESS METRICS" );
                 per_process_metrics = SCOREP_Definitions_NewRegion(
@@ -445,6 +400,54 @@ on_location_creation( SCOREP_Location* locationData,
                     SCOREP_INVALID_LINE_NO,
                     SCOREP_PARADIGM_MEASUREMENT,
                     SCOREP_REGION_ARTIFICIAL );
+
+                bytes_allocated_metric =
+                    SCOREP_Definitions_NewMetric( "allocation_size",
+                                                  "Size of allocated heap memory",
+                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                                  SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                                  SCOREP_METRIC_VALUE_UINT64,
+                                                  SCOREP_METRIC_BASE_DECIMAL,
+                                                  0,
+                                                  "bytes",
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
+
+                bytes_freed_metric =
+                    SCOREP_Definitions_NewMetric( "deallocation_size",
+                                                  "Size of released heap memory",
+                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                                  SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                                  SCOREP_METRIC_VALUE_UINT64,
+                                                  SCOREP_METRIC_BASE_DECIMAL,
+                                                  0,
+                                                  "bytes",
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
+
+                bytes_leaked_metric =
+                    SCOREP_Definitions_NewMetric( "bytes_leaked",
+                                                  "Size of allocated heap memory that was not released",
+                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                                  SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                                  SCOREP_METRIC_VALUE_UINT64,
+                                                  SCOREP_METRIC_BASE_DECIMAL,
+                                                  0,
+                                                  "bytes",
+                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
+                                                  SCOREP_INVALID_METRIC );
+
+                max_heap_memory_allocated_metric =
+                    SCOREP_Definitions_NewMetric( "maximum_heap_memory_allocated",
+                                                  "Maximum amount of heap memory allocated at a time",
+                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                                  SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                                  SCOREP_METRIC_VALUE_UINT64,
+                                                  SCOREP_METRIC_BASE_DECIMAL,
+                                                  0,
+                                                  "bytes",
+                                                  SCOREP_METRIC_PROFILING_TYPE_MAX,
+                                                  SCOREP_INVALID_METRIC );
             }
 
             /* Enter the artificial program region */

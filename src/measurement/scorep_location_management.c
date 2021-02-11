@@ -99,9 +99,8 @@ static struct SCOREP_Location** location_list_tail = &location_list_head;
 /* We defer all new locations until the SCOREP_Location_ActivateInitLocations() call */
 static bool defer_init_locations = true;
 
-static SCOREP_Mutex     scorep_location_list_mutex;
-static SCOREP_Mutex     per_process_metrics_location_mutex;
-static SCOREP_Location* per_process_metrics_location;
+static SCOREP_Mutex scorep_location_list_mutex;
+static SCOREP_Mutex per_process_metrics_location_mutex;
 
 void
 SCOREP_Location_Initialize( void )
@@ -188,6 +187,8 @@ char scorep_per_process_metrics_location_name[] = "Per process metrics";
 SCOREP_Location*
 SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 {
+    static SCOREP_Location* per_process_metrics_location;
+
     SCOREP_ErrorCode result = SCOREP_MutexLock( per_process_metrics_location_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot lock per_process_metrics_location_mutex" );
 
