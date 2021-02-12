@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2014, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -122,7 +122,6 @@ jacobi_mpi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.mod.cpp  
                               $(SRC_ROOT)test/jacobi/hybrid/C++/main.cpp.opari.inc   \
                               $(SRC_ROOT)test/jacobi/hybrid/C++/pomp.c
 jacobi_mpi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 jacobi_mpi_omp_cxx_LDADD    = $(mpi_omp_libadd)
 jacobi_mpi_omp_cxx_LDFLAGS  = $(mpi_omp_ldflags)
@@ -162,8 +161,6 @@ jacobi_mpi_f90_LDFLAGS  = $(mpi_ldflags)
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
-# if the CPP flags are not specified  AM_CPPFLAGS are used by default which
-# cause an error on Jump.
 jacobi_mpi_f90_uninstrumented_CPPFLAGS =
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
 
@@ -194,21 +191,16 @@ jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.mod.F90         \
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90.opari.inc
 jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_mpi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) \
-                              @OPARI2_CPPFLAGS@ \
+jacobi_mpi_omp_f90_CPPFLAGS = @OPARI2_CPPFLAGS@ \
                               -I$(INC_ROOT)test/jacobi/hybrid/Fortran
 jacobi_mpi_omp_f90_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_f90.la
-jacobi_mpi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_f90_LDFLAGS += $(mpi_omp_ldflags)
+jacobi_mpi_omp_f90_LDFLAGS  = $(mpi_omp_ldflags)
 
 check_PROGRAMS                             += jacobi_mpi_omp_f90_uninstrumented
 jacobi_mpi_omp_f90_uninstrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \
                                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.F90      \
                                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
-jacobi_mpi_omp_f90_uninstrumented_LDFLAGS   = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_mpi_omp_f90_uninstrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_f90

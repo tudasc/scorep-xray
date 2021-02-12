@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2016,
+## Copyright (c) 2009-2011, 2013, 2016, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -120,7 +120,6 @@ jacobi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.mod.cpp      
                           $(SRC_ROOT)test/jacobi/OpenMP/C++/main.cpp.opari.inc   \
                           $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
 jacobi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
-jacobi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 jacobi_omp_cxx_LDADD    = $(omp_libadd)
 jacobi_omp_cxx_LDFLAGS  = $(omp_ldflags)
@@ -158,7 +157,7 @@ jacobi_serial_f90_LDFLAGS  = $(serial_ldflags)
 
 check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
 jacobi_serial_f90_uninstrumented_SOURCES  = $(jacobi_serial_f90_sources)
-jacobi_serial_f90_uninstrumented_CPPFLAGS = -I.
+jacobi_serial_f90_uninstrumented_CPPFLAGS =
 jacobi_serial_f90_uninstrumented_LDADD    = -lm
 
 TESTS_SERIAL += jacobi_serial_f90
