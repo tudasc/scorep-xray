@@ -72,60 +72,60 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 #
 AC_ARG_ENABLE([platform-mic],
     [AS_HELP_STRING([--enable-platform-mic],
-                    [Force build for Intel Xeon Phi co-processors [no].
-                     This option is only needed for Xeon Phi
-                     co-processors, like the Knights Corner (KNC). It
-                     is not needed for self-hosted Xeon Phis, like the
-                     Knights Landing (KNL); for these chips no special
-                     treatment is required.])],
+         [Force build for Intel Xeon Phi co-processors [no].
+          This option is only needed for Xeon Phi
+          co-processors, like the Knights Corner (KNC). It
+          is not needed for self-hosted Xeon Phis, like the
+          Knights Landing (KNL); for these chips no special
+          treatment is required.])],
 
     [AS_CASE([${enableval}],
-        [yes],
-            [ac_scorep_platform=mic],
-        [no],
-            [],
-        [AC_MSG_ERROR([value '$enableval' unsupported for '--enable-platform-mic'])])
+         [yes],
+              [ac_scorep_platform=mic],
+         [no],
+              [],
+         [AC_MSG_ERROR([value '$enableval' unsupported for '--enable-platform-mic'])])
     ])
 
 AS_IF([test "x${ac_scorep_platform}" = "x"],
     [AS_CASE([${build_os}],
          [linux*],
-             [AS_IF([test "x${build_cpu}" = "xia64" && test -f /etc/sgi-release],
-                      [ac_scorep_platform="altix"],
-                  [test "x${build_cpu}" = "xpowerpc64" && test -d /bgl/BlueLight],
-                      [ac_scorep_platform="bgl"],
-                  [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys/drivers/ppcfloor/hwi],
-                      [ac_scorep_platform="bgq"],
-                  [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
-                      [ac_scorep_platform="bgp"],
-                  [(test "x${build_cpu}" = "xx86_64" || test "x${build_cpu}" = "xaarch64") && test -d /opt/cray],
-                      [AS_IF([test -L /opt/cray/pmi/default],
-                           [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
-                                   [ac_scorep_platform="crayxt"],
-                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
-                                   [ac_scorep_platform="crayxe"],
-                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
-                                   [ac_scorep_platform="crayxk"],
-                               [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
-                                   [ac_scorep_platform="crayxc"],
-                               [test -d /opt/cray/ari/modulefiles],
-                                   [ac_scorep_platform="crayxc"],
-                               [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
-                                   [ac_scorep_platform="crayxk"],
-                               [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
-                                   [ac_scorep_platform="crayxe"])],
-                      [test -L /opt/cray/pe/pmi/default],
-                           [AS_IF([test -d /opt/cray/ari/modulefiles],
-                               [ac_scorep_platform="crayxc"])])
-                       AS_IF([test "x${ac_scorep_platform}" = "x"],
-                           [AC_MSG_ERROR([Unknown Cray platform.])])],
-                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
-                      [ac_scorep_platform="k"],
-                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
-                      [ac_scorep_platform="fx10"],
-                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVmxlang],
-                      [ac_scorep_platform="fx100"],
-                  [ac_scorep_platform=linux])],
+              [AS_IF([test "x${build_cpu}" = "xia64" && test -f /etc/sgi-release],
+                        [ac_scorep_platform="altix"],
+                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgl/BlueLight],
+                        [ac_scorep_platform="bgl"],
+                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys/drivers/ppcfloor/hwi],
+                        [ac_scorep_platform="bgq"],
+                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
+                        [ac_scorep_platform="bgp"],
+                   [(test "x${build_cpu}" = "xx86_64" || test "x${build_cpu}" = "xaarch64") && test -d /opt/cray],
+                        [AS_IF([test -L /opt/cray/pmi/default],
+                             [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
+                                       [ac_scorep_platform="crayxt"],
+                                  [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                                       [ac_scorep_platform="crayxe"],
+                                  [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                                       [ac_scorep_platform="crayxk"],
+                                  [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
+                                       [ac_scorep_platform="crayxc"],
+                                  [test -d /opt/cray/ari/modulefiles],
+                                       [ac_scorep_platform="crayxc"],
+                                  [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                                       [ac_scorep_platform="crayxk"],
+                                  [test -d /opt/cray/gem/modulefiles && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                                       [ac_scorep_platform="crayxe"])],
+                             [test -L /opt/cray/pe/pmi/default],
+                                  [AS_IF([test -d /opt/cray/ari/modulefiles],
+                                       [ac_scorep_platform="crayxc"])])
+                         AS_IF([test "x${ac_scorep_platform}" = "x"],
+                             [AC_MSG_ERROR([Unknown Cray platform.])])],
+                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
+                        [ac_scorep_platform="k"],
+                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
+                        [ac_scorep_platform="fx10"],
+                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVmxlang],
+                        [ac_scorep_platform="fx100"],
+                   [ac_scorep_platform=linux])],
          [sunos* | solaris*],
               [ac_scorep_platform="solaris"],
          [darwin*],
@@ -215,8 +215,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_FX100],   [test "x${ac_scorep_platform}" = "xfx100"])
 
     AS_CASE([${ac_scorep_platform}],
-            [crayx*],     [afs_platform_cray="yes"],
-            [afs_platform_cray="no"])
+        [crayx*], [afs_platform_cray="yes"],
+        [afs_platform_cray="no"])
     AM_CONDITIONAL([PLATFORM_CRAY],[ test "x${afs_platform_cray}" = "xyes" ])
 
     AM_COND_IF([PLATFORM_ALTIX],
