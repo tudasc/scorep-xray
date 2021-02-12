@@ -4,7 +4,7 @@
 !  Copyright (c) 2020,
 !  Technische Universitaet Dresden, Germany
 !
-!  Copyright (c) 2020,
+!  Copyright (c) 2020-2021,
 !  Forschungszentrum Juelich GmbH, Germany
 !
 ! This software may be modified and distributed under the terms of
@@ -21,8 +21,8 @@
 
       SUBROUTINE MPI_Init_f08( ierror )
       INTEGER, OPTIONAL, INTENT(OUT) :: ierror
-      write(*,*) "[Score-P] 'USE mpi_f08' not supported yet, "//
-     & "consider switching to 'USE mpi'."
+      write(*,*) "[Score-P] 'USE mpi_f08' not supported yet,"
+      write(*,*) "           consider switching to 'USE mpi'."
       CALL ABORT
       END SUBROUTINE
 
@@ -30,7 +30,7 @@
       INTEGER, INTENT(IN) :: required
       INTEGER, INTENT(OUT) :: provided
       INTEGER, OPTIONAL, INTENT(OUT) :: ierror
-      write(*,*) "[Score-P] 'USE mpi_f08' not supported yet, "//
-     & "consider switching to 'USE mpi'."
+      write(*,*) "[Score-P] 'USE mpi_f08' not supported yet,"
+      write(*,*) "           consider switching to 'USE mpi'."
       CALL ABORT
       END SUBROUTINE
