@@ -17,7 +17,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -42,8 +42,8 @@ LIBS = @MPI_LIBS@
 # -Ox does not work for all compilers. Use AM_CONDITIONAL here?
 CFLAGS   = -O3 @OPENMP_CFLAGS@
 CXXFLAGS = -O3 @OPENMP_CXXFLAGS@
-F77FLAGS = -O3 @OPENMP_FFLAGS@
-FCFLAGS  = -O3 @OPENMP_FCFLAGS@
+F77FLAGS = -O3 @OPENMP_FFLAGS@ @SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH@
+FCFLAGS  = -O3 @OPENMP_FCFLAGS@ @SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH@
 
 PARADIGM   = mpi_omp
 CODES      = jacobi

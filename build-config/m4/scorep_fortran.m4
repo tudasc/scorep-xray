@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2020,
+## Copyright (c) 2009-2013, 2020-2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012, 2014,
@@ -33,7 +33,7 @@
 
 dnl ------------------------------------------------------------------
 
-#  Checks whether the F77 compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+#  Checks whether the F77 compiler actually is functional, Open MPI can install empty shells for the compiler wrappers
 dnl Do not use AC_DEFUN to prevent AC_F77_LIBRARY_LDFLAGS was expanded before it was required warnings
 m4_define([SCOREP_FORTRAN_F77],[
     SCOREP_FORTRAN_F77_WORKS
@@ -70,7 +70,7 @@ AC_DEFUN([SCOREP_FORTRAN_F77_WORKS], [
     AM_CONDITIONAL([SCOREP_HAVE_F77], [test "x${scorep_cv_f77_works}" = "xyes"])
 ])
 
-#  Checks whether the FC compiler actually is functional, OpenMPI can install empty shells for the compiler wrappers
+#  Checks whether the FC compiler actually is functional, Open MPI can install empty shells for the compiler wrappers
 dnl Do not use AC_DEFUN to prevent AC_FC_LIBRARY_LDFLAGS was expanded before it was required warnings
 m4_define([SCOREP_FORTRAN_FC],[
     SCOREP_FORTRAN_FC_WORKS
@@ -100,3 +100,45 @@ AC_DEFUN([SCOREP_FORTRAN_FC_WORKS], [
                 AC_LANG_POP([Fortran])])
     AM_CONDITIONAL([SCOREP_HAVE_FC], [test "x${scorep_cv_fc_works}" = "xyes"])
 ])
+
+
+# Workaround for GCC 10 argument mismatch errors:
+# GCC 10 now rejects argument mismatches occurring in the same source
+# file, see #9. This affects jacobi MPI tests that use MPI_GET_ADDRESS on
+# Cray EX (does it affect all MPICH-based MPIs? Open MPI seems to work
+# OK). Porting the jacobi code would be a solution. Replacing it with
+# a conforming code would be another. As both can't be implemented in
+# time for 7.0, downgrade the error to a warning via
+# -fallow-argument-mismatch.
+AC_DEFUN([SCOREP_FORTRAN_ARGUMENT_MISMATCH], [
+for fcflag in "" "-fallow-argument-mismatch"; do
+    FCFLAGS_save="$FCFLAGS"
+    FCFLAGS="$fcflag $FCFLAGS"
+    _FORTRAN_HAVE_ARGUMENT_MISMATCH
+    FCFLAGS="$FCFLAGS_save"
+    AS_IF([test "x${have_argument_mismatch_error}" = xno],
+        [AC_SUBST([SCOREP_FORTRAN_ALLOW_ARGUMENT_MISMATCH], ["$fcflag"])
+         break])
+done
+]) # SCOREP_FORTRAN_ARGUMENT_MISMATCH
+
+AC_DEFUN([_FORTRAN_HAVE_ARGUMENT_MISMATCH], [
+# see https://gcc.gnu.org/gcc-10/porting_to.html#argument-mismatch
+AC_LANG_PUSH([Fortran])
+AC_COMPILE_IFELSE([
+    AC_LANG_SOURCE(
+[[
+      subroutine sub_assumed(array, n)
+        real array(*)
+        integer n
+      end
+
+      program arg_mismatch
+        real var
+        call sub_assumed(var, 1)
+      end
+]])],
+    [have_argument_mismatch_error=no],
+    [have_argument_mismatch_error=yes])
+AC_LANG_POP([Fortran])
+]) # _FORTRAN_HAVE_ARGUMENT_MISMATCH
