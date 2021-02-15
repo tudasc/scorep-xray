@@ -434,7 +434,7 @@ SCOREP_Config_UserAdapter::addIncFlags( std::string&           cflags,
  * Cuda adapter
  * *************************************************************************************/
 SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
-    : SCOREP_Config_Adapter( "cuda", "scorep_adapter_cuda", true )
+    : SCOREP_Config_Adapter( "cuda", "scorep_adapter_cuda", false )
 {
 }
 
@@ -452,7 +452,7 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
  * OpenACC adapter
  * *************************************************************************************/
 SCOREP_Config_OpenaccAdapter::SCOREP_Config_OpenaccAdapter()
-    : SCOREP_Config_Adapter( "openacc", "scorep_adapter_openacc", true )
+    : SCOREP_Config_Adapter( "openacc", "scorep_adapter_openacc", false )
 {
 }
 
@@ -470,7 +470,7 @@ SCOREP_Config_OpenaccAdapter::addLibs( std::deque<std::string>&           libs,
  * OpenCL adapter
  * *************************************************************************************/
 SCOREP_Config_OpenclAdapter::SCOREP_Config_OpenclAdapter()
-    : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", true )
+    : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", false )
     , m_wrapmode( SCOREP_LIBWRAP_DEFAULT_MODE )
 {
 }

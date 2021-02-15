@@ -49,7 +49,11 @@ SCOREP_Instrumenter_OpenACCAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLi
 {
     std::string flags;
 
-    if ( !isEnabled() )
+    if ( isEnabled() )
+    {
+        flags += " --" + m_name;
+    }
+    else
     {
         flags += " --no" + m_name;
     }
