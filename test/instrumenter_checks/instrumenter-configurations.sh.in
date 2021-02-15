@@ -13,7 +13,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014, 2019,
+## Copyright (c) 2009-2011, 2014, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -38,7 +38,6 @@
 comp_arg=""
 pomp_user_arg=""
 pdt_arg=""
-cobi_arg=""
 omp_i_arg=""
 omp_b_arg=""
 mpp_arg=""
@@ -82,60 +81,57 @@ for comp_arg in $compilerargs; do
 @HAVE_SCOREP_PDT_TRUE@                fi
 	        for preprocess_user_arg in $prepocessargs; do
 
-@HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
+                # --- output per paradigm begins --- #
 
-                    # --- output per paradigm begins --- #
+                # serial ----------------------------#
+                echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg" >> ${file_prefix}serial
 
-                    # serial ----------------------------#
-                    echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
+                # omp -------------------------------#
+@HAVE_OPENMP_SUPPORT_TRUE@                for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_OPENMP_SUPPORT_TRUE@                     for omp_b_arg in $omp_backend_args; do
+@HAVE_OPENMP_SUPPORT_TRUE@                          echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $omp_i_arg $omp_b_arg " >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                     done
+@HAVE_OPENMP_SUPPORT_TRUE@                done
 
-                    # omp -------------------------------#
-@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                              echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_i_arg $omp_b_arg " >> ${file_prefix}omp
-@HAVE_OPENMP_SUPPORT_TRUE@                         done
-@HAVE_OPENMP_SUPPORT_TRUE@                    done
+                # mpi -------------------------------#
+@HAVE_MPI_SUPPORT_TRUE@                for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@                    echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg" >> ${file_prefix}mpi
+@HAVE_MPI_SUPPORT_TRUE@                done
 
-                    # mpi -------------------------------#
-@HAVE_MPI_SUPPORT_TRUE@                    for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg" >> ${file_prefix}mpi
-@HAVE_MPI_SUPPORT_TRUE@                    done
-
-                    # mpi_omp ---------------------------#
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                             for omp_b_arg in $omp_backend_args; do
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                                  echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}mpi_omp
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                             done
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
+                # mpi_omp ---------------------------#
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                              echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                         done
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                done
 
-                    # shmem -----------------------------#
-@HAVE_SHMEM_SUPPORT_TRUE@                    for mpp_arg in "mpp=shmem"; do
-@HAVE_SHMEM_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg" >> ${file_prefix}shmem
-@HAVE_SHMEM_SUPPORT_TRUE@                    done
+                # shmem -----------------------------#
+@HAVE_SHMEM_SUPPORT_TRUE@                for mpp_arg in "mpp=shmem"; do
+@HAVE_SHMEM_SUPPORT_TRUE@                    echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg" >> ${file_prefix}shmem
+@HAVE_SHMEM_SUPPORT_TRUE@                done
 
-                    # shmem_omp -------------------------#
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpp_arg in "mpp=shmem"; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            for omp_b_arg in $omp_backend_args; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                                echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}shmem_omp
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            done
+                # shmem_omp -------------------------#
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                for mpp_arg in "mpp=shmem"; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_b_arg in $omp_backend_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}shmem_omp
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                done
 
-                    # cuda ------------------------------#
-@HAVE_CUDA_SUPPORT_TRUE@                    if [ $preprocess_user_arg = nopreprocess ]; then
-@HAVE_CUDA_SUPPORT_TRUE@                        for cuda_arg in cuda nocuda; do
-@HAVE_CUDA_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $cuda_arg" >> ${file_prefix}cuda
-@HAVE_CUDA_SUPPORT_TRUE@                        done
-@HAVE_CUDA_SUPPORT_TRUE@                    fi
+                # cuda ------------------------------#
+@HAVE_CUDA_SUPPORT_TRUE@                if [ $preprocess_user_arg = nopreprocess ]; then
+@HAVE_CUDA_SUPPORT_TRUE@                    for cuda_arg in cuda nocuda; do
+@HAVE_CUDA_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cuda_arg" >> ${file_prefix}cuda
+@HAVE_CUDA_SUPPORT_TRUE@                    done
+@HAVE_CUDA_SUPPORT_TRUE@                fi
 
-                    # ...  ------------------------------#
+                # ...  ------------------------------#
 
-                    # --- output per paradigm ends --- #
+                # --- output per paradigm ends --- #
 
-@HAVE_COBI_TRUE@                done
                 done
 @HAVE_SCOREP_PDT_TRUE@        done
 @HAVE_SCOREP_PDT_FALSE@        done

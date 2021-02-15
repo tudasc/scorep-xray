@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013, 2017-2019,
+dnl Copyright (c) 2009-2013, 2017-2019, 2021,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -123,7 +123,6 @@ AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS
 # </AC_SCOREP_COMMON_CHECKS>
 
 SCOREP_PDT
-AC_SCOREP_COBI
 
 AC_CHECK_FUNCS_ONCE([readlink])
 

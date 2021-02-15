@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020,
+ * Copyright (c) 2009-2017, 2020-2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,7 +48,6 @@
 #include <vector>
 
 class SCOREP_Instrumenter_Adapter;
-//class SCOREP_Instrumenter_CobiAdapter;
 class SCOREP_Instrumenter_CompilerAdapter;
 class SCOREP_Instrumenter_CudaAdapter;
 class SCOREP_Instrumenter_OpariAdapter;
@@ -245,7 +244,6 @@ private:
      */
     std::string m_compiler_flags;
 
-    //SCOREP_Instrumenter_CobiAdapter*       m_cobi_adapter;
     SCOREP_Instrumenter_CompilerAdapter*   m_compiler_adapter;
     SCOREP_Instrumenter_CudaAdapter*       m_cuda_adapter;
     SCOREP_Instrumenter_OpariAdapter*      m_opari_adapter;
