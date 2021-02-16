@@ -71,7 +71,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
 #ifdef SCOREP_SUBSYSTEMS_SHMEM
     &SCOREP_Subsystem_ShmemAdapter,
 #endif
-#if HAVE_CUDA_SUPPORT
+#if HAVE( CUDA_TESTS )
     &SCOREP_Subsystem_CudaAdapter,
 #endif
     &SCOREP_Subsystem_ThreadForkJoin

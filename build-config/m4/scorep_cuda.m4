@@ -108,10 +108,22 @@ AC_ARG_ENABLE([cuda],
                        [:],
                        [AC_MSG_ERROR([Invalid argument for --enable-cuda: $enableval])])])
 
+dnl cannot run CUDA checks, if only stubs-libraries are provided
+scorep_have_cuda_tests=${scorep_have_cuda}
+AC_MSG_CHECKING([whether libcuda is in a stubs-library])
 AS_CASE(["/${with_libcuda_lib}/"],
-        [*/stubs/*], [AS_UNSET([with_libcuda_rpathflag])])
+        [*/stubs/*],
+        [AS_UNSET([with_libcuda_rpathflag])
+         scorep_have_cuda_tests=no
+         AC_MSG_RESULT([yes])],
+        [AC_MSG_RESULT([no])])
+AC_MSG_CHECKING([whether libnvidia-ml is in a stubs-library])
 AS_CASE(["/${with_libnvidia_ml_lib}/"],
-        [*/stubs/*], [AS_UNSET([with_libnvidia_ml_rpathflag])])
+        [*/stubs/*],
+        [AS_UNSET([with_libnvidia_ml_rpathflag])
+         scorep_have_cuda_tests=no
+         AC_MSG_RESULT([yes])],
+        [AC_MSG_RESULT([no])])
 
 AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                     [test "x${scorep_have_cuda}" = "xyes"],
@@ -132,9 +144,13 @@ AC_SCOREP_COND_HAVE([NVML_SUPPORT],
                     [test "x${scorep_have_libnvidia_ml}" = "xyes"],
                     [Defined if NVIDIA NVML is available.])
 
+AC_SCOREP_COND_HAVE([CUDA_TESTS],
+    [test "x${scorep_have_cuda_tests}" = "xyes"],
+    [Defined if CUDA tests will be run.], [], [])
+
 dnl run_cuda_test.sh: test sources only available for scorep_cuda_version 5000, 5050, 6000, 6050
-AM_CONDITIONAL([HAVE_CUDA_TESTS],
-    [test "x${scorep_have_cuda}" = xyes \
+AM_CONDITIONAL([HAVE_CUDA_TESTS_HAVE_GOLD],
+    [test "x${scorep_have_cuda_tests}" = "xyes" \
      && (test ${scorep_cuda_version} -eq 5000 \
          || test ${scorep_cuda_version} -eq 5050 \
          || test ${scorep_cuda_version} -eq 6000 \
