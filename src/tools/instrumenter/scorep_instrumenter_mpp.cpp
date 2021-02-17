@@ -279,13 +279,14 @@ SCOREP_Instrumenter_Shmem::is_shmem_library( const std::string& libraryName )
 {
     /*
      * Check for libopenshmem (OpenSHMEM)
-     *           liboshmem    (OpenMPI)
+     *           liboshmem    (Open MPI SHMEM)
      *           libsma       (SGI MPT, Cray SHMEM)
      */
 
-    if ( SCOREP_SHMEM_LIB_NAME != "" )
+    const std::string shmem_lib_name( SCOREP_SHMEM_LIB_NAME );
+    if ( !shmem_lib_name.empty() )
     {
-        return check_lib_name( libraryName, SCOREP_SHMEM_LIB_NAME );
+        return check_lib_name( libraryName, shmem_lib_name );
     }
 
     return false;

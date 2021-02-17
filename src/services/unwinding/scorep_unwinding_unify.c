@@ -413,7 +413,7 @@ section_iterator( bfd*      abfd,
         return;
     }
 
-    if ( !bfd_get_section_flags( abfd, section ) & SEC_ALLOC )
+    if ( !( bfd_get_section_flags( abfd, section ) & SEC_ALLOC ) )
     {
         return;
     }
