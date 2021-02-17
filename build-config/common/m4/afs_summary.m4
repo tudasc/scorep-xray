@@ -290,43 +290,47 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
         $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary        >$summary.sub
         $SED -e :a -e '/\\$/N; s/\n/'"$_afs_summary_sub"'/; ta' <$summary-master >$summary-master.sub
         LC_ALL=C $AWK '
-function printsummary(summary) {
-    match(summary, ": *")
-    descr = substr(summary, 1, RSTART+RLENGTH-1)
-    value = substr(summary, RSTART+RLENGTH)
-    value_res = ""
-    pre  = ""
-    post = ""
-    firstword = 0
-    while (value != "") {
-        start = 1
-        if (0 != match(value, " *\\\\\032 *")) {
-            chunk = substr(value, 1, RSTART - 1)
-            sep   = substr(value, RSTART, RLENGTH)
-            value = substr(value, RSTART + RLENGTH)
+function printsummary(ps_summary, ps_descr_pre, ps_descr_post) {
+    match(ps_summary, ": *")
+    ps_descr = substr(ps_summary, 1, RSTART)
+    ps_gap = substr(ps_summary, RSTART+1, RLENGTH-1)
+    ps_value = substr(ps_summary, RSTART+RLENGTH)
+    match(ps_descr, "^ *")
+    ps_indent = substr(ps_descr, 1, RLENGTH)
+    ps_descr = substr(ps_descr, RLENGTH+1)
+    ps_value_res = ""
+    ps_pre  = ""
+    ps_post = ""
+    ps_firstword = 0
+    while (ps_value != "") {
+        ps_start = 1
+        if (0 != match(ps_value, " *\\\\\032 *")) {
+            ps_chunk = substr(ps_value, 1, RSTART - 1)
+            ps_sep   = substr(ps_value, RSTART, RLENGTH)
+            ps_value = substr(ps_value, RSTART + RLENGTH)
         } else {
             # last chunk
-            chunk = value
-            sep   = ""
-            value = ""
+            ps_chunk = ps_value
+            ps_sep   = ""
+            ps_value = ""
         }
-        if (!firstword && length(chunk) > 0) {
-            if (match(chunk, "^@<:@a-z@:>@*"))
-                word = substr(chunk, RSTART, RLENGTH)
+        if (!ps_firstword && length(ps_chunk) > 0) {
+            if (match(ps_chunk, "^@<:@a-z@:>@*"))
+                ps_word = substr(ps_chunk, RSTART, RLENGTH)
             else
-                word = chunk
-            if (word == "yes")
-                pre  = "\033@<:@0;32m"
-            else if (word == "no")
-                pre  = "\033@<:@0;31m"
+                ps_word = ps_chunk
+            if (ps_word == "yes")
+                ps_pre  = "\033@<:@0;32m"
+            else if (ps_word == "no")
+                ps_pre  = "\033@<:@0;31m"
             else
-                pre  = "\033@<:@1;34m"
-            post = "\033@<:@m"
-            firstword = 1
+                ps_pre  = "\033@<:@1;34m"
+            ps_post = "\033@<:@m"
+            ps_firstword = 1
         }
-        value_res = value_res "" pre "" chunk "" post "" sep
+        ps_value_res = ps_value_res "" ps_pre "" ps_chunk "" ps_post "" ps_sep
     }
-    print descr "" value_res
+    print ps_indent "" ps_descr_pre "" ps_descr "" ps_descr_post "" ps_gap "" ps_value_res
 }
 
 BEGIN {
@@ -362,15 +366,18 @@ BEGIN {
     if (!(descr in refsections) || refsections@<:@descr@:>@ != value) {
         for (i = 1; i < sectionestacklen; i++) {
             if (!sectionstackprinted@<:@i-1@:>@) {
-                printsummary(sectionstack@<:@i-1@:>@)
+                printsummary(sectionstack@<:@i-1@:>@, "", "")
                 sectionstackprinted@<:@i-1@:>@ = 1
             }
         }
+        descr_pre = ""
+        descr_post = ""
         if (descr in refsections) {
             # we are here, because the values differ
-            descr = "\033@<:@0;31m" descr "\033@<:@m"
+            descr_pre = "\033@<:@0;31m"
+            descr_post = "\033@<:@m"
         }
-        printsummary(descr "" value)
+        printsummary(descr "" value, descr_pre, descr_post)
         sectionstackprinted@<:@depth@:>@ = 1
     }
 }
