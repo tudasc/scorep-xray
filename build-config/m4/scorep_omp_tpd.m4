@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2017,
+dnl Copyright (c) 2013-2017, 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -23,7 +23,7 @@ dnl file build-config/m4/scorep_omp_tpd.m4
 # automake conditional 'HAVE_SCOREP_OMP_TPD' and the autoconf
 # substitution SCOREP_OMP_TPD.
 AC_DEFUN([SCOREP_OPENMP_TPD],[
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 
 AC_LANG_PUSH([C])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(

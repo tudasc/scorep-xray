@@ -15,15 +15,15 @@
 # ------------
 # Determines additional platform-specific libtool link flags, i.e.:
 #
-#   - On Cray, force static linking of compute-node executables if the
+#   - On Cray, force static linking of computenode executables if the
 #     environment variable CRAYPE_LINK_TYPE is set to 'static' or unset
 #     (default: static).
 #
 #   - On IBM Blue Gene/Q and Fujitsu K/FX10/FX100, force static linking
-#     of compute-node executables.
+#     of computenode executables.
 #
 # This macro has to be called after LT_INIT and requires that
-# `ac_scorep_platform` is set appropriately.  For each compute-node
+# `ac_scorep_platform` is set appropriately.  For each computenode
 # executable `foo`, use
 #
 #   foo_LDFLAGS = $(AM_LDFLAGS) $(LINKMODE_FLAGS)

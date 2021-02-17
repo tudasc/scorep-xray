@@ -63,9 +63,9 @@ Configuration
 
 The configure script in this package tries to automatically determine
 the platform for which Score-P will be compiled in order to provide
-reasonable defaults for backend (i.e., compute-node) compilers,
+reasonable defaults for backend (i.e., compute node) compilers,
 MPI compilers, and, in case of cross-compiling environments, frontend
-(i.e., login-node) compilers.
+(i.e., login node) compilers.
 
 Depending on the environment it is possible to override the platform
 defaults by using the following configure options:

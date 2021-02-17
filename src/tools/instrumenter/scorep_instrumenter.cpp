@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2020,
+ * Copyright (c) 2009-2013, 2015, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -273,7 +273,7 @@ SCOREP_Instrumenter::Run( void )
                     }
                     *current_file = precompile( *current_file );
 
-                    #if SCOREP_BACKEND_COMPILER_CRAY
+                    #if SCOREP_BACKEND_COMPILER_FC_CRAY
                     if ( m_opari_adapter->isEnabled() &&
                          m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
                     {

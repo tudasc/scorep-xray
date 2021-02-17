@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2018-2019,
+## Copyright (c) 2009-2015, 2018-2019, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -257,6 +257,13 @@ if SCOREP_COMPILER_CRAY
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
 endif SCOREP_COMPILER_CRAY
+
+if PLATFORM_CRAY
+if SCOREP_COMPILER_CLANG
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
+endif SCOREP_COMPILER_CLANG
+endif PLATFORM_CRAY
 
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU

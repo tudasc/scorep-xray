@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2020,
+dnl Copyright (c) 2009-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -64,16 +64,10 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC dnl required
-AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AFS_SUMMARY([C99 compiler used], [$CC])
-AM_PROG_CC_C_O
-
-AC_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
-            dnl mode also for frontend tools
-
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_CC
+SCOREP_COMPUTENODE_CXX
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 AM_CONDITIONAL([HAVE_FORTRAN_SUPPORT], [test "x${scorep_cv_f77_works}" = "xyes" || test "x${scorep_cv_fc_works}" = "xyes"])
 
 LT_PREREQ([2.4.6])
@@ -103,9 +97,9 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       ])
 AC_SUBST([backend_suffix])
 
-m4_include(../build-includes/compute-node.m4)
+m4_include(../build-includes/computenode.m4)
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
-    [m4_include(../build-includes/login-node.m4)])
+    [m4_include(../build-includes/loginnode.m4)])
 
 adl_RECURSIVE_EVAL([${prefix}], [PREFIX])
 AC_SUBST([PREFIX])

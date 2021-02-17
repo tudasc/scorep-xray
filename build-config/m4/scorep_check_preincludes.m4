@@ -9,6 +9,9 @@ dnl
 dnl Copyright (c) 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
+dnl Copyright (c) 2021,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -18,11 +21,7 @@ dnl file build-config/m4/scorep_check_preincludes.m4
 
 AC_DEFUN([SCOREP_CHECK_PREINCLUDES], [
 AC_REQUIRE([AC_SCOREP_OPENMP])dnl
-
-
-AC_LANG_PUSH([C])
-AX_COMPILER_VENDOR
-AC_LANG_POP([C])
+AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 
 scorep_c_no_preinclude_flag=""
 AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland],
@@ -38,9 +37,7 @@ AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland],
 
 AC_SUBST([SCOREP_C_NO_PREINCLUDE_FLAG], [${scorep_c_no_preinclude_flag}])
 
-AC_LANG_PUSH([C++])
-AX_COMPILER_VENDOR
-AC_LANG_POP([C++])
+AC_REQUIRE([SCOREP_COMPUTENODE_CXX])dnl
 
 scorep_cxx_no_preinclude_flag=""
 AS_IF([test "x${ax_cv_cxx_compiler_vendor%/*}" = xportland],

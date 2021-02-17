@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,53 +45,6 @@
 
 #include <algorithm>
 
-/* ****************************************************************************
-   Compiler specific defines
-******************************************************************************/
-
-/*
- * SCOREP_OPARI_MANGLING_SCHEME is used in opari2 option --omp-tpd-mangling.
- * This option is only used if the compiler doesn't support OpenMP ancestry
- * functions. These functions were introduced in OpenMP 3.0.
- */
-#if SCOREP_BACKEND_COMPILER_CRAY
-#define SCOREP_OPARI_MANGLING_SCHEME "cray"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " --nosrc "
-
-#elif SCOREP_BACKEND_COMPILER_GNU
-#define SCOREP_OPARI_MANGLING_SCHEME "gnu"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_IBM
-#define SCOREP_OPARI_MANGLING_SCHEME "ibm"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_INTEL
-#define SCOREP_OPARI_MANGLING_SCHEME "intel"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_PGI
-#define SCOREP_OPARI_MANGLING_SCHEME "pgi"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_STUDIO
-#define SCOREP_OPARI_MANGLING_SCHEME "sun"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-#define SCOREP_OPARI_MANGLING_SCHEME "fujitsu"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_CLANG
-/* --omp-tpd-mangling=clang is not implemented in opari2. But as ancestry
- * is the default since scorep 4.0 and supported by clang, tpd options
- * wont get used. */
-#define SCOREP_OPARI_MANGLING_SCHEME "clang"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#else
-#error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
-#endif
 
 /* **************************************************************************************
  * class SCOREP_Instrumenter_OpariAdapter
@@ -361,12 +314,61 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
                                                 const std::string&   input_file,
                                                 const std::string&   output_file )
 {
+    /*
+     * SCOREP_OPARI_MANGLING_SCHEME is used in opari2 option --omp-tpd-mangling.
+     * This option is only used if the compiler doesn't support OpenMP ancestry
+     * functions. These functions were introduced in OpenMP 3.0.
+     */
+    #if SCOREP_BACKEND_COMPILER_CRAY
+    #define SCOREP_OPARI_MANGLING_SCHEME "cray"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " --nosrc "
+
+    #elif SCOREP_BACKEND_COMPILER_GNU
+    #define SCOREP_OPARI_MANGLING_SCHEME "gnu"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_IBM
+    #define SCOREP_OPARI_MANGLING_SCHEME "ibm"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_INTEL
+    #define SCOREP_OPARI_MANGLING_SCHEME "intel"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_PGI
+    #define SCOREP_OPARI_MANGLING_SCHEME "pgi"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_STUDIO
+    #define SCOREP_OPARI_MANGLING_SCHEME "sun"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_FUJITSU
+    #define SCOREP_OPARI_MANGLING_SCHEME "fujitsu"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #elif SCOREP_BACKEND_COMPILER_CLANG
+    /* --omp-tpd-mangling=clang is not implemented in opari2. But as ancestry
+     * is the default since scorep 4.0 and supported by clang, tpd options
+     * wont get used. */
+    #define SCOREP_OPARI_MANGLING_SCHEME "clang"
+    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
+    #else
+    #error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
+    #endif
+
+    #if SCOREP_BACKEND_COMPILER_FC_CRAY
+    std::string command = m_opari + m_params + " --nosrc ";
+    #else
     std::string command = m_opari + m_params +
                           SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " ";
+    #endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
 
     add_param( command, "--omp-task-untied=keep", "--omp-task-untied=" );
     if ( m_use_tpd )
     {
+        // Combination of cc/CC Clang and ftn Cray won't use tpd
         add_param( command, "--omp-tpd", "--omp-tpd" );
         add_param( command,
                    "--omp-tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME,
@@ -414,6 +416,9 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
     command += input_file + " " + output_file;
 
     instrumenter.executeCommand( command );
+
+    #undef SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+    #undef SCOREP_OPARI_MANGLING_SCHEME
 }
 
 void

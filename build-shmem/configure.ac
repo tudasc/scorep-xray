@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2013-2018, 2020,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015-2016, 2018-2020,
+dnl Copyright (c) 2015-2016, 2018-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -62,14 +62,10 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC dnl required
-AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AM_PROG_CC_C_O
-
-AC_PROG_CXX dnl needed for tests only
-
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_CC
+SCOREP_COMPUTENODE_CXX
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])
@@ -91,7 +87,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [ac_scorep_frontend="no"],
       [ac_scorep_frontend="yes"])
 
-m4_include(../build-includes/compute-node-shmem.m4)
+m4_include(../build-includes/computenode-shmem.m4)
 
 AC_SCOREP_GIT_CONTROLLED
 

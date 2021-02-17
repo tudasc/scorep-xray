@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2016, 2018-2020,
+dnl Copyright (c) 2009-2016, 2018-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -84,14 +84,10 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC dnl required
-AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AM_PROG_CC_C_O
-
-AC_PROG_CXX dnl needed for tests only
-
-SCOREP_FORTRAN_F77
-SCOREP_FORTRAN_FC
+SCOREP_COMPUTENODE_CC
+SCOREP_COMPUTENODE_CXX
+SCOREP_COMPUTENODE_F77
+SCOREP_COMPUTENODE_FC
 
 SCOREP_FORTRAN_ARGUMENT_MISMATCH
 
@@ -110,7 +106,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [ac_scorep_frontend="no"],
       [ac_scorep_frontend="yes"])
 
-m4_include(../build-includes/compute-node-mpi.m4)
+m4_include(../build-includes/computenode-mpi.m4)
 
 AC_SCOREP_GIT_CONTROLLED
 

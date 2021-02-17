@@ -6,7 +6,7 @@
 ## Copyright (c) 2018-2019,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2020,
+## Copyright (c) 2020-2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -21,7 +21,7 @@
 # -----------------------------------------------------------
 # Determine the type for Fortran character lengths
 AC_DEFUN([SCOREP_CHECK_FORTRAN_CHARLEN_TYPE],
-[AC_REQUIRE([SCOREP_FORTRAN_FC_WORKS])
+[AC_REQUIRE([SCOREP_COMPUTENODE_FC_WORKS])
 AS_IF([test "x${scorep_cv_fc_works}" = "xyes"], [
 AC_LANG_PUSH([Fortran])
 # $ac_ext is the current value of $ac_fc_srcext, or his default

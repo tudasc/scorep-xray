@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2014, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -44,7 +44,7 @@ AC_SCOREP_COND_HAVE([DEMANGLE],
 ])
 
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])dnl
 AC_REQUIRE([SCOREP_LIBBFD])dnl
 
