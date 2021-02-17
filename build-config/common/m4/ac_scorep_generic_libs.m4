@@ -407,7 +407,7 @@ AS_IF([test "x${with_[]lib_name[]_include_checks_successful}" = "xyes" && \
 
 AC_MSG_CHECKING([for $1])
 AC_MSG_RESULT([${lib_name[]_result}])
-AFS_SUMMARY([$1 support], [${]lib_name[_result}])
+AFS_SUMMARY([$1 found], [${]lib_name[_result}])
 ])
 
 
@@ -439,7 +439,7 @@ AS_IF([test "x${with_[]lib_name}" = xno],
      AC_SUBST(lib_NAME[]_LDFLAGS,  [""])
      AC_SUBST(lib_NAME[]_LIBS,     [""])
 
-     AFS_SUMMARY([$1 support], [no, disabled])
+     AFS_SUMMARY([$1 found], [no, disabled])
     ],
     [scorep_have_[]lib_name="yes"
      AM_CONDITIONAL(HAVE_[]lib_NAME, [test 1 -eq 1])
@@ -450,7 +450,7 @@ AS_IF([test "x${with_[]lib_name}" = xno],
 
      AC_MSG_CHECKING([for $1])
      AC_MSG_RESULT([yes, bypassed on Fujitsu systems])
-     AFS_SUMMARY([$1 support], [yes (check bypassed on Fujitsu systems)])
+     AFS_SUMMARY([$1 found], [yes (check bypassed on Fujitsu systems)])
     ])
 
 m4_popdef([lib_NAME])
