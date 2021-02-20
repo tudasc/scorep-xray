@@ -332,10 +332,15 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
 
 dnl determine cuda version
 AS_IF([test "x$scorep_cuda_error" != xyes],
-    [AC_COMPUTE_INT([scorep_cuda_version],
+    [# Cannot run CUDA apps if only stubs are provided, thus switch to corss-compiling
+    # to determine version
+    scorep_cross_compiling_safe=$cross_compiling
+    cross_compiling=yes
+    AC_COMPUTE_INT([scorep_cuda_version],
         [CUDA_VERSION],
         [#include <cuda.h>],
         [scorep_cuda_error=yes])
+    cross_compiling=$scorep_cross_compiling_safe
     AS_IF([test "x${scorep_cuda_error}" = xyes],
         [AC_MSG_WARN([CUDA driver API version could not be determined.])],
         [AS_IF([test ${scorep_cuda_version} -lt 4010],
