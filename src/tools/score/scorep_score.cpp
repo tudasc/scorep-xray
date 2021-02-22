@@ -73,7 +73,6 @@ main( int    argc,
     bool                     use_mangled                 = false;
     SCOREP_Score_SortingType sortingby                   = SCOREP_SCORE_SORTING_TYPE_MAXBUFFER;
     bool                     produce_initial_filter_file = false;
-    bool                     filter_file_options_set     = false;
     // default options for automatic selection
     double min_percentage_from_max_buf = 1;
     double max_time_per_visit          = 1;
@@ -350,12 +349,6 @@ main( int    argc,
     {
         cerr << "ERROR: Cannot open Cube report '" << file_name << "'" << endl;
         exit_fail();
-    }
-
-    if ( filter_file_options_set && !produce_initial_filter_file )
-    {
-        cerr << "WARNING: Options to configure the filter file generation (-t or -b) are set.\n"
-             << "         Without enabling the generation (-g) these will have no effect!" << endl;
     }
 
     SCOREP_Score_Estimator estimator( profile, dense_num, sortingby );
