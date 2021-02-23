@@ -43,8 +43,8 @@ User tools and API improvements and changes:
   CUDA and OpenCL location properties to separate devices in a
   multi-gpu environment.
 - Allow to build against the `libcuda.so` stubs library from the
-  CUDA SDK. Specify `--with-cuda=<cuda-sdk>/lib64/stubs` when
-  configuring, At runtime the `libcuda.so` library must be found by
+  CUDA SDK. Specify `--with-libcuda-lib=<cuda-sdk>/lib64/stubs` when
+  configuring. At runtime the `libcuda.so` library must be found by
   the system-library path though.
 
 Bugfixes:

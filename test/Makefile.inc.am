@@ -70,11 +70,11 @@ external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
 
 endif HAVE_COMPILER_INSTRUMENTATION
 
-if HAVE_CUDA_SUPPORT
+if HAVE_CUDA_TESTS
 common_mgmt_libadd += \
     libscorep_adapter_cuda_mgmt.la \
     libscorep_alloc_metric.la
-endif HAVE_CUDA_SUPPORT
+endif HAVE_CUDA_TESTS
 
 common_cppflags = \
     $(AM_CPPFLAGS)                       \

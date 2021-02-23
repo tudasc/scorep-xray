@@ -96,8 +96,11 @@ SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine&
 {
     std::string flags;
 
-    // Per default, the scorep-config returns cuda libs.
-    if ( !isEnabled() )
+    if ( isEnabled() )
+    {
+        flags += " --" + m_name;
+    }
+    else
     {
         flags += " --no" + m_name;
     }

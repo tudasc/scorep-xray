@@ -349,7 +349,11 @@ various Score-P components.
     in multiple defined symbols if the source file is preprocessed
     before compilation. Thus this combination is not allowed by the
     instrumenter.
-
+  - When building against a stubs-only CUDA installation (i.e., without
+    `libcuda.so` from the NVIDIA driver package), then `make check` will
+    likely fail. In this case, ensure that the library path is provided
+    to configure via the `--with-libcuda-lib=<cuda-sdk>/lib64/stubs` flag and
+    includes a `stubs`-directory component.
 
 --------------------------------------------------------------------------------
 
