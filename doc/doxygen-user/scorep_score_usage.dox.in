@@ -11,13 +11,6 @@ Options:
  -m          Prints mangled region names instead of demangled names.
  -s <choice> Sorting of entries. Possible choices are totaltime, timepervisit,
               maxbuffer, visits and name (default=maxbuffer).
- -g          Generation of an initial filter file, has to be adapted to the
-             application requirements. The name is 'initial_scorep.filter'.
- -b <%>      Only consider regions for the filter file that contribute more
-             than <%> to the estimated memory requirements (SCOREP_TOTAL_MEMORY)
-             (default 1%).
- -t <us>     Maximum 'time per visit' value in us that a region has to be below
-             of to be included in the the filter file suggestion (default 1us).
  -g [<list>] Generation of an initial filter file with the name
              'initial_scorep.filter'. A valid parameter list has the form 
              KEY=VALUE[,KEY=VALUE]*. By default, uses the following control
