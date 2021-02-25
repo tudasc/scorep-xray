@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -62,6 +62,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MemoryAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Topologies;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PlatformTopology;
+extern const SCOREP_Subsystem SCOREP_Subsystem_KokkosAdapter;
 
 /**
  * List of subsystems.
@@ -86,7 +87,8 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_OpenclAdapter,
     &SCOREP_Subsystem_OpenaccAdapter,
-    &SCOREP_Subsystem_MemoryAdapter
+    &SCOREP_Subsystem_MemoryAdapter,
+    &SCOREP_Subsystem_KokkosAdapter
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

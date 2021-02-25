@@ -534,6 +534,15 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* Kokkos support
+
+  - Currently only one accelerator device is supported. To ensure that for this
+    device a Score-P location was created before first deep-copy, enable
+    recording of memory allocations in the corresponding accelerator adapter
+    of Score-P.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - Score-P does not support MPMD style programs where the executables

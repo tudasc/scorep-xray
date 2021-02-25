@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -59,6 +59,7 @@ class SCOREP_Instrumenter_PthreadAdapter;
 class SCOREP_Instrumenter_OpenCLAdapter;
 class SCOREP_Instrumenter_OpenACCAdapter;
 class SCOREP_Instrumenter_MemoryAdapter;
+class SCOREP_Instrumenter_KokkosAdapter;
 
 class SCOREP_Instrumenter_Thread;
 class SCOREP_Instrumenter_Mpp;
@@ -255,6 +256,7 @@ private:
     SCOREP_Instrumenter_OpenACCAdapter*    m_openacc_adapter;
     SCOREP_Instrumenter_OpenCLAdapter*     m_opencl_adapter;
     SCOREP_Instrumenter_MemoryAdapter*     m_memory_adapter;
+    SCOREP_Instrumenter_KokkosAdapter*     m_kokkos_adapter;
 
     SCOREP_Instrumenter_Thread* m_thread;
     SCOREP_Instrumenter_Mpp*    m_mpp;

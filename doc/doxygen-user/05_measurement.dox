@@ -260,8 +260,9 @@ functions, methods and subroutines.
 A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
-from @opari2 (see section @secref{pomp_instrumentation}), and CUDA device and host
-activities (see Section @secref{cuda_adapter}). See section @secref{mpi_groups}
+from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
+activities (see Section @secref{cuda_adapter}), and Kokkos activities (see
+Section @secref{kokkos_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
 <tt>\--disable</tt> to restrict instrumentation of @openmp directives. This
 <tt>\--disable</tt> flag can than be passed on to the @opari2 invocation with the
@@ -844,7 +845,7 @@ If @scorep has been built with CUDA support it is capable of recording CUDA API 
  Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default.
 
 Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement.
-Please refer to the description of this variable to enable a particular composition of CUDA measurement features.
+Please refer to the description of this variable to enable a particular combination of CUDA measurement features.
 
 CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
@@ -878,7 +879,7 @@ GPU idle time is not affected by kernel filtering.
 If @scorep has been built with OpenCL support it is capable of recording OpenCL API function calls.
 
 Setting the environment variable \confvar{SCOREP_OPENCL_ENABLE} to <b><tt>yes</tt></b> enables OpenCL measurement.
-Please refer to the description of this variable to enable a particular composition of OpenCL measurement features.
+Please refer to the description of this variable to enable a particular combination of OpenCL measurement features.
 
 OpenCL measurement uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
@@ -899,13 +900,34 @@ To enable OpenACC measurement in Score-P the user has to:
   <li> Build and install shared libraries of Score-P (use <tt>\--enable-shared</tt> option when configuring Score-P).
   <li> Set the environment variable <tt>ACC_PROFLIB</tt> to specify the OpenACC profiling library.<br>
        Example: <pre>export ACC_PROFLIB=<path_to_scorep_installation>/lib/libscorep_adapter_openacc_event.so</pre>
-  <li> Set the environment variable \confvar{SCOREP_OPENACC_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular composition of OpenACC measurement features.
+  <li> Set the environment variable \confvar{SCOREP_OPENACC_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular combination of OpenACC measurement features.
 </ul>
 
 @note @scorep supports OpenACC monitoring, if the respective OpenACC compiler
 implements the OpenACC profiling interface that is part of the OpenACC standard
 since version 2.5. Make sure that the @scorep installation has configured
 OpenACC support. The configure summary should contain the line: <pre>OpenACC support: yes</pre>
+
+@section kokkos_adapter Kokkos Performance Measurement
+@seclabel{kokkos_adapter}
+
+@scorep is capable of recording information from the Kokkos performance
+portability framework's tools interface, including parallel regions, user
+regions, memory allocation, and memory copies. As with OpenACC, the user must
+perform the following steps:
+
+<ul>
+  <li> Build and install shared libraries of Score-P (use <tt>\--enable-shared</tt> option when configuring Score-P).
+  <li> Set the environment variable <tt>KOKKOS_PROFILE_LIBRARY</tt> to specify the Kokkos profiling library.<br>
+       Example: <pre>export KOKKOS_PROFILE_LIBRARY=<path_to_scorep_installation>/lib/libscorep_adapter_kokkos_event.so</pre>
+  <li> Set the environment variable \confvar{SCOREP_KOKKOS_ENABLE} to <b><tt>yes</tt></b>. Please refer to the description of this variable to enable a particular combination of Kokkos measurement features.
+</ul>
+
+Kokkos events can be filtered by name at runtime using the @scorep filter file (see Section @secref{filtering}).
+This applies to all types of Kokkos events. Users should note that the Kokkos
+tools interface allows explicit naming of parallel regions, and those names,
+if provided, will be the names used for filtering.
+
 
 @section online_access_measurement Online Access Interface
 @seclabel{online_access_measurement}

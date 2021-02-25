@@ -87,6 +87,9 @@ scorep-config <command> [<options>]
               Available wrapping modes are:
                linktime (default)
                runtime
+   --kokkos|--nokokkos
+              Specifies whether kokkos instrumentation is used.
+              On default kokkos instrumentation is enabled.
    --preprocess|--nopreprocess
               Specifies whether preprocess instrumentation is used.
               On default preprocess instrumentation is disabled.

@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2017,
+ * Copyright (c) 2014-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -379,6 +379,22 @@ public:
 
 private:
     std::string m_wrapmode;
+};
+
+/* **************************************************************************************
+ * class SCOREP_Config_KokkosAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the kokkos adapter.
+ */
+class SCOREP_Config_KokkosAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_KokkosAdapter();
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 };
 
 /* **************************************************************************************

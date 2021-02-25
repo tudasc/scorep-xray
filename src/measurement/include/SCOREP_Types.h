@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -360,6 +360,9 @@ typedef enum SCOREP_GroupType
 
     SCOREP_GROUP_TOPOLOGY_USER_LOCATIONS     = 22,
     SCOREP_GROUP_TOPOLOGY_USER_GROUP         = 23,
+
+    SCOREP_GROUP_KOKKOS_LOCATIONS            = 24,
+    SCOREP_GROUP_KOKKOS_GROUP                = 25,
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;

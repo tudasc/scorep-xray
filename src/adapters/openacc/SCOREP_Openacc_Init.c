@@ -47,7 +47,7 @@ openacc_subsystem_register( size_t subsystemId )
 {
     UTILS_DEBUG( "Register environment variables" );
 
-    return SCOREP_ConfigRegister( "openacc", scorep_openacc_configs );
+    return SCOREP_ConfigRegister( "openacc", scorep_openacc_confvars );
 }
 
 /**

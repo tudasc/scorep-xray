@@ -10,6 +10,7 @@ Features and improvements:
   bindings, instead of the `INCLUDE 'mpif.h'`.
   Note that `USE mpi_f08` is not yet supported and Score-P will
   abort during MPI initialization if this is detected.
+- Added support for recording events from the Kokkos tools interface.
 
 User tools and API improvements and changes:
 

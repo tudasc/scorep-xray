@@ -125,5 +125,7 @@ Common options are:
                   .libwrap anchor file.
                   Use 'scorep-info libwrap-summary' for a more detailed listing
                   of available library wrappers.
+  --kokkos        Enables Kokkos instrumentation.
+  --nokokkos      Disables Kokkos instrumentation.
 
 Report bugs to <support@score-p.org>
