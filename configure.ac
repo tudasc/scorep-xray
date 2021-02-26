@@ -171,7 +171,7 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2], [9], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2], [9], [1])
 AS_IF([test -n "${scorep_otf2_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_otf2_have_mic=no
