@@ -34,7 +34,6 @@ libscorep_adapter_pthread_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                           \
     -I$(PUBLIC_INC_DIR)                      \
     -I$(INC_ROOT)src/measurement/include     \
-    -I$(INC_DIR_MUTEX)                       \
     -I$(INC_DIR_COMMON_HASH)                 \
     $(UTILS_CPPFLAGS)                        \
     -I$(INC_DIR_DEFINITIONS)
@@ -62,7 +61,6 @@ libscorep_adapter_pthread_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                            \
     -I$(PUBLIC_INC_DIR)                       \
     -I$(INC_ROOT)src/measurement/include      \
-    -I$(INC_DIR_MUTEX)                        \
     -I$(INC_DIR_THREAD_CREATE_WAIT)           \
     -D_XOPEN_SOURCE=500                       \
     $(UTILS_CPPFLAGS)                         \

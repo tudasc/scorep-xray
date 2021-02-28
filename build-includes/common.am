@@ -48,7 +48,6 @@ UTILS_CPPFLAGS = \
     -I$(INC_DIR_COMMON_UTILS)
 
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
-INC_DIR_MUTEX = $(INC_ROOT)src/utils/include
 INC_DIR_SUBSTRATES = $(INC_ROOT)src/measurement/substrates/include
 INC_DIR_DEFINITIONS = $(INC_ROOT)src/measurement/definitions/include
 

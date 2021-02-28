@@ -38,7 +38,6 @@ libscorep_thread_create_wait_pthread_la_CPPFLAGS = \
     -I$(INC_DIR_THREAD_INTERN)                     \
     -I$(INC_DIR_THREAD_CREATE_WAIT_INTERN)         \
     -I$(INC_DIR_THREAD_CREATE_WAIT)                \
-    -I$(INC_DIR_MUTEX)                             \
     -I$(INC_DIR_SUBSTRATES)                        \
     -I$(INC_ROOT)src/measurement/include           \
     -I$(INC_ROOT)src/measurement                   \
@@ -71,7 +70,6 @@ libscorep_thread_create_wait_generic_la_CPPFLAGS = \
     -I$(INC_DIR_THREAD_INTERN)                     \
     -I$(INC_DIR_THREAD_CREATE_WAIT_INTERN)         \
     -I$(INC_DIR_THREAD_CREATE_WAIT)                \
-    -I$(INC_DIR_MUTEX)                             \
     -I$(INC_ROOT)src/measurement/include           \
     -I$(INC_ROOT)src/measurement                   \
     -I$(INC_ROOT)src/services/include              \

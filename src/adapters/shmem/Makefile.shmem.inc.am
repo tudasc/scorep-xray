@@ -46,7 +46,6 @@ libscorep_adapter_shmem_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/shmem        \
     -I$(INC_ROOT)src/measurement/include   \
     -I$(INC_ROOT)src/measurement           \
-    -I$(INC_DIR_MUTEX)                     \
     -I$(INC_DIR_COMMON_HASH)               \
     -I$(INC_DIR_DEFINITIONS)               \
     $(shmem_libwrap_cppflags)

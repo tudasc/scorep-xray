@@ -36,7 +36,6 @@ libscorep_adapter_memory_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include     \
     -I$(INC_DIR_COMMON_HASH)                 \
     $(UTILS_CPPFLAGS)                        \
-    -I$(INC_DIR_MUTEX)                       \
     -I$(INC_DIR_DEFINITIONS)                 \
     -I$(INC_DIR_SUBSTRATES)
 
@@ -151,7 +150,6 @@ libscorep_adapter_memory_event_cxx_L32_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/measurement/include      \
     $(UTILS_CPPFLAGS)                         \
     -DSCOREP_LIBWRAP_STATIC                   \
-    -I$(INC_DIR_MUTEX)                        \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_cxx_L32_la_LIBADD = \
@@ -175,7 +173,6 @@ libscorep_adapter_memory_event_cxx_L64_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/measurement/include      \
     $(UTILS_CPPFLAGS)                         \
     -DSCOREP_LIBWRAP_STATIC                   \
-    -I$(INC_DIR_MUTEX)                        \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_cxx_L64_la_LIBADD = \
@@ -199,7 +196,6 @@ libscorep_adapter_memory_event_cxx14_L32_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)                    \
     -DSCOREP_LIBWRAP_STATIC              \
-    -I$(INC_DIR_MUTEX)                   \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_cxx14_L32_la_LIBADD = \
@@ -223,7 +219,6 @@ libscorep_adapter_memory_event_cxx14_L64_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)                    \
     -DSCOREP_LIBWRAP_STATIC              \
-    -I$(INC_DIR_MUTEX)                   \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_cxx14_L64_la_LIBADD = \
@@ -270,7 +265,6 @@ libscorep_adapter_memory_event_pgCC_L32_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/measurement/include      \
     $(UTILS_CPPFLAGS)                         \
     -DSCOREP_LIBWRAP_STATIC                   \
-    -I$(INC_DIR_MUTEX)                        \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_pgCC_L32_la_LIBADD = \
@@ -294,7 +288,6 @@ libscorep_adapter_memory_event_pgCC_L64_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/measurement/include      \
     $(UTILS_CPPFLAGS)                         \
     -DSCOREP_LIBWRAP_STATIC                   \
-    -I$(INC_DIR_MUTEX)                        \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_memory_event_pgCC_L64_la_LIBADD = \

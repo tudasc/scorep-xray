@@ -80,6 +80,5 @@ libscorep_thread_fork_join_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS) \
      @SCOREP_TIMER_CPPFLAGS@

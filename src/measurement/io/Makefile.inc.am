@@ -29,7 +29,6 @@ libscorep_io_management_la_CPPFLAGS =    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
     -I$(INC_DIR_SUBSTRATES)              \
-    -I$(INC_DIR_MUTEX)                   \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/services/include    \

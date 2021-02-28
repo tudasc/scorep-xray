@@ -102,5 +102,5 @@ libscorep_profile_la_CPPFLAGS = \
     -DDOCDIR='"$(docdir)"' \
     -DPKGDATADIR='"$(pkgdatadir)"' \
     -I$(INC_DIR_THREAD) \
-    -I$(INC_DIR_MUTEX) \
+    $(UTILS_CPPFLAGS) \
     @SCOREP_TIMER_CPPFLAGS@

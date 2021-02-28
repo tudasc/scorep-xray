@@ -29,7 +29,6 @@ scorep_substrates_common_cppflags = \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement/tracing \
     -I$(INC_ROOT)src/utils/include \
-    -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_SUBSTRATES)
 
