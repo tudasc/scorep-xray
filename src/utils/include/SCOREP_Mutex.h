@@ -84,7 +84,7 @@ SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
 
 
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
-#include "../scorep_mutex.inc.c"
+#include "../mutex/scorep_mutex.inc.c"
 #endif /* SCOREP_GCC_ATOMIC_BUILTINS */
 
 #undef STATIC_INLINE
