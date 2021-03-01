@@ -332,6 +332,7 @@ check_region( SCOREP_RegionHandle* region,
             if ( ( strncmp( region_name_demangled, "POMP", 4 ) != 0 ) &&
                  ( strncmp( region_name_demangled, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name_demangled, "pomp", 4 ) != 0 ) &&
+                 ( strncmp( region_name_demangled, "Kokkos::Tools::Impl", 19 ) != 0 ) &&
                  ( strstr( region_name_demangled, "SCOREP_User_RegionClass" ) == 0 ) &&
                  ( !SCOREP_Filtering_Match( file_name, region_name_demangled, region_name ) ) )
             {

@@ -103,7 +103,8 @@ process_symbol( long         address,
                    ( strncmp( funcname_demangled, "cubew_", 6 ) != 0 ) &&
                    ( strncmp( funcname_demangled, ".omp.", 5 ) != 0 ) &&
                    ( strncmp( funcname_demangled, ".omp_outlined.", 14 ) != 0 ) &&
-                   ( strncmp( funcname_demangled, ".nondebug_wrapper.", 18 ) != 0 );
+                   ( strncmp( funcname_demangled, ".nondebug_wrapper.", 18 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "Kokkos::Tools::Impl", 19 ) != 0 );
 
     use_address &= ( !SCOREP_Filtering_Match( path, funcname_demangled, funcname ) );
 

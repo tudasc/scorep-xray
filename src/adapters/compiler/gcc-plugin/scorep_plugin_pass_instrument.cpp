@@ -108,7 +108,10 @@ is_instrumentable( const char* assemblerName )
     {
         return "is POMP";
     }
-
+    if ( strncmp( assemblerName, "Kokkos::Tools::Impl", 19 == 0 ) )
+    {
+        return "is Kokkos Tools interface";
+    }
     if ( cgraph_function_body_availability( node ) == AVAIL_NOT_AVAILABLE )
     {
         return "no function body";
