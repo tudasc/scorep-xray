@@ -55,4 +55,11 @@ libscorep_adapter_kokkos_event_la_LIBADD = \
 libscorep_adapter_kokkos_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
+if HAVE_LIBBFD
+libscorep_adapter_kokkos_event_la_LIBADD += \
+    $(LIBBFD_LIBS)
+libscorep_adapter_kokkos_event_la_LDFLAGS += \
+    $(LIBBFD_LDFLAGS)
+endif HAVE_LIBBFD
+
 endif HAVE_KOKKOS_SUPPORT
