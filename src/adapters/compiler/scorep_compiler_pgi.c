@@ -332,8 +332,13 @@ check_region( SCOREP_RegionHandle* region,
             if ( ( strncmp( region_name_demangled, "POMP", 4 ) != 0 ) &&
                  ( strncmp( region_name_demangled, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name_demangled, "pomp", 4 ) != 0 ) &&
-                 ( strncmp( region_name_demangled, "Kokkos::Tools::Impl", 19 ) != 0 ) &&
-                 ( strstr( region_name_demangled, "SCOREP_User_RegionClass" ) == 0 ) &&
+                 ( !strstr( region_name_demangled, "Kokkos::Tools" ) ) &&
+                 ( !strstr( region_name_demangled, "Kokkos::Profiling" ) ) &&
+                 /* Best effort at mangled name in case we don't have a demangler
+                    and demangled == mangled */
+                 ( !strstr( region_name_demangled, "6Kokkos5Tools" ) ) &&
+                 ( !strstr( region_name_demangled, "6Kokkos9Profiling" )  ) &&
+                 ( !strstr( region_name_demangled, "SCOREP_User_RegionClass" ) ) &&
                  ( !SCOREP_Filtering_Match( file_name, region_name_demangled, region_name ) ) )
             {
                 *region = SCOREP_Definitions_NewRegion( region_name_demangled,

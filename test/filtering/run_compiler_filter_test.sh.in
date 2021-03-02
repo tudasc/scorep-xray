@@ -1,0 +1,69 @@
+#!/bin/bash
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2021,
+## Technische Universitaet Dresden, Germany
+##
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       run_compiler_filter_test.sh
+
+# Get SRC_ROOT and OTF2_PRINT
+
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+SRC_ROOT=@abs_top_srcdir@/..
+RESULT_DIR=scorep-compiler-filter-test-dir
+
+cleanup()
+{
+    rm -rf scorep-measurement-tmp
+    rm -rf $RESULT_DIR
+    rm -f trace.txt
+}
+trap cleanup EXIT
+
+OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
+ 
+
+CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
+ 
+
+CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
+ 
+
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+
+#-------------------------------------------------------------
+#                                         Compiler Filter test
+#-------------------------------------------------------------
+
+# Execute compiler (internal) filter test
+# No filter file needed, the various hidden/visible functions should
+# be handled automatically
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./compiler_filter_test
+if [ $? -ne 0 ]; then
+    echo "Execution of compiler_filter_test returned with errors"
+    exit 1
+fi
+
+# Check output
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C GREP_OPTIONS= grep '^\(ENTER\|LEAVE\) ' > trace.txt
+
+if [ "`grep hidden trace.txt`" ]; then
+    echo "The following events should be filtered:"
+    grep hidden trace.txt
+    exit 1
+fi
+
+if [ "x`grep visible trace.txt`" = "x" ]; then
+    echo "Kokkos::visible() should not be filtered, but was"
+    exit 1
+fi
+
+exit 0

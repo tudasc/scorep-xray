@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -114,6 +114,12 @@ register_region( const char* str )
     if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+         ( !strstr( region_name, "Kokkos::Tools" ) ) &&
+         ( !strstr( region_name, "Kokkos::Profiling" )  ) &&
+         /* Best effort at mangled name in case we don't have a demangler
+            and demangled == mangled */
+         ( !strstr( region_name, "6Kokkos5Tools" ) ) &&
+         ( !strstr( region_name, "6Kokkos9Profiling" )  ) &&
          ( !SCOREP_Filtering_MatchFunction( region_name, NULL ) ) )
     {
         region_handle = SCOREP_Definitions_NewRegion( region_name,

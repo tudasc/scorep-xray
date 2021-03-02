@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2020,
+dnl Copyright (c) 2009-2021,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -449,6 +449,8 @@ AC_CONFIG_FILES([../test/filtering/run_filter_test.sh], \
                 [chmod +x ../test/filtering/run_filter_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \
                 [chmod +x ../test/filtering/run_filter_f_test.sh])
+AC_CONFIG_FILES([../test/filtering/run_compiler_filter_test.sh], \
+                [chmod +x ../test/filtering/run_compiler_filter_test.sh])
 AC_CONFIG_FILES([../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh], \
                 [chmod +x ../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh])
 AC_CONFIG_FILES([../test/services/metric/run_rusage_serial_metric_test.sh], \
