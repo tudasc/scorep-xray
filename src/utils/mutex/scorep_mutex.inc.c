@@ -39,10 +39,41 @@ SCOREP_MutexLock( SCOREP_Mutex* scorepMutex )
     }
 }
 
+STATIC_INLINE bool
+SCOREP_MutexTrylock( SCOREP_Mutex* scorepMutex )
+{
+    UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
+
+    if ( SCOREP_Atomic_LoadN_bool( scorepMutex, SCOREP_ATOMIC_RELAXED ) == true )
+    {
+        SCOREP_CPU_RELAX;
+        return false;
+    }
+
+    if ( SCOREP_Atomic_TestAndSet( scorepMutex, SCOREP_ATOMIC_ACQUIRE ) == true )
+    {
+        SCOREP_CPU_RELAX;
+        return false;
+    }
+
+    return true;
+}
+
 STATIC_INLINE void
 SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex )
 {
     UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
     SCOREP_Atomic_clear( scorepMutex, SCOREP_ATOMIC_RELEASE );
+}
+
+STATIC_INLINE void
+SCOREP_MutexWait( SCOREP_Mutex* scorepMutex, SCOREP_Atomic_Memorder memorder )
+{
+    UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
+
+    while ( SCOREP_Atomic_LoadN_bool( scorepMutex, ( memorder ) ) == true )
+    {
+        SCOREP_CPU_RELAX;
+    }
 }

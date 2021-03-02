@@ -77,9 +77,17 @@ typedef bool SCOREP_Mutex;
 STATIC_INLINE void
 SCOREP_MutexLock( SCOREP_Mutex* scorepMutex );
 
+/* Try to acquire the lock, returns true on success */
+STATIC_INLINE bool
+SCOREP_MutexTrylock( SCOREP_Mutex* scorepMutex );
+
 STATIC_INLINE void
 SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
 
+/* Wait for a mutex state to be 'unlocked' */
+STATIC_INLINE void
+SCOREP_MutexWait( SCOREP_Mutex*          scorepMutex,
+                  SCOREP_Atomic_Memorder memorder );
 
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
 #include "../mutex/scorep_mutex.inc.c"
