@@ -2,7 +2,7 @@
 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015, 2017, 2019,
+## Copyright (c) 2015, 2017, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -13,7 +13,11 @@
 set -e
 
 CC=${CC-@CC@}
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+
+OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
+CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
+CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 _append()
 {
