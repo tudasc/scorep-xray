@@ -11,28 +11,23 @@ various Score-P components.
 * Platform support
 
   - Score-P has been tested on the following platforms:
-    + Cray XC (see 'Shared libraries on Cray systems' below)
-    + K Computer
-    + various Linux/Intel (x86/x64/Power8/ARM AArch64) clusters
-    + Intel Xeon Phi (KNL), only native mode supported
+    + Cray XC systems with all available PrgEnvs (see 'Shared
+      libraries on Cray systems' below)
+    + various Linux/Intel (x86_x64/Power9/ARM AArch64) clusters with
+      GNU, Intel, Nvidia, and IBM compilers. Note that some compilers
+      are based on Clang.
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
 
   - The following platforms have not been tested recently:
+    + Intel Xeon Phi (KNL), only native mode supported
     + IBM Blue Gene/Q, only static libraries supported
-    + SGI Altix/ICE
-    + IBM Blue Gene/P
     + Cray XT, XE, XK
-    + Sun Solaris/SPARC-based clusters
-    + IBM SP clusters
     However the supplied build system might still work on these
     systems.
 
   - The following platforms have not been tested:
-    + NEC SX-9
-    + IBM Blue Gene/L
-    + SiCortex systems
-    + other NEC SX systems
+    + NEC systems
 
   - Each toolset installation can only support one MPI implementation
     (because MPI is only source-code but not binary compatible). If
