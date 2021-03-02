@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013, 2019,
+## Copyright (c) 2009-2011, 2013, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -42,7 +42,11 @@ OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SRC_ROOT=@abs_top_srcdir@/..
 CXX=@CXX@
 OPENMP_CFLAGS=@OPENMP_CFLAGS@
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:@SCOREP_PAPI_LIBDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+SCOREP_PAPI_LIBDIR=@SCOREP_PAPI_LIBDIR@
+OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
+CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
+CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
+export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${SCOREP_PAPI_LIBDIR:+:$SCOREP_PAPI_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 # Execute test without OpenMP and compiler instrumentation (only user)
 ./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cpp
