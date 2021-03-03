@@ -88,10 +88,9 @@ _ACEOF
 
             # we need to bisect into lower and upper
 
-            mid=$(($[]4 + ($[]5 - $[]4 + 1) / 2))
-
-            _SCOREP_CHECK_SYMBOLS_BISECT($[]2, $[]3, $[]4, [$(($mid - 1))])
-            _SCOREP_CHECK_SYMBOLS_BISECT($[]2, $[]3, [$mid], $[]5)
+            # no local variables, thus recompute mid point after first recursion
+            _SCOREP_CHECK_SYMBOLS_BISECT($[]2, $[]3, $[]4, [$((($[]4 + ($[]5 - $[]4 + 1) / 2) - 1))])
+            _SCOREP_CHECK_SYMBOLS_BISECT($[]2, $[]3, [$(($[]4 + ($[]5 - $[]4 + 1) / 2))], $[]5)
 
         fi # #symbols != 1
 
