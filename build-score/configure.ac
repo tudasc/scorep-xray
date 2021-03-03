@@ -103,7 +103,7 @@ AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
 # -std=<option>     # GNU, Intel, PGI/NVIDIA
 # -qlangvl=<option> # IBM
 # --c++<option>     # PGI
-CXX_ARGS="`echo $CXX_FULL | ${SED} -E -e 's/-h +std=\S+( |$)//g' -e 's/-std=\S+( |$)//g' -e 's/-qlangvl=\S+( |$)//g' -e 's/--c++\S+( |$)//g' | ${AWK} '{$1 = ""; print $0}'`"
+CXX_ARGS="`echo $CXX_FULL | ${SED} -E -e 's/-h +std=\S+( |$)//g' -e 's/-std=\S+( |$)//g' -e 's/-qlangvl=\S+( |$)//g' -e 's/--c\+\+\S+( |$)//g' | ${AWK} '{$1 = ""; print $0}'`"
 AS_IF([test "x${fallback}" = x],
     [CC="${CC} ${CXX_ARGS}"])
 
