@@ -123,14 +123,14 @@ AC_DEFUN([SCOREP_CHECK_SYMBOLS], [
 m4_pushdef([_scorep_check_symbols_tag],
     m4_bpatsubst(m4_normalize($1), [[^A-Za-z0-9 ]+], []))dnl
 
-(
+cat <<_ACEOF >confsymbols
 m4_foreach([func],
            [$4],
            [AH_TEMPLATE(AS_TR_CPP([HAVE_]_scorep_check_symbols_tag[_SYMBOL_]$2[]func),
                 [Define to 1 if ]$1[ has the ]$2[]func[ symbol, 0 if not])dnl
-printf "%s %s\n" $2[]func AS_TR_CPP([HAVE_]_scorep_check_symbols_tag[_SYMBOL_]$2[]func);
+$2[]func AS_TR_CPP([HAVE_]_scorep_check_symbols_tag[_SYMBOL_]$2[]func)
 ])dnl
-) >confsymbols
+_ACEOF
 _SCOREP_CHECK_SYMBOLS_BISECT($1, $3)
 rm -f confsymbols confsymbols.this confsymbolstest.h confsymbolstest.c
 m4_popdef([_scorep_check_symbols_tag])
