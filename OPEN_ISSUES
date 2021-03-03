@@ -42,9 +42,6 @@ various Score-P components.
     incompatible. I.e., for each major version a separate Score-P
     installation must be provided.
 
-  - To build Score-P it is required to have Fortran compilers and
-    highly recommended to have MPI compilers.
-
   - To build Score-P, a C and C++ compiler as well as C and Fortran
     compiler wrappers (e.g., MPI od SHMEM) are used. Compilers and
     compiler wrappers must be compatible.
