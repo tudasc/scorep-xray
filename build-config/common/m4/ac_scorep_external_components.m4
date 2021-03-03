@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2019,
+## Copyright (c) 2009-2013, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -34,8 +34,9 @@
 
 dnl $1: name of the component, e.g., otf2, opari2.
 dnl $2: requested interface version to be provided by external $1 to build this package.
+dnl $3: requested revision to be provided by external $1 to build this package.
 dnl Note that the external's current:revision:age is
-dnl accepted if current >= $2 && $2 >= (current - age)
+dnl accepted if current >= $2 && $2 >= (current - age) && ($2 < current || $3 >= revision)
 dnl Macro will check for availability of $1-config. Intended to be
 dnl called from a toplevel configure. If with_val=yes, search for
 dnl $1-config in PATH, else search in with_val and with_val/bin. Sets
@@ -75,9 +76,11 @@ AS_IF([test "x${with_$1}" != "xno"],
           AS_IF([test $? -eq 0 && test "x${interface_version}" != "x"],
               [# get 'current'
                $1_max_provided_interface_version=`echo ${interface_version} | awk -F ":" '{print $[]1}'`
+               # get 'revision'
+               $1_provided_revision=`echo ${interface_version} | awk -F ":" '{print $[]2}'`
                # get 'age'
                $1_provided_age=`echo ${interface_version} | awk -F ":" '{print $[]3}'`
-              AS_IF([test ${$1_max_provided_interface_version} -eq 0 && test ${$1_provided_age} -eq 0],
+              AS_IF([test ${interface_version} = "0:0:0"],
                   [# by convention, master is 0:0:0
                    AC_MSG_WARN([external $1 built from master, version checks disabled, might produce compile and link errors.])
                    AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin} (built from master, version checks disabled, might produce compile and link errors.)])],
@@ -85,11 +88,12 @@ AS_IF([test "x${with_$1}" != "xno"],
                    AS_VAR_ARITH([$1_min_provided_interface_version], [${$1_max_provided_interface_version} - ${$1_provided_age}])
                    # this is the version check:
                    AS_IF([test ${$1_max_provided_interface_version} -ge $2 && \
-                          test $2 -ge ${$1_min_provided_interface_version}],
+                          test $2 -ge ${$1_min_provided_interface_version} && \
+                          ( test $2 -lt ${$1_max_provided_interface_version} || test $3 -ge ${$1_provided_revision} ) ],
                        [AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}])],
                        [AS_IF([test ${$1_provided_age} -eq 0],
-                           [AC_MSG_ERROR([provided interface version '${$1_max_provided_interface_version}' of $1 not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])],
-                           [AC_MSG_ERROR([provided interface versions [[${$1_min_provided_interface_version},${$1_max_provided_interface_version}]] of $1 not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])
+                           [AC_MSG_ERROR([provided interface version '${$1_max_provided_interface_version}:${$1_provided_revision}' of $1 not sufficient for AC_PACKAGE_NAME, provide '$2:$3' or compatible.])],
+                           [AC_MSG_ERROR([provided interface versions [[${$1_min_provided_interface_version},${$1_max_provided_interface_version}]] of $1 not sufficient for AC_PACKAGE_NAME, provide '$2:$3' or compatible.])
 ])])])
               ],
               [AC_MSG_ERROR([required option --interface-version not supported by $1-config.])])
