@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2014, 2017, 2019,
+dnl Copyright (c) 2009-2014, 2017, 2019, 2021,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -171,7 +171,7 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2], [9])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2], [9], [1])
 AS_IF([test -n "${scorep_otf2_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_otf2_have_mic=no
@@ -183,8 +183,8 @@ AS_IF([test -n "${scorep_otf2_config_bin}" && \
        AS_IF([test "x${scorep_otf2_have_mic}" = "xno"],
              [AC_MSG_ERROR([cannot detect MIC support for external OTF2 installation. Either provide a suitable OTF2 library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-otf2' option to use the included OTF2 copy.])])
       ])
-AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [3])
-AC_SCOREP_HAVE_CONFIG_TOOL([cubew], [7])
+AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [3], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubew], [7], [0])
 AS_IF([test -n "${scorep_cubew_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_cubew_have_mic=no
@@ -196,7 +196,7 @@ AS_IF([test -n "${scorep_cubew_config_bin}" && \
        AS_IF([test "x${scorep_cubew_have_mic}" = "xno"],
              [AC_MSG_ERROR([cannot detect MIC support for external Cube Writer installation. Either provide a suitable Cube library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-cubew' option to use the included Cube Writer copy.])])
       ])
-AC_SCOREP_HAVE_CONFIG_TOOL([cubelib], [7])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubelib], [7], [0])
 
 # handle external package's subdir configures
 
