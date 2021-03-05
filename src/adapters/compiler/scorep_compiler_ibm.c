@@ -114,7 +114,12 @@ get_region_handle( const char* region_name,
                  strncmp( region_name_demangled, "POMP", 4 ) == 0 ||
                  strncmp( region_name_demangled, "Pomp", 4 ) == 0 ||
                  strncmp( region_name_demangled, "pomp", 4 ) == 0 ||
-                 strncmp( region_name_demangled, "Kokkos::Tools::Impl", 19 ) == 0  ||
+                 strstr( region_name_demangled, "Kokkos::Tools" ) ||
+                 strstr( region_name_demangled, "Kokkos::Profiling" ) ||
+                 /* Best effort at mangled name in case we don't have a demangler
+                    and demangled == mangled */
+                 strstr( region_name_demangled, "6Kokkos5Tools" ) ||
+                 strstr( region_name_demangled, "6Kokkos9Profiling" ) ||
                  ( strncmp( region_name_demangled, "__xl_", 5 ) == 0 && strstr( region_name_demangled, "_OL_" ) ) ||
                  SCOREP_Filtering_Match( file, region_name_demangled, region_name ) )
             {

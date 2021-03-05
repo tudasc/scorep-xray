@@ -43,7 +43,7 @@ various Score-P components.
     installation must be provided.
 
   - To build Score-P, a C and C++ compiler as well as C and Fortran
-    compiler wrappers (e.g., MPI od SHMEM) are used. Compilers and
+    compiler wrappers (e.g., MPI or SHMEM) are used. Compilers and
     compiler wrappers must be compatible.
 
      - Note: PGI changed its default C++ compiler from 'pgCC' (which
@@ -532,6 +532,23 @@ various Score-P components.
     device a Score-P location was created before first deep-copy, enable
     recording of memory allocations in the corresponding accelerator adapter
     of Score-P.
+  - Kokkos/OpenMP support should be considered experimental until OMPT
+    support is added to Score-P. This affects principally the Kokkos adapter.
+  - Kokkos/Pthreads should be considered unsupported. It will produce a
+    measurement, but probably not a meaningful one. This affects
+    instrumentation of Kokkos-based codes in general, with or without use of
+    the Kokkos tools interface.
+  - In order for non-GPU-based back ends to support Kokkos-based allocation
+    tracking and memory copy instrumentation, it is necessary to ensure that
+    the threads where memory is allocated or copied are instrumented. For best
+    chances of success there, we recommend using Score-P's '--thread=pthread'
+    option for the OpenMP back end and a static build of Kokkos. This affects
+    use of the SCOREP_KOKKOS_ENABLE=memcpy,malloc settings in the Kokkos
+    adapter. If instrumenting a different configuration (e.g. a shared Kokkos
+    library) is important for your use case, please contact
+    support@score-p.org for help.
+
+
 
 --------------------------------------------------------------------------------
 

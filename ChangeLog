@@ -11,6 +11,9 @@ Features and improvements:
   Note that `USE mpi_f08` is not yet supported and Score-P will
   abort during MPI initialization if this is detected.
 - Added support for recording events from the Kokkos tools interface.
+  The Kokkos CUDA and HIP back ends are stable on a single device
+  (see OPEN_ISSUES). The OpenMP and Pthread back ends should be
+  treated as experimental.
 
 User tools and API improvements and changes:
 

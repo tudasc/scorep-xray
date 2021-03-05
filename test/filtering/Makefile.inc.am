@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014-2015, 2019,
+## Copyright (c) 2009-2011, 2014-2015, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -66,8 +66,31 @@ TESTS_SERIAL += ./../test/filtering/run_filter_test.sh
 
 endif SCOREP_HAVE_FC
 
+if HAVE_COMPILER_INSTRUMENTATION
+
+check_PROGRAMS += compiler_filter_test
+
+compiler_filter_test_SOURCES = \
+    $(SRC_ROOT)test/filtering/compiler_filter_test.cpp
+
+compiler_filter_test_CPPFLAGS = $(AM_CPPFLAGS)                      \
+                       -I$(PUBLIC_INC_DIR)                 \
+                       $(UTILS_CPPFLAGS)                   \
+                       $(SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS)
+
+compiler_filter_test_CXXFLAGS = `./scorep-config --cxxflags --build-check`
+
+compiler_filter_test_LDADD    = $(serial_libadd)
+
+compiler_filter_test_LDFLAGS  = $(serial_ldflags) $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
+
+TESTS_SERIAL += ./../test/filtering/run_compiler_filter_test.sh 
+
+endif HAVE_COMPILER_INSTRUMENTATION
+
 EXTRA_DIST += \
      $(SRC_ROOT)test/filtering/filter.cfg            \
      $(SRC_ROOT)test/filtering/filter_f.cfg          \
      $(SRC_ROOT)test/filtering/run_filter_test.sh.in \
-     $(SRC_ROOT)test/filtering/run_filter_f_test.sh.in
+     $(SRC_ROOT)test/filtering/run_filter_f_test.sh.in \
+     $(SRC_ROOT)test/filtering/run_compiler_filter_test.sh.in

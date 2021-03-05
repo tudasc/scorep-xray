@@ -108,7 +108,10 @@ is_instrumentable( const char* assemblerName )
     {
         return "is POMP";
     }
-    if ( strncmp( assemblerName, "Kokkos::Tools::Impl", 19 == 0 ) )
+    /* Filter out everything in Kokkos::Tools */
+    /* To catch older versions, we want everything in Kokkos::Profiling too */
+    if ( strncmp( assemblerName, "_ZN6Kokkos5Tools", 16 ) == 0 ||
+         strncmp( assemblerName, "_ZN6Kokkos9Profiling", 20 ) == 0 )
     {
         return "is Kokkos Tools interface";
     }
