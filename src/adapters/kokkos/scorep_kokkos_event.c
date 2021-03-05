@@ -240,7 +240,12 @@ extern char*
 cplus_demangle( const char* mangled,
                 int         options );
 
-    #define kokkos_demangle( mangled ) cplus_demangle( mangled, 0 )
+    #define kokkos_demangle( mangled ) cplus_demangle( mangled, \
+                                                       ( 1 << 0 ) /* include function arguments */ | \
+                                                       ( 1 << 1 ) /* include const, volatile, etc. */ | \
+                                                       ( 1 << 3 ) /* include implementation details */ | \
+                                                       ( 1 << 4 ) /* include type encodings */ )
+
 #else
 
     #define kokkos_demangle( mangled ) NULL
