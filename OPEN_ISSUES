@@ -14,7 +14,7 @@ various Score-P components.
     + Cray XC systems with all available PrgEnvs (see 'Shared
       libraries on Cray systems' below)
     + various Linux (Intel, AMD, IBM, ARM) clusters with GNU,
-      Intel, Nvidia, and IBM compilers. Note that some compilers
+      Intel, NVIDIA, and IBM compilers. Note that some compilers
       are based on Clang.
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
@@ -42,9 +42,9 @@ various Score-P components.
     incompatible. I.e., for each major version a separate Score-P
     installation must be provided.
 
-  - To build Score-P, a C and C++ compiler as well as C and Fortran
-    compiler wrappers (e.g., MPI or SHMEM) are used. Compilers and
-    compiler wrappers must be compatible.
+  - To build Score-P, a C and C++ compiler as well as C and, optionally,
+    Fortran compiler wrappers (e.g., MPI or SHMEM) are used. Compilers
+    and compiler wrappers must be compatible.
 
      - Note: PGI changed its default C++ compiler from 'pgCC' (which
        was entirely removed in 16.1) to 'pgc++'. For building Score-P
@@ -53,11 +53,13 @@ various Score-P components.
        'pgCC', please add 'CXX=pgCC' to your configure line to force
        Score-P to use 'pgCC' as well. This will prevent link failures.
 
-  - Shared libraries on Cray systems: it is possible to build shared
-    libraries on Cray systems just by using the '--enable-shared'
-    configure option. Note that in order to link to these libraries,
-    you need to pass the '-dynamic' flag to the compiler wrapper;
-    static is the default linking mode on Cray systems.
+  - Shared libraries on Cray systems: building Score-P's shared libraries
+    works as normal through the '--enable-shared' configure option. But
+    note that if the default Cray link mode is static (which is the case
+    for CCE prior to 9.0.0) or if CRAYPE_LINK_TYPE=static is provided
+    via the environment, you need to pass the '-dynamic' flag
+    (if available) to the Cray compiler wrapper when building your
+    application to link to Score-P's shared libraries.
 
   - Experimental platforms:
 
@@ -82,12 +84,17 @@ various Score-P components.
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on Blue Gene systems
-  - Intel  : only works with Intel icc/ifort version 11 and higher compilers
+  - Intel  : only works with Intel icc/icpc/ifort version 11 and higher
+             compilers. Note that the Clang-based ixc/icpx/ifx
+             compilers from Intel oneAPI toolkit are not supported.
   - Cray   : tested with version 8.1.8 and later, uses the GNU interface
   - Fujitsu: tested with different versions of the language
              environment K-1.2.0 on K computer and compiler version
              1.2.1 on FX-10 systems. Uses the GNU interface
-  - Clang  : tested with Clang 4.0 and higher
+  - Clang  : tested with Clang 4.0 and higher. Note that several
+             compiler vendors now use Clang for their C and C++
+             compilers while the Fortran compiler stays
+             vendor-specific.
 
   - The Intel compiler provides the function name and the source code
     location in one string separated by a colon.  Thus, if the path
@@ -115,7 +122,7 @@ various Score-P components.
 
   - Measurement filtering can only be applied to functions
     instrumented by the IBM, GNU, Intel, PGI, or Oracle compilers as
-    well as functions instrumented by PDT and user functions.
+    well as functions instrumented by PDT, Kokkos, and user functions.
     Filtering of MPI, SHMEM, and OpenMP runtime functions is always
     ineffective.
 

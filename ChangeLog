@@ -1,51 +1,45 @@
 ------------------- Upcoming version 7.0 -----------------------------
 
-Major features:
-
 Features and improvements:
 
-- Added support for recording calls to OpenCL 2.1/2.2 functions.
-- Score-P now requires an MPI implementation which is compliant
-  to at least MPI 2.2 standard and provides the `USE mpi` Fortran
-  bindings, instead of the `INCLUDE 'mpif.h'`.
-  Note that `USE mpi_f08` is not yet supported and Score-P will
-  abort during MPI initialization if this is detected.
-- Added support for recording events from the Kokkos tools interface.
+- Add support for recording calls to OpenCL 2.1/2.2 functions.
+- Add support for recording events from the Kokkos tools interface.
   The Kokkos CUDA and HIP back ends are stable on a single device
   (see OPEN_ISSUES). The OpenMP and Pthread back ends should be
   treated as experimental.
+- Issue individual I/O events in POSIX vectorized I/O operations.
+- Add recording of transfer offsets of POSIX I/O operations.
+- Add wrapping of more vectorized I/O operations:
+  - `preadv2`,  `preadv64`,  `preadv64v2`
+  - `pwritev2`, `pwritev64`, `pwritev64v2`
+- Add stripe count/size for recorded files on the Lustre file system.
+- Add process ID (PID) and thread ID (TID) as attributes on program
+  begin or thread creation events respectivly.
+- Record node-level unique identifiers for NVIDIA and AMD GPUs as
+  CUDA and OpenCL location properties to separate devices in a
+  multi-GPU environment.
+- A new mutex implementation based on atomic intrinsics replaces all
+  existing mutex implementations.
 
 User tools and API improvements and changes:
 
-- The configure option --with-extra-instrumentation-flags was
-  removed. It was introduced to work around GCC compiler
-  instrumentation issues that vanished with the advent of the
-  recommended GCC compiler instrumentation plug-in.
-- The scorep instrumenter option --config=<file> was removed as it
-  was considered of little use.
-- Added ability to generate an initial filter file with optional
+- Remove the configure option `--with-extra-instrumentation-flags`.
+  It was introduced to work around GCC compiler instrumentation issues
+  that vanished with the advent of the recommended GCC compiler
+  instrumentation plug-in.
+- Remove the instrumenter option `--config=<file>` as it was
+  considered of little use.
+- Add ability to generate an initial filter file with optional
   control parameters using buffer values, visits and region types.
   This includes the ability to iteratively refine the generated filter
   file using existing filters.
 - Compile-time filtering via `scorep --instrument-filter` is now
   also available for builds using Intel compilers.
-- Added additional scorep-score sorting modes `name`, `totaltime`,
+- Add additional `scorep-score` sorting modes `name`, `totaltime`,
   `timepervisit`, and `visits`, besides the default `maxbuffer`.
   Select a sorting mode via `-s <mode>`.
-- Issue individual I/O events in POSIX vectorized I/O operations.
-- Added recording of transfer offsets of POSIX I/O operations.
-- Added wrapping of more vectorized I/O operations:
-  - `preadv2`,  `preadv64`,  `preadv64v2`
-  - `pwritev2`, `pwritev64`, `pwritev64v2`
-- Add stripe count/size for recorded files on the Lustre file system.
-- A new mutex implementation based on atomic intrinsics replaces all
-  existing mutex implementations. Therefore the `--mutex` option to
-  scorep and scorep-config was removed.
-- Add process ID (PID) and thread ID (TID) as attributes on program
-  begin or thread creation events respectivly.
-- Show node-level unique identifiers for NVIDIA and AMD GPUs as
-  CUDA and OpenCL location properties to separate devices in a
-  multi-gpu environment.
+- Remove the `scorep` and `scorep-config` option `--mutex` due to
+  changes in the mutex implementation, see above.
 - Allow to build against the `libcuda.so` stubs library from the
   CUDA SDK. Specify `--with-libcuda-lib=<cuda-sdk>/lib64/stubs` when
   configuring. At runtime the `libcuda.so` library must be found by
@@ -60,6 +54,16 @@ Bugfixes:
   GPU kernels, and OpenMP tasks in profiling.
 - Allocation metrics were lost on MPI RMA window allocation functions.
 - Honor `CUDA_VISIBLE_DEVICES` when creating CUDA location names.
+- Improve error handling of calls to `realpath` on kernel files in
+  `/proc` or `/sys` when recording I/O activities.
+
+Compatibility:
+
+- Score-P now requires an MPI implementation which is compliant with
+  at least the MPI 2.2 standard and provides the `USE mpi` Fortran
+  bindings, instead of the discouraged `INCLUDE 'mpif.h'`.
+  Note that `USE mpi_f08` is not yet supported and Score-P will
+  abort during MPI initialization if this is detected.
 
 ------------------- Released version 6.0 -----------------------------
 
