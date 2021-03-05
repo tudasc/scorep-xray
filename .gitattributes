@@ -152,3 +152,5 @@
 /test/services/metric/data/jacobi/hybrid/C/pomp.c -hook-config
 # Test file
 /test/shmem/shmem_hello_world.c -hook-config
+# Test file
+/test/filtering/compiler_filter_test.cpp -hook-config
