@@ -76,12 +76,16 @@ AS_IF([test "x${ac_scorep_have_online_access}" = "xyes"], [
     # For the version check we need flex, not lex
     AS_IF([test "x${LEX}" = "xflex"],
         [AC_MSG_CHECKING([for a suitable version of flex])
-         flex_version_full=`${LEX} -V | ${SED} 's/[[a-zA-Z]]//g'`
-         flex_version=`echo "${flex_version_full}" | ${SED} 's/\.//g'`
-         AS_IF([test "${flex_version}" -gt 254],
-             [AC_MSG_RESULT([${flex_version_full}])],
-             [scorep_online_access_hint="flex >= 2.5.4 instead of ${flex_version_full}"
-              AC_MSG_RESULT([none (${flex_version_full}, need > 2.5.4)])])],
+         flex_version_output="$(${LEX} -V)"
+         flex_version_full=$(expr "${flex_version_output}" : '.* \([[1-9]][[0-9]]*\.[[0-9]][[0-9]]*\.[[0-9]][[0-9]]*\)')
+         AS_IF([test "${flex_version_full}" != ""],
+             [flex_version=$(echo "${flex_version_full}" | ${AWK} -F. '{ print ($[]1 * 1000000 + $[]2 * 1000 + $[]3) }')
+              AS_IF([test "${flex_version}" -gt 2005004],
+                  [AC_MSG_RESULT([yes, (${flex_version_full})])],
+                  [scorep_online_access_hint="flex >= 2.5.4 instead of ${flex_version_full}"
+                   AC_MSG_RESULT([no, (${flex_version_full}, need > 2.5.4)])])],
+             [scorep_online_access_hint="flex >= 2.5.4, but flex outputs an unrecognized version ${flex_version_output}"
+              AC_MSG_RESULT([no, unrecognized flex version output (${flex_version_output})])])],
         [scorep_online_access_hint="flex"
          LEX=${am_missing_run}flex])
 
