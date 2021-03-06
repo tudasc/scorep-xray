@@ -19,50 +19,44 @@ namespace Kokkos
 namespace Tools
 {
 void
-hidden()
-{
-    cout << "H";
-}
+hidden();
 }
 
 namespace Profiling
 {
 void
-hidden()
-{
-    cout << "H";
-}
+hidden();
 }
 
 void
-visible()
-{
-    cout << "V";
-}
+visible();
 }
 
-extern "C" {
-void
-pomp_hidden()
+extern "C"
 {
-    cout << "H";
-}
+void
+pomp_hidden();
 
 void
-Pomp_hidden()
-{
-    cout << "H";
-}
+Pomp_hidden();
 
 void
-POMP_hidden()
-{
-    cout << "H";
-}
+POMP_hidden();
 
 void
-visible_pomp()
-{
-    cout << "V";
-}
+visible_pomp();
 };
+
+int
+main( int argc, char** argv )
+{
+    Kokkos::Tools::hidden();
+    Kokkos::Profiling::hidden();
+    Kokkos::visible();
+    pomp_hidden();
+    Pomp_hidden();
+    POMP_hidden();
+    visible_pomp();
+    cout << endl;
+    return 0;
+}
