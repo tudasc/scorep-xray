@@ -56,6 +56,7 @@ Bugfixes:
 - Honor `CUDA_VISIBLE_DEVICES` when creating CUDA location names.
 - Improve error handling of calls to `realpath` on kernel files in
   `/proc` or `/sys` when recording I/O activities.
+- Allow to select 'runtime' wrapping of OpenCL in the instrumenter again.
 
 Compatibility:
 
