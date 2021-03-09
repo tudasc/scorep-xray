@@ -57,7 +57,7 @@ AS_IF([test ${have_cplus_demangle+set} != set],
 # ------------------
 # Generate a Makefile.libbfd to download binutils and install libbfd
 # at make time. In addition, set automake conditional
-# HAVE_LIBBFD_MAKEFILE to trigger this process from
+# HAVE_SCOREP_LIBBFD_MAKEFILE to trigger this process from
 # build-backend/Makefile.
 # Remove the installed libbfd.la as it cannot be relied upon.
 # dependency_libs reference the build directory (which is OK for a
