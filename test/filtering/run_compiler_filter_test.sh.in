@@ -22,6 +22,7 @@ RESULT_DIR=scorep-compiler-filter-test-dir
 
 cleanup()
 {
+    rm -f compiler_filter_test
     rm -rf scorep-measurement-tmp
     rm -rf $RESULT_DIR
     rm -f trace.txt
@@ -29,15 +30,19 @@ cleanup()
 trap cleanup EXIT
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
- 
-
 CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
- 
-
 CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
- 
-
 export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+
+./scorep -v --build-check --compiler \
+    @CXX@ -O0 \
+        $SRC_ROOT/test/filtering/compiler_filter_test_main.cpp \
+        $SRC_ROOT/test/filtering/compiler_filter_test.cpp \
+        -o compiler_filter_test
+if [ ! -x compiler_filter_test ]; then
+    echo "Failed to build compiler_filter_test"
+    exit 1
+fi
 
 #-------------------------------------------------------------
 #                                         Compiler Filter test
