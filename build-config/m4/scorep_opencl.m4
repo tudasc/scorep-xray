@@ -190,6 +190,21 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([SCOREP_OPENCL], [
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
 
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_1_0_APIS],
+          [1], [Enable declarations for deprecated OpenCL 1.0 APIs])
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_1_1_APIS],
+          [1], [Enable declarations for deprecated OpenCL 1.1 APIs])
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_1_2_APIS],
+          [1], [Enable declarations for deprecated OpenCL 1.2 APIs])
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_2_0_APIS],
+          [1], [Enable declarations for deprecated OpenCL 2.0 APIs])
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_2_1_APIS],
+          [1], [Enable declarations for deprecated OpenCL 2.1 APIs])
+AC_DEFINE([CL_USE_DEPRECATED_OPENCL_2_2_APIS],
+          [1], [Enable declarations for deprecated OpenCL 2.2 APIs])
+AC_DEFINE([NVCL_SUPPRESS_USE_DEPRECATED_OPENCL_1_0_APIS_WARNING],
+          [1], [Suppress warning enabling deprecated OpenCL 1.0 APIs from the NVIDIA implementation.])
+
 AFS_SUMMARY_PUSH
 
 AM_COND_IF([HAVE_LIBWRAP_SUPPORT],

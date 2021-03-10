@@ -98,7 +98,8 @@ SCOREP_Instrumenter_OpenCLAdapter::checkOption( const std::string& arg )
             m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
             return true;
         }
-#elif HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
+#endif
+#if HAVE_BACKEND( LIBWRAP_RUNTIME_SUPPORT )
         if ( m_wrapmode == "runtime" )
         {
             return true;
