@@ -148,7 +148,7 @@ various Score-P components.
   - The GCC plug-in is supported from GCC 4.9 onwards. Though due to
     constant changes in the plug-in API of the GNU compiler
     infrastructure, it is unlikely that the Score-P instrumentation
-    plug-in builds with versions newer than GCC snapshot 11-20201213.
+    plug-in builds with versions newer than GCC snapshot 11-20210307.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiple defined symbols if the
