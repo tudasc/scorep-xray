@@ -130,10 +130,10 @@ checkconstructor( int   argc,
 #elif SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_PRAGMA
 
 void
-scorep_constructor( int   argc,
-                    char* argv[] );
+checkconstructor( int   argc,
+                  char* argv[] );
 
-#pragma init(scorep_constructor)
+#pragma init(checkconstructor)
 
 #endif
 
