@@ -326,6 +326,19 @@ various Score-P components.
     filtering is a workaround. Future OpenMP instrumentation based on
     OMPT instead of OPARI2 does not show this problems.
 
+  - Like other compilers, the NVIDIA HPC SDK compilers add outlined
+    functions to implement OpenMP directives. These functions get
+    potentially instrumented but need to be ignored by scorep to
+    prevent 'TPD==0' errors. Unfortunately, NVIDIA's naming convention
+    for these functions currently prevent scorep from providing a
+    robust automatic filter. For SDKs predating 21.2, the outlined
+    functions seem to be of the form <FUNCTION>_<SOMETHING>L<LINENO>,
+    which could be filtered with this very generic EXCLUDE rule:
+      *_*L[0-9]*
+    For version 21.2 of the SDK, this EXCLUDE rule worked for a hello
+    world example:
+      __nv_*_F[0-9]*L[0-9]*_[0-9]*
+
 --------------------------------------------------------------------------------
 
 * CUDA support
