@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -88,8 +88,6 @@ void
 SCOREP_Thread_Initialize( void )
 {
     UTILS_DEBUG_ENTRY();
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &sequence_count_lock );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
     UTILS_BUG_ON( initial_tpd != 0, "" );
 
@@ -131,9 +129,6 @@ SCOREP_Thread_Finalize( void )
     scorep_thread_delete_private_data( initial_tpd );
 
     initial_tpd = 0;
-
-    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &sequence_count_lock );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 }
 
 
@@ -141,9 +136,9 @@ uint32_t
 scorep_thread_get_next_sequence_count( void )
 {
     UTILS_DEBUG_ENTRY();
-    SCOREP_MutexLock( sequence_count_lock );
+    SCOREP_MutexLock( &sequence_count_lock );
     uint32_t tmp = sequence_count++;
-    SCOREP_MutexUnlock( sequence_count_lock );
+    SCOREP_MutexUnlock( &sequence_count_lock );
     return tmp;
 }
 

@@ -106,11 +106,11 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
         return;
     }
 
-    SCOREP_MutexLock( handle->region_definition_lock );
+    SCOREP_MutexLock( &handle->region_definition_lock );
 
     if ( *region != SCOREP_INVALID_REGION )
     {
-        SCOREP_MutexUnlock( handle->region_definition_lock );
+        SCOREP_MutexUnlock( &handle->region_definition_lock );
         return;
     }
 
@@ -128,7 +128,7 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
         *regionFiltered = !!SCOREP_Filtering_Match( file, func, symbol );
     }
 
-    SCOREP_MutexUnlock( handle->region_definition_lock );
+    SCOREP_MutexUnlock( &handle->region_definition_lock );
 }
 
 void
@@ -158,11 +158,11 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
                      attributes->version );
     }
 
-    SCOREP_MutexLock( libwrap_object_lock );
+    SCOREP_MutexLock( &libwrap_object_lock );
 
     if ( *outHandle != NULL )
     {
-        SCOREP_MutexUnlock( libwrap_object_lock );
+        SCOREP_MutexUnlock( &libwrap_object_lock );
         return;
     }
 
@@ -176,7 +176,6 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
     UTILS_ASSERT( handle );
 
     /* Initialize the new library wrapper handle */
-    SCOREP_MutexCreate( &handle->region_definition_lock );
     handle->attributes = attributes;
 
     /* Initialize number_of_shared_lib_handles */
@@ -251,7 +250,7 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
     /* Wrapper was successfuly created, make the result visible to others. */
     *outHandle = handle;
 
-    SCOREP_MutexUnlock( libwrap_object_lock );
+    SCOREP_MutexUnlock( &libwrap_object_lock );
 
     return;
 }
@@ -343,16 +342,12 @@ scorep_libwrap_delete( SCOREP_LibwrapHandle* handle )
 
 #endif
     }
-
-    SCOREP_MutexDestroy( &( handle->region_definition_lock ) );
 }
 
 
 void
 SCOREP_Libwrap_Initialize( void )
 {
-    SCOREP_MutexCreate( &libwrap_object_lock );
-
 #if HAVE( GNU_LIB_NAMES_H )
     lib_names_mapping = SCOREP_Hashtab_CreateSize( 16,
                                                    SCOREP_Hashtab_HashString,
@@ -467,8 +462,6 @@ SCOREP_Libwrap_Finalize( void )
                             SCOREP_Hashtab_DeleteFree,
                             SCOREP_Hashtab_DeleteFree );
 #endif
-
-    SCOREP_MutexDestroy( &libwrap_object_lock );
 
     active = false;
 }

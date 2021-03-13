@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015, 2018-2019,
+ * Copyright (c) 2009-2012, 2015, 2018-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -436,7 +436,7 @@ region_init_fortran( SCOREP_Fortran_RegionHandle* regionHandle,
     SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
 
     /* Lock region definition */
-    SCOREP_MutexLock( scorep_user_region_mutex );
+    SCOREP_MutexLock( &scorep_user_region_mutex );
 
     /* Lookup the region name in the region table */
     SCOREP_User_RegionHandle region = find_region( region_name );
@@ -478,7 +478,7 @@ region_init_fortran( SCOREP_Fortran_RegionHandle* regionHandle,
     *regionHandle = SCOREP_C2F_REGION( region );
 
     /* Unlock region definition */
-    SCOREP_MutexUnlock( scorep_user_region_mutex );
+    SCOREP_MutexUnlock( &scorep_user_region_mutex );
 
     /* Cleanup */
     free( region_name );

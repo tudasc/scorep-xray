@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013, 2015-2016,
+ * Copyright (c) 2012-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -46,14 +46,14 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
         return;
     }
 
-    SCOREP_MutexLock( scorep_compiler_region_mutex );
+    SCOREP_MutexLock( &scorep_compiler_region_mutex );
 
     if ( *regionDescr->handle == SCOREP_INVALID_REGION )
     {
         scorep_compiler_register_region( regionDescr );
     }
 
-    SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+    SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

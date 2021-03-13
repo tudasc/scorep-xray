@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014, 2019,
+ * Copyright (c) 2009-2012, 2014, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -117,9 +117,6 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
     }
     is_initialized = true;
 
-    SCOREP_MutexCreate( &memory_lock );
-    SCOREP_MutexCreate( &out_of_memory_mutex );
-
     if ( totalMemory > ( uint64_t )UINT32_MAX )
     {
         UTILS_WARNING( "Too many memory requested. "
@@ -141,7 +138,7 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
         &page_size,
         ( SCOREP_Allocator_Guard )SCOREP_MutexLock,
         ( SCOREP_Allocator_Guard )SCOREP_MutexUnlock,
-        ( SCOREP_Allocator_GuardObject )memory_lock );
+        ( SCOREP_Allocator_GuardObject )( &memory_lock ) );
 
     UTILS_BUG_ON( !allocator,
                   "Cannot create memory manager for "
@@ -165,30 +162,19 @@ SCOREP_Memory_Finalize( void )
     is_initialized = false;
 
     assert( definitions_page_manager );
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-    // function, so omp_set/unset_lock, which is called after the end
-    // of main from the atexit handler, causes segmentation fault. The
-    // problem will be fixed in  Intel Compiler 11.1 update 6.
-    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
     SCOREP_Allocator_DeletePageManager( definitions_page_manager );
-#endif
     definitions_page_manager = 0;
 
     assert( allocator );
     SCOREP_Allocator_DeleteAllocator( allocator );
     allocator = 0;
-
-    SCOREP_MutexDestroy( &out_of_memory_mutex );
-    SCOREP_MutexDestroy( &memory_lock );
 }
 
 void
 SCOREP_Memory_HandleOutOfMemory( void )
 {
     /* let only first thread do the OOM handling */
-    SCOREP_MutexLock( out_of_memory_mutex );
+    SCOREP_MutexLock( &out_of_memory_mutex );
     if ( !out_of_memory )
     {
         out_of_memory = true;
@@ -217,7 +203,7 @@ SCOREP_Memory_HandleOutOfMemory( void )
     memory_dump_stats_full();
 
     abort();
-    SCOREP_MutexUnlock( out_of_memory_mutex );
+    SCOREP_MutexUnlock( &out_of_memory_mutex );
 }
 
 SCOREP_Allocator_PageManager*
@@ -248,10 +234,10 @@ SCOREP_Memory_CreateTracingPageManager( bool forEvents )
 
         new_entry->page_manager = page_manager;
 
-        SCOREP_MutexLock( memory_lock );
+        SCOREP_MutexLock( &memory_lock );
         new_entry->next            = tracing_page_managers_head;
         tracing_page_managers_head = new_entry;
-        SCOREP_MutexUnlock( memory_lock );
+        SCOREP_MutexUnlock( &memory_lock );
     }
 
     return page_manager;
@@ -266,15 +252,7 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
     {
         if ( pageManagers[ i ] )
         {
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-            // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-            // function, so omp_set/unset_lock, which is called after the end
-            // of main from the atexit handler, causes segmentation fault. The
-            // problem will be fixed in  Intel Compiler 11.1 update 6.
-            // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
             SCOREP_Allocator_DeletePageManager( pageManagers[ i ] );
-#endif
         }
     }
 }
@@ -288,7 +266,7 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
     {
         /* only called once per location at pre-unify, thus no reuse possible */
 
-        SCOREP_MutexLock( memory_lock );
+        SCOREP_MutexLock( &memory_lock );
         struct tracing_page_manager_list** it = &tracing_page_managers_head;
         while ( *it )
         {
@@ -303,18 +281,10 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
             /* Remove element from list */
             *it = ( *it )->next;
         }
-        SCOREP_MutexUnlock( memory_lock );
+        SCOREP_MutexUnlock( &memory_lock );
     }
 
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-    // function, so omp_set/unset_lock, which is called after the end
-    // of main from the atexit handler, causes segmentation fault. The
-    // problem will be fixed in  Intel Compiler 11.1 update 6.
-    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
     SCOREP_Allocator_DeletePageManager( pageManager );
-#endif
 }
 
 

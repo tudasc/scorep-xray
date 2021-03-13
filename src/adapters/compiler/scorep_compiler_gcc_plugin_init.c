@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013, 2015-2016,
+ * Copyright (c) 2012-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -82,9 +82,6 @@ scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize GCC plugin compiler adapter" );
 
-    /* Initialize region mutex */
-    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
     /* Initialize plugin instrumentation */
     for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
           region_descr < &scorep_region_descriptions_end;
@@ -115,8 +112,6 @@ scorep_compiler_subsystem_end( void )
 void
 scorep_compiler_subsystem_finalize( void )
 {
-    /* Delete region mutex */
-    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 

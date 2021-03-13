@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015, 2017,
+ * Copyright (c) 2014-2015, 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -73,7 +73,6 @@ pthread_subsystem_init( void )
         SCOREP_PARADIGM_FLAG_NONE );
 
     register_pthread_regions();
-    scorep_pthread_mutex_init();
     scorep_pthread_main_thread = pthread_self();
 
     UTILS_DEBUG_EXIT();
@@ -109,8 +108,6 @@ static void
 pthread_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
-
-    scorep_pthread_mutex_finalize();
 
     UTILS_DEBUG_EXIT();
 }

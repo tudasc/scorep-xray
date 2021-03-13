@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015, 2019,
+ * Copyright (c) 2009-2013, 2015, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -78,13 +78,7 @@ get_region_handle( const char* region_name,
     long                       region_key = ( long )region_name;
     if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
     {
-        /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
-           These functions are called at a stage, where locks do not yet work. Thus,
-           make sure that in case of race conditions, functions can only get filtered.
-         */
-#if defined( __IBMC__ ) && __IBMC__ <= 1100
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
-#endif
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
         {
             char* file = UTILS_CStr_dup( file_name );
@@ -133,9 +127,7 @@ get_region_handle( const char* region_name,
             free( file );
             scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
-#if defined( __IBMC__ ) && __IBMC__ <= 1100
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
-#endif
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
     return hash_node->region_handle;
 }
@@ -168,13 +160,9 @@ __func_trace_enter( const char*          region_name,
         return;
     }
 
-    /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
-       These functions are called at a stage, where locks do not yet work. Thus,
-       make sure that only final valid values are assigned to *handle.
-     */
     if ( *handle == 0 )
     {
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( *handle == 0 )
         {
             SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
@@ -187,7 +175,7 @@ __func_trace_enter( const char*          region_name,
                 *handle = region;
             }
         }
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
     if ( *handle != SCOREP_FILTERED_REGION )
     {

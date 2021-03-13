@@ -116,15 +116,15 @@ static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
  * @def SCOREP_OPENCL_LOCK
  * Lock mutex of the OpenCL adapter
  */
-# define SCOREP_OPENCL_LOCK() SCOREP_MutexLock( opencl_mutex )
+# define SCOREP_OPENCL_LOCK() SCOREP_MutexLock( &opencl_mutex )
 /**
  * @def SCOREP_OPENCL_UNLOCK
  * Unlock mutex of the OpenCL adapter
  */
-# define SCOREP_OPENCL_UNLOCK() SCOREP_MutexUnlock( opencl_mutex )
+# define SCOREP_OPENCL_UNLOCK() SCOREP_MutexUnlock( &opencl_mutex )
 
 /** Score-P mutex for access to global variables in the OpenCL adapter */
-static SCOREP_Mutex opencl_mutex = SCOREP_INVALID_MUTEX;
+static SCOREP_Mutex opencl_mutex;
 
 /**
  * Internal location mapping for unification (needed for OpenCL communication)
@@ -214,8 +214,6 @@ scorep_opencl_init( void )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Initialize wrapper" );
 
-        SCOREP_MutexCreate( &opencl_mutex );
-
         /* define region for OpenCL synchronization */
         SCOREP_SourceFileHandle cl_sync_file_handle =
             SCOREP_Definitions_NewSourceFile( "OPENCL_SYNC" );
@@ -283,16 +281,14 @@ scorep_opencl_finalize( void )
             scorep_opencl_queue* queue = cl_queue_list;
             while ( queue != NULL )
             {
-                SCOREP_MutexLock( queue->mutex );
+                SCOREP_MutexLock( &queue->mutex );
 
                 if ( queue->buffer < queue->buf_pos )
                 {
                     scorep_opencl_queue_flush( queue );
                 }
 
-                SCOREP_MutexUnlock( queue->mutex );
-
-                SCOREP_MutexDestroy( &queue->mutex );
+                SCOREP_MutexUnlock( &queue->mutex );
 
                 if ( queue->queue )
                 {
@@ -341,8 +337,6 @@ scorep_opencl_finalize( void )
         }
 
         opencl_finalized = true;
-
-        SCOREP_MutexDestroy( &opencl_mutex );
     }
 }
 
@@ -515,9 +509,6 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
     queue->buf_pos  = queue->buffer;
     queue->buf_last = queue->buffer;
 
-    // create a mutex to lock the buffer of the command queue
-    SCOREP_MutexCreate( &queue->mutex );
-
     // append generated queue to global queue list
     SCOREP_OPENCL_LOCK();
     queue->next   = cl_queue_list;
@@ -656,7 +647,7 @@ scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
     }
 
     // lock work on the queue's buffer
-    SCOREP_MutexLock( queue->mutex );
+    SCOREP_MutexLock( &queue->mutex );
 
     scorep_opencl_guarantee_buffer( queue );
 
@@ -666,7 +657,7 @@ scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
     queue->buf_last = queue->buf_pos;
     queue->buf_pos++;
 
-    SCOREP_MutexUnlock( queue->mutex );
+    SCOREP_MutexUnlock( &queue->mutex );
 
 
     entry->is_enqueued = false;
@@ -898,7 +889,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     }
 
     // lock work on the queue's buffer
-    // SCOREP_MutexLock( queue->mutex );
+    // SCOREP_MutexLock( &queue->mutex );
 
     buf_entry = queue->buffer;
 
@@ -1166,7 +1157,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     queue->buf_pos  = queue->buffer;
     queue->buf_last = queue->buffer;
 
-    //SCOREP_MutexUnlock( queue->mutex );
+    //SCOREP_MutexUnlock( &queue->mutex );
 
     SCOREP_ExitRegion( opencl_flush_region_handle );
 

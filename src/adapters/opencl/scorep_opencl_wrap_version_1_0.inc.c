@@ -853,9 +853,9 @@ SCOREP_LIBWRAP_FUNC_NAME( clFinish )( cl_command_queue commandQueue )
         //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Finish command queue %p", commandQueue );
         scorep_opencl_queue* queue = scorep_opencl_queue_get( commandQueue );
 
-        SCOREP_MutexLock( queue->mutex );
+        SCOREP_MutexLock( &queue->mutex );
         scorep_opencl_queue_flush( queue );
-        SCOREP_MutexUnlock( queue->mutex );
+        SCOREP_MutexUnlock( &queue->mutex );
     }
 
     SCOREP_OPENCL_WRAP_ENTER();

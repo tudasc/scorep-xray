@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -72,13 +72,13 @@ static SCOREP_Mutex definitions_lock;
 void
 SCOREP_Definitions_Lock( void )
 {
-    SCOREP_MutexLock( definitions_lock );
+    SCOREP_MutexLock( &definitions_lock );
 }
 
 void
 SCOREP_Definitions_Unlock( void )
 {
-    SCOREP_MutexUnlock( definitions_lock );
+    SCOREP_MutexUnlock( &definitions_lock );
 }
 
 void
@@ -89,9 +89,6 @@ SCOREP_Definitions_Initialize( void )
         return;
     }
     definitions_initialized = true;
-
-    SCOREP_MutexCreate( &definitions_lock );
-    scorep_definitions_create_interim_communicator_counter_lock();
 
     SCOREP_DefinitionManager* local_definition_manager = &scorep_local_definition_manager;
     SCOREP_Definitions_InitializeDefinitionManager( &local_definition_manager,
@@ -276,8 +273,6 @@ SCOREP_Definitions_Finalize( void )
     // SCOREP_Memory_AllocForDefinitions, so we don't need to free it
     // explicitly.
 
-    SCOREP_MutexDestroy( &definitions_lock );
-    scorep_definitions_destroy_interim_communicator_counter_lock();
     scorep_system_tree_seq_free();
 
     definitions_initialized = false;

@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015, 2019,
+ * Copyright (c) 2014-2015, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -88,8 +88,6 @@ scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
     UTILS_BUG_ON( initialTpd == 0, "" );
     UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0, "" );
 
-    scorep_thread_create_mutexes();
-
     set_tpd_to( initialTpd );
     /* From here on it is save to call SCOREP_Location_GetCurrentCPULocation(). */
 }
@@ -107,7 +105,6 @@ scorep_thread_on_finalize( scorep_thread_private_data* tpd )
 {
     scorep_thread_private_data_omp* model_data = scorep_thread_get_model_data( tpd );
     UTILS_BUG_ON( model_data->parent_reuse_count != 0, "" );
-    scorep_thread_destroy_mutexes();
 }
 
 

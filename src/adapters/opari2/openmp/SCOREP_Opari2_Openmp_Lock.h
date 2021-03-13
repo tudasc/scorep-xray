@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -116,10 +116,6 @@ SCOREP_Opari2_Openmp_GetLock( const void* lock );
 /** Deletes the given lock from the management system */
 void
 scorep_opari2_openmp_lock_destroy( const void* lock );
-
-/** Registers omp lock regions ot the measurement system */
-void
-scorep_opari2_openmp_lock_initialize( void );
 
 /** Clean up of the locking management. Frees all memory for locking managment. */
 void

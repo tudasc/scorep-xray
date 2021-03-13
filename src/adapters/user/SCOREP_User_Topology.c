@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2020,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -50,7 +53,7 @@ SCOREP_User_CartTopologyCreate( SCOREP_User_CartesianTopologyHandle* topologyHan
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_MutexLock( scorep_user_topo_mutex );
+        SCOREP_MutexLock( &scorep_user_topo_mutex );
         if ( *topologyHandle == SCOREP_USER_INVALID_CARTESIAN_TOPOLOGY )
         {
             if ( name == NULL || *name == '\0' )
@@ -74,7 +77,7 @@ SCOREP_User_CartTopologyCreate( SCOREP_User_CartesianTopologyHandle* topologyHan
         {
             UTILS_WARNING( "Initializing a non empty topology!" );
         }
-        SCOREP_MutexUnlock( scorep_user_topo_mutex );
+        SCOREP_MutexUnlock( &scorep_user_topo_mutex );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

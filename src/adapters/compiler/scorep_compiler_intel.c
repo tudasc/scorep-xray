@@ -163,12 +163,12 @@ __VT_IntelEntry( char*     str,
     /* Register new region if unknown */
     if ( *id == 0 )
     {
-        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        SCOREP_MutexLock( &scorep_compiler_region_mutex );
         if ( *id == 0 )
         {
             *id = register_region( str );
         }
-        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
     }
 
     /* Enter event */

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014-2015,
+ * Copyright (c) 2009-2012, 2014-2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -64,7 +64,7 @@ get_file( const char*              file,
           SCOREP_SourceFileHandle* lastFile )
 {
     /* Hashtable access must be mutual exclusive */
-    SCOREP_MutexLock( scorep_user_file_table_mutex );
+    SCOREP_MutexLock( &scorep_user_file_table_mutex );
 
     /* In most cases, it is expected that no regions are in included
        files. If the compiler inserts always the same string adress for file names,
@@ -76,7 +76,7 @@ get_file( const char*              file,
      */
     if ( lastFileName && lastFile && *lastFileName == file )
     {
-        SCOREP_MutexUnlock( scorep_user_file_table_mutex );
+        SCOREP_MutexUnlock( &scorep_user_file_table_mutex );
         return *lastFile;
     }
 
@@ -91,7 +91,7 @@ get_file( const char*              file,
         *lastFileName = file;
     }
 
-    SCOREP_MutexUnlock( scorep_user_file_table_mutex );
+    SCOREP_MutexUnlock( &scorep_user_file_table_mutex );
     return handle;
 }
 
@@ -456,7 +456,7 @@ scorep_user_region_init_c_cxx( SCOREP_User_RegionHandle*    handle,
                                              lastFile );
 
     /* Lock region definition */
-    SCOREP_MutexLock( scorep_user_region_mutex );
+    SCOREP_MutexLock( &scorep_user_region_mutex );
 
     /* Test whether the handle is still invalid, or if it was initialized in the mean time.
        If the handle is invalid, register a new region */
@@ -495,7 +495,7 @@ scorep_user_region_init_c_cxx( SCOREP_User_RegionHandle*    handle,
         *handle = new_handle;
     }
     /* Release lock */
-    SCOREP_MutexUnlock( scorep_user_region_mutex );
+    SCOREP_MutexUnlock( &scorep_user_region_mutex );
 }
 
 
@@ -569,7 +569,7 @@ scorep_user_region_by_name_begin( const char*                  name,
     /* if it's an invalid handle, or added by mistake (==NULL) create new, valid handle */
     if ( result == NULL )
     {
-        SCOREP_MutexLock( scorep_user_region_by_name_mutex );
+        SCOREP_MutexLock( &scorep_user_region_by_name_mutex );
         size_t hash_hint;
         result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, &hash_hint );
         if ( result == NULL )
@@ -597,7 +597,7 @@ scorep_user_region_by_name_begin( const char*                  name,
                                                    &hash_hint );
             }
         }
-        SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
+        SCOREP_MutexUnlock( &scorep_user_region_by_name_mutex );
     }
     UTILS_BUG_ON( result == NULL, "Could not create region-by-name: '%s'", name );
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016, 2019,
+ * Copyright (c) 2009-2014, 2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,10 +42,6 @@
 #include <stdbool.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Memory.h>
-
-void
-SCOREP_Location_Initialize( void );
-
 
 /**
  * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up

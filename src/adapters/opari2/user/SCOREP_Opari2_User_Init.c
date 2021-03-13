@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -38,7 +38,7 @@
 SCOREP_Opari2_User_Region* scorep_opari2_user_regions = NULL;
 
 /** Lock to protect on-the-fly assignments.*/
-SCOREP_Mutex scorep_opari2_user_assign_lock = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_opari2_user_assign_lock = SCOREP_MUTEX_INIT;
 
 
 /* *****************************************************************************
@@ -69,8 +69,6 @@ opari2_user_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_MutexCreate( &scorep_opari2_user_assign_lock );
-
     size_t n = POMP2_USER_Get_num_regions();
 
     scorep_opari2_user_regions = calloc( n, sizeof( SCOREP_Opari2_User_Region ) );
@@ -93,7 +91,6 @@ opari2_user_subsystem_finalize( void )
     UTILS_DEBUG_ENTRY();
 
     free( scorep_opari2_user_regions );
-    SCOREP_MutexDestroy( &scorep_opari2_user_assign_lock );
 
     UTILS_DEBUG_EXIT();
 }

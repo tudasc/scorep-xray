@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016, 2019,
+ * Copyright (c) 2016, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,7 +42,7 @@ struct scorep_profile_io_paradigm
 };
 
 static struct scorep_profile_io_paradigm io_paradigm_root;
-static SCOREP_Mutex                      io_paradigm_mutex = SCOREP_INVALID_MUTEX;
+static SCOREP_Mutex                      io_paradigm_mutex;
 
 /* *******************************************************************************
  * External interface
@@ -51,8 +51,6 @@ static SCOREP_Mutex                      io_paradigm_mutex = SCOREP_INVALID_MUTE
 void
 scorep_profile_io_init( void )
 {
-    SCOREP_MutexCreate( &io_paradigm_mutex );
-
     io_paradigm_root.io_paradigm                                      = SCOREP_INVALID_IO_PARADIGM_TYPE;
     io_paradigm_root.io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] =
         SCOREP_Definitions_NewMetric( "io_bytes_read",
@@ -80,12 +78,6 @@ scorep_profile_io_init( void )
 }
 
 void
-scorep_profile_io_finalize( void )
-{
-    SCOREP_MutexDestroy( &io_paradigm_mutex );
-}
-
-void
 scorep_profile_io_init_location( SCOREP_Profile_LocationData* location )
 {
     location->current_io_paradigm = &io_paradigm_root;
@@ -102,7 +94,7 @@ scorep_profile_io_paradigm_enter( SCOREP_Location*      thread,
 
     if ( io_paradigm->children[ ioParadigm ] == NULL )
     {
-        SCOREP_MutexLock( io_paradigm_mutex );
+        SCOREP_MutexLock( &io_paradigm_mutex );
         if ( io_paradigm->children[ ioParadigm ] == NULL )
         {
             /* not really per-location object, but MISC should survive location death */
@@ -137,7 +129,7 @@ scorep_profile_io_paradigm_enter( SCOREP_Location*      thread,
                                               SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
                                               io_paradigm->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] );
         }
-        SCOREP_MutexUnlock( io_paradigm_mutex );
+        SCOREP_MutexUnlock( &io_paradigm_mutex );
     }
 
     location->current_io_paradigm = io_paradigm->children[ ioParadigm ];

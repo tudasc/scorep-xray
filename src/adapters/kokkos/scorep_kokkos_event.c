@@ -149,7 +149,7 @@ get_region( scorep_kokkos_group group,
             const char*         name,
             const char*         mangledName )
 {
-    SCOREP_MutexLock( kokkos_regions_hashtab_mutex );
+    SCOREP_MutexLock( &kokkos_regions_hashtab_mutex );
 
     uint32_t hash = jenkins_hash( name, strlen( name ), 0 );
     uint32_t id   = hash & KOKKOS_REGION_HASH_MASK;
@@ -187,7 +187,7 @@ get_region( scorep_kokkos_group group,
     }
     SCOREP_RegionHandle region = node->region;
 
-    SCOREP_MutexUnlock( kokkos_regions_hashtab_mutex );
+    SCOREP_MutexUnlock( &kokkos_regions_hashtab_mutex );
 
     return region;
 }
@@ -209,7 +209,7 @@ static SCOREP_Mutex                kokkos_alloc_metrics_mutex;
 static SCOREP_AllocMetric*
 get_metric( const char* name )
 {
-    SCOREP_MutexLock( kokkos_alloc_metrics_mutex );
+    SCOREP_MutexLock( &kokkos_alloc_metrics_mutex );
 
     scorep_kokkos_metric_entry* current = kokkos_alloc_metrics;
     while ( current && strcmp( current->kokkos_space, name ) )
@@ -218,7 +218,7 @@ get_metric( const char* name )
     }
     if ( current )
     {
-        SCOREP_MutexUnlock( kokkos_alloc_metrics_mutex );
+        SCOREP_MutexUnlock( &kokkos_alloc_metrics_mutex );
         return current->metric;
     }
 
@@ -230,7 +230,7 @@ get_metric( const char* name )
     SCOREP_AllocMetric_New( name, &allocMetric );
     new_entry->metric = allocMetric;
 
-    SCOREP_MutexUnlock( kokkos_alloc_metrics_mutex );
+    SCOREP_MutexUnlock( &kokkos_alloc_metrics_mutex );
 
     return allocMetric;
 }
@@ -337,9 +337,6 @@ init_kokkos( void )
 
         kokkos_file_handle = SCOREP_Definitions_NewSourceFile( "KOKKOS" );
 
-        SCOREP_MutexCreate( &kokkos_regions_hashtab_mutex );
-        SCOREP_MutexCreate( &kokkos_alloc_metrics_mutex );
-
         if ( kokkos_record_memcpy )
         {
             kokkos_deep_copy_region = SCOREP_Definitions_NewRegion(
@@ -431,9 +428,6 @@ kokkosp_finalize_library( void )
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
     UTILS_DEBUG( "[Kokkos] Finalize library" );
-
-    SCOREP_MutexDestroy( &kokkos_regions_hashtab_mutex );
-    SCOREP_MutexDestroy( &kokkos_alloc_metrics_mutex );
 
     if ( kokkos_record_memcpy )
     {

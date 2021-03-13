@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -102,15 +102,6 @@ static bool defer_init_locations = true;
 static SCOREP_Mutex scorep_location_list_mutex;
 static SCOREP_Mutex per_process_metrics_location_mutex;
 
-void
-SCOREP_Location_Initialize( void )
-{
-    SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
-    result = SCOREP_MutexCreate( &per_process_metrics_location_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
-}
-
 
 SCOREP_Location*
 scorep_location_create_location( SCOREP_LocationType type,
@@ -134,13 +125,13 @@ scorep_location_create_location( SCOREP_LocationType type,
     new_location->type = type;
     new_location->next = NULL;
 
-    SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
+    SCOREP_ErrorCode result = SCOREP_MutexLock( &scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
     *location_list_tail = new_location;
     location_list_tail  = &new_location->next;
 
-    result = SCOREP_MutexUnlock( scorep_location_list_mutex );
+    result = SCOREP_MutexUnlock( &scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
     return new_location;
@@ -189,7 +180,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 {
     static SCOREP_Location* per_process_metrics_location;
 
-    SCOREP_ErrorCode result = SCOREP_MutexLock( per_process_metrics_location_mutex );
+    SCOREP_ErrorCode result = SCOREP_MutexLock( &per_process_metrics_location_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot lock per_process_metrics_location_mutex" );
 
     if ( !per_process_metrics_location )
@@ -212,7 +203,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 void
 SCOREP_Location_ReleasePerProcessMetricsLocation( void )
 {
-    SCOREP_ErrorCode result = SCOREP_MutexUnlock( per_process_metrics_location_mutex );
+    SCOREP_ErrorCode result = SCOREP_MutexUnlock( &per_process_metrics_location_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot unlock per_process_metrics_location_mutex" );
 }
 
@@ -327,12 +318,6 @@ SCOREP_Location_Finalize( void )
 
     location_list_head = 0;
     location_list_tail = &location_list_head;
-
-    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &scorep_location_list_mutex );
-    UTILS_ASSERT( result == SCOREP_SUCCESS );
-
-    result = SCOREP_MutexDestroy( &per_process_metrics_location_mutex );
-    UTILS_ASSERT( result == SCOREP_SUCCESS );
 }
 
 

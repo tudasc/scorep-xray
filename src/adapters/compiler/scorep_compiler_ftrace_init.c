@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,9 +54,6 @@ scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize ftrace compiler adapter!" );
 
-    /* Initialize region mutex */
-    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
     if ( !SCOREP_IsUnwindingEnabled() )
     {
         /* Initialize hash table */
@@ -87,9 +84,6 @@ scorep_compiler_subsystem_finalize( void )
     }
 
     UTILS_DEBUG( "finalize ftrace compiler adapter!" );
-
-    /* Delete region mutex */
-    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 SCOREP_ErrorCode

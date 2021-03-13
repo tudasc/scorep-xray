@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -199,7 +199,7 @@ void
 POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2Handle,
                           const char                initString[] )
 {
-    SCOREP_MutexLock( scorep_opari2_user_assign_lock );
+    SCOREP_MutexLock( &scorep_opari2_user_assign_lock );
     if ( *opari2Handle == NULL )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "In POMP2_USER_Assign_handle" );
@@ -230,7 +230,7 @@ POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2Handle,
         /* Increase array index */
         ++count;
     }
-    SCOREP_MutexUnlock( scorep_opari2_user_assign_lock );
+    SCOREP_MutexUnlock( &scorep_opari2_user_assign_lock );
 }
 
 /** @} */

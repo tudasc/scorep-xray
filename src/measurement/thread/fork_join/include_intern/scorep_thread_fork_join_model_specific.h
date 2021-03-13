@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2013-2014, 2016-2017,
@@ -29,14 +29,6 @@
 
 struct SCOREP_Location;
 struct scorep_thread_private_data;
-
-void
-scorep_thread_create_mutexes( void );
-
-
-void
-scorep_thread_destroy_mutexes( void );
-
 
 /**
  * Perform model-specific fork activities in a fork-join model. Called

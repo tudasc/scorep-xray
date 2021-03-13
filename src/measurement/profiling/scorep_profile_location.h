@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2019,
+ * Copyright (c) 2009-2012, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -94,18 +94,6 @@ extern size_t scorep_profile_substrate_id;
 /* **************************************************************************************
    Functions
 ****************************************************************************************/
-
-/**
- * Initializes the memory object exchange.
- */
-void
-scorep_profile_initialize_exchange( void );
-
-/**
- * Finalizes the memory object exchange.
- */
-void
-scorep_profile_finalize_exchange( void );
 
 /**
  * Creates a new location data structure.

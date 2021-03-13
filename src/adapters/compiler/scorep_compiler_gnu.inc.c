@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2015-2016,
+ * Copyright (c) 2009-2012, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -93,13 +93,13 @@ SCOREP_COMPILER_GNU_FUNC_ENTER( void* func,
     {
         if ( hash_node->region_handle == SCOREP_INVALID_REGION )
         {
-            SCOREP_MutexLock( scorep_compiler_region_mutex );
+            SCOREP_MutexLock( &scorep_compiler_region_mutex );
             if ( hash_node->region_handle == SCOREP_INVALID_REGION )
             {
                 /* -- region entered the first time, register region -- */
                 scorep_compiler_register_region( hash_node );
             }
-            SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+            SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
         }
         SCOREP_EnterRegion( hash_node->region_handle );
     }

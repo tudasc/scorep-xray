@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -46,7 +46,7 @@
 
 #include "scorep_compiler_confvars.inc.c"
 
-SCOREP_Mutex scorep_compiler_region_mutex = SCOREP_INVALID_MUTEX;
+SCOREP_Mutex scorep_compiler_region_mutex = SCOREP_MUTEX_INIT;
 
 /**
    The adapter initialize function is compiler specific. Thus it is contained in each
