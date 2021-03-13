@@ -66,7 +66,7 @@ preloading.
 Description
 ===========
 
-\`scorep-preload-init\` is a script that prepares a measuremnt to be executed
+\`scorep-preload-init\` is a script that prepares a measurement to be executed
 on an uninstrumented application with the help of the LD_PRELOAD mechanism.
 
 In case of an cross-machine, this preparation step must be executed on
@@ -337,7 +337,7 @@ The value for LD_PRELOAD is:
     LD_PRELOAD=${LD_PRELOAD_VALUE}
 
 Set this variable when starting your application. This might be needed
-to be done when launching your appication or setting it before executing
+to be done when launching your application or setting it before executing
 the application in the job script.
 
 To remove this preload result run:
