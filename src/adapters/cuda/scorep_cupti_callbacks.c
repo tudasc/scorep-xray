@@ -2392,7 +2392,7 @@ scorep_cupti_callbacks_finalize( void )
             SCOREP_CUPTI_CALL( cuptiUnsubscribe( scorep_cupti_callbacks_subscriber ) );
         }
 
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_FLUSHATEXIT )
+        if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_DONTFLUSHATEXIT ) )
         {
             scorep_cupti_context* context = scorep_cupti_context_list;
 

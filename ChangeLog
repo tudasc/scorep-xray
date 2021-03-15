@@ -22,6 +22,13 @@ Features and improvements:
   multi-GPU environment.
 - A new mutex implementation based on atomic intrinsics replaces all
   existing mutex implementations.
+- Change default of CUDA instrumentation to force a flush of CUDA
+  activity buffers at program exit. This should resolve issues with
+  measurements failing to include CUDA activity.
+  `SCOREP_CUDA_ENABLE=flushatexit` is deprecated and replaced with the
+  new `SCOREP_CUDA_ENABLE=dontflushatexit` option for programs that already
+  perform a device synchronize or reset before exit and don't need an
+  additional flush.
 
 User tools and API improvements and changes:
 

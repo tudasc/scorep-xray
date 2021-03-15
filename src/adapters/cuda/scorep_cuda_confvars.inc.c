@@ -104,9 +104,18 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
         "Record references between CUDA activities"
     },
     {
+        "dontflushatexit",
+        SCOREP_CUDA_FEATURE_DONTFLUSHATEXIT,
+        "Disable flushing CUDA activity buffer at program exit"
+    },
+    {
+        /* Note that as this is a SCOREP_CONFIG_TYPE_BITSET variable,
+         * which prohibits a value of 0, so we continue to use the
+         * existing bit and simply ignore it.
+         */
         "flushatexit",
         SCOREP_CUDA_FEATURE_FLUSHATEXIT,
-        "Flush CUDA activity buffer at program exit"
+        "[DEPRECATED] Flush CUDA activity buffer at program exit (see 'dontflushatexit')"
     },
     {
         "default/yes/1",

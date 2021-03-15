@@ -854,7 +854,16 @@ To avoid dropping of records increase the buffer size via the environment variab
 Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK} (default: 8k). Buffer chunks are allocated whenever CUPTI requests a buffer (e.g., to record activities on a CUDA stream).
 \confvar{SCOREP_CUDA_BUFFER} specifies the upper bound of memory to be allocated for CUPTI activities. Therefore it should be a multiple of \confvar{SCOREP_CUDA_BUFFER_CHUNK}.
 
-@note Make sure to call <tt>cudaDeviceReset()</tt> or <tt>cudaDeviceSynchronize()</tt> before the exit of the program. Otherwise GPU activities might be missing in the trace.
+@note Make sure to call <tt>cudaDeviceReset()</tt> or
+<tt>cudaDeviceSynchronize()</tt> before the exit of the program. Otherwise GPU
+activities might be missing in the trace. Previous versions of @scorep allowed
+users to optionally mitigate this through the <b><tt>flushatexit</tt></b>
+value in \confvar{SCOREP_CUDA_ENABLE}. This has been inverted; now users who
+perform this synchronization and would like to see if performance improves by
+removing a redundant synchronize in @scorep may set
+<b><tt>dontflushatexit</tt></b> in \confvar{SCOREP_CUDA_ENABLE}
+instead. <b><tt>flushatexit</tt></b> is deprecated and will be removed in a
+future version of @scorep.
 
 @note For CUDA 5.5 there is an error in CUPTI buffer handling. The last activity in a CUPTI activity buffer (\confvar{SCOREP_CUDA_BUFFER_CHUNK}) gets lost, when the buffer is full.
 To avoid this issue specify \confvar{SCOREP_CUDA_BUFFER_CHUNK} as large as necessary to store all CUDA device activities until the CUDA device is synchronized with the host.
