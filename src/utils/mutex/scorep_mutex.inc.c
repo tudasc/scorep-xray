@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2020,
@@ -17,15 +17,12 @@
 #error STATIC_INLINE needs to be defined
 #endif /* STATIC_INLINE */
 
+#include <UTILS_Error.h>
 
-STATIC_INLINE SCOREP_ErrorCode
+STATIC_INLINE void
 SCOREP_MutexLock( SCOREP_Mutex* scorepMutex )
 {
-    if ( !scorepMutex )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                            "Invalid mutex handle given." );
-    }
+    UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
     /* test-and-test-and-set lock */
     while ( true )
@@ -40,20 +37,12 @@ SCOREP_MutexLock( SCOREP_Mutex* scorepMutex )
         }
         SCOREP_CPU_RELAX;
     }
-
-    return SCOREP_SUCCESS;
 }
 
-STATIC_INLINE SCOREP_ErrorCode
+STATIC_INLINE void
 SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex )
 {
-    if ( !scorepMutex )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                            "Invalid mutex handle given." );
-    }
+    UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
     SCOREP_Atomic_clear( scorepMutex, SCOREP_ATOMIC_RELEASE );
-
-    return SCOREP_SUCCESS;
 }
