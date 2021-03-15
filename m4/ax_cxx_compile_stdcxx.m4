@@ -10,8 +10,8 @@
 #
 #   Check for baseline language coverage in the compiler for the specified
 #   version of the C++ standard.  If necessary, add switches to CXX and
-#   CXXCPP to enable support.  VERSION may be '11' (for the C++11 standard)
-#   or '14' (for the C++14 standard).
+#   CXXCPP to enable support.  VERSION may be '11' (for the C++11 standard),
+#   '14' (for the C++14 standard), or '17' (for the C++17 standard).
 #
 #   The second argument, if specified, indicates whether you insist on an
 #   extended mode (e.g. -std=gnu++11) or a strict conformance mode (e.g.
@@ -101,9 +101,9 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
   if test x$ac_success = xno; then
     dnl HP's aCC needs +std=c++11 according to:
     dnl http://h21007.www2.hp.com/portal/download/files/unprot/aCxx/PDF_Release_Notes/769149-001.pdf
-    dnl Cray's crayCC needs "-h std=c++11"
+    dnl Cray's classic crayCC needs "-hstd=c++11"; the new Clang-based versions support "-std=c++11"
     for alternative in ${ax_cxx_compile_alternatives}; do
-      for switch in -std=c++${alternative} +std=c++${alternative} "-h std=c++${alternative}"; do
+      for switch in -std=c++${alternative} -hstd=c++${alternative} +std=c++${alternative}; do
         cachevar=AS_TR_SH([ax_cv_cxx_compile_cxx$1_$switch])
         AC_CACHE_CHECK(whether $CXX supports C++$1 features with $switch,
                        $cachevar,
