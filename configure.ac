@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2019,
+dnl Copyright (c) 2009-2019, 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -196,7 +196,7 @@ AS_IF([test -n "${scorep_cubew_config_bin}" && \
        AS_IF([test "x${scorep_cubew_have_mic}" = "xno"],
              [AC_MSG_ERROR([cannot detect MIC support for external Cube Writer installation. Either provide a suitable Cube library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-cubew' option to use the included Cube Writer copy.])])
       ])
-AC_SCOREP_HAVE_CONFIG_TOOL([cubelib], [7], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubelib], [10], [0])
 
 # handle external package's subdir configures
 
