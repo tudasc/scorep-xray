@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2017, 2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2018,
+dnl Copyright (c) 2018, 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -127,13 +127,8 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC
-AC_SCOREP_PROG_CC_C99
-
-AC_PROG_CXX
-AC_LANG_PUSH([C++])
-AX_COMPILER_VENDOR
-AC_LANG_POP([C++])
+AFS_PROG_CC([99])
+AFS_PROG_CXX
 
 AC_CXX_NAMESPACES
 AC_CXX_HAVE_SSTREAM
@@ -234,8 +229,8 @@ AFS_SUMMARY([Library wrapper support], [${scorep_have_libwrap_generator}${reason
 AS_UNSET([reason])
 
 AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],
-      [AFS_SUMMARY([C compiler used],   [${CC}])
-       AFS_SUMMARY([C++ compiler used], [${CXX}])])
+      [AFS_PROG_CC_SUMMARY
+       AFS_PROG_CXX_SUMMARY])
 
 AC_SCOREP_GIT_CONTROLLED
 

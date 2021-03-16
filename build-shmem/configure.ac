@@ -63,9 +63,13 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
 SCOREP_COMPUTENODE_CC
+AFS_PROG_CC_SUMMARY([SHMEM])
 SCOREP_COMPUTENODE_CXX
-SCOREP_COMPUTENODE_F77
+AFS_PROG_CXX_SUMMARY([SHMEM])
 SCOREP_COMPUTENODE_FC
+AFS_PROG_FC_SUMMARY([SHMEM])
+SCOREP_COMPUTENODE_F77
+AFS_PROG_F77_SUMMARY([SHMEM])
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])
@@ -98,37 +102,29 @@ AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 AC_LANG_PUSH([C])
 SCOREP_SHMEM_WORKING(
-    [scorep_shmem_c_supported="yes"
-     scorep_shmem_c_summary_tail=", using $CC"],
+    [scorep_shmem_c_supported="yes"],
     [scorep_shmem_c_supported="no"])
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
-AFS_SUMMARY([C99 compiler works], [${scorep_shmem_c_supported}${scorep_shmem_c_summary_tail}])
 
 # C++ SHMEM is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
 SCOREP_SHMEM_WORKING(
-    [scorep_shmem_cxx_supported="yes"
-     scorep_shmem_cxx_summary_tail=", using $CXX"],
+    [scorep_shmem_cxx_supported="yes"],
     [scorep_shmem_cxx_supported="no"])
 AC_LANG_POP([C++])
-AFS_SUMMARY([C++ compiler works], [${scorep_shmem_cxx_supported}${scorep_shmem_cxx_summary_tail}])
 
 AC_LANG_PUSH([Fortran 77])
 SCOREP_SHMEM_WORKING(
-    [scorep_shmem_f77_supported="yes"
-     scorep_shmem_f77_summary_tail=", using $F77"],
+    [scorep_shmem_f77_supported="yes"],
     [scorep_shmem_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-AFS_SUMMARY([F77 compiler works], [${scorep_shmem_f77_supported}${scorep_shmem_f77_summary_tail}])
 
 AC_LANG_PUSH([Fortran])
 SCOREP_SHMEM_WORKING(
-    [scorep_shmem_f90_supported="yes"
-     scorep_shmem_f90_summary_tail=", using $FC"],
+    [scorep_shmem_f90_supported="yes"],
     [scorep_shmem_f90_supported="no"])
 AC_LANG_POP([Fortran])
-AFS_SUMMARY([F90 compiler works], [${scorep_shmem_f90_supported}${scorep_shmem_f90_summary_tail}])
 
 AS_IF([test "x$scorep_shmem_c_supported$scorep_shmem_cxx_supported$scorep_shmem_f77_supported$scorep_shmem_f90_supported" != "xnononono"], [
     AFS_SUMMARY([Library used for SHMEM], [$SHMEM_LIBS])

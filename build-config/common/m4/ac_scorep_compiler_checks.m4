@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012, 2014
@@ -56,17 +56,7 @@ AC_LANG_POP([C])
 dnl ------------------------------------------------------------------
 
 AC_DEFUN([AC_SCOREP_COMPILER_CHECKS],[
-AC_LANG_PUSH([C])
-AX_COMPILER_VENDOR
-AX_COMPILER_VERSION
-AC_LANG_POP([C])
-
-# Disable default OpenMP support for the Cray compilers
-AS_IF([test "x${ax_cv_c_compiler_vendor}" = xcray],
-    [CC="${CC} -hnoomp -O2"
-     CXX="${CXX} -hnoomp -O2"
-     F77="${F77} -hnoomp -O2"
-     FC="${FC} -hnoomp -O2"])dnl
+dnl FIX REQUIRE: Needs AFS_PROG_CC
 
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INTEL],   [test 1 -eq 1], [false])],

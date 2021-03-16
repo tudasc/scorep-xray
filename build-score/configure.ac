@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2015-2016, 2018, 2020,
+dnl Copyright (c) 2009-2013, 2015-2016, 2018, 2020-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -80,10 +80,7 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
      CXX="`GREP_OPTIONS= ${GREP} ^CXX= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
-AC_PROG_CXX
-AC_LANG_PUSH([C++])
-AX_COMPILER_VENDOR
-AC_LANG_POP([C++])
+AFS_PROG_CXX
 
 AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
     [intel],    [CC=icc],
@@ -115,15 +112,14 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AC_PROG_CC
-AC_SCOREP_PROG_CC_C99
+AFS_PROG_CC([99])
 
 LT_PREREQ([2.4.6])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
-AFS_SUMMARY([C compiler used],   [${CC}${fallback}])
-AFS_SUMMARY([C++ compiler used], [${CXX}])
+AFS_PROG_CC_SUMMARY([], [${fallback}])
+AFS_PROG_CXX_SUMMARY
 
 AC_SCOREP_GIT_CONTROLLED
 

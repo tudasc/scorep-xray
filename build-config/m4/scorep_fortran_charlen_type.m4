@@ -21,8 +21,8 @@
 # -----------------------------------------------------------
 # Determine the type for Fortran character lengths
 AC_DEFUN([SCOREP_CHECK_FORTRAN_CHARLEN_TYPE],
-[AC_REQUIRE([SCOREP_COMPUTENODE_FC_WORKS])
-AS_IF([test "x${scorep_cv_fc_works}" = "xyes"], [
+[dnl FIX REQUIRE: Needs AFS_PROG_FC
+AS_IF([test "x${afs_cv_prog_fc_works}" = "xyes"], [
 AC_LANG_PUSH([Fortran])
 # $ac_ext is the current value of $ac_fc_srcext, or his default
 # $ac_fc_srcext is used with parameter expansion for a default value:
