@@ -489,3 +489,12 @@ AC_DEFUN([_AFS_COMPILER_SUMMARY], [
     AS_UNSET([_afs_compiler_summary_opts])
     AS_UNSET([_afs_compiler_summary_prefix])
 ])
+
+
+# AC_SCOREP_PROG_CC_C99
+# ---------------------
+# Meanwhile identical to AC_PROG_CC_C99, thus mark as obsolete and warn during
+# bootstrap.  This macro can be removed once all uses have been converted or
+# configure scripts have moved from 'AC_PROG_CC' to 'AFS_PROG_CC'.
+#
+AU_DEFUN([AC_SCOREP_PROG_CC_C99], [AC_PROG_CC_C99])
