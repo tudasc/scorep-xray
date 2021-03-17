@@ -172,7 +172,7 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
      * to create the wrapper. Other threads may call SCOREP_Libwrap_Create
      * only if the handle is still NULL.
      */
-    SCOREP_LibwrapHandle* handle = malloc( sizeof( SCOREP_LibwrapHandle ) + attributes->number_of_shared_libs * sizeof( void* ) );
+    SCOREP_LibwrapHandle* handle = calloc( 1, sizeof( SCOREP_LibwrapHandle ) + attributes->number_of_shared_libs * sizeof( void* ) );
     UTILS_ASSERT( handle );
 
     /* Initialize the new library wrapper handle */

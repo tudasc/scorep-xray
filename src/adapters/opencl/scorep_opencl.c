@@ -360,7 +360,7 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
 
     queue = ( scorep_opencl_queue* )SCOREP_Memory_AllocForMisc(
         sizeof( scorep_opencl_queue ) );
-
+    memset( queue, 0, sizeof( scorep_opencl_queue ) );
     queue->queue         = clQueue;
     queue->host_location = SCOREP_Location_GetCurrentCPULocation();
 
@@ -832,7 +832,7 @@ scorep_opencl_set_synchronization_point( scorep_opencl_queue* queue )
 
     /* check whether last command queue activity is already finished or if it can
        be used for synchronization */
-    if ( evtState != 0 && evtState != CL_COMPLETE ) /* can be used for synchronization */
+    if ( evtState != 0 && evtState != CL_COMPLETE )     /* can be used for synchronization */
     {
         tmpEvt[ 0 ] = lastEntry->event;
 
