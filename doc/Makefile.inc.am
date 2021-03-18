@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015, 2017,
+## Copyright (c) 2009-2011, 2015, 2017, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -68,9 +68,9 @@ doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision
 
 update-revision:
 	@$(am__tty_colors); \
-        if $(AM_V_P); then echo "cd $(srcdir) && git describe --always --dirty > 'build-config/REVISION'"; \
+        if $(AM_V_P); then echo "cd $(srcdir) && git describe --long --always --dirty | $(SED) 's/.*-g//' > 'build-config/REVISION'"; \
         else               echo "  GEN      $${mgn}$(srcdir)/build-config/REVISION$$std"; fi; \
-        cd $(srcdir) && git describe --always --dirty > "build-config/REVISION"
+        cd $(srcdir) && git describe --long --always --dirty | $(SED) 's/.*-g//' > "build-config/REVISION"
 
 copy-revision-file-to-dist:
 	$(AM_V_at)$(MKDIR_P) "$(distdir)/build-config/" || exit 1;                           \
