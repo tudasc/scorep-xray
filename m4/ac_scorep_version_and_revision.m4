@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -34,6 +34,7 @@ AC_DEFUN([AC_SCOREP_REVISION],
 [
 AC_REQUIRE([_AC_SCOREP_GIT_CONTROLLED])
 AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
+AC_REQUIRE([AC_PROG_SED])
 
 # When in a working copy, write REVISION* files. The REVISION* files
 # are updated during each configure call and also at make
@@ -47,7 +48,7 @@ AS_IF([test "x${ac_scorep_git_controlled}" = xyes &&
        component_revision=$(
             unset $(git rev-parse --local-env-vars 2>/dev/null) &&
             cd ${afs_srcdir} &&
-            git describe --always --dirty 2>/dev/null)],
+            git describe --long --always --dirty | ${SED} 's/.*-g//' 2>/dev/null)],
       [echo "$component_revision" >${afs_srcdir}/build-config/REVISION],
       [component_revision=external])
 
