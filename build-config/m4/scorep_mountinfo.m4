@@ -39,6 +39,7 @@ AC_LINK_IFELSE([AC_LANG_CALL([], [endmntent])],
                 [ac_scorep_mntent_have_end="no"])
 AC_MSG_RESULT([${ac_scorep_mntent_have_end}])
 
+ac_scorep_have_mount_info="no"
 AS_IF([test "x${ac_scorep_mntent_header}"   = "xyes" && \
        test "x${ac_scorep_mntent_have_set}" = "xyes" && \
        test "x${ac_scorep_mntent_have_get}" = "xyes" && \
