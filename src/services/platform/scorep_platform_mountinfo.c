@@ -165,14 +165,14 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
 static SCOREP_MountInfo*
 mountinfo_find_mount( const char* path )
 {
-    const int         path_len    = strlen( path );
-    int               bestmatch   = 0;
+    size_t            path_len    = strlen( path );
+    size_t            bestmatch   = 0;
     SCOREP_MountInfo* found_entry = NULL;
     SCOREP_MountInfo* entry       = mount_stack_top;
 
     while ( entry != NULL )
     {
-        int tmp_len = strlen( entry->mount_point );
+        size_t tmp_len = strlen( entry->mount_point );
 
         if ( ( bestmatch <= tmp_len && tmp_len <= path_len )
              && ( strncmp( entry->mount_point, path, tmp_len ) == 0 ) )
