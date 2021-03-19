@@ -512,9 +512,10 @@ main( int    argc,
         }
         else if ( strncmp( argv[ i ], "--mutex", 7 ) == 0 )
         {
-            std::cerr << "[Score-P] WARNING: Option '--mutex=<implementation>' no longer exists. An implementation\n"
-                      << "                   based on atomic intrinsics replaces all former variants."
+            std::cerr << "[Score-P] ERROR: Option '--mutex=<implementation>' no longer exists. An implementation\n"
+                      << "                 based on atomic intrinsics replaces all former variants."
                       << std::endl;
+            exit( EXIT_FAILURE );
         }
         else
         {
