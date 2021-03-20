@@ -167,9 +167,10 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
 /** Find a mount point for the given file path.
  *
  * Mount points are stored in reverse order, as later mounts overwrite previous
- * one. Searching must stop on the first match.
+ * one. Searching must stop on the first match and on full directory components,
+   not just a string prefix.
  *
- * Example:
+ * Example for mount order:
  * @code
  *  $ mkdir -p foo/bar
  *  $ mount -t tmpfs tmpfs foo/bar
@@ -180,6 +181,17 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
  * @endcode
  *
  * The mount point for `foo/bar/baz` must be `foo`, not `foo/bar`.
+ *
+ * Example for directory components:
+ * @code
+ *  $ mkdir -p foo
+ *  $ mount -t tmpfs tmpfs foo
+ *  $ touch foo/bar
+ *  $ touch foobar
+ * @endcode
+ *
+ * The mount point for `foobar` must *not* be `foo` but some other directory
+ * above.
  */
 static SCOREP_MountInfo*
 mountinfo_find_mount( const char* path )
@@ -192,7 +204,8 @@ mountinfo_find_mount( const char* path )
         size_t mnt_len = entry->mount_point_length;
 
         if ( ( mnt_len <= path_len )
-             && ( strncmp( entry->mount_point, path, mnt_len ) == 0 ) )
+             && ( strncmp( entry->mount_point, path, mnt_len ) == 0 )
+             && ( mnt_len == path_len || path[ mnt_len ] == '/' ) )
         {
             return entry;
         }
