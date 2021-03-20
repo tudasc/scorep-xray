@@ -38,6 +38,7 @@ static bool mountinfo_initialized = false;
 
 struct SCOREP_MountInfo
 {
+    size_t                   mount_point_length;
     char*                    mount_point;
     char*                    mount_src;
     char*                    fstype;
@@ -94,10 +95,11 @@ read_mounts( void )
         SCOREP_MountInfo* mnt = malloc( sizeof( *mnt ) + sizeof( char ) * ( mount_point_len + fstype_len + mount_src_len ) );
         UTILS_ASSERT( mnt != NULL );
 
-        mnt->mount_point = ( char* )( mnt + 1 );
-        mnt->mount_src   = mnt->mount_point + mount_point_len;
-        mnt->fstype      = mnt->mount_src + mount_src_len;
-        mnt->next        = NULL;
+        mnt->mount_point_length = mount_point_len - 1;
+        mnt->mount_point        = ( char* )( mnt + 1 );
+        mnt->mount_src          = mnt->mount_point + mount_point_len;
+        mnt->fstype             = mnt->mount_src + mount_src_len;
+        mnt->next               = NULL;
 
         memcpy( mnt->mount_point, fs->mnt_dir, mount_point_len );
         memcpy( mnt->mount_src, fs->mnt_fsname, mount_src_len );
@@ -172,12 +174,12 @@ mountinfo_find_mount( const char* path )
 
     while ( entry != NULL )
     {
-        size_t tmp_len = strlen( entry->mount_point );
+        size_t mnt_len = entry->mount_point_length;
 
-        if ( ( bestmatch <= tmp_len && tmp_len <= path_len )
-             && ( strncmp( entry->mount_point, path, tmp_len ) == 0 ) )
+        if ( ( bestmatch <= mnt_len && mnt_len <= path_len )
+             && ( strncmp( entry->mount_point, path, mnt_len ) == 0 ) )
         {
-            bestmatch   = tmp_len;
+            bestmatch   = mnt_len;
             found_entry = entry;
         }
         entry = entry->next;
