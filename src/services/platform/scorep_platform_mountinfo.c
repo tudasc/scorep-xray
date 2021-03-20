@@ -164,28 +164,42 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
     return SCOREP_INVALID_SYSTEM_TREE_NODE;
 }
 
+/** Find a mount point for the given file path.
+ *
+ * Mount points are stored in reverse order, as later mounts overwrite previous
+ * one. Searching must stop on the first match.
+ *
+ * Example:
+ * @code
+ *  $ mkdir -p foo/bar
+ *  $ mount -t tmpfs tmpfs foo/bar
+ *  $ touch foo/bar/baz
+ *  $ mount -t tmpfs tmpfs foo
+ *  $ mkdir -p foo/bar
+ *  $ touch foo/bar/baz
+ * @endcode
+ *
+ * The mount point for `foo/bar/baz` must be `foo`, not `foo/bar`.
+ */
 static SCOREP_MountInfo*
 mountinfo_find_mount( const char* path )
 {
-    size_t            path_len    = strlen( path );
-    size_t            bestmatch   = 0;
-    SCOREP_MountInfo* found_entry = NULL;
-    SCOREP_MountInfo* entry       = mount_stack_top;
+    size_t            path_len = strlen( path );
+    SCOREP_MountInfo* entry    = mount_stack_top;
 
     while ( entry != NULL )
     {
         size_t mnt_len = entry->mount_point_length;
 
-        if ( ( bestmatch <= mnt_len && mnt_len <= path_len )
+        if ( ( mnt_len <= path_len )
              && ( strncmp( entry->mount_point, path, mnt_len ) == 0 ) )
         {
-            bestmatch   = mnt_len;
-            found_entry = entry;
+            return entry;
         }
         entry = entry->next;
     }
 
-    return found_entry;
+    return NULL;
 }
 
 void
