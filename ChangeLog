@@ -72,6 +72,7 @@ Bugfixes:
   `/proc` or `/sys` when recording I/O activities.
 - Allow to select 'runtime' wrapping of OpenCL in the instrumenter again.
 - Improve thread-safety of CUDA adapter.
+- Improve mount point extraction for some corner cases.
 
 Compatibility:
 
