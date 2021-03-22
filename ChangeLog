@@ -1,5 +1,9 @@
 ------------------- Upcoming version 8.0 -----------------------------
 
+Bugfixes:
+- Fix event sequence and attributes when recording non-blocking
+  `lio_listio` operations.
+
 ------------------- Released version 7.0 -----------------------------
 
 Features and improvements:

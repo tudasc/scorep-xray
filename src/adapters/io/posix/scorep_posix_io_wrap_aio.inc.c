@@ -75,15 +75,34 @@ aio_cancel_all_requests_of_fd( int                   fd,
 }
 
 static inline int
-aio_translate_mode( int aio_mode, SCOREP_IoOperationMode* scorep_mode )
+aio_translate_opcode( int                     aioOpcode,
+                      SCOREP_IoOperationMode* scorepMode )
 {
-    switch ( aio_mode )
+    switch ( aioOpcode )
     {
         case LIO_READ:
-            *scorep_mode = SCOREP_IO_OPERATION_MODE_READ;
+            *scorepMode = SCOREP_IO_OPERATION_MODE_READ;
             break;
         case LIO_WRITE:
-            *scorep_mode = SCOREP_IO_OPERATION_MODE_WRITE;
+            *scorepMode = SCOREP_IO_OPERATION_MODE_WRITE;
+            break;
+        default:
+            return -1;
+    }
+    return 0;
+}
+
+static inline int
+aio_translate_mode( int                     aioMode,
+                    SCOREP_IoOperationFlag* scorepIoOpFlag )
+{
+    switch ( aioMode )
+    {
+        case LIO_WAIT:
+            *scorepIoOpFlag |= SCOREP_IO_OPERATION_FLAG_BLOCKING;
+            break;
+        case LIO_NOWAIT:
+            *scorepIoOpFlag |= SCOREP_IO_OPERATION_FLAG_NON_BLOCKING;
             break;
         default:
             return -1;
@@ -419,7 +438,9 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
     INITIALIZE_FUNCTION_POINTER( lio_listio );
     int ret;
 
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    SCOREP_IoOperationFlag io_blocking_semantic_flag = SCOREP_IO_OPERATION_FLAG_NONE;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && ( aio_translate_mode( mode, &io_blocking_semantic_flag ) != -1 ) )
     {
         SCOREP_EnterWrappedRegion( scorep_posix_io_region_lio_listio );
 
@@ -430,7 +451,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
         for ( int i = 0; i < nitems; ++i )
         {
             aiocbp = aiocb_list[ i ];
-            if ( aio_translate_mode( aiocbp->aio_lio_opcode, &io_mode ) == -1 )
+            if ( aio_translate_opcode( aiocbp->aio_lio_opcode, &io_mode ) == -1 )
             {
                 continue;
             }
@@ -442,7 +463,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
             {
                 SCOREP_IoOperationBegin( handle,
                                          io_mode,
-                                         SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
+                                         SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | io_blocking_semantic_flag,
                                          ( uint64_t )aiocbp->aio_nbytes,
                                          ( uint64_t )aiocbp,
                                          aiocbp->aio_offset );
@@ -457,16 +478,16 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
         for ( int i = 0; i < nitems; ++i )
         {
             aiocbp = aiocb_list[ i ];
+            if ( aio_translate_opcode( aiocbp->aio_lio_opcode, &io_mode ) == -1 )
+            {
+                continue;
+            }
+
             handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_POSIX,
                                                 &( aiocbp->aio_fildes ) );
 
             if ( handle != SCOREP_INVALID_IO_HANDLE )
             {
-                if ( aio_translate_mode( aiocbp->aio_lio_opcode, &io_mode ) == -1 )
-                {
-                    continue;
-                }
-
                 int error = SCOREP_LIBWRAP_FUNC_CALL( aio_error, ( aiocbp ) );
 
                 if ( error == 0 )
@@ -484,6 +505,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
                 {
                     SCOREP_IoOperationIssued( handle,
                                               ( uint64_t )aiocbp );
+                    aio_add_request( aiocbp, io_mode );
                 }
             }
         }
