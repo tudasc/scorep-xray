@@ -228,7 +228,8 @@ exit_with_refs( uint64_t*           time,
 
 /************************** CUDA function table *******************************/
 #define SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX 1024 /* "educated guess" */
-static SCOREP_RegionHandle scorep_cupti_callbacks_cuda_function_table[ SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
+static SCOREP_RegionHandle cuda_function_table[ SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
+static SCOREP_Mutex        cuda_function_table_mutex;
 
 /**
  * This is a pseudo hash function for CUPTI callbacks. No real hash is needed,
@@ -271,36 +272,50 @@ cuda_api_function_hash( CUpti_CallbackDomain domain,
 }
 
 /**
- * Store a CUPTI callback together with a Score-P region handle.
+ * Get or create a Score-P region for the given CUPTI callback.
  *
  * @param domain            CUPTI callback domain.
  * @param callbackId        CUPTI callback ID.
- * @param region          Score-P region handle.
- */
-static void
-cuda_api_function_put( CUpti_CallbackDomain domain,
-                       CUpti_CallbackId     callbackId,
-                       SCOREP_RegionHandle  region )
-{
-    scorep_cupti_callbacks_cuda_function_table[ cuda_api_function_hash( domain, callbackId ) ] = region;
-}
-
-/**
- * Retrieve the Score-P region handle of a CUPTI callback.
+ * @param functionName      Name for the region.
  *
- * @param domain            CUPTI callback domain.
- * @param callbackId        CUPTI callback ID.
- *
- * @return Return corresponding Score-P region handle.
+ * @return Score-P region handle.
  */
 static SCOREP_RegionHandle
-cuda_api_function_get( CUpti_CallbackDomain domain,
-                       CUpti_CallbackId     callbackId )
+cuda_api_get_region( CUpti_CallbackDomain domain,
+                     CUpti_CallbackId     callbackId,
+                     const char*          functionName )
 {
-    return scorep_cupti_callbacks_cuda_function_table[ cuda_api_function_hash( domain, callbackId ) ];
-}
-/******************************************************************************/
+    UTILS_BUG_ON( domain != CUPTI_CB_DOMAIN_RUNTIME_API
+                  && domain != CUPTI_CB_DOMAIN_DRIVER_API,
+                  "invalid CUPTI domain" );
+    uint32_t idx = cuda_api_function_hash( domain, callbackId );
 
+    SCOREP_RegionHandle region_handle = cuda_function_table[ idx ];
+    if ( region_handle != SCOREP_INVALID_REGION )
+    {
+        return region_handle;
+    }
+
+    SCOREP_MutexLock( &cuda_function_table_mutex );
+    region_handle = cuda_function_table[ idx ];
+    if ( region_handle != SCOREP_INVALID_REGION )
+    {
+        SCOREP_MutexUnlock( &cuda_function_table_mutex );
+        return region_handle;
+    }
+
+    region_handle = SCOREP_Definitions_NewRegion(
+        functionName, NULL,
+        domain == CUPTI_CB_DOMAIN_RUNTIME_API
+        ? cuda_runtime_file_handle
+        : cuda_driver_file_handle,
+        0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
+
+    cuda_function_table[ idx ] = region_handle;
+
+    SCOREP_MutexUnlock( &cuda_function_table_mutex );
+    return region_handle;
+}
 
 /*
  * Set a subscriber and a callback function for CUPTI callbacks.
@@ -585,19 +600,8 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
     }
 
     /* get the region handle for the API function */
-    region_handle_stored =
-        cuda_api_function_get( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId );
-    if ( region_handle_stored != SCOREP_INVALID_REGION )
-    {
-        region_handle = region_handle_stored;
-    }
-    else
-    {
-        region_handle = SCOREP_Definitions_NewRegion( cbInfo->functionName, NULL, cuda_runtime_file_handle,
-                                                      0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
-
-        cuda_api_function_put( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId, region_handle );
-    }
+    region_handle = cuda_api_get_region( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId,
+                                         cbInfo->functionName );
 
     /* time stamp for all the following potential events */
     time = SCOREP_Timer_GetClockTicks();
@@ -896,7 +900,6 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     SCOREP_Location*    location = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            time;
     SCOREP_RegionHandle region_handle              = SCOREP_INVALID_REGION;
-    SCOREP_RegionHandle region_handle_stored       = SCOREP_INVALID_REGION;
     bool                record_driver_api_location =
         SCOREP_IS_CALLBACK_STATE_SET( SCOREP_CUPTI_CALLBACKS_STATE_DRIVER, location );
 
@@ -926,19 +929,8 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     /* Generate Score-P region handle for the API functions (if enabled) */
     if ( record_driver_api_location )
     {
-        region_handle_stored =
-            cuda_api_function_get( CUPTI_CB_DOMAIN_DRIVER_API, callbackId );
-        if ( region_handle_stored != SCOREP_INVALID_REGION )
-        {
-            region_handle = region_handle_stored;
-        }
-        else
-        {
-            region_handle = SCOREP_Definitions_NewRegion( cbInfo->functionName, NULL, cuda_driver_file_handle,
-                                                          0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
-
-            cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );
-        }
+        region_handle = cuda_api_get_region( CUPTI_CB_DOMAIN_DRIVER_API, callbackId,
+                                             cbInfo->functionName );
 
         time = SCOREP_Timer_GetClockTicks();
     }
@@ -2252,7 +2244,7 @@ scorep_cupti_callbacks_init( void )
         scorep_cupti_set_callback( scorep_cupti_callbacks_all );
 
         /* reset the hash table for CUDA API functions */
-        memset( scorep_cupti_callbacks_cuda_function_table, SCOREP_INVALID_REGION,
+        memset( cuda_function_table, SCOREP_INVALID_REGION,
                 SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX * sizeof( uint32_t ) );
 
         if ( scorep_cuda_record_kernels )
