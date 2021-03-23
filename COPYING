@@ -3,6 +3,10 @@ agreement given below, except for the third-party code distributed in the
 'vendor/' subdirectory.  See the corresponding COPYING files in 'vendor/*'
 of the distribution tarball for details.
 
+Instrumented applications:
+Please note that if a Score-P installation uses libbfd (check via
+`scorep-info config-summary | grep 'libbfd found'`), the Score-P
+instrumented binaries may only be distributed under GPLv3 licensing.
 
 -----------------------------------------------------------------------------
 

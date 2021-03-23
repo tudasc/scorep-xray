@@ -378,6 +378,8 @@ be used to build Score-P are as follows:
                include and lib options directly.
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>
+  Please note that if a Score-P installation uses libbfd, the Score-P
+  instrumented binaries may only be distributed under GPLv3 licensing.
   --with-llvm[=<llvm-bindir>]
                Use an already installed LLVM, including libclang as we
                need libclang for library-wrapping. Provide path to
