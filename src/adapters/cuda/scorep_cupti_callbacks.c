@@ -227,8 +227,8 @@ exit_with_refs( uint64_t*           time,
 /******************************************************************************/
 
 /************************** CUDA function table *******************************/
-#define CUPTI_CALLBACKS_CUDA_API_FUNC_MAX 1024
-static SCOREP_RegionHandle scorep_cupti_callbacks_cuda_function_table[ CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
+#define SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX 1024 /* "educated guess" */
+static SCOREP_RegionHandle scorep_cupti_callbacks_cuda_function_table[ SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
 
 /**
  * This is a pseudo hash function for CUPTI callbacks. No real hash is needed,
@@ -244,42 +244,28 @@ static uint32_t
 cuda_api_function_hash( CUpti_CallbackDomain domain,
                         CUpti_CallbackId     callbackId )
 {
-    uint32_t index = 0;
+    uint32_t max    = SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX;
+    uint32_t offset = 0;
+    uint32_t index  = 0;
 
     /* Use an offset for the driver API functions, if CUDA runtime and driver
        API recording is enabled (uncommon case) */
     if ( scorep_record_runtime_api && scorep_record_driver_api )
     {
-        uint16_t offset = 0;
-
+        /* shift the driver API past the runtime API */
         if ( domain == CUPTI_CB_DOMAIN_DRIVER_API )
         {
-            offset = CUPTI_CALLBACKS_CUDA_API_FUNC_MAX / 2;
+            offset = SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX / 2;
         }
-
-        index = offset + ( uint32_t )callbackId;
-
-        if ( ( domain == CUPTI_CB_DOMAIN_RUNTIME_API ) &&
-             ( index >= ( uint32_t )( CUPTI_CALLBACKS_CUDA_API_FUNC_MAX - offset ) ) )
+        else
         {
-            index = 0;
-
-            UTILS_WARNING( "[CUPTI Callbacks] Hash table for CUDA runtime API "
-                           "function %d is to small!", callbackId );
+            max -= SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX / 2;
         }
     }
-    else
-    {
-        index = ( uint32_t )callbackId;
-    }
+    index = offset + ( uint32_t )callbackId;
 
-    if ( index >= CUPTI_CALLBACKS_CUDA_API_FUNC_MAX )
-    {
-        index = 0;
-
-        UTILS_WARNING( "[CUPTI Callbacks] Hash table for CUDA API "
-                       "function %d is to small!", callbackId );
-    }
+    UTILS_BUG_ON( index >= max,
+                  "Hash table for CUDA API function %d is to small!", callbackId );
 
     return ( uint32_t )index;
 }
@@ -2267,7 +2253,7 @@ scorep_cupti_callbacks_init( void )
 
         /* reset the hash table for CUDA API functions */
         memset( scorep_cupti_callbacks_cuda_function_table, SCOREP_INVALID_REGION,
-                CUPTI_CALLBACKS_CUDA_API_FUNC_MAX * sizeof( uint32_t ) );
+                SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX * sizeof( uint32_t ) );
 
         if ( scorep_cuda_record_kernels )
         {
