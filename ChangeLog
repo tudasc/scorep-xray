@@ -1,8 +1,10 @@
 ------------------- Upcoming version 8.0 -----------------------------
 
 Bugfixes:
+
 - Fix event sequence and attributes when recording non-blocking
   `lio_listio` operations.
+- Improve thread-safety of CUDA adapter.
 
 ------------------- Released version 7.0 -----------------------------
 
