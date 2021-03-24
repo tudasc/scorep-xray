@@ -42,6 +42,8 @@ public:
     bool
     checkCommand( const std::string& current,
                   const std::string& next ) override;
+    void
+    checkObjects( SCOREP_Instrumenter& instrumenter ) override;
     std::string
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
                        const std::string&           inputFile ) override;
