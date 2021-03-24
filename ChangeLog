@@ -4,7 +4,6 @@ Bugfixes:
 
 - Fix event sequence and attributes when recording non-blocking
   `lio_listio` operations.
-- Improve thread-safety of CUDA adapter.
 
 ------------------- Released version 7.0 -----------------------------
 
@@ -72,6 +71,7 @@ Bugfixes:
 - Improve error handling of calls to `realpath` on kernel files in
   `/proc` or `/sys` when recording I/O activities.
 - Allow to select 'runtime' wrapping of OpenCL in the instrumenter again.
+- Improve thread-safety of CUDA adapter.
 
 Compatibility:
 
