@@ -38,6 +38,7 @@ static bool mountinfo_initialized = false;
 
 struct SCOREP_MountInfo
 {
+    size_t                   mount_point_length;
     char*                    mount_point;
     char*                    mount_src;
     char*                    fstype;
@@ -94,10 +95,11 @@ read_mounts( void )
         SCOREP_MountInfo* mnt = malloc( sizeof( *mnt ) + sizeof( char ) * ( mount_point_len + fstype_len + mount_src_len ) );
         UTILS_ASSERT( mnt != NULL );
 
-        mnt->mount_point = ( char* )( mnt + 1 );
-        mnt->mount_src   = mnt->mount_point + mount_point_len;
-        mnt->fstype      = mnt->mount_src + mount_src_len;
-        mnt->next        = NULL;
+        mnt->mount_point_length = mount_point_len - 1;
+        mnt->mount_point        = ( char* )( mnt + 1 );
+        mnt->mount_src          = mnt->mount_point + mount_point_len;
+        mnt->fstype             = mnt->mount_src + mount_src_len;
+        mnt->next               = NULL;
 
         memcpy( mnt->mount_point, fs->mnt_dir, mount_point_len );
         memcpy( mnt->mount_src, fs->mnt_fsname, mount_src_len );
@@ -162,28 +164,55 @@ mountinfo_get_tree_node_handle( SCOREP_MountInfo* entry )
     return SCOREP_INVALID_SYSTEM_TREE_NODE;
 }
 
+/** Find a mount point for the given file path.
+ *
+ * Mount points are stored in reverse order, as later mounts overwrite previous
+ * one. Searching must stop on the first match and on full directory components,
+   not just a string prefix.
+ *
+ * Example for mount order:
+ * @code
+ *  $ mkdir -p foo/bar
+ *  $ mount -t tmpfs tmpfs foo/bar
+ *  $ touch foo/bar/baz
+ *  $ mount -t tmpfs tmpfs foo
+ *  $ mkdir -p foo/bar
+ *  $ touch foo/bar/baz
+ * @endcode
+ *
+ * The mount point for `foo/bar/baz` must be `foo`, not `foo/bar`.
+ *
+ * Example for directory components:
+ * @code
+ *  $ mkdir -p foo
+ *  $ mount -t tmpfs tmpfs foo
+ *  $ touch foo/bar
+ *  $ touch foobar
+ * @endcode
+ *
+ * The mount point for `foobar` must *not* be `foo` but some other directory
+ * above.
+ */
 static SCOREP_MountInfo*
 mountinfo_find_mount( const char* path )
 {
-    const int         path_len    = strlen( path );
-    int               bestmatch   = 0;
-    SCOREP_MountInfo* found_entry = NULL;
-    SCOREP_MountInfo* entry       = mount_stack_top;
+    size_t            path_len = strlen( path );
+    SCOREP_MountInfo* entry    = mount_stack_top;
 
     while ( entry != NULL )
     {
-        int tmp_len = strlen( entry->mount_point );
+        size_t mnt_len = entry->mount_point_length;
 
-        if ( ( bestmatch <= tmp_len && tmp_len <= path_len )
-             && ( strncmp( entry->mount_point, path, tmp_len ) == 0 ) )
+        if ( ( mnt_len <= path_len )
+             && ( strncmp( entry->mount_point, path, mnt_len ) == 0 )
+             && ( mnt_len == path_len || path[ mnt_len ] == '/' ) )
         {
-            bestmatch   = tmp_len;
-            found_entry = entry;
+            return entry;
         }
         entry = entry->next;
     }
 
-    return found_entry;
+    return NULL;
 }
 
 void
