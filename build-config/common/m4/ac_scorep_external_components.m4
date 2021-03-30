@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -36,7 +36,7 @@ dnl $1: name of the component, e.g., otf2, opari2.
 dnl $2: requested interface version to be provided by external $1 to build this package.
 dnl $3: requested revision to be provided by external $1 to build this package.
 dnl Note that the external's current:revision:age is
-dnl accepted if current >= $2 && $2 >= (current - age) && ($2 < current || $3 >= revision)
+dnl accepted if current >= $2 && $2 >= (current - age) && ($2 < current || $3 <= revision)
 dnl Macro will check for availability of $1-config. Intended to be
 dnl called from a toplevel configure. If with_val=yes, search for
 dnl $1-config in PATH, else search in with_val and with_val/bin. Sets
@@ -89,12 +89,10 @@ AS_IF([test "x${with_$1}" != "xno"],
                    # this is the version check:
                    AS_IF([test ${$1_max_provided_interface_version} -ge $2 && \
                           test $2 -ge ${$1_min_provided_interface_version} && \
-                          ( test $2 -lt ${$1_max_provided_interface_version} || test $3 -ge ${$1_provided_revision} ) ],
+                          ( test $2 -lt ${$1_max_provided_interface_version} || test $3 -le ${$1_provided_revision} ) ],
                        [AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}])],
-                       [AS_IF([test ${$1_provided_age} -eq 0],
-                           [AC_MSG_ERROR([provided interface version '${$1_max_provided_interface_version}:${$1_provided_revision}' of $1 not sufficient for AC_PACKAGE_NAME, provide '$2:$3' or compatible.])],
-                           [AC_MSG_ERROR([provided interface versions [[${$1_min_provided_interface_version},${$1_max_provided_interface_version}]] of $1 not sufficient for AC_PACKAGE_NAME, provide '$2:$3' or compatible.])
-])])])
+                       [AC_MSG_ERROR([provided library interface version '${$1_max_provided_interface_version}:${$1_provided_revision}:${$1_provided_age}' of $1 not sufficient for AC_PACKAGE_NAME, provide '$2:$3' or compatible. If in doubt what to do, contact <AC_PACKAGE_BUGREPORT>.])])
+                  ])
               ],
               [AC_MSG_ERROR([required option --interface-version not supported by $1-config.])])
          ],
