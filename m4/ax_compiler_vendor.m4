@@ -83,6 +83,7 @@ AC_DEFUN([AX_COMPILER_VENDOR], [dnl
 		sdcc:		SDCC,__SDCC
 		sx:		_SX
 		portland:	__PGI
+		flang:		__flang__,__PGLLVM__
 		gnu:		__GNUC__
 		sun:		__SUNPRO_C,__SUNPRO_CC,__SUNPRO_F90,__SUNPRO_F95
 		hp:		__HP_cc,__HP_aCC
@@ -118,6 +119,7 @@ AC_DEFUN([AX_COMPILER_VENDOR], [dnl
 
 	ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor=$vendor
 
+	flang_variants="classic: __PGLLVM__"
 	portland_variants="llvm: __PGLLVM__"
 	eval variants=\"\$${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor}_variants : NONE\"
 	for vartest in $variants; do
