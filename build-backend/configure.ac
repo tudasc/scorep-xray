@@ -216,7 +216,7 @@ AFS_SUMMARY_SECTION_END # OTF2 features
 opari2_fix_and_free_form_options=1
 AS_IF([test -n "${scorep_opari2_bindir}"],
       [# Require major version 2. It is very unlikely that there will a major version > 2.
-       AS_IF([opari2-config --version | GREP_OPTIONS= grep -v ^2],
+       AS_IF([${scorep_opari2_bindir}/opari2-config --version | GREP_OPTIONS= grep -v ^2],
            [AC_MSG_ERROR([Provided OPARI2 too old ($(opari2-config --version)), should be at least 2.0])])
        AC_SUBST([OPARI2_BINDIR],            ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["${scorep_opari2_bindir}"])
