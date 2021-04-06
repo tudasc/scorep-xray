@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2021,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
