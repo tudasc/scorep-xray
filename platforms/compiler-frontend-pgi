@@ -4,10 +4,10 @@ F77_FOR_BUILD=pgfortran
 FC_FOR_BUILD=pgfortran
 
 #CPPFLAGS_FOR_BUILD=
-# Provide flags as 16.1 is broken with the default '-O2 -g'.
-CFLAGS_FOR_BUILD=-O2 -gopt
-CXXFLAGS_FOR_BUILD=-O2 -gopt
-#FFLAGS_FOR_BUILD=
-#FCFLAGS_FOR_BUILD=
+# Use -gopt instead of -g as the latter caused problems with 16.1.
+CFLAGS_FOR_BUILD=-gopt -O2
+CXXFLAGS_FOR_BUILD=-gopt -O2
+FFLAGS_FOR_BUILD=-gopt -O2
+FCFLAGS_FOR_BUILD=-gopt -O2
 #LDFLAGS_FOR_BUILD=
 #LIBS_FOR_BUILD=
