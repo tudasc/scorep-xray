@@ -53,10 +53,6 @@
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request_mgmt.h"
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-#include "scorep_mpi_oa_profile_mgmt.h"
-#endif // !defined( SCOREP_MPI_NO_HOOKS )
-
 #include <stdlib.h>
 
 /**
@@ -249,10 +245,6 @@ mpi_subsystem_init_mpp( void )
 
 #if !defined( SCOREP_MPI_NO_RMA )
     scorep_mpi_win_init();
-#endif
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    scorep_mpiprofile_init();
 #endif
 
     return SCOREP_SUCCESS;

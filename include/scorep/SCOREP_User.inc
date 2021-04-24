@@ -79,12 +79,6 @@
 #define SCOREP_USER_REWIND_DEFINE( handle ) \
         SCOREP_USER_DECL_VAR( SCOREP_USER_REGION_HANDLE, handle, SCOREP_USER_INVALID_REGION )
 
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )\
-        call SCOREP_F_OaBegin( handle,name,type,"",__LINE__)
-
-#define SCOREP_USER_OA_PHASE_END( handle ) \
-        call SCOREP_F_OaEnd( handle )
-
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
         call SCOREP_F_Begin(handle,name,type,"",__LINE__)
 
@@ -175,8 +169,6 @@
 
 #define SCOREP_USER_REGION_DEFINE( handle )
 #define SCOREP_USER_REWIND_DEFINE( handle )
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )
-#define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )

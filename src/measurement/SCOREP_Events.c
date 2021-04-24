@@ -1495,14 +1495,3 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
     SCOREP_CALL_SUBSTRATE_MGMT( LeakedMemory, LEAKED_MEMORY,
                                 ( addrLeaked, bytesLeaked, substrateData ) );
 }
-
-
-/**
- * Returns the timestamp of the last triggered event on the current location.
- *
- */
-uint64_t
-SCOREP_GetLastTimeStamp( void )
-{
-    return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
-}

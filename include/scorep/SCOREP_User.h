@@ -95,120 +95,6 @@
  */
 
 /**
-    @def SCOREP_USER_OA_PHASE_BEGIN(handle, name, type)
-    This macro marks the start of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
-    SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
-    recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
-    iterations for iterative online analysis.
-    @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
-                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
-    @param name    A string containing the name of the new region. The name should be
-                   unique.
-    @param type    Specifies the type of the region. Possible values are
-                   SCOREP_USER_REGION_TYPE_COMMON,
-                   SCOREP_USER_REGION_TYPE_FUNCTION, SCOREP_USER_REGION_TYPE_LOOP,
-                   SCOREP_USER_REGION_TYPE_DYNAMIC, SCOREP_USER_REGION_TYPE_PHASE, or a
-                   combination of them.
-
-    C/C++ example:
-    @code
-    void main()
-    {
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      // application initialization
-
-      for ( ) // main loop of the application
-          {
-                  SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
-
-                  // do something
-
-                  SCOREP_USER_OA_PHASE_END( my_region_handle )
-          }
-
-          // application finalization
-    }
-    @endcode
-
-    Fortran example:
-    @code
-    program myProg
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      ! applications initialization
-
-          ! main loop of the application
-          do ...
-
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
-
-      ! do something
-
-      SCOREP_USER_OA_PHASE_END( my_region_handle )
-
-          enddo
-
-          !application finalization
-
-    end program myProg
-    @endcode
- */
-
-/**
-    @def SCOREP_USER_OA_PHASE_END(handle)
-    This macro marks the end of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
-    SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
-    recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
-    iterations for iterative online analysis.
-    @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
-                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
-    C/C++ example:
-    @code
-    void main()
-    {
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      // application initialization
-
-      for ( ) // main loop of the application
-          {
-                  SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
-
-                  // do something
-
-                  SCOREP_USER_OA_PHASE_END( my_region_handle )
-          }
-
-          // application finalization
-    }
-    @endcode
-
-    Fortran example:
-    @code
-    program myProg
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      ! applications initialization
-
-          ! main loop of the application
-          do ...
-
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
-
-      ! do something
-
-      SCOREP_USER_OA_PHASE_END( my_region_handle )
-
-          enddo
-
-          !application finalization
-
-    end program myProg
-    @endcode
- */
-
-/**
     @def SCOREP_USER_REGION_BEGIN(handle, name, type)
     This macro marks the start of a user defined region. The SCOREP_USER_REGION_BEGIN and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested.
@@ -642,13 +528,6 @@
 #define SCOREP_USER_FUNC_DEFINE()
 
 #ifdef SCOREP_USER_ENABLE
-
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) SCOREP_User_OaPhaseBegin( \
-        &handle, &SCOREP_User_LastFileName, &SCOREP_User_LastFileHandle, name, \
-        type, __FILE__, __LINE__ );
-
-#define SCOREP_USER_OA_PHASE_END( handle ) \
-    SCOREP_User_OaPhaseEnd( handle );
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
     static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
@@ -1499,8 +1378,6 @@
 #define SCOREP_USER_REGION( name, type )
 #define SCOREP_USER_REGION_DEFINE( handle )
 #define SCOREP_USER_REWIND_DEFINE( handle )
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )
-#define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )

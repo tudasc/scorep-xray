@@ -1817,8 +1817,8 @@ SCOREP_Metric_Read( SCOREP_Location* location )
 #undef read_strictly_synchronous_metrics
 #undef read_synchronous_metrics
 
-/** @brief  Reinitialize metric management. This functionality is used by
- *          Score-P Online Access to change recorded metrics between
+/** @brief  Reinitialize metric management. This functionality can be used by
+ *          online monitoring tools to change recorded metrics between
  *          separate phases of program execution.
  *
  *  @return It returns SCOREP_SUCCESS if successful,

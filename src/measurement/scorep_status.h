@@ -56,9 +56,6 @@ SCOREP_IsTracingEnabled( void );
 bool
 SCOREP_IsProfilingEnabled( void );
 
-bool
-SCOREP_IsOAEnabled( void );
-
 void
 SCOREP_Status_OnOtf2Flush( void );
 

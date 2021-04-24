@@ -57,13 +57,13 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
+#include "scorep_mpi_communicator.h"
+#include "scorep_mpi_request_mgmt.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_IoManagement.h>
-
-#include "scorep_mpi_communicator.h"
 
 /**
  * MPI-I/O hashtable for managing I/O split operations.

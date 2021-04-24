@@ -468,8 +468,7 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
 #else
     req->payload.p2p.datatype = datatype;
 #endif
-    req->payload.p2p.comm_handle         = SCOREP_MPI_COMM_HANDLE( comm );
-    req->payload.p2p.online_analysis_pod = NULL;
+    req->payload.p2p.comm_handle = SCOREP_MPI_COMM_HANDLE( comm );
 }
 
 void

@@ -31,8 +31,6 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_kokkos.hpp       \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mpp.cpp          \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mpp.hpp          \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_online_access.cpp \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_online_access.hpp \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_opari.cpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_opari.hpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_openacc.cpp      \

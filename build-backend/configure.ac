@@ -289,8 +289,6 @@ SCOREP_TIMER
 AC_SCOREP_COMPILER_INSTRUMENTATION
 SCOREP_CHECK_PREINCLUDES
 
-AC_SCOREP_ONLINE_ACCESS
-
 SCOREP_MEMORY_SUPPORT
 SCOREP_IQUOTE_SUPPORT
 SCOREP_GCC_ATOMIC_BUILTINS
@@ -451,8 +449,6 @@ AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \
                 [chmod +x ../test/filtering/run_filter_f_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_compiler_filter_test.sh], \
                 [chmod +x ../test/filtering/run_compiler_filter_test.sh])
-AC_CONFIG_FILES([../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh], \
-                [chmod +x ../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh])
 AC_CONFIG_FILES([../test/services/metric/run_rusage_serial_metric_test.sh], \
                 [chmod +x ../test/services/metric/run_rusage_serial_metric_test.sh])
 AC_CONFIG_FILES([../test/services/metric/run_rusage_openmp_metric_test.sh], \
@@ -467,12 +463,6 @@ AC_CONFIG_FILES([../test/services/metric/run_papi_openmp_per_process_metric_test
                 [chmod +x ../test/services/metric/run_papi_openmp_per_process_metric_test.sh])
 AC_CONFIG_FILES([../test/rewind/run_rewind_test.sh], \
                 [chmod +x ../test/rewind/run_rewind_test.sh])
-AC_CONFIG_FILES([../test/OA/OMP/run_oa_omp_test.sh], \
-                [chmod +x ../test/OA/OMP/run_oa_omp_test.sh])
-AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \
-                [chmod +x ../test/OA/serial/C/run_oa_c_test.sh])
-AC_CONFIG_FILES([../test/OA/serial/Fortran/run_oa_f_test.sh], \
-                [chmod +x ../test/OA/serial/Fortran/run_oa_f_test.sh])
 AC_CONFIG_FILES([../installcheck/constructor_checks/bin/run_constructor_checks.sh:../test/constructor_checks/run_constructor_checks.sh.in],
                 [chmod +x ../installcheck/constructor_checks/bin/run_constructor_checks.sh])
 AC_CONFIG_FILES([../installcheck/constructor_checks/generate_makefile.sh:../test/constructor_checks/generate_makefile.sh.in],

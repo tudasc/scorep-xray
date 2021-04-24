@@ -4,7 +4,6 @@ include ../src/measurement/Makefile.confvars.inc.am
 include ../src/measurement/profiling/Makefile.confvars.inc.am
 include ../src/measurement/tracing/Makefile.confvars.inc.am
 include ../src/measurement/substrates/Makefile.confvars.inc.am
-include ../src/measurement/online_access/Makefile.confvars.inc.am
 include ../src/measurement/filtering/Makefile.confvars.inc.am
 include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am
 include ../src/measurement/thread/create_wait/Makefile.confvars.inc.am

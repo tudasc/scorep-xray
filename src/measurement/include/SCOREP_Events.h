@@ -1323,14 +1323,6 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
                      size_t   bytesLeaked,
                      void*    substrateData[] );
 
-
-/**
- * Returns the time stamp of the last triggered event on the current location.
- *
- */
-uint64_t
-SCOREP_GetLastTimeStamp( void );
-
 /*@}*/
 
 #endif /* SCOREP_EVENTS_H */

@@ -2,8 +2,8 @@ Score-P
 -------
 The Score-P (Scalable Performance Measurement Infrastructure for
 Parallel Codes) measurement infrastructure is a highly scalable and
-easy-to-use tool suite for profiling, event trace recording, and
-online analysis of HPC applications.
+easy-to-use tool suite for profiling and event trace recording of
+HPC applications.
 
 To build Score-P you usually just need to do
 

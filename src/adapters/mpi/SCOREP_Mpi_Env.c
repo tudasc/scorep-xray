@@ -64,11 +64,6 @@
 #include <SCOREP_Events.h>
 
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-#include "scorep_mpi_oa_profile.h"
-#endif
-
-
 /**
  * Stores whether the application has called MPI_Finalize to
  * return the proper value if it calls MPI_Finalized afterwards.
@@ -305,9 +300,6 @@ MPI_Finalize( void )
     /* finalize MPI event handling */
     /* We need to make sure that our exit handler is called before the MPI one. */
     SCOREP_RegisterExitHandler();
-  #if !defined( SCOREP_MPI_NO_HOOKS )
-    scorep_mpiprofile_finalize();
-  #endif
 
     /* fake finalization, so that MPI can be used during Score-P finalization */
     SCOREP_ENTER_WRAPPED_REGION();

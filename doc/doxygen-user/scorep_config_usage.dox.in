@@ -63,9 +63,6 @@ scorep-config <command> [<options>]
    --nvcc     Convert flags to be suitable for the nvcc compiler.
    --static   Use only static Score-P libraries if possible.
    --dynamic  Use only dynamic Score-P libraries if possible.
-   --online-access|--noonline-access
-              Specifies whether online access (needed by Periscope) is
-              enabled. On default it is enabled.
    --compiler|--nocompiler
               Specifies whether compiler instrumentation is used.
               On default compiler instrumentation is enabled.

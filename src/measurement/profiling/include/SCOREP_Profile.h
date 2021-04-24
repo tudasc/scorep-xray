@@ -131,8 +131,7 @@ SCOREP_Profile_Initialize( size_t substrateId );
    are called, the profiling system needs to be reinitialized by a call to
    @ref SCOREP_Profile_Initialize.
    @return The substrate id that was passed to SCOREP_Profile_Initialize() in
-   order to reinitialize not using the subsystem mechanism (see
-   SCOREP_OA_RequestsSubmit()).
+   order to reinitialize not using the subsystem mechanism.
  */
 size_t
 SCOREP_Profile_Finalize( void );

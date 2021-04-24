@@ -47,7 +47,6 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Profile.h>
 #include <tracing/SCOREP_Tracing.h>
-#include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Filtering_Management.h>
 #include <SCOREP_Timer_Utils.h>
 #include "scorep_subsystem_management.h"
@@ -408,7 +407,6 @@ SCOREP_RegisterAllConfigVariables( void )
 
     SCOREP_Profile_Register();
     SCOREP_Tracing_Register();
-    SCOREP_OA_Register();
     SCOREP_Filtering_Register();
     SCOREP_Timer_Register();
     scorep_subsystems_register();

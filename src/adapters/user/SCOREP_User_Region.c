@@ -47,7 +47,6 @@
 #include <SCOREP_Filtering.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
-#include <SCOREP_OA_Functions.h>
 #include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
 #define SCOREP_DEBUG_MODULE_NAME USER
@@ -382,59 +381,6 @@ SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle )
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         scorep_user_rewind_region_enter( handle );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-
-void
-SCOREP_User_OaPhaseBegin( SCOREP_User_RegionHandle*    handle,
-                          const char**                 lastFileName,
-                          SCOREP_SourceFileHandle*     lastFile,
-                          const char*                  name,
-                          const SCOREP_User_RegionType regionType,
-                          const char*                  fileName,
-                          const uint32_t               lineNo )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        /* Make sure that the region is initialized */
-        if ( *handle == SCOREP_USER_INVALID_REGION )
-        {
-            scorep_user_region_init_c_cxx( handle, lastFileName, lastFile, name,
-                                           regionType, fileName, lineNo );
-        }
-
-        SCOREP_OA_PhaseBegin( ( *handle )->handle );
-
-        scorep_user_region_enter( *handle );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-
-void
-SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-
-    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        scorep_user_region_exit( handle );
-
-        SCOREP_OA_PhaseEnd( handle->handle );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

@@ -242,8 +242,6 @@ AC_SUBST([MPILIB_LDFLAGS], ["${MPILIB_LDFLAGS}"])
 SCOREP_TIMER
 AC_SCOREP_COMPILER_INSTRUMENTATION
 
-AC_SCOREP_ONLINE_ACCESS
-
 SCOREP_MEMORY_SUPPORT
 SCOREP_GCC_ATOMIC_BUILTINS
 
@@ -261,8 +259,6 @@ AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
 AC_CONFIG_FILES([../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh], \
                 [chmod +x ../test/mpi_omp/run_mpi_omp_sequence_definition_test.sh])
-AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
-                [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
 AC_CONFIG_FILES([run_io_mpi_test.sh:../test/io/mpi/run_io_mpi_test.sh.in],
                 [chmod +x run_io_mpi_test.sh])
 

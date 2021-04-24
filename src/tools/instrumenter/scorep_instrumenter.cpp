@@ -57,7 +57,6 @@
 #include "scorep_instrumenter_cuda.hpp"
 #include "scorep_instrumenter_mpp.hpp"
 #include "scorep_instrumenter_io.hpp"
-#include "scorep_instrumenter_online_access.hpp"
 #include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_preprocess.hpp"
 #include "scorep_instrumenter_pdt.hpp"
@@ -98,7 +97,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     m_kokkos_adapter     = new SCOREP_Instrumenter_KokkosAdapter();
     new SCOREP_Instrumenter_LinktimeWrappingAdapter();
-    new SCOREP_Instrumenter_OnlineAccess();
     new SCOREP_Instrumenter_LibwrapAdapter();
 
     /* pre-preprocess adapter order */

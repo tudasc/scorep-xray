@@ -43,11 +43,6 @@ ${proto:c}
     {
       if (event_gen_active_for_group)
         {
-          ${guard:hooks}
-            ${check:hooks}
-              ${call:posthook};
-          ${guard:end}
-
           SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
                                   root_loc,
                                   SCOREP_MPI_COLLECTIVE__${name|uppercase},

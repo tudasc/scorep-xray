@@ -6,9 +6,9 @@
 This document provides an introduction to
 @href{http://www.score-p.org,@scorep}: the @emph{Scalable Performance
     Measurement Infrastructure for Parallel Codes}. It is a software system
-that provides a measurement infrastructure for profiling, event trace
-recording, and online analysis of High Performance Computing (HPC)
-applications. It has been developed within the framework of the Scalable
+that provides a measurement infrastructure for profiling and event trace
+recording of High Performance Computing (HPC) applications.
+It has been developed within the framework of the Scalable
 Infrastructure for the Automated Performance Analysis of Parallel Codes
 (@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the
 German Federal Ministry of Education and Research
@@ -59,7 +59,6 @@ than one tool was to be employed.
 In this context, @scorep offers the user a maximum of convenience by
 providing the Opari2 instrumenter as a common infrastructure for a
 number of analysis tools like
-@href{http://www.lrr.in.tum.de/periscope,Periscope},
 @href{http://www.scalasca.org,Scalasca},
 @href{http://www.vampir.eu,Vampir}, and
 @href{http://www.cs.uoregon.edu/research/tau,Tau} that obviates the
@@ -204,15 +203,12 @@ suffer from significant perturbations. It is therefore advisable not
 to measure such regions.
 
 The next step is the analysis of the data obtained in the measurement
-phase. Traditionally this has mainly been done post mortem, i.\ e.\ after
-the execution of the instrumented application has ended. This is
-of course possible in @scorep too, but @scorep offers the additional
-option to go into the analysis in the so-called on-line mode, i.\ e.\ to
-investigate the performance data while the application is still
-running. If the collected data are event traces then a more detailed
-investigation is possible than in the case of profiles. In particular,
-one can then also look at more sophisticated dependencies between
-events happening on different processes.
+phase. Traditionally this is done post mortem, i.\ e.\ after
+the execution of the instrumented application has ended. If the
+collected data are event traces then a more detailed investigation
+is possible than in the case of profiles. In particular, one can
+then also look at more sophisticated dependencies between events
+happening on different processes.
 
 The optimization cycle then continues with the presentation of the
 analysis results in a report. Here it is important to eliminate the
@@ -318,18 +314,13 @@ become the default data source for future versions of both Vampir and
 Scalasca. In this way, the user is free to choose between these two
 complementary tools to investigate the trace files and may select the
 one that is more appropriate for the specific question at hand.
-As an alternative to writing the trace data to disk and evaluating
-them post mortem, it is also possible to directly hand over the data
-to on-line analysis tools like Periscope. The corresponding interface
-that allows this on-line access is also an integral part of @scorep.
 
 In profiling mode, the performance
 events are summarized at runtime separately for each call-path like in
 Scalasca. Additionally, support for phases, dynamic
 regions and parameter-based profiling has been integrated. The collected
 data is passed to the @scorep's profiling back-end CUBE4 for
-post mortem analysis using Scalasca or TAU or is used directly through
-the on-line access interface by Periscope. Also in profiling mode,
+post mortem analysis using Scalasca or TAU. Also in profiling mode,
 @scorep supports the automatic detection of MPI wait states. Usually
 such inefficiencies are important bottlenecks and are thoroughly
 investigated by means of automatic trace analysis and subsequent

@@ -149,10 +149,7 @@ enum
     "   --target   Get flags for specified target, e.g., mic, score.\n" \
     "   --nvcc     Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static   Use only static Score-P libraries if possible.\n" \
-    "   --dynamic  Use only dynamic Score-P libraries if possible.\n" \
-    "   --online-access|--noonline-access\n" \
-    "              Specifies whether online access (needed by Periscope) is\n" \
-    "              enabled. On default it is enabled.\n"
+    "   --dynamic  Use only dynamic Score-P libraries if possible.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
@@ -236,7 +233,6 @@ main( int    argc,
     bool                   install       = true;
     bool                   allow_dynamic = true;
     bool                   allow_static  = true;
-    bool                   online_access = true;
 #if defined( SCOREP_SHARED_BUILD )
     bool preload_libs = false;
 #endif
@@ -447,14 +443,6 @@ main( int    argc,
         {
             allow_dynamic = false;
         }
-        else if ( strcmp( argv[ i ], "--online-access" ) == 0 )
-        {
-            online_access = true;
-        }
-        else if ( strcmp( argv[ i ], "--noonline-access" ) == 0 )
-        {
-            online_access = false;
-        }
         else if ( strcmp( argv[ i ], "--adapter-init" ) == 0 )
         {
             action = ACTION_ADAPTER_INIT;
@@ -628,7 +616,7 @@ main( int    argc,
     std::string                       str;
 
     SCOREP_Config_Adapter::addLibsAll( libs, deps );
-    SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
+    SCOREP_Config_MppSystem::current->addLibs( libs, deps );
     SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
 
 #if defined( SCOREP_SHARED_BUILD )

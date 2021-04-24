@@ -50,10 +50,6 @@
 #define SCOREP_MPI_CONST_DECL
 #endif
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-#include "scorep_mpi_oa_hooks.h"
-#endif
-
 /** @defgroup MPI_Wrapper SCOREP MPI wrapper library
    The MPI wrapper provides an implementation of the MPI functions which use the
    PMPI functions internally to provide the desired MPI functionality. Additionally,
@@ -107,10 +103,6 @@
  */
 extern bool scorep_mpi_memory_recording;
 
-/** Flag to indicate whether MPI Profiling hooks are turned on or off.
- */
-extern bool scorep_mpi_hooks_on;
-
 extern int scorep_mpi_status_size;
 
 /**
@@ -154,21 +146,6 @@ extern bool scorep_mpi_enable_topologies;
  */
 #define SCOREP_MPI_DISABLE_GROUP( group ) \
     ( scorep_mpi_enabled = scorep_mpi_enabled & ( ~( group ) ) )
-
-/** @def SCOREP_IS_MPI_HOOKS_ON
-    Check whether MPI profiling hooks are enabled globally.
- */
-#define SCOREP_IS_MPI_HOOKS_ON scorep_mpi_hooks_on
-
-/** @def SCOREP_MPI_HOOKS_ON
-    Turn on MPI Profiling hooks inside MPI adapter.
- */
-#define SCOREP_MPI_HOOKS_ON scorep_mpi_hooks_on = true
-
-/** @def SCOREP_MPI_HOOKS_OFF
-    Turn off MPI Profiling hooks inside MPI adapter.
- */
-#define SCOREP_MPI_HOOKS_OFF scorep_mpi_hooks_on = false
 
 /**
  *  Metric which tracks allocations done by calls to the MPI API, i.e.,

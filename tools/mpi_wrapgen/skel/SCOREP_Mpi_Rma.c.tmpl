@@ -59,6 +59,7 @@
 
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include "scorep_mpi_request_mgmt.h"
 #include "scorep_mpi_rma_request.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>

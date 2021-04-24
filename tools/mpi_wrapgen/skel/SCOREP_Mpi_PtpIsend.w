@@ -15,10 +15,6 @@ ${proto:c}
   ${rtype}            return_val;
   SCOREP_MpiRequestId reqid;
 
-${guard:hooks}
-  ${declarehooks};
-${guard:end}
-
   int sz;
   if (event_gen_active)
   {
@@ -28,11 +24,6 @@ ${guard:end}
     if (event_gen_active_for_group)
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
-
-${guard:hooks}
-      ${check:hooks}
-          ${call:prehook};
-${guard:end}
 
       if (dest != MPI_PROC_NULL)
       {
@@ -64,11 +55,6 @@ ${guard:end}
       {
          scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                              tag, dest, (uint64_t)count*sz, datatype, comm, reqid);
-
-${guard:hooks}
-        ${check:hooks}
-          ${call:posthook};
-${guard:end}
       }
 
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
