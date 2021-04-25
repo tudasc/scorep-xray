@@ -39,7 +39,6 @@ libscorep_sampling_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include     \
     $(UTILS_CPPFLAGS)                     \
     -I$(INC_DIR_COMMON_HASH)              \
-    -I$(INC_DIR_MUTEX)                    \
     -I$(INC_DIR_DEFINITIONS)              \
     @SAMPLING_CPPFLAGS@
 

@@ -52,7 +52,6 @@ libscorep_adapter_opencl_mgmt_common_cppflags = \
     -I$(INC_ROOT)src/adapters/include     \
     -I$(INC_ROOT)src/services/include     \
     $(UTILS_CPPFLAGS)                     \
-    -I$(INC_DIR_MUTEX)                    \
     -I$(INC_DIR_COMMON_HASH)              \
     -I$(INC_DIR_DEFINITIONS)              \
     @OPENCL_CPPFLAGS@                     \
@@ -121,7 +120,6 @@ libscorep_adapter_opencl_event_common_cppflags = \
     -I$(INC_ROOT)src/services/include        \
     -I$(INC_ROOT)src/adapters/opencl         \
     -I$(INC_DIR_COMMON_HASH)                 \
-    -I$(INC_DIR_MUTEX)                       \
     -I$(INC_DIR_DEFINITIONS)                 \
     @OPENCL_CPPFLAGS@
 

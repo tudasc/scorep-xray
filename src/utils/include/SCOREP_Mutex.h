@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2020,
+ * Copyright (c) 2009-2011, 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -52,8 +52,6 @@
  */
 
 
-#include <SCOREP_ErrorCodes.h>
-
 #include <stdbool.h>
 
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
@@ -76,15 +74,23 @@ typedef bool SCOREP_Mutex;
 #define SCOREP_MUTEX_INIT false
 
 
-STATIC_INLINE SCOREP_ErrorCode
+STATIC_INLINE void
 SCOREP_MutexLock( SCOREP_Mutex* scorepMutex );
 
-STATIC_INLINE SCOREP_ErrorCode
+/* Try to acquire the lock, returns true on success */
+STATIC_INLINE bool
+SCOREP_MutexTrylock( SCOREP_Mutex* scorepMutex );
+
+STATIC_INLINE void
 SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
 
+/* Wait for a mutex state to be 'unlocked' */
+STATIC_INLINE void
+SCOREP_MutexWait( SCOREP_Mutex*          scorepMutex,
+                  SCOREP_Atomic_Memorder memorder );
 
 #if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
-#include "../scorep_mutex.inc.c"
+#include "../mutex/scorep_mutex.inc.c"
 #endif /* SCOREP_GCC_ATOMIC_BUILTINS */
 
 #undef STATIC_INLINE

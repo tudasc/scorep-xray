@@ -52,7 +52,6 @@ libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include    \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
-    -I$(INC_DIR_MUTEX)                   \
     -I$(INC_ROOT)src/services/include    \
     -I$(INC_DIR_DEFINITIONS)             \
     @SCOREP_TIMER_CPPFLAGS@
@@ -218,7 +217,6 @@ libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_ROOT)src/services/include          \
     -I$(PUBLIC_INC_DIR)                        \
-    -I$(INC_DIR_MUTEX)                         \
     -I$(INC_DIR_DEFINITIONS)
 
 ## Disable mpi profiling hooks

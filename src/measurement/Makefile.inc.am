@@ -99,7 +99,6 @@ libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_THREAD) \
-    -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS) \
     @SCOREP_TIMER_CPPFLAGS@ \
@@ -110,7 +109,6 @@ libscorep_measurement_libwrap_la_SOURCES = \
     $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c
 libscorep_measurement_libwrap_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
-    -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS) \
     $(SCOREP_DLFCN_RTLD_NEXT_CPPFLAGS)
 
@@ -160,7 +158,6 @@ libscorep_constructor_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/adapters/compiler \
-    -I$(INC_DIR_MUTEX) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_DEFINITIONS)

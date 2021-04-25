@@ -60,7 +60,6 @@ libscorep_adapter_opari2_openmp_mgmt_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                            \
     -I$(INC_DIR_DEFINITIONS)                       \
     $(UTILS_CPPFLAGS)                              \
-    -I$(INC_DIR_MUTEX)                             \
     -I$(INC_DIR_THREAD)                            \
     -I@OPARI2_REGION_INFO_INC_DIR@                 \
     @OPARI2_CPPFLAGS@
@@ -93,7 +92,6 @@ libscorep_adapter_opari2_openmp_event_la_CPPFLAGS = \
     -I$(INC_DIR_DEFINITIONS)                        \
     $(UTILS_CPPFLAGS)                               \
     -I$(INC_DIR_THREAD_FORK_JOIN)                   \
-    -I$(INC_DIR_MUTEX)                              \
     -I@OPARI2_REGION_INFO_INC_DIR@                  \
     @OPARI2_CPPFLAGS@
 
@@ -179,7 +177,6 @@ SCOREP_OPARI2_OPENMP_FORTRAN_FLAGS =     \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
     $(UTILS_CPPFLAGS)                    \
-    -I$(INC_DIR_MUTEX)                   \
     -I@OPARI2_REGION_INFO_INC_DIR@       \
     @OPARI2_CPPFLAGS@
 

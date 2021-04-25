@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2016, 2018, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -125,14 +125,12 @@ scorep_location_create_location( SCOREP_LocationType type,
     new_location->type = type;
     new_location->next = NULL;
 
-    SCOREP_ErrorCode result = SCOREP_MutexLock( &scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
+    SCOREP_MutexLock( &scorep_location_list_mutex );
 
     *location_list_tail = new_location;
     location_list_tail  = &new_location->next;
 
-    result = SCOREP_MutexUnlock( &scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
+    SCOREP_MutexUnlock( &scorep_location_list_mutex );
 
     return new_location;
 }
@@ -180,8 +178,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 {
     static SCOREP_Location* per_process_metrics_location;
 
-    SCOREP_ErrorCode result = SCOREP_MutexLock( &per_process_metrics_location_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot lock per_process_metrics_location_mutex" );
+    SCOREP_MutexLock( &per_process_metrics_location_mutex );
 
     if ( !per_process_metrics_location )
     {
@@ -203,8 +200,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 void
 SCOREP_Location_ReleasePerProcessMetricsLocation( void )
 {
-    SCOREP_ErrorCode result = SCOREP_MutexUnlock( &per_process_metrics_location_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS, "Cannot unlock per_process_metrics_location_mutex" );
+    SCOREP_MutexUnlock( &per_process_metrics_location_mutex );
 }
 
 
