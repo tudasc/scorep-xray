@@ -54,8 +54,9 @@
 
 #include <stdbool.h>
 
-#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
 #include <SCOREP_Atomic.h>
+
+#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
 #include <stdlib.h>
 #include <UTILS_Error.h>
 #define STATIC_INLINE static inline
