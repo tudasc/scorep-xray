@@ -385,6 +385,15 @@ provides support for instrumentation of C/C++ codes.
   Sec. @secref{filtering}).
 @endparblock
 
+@parblock
+@note
+  CMake marks headers from imported targets as @emph{system headers}, which
+  consequently marks functions contained in these headers uninstrumentable by
+  the GCC compiler instrumentation. The CMake option
+  @verb{-DCMAKE_NO_SYSTEM_FROM_IMPORTED} can be used to circumvent this marking,
+  thus ensuring full instrumentation coverage of these targets, if this is
+  desired (see previous note).
+@endparblock
 
 Names provided for instrumented routines depend on the compiler, which may
 add underscores and other decorations to Fortran and C++ routine names, and
