@@ -365,7 +365,7 @@ provides support for instrumentation of C/C++ codes.
 @note
   As an exception, instrumentation via the GCC plug-in or Intel
   compilers support all filtering features when using the @scorep
-  option @verb{--instrument-filter=<file>}`. This option may require
+  option @verb{--instrument-filter=<file>}. This option may require
   an absolute file path. Note that the GCC
   plug-in instrumentation by default does not instrument functions
   declared as @verb{inline}. By providing a filter that matches
