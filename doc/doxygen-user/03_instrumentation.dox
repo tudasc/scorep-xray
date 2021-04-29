@@ -283,11 +283,14 @@ instrumentation, respectively.  The default set of instrumented MPI
 library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
 
+@parblock
 @note
   To fine-tune instrumentation of OpenMP regions, use the
   <tt>\--opari=<parameter-list></tt> option. For available parameters please
   refer to the OPARI2 manual.
+@endparblock
 
+@parblock
 @note
   Since Score-P version 1.3 there were two variants of internal
   OpenMP data handling, namely @verb{--thread=omp:pomp_tpd} and
@@ -297,6 +300,7 @@ parallel constructs and API calls are instrumented by default.
   variants by only one: @verb{--thread=omp}. The possible
   options are detected at configure time. If both are available,
   the ancestry mechanism will be used by default.
+@endparblock
 
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>\--compiler</tt>).
@@ -356,6 +360,7 @@ Fortran codes, except for the SUN Studio compilers which only provide
 appropriate support in their Fortran compiler and the Clang compiler which
 provides support for instrumentation of C/C++ codes.
 
+@parblock
 @note
   The automatic compiler instrumentation might create a significant relative
   measurement overhead on short function calls. This can impact the overall
@@ -364,7 +369,9 @@ provides support for instrumentation of C/C++ codes.
   functions are also instrumented by the compiler. Currently, it is not
   possible to prevent the instrumentation of specific functions on all
   platforms when using automatic compiler instrumentation.
+@endparblock
 
+@parblock
 @note
   As an exception, instrumentation via the GCC plug-in or Intel
   compilers support all filtering features when using the @scorep
@@ -376,6 +383,7 @@ provides support for instrumentation of C/C++ codes.
   default behavior can be overridden. This @verb{INCLUDE} is not
   allowed to be the @emph{match-all} rule @verb{INCLUDE *} (see
   Sec. @secref{filtering}).
+@endparblock
 
 
 Names provided for instrumented routines depend on the compiler, which may
@@ -578,15 +586,19 @@ Fortran:
     end subroutine instrument_end
 @endcode
 
+@parblock
 @note
   When using the "BY_NAME" macros in Fortran, be aware of section 12.4.1.1 of the
   F90/95/2003 standard. If you pass <i>name</i> through a dummy argument of a subroutine
   the length <i>len</i> of the character array <i>name</i> must be exactly the size of the
   actual string passed. In the Fortran examples above this is assured by `len=*`.
+@endparblock
 
+@parblock
 @note
   To ensure correct nesting, avoid automatic compiler instrumentation for these
   helper functions.
+@endparblock
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
@@ -660,15 +672,19 @@ as well as the macro
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
+@parblock
 @note
   If a region that has parameters triggers a user metric, the metric must be
   triggered after the parameters are provided.
+@endparblock
 
+@parblock
 @note
   The order of the parameters is important. If the region will have different
   orders for the same parameters, than only one will survive in the measurement
   data. Also in Cube, parameters are grouped into numeric and string types,
   thus the order will may be different than the instrumentation.
+@endparblock
 
 @section control_instrumentation Measurement Control Instrumentation
 @seclabel{control_instrumentation}
