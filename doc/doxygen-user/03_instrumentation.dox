@@ -283,18 +283,24 @@ instrumentation, respectively.  The default set of instrumented MPI
 library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
 
-@note To fine-tune instrumentation of OpenMP regions, use the
-      <tt>\--opari=<parameter-list></tt> option. For available parameters please
-      refer to the OPARI2 manual.
+@parblock
+@note
+  To fine-tune instrumentation of OpenMP regions, use the
+  <tt>\--opari=<parameter-list></tt> option. For available parameters please
+  refer to the OPARI2 manual.
+@endparblock
 
-@note Since Score-P version 1.3 there were two variants of internal
-      OpenMP data handling, namely @verb{--thread=omp:pomp_tpd} and
-      @verb{--thread=omp:ancestry}, depending on the functionality
-      available on the target system. From Score-P version 4 on, due
-      to internal refactorings, we replace the two OpenMP threading
-      variants by only one: @verb{--thread=omp}. The possible
-      options are detected at configure time. If both are available,
-      the ancestry mechanism will be used by default.
+@parblock
+@note
+  Since Score-P version 1.3 there were two variants of internal
+  OpenMP data handling, namely @verb{--thread=omp:pomp_tpd} and
+  @verb{--thread=omp:ancestry}, depending on the functionality
+  available on the target system. From Score-P version 4 on, due
+  to internal refactorings, we replace the two OpenMP threading
+  variants by only one: @verb{--thread=omp}. The possible
+  options are detected at configure time. If both are available,
+  the ancestry mechanism will be used by default.
+@endparblock
 
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>\--compiler</tt>).
@@ -316,9 +322,10 @@ it is possible to disable default instrumentation with <tt>\--nocompiler</tt>,
 performed, this can help verify that the @scorep instrumenter correctly
 handles the compile/link commands.
 
-@note Disabling @openmp in the instrumenter for @openmp applications will cause
-      errors during program execution if any event occurs inside of a parallel
-      region.
+@note
+  Disabling @openmp in the instrumenter for @openmp applications will cause
+  errors during program execution if any event occurs inside of a parallel
+  region.
 
 @section compiler_instrumentation Automatic Compiler Instrumentation
 @seclabel{compiler_instrumentation}
@@ -353,6 +360,7 @@ Fortran codes, except for the SUN Studio compilers which only provide
 appropriate support in their Fortran compiler and the Clang compiler which
 provides support for instrumentation of C/C++ codes.
 
+@parblock
 @note
   The automatic compiler instrumentation might create a significant relative
   measurement overhead on short function calls. This can impact the overall
@@ -361,11 +369,13 @@ provides support for instrumentation of C/C++ codes.
   functions are also instrumented by the compiler. Currently, it is not
   possible to prevent the instrumentation of specific functions on all
   platforms when using automatic compiler instrumentation.
+@endparblock
 
+@parblock
 @note
   As an exception, instrumentation via the GCC plug-in or Intel
   compilers support all filtering features when using the @scorep
-  option @verb{--instrument-filter=<file>}`. This option may require
+  option @verb{--instrument-filter=<file>}. This option may require
   an absolute file path. Note that the GCC
   plug-in instrumentation by default does not instrument functions
   declared as @verb{inline}. By providing a filter that matches
@@ -373,7 +383,17 @@ provides support for instrumentation of C/C++ codes.
   default behavior can be overridden. This @verb{INCLUDE} is not
   allowed to be the @emph{match-all} rule @verb{INCLUDE *} (see
   Sec. @secref{filtering}).
+@endparblock
 
+@parblock
+@note
+  CMake marks headers from imported targets as @emph{system headers}, which
+  consequently marks functions contained in these headers uninstrumentable by
+  the GCC compiler instrumentation. The CMake option
+  @verb{-DCMAKE_NO_SYSTEM_FROM_IMPORTED} can be used to circumvent this marking,
+  thus ensuring full instrumentation coverage of these targets, if this is
+  desired (see previous note).
+@endparblock
 
 Names provided for instrumented routines depend on the compiler, which may
 add underscores and other decorations to Fortran and C++ routine names, and
@@ -575,13 +595,19 @@ Fortran:
     end subroutine instrument_end
 @endcode
 
-@note When using the "BY_NAME" macros in Fortran, be aware of section 12.4.1.1 of the
-      F90/95/2003 standard. If you pass <i>name</i> through a dummy argument of a subroutine
-      the length <i>len</i> of the character array <i>name</i> must be exactly the size of the
-      actual string passed. In the Fortran examples above this is assured by `len=*`.
+@parblock
+@note
+  When using the "BY_NAME" macros in Fortran, be aware of section 12.4.1.1 of the
+  F90/95/2003 standard. If you pass <i>name</i> through a dummy argument of a subroutine
+  the length <i>len</i> of the character array <i>name</i> must be exactly the size of the
+  actual string passed. In the Fortran examples above this is assured by `len=*`.
+@endparblock
 
-@note To ensure correct nesting, avoid automatic compiler instrumentation for these helper
-      functions.
+@parblock
+@note
+  To ensure correct nesting, avoid automatic compiler instrumentation for these
+  helper functions.
+@endparblock
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
@@ -655,13 +681,19 @@ as well as the macro
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
-@note If a region that has parameters triggers a user metric, the metric must
-      be triggered after the parameters are provided.
+@parblock
+@note
+  If a region that has parameters triggers a user metric, the metric must be
+  triggered after the parameters are provided.
+@endparblock
 
-@note The order of the parameters is important. If the region will have different
-      orders for the same parameters, than only one will survive in the measurement
-      data. Also in Cube, parameters are grouped into numeric and string types,
-      thus the order will may be different than the instrumentation.
+@parblock
+@note
+  The order of the parameters is important. If the region will have different
+  orders for the same parameters, than only one will survive in the measurement
+  data. Also in Cube, parameters are grouped into numeric and string types,
+  thus the order will may be different than the instrumentation.
+@endparblock
 
 @section control_instrumentation Measurement Control Instrumentation
 @seclabel{control_instrumentation}
@@ -690,22 +722,24 @@ the recording switch is process-local, and effects all threads on the process,
 it can only be initiated outside of OpenMP parallel regions.  Switching recording
 on/off is done independently on each MPI process without synchronization.
 
-@note Switching recording on/off may result in inconsistent traces or profiles,
-      if not applied with care. In particular, if communication is recorded incomplete
-      (e.g., if the send is missing but the corresponding receive event is recorded)
-      it may result in errors during execution or analysis. Furthermore, it is not
-      possible to switch recording on/off from within parallel OpenMP regions. We
-      recommend to use the selective recording interface, instead of the manual on/off
-      switch whenever possible. Special care is required in combination with
-      selective recording (see Section @secref{selective_recording}, which also
-      switches recording on/off.
+@note
+  Switching recording on/off may result in inconsistent traces or profiles,
+  if not applied with care. In particular, if communication is recorded incomplete
+  (e.g., if the send is missing but the corresponding receive event is recorded)
+  it may result in errors during execution or analysis. Furthermore, it is not
+  possible to switch recording on/off from within parallel OpenMP regions. We
+  recommend to use the selective recording interface, instead of the manual on/off
+  switch whenever possible. Special care is required in combination with
+  selective recording (see Section @secref{selective_recording}, which also
+  switches recording on/off.
 
 @section pomp_instrumentation Semi-Automatic Instrumentation of @pomp2 User Regions
 @seclabel{pomp_instrumentation}
 
-@note Since @scorep version 1.4, OpenMP instrumentation using @opari2
-no longer activates @pomp2 instrumentation implicitly. You need to
-explicitly add the <tt>\--pomp</tt> option to the @scorep instrumenter.
+@note
+  Since @scorep version 1.4, OpenMP instrumentation using @opari2
+  no longer activates @pomp2 instrumentation implicitly. You need to
+  explicitly add the <tt>\--pomp</tt> option to the @scorep instrumenter.
 
 If you manually instrument the desired user functions and regions of
 your application source files using the @pomp2 <tt>INST</tt>
@@ -811,8 +845,9 @@ before the preprocessing happens. In this case constructs and regions in header
 files, macros, or templates are not instrumented. Conditional compilation directives
 around constructs may also lead to broken instrumentation.
 
-@note If a parallel region is not instrumented, the application will
-      crash during runtime.
+@note
+  If a parallel region is not instrumented, the application will crash during
+  runtime.
 
 The preprocessing does not work in combination with PDT source
 code instrumentation. Thus, if PDT instrumentation is enabled, it changes
