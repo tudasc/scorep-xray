@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020,
+ * Copyright (c) 2009-2017, 2020-2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -52,7 +52,6 @@
 #include <UTILS_IO.h>
 
 #include "scorep_instrumenter.hpp"
-//#include "scorep_instrumenter_cobi.hpp"
 #include "scorep_instrumenter_compiler.hpp"
 #include "scorep_instrumenter_cuda.hpp"
 #include "scorep_instrumenter_mpp.hpp"
@@ -84,7 +83,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_command_line( command_line )
 {
     /* Create adapters */
-    //m_cobi_adapter       = new SCOREP_Instrumenter_CobiAdapter();
     m_compiler_adapter   = new SCOREP_Instrumenter_CompilerAdapter();
     m_cuda_adapter       = new SCOREP_Instrumenter_CudaAdapter();
     m_opari_adapter      = new SCOREP_Instrumenter_OpariAdapter();
@@ -110,9 +108,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     /* pre-link adapter order */
     m_prelink_adapters.push_back( m_compiler_adapter );
     m_prelink_adapters.push_back( m_opari_adapter );
-
-    /* post-link adapter order */
-    //m_postlink_adapters.push_back( m_cobi_adapter );
 
     /* Create paradigm groups */
     m_thread = new SCOREP_Instrumenter_Thread();

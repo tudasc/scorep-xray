@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014, 2016-2017,
+ * Copyright (c) 2014, 2016-2017, 2021,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -51,7 +51,6 @@ SCOREP_Instrumenter_PdtAdapter::SCOREP_Instrumenter_PdtAdapter( void )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS );
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_USER );
-//    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
 
     m_pdt_bin_path    = PDT;

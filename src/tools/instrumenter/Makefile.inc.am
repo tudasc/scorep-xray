@@ -76,16 +76,3 @@ endif HAVE_SCOREP_PDT
 
 EXTRA_DIST += \
     $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf
-
-
-if HAVE_COBI
-scorep_SOURCES += \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.cpp \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.hpp
-
-EXTRA_DIST += \
-    $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in \
-    $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
-
-BUILT_SOURCES += create-cobi-config-local
-endif
