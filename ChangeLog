@@ -4,6 +4,13 @@ User tools and API improvements and changes:
 
 - Support for the online access interface was removed.
 
+------------------- Upcoming version 7.1 -----------------------------
+
+Bug fixes:
+
+- Properly handle `nvcc` compiler flags beginning with -o that do
+  not set output files.
+
 ------------------- Released version 7.0 -----------------------------
 
 Features and improvements:

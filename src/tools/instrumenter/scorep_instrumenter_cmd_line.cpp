@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -729,12 +729,12 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
 
     /* Some stupid compilers have options starting with -o that do not
        specify an output filename */
-    else if ( m_install_data.isArgWithO( current ) )
+    else if ( m_install_data.isArgWithO( current ) ||
+              is_nvcc_dash_o_flag( current ) )
     {
         *m_current_flags += " " + current;
         return scorep_parse_mode_command;
     }
-
     else if ( current[ 0 ] == '-' )
     {
         /* Check standard parameters */
@@ -910,4 +910,16 @@ SCOREP_Instrumenter_CmdLine::is_nvcc_compile_flag( const std::string& flag )
            flag == "--fatbin" ||
            flag == "-cuda" ||
            flag == "--cuda";
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::is_nvcc_dash_o_flag( const std::string& flag )
+{
+    if ( !isNvcc( getCompilerName() ) )
+    {
+        return false;
+    }
+    return flag == "-odir" ||
+           flag == "-objtemp" ||
+           flag == "-opt-info";
 }

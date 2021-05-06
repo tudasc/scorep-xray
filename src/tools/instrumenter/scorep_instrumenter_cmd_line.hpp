@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016-2017,
+ * Copyright (c) 2009-2014, 2016-2017, 2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -367,6 +367,16 @@ private:
 
     bool
     is_nvcc_compile_flag( const std::string& flag );
+
+    /**
+       Checks whether a flag begins with, but is not,
+       `-o` and is known to nvcc.
+       Will look up compiler name to see if it's nvcc.
+       @param flag The flag
+     */
+
+    bool
+    is_nvcc_dash_o_flag( const std::string& flag );
 
     /* ***************************************************** Private members */
 private:
