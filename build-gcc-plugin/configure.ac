@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2012-2015, 2018-2019,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015, 2018,
+dnl Copyright (c) 2015, 2018, 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -118,10 +118,8 @@ AX_COMPILER_VENDOR
 AC_LANG_POP([C])
 
 # Checks for programs.
-AC_PROG_CC
-AC_SCOREP_PROG_CC_C99
-AC_PROG_CXX
-AM_PROG_CC_C_O
+AFS_PROG_CC([99])
+AFS_PROG_CXX
 
 LT_PREREQ([2.4.6])
 LT_INIT([shared disable-static])

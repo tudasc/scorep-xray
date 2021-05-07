@@ -30,6 +30,7 @@
 # LICENSE
 #
 #   Copyright (c) 2014 Bastien ROUCARIES <roucaries.bastien+autoconf@gmail.com>
+#   Copyright (c) 2021 Markus Geimer <m.geimer@fz-juelich.de>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
@@ -155,10 +156,16 @@ AC_DEFUN([_AX_COMPILER_VERSION_CRAY],[
 
 # for fujitsu
 AC_DEFUN([_AX_COMPILER_VERSION_FUJITSU],[
-  AC_COMPUTE_INT(ax_cv_[]_AC_LANG_ABBREV[]_compiler_version,
-                 __FCC_VERSION,,
-		 AC_MSG_WARN([[[$0]] unknown fujitsu release])
-		 ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="")
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
+    [__FCC_major__],,
+    AC_MSG_FAILURE([[[$0]] unknown fujitsu major]))
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
+    [__FCC_minor__],,
+    AC_MSG_FAILURE([[[$0]] unknown fujitsu minor]))
+  AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
+    [__FCC_patchlevel__],,
+    AC_MSG_FAILURE([[[$0]] unknown fujitsu patch level]))
+  ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch"
   ])
 
 # for GNU

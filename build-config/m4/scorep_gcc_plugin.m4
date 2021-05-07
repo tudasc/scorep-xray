@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2012-2016,
 dnl Technische Universitaet Dresden, Germany
 dnl
+dnl Copyright (c) 2021,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -230,7 +233,7 @@ class B : A { void m( int, double ) override {} };
 ]])], [AC_DEFINE([HAVE_BUILTIN_UNREACHABLE], [1], [Compiler provides __builtin_unreachable()])])
 
     AC_LANG_POP([C++])
-    AFS_SUMMARY([Compiler used], [$CXX])])
+    AFS_PROG_CXX_SUMMARY
 ])
 
 AS_UNSET([scorep_gcc_plugin_includedir])
