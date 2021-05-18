@@ -10,6 +10,9 @@ Bug fixes:
 
 - Properly handle `nvcc` compiler flags beginning with -o that do
   not set output files.
+- Ensure that Score-P's compiler wrappers are not called recursively. This was
+  possible as a result of  `scorep-nvcc` using a `scorep-*` host
+  compiler wrapper.
 
 ------------------- Released version 7.0 -----------------------------
 
