@@ -79,7 +79,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/share/bg-gnu/platform-shmem-user-provided         \
               $(srcdir)/share/bg-gnu/README                               \
               $(srcdir)/THANKS                                            \
-              $(srcdir)/OPEN_ISSUES
+              $(srcdir)/OPEN_ISSUES                                       \
+              $(srcdir)/build-config/downloads
 
 
 if ! CROSS_BUILD

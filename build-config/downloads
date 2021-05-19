@@ -1,0 +1,7 @@
+# build-config/downloads
+
+# A set of variable definitions sourced during configure for packages
+# that might get downloaded. The variables might end up in
+# configure-time generated Makefiles and configure's summary
+# output. Keep in mind that when modifying the generated Makefiles,
+# the summary output might become outdated.
