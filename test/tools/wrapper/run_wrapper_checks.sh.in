@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2017,
@@ -58,25 +58,59 @@ EOS
     chmod 755 bin/$1
 }
 
+create_scorep_script()
+{
+cat >bin/$1 <<EOF
+#!/bin/sh
+outstr=
+callstr=
+for arg in "\$@"
+do
+    if [ \$arg != \${arg##--} ]; then
+        outstr="\$outstr \$arg"
+    else
+        callstr="\$callstr \$arg"
+    fi
+done
+echo "$1" \$outstr \$( \$callstr )
+EOF
+    chmod 755 bin/$1
+}
+create_wrapper_script()
+{
+cat >bin/$1 <<EOS
+#!/bin/sh
+
+echo "$1" \$(\$@)
+
+EOS
+    chmod 755 bin/$1
+}
+
 # first our scorep
-create_script scorep
-# than some compilers
+create_scorep_script scorep
+# then some compilers
 create_script $CC
 create_script $CXX
+create_wrapper_script nested
+# mockups for creating non-standard wrappers
+create_script foo
+create_script bar
+
 
 test_init 'Score-P wrapper script'
 
-test_expect_success 'The scorep-wrapper script exist and is executable' '
+test_expect_success 'The scorep-wrapper script exists and is executable' '
     test -x "$BINDIR/scorep-wrapper" &&
     @LN_S@ "$BINDIR/scorep-wrapper" bin
 '
 
-test_expect_success 'The wrapper instance for $CC exist and is executable' '
+test_expect_success 'The wrapper instance for $CC exists and is executable' '
     test -x "$BINDIR/scorep-$CC" &&
     @LN_S@ "$BINDIR/scorep-$CC" bin
 '
 
-test_expect_success 'The wrapper instance for $CXX exist and is executable' '
+test_expect_success 'The wrapper instance for $CXX exists and is executable' '
     test -x "$BINDIR/scorep-$CXX" &&
     @LN_S@ "$BINDIR/scorep-$CXX" bin
 '
@@ -134,6 +168,17 @@ test_expect_success 'Creating new instance "bar" in custom dir' '
 test_expect_success 'Instance "bar" works' '
     echo "scorep bar -c foo.c" >expect &&
     scorep_cmd=bin/scorep ./scorep-bar -c foo.c >result &&
+    test_compare expect result
+'
+test_expect_success 'Creating nested wrapper, nvcc-style' '
+    test -x "bin/nested" &&
+    scorep-wrapper --create nested &&
+    test -x "bin/scorep-nested"
+'
+
+test_expect_success 'Nested wrapper only invokes "scorep" once' '
+    echo "scorep nested $CC -c test.c" >expect &&
+    scorep_cmd=bin/scorep scorep-nested scorep-$CC -c test.c >result &&
     test_compare expect result
 '
 

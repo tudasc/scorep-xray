@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015, 2017,
@@ -263,5 +263,5 @@ if test "x${SCOREP_WRAPPER}" = xoff || test "x${SCOREP_WRAPPER}" = xOFF
 then
     exec $compiler "$@"
 else
-    exec $scorep_cmd $SCOREP_WRAPPER_INSTRUMENTER_FLAGS $compiler $SCOREP_WRAPPER_COMPILER_FLAGS "$@"
+    exec env SCOREP_WRAPPER=off $scorep_cmd $SCOREP_WRAPPER_INSTRUMENTER_FLAGS $compiler $SCOREP_WRAPPER_COMPILER_FLAGS "$@"
 fi
