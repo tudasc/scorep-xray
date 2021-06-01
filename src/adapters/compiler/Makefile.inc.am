@@ -204,21 +204,7 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
 libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
 
-else !HAVE_LIBBFD
-
-if HAVE_NM
-
-libscorep_adapter_compiler_symbol_table_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
-# the SCOREP_Timer_Ticks.h dependency is used to generate unique
-# filenames. This should be done differently, see #692
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include \
-    @SCOREP_TIMER_CPPFLAGS@
-
-endif HAVE_NM
-
-endif !HAVE_LIBBFD
+endif HAVE_LIBBFD
 
 endif HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
 

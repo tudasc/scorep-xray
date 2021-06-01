@@ -61,13 +61,6 @@ AS_CASE([${ax_cv_c_compiler_vendor%/*}],
      compiler_instrumentation_result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
 
 
-dnl `which nm` is the correct one for BG and Cray, but
-dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
-AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
-AC_SCOREP_COND_HAVE([NM],
-    [test "x${scorep_have_nm}" != "xno"],
-    [Define if nm is available.])
-
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
          [pwd_save=`pwd`
@@ -79,13 +72,7 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
               [Toplevel src directory])
 
           AM_COND_IF([HAVE_LIBBFD],
-              [compiler_instrumentation_result="yes, using libbfd"],
-              [# try nm if bfd is not available
-               AM_COND_IF([HAVE_NM],
-                   [compiler_instrumentation_result="yes, using nm"
-                    AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm.])],
-                   [have_compiler_instrumentation="no"
-                    compiler_instrumentation_result="no, neither libbfd nor nm are available"])])
+             [compiler_instrumentation_result="yes, using libbfd"])
          ],
          [# compilers that don't need the symbol table
           AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
