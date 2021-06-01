@@ -68,7 +68,7 @@ done
 
 # create possible configurations, one file per paradigm
 compilerargs="nocompiler"
-@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@compilerargs="compiler nocompiler"
+@HAVE_COMPILER_INSTRUMENTATION_TRUE@compilerargs="compiler nocompiler"
 for comp_arg in $compilerargs; do
 
     for pomp_user_arg in pomp nopomp; do

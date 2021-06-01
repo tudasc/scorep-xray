@@ -40,8 +40,7 @@ rm -rf $RESULT_DIR
 # build test
 cp  @abs_srcdir@/mpi_omp_metric_collection_test.c mpi_omp_metric_collection_test.c
 
-@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
-@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
+extra_flag=""
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
 CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@

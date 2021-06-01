@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -82,21 +82,8 @@ jacobi_mpi_omp_c_metric_test_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -DSCOREP_USER_ENABLE
 
-# for some unknown reason we need an extra -I for the SUN compiler in
-# OpenMP and hybrid mode.
-if SCOREP_COMPILER_SUN
-jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
-endif SCOREP_COMPILER_SUN
-
 jacobi_mpi_omp_c_metric_test_LDADD    = $(mpi_omp_libadd)
 jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags)
-
-# for some unknown reason we need an extra -I for the SUN compiler in
-# OpenMP and hybrid mode.
-if SCOREP_COMPILER_SUN
-jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/services/metric/data/jacobi/hybrid/C
-endif SCOREP_COMPILER_SUN
-
 
 # As long as there is no appropriate make target add binary to MPI test
 # cases. No metrics will be recorded because corresponding environment

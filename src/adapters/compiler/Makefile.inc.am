@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2015, 2019,
+## Copyright (c) 2009-2012, 2014-2015, 2019, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -171,13 +171,6 @@ endif !SCOREP_COMPILER_PGI_LLVM
 endif SCOREP_COMPILER_PGI
 
 
-#--- Oracle Studio specific settings
-if SCOREP_COMPILER_SUN
-libscorep_adapter_compiler_mgmt_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_data.h
-endif SCOREP_COMPILER_SUN
-
 #--- Common functionality if the used compiler instrumentation needs
 #--- the symbol table
 if HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
@@ -334,12 +327,6 @@ endif HAVE_LIBBFD
 endif !SCOREP_COMPILER_PGI_LLVM
 
 endif SCOREP_COMPILER_PGI
-
-#--- Oracle Studio specific settings
-if SCOREP_COMPILER_SUN
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
-endif SCOREP_COMPILER_SUN
 
 #--- Fujitsu specific settings, same as GNU non-plug-in
 if SCOREP_COMPILER_FUJITSU

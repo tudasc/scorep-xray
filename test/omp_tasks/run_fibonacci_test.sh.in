@@ -50,8 +50,7 @@ echo "==================="
 
 # Setup
 cp  @abs_srcdir@/task_fibonacci.c task_fibonacci.c
-@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
-@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
+extra_flag=""
 result_dir_base="scorep_fibonacci_"
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
