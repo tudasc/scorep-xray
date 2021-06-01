@@ -6,7 +6,7 @@
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2017,
+## Copyright (c) 2017, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -19,7 +19,6 @@
 
 AC_DEFUN([AFS_COMPILER_SHMEM],
 [
-AC_CHECK_PROG([NM], [nm], [`which nm`])
 AC_REQUIRE([AC_PROG_GREP])
 AC_REQUIRE([AC_PROG_AWK])
 
