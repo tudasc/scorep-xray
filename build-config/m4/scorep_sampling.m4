@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -33,6 +33,7 @@
 
 
 AC_DEFUN([SCOREP_SAMPLING], [
+AC_REQUIRE([SCOREP_LIBBFD])dnl
 # check whether the compiler provides support for thread-local storage
 # (TLS), the sampling check uses scorep_have_thread_local_storage to
 # determine whether TLS is supported or not

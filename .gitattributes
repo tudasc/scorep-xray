@@ -163,3 +163,5 @@
 # imported form ORNL
 /test/instrumenter_checks/shmem_omp/src/heat/cc/heat.c -hook-beautifier
 /test/instrumenter_checks/shmem/src/heat/cc/heat.c -hook-beautifier
+# contains Makefile snippet
+/build-config/m4/scorep_libbfd.m4 -hook-indent-tabs
