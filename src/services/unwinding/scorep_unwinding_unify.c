@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2021,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -26,7 +29,6 @@
 #include <ctype.h>
 #include <sys/mman.h>
 
-#if HAVE( LIBBFD )
 #include <bfd.h>
 
 #ifndef bfd_get_section_size
@@ -41,7 +43,6 @@
 #define bfd_get_section_flags( abfd, asection ) bfd_section_flags( asection )
 #endif
 
-#endif
 
 #include "scorep_unwinding_region.h"
 
@@ -145,10 +146,8 @@ struct addr_range
     struct addr_range* right;
     uint64_t           start;
     uint64_t           end;
-#if HAVE( LIBBFD )
     bfd*               image;
     asymbol**          image_symbols;
-#endif
     char               pathname[ 1 ];
 };
 
@@ -389,17 +388,14 @@ cplus_demangle( const char* mangled,
 struct scl_data
 {
     bool          found;
-#if HAVE( LIBBFD )
     asymbol**     image_symbols;
     long          start_addr;
     long          end_addr;
     char**        filename;
     unsigned int* start_lno;
     unsigned int* end_lno;
-#endif
 };
 
-#if HAVE( LIBBFD )
 
 static void
 section_iterator( bfd*      abfd,
@@ -454,7 +450,6 @@ section_iterator( bfd*      abfd,
     }
 }
 
-#endif
 
 static bool
 get_function_scl( struct addr_range* range,
@@ -467,7 +462,6 @@ get_function_scl( struct addr_range* range,
     struct scl_data data;
     data.found = false;
 
-#if HAVE( LIBBFD )
     if ( range->image )
     {
         data.image_symbols = range->image_symbols;
@@ -479,7 +473,6 @@ get_function_scl( struct addr_range* range,
 
         bfd_map_over_sections( range->image, section_iterator, &data );
     }
-#endif
 
     return data.found;
 }
@@ -494,7 +487,6 @@ get_instruction_scl( struct addr_range* range,
     struct scl_data data;
     data.found = false;
 
-#if HAVE( LIBBFD )
     if ( range->image )
     {
         data.image_symbols = range->image_symbols;
@@ -506,7 +498,6 @@ get_instruction_scl( struct addr_range* range,
 
         bfd_map_over_sections( range->image, section_iterator, &data );
     }
-#endif
 
     return data.found;
 }
@@ -585,7 +576,6 @@ finalize_region_definitions( SCOREP_Location* location,
 static void
 open_image( struct addr_range* range )
 {
-#if HAVE( LIBBFD )
     if ( range->image )
     {
         return;
@@ -630,13 +620,11 @@ open_image( struct addr_range* range )
 out:
     bfd_close( range->image );
     range->image = NULL;
-#endif
 }
 
 static void
 close_image( struct addr_range* range )
 {
-#if HAVE( LIBBFD )
     free( range->image_symbols );
     range->image_symbols = NULL;
     if ( range->image )
@@ -644,16 +632,13 @@ close_image( struct addr_range* range )
         bfd_close( range->image );
         range->image = NULL;
     }
-#endif
 }
 
 SCOREP_ErrorCode
 scorep_unwinding_unify( void )
 {
-#if HAVE( LIBBFD )
     /* initialize BFD */
     bfd_init();
-#endif
 
     /* Load /proc/self/maps */
     struct addr_range* addr_ranges = NULL;

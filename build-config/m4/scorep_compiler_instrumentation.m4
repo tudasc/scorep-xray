@@ -56,9 +56,7 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
           AC_DEFINE_UNQUOTED([SCOREP_ABS_TOPLEVEL_SRCDIR],
               ["${scorep_abs_toplevel_srcdir}"],
               [Toplevel src directory])
-
-          AM_COND_IF([HAVE_LIBBFD],
-             [compiler_instrumentation_result="yes, using libbfd"])
+          compiler_instrumentation_result="yes, using libbfd"
          ],
          [# compilers that don't need the symbol table
           AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],

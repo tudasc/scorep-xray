@@ -48,9 +48,6 @@ AS_IF([test ${have_cplus_demangle+set} != set],
     [AS_IF([test "x${have_cplus_demangle}" = xyes],
          [AC_DEFINE([HAVE_DEMANGLE], [1], [Define to 1 if cplus_demangle is available via ]_afs_lib_NAME[_LDFLAGS, ]_afs_lib_NAME[_LIBS, and AM_CONDITIONAL HAVE_DEMANGLE.])
           AFS_AM_CONDITIONAL(HAVE_DEMANGLE, [test 0 -eq 0], [false])])])
-# TODO: temporary, to serve as a drop-in replacement, remove later
-AC_DEFINE([HAVE_LIBBFD], [1], [Define to 1 id libbfd is available])
-AM_CONDITIONAL([HAVE_LIBBFD], [test 0 -eq 0])
 ])# SCOREP_LIBBFD
 
 
