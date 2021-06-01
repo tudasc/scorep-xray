@@ -31,9 +31,7 @@
 
 AC_DEFUN([SCOREP_LIBBFD], [
 scorep_have_demangle="no"
-AS_CASE([${ac_scorep_platform}],
-    [k|fx10|fx100], [_FUJITSU_LIBBFD_CHECK_WORKAROUND],
-    [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
+AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
 AC_SCOREP_COND_HAVE([LIBBFD],
     [test "x${scorep_have_libbfd}" = "xyes"],
     [Define if libbfd is available.])
@@ -91,29 +89,6 @@ AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
      test "x${scorep_compiler_instrumentation_needs_symbol_table}" = "xyes"],
     [Define if the compiler instrumentation needs the symbol table.])
 
-])
-
-dnl ----------------------------------------------------------------------------
-
-# _FUJITSU_LIBBFD_CHECK_WORKAROUND
-# Fujitsu are cross-compile machines, i.e. we explicitly need to specify the
-# path to bfd. This path (which contains system stuff) is used in a CPPFLAGS.
-# This breaks compilation. Therefore, work around the usual compiler
-# instrumentation's AC_SCOREP_BACKEND_LIB check.
-# -----------------------------------------------------------------------------
-m4_define([_FUJITSU_LIBBFD_CHECK_WORKAROUND], [
-BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU([libbfd], [-lbfd -liberty])
-AC_CHECK_HEADER([demangle.h])
-AC_MSG_CHECKING([for cplus_demangle])
-save_libs=${LIBS}
-LIBS="${LIBBFD_LIBS} ${LIBS}"
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
-                     [[cplus_demangle("test", 27)]])],
-    [scorep_have_demangle=yes],
-    [scorep_have_demangle=no])
-LIBS=${save_libs}
-AC_MSG_RESULT([${scorep_have_demangle}])
 ])
 
 dnl ----------------------------------------------------------------------------
