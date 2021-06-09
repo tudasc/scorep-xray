@@ -15,7 +15,6 @@
 ## directory for details.
 ##
 
-if HAVE_SCOREP_SCORE
 lib_LTLIBRARIES += libscorep_estimator.la
 libscorep_estimator_la_SOURCES= \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Estimator.cpp \
@@ -88,5 +87,3 @@ libscorep_estimator_la_DEPENDENCIES += @CUBELIB_LIBS@
 	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
 
 endif !HAVE_SCOREP_EXTERNAL_CUBELIB
-
-endif HAVE_SCOREP_SCORE
