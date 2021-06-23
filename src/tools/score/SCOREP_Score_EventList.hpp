@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2021,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -445,6 +448,7 @@
     SCOREP_SCORE_EVENT( "MPI_File_write_all_begin" ) \
     SCOREP_SCORE_EVENT( "MPI_File_write_at_all_begin" ) \
     SCOREP_SCORE_EVENT( "MPI_File_write_ordered_begin" ) \
+    SCOREP_SCORE_EVENT( "sync" ) \
     SCOREP_SCORE_EVENT( "aio_read" ) \
     SCOREP_SCORE_EVENT( "aio_write" )
 

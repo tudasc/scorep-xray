@@ -13,6 +13,7 @@ Bug fixes:
 - Ensure that Score-P's compiler wrappers are not called recursively. This was
   possible as a result of  `scorep-nvcc` using a `scorep-*` host
   compiler wrapper.
+- scorep-score: fix event size estimation of I/O sync events
 
 ------------------- Released version 7.0 -----------------------------
 
