@@ -1,3 +1,7 @@
+# no indent tab check for Makefiles
+/bootstrap -hook-indent-tabs
+**/Makefile* -hook-indent-tabs
+**/*.am -hook-indent-tabs
 # Unmodified download from http://www.fftw.org/cycle.h for reference. Extracts will be used for timer implementation.
 /src/services/timer/cycle.h -hook-beautifier
 # Function envelop missing on purpose.
