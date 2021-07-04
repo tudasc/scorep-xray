@@ -68,7 +68,7 @@ cmd_help()
 
 cmd=cmd_${1:-get}
 
-${cmd} git otf2 -b v2.3 https://gitlab.version.fz-juelich.de/perftools/otf2.git
-${cmd} git opari2 -b v2.0.6 https://gitlab.version.fz-juelich.de/perftools/opari2.git
-${cmd} git cubew -b v4.6 https://gitlab.version.fz-juelich.de/perftools/cubew.git
-${cmd} git cubelib -b v4.6 https://gitlab.version.fz-juelich.de/perftools/cubelib.git
+${cmd} git otf2 -b v2.3 https://gitlab.jsc.fz-juelich.de/perftools/otf2.git
+${cmd} git opari2 -b v2.0.6 https://gitlab.jsc.fz-juelich.de/perftools/opari2.git
+${cmd} git cubew -b v4.6 https://gitlab.jsc.fz-juelich.de/perftools/cubew.git
+${cmd} git cubelib -b v4.6 https://gitlab.jsc.fz-juelich.de/perftools/cubelib.git
