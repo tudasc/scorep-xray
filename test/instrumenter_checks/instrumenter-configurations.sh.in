@@ -61,9 +61,21 @@ omp_backend_args=
 
 cd @abs_top_builddir@
 
-# remove files from previous invocation
+paradigm_list="serial"
+@HAVE_OPENMP_SUPPORT_TRUE@paradigm_list="${paradigm_list} omp"
+@HAVE_MPI_SUPPORT_TRUE@paradigm_list="${paradigm_list} mpi"
+@HAVE_OPENMP_SUPPORT_TRUE@@HAVE_MPI_SUPPORT_TRUE@paradigm_list="${paradigm_list} mpi_omp"
+@HAVE_SHMEM_SUPPORT_TRUE@paradigm_list="${paradigm_list} shmem"
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@paradigm_list="${paradigm_list} shmem_omp"
+@HAVE_CUDA_SUPPORT_TRUE@paradigm_list="${paradigm_list} cuda"
+
+# remove files from previous invocation. clean all possible.
 for paradigm in serial omp mpi mpi_omp shmem shmem_omp cuda; do
     rm -f ${file_prefix}${paradigm}
+done
+# set defaults for supported paradigms
+for paradigm in ${paradigm_list}; do
+    echo default >${file_prefix}${paradigm}
 done
 
 # create possible configurations, one file per paradigm

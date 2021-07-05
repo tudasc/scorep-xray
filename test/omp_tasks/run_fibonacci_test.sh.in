@@ -50,7 +50,6 @@ echo "==================="
 
 # Setup
 cp  @abs_srcdir@/task_fibonacci.c task_fibonacci.c
-extra_flag=""
 result_dir_base="scorep_fibonacci_"
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
@@ -94,8 +93,7 @@ if [ ! -e fib_pomp ]; then
 fi
 
 # build with compiler and pomp instrumentation
-./scorep $extra_flag \
-         ${V:+--verbose} \
+./scorep ${V:+--verbose} \
          --build-check \
          @CC@ -I. -o fib_full task_fibonacci.c @OPENMP_CFLAGS@
 
