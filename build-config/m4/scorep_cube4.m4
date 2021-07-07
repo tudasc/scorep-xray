@@ -77,11 +77,8 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
      AC_MSG_CHECKING([for cube reader library])
      AS_IF([test "x${has_cubelib_header}" = "xyes" && test "x${has_cubelib_reader_lib}" = "xyes"],
          [AC_MSG_RESULT([yes])
-          AFS_SUMMARY([cube c++ library support], [yes, using ${CUBELIB_CPPFLAGS} ${CUBELIB_LDFLAGS} ${CUBELIB_LIBS}])
-          AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 1])],
-         [AC_MSG_RESULT([no])
-          AFS_SUMMARY([cube c++ library support], [no])
-          AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 0])])
+          AFS_SUMMARY([cube c++ library support], [yes, using ${CUBELIB_CPPFLAGS} ${CUBELIB_LDFLAGS} ${CUBELIB_LIBS}])],
+         [AC_MSG_ERROR([A compatible Cube reader is required.])])
 
      ## Clean up
      LIBS="${scorep_save_libs}"
@@ -91,6 +88,5 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
     ],
     [# using internal cube c++ library, header and lib assumend to be in place
      AFS_SUMMARY([cube c++ library support], [yes, using internal])
-     AM_CONDITIONAL([HAVE_SCOREP_SCORE], [test 1 -eq 1])
     ])
 ])
