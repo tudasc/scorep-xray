@@ -32,7 +32,7 @@ beautify_candidate()
     if is_ignored "$1"
     then
         echo "  IGNORED  ${1}"
-        continue
+        return 1
     fi
 
     # Beautify the candidate

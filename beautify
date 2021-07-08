@@ -80,7 +80,10 @@ fi
 ) | sort -u |
 while read path
 do
-    beautify_candidate "$path"
+    if ! beautify_candidate "$path"
+    then
+        continue
+    fi
     if $do_commit
     then
         git add -- "$path"
