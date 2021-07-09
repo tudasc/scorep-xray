@@ -3,6 +3,7 @@
 User tools and API improvements and changes:
 
 - Support for the online access interface was removed.
+- Support for NEC and Sun compilers was removed.
 
 ------------------- Upcoming version 7.1 -----------------------------
 

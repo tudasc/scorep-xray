@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -42,7 +42,6 @@ jacobi_serial_c_metric_test_CPPFLAGS  = \
 jacobi_serial_c_metric_test_LDADD     = $(serial_libadd)
 
 
-if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
 TESTS_SERIAL += ./../test/services/metric/run_rusage_serial_metric_test.sh
 endif
@@ -51,7 +50,6 @@ if HAVE_PAPI
 TESTS_SERIAL += ./../test/services/metric/run_papi_serial_metric_test.sh
 endif
 jacobi_serial_c_metric_test_LDFLAGS   = $(serial_ldflags)
-endif
 
 ## OpenMP
 
@@ -73,15 +71,8 @@ jacobi_omp_c_metric_test_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -DSCOREP_USER_ENABLE
 
-# for some unknown reason we need an extra -I for the SUN compiler in
-# OpenMP and hybrid mode.
-if SCOREP_COMPILER_SUN
-jacobi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
-endif
-
 jacobi_omp_c_metric_test_LDADD    = $(omp_libadd)
 
-if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
 TESTS_OMP  += ./../test/services/metric/run_rusage_openmp_metric_test.sh \
               ./../test/services/metric/run_rusage_openmp_per_process_metric_test.sh
@@ -99,8 +90,6 @@ clean-local-metric-openmp-papi-experiments:
 endif HAVE_PAPI
 
 jacobi_omp_c_metric_test_LDFLAGS  = $(omp_ldflags)
-
-endif !SCOREP_COMPILER_SUN
 
 endif HAVE_SCOREP_OMP_TPD
 

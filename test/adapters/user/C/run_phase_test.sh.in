@@ -49,8 +49,6 @@ echo "==================="
 
 # Setup test environment
 cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
-@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
-@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
 CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
@@ -58,7 +56,7 @@ CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
 export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
 
 # build instrumented executable
-./scorep $extra_flag --user -v --build-check \
+./scorep --user -v --build-check \
         @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
 
 export @SYS_LIB_SEARCH_PATH_VAR@=@SCOREP_PAPI_LIBDIR@${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}

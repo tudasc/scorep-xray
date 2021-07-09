@@ -50,8 +50,6 @@ echo "==================="
 
 # Setup
 cp  @abs_srcdir@/task_single_loop.c task_single_loop.c
-@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
-@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
 result_dir_base="scorep_single_loop_"
 
 OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
@@ -95,8 +93,7 @@ if [ ! -e task_loop_pomp ]; then
 fi
 
 # build with compiler and pomp instrumentation
-./scorep $extra_flag \
-         -v \
+./scorep -v \
          --build-check \
          @CC@ -I. -o task_loop_full task_single_loop.c @OPENMP_CFLAGS@
 

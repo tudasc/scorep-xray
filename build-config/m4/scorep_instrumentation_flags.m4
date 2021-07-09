@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2013, 2015, 2020-2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2013-2015, 2019,
+dnl Copyright (c) 2013-2015, 2019, 2021,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2016,
@@ -57,7 +57,6 @@ scorep_compiler_instrumentation_cxxflags=
 scorep_compiler_instrumentation_fflags=
 AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cflags="-tcollect"],
-    [sun],      [scorep_compiler_instrumentation_cflags="-O -Qoption f90comp -phat"],
     [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qdebug=function_trace])
                  SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qfunctrace])],
     [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
@@ -140,7 +139,6 @@ AS_UNSET([scorep_instrumentation_cppflags])
 AS_UNSET([scorep_instrumentation_ldflags])
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
-    [sun],      [],
     [ibm],      [],
     [portland], [],
     [gnu],      [AS_CASE([${ac_scorep_platform}],

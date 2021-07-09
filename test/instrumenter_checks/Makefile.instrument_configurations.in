@@ -11,7 +11,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014, 2016,
+## Copyright (c) 2009-2012, 2014, 2016, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -45,10 +45,6 @@ PARADIGM_SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/$(PARADIGM)/src
 PREPS_FILE      = @abs_top_builddir@/../installcheck/instrumenter_checks/configurations_$(PARADIGM)
 # we build these checks always without memory instrumentation
 SCOREP_ARGS     = --nomemory
-
-
-@SCOREP_COMPILER_SUN_TRUE@SKIP_DEFAULT = yes
-@SCOREP_COMPILER_SUN_FALSE@SKIP_DEFAULT = no
 
 @SCOREP_COMPILER_IBM_TRUE@FD_FLAG="-WF,"
 @SCOREP_COMPILER_IBM_FALSE@FD_FLAG=""
@@ -92,46 +88,11 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
 	for code in $(CODES); do \
             for language in $(LANGUAGES); do \
                 if test -e $(PARADIGM_SRCDIR)/$$code/$$language/Makefile; then \
-                    if test "x$(SKIP_DEFAULT)" = "xno"; then \
-                        options="$(SCOREP_ARGS)"; \
-                        prep="@BINDIR@/scorep $$options"; \
-                        suffix="_default"; \
-                        obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
-                        mkdir -p "$$obj_dir"; \
-                        cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
-                        if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
-                            set -x; \
-                            options="$$options --verbose"; \
-                        else \
-                            echo "  GEN     $${mgn}$(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}$$std"; \
-                        fi; \
-                        $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
-                            PREP="$$prep" \
-                            SUFFIX="$$suffix" \
-                            OBJDIR="$$obj_dir" \
-                            BINDIR="$(BINDIR)" \
-                            CODE="$$code" \
-                            LANGUAGE="$$language" \
-                            SRCDIR="$(PARADIGM_SRCDIR)/$$code/$$language" \
-                            INCDIR="$(INCDIR)" \
-                            PARADIGM="$(PARADIGM)" \
-                            CC="$(CC)" \
-                            CXX="$(CXX)" \
-                            F77="$(F77)" \
-                            FC="$(FC)" \
-                            NVCC="$(NVCC)" \
-                            LIBS="$(LIBS)" \
-                            CFLAGS="$(CFLAGS)" \
-                            CXXFLAGS="$(CXXFLAGS)" \
-                            F77FLAGS="$(FFLAGS)" \
-                            FCFLAGS="$(FCFLAGS)" \
-                            CUFLAGS="$(CUFLAGS)" \
-                            $$code && \
-                        set +x && \
-                        ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \
-                    fi; \
                     while read line; do \
-                        options="$(SCOREP_ARGS) `echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`"; \
+                        options="$(SCOREP_ARGS)"; \
+                        if test "x$$line" != "xdefault"; then \
+                            options="$$options `echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`"; \
+                        fi; \
                         prep="@BINDIR@/scorep $$options"; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); gsub(":", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014-2015,
+## Copyright (c) 2009-2011, 2014-2015, 2021,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -68,12 +68,6 @@ jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 jacobi_omp_c_LDADD    = $(omp_libadd)
 jacobi_omp_c_LDFLAGS  = $(omp_ldflags)
-
-# for some unknown reason we need an extra -I for the SUN compiler in
-# OpenMP and hybrid mode.
-if SCOREP_COMPILER_SUN
-jacobi_omp_c_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
-endif
 
 check_PROGRAMS                     += jacobi_omp_c_uninstrumented
 jacobi_omp_c_uninstrumented_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c \
