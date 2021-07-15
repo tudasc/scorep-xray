@@ -19,6 +19,8 @@ Bug fixes:
 - Fix Fortran wrappers for MPI_Alltoallw and MPI_Ialltoallw when using
   MPI_IN_PLACE. This resolves a rare crash when passing legal NULL
   array arguments to these functions.
+- Communication completed in MPI_Request_get_status is now correctly
+  recorded.
 
 ------------------- Released version 7.0 -----------------------------
 

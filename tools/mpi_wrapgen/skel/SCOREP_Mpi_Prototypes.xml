@@ -4698,7 +4698,7 @@
     <version id="1.0" />
 </prototype>
 
-<prototype name="MPI_Request_get_status" rtype="int" group="misc" guard="extra,misc" >
+<prototype name="MPI_Request_get_status" rtype="int" group="request" guard="request" >
     <param access="i" type_modifier="" type="MPI_Request" name="request" />
     <param access="o" type_modifier="" type="int*" name="flag" />
     <param access="o" type_modifier="" type="MPI_Status*" name="status" />

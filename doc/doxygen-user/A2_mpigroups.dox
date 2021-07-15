@@ -1082,7 +1082,7 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Request_get_status</td>
-  <td>MISC</td>
+  <td>REQUEST</td>
 </tr>
 <tr>
   <td>MPI_Rget</td>

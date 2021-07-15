@@ -3499,8 +3499,8 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_get_status )
-    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+#if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_get_status )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] =
             SCOREP_Definitions_NewRegion( "MPI_Request_get_status",

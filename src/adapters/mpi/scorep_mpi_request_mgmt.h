@@ -58,13 +58,14 @@ typedef enum scorep_mpi_request_type
 
 enum scorep_mpi_requests_flags
 {
-    SCOREP_MPI_REQUEST_FLAG_NONE          = 0x00,
-    SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT = 0x01,
-    SCOREP_MPI_REQUEST_FLAG_DEALLOCATE    = 0x02,
-    SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE     = 0x10,
-    SCOREP_MPI_REQUEST_FLAG_ANY_TAG       = 0x20,
-    SCOREP_MPI_REQUEST_FLAG_ANY_SRC       = 0x40,
-    SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL    = 0x80
+    SCOREP_MPI_REQUEST_FLAG_NONE          = 0x000,
+    SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT = 0x001,
+    SCOREP_MPI_REQUEST_FLAG_DEALLOCATE    = 0x002,
+    SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE     = 0x010,
+    SCOREP_MPI_REQUEST_FLAG_ANY_TAG       = 0x020,
+    SCOREP_MPI_REQUEST_FLAG_ANY_SRC       = 0x040,
+    SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL    = 0x080,
+    SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED  = 0x100
 };
 
 typedef uint64_t scorep_mpi_request_flag;
@@ -193,6 +194,10 @@ scorep_mpi_test_request( scorep_mpi_request* req );
 void
 scorep_mpi_check_request( scorep_mpi_request* req,
                           MPI_Status*         status );
+
+void
+scorep_mpi_cleanup_request( scorep_mpi_request* req );
+
 void
 scorep_mpi_save_request_array( MPI_Request* arr_req,
                                int          arr_req_size );
