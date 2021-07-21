@@ -182,7 +182,7 @@ typedef struct
     int           failCount;
 
     int           currentRank;
-    int           masterRank;
+    int           primaryRank;
     TestAllreduce testAllreduce;
 } CuSuite;
 
