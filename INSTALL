@@ -630,7 +630,7 @@ User Library Wrapping
    To enable the user library wrapping feature, Score-P needs the LLVM compiler
 infrastructure. For one the 'llvm-config' program is needed, and also `libclang`
 and it's developer packages. The clang/clang++ compilers are not strictly
-needed, but will be used when avaiable.
+needed, but will be used when available.
 
 On Debian and it's derivatives the packages are called:
 
