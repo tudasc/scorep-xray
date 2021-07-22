@@ -97,7 +97,7 @@ AC_DEFUN([AX_C_COMPILE_STDC], [dnl
 
   m4_if([$2], [], [dnl
     AC_CACHE_CHECK(whether $CC supports C$1 features by default,
-		   ax_cv_c_compile_c$1,
+                   ax_cv_c_compile_c$1,
       [AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_C_COMPILE_STDC_testbody_$1])],
         [ax_cv_c_compile_c$1=yes],
         [ax_cv_c_compile_c$1=no])])
@@ -371,19 +371,19 @@ test_varargs (const char *format, ...)
   while (*format)
     {
       switch (*format++)
-	{
-	case 's': // string
-	  str = va_arg (args_copy, const char *);
-	  break;
-	case 'd': // int
-	  number = va_arg (args_copy, int);
-	  break;
-	case 'f': // float
-	  fnumber = va_arg (args_copy, double);
-	  break;
-	default:
-	  break;
-	}
+        {
+        case 's': // string
+          str = va_arg (args_copy, const char *);
+          break;
+        case 'd': // int
+          number = va_arg (args_copy, int);
+          break;
+        case 'f': // float
+          fnumber = va_arg (args_copy, double);
+          break;
+        default:
+          break;
+        }
     }
   va_end (args_copy);
   va_end (args);
@@ -428,7 +428,7 @@ m4_define([_AX_C_COMPILE_STDC_main_new_in_99], [[
 
   // work around unused variable warnings
   ok |= (!success || bignum == 0LL || ubignum == 0uLL || newvar[0] == 'x'
-	 || dynamic_array[ni.number - 1] != 543);
+         || dynamic_array[ni.number - 1] != 543);
 ]])
 
 
@@ -489,8 +489,8 @@ struct anonymous
 
 m4_define([_AX_C_COMPILE_STDC_main_new_in_11], [[
   _Static_assert ((offsetof (struct anonymous, i)
-		   == offsetof (struct anonymous, w.k)),
-		  "Anonymous union alignment botch");
+                   == offsetof (struct anonymous, w.k)),
+                  "Anonymous union alignment botch");
   v1.i = 2;
   v1.w.k = 5;
   ok |= v1.i != 5;

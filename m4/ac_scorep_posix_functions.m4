@@ -325,7 +325,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 
             int main()
             {
-	        FILE *fh = popen( "echo test", "r" );
+                FILE *fh = popen( "echo test", "r" );
                 pclose( fh );
                 return 0;
             }

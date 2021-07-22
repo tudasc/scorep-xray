@@ -65,7 +65,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
 
   m4_if([$2], [], [dnl
     AC_CACHE_CHECK(whether $CXX supports C++$1 features by default,
-		   ax_cv_cxx_compile_cxx$1,
+                   ax_cv_cxx_compile_cxx$1,
       [AC_COMPILE_IFELSE([AC_LANG_SOURCE([_AX_CXX_COMPILE_STDCXX_testbody_$1])],
         [ax_cv_cxx_compile_cxx$1=yes],
         [ax_cv_cxx_compile_cxx$1=no])])

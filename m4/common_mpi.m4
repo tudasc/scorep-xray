@@ -72,59 +72,59 @@ dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([AC_SCOREP_MPI_WORKING], [
 if test x = x"$MPILIBS"; then
-	AC_LANG_CASE([C], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
-		[C++], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
-		[Fortran 77], [AC_MSG_CHECKING([for MPI_Init])
-			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
-				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])],
-		[Fortran], [AC_MSG_CHECKING([for MPI_Init])
-			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
-				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])])
+        AC_LANG_CASE([C], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
+                [C++], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
+                [Fortran 77], [AC_MSG_CHECKING([for MPI_Init])
+                        AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
+                                AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])],
+                [Fortran], [AC_MSG_CHECKING([for MPI_Init])
+                        AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
+                                AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])])
 fi
 AC_LANG_CASE([Fortran 77], [
-	if test x = x"$MPILIBS"; then
-		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
-	fi
-	if test x = x"$MPILIBS"; then
-		AC_CHECK_LIB(fmpich, MPI_Init, [MPILIBS="-lfmpich"])
-	fi
+        if test x = x"$MPILIBS"; then
+                AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
+        fi
+        if test x = x"$MPILIBS"; then
+                AC_CHECK_LIB(fmpich, MPI_Init, [MPILIBS="-lfmpich"])
+        fi
 ],
 [Fortran], [
-	if test x = x"$MPILIBS"; then
-		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
-	fi
-	if test x = x"$MPILIBS"; then
-		AC_CHECK_LIB(mpichf90, MPI_Init, [MPILIBS="-lmpichf90"])
-	fi
+        if test x = x"$MPILIBS"; then
+                AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
+        fi
+        if test x = x"$MPILIBS"; then
+                AC_CHECK_LIB(mpichf90, MPI_Init, [MPILIBS="-lmpichf90"])
+        fi
 ])
 if test x = x"$MPILIBS"; then
-	AC_CHECK_LIB(mpi, MPI_Init, [MPILIBS="-lmpi"])
+        AC_CHECK_LIB(mpi, MPI_Init, [MPILIBS="-lmpi"])
 fi
 if test x = x"$MPILIBS"; then
-	AC_CHECK_LIB(mpich, MPI_Init, [MPILIBS="-lmpich"])
+        AC_CHECK_LIB(mpich, MPI_Init, [MPILIBS="-lmpich"])
 fi
 
 dnl We have to use AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[],[]) and not AC_CHECK_HEADER because the
 dnl latter uses $CPP, not $CC (which may be mpicc).
 AC_LANG_CASE([C], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpi.h (C)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
-		AC_MSG_RESULT(no)])
+        AC_MSG_CHECKING([for mpi.h (C)])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
+                AC_MSG_RESULT(no)])
 fi],
 [C++], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for mpi.h (C++)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
-		AC_MSG_RESULT(no)])
+        AC_MSG_CHECKING([for mpi.h (C++)])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [[]])],[AC_MSG_RESULT(yes)],[MPILIBS=""
+                AC_MSG_RESULT(no)])
 fi],
 [Fortran 77], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for use mpi (F77)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
-		AC_MSG_RESULT(no)])
+        AC_MSG_CHECKING([for use mpi (F77)])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
+                AC_MSG_RESULT(no)])
 fi],
 [Fortran], [if test x != x"$MPILIBS"; then
-	AC_MSG_CHECKING([for use mpi (FC)])
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
-		AC_MSG_RESULT(no)])
+        AC_MSG_CHECKING([for use mpi (FC)])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      use mpi])],[AC_MSG_RESULT(yes)], [MPILIBS=""
+                AC_MSG_RESULT(no)])
 fi])
 
 AC_SUBST(MPILIBS)

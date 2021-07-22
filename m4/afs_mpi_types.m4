@@ -189,7 +189,7 @@ m4_define([_AFS_MPI_TYPESUBST_UINT_BODY], [
         'unsigned short' 'unsigned char'; do
         AC_COMPILE_IFELSE(
             [AC_LANG_BOOL_COMPILE_TRY(
-	        [AC_INCLUDES_DEFAULT],
+                [AC_INCLUDES_DEFAULT],
                 [(($afs_type) -1 >> ($[]2 / 2 - 1)) >> ($[]2 / 2 - 1) == 3])],
             [AS_VAR_SET([$[]3], [$afs_type])])
         AS_VAR_IF([$[]3], [no], [], [break])
