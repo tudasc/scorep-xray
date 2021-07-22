@@ -1,3 +1,6 @@
+# no indent tab check for Makefiles
+**/Makefile*    -hook-indent-tabs
+**/*.am         -hook-indent-tabs
 # Imported from http://www.burtleburtle.net/bob/hash/doobs.html
 /jenkins_hash.c -hook-beautifier
 # Imported from http://www.burtleburtle.net/bob/hash/doobs.html
