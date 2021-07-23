@@ -2,6 +2,10 @@
 /bootstrap -hook-indent-tabs
 **/Makefile* -hook-indent-tabs
 **/*.am -hook-indent-tabs
+**/*.s -hook-indent-tabs
+**/*.eps binary
+**/*.pdf binary
+**/*.svg binary
 # Unmodified download from http://www.fftw.org/cycle.h for reference. Extracts will be used for timer implementation.
 /src/services/timer/cycle.h -hook-beautifier
 # Function envelop missing on purpose.
@@ -18,9 +22,9 @@
 /src/adapters/cuda/scorep_cuda_confvars.inc.c -hook-config
 # Not a compilation unit.
 /src/adapters/mpi/scorep_mpi_confvars.inc.c -hook-config
-# Not a compilation unit. 
+# Not a compilation unit.
 /src/adapters/opencl/scorep_opencl_wrap_version_2_1.inc.c -hook-config
-# Not a compilation unit. 
+# Not a compilation unit.
 /src/adapters/opencl/scorep_opencl_wrap_version_2_2.inc.c -hook-config
 # Not a compilation unit.
 /src/adapters/shmem/scorep_shmem_confvars.inc.c -hook-config
@@ -154,3 +158,8 @@
 /test/shmem/shmem_hello_world.c -hook-config
 # Test file
 /test/filtering/compiler_filter_test.cpp -hook-config
+# Makefile input file
+/test/constructor_checks/generate_makefile.sh.in -hook-indent-tabs
+# imported form ORNL
+/test/instrumenter_checks/shmem_omp/src/heat/cc/heat.c -hook-beautifier
+/test/instrumenter_checks/shmem/src/heat/cc/heat.c -hook-beautifier
