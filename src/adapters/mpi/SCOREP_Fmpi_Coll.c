@@ -2090,12 +2090,18 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
     ccomm = PMPI_Comm_f2c( *comm );
     PMPI_Comm_size( ccomm, &size );
 
-    csendtypes = malloc( size * sizeof( MPI_Datatype ) );
+    if ( sendbuf != MPI_IN_PLACE )
+    {
+        csendtypes = malloc( size * sizeof( MPI_Datatype ) );
+    }
     crecvtypes = malloc( size * sizeof( MPI_Datatype ) );
 
     while ( size > 0 )
     {
-        csendtypes[ size - 1 ] = PMPI_Type_f2c( sendtypes[ size - 1 ] );
+        if ( sendbuf != MPI_IN_PLACE )
+        {
+            csendtypes[ size - 1 ] = PMPI_Type_f2c( sendtypes[ size - 1 ] );
+        }
         crecvtypes[ size - 1 ] = PMPI_Type_f2c( recvtypes[ size - 1 ] );
         --size;
     }
@@ -2103,7 +2109,10 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
     *ierr = MPI_Alltoallw( sendbuf, sendcounts, sdispls, csendtypes, recvbuf,
                            recvcounts, rdispls, crecvtypes, ccomm );
 
-    free( csendtypes );
+    if ( sendbuf != MPI_IN_PLACE )
+    {
+        free( csendtypes );
+    }
     free( crecvtypes );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2154,12 +2163,18 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
     ccomm = PMPI_Comm_f2c( *comm );
     PMPI_Comm_size( ccomm, &size );
 
-    csendtypes = malloc( size * sizeof( MPI_Datatype ) );
+    if ( sendbuf != MPI_IN_PLACE )
+    {
+        csendtypes = malloc( size * sizeof( MPI_Datatype ) );
+    }
     crecvtypes = malloc( size * sizeof( MPI_Datatype ) );
 
     while ( size > 0 )
     {
-        csendtypes[ size - 1 ] = PMPI_Type_f2c( sendtypes[ size - 1 ] );
+        if ( sendbuf != MPI_IN_PLACE )
+        {
+            csendtypes[ size - 1 ] = PMPI_Type_f2c( sendtypes[ size - 1 ] );
+        }
         crecvtypes[ size - 1 ] = PMPI_Type_f2c( recvtypes[ size - 1 ] );
         --size;
     }
@@ -2169,7 +2184,10 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
 
     *request = PMPI_Request_c2f( crequest );
 
-    free( csendtypes );
+    if ( sendbuf != MPI_IN_PLACE )
+    {
+        free( csendtypes );
+    }
     free( crecvtypes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
