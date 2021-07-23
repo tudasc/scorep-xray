@@ -652,7 +652,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         m_is_linking      = false;
         m_is_compiling    = false;
     }
-    else if ( current == "-M" ) /* Generate dependencies */
+    else if ( current == "-M" || current == "-MM" ) /* Generate dependencies */
     {
         m_do_nothing      = true;
         m_preprocess_mode = DISABLE;
