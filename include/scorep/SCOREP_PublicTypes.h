@@ -40,7 +40,7 @@
 
 #include <stdint.h>
 
-/** \defgroup Public type definitions and enums used in Score-P
+/** \defgroup public_types Public type definitions and enums used in Score-P
  */
 /*@{*/
 
