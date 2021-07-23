@@ -68,7 +68,7 @@ endif SCOREP_HAVE_FC
 
 if HAVE_COMPILER_INSTRUMENTATION
 
-TESTS_SERIAL += ./../test/filtering/run_compiler_filter_test.sh 
+TESTS_SERIAL += ./../test/filtering/run_compiler_filter_test.sh
 
 endif HAVE_COMPILER_INSTRUMENTATION
 

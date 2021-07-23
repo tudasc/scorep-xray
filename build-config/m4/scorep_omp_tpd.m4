@@ -47,7 +47,7 @@ AS_CASE([${ac_scorep_platform}],
             # 1. On Juqueen with gfortan all OpenMP tpd installchecks fail,
             #    ancestry works though.
             # 2. On Juqueen with bgxlc V12.1 declaration and definition of
-            #    pomp_tpd fails with a 'Identifier pomp_tpd has already been 
+            #    pomp_tpd fails with a 'Identifier pomp_tpd has already been
             #    defined' error. Reproducer:
             #      extern int64_t __attribute__((aligned (16))) pomp_tpd;
             #      _Pragma( "omp threadprivate( pomp_tpd )" )

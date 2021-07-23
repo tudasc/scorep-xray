@@ -18,4 +18,3 @@
 ## file       run_region_types_consistency_check.sh
 
 SCOREP_ENABLE_TRACING=true ./region_types_consistency_check
-

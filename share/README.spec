@@ -1,5 +1,5 @@
 STATUS
------- 
+------
 
  * The file 'scorep.spec.in' has following changes:
     - All <cubeplinit> parts have been moved to the top to
@@ -16,9 +16,9 @@ STATUS
     - The computation of the metrics uses multiplications
       rather than more complicated if-constructs.
     - <cubeplinit> uses local variables.
-    - Added some comments.    
+    - Added some comments.
 
- * The file 'scorep_alt.spec' generates an alternative (not 
+ * The file 'scorep_alt.spec' generates an alternative (not
    paradigm-centric) metric hierarchy. It focuses on global
    topics like synchonization, communication, management and
    file I/O which break down to paradigm specific level. It
@@ -42,4 +42,4 @@ LIMITATIONS
    threads metric
 
  * CUDA and OpenCL subhierarchies are experimental. Need to be
-   examined with the GPU experts. 
+   examined with the GPU experts.

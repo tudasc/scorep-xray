@@ -49,7 +49,7 @@ echo "Output of metric test can be found in $RESULT_DIR"
 $OTF2_PRINT -G $RESULT_DIR/traces.otf2 |
     grep '^METRIC_' |
     LC_ALL=C sed -e 's/^METRIC_\(MEMBER\)[[:blank:]][[:blank:]]*/METRIC_\1 /g' \
-	               -e 's/^METRIC_\(CLASS\)[[:blank:]][[:blank:]]*/METRIC_\1 /g' \
+                 -e 's/^METRIC_\(CLASS\)[[:blank:]][[:blank:]]*/METRIC_\1 /g' \
                  -e 's/^METRIC_\(INSTANCE\)[[:blank:]][[:blank:]]*/METRIC_\1 /g' \
                  -e 's/Name: "\([^"]*\)" <[[:digit:]][[:digit:]]*>/Name: "\1" <id>/g' \
                  -e 's/Descr\.: "[^"]*" <[[:digit:]][[:digit:]]*>/Descr.: "<string>" <id>/g' \

@@ -15,9 +15,9 @@
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
     <execute replace_execution="true">
-	    <utility command="rm" group="command">
-	      <argument value="-rf epik_a"/>
-            </utility>
+        <utility command="rm" group="command">
+            <argument value="-rf epik_a"/>
+        </utility>
     </execute>
      <execute>
         <global name="SCORPEnvironment">
@@ -27,22 +27,22 @@
         </global>
     </execute>
     <execute replace_execution="true">
-	    <utility command="scout.mpi" group="cube"/>
+        <utility command="scout.mpi" group="cube"/>
     </execute>
-        <analyze foralllike="scout.cube" depth="1">
-	    <utility type="view" command="cube3" group="cube" visualizer="true">
-		<argument value="%%FILE%%"/>
-	    </utility>
-        </analyze>
+    <analyze foralllike="scout.cube" depth="1">
+        <utility type="view" command="cube3" group="cube" visualizer="true">
+            <argument value="%%FILE%%"/>
+        </utility>
+    </analyze>
 </tool>
 <tool name="Scalasca-OMP">
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
     <execute replace_execution="true">
-	    <utility command="rm" group="command">
-	      <argument value="-rf epik_a"/>
-            </utility>
+        <utility command="rm" group="command">
+            <argument value="-rf epik_a"/>
+        </utility>
     </execute>
     <execute>
         <global name="SCORPEnvironment">
@@ -52,22 +52,22 @@
         </global>
     </execute>
     <execute replace_execution="true">
-	    <utility command="scout.omp" group="cube"/>
+        <utility command="scout.omp" group="cube"/>
     </execute>
-        <analyze foralllike="scout.cube" depth="1">
-	    <utility type="view" command="cube3" group="cube" visualizer="true">
-		<argument value="%%FILE%%"/>
-	    </utility>
-        </analyze>
+    <analyze foralllike="scout.cube" depth="1">
+        <utility type="view" command="cube3" group="cube" visualizer="true">
+            <argument value="%%FILE%%"/>
+        </utility>
+    </analyze>
 </tool>
 <tool name="Scalasca-hybrid">
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
     <execute replace_execution="true">
-	    <utility command="rm" group="command">
-	      <argument value="-rf epik_a"/>
-            </utility>
+        <utility command="rm" group="command">
+            <argument value="-rf epik_a"/>
+        </utility>
     </execute>
     <execute>
         <global name="SCORPEnvironment">
@@ -77,13 +77,13 @@
         </global>
     </execute>
     <execute replace_execution="true">
-	    <utility command="scout.hyb" group="cube"/>
+        <utility command="scout.hyb" group="cube"/>
     </execute>
-        <analyze foralllike="scout.cube" depth="1">
-	    <utility type="view" command="cube3" group="cube" visualizer="true">
-		<argument value="%%FILE%%"/>
-	    </utility>
-        </analyze>
+    <analyze foralllike="scout.cube" depth="1">
+        <utility type="view" command="cube3" group="cube" visualizer="true">
+            <argument value="%%FILE%%"/>
+        </utility>
+    </analyze>
 </tool>
 <tool name="ScoreP-TAU">
     <compile>
@@ -96,7 +96,7 @@
     </execute>
     <analyze foralllike="profile.cubex" depth="1">
         <utility command="paraprof" group="tau" visualizer="true">
-                <argument value="%%FILE%%"/>
+            <argument value="%%FILE%%"/>
         </utility>
     </analyze>
 </tool>

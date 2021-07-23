@@ -8,4 +8,3 @@ This is the list of all known configure variables to control a @scorep measureme
  Not all variables are supported by one @scorep installation. Use the
  `scorep-info config-vars` command to list only those supported
  by the used installation.
-

@@ -98,12 +98,12 @@ if HAVE_DOXYGEN
 SCOREP_V_DOXYGEN = $(scorep__v_DOXYGEN_@AM_V@)
 scorep__v_DOXYGEN_ = $(scorep__v_DOXYGEN_@AM_DEFAULT_V@)
 scorep__v_DOXYGEN_0 = @$(am__tty_colors); echo "  DOXYGEN  $${blu}$@$$std";
-scorep__v_DOXYGEN_1 = 
+scorep__v_DOXYGEN_1 =
 
 SCOREP_V_DEVNULL = $(scorep__v_DEVNULL_@AM_V@)
 scorep__v_DEVNULL_ = $(scorep__v_DEVNULL_@AM_DEFAULT_V@)
 scorep__v_DEVNULL_0 = >/dev/null
-scorep__v_DEVNULL_1 = 
+scorep__v_DEVNULL_1 =
 
 doxygen-user: doxygen-project-number doc/doxygen-user/main.dox doc/doxygen-user.cfg
 	$(AM_V_at)$(MKDIR_P) "$(USER_DOC_DIR)/tags"

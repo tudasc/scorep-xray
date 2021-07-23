@@ -64,5 +64,3 @@ fi
 echo "Uncorrect number of events for 'foo'."
 echo "16 expected but `grep -c loop trace.txt` occurred"
 exit 1
-
-

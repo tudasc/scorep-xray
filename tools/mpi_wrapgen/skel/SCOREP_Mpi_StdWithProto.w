@@ -55,4 +55,3 @@ ${name} SCOREP_${name|uppercase}_PROTO_ARGS
     return return_val;
 }
 ${guard:end}
-

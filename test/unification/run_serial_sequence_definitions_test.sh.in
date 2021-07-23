@@ -33,12 +33,12 @@ SCOREP_ENABLE_TRACING=1 SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS=1 SCOREP_
 
 locations=`$OTF2_PRINT -G $SINGLE_DIR/traces.otf2 | grep "LOCATION " | cut -c27-38`
 
-for i in $locations; do 
+for i in $locations; do
     $OTF2_PRINT -L $i $SEQUENCE_DIR/traces.otf2 | cut -c50-65 --complement > sequence.trace
     $OTF2_PRINT -L $i $SINGLE_DIR/traces.otf2 | cut -c50-65 --complement > single.trace
     if [ "`diff sequence.trace single.trace`" ]; then
-	diff sequence.trace single.trace
-	exit 1
+        diff sequence.trace single.trace
+        exit 1
     else
         echo "Event comparison location $i: ok"
     fi
@@ -47,4 +47,3 @@ done
 rm single.trace sequence.trace
 
 exit 0
-

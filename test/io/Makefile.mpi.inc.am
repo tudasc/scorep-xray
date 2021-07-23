@@ -19,4 +19,3 @@ endif
 
 EXTRA_DIST += $(SRC_ROOT)test/io/mpi/test_mpi_read_write.c \
               $(SRC_ROOT)test/io/mpi/run_io_mpi_test.sh.in
-

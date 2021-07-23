@@ -50,8 +50,8 @@ fi
 ###############################################################################
 # Check location mapping
 #
-# Idea: the executable writes an parameter on each location that has the 
-# value of the location id. Check whether the parameter value matches the 
+# Idea: the executable writes an parameter on each location that has the
+# value of the location id. Check whether the parameter value matches the
 # location id in the definitions.
 ###############################################################################
 
@@ -73,12 +73,12 @@ fi
 
 locations=`$OTF2_PRINT -G $SINGLE_DIR/traces.otf2 | grep "LOCATION " | cut -c27-38`
 
-for i in $locations; do 
+for i in $locations; do
     $OTF2_PRINT -L $i $SEQUENCE_DIR/traces.otf2 | cut -c50-65 --complement > sequence.trace
     $OTF2_PRINT -L $i $SINGLE_DIR/traces.otf2 | cut -c50-65 --complement > single.trace
     if [ "`diff sequence.trace single.trace`" ]; then
-	diff sequence.trace single.trace
-	exit 1
+        diff sequence.trace single.trace
+        exit 1
     else
         echo "Event comparison location $i: ok"
     fi
@@ -87,4 +87,3 @@ done
 rm single.trace sequence.trace
 
 exit 0
-

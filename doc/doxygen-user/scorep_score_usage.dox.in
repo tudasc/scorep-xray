@@ -12,7 +12,7 @@ Options:
  -s <choice> Sorting of entries. Possible choices are totaltime, timepervisit,
               maxbuffer, visits and name (default=maxbuffer).
  -g [<list>] Generation of an initial filter file with the name
-             'initial_scorep.filter'. A valid parameter list has the form 
+             'initial_scorep.filter'. A valid parameter list has the form
              KEY=VALUE[,KEY=VALUE]*. By default, uses the following control
              parameters:
 

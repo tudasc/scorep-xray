@@ -278,4 +278,3 @@ subroutine CheckError(myData)
     myData%fError = sqrt(error) / DBLE(myData%iCols * myData%iRows)
 
 end subroutine CheckError
-

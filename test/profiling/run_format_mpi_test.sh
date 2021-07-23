@@ -21,7 +21,7 @@ formats="TAU_SNAPSHOT CUBE_TUPLE THREAD_SUM THREAD_TUPLE KEY_THREADS CLUSTER_THR
 
 if test -f ./jacobi_mpi_c; then
     for format in $formats; do
-	echo "Testing $format format in MPI mode ..."
+        echo "Testing $format format in MPI mode ..."
         SCOREP_PROFILING_FORMAT=$format mpiexec -np 4 ./jacobi_mpi_c
     done
 fi

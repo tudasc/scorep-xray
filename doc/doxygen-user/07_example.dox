@@ -198,9 +198,9 @@ configuration for consequent trace collection with @scorep, <tt>scorep-score</tt
 @code
 % scorep-score scorep_bt-mz_W_4x4_sum/profile.cubex
 Estimated aggregate size of event trace (total_tbc):
-					 990247448 bytes
+                                           990247448 bytes
 Estimated requirements for largest trace buffer (max_tbc):
-					 256229936 bytes
+                                           256229936 bytes
 (hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
 or reduce requirements using file listing names of USR regions
@@ -271,9 +271,9 @@ One can use <tt>scorep-score</tt> once again to verify the effect of the filter 
 @code
 % scorep-score -f ../config/scorep.filt scorep_bt-mz_W_4x4_sum
 Estimated aggregate size of event trace (total_tbc):
-					 20210360 bytes
+                                           20210360 bytes
 Estimated requirements for largest trace buffer (max_tbc):
-					 6290888 bytes
+                                            6290888 bytes
 (hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
 or reduce requirements using file listing names of USR regions
@@ -407,9 +407,9 @@ the effect of filtering:
 @code
 % scorep-score scorep_bt-mz_W_4x4_sum_with_filter/profile.cubex
 Estimated aggregate size of event trace (total_tbc):
-					 20210360 bytes
+                                           20210360 bytes
 Estimated requirements for largest trace buffer (max_tbc):
-					 6290888 bytes
+                                            6290888 bytes
 (hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
 or reduce requirements using file listing names of USR regions
