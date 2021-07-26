@@ -40,15 +40,30 @@ Overview
 User library wrapping enables users to install library wrappers for any
 C or C++ library they want.
 
+In contrast to wrappers integrated into Score-P, e.g., PThreads, MPI, and
+OpenCL, user library wrappers do not extract semantic information from the
+library. It only intercepts function calls and provides their timing
+information.
+
 Without this mechanism, in order to intercept calls to a library, users
 need to either build this library with Score-P or add manual instrumentation
 to the application using the library.
 Another advantage of user library wrapping is you don't need access to the
 source code of the to-be-wrapped library. Headers and library files suffice.
 
-This feature requires Score-P to be configured with libclang.
+Requirements:
+--------------
+
+To enable this feature, Score-P needs to be built with `libclang` from the LLVM compiler
+infrastructure.
+More details can be found in Score-P's `INSTALL` file under "User Library Wrapping".
+
 You can find out whether user library wrapping is enabled in the configure
 summary or via `scorep-info config-summary` in Section "Score-P (libwrap)".
+
+
+Linktime vs. runtime wrapping:
+------------------------------
 
 There exist two ways to wrap calls to the to-be-wrapped (or target-)
 library. The main difference lies in when the actual wrapping takes place -
@@ -378,11 +393,6 @@ improved with LLVM 3.9. For LLVM versions <= 3.8 the library wrapper generator
 will likely generate function wrappers for functions that are inlined and
 cannot be wrapped. The workflow will provide you with a warning and what
 to do in this case.
-
-In contrast to wrappers integrated into Score-P, e.g., PThreads, MPI, and
-OpenCL, user library wrappers do not extract semantic information from the
-library. It only intercepts function calls and provides their timing
-information.
 
 Miscellaneous
 =============
