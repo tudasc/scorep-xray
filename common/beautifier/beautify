@@ -47,6 +47,12 @@ do
     (--on-committed)
         against=HEAD^1
         do_commit=true
+        # Ensure that worktree and staging area is clean to prevent file clobbering
+        if ! eval git diff-files --quiet --ignore-submodules --diff-filter=$filter               -- $extension ||
+           ! eval git diff-index --quiet --ignore-submodules --diff-filter=$filter --cached HEAD -- $extension
+        then
+            die "error: Worktree or staging area not clean. Preventing clobbering of files."
+        fi
         shift
         ;;
     (--no-commit)
@@ -80,7 +86,10 @@ fi
 ) | sort -u |
 while read path
 do
-    beautify_candidate "$path"
+    if ! beautify_candidate "$path"
+    then
+        continue
+    fi
     if $do_commit
     then
         git add -- "$path"
