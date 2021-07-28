@@ -775,6 +775,12 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
     /* We must use pomp_old_task to reset the old task id after the creation.
        We cannot store the new task id in pomp_current_task, because other tasks
        maybe executed before. */
+
+    if ( pomp_current_task == 0 )
+    {
+        /* A user might create an OpenMP task outside a parallel region, see #53 */
+        pomp_current_task = scorep_to_pomp2_handle( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) );
+    }
     *pomp_old_task = pomp_current_task;
     *pomp_new_task = POMP2_Get_new_task_handle();
 
@@ -876,6 +882,11 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
 
     UTILS_DEBUG_ENTRY();
 
+    if ( pomp_current_task == 0 )
+    {
+        /* A user might create an OpenMP task outside a parallel region, see #53 */
+        pomp_current_task = scorep_to_pomp2_handle( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) );
+    }
     *pomp_new_task = POMP2_Get_new_task_handle();
     *pomp_old_task = pomp_current_task;
 
