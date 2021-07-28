@@ -16,6 +16,9 @@ Bug fixes:
   compiler wrapper.
 - scorep-score: fix event size estimation of I/O sync events.
 - Allow for OpenMP tasks outside of an OpenMP parallel region.
+- Fix Fortran wrappers for MPI_Alltoallw and MPI_Ialltoallw when using
+  MPI_IN_PLACE. This resolves a rare crash when passing legal NULL
+  array arguments to these functions.
 
 ------------------- Released version 7.0 -----------------------------
 
