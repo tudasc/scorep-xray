@@ -17,4 +17,3 @@ MPI_FCFLAGS=-g -O2
 # FMPILIB   = -lmpi_f77
 # FMPIOBJ   =
 # MPIEXTRA  = -DHAS_MPI2_1SIDED
-

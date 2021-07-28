@@ -105,13 +105,13 @@ AC_DEFUN([_AX_COMPILER_VERSION_IBM],
     [
       AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
         [__xlC__%1000],,
-      	AC_MSG_FAILURE([[[$0]] unknown IBM compiler patch version]))
+        AC_MSG_FAILURE([[[$0]] unknown IBM compiler patch version]))
       AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
         [(__xlC__/10000)%10],,
-      	AC_MSG_FAILURE([[[$0]] unknown IBM compiler minor version]))
+        AC_MSG_FAILURE([[[$0]] unknown IBM compiler minor version]))
       AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
         [(__xlC__/100000)%10],,
-      	AC_MSG_FAILURE([[[$0]] unknown IBM compiler major version]))
+        AC_MSG_FAILURE([[[$0]] unknown IBM compiler major version]))
       ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch"
     ])
 ])
@@ -186,12 +186,12 @@ AC_DEFUN([_AX_COMPILER_VERSION_GNU],[
 AC_DEFUN([_AX_COMPILER_VERSION_SUN],[
   m4_define([_AX_COMPILER_VERSION_SUN_NUMBER],
             [
-	     #if defined(__SUNPRO_CC)
-	     __SUNPRO_CC
-	     #else
-	     __SUNPRO_C
-	     #endif
-	    ])
+             #if defined(__SUNPRO_CC)
+             __SUNPRO_CC
+             #else
+             __SUNPRO_C
+             #endif
+            ])
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_until59,
     !!(_AX_COMPILER_VERSION_SUN_NUMBER < 0x1000),,
     AC_MSG_FAILURE([[[$0]] unknown sun release version]))
@@ -199,7 +199,7 @@ AC_DEFUN([_AX_COMPILER_VERSION_SUN],[
     [dnl
       AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
         _AX_COMPILER_VERSION_SUN_NUMBER % 0x10,,
-	AC_MSG_FAILURE([[[$0]] unknown sun patch version]))
+        AC_MSG_FAILURE([[[$0]] unknown sun patch version]))
       AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
         (_AX_COMPILER_VERSION_SUN_NUMBER / 0x10) % 0x10,,
         AC_MSG_FAILURE([[[$0]] unknown sun minor version]))
@@ -224,12 +224,12 @@ AC_DEFUN([_AX_COMPILER_VERSION_SUN],[
 AC_DEFUN([_AX_COMPILER_VERSION_HP],[
   m4_define([_AX_COMPILER_VERSION_HP_NUMBER],
             [
-	     #if defined(__HP_cc)
-	     __HP_cc
-	     #else
-	     __HP_aCC
-	     #endif
-	    ])
+             #if defined(__HP_cc)
+             __HP_cc
+             #else
+             __HP_aCC
+             #endif
+            ])
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_untilA0121,
     !!(_AX_COMPILER_VERSION_HP_NUMBER <= 1),,
     AC_MSG_FAILURE([[[$0]] unknown hp release version]))
@@ -255,12 +255,12 @@ AC_DEFUN([_AX_COMPILER_VERSION_HP],[
 AC_DEFUN([_AX_COMPILER_VERSION_DEC],[dnl
   m4_define([_AX_COMPILER_VERSION_DEC_NUMBER],
             [
-	     #if defined(__DECC_VER)
-	     __DECC_VER
-	     #else
-	     __DECCXX_VER
-	     #endif
-	    ])
+             #if defined(__DECC_VER)
+             __DECC_VER
+             #else
+             __DECCXX_VER
+             #endif
+            ])
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
     (_AX_COMPILER_VERSION_DEC_NUMBER % 10000),,
     AC_MSG_FAILURE([[[$0]] unknown dec release version]))
@@ -277,20 +277,20 @@ AC_DEFUN([_AX_COMPILER_VERSION_DEC],[dnl
 AC_DEFUN([_AX_COMPILER_VERSION_BORLAND],[dnl
   m4_define([_AX_COMPILER_VERSION_TURBOC_NUMBER],
             [
-	     #if defined(__TURBOC__)
-	     __TURBOC__
-	     #else
-	     choke me
-	     #endif
-	    ])
+             #if defined(__TURBOC__)
+             __TURBOC__
+             #else
+             choke me
+             #endif
+            ])
   m4_define([_AX_COMPILER_VERSION_BORLANDC_NUMBER],
             [
-	     #if defined(__BORLANDC__)
-	     __BORLANDC__
-	     #else
-	     __CODEGEARC__
-	     #endif
-	    ])
+             #if defined(__BORLANDC__)
+             __BORLANDC__
+             #else
+             __CODEGEARC__
+             #endif
+            ])
  AC_COMPILE_IFELSE(
    [AC_LANG_PROGRAM(,
      _AX_COMPILER_VERSION_TURBOC_NUMBER)],
@@ -303,23 +303,23 @@ AC_DEFUN([_AX_COMPILER_VERSION_BORLAND],[dnl
        [test $_ax_[]_AC_LANG_ABBREV[]_compiler_version_turboc_raw -lt 661 || test $_ax_[]_AC_LANG_ABBREV[]_compiler_version_turboc_raw -gt 1023],
        [dnl compute normal version
         AC_COMPUTE_INT(
-	  _ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
-	  _AX_COMPILER_VERSION_TURBOC_NUMBER % 0x100,,
-	  AC_MSG_FAILURE([[[$0]] unknown turboc minor version]))
-	AC_COMPUTE_INT(
-	  _ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
-	  (_AX_COMPILER_VERSION_TURBOC_NUMBER/0x100)%0x100,,
-	  AC_MSG_FAILURE([[[$0]] unknown turboc major version]))
-	ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor"],
+          _ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
+          _AX_COMPILER_VERSION_TURBOC_NUMBER % 0x100,,
+          AC_MSG_FAILURE([[[$0]] unknown turboc minor version]))
+        AC_COMPUTE_INT(
+          _ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
+          (_AX_COMPILER_VERSION_TURBOC_NUMBER/0x100)%0x100,,
+          AC_MSG_FAILURE([[[$0]] unknown turboc major version]))
+        ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:$_ax_[]_AC_LANG_ABBREV[]_compiler_version_major.$_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor"],
       [dnl special version
        AS_CASE([$_ax_[]_AC_LANG_ABBREV[]_compiler_version_turboc_raw],
          [661],[ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:1.00"],
-	 [662],[ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:1.01"],
+         [662],[ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:1.01"],
          [663],[ax_cv_[]_AC_LANG_ABBREV[]_compiler_version="0turboc:2.00"],
-	 [
-	 AC_MSG_WARN([[[$0]] unknown turboc version between 0x295 and 0x400 please report bug])
-	 ax_cv_[]_AC_LANG_ABBREV[]_compiler_version=""
-	 ])
+         [
+         AC_MSG_WARN([[[$0]] unknown turboc version between 0x295 and 0x400 please report bug])
+         ax_cv_[]_AC_LANG_ABBREV[]_compiler_version=""
+         ])
       ])
     ],
     # borlandc
@@ -393,12 +393,12 @@ dnl LCC does not output version...
 AC_DEFUN([_AX_COMPILER_VERSION_SGI],[
    m4_define([_AX_COMPILER_VERSION_SGI_NUMBER],
             [
-	     #if defined(_COMPILER_VERSION)
-	     _COMPILER_VERSION
-	     #else
-	     _SGI_COMPILER_VERSION
-	     #endif
-	    ])
+             #if defined(_COMPILER_VERSION)
+             _COMPILER_VERSION
+             #else
+             _SGI_COMPILER_VERSION
+             #endif
+            ])
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_patch,
     [_AX_COMPILER_VERSION_SGI_NUMBER%10],,
     AC_MSG_FAILURE([[[$0]] unknown SGI compiler patch version]))
@@ -496,18 +496,18 @@ AC_DEFUN([_AX_COMPILER_VERSION_SDCC],[
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_major,
     /* avoid parse error with comments */
     #if(defined(__SDCC_VERSION_MAJOR))
-	__SDCC_VERSION_MAJOR
+        __SDCC_VERSION_MAJOR
     #else
-	SDCC/100
+        SDCC/100
     #endif
     ,,
     AC_MSG_FAILURE([[[$0]] unknown sdcc major]))
   AC_COMPUTE_INT(_ax_[]_AC_LANG_ABBREV[]_compiler_version_minor,
     /* avoid parse error with comments */
     #if(defined(__SDCC_VERSION_MINOR))
-	__SDCC_VERSION_MINOR
+        __SDCC_VERSION_MINOR
     #else
-	(SDCC%100)/10
+        (SDCC%100)/10
     #endif
     ,,
     AC_MSG_FAILURE([[[$0]] unknown sdcc minor]))
@@ -515,11 +515,11 @@ AC_DEFUN([_AX_COMPILER_VERSION_SDCC],[
     [
     /* avoid parse error with comments */
     #if(defined(__SDCC_VERSION_PATCH))
-	__SDCC_VERSION_PATCH
+        __SDCC_VERSION_PATCH
     #elsif(defined(_SDCC_VERSION_PATCHLEVEL))
-	__SDCC_VERSION_PATCHLEVEL
+        __SDCC_VERSION_PATCHLEVEL
     #else
-	SDCC%10
+        SDCC%10
     #endif
     ],,
     AC_MSG_FAILURE([[[$0]] unknown sdcc patch level]))
@@ -535,25 +535,25 @@ AC_DEFUN([AX_COMPILER_VERSION],[dnl
     [ dnl
       AS_CASE([${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor%/*}],
         [intel],[_AX_COMPILER_VERSION_INTEL],
-	[ibm],[_AX_COMPILER_VERSION_IBM],
-	[pathscale],[_AX_COMPILER_VERSION_PATHSCALE],
-	[clang],[_AX_COMPILER_VERSION_CLANG],
-	[cray],[_AX_COMPILER_VERSION_CRAY],
-	[fujitsu],[_AX_COMPILER_VERSION_FUJITSU],
+        [ibm],[_AX_COMPILER_VERSION_IBM],
+        [pathscale],[_AX_COMPILER_VERSION_PATHSCALE],
+        [clang],[_AX_COMPILER_VERSION_CLANG],
+        [cray],[_AX_COMPILER_VERSION_CRAY],
+        [fujitsu],[_AX_COMPILER_VERSION_FUJITSU],
         [gnu],[_AX_COMPILER_VERSION_GNU],
-	[sun],[_AX_COMPILER_VERSION_SUN],
-	[hp],[_AX_COMPILER_VERSION_HP],
-	[dec],[_AX_COMPILER_VERSION_DEC],
-	[borland],[_AX_COMPILER_VERSION_BORLAND],
-	[comeau],[_AX_COMPILER_VERSION_COMEAU],
-	[kai],[_AX_COMPILER_VERSION_KAI],
-	[sgi],[_AX_COMPILER_VERSION_SGI],
-	[microsoft],[_AX_COMPILER_VERSION_MICROSOFT],
-	[metrowerks],[_AX_COMPILER_VERSION_METROWERKS],
-	[watcom],[_AX_COMPILER_VERSION_WATCOM],
-	[portland],[_AX_COMPILER_VERSION_PORTLAND],
-	[tcc],[_AX_COMPILER_VERSION_TCC],
-	[sdcc],[_AX_COMPILER_VERSION_SDCC],
-  	[ax_cv_[]_AC_LANG_ABBREV[]_compiler_version=""])
+        [sun],[_AX_COMPILER_VERSION_SUN],
+        [hp],[_AX_COMPILER_VERSION_HP],
+        [dec],[_AX_COMPILER_VERSION_DEC],
+        [borland],[_AX_COMPILER_VERSION_BORLAND],
+        [comeau],[_AX_COMPILER_VERSION_COMEAU],
+        [kai],[_AX_COMPILER_VERSION_KAI],
+        [sgi],[_AX_COMPILER_VERSION_SGI],
+        [microsoft],[_AX_COMPILER_VERSION_MICROSOFT],
+        [metrowerks],[_AX_COMPILER_VERSION_METROWERKS],
+        [watcom],[_AX_COMPILER_VERSION_WATCOM],
+        [portland],[_AX_COMPILER_VERSION_PORTLAND],
+        [tcc],[_AX_COMPILER_VERSION_TCC],
+        [sdcc],[_AX_COMPILER_VERSION_SDCC],
+        [ax_cv_[]_AC_LANG_ABBREV[]_compiler_version=""])
     ])
 ])
