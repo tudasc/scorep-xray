@@ -338,7 +338,7 @@ for flag in $lw_ldflags; do
         error_and_exit "-l flags are supposed to be put into --libs, but ${flag} is in --ldflags."
     elif [ "${flag#-L}" != "$flag" ]; then
         lib_dirs="$lib_dirs ${flag#-L}"
-    elif [ "${flag#-Wl,-rpath=}" != "$flag" ]; then 
+    elif [ "${flag#-Wl,-rpath=}" != "$flag" ]; then
         # -Wl is generally problematic, we avoid this problem and cover some basic versions
         # -rpath is not covered by unit tests since we can only check it properly when linking dynamically
         lib_dirs="$lib_dirs ${flag#-Wl,-rpath=}"

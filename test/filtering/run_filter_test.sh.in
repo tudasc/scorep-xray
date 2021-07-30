@@ -86,4 +86,3 @@ if [ "x`grep filter_not3 trace.txt`" = "x" ]; then
 fi
 
 exit 0
-

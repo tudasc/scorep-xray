@@ -96,7 +96,7 @@ subroutine Init (myData)
     integer dim_size(2)
     integer, dimension(2) :: coords
     logical reorder, periods(2)
-    
+
 !    /* MPI Initialization */
 #if !defined(MPI_VERSION) || (MPI_VERSION>=2)
     integer :: required = MPI_THREAD_FUNNELED
@@ -124,8 +124,8 @@ subroutine Init (myData)
     SCOREP_USER_CARTESIAN_TOPOLOGY_INIT ( mytopo )
     coords = (/ MOD(myData%iMyRank,2), myData%iMyRank/2 /)
     SCOREP_USER_CARTESIAN_TOPOLOGY_SET_COORDS (mytopo, 2, coords)
-    
-    
+
+
     old_comm = MPI_COMM_WORLD
     ndims = 2
     dim_size(1) = 1
@@ -133,7 +133,7 @@ subroutine Init (myData)
     periods(1) = .TRUE.
     periods(2) = .FALSE.
     reorder = .TRUE.
-      
+
     call MPI_Cart_create(old_comm,ndims,dim_size,periods,reorder,new_comm,ierr)
 
 

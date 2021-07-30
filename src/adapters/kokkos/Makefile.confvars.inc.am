@@ -29,4 +29,3 @@ libscorep_confvars_la_LIBADD += libscorep_kokkos_confvars.la
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/kokkos/scorep_kokkos_confvars.inc.c
-

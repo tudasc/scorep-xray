@@ -21,4 +21,3 @@ ${proto:fortran} {
 }
 ${guard:end}
 #endif
-

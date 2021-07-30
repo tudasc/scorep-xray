@@ -61,11 +61,11 @@ module JacobiMod
             ! Not inserted as pragma to test on-the-fly registration.
             ! With Pragmas, the instrumenter would create initialization time
             ! initialization.
-	    call POMP2_Begin( pomp_user_region_handle, &
-	      "90*regionType=userRegion*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
+            call POMP2_Begin( pomp_user_region_handle, &
+              "90*regionType=userRegion*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
 #endif
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
-	        SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC )
+                SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC )
                 residual = 0.0d0
 
                 ! Copy new solution into old
@@ -97,11 +97,11 @@ module JacobiMod
                  myData%iIterCount = myData%iIterCount + 1
                  residual = SQRT(residual) / DBLE(myData%iCols * myData%iRows)
 
-	         SCOREP_USER_REGION_END( main_loop )
+                 SCOREP_USER_REGION_END( main_loop )
             ! End iteration loop
             end do
 #ifdef SCOREP_POMP_USER
-	    call POMP2_End( pomp_user_region_handle );
+            call POMP2_End( pomp_user_region_handle );
 #endif
 
             myData%fResidual = residual

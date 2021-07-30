@@ -65,5 +65,3 @@ fi
 echo "Incorrect number of events for 'Region1'."
 echo "4 expected but `grep -c Region1 trace.txt` occurred"
 exit 1
-
-

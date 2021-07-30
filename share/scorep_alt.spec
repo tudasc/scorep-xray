@@ -134,7 +134,7 @@
                         };
 
                         //--- Management
-                        
+
                         if ( ${name} =~ /^MPI_(Init|Init_thread|Finalize)$/ )
                         {
                             ${mpi_mgmt_startup}[${i}] = 1;
@@ -337,7 +337,7 @@
                         ( ${paradigm} eq "measurement" )
                         or
                         ( ${name} eq "BUFFER FLUSH" )
-                        or 
+                        or
                         ( ${name} eq "MEASUREMENT OFF" )
                         or
                         ( ( ${paradigm} eq "thread-fork-join" ) and ( ${name} eq "TASKS" ) )

@@ -5,6 +5,3 @@ EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C++/run_user_cxx_test.sh.in
 
 TESTS_SERIAL += ./../test/adapters/user/C++/run_user_cxx_test.sh
-
-
-

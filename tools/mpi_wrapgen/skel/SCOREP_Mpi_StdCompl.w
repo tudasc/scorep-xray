@@ -56,4 +56,3 @@ ${proto:c}
 }
 ${guard:end}
 #endif
-

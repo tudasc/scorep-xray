@@ -28,5 +28,3 @@ void parseCommandLineArguments(int argc,char*argv[]);
 //Kernel Declaration
  __global__ void calculateCFD_V1( float* input,  float* output, unsigned int Ni, unsigned int Nj, float h);
  __global__ void calculateCFD_V2( float* input,  float* output, unsigned int Ni, unsigned int Nj, float h);
-
-

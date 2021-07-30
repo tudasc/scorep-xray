@@ -49,4 +49,3 @@ endif HAVE_GCC_PLUGIN_SUPPORT
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/fake-gmp/gmp.h
-

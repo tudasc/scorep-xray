@@ -86,12 +86,12 @@ for comp_arg in $compilerargs; do
     for pomp_user_arg in pomp nopomp; do
 @HAVE_SCOREP_PDT_FALSE@        for user_arg in user nouser; do
 @HAVE_SCOREP_PDT_TRUE@        for pdt_arg in pdt nopdt; do
-@HAVE_SCOREP_PDT_TRUE@		if [ $pdt_arg = pdt ]; then
-@HAVE_SCOREP_PDT_TRUE@		    prepocessargs="nopreprocess"
-@HAVE_SCOREP_PDT_TRUE@		else
-		    prepocessargs="preprocess nopreprocess"
+@HAVE_SCOREP_PDT_TRUE@            if [ $pdt_arg = pdt ]; then
+@HAVE_SCOREP_PDT_TRUE@                prepocessargs="nopreprocess"
+@HAVE_SCOREP_PDT_TRUE@            else
+                prepocessargs="preprocess nopreprocess"
 @HAVE_SCOREP_PDT_TRUE@                fi
-	        for preprocess_user_arg in $prepocessargs; do
+            for preprocess_user_arg in $prepocessargs; do
 
                 # --- output per paradigm begins --- #
 

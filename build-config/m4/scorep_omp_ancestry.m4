@@ -51,9 +51,9 @@ AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland &&
        test ${afs_compiler_version_major} -lt 18],
     [scorep_have_omp_ancestry=1])
 
-AS_IF([test 1 -eq ${scorep_have_omp_ancestry}], 
+AS_IF([test 1 -eq ${scorep_have_omp_ancestry}],
     [AC_MSG_RESULT([yes])
-     AFS_SUMMARY([OpenMP ancestry], [yes])], 
+     AFS_SUMMARY([OpenMP ancestry], [yes])],
     [AC_MSG_RESULT([no])
      AFS_SUMMARY([OpenMP ancestry], [no])])
 

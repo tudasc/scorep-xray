@@ -86,4 +86,3 @@ if [ "`grep BAZ trace.txt`" ]; then
 fi
 
 exit 0
-

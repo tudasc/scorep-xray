@@ -21,7 +21,7 @@ formats="TAU_SNAPSHOT CUBE_TUPLE THREAD_SUM THREAD_TUPLE KEY_THREADS CLUSTER_THR
 
 if test -f ./jacobi_serial_c; then
     for format in $formats; do
-	echo "Testing $format format in serial mode ..."
+        echo "Testing $format format in serial mode ..."
         SCOREP_PROFILING_FORMAT=$format ./jacobi_serial_c
     done
 fi

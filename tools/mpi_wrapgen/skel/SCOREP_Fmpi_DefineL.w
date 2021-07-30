@@ -3,4 +3,3 @@
     It is used for the Fortran wrappers of ${name}.
 */
 #define ${name}_L ${name|lowercase}
-

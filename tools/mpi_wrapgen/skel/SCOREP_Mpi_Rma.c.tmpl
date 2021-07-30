@@ -305,7 +305,7 @@ int MPI_Win_fence(int     assert,
       //       value for the SYNC_LEVEL
 
       SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_BARRIER,
-                               SCOREP_RMA_SYNC_LEVEL_MEMORY | 
+                               SCOREP_RMA_SYNC_LEVEL_MEMORY |
                                SCOREP_RMA_SYNC_LEVEL_PROCESS,
                                win_handle,
                                SCOREP_INVALID_ROOT_RANK,
@@ -574,7 +574,7 @@ int MPI_Win_lock(int     lock_type,
     {
       SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WIN_LOCK]);
       SCOREP_RmaRequestLock( scorep_mpi_win_handle( win ), rank, 0,
-                             lock_type == MPI_LOCK_EXCLUSIVE ? SCOREP_LOCK_EXCLUSIVE : SCOREP_LOCK_SHARED ); 
+                             lock_type == MPI_LOCK_EXCLUSIVE ? SCOREP_LOCK_EXCLUSIVE : SCOREP_LOCK_SHARED );
     }
     else if ( SCOREP_IsUnwindingEnabled() )
     {
@@ -821,7 +821,7 @@ int MPI_Win_test(MPI_Win win,
   {
     if (event_gen_active_for_group)
     {
-      if (*flag != 0) 
+      if (*flag != 0)
       {
         scorep_mpi_rma_request_foreach_on_window( scorep_mpi_win_handle( win ),
                                                   scorep_mpi_rma_request_write_standard_completion );
@@ -1125,4 +1125,3 @@ MPI_Win_set_name( MPI_Win win, SCOREP_MPI_CONST_DECL char* win_name )
 /**
  * @}
  */
-

@@ -49,8 +49,8 @@ AS_UNSET([alignas])
 AC_CHECK_HEADERS([stdalign.h],
     [AC_CHECK_DECLS([alignas],
         [alignas="alignas(x)"],
-	[],
-	[#include <stdalign.h>])])
+        [],
+        [#include <stdalign.h>])])
 AC_DEFINE_UNQUOTED([SCOREP_ALIGNAS(x)], [$alignas], [Provide alignas macro])
 ])#_SCOREP_ALIGNAS
 

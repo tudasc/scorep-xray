@@ -18,7 +18,7 @@ described as follows:
   measurement system and the information gathered during the run time
   of this process is stored and analyzed.</li>
 <li> \emph{Examination of results}: The information about the
-	behavior of the code at run time is
+  behavior of the code at run time is
   visualized and the user gets the opportunity to examine the reported
   results. </li>
 </ul>
@@ -42,12 +42,9 @@ compilers, libraries and MPI implementations.
 Autotools based projects are build as follows:
 <ol>
 <li>The available compilers and tools available are detected
-		from the environment by the configure script.
-		</li>
-<li>Makefiles are generated based on the detected compilers and tools.
-		</li>
-<li>The generated Makefile project is then built and installed.
-		</li>
+  from the environment by the configure script.</li>
+<li>Makefiles are generated based on the detected compilers and tools.</li>
+<li>The generated Makefile project is then built and installed.</li>
 </ol>
 
 @scorep will have features enabled or disabled, based on the detection
@@ -121,7 +118,7 @@ For example, in the <tt>install/scorep</tt> directory on his/her home folder:
 In this case, the user's <tt>PATH</tt> variable needs to be updated to
 include the <tt>bin</tt> directory of @scorep, and the appropriate
 library and include folders specified (with <tt>-L</tt> and <tt>-I</tt>)
-	when instrumenting and building applications.
+when instrumenting and building applications.
 
 Users of the SuperMUC (after loading the required modules mentioned
 previously), can issue the following command to configure @scorep:
