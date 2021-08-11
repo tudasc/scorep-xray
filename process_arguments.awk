@@ -53,35 +53,39 @@
 }
 
 
-function evaluate_placeholder(compiler)
+function evaluate_placeholder(variable, separator)
 {
   # e.g. transform MPICC="mpiicc -cc={CC}" to MPICC="mpiicc -cc=gcc",
   # assuming that CC=gcc
-  mpi_compiler = "MPI" compiler
-  pattern = "{" compiler "}"
-  if (mpi_compiler in args_binary) {
-    if (match(args_binary[mpi_compiler], pattern) != 0) {
-      sub(pattern, args_binary[compiler], args_binary[mpi_compiler])
+  mpi_variable = "MPI" separator variable
+  pattern = "{" variable "}"
+  if (mpi_variable in args_binary) {
+    if (match(args_binary[mpi_variable], pattern) != 0) {
+      sub(pattern, args_binary[variable], args_binary[mpi_variable])
     }
   }
 
   # e.g. transform SHMEMCC={CC} to SHMEMCC="icc",
   # assuming that CC=icc
-  shmem_compiler = "SHMEM" compiler
-  pattern = "{" compiler "}"
-  if (shmem_compiler in args_binary) {
-    if (match(args_binary[shmem_compiler], pattern) != 0) {
-      sub(pattern, args_binary[compiler], args_binary[shmem_compiler])
+  shmem_variable = "SHMEM" separator variable
+  pattern = "{" variable "}"
+  if (shmem_variable in args_binary) {
+    if (match(args_binary[shmem_variable], pattern) != 0) {
+      sub(pattern, args_binary[variable], args_binary[shmem_variable])
     }
   }
 }
 
 
 END{
-  evaluate_placeholder("CC")
-  evaluate_placeholder("CXX")
-  evaluate_placeholder("F77")
-  evaluate_placeholder("FC")
+  evaluate_placeholder("CC", "")
+  evaluate_placeholder("CXX", "")
+  evaluate_placeholder("F77", "")
+  evaluate_placeholder("FC", "")
+  evaluate_placeholder("CFLAGS", "_")
+  evaluate_placeholder("CXXFLAGS", "_")
+  evaluate_placeholder("FFLAGS", "_")
+  evaluate_placeholder("FCFLAGS", "_")
 
   # Concatenate the map's content into a "key=value" pair sequence, add the
   # unary arguments and print it to stdout.
