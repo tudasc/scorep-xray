@@ -141,8 +141,6 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
               [ac_scorep_platform="mac"],
          [aix*],
               [ac_scorep_platform="aix"],
-         [superux*],
-              [ac_scorep_platform="necsx"],
          [mingw*],
               [ac_scorep_platform="mingw"],
          [ac_scorep_platform="unknown"])
@@ -185,7 +183,6 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [mic],     [ac_scorep_cross_compiling="yes"],
          [mingw],   [ac_scorep_cross_compiling="no"],
          [aix],     [ac_scorep_cross_compiling="no"],
-         [necsx],   [ac_scorep_cross_compiling="yes"],
          [unknown], [ac_scorep_cross_compiling="no"],
          [AC_MSG_ERROR([provided platform '${ac_scorep_platform}' unknown.])])
      AFS_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (auto detected)])
@@ -219,7 +216,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_SOLARIS], [test "x${ac_scorep_platform}" = "xsolaris"])
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
     AM_CONDITIONAL([PLATFORM_MIC],     [test "x${ac_scorep_platform}" = "xmic"])
-    AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_MINGW],   [test "x${ac_scorep_platform}" = "xmingw"])
     AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
     AM_CONDITIONAL([PLATFORM_FX10],    [test "x${ac_scorep_platform}" = "xfx10"])
@@ -260,8 +256,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the macOS platform])])
     AM_COND_IF([PLATFORM_MIC],
         [AC_DEFINE([HAVE_PLATFORM_MIC], [1], [Set if we are building for the Intel MIC platform])])
-    AM_COND_IF([PLATFORM_NECSX],
-        [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_MINGW],
         [AC_DEFINE([HAVE_PLATFORM_MINGW], [1], [Set if we are building for the MinGW platform])])
     AM_COND_IF([PLATFORM_K],
