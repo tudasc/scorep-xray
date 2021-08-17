@@ -356,12 +356,10 @@ number of different compilers:
   <li> @ibm xlf (version 9.1 or later, @ibm @bluegene)</li>
   <li> PGI (on Linux)</li>
   <li> Intel compilers (version 10 or later, Linux)</li>
-  <li> SUN Studio compilers (Linux, Fortran only)</li>
 </ul>
 In all cases, @scorep supports automatic instrumentation of C, C++ and,
-Fortran codes, except for the SUN Studio compilers which only provide
-appropriate support in their Fortran compiler and the Clang compiler which
-provides support for instrumentation of C/C++ codes.
+Fortran codes, except for the Clang compiler which only provides support
+for instrumentation of C/C++ codes.
 
 @parblock
 @note

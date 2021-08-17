@@ -38,8 +38,8 @@
 # configure --help.  On some systems there may be no reasonable
 # defaults for the MPI implementation, so specify them using
 # --with-mpi=... Also, on some systems there are different
-# compiler-suites available which can be choosen via
-# --with-compiler=(gcc|intel|sun|ibm|...)
+# compiler-suites available which can be chosen via
+# --with-compiler=(gcc|intel|ibm|clang...)
 
 
 # intended to be called by toplevel configure

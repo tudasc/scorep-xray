@@ -672,9 +672,6 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
     #elif SCOREP_BACKEND_COMPILER_PGI
     #define SCOREP_COMPILER_TYPE "pgi"
 
-    #elif SCOREP_BACKEND_COMPILER_STUDIO
-    #define SCOREP_COMPILER_TYPE "sun"
-
     #elif SCOREP_BACKEND_COMPILER_FUJITSU
     #define SCOREP_COMPILER_TYPE "fujitsu"
 
