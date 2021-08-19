@@ -96,6 +96,14 @@ wrapper command from above will than expand to the original compile command:
 
 See also the EXAMPLES section below.
 
+Note on MPI: while many MPI distributions also allow selecting the
+compiler that the wrapper will invoke via environment variables, this
+mechanism should not be used with Score-P. Instead, users should use
+the command line arguments along with the Score-P wrappers for the MPI
+compiler wrappers:
+
+    $ scorep-mpicc -cc=/path/to/specific/compiler ...
+
 Wrapper Instances
 =================
 
