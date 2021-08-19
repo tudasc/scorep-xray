@@ -1,7 +1,7 @@
 # Intel MPI 5.x and higher (implements MPI-3)
 
-MPICC=mpicc -cc={CC}
-MPICXX=mpicxx -cxx={CXX}
+MPICC=mpiicc -cc={CC}
+MPICXX=mpiicpc -cxx={CXX}
 MPIF77=mpif77 -f77={F77}
 MPIFC=mpif90 -fc={FC}
 
