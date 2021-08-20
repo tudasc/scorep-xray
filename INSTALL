@@ -79,9 +79,20 @@ frontend parts can be specified explicitly if desired.
                be in $PATH.
                [Default: gcc]
 
-The MPI compiler, if in $PATH, is usually autodetected. If there are
-several MPI compilers in $PATH the user is requested to select one
-using the configure option:
+The MPI compiler, if in $PATH, is usually autodetected. Users should
+normally not need to specify which compiler will be invoked by the MPI
+compiler wrapper; Score-P handles this automatically using the
+appropriate command line arguments for the correct version of
+MPI. While many MPI distributions also allow selecting the compiler
+that the wrapper will invoke via environment variables, this mechanism
+should not be used with Score-P.
+
+Note that this also applies to instrumentation time. Here, users
+should use the command line arguments along with the Score-P wrappers
+for the MPI compiler wrappers: scorep-mpicc -cc=/path/to/specific/compiler ...
+
+If there are several MPI compilers in $PATH the user should
+select one using the configure option:
 
   --with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam| \
               mpibull2|mpich|mpich2|mpich3|openmpi|openmpi3|platform| \
