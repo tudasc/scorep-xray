@@ -87,6 +87,64 @@
     } \
     while ( 0 )
 
+/* Build-up CUDA Toolkit device index to NVIDIA Driver device index.
+ * Will give us correct device IDs in multi-GPU/multi-process */
+static SCOREP_ErrorCode
+create_visible_devices_map( void )
+{
+    NVML_CALL( nvmlInit, ( ),
+               return SCOREP_WARNING;
+               );
+
+    unsigned int nvidia_device_count;
+    NVML_CALL( nvmlDeviceGetCount, ( &nvidia_device_count ),
+               return SCOREP_WARNING;
+               );
+
+    int cuda_device_count;
+    CUDART_CALL( cudaGetDeviceCount, ( &cuda_device_count ),
+                 return SCOREP_WARNING;
+                 );
+
+    scorep_cuda_visible_devices_map = calloc( cuda_device_count, sizeof( *scorep_cuda_visible_devices_map ) );
+    UTILS_ASSERT( scorep_cuda_visible_devices_map );
+
+    int device;
+    for ( device = 0; device < cuda_device_count; ++device )
+    {
+        struct cudaDeviceProp device_properties;
+        CUDART_CALL( cudaGetDeviceProperties, ( &device_properties, device ),
+                     continue;
+                     );
+        char* uuid_bytes = device_properties.uuid.bytes;
+        char  uuid[ NVML_DEVICE_UUID_BUFFER_SIZE ];
+
+        snprintf( uuid, sizeof( uuid ),
+                  "GPU-%02hhx%02hhx%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
+                  uuid_bytes[  0 ], uuid_bytes[  1 ], uuid_bytes[  2 ], uuid_bytes[  3 ],
+                  uuid_bytes[  4 ], uuid_bytes[  5 ],
+                  uuid_bytes[  6 ], uuid_bytes[  7 ],
+                  uuid_bytes[  8 ], uuid_bytes[  9 ],
+                  uuid_bytes[ 10 ], uuid_bytes[ 11 ], uuid_bytes[ 12 ], uuid_bytes[ 13 ], uuid_bytes[ 14 ], uuid_bytes[ 15 ] );
+
+        nvmlDevice_t nvml_devices;
+        NVML_CALL( nvmlDeviceGetHandleByUUID, ( uuid, &nvml_devices ),
+                   continue;
+                   );
+
+        unsigned int nvml_device_index;
+        NVML_CALL( nvmlDeviceGetIndex, ( nvml_devices, &nvml_device_index ),
+                   continue;
+                   );
+
+        scorep_cuda_visible_devices_map[ device ] = nvml_device_index;
+    }
+
+    NVML_CALL( nvmlShutdown, ( ) );
+
+    return SCOREP_SUCCESS;
+}
+
 #endif
 
 /**
@@ -139,60 +197,13 @@ cuda_subsystem_init( void )
         "CUDA",
         SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
-
 #if HAVE( NVML_SUPPORT )
-    /* Build-up CUDA Toolkit device index to NVIDIA Driver device index.
-     * Will give us correct device IDs in multi-GPU/multi-process */
-
-    NVML_CALL( nvmlInit, ( ),
-               return SCOREP_SUCCESS;
-               );
-
-    unsigned int nvidia_device_count;
-    NVML_CALL( nvmlDeviceGetCount, ( &nvidia_device_count ),
-               return SCOREP_SUCCESS;
-               );
-
-    int cuda_device_count;
-    CUDART_CALL( cudaGetDeviceCount, ( &cuda_device_count ),
-                 return SCOREP_SUCCESS;
-                 );
-
-    scorep_cuda_visible_devices_map = calloc( cuda_device_count, sizeof( *scorep_cuda_visible_devices_map ) );
-    UTILS_ASSERT( scorep_cuda_visible_devices_map );
-
-    int device;
-    for ( device = 0; device < cuda_device_count; ++device )
+    if ( create_visible_devices_map() != SCOREP_SUCCESS )
     {
-        struct cudaDeviceProp device_properties;
-        CUDART_CALL( cudaGetDeviceProperties, ( &device_properties, device ),
-                     continue;
-                     );
-        char* uuid_bytes = device_properties.uuid.bytes;
-        char  uuid[ NVML_DEVICE_UUID_BUFFER_SIZE ];
-
-        snprintf( uuid, sizeof( uuid ),
-                  "GPU-%02hhx%02hhx%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
-                  uuid_bytes[  0 ], uuid_bytes[  1 ], uuid_bytes[  2 ], uuid_bytes[  3 ],
-                  uuid_bytes[  4 ], uuid_bytes[  5 ],
-                  uuid_bytes[  6 ], uuid_bytes[  7 ],
-                  uuid_bytes[  8 ], uuid_bytes[  9 ],
-                  uuid_bytes[ 10 ], uuid_bytes[ 11 ], uuid_bytes[ 12 ], uuid_bytes[ 13 ], uuid_bytes[ 14 ], uuid_bytes[ 15 ] );
-
-        nvmlDevice_t nvml_devices;
-        NVML_CALL( nvmlDeviceGetHandleByUUID, ( uuid, &nvml_devices ),
-                   continue;
-                   );
-
-        unsigned int nvml_device_index;
-        NVML_CALL( nvmlDeviceGetIndex, ( nvml_devices, &nvml_device_index ),
-                   continue;
-                   );
-
-        scorep_cuda_visible_devices_map[ device ] = nvml_device_index;
+        UTILS_WARNING( "Query of NVML interface failed. Stream locations will keep "
+                       "their logical device ids, which might differ from the "
+                       "physical mapping in a multi GPU environment." );
     }
-
-    NVML_CALL( nvmlShutdown, ( ) );
 #endif
 
     if ( scorep_cuda_features > 0 )
