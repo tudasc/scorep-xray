@@ -4,6 +4,7 @@ Features and improvements:
 
 - Add support for recording the offset parameter to MPI I/O
   functions with explicit offsets.
+- Record events for the ISO C I/O 'remove' function.
 
 User tools and API improvements and changes:
 
