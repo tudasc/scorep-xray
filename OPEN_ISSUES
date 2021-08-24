@@ -235,7 +235,7 @@ various Score-P components.
 
 * OpenMP support
 
-  - Device directives, introduced with OpenMP 4, are not supported.
+  - Device directives, introduced with OpenMP 4 and later, are not supported.
 
   - Function instrumentation using the Intel compiler version 11.1 for
     codes using OpenMP tasking is erroneous. You might try PDT
@@ -328,6 +328,14 @@ various Score-P components.
     For version 21.2 of the SDK, this EXCLUDE rule worked for a hello
     world example:
       __nv_*_F[0-9]*L[0-9]*_[0-9]*
+
+  - With CMake, OpenMP might get enabled at link time not via a
+    compiler flag like `-fopenmp`, but by explicit linking of the
+    runtime, e.g., `-lgomp`. In this case, Score-P would not
+    automatically add its OpenMP support libraries and the link would
+    fail. As a workaround, please provide `--thread=omp` to the
+    `scorep-wrapper` via
+    `make SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--thread=omp"`.
 
 --------------------------------------------------------------------------------
 
