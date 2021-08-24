@@ -74,7 +74,10 @@ Usually the @scorep instrumenter <tt>scorep</tt> is able to
 automatically detect the programming paradigm from the set of compile
 and link options given to the compiler. In some cases however, when
 the compiler or compiler wrapper enables specific programming paradigm
-by default (e.g., Pthreads on Cray and Blue Gene/Q systems),
+by default (e.g., Pthreads on Cray and Blue Gene/Q systems)
+or using non-standard ways of activating features (e.g., providing the
+OpenMP runtime via <tt>-lgomp</tt> instead of <tt>-fopenmp</tt> as
+seen with CMake),
 <tt>scorep</tt> needs to be made aware of the programming paradigm in
 order to do the correct instrumentation. Please see <tt>scorep
 \--help</tt> for the available options.
