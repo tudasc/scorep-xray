@@ -645,6 +645,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
     const int xnb_active        = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
 
     if ( !req ||
+         ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED ) ||
          ( ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) &&
            !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) ) )
     {
@@ -754,12 +755,24 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                 break;
         }
     }
+}
+
+void
+scorep_mpi_cleanup_request( scorep_mpi_request* req )
+{
+    if ( !req ||
+         ( ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT ) &&
+           !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) ) )
+    {
+        return;
+    }
 
     if ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_PERSISTENT )
     {
-        /* if persistent request, set to inactive,
+        /* if persistent request, set to inactive and incomplete,
            and, if requested delete request */
         req->flags &= ~SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE;
+        req->flags &= ~SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED;
         if ( req->flags & SCOREP_MPI_REQUEST_FLAG_DEALLOCATE )
         {
             scorep_mpi_request_free( req );

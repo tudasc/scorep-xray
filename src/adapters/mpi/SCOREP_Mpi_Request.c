@@ -167,6 +167,7 @@ MPI_Wait( MPI_Request* request,
     SCOREP_EXIT_WRAPPED_REGION();
 
     scorep_mpi_check_request( orig_req, status );
+    scorep_mpi_cleanup_request( orig_req );
 
     if ( event_gen_active )
     {
@@ -240,6 +241,7 @@ MPI_Waitall( int          count,
         orig_req = scorep_mpi_saved_request_get( i );
 
         scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
+        scorep_mpi_cleanup_request( orig_req );
     }
     if ( event_gen_active )
     {
@@ -319,6 +321,7 @@ MPI_Waitany( int          count,
             if ( i == *index )
             {
                 scorep_mpi_check_request( orig_req, status );
+                scorep_mpi_cleanup_request( orig_req );
             }
             else if ( orig_req && ( orig_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
@@ -330,6 +333,7 @@ MPI_Waitany( int          count,
     {
         orig_req = scorep_mpi_saved_request_get( *index );
         scorep_mpi_check_request( orig_req, status );
+        scorep_mpi_cleanup_request( orig_req );
     }
 
     if ( event_gen_active )
@@ -424,6 +428,7 @@ MPI_Waitsome( int          incount,
                 {
                     tmpstat = array_of_statuses[ cur ];
                     scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
+                    scorep_mpi_cleanup_request( orig_req );
                     array_of_statuses[ j ] = tmpstat;
 
                     tmp                     = array_of_indices[ cur ];
@@ -445,6 +450,7 @@ MPI_Waitsome( int          incount,
         {
             orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( orig_req );
         }
     }
 
@@ -521,6 +527,7 @@ MPI_Test( MPI_Request* request,
     if ( *flag )
     {
         scorep_mpi_check_request( orig_req, status );
+        scorep_mpi_cleanup_request( orig_req );
     }
     else if ( orig_req && event_gen_active_for_group && xtest_active )
     {
@@ -616,6 +623,7 @@ MPI_Testany( int          count,
     {
         orig_req = scorep_mpi_saved_request_get( *index );
         scorep_mpi_check_request( orig_req, status );
+        scorep_mpi_cleanup_request( orig_req );
     }
     if ( event_gen_active )
     {
@@ -692,6 +700,7 @@ MPI_Testall( int          count,
         {
             orig_req = scorep_mpi_saved_request_get( i );
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( orig_req );
         }
     }
     else if ( event_gen_active_for_group && xtest_active )
@@ -799,6 +808,7 @@ MPI_Testsome( int          incount,
                 {
                     tmpstat = array_of_statuses[ cur ];
                     scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
+                    scorep_mpi_cleanup_request( orig_req );
                     array_of_statuses[ j ] = tmpstat;
 
                     tmp                     = array_of_indices[ cur ];
@@ -820,6 +830,7 @@ MPI_Testsome( int          incount,
         {
             orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( orig_req );
         }
     }
 
@@ -1176,6 +1187,84 @@ MPI_Cancel( MPI_Request* request )
         else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CANCEL ] );
+        }
+
+        SCOREP_MPI_EVENT_GEN_ON();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return return_val;
+}
+#endif
+
+#if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Measurement wrapper for MPI_Request_get_status
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup request
+ * Triggers an enter and exit event.
+ */
+int
+MPI_Request_get_status( MPI_Request request,
+                        int*        flag,
+                        MPI_Status* status )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
+    const int           xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
+    int                 return_val;
+    scorep_mpi_request* orig_req;
+    MPI_Status          mystatus;
+    uint64_t            start_time_stamp;
+
+    if ( event_gen_active )
+    {
+        SCOREP_MPI_EVENT_GEN_OFF();
+
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] );
+        }
+        else if ( SCOREP_IsUnwindingEnabled() )
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] );
+        }
+    }
+
+    if ( status == MPI_STATUS_IGNORE )
+    {
+        status = &mystatus;
+    }
+    orig_req = scorep_mpi_request_get( request );
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Request_get_status( request, flag, status );
+    SCOREP_EXIT_WRAPPED_REGION();
+    if ( *flag )
+    {
+        scorep_mpi_check_request( orig_req, status );
+        /* mark request as completed */
+        if ( orig_req )
+        {
+            orig_req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED;
+        }
+    }
+    else if ( orig_req && event_gen_active_for_group && xtest_active )
+    {
+        SCOREP_MpiRequestTested( orig_req->id );
+    }
+
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] );
+        }
+        else if ( SCOREP_IsUnwindingEnabled() )
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] );
         }
 
         SCOREP_MPI_EVENT_GEN_ON();
