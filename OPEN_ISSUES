@@ -11,8 +11,11 @@ various Score-P components.
 * Platform support
 
   - Score-P has been tested on the following platforms:
-    + Cray XC systems with all available PrgEnvs (see 'Shared
-      libraries on Cray systems' below)
+    + HPE/Cray XC systems with all available PrgEnvs (see 'Shared
+      libraries on Cray systems' below). With some versions of
+      PrgEnv-cray scorep fails to instrument. This will be fixed with
+      Cray PE-21.05.
+
     + various Linux (Intel, AMD, IBM, ARM) clusters with GNU,
       Intel, NVIDIA, and IBM compilers. Note that some compilers
       are based on Clang.
