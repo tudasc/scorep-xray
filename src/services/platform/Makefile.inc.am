@@ -141,16 +141,6 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
 endif PLATFORM_MAC
 
-if PLATFORM_NECSX
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
-if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
-else !HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
-endif !HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_topology_mockup.c
-endif PLATFORM_NECSX
-
 if PLATFORM_K
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID

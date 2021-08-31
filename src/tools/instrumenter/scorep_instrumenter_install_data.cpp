@@ -420,77 +420,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
     return false;
 }
 
-/* *************************************** STUDIO */
-#elif SCOREP_BACKEND_COMPILER_STUDIO
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-G";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    /* The sed statements remove every line directive if the following line
-       starts with a closing bracket */
-    if ( get_extension( output_file ) == ".i" )
-    {
-        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
-               + output_file;
-    }
-    else
-    {
-        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
-               + remove_extension( remove_path( output_file ) ) + ".i && mv "
-               + remove_extension( remove_path( output_file ) ) + ".i "
-               + output_file;
-    }
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return ( arg == "-E" ) || ( arg == "-F" );
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( ( current == "-h" ) ||
-         ( current == "-xMF" ) )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
@@ -720,43 +649,6 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
                                                                const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-#elif SCOREP_BACKEND_COMPILER_STUDIO
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-fixed";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    std::string basename = remove_extension( remove_path( output_file ) );
-
-    if ( get_extension( output_file ) == ".f90" )
-    {
-        return "-fpp -F -o " + basename
-               + ".i && grep -v \\# "
-               + basename + ".i > "
-               + output_file;
-    }
-    else
-    {
-        return "-fpp -F -o " + basename
-               + ".f90 && grep -v \\# "
-               + basename + ".f90 > "
-               + output_file
-               + " && rm -f "
-               + basename + ".f90";
-    }
 }
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU

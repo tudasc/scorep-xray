@@ -228,38 +228,6 @@ SCOREP_Instrumenter_CompilerAdapter::precompile( SCOREP_Instrumenter&         in
                                                  SCOREP_Instrumenter_CmdLine& cmdLine,
                                                  const std::string&           input_file )
 {
-    /* The sun compiler can only instrument Fortran files. Thus, any C/C++
-       files are not instrumented. To avoid user confusion, the instrumenter
-       aborts in case a C/C++ file should be compiler instrumented.
-     */
-#if SCOREP_BACKEND_COMPILER_STUDIO
-    static bool checked = false;
-    if ( !checked && !isEnabled() )
-    {
-        checked = true;
-    }
-    if ( !checked )
-    {
-        std::string               current_file = "";
-        std::string               extension    = "";
-        std::vector<std::string>* input_files  = cmdLine.getInputFiles();
-        for ( std::vector<std::string>::iterator current_file = input_files->begin();
-              current_file != input_files->end();
-              current_file++ )
-        {
-            if ( !is_fortran_file( *current_file ) )
-            {
-                std::cerr << "[Score-P] ERROR: Compiler instrumentation with the Sun compiler is "
-                          << "only possible for Fortran files\n"
-                          << "                 Use the '--nocompiler' option to disable compiler "
-                          << "instrumentation" << std::endl;
-                exit( EXIT_FAILURE );
-            }
-        }
-        checked = true;
-    }
-#endif // SCOREP_BACKEND_COMPILER_STUDIO
-
     /* For the XL compiler we have two interfaces. Check whether the version
        of the compilers match the used interface. */
 #if SCOREP_BACKEND_COMPILER_IBM && HAVE( POPEN )

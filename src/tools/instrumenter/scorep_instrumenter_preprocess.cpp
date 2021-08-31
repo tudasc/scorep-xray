@@ -106,11 +106,6 @@ SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         
         // '# number'. If the semantics is the same is investigated.
         command = "echo \"# 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
         #endif
-        #if SCOREP_BACKEND_COMPILER_STUDIO
-        // Above approach did not work for studio compiler.
-        // Start with an empty output_file as we append below.
-        command = "> " + output_file;
-        #endif
         instrumenter.executeCommand( command );
 
         instrumenter.executeCommand( "cat " + source_file + " >> " + output_file );

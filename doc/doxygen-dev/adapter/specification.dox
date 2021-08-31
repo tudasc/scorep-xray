@@ -296,7 +296,7 @@ The second step includes:
   <li> Grouping
   <li> Filtering
   <li> Reconfigure hardware counter during measurement
-  <li> Additional hardware counters (Sun Solaris, NEC machines)
+  <li> Additional hardware counters
   <li> User metrics
   <li> Parameter-based profiling
 </ul>

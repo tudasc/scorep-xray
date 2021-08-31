@@ -40,7 +40,6 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-frontend-ibm  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-intel  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-pgi  \
-              $(srcdir)/build-config/common/platforms/compiler-frontend-studio  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-clang \
               $(srcdir)/build-config/common/platforms/compiler-frontend-aocc \
               $(srcdir)/build-config/common/platforms/compiler-mpi-bullxmpi \
@@ -75,7 +74,6 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-nocross-ibm  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-intel  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-pgi  \
-              $(srcdir)/build-config/common/platforms/compiler-nocross-studio  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-clang  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-aocc  \
               $(srcdir)/build-config/common/platforms/platform-backend-altix  \
@@ -92,7 +90,6 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-backend-mac  \
               $(srcdir)/build-config/common/platforms/platform-backend-mic  \
               $(srcdir)/build-config/common/platforms/platform-backend-mingw \
-              $(srcdir)/build-config/common/platforms/platform-backend-necsx  \
               $(srcdir)/build-config/common/platforms/platform-backend-solaris  \
               $(srcdir)/build-config/common/platforms/platform-backend-k  \
               $(srcdir)/build-config/common/platforms/platform-backend-fx10  \
@@ -112,7 +109,6 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-frontend-mac  \
               $(srcdir)/build-config/common/platforms/platform-frontend-mic  \
               $(srcdir)/build-config/common/platforms/platform-frontend-mingw \
-              $(srcdir)/build-config/common/platforms/platform-frontend-necsx  \
               $(srcdir)/build-config/common/platforms/platform-frontend-solaris  \
               $(srcdir)/build-config/common/platforms/platform-frontend-k  \
               $(srcdir)/build-config/common/platforms/platform-frontend-fx10  \
@@ -131,7 +127,6 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/platform-mpi-linux  \
               $(srcdir)/build-config/common/platforms/platform-mpi-mac  \
               $(srcdir)/build-config/common/platforms/platform-mpi-mic  \
-              $(srcdir)/build-config/common/platforms/platform-mpi-necsx  \
               $(srcdir)/build-config/common/platforms/platform-mpi-solaris  \
               $(srcdir)/build-config/common/platforms/platform-shmem-crayxk  \
               $(srcdir)/build-config/common/platforms/platform-shmem-crayxe  \

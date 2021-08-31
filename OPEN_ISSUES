@@ -29,9 +29,6 @@ various Score-P components.
     However the supplied build system might still work on these
     systems.
 
-  - The following platforms have not been tested:
-    + NEC systems
-
   - Each toolset installation can only support one MPI implementation
     (because MPI is only source-code but not binary compatible). If
     your systems support more than one MPI implementation (e.g. Linux
@@ -84,7 +81,6 @@ various Score-P components.
              Note that PGI 13.8 is currently not supported as it is not
              recognized as an PGI compiler anymore. PGI 16 supports
              only 64-bit platforms.
-  - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on Blue Gene systems
   - Intel  : only works with Intel icc/icpc/ifort version 11 and higher
@@ -124,7 +120,7 @@ various Score-P components.
     versions.
 
   - Measurement filtering can only be applied to functions
-    instrumented by the IBM, GNU, Intel, PGI, or Oracle compilers as
+    instrumented by the IBM, GNU, Intel, or PGI compilers as
     well as functions instrumented by PDT, Kokkos, and user functions.
     Filtering of MPI, SHMEM, and OpenMP runtime functions is always
     ineffective.
