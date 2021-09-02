@@ -56,6 +56,10 @@ uint8_t scorep_cuda_record_gpumemusage = 0;
 
 bool scorep_cuda_record_references = false;
 
+bool scorep_record_driver_api = false;
+
+bool scorep_record_runtime_api = false;
+
 /* handles for CUDA communication unification */
 SCOREP_InterimCommunicatorHandle scorep_cuda_interim_communicator_handle =
     SCOREP_INVALID_INTERIM_COMMUNICATOR;
@@ -69,10 +73,26 @@ uint64_t* scorep_cuda_global_location_ids = NULL;
 void
 scorep_cuda_set_features( void )
 {
+    /* check for CUDA APIs */
+    if ( ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DRIVER_API ) == SCOREP_CUDA_FEATURE_DRIVER_API ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) )
+    {
+        scorep_record_driver_api = true;
+    }
+
+    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_RUNTIME_API ) == SCOREP_CUDA_FEATURE_RUNTIME_API )
+    {
+        scorep_record_runtime_api = true;
+    }
+
+
+
     /* check for CUDA kernels */
     if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL ) ||
          ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) ||
-         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_COUNTER ) )
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_COUNTER ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_IDLE ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) )
     {
         scorep_cuda_record_kernels = SCOREP_CUDA_KERNEL;
 
@@ -86,10 +106,17 @@ scorep_cuda_set_features( void )
         {
             scorep_cuda_record_kernels = SCOREP_CUDA_KERNEL_AND_COUNTER;
         }
+
+        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES )
+        {
+            scorep_cuda_record_references = true;
+        }
     }
 
     /* check for CUDA memcpy */
-    if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_MEMCPY )
+    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_MEMCPY ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_PURE_IDLE ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC ) )
     {
         scorep_cuda_record_memcpy = true;
 
@@ -97,45 +124,26 @@ scorep_cuda_set_features( void )
         {
             scorep_cuda_record_idle = SCOREP_CUDA_PURE_IDLE;
         }
+
+        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC )
+        {
+            scorep_cuda_sync_level = SCOREP_CUDA_RECORD_SYNC_FULL;
+        }
     }
 
     /* check for CUDA GPU memory usage */
     if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_GPUMEMUSAGE )
     {
         scorep_cuda_record_gpumemusage = SCOREP_CUDA_GPUMEMUSAGE;
-    }
 
-    /* check for features, which are only available, when something is recorded on the device */
-    if ( scorep_cuda_record_kernels || scorep_cuda_record_memcpy || scorep_cuda_record_gpumemusage )
-    {
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC )
+        /* requires an idle region */
+        if ( scorep_cuda_record_idle != SCOREP_CUDA_PURE_IDLE &&
+             scorep_cuda_record_idle != SCOREP_CUDA_COMPUTE_IDLE )
         {
-            scorep_cuda_sync_level = SCOREP_CUDA_RECORD_SYNC_FULL;
+            /* when looking at gpumemusage looking at memcpys and pure_idle
+               is the best fit as implicit default setting */
+            scorep_cuda_record_idle   = SCOREP_CUDA_PURE_IDLE;
+            scorep_cuda_record_memcpy = true;
         }
-
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES )
-        {
-            scorep_cuda_record_references = true;
-        }
-    }
-    else
-    {
-        /* Warn if required feature is missing */
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC )
-        {
-            UTILS_WARNING( "CUDA option 'sync' requires recording of  device activities." );
-        }
-
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES )
-        {
-            UTILS_WARNING( "CUDA option 'references' requires recording of device activities." );
-        }
-    }
-
-    /* 'references' must be used together with feature 'driver' */
-    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) &&
-         !( scorep_cuda_features & SCOREP_CUDA_FEATURE_DRIVER_API ) )
-    {
-        UTILS_WARNING( "CUDA option 'references' requires option 'driver'." );
     }
 }
