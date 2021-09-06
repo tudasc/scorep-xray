@@ -146,4 +146,19 @@ scorep_cuda_set_features( void )
             scorep_cuda_record_memcpy = true;
         }
     }
+
+
+    /* Generate errors or warnings for conflicting options that cannot be
+       resolved automatically and need user input to get the correct set of
+       requested features. */
+    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_PURE_IDLE ) &&
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_IDLE ) )
+    {
+        /* As they have different semantics and also different dependencies
+           the conflict cannot automatically be resolved without further
+           information. */
+        UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                     "[CUDA] Conflicting SCOREP_CUDA_ENABLE options `idle` and `pure_idle`!" );
+        abort();
+    }
 }
