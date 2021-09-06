@@ -122,9 +122,14 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
         SCOREP_CUDA_FEATURES_DEFAULT,
         "CUDA runtime API and GPU activities.\n"
         "Includes:\n"
-        "\240-\240runtime\n"
+        "\240-\240driver\n"
         "\240-\240kernel\n"
-        "\240-\240memcpy"
+        "\240-\240kernel_counter\n"
+        "\240-\240memcpy\n"
+        "\240-\240idle\n"
+        "\240-\240sync\n"
+        "\240-\240gpumemusage\n"
+        "\240-\240references\n"
     },
     { NULL, 0, NULL }
 };
