@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2020,
+ * Copyright (c) 2009-2014, 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -135,7 +135,19 @@ scorep_compiler_process_symbol_table( const char*                       executab
         }
 
         /* Process only symbols of type function */
+#if HAVE( PLATFORM_MAC )
+        /* Temporary fix: on macOS, clang-generated symbols do not
+         * provide the 'usual' range of flags but only BSF_LOCAL,
+         * BSF_GLOBAL, and BSF_DEBUGGING, thus no symbol is put into
+         * the hash table for '& BSF_FUNCTION'. Wrong flags is
+         * probably the cause for #46 as well.
+         * With #28, a new addr2line lookup will be provided that
+         * replaces scorep_compiler_process_symbol_table
+         * altogether. */
+        if ( !( canonic_symbols[ i ]->flags & BSF_GLOBAL ) )
+#else   /* ! HAVE( PLATFORM_MAC ) */
         if ( !( canonic_symbols[ i ]->flags & BSF_FUNCTION ) )
+#endif /* ! HAVE( PLATFORM_MAC ) */
         {
             continue;
         }
