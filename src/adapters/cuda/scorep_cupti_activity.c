@@ -83,12 +83,9 @@ uint8_t scorep_cupti_activity_state                         = 0;
 /* global region IDs for wrapper internal recording */
 SCOREP_RegionHandle scorep_cupti_buffer_flush_region_handle = SCOREP_INVALID_REGION;
 
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
 static void
 replace_context( uint32_t               newContextId,
                  scorep_cupti_context** context );
-
-#endif
 
 /*
  * Initialize the Score-P CUPTI Activity implementation.
@@ -252,14 +249,10 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
     /* create new context, as it is not listed */
     context_activity = ( scorep_cupti_activity* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_activity ) );
 
-#if HAVE( CUPTI_ASYNC_SUPPORT )
     context_activity->buffers                  = NULL;
     context_activity->max_buffer_size_exceeded = false;
-#else
-    context_activity->buffer = NULL;
-#endif
-    context_activity->scorep_last_gpu_time = SCOREP_GetBeginEpoch();
-    context_activity->gpu_idle             = true;
+    context_activity->scorep_last_gpu_time     = SCOREP_GetBeginEpoch();
+    context_activity->gpu_idle                 = true;
 
     /*
      * Get time synchronization factor between host and GPU time for measurement
@@ -279,7 +272,6 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
     return context_activity;
 }
 
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
 /*
  * Set the given Score-P context (currently flushing records) to the context
  * corresponding to the given context id (record's context).
@@ -328,16 +320,13 @@ replace_context( uint32_t               newContextId,
         ( *context )->activity->sync.factor    = current_sync_data.factor;
     }
 }
-#endif
 
 
 void
 scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
                                     scorep_cupti_context*     context )
 {
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
     replace_context( kernel->contextId, &context );
-#endif
 
     //context and context->activity cannot be NULL (caller of this function checks both)
 
@@ -529,9 +518,7 @@ void
 scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
                                     scorep_cupti_context* context )
 {
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
     replace_context( memcpy->contextId, &context );
-#endif
 
     scorep_cupti_activity*            contextActivity = context->activity;
     scorep_cupti_activity_memcpy_kind kind            = SCOREP_CUPTI_COPYDIRECTION_UNKNOWN;
@@ -830,10 +817,6 @@ scorep_cupti_activity_enable( bool enable )
         }
 
         /* flush activities */
-#if HAVE( CUPTI_ASYNC_SUPPORT )
         SCOREP_CUPTI_CALL( cuptiActivityFlushAll( 0 ) );
-#else
-        synchronize_context_list();
-#endif
     }
 }

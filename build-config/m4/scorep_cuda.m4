@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014, 2020,
+## Copyright (c) 2009-2012, 2014, 2020, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -55,7 +55,6 @@ AFS_SUMMARY_PUSH
 
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
-scorep_have_cupti_activity_async="no"
 scorep_nvcc_works="no"
 
 scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
@@ -139,11 +138,6 @@ AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                      AC_SUBST(CUDA_LDFLAGS,  [""])
                      AC_SUBST(CUDA_LIBS,     [""])])
 
-AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
-                    [test "x${scorep_have_cupti_activity_async}" = "xyes"],
-                    [Defined if CUPTI activity asynchronous buffer handling is available.]
-                   )
-
 AC_SCOREP_COND_HAVE([NVML_SUPPORT],
                     [test "x${scorep_have_libnvidia_ml}" = "xyes"],
                     [Defined if NVIDIA NVML is available.])
@@ -152,15 +146,8 @@ AC_SCOREP_COND_HAVE([CUDA_TESTS],
     [test "x${scorep_have_cuda_tests}" = "xyes"],
     [Defined if CUDA tests will be run.], [], [])
 
-dnl run_cuda_test.sh: test sources only available for scorep_cuda_version 5000, 5050, 6000, 6050
-AM_CONDITIONAL([HAVE_CUDA_TESTS_HAVE_GOLD],
-    [test "x${scorep_have_cuda_tests}" = "xyes" \
-     && (test ${scorep_cuda_version} -eq 5000 \
-         || test ${scorep_cuda_version} -eq 5050 \
-         || test ${scorep_cuda_version} -eq 6000 \
-         || test ${scorep_cuda_version} -eq 6050)])
-
-AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
+dnl run_cuda_test.sh: no gold files available for supported CUDA
+AM_CONDITIONAL([HAVE_CUDA_TESTS_HAVE_GOLD], [false])
 
 AFS_SUMMARY([CUDA version], [${scorep_cuda_version}])
 
@@ -298,39 +285,14 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
         [[
 #ifndef CUPTI_API_VERSION
 #  ups__cupti_api_version_not_defined
-#elif CUPTI_API_VERSION < 2
-#  ups__cupti_api_version_lt_2
+#elif CUPTI_API_VERSION < 7
+#  ups__cupti_api_version_lt_7
 #endif
          ]])],
-         [
-            AS_IF([test "x$scorep_cupti_error" = "xno"],
-                  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cupti.h"]],
-                    [[
-#if CUPTI_API_VERSION < 4
-#  ups__cupti_api_version_lt_4
-#endif
-                     ]])],
-                     [AC_MSG_NOTICE([Check for CUPTI 4 was successful.])
-                      scorep_have_cupti4="yes"],
-                     [])])
-         ],
+         [AC_MSG_NOTICE([Check for CUPTI 7 was successful.])],
          [AC_MSG_NOTICE([CUPTI version could not be determined and/or is
-                         incompatible (< 2). See 'config.log' for more details.])
+                         incompatible (< 7). See 'config.log' for more details.])
           scorep_cupti_error="yes" ])])
-
-dnl check for CUPTI activity asynchronous buffer handling
-AS_IF([test "x$scorep_have_cupti4" = "xyes"],
-  [
-  AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-#include <cupti.h>
-]],[[
-CUpti_BuffersCallbackRequestFunc funcBufferRequested;
-CUpti_BuffersCallbackCompleteFunc funcBufferCompleted;
-cuptiActivityRegisterCallbacks(funcBufferRequested, funcBufferCompleted);
-]])],
-      [scorep_have_cupti_activity_async="yes"],
-      [scorep_cupti_error="yes"])
-  ],[])
 
 dnl final check for errors
 if test "x${scorep_cupti_error}" = "xno"; then
@@ -370,8 +332,8 @@ AS_IF([test "x$scorep_cuda_error" != xyes],
     cross_compiling=$scorep_cross_compiling_safe
     AS_IF([test "x${scorep_cuda_error}" = xyes],
         [AC_MSG_WARN([CUDA driver API version could not be determined.])],
-        [AS_IF([test ${scorep_cuda_version} -lt 4010],
-            [AC_MSG_WARN([CUDA driver API version is incompatible (< 4010)])
+        [AS_IF([test ${scorep_cuda_version} -lt 7000],
+            [AC_MSG_WARN([CUDA driver API version is incompatible (< 7000)])
              scorep_cuda_error=yes],
             [AC_MSG_NOTICE([CUDA driver API version is ${scorep_cuda_version}.])])])])
 

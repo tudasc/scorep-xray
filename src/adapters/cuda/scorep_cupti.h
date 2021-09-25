@@ -140,7 +140,6 @@ typedef struct
     double   factor;     /**< synchronization factor for time interval */
 } scorep_cupti_sync;
 
-#if HAVE( CUPTI_ASYNC_SUPPORT )
 /**
  * Score-P CUPTI activity buffers list entry
  */
@@ -154,7 +153,6 @@ typedef struct scorep_cupti_buffer
     bool                        pending;    /**< set if buffer has been filled by CUPTI */
     struct scorep_cupti_buffer* next;       /**< ptr to next entry in list */
 } scorep_cupti_buffer;
-#endif
 
 /*
  * Score-P CUPTI activity specific context data.
@@ -163,12 +161,8 @@ typedef struct
 {
     uint32_t             default_strm_id;          /**< CUPTI stream ID of default stream */
     scorep_cupti_sync    sync;                     /**< store synchronization information */
-#if HAVE( CUPTI_ASYNC_SUPPORT )
     scorep_cupti_buffer* buffers;                  /**< CUPTI activity buffers list */
     bool                 max_buffer_size_exceeded; /**< flag if the maximum allowed buffer size is reached */
-#else
-    uint8_t*             buffer;                   /**< CUPTI activity buffer pointer */
-#endif
     uint64_t             scorep_last_gpu_time;     /**< last written Score-P timestamp */
     bool                 gpu_idle;                 /**< has idle region enter been written last */
 } scorep_cupti_activity;

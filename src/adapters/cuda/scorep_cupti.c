@@ -270,7 +270,6 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
                                           ( uint8_t )context->pci_device_id,
                                           UINT8_MAX );
 
-#if defined( SCOREP_CUPTI_ACTIVITY )
         if ( context->activity && ( stream->stream_id == context->activity->default_strm_id ) )
         {
             /* add a location property marking CUDA NULL streams */
@@ -278,7 +277,6 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
                                                  SCOREP_CUPTI_LOCATION_NULL_STREAM,
                                                  0, "yes" );
         }
-#endif
 
         stream->location_id = SCOREP_CUPTI_NO_ID;
     }
@@ -574,12 +572,8 @@ scorep_cupti_context_get( CUcontext cudaContext )
 {
     scorep_cupti_context* context = NULL;
 
-    /* since CUDA 6.0, we also have to test against the CUDA context ID */
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
     uint32_t cudaContextId = SCOREP_CUPTI_NO_CONTEXT_ID;
     SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &cudaContextId ) );
-#endif
-
 
     /* lookup context */
     context = scorep_cupti_context_list;
@@ -587,10 +581,10 @@ scorep_cupti_context_get( CUcontext cudaContext )
     {
         if ( context->cuda_context == cudaContext )
         {
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
             if ( context->context_id == cudaContextId )
-#endif
-            return context;
+            {
+                return context;
+            }
         }
 
         context = context->next;
@@ -649,9 +643,7 @@ scorep_cupti_context_get_create( CUcontext cudaContext )
         if ( context == NULL )
         {
             uint32_t context_id = SCOREP_CUPTI_NO_CONTEXT_ID;
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
             SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &context_id ) );
-#endif
             context = scorep_cupti_context_create( cudaContext, SCOREP_CUPTI_NO_DEVICE,
                                                    context_id, SCOREP_CUPTI_NO_DEVICE_ID );
 
