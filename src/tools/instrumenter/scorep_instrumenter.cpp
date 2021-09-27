@@ -217,13 +217,13 @@ SCOREP_Instrumenter::Run( void )
                 std::string search_path                = extract_path( *current_file );
                 std::string pdt_include_search_path    = " -I" + search_path;
                 std::string opari2_include_search_path = " -I" +  search_path;
-                if ( is_c_file( *current_file ) )
+                if ( !m_cuda_adapter->isNvcc() && is_c_file( *current_file ) )
                 {
                     #if SCOREP_BACKEND_HAVE_C_IQUOTE_SUPPORT
                     opari2_include_search_path = " -iquote " +  search_path;
                     #endif /* SCOREP_BACKEND_HAVE_IQUOTE_SUPPORT */
                 }
-                else if ( is_cpp_file( *current_file ) )
+                else if ( !m_cuda_adapter->isNvcc() && is_cpp_file( *current_file ) )
                 {
                     #if SCOREP_BACKEND_HAVE_CXX_IQUOTE_SUPPORT
                     opari2_include_search_path = " -iquote " +  search_path;
