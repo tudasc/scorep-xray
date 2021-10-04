@@ -198,7 +198,7 @@ static const size_t none_error_decls_size =
 /* *INDENT-OFF* */
 static const struct utils_error_decl error_decls[] =
 {
-    #define _e( code, description ) \
+    #define UTILS_ERROR_DECL( code, description ) \
     { \
         UTILS_STRINGIFY_( code ), \
         description, \
@@ -206,84 +206,84 @@ static const struct utils_error_decl error_decls[] =
     }
 
     /* This is the internal implementation of POSIX error code descriptions. */
-    _e( E2BIG,           "The list of arguments is too long" ),
-    _e( EACCES,          "Not enough rights" ),
-    _e( EADDRNOTAVAIL,   "Address is not available" ),
-    _e( EAFNOSUPPORT,    "Address family is not supported" ),
-    _e( EAGAIN,          "Resource temporarily not available" ),
-    _e( EALREADY,        "Connection is already processed" ),
-    _e( EBADF,           "Invalid file pointer" ),
-    _e( EBADMSG,         "Invalid message" ),
-    _e( EBUSY,           "Resource or device is busy" ),
-    _e( ECANCELED,       "Operation was aborted" ),
-    _e( ECHILD,          "No child process available" ),
-    _e( ECONNREFUSED,    "Connection was refused" ),
-    _e( ECONNRESET,      "Connection was reset" ),
-    _e( EDEADLK,         "Resolved deadlock" ),
-    _e( EDESTADDRREQ,    "Destination address was expected" ),
-    _e( EDOM,            "Domain error" ),
-    _e( EDQUOT,          "Reserved" ),
-    _e( EEXIST,          "File does already exist" ),
-    _e( EFAULT,          "Invalid address" ),
-    _e( EFBIG,           "File is too large" ),
-    _e( EINPROGRESS,     "Operation is work in progress" ),
-    _e( EINTR,           "Interruption of an operating system call" ),
-    _e( EINVAL,          "Invalid argument" ),
-    _e( EIO,             "Generic I/O error" ),
-    _e( EISCONN,         "Socket is already connected" ),
-    _e( EISDIR,          "Target is a directory" ),
-    _e( ELOOP,           "Too many layers of symbolic links" ),
-    _e( EMFILE,          "Too many opened files" ),
-    _e( EMLINK,          "Too many links" ),
-    _e( EMSGSIZE,        "Message buffer is too small" ),
-    _e( EMULTIHOP,       "Reserved" ),
-    _e( ENAMETOOLONG,    "Filename is too long" ),
-    _e( ENETDOWN,        "Network is down" ),
-    _e( ENETRESET,       "Connection was reset from the network" ),
-    _e( ENETUNREACH,     "Network is not reachable" ),
-    _e( ENFILE,          "Too many opened files" ),
-    _e( ENOBUFS,         "No buffer space available" ),
-    _e( ENODATA,         "No more data left in the queue" ),
-    _e( ENODEV,          "This device does not support this function" ),
-    _e( ENOENT,          "File or directory does not exist" ),
-    _e( ENOEXEC,         "Cannot execute binary" ),
-    _e( ENOLCK,          "Locking failed" ),
-    _e( ENOLINK,         "Reserved" ),
-    _e( ENOMEM,          "Not enough main memory available" ),
-    _e( ENOMSG,          "Message has not the expected type" ),
-    _e( ENOPROTOOPT,     "This protocol is not available" ),
-    _e( ENOSPC,          "No space left on device" ),
-    _e( ENOSR,           "No stream available" ),
-    _e( ENOSTR,          "This is not a stream" ),
-    _e( ENOSYS,          "Requested function is not implemented" ),
-    _e( ENOTCONN,        "Socket is not connected" ),
-    _e( ENOTDIR,         "This is not a directory" ),
-    _e( ENOTEMPTY,       "This directory is not empty" ),
-    _e( ENOTSOCK,        "No socket" ),
-    _e( ENOTSUP,         "This operation is not supported" ),
-    _e( ENOTTY,          "This IOCTL is not supported by the device" ),
-    _e( ENXIO,           "Device is not yet configured" ),
-    _e( EOPNOTSUPP,      "Operation is not supported by this socket" ),
-    _e( EOVERFLOW,       "Value is to long for the datatype" ),
-    _e( EPERM,           "Operation is not permitted" ),
-    _e( EPIPE,           "Broken pipe" ),
-    _e( EPROTO,          "Protocol error" ),
-    _e( EPROTONOSUPPORT, "Protocol is not supported" ),
-    _e( EPROTOTYPE,      "Wrong protocol type for this socket" ),
-    _e( ERANGE,          "Value is out of range" ),
-    _e( EROFS,           "Filesystem is read only" ),
-    _e( ESPIPE,          "This seek is not allowed" ),
-    _e( ESRCH,           "No matching process found" ),
-    _e( ESTALE,          "Reserved" ),
-    _e( ETIME,           "Timeout in file stream or IOCTL" ),
-    _e( ETIMEDOUT,       "Connection timed out" ),
-    _e( ETXTBSY,         "File could not be executed while it is opened" ),
-    _e( EWOULDBLOCK,     "Operation would be blocking" ),
-    _e( EXDEV,           "Invalid link between devices" ),
+    UTILS_ERROR_DECL( E2BIG,           "The list of arguments is too long" ),
+    UTILS_ERROR_DECL( EACCES,          "Not enough rights" ),
+    UTILS_ERROR_DECL( EADDRNOTAVAIL,   "Address is not available" ),
+    UTILS_ERROR_DECL( EAFNOSUPPORT,    "Address family is not supported" ),
+    UTILS_ERROR_DECL( EAGAIN,          "Resource temporarily not available" ),
+    UTILS_ERROR_DECL( EALREADY,        "Connection is already processed" ),
+    UTILS_ERROR_DECL( EBADF,           "Invalid file pointer" ),
+    UTILS_ERROR_DECL( EBADMSG,         "Invalid message" ),
+    UTILS_ERROR_DECL( EBUSY,           "Resource or device is busy" ),
+    UTILS_ERROR_DECL( ECANCELED,       "Operation was aborted" ),
+    UTILS_ERROR_DECL( ECHILD,          "No child process available" ),
+    UTILS_ERROR_DECL( ECONNREFUSED,    "Connection was refused" ),
+    UTILS_ERROR_DECL( ECONNRESET,      "Connection was reset" ),
+    UTILS_ERROR_DECL( EDEADLK,         "Resolved deadlock" ),
+    UTILS_ERROR_DECL( EDESTADDRREQ,    "Destination address was expected" ),
+    UTILS_ERROR_DECL( EDOM,            "Domain error" ),
+    UTILS_ERROR_DECL( EDQUOT,          "Reserved" ),
+    UTILS_ERROR_DECL( EEXIST,          "File does already exist" ),
+    UTILS_ERROR_DECL( EFAULT,          "Invalid address" ),
+    UTILS_ERROR_DECL( EFBIG,           "File is too large" ),
+    UTILS_ERROR_DECL( EINPROGRESS,     "Operation is work in progress" ),
+    UTILS_ERROR_DECL( EINTR,           "Interruption of an operating system call" ),
+    UTILS_ERROR_DECL( EINVAL,          "Invalid argument" ),
+    UTILS_ERROR_DECL( EIO,             "Generic I/O error" ),
+    UTILS_ERROR_DECL( EISCONN,         "Socket is already connected" ),
+    UTILS_ERROR_DECL( EISDIR,          "Target is a directory" ),
+    UTILS_ERROR_DECL( ELOOP,           "Too many layers of symbolic links" ),
+    UTILS_ERROR_DECL( EMFILE,          "Too many opened files" ),
+    UTILS_ERROR_DECL( EMLINK,          "Too many links" ),
+    UTILS_ERROR_DECL( EMSGSIZE,        "Message buffer is too small" ),
+    UTILS_ERROR_DECL( EMULTIHOP,       "Reserved" ),
+    UTILS_ERROR_DECL( ENAMETOOLONG,    "Filename is too long" ),
+    UTILS_ERROR_DECL( ENETDOWN,        "Network is down" ),
+    UTILS_ERROR_DECL( ENETRESET,       "Connection was reset from the network" ),
+    UTILS_ERROR_DECL( ENETUNREACH,     "Network is not reachable" ),
+    UTILS_ERROR_DECL( ENFILE,          "Too many opened files" ),
+    UTILS_ERROR_DECL( ENOBUFS,         "No buffer space available" ),
+    UTILS_ERROR_DECL( ENODATA,         "No more data left in the queue" ),
+    UTILS_ERROR_DECL( ENODEV,          "This device does not support this function" ),
+    UTILS_ERROR_DECL( ENOENT,          "File or directory does not exist" ),
+    UTILS_ERROR_DECL( ENOEXEC,         "Cannot execute binary" ),
+    UTILS_ERROR_DECL( ENOLCK,          "Locking failed" ),
+    UTILS_ERROR_DECL( ENOLINK,         "Reserved" ),
+    UTILS_ERROR_DECL( ENOMEM,          "Not enough main memory available" ),
+    UTILS_ERROR_DECL( ENOMSG,          "Message has not the expected type" ),
+    UTILS_ERROR_DECL( ENOPROTOOPT,     "This protocol is not available" ),
+    UTILS_ERROR_DECL( ENOSPC,          "No space left on device" ),
+    UTILS_ERROR_DECL( ENOSR,           "No stream available" ),
+    UTILS_ERROR_DECL( ENOSTR,          "This is not a stream" ),
+    UTILS_ERROR_DECL( ENOSYS,          "Requested function is not implemented" ),
+    UTILS_ERROR_DECL( ENOTCONN,        "Socket is not connected" ),
+    UTILS_ERROR_DECL( ENOTDIR,         "This is not a directory" ),
+    UTILS_ERROR_DECL( ENOTEMPTY,       "This directory is not empty" ),
+    UTILS_ERROR_DECL( ENOTSOCK,        "No socket" ),
+    UTILS_ERROR_DECL( ENOTSUP,         "This operation is not supported" ),
+    UTILS_ERROR_DECL( ENOTTY,          "This IOCTL is not supported by the device" ),
+    UTILS_ERROR_DECL( ENXIO,           "Device is not yet configured" ),
+    UTILS_ERROR_DECL( EOPNOTSUPP,      "Operation is not supported by this socket" ),
+    UTILS_ERROR_DECL( EOVERFLOW,       "Value is to long for the datatype" ),
+    UTILS_ERROR_DECL( EPERM,           "Operation is not permitted" ),
+    UTILS_ERROR_DECL( EPIPE,           "Broken pipe" ),
+    UTILS_ERROR_DECL( EPROTO,          "Protocol error" ),
+    UTILS_ERROR_DECL( EPROTONOSUPPORT, "Protocol is not supported" ),
+    UTILS_ERROR_DECL( EPROTOTYPE,      "Wrong protocol type for this socket" ),
+    UTILS_ERROR_DECL( ERANGE,          "Value is out of range" ),
+    UTILS_ERROR_DECL( EROFS,           "Filesystem is read only" ),
+    UTILS_ERROR_DECL( ESPIPE,          "This seek is not allowed" ),
+    UTILS_ERROR_DECL( ESRCH,           "No matching process found" ),
+    UTILS_ERROR_DECL( ESTALE,          "Reserved" ),
+    UTILS_ERROR_DECL( ETIME,           "Timeout in file stream or IOCTL" ),
+    UTILS_ERROR_DECL( ETIMEDOUT,       "Connection timed out" ),
+    UTILS_ERROR_DECL( ETXTBSY,         "File could not be executed while it is opened" ),
+    UTILS_ERROR_DECL( EWOULDBLOCK,     "Operation would be blocking" ),
+    UTILS_ERROR_DECL( EXDEV,           "Invalid link between devices" ),
 
     #include PACKAGE_INCLUDE( error_decls.gen.h )
 
-    #undef _e
+    #undef UTILS_ERROR_DECL
 };
 /* *INDENT-ON* */
 static size_t error_decls_size =
@@ -297,233 +297,233 @@ static const struct
     int                posixErrno;
 } posix_errno_delcs[] =
 {
-    #define _e( code ) \
+    #define UTILS_ERRNO_DECL( code ) \
     { \
         PACKAGE_MANGLE_NAME( ERROR_ ## code ), \
         code \
     }
 
 #ifdef EACCES
-    _e( EACCES ),           //  0
+    UTILS_ERRNO_DECL( EACCES ),           //  0
 #endif
 #ifdef EADDRNOTAVAIL
-    _e( EADDRNOTAVAIL ),    //  1
+    UTILS_ERRNO_DECL( EADDRNOTAVAIL ),    //  1
 #endif
 #ifdef EAFNOSUPPORT
-    _e( EAFNOSUPPORT ),     //  2
+    UTILS_ERRNO_DECL( EAFNOSUPPORT ),     //  2
 #endif
 #ifdef EAGAIN
-    _e( EAGAIN ),           //  3
+    UTILS_ERRNO_DECL( EAGAIN ),           //  3
 #endif
 #ifdef EALREADY
-    _e( EALREADY ),         //  4
+    UTILS_ERRNO_DECL( EALREADY ),         //  4
 #endif
 #ifdef EBADF
-    _e( EBADF ),            //  5
+    UTILS_ERRNO_DECL( EBADF ),            //  5
 #endif
 #ifdef EBADMSG
-    _e( EBADMSG ),          //  6
+    UTILS_ERRNO_DECL( EBADMSG ),          //  6
 #endif
 #ifdef EBUSY
-    _e( EBUSY ),            //  7
+    UTILS_ERRNO_DECL( EBUSY ),            //  7
 #endif
 #ifdef ECANCELED
-    _e( ECANCELED ),        //  8
+    UTILS_ERRNO_DECL( ECANCELED ),        //  8
 #endif
 #ifdef ECHILD
-    _e( ECHILD ),           //  9
+    UTILS_ERRNO_DECL( ECHILD ),           //  9
 #endif
 #ifdef ECONNREFUSED
-    _e( ECONNREFUSED ),     // 10
+    UTILS_ERRNO_DECL( ECONNREFUSED ),     // 10
 #endif
 #ifdef ECONNRESET
-    _e( ECONNRESET ),       // 11
+    UTILS_ERRNO_DECL( ECONNRESET ),       // 11
 #endif
 #ifdef EDEADLK
-    _e( EDEADLK ),          // 12
+    UTILS_ERRNO_DECL( EDEADLK ),          // 12
 #endif
 #ifdef EDESTADDRREQ
-    _e( EDESTADDRREQ ),     // 13
+    UTILS_ERRNO_DECL( EDESTADDRREQ ),     // 13
 #endif
 #ifdef EDOM
-    _e( EDOM ),             // 14
+    UTILS_ERRNO_DECL( EDOM ),             // 14
 #endif
 #ifdef EDQUOT
-    _e( EDQUOT ),           // 15
+    UTILS_ERRNO_DECL( EDQUOT ),           // 15
 #endif
 #ifdef EEXIST
-    _e( EEXIST ),           // 16
+    UTILS_ERRNO_DECL( EEXIST ),           // 16
 #endif
 #ifdef EFAULT
-    _e( EFAULT ),           // 17
+    UTILS_ERRNO_DECL( EFAULT ),           // 17
 #endif
 #ifdef EFBIG
-    _e( EFBIG ),            // 18
+    UTILS_ERRNO_DECL( EFBIG ),            // 18
 #endif
 #ifdef EINPROGRESS
-    _e( EINPROGRESS ),      // 19
+    UTILS_ERRNO_DECL( EINPROGRESS ),      // 19
 #endif
 #ifdef EINTR
-    _e( EINTR ),            // 20
+    UTILS_ERRNO_DECL( EINTR ),            // 20
 #endif
 #ifdef EINVAL
-    _e( EINVAL ),           // 21
+    UTILS_ERRNO_DECL( EINVAL ),           // 21
 #endif
 #ifdef EIO
-    _e( EIO ),              // 22
+    UTILS_ERRNO_DECL( EIO ),              // 22
 #endif
 #ifdef EISCONN
-    _e( EISCONN ),          // 23
+    UTILS_ERRNO_DECL( EISCONN ),          // 23
 #endif
 #ifdef EISDIR
-    _e( EISDIR ),           // 24
+    UTILS_ERRNO_DECL( EISDIR ),           // 24
 #endif
 #ifdef ELOOP
-    _e( ELOOP ),            // 25
+    UTILS_ERRNO_DECL( ELOOP ),            // 25
 #endif
 #ifdef EMFILE
-    _e( EMFILE ),           // 26
+    UTILS_ERRNO_DECL( EMFILE ),           // 26
 #endif
 #ifdef EMLINK
-    _e( EMLINK ),           // 27
+    UTILS_ERRNO_DECL( EMLINK ),           // 27
 #endif
 #ifdef EMSGSIZE
-    _e( EMSGSIZE ),         // 28
+    UTILS_ERRNO_DECL( EMSGSIZE ),         // 28
 #endif
 #ifdef EMULTIHOP
-    _e( EMULTIHOP ),        // 29
+    UTILS_ERRNO_DECL( EMULTIHOP ),        // 29
 #endif
 #ifdef ENAMETOOLONG
-    _e( ENAMETOOLONG ),     // 30
+    UTILS_ERRNO_DECL( ENAMETOOLONG ),     // 30
 #endif
 #ifdef ENETDOWN
-    _e( ENETDOWN ),         // 31
+    UTILS_ERRNO_DECL( ENETDOWN ),         // 31
 #endif
 #ifdef ENETRESET
-    _e( ENETRESET ),        // 32
+    UTILS_ERRNO_DECL( ENETRESET ),        // 32
 #endif
 #ifdef ENETUNREACH
-    _e( ENETUNREACH ),      // 33
+    UTILS_ERRNO_DECL( ENETUNREACH ),      // 33
 #endif
 #ifdef ENFILE
-    _e( ENFILE ),           // 34
+    UTILS_ERRNO_DECL( ENFILE ),           // 34
 #endif
 #ifdef ENOBUFS
-    _e( ENOBUFS ),          // 35
+    UTILS_ERRNO_DECL( ENOBUFS ),          // 35
 #endif
 #ifdef ENODATA
-    _e( ENODATA ),          // 36
+    UTILS_ERRNO_DECL( ENODATA ),          // 36
 #endif
 #ifdef ENODEV
-    _e( ENODEV ),           // 37
+    UTILS_ERRNO_DECL( ENODEV ),           // 37
 #endif
 #ifdef ENOENT
-    _e( ENOENT ),           // 38
+    UTILS_ERRNO_DECL( ENOENT ),           // 38
 #endif
 #ifdef ENOEXEC
-    _e( ENOEXEC ),          // 39
+    UTILS_ERRNO_DECL( ENOEXEC ),          // 39
 #endif
 #ifdef ENOLCK
-    _e( ENOLCK ),           // 40
+    UTILS_ERRNO_DECL( ENOLCK ),           // 40
 #endif
 #ifdef ENOLINK
-    _e( ENOLINK ),          // 41
+    UTILS_ERRNO_DECL( ENOLINK ),          // 41
 #endif
 #ifdef ENOMEM
-    _e( ENOMEM ),           // 42
+    UTILS_ERRNO_DECL( ENOMEM ),           // 42
 #endif
 #ifdef ENOMSG
-    _e( ENOMSG ),           // 43
+    UTILS_ERRNO_DECL( ENOMSG ),           // 43
 #endif
 #ifdef ENOPROTOOPT
-    _e( ENOPROTOOPT ),      // 44
+    UTILS_ERRNO_DECL( ENOPROTOOPT ),      // 44
 #endif
 #ifdef ENOSPC
-    _e( ENOSPC ),           // 45
+    UTILS_ERRNO_DECL( ENOSPC ),           // 45
 #endif
 #ifdef ENOSR
-    _e( ENOSR ),            // 46
+    UTILS_ERRNO_DECL( ENOSR ),            // 46
 #endif
 #ifdef ENOSTR
-    _e( ENOSTR ),           // 47
+    UTILS_ERRNO_DECL( ENOSTR ),           // 47
 #endif
 #ifdef ENOSYS
-    _e( ENOSYS ),           // 48
+    UTILS_ERRNO_DECL( ENOSYS ),           // 48
 #endif
 #ifdef ENOTCONN
-    _e( ENOTCONN ),         // 49
+    UTILS_ERRNO_DECL( ENOTCONN ),         // 49
 #endif
 #ifdef ENOTDIR
-    _e( ENOTDIR ),          // 50
+    UTILS_ERRNO_DECL( ENOTDIR ),          // 50
 #endif
 #ifdef ENOTEMPTY
-    _e( ENOTEMPTY ),        // 51
+    UTILS_ERRNO_DECL( ENOTEMPTY ),        // 51
 #endif
 #ifdef ENOTSOCK
-    _e( ENOTSOCK ),         // 52
+    UTILS_ERRNO_DECL( ENOTSOCK ),         // 52
 #endif
 #ifdef ENOTSUP
-    _e( ENOTSUP ),          // 53
+    UTILS_ERRNO_DECL( ENOTSUP ),          // 53
 #endif
 #ifdef ENOTTY
-    _e( ENOTTY ),           // 54
+    UTILS_ERRNO_DECL( ENOTTY ),           // 54
 #endif
 #ifdef ENXIO
-    _e( ENXIO ),            // 55
+    UTILS_ERRNO_DECL( ENXIO ),            // 55
 #endif
 #ifdef EOPNOTSUPP
-    _e( EOPNOTSUPP ),       // 56
+    UTILS_ERRNO_DECL( EOPNOTSUPP ),       // 56
 #endif
 #ifdef EOVERFLOW
-    _e( EOVERFLOW ),        // 57
+    UTILS_ERRNO_DECL( EOVERFLOW ),        // 57
 #endif
 #ifdef EPERM
-    _e( EPERM ),            // 58
+    UTILS_ERRNO_DECL( EPERM ),            // 58
 #endif
 #ifdef EPIPE
-    _e( EPIPE ),            // 59
+    UTILS_ERRNO_DECL( EPIPE ),            // 59
 #endif
 #ifdef EPROTO
-    _e( EPROTO ),           // 60
+    UTILS_ERRNO_DECL( EPROTO ),           // 60
 #endif
 #ifdef EPROTONOSUPPORT
-    _e( EPROTONOSUPPORT ),  // 61
+    UTILS_ERRNO_DECL( EPROTONOSUPPORT ),  // 61
 #endif
 #ifdef EPROTOTYPE
-    _e( EPROTOTYPE ),       // 62
+    UTILS_ERRNO_DECL( EPROTOTYPE ),       // 62
 #endif
 #ifdef ERANGE
-    _e( ERANGE ),           // 63
+    UTILS_ERRNO_DECL( ERANGE ),           // 63
 #endif
 #ifdef EROFS
-    _e( EROFS ),            // 64
+    UTILS_ERRNO_DECL( EROFS ),            // 64
 #endif
 #ifdef ESPIPE
-    _e( ESPIPE ),           // 65
+    UTILS_ERRNO_DECL( ESPIPE ),           // 65
 #endif
 #ifdef ESRCH
-    _e( ESRCH ),            // 66
+    UTILS_ERRNO_DECL( ESRCH ),            // 66
 #endif
 #ifdef ESTALE
-    _e( ESTALE ),           // 67
+    UTILS_ERRNO_DECL( ESTALE ),           // 67
 #endif
 #ifdef ETIME
-    _e( ETIME ),            // 68
+    UTILS_ERRNO_DECL( ETIME ),            // 68
 #endif
 #ifdef ETIMEDOUT
-    _e( ETIMEDOUT ),        // 69
+    UTILS_ERRNO_DECL( ETIMEDOUT ),        // 69
 #endif
 #ifdef ETXTBSY
-    _e( ETXTBSY ),          // 70
+    UTILS_ERRNO_DECL( ETXTBSY ),          // 70
 #endif
 #ifdef EWOULDBLOCK
-    _e( EWOULDBLOCK ),      // 71
+    UTILS_ERRNO_DECL( EWOULDBLOCK ),      // 71
 #endif
 #ifdef EXDEV
-    _e( EXDEV ),            // 72
+    UTILS_ERRNO_DECL( EXDEV ),            // 72
 #endif
 
-    #undef _e
+    #undef UTILS_ERRNO_DECL
 };
 /* *INDENT-ON* */
 static size_t posix_errno_delcs_size =

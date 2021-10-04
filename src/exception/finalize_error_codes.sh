@@ -22,7 +22,7 @@ error_code()
 {
     last="${PACKAGE}_ERROR_$1"
     printf "    /** %s */\n    %s,\n" "$2" "$last" >&5
-    printf "    _e( %s, \"%s\"),\n" "$1" "$2" >&6
+    printf "    UTILS_ERROR_DECL( %s, \"%s\"),\n" "$1" "$2" >&6
 }
 
 case "$ERRORS"
