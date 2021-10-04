@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014, 2020,
+ * Copyright (c) 2009-2012, 2014, 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -209,12 +209,8 @@ UTILS_IO_SimplifyPath( char* path )
                 if ( level == 0 )
                 {
                     size_t diff = cut_end - pos;
-                    size_t copy = pos;
                     len -= diff;
-                    for ( copy = pos; copy <= len; copy++ )
-                    {
-                        path[ copy ] = path[ copy + diff ];
-                    }
+                    memmove( &path[ pos ], &path[ pos + diff ], len - pos + 1 );
                     cut_end = pos;
                 }
             }
@@ -254,13 +250,9 @@ UTILS_IO_SimplifyPath( char* path )
 
         /* Cut piece out */
         cut_end++;  /* omit leading slash */
-        size_t  diff = cut_end - pos;
-        int64_t copy;
+        size_t diff = cut_end - pos;
         len -= diff;
-        for ( copy = pos; copy <= len; copy++ )
-        {
-            path[ copy ] = path[ copy + diff ];
-        }
+        memmove( &path[ pos ], &path[ pos + diff ], len - pos + 1 );
         if ( len < 0 )
         {
             path[ 0 ] = '\0';
@@ -284,10 +276,7 @@ UTILS_IO_SimplifyPath( char* path )
     /* Ensure it still has slashes if it had some before */
     if ( has_slashes && !UTILS_IO_HasPath( path ) && ( path[ 0 ] != '\0' ) )
     {
-        for ( pos = len; pos >= 0; pos-- )
-        {
-            path[ pos + 2 ] = path[ pos ];
-        }
+        memmove( &path[ 2 ], &path[ 0 ], len + 1 );
         path[ 0 ] = '.';
         path[ 1 ] = '/';
     }

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2017,
+ * Copyright (c) 2009-2012, 2017, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -534,7 +534,7 @@ utils_get_error_decl( PACKAGE_ErrorCode errorCode )
 {
     if ( errorCode <= PACKAGE_SUCCESS )
     {
-        if ( -errorCode >= none_error_decls_size )
+        if ( -errorCode >= ( PACKAGE_ErrorCode )none_error_decls_size )
         {
             return NULL;
         }
