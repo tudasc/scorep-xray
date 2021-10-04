@@ -567,18 +567,17 @@
         /* read size again as inserts might have happened in between */ \
         current_size =  SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
         /* move last key-value pair to removed key-value pair's slot, decrement size */ \
-        /* traverse to last element of current chunk */ \
-        for (; i < current_size && j < ( nPairsPerChunk ); ++i, ++j ) {} \
-        /* traverse to last chunk */ \
+        /* traverse to first element of current chunk */ \
+        for (; j > 0 ; --i, --j ) {} \
+        /* traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
         while ( chunk->next != NULL ) \
         { \
             previous_chunk = chunk; \
             chunk          = chunk->next; \
             i             += ( nPairsPerChunk ); \
-            j              = 0; \
         } \
         /* traverse to last used element of last chunk */ \
-        for (; i < current_size && j < ( nPairsPerChunk ); ++i, ++j ) {} \
+        for (; i < current_size; ++i, ++j ) {} \
         /* move key-value pair, decrement size, release empty chunk to free list */ \
         *free_key   = chunk->keys[ j - 1 ]; \
         *free_value = chunk->values[ j - 1 ]; \
