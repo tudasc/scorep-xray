@@ -108,10 +108,14 @@ create_visible_devices_map( void )
 
     scorep_cuda_visible_devices_map = calloc( cuda_device_count, sizeof( *scorep_cuda_visible_devices_map ) );
     UTILS_ASSERT( scorep_cuda_visible_devices_map );
+    scorep_cuda_visible_devices_len = cuda_device_count;
 
     int device;
     for ( device = 0; device < cuda_device_count; ++device )
     {
+        /* Mapping defaults to the identity */
+        scorep_cuda_visible_devices_map[ device ] = device;
+
         struct cudaDeviceProp device_properties;
         CUDART_CALL( cudaGetDeviceProperties, ( &device_properties, device ),
                      continue;
