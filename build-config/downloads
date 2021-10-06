@@ -1,0 +1,12 @@
+# build-config/downloads
+
+# A set of variable definitions sourced during configure for packages
+# that might get downloaded. The variables might end up in
+# configure-time generated Makefiles and configure's summary
+# output. Keep in mind that when modifying the generated Makefiles,
+# the summary output might become outdated.
+
+# Given --with-libbfd=download, we download this binutils tarball:
+# $binutils_base_url/$binutils_package.tar.gz
+binutils_package=binutils-2.36.1
+binutils_base_url=https://ftp.gnu.org/gnu/binutils

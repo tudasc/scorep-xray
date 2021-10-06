@@ -29,20 +29,6 @@
 ## directory for details.
 ##
 
-AC_DEFUN([SCOREP_LIBBFD], [
-scorep_have_demangle="no"
-AS_CASE([${ac_scorep_platform}],
-    [k|fx10|fx100], [_FUJITSU_LIBBFD_CHECK_WORKAROUND],
-    [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
-AC_SCOREP_COND_HAVE([LIBBFD],
-    [test "x${scorep_have_libbfd}" = "xyes"],
-    [Define if libbfd is available.])
-
-AC_SCOREP_COND_HAVE([DEMANGLE],
-    [test "x${scorep_have_demangle}" = "xyes"],
-    [Define if cplus_demangle is available.])
-])
-
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])dnl
@@ -61,13 +47,6 @@ AS_CASE([${ax_cv_c_compiler_vendor%/*}],
      compiler_instrumentation_result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
 
 
-dnl `which nm` is the correct one for BG and Cray, but
-dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
-AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
-AC_SCOREP_COND_HAVE([NM],
-    [test "x${scorep_have_nm}" != "xno"],
-    [Define if nm is available.])
-
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
          [pwd_save=`pwd`
@@ -77,15 +56,7 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
           AC_DEFINE_UNQUOTED([SCOREP_ABS_TOPLEVEL_SRCDIR],
               ["${scorep_abs_toplevel_srcdir}"],
               [Toplevel src directory])
-
-          AM_COND_IF([HAVE_LIBBFD],
-              [compiler_instrumentation_result="yes, using libbfd"],
-              [# try nm if bfd is not available
-               AM_COND_IF([HAVE_NM],
-                   [compiler_instrumentation_result="yes, using nm"
-                    AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm.])],
-                   [have_compiler_instrumentation="no"
-                    compiler_instrumentation_result="no, neither libbfd nor nm are available"])])
+          compiler_instrumentation_result="yes, using libbfd"
          ],
          [# compilers that don't need the symbol table
           AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
@@ -107,80 +78,3 @@ AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
 ])
 
 dnl ----------------------------------------------------------------------------
-
-# _FUJITSU_LIBBFD_CHECK_WORKAROUND
-# Fujitsu are cross-compile machines, i.e. we explicitly need to specify the
-# path to bfd. This path (which contains system stuff) is used in a CPPFLAGS.
-# This breaks compilation. Therefore, work around the usual compiler
-# instrumentation's AC_SCOREP_BACKEND_LIB check.
-# -----------------------------------------------------------------------------
-m4_define([_FUJITSU_LIBBFD_CHECK_WORKAROUND], [
-BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU([libbfd], [-lbfd -liberty])
-AC_CHECK_HEADER([demangle.h])
-AC_MSG_CHECKING([for cplus_demangle])
-save_libs=${LIBS}
-LIBS="${LIBBFD_LIBS} ${LIBS}"
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
-                     [[cplus_demangle("test", 27)]])],
-    [scorep_have_demangle=yes],
-    [scorep_have_demangle=no])
-LIBS=${save_libs}
-AC_MSG_RESULT([${scorep_have_demangle}])
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBBFD_LIB_CHECK], [
-have_libbfd="no"
-LIBS="-lbfd"
-
-_AC_SCOREP_LIBBFD_LINK_TEST
-AS_IF([test "x${have_libbfd}" = "xno"],
-      [LIBS="${LIBS} -liberty";
-       _AC_SCOREP_LIBBFD_LINK_TEST
-       AS_IF([test "x${have_libbfd}" = "xno"],
-             [LIBS="${LIBS} -lz";
-              _AC_SCOREP_LIBBFD_LINK_TEST])])
-
-AS_IF([test "x${have_libbfd}" = "xyes"],
-      [# check for demangle, libbfd CPPFLAGS|LDFLAGS|LIBS apply
-       AC_CHECK_HEADER([demangle.h])
-       AC_MSG_CHECKING([for cplus_demangle])
-       AC_LINK_IFELSE([AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
-                                       [[cplus_demangle("test", 27)]])],
-                      [scorep_have_demangle="yes"
-                       libbfd_success_post_result=" and cplus_demangle"],
-                      [scorep_have_demangle="no"])
-       AC_MSG_RESULT([${scorep_have_demangle}])])
-
-with_[]lib_name[]_lib_checks_successful=${have_libbfd}
-with_[]lib_name[]_libs=${LIBS}
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBBFD_LINK_TEST], [
-AC_LINK_IFELSE([_AC_SCOREP_LIBBFD_TEST_PROGRAM],
-               [have_libbfd="yes"],
-               [libbfd_link_test_save_LIBS="${LIBS}"
-                LIBS="${LIBS} -ldl"
-                AC_LINK_IFELSE([_AC_SCOREP_LIBBFD_TEST_PROGRAM],
-                               [have_libbfd="yes"],
-                               [LIBS="${libbfd_link_test_save_LIBS}"])])
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBBFD_TEST_PROGRAM], [
-AC_LANG_PROGRAM([[
-char bfd_init ();
-char bfd_openr ();
-char bfd_check_format ();
-char bfd_close ();]],
-                [[
-bfd_init ();
-bfd_openr ();
-bfd_check_format ();
-bfd_close ();]])
-])

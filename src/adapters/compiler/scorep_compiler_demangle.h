@@ -68,7 +68,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
         demangled = cplus_demangle( mangled, scorep_compiler_demangle_style ); \
         if ( demangled == NULL ) \
         { \
-            demangled = mangled; \
+            demangled = ( char* )mangled; \
             mangled   = NULL; \
         } \
     } \
@@ -79,7 +79,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
 #define scorep_compiler_demangle( mangled, demangled ) \
     do \
     { \
-        demangled = mangled; \
+        demangled = ( char* )mangled; \
         mangled   = NULL; \
     } \
     while ( 0 )

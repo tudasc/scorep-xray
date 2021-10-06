@@ -193,8 +193,6 @@ libscorep_adapter_compiler_symbol_table_la_CPPFLAGS = \
 libscorep_adapter_compiler_symbol_table_la_LIBADD =
 libscorep_adapter_compiler_symbol_table_la_LDFLAGS =
 
-if HAVE_LIBBFD
-
 libscorep_adapter_compiler_symbol_table_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
@@ -203,22 +201,6 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
     @LIBBFD_LIBS@
 libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
-
-else !HAVE_LIBBFD
-
-if HAVE_NM
-
-libscorep_adapter_compiler_symbol_table_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
-# the SCOREP_Timer_Ticks.h dependency is used to generate unique
-# filenames. This should be done differently, see #692
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include \
-    @SCOREP_TIMER_CPPFLAGS@
-
-endif HAVE_NM
-
-endif !HAVE_LIBBFD
 
 endif HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
 
@@ -285,14 +267,10 @@ if SCOREP_COMPILER_IBM
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
 
-if HAVE_LIBBFD
-
 libscorep_adapter_compiler_event_la_LIBADD += \
     $(LIBBFD_LIBS)
 libscorep_adapter_compiler_event_la_LDFLAGS += \
     $(LIBBFD_LDFLAGS)
-
-endif HAVE_LIBBFD
 
 endif SCOREP_COMPILER_IBM
 
@@ -315,14 +293,10 @@ else !SCOREP_COMPILER_PGI_LLVM
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
 
-if HAVE_LIBBFD
-
 libscorep_adapter_compiler_event_la_LIBADD += \
     $(LIBBFD_LIBS)
 libscorep_adapter_compiler_event_la_LDFLAGS += \
     $(LIBBFD_LDFLAGS)
-
-endif HAVE_LIBBFD
 
 endif !SCOREP_COMPILER_PGI_LLVM
 

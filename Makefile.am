@@ -51,14 +51,12 @@ include build-config/common/platforms.am
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST += $(srcdir)/src/config.h                                      \
-              $(srcdir)/src/config-custom.h                               \
-              $(srcdir)/doc/doxygen-user/scorep_usage.dox.in              \
-              $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in       \
-              $(srcdir)/doc/doxygen-user/scorep_score_usage.dox.in        \
-              $(srcdir)/doc/doxygen-user/scorep_backend_info_help.dox.in  \
-              $(srcdir)/doc/doxygen-user/scorep_backend_info_usage.dox.in \
+EXTRA_DIST += $(srcdir)/OPEN_ISSUES                                       \
+              $(srcdir)/THANKS                                            \
+              $(srcdir)/build-config/downloads                            \
               $(srcdir)/doc/doxygen-user/main_1.dox.in                    \
+              $(srcdir)/doc/doxygen-user/main_10.dox.in                   \
+              $(srcdir)/doc/doxygen-user/main_11.dox.in                   \
               $(srcdir)/doc/doxygen-user/main_2.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_3.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_4.dox.in                    \
@@ -67,19 +65,22 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/doxygen-user/main_7.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_8.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_9.dox.in                    \
-              $(srcdir)/doc/doxygen-user/main_10.dox.in                   \
-              $(srcdir)/doc/doxygen-user/main_11.dox.in                   \
+              $(srcdir)/doc/doxygen-user/scorep_backend_info_help.dox.in  \
+              $(srcdir)/doc/doxygen-user/scorep_backend_info_usage.dox.in \
+              $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in       \
               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md     \
+              $(srcdir)/doc/doxygen-user/scorep_score_usage.dox.in        \
+              $(srcdir)/doc/doxygen-user/scorep_usage.dox.in              \
               $(srcdir)/doc/images/project_logo.svg                       \
-              $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
-              $(srcdir)/share/scorep.errors                               \
-              $(srcdir)/share/bg-gnu/platform-frontend-user-provided      \
+              $(srcdir)/share/bg-gnu/README                               \
               $(srcdir)/share/bg-gnu/platform-backend-user-provided       \
+              $(srcdir)/share/bg-gnu/platform-frontend-user-provided      \
               $(srcdir)/share/bg-gnu/platform-mpi-user-provided           \
               $(srcdir)/share/bg-gnu/platform-shmem-user-provided         \
-              $(srcdir)/share/bg-gnu/README                               \
-              $(srcdir)/THANKS                                            \
-              $(srcdir)/OPEN_ISSUES
+              $(srcdir)/share/scorep.errors                               \
+              $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
+              $(srcdir)/src/config-custom.h                               \
+              $(srcdir)/src/config.h
 
 
 if ! CROSS_BUILD

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017, 2020,
+## Copyright (c) 2009-2015, 2017, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -122,3 +122,17 @@ libscorep_measurement_la_LDFLAGS = \
     @LIBBFD_LDFLAGS@               \
     @SCOREP_PAPI_LDFLAGS@          \
     @CUBEW_LDFLAGS@
+
+if HAVE_LIBBFD_MAKEFILE
+BUILT_SOURCES += @LIBBFD_PREFIX@/lib/libbfd.*
+@LIBBFD_PREFIX@/lib/libbfd.*:
+	$(MAKE) all -f @LIBBFD_MAKEFILE@
+
+CLEAN_LOCAL += @LIBBFD_PREFIX@-clean
+@LIBBFD_PREFIX@-clean:
+	$(MAKE) clean -f @LIBBFD_MAKEFILE@
+
+UNINSTALL_HOOK += @LIBBFD_PREFIX@-uninstall
+@LIBBFD_PREFIX@-uninstall:
+	$(MAKE) uninstall -f @LIBBFD_MAKEFILE@
+endif HAVE_LIBBFD_MAKEFILE

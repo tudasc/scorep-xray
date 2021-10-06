@@ -5,6 +5,12 @@ User tools and API improvements and changes:
 - Support for the online access interface was removed.
 - Support for NEC and Sun compilers was removed.
 
+Compatibility:
+
+- Score-P now requires a shared or PIC libbfd. Therefore, the
+  configure option --with-libbfd now also accepts 'download' to
+  download, build and install a libbfd at make time.
+
 ------------------- Released version 7.1 -----------------------------
 
 Bug fixes:

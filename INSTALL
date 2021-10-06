@@ -372,18 +372,18 @@ be used to build Score-P are as follows:
                the explicit include and lib options directly.
   --with-liblustreapi-include=<Path to liblustreapi headers>
   --with-liblustreapi-lib=<Path to liblustreapi libraries>
-  --with-libbfd=<Path to libbfd installation>
-               If you want to build scorep with libbfd but do not have
-               a libbfd in a standard location then you need to
-               explicitly specify the directory where it is
-               installed. On non-cross-compile systems we search the
-               system include and lib paths per default [yes], on
-               cross-compile systems however,you have to specify a
-               path [no]. --with-libbfd is a shorthand for
-               --with-libbfd-include=<Path/include> and
-               --with-libbfd-lib=<Path/lib>. If these shorthand
-               assumptions are not correct, you can use the explicit
-               include and lib options directly.
+  --with-libbfd[=yes|download|<path to libbfd installation>]
+               A shared or PIC libbfd is required. Option defaults
+               to [yes] on non-cross-compile systems and expects
+               library and headers to be found in system locations.
+               Provide libbfd's installation prefix [path] to
+               override this default. --with-libbfd=<path> is a
+               shorthand for --with-libbfd-include=<path/include>
+               and --with-libbfd-lib=<path/(lib64|lib)>. If this
+               not the case, use the explicit options directly or
+               provide paths via LIBBFD_LIB and LIBBFD_INCLUDE. Use
+               [download] to obtain and use libbfd via exernal
+               tarball.
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>
   Please note that if a Score-P installation uses libbfd, the Score-P
@@ -529,8 +529,8 @@ variables:
   LIBOPENCL_LIB
               Path to libOpenCL libraries.
   LIBBFD_INCLUDE
-              Path to libbfd headers.
-  LIBBFD_LIB  Path to libbfd libraries.
+              Path to libbfd headers. Superseded by --with-libbfd variants.
+  LIBBFD_LIB  Path to libbfd libraries. Superseded by --with-libbfd variants.
   OPENACC_INCLUDE
               Path to openacc.h header.
   OPENACC_PROFILING_INCLUDE

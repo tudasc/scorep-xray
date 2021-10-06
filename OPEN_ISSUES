@@ -132,13 +132,6 @@ various Score-P components.
     by using manual instrumentation or automatic source-code
     instrumentation based on PDToolkit.
 
-  - On systems where libiberty is build without -fPIC, one cannot use
-    libbfd for compiler instrumentation's region naming (GNU, Intel,
-    Cray) in --enable-shared builds of Score-P. Either provide a
-    libbfd that comes with a proper libiberty (--with-libbfd) or
-    disable libbfd region naming (--without-libbfd). In the latter
-    case, region names will be provided by nm.
-
   - The GNU compiler instrumentation provides only functions pointers,
     which we look up in the symbol table of the executable. Thus,
     functions from shared libraries, will not appear (are
