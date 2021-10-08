@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -171,6 +171,15 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location_group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, region );
+    /* Distinct local region definitions referencing the same code
+     * location that get attached to profile node siblings (see #106
+     * on how to do this) cause only one profile node's data to be
+     * written to the file; we loose data. Instead of inventing a
+     * profile-only 'identify and deal with this profile nodes'
+     * algorithm, using the existing definition's duplicate prevention
+     * mechanism already solves this issue consistently for all
+     * substrates. */
+    SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, interim_communicator );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, communicator );
@@ -201,7 +210,6 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     {
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node_property );
-        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, group );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, cartesian_topology );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, cartesian_coords );
