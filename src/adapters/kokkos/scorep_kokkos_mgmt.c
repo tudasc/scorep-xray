@@ -30,6 +30,7 @@
 
 #include <scorep_unify_helpers.h>
 #include <scorep_status.h>
+#include <scorep_system_tree.h>
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
@@ -113,8 +114,16 @@ scorep_kokkos_get_device_location( void )
         UTILS_DEBUG( "Creating artificial Kokkos device location" );
         SCOREP_Location* location = SCOREP_Location_CreateNonCPULocation(
             SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_LOCATION_TYPE_GPU, "Kokkos Device",
-            SCOREP_GetProcessLocationGroup() );
+            SCOREP_LOCATION_TYPE_GPU,
+            "Kokkos Stream",
+            SCOREP_Definitions_NewLocationGroup(
+                "Kokkos Context",
+                SCOREP_Definitions_NewSystemTreeNode(
+                    SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+                    SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+                    "Kokkos Device", "" ),
+                SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
+                SCOREP_GetProcessLocationGroup() ) );
         /* create_device_location called through subsystem */
     }
 
