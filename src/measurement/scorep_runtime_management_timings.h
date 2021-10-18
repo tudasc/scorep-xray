@@ -62,6 +62,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Addr2line_Initialize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
@@ -76,6 +77,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Unify )                          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_WriteData )           \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Addr2line_Finalize )             \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Finalize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeLocations )     \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_finalize )            \

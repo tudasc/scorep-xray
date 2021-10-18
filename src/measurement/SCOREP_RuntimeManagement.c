@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017-2018,
+ * Copyright (c) 2009-2015, 2017-2018, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -81,6 +81,7 @@
 #include <scorep_substrates_definition.h>
 #include <SCOREP_ErrorCallback.h>
 #include <SCOREP_Task.h>
+#include <SCOREP_Addr2line.h>
 
 #include "scorep_type_utils.h"
 #include "scorep_subsystem_management.h"
@@ -577,6 +578,12 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      */
     SCOREP_TIME( SCOREP_Location_ActivateInitLocations, ( ) );
 
+    /*
+     * @dependsOn Memory
+     * @dependsOn Location
+     */
+    SCOREP_TIME( SCOREP_Addr2line_Initialize, ( ) );
+
     /* == begin epoch, events are only allowed to happen inside the epoch == */
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
@@ -962,6 +969,7 @@ scorep_finalize( void )
 
     SCOREP_TIME( SCOREP_Substrates_WriteData, ( ) );
 
+    SCOREP_TIME( SCOREP_Addr2line_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
 
     /* Calls scorep_subsystems_finalize_location for all locations */
