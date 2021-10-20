@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,12 +39,10 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-#include <SCOREP_RuntimeManagement.h>
-
+#include "scorep_compiler_gnu.h"
 #include "SCOREP_Compiler_Init.h"
-#include "scorep_compiler_data.h"
-#include "scorep_compiler_symbol_table.h"
-
+#include <SCOREP_Addr2line.h>
+#include <SCOREP_RuntimeManagement.h>
 
 /* ***************************************************************************************
    Adapter management
@@ -57,16 +55,8 @@ scorep_compiler_subsystem_init( void )
 
     if ( !SCOREP_IsUnwindingEnabled() )
     {
-        /* Initialize hash tables */
-        scorep_compiler_hash_init();
-
-        /* call function to load all symbols from the executable */
-        scorep_compiler_load_symbols();
-
-        scorep_compiler_get_hash_statistics();
+        SCOREP_Addr2line_RegisterObjcloseCb( scorep_compiler_func_addr_hash_dlclose_cb );
     }
-
-    UTILS_DEBUG( "initialization of GNU compiler adapter done." );
 
     return SCOREP_SUCCESS;
 }
@@ -87,12 +77,6 @@ void
 scorep_compiler_subsystem_finalize( void )
 {
     UTILS_DEBUG( "finalize GNU compiler adapter." );
-
-    if ( !SCOREP_IsUnwindingEnabled() )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-    }
 }
 
 SCOREP_ErrorCode

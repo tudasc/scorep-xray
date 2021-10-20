@@ -51,7 +51,7 @@ AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
                     [scorep_compiler_gnu_with_plugin=yes],
                     [scorep_compiler_gnu_with_plugin=no])
 
-scorep_compiler_instrumentation_needs_symbol_table="no"
+scorep_compiler_instrumentation_needs_addr2line="no"
 scorep_compiler_instrumentation_cflags=
 scorep_compiler_instrumentation_cxxflags=
 scorep_compiler_instrumentation_fflags=
@@ -61,20 +61,20 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qfunctrace])],
     [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
                       scorep_compiler_instrumentation_cflags="-Minstrument=functions"
-                      scorep_compiler_instrumentation_needs_symbol_table="yes"],
+                      scorep_compiler_instrumentation_needs_addr2line="yes"],
     [portland], [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Mprof=func])
                  SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Minstrument=functions])],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xno"],
                        [scorep_compiler_instrumentation_cflags="-g -finstrument-functions"
-                        scorep_compiler_instrumentation_needs_symbol_table="yes"])],
+                        scorep_compiler_instrumentation_needs_addr2line="yes"])],
     [cray],     [scorep_compiler_instrumentation_cflags="-hfunc_trace"
                  scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"
-                 scorep_compiler_instrumentation_needs_symbol_table=yes],
+                 scorep_compiler_instrumentation_needs_addr2line=yes],
     [fujitsu],  [scorep_compiler_instrumentation_cflags="-g -Ntl_vtrc -Ntl_notrt"
-                 scorep_compiler_instrumentation_needs_symbol_table="yes"],
+                 scorep_compiler_instrumentation_needs_addr2line="yes"],
     [clang],    [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions])
                  SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions-after-inlining])
-                 scorep_compiler_instrumentation_needs_symbol_table="yes"
+                 scorep_compiler_instrumentation_needs_addr2line="yes"
                  AS_CASE([${ac_scorep_platform}],
                          [mac*], [# Disable position independent executable, which
                                   # also disables address space randomization,

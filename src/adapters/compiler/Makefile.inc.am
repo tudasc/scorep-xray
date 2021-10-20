@@ -56,12 +56,19 @@ libscorep_adapter_compiler_mgmt_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
 
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_DIR_SERVICES)
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    libscorep_addr2line.la
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
+
+
 #--- Cray specific settings
 if SCOREP_COMPILER_CRAY
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 endif SCOREP_COMPILER_CRAY
 
 
@@ -71,9 +78,7 @@ if SCOREP_COMPILER_GNU
 if !HAVE_GCC_PLUGIN_SUPPORT
 
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 
 #--- GCC-Plugin specific settings
 else HAVE_GCC_PLUGIN_SUPPORT
@@ -121,17 +126,13 @@ endif SCOREP_COMPILER_GNU
 #--- Clang specific settings
 if SCOREP_COMPILER_CLANG
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 endif SCOREP_COMPILER_CLANG
 
 #--- Fujitsu specific settings, same as GNU non-plug-in
 if SCOREP_COMPILER_FUJITSU
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 endif SCOREP_COMPILER_FUJITSU
 
 
@@ -157,9 +158,7 @@ if SCOREP_COMPILER_PGI
 if SCOREP_COMPILER_PGI_LLVM
 
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 
 else !SCOREP_COMPILER_PGI_LLVM
 
@@ -170,39 +169,6 @@ endif !SCOREP_COMPILER_PGI_LLVM
 
 endif SCOREP_COMPILER_PGI
 
-
-#--- Common functionality if the used compiler instrumentation needs
-#--- the symbol table
-if HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
-
-noinst_LTLIBRARIES += libscorep_adapter_compiler_symbol_table.la
-libscorep_adapter_compiler_mgmt_la_LIBADD += \
-    libscorep_adapter_compiler_symbol_table.la
-
-libscorep_adapter_compiler_symbol_table_la_SOURCES = \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h
-
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_DEFINITIONS) \
-    $(UTILS_CPPFLAGS)
-libscorep_adapter_compiler_symbol_table_la_LIBADD =
-libscorep_adapter_compiler_symbol_table_la_LDFLAGS =
-
-libscorep_adapter_compiler_symbol_table_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    @LIBBFD_CPPFLAGS@
-libscorep_adapter_compiler_mgmt_la_LIBADD += \
-    @LIBBFD_LIBS@
-libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
-    @LIBBFD_LDFLAGS@
-
-endif HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
 
 # --------------------------------------------------------------------
 # event library for the compiler adapter
@@ -220,6 +186,15 @@ libscorep_adapter_compiler_event_la_CPPFLAGS = \
 
 libscorep_adapter_compiler_event_la_LIBADD = \
     libscorep_measurement.la
+
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
+libscorep_adapter_compiler_event_la_CPPFLAGS += \
+    -I$(INC_DIR_SERVICES)                       \
+    -I$(INC_DIR_COMMON_HASH)
+
+libscorep_adapter_compiler_event_la_LIBADD += \
+    libscorep_addr2line.la
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 
 libscorep_adapter_compiler_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
@@ -311,7 +286,8 @@ endif SCOREP_COMPILER_FUJITSU
 endif HAVE_COMPILER_INSTRUMENTATION
 
 EXTRA_DIST += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_demangle.h \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_demangle.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.inc.c
