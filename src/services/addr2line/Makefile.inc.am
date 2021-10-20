@@ -45,6 +45,22 @@ libscorep_addr2line_la_CPPFLAGS = \
 
 FILES_THAT_INCLUDE_BFD_H += $(SRC_ROOT)src/services/addr2line/SCOREP_Addr2line.c
 
+if HAVE_SCOREP_LDAUDIT_API
+
+lib_LTLIBRARIES += libscorep_rtld_audit.la
+libscorep_rtld_audit_la_SOURCES = \
+    $(SRC_ROOT)src/services/addr2line/scorep_rtld_audit.c
+libscorep_rtld_audit_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    @SCOREP_LDAUDIT_CPPFLAGS@
+# The audit library needs to be a shared object
+libscorep_rtld_audit_la_LDFLAGS = \
+    -shared
+libscorep_rtld_audit_la_LIBADD = \
+    @SCOREP_LDAUDIT_LIBS@
+
+endif HAVE_SCOREP_LDAUDIT_API
+
 else !HAVE_SCOREP_ADDR2LINE
 
 libscorep_addr2line_la_SOURCES = \
