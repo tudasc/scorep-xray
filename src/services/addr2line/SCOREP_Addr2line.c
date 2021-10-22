@@ -30,8 +30,15 @@
 
 #include <link.h>
 
+#if HAVE( STDALIGN_H )
+#include <stdalign.h>
+#endif
+
+#include <SCOREP_Atomic.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_ReaderWriterLock.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
@@ -166,9 +173,6 @@ is_obj_relevant( const char* name )
     }
     return true;
 }
-
-
-#define SCOREP_ADDR2LINE_LT_OBJECT_TOKEN UINT16_MAX
 
 
 static int
@@ -671,6 +675,42 @@ SCOREP_Addr2line_LookupAddrRange( uintptr_t    beginProgramCounterAddr,
 }
 
 
+/* Runtime-loaded shared object representation */
+typedef struct rt_object rt_object;
+struct rt_object
+{
+    SO_OBJECT_COMMON;
+    uintptr_t  begin_addr;
+    rt_object* next;         /* singly-linked list */
+    uintptr_t  audit_cookie; /* identify dlopened object in dlclose */
+};
+
+
+/* Runtime-loaded shared objects correspond to a sorted singly linked list
+   for lookup and a free list. List access and modification needs (RW) locking.
+   We bfd-lookup (addr - base_addr) if addr in [begin_addr, end_addr]. */
+/* Must not be static as accessed from ld_audit library */
+rt_object* scorep_rt_objects_head     = NULL;
+unsigned   scorep_rt_object_count     = 0;
+uintptr_t  scorep_rt_objects_min_addr = UINTPTR_MAX;
+uintptr_t  scorep_rt_objects_max_addr = 0;
+struct rwlock
+{
+    SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) int16_t pending;
+    int16_t      departing;
+    int16_t      release_n_readers;
+    int16_t      release_writer;
+    SCOREP_Mutex writer_mutex;
+} scorep_rt_objects_rwlock =
+{
+    .pending           = 0,
+    .departing         = 0,
+    .release_n_readers = 0,
+    .release_writer    = 0,
+    .writer_mutex      = SCOREP_MUTEX_INIT
+};
+
+
 static lt_object*
 lookup_so( uintptr_t addr )
 {
@@ -693,6 +733,33 @@ lookup_so( uintptr_t addr )
             return &lt_objects[ i ];
         }
     }
+
+    /* search linearly in runtime objects */
+    SCOREP_RWLock_ReaderLock( &scorep_rt_objects_rwlock.pending,
+                              &scorep_rt_objects_rwlock.release_n_readers );
+    if ( scorep_rt_objects_head != NULL
+         && addr >= scorep_rt_objects_min_addr
+         && addr <= scorep_rt_objects_max_addr )
+    {
+        rt_object* rt_obj = scorep_rt_objects_head;
+        while ( rt_obj->next
+                && rt_obj->next->begin_addr < addr )
+        {
+            rt_obj = rt_obj->next;
+        }
+        if ( rt_obj->end_addr > addr )
+        {
+            /* found addr in runtime objects */
+            SCOREP_RWLock_ReaderUnlock( &scorep_rt_objects_rwlock.pending,
+                                        &scorep_rt_objects_rwlock.departing,
+                                        &scorep_rt_objects_rwlock.release_writer );
+            return ( lt_object* )rt_obj;
+        }
+    }
+    SCOREP_RWLock_ReaderUnlock( &scorep_rt_objects_rwlock.pending,
+                                &scorep_rt_objects_rwlock.departing,
+                                &scorep_rt_objects_rwlock.release_writer );
+    /* addr neither found in loadtime nor runtime objects */
     return NULL;
 }
 
@@ -766,6 +833,13 @@ section_iterator( bfd* abfd, asection* section, void* payload )
 }
 
 
+/* Keep dlcosed objects in as they might be accessed via
+   SCOREP_Addr2line_SoLookup* */
+/* Must not be static as accessed from ld_audit library */
+rt_object*   scorep_rt_objects_dlclosed_head  = NULL;
+SCOREP_Mutex scorep_rt_objects_dlclosed_mutex = SCOREP_MUTEX_INIT;
+
+
 void
 SCOREP_Addr2line_Finalize( void )
 {
@@ -789,7 +863,331 @@ SCOREP_Addr2line_Finalize( void )
         }
     }
     free( lt_objects );
+    lt_objects      = NULL;
     lt_object_count = 0;
 
+    /* No need to lock as we are in serial context */
+    while ( scorep_rt_objects_head )
+    {
+        free( scorep_rt_objects_head->symbols );
+        bfd_close( scorep_rt_objects_head->abfd );
+        free( ( char* )scorep_rt_objects_head->name );
+        scorep_rt_objects_head = scorep_rt_objects_head->next;
+    }
+    scorep_rt_object_count = 0;
+
+    while ( scorep_rt_objects_dlclosed_head )
+    {
+        free( scorep_rt_objects_dlclosed_head->symbols );
+        bfd_close( scorep_rt_objects_dlclosed_head->abfd );
+        free( ( char* )scorep_rt_objects_dlclosed_head->name );
+        scorep_rt_objects_dlclosed_head = scorep_rt_objects_dlclosed_head->next;
+    }
+
     UTILS_DEBUG_EXIT();
+}
+
+
+void
+scorep_la_preinit( uintptr_t* cookie )
+{
+    /* Called after ctors. Linktime shared objects already loaded and
+       dealt with at SCOREP_Addr2line_Initialize(). From now on,
+       scorep_la_objopen and scorep_la_objclose are called. */
+    UTILS_DEBUG_ENTRY();
+}
+
+
+/* dl_iterate_phdr helper */
+typedef struct rt_obj_identifier rt_obj_identifier;
+struct rt_obj_identifier
+{
+    size_t      cnt; /* ignore up to lt_objs_capacity objects */
+    const char* name;
+    uintptr_t   cookie;
+};
+
+
+/* *INDENT-OFF* */
+static int insert_rt_object_cb( struct dl_phdr_info* info, size_t unused, void* data );
+/* *INDENT-ON* */
+
+
+/* called only after la_preinit() */
+void
+scorep_la_objopen( const char* name,
+                   uintptr_t*  cookie /* corresponds to la_objclose */ )
+{
+    UTILS_DEBUG_ENTRY( "name=%s; cookie=%" PRIuPTR "; scorep_rt_object_count=%d",
+                       name,  cookie != NULL ? *cookie : 0,
+                       scorep_rt_object_count );
+
+    /* iterate over all shared objects and compare against provided name */
+    rt_obj_identifier search_for = { .cnt = 0, .name = name, .cookie = *cookie };
+    dl_iterate_phdr( insert_rt_object_cb, &search_for );
+}
+
+
+#define BITSET_NSLOTS( n_bits ) ( ( n_bits + UINT8_WIDTH - 1 ) / UINT8_WIDTH )
+#define BITSET_MASK( bit ) ( UINT8_C( 1 ) << ( ( bit ) % UINT8_WIDTH ) )
+#define BITSET_SLOT( bit ) ( ( bit ) / UINT8_WIDTH )
+
+
+/* bitset to keep track of no more than MAX_RT_OBJOPEN_CALLS_TRACKED
+   scorep_la_objopen() calls. The n-th calls to scorep_la_objopen()
+   sets the n-th bit, while a corresponding call to
+   scorep_la_objclose() clears the n-th bit. */
+/* Must not be static as accessed from ld_audit library */
+#define MAX_RT_OBJOPEN_CALLS_TRACKED ( UINT16_C( 1 ) << ( 13 ) )
+SCOREP_ALIGNAS( SCOREP_CACHELINESIZE )
+uint8_t scorep_rt_objects_loaded[ BITSET_NSLOTS( MAX_RT_OBJOPEN_CALLS_TRACKED ) ];
+
+
+/* atomic bitset operations */
+static inline void
+bitset_set( uint8_t* bitset, uint16_t bit )
+{
+    SCOREP_Atomic_OrFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                 BITSET_MASK( bit ),
+                                 SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+}
+
+
+static inline void
+bitset_clear( uint8_t* bitset, uint16_t bit )
+{
+    SCOREP_Atomic_AndFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                  ~BITSET_MASK( bit ),
+                                  SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+}
+
+
+static inline bool
+bitset_test( uint8_t* bitset, uint16_t bit )
+{
+    return SCOREP_Atomic_LoadN_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                      SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT )
+           & BITSET_MASK( bit );
+}
+
+
+/* Must not be static as accessed from ld_audit library */
+uint16_t scorep_rt_objopen_calls_tracked = 0;
+
+
+static int
+insert_rt_object_cb( struct dl_phdr_info* info, size_t unused, void* data )
+{
+    /* return 0 to continue iteration over shared objects, 1 to stop
+       iteration. */
+    rt_obj_identifier* id = ( rt_obj_identifier* )data;
+    /* ignore loadtime objects */
+    if ( id->cnt < lt_objs_capacity )
+    {
+        id->cnt++;
+        return 0;
+    }
+    if ( strcmp( id->name, info->dlpi_name ) != 0 )
+    {
+        return 0;
+    }
+    if ( !is_obj_relevant( id->name ) )
+    {
+        return 0;
+    }
+
+    const char* name           = NULL;
+    uintptr_t   base_addr      = 0;
+    bfd*        abfd           = NULL;
+    asymbol**   symbols        = NULL;
+    uintptr_t   begin_addr_min = UINTPTR_MAX;
+    uintptr_t   end_addr_max   = 0;
+    bool        has_symbols    = iterate_segments( info,
+                                                   &name,
+                                                   &base_addr,
+                                                   &abfd,
+                                                   &symbols,
+                                                   &begin_addr_min,
+                                                   &end_addr_max,
+                                                   false /* adjustName */ );
+    if ( !has_symbols )
+    {
+        return 1;
+    }
+
+    /* create shared object representation */
+    rt_object* new = SCOREP_Memory_AllocForMisc( sizeof( rt_object ) );
+    memset( new, 0, sizeof( rt_object ) );
+
+    new->end_addr     = end_addr_max;
+    new->base_addr    = base_addr;
+    new->abfd         = abfd;
+    new->symbols      = symbols;
+    new->name         = UTILS_CStr_dup( name );
+    new->token        = ++scorep_rt_objopen_calls_tracked;
+    new->begin_addr   = begin_addr_min;
+    new->next         = NULL;
+    new->audit_cookie = id->cookie;
+
+    UTILS_BUG_ON( scorep_rt_objopen_calls_tracked >= MAX_RT_OBJOPEN_CALLS_TRACKED );
+    bitset_set( scorep_rt_objects_loaded, new->token );
+
+    /* add shared object into sorted (by begin_addr) singly-linked list */
+    SCOREP_RWLock_WriterLock( &scorep_rt_objects_rwlock.writer_mutex,
+                              &scorep_rt_objects_rwlock.pending,
+                              &scorep_rt_objects_rwlock.departing,
+                              &scorep_rt_objects_rwlock.release_writer );
+    if ( !scorep_rt_objects_head
+         || scorep_rt_objects_head->begin_addr > begin_addr_min )
+    {
+        new->next              = scorep_rt_objects_head;
+        scorep_rt_objects_head = new;
+    }
+    else
+    {
+        rt_object* obj = scorep_rt_objects_head;
+        while ( obj->next
+                && obj->next->begin_addr < begin_addr_min )
+        {
+            obj = obj->next;
+        }
+        new->next = obj->next;
+        obj->next = new;
+    }
+    scorep_rt_object_count++;
+    /* update rt address interval */
+    if ( new->begin_addr < scorep_rt_objects_min_addr )
+    {
+        scorep_rt_objects_min_addr = new->begin_addr;
+    }
+    if ( new->end_addr > scorep_rt_objects_max_addr )
+    {
+        scorep_rt_objects_max_addr = new->end_addr;
+    }
+    SCOREP_RWLock_WriterUnlock( &scorep_rt_objects_rwlock.writer_mutex,
+                                &scorep_rt_objects_rwlock.pending,
+                                &scorep_rt_objects_rwlock.release_n_readers );
+
+    UTILS_DEBUG( "Insert %s; base=%" PRIuPTR "; begin=%" PRIuPTR "; "
+                 "end=%" PRIuPTR "; cookie=%" PRIuPTR "",
+                 new->name, base_addr, begin_addr_min, end_addr_max,
+                 new->audit_cookie );
+    return 1;
+}
+
+
+/* Singly-linked list to store objclose callbacks */
+/* Must not be static as accessed from ld_audit library */
+typedef struct rt_objclose_cb rt_objclose_cb;
+struct rt_objclose_cb
+{
+    SCOREP_Addr2line_ObjcloseCb cb;
+    rt_objclose_cb*             next;
+};
+rt_objclose_cb* scorep_rt_objclose_cb_head  = NULL;
+SCOREP_Mutex    scorep_rt_objclose_cb_mutex = SCOREP_MUTEX_INIT;
+
+
+void
+SCOREP_Addr2line_RegisterObjcloseCb( SCOREP_Addr2line_ObjcloseCb cb )
+{
+    rt_objclose_cb* new = SCOREP_Memory_AllocForMisc( sizeof( rt_objclose_cb ) );
+    new->cb = cb;
+    SCOREP_MutexLock( &scorep_rt_objclose_cb_mutex );
+    new->next                  = scorep_rt_objclose_cb_head;
+    scorep_rt_objclose_cb_head = new;
+    SCOREP_MutexUnlock( &scorep_rt_objclose_cb_mutex );
+}
+
+
+/* called only after la_preinit() */
+void
+scorep_la_objclose( uintptr_t* cookie /* corresponds to la_objopen */ )
+{
+    UTILS_DEBUG_ENTRY( "cookie=%" PRIuPTR "; scorep_rt_object_count=%d",
+                       cookie != NULL ? *cookie : 0, scorep_rt_object_count );
+
+    /* ignore objclose for loadtime objects */
+    if ( scorep_rt_object_count > 0 )
+    {
+        UTILS_BUG_ON( !scorep_rt_objects_head );
+
+        rt_object* remove = NULL;
+        SCOREP_RWLock_WriterLock( &scorep_rt_objects_rwlock.writer_mutex,
+                                  &scorep_rt_objects_rwlock.pending,
+                                  &scorep_rt_objects_rwlock.departing,
+                                  &scorep_rt_objects_rwlock.release_writer );
+        rt_object** obj = &scorep_rt_objects_head;
+        while ( *obj && ( *obj )->audit_cookie != *cookie )
+        {
+            obj = &( *obj )->next;
+        }
+        if ( !*obj || ( *obj )->audit_cookie != *cookie )
+        {
+            UTILS_DEBUG_EXIT( "Audit cookie %ld not found. Likely that it provided no symbols",
+                              *cookie );
+            SCOREP_RWLock_WriterUnlock( &scorep_rt_objects_rwlock.writer_mutex,
+                                        &scorep_rt_objects_rwlock.pending,
+                                        &scorep_rt_objects_rwlock.release_n_readers );
+            return;
+        }
+
+        remove = *obj;
+        *obj   = ( *obj )->next;
+
+        /* trigger objclose callbacks */
+        SCOREP_MutexLock( &scorep_rt_objclose_cb_mutex );
+        rt_objclose_cb* objclose_cb = scorep_rt_objclose_cb_head;
+        while ( objclose_cb )
+        {
+            objclose_cb->cb( remove, remove->name, remove->base_addr, remove->token );
+            objclose_cb = objclose_cb->next;
+        }
+        SCOREP_MutexUnlock( &scorep_rt_objclose_cb_mutex );
+
+        bitset_clear( scorep_rt_objects_loaded, remove->token );
+        scorep_rt_object_count--;
+        /* update rt address interval */
+        if ( remove->begin_addr == scorep_rt_objects_min_addr
+             || remove->end_addr == scorep_rt_objects_max_addr )
+        {
+            scorep_rt_objects_min_addr = UINTPTR_MAX;
+            scorep_rt_objects_max_addr = 0;
+            rt_object* rto = scorep_rt_objects_head;
+            while ( rto )
+            {
+                if ( rto->begin_addr < scorep_rt_objects_min_addr )
+                {
+                    scorep_rt_objects_min_addr = rto->begin_addr;
+                }
+                if ( rto->end_addr > scorep_rt_objects_max_addr )
+                {
+                    scorep_rt_objects_max_addr = rto->end_addr;
+                }
+                rto = rto->next;
+            }
+        }
+        SCOREP_RWLock_WriterUnlock( &scorep_rt_objects_rwlock.writer_mutex,
+                                    &scorep_rt_objects_rwlock.pending,
+                                    &scorep_rt_objects_rwlock.release_n_readers );
+
+        UTILS_DEBUG( "dlclose %s; cookie=%" PRIuPTR "", remove->name, *cookie );
+
+        /* keep dlclosed object representations, potentially accessed via
+           SCOREP_Addr2line_SoLookup* later on */
+        SCOREP_MutexLock( &scorep_rt_objects_dlclosed_mutex );
+        remove->next                    = scorep_rt_objects_dlclosed_head;
+        scorep_rt_objects_dlclosed_head = remove;
+        SCOREP_MutexUnlock( &scorep_rt_objects_dlclosed_mutex );
+    }
+}
+
+
+bool
+scorep_addr2line_so_still_loaded( uint16_t soToken )
+{
+    UTILS_BUG_ON( soToken >= MAX_RT_OBJOPEN_CALLS_TRACKED,
+                  "soToken %" PRIu16 " not in range [0, %d]",
+                  soToken, MAX_RT_OBJOPEN_CALLS_TRACKED - 1 );
+    return bitset_test( scorep_rt_objects_loaded, soToken );
 }

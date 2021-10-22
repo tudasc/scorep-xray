@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017, 2020,
+## Copyright (c) 2009-2015, 2017, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -57,6 +57,7 @@ EXTRA_DIST += $(srcdir)/OPEN_ISSUES                                       \
               $(srcdir)/doc/doxygen-user/main_1.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_10.dox.in                   \
               $(srcdir)/doc/doxygen-user/main_11.dox.in                   \
+              $(srcdir)/doc/doxygen-user/main_12.dox.in                   \
               $(srcdir)/doc/doxygen-user/main_2.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_3.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_4.dox.in                    \
@@ -69,6 +70,7 @@ EXTRA_DIST += $(srcdir)/OPEN_ISSUES                                       \
               $(srcdir)/doc/doxygen-user/scorep_backend_info_usage.dox.in \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in       \
               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md     \
+              $(srcdir)/doc/doxygen-user/scorep_info_ldaudit_help.md      \
               $(srcdir)/doc/doxygen-user/scorep_score_usage.dox.in        \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in              \
               $(srcdir)/doc/images/project_logo.svg                       \
@@ -95,7 +97,8 @@ endif
 
 pkgdata_DATA = @PACKAGE@.summary \
                share/scorep.spec \
-               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md
+               $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md \
+               $(srcdir)/doc/doxygen-user/scorep_info_ldaudit_help.md
 
 doc_DATA = $(srcdir)/ChangeLog \
            $(srcdir)/COPYING \
@@ -206,6 +209,8 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md \
     $(srcdir)/doc/doxygen-user/main_7.dox.in \
     doc/doxygen-user/confvars.dox.in \
+    $(srcdir)/doc/doxygen-user/main_12.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_info_ldaudit_help.md \
     $(srcdir)/doc/doxygen-user/main_8.dox.in \
     doc/doxygen-user/scorep_wrapper_usage.md \
     $(srcdir)/doc/doxygen-user/main_9.dox.in \

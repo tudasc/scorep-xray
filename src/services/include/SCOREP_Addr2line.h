@@ -216,6 +216,62 @@ SCOREP_Addr2line_LookupAddrRange( uintptr_t    beginProgramCounterAddr,
                                   unsigned*    sclEndLineNo );
 
 
+/**
+ * Callback type to be used in SCOREP_Addr2line_RegisterObjcloseCb().
+ */
+typedef void ( * SCOREP_Addr2line_ObjcloseCb )( void*       soHandle,
+                                                const char* soFileName,
+                                                uintptr_t   soBaseAddr,
+                                                uint16_t    soToken );
+
+
+/**
+ * Register @a cb callback to be triggered when run-time loaded shared
+ * objects are dlclosed. All available information about the shared
+ * object is provided via the callback's arguments. This gives the
+ * opportunity to update cached addresses (that might be invalid once
+ * the shared object is closed).
+ *
+ * @note See SCOREP_Addr2line_SoStillLoaded() for a different way to
+ * check if addresses corresponding to a soToken are still valid.
+ */
+void
+SCOREP_Addr2line_RegisterObjcloseCb( SCOREP_Addr2line_ObjcloseCb cb );
+
+
+/**
+ * Shared object token to identify load time shared objects (the ones
+ * that live throughout the entire program's runtime).
+ */
+#define SCOREP_ADDR2LINE_LT_OBJECT_TOKEN UINT16_MAX
+
+
+/**
+ * Check if addresses of a shared object with token @a soToken are
+ * still valid, i.e., if the shared object hasn't been dlclosed since
+ * a call to any function that provided @a soToken.  Always returns
+ * true for load-time shared objects.
+ *
+ * @note See SCOREP_Addr2line_RegisterObjcloseCb() for a different
+ * way to check if addresses corresponding to a soToken are still
+ * valid.
+ * @note For performance reasons. the lookup is done using a bitset of
+ * fixed size, thus no more than MAX_OBJOPEN_CALLS_TRACKED dlopen
+ * calls that provide symbols are tracked. We abort if this number is
+ * exceeded.
+ */
+static inline bool
+SCOREP_Addr2line_SoStillLoaded( uint16_t soToken )
+{
+    if ( soToken == SCOREP_ADDR2LINE_LT_OBJECT_TOKEN )
+    {
+        return true;
+    }
+    bool scorep_addr2line_so_still_loaded( uint16_t soToken );
+    return scorep_addr2line_so_still_loaded( soToken );
+}
+
+
 #endif /* HAVE( SCOREP_ADDR2LINE ) */
 
 #endif /* SCOREP_ADDR2LINE_H */

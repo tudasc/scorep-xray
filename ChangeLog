@@ -12,7 +12,11 @@ Compatibility:
   download, build and install a libbfd at make time.
 - Address-to-line lookup now requires the availability of
   dl_iterate_phdr from link.h where previously /proc/self/maps was
-  parsed.
+  parsed. In addition, symbols from dlopened shared libraries are
+  considered if linker auditing is available and the LD_AUDIT
+  environment variable is set to
+  <prefix>/lib[/backend]/libscorep_rtld_audit.so when executing an
+  instrumented binary.
 
 ------------------- Released version 7.1 -----------------------------
 
