@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -135,7 +135,7 @@ typedef struct
   same order like in @a scorep_profile_node_type.
  */
 scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
-  { &hash_by_handle,       &less_than_by_handle,       &compare_only_handle,  &copy_flat }, /* Regular region */
+  { &hash_by_handle,       &less_than_by_handle,       &compare_both_entries, &copy_flat }, /* Regular region */
   { &hash_by_both_entries, &less_than_by_both_entries, &compare_both_entries, &copy_flat }, /* Parameter string */
   { &hash_by_both_entries, &less_than_by_both_entries, &compare_both_entries, &copy_flat }, /* Parameter integer */
   { &hash_by_value,        &less_than_by_value,        &compare_only_value,   &copy_flat }, /* Thread root */
