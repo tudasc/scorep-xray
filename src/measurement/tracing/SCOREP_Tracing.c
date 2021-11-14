@@ -556,7 +556,8 @@ write_definitions( void )
             global_definition_writer,
             SCOREP_Timer_GetClockResolution(),
             epoch_begin,
-            epoch_end - epoch_begin );
+            epoch_end - epoch_begin,
+            OTF2_UNDEFINED_TIMESTAMP );
         scorep_tracing_write_global_definitions( global_definition_writer );
 
         ret = OTF2_Archive_CloseGlobalDefWriter( scorep_otf2_archive,

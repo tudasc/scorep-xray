@@ -208,7 +208,8 @@ scorep_write_location_group_definitions( void*                     writerHandle,
                                                                OTF2_LocationGroupRef,
                                                                OTF2_StringRef,
                                                                OTF2_LocationGroupType,
-                                                               OTF2_SystemTreeNodeRef );
+                                                               OTF2_SystemTreeNodeRef,
+                                                               OTF2_LocationGroupRef );
     def_location_group_pointer_t defLocationGroup =
         ( def_location_group_pointer_t )OTF2_DefWriter_WriteLocationGroup;
     if ( isGlobal )
@@ -233,7 +234,8 @@ scorep_write_location_group_definitions( void*                     writerHandle,
             definition->global_location_group_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
-            system_tree_parent );
+            system_tree_parent,
+            OTF2_UNDEFINED_LOCATION_GROUP );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "LocationGroup" );
@@ -493,7 +495,8 @@ write_location_group_seq( scorep_system_tree_seq*            definition,
         sequence_no,
         write_string_direct( writerData, display_name ),
         scorep_tracing_location_group_type_to_otf2( sub_type ),
-        parent );
+        parent,
+        OTF2_UNDEFINED_LOCATION_GROUP );
     if ( status != OTF2_SUCCESS )
     {
         scorep_handle_definition_writing_error( status, "LocationGroup" );
@@ -759,7 +762,8 @@ scorep_write_communicator_definitions( void*                     writerHandle,
             definition->sequence_number,
             comm_name_id,
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-            comm_parent_id );
+            comm_parent_id,
+            OTF2_COMM_FLAG_NONE );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Communicator" );
@@ -789,7 +793,8 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            comm_id );
+            comm_id,
+            OTF2_RMA_WIN_FLAG_CREATE_DESTROY_EVENTS );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "RmaWindow" );
