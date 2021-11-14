@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -71,7 +71,7 @@
 static SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        uint32_t                    globalLocationGroupId,
-                       SCOREP_SystemTreeNodeHandle parent,
+                       SCOREP_SystemTreeNodeHandle systemTreeParent,
                        SCOREP_StringHandle         nameHandle,
                        SCOREP_LocationGroupType    locationType );
 
@@ -81,7 +81,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
  * @in internal
  */
 SCOREP_LocationGroupHandle
-SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent )
+SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle systemTreeParent )
 {
     SCOREP_Definitions_Lock();
 
@@ -90,7 +90,7 @@ SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent )
     SCOREP_LocationGroupHandle new_handle = define_location_group(
         &scorep_local_definition_manager,
         UINT32_MAX,
-        parent,
+        systemTreeParent,
         SCOREP_INVALID_STRING,
         SCOREP_LOCATION_GROUP_TYPE_PROCESS );
 
@@ -106,21 +106,21 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
 
-    SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
-    if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
+    SCOREP_SystemTreeNodeHandle unified_system_tree_parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
+    if ( definition->system_tree_parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
     {
-        unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
-            definition->parent,
+        unified_system_tree_parent = SCOREP_HANDLE_GET_UNIFIED(
+            definition->system_tree_parent,
             SystemTreeNode,
             handlesPageManager );
-        UTILS_BUG_ON( unified_parent_handle == SCOREP_INVALID_SYSTEM_TREE_NODE,
+        UTILS_BUG_ON( unified_system_tree_parent == SCOREP_INVALID_SYSTEM_TREE_NODE,
                       "Invalid unification order of location group definition: system tree parent not yet unified" );
     }
 
     definition->unified = define_location_group(
         scorep_unified_definition_manager,
         definition->global_location_group_id,
-        unified_parent_handle,
+        unified_system_tree_parent,
         SCOREP_HANDLE_GET_UNIFIED(
             definition->name_handle,
             String,
@@ -139,7 +139,7 @@ equal_location_group( const SCOREP_LocationGroupDef* existingDefinition,
 SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        uint32_t                    globalLocationGroupId,
-                       SCOREP_SystemTreeNodeHandle parent,
+                       SCOREP_SystemTreeNodeHandle systemTreeParent,
                        SCOREP_StringHandle         nameHandle,
                        SCOREP_LocationGroupType    locationGroupType )
 {
@@ -152,7 +152,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
 
     /* location groups wont be unified, therefore no hash value needed */
     new_definition->global_location_group_id = globalLocationGroupId;
-    new_definition->parent                   = parent;
+    new_definition->system_tree_parent       = systemTreeParent;
     new_definition->name_handle              = nameHandle;
     new_definition->location_group_type      = locationGroupType;
 

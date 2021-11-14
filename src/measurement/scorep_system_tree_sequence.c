@@ -7,6 +7,9 @@
  * Copyright (c) 2015-2016, 2019,
  * Technische Universitaet Darmstadt, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -251,9 +254,9 @@ init_system_tree_seq( SCOREP_DefinitionManager* manager,
         current->num_children = 0;
         current->children     = NULL;
 
-        UTILS_ASSERT( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE );
+        UTILS_ASSERT( definition->system_tree_parent != SCOREP_INVALID_SYSTEM_TREE_NODE );
 
-        uint64_t index = SCOREP_HANDLE_DEREF( definition->parent,
+        uint64_t index = SCOREP_HANDLE_DEREF( definition->system_tree_parent,
                                               SystemTreeNode,
                                               manager->page_manager )->sequence_number;
 

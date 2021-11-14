@@ -221,10 +221,10 @@ scorep_write_location_group_definitions( void*                     writerHandle,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, LocationGroup, location_group )
     {
         OTF2_SystemTreeNodeRef system_tree_parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
-        if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
+        if ( definition->system_tree_parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             system_tree_parent = SCOREP_HANDLE_TO_ID(
-                definition->parent,
+                definition->system_tree_parent,
                 SystemTreeNode,
                 definitionManager->page_manager );
         }
