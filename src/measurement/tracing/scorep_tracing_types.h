@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020,
+ * Copyright (c) 2009-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -938,6 +938,56 @@ scorep_tracing_io_seek_option_to_otf2( SCOREP_IoSeekOption option )
     }
 
     return OTF2_UNDEFINED_TYPE;
+}
+
+static inline OTF2_CommFlag
+scorep_tracing_comm_flags_to_otf2( SCOREP_CommunicatorFlag scorepFlags )
+{
+    OTF2_CommFlag otf2_flags = OTF2_COMM_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepFlags & SCOREP_COMMUNICATOR_FLAG_ ## name ) \
+        { \
+            otf2_flags  |= OTF2_COMM_FLAG_ ## name; \
+            scorepFlags &= ~SCOREP_COMMUNICATOR_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( CREATE_DESTROY_EVENTS );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepFlags != SCOREP_COMMUNICATOR_FLAG_NONE,
+                  "Unhandled communicator flag" );
+
+    return otf2_flags;
+}
+
+static inline OTF2_RmaWinFlag
+scorep_tracing_rma_win_flags_to_otf2( SCOREP_RmaWindowFlag scorepFlags )
+{
+    OTF2_RmaWinFlag otf2_flags = OTF2_RMA_WIN_FLAG_NONE;
+
+#define if_flag( name ) \
+    do { \
+        if ( scorepFlags & SCOREP_RMA_WINDOW_FLAG_ ## name ) \
+        { \
+            otf2_flags  |= OTF2_RMA_WIN_FLAG_ ## name; \
+            scorepFlags &= ~SCOREP_RMA_WINDOW_FLAG_ ## name; \
+        } \
+    } \
+    while ( 0 )
+
+    if_flag( CREATE_DESTROY_EVENTS );
+
+#undef if_flag
+
+    UTILS_BUG_ON( scorepFlags != SCOREP_RMA_WINDOW_FLAG_NONE,
+                  "Unhandled RMA window flag" );
+
+    return otf2_flags;
 }
 
 #endif /* SCOREP_TRACING_INTERNAL_TYPES_H */

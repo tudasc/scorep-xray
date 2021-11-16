@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016, 2019,
+ * Copyright (c) 2009-2013, 2015-2016, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -478,7 +478,7 @@ fork_join_subsystem_pre_unify( void )
             SCOREP_Definitions_NewCommunicator( group_handle,
                                                 current_team_leader->name_handle,
                                                 parent_handle,
-                                                0 );
+                                                0, SCOREP_COMMUNICATOR_FLAG_NONE );
 
         i++;
     }

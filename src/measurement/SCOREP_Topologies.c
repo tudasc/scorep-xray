@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2019,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -700,7 +703,7 @@ define_topology_locations_pre_unify_create_groups( void )
                             topology_group_handles[ unique_topo_id ],
                             definition->topology_name,
                             SCOREP_INVALID_COMMUNICATOR,
-                            0 );
+                            0, SCOREP_COMMUNICATOR_FLAG_NONE );
                     }
                     // set comm for this topo
                     SCOREP_LOCAL_HANDLE_DEREF( definition->communicator_handle,
@@ -725,7 +728,7 @@ define_topology_locations_pre_unify_create_groups( void )
                         &scorep_local_definition_manager,
                         "Hardware CPU Locations", NULL ),
                     SCOREP_INVALID_COMMUNICATOR,
-                    0 );
+                    0, SCOREP_COMMUNICATOR_FLAG_NONE );
         }
         if ( have_process )
         {
@@ -743,7 +746,7 @@ define_topology_locations_pre_unify_create_groups( void )
                         &scorep_local_definition_manager,
                         "Process x Threads CPU Locations", NULL ),
                     SCOREP_INVALID_COMMUNICATOR,
-                    0 );
+                    0, SCOREP_COMMUNICATOR_FLAG_NONE );
         }
 
         free( all_locations );

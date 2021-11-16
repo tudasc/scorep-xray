@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -217,7 +217,8 @@ scorep_mpi_unify_communicators( void )
             group,
             definition->name_handle,
             unified_parent_handle,
-            payload->root_id );
+            payload->root_id,
+            SCOREP_COMMUNICATOR_FLAG_NONE );
 
         interim_comm_defs_processed++;
     }
@@ -247,7 +248,8 @@ scorep_mpi_unify_communicators( void )
             self,
             definition->name_handle,
             SCOREP_INVALID_COMMUNICATOR,
-            comm_payload->root_id );
+            comm_payload->root_id,
+            SCOREP_COMMUNICATOR_FLAG_NONE );
         interim_comm_defs_processed++;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();

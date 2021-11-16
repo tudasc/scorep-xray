@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019-2021,
+ * Copyright (c) 2009-2017, 2019-2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -330,14 +330,16 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
                      SCOREP_GroupHandle        group_handle,
                      SCOREP_StringHandle       name_handle,
                      SCOREP_CommunicatorHandle parent_handle,
-                     uint32_t                  unifyKey );
+                     uint32_t                  unifyKey,
+                     SCOREP_CommunicatorFlag   flags );
 
 
 SCOREP_CommunicatorHandle
 SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
                                     SCOREP_StringHandle       name,
                                     SCOREP_CommunicatorHandle parent,
-                                    uint32_t                  unifyKey )
+                                    uint32_t                  unifyKey,
+                                    SCOREP_CommunicatorFlag   flags )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -348,7 +350,8 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
         group,
         name,
         parent,
-        unifyKey );
+        unifyKey,
+        flags );
 
     SCOREP_Definitions_Unlock();
 
@@ -393,7 +396,8 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
             handlesPageManager ),
         unified_string_handle,
         unified_parent_handle,
-        definition->unify_key );
+        definition->unify_key,
+        definition->flags );
 }
 
 
@@ -402,7 +406,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
                      SCOREP_GroupHandle        group,
                      SCOREP_StringHandle       name,
                      SCOREP_CommunicatorHandle parent,
-                     uint32_t                  unifyKey )
+                     uint32_t                  unifyKey,
+                     SCOREP_CommunicatorFlag   flags )
 {
     SCOREP_CommunicatorDef*   new_definition = NULL;
     SCOREP_CommunicatorHandle new_handle     = SCOREP_INVALID_COMMUNICATOR;
@@ -424,6 +429,9 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
 
     new_definition->unify_key = unifyKey;
     HASH_ADD_POD( new_definition, unify_key );
+
+    /* No hashing */
+    new_definition->flags = flags;
 
     /* Open coded SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION, to handle the
      * communicator name */

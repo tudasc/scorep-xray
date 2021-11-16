@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016,
+ * Copyright (c) 2009-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -2269,7 +2269,8 @@ scorep_cupti_callbacks_init( void )
                 scorep_cuda_window_handle =
                     SCOREP_Definitions_NewRmaWindow(
                         "CUDA_WINDOW",
-                        scorep_cuda_interim_communicator_handle );
+                        scorep_cuda_interim_communicator_handle,
+                        SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
             }
 
             /* get global counter group IDs */

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -109,7 +109,8 @@ scorep_shmem_setup_comm_world( void )
 
     /* Create 'WORLD' window handle once for a process */
     scorep_shmem_world_window_handle =
-        SCOREP_Definitions_NewRmaWindow( WIN_WORLD_NAME, comm_world_handle );
+        SCOREP_Definitions_NewRmaWindow( WIN_WORLD_NAME, comm_world_handle,
+                                         SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
     comm_world_payload->rma_win = scorep_shmem_world_window_handle;
 
     SCOREP_RmaWinCreate( scorep_shmem_world_window_handle );
@@ -123,7 +124,8 @@ scorep_shmem_setup_comm_world( void )
 
         /* Create 'SELF' window handle once for a process */
         scorep_shmem_self_window_handle =
-            SCOREP_Definitions_NewRmaWindow( WIN_SELF_NAME, comm_self_handle );
+            SCOREP_Definitions_NewRmaWindow( WIN_SELF_NAME, comm_self_handle,
+                                             SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
         comm_self_payload->rma_win = scorep_shmem_self_window_handle;
 
         SCOREP_RmaWinCreate( scorep_shmem_self_window_handle );
@@ -216,7 +218,8 @@ scorep_shmem_get_pe_group( int start,
 
         /* First time we encounter this PE group */
         new_payload->rma_win =
-            SCOREP_Definitions_NewRmaWindow( name, new_handle );
+            SCOREP_Definitions_NewRmaWindow( name, new_handle,
+                                             SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
 
         SCOREP_RmaWinCreate( new_payload->rma_win );
     }

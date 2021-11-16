@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -129,7 +129,8 @@ scorep_kokkos_define_rma_win( void )
             SCOREP_PARADIGM_KOKKOS,
             0, NULL );
     return SCOREP_Definitions_NewRmaWindow( "KOKKOS_WINDOW",
-                                            kokkos_interim_communicator_handle );
+                                            kokkos_interim_communicator_handle,
+                                            SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
 }
 
 static size_t
@@ -254,7 +255,7 @@ kokkos_subsystem_pre_unify( void )
             SCOREP_Definitions_NewCommunicator(
                 group_handle,
                 SCOREP_INVALID_STRING,
-                SCOREP_INVALID_COMMUNICATOR, 0 );
+                SCOREP_INVALID_COMMUNICATOR, 0, SCOREP_COMMUNICATOR_FLAG_NONE );
     }
     return SCOREP_SUCCESS;
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2017, 2020,
+ * Copyright (c) 2014-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015, 2020,
@@ -254,7 +254,8 @@ scorep_opencl_init( void )
             scorep_opencl_window_handle =
                 SCOREP_Definitions_NewRmaWindow(
                     "OPENCL_WINDOW",
-                    scorep_opencl_interim_communicator_handle );
+                    scorep_opencl_interim_communicator_handle,
+                    SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
         }
 
         queue_max_buffer_entries = scorep_opencl_queue_size

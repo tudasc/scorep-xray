@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -71,7 +71,8 @@ static SCOREP_RmaWindowHandle
 define_rma_window( SCOREP_DefinitionManager* definition_manager,
                    SCOREP_StringHandle       nameHandle,
                    SCOREP_CommunicatorHandle communicatorHandle,
-                   uint32_t                  creationId );
+                   uint32_t                  creationId,
+                   SCOREP_RmaWindowFlag      flags );
 
 
 static void
@@ -82,7 +83,8 @@ hash_rma_window( SCOREP_RmaWindowDef* definition );
  */
 SCOREP_RmaWindowHandle
 SCOREP_Definitions_NewRmaWindow( const char*                      name,
-                                 SCOREP_InterimCommunicatorHandle communicatorHandle )
+                                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                 SCOREP_RmaWindowFlag             flags )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 
@@ -94,7 +96,8 @@ SCOREP_Definitions_NewRmaWindow( const char*                      name,
             &scorep_local_definition_manager,
             name, NULL ) : SCOREP_INVALID_STRING,
         communicatorHandle,
-        scorep_definitions_interim_communicator_get_rma_window_creation_counter( communicatorHandle ) );
+        scorep_definitions_interim_communicator_get_rma_window_creation_counter( communicatorHandle ),
+        flags );
 
     SCOREP_Definitions_Unlock();
 
@@ -163,7 +166,8 @@ scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*          definition,
             definition->communicator_handle,
             Communicator,
             handlesPageManager ),
-        definition->creation_id );
+        definition->creation_id,
+        definition->flags );
 }
 
 
@@ -179,7 +183,8 @@ SCOREP_RmaWindowHandle
 define_rma_window( SCOREP_DefinitionManager* definition_manager,
                    SCOREP_StringHandle       nameHandle,
                    SCOREP_CommunicatorHandle communicatorHandle,
-                   uint32_t                  creationId )
+                   uint32_t                  creationId,
+                   SCOREP_RmaWindowFlag      flags )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -192,6 +197,7 @@ define_rma_window( SCOREP_DefinitionManager* definition_manager,
     new_definition->communicator_handle = communicatorHandle;
     new_definition->creation_id         = creationId;
     new_definition->has_default_name    = true;
+    new_definition->flags               = flags;
 
     hash_rma_window( new_definition );
 
@@ -250,4 +256,5 @@ hash_rma_window( SCOREP_RmaWindowDef* definition )
 {
     HASH_ADD_HANDLE( definition, communicator_handle, Communicator );
     HASH_ADD_POD( definition, creation_id );
+    /* no two windows with the same creation_id should have different flags */
 }

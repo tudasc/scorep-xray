@@ -2,25 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018, 2020,
- *    Technische Universitaet Dresden, Germany
+ * Copyright (c) 2009-2011, 2018, 2020, 2022,
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
- *    University of Oregon, Eugene, USA
+ * University of Oregon, Eugene, USA
  *
  * Copyright (c) 2009-2011, 2018, 2022,
- *    Forschungszentrum Juelich GmbH, Germany
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
- *    Technische Universitaet Muenchen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -882,6 +882,30 @@ typedef enum SCOREP_Substrates_RequirementFlag
 
     SCOREP_SUBSTRATES_NUM_REQUIREMENTS                               /**< Non-ABI used internally  */
 } SCOREP_Substrates_RequirementFlag;
+
+
+/**
+ * Flags for communicator definitions
+ */
+typedef enum SCOREP_CommunicatorFlag
+{
+    /** @brief No flag is set. */
+    SCOREP_COMMUNICATOR_FLAG_NONE                  = 0,
+    /** @brief There will be communicator event/destroy events. */
+    SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS = ( 1 << 0 )
+} SCOREP_CommunicatorFlag;
+
+
+/**
+ * Flags for RMA window definitions
+ */
+typedef enum SCOREP_RmaWindowFlag
+{
+    /** @brief No flag is set. */
+    SCOREP_RMA_WINDOW_FLAG_NONE                  = 0,
+    /** @brief There will be RMA window event/destroy events. */
+    SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS = ( 1 << 0 )
+} SCOREP_RmaWindowFlag;
 
 /** @} */
 

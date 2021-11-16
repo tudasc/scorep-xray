@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016-2017, 2020,
+ * Copyright (c) 2009-2013, 2016-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -64,6 +64,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
     SCOREP_StringHandle       name_handle;
     SCOREP_CommunicatorHandle parent_handle;
     uint32_t                  unify_key;
+    SCOREP_CommunicatorFlag   flags;
 };
 
 
@@ -205,7 +206,8 @@ SCOREP_CommunicatorHandle
 SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
                                     SCOREP_StringHandle       name,
                                     SCOREP_CommunicatorHandle parent,
-                                    uint32_t                  unifyKey );
+                                    uint32_t                  unifyKey,
+                                    SCOREP_CommunicatorFlag   flags );
 
 
 void
