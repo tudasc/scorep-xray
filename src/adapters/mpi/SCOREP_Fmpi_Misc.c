@@ -361,7 +361,7 @@ FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int
     free( c_key );
 
     c_value_len = strlen( c_value );
-    strncpy( value, c_value, c_value_len );
+    memcpy( value, c_value, c_value_len );
     memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -412,7 +412,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, score
 
 
     c_key_len = strlen( c_key );
-    strncpy( key, c_key, c_key_len );
+    memcpy( key, c_key, c_key_len );
     memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -671,7 +671,7 @@ FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value
     free( c_key );
 
     c_value_len = strlen( c_value );
-    strncpy( value, c_value, c_value_len );
+    memcpy( value, c_value, c_value_len );
     memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -724,7 +724,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* i
 
 
     c_key_len = strlen( c_key );
-    strncpy( key, c_key, c_key_len );
+    memcpy( key, c_key, c_key_len );
     memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
     SCOREP_IN_MEASUREMENT_DECREMENT();

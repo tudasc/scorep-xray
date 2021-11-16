@@ -239,7 +239,7 @@ FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ier
 
 
     c_string_len = strlen( c_string );
-    strncpy( string, c_string, c_string_len );
+    memcpy( string, c_string, c_string_len );
     memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -359,7 +359,7 @@ FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen
 
 
     c_string_len = strlen( c_string );
-    strncpy( string, c_string, c_string_len );
+    memcpy( string, c_string, c_string_len );
     memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
     SCOREP_IN_MEASUREMENT_DECREMENT();

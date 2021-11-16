@@ -1574,7 +1574,7 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, 
 
 
     c_type_name_len = strlen( c_type_name );
-    strncpy( type_name, c_type_name, c_type_name_len );
+    memcpy( type_name, c_type_name, c_type_name_len );
     memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2742,7 +2742,7 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen,
 
 
     c_type_name_len = strlen( c_type_name );
-    strncpy( type_name, c_type_name, c_type_name_len );
+    memcpy( type_name, c_type_name, c_type_name_len );
     memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();

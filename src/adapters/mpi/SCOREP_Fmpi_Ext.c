@@ -320,7 +320,7 @@ FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, scorep_fo
 
 
     c_name_len = strlen( c_name );
-    strncpy( name, c_name, c_name_len );
+    memcpy( name, c_name, c_name_len );
     memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -540,7 +540,7 @@ FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr,
 
 
     c_name_len = strlen( c_name );
-    strncpy( name, c_name, c_name_len );
+    memcpy( name, c_name, c_name_len );
     memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();

@@ -665,7 +665,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
     free( c_service_name );
 
     c_port_name_len = strlen( c_port_name );
-    strncpy( port_name, c_port_name, c_port_name_len );
+    memcpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -697,7 +697,7 @@ FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, scorep_fortra
 
 
     c_port_name_len = strlen( c_port_name );
-    strncpy( port_name, c_port_name, c_port_name_len );
+    memcpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1246,7 +1246,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
     free( c_service_name );
 
     c_port_name_len = strlen( c_port_name );
-    strncpy( port_name, c_port_name, c_port_name_len );
+    memcpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1279,7 +1279,7 @@ FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, scorep_f
 
 
     c_port_name_len = strlen( c_port_name );
-    strncpy( port_name, c_port_name, c_port_name_len );
+    memcpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
