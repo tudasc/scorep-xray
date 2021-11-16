@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014-2015,
@@ -148,9 +148,6 @@ shmem_subsystem_end( void )
     {
         SCOREP_AllocMetric_ReportLeaked( scorep_shmem_allocations_metric );
     }
-
-    /* Destroy all RmaWin in the master thread. */
-    scorep_shmem_close_pe_group();
 }
 
 /**

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -47,12 +47,5 @@ SCOREP_RmaWindowHandle
 scorep_shmem_get_pe_group( int peStart,
                            int logPEStride,
                            int PE_size );
-
-/**
- * Trigger writing of RmaWinDestroy record for each window in the hash table.
- */
-void
-scorep_shmem_close_pe_group( void );
-
 
 #endif /* SCOREP_SHMEM_COMMUNICATOR_MGMT_H */
