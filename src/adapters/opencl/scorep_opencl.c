@@ -255,7 +255,7 @@ scorep_opencl_init( void )
                 SCOREP_Definitions_NewRmaWindow(
                     "OPENCL_WINDOW",
                     scorep_opencl_interim_communicator_handle,
-                    SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
+                    SCOREP_RMA_WINDOW_FLAG_NONE );
         }
 
         queue_max_buffer_entries = scorep_opencl_queue_size
@@ -306,34 +306,7 @@ scorep_opencl_finalize( void )
             // do some unification preparation before destroying these information
             opencl_create_comm_group();
 
-            // destroy RMA windows for queues
-            scorep_opencl_queue* queue = cl_queue_list;
-            while ( queue != NULL )
-            {
-                /* destroy window on every location, where it is used */
-                if ( SCOREP_OPENCL_NO_ID != queue->device_location_id )
-                {
-                    SCOREP_Location_RmaWinDestroy( queue->device_location,
-                                                   SCOREP_Timer_GetClockTicks(),
-                                                   scorep_opencl_window_handle );
-                }
-
-                queue = queue->next;
-            }
-
             cl_queue_list = NULL;
-
-            // destroy RMA window for host locations
-            scorep_opencl_location* location = location_list;
-            while ( location != NULL )
-            {
-                SCOREP_Location_RmaWinDestroy( location->location,
-                                               SCOREP_Timer_GetClockTicks(),
-                                               scorep_opencl_window_handle );
-
-                location = location->next;
-            }
-
             location_list = NULL;
         }
 
@@ -598,13 +571,6 @@ opencl_set_cpu_location_id( SCOREP_Location* hostLocation )
 
         SCOREP_OPENCL_UNLOCK();
 
-        // create RMA window on host location
-        uint64_t time = SCOREP_Timer_GetClockTicks();
-        SCOREP_Location_RmaWinCreate( hostLocation, time,
-                                      scorep_opencl_window_handle );
-
-        SCOREP_Location_SetLastTimestamp( hostLocation, time );
-
         SCOREP_Location_SetSubsystemData( hostLocation, scorep_opencl_subsystem_id, loc_data );
     }
 }
@@ -726,13 +692,6 @@ scorep_opencl_retain_buffer( scorep_opencl_queue*        queue,
         // set location counter and create RMA window
         queue->device_location_id = scorep_opencl_global_location_number++;
         SCOREP_OPENCL_UNLOCK();
-
-        // create window on every location, where it is used
-        // use the last written time stamp, as it is not important when exactly
-        // the window has been created
-        SCOREP_Location_RmaWinCreate( queue->device_location,
-                                      queue->scorep_last_timestamp,
-                                      scorep_opencl_window_handle );
     }
 
     // retain OpenCL profiling event
