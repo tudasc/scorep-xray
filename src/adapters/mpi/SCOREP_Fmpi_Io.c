@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* lowercase defines */
+
 /** @def MPI_File_close_L
     Exchanges MPI_File_close_L by mpi_file_close.
     It is used for the Fortran wrappers of MPI_File_close.
@@ -396,8 +397,8 @@
 #define MPI_Register_datarep_L mpi_register_datarep
 
 
-
 /* uppercase defines */
+
 /** @def MPI_File_close_U
     Exchange MPI_File_close_U by MPI_FILE_CLOSE.
     It is used for the Fortran wrappers of MPI_File_close.
@@ -733,7 +734,6 @@
     It is used for the Fortran wrappers of MPI_Register_datarep.
  */
 #define MPI_Register_datarep_U MPI_REGISTER_DATAREP
-
 
 
 /**

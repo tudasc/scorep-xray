@@ -61,6 +61,7 @@
 /**
  * @name Uppercase names
  * @{*/
+
 /** @def MPI_Comm_compare_U
     Exchange MPI_Comm_compare_U by MPI_COMM_COMPARE.
     It is used for the Fortran wrappers of MPI_Comm_compare.
@@ -303,12 +304,12 @@
 #define MPI_Keyval_free_U MPI_KEYVAL_FREE
 
 
-
 /**
  * @}
  * @name Lowercase names
  * @{
  */
+
 /** @def MPI_Comm_compare_L
     Exchanges MPI_Comm_compare_L by mpi_comm_compare.
     It is used for the Fortran wrappers of MPI_Comm_compare.
@@ -549,7 +550,6 @@
     It is used for the Fortran wrappers of MPI_Keyval_free.
  */
 #define MPI_Keyval_free_L mpi_keyval_free
-
 
 
 #ifndef NEED_F2C_CONV

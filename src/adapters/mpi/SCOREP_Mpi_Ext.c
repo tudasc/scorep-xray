@@ -122,6 +122,7 @@ MPI_Abort( MPI_Comm comm,
 }
 #endif
 
+
 #if HAVE( MPI_GREQUEST_COMPLETE_COMPLIANT )
 #if HAVE( DECL_PMPI_GREQUEST_COMPLETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_complete )
 /**
@@ -176,7 +177,6 @@ MPI_Grequest_complete( MPI_Request request )
 }
 #endif
 #endif
-
 
 #if HAVE( DECL_PMPI_GET_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_count )
 /**

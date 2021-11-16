@@ -62,6 +62,7 @@
 #include <UTILS_Error.h>
 
 /* uppercase defines */
+
 /** @def MPI_Close_port_U
     Exchange MPI_Close_port_U by MPI_CLOSE_PORT.
     It is used for the Fortran wrappers of MPI_Close_port.
@@ -134,8 +135,8 @@
  */
 #define MPI_Unpublish_name_U MPI_UNPUBLISH_NAME
 
-
 /* lowercase defines */
+
 /** @def MPI_Close_port_L
     Exchanges MPI_Close_port_L by mpi_close_port.
     It is used for the Fortran wrappers of MPI_Close_port.
@@ -207,7 +208,6 @@
     It is used for the Fortran wrappers of MPI_Unpublish_name.
  */
 #define MPI_Unpublish_name_L mpi_unpublish_name
-
 
 /**
  * @name Fortran wrappers

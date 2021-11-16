@@ -483,6 +483,7 @@ MPI_Error_string( int errorcode, char* string, int* resultlen )
 }
 #endif
 
+
 #if HAVE( DECL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string ) && defined( SCOREP_MPI_ADD_ERROR_STRING_PROTO_ARGS )
 /**
  * Measurement wrapper for MPI_Add_error_string
@@ -535,7 +536,6 @@ MPI_Add_error_string SCOREP_MPI_ADD_ERROR_STRING_PROTO_ARGS
     return return_val;
 }
 #endif
-
 
 /**
  * @}

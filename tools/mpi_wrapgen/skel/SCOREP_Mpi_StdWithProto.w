@@ -1,3 +1,4 @@
+
 ${guard:start} && defined( SCOREP_${name|uppercase}_PROTO_ARGS )
 /**
  * Measurement wrapper for ${name}

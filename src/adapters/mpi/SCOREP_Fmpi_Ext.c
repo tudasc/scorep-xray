@@ -60,6 +60,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Abort_U
     Exchange MPI_Abort_U by MPI_ABORT.
     It is used for the Fortran wrappers of MPI_Abort.
@@ -132,8 +133,8 @@
  */
 #define MPI_Wtime_U MPI_WTIME
 
-
 /* lowercase defines */
+
 /** @def MPI_Abort_L
     Exchanges MPI_Abort_L by mpi_abort.
     It is used for the Fortran wrappers of MPI_Abort.
@@ -205,7 +206,6 @@
     It is used for the Fortran wrappers of MPI_Wtime.
  */
 #define MPI_Wtime_L mpi_wtime
-
 
 /**
  * @name Fortran wrappers

@@ -62,6 +62,7 @@
 #include <UTILS_Debug.h>
 
 /* uppercase defines */
+
 /** @def MPI_Get_version_U
     Exchange MPI_Get_version_U by MPI_GET_VERSION.
     It is used for the Fortran wrappers of MPI_Get_version.
@@ -140,8 +141,8 @@
  */
 #define MPI_Op_free_U MPI_OP_FREE
 
-
 /* lowercase defines */
+
 /** @def MPI_Get_version_L
     Exchanges MPI_Get_version_L by mpi_get_version.
     It is used for the Fortran wrappers of MPI_Get_version.
@@ -219,7 +220,6 @@
     It is used for the Fortran wrappers of MPI_Op_free.
  */
 #define MPI_Op_free_L mpi_op_free
-
 
 /**
  * @name Fortran wrappers

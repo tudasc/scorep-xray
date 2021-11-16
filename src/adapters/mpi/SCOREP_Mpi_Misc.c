@@ -68,6 +68,7 @@
  * @{
  */
 
+
 #if HAVE( DECL_PMPI_ADDRESS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Address ) && defined( SCOREP_MPI_ADDRESS_PROTO_ARGS )
 /**
  * Measurement wrapper for MPI_Address
@@ -120,7 +121,6 @@ MPI_Address SCOREP_MPI_ADDRESS_PROTO_ARGS
     return return_val;
 }
 #endif
-
 
 #if HAVE( DECL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
 /**
@@ -783,6 +783,7 @@ MPI_Info_free( MPI_Info* info )
 }
 #endif
 
+
 #if HAVE( MPI_INFO_DELETE_COMPLIANT )
 #if HAVE( DECL_PMPI_INFO_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_delete )
 /**
@@ -1005,7 +1006,6 @@ MPI_Info_set( MPI_Info info, SCOREP_MPI_CONST_DECL char* key, SCOREP_MPI_CONST_D
 }
 #endif
 #endif
-
 
 /**
  * @}

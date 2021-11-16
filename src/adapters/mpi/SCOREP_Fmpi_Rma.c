@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Accumulate_U
     Exchange MPI_Accumulate_U by MPI_ACCUMULATE.
     It is used for the Fortran wrappers of MPI_Accumulate.
@@ -319,8 +320,8 @@
 #define MPI_Win_set_name_U MPI_WIN_SET_NAME
 
 
-
 /* lowercase defines */
+
 /** @def MPI_Accumulate_L
     Exchanges MPI_Accumulate_L by mpi_accumulate.
     It is used for the Fortran wrappers of MPI_Accumulate.
@@ -579,7 +580,6 @@
     It is used for the Fortran wrappers of MPI_Win_set_name.
  */
 #define MPI_Win_set_name_L mpi_win_set_name
-
 
 
 #ifndef NEED_F2C_CONV
