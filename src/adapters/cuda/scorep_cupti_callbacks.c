@@ -1998,18 +1998,11 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
                  context->location_id == SCOREP_CUPTI_NO_ID )
             {
                 context->location_id = scorep_cupti_location_counter++;
-
-                /* create window on every location, where it is used
-                   SCOREP_RmaWinCreate( scorep_cuda_window_handle );*/
             }
 
             if ( SCOREP_CUPTI_NO_ID == stream->location_id )
             {
                 stream->location_id = scorep_cupti_location_counter++;
-
-                /* create window on every location, where it is used */
-                SCOREP_Location_RmaWinCreate( stream->scorep_location, time,
-                                              scorep_cuda_window_handle );
             }
 
             SCOREP_CUPTI_UNLOCK();
@@ -2270,7 +2263,7 @@ scorep_cupti_callbacks_init( void )
                     SCOREP_Definitions_NewRmaWindow(
                         "CUDA_WINDOW",
                         scorep_cuda_interim_communicator_handle,
-                        SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
+                        SCOREP_RMA_WINDOW_FLAG_NONE );
             }
 
             /* get global counter group IDs */
