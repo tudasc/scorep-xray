@@ -599,6 +599,14 @@ various Score-P components.
     instrumentation. Thus Score-P must be build with a Clang-based compiler
     suite.
 
+    If the compile step for device code errors out with:
+
+        lld: error: undefined symbol: __cyg_profile_func_enter
+        >>> referenced by <filename>:<linenumber>
+
+    then the heuristic to detect the usage of `hipcc` failed and must be
+    enabled explicity with `scorep --hip`.
+
 --------------------------------------------------------------------------------
 
 * Score-P misc.

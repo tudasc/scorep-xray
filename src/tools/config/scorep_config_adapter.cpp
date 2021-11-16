@@ -474,6 +474,21 @@ SCOREP_Config_HipAdapter::SCOREP_Config_HipAdapter()
 }
 
 void
+SCOREP_Config_HipAdapter::addCFlags( std::string&           cflags,
+                                     bool                   build_check,
+                                     SCOREP_Config_Language language,
+                                     bool                   nvcc )
+{
+    /* The HIP adapter should only be invoked on hipcc normally.
+     * In this case we want to ensure that `-finstrument-functions*`
+     * is restricted to host code only.
+     */
+    std::string pattern     = "-finstrument-functions";
+    std::string replacement = "-Xarch_host -finstrument-functions";
+    cflags = replace_all( pattern, replacement, cflags );
+}
+
+void
 SCOREP_Config_HipAdapter::addLibs( std::deque<std::string>&           libs,
                                    SCOREP_Config_LibraryDependencies& deps )
 {

@@ -51,10 +51,9 @@ SCOREP_Instrumenter_HipAdapter::checkCompilerName( const std::string& compiler )
 {
     if ( remove_path( compiler ).substr( 0, 3 ) == "hip" )
     {
-        if ( m_usage == detect )
-        {
-            m_usage = enabled;
-        }
+        /* we need to enable the adapter, else compiler instrumentation does not work
+         * i.e., overwrite `scorep --nohip hipcc` to `scorep-config --hip` */
+        m_usage = enabled;
 
         /* pro forma disable also preprocessing, didn't worked great with nvcc */
         m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS );
