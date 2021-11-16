@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -55,7 +55,6 @@ typedef struct scorep_kokkos_cpu_location_data
 typedef struct scorep_kokkos_gpu_location_data
 {
     uint32_t rma_win_rank;
-    bool     rma_win_created;
 } scorep_kokkos_gpu_location_data;
 
 struct SCOREP_Location;

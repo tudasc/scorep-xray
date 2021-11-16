@@ -89,8 +89,7 @@ create_device_location( SCOREP_Location* location )
     UTILS_DEBUG( "Found device location" );
 
     scorep_kokkos_gpu_location_data* data = SCOREP_Memory_AllocForMisc( sizeof( *data ) );
-    data->rma_win_rank    = ++kokkos_location_rank;
-    data->rma_win_created = false;
+    data->rma_win_rank = ++kokkos_location_rank;
 
     SCOREP_Location_SetSubsystemData( location, scorep_kokkos_subsystem_id, data );
 
@@ -130,7 +129,7 @@ scorep_kokkos_define_rma_win( void )
             0, NULL );
     return SCOREP_Definitions_NewRmaWindow( "KOKKOS_WINDOW",
                                             kokkos_interim_communicator_handle,
-                                            SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
+                                            SCOREP_RMA_WINDOW_FLAG_NONE );
 }
 
 static size_t
