@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Add_error_class_U
     Exchange MPI_Add_error_class_U by MPI_ADD_ERROR_CLASS.
     It is used for the Fortran wrappers of MPI_Add_error_class.
@@ -89,8 +90,8 @@
  */
 #define MPI_Error_string_U MPI_ERROR_STRING
 
-
 /* lowercase defines */
+
 /** @def MPI_Add_error_class_L
     Exchanges MPI_Add_error_class_L by mpi_add_error_class.
     It is used for the Fortran wrappers of MPI_Add_error_class.
@@ -120,7 +121,6 @@
     It is used for the Fortran wrappers of MPI_Error_string.
  */
 #define MPI_Error_string_L mpi_error_string
-
 
 /**
  * @name Fortran wrappers

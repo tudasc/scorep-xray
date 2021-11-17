@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Bsend_U
     Exchange MPI_Bsend_U by MPI_BSEND.
     It is used for the Fortran wrappers of MPI_Bsend.
@@ -209,8 +210,8 @@
  */
 #define MPI_Ssend_init_U MPI_SSEND_INIT
 
-
 /* lowercase defines */
+
 /** @def MPI_Bsend_L
     Exchanges MPI_Bsend_L by mpi_bsend.
     It is used for the Fortran wrappers of MPI_Bsend.
@@ -360,7 +361,6 @@
     It is used for the Fortran wrappers of MPI_Ssend_init.
  */
 #define MPI_Ssend_init_L mpi_ssend_init
-
 
 #ifndef NEED_F2C_CONV
 

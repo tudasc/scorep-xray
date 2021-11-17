@@ -1,3 +1,4 @@
+
 #if HAVE( ${name|uppercase}_COMPLIANT )
 ${guard:start}
 /**

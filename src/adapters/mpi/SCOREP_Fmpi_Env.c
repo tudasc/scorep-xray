@@ -62,6 +62,7 @@
 #include <UTILS_Error.h>
 
 /* uppercase defines */
+
 /** @def MPI_Finalize_U
     Exchange MPI_Finalize_U by MPI_FINALIZE.
     It is used for the Fortran wrappers of MPI_Finalize.
@@ -110,8 +111,8 @@
  */
 #define MPI_Query_thread_U MPI_QUERY_THREAD
 
-
 /* lowercase defines */
+
 /** @def MPI_Finalize_L
     Exchanges MPI_Finalize_L by mpi_finalize.
     It is used for the Fortran wrappers of MPI_Finalize.
@@ -159,7 +160,6 @@
     It is used for the Fortran wrappers of MPI_Query_thread.
  */
 #define MPI_Query_thread_L mpi_query_thread
-
 
 /**
  * @name Fortran wrappers

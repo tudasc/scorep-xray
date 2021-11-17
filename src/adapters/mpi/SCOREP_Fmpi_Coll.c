@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Allgather_U
     Exchange MPI_Allgather_U by MPI_ALLGATHER.
     It is used for the Fortran wrappers of MPI_Allgather.
@@ -269,8 +270,8 @@
  */
 #define MPI_Scatterv_U MPI_SCATTERV
 
-
 /* lowercase defines */
+
 /** @def MPI_Allgather_L
     Exchanges MPI_Allgather_L by mpi_allgather.
     It is used for the Fortran wrappers of MPI_Allgather.
@@ -480,7 +481,6 @@
     It is used for the Fortran wrappers of MPI_Scatterv.
  */
 #define MPI_Scatterv_L mpi_scatterv
-
 
 /**
  * @name Fortran wrappers

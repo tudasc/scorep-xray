@@ -1639,6 +1639,7 @@ MPI_Win_create_dynamic( MPI_Info info, MPI_Comm comm, MPI_Win* win )
     return return_val;
 }
 #endif
+
 #if HAVE( DECL_PMPI_WIN_DETACH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_detach ) && defined( SCOREP_MPI_WIN_DETACH_PROTO_ARGS )
 /**
  * Measurement wrapper for MPI_Win_detach
@@ -1691,7 +1692,6 @@ MPI_Win_detach SCOREP_MPI_WIN_DETACH_PROTO_ARGS
     return return_val;
 }
 #endif
-
 
 #if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA )
 /**

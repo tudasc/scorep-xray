@@ -60,6 +60,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Cancel_U
     Exchange MPI_Cancel_U by MPI_CANCEL.
     It is used for the Fortran wrappers of MPI_Cancel.
@@ -144,8 +145,8 @@
  */
 #define MPI_Waitsome_U MPI_WAITSOME
 
-
 /* lowercase defines */
+
 /** @def MPI_Cancel_L
     Exchanges MPI_Cancel_L by mpi_cancel.
     It is used for the Fortran wrappers of MPI_Cancel.
@@ -229,7 +230,6 @@
     It is used for the Fortran wrappers of MPI_Waitsome.
  */
 #define MPI_Waitsome_L mpi_waitsome
-
 
 #ifndef NEED_F2C_CONV
 

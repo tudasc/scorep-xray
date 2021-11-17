@@ -1836,6 +1836,7 @@ MPI_Unpack_external( SCOREP_MPI_CONST_DECL char* datarep, SCOREP_MPI_CONST_DECL 
 }
 #endif
 
+
 #if HAVE( DECL_PMPI_TYPE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hindexed ) && defined( SCOREP_MPI_TYPE_HINDEXED_PROTO_ARGS )
 /**
  * Measurement wrapper for MPI_Type_hindexed
@@ -2108,7 +2109,6 @@ MPI_Type_create_f90_real( int p, int r, MPI_Datatype* newtype )
 }
 #endif
 #endif
-
 
 /**
  * @}

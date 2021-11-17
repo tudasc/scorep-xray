@@ -62,6 +62,7 @@
 #include <UTILS_Error.h>
 
 /* uppercase defines */
+
 /** @def MPI_Pack_U
     Exchange MPI_Pack_U by MPI_PACK.
     It is used for the Fortran wrappers of MPI_Pack.
@@ -340,8 +341,8 @@
 #define MPI_Type_set_name_U MPI_TYPE_SET_NAME
 
 
-
 /* lowercase defines */
+
 /** @def MPI_Pack_L
     Exchanges MPI_Pack_L by mpi_pack.
     It is used for the Fortran wrappers of MPI_Pack.
@@ -618,7 +619,6 @@
     It is used for the Fortran wrappers of MPI_Type_set_name.
  */
 #define MPI_Type_set_name_L mpi_type_set_name
-
 
 
 /**
@@ -1399,6 +1399,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 }
 #endif
 
+
 #if HAVE( MPI_TYPE_CREATE_F90_COMPLEX_COMPLIANT )
 #if HAVE( DECL_PMPI_TYPE_CREATE_F90_COMPLEX ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_complex )
 /**
@@ -1464,7 +1465,6 @@ FSUB( MPI_Type_create_f90_real )( int* p, int* r, MPI_Datatype* newtype, int* ie
 }
 #endif
 #endif
-
 
 /**
  * @}
@@ -2551,6 +2551,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 }
 #endif
 
+
 #if HAVE( MPI_TYPE_CREATE_F90_COMPLEX_COMPLIANT )
 #if HAVE( DECL_PMPI_TYPE_CREATE_F90_COMPLEX ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_complex )
 /**
@@ -2575,6 +2576,7 @@ FSUB( MPI_Type_create_f90_complex )( MPI_Fint* p, MPI_Fint* r, MPI_Fint* newtype
 }
 #endif
 #endif
+
 #if HAVE( MPI_TYPE_CREATE_F90_INTEGER_COMPLIANT )
 #if HAVE( DECL_PMPI_TYPE_CREATE_F90_INTEGER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_integer )
 /**
@@ -2599,6 +2601,7 @@ FSUB( MPI_Type_create_f90_integer )( MPI_Fint* r, MPI_Fint* newtype, MPI_Fint* i
 }
 #endif
 #endif
+
 #if HAVE( MPI_TYPE_CREATE_F90_REAL_COMPLIANT )
 #if HAVE( DECL_PMPI_TYPE_CREATE_F90_REAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_real )
 /**

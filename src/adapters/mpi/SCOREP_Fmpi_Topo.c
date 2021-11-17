@@ -59,6 +59,7 @@
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
+
 /** @def MPI_Cart_coords_U
     Exchange MPI_Cart_coords_U by MPI_CART_COORDS.
     It is used for the Fortran wrappers of MPI_Cart_coords.
@@ -239,8 +240,8 @@
  */
 #define MPI_Topo_test_U MPI_TOPO_TEST
 
-
 /* lowercase defines */
+
 /** @def MPI_Cart_coords_L
     Exchanges MPI_Cart_coords_L by mpi_cart_coords.
     It is used for the Fortran wrappers of MPI_Cart_coords.
@@ -420,7 +421,6 @@
     It is used for the Fortran wrappers of MPI_Topo_test.
  */
 #define MPI_Topo_test_L mpi_topo_test
-
 
 /**
  * @name Fortran wrappers
