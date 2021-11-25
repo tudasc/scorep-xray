@@ -567,21 +567,21 @@
         /* read size again as inserts might have happened in between */ \
         current_size =  SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
         /* move last key-value pair to removed key-value pair's slot, decrement size */ \
-        /* traverse to first element of current chunk */ \
-        for (; j > 0 ; --i, --j ) {} \
-        /* traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
+        /*   go to first element of current chunk */ \
+        i -= j; \
+        /*   traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
         while ( chunk->next != NULL ) \
         { \
             previous_chunk = chunk; \
             chunk          = chunk->next; \
             i             += ( nPairsPerChunk ); \
         } \
-        /* traverse to last used element of last chunk */ \
-        for (; i < current_size; ++i, ++j ) {} \
-        /* move key-value pair, decrement size, release empty chunk to free list */ \
-        *free_key   = chunk->keys[ j - 1 ]; \
-        *free_value = chunk->values[ j - 1 ]; \
-        if ( j == 1 ) /* chunk is now empty */ \
+        /*   go to last used element of last chunk */ \
+        j = current_size - i - 1; \
+        /*   move key-value pair, decrement size, release empty chunk to free list */ \
+        *free_key   = chunk->keys[ j ]; \
+        *free_value = chunk->values[ j ]; \
+        if ( j == 0 ) /* sole pair of last chunk was moved, chunk is now empty */ \
         { \
             if ( previous_chunk == NULL ) \
             { \
