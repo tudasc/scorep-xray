@@ -389,21 +389,6 @@
         *inserted = true; /* i.e. not found */ \
         prefix ## _value_t dummy; \
         return dummy; \
-    } \
-    \
-    static inline bool /* found */ \
-    prefix ## _get( prefix ## _key_t key, \
-                    prefix ## _value_t* value ) \
-    { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
-        bool inserted; \
-        prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
-        if ( !inserted ) \
-        { \
-                *value = ret_val; \
-                return true; \
-        } \
-        return false; \
     }
 
 /* implementation detail, do not use directly */
@@ -442,6 +427,21 @@
         SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
         SCOREP_HASH_TABLE_NEW_CHUNK_MONOTONIC( prefix, nPairsPerChunk ) \
         SCOREP_HASH_TABLE_INSERT_2( prefix ) \
+    } \
+\
+    static inline bool /* found */ \
+    prefix ## _get( prefix ## _key_t key, \
+                    prefix ## _value_t* value ) \
+    { \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        bool inserted; \
+        prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
+        if ( !inserted ) \
+        { \
+            *value = ret_val; \
+            return true; \
+        } \
+        return false; \
     } \
 \
     static inline prefix ## _value_t \
@@ -487,6 +487,23 @@
         SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
         SCOREP_HASH_TABLE_NEW_CHUNK_NON_MONOTONIC( prefix, nPairsPerChunk ) \
         SCOREP_HASH_TABLE_INSERT_2( prefix ) \
+    } \
+\
+    static inline bool /* found */ \
+    prefix ## _get( prefix ## _key_t key, \
+                    prefix ## _value_t* value ) \
+    { \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        bool inserted; \
+        SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
+        prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
+        SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
+        if ( !inserted ) \
+        { \
+            *value = ret_val; \
+            return true; \
+        } \
+        return false; \
     } \
 \
     static inline prefix ## _value_t \
