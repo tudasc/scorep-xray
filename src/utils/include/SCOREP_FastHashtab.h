@@ -342,7 +342,7 @@
 
 
 /* implementation detail, do not use directly */
-#define HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+#define SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     struct prefix ## _chunk_t \
     { \
@@ -425,7 +425,7 @@
  */
 #define SCOREP_HASH_TABLE_MONOTONIC( prefix, nPairsPerChunk, hashTableSize ) \
     SCOREP_HASH_TABLE_MONOTONIC_BUCKET( prefix ) \
-    HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     /* implementation detail, do not use directly */ \
     static inline prefix ## _value_t \
@@ -470,7 +470,7 @@
     static struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
     static SCOREP_Mutex               prefix ## _chunk_free_list_lock; \
     SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix ) \
-    HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     /* implementation detail, do not use directly */ \
     static inline prefix ## _value_t \
