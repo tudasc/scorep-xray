@@ -12,6 +12,7 @@
 
 #include <SCOREP_Atomic.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_ReaderWriterLock.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -201,7 +202,10 @@
         SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size; \
         SCOREP_Mutex                                    insert_lock; \
         SCOREP_Mutex                                    remove_lock; \
-        uint16_t                                        n_concurrent_readers; \
+        int16_t                                         pending; \
+        int16_t                                         departing; \
+        int16_t                                         release_n_readers; \
+        int16_t                                         release_writer; \
         prefix ## _chunk_t*                             chunk; \
     };
 
@@ -491,14 +495,9 @@
                                bool* inserted ) \
     { \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
-        /* wait for remove operation to finish */ \
-        SCOREP_MutexWait( &( bucket->remove_lock ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-        /* increase number of readers */ \
-        SCOREP_Atomic_FetchAdd_uint16( &( bucket->n_concurrent_readers ), 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-        /* get and insert */ \
+        SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
         prefix ## _value_t value = prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
-        /* decrease number of readers */ \
-        SCOREP_Atomic_FetchSub_uint16( &( bucket->n_concurrent_readers ), 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
         return value; \
     } \
 \
@@ -523,50 +522,39 @@
         /* search and remove, if found, reduce bucket->size, call <prefix>_value_dtor if found */ \
         uint32_t i                         = 0; \
         uint32_t j                         = 0; \
-        uint32_t current_size              =  SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-        prefix ## _chunk_t* chunk          = bucket->chunk; \
         prefix ## _chunk_t* previous_chunk = NULL; \
         bool found                         = false; \
-        uint32_t            old_size; \
         prefix ## _key_t*   free_key; \
         prefix ## _value_t* free_value; \
+        SCOREP_RWLock_WriterLock( &( bucket->remove_lock ), &( bucket->pending ), \
+                                  &( bucket->departing ), &( bucket->release_writer ) ); \
+        uint32_t current_size     = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        prefix ## _chunk_t* chunk = bucket->chunk; \
         /* search until end of chunks */ \
-        do \
+        for (; i < current_size; ++i, ++j ) \
         { \
-            for (; i < current_size; ++i, ++j ) \
+            if ( j == ( nPairsPerChunk ) ) \
             { \
-                if ( j == ( nPairsPerChunk ) ) \
-                { \
-                    previous_chunk = chunk; \
-                    chunk          = chunk->next; \
-                    j              = 0; \
-                } \
-                if ( prefix ## _equals( key, chunk->keys[ j ] ) ) \
-                { \
-                    prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
-                    free_key   = &( chunk->keys[ j ] ); \
-                    free_value = &( chunk->values[ j ] ); \
-                    found      = true; \
-                    break; \
-                } \
+                previous_chunk = chunk; \
+                chunk          = chunk->next; \
+                j              = 0; \
             } \
-            if ( found ) \
+            if ( prefix ## _equals( key, chunk->keys[ j ] ) ) \
             { \
+                prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                free_key   = &( chunk->keys[ j ] ); \
+                free_value = &( chunk->values[ j ] ); \
+                found      = true; \
                 break; \
             } \
-            old_size = current_size; \
         } \
-        while ( ( current_size = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ) ) > old_size ); \
         if ( !found ) \
         { \
+            SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
+                                        &( bucket->release_n_readers ) );  \
             return false; \
         } \
-        SCOREP_MutexLock( &( bucket->remove_lock ) ); \
-        /* 'remove_lock' acquired: wait for get_and_insert operations to finish */ \
-        while ( SCOREP_Atomic_LoadN_uint16( &( bucket->n_concurrent_readers ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ) > 0 ) { SCOREP_CPU_RELAX; } \
-        /* read size again as inserts might have happened in between */ \
-        current_size =  SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-        /* move last key-value pair to removed key-value pair's slot, decrement size */ \
+        /* move last key-value pair to removed key-value pair's slot, decrement size: */ \
         /*   go to first element of current chunk */ \
         i -= j; \
         /*   traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
@@ -597,9 +585,9 @@
             prefix ## _chunk_free_list = chunk; \
             SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
         } \
-        SCOREP_Atomic_StoreN_uint32( &( bucket->size ), current_size - 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-        /* unlock */ \
-        SCOREP_MutexUnlock( &( bucket->remove_lock ) ); \
+        SCOREP_Atomic_StoreN_uint32( &( bucket->size ), --current_size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
+                                    &( bucket->release_n_readers ) ); \
         return true; \
     }
 
