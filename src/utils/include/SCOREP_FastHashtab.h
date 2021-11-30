@@ -39,8 +39,8 @@
    In addition the user needs to provide helper functions and
    typedefs. Care was taken to minimize locking: an arbitrary number
    of 'getters' can run concurrently, even if an insert operation
-   takes place. Remove operations block getters and inserters only
-   during table modification, but not during the search.
+   takes place. Remove operations block until pending getters and
+   inserters have finished.
 
    The monotonic version has no remove operation.
 
@@ -59,8 +59,9 @@
    is called. If an item wasn't found, it will be inserted utilizing
    the the user-provided function <prefix>_value_ctor() and
    potentially the user-provided <prefix>_allocate_chunk().
-   The provided remove operation <prefix>_remove() calls the
-   user-provided <prefix>_value_dtor() if the key was found.
+   The provided remove operations <prefix>_remove() and
+   <prefix>_remove_if() call the user-provided <prefix>_value_dtor()
+   if a key-value pair is to be removed.
 
    A template instantiation provides the functions
    <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks() that
@@ -154,8 +155,8 @@
    SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
    ------------------------------------------------------------------------
 
-   Similar to SCOREP_HASH_TABLE_MONOTONIC, but in addition, provide a
-   remove operation.  The remove operation will wait for
+   Similar to SCOREP_HASH_TABLE_MONOTONIC, but in addition, provides
+   remove operations.  The remove operations will wait for
    get_and_insert operations to finish. When removal takes place, new
    get_and_insert operations will wait until removal is complete. When
    a remove operation leads to an empty chunk, store this chunk in a
@@ -169,6 +170,20 @@
    // <prefix>_value_dtor(). If key is found, return true.
    static inline bool
    <prefix>_remove( <prefix>_key_t key );
+
+   // A function of following type needs to be provided to
+   // <prefix>_remove_if().
+   typedef bool ( *<prefix>_condition_t )( <prefix>_key_t,
+                                           <prefix>_value_t,
+                                           void* data );
+
+   // <prefix>_remove_if() will iterate over the entire hash table and
+   // call @a condition() for every key-value pair, providing @a data
+   // as third parameter. If condition() returns true, the
+   // corresponding key-value pair is removed and
+   // <prefix>_value_dtor() is called.
+   static inline void
+   <prefix>_remove_if( <prefix>_condition_t condition, void* data );
 
    In addition to the functions and types required for
    SCOREP_HASH_TABLE_MONOTONIC, the following needs to be provided
@@ -461,6 +476,41 @@
     }
 
 
+/* implementation detail, do not use directly */
+#define SCOREP_HASH_TABLE_MOVE_LAST_TO_REMOVED( prefix, nPairsPerChunk ) \
+    /* move last key-value pair to removed key-value pair's slot, decrement size: */ \
+    /*   go to first element of current chunk */ \
+    i -= j; \
+    /*   traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
+    while ( chunk->next != NULL ) \
+    { \
+        previous_chunk = chunk; \
+        chunk          = chunk->next; \
+        i             += ( nPairsPerChunk ); \
+    } \
+    /*   go to last used element of last chunk */ \
+    j = current_size - i - 1; \
+    /*   move key-value pair, decrement size, release empty chunk to free list */ \
+    *free_key   = chunk->keys[ j ]; \
+    *free_value = chunk->values[ j ]; \
+    if ( j == 0 ) /* sole pair of last chunk was moved, chunk is now empty */ \
+    { \
+        if ( previous_chunk == NULL ) \
+        { \
+            bucket->chunk = NULL; \
+        } \
+        else \
+        { \
+            previous_chunk->next = NULL; \
+        } \
+        /* lock chunk_free_list as it is per hash table, not per bucket */ \
+        SCOREP_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+        chunk->next = prefix ## _chunk_free_list; \
+        prefix ## _chunk_free_list = chunk; \
+        SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+    } \
+    SCOREP_Atomic_StoreN_uint32( &( bucket->size ), --current_size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+
 /*
    SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
    see documentation above
@@ -558,6 +608,7 @@
             } \
             if ( prefix ## _equals( key, chunk->keys[ j ] ) ) \
             { \
+                /* release element */ \
                 prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
                 free_key   = &( chunk->keys[ j ] ); \
                 free_value = &( chunk->values[ j ] ); \
@@ -571,41 +622,51 @@
                                         &( bucket->release_n_readers ) );  \
             return false; \
         } \
-        /* move last key-value pair to removed key-value pair's slot, decrement size: */ \
-        /*   go to first element of current chunk */ \
-        i -= j; \
-        /*   traverse to last chunk; by then, (i,j=0) refers to the first element of the last chunk. */ \
-        while ( chunk->next != NULL ) \
-        { \
-            previous_chunk = chunk; \
-            chunk          = chunk->next; \
-            i             += ( nPairsPerChunk ); \
-        } \
-        /*   go to last used element of last chunk */ \
-        j = current_size - i - 1; \
-        /*   move key-value pair, decrement size, release empty chunk to free list */ \
-        *free_key   = chunk->keys[ j ]; \
-        *free_value = chunk->values[ j ]; \
-        if ( j == 0 ) /* sole pair of last chunk was moved, chunk is now empty */ \
-        { \
-            if ( previous_chunk == NULL ) \
-            { \
-                bucket->chunk = NULL; \
-            } \
-            else \
-            { \
-                previous_chunk->next = NULL; \
-            } \
-            /* lock chunk_free_list as it is per hash table, not per bucket */ \
-            SCOREP_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
-            chunk->next = prefix ## _chunk_free_list; \
-            prefix ## _chunk_free_list = chunk; \
-            SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
-        } \
-        SCOREP_Atomic_StoreN_uint32( &( bucket->size ), --current_size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        SCOREP_HASH_TABLE_MOVE_LAST_TO_REMOVED( prefix, nPairsPerChunk ) \
         SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
                                     &( bucket->release_n_readers ) ); \
         return true; \
+    } \
+\
+    typedef bool ( *prefix ## _condition_t )( prefix ## _key_t, prefix ## _value_t, void* data ); \
+\
+    static inline void \
+    prefix ## _remove_if( prefix ## _condition_t condition, void* data ) \
+    { \
+        for ( uint32_t b = 0; b < ( hashTableSize ); ++b ) \
+        { \
+            prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ b ] ); \
+            SCOREP_RWLock_WriterLock( &( bucket->remove_lock ), &( bucket->pending ), \
+                                      &( bucket->departing ), &( bucket->release_writer ) ); \
+            prefix ## _chunk_t* outer_chunk = bucket->chunk; \
+            int32_t outer_i                 = 0; \
+            uint32_t current_size           = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+            while ( outer_chunk != NULL ) \
+            { \
+                for ( int32_t outer_j = 0; outer_i < current_size && outer_j < ( nPairsPerChunk ); ++outer_i, ++outer_j ) \
+                { \
+                    if ( condition( outer_chunk->keys[ outer_j ], outer_chunk->values[ outer_j ], data ) ) \
+                    { \
+                        uint32_t i = outer_i; \
+                        uint32_t j = outer_j; \
+                        prefix ## _chunk_t* chunk = outer_chunk; \
+                        prefix ## _key_t*   free_key; \
+                        prefix ## _value_t* free_value; \
+                        prefix ## _chunk_t* previous_chunk = NULL; \
+                        /* release element */ \
+                        prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                        free_key   = &( chunk->keys[ j ] ); \
+                        free_value = &( chunk->values[ j ] ); \
+                        SCOREP_HASH_TABLE_MOVE_LAST_TO_REMOVED( prefix, nPairsPerChunk ) \
+                        --outer_i; \
+                        --outer_j; \
+                    } \
+                } \
+                outer_chunk = outer_chunk->next; \
+            } \
+            SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
+                                        &( bucket->release_n_readers ) ); \
+        } \
     }
 
 /* *INDENT-ON*  */
