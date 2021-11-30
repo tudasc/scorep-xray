@@ -305,11 +305,11 @@ private:
     SCOREP_Score_FilterState m_filter;
 
     /**
-     * Formats the group name to a clean name according to the unix filename
+     * Formats a name string to a clean name according to the unix filename
      * pattern matching based on fnmatch.
      */
     std::string
-    cleanName();
+    cleanName( const std::string& name );
 };
 
 #endif // SCOREP_SCORE_GROUP_HPP
