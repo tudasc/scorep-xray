@@ -27,6 +27,7 @@
 #include <UTILS_Debug.h>
 
 #include "scorep_hip.h"
+#include "scorep_hip_callbacks.h"
 
 #include "scorep_hip_confvars.inc.c"
 
@@ -58,23 +59,27 @@ subsystem_register( size_t subsystemId )
 static SCOREP_ErrorCode
 subsystem_init( void )
 {
+    scorep_hip_callbacks_init();
     return SCOREP_SUCCESS;
 }
 
 static SCOREP_ErrorCode
 subsystem_begin( void )
 {
+    scorep_hip_callbacks_enable();
     return SCOREP_SUCCESS;
 }
 
 static void
 subsystem_end( void )
 {
+    scorep_hip_callbacks_disable();
 }
 
 static void
 subsystem_finalize( void )
 {
+    scorep_hip_callbacks_finalize();
 }
 
 static SCOREP_ErrorCode

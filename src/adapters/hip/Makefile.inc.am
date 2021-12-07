@@ -22,7 +22,9 @@ lib_LTLIBRARIES += libscorep_adapter_hip_mgmt.la
 libscorep_adapter_hip_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/hip/scorep_hip.h \
     $(SRC_ROOT)src/adapters/hip/scorep_hip_init.c \
-    $(SRC_ROOT)src/adapters/hip/scorep_hip_init.h
+    $(SRC_ROOT)src/adapters/hip/scorep_hip_init.h \
+    $(SRC_ROOT)src/adapters/hip/scorep_hip_callbacks.c \
+    $(SRC_ROOT)src/adapters/hip/scorep_hip_callbacks.h
 
 libscorep_adapter_hip_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
