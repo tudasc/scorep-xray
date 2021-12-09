@@ -298,6 +298,7 @@ UTILS_IO_JoinPath( int nPaths, ... )
         const char* path = va_arg( paths, const char* );
         if ( !path )
         {
+            va_end( paths );
             return NULL;
         }
 
