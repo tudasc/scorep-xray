@@ -217,7 +217,7 @@ static const SCOREP_ConfigVariable scorep_profile_confvars[] = {
         SCOREP_CONFIG_TYPE_NUMBER,
         &scorep_profile_max_callpath_depth,
         NULL,
-        "30",
+        "100",
         "Maximum depth of the calltree",
         ""
     },

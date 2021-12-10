@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2018, 2020,
+ * Copyright (c) 2009-2018, 2020-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -71,6 +71,7 @@
 #include <scorep_profile_io.h>
 
 #include <string.h>
+#include <inttypes.h>
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -1324,6 +1325,12 @@ parameter_uint64( SCOREP_Location*       thread,
 
     if ( location->current_depth >= scorep_profile.max_callpath_depth )
     {
+        UTILS_WARNING( "Parameter couldn't be set because the Score-P callpath depth limitation of %" PRIu64 " was exceeded.\n"
+                       "Reached callpath depth was %" PRIu64 ".\n"
+                       "Consider setting SCOREP_PROFILING_MAX_CALLPATH_DEPTH to %" PRIu64 ".\n",
+                       scorep_profile.max_callpath_depth,
+                       scorep_profile.reached_depth,
+                       scorep_profile.reached_depth );
         return;
     }
     location->current_depth++;
