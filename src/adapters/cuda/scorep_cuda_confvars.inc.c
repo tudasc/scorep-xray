@@ -144,7 +144,7 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         SCOREP_CONFIG_TYPE_BITSET, /* type */
         &scorep_cuda_features,     /* pointer to target variable */
         ( void* )cuda_enable_groups,
-        "no",                      /* default value */
+        "yes",                     /* default value */
         "CUDA measurement features",
         "SCOREP_CUDA_ENABLE sets the CUDA measurement mode to capture.\n\n"
         "Notes:\n"
