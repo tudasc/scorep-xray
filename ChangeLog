@@ -10,6 +10,10 @@ User tools and API improvements and changes:
 
 - Support for the online access interface was removed.
 - Support for NEC and Sun compilers was removed.
+- Improvement of `SCOREP_CUDA_ENABLE` options to include implicit
+  dependencies and define a default in line with the overall
+  measurement strategy of Score-P. Check `scorep-info` for more
+  information.
 
 Compatibility:
 
