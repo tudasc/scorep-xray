@@ -101,7 +101,7 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
     {
         "references",
         SCOREP_CUDA_FEATURE_REFERENCES,
-        "Record references between CUDA activities"
+        "Record references between CUDA activities (tracing only)"
     },
     {
         "dontflushatexit",
@@ -146,7 +146,13 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         ( void* )cuda_enable_groups,
         "no",                      /* default value */
         "CUDA measurement features",
-        "Sets the CUDA measurement mode to capture:"
+        "SCOREP_CUDA_ENABLE sets the CUDA measurement mode to capture.\n\n"
+        "Notes:\n"
+        "\240-\240Options required by other options will be included automatically.\n"
+        "\240-\240idle and pure idle are mutually exclusive.\n"
+        "\240-\240The tag (tracing only) indicates that profiling will not yield additional\n"
+        "\240\240\240data from this option.\n\n"
+        "The following options or sets are available:\n"
     },
     {
         "buffer",
