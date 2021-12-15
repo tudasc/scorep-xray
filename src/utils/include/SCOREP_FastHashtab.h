@@ -112,7 +112,7 @@
    // indicates if the a new key-values pair was inserted.
    static inline <prefix>_value_t
    <prefix>_get_and_insert( <prefix>_key_t key,
-                            const void* ctorData,
+                            void* ctorData,
                             bool* inserted );
 
    // <prefix>_iterate_key_value_pairs() will iterate over the entire
@@ -436,7 +436,7 @@
     /* implementation detail, do not use directly */ \
     static inline prefix ## _value_t \
     prefix ## _get_and_insert_impl( prefix ## _key_t key, \
-                                    const void* ctorData, \
+                                    void* ctorData, \
                                     bool* inserted, \
                                     prefix ## _bucket_t* bucket ) \
     { \
@@ -465,7 +465,7 @@
 \
     static inline prefix ## _value_t \
     prefix ## _get_and_insert( prefix ## _key_t key, \
-                               const void* ctorData, \
+                               void* ctorData, \
                                bool* inserted ) \
     { \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
@@ -535,7 +535,7 @@
     /* implementation detail, do not use directly */ \
     static inline prefix ## _value_t \
     prefix ## _get_and_insert_impl( prefix ## _key_t key, \
-                                    const void* ctorData, \
+                                    void* ctorData, \
                                     bool* inserted, \
                                     prefix ## _bucket_t* bucket ) \
     { \
@@ -566,7 +566,7 @@
 \
     static inline prefix ## _value_t \
     prefix ## _get_and_insert( prefix ## _key_t key, \
-                               const void* ctorData, \
+                               void* ctorData, \
                                bool* inserted ) \
     { \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
