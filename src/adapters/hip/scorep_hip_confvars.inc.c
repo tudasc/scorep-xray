@@ -31,6 +31,11 @@ static const SCOREP_ConfigType_SetEntry hip_enable_groups[] =
         "All HIP API calls"
     },
     {
+        "kernels",
+        SCOREP_HIP_FEATURE_KERNELS,
+        "HIP kernels"
+    },
+    {
         "default/yes/1/true",
         SCOREP_HIP_FEATURES_DEFAULT,
         "HIP tracing"

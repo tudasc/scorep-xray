@@ -25,9 +25,11 @@
 /*
  * HIP features (to be enabled/disabled via environment variables)
  */
-#define SCOREP_HIP_FEATURE_API ( 1 << 0 )
+#define SCOREP_HIP_FEATURE_API     ( 1 << 0 )
+#define SCOREP_HIP_FEATURE_KERNELS ( 1 << 1 )
 #define SCOREP_HIP_FEATURES_DEFAULT \
-    ( SCOREP_HIP_FEATURE_API )
+    ( SCOREP_HIP_FEATURE_API | \
+      SCOREP_HIP_FEATURE_KERNELS )
 
 
 /*

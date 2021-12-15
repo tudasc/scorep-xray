@@ -28,6 +28,7 @@
 #include <SCOREP_Filtering.h>
 #include <SCOREP_AcceleratorManagement.h>
 #include <SCOREP_FastHashtab.h>
+#include <SCOREP_Demangle.h>
 
 #include <scorep_system_tree.h>
 
@@ -603,6 +604,103 @@ get_stream( uint64_t streamId )
     return stream;
 }
 
+/************************** HIP kernel table **********************************/
+
+typedef struct
+{
+    uint32_t    hash_value;
+    const char* string_value;
+} kernel_table_key_t;
+typedef SCOREP_RegionHandle kernel_table_value_t;
+
+#define KERNEL_TABLE_HASH_EXPONENT 8
+
+static inline uint32_t
+kernel_table_bucket_idx( kernel_table_key_t key )
+{
+    return key.hash_value & hashmask( KERNEL_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+kernel_table_equals( kernel_table_key_t key1,
+                     kernel_table_key_t key2 )
+{
+    return key1.hash_value == key2.hash_value && strcmp( key1.string_value, key2.string_value ) == 0;
+}
+
+static inline void*
+kernel_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+kernel_table_free_chunk( void* chunk )
+{
+}
+
+static inline const char*
+demangle( char const** mangled )
+{
+    const char* demangled = SCOREP_Demangle( *mangled, SCOREP_DEMANGLE_DEFAULT );
+    if ( !demangled )
+    {
+        demangled = *mangled;
+        *mangled  = NULL;
+    }
+
+    return demangled;
+}
+
+static inline kernel_table_value_t
+kernel_table_value_ctor( kernel_table_key_t* key,
+                         void*               ctorData )
+{
+    const char*         kernel_name_mangled   = key->string_value;
+    const char*         kernel_name_demangled = demangle( &kernel_name_mangled );
+    SCOREP_RegionHandle new_region            = SCOREP_Definitions_NewRegion( kernel_name_demangled,
+                                                                              kernel_name_mangled,
+                                                                              hip_file_handle,
+                                                                              0, 0,
+                                                                              SCOREP_PARADIGM_HIP,
+                                                                              SCOREP_REGION_FUNCTION );
+
+    SCOREP_RegionHandle_SetGroup( new_region, "HIP_KERNEL" );
+
+    if ( kernel_name_mangled )
+    {
+        free( ( char* )kernel_name_demangled );
+    }
+
+    /* the mangled named is the key */
+    key->string_value = SCOREP_RegionHandle_GetCanonicalName( new_region );
+
+    return new_region;
+}
+
+/* nPairsPerChunk: 16+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( kernel_table,
+                             6,
+                             hashsize( KERNEL_TABLE_HASH_EXPONENT ) );
+
+static SCOREP_RegionHandle
+get_kernel_region_by_name( const char* kernelName )
+{
+    size_t             kernel_name_length = strlen( kernelName );
+    kernel_table_key_t key                = {
+        .hash_value   = jenkins_hash( kernelName, kernel_name_length, 0 ),
+        .string_value = kernelName
+    };
+
+    SCOREP_RegionHandle new_region = SCOREP_INVALID_REGION;
+    if ( kernel_table_get_and_insert( key, NULL, &new_region ) )
+    {
+        UTILS_DEBUG( "Added region for %s", kernelName );
+    }
+
+    return new_region;
+}
+
 // Runtime API callback function
 static void
 api_region_enter( uint32_t          cid,
@@ -734,6 +832,65 @@ stream_cb( uint32_t    domain,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static void
+kernel_cb( uint32_t    domain,
+           uint32_t    cid,
+           const void* callbackData,
+           void*       arg )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    // Early exit if we're already in measurement
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( domain != ACTIVITY_DOMAIN_HIP_API, "Only HIP domain handled." );
+
+    const hip_api_data_t* data = ( const hip_api_data_t* )callbackData;
+
+    if ( data->phase == ACTIVITY_API_PHASE_ENTER )
+    {
+        api_region_enter( cid, SCOREP_REGION_WRAPPER, "HIP_API", false );
+    }
+
+    // Only store the correlation record on exit
+    if ( data->phase == ACTIVITY_API_PHASE_EXIT )
+    {
+        const char* kernel_name = NULL;
+        uint64_t    stream      = 0;
+        switch ( cid )
+        {
+            case HIP_API_ID_hipModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
+                stream      = ( uint64_t )( data->args.hipModuleLaunchKernel.stream );
+                break;
+            case HIP_API_ID_hipExtModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
+                stream      = ( uint64_t )( data->args.hipExtModuleLaunchKernel.hStream );
+                break;
+            case HIP_API_ID_hipHccModuleLaunchKernel:
+                kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
+                stream      = ( uint64_t )( data->args.hipHccModuleLaunchKernel.hStream );
+                break;
+            case HIP_API_ID_hipLaunchKernel:
+                kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
+                                                     data->args.hipLaunchKernel.stream );
+                stream = ( uint64_t )data->args.hipLaunchKernel.stream;
+                break;
+            default:
+                UTILS_BUG( "Unhandled kernel call" );
+                break;
+        }
+        SCOREP_RegionHandle kernel_region = get_kernel_region_by_name( kernel_name );
+
+        api_region_exit( cid );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 // Init tracing routine
 void
 scorep_hip_callbacks_init( void )
@@ -774,6 +931,21 @@ scorep_hip_callbacks_enable( void )
     }
 
     bool need_stream_api_tracing = false;
+
+    /* Kernel launches. */
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNELS )
+    {
+        need_stream_api_tracing = true;
+
+        ENABLE_TRACING( hipModuleLaunchKernel, kernel_cb );
+        ENABLE_TRACING( hipExtModuleLaunchKernel, kernel_cb );
+        ENABLE_TRACING( hipHccModuleLaunchKernel, kernel_cb );
+        ENABLE_TRACING( hipLaunchKernel, kernel_cb );
+        /* calls hipModuleLaunchKernel through public API, so we get this traced
+         * with actual meaningful args that way */
+        /* ENABLE_TRACING( hipLaunchByPtr, kernel_cb ); */
+    }
+
     if ( need_stream_api_tracing )
     {
         /* Should all our static setup move here? In principle sure but

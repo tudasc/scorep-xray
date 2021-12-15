@@ -39,10 +39,12 @@ libscorep_adapter_hip_mgmt_la_CPPFLAGS = \
     $(HIP_CPPFLAGS)
 
 libscorep_adapter_hip_mgmt_la_LIBADD = \
+    $(SCOREP_LIBBFD_LIBS) \
     $(HIP_LIBS)
 
 libscorep_adapter_hip_mgmt_la_LDFLAGS = \
     $(library_api_version_ldflags) \
+    $(SCOREP_LIBBFD_LDFLAGS) \
     $(HIP_LDFLAGS)
 
 if HAVE_ROCM_SMI_SUPPORT
