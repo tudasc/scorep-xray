@@ -701,6 +701,130 @@ get_kernel_region_by_name( const char* kernelName )
     return new_region;
 }
 
+/************************** HIP correlations **********************************/
+
+typedef struct
+{
+    SCOREP_Location* host_origin_location;
+    uint32_t         cid;
+    union
+    {
+        struct
+        {
+            scorep_hip_stream*  stream;
+            SCOREP_RegionHandle kernel_region;
+        } launch;
+    } payload;
+} correlation_entry;
+
+typedef uint64_t           correlation_table_key_t;
+typedef correlation_entry* correlation_table_value_t;
+
+#define CORRELATION_TABLE_HASH_EXPONENT 10
+
+typedef struct free_list_entry
+{
+    struct free_list_entry* next;
+} free_list_entry;
+static free_list_entry* correlation_entry_free_list;
+static UTILS_Mutex      correlation_entry_free_list_mutex;
+
+static inline uint32_t
+correlation_table_bucket_idx( correlation_table_key_t key )
+{
+    uint32_t hashvalue = jenkins_hash( &key, sizeof( key ), 0 );
+
+    return hashvalue & hashmask( CORRELATION_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+correlation_table_equals( correlation_table_key_t key1,
+                          correlation_table_key_t key2 )
+{
+    return key1 == key2;
+}
+
+static inline void*
+correlation_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+correlation_table_free_chunk( void* chunk )
+{
+}
+
+static inline correlation_table_value_t
+correlation_table_value_ctor( correlation_table_key_t* key,
+                              void*                    ctorData )
+{
+    UTILS_MutexLock( &correlation_entry_free_list_mutex );
+
+    correlation_entry* correlation = ( correlation_entry* )correlation_entry_free_list;
+    if ( correlation )
+    {
+        correlation_entry_free_list = correlation_entry_free_list->next;
+    }
+    else
+    {
+        correlation = SCOREP_Memory_AllocForMisc( sizeof( *correlation ) );
+    }
+
+    UTILS_MutexUnlock( &correlation_entry_free_list_mutex );
+
+    memset( correlation, 0, sizeof( *correlation ) );
+
+    return correlation;
+}
+
+static inline void
+correlation_table_value_dtor( correlation_table_key_t   key,
+                              correlation_table_value_t value )
+{
+    free_list_entry* unused_object = ( free_list_entry* )value;
+
+    UTILS_MutexLock( &correlation_entry_free_list_mutex );
+
+    unused_object->next         = correlation_entry_free_list;
+    correlation_entry_free_list = unused_object;
+
+    UTILS_MutexUnlock( &correlation_entry_free_list_mutex );
+}
+
+/* nPairsPerChunk: 8+8 bytes per pair, 8 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_NON_MONOTONIC( correlation_table,
+                                 7,
+                                 hashsize( CORRELATION_TABLE_HASH_EXPONENT ) );
+
+static correlation_entry*
+get_correlation_entry( uint64_t correlationId )
+{
+    correlation_entry* correlation;
+    if ( !correlation_table_get( correlationId, &correlation ) )
+    {
+        return NULL;
+    }
+
+    return correlation;
+}
+
+static correlation_entry*
+create_correlation_entry( uint64_t correlationId,
+                          uint32_t cid )
+{
+    correlation_entry* correlation = NULL;
+    if ( !correlation_table_get_and_insert( correlationId, NULL, &correlation ) )
+    {
+        UTILS_WARNING( "Duplicate correlation entry for ID %" PRIu64, correlationId );
+    }
+
+    correlation->host_origin_location = SCOREP_Location_GetCurrentCPULocation();
+    correlation->cid                  = cid;
+
+    return correlation;
+}
+
 // Runtime API callback function
 static void
 api_region_enter( uint32_t          cid,
@@ -883,7 +1007,9 @@ kernel_cb( uint32_t    domain,
                 UTILS_BUG( "Unhandled kernel call" );
                 break;
         }
-        SCOREP_RegionHandle kernel_region = get_kernel_region_by_name( kernel_name );
+        correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
+        e->payload.launch.stream        = get_stream( stream );
+        e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
 
         api_region_exit( cid );
     }
@@ -962,10 +1088,23 @@ scorep_hip_callbacks_enable( void )
     }
 }
 
+#if HAVE( UTILS_DEBUG )
+static void
+print_orphan( correlation_table_key_t   k,
+              correlation_table_value_t v,
+              void*                     unused )
+{
+    UTILS_DEBUG( "correlation id %d", v->cid );
+}
+#endif
+
 // Stop tracing routine
 void
 scorep_hip_callbacks_disable( void )
 {
     SCOREP_ROCTRACER_CALL( roctracer_disable_domain_callback( ACTIVITY_DOMAIN_HIP_API ) );
     UTILS_DEBUG( "############################## Stop HIP tracing" );
+#if HAVE( UTILS_DEBUG )
+    correlation_table_iterate_key_value_pairs( &print_orphan, NULL );
+#endif
 }
