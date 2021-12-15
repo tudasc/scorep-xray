@@ -192,7 +192,7 @@ SCOREP_Score_Group::print( double                   totalTime,
              << " " << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
              << " " << setw( widths.m_time_per_visit ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
              << left
-             << "  " << getDisplayName() << endl;
+             << "  " << cleanName( getDisplayName() ) << endl;
     }
 }
 
@@ -207,9 +207,9 @@ SCOREP_Score_Group::getDisplayName()
 }
 
 std::string
-SCOREP_Score_Group::cleanName()
+SCOREP_Score_Group::cleanName( const std::string& name )
 {
-    std::string temp = m_mangled_name;
+    std::string temp = name;
     // make the name string fit our regex semantic, in particular for C++
     std::replace( temp.begin(), temp.end(), ' ', '?' );
     std::replace( temp.begin(), temp.end(), ']', '?' );
@@ -240,7 +240,7 @@ SCOREP_Score_Group::getFilterCandidate( uint64_t                 maxBuffer,
              && ( ( filterUSR && m_type == SCOREP_SCORE_TYPE_USR ) ||
                   ( filterCOM && m_type == SCOREP_SCORE_TYPE_COM ) ) ) )
     {
-        string clean_name = cleanName();
+        string clean_name = cleanName( m_mangled_name );
 
         std::ostringstream temp;
         temp.setf( ios::fixed, ios::floatfield );
@@ -267,7 +267,7 @@ SCOREP_Score_Group::getPreviouslyFiltered()
     {
         return "    # name='" + m_name + "'\n"
                + "    # file='" + m_file_name + "'\n"
-               + "    MANGLED " + cleanName() + "\n\n";
+               + "    MANGLED " + cleanName( m_mangled_name ) + "\n\n";
     }
     return "";
 }
