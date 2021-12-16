@@ -319,11 +319,12 @@ delete_memory_allocation( SCOREP_AllocMetric* allocMetric,
 static uint64_t process_allocated_memory;
 
 SCOREP_ErrorCode
-SCOREP_AllocMetric_New( const char*          name,
-                        SCOREP_AllocMetric** allocMetric )
+SCOREP_AllocMetric_NewScoped( const char*                name,
+                              SCOREP_LocationGroupHandle scope,
+                              SCOREP_AllocMetric**       allocMetric )
 {
-    *allocMetric = SCOREP_Memory_AllocForMisc( sizeof( **allocMetric ) );
-    memset( *allocMetric, 0, sizeof( **allocMetric ) );
+    SCOREP_AllocMetric* alloc_metric = SCOREP_Memory_AllocForMisc( sizeof( *alloc_metric ) );
+    memset( alloc_metric, 0, sizeof( *alloc_metric ) );
 
     SCOREP_MetricHandle metric_handle =
         SCOREP_Definitions_NewMetric( name,
@@ -345,14 +346,23 @@ SCOREP_AllocMetric_New( const char*          name,
 
     SCOREP_Location* per_process_metric_location =
         SCOREP_Location_AcquirePerProcessMetricsLocation( NULL );
-    ( *allocMetric )->sampling_set =
+    alloc_metric->sampling_set =
         SCOREP_Definitions_NewScopedSamplingSet( sampling_set_handle,
                                                  SCOREP_Location_GetLocationHandle( per_process_metric_location ),
                                                  SCOREP_METRIC_SCOPE_LOCATION_GROUP,
-                                                 SCOREP_GetProcessLocationGroup() );
+                                                 scope );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
 
+    *allocMetric = alloc_metric;
+
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+SCOREP_AllocMetric_New( const char*          name,
+                        SCOREP_AllocMetric** allocMetric )
+{
+    return SCOREP_AllocMetric_NewScoped( name, SCOREP_GetProcessLocationGroup(), allocMetric );
 }
 
 
