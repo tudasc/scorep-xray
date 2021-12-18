@@ -106,10 +106,13 @@
    // the table-bucket used in searching key. If @a key is not already
    // in the table, which is checked using the function
    // <prefix>_equals(), a new key-value pair will be added where the
-   // value is provided by the function <prefix>_value_ctor(), using
-   // @a ctorData.  If the table needs to allocate new internal data
-   // during insert, it calls <prefix>_allocate_chunk(). @a inserted
-   // indicates if the a new key-values pair was inserted.
+   // value is provided by the function <prefix>_value_ctor(), passing
+   // a reference to the final key storage and using @a ctorData.
+   // Note that the new key value needs to be identicial to @a key in
+   // terms of <prefix>_equals( key, internal-key-storage ).
+   // If the table needs to allocate new internal data during insert,
+   // it calls <prefix>_allocate_chunk(). @a inserted indicates if the
+   // a new key-values pair was inserted.
    static inline <prefix>_value_t
    <prefix>_get_and_insert( <prefix>_key_t key,
                             void* ctorData,
@@ -148,7 +151,7 @@
    uint32_t <prefix>_bucket_idx( <prefix>_key_t key ); // consider inlining
    bool <prefix>_equals( <prefix>_key_t key1, <prefix>_key_t key2 ); // consider inlining
    void* <prefix>_allocate_chunk( size_t chunkSize ); // consider cacheline-size alignment
-   <prefix>_value_t <prefix>_value_ctor( <prefix>_key_t key, void* ctorData );
+   <prefix>_value_t <prefix>_value_ctor( <prefix>_key_t* key, void* ctorData );
    void <prefix>_iterate_key_value_pair( <prefix>_key_t key, <prefix>_value_t value );
    void <prefix>_free_chunk( void* chunk );
 
@@ -354,7 +357,8 @@
 #define SCOREP_HASH_TABLE_INSERT_2( prefix ) \
     /* create new value_t and insert */ \
     ( *chunk )->keys[ j ]   = key; \
-    ( *chunk )->values[ j ] = prefix ## _value_ctor( key, ctorData ); \
+    ( *chunk )->values[ j ] = prefix ## _value_ctor( &( *chunk )->keys[ j ], ctorData ); \
+    UTILS_BUG_ON( !prefix ## _equals( key, ( *chunk )->keys[ j ] ), "Key values are not equal" ); \
     SCOREP_Atomic_StoreN_uint32( &( bucket->size ), current_size + 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     /* unlock */ \
     SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
