@@ -1379,6 +1379,26 @@ activity_cb( const char* begin,
         uint64_t end_time   = CONVERT_TO_SCOREP_TIMESTAMP( record->end_ns );
         switch ( e->cid )
         {
+            case HIP_API_ID_hipModuleLaunchKernel:
+            case HIP_API_ID_hipExtModuleLaunchKernel:
+            case HIP_API_ID_hipHccModuleLaunchKernel:
+            case HIP_API_ID_hipLaunchKernel:
+                UTILS_DEBUG( "Recording kernel %s execution from correlation id %" PRIu64 ", "
+                             "translated %" PRIu64 " duration, original %" PRIu64 " duration",
+                             SCOREP_RegionHandle_GetName( e->payload.launch.kernel_region ),
+                             record->correlation_id,
+                             record->end_ns - record->begin_ns,
+                             end_time - begin_time );
+
+                SCOREP_Location_EnterRegion( e->payload.launch.stream->device_location,
+                                             begin_time,
+                                             e->payload.launch.kernel_region );
+
+                SCOREP_Location_ExitRegion( e->payload.launch.stream->device_location,
+                                            end_time,
+                                            e->payload.launch.kernel_region );
+                break;
+
             default:
                 break;
         }
@@ -1500,6 +1520,7 @@ scorep_hip_callbacks_enable( void )
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNELS )
     {
         need_stream_api_tracing = true;
+        need_activity_tracing   = true;
 
         ENABLE_TRACING( hipModuleLaunchKernel, kernel_cb );
         ENABLE_TRACING( hipExtModuleLaunchKernel, kernel_cb );
