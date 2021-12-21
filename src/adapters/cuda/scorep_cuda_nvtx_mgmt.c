@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#include "scorep_cupti.h"
+
 /*************** Types ********************************************************/
 
 /* We provide an implementation for NVTX, thus we also need to declare the
@@ -446,4 +448,12 @@ scorep_cuda_nvtx_apply_category( nvtxDomainHandle_t           domain,
     {
         SCOREP_TriggerParameterStringHandle( nvtx_parameter_category, category_name );
     }
+}
+
+void
+scorep_cuda_nvtx_set_stream_name( void*       stream,
+                                  const char* name )
+{
+    scorep_cupti_stream_set_name(
+        scorep_cupti_stream_get( ( CUstream )stream ), name );
 }

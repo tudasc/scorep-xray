@@ -454,6 +454,33 @@ scorep_cupti_stream_get_by_id( scorep_cupti_context* context,
     return NULL;
 }
 
+scorep_cupti_stream*
+scorep_cupti_stream_get( CUstream cudaStream )
+{
+    CUcontext cuda_context;
+    SCOREP_CUDA_DRIVER_CALL( cuStreamGetCtx( cudaStream, &cuda_context ) );
+
+    scorep_cupti_context* scorep_context = scorep_cupti_context_get( cuda_context );
+
+    uint32_t stream_id;
+    SCOREP_CUPTI_CALL( cuptiGetStreamId( cuda_context, cudaStream, &stream_id ) );
+
+    SCOREP_CUPTI_LOCK();
+    scorep_cupti_stream* scorep_stream = scorep_cupti_stream_get_by_id( scorep_context, stream_id );
+    SCOREP_CUPTI_UNLOCK();
+
+    return scorep_stream;
+}
+
+void
+scorep_cupti_stream_set_name( scorep_cupti_stream* stream,
+                              const char*          name )
+{
+    SCOREP_CUPTI_LOCK();
+    SCOREP_Location_SetName( stream->scorep_location, name );
+    SCOREP_CUPTI_UNLOCK();
+}
+
 /*
  * Create a Score-P CUPTI context. If the CUDA context is not given, the
  * current context will be requested and used.

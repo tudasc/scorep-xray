@@ -188,6 +188,16 @@ const char*
 SCOREP_Location_GetName( SCOREP_Location* locationData );
 
 /**
+ *  Sets the name of the location.
+ *
+ * @param location  The location.
+ * @param name      The name for the location.
+ */
+void
+SCOREP_Location_SetName( SCOREP_Location* locationData,
+                         const char*      name );
+
+/**
  *  Sets the location name based on the OS thread ID.
  *
  * @param threadID  The OS thread Id to identify the location.

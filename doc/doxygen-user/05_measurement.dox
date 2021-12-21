@@ -912,6 +912,8 @@ The following resource naming APIs are supported:
 <dl>
   <dt><tt>nvtxNameOsThread{A,W}</tt></dt>
     <dd>Name of CPU location</dd>
+  <dt><tt>nvtxNameCuStream{A,W}</tt></dt>
+    <dd>Name of GPU location</dd>
 </dl>
 
 @section opencl_adapter OpenCL Performance Measurement

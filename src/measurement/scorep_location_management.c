@@ -490,6 +490,15 @@ SCOREP_Location_GetName( SCOREP_Location* locationData )
         String )->string_data;
 }
 
+void
+SCOREP_Location_SetName( SCOREP_Location* locationData,
+                         const char*      name )
+{
+    SCOREP_LOCAL_HANDLE_DEREF(
+        locationData->location_handle,
+        Location )->name_handle = SCOREP_Definitions_NewString( name );
+}
+
 bool
 SCOREP_Location_SetNameByThreadId( uint64_t    threadId,
                                    const char* name )
@@ -501,9 +510,7 @@ SCOREP_Location_SetNameByThreadId( uint64_t    threadId,
     {
         if ( location_data->thread_id == threadId )
         {
-            SCOREP_LOCAL_HANDLE_DEREF(
-                location_data->location_handle,
-                Location )->name_handle = SCOREP_Definitions_NewString( name );
+            SCOREP_Location_SetName( location_data, name );
             UTILS_MutexUnlock( &scorep_location_list_mutex );
             return true;
         }

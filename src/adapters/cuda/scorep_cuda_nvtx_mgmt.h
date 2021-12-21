@@ -61,4 +61,8 @@ void
 scorep_cuda_nvtx_apply_category( nvtxDomainHandle_t           domain,
                                  const nvtxEventAttributes_t* eventAttrib );
 
+void
+scorep_cuda_nvtx_set_stream_name( void*       stream,
+                                  const char* name );
+
 #endif /* SCOREP_CUDA_NVTX_MGMT_H */

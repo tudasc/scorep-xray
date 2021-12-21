@@ -515,6 +515,96 @@ nvtxNameOsThreadW( uint32_t       threadId,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+/*************** Stream naming ************************************************/
+
+/*
+ * From cuda_runtime_api.h:
+ * > The types ::CUstream and ::cudaStream_t are identical and may be used interchangeably.
+ * They are just pointers, thus we can use `void*` to avoid additional includes
+ */
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCuStreamA( void*       stream,
+                   const char* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    scorep_cuda_nvtx_set_stream_name( stream, name );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCuStreamW( void*          stream,
+                   const wchar_t* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    nvtxNameCuStreamA( stream, scorep_cuda_nvtx_unicode_to_ascii( name ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCudaStreamA( void*       stream,
+                     const char* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    scorep_cuda_nvtx_set_stream_name( stream, name );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCudaStreamW( void*          stream,
+                     const wchar_t* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    nvtxNameCudaStreamA( stream, scorep_cuda_nvtx_unicode_to_ascii( name ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 /*************** String registration ******************************************/
 
 NVTX_DECLSPEC nvtxStringHandle_t NVTX_API
@@ -570,8 +660,6 @@ nvtxDomainRegisterStringW( nvtxDomainHandle_t domain,
  * nvtxNameCuDeviceW
  * nvtxNameCuEventA
  * nvtxNameCuEventW
- * nvtxNameCuStreamA
- * nvtxNameCuStreamW
  */
 
 /* Not implemented API: nvToolsExtCudaRt.h
@@ -580,8 +668,6 @@ nvtxDomainRegisterStringW( nvtxDomainHandle_t domain,
  * nvtxNameCudaDeviceW
  * nvtxNameCudaEventA
  * nvtxNameCudaEventW
- * nvtxNameCudaStreamA
- * nvtxNameCudaStreamW
  */
 
 /* Not implemented API: nvToolsExtOpenCL.h
