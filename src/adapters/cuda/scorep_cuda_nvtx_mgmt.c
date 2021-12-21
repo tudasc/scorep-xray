@@ -457,3 +457,11 @@ scorep_cuda_nvtx_set_stream_name( void*       stream,
     scorep_cupti_stream_set_name(
         scorep_cupti_stream_get( ( CUstream )stream ), name );
 }
+
+void
+scorep_cuda_nvtx_set_context_name( void*       context,
+                                   const char* name )
+{
+    scorep_cupti_context_set_name(
+        scorep_cupti_context_get( ( CUcontext )context ), name );
+}

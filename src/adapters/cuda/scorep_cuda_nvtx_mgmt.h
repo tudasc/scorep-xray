@@ -65,4 +65,8 @@ void
 scorep_cuda_nvtx_set_stream_name( void*       stream,
                                   const char* name );
 
+void
+scorep_cuda_nvtx_set_context_name( void*       context,
+                                   const char* name );
+
 #endif /* SCOREP_CUDA_NVTX_MGMT_H */

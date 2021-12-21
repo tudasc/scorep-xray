@@ -309,6 +309,16 @@ scorep_cupti_context_get_by_id( uint32_t contextId );
 scorep_cupti_context*
 scorep_cupti_context_get_create( CUcontext cudaContext );
 
+/**
+ * Set the name for the given CUDA context
+ *
+ * @param context the CUDA context
+ * @param name the name
+ */
+void
+scorep_cupti_context_set_name( scorep_cupti_context* context,
+                               const char*           name );
+
 /*
  * Remove a context from the global context list and return it.
  *

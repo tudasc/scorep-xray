@@ -605,6 +605,53 @@ nvtxNameCudaStreamW( void*          stream,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+/*************** Context naming ************************************************/
+
+/*
+ * CUcontext is just a pointer, thus we can use `void*` to avoid additional includes
+ */
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCuContextA( void*       context,
+                    const char* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    scorep_cuda_nvtx_set_context_name( context, name );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+NVTX_DECLSPEC void NVTX_API
+nvtxNameCuContextW( void*          context,
+                    const wchar_t* name )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    nvtxNameCuContextA( context, scorep_cuda_nvtx_unicode_to_ascii( name ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 /*************** String registration ******************************************/
 
 NVTX_DECLSPEC nvtxStringHandle_t NVTX_API
@@ -654,8 +701,6 @@ nvtxDomainRegisterStringW( nvtxDomainHandle_t domain,
 
 /* Not implemented API: nvToolsExtCuda.h
  *
- * nvtxNameCuContextA
- * nvtxNameCuContextW
  * nvtxNameCuDeviceA
  * nvtxNameCuDeviceW
  * nvtxNameCuEventA

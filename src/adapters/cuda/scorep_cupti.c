@@ -710,6 +710,15 @@ scorep_cupti_context_remove( CUcontext cudaContext )
     return NULL;
 }
 
+void
+scorep_cupti_context_set_name( scorep_cupti_context* context,
+                               const char*           name )
+{
+    SCOREP_CUPTI_LOCK();
+    SCOREP_LocationGroupHandle_SetName( context->location_group, name );
+    SCOREP_CUPTI_UNLOCK();
+}
+
 /*
  * Finalize the Score-P CUPTI context and free all memory allocated with it.
  *
