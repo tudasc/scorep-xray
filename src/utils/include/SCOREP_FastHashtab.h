@@ -66,10 +66,13 @@
    user-provided <prefix>_value_dtor() if a key-value pair is to be removed.
 
    A template instantiation provides the functions
-   <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks() that
-   require user-provided functions <prefix>_iterate_key_value_pair()
-   and <prefix>_free_chunk(). These functions are supposed to be used
-   in a serial context only.
+   <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks(). The former
+   expects a callback function of type
+
+   void (*)( <prefix>_key_t, <prefix>_value_t, void* );
+
+   The latter require a user-provided functions <prefix>_free_chunk().
+   These functions are supposed to be used in a serial context only.
 
    All types and functions names are prefixed with <prefix>, so you
    might instantiate more than one table per compilation unit. All
@@ -119,11 +122,13 @@
                             bool* inserted );
 
    // <prefix>_iterate_key_value_pairs() will iterate over the entire
-   // table and call <prefix>_iterate_key_value_pair() for each
-   // key-value pair. This function is supposed to be used in a serial
-   // context only.
+   // table and call cb( key, value, cbData ) for each key-value pair.
+   // This function is supposed to be used in a serial context only.
    static void
-   <prefix>_iterate_key_value_pairs( void );
+   <prefix>_iterate_key_value_pairs( void ( *cb )( <prefix>_key_t   key,
+                                                   <prefix>_value_t value,
+                                                   void*            cbData ),
+                                     void* cbData );
 
    // <prefix>_free_chunks() iterates over all chunks of the table and
    // calls <prefix>_free_chunk() for each chunk. Afterwards, the
@@ -380,7 +385,10 @@
 \
     /* Do not call concurrently */ \
     static void \
-    prefix ## _iterate_key_value_pairs( void ) \
+    prefix ## _iterate_key_value_pairs( void ( *cb )( prefix ## _key_t   key, \
+                                                      prefix ## _value_t value, \
+                                                      void*              cbData ), \
+                                        void* cbData ) \
     { \
         for ( uint32_t b = 0; b < ( hashTableSize ); ++b ) \
         { \
@@ -392,8 +400,7 @@
             { \
                 for ( int j = 0; i < current_size && j < ( nPairsPerChunk ); ++i, ++j ) \
                 { \
-                    prefix ## _iterate_key_value_pair( chunk->keys[ j ], \
-                                                       chunk->values[ j ] ); \
+                    cb( chunk->keys[ j ], chunk->values[ j ], cbData ); \
                 } \
                 chunk = chunk->next; \
             } \
