@@ -55,10 +55,10 @@
    instantiation: <prefix>_get_and_insert().
 
    The bucket is determined by calling the user-provided
-   <prefix>_hash(). For searching, the user-provided <prefix>_equals()
-   is called. If an item wasn't found, it will be inserted utilizing
-   the the user-provided function <prefix>_value_ctor() and
-   potentially the user-provided <prefix>_allocate_chunk().
+   <prefix>_bucket_idx(). For searching, the user-provided
+   <prefix>_equals() is called. If an item wasn't found, it will be
+   inserted utilizing the the user-provided function <prefix>_value_ctor()
+   and potentially the user-provided <prefix>_allocate_chunk().
    The provided remove operations <prefix>_remove() and
    <prefix>_remove_if() call the user-provided <prefix>_value_dtor()
    if a key-value pair is to be removed.
@@ -90,7 +90,7 @@
    // <prefix>_get() will return true if @a key was found in the hash
    // table, which is checked using the function <prefix>_equals().
    // In this case @a *value will be assigned the hash table's value
-   // corresponding to key. The function <prefix>_hash() determines
+   // corresponding to key. The function <prefix>_bucket_idx() determines
    // the table-bucket used in searching @a key. If @a key is not in
    // the table, false is returned and @a *value stays untouched. An
    // arbitrary number of get operations can run concurrently, even
@@ -100,7 +100,7 @@
                  <prefix>_value_t* value );
 
    // <prefix>_get_and_insert() will return the <prefix>_value_t that
-   // corresponds to @a key. The function <prefix>_hash() determines
+   // corresponds to @a key. The function <prefix>_bucket_idx() determines
    // the table-bucket used in searching key. If @a key is not already
    // in the table, which is checked using the function
    // <prefix>_equals(), a new key-value pair will be added where the
@@ -143,7 +143,7 @@
 
    typedef <existing_type> <prefix>_key_t;
    typedef <existing_type> <prefix>_value_t;
-   uint32_t <prefix>_hash( <prefix>_key_t key ); // consider inlining
+   uint32_t <prefix>_bucket_idx( <prefix>_key_t key ); // consider inlining
    bool <prefix>_equals( <prefix>_key_t key1, <prefix>_key_t key2 ); // consider inlining
    void* <prefix>_allocate_chunk( size_t chunkSize ); // consider cacheline-size alignment
    <prefix>_value_t <prefix>_value_ctor( <prefix>_key_t key, void* ctorData );
@@ -448,7 +448,7 @@
     prefix ## _get( prefix ## _key_t key, \
                     prefix ## _value_t* value ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
         bool inserted; \
         prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
         if ( !inserted ) \
@@ -464,7 +464,7 @@
                                const void* ctorData, \
                                bool* inserted ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
         return prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
     } \
 \
@@ -543,7 +543,7 @@
     prefix ## _get( prefix ## _key_t key, \
                     prefix ## _value_t* value ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
         bool inserted; \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
         prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
@@ -561,7 +561,7 @@
                                const void* ctorData, \
                                bool* inserted ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
         prefix ## _value_t value = prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
         SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
@@ -585,7 +585,7 @@
     static inline bool \
     prefix ## _remove( prefix ## _key_t key ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _get_hash( key ) ] ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
         /* search and remove, if found, reduce bucket->size, call <prefix>_value_dtor if found */ \
         uint32_t i                         = 0; \
         uint32_t j                         = 0; \
