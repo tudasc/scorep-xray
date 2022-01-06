@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020,
+ * Copyright (c) 2009-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -306,7 +306,8 @@ typedef enum SCOREP_ParadigmProperty
  *
  */
 #define SCOREP_LOCATION_GROUP_TYPES \
-    SCOREP_LOCATION_GROUP_TYPE( PROCESS, "process" )
+    SCOREP_LOCATION_GROUP_TYPE( PROCESS, "process" ) \
+    SCOREP_LOCATION_GROUP_TYPE( ACCELERATOR, "accelerator" )
 
 typedef enum SCOREP_LocationGroupType
 {
@@ -528,15 +529,17 @@ typedef enum
  */
 typedef enum SCOREP_SystemTreeDomain
 {
-    SCOREP_SYSTEM_TREE_DOMAIN_NONE          = 0,
+    SCOREP_SYSTEM_TREE_DOMAIN_NONE               = 0,
 
-    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE       = ( 1 << 0 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY = ( 1 << 1 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_NUMA          = ( 1 << 2 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_SOCKET        = ( 1 << 3 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_CACHE         = ( 1 << 4 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_CORE          = ( 1 << 5 ),
-    SCOREP_SYSTEM_TREE_DOMAIN_PU            = ( 1 << 6 )
+    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE            = ( 1 << 0 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY      = ( 1 << 1 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_NUMA               = ( 1 << 2 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_SOCKET             = ( 1 << 3 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_CACHE              = ( 1 << 4 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_CORE               = ( 1 << 5 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_PU                 = ( 1 << 6 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE = ( 1 << 7 ),
+    SCOREP_SYSTEM_TREE_DOMAIN_NETWORKING_DEVICE  = ( 1 << 8 )
 } SCOREP_SystemTreeDomain;
 
 
@@ -566,7 +569,8 @@ typedef enum SCOREP_AttributeType
     SCOREP_ATTRIBUTE_TYPE_RMA_WINDOW,
     SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION,
     SCOREP_ATTRIBUTE_TYPE_CALLING_CONTEXT,
-    SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR
+    SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR,
+    SCOREP_ATTRIBUTE_TYPE_LOCATION_GROUP
 } SCOREP_AttributeType;
 
 /**

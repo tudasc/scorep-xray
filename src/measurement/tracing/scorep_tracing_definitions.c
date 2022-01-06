@@ -1846,6 +1846,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
      */
     WRITE_MAPPING( localDefinitionWriter, 64, location, LOCATION );
 
+    WRITE_MAPPING( localDefinitionWriter, 32, location_group, LOCATION_GROUP );
     WRITE_MAPPING( localDefinitionWriter, 32, region, REGION );
     WRITE_MAPPING( localDefinitionWriter, 32, group, GROUP );
     WRITE_MAPPING( localDefinitionWriter, 32, interim_communicator, COMM );

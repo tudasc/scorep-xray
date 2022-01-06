@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016, 2018,
+ * Copyright (c) 2009-2013, 2015-2016, 2018, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -360,7 +360,8 @@ SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle );
     DEF_WITH_MAPPING( InterruptGenerator, interrupt_generator ) \
     DEF_WITH_MAPPING( CartesianTopology, cartesian_topology ) \
     DEF_WITH_MAPPING( IoFile, io_file ) \
-    DEF_WITH_MAPPING( IoHandle, io_handle )
+    DEF_WITH_MAPPING( IoHandle, io_handle ) \
+    DEF_WITH_MAPPING( LocationGroup, location_group )
 
 
 /**

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2019,
+ * Copyright (c) 2009-2013, 2015-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -123,7 +123,7 @@ convert_to_cube_location_type( SCOREP_LocationType locationType )
         case SCOREP_LOCATION_TYPE_CPU_THREAD:
             return CUBE_LOCATION_TYPE_CPU_THREAD;
         case SCOREP_LOCATION_TYPE_GPU:
-            return CUBE_LOCATION_TYPE_GPU;
+            return CUBE_LOCATION_TYPE_ACCELERATOR_STREAM;
         case SCOREP_LOCATION_TYPE_METRIC:
             return CUBE_LOCATION_TYPE_METRIC;
         case SCOREP_INVALID_LOCATION_TYPE:
@@ -143,6 +143,8 @@ convert_to_cube_location_group_type( SCOREP_LocationGroupType type )
     {
         case SCOREP_LOCATION_GROUP_TYPE_PROCESS:
             return CUBE_LOCATION_GROUP_TYPE_PROCESS;
+        case SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR:
+            return CUBE_LOCATION_GROUP_TYPE_ACCELERATOR;
         case SCOREP_INVALID_LOCATION_GROUP_TYPE:
             break;
     }

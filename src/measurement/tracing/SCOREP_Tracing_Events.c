@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2018, 2020,
+ * Copyright (c) 2009-2013, 2015-2018, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -534,6 +534,12 @@ add_attribute( SCOREP_Location*       location,
             otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
                 *( ( SCOREP_SourceCodeLocationHandle* )value ), InterruptGenerator );
             otf_type = OTF2_TYPE_INTERRUPT_GENERATOR;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_LOCATION_GROUP:
+            otf_val.locationGroupRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_LocationGroupHandle* )value ), LocationGroup );
+            otf_type = OTF2_TYPE_LOCATION_GROUP;
             break;
 
         default:
