@@ -14,6 +14,8 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_ReaderWriterLock.h>
 
+#include <UTILS_Error.h>
+
 #include <stdint.h>
 #include <stdbool.h>
 #if HAVE( STDALIGN_H )
@@ -55,13 +57,13 @@
    instantiation: <prefix>_get_and_insert().
 
    The bucket is determined by calling the user-provided
-   <prefix>_bucket_idx(). For searching, the user-provided
-   <prefix>_equals() is called. If an item wasn't found, it will be
-   inserted utilizing the the user-provided function <prefix>_value_ctor()
-   and potentially the user-provided <prefix>_allocate_chunk().
-   The provided remove operations <prefix>_remove() and
-   <prefix>_remove_if() call the user-provided <prefix>_value_dtor()
-   if a key-value pair is to be removed.
+   <prefix>_bucket_idx(). Which must return a value in the interval
+   [0, hashTableSize). For searching, the user-provided function
+   <prefix>_equals() is called. If an item wasn't found, it will be inserted
+   utilizing the the user-provided function <prefix>_value_ctor() and
+   potentially the user-provided <prefix>_allocate_chunk(). The provided
+   remove operations <prefix>_remove() and <prefix>_remove_if() call the
+   user-provided <prefix>_value_dtor() if a key-value pair is to be removed.
 
    A template instantiation provides the functions
    <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks() that
@@ -448,7 +450,9 @@
     prefix ## _get( prefix ## _key_t key, \
                     prefix ## _value_t* value ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
+        uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
+        UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         bool inserted; \
         prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
         if ( !inserted ) \
@@ -464,7 +468,9 @@
                                const void* ctorData, \
                                bool* inserted ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
+        uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
+        UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         return prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
     } \
 \
@@ -543,7 +549,9 @@
     prefix ## _get( prefix ## _key_t key, \
                     prefix ## _value_t* value ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
+        uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
+        UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         bool inserted; \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
         prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
@@ -561,7 +569,9 @@
                                const void* ctorData, \
                                bool* inserted ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
+        uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
+        UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
         prefix ## _value_t value = prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
         SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
@@ -585,7 +595,9 @@
     static inline bool \
     prefix ## _remove( prefix ## _key_t key ) \
     { \
-        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ prefix ## _bucket_idx( key ) ] ); \
+        uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
+        UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
+        prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         /* search and remove, if found, reduce bucket->size, call <prefix>_value_dtor if found */ \
         uint32_t i                         = 0; \
         uint32_t j                         = 0; \
