@@ -20,6 +20,7 @@ include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/measurement/Makefile.inc.am
 include ../src/measurement/definitions/Makefile.inc.am
+include ../src/measurement/accelerator/Makefile.inc.am
 include ../src/measurement/io/Makefile.inc.am
 include ../src/measurement/profiling/Makefile.inc.am
 include ../src/measurement/substrates/Makefile.inc.am

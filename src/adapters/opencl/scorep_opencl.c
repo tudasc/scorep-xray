@@ -29,6 +29,7 @@
 #include <SCOREP_Memory.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_AcceleratorManagement.h>
 #include <scorep_system_tree.h>
 
 #include <jenkins_hash.h>
@@ -447,11 +448,9 @@ opencl_device_get_create( cl_device_id clDeviceID )
 
     char context_name_buffer[ 64 ];
     sprintf( context_name_buffer, "OpenCL Context %u", opencl_context_counter++ );
-    device->location_group = SCOREP_Definitions_NewLocationGroup(
-        context_name_buffer,
+    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
         device->system_tree_node,
-        SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
-        SCOREP_GetProcessLocationGroup() );
+        context_name_buffer );
 
     device->next             = NULL;
     *opencl_device_list_tail = device;

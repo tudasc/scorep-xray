@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2017, 2019,
+## Copyright (c) 2009-2017, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -58,6 +58,7 @@ libscorep_measurement_core_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/include/SCOREP_Task.h                    \
     $(SRC_ROOT)src/measurement/include/SCOREP_Paradigms.h               \
     $(SRC_ROOT)src/measurement/include/SCOREP_IoManagement.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_AcceleratorManagement.h   \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filtering_Management.h  \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filtering.c             \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c              \

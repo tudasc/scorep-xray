@@ -38,6 +38,7 @@
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_AcceleratorManagement.h>
 #include <scorep_task_internal.h>
 #include <scorep_system_tree.h>
 
@@ -59,9 +60,8 @@ main( int argc, char** argv )
         SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
         "Device", "0" );
 
-    SCOREP_LocationGroupHandle device_context = SCOREP_Definitions_NewLocationGroup(
-        "Context 0", device, SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
-        SCOREP_GetProcessLocationGroup() );
+    SCOREP_LocationGroupHandle device_context = SCOREP_AcceleratorMgmt_CreateContext(
+        device, "Context 0" );
 
     SCOREP_Location* location2 =
         SCOREP_Location_CreateNonCPULocation( location1,

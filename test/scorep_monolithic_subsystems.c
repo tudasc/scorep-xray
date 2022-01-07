@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015, 2019,
+ * Copyright (c) 2014-2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -43,6 +43,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_AcceleratorManagement;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_IoManagement;
 
@@ -51,6 +52,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_Substrates,
     &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
+    &SCOREP_Subsystem_AcceleratorManagement,
 #if HAVE( UNWINDING_SUPPORT )
     &SCOREP_Subsystem_UnwindingService,
 #endif

@@ -40,6 +40,7 @@
 #include "scorep_cuda.h"     /* CUPTI common structures, functions, etc. */
 #include "scorep_cupti_callbacks.h"
 
+#include <SCOREP_AcceleratorManagement.h>
 #include <scorep_system_tree.h>
 
 #include <SCOREP_Timer_Ticks.h>
@@ -539,11 +540,9 @@ scorep_cupti_context_create( CUcontext cudaContext )
 
     char context_name_buffer[ 64 ];
     sprintf( context_name_buffer, "CUDA Context %u", context->context_id );
-    context->location_group = SCOREP_Definitions_NewLocationGroup(
-        context_name_buffer,
+    context->location_group = SCOREP_AcceleratorMgmt_CreateContext(
         context->device->system_tree_node,
-        SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
-        SCOREP_GetProcessLocationGroup() );
+        context_name_buffer );
 
     return context;
 }
