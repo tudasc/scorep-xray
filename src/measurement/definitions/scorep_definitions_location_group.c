@@ -71,9 +71,9 @@
 static SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        uint32_t                    globalLocationGroupId,
+                       SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
-                       SCOREP_StringHandle         nameHandle,
-                       SCOREP_LocationGroupType    locationType );
+                       SCOREP_LocationGroupType    locationGroupType );
 
 /**
  * Registers a new local location group into the definitions.
@@ -81,7 +81,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
  * @in internal
  */
 SCOREP_LocationGroupHandle
-SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle systemTreeParent )
+SCOREP_Definitions_NewLocationGroup( const char*                 name,
+                                     SCOREP_SystemTreeNodeHandle systemTreeParent )
 {
     SCOREP_Definitions_Lock();
 
@@ -90,8 +91,10 @@ SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle systemTreeParen
     SCOREP_LocationGroupHandle new_handle = define_location_group(
         &scorep_local_definition_manager,
         UINT32_MAX,
+        scorep_definitions_new_string(
+            &scorep_local_definition_manager,
+            name ? name : "<unknown location group>", NULL ),
         systemTreeParent,
-        SCOREP_INVALID_STRING,
         SCOREP_LOCATION_GROUP_TYPE_PROCESS );
 
     SCOREP_Definitions_Unlock();
@@ -120,11 +123,11 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
     definition->unified = define_location_group(
         scorep_unified_definition_manager,
         definition->global_location_group_id,
-        unified_system_tree_parent,
         SCOREP_HANDLE_GET_UNIFIED(
             definition->name_handle,
             String,
             handlesPageManager ),
+        unified_system_tree_parent,
         definition->location_group_type );
 }
 
@@ -139,8 +142,8 @@ equal_location_group( const SCOREP_LocationGroupDef* existingDefinition,
 SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        uint32_t                    globalLocationGroupId,
+                       SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
-                       SCOREP_StringHandle         nameHandle,
                        SCOREP_LocationGroupType    locationGroupType )
 {
     UTILS_ASSERT( definition_manager );
@@ -152,8 +155,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
 
     /* location groups wont be unified, therefore no hash value needed */
     new_definition->global_location_group_id = globalLocationGroupId;
+    new_definition->name_handle              = name;
     new_definition->system_tree_parent       = systemTreeParent;
-    new_definition->name_handle              = nameHandle;
     new_definition->location_group_type      = locationGroupType;
 
     /* Does return if it is a duplicate */

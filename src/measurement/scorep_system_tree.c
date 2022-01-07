@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -106,7 +106,7 @@ SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
      *
      * In early stage 'global location group ID' and 'name' are set to invalid dummies.
      * Correct values must be set later on. */
-    return SCOREP_Definitions_NewLocationGroup( parent );
+    return SCOREP_Definitions_NewLocationGroup( "", parent );
 }
 
 void
