@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2017,
+ * Copyright (c) 2014-2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -94,14 +94,28 @@ typedef struct
 } scorep_opencl_buffer_entry;
 
 /**
+ * Score-P OpenCL device
+ *
+ * @todo For now one implicit context per device
+ */
+typedef struct scorep_opencl_device
+{
+    cl_device_id                 device_id;
+    SCOREP_SystemTreeNodeHandle  system_tree_node;
+    SCOREP_LocationGroupHandle   location_group;
+    struct scorep_opencl_device* next;                 /**< Pointer to next device */
+} scorep_opencl_device;
+
+/**
  * Score-P OpenCL command queue
  */
 typedef struct scorep_opencl_queue
 {
     cl_command_queue            queue;                 /**< the OpenCL command queue */
-    struct SCOREP_Location*     device_location;       /**< Score-P device location */
-    uint32_t                    device_location_id;    /**< internal location ID used for unification */
+    struct SCOREP_Location*     location;              /**< Score-P accelerator location */
+    uint32_t                    location_id;           /**< internal location ID used for unification */
     struct SCOREP_Location*     host_location;         /**< Score-P host location */
+    scorep_opencl_device*       device;                /**< Scorep-P OpenCL device */
     scorep_opencl_sync          sync;                  /**< Score-P - OpenCL time synchronization */
     uint64_t                    scorep_last_timestamp; /**< last written Score-P timestamp */
     scorep_opencl_buffer_entry* buffer;                /**< OpenCL buffer pointer */
