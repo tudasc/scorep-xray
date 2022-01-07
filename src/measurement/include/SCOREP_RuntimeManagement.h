@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -193,11 +193,11 @@ void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
 
 /**
- * Get handle of location group.
- * @return Returns handle of current location group.
+ * Get handle of the location group for this process.
+ * @return Returns handle of current process location group.
  */
 SCOREP_LocationGroupHandle
-SCOREP_GetLocationGroup( void );
+SCOREP_GetProcessLocationGroup( void );
 
 /**
  * Get the initial timestamp of this process which denotes the begin of the

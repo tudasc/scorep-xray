@@ -136,7 +136,7 @@ SCOREP_FinalizeLocationGroup( void )
     /* Update location group ID and name */
 
     SCOREP_LocationGroupDef* location_group
-        = SCOREP_LOCAL_HANDLE_DEREF( SCOREP_GetLocationGroup(), LocationGroup );
+        = SCOREP_LOCAL_HANDLE_DEREF( SCOREP_GetProcessLocationGroup(), LocationGroup );
 
     /* In early stage 'name' is set to an invalid dummy.
      * Correct value must be set manually. */

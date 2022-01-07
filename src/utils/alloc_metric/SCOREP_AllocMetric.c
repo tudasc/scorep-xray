@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2018, 2020-2021,
+ * Copyright (c) 2016-2018, 2020-2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -349,7 +349,7 @@ SCOREP_AllocMetric_New( const char*          name,
         SCOREP_Definitions_NewScopedSamplingSet( sampling_set_handle,
                                                  SCOREP_Location_GetLocationHandle( per_process_metric_location ),
                                                  SCOREP_METRIC_SCOPE_LOCATION_GROUP,
-                                                 SCOREP_GetLocationGroup() );
+                                                 SCOREP_GetProcessLocationGroup() );
     SCOREP_Location_ReleasePerProcessMetricsLocation();
 
     return SCOREP_SUCCESS;
