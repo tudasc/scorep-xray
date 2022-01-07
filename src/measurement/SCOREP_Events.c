@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019, 2020,
+ * Copyright (c) 2009-2017, 2019, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -578,6 +578,31 @@ SCOREP_Location_AddPCIProperties( SCOREP_Location* location,
     if ( UINT8_MAX != function )
     {
         SCOREP_Location_AddLocationProperty( location, "PCI Function", 8, "%" PRIu8, function );
+    }
+}
+
+
+void
+SCOREP_SystemTreeNode_AddPCIProperties( SCOREP_SystemTreeNodeHandle node,
+                                        uint16_t                    domain,
+                                        uint8_t                     bus,
+                                        uint8_t                     device,
+                                        uint8_t                     function )
+{
+    char buffer[ 16 ];
+    if ( UINT16_MAX != domain )
+    {
+        sprintf( buffer, "%" PRIu16, domain );
+        SCOREP_SystemTreeNodeHandle_AddProperty( node, "PCI Domain ID", buffer );
+    }
+    sprintf( buffer, "%" PRIu8, bus );
+    SCOREP_SystemTreeNodeHandle_AddProperty( node, "PCI Bus ID", buffer );
+    sprintf( buffer, "%" PRIu8, device );
+    SCOREP_SystemTreeNodeHandle_AddProperty( node, "PCI Device ID", buffer );
+    if ( UINT8_MAX != function )
+    {
+        sprintf( buffer, "%" PRIu8, function );
+        SCOREP_SystemTreeNodeHandle_AddProperty( node, "PCI Function", buffer );
     }
 }
 

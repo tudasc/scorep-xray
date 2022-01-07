@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2020,
+ * Copyright (c) 2009-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -331,6 +331,25 @@ SCOREP_Location_AddPCIProperties( SCOREP_Location* location,
                                   uint8_t          bus,
                                   uint8_t          device,
                                   uint8_t          function );
+
+/**
+ * Helper function to add a PCI ID tuple to a system tree node.
+ *
+ * @a domain or @a function may be unknown, use UINT16_MAX/UIN8_MAX as values,
+ * respectivly, and wont be added in this case.
+ *
+ * @param node      System tree node.
+ * @param domain    PCI domain ID.
+ * @param bus       PCI bus ID.
+ * @param device    PCI device ID.
+ * @param function  PCI function ID.
+ */
+void
+SCOREP_SystemTreeNode_AddPCIProperties( SCOREP_SystemTreeNodeHandle node,
+                                        uint16_t                    domain,
+                                        uint8_t                     bus,
+                                        uint8_t                     device,
+                                        uint8_t                     function );
 
 /**
  * Process an mpi send event in the measurement system.
