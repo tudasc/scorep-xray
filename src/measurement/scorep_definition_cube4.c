@@ -1016,6 +1016,15 @@ write_location_group_definitions( cube_t*                   myCube,
             convert_to_cube_location_group_type( definition->location_group_type );
 
         processes[ rank ] = cube_def_location_group( myCube, name, rank, type, node );
+
+        if ( definition->creating_location_group != SCOREP_INVALID_LOCATION_GROUP )
+        {
+            SCOREP_LocationGroupDef* creating_location_group =
+                SCOREP_UNIFIED_HANDLE_DEREF( definition->creating_location_group, LocationGroup );
+            const char* value = SCOREP_UNIFIED_HANDLE_DEREF( creating_location_group->name_handle,
+                                                             String )->string_data;
+            cube_location_group_def_attr( processes[ rank ], "Creating location group", value );
+        }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( system_tree );

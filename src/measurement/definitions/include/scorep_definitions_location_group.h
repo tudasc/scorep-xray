@@ -51,13 +51,15 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
     SCOREP_StringHandle         name_handle;
     SCOREP_SystemTreeNodeHandle system_tree_parent;
     SCOREP_LocationGroupType    location_group_type;
+    SCOREP_LocationGroupHandle  creating_location_group;
 };
 
 
 SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewLocationGroup( const char*                 name,
                                      SCOREP_SystemTreeNodeHandle systemTreeParent,
-                                     SCOREP_LocationGroupType    locationGroupType );
+                                     SCOREP_LocationGroupType    locationGroupType,
+                                     SCOREP_LocationGroupHandle  creatingLocationGroup );
 
 
 void

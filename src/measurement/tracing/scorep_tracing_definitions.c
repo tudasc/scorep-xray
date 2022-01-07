@@ -229,13 +229,22 @@ scorep_write_location_group_definitions( void*                     writerHandle,
                 definitionManager->page_manager );
         }
 
+        OTF2_LocationGroupRef creating_location_group = OTF2_UNDEFINED_LOCATION_GROUP;
+        if ( definition->creating_location_group != SCOREP_INVALID_LOCATION_GROUP )
+        {
+            creating_location_group = SCOREP_HANDLE_TO_ID(
+                definition->creating_location_group,
+                LocationGroup,
+                definitionManager->page_manager );
+        }
+
         OTF2_ErrorCode status = defLocationGroup(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
             system_tree_parent,
-            OTF2_UNDEFINED_LOCATION_GROUP );
+            creating_location_group );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "LocationGroup" );

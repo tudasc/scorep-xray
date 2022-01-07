@@ -72,7 +72,8 @@ static SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
-                       SCOREP_LocationGroupType    locationGroupType );
+                       SCOREP_LocationGroupType    locationGroupType,
+                       SCOREP_LocationGroupHandle  creatingLocationGroup );
 
 /**
  * Registers a new local location group into the definitions.
@@ -82,7 +83,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
 SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewLocationGroup( const char*                 name,
                                      SCOREP_SystemTreeNodeHandle systemTreeParent,
-                                     SCOREP_LocationGroupType    locationGroupType )
+                                     SCOREP_LocationGroupType    locationGroupType,
+                                     SCOREP_LocationGroupHandle  creatingLocationGroup )
 {
     SCOREP_Definitions_Lock();
 
@@ -94,7 +96,8 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
             &scorep_local_definition_manager,
             name ? name : "<unknown location group>", NULL ),
         systemTreeParent,
-        locationGroupType );
+        locationGroupType,
+        creatingLocationGroup );
 
     SCOREP_Definitions_Unlock();
 
@@ -119,6 +122,17 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
                       "Invalid unification order of location group definition: system tree parent not yet unified" );
     }
 
+    SCOREP_LocationGroupHandle unified_creating_location_group = SCOREP_INVALID_LOCATION_GROUP;
+    if ( definition->creating_location_group != SCOREP_INVALID_LOCATION_GROUP )
+    {
+        unified_creating_location_group = SCOREP_HANDLE_GET_UNIFIED(
+            definition->creating_location_group,
+            LocationGroup,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_creating_location_group == SCOREP_INVALID_LOCATION_GROUP,
+                      "Invalid unification order of location group definition: creating location group not yet unified" );
+    }
+
     definition->unified = define_location_group(
         scorep_unified_definition_manager,
         SCOREP_HANDLE_GET_UNIFIED(
@@ -126,7 +140,8 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
             String,
             handlesPageManager ),
         unified_system_tree_parent,
-        definition->location_group_type );
+        definition->location_group_type,
+        unified_creating_location_group );
 }
 
 static inline bool
@@ -141,7 +156,8 @@ SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
-                       SCOREP_LocationGroupType    locationGroupType )
+                       SCOREP_LocationGroupType    locationGroupType,
+                       SCOREP_LocationGroupHandle  creatingLocationGroup )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -151,9 +167,10 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
     SCOREP_DEFINITION_ALLOC( LocationGroup );
 
     /* location groups wont be unified, therefore no hash value needed */
-    new_definition->name_handle         = name;
-    new_definition->system_tree_parent  = systemTreeParent;
-    new_definition->location_group_type = locationGroupType;
+    new_definition->name_handle             = name;
+    new_definition->system_tree_parent      = systemTreeParent;
+    new_definition->location_group_type     = locationGroupType;
+    new_definition->creating_location_group = creatingLocationGroup;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( LocationGroup, location_group );

@@ -108,7 +108,8 @@ SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
      * Correct values must be set later on. */
     return SCOREP_Definitions_NewLocationGroup( "",
                                                 parent,
-                                                SCOREP_LOCATION_GROUP_TYPE_PROCESS );
+                                                SCOREP_LOCATION_GROUP_TYPE_PROCESS,
+                                                SCOREP_INVALID_LOCATION_GROUP );
 }
 
 void
