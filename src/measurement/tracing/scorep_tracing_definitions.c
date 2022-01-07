@@ -143,13 +143,22 @@ scorep_write_location_definitions(
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Location, location )
     {
+        OTF2_LocationGroupRef location_group_parent = OTF2_UNDEFINED_LOCATION_GROUP;
+        if ( definition->location_group_parent != SCOREP_INVALID_LOCATION_GROUP )
+        {
+            location_group_parent = SCOREP_HANDLE_TO_ID(
+                definition->location_group_parent,
+                LocationGroup,
+                definitionManager->page_manager );
+        }
+
         OTF2_ErrorCode status = defLocation(
             writerHandle,
             definition->global_location_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_type_to_otf2( definition->location_type ),
             definition->number_of_events,
-            definition->location_group_id );
+            location_group_parent );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Location" );

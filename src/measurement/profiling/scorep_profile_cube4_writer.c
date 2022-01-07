@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019,
+ * Copyright (c) 2009-2016, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1144,7 +1144,6 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
     scorep_write_definitions_to_cube4( write_set.my_cube,
                                        write_set.map,
-                                       write_set.ranks_number,
                                        write_set.global_items,
                                        write_set.items_per_rank,
                                        &layout,

@@ -347,7 +347,8 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
 
     queue->device_location = SCOREP_Location_CreateNonCPULocation(
         queue->host_location,
-        SCOREP_LOCATION_TYPE_GPU, thread_name );
+        SCOREP_LOCATION_TYPE_GPU, thread_name,
+        SCOREP_GetProcessLocationGroup() );
 
     /* Use NVIDIA OpenCL extension to query PCI domain/bus/device IDs for
        node-level unique identification of the used GPU analog to CUDA

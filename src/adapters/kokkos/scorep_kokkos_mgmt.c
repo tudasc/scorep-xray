@@ -21,6 +21,7 @@
 
 #include "scorep_kokkos.h"
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Definitions.h>
@@ -112,7 +113,8 @@ scorep_kokkos_get_device_location( void )
         UTILS_DEBUG( "Creating artificial Kokkos device location" );
         SCOREP_Location* location = SCOREP_Location_CreateNonCPULocation(
             SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_LOCATION_TYPE_GPU, "Kokkos Device" );
+            SCOREP_LOCATION_TYPE_GPU, "Kokkos Device",
+            SCOREP_GetProcessLocationGroup() );
         /* create_device_location called through subsystem */
     }
 

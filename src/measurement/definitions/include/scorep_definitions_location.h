@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,19 +49,20 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
     SCOREP_DEFINE_DEFINITION_HEADER( Location );
 
     /* don't use the sequence number for the id, this is generated */
-    uint64_t            global_location_id;
-    SCOREP_StringHandle name_handle;
-    SCOREP_LocationType location_type;
-    uint64_t            number_of_events;        // only known after measurement
-    uint32_t            location_group_id;
+    uint64_t                   global_location_id;
+    SCOREP_StringHandle        name_handle;
+    SCOREP_LocationType        location_type;
+    SCOREP_LocationGroupHandle location_group_parent;
+    uint64_t                   number_of_events;        // only known after measurement
 };
 
 
 SCOREP_LocationHandle
-SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
-                                const char*         name,
-                                size_t              sizeOfPayload,
-                                void**              payload );
+SCOREP_Definitions_NewLocation( SCOREP_LocationType        type,
+                                const char*                name,
+                                SCOREP_LocationGroupHandle locationGroupParent,
+                                size_t                     sizeOfPayload,
+                                void**                     payload );
 
 
 void

@@ -262,7 +262,8 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
 
         stream->scorep_location =
             SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
-                                                  SCOREP_LOCATION_TYPE_GPU, thread_name );
+                                                  SCOREP_LOCATION_TYPE_GPU, thread_name,
+                                                  SCOREP_GetProcessLocationGroup() );
 
         SCOREP_Location_AddPCIProperties( stream->scorep_location,
                                           ( uint16_t )context->pci_domain_id,

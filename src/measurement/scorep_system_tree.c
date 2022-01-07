@@ -142,11 +142,4 @@ SCOREP_FinalizeLocationGroup( void )
     /* In early stage 'name' is set to an invalid dummy.
      * Correct value must be set manually. */
     location_group->name_handle = SCOREP_Definitions_NewString( SCOREP_Mpp_GetLocationGroupName() );
-
-    /* Set location group in all locations */
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
-    {
-        definition->location_group_id = location_group->sequence_number;
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

@@ -952,7 +952,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
-                                                                    "" );
+                                                                    "",
+                                                                    SCOREP_GetProcessLocationGroup() );
                     }
                     current_location_metric_set->sampling_sets
                         = malloc( current_overall_number_of_metrics * sizeof( SCOREP_SamplingSetHandle ) );
@@ -1650,7 +1651,8 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
-                                                                    "" );
+                                                                    "",
+                                                                    SCOREP_GetProcessLocationGroup() );
                     }
                     current_location_metric_set->sampling_sets
                         = malloc( current_overall_number_of_metrics * sizeof( SCOREP_SamplingSetHandle ) );

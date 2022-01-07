@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015,
+ * Copyright (c) 2009-2011, 2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -113,7 +113,6 @@ typedef struct
    the mapping table given by map.
    @param myCube      Pointer to the cube struct to which the data is written.
    @param map         Pointer to an already initialized mapping structure.
-   @param nRanks      Number of ranks.
    @param nLocations  Global number of locations.
    @param locationsPerRank List of number of locations per rank.
    @param layout      Description of the cube layout
@@ -122,7 +121,6 @@ typedef struct
 void
 scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
-                                   uint32_t                      nRanks,
                                    uint64_t                      nLocations,
                                    uint32_t*                     locationsPerRank,
                                    const scorep_cube_layout*     layout,

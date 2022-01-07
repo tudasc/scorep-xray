@@ -10,6 +10,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -52,7 +55,8 @@ main( int argc, char** argv )
     SCOREP_Location* location2 =
         SCOREP_Location_CreateNonCPULocation( location1,
                                               SCOREP_LOCATION_TYPE_GPU,
-                                              "test_thread_2" );
+                                              "test_thread_2",
+                                              SCOREP_GetProcessLocationGroup() );
 
     SCOREP_RegionHandle parallel = SCOREP_Definitions_NewRegion( "parallel",
                                                                  "parallel",
