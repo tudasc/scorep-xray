@@ -39,6 +39,7 @@
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_task_internal.h>
+#include <scorep_system_tree.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,11 +53,21 @@ main( int argc, char** argv )
     SCOREP_InitMeasurement();
 
     SCOREP_Location* location1 = SCOREP_Location_GetCurrentCPULocation();
+
+    SCOREP_SystemTreeNodeHandle device = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "Device", "0" );
+
+    SCOREP_LocationGroupHandle device_context = SCOREP_Definitions_NewLocationGroup(
+        "Context 0", device, SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
+        SCOREP_GetProcessLocationGroup() );
+
     SCOREP_Location* location2 =
         SCOREP_Location_CreateNonCPULocation( location1,
                                               SCOREP_LOCATION_TYPE_GPU,
-                                              "test_thread_2",
-                                              SCOREP_GetProcessLocationGroup() );
+                                              "test_gpu",
+                                              device_context );
 
     SCOREP_RegionHandle parallel = SCOREP_Definitions_NewRegion( "parallel",
                                                                  "parallel",
