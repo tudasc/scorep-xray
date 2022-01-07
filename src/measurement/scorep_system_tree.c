@@ -104,7 +104,7 @@ SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
 
     /* Create Location Group definition
      *
-     * In early stage 'global location group ID' and 'name' are set to invalid dummies.
+     * In early stage 'name' is set to an invalid dummy.
      * Correct values must be set later on. */
     return SCOREP_Definitions_NewLocationGroup( "", parent );
 }
@@ -133,21 +133,17 @@ SCOREP_FinalizeLocationGroup( void )
 {
     /* Update location group ID and name */
 
-    uint32_t location_group_id = SCOREP_Status_GetRank();
-
     SCOREP_LocationGroupDef* location_group
         = SCOREP_LOCAL_HANDLE_DEREF( SCOREP_GetLocationGroup(), LocationGroup );
 
-    /* In early stage 'global location group ID' and 'name' are set to invalid dummies.
-     * Correct values must be set manually. */
-    location_group->name_handle              = SCOREP_Definitions_NewString( SCOREP_Mpp_GetLocationGroupName() );
-    location_group->global_location_group_id = location_group_id;
-
+    /* In early stage 'name' is set to an invalid dummy.
+     * Correct value must be set manually. */
+    location_group->name_handle = SCOREP_Definitions_NewString( SCOREP_Mpp_GetLocationGroupName() );
 
     /* Set location group in all locations */
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
     {
-        definition->location_group_id = location_group_id;
+        definition->location_group_id = location_group->sequence_number;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

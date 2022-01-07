@@ -231,7 +231,7 @@ scorep_write_location_group_definitions( void*                     writerHandle,
 
         OTF2_ErrorCode status = defLocationGroup(
             writerHandle,
-            definition->global_location_group_id,
+            definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
             system_tree_parent,
@@ -1080,9 +1080,9 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                     break;
 
                 case SCOREP_METRIC_SCOPE_LOCATION_GROUP:
-                    scope = SCOREP_HANDLE_DEREF( scoped_definition->scope_handle,
+                    scope = SCOREP_HANDLE_TO_ID( scoped_definition->scope_handle,
                                                  LocationGroup,
-                                                 definitionManager->page_manager )->global_location_group_id;
+                                                 definitionManager->page_manager );
                     break;
 
                 case SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE:

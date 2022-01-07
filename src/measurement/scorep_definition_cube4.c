@@ -1006,7 +1006,7 @@ write_location_group_definitions( cube_t*                   myCube,
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, LocationGroup, location_group )
     {
-        uint32_t   rank = definition->global_location_group_id;
+        uint32_t   rank = definition->sequence_number;
         cube_node* node = get_cube_node( system_tree, definition->system_tree_parent,
                                          manager->system_tree_node.counter );
 

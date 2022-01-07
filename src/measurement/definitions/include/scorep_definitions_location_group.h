@@ -48,8 +48,6 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
 
-    /* don't use the sequence number for the id, this is generated */
-    uint32_t                    global_location_group_id;
     SCOREP_StringHandle         name_handle;
     SCOREP_SystemTreeNodeHandle system_tree_parent;
     SCOREP_LocationGroupType    location_group_type;

@@ -70,7 +70,6 @@
 
 static SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
-                       uint32_t                    globalLocationGroupId,
                        SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
                        SCOREP_LocationGroupType    locationGroupType );
@@ -90,7 +89,6 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
      * Correct values must be set later on. */
     SCOREP_LocationGroupHandle new_handle = define_location_group(
         &scorep_local_definition_manager,
-        UINT32_MAX,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unknown location group>", NULL ),
@@ -122,7 +120,6 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
 
     definition->unified = define_location_group(
         scorep_unified_definition_manager,
-        definition->global_location_group_id,
         SCOREP_HANDLE_GET_UNIFIED(
             definition->name_handle,
             String,
@@ -141,7 +138,6 @@ equal_location_group( const SCOREP_LocationGroupDef* existingDefinition,
 
 SCOREP_LocationGroupHandle
 define_location_group( SCOREP_DefinitionManager*   definition_manager,
-                       uint32_t                    globalLocationGroupId,
                        SCOREP_StringHandle         name,
                        SCOREP_SystemTreeNodeHandle systemTreeParent,
                        SCOREP_LocationGroupType    locationGroupType )
@@ -154,10 +150,9 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
     SCOREP_DEFINITION_ALLOC( LocationGroup );
 
     /* location groups wont be unified, therefore no hash value needed */
-    new_definition->global_location_group_id = globalLocationGroupId;
-    new_definition->name_handle              = name;
-    new_definition->system_tree_parent       = systemTreeParent;
-    new_definition->location_group_type      = locationGroupType;
+    new_definition->name_handle         = name;
+    new_definition->system_tree_parent  = systemTreeParent;
+    new_definition->location_group_type = locationGroupType;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
