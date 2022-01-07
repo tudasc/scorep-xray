@@ -1755,7 +1755,7 @@ handle_cuda_malloc( CUcontext cudaContext,
         {
             UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaMalloc: time stamp < last written "
                              "timestamp! (CUDA device: %d)",
-                             context->cuda_device );
+                             context->device->cuda_device );
 
             time = context->streams->scorep_last_timestamp;
         }
@@ -1811,7 +1811,7 @@ handle_cuda_free( CUcontext cudaContext,
             {
                 UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaFree: time stamp < last written "
                                  "timestamp! (CUDA device: %d)",
-                                 context->cuda_device );
+                                 context->device->cuda_device );
 
                 time = context->streams->scorep_last_timestamp;
             }
@@ -1936,7 +1936,7 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
             *cbInfo->correlationData = ( uint64_t )stream;
 
             /* check if current host thread is the same as the context host thread */
-            if ( context->scorep_host_location != host_location )
+            if ( context->host_location != host_location )
             {
                 UTILS_WARNING( "[CUPTI Callbacks] Host thread of context changed! "
                                "Skipping memory copy!" );
@@ -1958,7 +1958,7 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
                 UTILS_WARN_ONCE( "[CUPTI Callbacks] memcpy start: "
                                  "time stamp < last written time stamp! "
                                  "(CUDA device: %d) Using the last written time stamp.",
-                                 context->cuda_device );
+                                 context->device->cuda_device );
 
                 time = stream->scorep_last_timestamp;
             }

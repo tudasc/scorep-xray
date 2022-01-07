@@ -385,7 +385,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
                              start, stream->scorep_last_timestamp );
             UTILS_WARN_ONCE( "[CUPTI Activity] Kernel: '%s', CUdevice: %d, "
                              "CUDA stream ID: %d",
-                             hashNode->name, context->cuda_device, stream->stream_id );
+                             hashNode->name, context->device->cuda_device, stream->stream_id );
 
             if ( stream->scorep_last_timestamp < stop )
             {
@@ -406,7 +406,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
         {
             UTILS_WARN_ONCE( "[CUPTI Activity] Kernel: start time > stop time!" );
             UTILS_WARN_ONCE( "[CUPTI Activity] Skipping '%s' on CUDA device:stream [%d:%d],",
-                             hashNode->name, context->cuda_device, stream->stream_id );
+                             hashNode->name, context->device->cuda_device, stream->stream_id );
             return;
         }
 
@@ -418,7 +418,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
                              contextActivity->sync.host_stop, stop );
             UTILS_WARN_ONCE( "[CUPTI Activity] Kernel: '%s', CUdevice: %d, "
                              "CUDA stream ID: %d",
-                             hashNode->name, context->cuda_device, stream->stream_id );
+                             hashNode->name, context->device->cuda_device, stream->stream_id );
 
             /* Write kernel with sync.hostStop stop time stamp, if possible */
             if ( contextActivity->sync.host_stop > start )
@@ -546,7 +546,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
     {
         UTILS_WARN_ONCE( "[CUPTI Activity] Memcpy: start time < last written "
                          "timestamp! (CUDA device:stream [%d:%d])",
-                         context->cuda_device, stream->stream_id );
+                         context->device->cuda_device, stream->stream_id );
 
 
         if ( stream->scorep_last_timestamp < stop )
@@ -568,7 +568,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
     {
         UTILS_WARN_ONCE( "[CUPTI Activity] Skipping memcpy (start time > stop time) "
                          "on CUdevice:Stream %d:%d",
-                         context->cuda_device, stream->stream_id );
+                         context->device->cuda_device, stream->stream_id );
         return;
     }
 
@@ -577,7 +577,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
     {
         UTILS_WARN_ONCE( "[CUPTI Activity] Memcpy: sync stop time < stop time! "
                          "(CUDA device:stream [%d:%d])",
-                         context->cuda_device, stream->stream_id );
+                         context->device->cuda_device, stream->stream_id );
 
         /* Write memcpy with sync.hostStop stop time stamp, if possible */
         if ( contextActivity->sync.host_stop > start )

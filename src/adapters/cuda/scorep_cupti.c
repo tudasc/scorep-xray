@@ -40,6 +40,8 @@
 #include "scorep_cuda.h"     /* CUPTI common structures, functions, etc. */
 #include "scorep_cupti_callbacks.h"
 
+#include <scorep_system_tree.h>
+
 #include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_CStr.h>
@@ -62,6 +64,10 @@ SCOREP_Mutex scorep_cupti_mutex = SCOREP_MUTEX_INIT;
 
 /* attribute handles for CUDA references */
 scorep_cupti_attribute_handles scorep_cupti_attributes;
+
+/* List of CUPTI devices */
+static scorep_cupti_device*  cupti_device_list;
+static scorep_cupti_device** cupti_device_list_tail = &cupti_device_list;
 
 /* set the list of CUPTI contexts to 'empty' */
 scorep_cupti_context* scorep_cupti_context_list = NULL;
@@ -94,6 +100,13 @@ SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total =
     SCOREP_INVALID_SAMPLING_SET;
 SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread =
     SCOREP_INVALID_SAMPLING_SET;
+
+static scorep_cupti_device*
+cupti_device_get( CUdevice cudaDevice );
+static scorep_cupti_device*
+cupti_device_create( CUdevice cudaDevice );
+static scorep_cupti_device*
+cupti_device_get_create( CUdevice cudaDevice );
 
 static bool scorep_cupti_initialized = 0;
 static bool scorep_cupti_finalized   = 0;
@@ -237,7 +250,7 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
     {
         char thread_name[ 16 ] = "CUDA";
 
-        if ( context->device_id == SCOREP_CUPTI_NO_DEVICE_ID )
+        if ( context->device->device_id == SCOREP_CUPTI_NO_DEVICE_ID )
         {
             if ( -1 == snprintf( thread_name + 4, 12, "[?:%d]", streamId ) )
             {
@@ -246,30 +259,17 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         }
         else
         {
-            /* CUDA_VISIBLE_DEVICES may be used to change the order and thus
-             * the device ID visible from the outside, use it to map the device ID
-             */
-            uint32_t device_id = context->device_id;
-            if ( device_id < scorep_cuda_visible_devices_len )
-            {
-                device_id = scorep_cuda_visible_devices_map[ device_id ];
-            }
-            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", device_id, streamId ) )
+            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", context->device->device_id, streamId ) )
             {
                 UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
             }
         }
 
         stream->scorep_location =
-            SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
-                                                  SCOREP_LOCATION_TYPE_GPU, thread_name,
-                                                  SCOREP_GetProcessLocationGroup() );
-
-        SCOREP_Location_AddPCIProperties( stream->scorep_location,
-                                          ( uint16_t )context->pci_domain_id,
-                                          ( uint8_t )context->pci_bus_id,
-                                          ( uint8_t )context->pci_device_id,
-                                          UINT8_MAX );
+            SCOREP_Location_CreateNonCPULocation( context->host_location,
+                                                  SCOREP_LOCATION_TYPE_GPU,
+                                                  thread_name,
+                                                  context->location_group );
 
         if ( context->activity && ( stream->stream_id == context->activity->default_strm_id ) )
         {
@@ -458,85 +458,64 @@ scorep_cupti_stream_get_by_id( scorep_cupti_context* context,
  * current context will be requested and used.
  *
  * @param cudaContext CUDA context
- * @param cudaDevice CUDA device
- * @param contextId ID of the CUDA context
- * @param deviceId ID of the CUDA device
  *
  * @return pointer to created Score-P CUPTI context
  */
 scorep_cupti_context*
-scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
-                             uint32_t contextId, uint32_t deviceId )
+scorep_cupti_context_create( CUcontext cudaContext )
 {
-    scorep_cupti_context* context = NULL;
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
+
+    /* get the current CUDA context, if it is not given */
+    if ( cudaContext == NULL )
+    {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI] Creating context for current context" );
+        SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cudaContext ) );
+    }
+
+    CUcontext current_context;
+    SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &current_context ) );
+
+    /* if given context does not match the current one, get the device for
+       the given one */
+    if ( cudaContext != current_context )
+    {
+        SCOREP_CUDA_DRIVER_CALL( cuCtxSetCurrent( cudaContext ) );
+    }
+
+    CUdevice cuda_device;
+    CUresult result = cuCtxGetDevice( &cuda_device );
+
+    /* reset the active context */
+    if ( cudaContext != current_context )
+    {
+        SCOREP_CUDA_DRIVER_CALL( cuCtxSetCurrent( current_context ) );
+    }
+
+    if ( CUDA_SUCCESS != result )
+    {
+        /* This might be a fatal error */
+        UTILS_WARNING( "[CUPTI] Could not get CUDA device for context" );
+        SCOREP_RESUME_CUDRV_CALLBACKS();
+        return NULL;
+    }
 
     /* create new context */
-    context = ( scorep_cupti_context* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_context ) );
+    scorep_cupti_context* context = SCOREP_Memory_AllocForMisc( sizeof( *context ) );
 
-    context->context_id           = contextId;
+    SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &context->context_id ) );
+
+    context->device = cupti_device_get_create( cuda_device );
+
     context->gpu_memory_allocated = 0;
     context->cuda_mallocs         = NULL;
     context->free_cuda_mallocs    = NULL;
     context->streams              = NULL;
     context->next                 = NULL;
 
-    context->scorep_host_location = SCOREP_Location_GetCurrentCPULocation();
-    context->location_id          = SCOREP_CUPTI_NO_ID;
-
-    SCOREP_SUSPEND_CUDRV_CALLBACKS();
-
-    /* try to get CUDA device (ID), if they are not given */
-    if ( deviceId == SCOREP_CUPTI_NO_DEVICE_ID )
-    {
-        if ( cudaDevice == SCOREP_CUPTI_NO_DEVICE )
-        {
-            CUcontext cuCurrCtx;
-
-            if ( cudaContext != NULL )
-            {
-                SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cuCurrCtx ) );
-
-                /* if given context does not match the current one, get the device for
-                   the given one */
-                if ( cudaContext != cuCurrCtx )
-                {
-                    SCOREP_CUDA_DRIVER_CALL( cuCtxSetCurrent( cudaContext ) );
-                }
-            }
-
-            if ( CUDA_SUCCESS == cuCtxGetDevice( &cudaDevice ) )
-            {
-                deviceId = ( uint32_t )cudaDevice;
-            }
-
-            /* reset the active context */
-            if ( cudaContext != NULL && cudaContext != cuCurrCtx )
-            {
-                SCOREP_CUDA_DRIVER_CALL( cuCtxSetCurrent( cuCurrCtx ) );
-            }
-        }
-        else
-        {
-            /* no device ID, but CUDA device is given */
-            deviceId = ( uint32_t )cudaDevice;
-        }
-    }
-
-    context->device_id   = deviceId;
-    context->cuda_device = cudaDevice;
-
-    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_domain_id, cudaDevAttrPciDomainId, cudaDevice ) );
-    UTILS_BUG_ON( context->pci_domain_id < 0 || context->pci_domain_id >= UINT16_MAX, "Invalid PCI domain ID: %d", context->pci_domain_id );
-    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_bus_id, cudaDevAttrPciBusId, cudaDevice ) );
-    UTILS_BUG_ON( context->pci_bus_id < 0 || context->pci_bus_id >= UINT8_MAX, "Invalid PCI bus ID: %d", context->pci_bus_id );
-    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_device_id, cudaDevAttrPciDeviceId, cudaDevice ) );
-    UTILS_BUG_ON( context->pci_device_id < 0 || context->pci_device_id >= UINT8_MAX, "Invalid PCI device ID: %d", context->pci_device_id );
-
-    /* get the current CUDA context, if it is not given */
-    if ( cudaContext == NULL )
-    {
-        SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cudaContext ) );
-    }
+    context->host_location = SCOREP_Location_GetCurrentCPULocation();
+    context->location_id   = SCOREP_CUPTI_NO_ID;
 
     /* set the CUDA context */
     context->cuda_context = cudaContext;
@@ -546,7 +525,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     {
         // ensure to not create the RMA window twice on the same host location
         scorep_cuda_location_data* loc_data =
-            SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_Location_GetSubsystemData( context->host_location,
                                               scorep_cuda_subsystem_id );
     }
 
@@ -554,9 +533,17 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI] Created context for CUcontext %p, CUdevice %d",
-                        cudaContext, cudaDevice );
+                        cudaContext, context->device->cuda_device );
 
     SCOREP_RESUME_CUDRV_CALLBACKS();
+
+    char context_name_buffer[ 64 ];
+    sprintf( context_name_buffer, "CUDA Context %u", context->context_id );
+    context->location_group = SCOREP_Definitions_NewLocationGroup(
+        context_name_buffer,
+        context->device->system_tree_node,
+        SCOREP_LOCATION_GROUP_TYPE_ACCELERATOR,
+        SCOREP_GetProcessLocationGroup() );
 
     return context;
 }
@@ -573,8 +560,8 @@ scorep_cupti_context_get( CUcontext cudaContext )
 {
     scorep_cupti_context* context = NULL;
 
-    uint32_t cudaContextId = SCOREP_CUPTI_NO_CONTEXT_ID;
-    SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &cudaContextId ) );
+    uint32_t cuda_context_id = SCOREP_CUPTI_NO_CONTEXT_ID;
+    SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &cuda_context_id ) );
 
     /* lookup context */
     context = scorep_cupti_context_list;
@@ -582,7 +569,7 @@ scorep_cupti_context_get( CUcontext cudaContext )
     {
         if ( context->cuda_context == cudaContext )
         {
-            if ( context->context_id == cudaContextId )
+            if ( context->context_id == cuda_context_id )
             {
                 return context;
             }
@@ -643,10 +630,7 @@ scorep_cupti_context_get_create( CUcontext cudaContext )
 
         if ( context == NULL )
         {
-            uint32_t context_id = SCOREP_CUPTI_NO_CONTEXT_ID;
-            SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &context_id ) );
-            context = scorep_cupti_context_create( cudaContext, SCOREP_CUPTI_NO_DEVICE,
-                                                   context_id, SCOREP_CUPTI_NO_DEVICE_ID );
+            context = scorep_cupti_context_create( cudaContext );
 
             /* prepend context to global context list */
             context->next             = scorep_cupti_context_list;
@@ -724,7 +708,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
     }
 
     /* cleanup stream list */
-    /* free is implicitly done by Score-P memory management */
     /* currently there are only RMA windows destroyed */
     if ( scorep_cuda_record_memcpy )
     {
@@ -739,7 +722,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
     }
     context->streams = NULL;
 
-    /* free CUDA malloc entries, if user application has memory leaks */
     while ( context->cuda_mallocs != NULL )
     {
         scorep_cupti_gpumem* scorepMem =  context->cuda_mallocs;
@@ -750,9 +732,7 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
         }
 
         context->cuda_mallocs = scorepMem->next;
-        /* free is implicitly done by Score-P memory management */
-        /*free(scorepMem);*/
-        scorepMem = NULL;
+        scorepMem             = NULL;
     }
 
     // destroy the RMA window on the host
@@ -766,13 +746,9 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
 
     if ( context->activity != NULL )
     {
-        /* free is implicitly done by Score-P memory management */
-        /*free(scorepCtx->activity);*/
         context->activity = NULL;
     }
 
-    /* free is implicitly done by Score-P memory management */
-    /*free(scorepCtx);*/
     context = NULL;
 }
 
@@ -837,7 +813,7 @@ scorep_cupti_create_cuda_comm_group( uint64_t** globalLocationIds )
         if ( SCOREP_CUPTI_NO_ID != context->location_id )
         {
             ( *globalLocationIds )[ context->location_id ] =
-                SCOREP_Location_GetGlobalId( context->scorep_host_location );
+                SCOREP_Location_GetGlobalId( context->host_location );
         }
 
         context = context->next;
@@ -918,4 +894,94 @@ scorep_cupti_kernel_hash_get( const char* name )
     }
 
     return NULL;
+}
+
+/*
+ * Get a Score-P device by CUDA device
+ *
+ * @param cudaDevice the CUDA context
+ *
+ * @return Score-P CUPTI context
+ */
+scorep_cupti_device*
+cupti_device_get( CUdevice cudaDevice )
+{
+    scorep_cupti_device* device = NULL;
+
+    /* lookup device */
+    device = cupti_device_list;
+    while ( device != NULL )
+    {
+        if ( device->cuda_device == cudaDevice )
+        {
+            return device;
+        }
+
+        device = device->next;
+    }
+
+    return NULL;
+}
+
+/*
+ * Create a Score-P device by CUDA device
+ *
+ * @param cudaDevice the CUDA device
+ *
+ * @return Score-P CUPTI device
+ */
+scorep_cupti_device*
+cupti_device_create( CUdevice cudaDevice )
+{
+    scorep_cupti_device* device = SCOREP_Memory_AllocForMisc( sizeof( *device ) );
+
+    device->cuda_device = cudaDevice;
+    device->device_id   = ( uint32_t )cudaDevice;
+
+    /* CUDA_VISIBLE_DEVICES may be used to change the order and thus
+     * the device ID visible from the outside, use it to map the device ID
+     */
+    if ( device->device_id < scorep_cuda_visible_devices_len )
+    {
+        device->device_id = scorep_cuda_visible_devices_map[ device->device_id ];
+    }
+
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &device->pci_domain_id, cudaDevAttrPciDomainId, cudaDevice ) );
+    UTILS_BUG_ON( device->pci_domain_id < 0 || device->pci_domain_id >= UINT16_MAX, "Invalid PCI domain ID: %d", device->pci_domain_id );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &device->pci_bus_id, cudaDevAttrPciBusId, cudaDevice ) );
+    UTILS_BUG_ON( device->pci_bus_id < 0 || device->pci_bus_id >= UINT8_MAX, "Invalid PCI bus ID: %d", device->pci_bus_id );
+    SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &device->pci_device_id, cudaDevAttrPciDeviceId, cudaDevice ) );
+    UTILS_BUG_ON( device->pci_device_id < 0 || device->pci_device_id >= UINT8_MAX, "Invalid PCI device ID: %d", device->pci_device_id );
+
+    char device_name_buffer[ 32 ];
+    sprintf( device_name_buffer, "%u", device->device_id );
+    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "CUDA Device",
+        device_name_buffer );
+
+    SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
+                                            ( uint16_t )device->pci_domain_id,
+                                            ( uint8_t )device->pci_bus_id,
+                                            ( uint8_t )device->pci_device_id,
+                                            UINT8_MAX );
+
+    device->next            = NULL;
+    *cupti_device_list_tail = device;
+    cupti_device_list_tail  = &device->next;
+
+    return device;
+}
+
+scorep_cupti_device*
+cupti_device_get_create( CUdevice cudaDevice )
+{
+    scorep_cupti_device* device = cupti_device_get( cudaDevice );
+    if ( device != NULL )
+    {
+        return device;
+    }
+
+    return cupti_device_create( cudaDevice );
 }

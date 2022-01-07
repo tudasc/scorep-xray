@@ -168,24 +168,35 @@ typedef struct
 } scorep_cupti_activity;
 
 /*
+ * Score-P CUPTI device.
+ */
+typedef struct scorep_cupti_device
+{
+    CUdevice                    cuda_device;          /**< CUDA device handle */
+    uint32_t                    device_id;            /**< device ID, if possible the physical */
+    int                         pci_domain_id;        /**< PCI domain id of the device */
+    int                         pci_bus_id;           /**< PCI bus id of the device */
+    int                         pci_device_id;        /**< PCI device id of the device */
+    SCOREP_SystemTreeNodeHandle system_tree_node;
+    struct scorep_cupti_device* next;
+} scorep_cupti_device;
+
+/*
  * Score-P CUPTI context.
  */
 typedef struct scorep_cupti_context
 {
     CUcontext                    cuda_context;         /**< CUDA context handle */
     uint32_t                     context_id;           /**< context ID */
-    uint32_t                     device_id;            /**< device ID */
-    int                          pci_domain_id;        /**< PCI domain id of the device */
-    int                          pci_bus_id;           /**< PCI bus id of the device */
-    int                          pci_device_id;        /**< PCI device id of the device */
-    CUdevice                     cuda_device;          /**< CUDA device handle */
-    SCOREP_Location*             scorep_host_location; /**< Score-P context host location */
+    scorep_cupti_device*         device;               /**< Score-P CUDA device */
+    SCOREP_Location*             host_location;        /**< Score-P context host location */
     uint32_t                     location_id;          /**< internal location ID used for unification */
     scorep_cupti_stream*         streams;              /**< list of Score-P CUDA streams */
     scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
     scorep_cupti_gpumem*         free_cuda_mallocs;    /**< free-list of allocated GPU memory fields */
     size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
     scorep_cupti_activity*       activity;
+    SCOREP_LocationGroupHandle   location_group;
     struct scorep_cupti_context* next;
 } scorep_cupti_context;
 
@@ -266,10 +277,7 @@ scorep_cupti_handle_error( CUptiResult err,
  * @return pointer to created Score-P CUPTI context
  */
 scorep_cupti_context*
-scorep_cupti_context_create( CUcontext cudaContext,
-                             CUdevice  cudaDevice,
-                             uint32_t  cudaContextId,
-                             uint32_t  cudaDeviceId );
+scorep_cupti_context_create( CUcontext cudaContext );
 
 /*
  * Get a Score-P CUPTI context by CUDA context.
