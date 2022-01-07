@@ -81,7 +81,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
  */
 SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewLocationGroup( const char*                 name,
-                                     SCOREP_SystemTreeNodeHandle systemTreeParent )
+                                     SCOREP_SystemTreeNodeHandle systemTreeParent,
+                                     SCOREP_LocationGroupType    locationGroupType )
 {
     SCOREP_Definitions_Lock();
 
@@ -93,7 +94,7 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
             &scorep_local_definition_manager,
             name ? name : "<unknown location group>", NULL ),
         systemTreeParent,
-        SCOREP_LOCATION_GROUP_TYPE_PROCESS );
+        locationGroupType );
 
     SCOREP_Definitions_Unlock();
 

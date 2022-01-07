@@ -102,11 +102,13 @@ SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
         }
     }
 
-    /* Create Location Group definition
+    /* Create Location Group definition for this process
      *
      * In early stage 'name' is set to an invalid dummy.
      * Correct values must be set later on. */
-    return SCOREP_Definitions_NewLocationGroup( "", parent );
+    return SCOREP_Definitions_NewLocationGroup( "",
+                                                parent,
+                                                SCOREP_LOCATION_GROUP_TYPE_PROCESS );
 }
 
 void

@@ -56,7 +56,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 
 SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewLocationGroup( const char*                 name,
-                                     SCOREP_SystemTreeNodeHandle systemTreeParent );
+                                     SCOREP_SystemTreeNodeHandle systemTreeParent,
+                                     SCOREP_LocationGroupType    locationGroupType );
 
 
 void
