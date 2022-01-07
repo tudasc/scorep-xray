@@ -563,26 +563,6 @@ SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
 
 
 void
-SCOREP_Location_AddPCIProperties( SCOREP_Location* location,
-                                  uint16_t         domain,
-                                  uint8_t          bus,
-                                  uint8_t          device,
-                                  uint8_t          function )
-{
-    if ( UINT16_MAX != domain )
-    {
-        SCOREP_Location_AddLocationProperty( location, "PCI Domain ID", 16, "%" PRIu16, domain );
-    }
-    SCOREP_Location_AddLocationProperty( location, "PCI Bus ID", 8, "%" PRIu8, bus );
-    SCOREP_Location_AddLocationProperty( location, "PCI Device ID", 8, "%" PRIu8, device );
-    if ( UINT8_MAX != function )
-    {
-        SCOREP_Location_AddLocationProperty( location, "PCI Function", 8, "%" PRIu8, function );
-    }
-}
-
-
-void
 SCOREP_SystemTreeNode_AddPCIProperties( SCOREP_SystemTreeNodeHandle node,
                                         uint16_t                    domain,
                                         uint8_t                     bus,

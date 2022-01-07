@@ -314,25 +314,6 @@ SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
 
 
 /**
- * Helper function to add a PCI ID tuple to a location.
- *
- * @a domain or @a function may be unknown, use UINT16_MAX/UIN8_MAX as values,
- * respectivly, and wont be added in this case.
- *
- * @param location  Location.
- * @param domain    PCI domain ID.
- * @param bus       PCI bus ID.
- * @param device    PCI device ID.
- * @param function  PCI function ID.
- */
-void
-SCOREP_Location_AddPCIProperties( SCOREP_Location* location,
-                                  uint16_t         domain,
-                                  uint8_t          bus,
-                                  uint8_t          device,
-                                  uint8_t          function );
-
-/**
  * Helper function to add a PCI ID tuple to a system tree node.
  *
  * @a domain or @a function may be unknown, use UINT16_MAX/UIN8_MAX as values,
