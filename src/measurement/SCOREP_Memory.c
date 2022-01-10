@@ -336,8 +336,8 @@ SCOREP_Location_AlignedAllocForMisc( SCOREP_Location* locationData, size_t align
     }
 
     void* mem = SCOREP_Allocator_AlignedAlloc(
-        SCOREP_Location_GetMemoryPageManager( locationData,
-                                              SCOREP_MEMORY_TYPE_MISC ),
+        SCOREP_Location_GetOrCreateMemoryPageManager( locationData,
+                                                      SCOREP_MEMORY_TYPE_MISC ),
         alignment,
         size );
     if ( !mem )
