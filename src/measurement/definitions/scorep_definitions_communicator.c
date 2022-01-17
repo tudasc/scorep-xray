@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019-2020,
+ * Copyright (c) 2009-2017, 2019-2021,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -64,22 +64,8 @@
 #include <scorep_substrates_definition.h>
 #include <scorep_type_utils.h>
 #include <scorep_location_management.h>
-#include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
 #include <SCOREP_Memory.h>
-
-
-static SCOREP_Mutex interim_communicator_definition_counter_lock;
-
-
-static uint32_t
-get_new_interim_communicator_id( void )
-{
-    uint32_t new_id;
-    SCOREP_MutexLock( &interim_communicator_definition_counter_lock );
-    new_id = scorep_local_definition_manager.interim_communicator.counter++;
-    SCOREP_MutexUnlock( &interim_communicator_definition_counter_lock );
-    return new_id;
-}
 
 
 static SCOREP_InterimCommunicatorHandle
@@ -312,7 +298,9 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
     }
     *managerEntry->tail             = new_handle;
     managerEntry->tail              = &new_definition->next;
-    new_definition->sequence_number = get_new_interim_communicator_id();
+    new_definition->sequence_number = SCOREP_Atomic_FetchAdd_uint32(
+        &scorep_local_definition_manager.interim_communicator.counter,
+        1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     if ( sizeOfPayload && payloadOut )
     {

@@ -72,7 +72,7 @@ static bool is_initialized;
 static bool is_finalized;
 
 static uint32_t     active_locations;
-static SCOREP_Mutex thread_create_mutex;
+static SCOREP_Mutex thread_create_mutex; /* also protects subsystem_data_free_list */
 static SCOREP_Mutex thread_subsystem_data_mutex;
 static size_t       subsystem_id;
 

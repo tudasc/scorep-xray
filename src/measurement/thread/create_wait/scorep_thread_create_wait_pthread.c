@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016, 2018-2019,
+ * Copyright (c) 2014, 2016, 2018-2019, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2019-2020,
@@ -34,6 +34,7 @@
 #include <UTILS_Error.h>
 
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Task.h>
@@ -45,7 +46,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-
+#include <inttypes.h>
 
 /* *INDENT-OFF* */
 static void create_tpd_key( void );
@@ -89,8 +90,6 @@ static struct tpd_reuse_pool  tpd_reuse_pool[ TPD_REUSE_POOL_SIZE ];
 static struct reuse_pool_tpd* tpd_reuse_pool_free_list;
 static SCOREP_Mutex           tpd_reuse_pool_mutex;
 
-static SCOREP_Mutex pthread_location_count_mutex;
-static SCOREP_Mutex orphan_location_count_mutex;
 
 struct SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation( void )
@@ -291,7 +290,7 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
 {
     UTILS_DEBUG_ENTRY();
 
-    static unsigned pthread_location_count;
+    static uint32_t pthread_location_count;
     *locationIsCreated = false;
 
     *currentTpd = pop_from_tpd_reuse_pool( locationReuseKey );
@@ -299,13 +298,12 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        SCOREP_MutexLock( &pthread_location_count_mutex );
-        unsigned location_count = ++pthread_location_count;
-        SCOREP_MutexUnlock( &pthread_location_count_mutex );
+        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
+            &pthread_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         const int provided_length = 80;
         char      location_name[ provided_length ];
-        int       real_length = snprintf( location_name, provided_length, "Pthread thread %d", location_count );
+        int       real_length = snprintf( location_name, provided_length, "Pthread thread %" PRIu32, location_count );
         UTILS_ASSERT( real_length <  provided_length );
 
         SCOREP_Location* location = SCOREP_Location_CreateCPULocation( location_name );
@@ -470,7 +468,7 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
 {
     UTILS_DEBUG_ENTRY();
 
-    static unsigned orphan_location_count;
+    static uint32_t orphan_location_count;
     *locationIsCreated = false;
 
     uintptr_t reuse_key = scorep_thread_create_wait_get_reuse_key( SCOREP_PARADIGM_ORPHAN_THREAD, 0 );
@@ -479,12 +477,11 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        SCOREP_MutexLock( &orphan_location_count_mutex );
-        unsigned location_count = ++orphan_location_count;
-        SCOREP_MutexUnlock( &orphan_location_count_mutex );
+        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
+            &orphan_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         char location_name[ 80 ];
-        int  length = snprintf( location_name, 80, "Orphan thread %d", location_count );
+        int  length = snprintf( location_name, 80, "Orphan thread %" PRIu32, location_count );
         UTILS_ASSERT( length < 80 );
 
         SCOREP_Location* location = SCOREP_Location_CreateCPULocation( location_name );
