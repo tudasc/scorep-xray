@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
+dnl Copyright (c) 2022,
+dnl Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -14,12 +17,12 @@ dnl
 dnl file scorep_libbfd.m4
 
 
-# SCOREP_LIBFD()
+# SCOREP_LIBBFD()
 # --------------
 # Provide configure options to use or download a libbfd installation
 # or package. Check an existing installation whether it is usable, it
 # needs to be either shared or PIC.  As libbfd is a hard requirement,
-# abort if this check fails. The download option generates a Maekfile
+# abort if this check fails. The download option generates a Makefile
 # that builds and install libbfd at make time.
 #
 AC_DEFUN_ONCE([SCOREP_LIBBFD], [
@@ -36,7 +39,7 @@ AS_HELP_STRING([--with-]_afs_lib_name[@<:@=yes|download|<path to ]_afs_lib_name[
      not the case, use the explicit
      options directly or provide paths via ]_afs_lib_NAME[_LIB
      and ]_afs_lib_NAME[_INCLUDE. Use [download] to obtain and
-     use ]_afs_lib_name[ via exernal tarball.])])dnl
+     use ]_afs_lib_name[ via external tarball.])])dnl
 AC_LANG_POP([C])
 dnl
 AS_IF([test "${libbfd_summary:+set}" != set],
@@ -148,7 +151,7 @@ AC_CHECK_HEADER([bfd.h],
               [libbfd_summary="${libbfd_summary}, cplus_demangle not available"
                have_cplus_demangle=no])],
          [AC_MSG_FAILURE([Cannot link _afs_lib_name (and dependencies).])])],
-    [AC_MSG_FAILURE([bfh.h required])])
+    [AC_MSG_FAILURE([bfd.h required])])
 ])# _LIBBFD_CHECK
 
 
