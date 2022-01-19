@@ -74,7 +74,7 @@ libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
 
 libscorep_adapter_cuda_mgmt_la_LIBADD = \
     @CUDA_LIBS@ \
-    @LIBBFD_LIBS@
+    @SCOREP_LIBBFD_LIBS@
 
 libscorep_adapter_cuda_mgmt_la_LDFLAGS = \
     @CUDA_LDFLAGS@                       \

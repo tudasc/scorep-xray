@@ -45,11 +45,11 @@ libscorep_unwinding_la_LDFLAGS = \
     @LIBUNWIND_LDFLAGS@
 
 libscorep_unwinding_la_CPPFLAGS += \
-    @LIBBFD_CPPFLAGS@
+    @SCOREP_LIBBFD_CPPFLAGS@
 libscorep_measurement_la_LIBADD += \
-    @LIBBFD_LIBS@
+    @SCOREP_LIBBFD_LIBS@
 libscorep_measurement_la_LDFLAGS += \
-    @LIBBFD_LDFLAGS@
+    @SCOREP_LIBBFD_LDFLAGS@
 
 else !HAVE_UNWINDING_SUPPORT
 
