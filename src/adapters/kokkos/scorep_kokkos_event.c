@@ -235,7 +235,7 @@ get_metric( const char* name )
     return allocMetric;
 }
 
-#if HAVE( DEMANGLE )
+#if HAVE( SCOREP_DEMANGLE )
 extern char*
 cplus_demangle( const char* mangled,
                 int         options );

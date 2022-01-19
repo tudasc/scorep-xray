@@ -23,14 +23,14 @@
 
 #include "scorep_unwinding_region.h"
 
-#if HAVE( DEMANGLE )
+#if HAVE( SCOREP_DEMANGLE )
 /* Declaration of external demangling function */
 /* It is contained in "demangle.h" */
 extern char*
 cplus_demangle( const char* mangled,
                 int         options );
 
-#endif /* HAVE( DEMANGLE ) */
+#endif /* HAVE( SCOREP_DEMANGLE ) */
 
 
 /* *INDENT-OFF* */
@@ -132,7 +132,7 @@ finalize_region( scorep_unwinding_region* region,
     SCOREP_RegionDef* definition =
         SCOREP_LOCAL_HANDLE_DEREF( region->handle, Region );
 
-#if HAVE( DEMANGLE )
+#if HAVE( SCOREP_DEMANGLE )
     const char* region_name    = SCOREP_RegionHandle_GetName( region->handle );
     char*       demangled_name = cplus_demangle( region_name, 15 );
     if ( demangled_name )
@@ -140,7 +140,7 @@ finalize_region( scorep_unwinding_region* region,
         definition->name_handle = SCOREP_Definitions_NewString( demangled_name );
         free( demangled_name );
     }
-#endif /* HAVE( DEMANGLE ) */
+#endif /* HAVE( SCOREP_DEMANGLE ) */
 
 #if !HAVE( SCOREP_ADDR2LINE )
     return;

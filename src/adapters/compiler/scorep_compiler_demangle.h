@@ -42,7 +42,7 @@
 
 #include <stdlib.h>
 
-#if HAVE( DEMANGLE )
+#if HAVE( SCOREP_DEMANGLE )
 /* Declaration of external demangling function */
 /* It is contained in "demangle.h" */
 extern char*
@@ -74,7 +74,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
     } \
     while ( 0 )
 
-#else /* !HAVE( DEMANGLE ) */
+#else /* !HAVE( SCOREP_DEMANGLE ) */
 
 #define scorep_compiler_demangle( mangled, demangled ) \
     do \
@@ -84,7 +84,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
     } \
     while ( 0 )
 
-#endif /* !HAVE( DEMANGLE ) */
+#endif /* !HAVE( SCOREP_DEMANGLE ) */
 
 #define scorep_compiler_demangle_free( mangled, demangled ) \
     do \
