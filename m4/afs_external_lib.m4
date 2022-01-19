@@ -77,15 +77,15 @@ m4_pushdef([_afs_lib_withval], [with_]m4_translit(_afs_lib_name, [-+.], [___]))d
 m4_pushdef([_afs_lib_withval_lib], [with_]m4_translit(_afs_lib_name, [-+.], [___])_lib)dnl
 m4_ifnblank([$3], [m4_pushdef([_afs_lib_withval_include], [with_]m4_translit(_afs_lib_name, [-+.], [___])_include)])dnl
 dnl
-m4_pushdef([_afs_lib_LDFLAGS], _afs_lib_NAME[]_LDFLAGS)dnl
-m4_ifnblank([$3], [m4_pushdef([_afs_lib_CPPFLAGS], _afs_lib_NAME[]_CPPFLAGS)])dnl
-m4_pushdef([_afs_lib_LIBS], _afs_lib_NAME[]_LIBS)dnl
+m4_pushdef([_afs_lib_LDFLAGS], AFS_PACKAGE_NAME[]_[]_afs_lib_NAME[]_LDFLAGS)dnl
+m4_ifnblank([$3], [m4_pushdef([_afs_lib_CPPFLAGS], AFS_PACKAGE_NAME[]_[]_afs_lib_NAME[]_CPPFLAGS)])dnl
+m4_pushdef([_afs_lib_LIBS], AFS_PACKAGE_NAME[]_[]_afs_lib_NAME[]_LIBS)dnl
 AC_SUBST(_afs_lib_LDFLAGS)dnl
 m4_ifnblank([$3], [AC_SUBST(_afs_lib_CPPFLAGS)])dnl
 AC_SUBST(_afs_lib_LIBS)dnl
 m4_ifnblank([$4], dnl
-m4_pushdef(_afs_lib_MAKEFILE, _afs_lib_NAME[]_MAKEFILE)dnl
-m4_pushdef([_afs_lib_PREFIX], _afs_lib_NAME[]_PREFIX))dnl
+m4_pushdef(_afs_lib_MAKEFILE, AFS_PACKAGE_NAME[]_[]_afs_lib_NAME[]_MAKEFILE)dnl
+m4_pushdef([_afs_lib_PREFIX], AFS_PACKAGE_NAME[]_[]_afs_lib_NAME[]_PREFIX))dnl
 m4_ifnblank([$4], [dnl Can't be put into ifnblank above
 AC_SUBST(_afs_lib_MAKEFILE)dnl
 AC_SUBST(_afs_lib_PREFIX)])dnl
