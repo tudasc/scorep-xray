@@ -17,9 +17,14 @@
 #ifndef SCOREP_CUDA_NVTX_MGMT_H
 #define SCOREP_CUDA_NVTX_MGMT_H
 
+#include <wchar.h>
+
 /*************** Functions ****************************************************/
 
 void
 scorep_cuda_nvtx_init( void );
+
+const char*
+scorep_cuda_nvtx_unicode_to_ascii( const wchar_t* wide );
 
 #endif /* SCOREP_CUDA_NVTX_MGMT_H */

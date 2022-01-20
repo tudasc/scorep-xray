@@ -25,6 +25,24 @@
 
 #include <nvToolsExt.h>
 
+/*************** Macros *******************************************************/
+
+#define SCOREP_CUDA_NVTX_MAKE_ASCII_ATTRIBUTES( message ) \
+    { \
+        .version       = NVTX_VERSION, \
+        .size          = NVTX_EVENT_ATTRIB_STRUCT_SIZE, \
+        .messageType   = NVTX_MESSAGE_TYPE_ASCII, \
+        .message.ascii = message \
+    }
+
+#define SCOREP_CUDA_NVTX_MAKE_UNICODE_ATTRIBUTES( message ) \
+    { \
+        .version         = NVTX_VERSION, \
+        .size            = NVTX_EVENT_ATTRIB_STRUCT_SIZE, \
+        .messageType     = NVTX_MESSAGE_TYPE_UNICODE, \
+        .message.unicode = message \
+    }
+
 /*************** Init functions ***********************************************/
 
 NVTX_DECLSPEC int NVTX_API
@@ -70,6 +88,7 @@ NVTX_DECLSPEC void NVTX_API
 nvtxMarkEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxDomainMarkEx( NULL, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -77,11 +96,8 @@ NVTX_DECLSPEC void NVTX_API
 nvtxMarkA( const char* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return;
-    }
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_ASCII_ATTRIBUTES( message );
+    nvtxMarkEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -89,11 +105,8 @@ NVTX_DECLSPEC void NVTX_API
 nvtxMarkW( const wchar_t* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return;
-    }
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_UNICODE_ATTRIBUTES( message );
+    nvtxMarkEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -126,39 +139,29 @@ NVTX_DECLSPEC nvtxRangeId_t NVTX_API
 nvtxRangeStartEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return 0;
-    }
+    nvtxRangeId_t result = nvtxDomainRangeStartEx( NULL, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC nvtxRangeId_t NVTX_API
 nvtxRangeStartA( const char* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return 0;
-    }
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_ASCII_ATTRIBUTES( message );
+    nvtxRangeId_t         result     = nvtxRangeStartEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC nvtxRangeId_t NVTX_API
 nvtxRangeStartW( const wchar_t* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return 0;
-    }
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_UNICODE_ATTRIBUTES( message );
+    nvtxRangeId_t         result     = nvtxRangeStartEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC void NVTX_API
@@ -181,6 +184,7 @@ NVTX_DECLSPEC void NVTX_API
 nvtxRangeEnd( nvtxRangeId_t id )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxDomainRangeEnd( NULL, id );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -213,24 +217,29 @@ NVTX_DECLSPEC int NVTX_API
 nvtxRangePushEx( const nvtxEventAttributes_t* eventAttrib )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    int result = nvtxDomainRangePushEx( NULL, eventAttrib );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC int NVTX_API
 nvtxRangePushA( const char* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_ASCII_ATTRIBUTES( message );
+    int                   result     = nvtxRangePushEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC int NVTX_API
 nvtxRangePushW( const wchar_t* message )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxEventAttributes_t attributes = SCOREP_CUDA_NVTX_MAKE_UNICODE_ATTRIBUTES( message );
+    int                   result     = nvtxRangePushEx( &attributes );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 NVTX_DECLSPEC int NVTX_API
@@ -250,8 +259,9 @@ NVTX_DECLSPEC int NVTX_API
 nvtxRangePop( void )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    int result = nvtxDomainRangePop( NULL );
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return 0;
+    return result;
 }
 
 /*************** Domain management ********************************************/
@@ -283,6 +293,7 @@ nvtxDomainCreateW( const wchar_t* name )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
         SCOREP_InitMeasurement();
     }
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -291,11 +302,10 @@ nvtxDomainCreateW( const wchar_t* name )
         return NULL;
     }
 
-    // Create a domain handle with a name
-    // Names here will get used for region group name(?)
+    nvtxDomainHandle_t result = nvtxDomainCreateA( scorep_cuda_nvtx_unicode_to_ascii( name ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return NULL;
+    return result;
 }
 
 NVTX_DECLSPEC void NVTX_API
@@ -357,7 +367,19 @@ nvtxDomainNameCategoryW( nvtxDomainHandle_t domain,
                          const wchar_t*     name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Not implemented
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    nvtxDomainNameCategoryA( domain, category, scorep_cuda_nvtx_unicode_to_ascii( name ) );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -366,6 +388,7 @@ nvtxNameCategoryA( uint32_t    category,
                    const char* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxDomainNameCategoryA( NULL, category, name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -374,6 +397,7 @@ nvtxNameCategoryW( uint32_t       category,
                    const wchar_t* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    nvtxDomainNameCategoryW( NULL, category, name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -393,6 +417,19 @@ nvtxNameOsThreadW( uint32_t       threadId,
                    const wchar_t* name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    nvtxNameOsThreadA( threadId, scorep_cuda_nvtx_unicode_to_ascii( name ) );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -413,9 +450,22 @@ nvtxDomainRegisterStringW( nvtxDomainHandle_t domain,
                            const wchar_t*     string )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Convert to char* and return from -A version
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_unicode_to_ascii needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return NULL;
+    }
+
+    nvtxStringHandle_t result =
+        nvtxDomainRegisterStringA( domain, scorep_cuda_nvtx_unicode_to_ascii( string ) );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
-    return NULL;
+    return result;
 }
 
 /* Not implemented API: nvToolsExtCuda.h
