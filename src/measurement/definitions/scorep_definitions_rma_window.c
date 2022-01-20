@@ -94,7 +94,7 @@ SCOREP_Definitions_NewRmaWindow( const char*                      name,
         &scorep_local_definition_manager,
         name ? scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name, NULL ) : SCOREP_INVALID_STRING,
+            name ) : SCOREP_INVALID_STRING,
         communicatorHandle,
         scorep_definitions_interim_communicator_get_rma_window_creation_counter( communicatorHandle ),
         flags );
@@ -133,7 +133,7 @@ SCOREP_RmaWindowHandle_SetName( SCOREP_RmaWindowHandle rmaWindowHandle,
     {
         definition->name_handle = scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "", NULL );
+            name ? name : "" );
         definition->has_default_name = false;
     }
 

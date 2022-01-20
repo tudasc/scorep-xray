@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017, 2019,
+ * Copyright (c) 2016-2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -82,7 +82,7 @@ SCOREP_Definitions_NewIoFile( const char*                 fileName,
         /* name */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            fileName ? fileName : "<unknown file>", NULL ),
+            fileName ? fileName : "<unknown file>" ),
         scope );
 
     SCOREP_Definitions_Unlock();

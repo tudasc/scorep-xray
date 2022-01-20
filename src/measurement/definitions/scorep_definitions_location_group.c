@@ -94,7 +94,7 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unknown location group>", NULL ),
+            name ? name : "<unknown location group>" ),
         systemTreeParent,
         locationGroupType,
         creatingLocationGroup );

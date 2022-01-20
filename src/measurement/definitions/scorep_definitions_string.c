@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2019,
+ * Copyright (c) 2009-2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -69,13 +69,35 @@
 SCOREP_StringHandle
 SCOREP_Definitions_NewString( const char* str )
 {
+    UTILS_ASSERT( str );
+
     UTILS_DEBUG_ENTRY( "%s", str );
 
     SCOREP_Definitions_Lock();
 
     SCOREP_StringHandle new_handle = scorep_definitions_new_string(
+        &scorep_local_definition_manager, str );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+SCOREP_StringHandle
+SCOREP_Definitions_NewStringGenerator( size_t                             stringLength,
+                                       scorep_string_definition_generator generator,
+                                       void*                              generatorArg )
+{
+    UTILS_ASSERT( generator );
+
+    UTILS_DEBUG_ENTRY( "%zu", stringLength );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_StringHandle new_handle = scorep_definitions_new_string_generator(
         &scorep_local_definition_manager,
-        str, NULL );
+        stringLength, generator, generatorArg );
 
     SCOREP_Definitions_Unlock();
 
@@ -92,7 +114,7 @@ scorep_definitions_unify_string( SCOREP_StringDef*             definition,
 
     definition->unified = scorep_definitions_new_string(
         scorep_unified_definition_manager,
-        definition->string_data, NULL );
+        definition->string_data );
 }
 
 
@@ -108,34 +130,26 @@ equal_string( const SCOREP_StringDef* existingDefinition,
 
 
 SCOREP_StringHandle
-scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_manager,
-                               const char*                       str,
-                               scorep_string_definition_modifier modifier )
+scorep_definitions_new_string_generator( SCOREP_DefinitionManager*          definition_manager,
+                                         size_t                             stringLength,
+                                         scorep_string_definition_generator generator,
+                                         void*                              generatorArg )
 {
     UTILS_ASSERT( definition_manager );
+    UTILS_ASSERT( generator );
 
     SCOREP_StringDef*   new_definition = NULL;
     SCOREP_StringHandle new_handle     = SCOREP_INVALID_STRING;
 
     /* 1) Get storage for new definition */
-    size_t string_length = strlen( str );
     SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( String,
                                             char,
-                                            string_length + 1 );
+                                            stringLength + 1 );
 
-    /* 2) populate definitions attributes */
-
-    /* we know the length of the string already, therefore we can use the
-     * faster memcpy
-     */
-    memcpy( new_definition->string_data, str, string_length + 1 );
-    if ( modifier )
-    {
-        modifier( new_definition->string_data );
-        string_length = strlen( new_definition->string_data );
-    }
-    new_definition->string_length = string_length;
-    new_definition->hash_value    = jenkins_hash( str, string_length, 0 );
+    /* 2) Let the caller generate its string content */
+    generator( stringLength, new_definition->string_data, generatorArg );
+    new_definition->string_length = strlen( new_definition->string_data );
+    new_definition->hash_value    = jenkins_hash( new_definition->string_data, new_definition->string_length, 0 );
 
     /*
      * 3) search in existing definitions and return found
@@ -155,40 +169,62 @@ scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_mana
 }
 
 
+static void
+generator_memcpy( size_t stringLength,
+                  char*  stringStorage,
+                  void*  arg )
+{
+    memcpy( stringStorage, arg, stringLength + 1 );
+}
+
+
 SCOREP_StringHandle
-scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
-                                  size_t                    strLen,
-                                  const char*               strFmt,
-                                  va_list                   va )
+scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
+                               const char*               string )
 {
     UTILS_ASSERT( definition_manager );
+    UTILS_ASSERT( string );
 
-    SCOREP_StringDef*   new_definition = NULL;
-    SCOREP_StringHandle new_handle     = SCOREP_INVALID_STRING;
+    return scorep_definitions_new_string_generator( definition_manager,
+                                                    strlen( string ),
+                                                    generator_memcpy,
+                                                    ( void* )string );
+}
 
-    SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( String,
-                                            char,
-                                            strLen + 1 );
+struct generator_vsnprintf_args
+{
+    const char* string_format;
+    va_list     va;
+};
 
-    vsnprintf( new_definition->string_data, strLen + 1, strFmt, va );
-    new_definition->string_length = strLen;
-    new_definition->hash_value    = jenkins_hash( new_definition->string_data, strLen, 0 );
+static void
+generator_vsnprintf( size_t stringLength,
+                     char*  stringStorage,
+                     void*  arg )
+{
+    struct generator_vsnprintf_args* args = arg;
+    vsnprintf( stringStorage, stringLength + 1, args->string_format, args->va );
+}
 
-    /*
-     * 3) search in existing definitions and return found
-     *    - discard new if an old one was found
-     *    - if not, link new one into the hash chain and into definition list
-     */
-    /* Does return if it is a duplicate */
-    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( String, string );
+SCOREP_StringHandle
+scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
+                                  size_t                    stringLength,
+                                  const char*               formatString,
+                                  va_list                   vaList )
+{
+    UTILS_ASSERT( definition_manager );
+    UTILS_ASSERT( formatString );
 
-    if ( definition_manager == &scorep_local_definition_manager )
-    {
-        SCOREP_CALL_SUBSTRATE_MGMT( NewDefinitionHandle, NEW_DEFINITION_HANDLE,
-                                    ( new_handle, SCOREP_HANDLE_TYPE_STRING ) );
-    }
+    struct generator_vsnprintf_args args;
+    args.string_format = formatString;
+    /* Based on N1256 §7.15 footnote 221, taking the address of `va_list` is valid,
+       but GCC issues a warning and segfaults, thus `va_copy` is used, which works. */
+    va_copy( args.va, vaList );
 
-    return new_handle;
+    return scorep_definitions_new_string_generator( definition_manager,
+                                                    stringLength,
+                                                    generator_vsnprintf,
+                                                    &args );
 }
 
 const char*

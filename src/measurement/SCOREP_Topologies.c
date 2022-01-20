@@ -726,7 +726,7 @@ define_topology_locations_pre_unify_create_groups( void )
                     group_handle,
                     scorep_definitions_new_string(
                         &scorep_local_definition_manager,
-                        "Hardware CPU Locations", NULL ),
+                        "Hardware CPU Locations" ),
                     SCOREP_INVALID_COMMUNICATOR,
                     0, SCOREP_COMMUNICATOR_FLAG_NONE );
         }
@@ -744,7 +744,7 @@ define_topology_locations_pre_unify_create_groups( void )
                     group_handle,
                     scorep_definitions_new_string(
                         &scorep_local_definition_manager,
-                        "Process x Threads CPU Locations", NULL ),
+                        "Process x Threads CPU Locations" ),
                     SCOREP_INVALID_COMMUNICATOR,
                     0, SCOREP_COMMUNICATOR_FLAG_NONE );
         }
@@ -847,8 +847,7 @@ topologies_subsystem_post_unify( void )
                     char* comm_name = SCOREP_UNIFIED_HANDLE_DEREF( unified_comm_string_handle, String )->string_data;
 
                     SCOREP_StringHandle new_name_handle = scorep_definitions_new_string( scorep_unified_definition_manager,
-                                                                                         comm_name,
-                                                                                         NULL );
+                                                                                         comm_name );
                     definition->topology_name = new_name_handle;
                 }
             }

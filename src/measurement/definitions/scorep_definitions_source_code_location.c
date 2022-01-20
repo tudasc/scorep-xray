@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2015, 2019,
+ * Copyright (c) 2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -63,6 +63,14 @@ static bool
 equal_source_code_location( const SCOREP_SourceCodeLocationDef* existingDefinition,
                             const SCOREP_SourceCodeLocationDef* newDefinition );
 
+static void
+simplify_path( size_t strLen,
+               char*  str,
+               void*  arg )
+{
+    memcpy( str, arg, strLen + 1 );
+    UTILS_IO_SimplifyPath( str );
+}
 
 SCOREP_SourceCodeLocationHandle
 SCOREP_Definitions_NewSourceCodeLocation( const char*   file,
@@ -72,12 +80,14 @@ SCOREP_Definitions_NewSourceCodeLocation( const char*   file,
 
     SCOREP_Definitions_Lock();
 
+    file = file ? file : "";
+
     SCOREP_SourceCodeLocationHandle new_handle = define_source_code_location(
         &scorep_local_definition_manager,
-        scorep_definitions_new_string(
+        scorep_definitions_new_string_generator(
             &scorep_local_definition_manager,
-            file ? file : "",
-            UTILS_IO_SimplifyPath ),
+            strlen( file ),
+            simplify_path, ( void* )file ),
         lineNumber );
 
     SCOREP_Definitions_Unlock();

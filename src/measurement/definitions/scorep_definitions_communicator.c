@@ -133,7 +133,7 @@ SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commH
     {
         definition->name_handle = scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "", NULL );
+            name ? name : "" );
     }
 
     SCOREP_Definitions_Unlock();

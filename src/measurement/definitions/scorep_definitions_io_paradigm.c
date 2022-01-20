@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019,
+ * Copyright (c) 2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -64,9 +64,9 @@ SCOREP_Definitions_NewIoParadigm( SCOREP_IoParadigmType  paradigm,
 
     new_paradigm->paradigm_type         = paradigm;
     new_paradigm->identification_handle = scorep_definitions_new_string(
-        &scorep_local_definition_manager, identification, NULL );
+        &scorep_local_definition_manager, identification );
     new_paradigm->name_handle = scorep_definitions_new_string(
-        &scorep_local_definition_manager, name, NULL );
+        &scorep_local_definition_manager, name );
     new_paradigm->paradigm_class = paradigmClass;
     new_paradigm->paradigm_flags = paradigmFlags;
 
