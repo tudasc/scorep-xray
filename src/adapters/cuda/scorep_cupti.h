@@ -181,9 +181,9 @@ typedef struct scorep_cupti_context
     CUcontext                    cuda_context;         /**< CUDA context handle */
     uint32_t                     context_id;           /**< context ID */
     uint32_t                     device_id;            /**< device ID */
-    uint32_t                     pci_domain_id;        /**< PCI domain id of the device */
-    uint32_t                     pci_bus_id;           /**< PCI bus id of the device */
-    uint32_t                     pci_device_id;        /**< PCI device id of the device */
+    int                          pci_domain_id;        /**< PCI domain id of the device */
+    int                          pci_bus_id;           /**< PCI bus id of the device */
+    int                          pci_device_id;        /**< PCI device id of the device */
     CUdevice                     cuda_device;          /**< CUDA device handle */
     SCOREP_Location*             scorep_host_location; /**< Score-P context host location */
     uint32_t                     location_id;          /**< internal location ID used for unification */

@@ -604,8 +604,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
 
     if ( scorep_cuda_record_memcpy && !record_driver_api_location )
     {
-        if (
-            ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL ) )
+        if ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL )
         {
             switch ( callbackId )
             {

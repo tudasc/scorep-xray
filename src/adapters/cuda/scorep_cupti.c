@@ -265,9 +265,9 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
                                                   SCOREP_LOCATION_TYPE_GPU, thread_name );
 
         SCOREP_Location_AddPCIProperties( stream->scorep_location,
-                                          context->pci_domain_id,
-                                          context->pci_bus_id,
-                                          context->pci_device_id,
+                                          ( uint16_t )context->pci_domain_id,
+                                          ( uint8_t )context->pci_bus_id,
+                                          ( uint8_t )context->pci_device_id,
                                           UINT8_MAX );
 
 #if defined( SCOREP_CUPTI_ACTIVITY )
@@ -527,8 +527,11 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     context->cuda_device = cudaDevice;
 
     SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_domain_id, cudaDevAttrPciDomainId, cudaDevice ) );
+    UTILS_BUG_ON( context->pci_domain_id < 0 || context->pci_domain_id >= UINT16_MAX, "Invalid PCI domain ID: %d", context->pci_domain_id );
     SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_bus_id, cudaDevAttrPciBusId, cudaDevice ) );
+    UTILS_BUG_ON( context->pci_bus_id < 0 || context->pci_bus_id >= UINT8_MAX, "Invalid PCI bus ID: %d", context->pci_bus_id );
     SCOREP_CUDA_DRIVER_CALL( cudaDeviceGetAttribute( &context->pci_device_id, cudaDevAttrPciDeviceId, cudaDevice ) );
+    UTILS_BUG_ON( context->pci_device_id < 0 || context->pci_device_id >= UINT8_MAX, "Invalid PCI device ID: %d", context->pci_device_id );
 
     /* get the current CUDA context, if it is not given */
     if ( cudaContext == NULL )
