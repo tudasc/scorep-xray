@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -31,7 +34,7 @@
  * @file
  * @ingroup    MPI_Wrapper
  *
- * @brief Contains the implementation of MPI Reqests management
+ * @brief Contains the implementation of MPI Requests management
  */
 
 #include <config.h>
@@ -571,7 +574,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
     struct scorep_mpi_request_hash* hash_entry = scorep_mpi_get_request_hash_entry( req->request );
 
     /*
-     * Drop type duplicate, but only if we could have make a duplicate in the
+     * Drop type duplicate, but only if we could have made a duplicate in the
      * first place
      */
 #if HAVE( DECL_PMPI_TYPE_DUP )
@@ -579,6 +582,11 @@ scorep_mpi_request_free( scorep_mpi_request* req )
          || req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV )
     {
         PMPI_Type_free( &req->payload.p2p.datatype );
+    }
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
+         || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    {
+        PMPI_Type_free( &req->payload.io.datatype );
     }
 #endif
 
