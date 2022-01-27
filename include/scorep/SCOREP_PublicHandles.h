@@ -93,6 +93,8 @@ typedef SCOREP_AnyHandle SCOREP_InterruptGeneratorHandle;
 
 typedef SCOREP_AnyHandle SCOREP_IoFileHandle;
 
+typedef SCOREP_AnyHandle SCOREP_IoFilePropertyHandle;
+
 typedef SCOREP_AnyHandle SCOREP_IoHandleHandle;
 
 typedef SCOREP_AnyHandle SCOREP_LocationHandle;
@@ -114,6 +116,5 @@ typedef SCOREP_AnyHandle SCOREP_StringHandle;
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
 
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodePropertyHandle;
-
 
 #endif /* SCOREP_PUBLIC_HANDLES_H */

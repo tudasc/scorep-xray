@@ -49,13 +49,9 @@ typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 
 typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
 
-typedef SCOREP_AnyHandle SCOREP_IoFilePropertyHandle;
-
 typedef SCOREP_AnyHandle SCOREP_MarkerGroupHandle;
 
 typedef SCOREP_AnyHandle SCOREP_MarkerHandle;
-
-
 
 typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
 
