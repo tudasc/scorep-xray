@@ -110,6 +110,16 @@ aio_translate_mode( int                     aioMode,
     return 0;
 }
 
+static inline uint64_t
+aio_get_transfer_size( const struct aiocb* aiocbp )
+{
+#if defined( __GLIBC__ )
+    return ( uint64_t )aiocbp->__return_value;
+#else
+    return SCOREP_IO_UNKOWN_TRANSFER_SIZE;
+#endif
+}
+
 #if HAVE( POSIX_IO_SYMBOL_AIO_CANCEL )
 int
 SCOREP_LIBWRAP_FUNC_NAME( aio_cancel )( int fd, struct aiocb* aiocbp )
@@ -185,11 +195,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_error )( const struct aiocb* aiocbp )
             {
                 SCOREP_IoOperationComplete( handle,
                                             io_mode,
-#if defined( __GLIBC__ )
-                                            ( uint64_t )aiocbp->__return_value,
-#else
-                                            SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-#endif
+                                            aio_get_transfer_size( aiocbp ),
                                             ( uint64_t )aiocbp );
 
                 aio_delete_request( aiocbp );
@@ -494,11 +500,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
                 {
                     SCOREP_IoOperationComplete( handle,
                                                 io_mode,
-#if defined( __GLIBC__ )
-                                                ( uint64_t )aiocbp->__return_value,
-#else
-                                                SCOREP_IO_UNKOWN_TRANSFER_SIZE,
-#endif
+                                                aio_get_transfer_size( aiocbp ),
                                                 ( uint64_t )aiocbp );
                 }
                 else if ( error == EINPROGRESS )
