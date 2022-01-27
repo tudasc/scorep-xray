@@ -4,7 +4,7 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2021,
+ * Copyright (c) 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -20,17 +20,9 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Addr2line.h>
+#include <SCOREP_Demangle.h>
 
 #include "scorep_unwinding_region.h"
-
-#if HAVE( SCOREP_DEMANGLE )
-/* Declaration of external demangling function */
-/* It is contained in "demangle.h" */
-extern char*
-cplus_demangle( const char* mangled,
-                int         options );
-
-#endif /* HAVE( SCOREP_DEMANGLE ) */
 
 
 /* *INDENT-OFF* */
@@ -132,15 +124,14 @@ finalize_region( scorep_unwinding_region* region,
     SCOREP_RegionDef* definition =
         SCOREP_LOCAL_HANDLE_DEREF( region->handle, Region );
 
-#if HAVE( SCOREP_DEMANGLE )
     const char* region_name    = SCOREP_RegionHandle_GetName( region->handle );
-    char*       demangled_name = cplus_demangle( region_name, 15 );
+    char*       demangled_name = SCOREP_Demangle( region_name,
+                                                  SCOREP_DEMANGLE_DEFAULT );
     if ( demangled_name )
     {
         definition->name_handle = SCOREP_Definitions_NewString( demangled_name );
         free( demangled_name );
     }
-#endif /* HAVE( SCOREP_DEMANGLE ) */
 
 #if !HAVE( SCOREP_ADDR2LINE )
     return;

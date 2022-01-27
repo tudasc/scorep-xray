@@ -67,3 +67,5 @@ libscorep_addr2line_la_SOURCES = \
     $(SRC_ROOT)src/services/addr2line/SCOREP_Addr2line_mockup.c
 
 endif !HAVE_SCOREP_ADDR2LINE
+
+EXTRA_DIST += $(SRC_ROOT)src/services/include/SCOREP_Demangle.h

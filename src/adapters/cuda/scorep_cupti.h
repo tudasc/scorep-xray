@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2020,
+ * Copyright (c) 2009-2013, 2015, 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,6 +48,7 @@
 #include "SCOREP_Events.h"
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Demangle.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
@@ -72,22 +73,13 @@
         if ( _status != CUPTI_SUCCESS )                                 \
         {                                                               \
             const char* msg;                                            \
-            cuptiGetResultString( _status, & msg );                      \
+            cuptiGetResultString( _status, &msg );                      \
             UTILS_WARNING( "[CUPTI] Call to '%s' failed with message: '%s'",  #fct, msg ); \
         }                                                               \
     }
 
-#if HAVE( SCOREP_DEMANGLE )
-extern char*
-cplus_demangle( const char* mangled,
-                int         options );
-
-   #define SCOREP_DEMANGLE_CUDA_KERNEL( mangled ) \
-    cplus_demangle( mangled, 0 )
-#else
 #define SCOREP_DEMANGLE_CUDA_KERNEL( mangled ) \
-    ( char* )mangled
-#endif
+    SCOREP_Demangle( mangled, SCOREP_DEMANGLE_NO_OPTS )
 
 /* the default size for the CUDA kernel name hash table */
 #define SCOREP_CUDA_KERNEL_HASHTABLE_SIZE 1024
