@@ -67,7 +67,7 @@ UTILS_BEGIN_C_DECLS
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <SCOREP_DefinitionHandles.h>
+#include "SCOREP_DefinitionHandles.h"
 
 /**
  * Indicates if the measurement system is initialized, i.e. if

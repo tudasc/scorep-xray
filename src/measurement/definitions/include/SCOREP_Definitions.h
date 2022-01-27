@@ -72,7 +72,7 @@
  */
 /*@{*/
 
-#include "SCOREP_DefinitionHandles.h"
+#include <SCOREP_DefinitionHandles.h>
 
 /* forward decl */
 struct SCOREP_DefinitionManager;

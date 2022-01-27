@@ -26,8 +26,10 @@
  */
 #ifndef SCOREP_IO_MANAGEMENT_H
 #define SCOREP_IO_MANAGEMENT_H
+
 #include <stdbool.h>
-#include <SCOREP_DefinitionHandles.h>
+
+#include "SCOREP_DefinitionHandles.h"
 
 /**
  * Matching ID handling.

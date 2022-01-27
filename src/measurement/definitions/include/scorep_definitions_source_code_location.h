@@ -26,7 +26,6 @@
 
 #include <stdarg.h>
 
-#include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Memory.h>
 

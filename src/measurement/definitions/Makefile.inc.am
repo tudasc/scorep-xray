@@ -33,7 +33,6 @@ noinst_LTLIBRARIES += libscorep_definitions.la
 libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/SCOREP_Definitions.c   \
     $(SRC_ROOT)src/measurement/definitions/include/SCOREP_Definitions.h   \
-    $(SRC_ROOT)src/measurement/definitions/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_private.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_string.c \
     $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_string.h \

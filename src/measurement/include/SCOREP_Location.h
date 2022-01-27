@@ -37,7 +37,7 @@
 #include <stdbool.h>
 
 #include "SCOREP_Types.h"
-#include <SCOREP_DefinitionHandles.h>
+#include "SCOREP_DefinitionHandles.h"
 
 /**
  * @file
