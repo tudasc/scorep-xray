@@ -496,18 +496,24 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
             {
                 int error = SCOREP_LIBWRAP_FUNC_CALL( aio_error, ( aiocbp ) );
 
-                if ( error == 0 )
+                if ( error == 0 || error == EINPROGRESS )
                 {
-                    SCOREP_IoOperationComplete( handle,
-                                                io_mode,
-                                                aio_get_transfer_size( aiocbp ),
-                                                ( uint64_t )aiocbp );
-                }
-                else if ( error == EINPROGRESS )
-                {
-                    SCOREP_IoOperationIssued( handle,
-                                              ( uint64_t )aiocbp );
-                    aio_add_request( aiocbp, io_mode );
+                    if ( io_operation_flags & SCOREP_IO_OPERATION_FLAG_NON_BLOCKING )
+                    {
+                        SCOREP_IoOperationIssued( handle, ( uint64_t )aiocbp );
+                    }
+
+                    if ( error == 0 )
+                    {
+                        SCOREP_IoOperationComplete( handle,
+                                                    io_mode,
+                                                    aio_get_transfer_size( aiocbp ),
+                                                    ( uint64_t )aiocbp );
+                    }
+                    else if ( io_operation_flags & SCOREP_IO_OPERATION_FLAG_NON_BLOCKING )
+                    {
+                        aio_add_request( aiocbp, io_mode );
+                    }
                 }
             }
         }
