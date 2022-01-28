@@ -3832,9 +3832,9 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 
@@ -3909,9 +3909,9 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 
@@ -3986,9 +3986,9 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 
@@ -4063,9 +4063,9 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 
@@ -4140,9 +4140,9 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 
@@ -4217,9 +4217,9 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
         {
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
                 mpi_io_split_end( io_handle, &matching_id, &datatype );
 

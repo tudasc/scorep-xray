@@ -46,7 +46,7 @@ ${proto:c}
       if( io_handle != SCOREP_INVALID_IO_HANDLE )
       {
           int n_elements;
-          uint64_t matching_id;
+          SCOREP_MpiRequestId matching_id;
           MPI_Datatype datatype;
 
           mpi_io_split_end( io_handle, &matching_id, &datatype );
