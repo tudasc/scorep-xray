@@ -53,16 +53,16 @@ ${proto:c}
   {
     if ( event_gen_active_for_group )
     {
-      if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+      if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
       {
-          {
-            scorep_mpi_request_io_create( *request,
-                                          SCOREP_MPI_REQUEST_TYPE_IO_${attribute(operation_type)},
-                                          (uint64_t)(count * type_size),
-                                          datatype,
-                                          fh,
-                                          req_id );
-          }
+        SCOREP_IoOperationIssued( io_handle, req_id );
+
+        scorep_mpi_request_io_create( *request,
+                                      SCOREP_MPI_REQUEST_TYPE_IO_${attribute(operation_type)},
+                                      (uint64_t)(count * type_size),
+                                      datatype,
+                                      fh,
+                                      req_id );
       }
 
       SCOREP_IoMgmt_PopHandle( io_handle );

@@ -14,6 +14,7 @@ ${proto:c}
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
   const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   SCOREP_IoHandleHandle io_handle = SCOREP_INVALID_IO_HANDLE;
+  SCOREP_MpiRequestId   req_id;
   ${rtype} return_val;
 
   if ( event_gen_active )
@@ -25,8 +26,8 @@ ${proto:c}
       io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
       if( io_handle != SCOREP_INVALID_IO_HANDLE )
       {
-         const int                   type_size = mpi_io_get_type_size( datatype );
-         const SCOREP_MpiRequestId   req_id    = scorep_mpi_get_request_id();
+         const int type_size = mpi_io_get_type_size( datatype );
+         req_id = scorep_mpi_get_request_id();
 
          mpi_io_split_begin(io_handle, req_id, datatype);
 
@@ -52,6 +53,10 @@ ${proto:c}
   {
     if ( event_gen_active_for_group )
     {
+      if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+      {
+        SCOREP_IoOperationIssued( io_handle, req_id );
+      }
       SCOREP_IoMgmt_PopHandle( io_handle );
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }
