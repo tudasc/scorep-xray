@@ -59,23 +59,11 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_request_mgmt.h"
+#include "scorep_mpi_io_mgmt.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Hashtab.h>
 #include <SCOREP_IoManagement.h>
-
-/**
- * MPI-I/O hashtable for managing I/O split operations.
- */
-extern SCOREP_Hashtab* scorep_mpi_io_split_table;
-
-typedef struct mpi_io_split_op
-{
-    SCOREP_MpiRequestId matching_id;
-    MPI_Datatype        datatype;
-    bool                is_active;
-} mpi_io_split_op;
 
 static inline SCOREP_IoAccessMode
 mpi_io_get_access_mode( int amode )
@@ -148,65 +136,6 @@ mpi_io_get_seek_option( int whence )
     }
 
     return SCOREP_IO_SEEK_INVALID;
-}
-
-static inline mpi_io_split_op*
-mpi_io_find_split_op( SCOREP_IoHandleHandle ioHandle )
-{
-    int32_t               tmp_io_handle = ( int32_t )ioHandle;
-    SCOREP_Hashtab_Entry* entry         = SCOREP_Hashtab_Find( scorep_mpi_io_split_table,
-                                                               ( void* )&tmp_io_handle,
-                                                               NULL );
-
-    return ( !entry ) ? NULL : entry->value.ptr;
-}
-
-static inline void
-mpi_io_split_end( SCOREP_IoHandleHandle ioHandle,
-                  uint64_t*             matching_id,
-                  MPI_Datatype*         datatype )
-{
-    mpi_io_split_op* split_op = mpi_io_find_split_op( ioHandle );
-
-    UTILS_BUG_ON( !split_op && !split_op->is_active, "Started split operation not found" );
-
-    *matching_id = split_op->matching_id;
-    *datatype    = split_op->datatype;
-
-    split_op->is_active = false;
-}
-
-
-static inline void
-mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
-                    uint64_t              matching_id,
-                    MPI_Datatype          datatype )
-{
-    mpi_io_split_op* split_op = mpi_io_find_split_op( ioHandle );
-
-    if ( !split_op )
-    {
-        void* allocated_memory = SCOREP_Memory_AllocForMisc( sizeof( *split_op ) + sizeof( SCOREP_IoHandleHandle ) );
-
-        split_op = allocated_memory;
-        memset( split_op, 0, sizeof( *split_op ) );
-
-        SCOREP_IoHandleHandle* tmp_io_handle = ( void* )( ( char* )allocated_memory + sizeof( *split_op ) );
-        *tmp_io_handle = ioHandle;
-
-        SCOREP_Hashtab_InsertPtr( scorep_mpi_io_split_table,
-                                  ( void* )tmp_io_handle,
-                                  ( void* )split_op,
-                                  NULL );
-    }
-
-    split_op->matching_id = matching_id;
-#if HAVE( DECL_PMPI_TYPE_DUP )
-    PMPI_Type_dup( datatype, &split_op->datatype );
-#else
-    split_op->datatype = datatype;
-#endif
-    split_op->is_active = true;
 }
 
 static inline int
@@ -3397,7 +3326,7 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3471,7 +3400,7 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3545,7 +3474,7 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3619,7 +3548,7 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3693,7 +3622,7 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3767,7 +3696,7 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
 
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
@@ -3837,7 +3766,7 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
@@ -3918,7 +3847,7 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
@@ -3999,7 +3928,7 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
@@ -4080,7 +4009,7 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
@@ -4161,7 +4090,7 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
@@ -4242,7 +4171,7 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
                 SCOREP_MpiRequestId matching_id;
                 MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );

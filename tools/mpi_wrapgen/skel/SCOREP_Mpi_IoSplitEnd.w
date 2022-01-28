@@ -49,7 +49,7 @@ ${proto:c}
           SCOREP_MpiRequestId matching_id;
           MPI_Datatype datatype;
 
-          mpi_io_split_end( io_handle, &matching_id, &datatype );
+          scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
           const int type_size = mpi_io_get_type_size( datatype );
           PMPI_Get_count( status, datatype, &n_elements );

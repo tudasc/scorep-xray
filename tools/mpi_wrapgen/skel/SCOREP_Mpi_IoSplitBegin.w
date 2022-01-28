@@ -53,7 +53,7 @@ ${proto:c}
     {
       if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
       {
-        mpi_io_split_begin(io_handle, req_id, datatype);
+        scorep_mpi_io_split_begin(io_handle, req_id, datatype);
 
         SCOREP_IoOperationIssued( io_handle, req_id );
       }

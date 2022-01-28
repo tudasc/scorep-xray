@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015, 2017, 2019,
+## Copyright (c) 2009-2015, 2017, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -44,6 +44,8 @@ libscorep_adapter_mpi_mgmt_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.h \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_rma_request.c       \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_rma_request.h       \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_io_mgmt.c           \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_io_mgmt.h           \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h
 libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
