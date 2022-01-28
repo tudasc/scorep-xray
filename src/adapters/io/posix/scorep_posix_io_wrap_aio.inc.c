@@ -444,9 +444,9 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
     INITIALIZE_FUNCTION_POINTER( lio_listio );
     int ret;
 
-    SCOREP_IoOperationFlag io_blocking_semantic_flag = SCOREP_IO_OPERATION_FLAG_NONE;
+    SCOREP_IoOperationFlag io_operation_flags = SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE;
 
-    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && ( aio_translate_mode( mode, &io_blocking_semantic_flag ) != -1 ) )
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && ( aio_translate_mode( mode, &io_operation_flags ) != -1 ) )
     {
         SCOREP_EnterWrappedRegion( scorep_posix_io_region_lio_listio );
 
@@ -469,7 +469,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
             {
                 SCOREP_IoOperationBegin( handle,
                                          io_mode,
-                                         SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | io_blocking_semantic_flag,
+                                         io_operation_flags,
                                          ( uint64_t )aiocbp->aio_nbytes,
                                          ( uint64_t )aiocbp,
                                          aiocbp->aio_offset );
