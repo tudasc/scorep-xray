@@ -186,26 +186,23 @@ mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
 
     if ( !split_op )
     {
-        void * allocated_memory = SCOREP_Memory_AllocForMisc( sizeof( mpi_io_split_op ) + sizeof( SCOREP_IoHandleHandle ) );
+        void* allocated_memory = SCOREP_Memory_AllocForMisc( sizeof( *split_op ) + sizeof( SCOREP_IoHandleHandle ) );
 
-        split_op              = allocated_memory;
-        split_op->matching_id = matching_id;
-        split_op->datatype    = datatype;
+        split_op = allocated_memory;
+        memset( split_op, 0, sizeof( *split_op ) );
 
-        SCOREP_IoHandleHandle * tmp_io_handle = (void *) ((char *) allocated_memory + sizeof( *split_op ));
+        SCOREP_IoHandleHandle* tmp_io_handle = ( void* )( ( char* )allocated_memory + sizeof( *split_op ) );
         *tmp_io_handle = ioHandle;
 
         SCOREP_Hashtab_InsertPtr( scorep_mpi_io_split_table,
-                                  ( void* ) tmp_io_handle,
-                                  ( void* ) split_op,
+                                  ( void* )tmp_io_handle,
+                                  ( void* )split_op,
                                   NULL );
     }
-    else
-    {
-        split_op->matching_id = matching_id;
-        split_op->datatype    = datatype;
-        split_op->is_active   = true;
-    }
+
+    split_op->matching_id = matching_id;
+    split_op->datatype    = datatype;
+    split_op->is_active   = true;
 }
 
 static inline int
