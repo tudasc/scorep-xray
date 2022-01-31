@@ -290,7 +290,7 @@ FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, score
 
 
     c_version_len = strlen( c_version );
-    strncpy( version, c_version, c_version_len );
+    memcpy( version, c_version, c_version_len );
     memset( version + c_version_len, ' ', version_len - c_version_len );
     free( c_version );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -448,7 +448,7 @@ FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* i
 
 
     c_version_len = strlen( c_version );
-    strncpy( version, c_version, c_version_len );
+    memcpy( version, c_version, c_version_len );
     memset( version + c_version_len, ' ', version_len - c_version_len );
     free( c_version );
     SCOREP_IN_MEASUREMENT_DECREMENT();

@@ -1003,7 +1003,7 @@ FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
     *filetype = PMPI_Type_c2f( c_filetype );
 
     c_datarep_len = strlen( c_datarep );
-    strncpy( datarep, c_datarep, c_datarep_len );
+    memcpy( datarep, c_datarep, c_datarep_len );
     memset( datarep + c_datarep_len, ' ', datarep_len - c_datarep_len );
     free( c_datarep );
     SCOREP_IN_MEASUREMENT_DECREMENT();

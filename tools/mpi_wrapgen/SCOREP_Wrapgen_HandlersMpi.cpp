@@ -412,7 +412,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_fortran
             if ( datatype::is_output_param( arg ) )
             {
                 str += "\n  c_" + arg_name + "_len = strlen(c_" + arg_name + ");\n  " +
-                       "strncpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
+                       "memcpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
                        "memset(" + arg_name + " + c_" + arg_name + "_len, ' ', " + arg_name + "_len - c_" + arg_name + "_len);\n";
             }
             str += "free(c_" + arg_name + ");";
@@ -469,7 +469,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
             if ( datatype::is_output_param( arg ) )
             {
                 str += "\n  c_" + arg_name + "_len = strlen(c_" + arg_name + ");\n  " +
-                       "strncpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
+                       "memcpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
                        "memset(" + arg_name + " + c_" + arg_name + "_len, ' ', " + arg_name + "_len - c_" + arg_name + "_len);\n";
             }
             str += "free(c_" + arg_name + ");";

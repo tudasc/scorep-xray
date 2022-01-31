@@ -1023,7 +1023,7 @@ FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ier
 
 
     c_win_name_len = strlen( c_win_name );
-    strncpy( win_name, c_win_name, c_win_name_len );
+    memcpy( win_name, c_win_name, c_win_name_len );
     memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -1921,7 +1921,7 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MP
 
 
     c_win_name_len = strlen( c_win_name );
-    strncpy( win_name, c_win_name, c_win_name_len );
+    memcpy( win_name, c_win_name, c_win_name_len );
     memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();

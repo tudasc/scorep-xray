@@ -1278,7 +1278,7 @@ FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int*
 
 
     c_comm_name_len = strlen( c_comm_name );
-    strncpy( comm_name, c_comm_name, c_comm_name_len );
+    memcpy( comm_name, c_comm_name, c_comm_name_len );
     memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -2194,7 +2194,7 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen,
 
 
     c_comm_name_len = strlen( c_comm_name );
-    strncpy( comm_name, c_comm_name, c_comm_name_len );
+    memcpy( comm_name, c_comm_name, c_comm_name_len );
     memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
     SCOREP_IN_MEASUREMENT_DECREMENT();
