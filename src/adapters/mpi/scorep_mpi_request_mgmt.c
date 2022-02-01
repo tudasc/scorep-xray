@@ -740,7 +740,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
 
             case SCOREP_MPI_REQUEST_TYPE_IO_READ:
             case SCOREP_MPI_REQUEST_TYPE_IO_WRITE:
-                if ( io_events_active && xnb_active )
+                if ( io_events_active )
                 {
                     PMPI_Type_size( req->payload.io.datatype, &sz );
                     PMPI_Get_count( status, req->payload.io.datatype, &count );
