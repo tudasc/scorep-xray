@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2020,
+## Copyright (c) 2009-2012, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -50,16 +50,16 @@ dnl user with the options --with-libcudart and --with-libcuda. There is no
 dnl need for a --with-libcupti as cupti resides within the toolkit
 dnl installation.
 
-AC_DEFUN([AC_SCOREP_CUDA], [
+AC_DEFUN([SCOREP_CUDA], [
 AFS_SUMMARY_PUSH
 
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
 
-ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
-ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
-ac_scorep_cuda_safe_LIBS=$LIBS
+scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
+scorep_cuda_safe_LDFLAGS=$LDFLAGS
+scorep_cuda_safe_LIBS=$LIBS
 
 AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
@@ -88,9 +88,9 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
 AC_SCOREP_BACKEND_LIB([libnvidia-ml], [nvml.h], [${with_libcudart_cppflags}])
 
-CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
-LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
-LIBS=$ac_scorep_cuda_safe_LIBS
+CPPFLAGS=$scorep_cuda_safe_CPPFLAGS
+LDFLAGS=$scorep_cuda_safe_LDFLAGS
+LIBS=$scorep_cuda_safe_LIBS
 
 AS_IF([test "x${scorep_have_libcudart}" = "xyes" &&
        test "x${scorep_have_libcupti}"  = "xyes" &&
