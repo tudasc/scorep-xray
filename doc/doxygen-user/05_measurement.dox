@@ -838,11 +838,22 @@ recorded if the communicator has only one member.
 
 If @scorep has been built with CUDA support it is capable of recording CUDA API function calls and GPU activities. The measurement is based on NVIDIA's <b>CU</b>DA <b>P</b>rofiling and <b>T</b>ool <b>I</b>nterface (CUPTI), which is an integral part of the CUDA Toolkit since version 4.1.
 
-@scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation:
+@scorep can wrap the NVIDIA's <b><tt>nvcc</tt></b> compiler like any other compiler by either prefixing (<b><tt>scorep nvcc</tt></b>) or by replacing (<b><tt>scorep-nvcc</tt></b>) it to instrument <tt>.cu</tt> files.
+<b><tt>nvcc</tt></b> by default uses <b><tt>g++</tt></b> to compile host-code.
+For @scorep to be able to compiler-instrument the host-code, @scorep's compiler and <b><tt>nvcc</tt></b>'s host-code compiler must match.
+If they don't match, compilation is likely to fail with an <tt>unrecognized command-line option</tt>.
+There are ways around this problem:
+<ul>
+  <li> Make the <tt>nvcc</tt> host-code compiler match the @scorep compiler by adding <tt>-ccbin <SCOREP_COMPILER></tt> to the <tt>nvcc</tt> invocation.
+  You can query <tt><SCOREP_COMPILER></tt> and the entire command using <tt>scorep-info config.summary | grep 'nvcc works'</tt>.
+  E.g., if the <tt>.cu</tt> file does neither contain MPI nor SHMEM and @scorep uses an Intel compiler suite, the command could be <tt>nvcc -ccbin icpc -Xcompiler=-std=c++11</tt>.
+  By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc<\tt> invocations. </li>
+  <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>--nocompiler</tt>. </li>
+  <li> Use a @scorep installation that is based on the GNU compiler tool chain. </li>
+</ul>
 
- <tt>\--compiler-bindir=<path-to-intel-compiler-command></tt>
-
- Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default.
+@note If @scorep cannot build a minimal CUDA program using <tt>-ccbin</tt>, CUDA support will be disabled for this installation.
+Please inform the system administrator about the inconsistency in the software stack.
 
 Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement.
 Please refer to the description of this variable to enable a particular combination of CUDA measurement features.
