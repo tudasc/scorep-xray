@@ -179,7 +179,7 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
       [AC_SUBST([OPARI2_CPPFLAGS], ['-I$(srcdir)/../vendor/opari2/include'])])
 
 AC_SCOREP_BUILD_MODE
-AC_SCOREP_CUDA
+SCOREP_CUDA
 SCOREP_OPENACC
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI

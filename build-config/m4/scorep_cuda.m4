@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2020,
+## Copyright (c) 2009-2012, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -50,16 +50,17 @@ dnl user with the options --with-libcudart and --with-libcuda. There is no
 dnl need for a --with-libcupti as cupti resides within the toolkit
 dnl installation.
 
-AC_DEFUN([AC_SCOREP_CUDA], [
+AC_DEFUN([SCOREP_CUDA], [
 AFS_SUMMARY_PUSH
 
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
+scorep_nvcc_works="no"
 
-ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
-ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
-ac_scorep_cuda_safe_LIBS=$LIBS
+scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
+scorep_cuda_safe_LDFLAGS=$LDFLAGS
+scorep_cuda_safe_LIBS=$LIBS
 
 AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
@@ -88,13 +89,16 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
 AC_SCOREP_BACKEND_LIB([libnvidia-ml], [nvml.h], [${with_libcudart_cppflags}])
 
-CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
-LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
-LIBS=$ac_scorep_cuda_safe_LIBS
+_CUDA_NVCC_WORKS
+
+CPPFLAGS=$scorep_cuda_safe_CPPFLAGS
+LDFLAGS=$scorep_cuda_safe_LDFLAGS
+LIBS=$scorep_cuda_safe_LIBS
 
 AS_IF([test "x${scorep_have_libcudart}" = "xyes" &&
        test "x${scorep_have_libcupti}"  = "xyes" &&
-       test "x${scorep_have_libcuda}"   = "xyes"],
+       test "x${scorep_have_libcuda}"   = "xyes" &&
+       test "x${scorep_nvcc_works}"     = "xyes"],
       [scorep_have_cuda=yes])
 AC_ARG_ENABLE([cuda],
               [AS_HELP_STRING([--enable-cuda],
@@ -160,51 +164,81 @@ AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
 
 AFS_SUMMARY([CUDA version], [${scorep_cuda_version}])
 
+AFS_SUMMARY([nvcc works], [${scorep_nvcc_msg}])
+
 AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
-# prepare compiler variables for use with nvcc in instrumenter checks
-# all flags are passed as comma-separated list after -Xcompiler
-AM_COND_IF([HAVE_CUDA_SUPPORT], [
-    SCOREP_INSTRUMENTER_CHECK_NVCC_CXX=${CXX%% *}
-    SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=${CXX#* }
-    AS_IF([test "x${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}" = "x${CXX}"],
-        [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=],
-        [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS=`
-            echo $SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS |
-                sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
-         SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS:+-Xcompiler=}${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}"])
+]) # SCOREP_CUDA
 
-    # nvcc 10.x in conjunction with g++-8.4 and later on powerpc64le:
-    # need to set '-std=c++11' or '-Xcompiler -mno-float128' to
-    # prevent 'identifier "__ieee128" is undefined' errors. See #21.
-    AC_LANG_PUSH([C++])
-    CXX_save="${CXX}"
-    CXX="nvcc -ccbin ${CXX}"
-    CXXFLAGS_save="${CXXFLAGS}"
-    ac_ext_save="${ac_ext}"
-    ac_ext=cu
-    for CXXFLAGS in "" "-Xcompiler=-mno-float128"; do
-        AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main() {return 0;}]])],
-            [nvcc_failure=no
-             flag=$(echo $CXXFLAGS | cut -d '=' -f 2)
-             AS_IF([test "x${flag}" != x],
-                 [AS_IF([test "x${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS}" = x],
-                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="-Xcompiler=${flag}"],
-                     [SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS="${SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS},${flag}"])])
-             break],
-            [nvcc_failure=yes])
-    done
-    AS_IF([test "x${nvcc_failure}" = xyes],
-        [AC_MSG_WARN([nvcc compilation failed, make installcheck might fail.])])
-    ac_ext="${ac_ext_save}"
-    CXXFLAGS="${CXXFLAGS_save}"
-    CXX="${CXX_save}"
-    AC_LANG_POP([C++])
+dnl ----------------------------------------------------------------------------
 
-    AC_SUBST([SCOREP_INSTRUMENTER_CHECK_NVCC_CXX])
-    AC_SUBST([SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS])
-])
-])
+# _CUDA_NVCC_WORKS()
+# ------------------
+# Check if nvcc -ccbin $CXX works.
+# Most CUDA installations use g++ by default to compile host-code. If
+# scorep uses a different compiler, instrumentation will fail (because
+# of incompatible instrumentation flags like -Minstrument-functions or
+# -tcollect). Thus, we require nvcc -ccbin $CXX to work for CUDA
+# support.
+#
+m4_define([_CUDA_NVCC_WORKS], [
+
+ccbin=${CXX%% *}
+ccbin_flags=${CXX#* }
+AS_IF([test "x${ccbin_flags}" = "x${CXX}"],
+    [ccbin_flags=],
+    [# convert scorep's ordinary flags to -Xcompiler flags
+     ccbin_flags=`
+       echo $ccbin_flags |
+            sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
+     ccbin_flags="${ccbin_flags:+-Xcompiler=}${ccbin_flags}"])
+
+# Some compiler-CUDA combinations are known to need extra -Xcompiler
+# variables:
+# - nvcc 10.x in conjunction with g++-8.4 and later on powerpc64le:
+#   need to set '-Xcompiler=-std=c++11' or '-Xcompiler=-mno-float128' to
+#   prevent 'identifier "__ieee128" is undefined' errors. See #21.
+# - nvcc 11.5 in conjunction with icpc 2021.4.0 needs -std=<any c++ value>.
+# - nvcc 11.5 in conjunction with nvhpc 22.1 doesn't work.
+AC_LANG_PUSH([C++])
+CXX_save="${CXX}"
+CXX="nvcc -ccbin ${ccbin}"
+CXXFLAGS_save="${CXXFLAGS}"
+ac_ext_save="${ac_ext}"
+ac_ext=cu
+for CXXFLAGS in "" "-Xcompiler=-std=c++11" "-Xcompiler=-mno-float128"; do
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <stdio.h>
+__global__ void cuda_hello(){
+    printf("Hello World from GPU!\n");
+}
+int main() {
+    cuda_hello<<<1,1>>>();
+    return 0;
+}
+        ]])],
+        [scorep_nvcc_works=yes
+         flag=$(echo $CXXFLAGS | cut -d '=' -f 2-)
+         AS_IF([test "x${flag}" != x],
+             [AS_IF([test "x${ccbin_flags}" = x],
+                  [ccbin_flags="-Xcompiler=${flag}"],
+                  [ccbin_flags="${ccbin_flags},${flag}"])])
+         break],
+        [scorep_nvcc_works=no])
+done
+AS_IF([test "x${scorep_nvcc_works}" = xno],
+    [AC_MSG_WARN([nvcc -ccbin ${ccbin} compilation failed. Disabling CUDA support.])
+     scorep_nvcc_msg=no],
+    [scorep_nvcc_msg="yes, using nvcc -ccbin ${ccbin} ${ccbin_flags}"])
+
+ac_ext="${ac_ext_save}"
+CXXFLAGS="${CXXFLAGS_save}"
+CXX="${CXX_save}"
+AC_LANG_POP([C++])
+
+AC_SUBST([SCOREP_INSTRUMENTER_CHECK_NVCC_CXX], [$ccbin])
+AC_SUBST([SCOREP_INSTRUMENTER_CHECK_CUFLAGS_CXXFLAGS], [$ccbin_flags])
+]) # _CUDA_NVCC_WORKS
 
 dnl ----------------------------------------------------------------------------
 
