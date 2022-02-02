@@ -14,7 +14,6 @@ ${proto:c}
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
   const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
-  uint64_t start_time_stamp;
   ${decl}
 
   if (event_gen_active)
@@ -26,8 +25,6 @@ ${proto:c}
 
           SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
           SCOREP_MpiCollectiveBegin();
-          start_time_stamp =
-            SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
         }
       else if ( SCOREP_IsUnwindingEnabled() )
         {
