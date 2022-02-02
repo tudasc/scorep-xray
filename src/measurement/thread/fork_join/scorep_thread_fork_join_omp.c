@@ -317,7 +317,7 @@ scorep_thread_create_location_name( char*                       locationName,
         /* Children of non-master */
         const char* parent_name = SCOREP_Location_GetName( parent_location );
         length = strlen( parent_name );
-        strncpy( locationName, parent_name, length + 1 );
+        memcpy( locationName, parent_name, length + 1 );
         while ( tpd && scorep_thread_get_location( tpd ) == parent_location )
         {
             length += 2;
