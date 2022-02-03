@@ -525,9 +525,10 @@ scorep_user_region_by_name_begin( const char*                  name,
 
             if ( handle == SCOREP_FILTERED_USER_REGION )
             {
-                char* saved_name = SCOREP_Memory_AllocForMisc( sizeof( char ) * ( strlen( name ) + 1 ) );
-                saved_name[ strlen( name ) ] = '\0';
-                strncpy( saved_name, name, strlen( name ) );
+                size_t len        = strlen( name );
+                char*  saved_name = SCOREP_Memory_AllocForMisc( sizeof( char ) * ( len + 1 ) );
+                saved_name[ len ] = '\0';
+                memcpy( saved_name, name, len );
 
                 result = SCOREP_Hashtab_InsertPtr( scorep_user_region_by_name_hash_table,
                                                    ( void* )saved_name,
