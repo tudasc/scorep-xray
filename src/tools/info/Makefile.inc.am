@@ -13,6 +13,8 @@ scorep_info_SOURCES = \
     $(SRC_ROOT)src/tools/info/scorep_info_command_config_vars.cpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_libwrap_summary.hpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_libwrap_summary.cpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_license.hpp \
+    $(SRC_ROOT)src/tools/info/scorep_info_command_license.cpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.hpp \
     $(SRC_ROOT)src/tools/info/scorep_info_command_open_issues.cpp
 

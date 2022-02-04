@@ -97,8 +97,9 @@ pkgdata_DATA = @PACKAGE@.summary \
                share/scorep.spec \
                $(srcdir)/doc/doxygen-user/scorep_info_confvars_help.md
 
-doc_DATA = $(srcdir)/OPEN_ISSUES \
-           $(srcdir)/ChangeLog
+doc_DATA = $(srcdir)/ChangeLog \
+           $(srcdir)/COPYING \
+           $(srcdir)/OPEN_ISSUES
 
 profiledocdir = $(docdir)/profile
 dist_profiledoc_DATA = $(DOC_SRC_DIR)/profile/scorep_metrics.html \
