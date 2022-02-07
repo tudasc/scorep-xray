@@ -45,7 +45,8 @@ SCOREP_Info_Command_ConfigVars::printHelp( bool full )
     if ( full )
     {
         std::cout << "    Info command options:\n"
-                  << "      --help        Displays a description of the Score-P measurement configuration system.\n"
+                  << "      --help        Displays a description of the Score-P measurement\n"
+                  << "                    configuration system.\n"
                   << "      --full        Displays a detailed description for each config variable.\n"
                   << "      --values      Displays the current values for each config variable.\n"
                   << "                    Warning: These values may be wrong, please consult the\n"
