@@ -1,3 +1,7 @@
 
+You can query the installation-specific value of `LD_AUDIT` via:
+
+    $ scorep-info ldaudit
+
 @page scorepwrapper @scorep Compiler Wrapper Usage
 @seclabel{scorepwrapper}

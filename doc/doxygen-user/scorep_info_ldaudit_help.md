@@ -21,7 +21,3 @@ launchers like `mpiexec` or `srun`; linker auditing takes place
 immediately after `LD_AUDIT` is set and results in error messages
 about missing symbols if not used together with Score-P instrumented
 binaries.
-
-You can query the installation-specific value of `LD_AUDIT` via
-
-    $ scorep-info ldaudit
