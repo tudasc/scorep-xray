@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016, 2019-2020,
+ * Copyright (c) 2016, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -27,22 +27,20 @@
 #include <scorep_status.h>
 #include <SCOREP_IoManagement.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
 
-struct scorep_profile_io_paradigm
+typedef struct io_paradigm_node
 {
-    SCOREP_IoParadigmType              io_paradigm;
-    /** Parent of this I/O paradigm */
-    struct scorep_profile_io_paradigm* parent;
     /** The I/O bytes read metric for this I/O paradigm level,
      *  indexed with SCOREP_IoOperationMode
      */
-    SCOREP_MetricHandle                io_bytes_metric[ 2 ];
+    SCOREP_MetricHandle      io_bytes_metric[ SCOREP_IO_OPERATION_MODE_FLUSH ];
     /** Possible children of this paradigm */
-    struct scorep_profile_io_paradigm* children[ SCOREP_INVALID_IO_PARADIGM_TYPE ];
-};
+    struct io_paradigm_node* children[ SCOREP_INVALID_IO_PARADIGM_TYPE ];
+} io_paradigm_node;
 
-static struct scorep_profile_io_paradigm io_paradigm_root;
-static SCOREP_Mutex                      io_paradigm_mutex;
+static io_paradigm_node io_paradigm_root;
+static SCOREP_Mutex     io_paradigm_mutex;
 
 /* *******************************************************************************
  * External interface
@@ -51,7 +49,10 @@ static SCOREP_Mutex                      io_paradigm_mutex;
 void
 scorep_profile_io_init( void )
 {
-    io_paradigm_root.io_paradigm                                      = SCOREP_INVALID_IO_PARADIGM_TYPE;
+    UTILS_ASSERT( SCOREP_IO_OPERATION_MODE_READ < SCOREP_IO_OPERATION_MODE_FLUSH
+                  && SCOREP_IO_OPERATION_MODE_WRITE < SCOREP_IO_OPERATION_MODE_FLUSH
+                  && SCOREP_IO_OPERATION_MODE_FLUSH == 2 );
+
     io_paradigm_root.io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] =
         SCOREP_Definitions_NewMetric( "io_bytes_read",
                                       "I/O bytes read",
@@ -77,35 +78,28 @@ scorep_profile_io_init( void )
                                       SCOREP_INVALID_METRIC );
 }
 
-void
-scorep_profile_io_init_location( SCOREP_Profile_LocationData* location )
+static io_paradigm_node*
+ensure_io_paradigm( io_paradigm_node*     ioParadigmNode,
+                    SCOREP_IoParadigmType ioParadigm )
 {
-    location->current_io_paradigm = &io_paradigm_root;
-}
-
-void
-scorep_profile_io_paradigm_enter( SCOREP_Location*      thread,
-                                  SCOREP_IoParadigmType ioParadigm )
-{
+    UTILS_ASSERT( ioParadigmNode );
     UTILS_BUG_ON( ioParadigm >= SCOREP_INVALID_IO_PARADIGM_TYPE, "invalid I/O paradigm passed" );
 
-    SCOREP_Profile_LocationData*       location    = scorep_profile_get_profile_data( thread );
-    struct scorep_profile_io_paradigm* io_paradigm = location->current_io_paradigm;
-
-    if ( io_paradigm->children[ ioParadigm ] == NULL )
+    io_paradigm_node* child =
+        SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                      SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( child == NULL )
     {
         SCOREP_MutexLock( &io_paradigm_mutex );
-        if ( io_paradigm->children[ ioParadigm ] == NULL )
+        child = SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                              SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        if ( child == NULL )
         {
             /* not really per-location object, but MISC should survive location death */
-            io_paradigm->children[ ioParadigm ] =
-                SCOREP_Memory_AllocForMisc( sizeof( *io_paradigm ) );
-            memset( io_paradigm->children[ ioParadigm ], 0, sizeof( *io_paradigm ) );
+            child = SCOREP_Memory_AllocForMisc( sizeof( *child ) );
+            memset( child, 0, sizeof( *child ) );
 
-            io_paradigm->children[ ioParadigm ]->io_paradigm = ioParadigm;
-            io_paradigm->children[ ioParadigm ]->parent      = io_paradigm;
-
-            io_paradigm->children[ ioParadigm ]->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] =
+            child->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] =
                 SCOREP_Definitions_NewMetric( SCOREP_IoMgmt_GetParadigmName( ioParadigm ),
                                               "I/O bytes read",
                                               SCOREP_METRIC_SOURCE_TYPE_OTHER,
@@ -115,9 +109,9 @@ scorep_profile_io_paradigm_enter( SCOREP_Location*      thread,
                                               0,
                                               "bytes",
                                               SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                              io_paradigm->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] );
+                                              ioParadigmNode->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_READ ] );
 
-            io_paradigm->children[ ioParadigm ]->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] =
+            child->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] =
                 SCOREP_Definitions_NewMetric( SCOREP_IoMgmt_GetParadigmName( ioParadigm ),
                                               "I/O bytes written",
                                               SCOREP_METRIC_SOURCE_TYPE_OTHER,
@@ -127,28 +121,45 @@ scorep_profile_io_paradigm_enter( SCOREP_Location*      thread,
                                               0,
                                               "bytes",
                                               SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                              io_paradigm->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] );
+                                              ioParadigmNode->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] );
+
+            /* announce final node */
+            SCOREP_Atomic_StoreN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                           child,
+                                           SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
         SCOREP_MutexUnlock( &io_paradigm_mutex );
     }
 
-    location->current_io_paradigm = io_paradigm->children[ ioParadigm ];
+    return SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                         SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
-void
-scorep_profile_io_paradigm_leave( SCOREP_Location*      thread,
-                                  SCOREP_IoParadigmType ioParadigm )
+static io_paradigm_node*
+trigger_io_operation_recursively( SCOREP_Location*       thread,
+                                  SCOREP_IoHandleHandle  handle,
+                                  SCOREP_IoOperationMode mode,
+                                  uint64_t               bytesResult )
 {
-    UTILS_BUG_ON( ioParadigm >= SCOREP_INVALID_IO_PARADIGM_TYPE, "invalid I/O paradigm passed" );
-
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
-    if ( location->current_io_paradigm->io_paradigm != ioParadigm )
+    io_paradigm_node* io_paradigm;
+    if ( handle == SCOREP_INVALID_IO_HANDLE )
     {
-        UTILS_WARNING( "leaving the wrong I/O context" );
-        return;
+        /* Stop recursion */
+        io_paradigm = &io_paradigm_root;
+    }
+    else
+    {
+        /* Recurse into parent */
+        io_paradigm_node* parent_io_paradigm = trigger_io_operation_recursively(
+            thread,
+            SCOREP_IoHandleHandle_GetParentHandle( handle ),
+            mode, bytesResult );
+        io_paradigm = ensure_io_paradigm( parent_io_paradigm, SCOREP_IoHandleHandle_GetIoParadigm( handle ) );
     }
 
-    location->current_io_paradigm = location->current_io_paradigm->parent;
+    SCOREP_Profile_TriggerInteger( thread, io_paradigm->io_bytes_metric[ mode ], bytesResult );
+
+    return io_paradigm;
 }
 
 void
@@ -159,24 +170,11 @@ scorep_profile_io_operation_complete( SCOREP_Location*       thread,
                                       uint64_t               bytesResult,
                                       uint64_t               matchingId )
 {
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
-    scorep_profile_node*         node     = scorep_profile_get_current_node( location );
-    if ( location->current_io_paradigm->io_paradigm == SCOREP_INVALID_IO_PARADIGM_TYPE )
-    {
-        UTILS_WARNING( "completed I/O operation outside I/O paradigm context" );
-        return;
-    }
-
     if ( bytesResult == SCOREP_IO_UNKOWN_TRANSFER_SIZE
-         || mode > SCOREP_IO_OPERATION_MODE_WRITE )
+         || mode >= SCOREP_IO_OPERATION_MODE_FLUSH )
     {
         return;
     }
 
-    struct scorep_profile_io_paradigm* io_paradigm = location->current_io_paradigm;
-    while ( io_paradigm )
-    {
-        SCOREP_Profile_TriggerInteger( thread, io_paradigm->io_bytes_metric[ mode ], bytesResult );
-        io_paradigm = io_paradigm->parent;
-    }
+    trigger_io_operation_recursively( thread, handle, mode, bytesResult );
 }

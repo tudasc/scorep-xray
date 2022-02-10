@@ -28,18 +28,6 @@
 void
 scorep_profile_io_init( void );
 
-struct SCOREP_Profile_LocationData;
-void
-scorep_profile_io_init_location( struct SCOREP_Profile_LocationData* location );
-
-void
-scorep_profile_io_paradigm_enter( SCOREP_Location*      location,
-                                  SCOREP_IoParadigmType ioParadigm );
-
-void
-scorep_profile_io_paradigm_leave( SCOREP_Location*      location,
-                                  SCOREP_IoParadigmType ioParadigm );
-
 void
 scorep_profile_io_operation_complete( SCOREP_Location*       location,
                                       uint64_t               timestamp,

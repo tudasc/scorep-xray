@@ -1743,8 +1743,6 @@ const static SCOREP_Substrates_Callback substrate_mgmt_callbacks[ SCOREP_SUBSTRA
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( LeakedMemory,              LEAKED_MEMORY,                leaked_memory ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( GetRequirement,            GET_REQUIREMENT,              get_requirement ),
     SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( DumpManifest,              DUMP_MANIFEST,                dump_manifest ),
-    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( IoParadigmEnter,           IO_PARADIGM_ENTER,            scorep_profile_io_paradigm_enter ),
-    SCOREP_ASSIGN_SUBSTRATE_MGMT_CALLBACK( IoParadigmLeave,           IO_PARADIGM_LEAVE,            scorep_profile_io_paradigm_leave ),
 };
 
 

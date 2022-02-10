@@ -93,6 +93,12 @@ SCOREP_IoHandleHandle_GetIoFile( SCOREP_IoHandleHandle handle );
 void*
 SCOREP_IoHandleHandle_GetPayload( SCOREP_IoHandleHandle handle );
 
+SCOREP_IoHandleHandle
+SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle );
+
+SCOREP_IoParadigmType
+SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle );
+
 void
 scorep_definitions_unify_io_handle( SCOREP_IoHandleDef*                  definition,
                                     struct SCOREP_Allocator_PageManager* handlesPageManager );

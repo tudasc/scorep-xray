@@ -156,9 +156,6 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
     location->location_data         = locationData;
     location->migration_sum         = 1;
     location->migration_win         = 0;
-    location->current_io_paradigm   = NULL;
-
-    scorep_profile_io_init_location( location );
 
     return location;
 }
