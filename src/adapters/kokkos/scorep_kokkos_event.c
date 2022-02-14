@@ -4,6 +4,9 @@
  * Copyright (c) 2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -27,6 +30,7 @@
 #include <SCOREP_Task.h>
 #include <SCOREP_AllocMetric.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Demangle.h>
 
 #define SCOREP_DEBUG_MODULE_NAME KOKKOS
 #include <UTILS_Debug.h>
@@ -235,22 +239,9 @@ get_metric( const char* name )
     return allocMetric;
 }
 
-#if HAVE( DEMANGLE )
-extern char*
-cplus_demangle( const char* mangled,
-                int         options );
 
-    #define kokkos_demangle( mangled ) cplus_demangle( mangled, \
-                                                       ( 1 << 0 ) /* include function arguments */ | \
-                                                       ( 1 << 1 ) /* include const, volatile, etc. */ | \
-                                                       ( 1 << 3 ) /* include implementation details */ | \
-                                                       ( 1 << 4 ) /* include type encodings */ )
-
-#else
-
-    #define kokkos_demangle( mangled ) NULL
-
-#endif
+#define kokkos_demangle( mangled ) \
+    SCOREP_Demangle( mangled, SCOREP_DEMANGLE_DEFAULT )
 
 /*
  * The name provided to parallel_{for,scan,reduce} may be either the label

@@ -32,7 +32,7 @@
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])dnl
-AC_REQUIRE([SCOREP_LIBBFD])dnl
+AC_REQUIRE([SCOREP_ADDR2LINE])dnl
 
 have_compiler_instrumentation=yes
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
@@ -48,20 +48,16 @@ AS_CASE([${ax_cv_c_compiler_vendor%/*}],
 
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
-    [AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
-         [pwd_save=`pwd`
-          cd ${srcdir}/../
-          scorep_abs_toplevel_srcdir=`pwd`
-          cd ${pwd_save}
-          AC_DEFINE_UNQUOTED([SCOREP_ABS_TOPLEVEL_SRCDIR],
-              ["${scorep_abs_toplevel_srcdir}"],
-              [Toplevel src directory])
-          compiler_instrumentation_result="yes, using libbfd"
-         ],
-         [# compilers that don't need the symbol table
+    [AS_IF([test "x${scorep_compiler_instrumentation_needs_addr2line}" = xyes],
+         [AS_IF([test "x${scorep_have_addr2line}" = xyes],
+              [compiler_instrumentation_result="yes, using addr2line lookup"
+               AFS_AM_CONDITIONAL([HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE], [test 1 -eq 1], [false])],
+              [compiler_instrumentation_result="no, addr2line lookup not available"
+               have_compiler_instrumentation=no])],
+         [# compilers that don't need addr2line lookup
           AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
               [compiler_instrumentation_result="yes, using GCC plug-in with support for compile-time filtering"],
-              [compiler_instrumentation_result="yes"])
+              [compiler_instrumentation_result="yes, vendor specific"])
          ])
     ])
 AFS_SUMMARY([compiler instrumentation], [${compiler_instrumentation_result}])
@@ -69,12 +65,6 @@ AFS_SUMMARY([compiler instrumentation], [${compiler_instrumentation_result}])
 AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION],
     [test "x${have_compiler_instrumentation}" = xyes],
     [Defined if compiler instrumentation is available.])
-
-AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
-    [test "x${have_compiler_instrumentation}" = xyes &&
-     test "x${scorep_compiler_instrumentation_needs_symbol_table}" = "xyes"],
-    [Define if the compiler instrumentation needs the symbol table.])
-
 ])
 
 dnl ----------------------------------------------------------------------------

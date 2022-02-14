@@ -33,7 +33,7 @@
 
 
 AC_DEFUN([SCOREP_SAMPLING], [
-AC_REQUIRE([SCOREP_LIBBFD])dnl
+AC_REQUIRE([SCOREP_ADDR2LINE])dnl
 # check whether the compiler provides support for thread-local storage
 # (TLS), the sampling check uses scorep_have_thread_local_storage to
 # determine whether TLS is supported or not

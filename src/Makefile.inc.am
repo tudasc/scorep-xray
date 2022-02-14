@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017, 2021,
+## Copyright (c) 2009-2015, 2017, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -119,20 +119,34 @@ libscorep_measurement_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     @OTF2_LDFLAGS@                 \
     @LIBUNWIND_LDFLAGS@            \
-    @LIBBFD_LDFLAGS@               \
     @SCOREP_PAPI_LDFLAGS@          \
     @CUBEW_LDFLAGS@
 
-if HAVE_LIBBFD_MAKEFILE
-BUILT_SOURCES += @LIBBFD_PREFIX@/lib/libbfd.*
-@LIBBFD_PREFIX@/lib/libbfd.*:
-	$(MAKE) all -f @LIBBFD_MAKEFILE@
 
-CLEAN_LOCAL += @LIBBFD_PREFIX@-clean
-@LIBBFD_PREFIX@-clean:
-	$(MAKE) clean -f @LIBBFD_MAKEFILE@
+# In case of --with-libbfd=download, we need to build and install
+# libbfd before files including bfd.h are compiled. Otherwise a system
+# bfd.h might get included during the first make after
+# configure. Linking to the downloaded libbfd.so will work, but
+# runtime errors are to expect.
+# The BUILT_SOURCES mechanism might not work as we trigger some
+# Makefiles not via `make all` but `make foo`. In the latter case,
+# BUILT_SOURCES are ignored.
+# A pragmatic way to introduce the bfd.h dependency is to have the
+# source files depend on @SCOREP_LIBBFD_PREFIX@/include/bfd.h. Thus,
+# add all files that include bfd.h to FILES_THAT_INCLUDE_BFD_H.
+FILES_THAT_INCLUDE_BFD_H =
 
-UNINSTALL_HOOK += @LIBBFD_PREFIX@-uninstall
-@LIBBFD_PREFIX@-uninstall:
-	$(MAKE) uninstall -f @LIBBFD_MAKEFILE@
-endif HAVE_LIBBFD_MAKEFILE
+if HAVE_SCOREP_LIBBFD_MAKEFILE
+BUILT_SOURCES += @SCOREP_LIBBFD_PREFIX@/include/bfd.h
+$(FILES_THAT_INCLUDE_BFD_H): @SCOREP_LIBBFD_PREFIX@/include/bfd.h
+@SCOREP_LIBBFD_PREFIX@/include/bfd.h:
+	$(MAKE) all -f @SCOREP_LIBBFD_MAKEFILE@
+
+CLEAN_LOCAL += @SCOREP_LIBBFD_PREFIX@-clean
+@SCOREP_LIBBFD_PREFIX@-clean:
+	$(MAKE) clean -f @SCOREP_LIBBFD_MAKEFILE@
+
+UNINSTALL_HOOK += @SCOREP_LIBBFD_PREFIX@-uninstall
+@SCOREP_LIBBFD_PREFIX@-uninstall:
+	$(MAKE) uninstall -f @SCOREP_LIBBFD_MAKEFILE@
+endif HAVE_SCOREP_LIBBFD_MAKEFILE

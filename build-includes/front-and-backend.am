@@ -12,7 +12,6 @@ include ../src/services/timer/Makefile.confvars.inc.am
 include ../src/services/sampling/Makefile.confvars.inc.am
 include ../src/services/unwinding/Makefile.confvars.inc.am
 include ../src/services/platform/Makefile.confvars.inc.am
-include ../src/adapters/compiler/Makefile.confvars.inc.am
 include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/kokkos/Makefile.confvars.inc.am
 include ../src/adapters/opencl/Makefile.confvars.inc.am

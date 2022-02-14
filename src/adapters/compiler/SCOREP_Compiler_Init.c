@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,8 +43,6 @@
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
-
-#include "scorep_compiler_confvars.inc.c"
 
 SCOREP_Mutex scorep_compiler_region_mutex = SCOREP_MUTEX_INIT;
 
@@ -89,12 +87,10 @@ compiler_subsystem_finalize_location( struct SCOREP_Location* location )
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name              = "COMPILER",
-    .subsystem_register          = &compiler_subsystem_register,
     .subsystem_init              = &scorep_compiler_subsystem_init,
     .subsystem_begin             = &scorep_compiler_subsystem_begin,
     .subsystem_end               = &scorep_compiler_subsystem_end,
     .subsystem_finalize          = &scorep_compiler_subsystem_finalize,
     .subsystem_init_location     = &scorep_compiler_subsystem_init_location,
     .subsystem_finalize_location = &compiler_subsystem_finalize_location,
-    .subsystem_deregister        = &compiler_subsystem_deregister,
 };

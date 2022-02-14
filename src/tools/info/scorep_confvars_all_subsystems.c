@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,7 +52,6 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter;
@@ -75,7 +74,6 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_SamplingService,
     &SCOREP_Subsystem_Topologies,
     &SCOREP_Subsystem_PlatformTopology,
-    &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
     &SCOREP_Subsystem_Opari2UserAdapter,
     &SCOREP_Subsystem_MpiAdapter,

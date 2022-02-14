@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2020,
+ * Copyright (c) 2009-2016, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -78,6 +78,7 @@ enum
     ACTION_ADAPTER_INIT,
     ACTION_LIBWRAP_LINKTIME,
     ACTION_LIBWRAP_RUNTIME,
+    ACTION_LDAUDIT,
     ACTION_TARGETS,
     ACTION_CONSTRUCTOR
 };
@@ -144,6 +145,7 @@ enum
     "              Prints true if link-time library wrapping is supported.\n" \
     "   --libwrap-support=runtime\n" \
     "              Prints true if run-time library wrapping is supported.\n" \
+    "   --ldaudit  Prints the linker auditing LD_AUDIT value if supported.\n" \
     "  Options:\n" \
     "   --target   Get flags for specified target, e.g., mic, score.\n" \
     "   --nvcc     Convert flags to be suitable for the nvcc compiler.\n" \
@@ -440,6 +442,10 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--libwrap-support=runtime" ) == 0 )
         {
             action = ACTION_LIBWRAP_RUNTIME;
+        }
+        else if ( strcmp( argv[ i ], "--ldaudit" ) == 0 )
+        {
+            action = ACTION_LDAUDIT;
         }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
@@ -778,7 +784,7 @@ main( int    argc,
             break;
 
         case ACTION_CONSTRUCTOR:
-            /* ignore this request if no support is avaible */
+            /* ignore this request if no support is available */
 #if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
             /* only add the constructor object if we would also add libs */
             if ( !libs.empty() )
@@ -809,6 +815,10 @@ main( int    argc,
 #else
             std::cout << "false" << std::endl;
 #endif
+            break;
+
+        case ACTION_LDAUDIT:
+            std::cout << SCOREP_BACKEND_LIBDIR "/libscorep_rtld_audit.so" << std::endl;
             break;
 
         default:

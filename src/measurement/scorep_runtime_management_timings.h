@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,31 +50,34 @@
 #include <stdint.h>
 #include "scorep_ipc.h"
 
+/* order by occurrence and nesting */
 #define SCOREP_TIMING_FUNCTIONS                                         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Paradigms_Initialize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_EarlyInitialize )     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filtering_Initialize )           \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_ActivateInitLocations ) \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Addr2line_Initialize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
-    SCOREP_TIMING_TRANSFORM_OP( synchronize )                           \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
-    SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration )                   \
-    SCOREP_TIMING_TRANSFORM_OP( trigger_exit_callbacks )                \
+    SCOREP_TIMING_TRANSFORM_OP( synchronize )                           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Task_ExitAllRegions )            \
+    SCOREP_TIMING_TRANSFORM_OP( trigger_exit_callbacks )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
+    SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration )                   \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Libwrap_Finalize )               \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filtering_Finalize )             \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeDefinitions )   \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Unify )                          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_WriteData )           \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Addr2line_Finalize )             \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Finalize )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeLocations )     \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_finalize )            \

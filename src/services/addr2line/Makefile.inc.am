@@ -1,0 +1,71 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2021-2022,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       Makefile.inc.am
+
+
+noinst_LTLIBRARIES += libscorep_addr2line.la
+
+# always provide libbfd for demangling, even if the entire addr2line
+# feature is not available.
+libscorep_addr2line_la_LDFLAGS = \
+    @SCOREP_LIBBFD_LDFLAGS@
+libscorep_addr2line_la_LIBADD = \
+    @SCOREP_LIBBFD_LIBS@
+
+# SCOREP_Addr2line_Initialize|Finalize called from libscorep_measurement
+libscorep_measurement_la_LIBADD +=  \
+    libscorep_addr2line.la
+
+
+if HAVE_SCOREP_ADDR2LINE
+
+libscorep_addr2line_la_SOURCES = \
+    $(SRC_ROOT)src/services/include/SCOREP_Addr2line.h \
+    $(SRC_ROOT)src/services/addr2line/SCOREP_Addr2line.c
+libscorep_addr2line_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_SERVICES) \
+    -I$(INC_DIR_MEASUREMENT) \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(PUBLIC_INC_DIR) \
+    @SCOREP_DL_ITERATE_PHDR_CPPFLAGS@ \
+    @SCOREP_LIBBFD_CPPFLAGS@
+
+FILES_THAT_INCLUDE_BFD_H += $(SRC_ROOT)src/services/addr2line/SCOREP_Addr2line.c
+
+if HAVE_SCOREP_LDAUDIT_API
+
+lib_LTLIBRARIES += libscorep_rtld_audit.la
+libscorep_rtld_audit_la_SOURCES = \
+    $(SRC_ROOT)src/services/addr2line/scorep_rtld_audit.c
+libscorep_rtld_audit_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    @SCOREP_LDAUDIT_CPPFLAGS@
+# The audit library needs to be a shared object
+libscorep_rtld_audit_la_LDFLAGS = \
+    -shared
+libscorep_rtld_audit_la_LIBADD = \
+    @SCOREP_LDAUDIT_LIBS@
+
+endif HAVE_SCOREP_LDAUDIT_API
+
+else !HAVE_SCOREP_ADDR2LINE
+
+libscorep_addr2line_la_SOURCES = \
+    $(SRC_ROOT)src/services/addr2line/SCOREP_Addr2line_mockup.c
+
+endif !HAVE_SCOREP_ADDR2LINE
+
+EXTRA_DIST += $(SRC_ROOT)src/services/include/SCOREP_Demangle.h

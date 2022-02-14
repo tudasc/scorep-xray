@@ -68,8 +68,13 @@ various Score-P components.
     maintain these is always welcomed.
 
     + MinGW
+      - Address-to-line lookup might not work as link.h and
+        dl_iterate_phdr might not be available.
     + macOS
       - Building shared/dynamic libraries may not work.
+      - Address-to-line lookup (e.g., for clang-based compiler
+        instrumentation) does not work as link.h and dl_iterate_phdr
+        is not available.
 
 --------------------------------------------------------------------------------
 

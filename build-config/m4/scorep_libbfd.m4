@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2021,
+dnl Copyright (c) 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2022,
@@ -17,7 +17,7 @@ dnl
 dnl file scorep_libbfd.m4
 
 
-# SCOREP_LIBBFD()
+# _SCOREP_LIBBFD()
 # --------------
 # Provide configure options to use or download a libbfd installation
 # or package. Check an existing installation whether it is usable, it
@@ -25,7 +25,7 @@ dnl file scorep_libbfd.m4
 # abort if this check fails. The download option generates a Makefile
 # that builds and install libbfd at make time.
 #
-AC_DEFUN_ONCE([SCOREP_LIBBFD], [
+AC_DEFUN([_SCOREP_LIBBFD], [
 AC_LANG_PUSH([C])
 AFS_EXTERNAL_LIB([bfd], [_LIBBFD_CHECK], [bfd.h], [_LIBBFD_DOWNLOAD], [dnl
 AS_HELP_STRING([--with-]_afs_lib_name[@<:@=yes|download|<path to ]_afs_lib_name[ installation>@:>@],
@@ -44,14 +44,13 @@ AC_LANG_POP([C])
 dnl
 AS_IF([test "${libbfd_summary:+set}" != set],
     [AC_MSG_ERROR([internal: libbfd_summary not set])])
-AFS_SUMMARY([libbfd support], [$libbfd_summary])
 dnl
 AS_IF([test ${have_cplus_demangle+set} != set],
     [AC_MSG_ERROR([internal: have_cplus_demangle not set])],
     [AS_IF([test "x${have_cplus_demangle}" = xyes],
-         [AC_DEFINE([HAVE_DEMANGLE], [1], [Define to 1 if cplus_demangle is available via ]_afs_lib_NAME[_LDFLAGS, ]_afs_lib_NAME[_LIBS, and AM_CONDITIONAL HAVE_DEMANGLE.])
-          AFS_AM_CONDITIONAL(HAVE_DEMANGLE, [test 0 -eq 0], [false])])])
-])# SCOREP_LIBBFD
+         [AC_DEFINE([HAVE_SCOREP_DEMANGLE], [1], [Define to 1 if cplus_demangle is available via ]_afs_lib_NAME[_LDFLAGS, ]_afs_lib_NAME[_LIBS, and AM_CONDITIONAL HAVE_SCOREP_DEMANGLE.])
+          AFS_AM_CONDITIONAL(HAVE_SCOREP_DEMANGLE, [test 0 -eq 0], [false])])])
+])# _SCOREP_LIBBFD
 
 
 # _LIBBFD_DOWNLOAD()

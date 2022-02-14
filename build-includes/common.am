@@ -50,6 +50,8 @@ UTILS_CPPFLAGS = \
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 INC_DIR_SUBSTRATES = $(INC_ROOT)src/measurement/substrates/include
 INC_DIR_DEFINITIONS = $(INC_ROOT)src/measurement/definitions/include
+INC_DIR_MEASUREMENT = $(INC_ROOT)src/measurement/include
+INC_DIR_SERVICES = $(INC_ROOT)src/services/include
 
 # not in common yet, as cube has this already in its package specific common.am too.
 bin_SCRIPTS =

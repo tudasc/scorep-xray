@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -48,7 +48,9 @@
 #include "scorep_info_command.hpp"
 #include "scorep_info_command_config_summary.hpp"
 #include "scorep_info_command_config_vars.hpp"
+#include "scorep_info_command_ldaudit.hpp"
 #include "scorep_info_command_libwrap_summary.hpp"
+#include "scorep_info_command_license.hpp"
 #include "scorep_info_command_open_issues.hpp"
 
 /**
@@ -100,6 +102,8 @@ main( int   argc,
     new SCOREP_Info_Command_ConfigVars();
     new SCOREP_Info_Command_LibwrapSummary();
     new SCOREP_Info_Command_OpenIssues();
+    new SCOREP_Info_Command_License();
+    new SCOREP_Info_Command_Ldaudit();
 
     if ( argc == 1 )
     {
