@@ -194,7 +194,12 @@ libscorep_adapter_compiler_event_la_CPPFLAGS += \
 
 libscorep_adapter_compiler_event_la_LIBADD += \
     libscorep_addr2line.la
-endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
+else !HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
+if HAVE_SCOREP_DEMANGLE
+libscorep_adapter_compiler_event_la_CPPFLAGS += \
+    -I$(INC_DIR_SERVICES)
+endif HAVE_SCOREP_DEMANGLE
+endif !HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 
 libscorep_adapter_compiler_event_la_LDFLAGS = \
     $(library_api_version_ldflags)

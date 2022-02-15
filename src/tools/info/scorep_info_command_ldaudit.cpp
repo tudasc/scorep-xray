@@ -19,6 +19,7 @@
 #include "scorep_info_command_ldaudit.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 #include <scorep_config_tool_backend.h>
 #include "scorep_info.hpp"

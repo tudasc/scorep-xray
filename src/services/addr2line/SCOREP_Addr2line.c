@@ -25,6 +25,7 @@
 
 #include <inttypes.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -119,15 +120,15 @@ SCOREP_Addr2line_Initialize( void )
     lt_objects = calloc( lt_objs_capacity, sizeof( lt_object ) );
     UTILS_BUG_ON( !lt_begin_addrs || !lt_objects );
 
-    unsigned init_result = bfd_init();
+    /* some versions of libbfd have bfd_init to return void, others return unsigned. */
+    bfd_init();
 
     /* fill arrays but ignore shared objects that don't report any symbols */
     dl_iterate_phdr( fill_lt_arrays_cb, ( void* )&lt_object_count );
     UTILS_BUG_ON( lt_object_count > lt_objs_capacity,
                   "Actual count must not exceed capacity." );
 
-    UTILS_DEBUG_EXIT( "lt_object_count=%zu; bfd_init=%d",
-                      lt_object_count, init_result );
+    UTILS_DEBUG_EXIT( "lt_object_count=%zu", lt_object_count );
 }
 
 
@@ -928,6 +929,9 @@ scorep_la_objopen( const char* name,
 }
 
 
+#ifndef UINT8_WIDTH
+#define UINT8_WIDTH 8
+#endif
 #define BITSET_NSLOTS( n_bits ) ( ( n_bits + UINT8_WIDTH - 1 ) / UINT8_WIDTH )
 #define BITSET_MASK( bit ) ( UINT8_C( 1 ) << ( ( bit ) % UINT8_WIDTH ) )
 #define BITSET_SLOT( bit ) ( ( bit ) / UINT8_WIDTH )
