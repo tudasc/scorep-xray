@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -659,7 +662,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          uint64_t                         bytesReceived )
 {
     UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
-                  "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
+                  "Invalid rank passed to SCOREP_MpiCollectiveEnd" );
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
@@ -670,6 +673,47 @@ SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
     SCOREP_CALL_SUBSTRATE( MpiCollectiveEnd, MPI_COLLECTIVE_END,
                            ( location, timestamp, communicatorHandle, rootRank,
                              collectiveType, bytesSent, bytesReceived ) );
+}
+
+/**
+ * Process a MPI non-blocking collective request event in the measurement system.
+ */
+void
+SCOREP_MpiNonBlockingCollectiveRequest( SCOREP_MpiRequestId requestId )
+{
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    /* use the timestamp from the associated enter */
+    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_CALL_SUBSTRATE( MpiNonBlockingCollectiveRequest, MPI_NON_BLOCKING_COLLECTIVE_REQUEST,
+                           ( location, timestamp, requestId ) );
+}
+
+/**
+ * Process a MPI non-blocking collective complete event in the measurement system.
+ */
+void
+SCOREP_MpiNonBlockingCollectiveComplete( SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                         SCOREP_MpiRank                   rootRank,
+                                         SCOREP_CollectiveType            collectiveType,
+                                         uint64_t                         bytesSent,
+                                         uint64_t                         bytesReceived,
+                                         SCOREP_MpiRequestId              requestId )
+{
+    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
+                  "Invalid rank passed to SCOREP_MpiNonBlockingCollectiveComplete" );
+
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_CALL_SUBSTRATE( MpiNonBlockingCollectiveComplete, MPI_NON_BLOCKING_COLLECTIVE_COMPLETE,
+                           ( location, timestamp, communicatorHandle, rootRank,
+                             collectiveType, bytesSent, bytesReceived, requestId ) );
 }
 
 void
@@ -727,7 +771,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                   destinationRank,
                   uint64_t                         bytesSent,
                   SCOREP_MpiRequestId              requestId )
 {
-    UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
+    UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
@@ -747,7 +791,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
                  uint64_t                         bytesReceived,
                  SCOREP_MpiRequestId              requestId )
 {
-    UTILS_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
+    UTILS_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();

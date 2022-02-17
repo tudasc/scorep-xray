@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -34,7 +37,7 @@
    @file
    @ingroup    MPI_Wrapper
 
-   @brief Contains the declarations for the handling of MPI Reqests.
+   @brief Contains the declarations for the handling of MPI Requests.
  */
 
 #include <SCOREP_Types.h>
@@ -55,7 +58,8 @@ typedef enum scorep_mpi_request_type
     SCOREP_MPI_REQUEST_TYPE_RMA,
     SCOREP_MPI_REQUEST_TYPE_COLL_COMM,
     SCOREP_MPI_REQUEST_TYPE_COLL_SYNC,
-    SCOREP_MPI_REQUEST_TYPE_COMM_IDUP
+    SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
+    SCOREP_MPI_REQUEST_TYPE_ICOLL
 } scorep_mpi_request_type;
 
 enum scorep_mpi_requests_flags
@@ -99,6 +103,15 @@ typedef struct
 
 typedef struct
 {
+    SCOREP_CollectiveType            coll_type;
+    int                              root_loc;
+    uint64_t                         bytes_sent;
+    uint64_t                         bytes_recv;
+    SCOREP_InterimCommunicatorHandle comm_handle;
+} scorep_mpi_request_icoll_data;
+
+typedef struct
+{
     uint64_t     bytes;
     MPI_Datatype datatype;
     MPI_File     fh;
@@ -124,6 +137,7 @@ struct scorep_mpi_request
     union
     {
         scorep_mpi_request_p2p_data       p2p;
+        scorep_mpi_request_icoll_data     icoll;
         scorep_mpi_request_comm_idup_data comm_idup;
         scorep_mpi_request_io_data        io;
         scorep_mpi_request_rma_data       rma;
@@ -153,7 +167,7 @@ scorep_mpi_unmark_request( scorep_mpi_request* req );
  * @param flags     Bitmask containing flags set for this request
  * @param tag       MPI tag for this request
  * @param dest      Destination rank of request
- * @param bytes     Number of bytes transfered in request
+ * @param bytes     Number of bytes transferred in request
  * @param datatype  MPI datatype handle
  * @param comm      MPI communicator handle
  * @param id        Request id
@@ -168,6 +182,27 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
                                MPI_Datatype            datatype,
                                MPI_Comm                comm,
                                SCOREP_MpiRequestId     id );
+
+/**
+ * @brief Create entry for a given MPI non-blocking collective request handle
+ * @param request        MPI request handle
+ * @param flags          Bitmask containing flags set for this request
+ * @param collectiveType Type of non-blocking collective operation
+ * @param rootLoc        Root location of collective operation
+ * @param bytesSent      Number of bytes sent in request
+ * @param bytesRecv      Number of bytes received in request
+ * @param comm           MPI communicator handle
+ * @param id             Request id
+ */
+void
+scorep_mpi_request_icoll_create( MPI_Request             request,
+                                 scorep_mpi_request_flag flags,
+                                 SCOREP_CollectiveType   collectiveType,
+                                 int                     rootLoc,
+                                 uint64_t                bytesSent,
+                                 uint64_t                bytesRecv,
+                                 MPI_Comm                comm,
+                                 SCOREP_MpiRequestId     id );
 
 /**
  * @brief Create entry for a given MPI Comm_Idup request handle
@@ -193,7 +228,7 @@ scorep_mpi_request_win_create( MPI_Request             mpiRequest,
  * @brief Create entry for a given MPI I/O request handle
  * @param request   MPI request handle
  * @param type      Type of request
- * @param bytes     Number of bytes transfered in request
+ * @param bytes     Number of bytes transferred in request
  * @param datatype  MPI datatype handle
  * @param fh        MPI_File handle
  * @param id        Request id

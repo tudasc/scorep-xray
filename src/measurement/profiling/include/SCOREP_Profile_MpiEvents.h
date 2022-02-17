@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -100,6 +103,27 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
                               SCOREP_CollectiveType            collectiveType,
                               uint64_t                         bytesSent,
                               uint64_t                         bytesReceived );
+
+/**
+ * Process a non-blocking collective MPI communication event in the profile.
+ * @param location           Location object for the thread where the event occurred.
+ * @param timestamp          Unused.
+ * @param communicatorHandle Unused.
+ * @param rootRank           Unused.
+ * @param collectiveType     Unused.
+ * @param bytesSent          Number of sent bytes.
+ * @param bytesReceived      Number of received bytes.
+ * @param requestId          Unused.
+ */
+void
+SCOREP_Profile_NonBlockingCollectiveComplete( SCOREP_Location*                 location,
+                                              uint64_t                         timestamp,
+                                              SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                              SCOREP_MpiRank                   rootRank,
+                                              SCOREP_CollectiveType            collectiveType,
+                                              uint64_t                         bytesSent,
+                                              uint64_t                         bytesReceived,
+                                              SCOREP_MpiRequestId              requestId );
 
 /**
  * Process a collective RMA communication event in the profile.

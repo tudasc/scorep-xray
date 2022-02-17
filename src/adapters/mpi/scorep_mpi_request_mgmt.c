@@ -338,6 +338,33 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
 }
 
 void
+scorep_mpi_request_icoll_create( MPI_Request             request,
+                                 scorep_mpi_request_flag flags,
+                                 SCOREP_CollectiveType   collectiveType,
+                                 int                     rootLoc,
+                                 uint64_t                bytesSent,
+                                 uint64_t                bytesRecv,
+                                 MPI_Comm                comm,
+                                 SCOREP_MpiRequestId     id )
+{
+    scorep_mpi_request data = { .request       = request,
+                                .request_type  = SCOREP_MPI_REQUEST_TYPE_ICOLL,
+                                .payload.icoll = {
+                                    .coll_type   = collectiveType,
+                                    .root_loc    = rootLoc,
+                                    .bytes_sent  = bytesSent,
+                                    .bytes_recv  = bytesRecv,
+                                    .comm_handle = SCOREP_MPI_COMM_HANDLE( comm ),
+                                },
+                                .flags  = flags,
+                                .id     = id,
+                                .next   = NULL,
+                                .marker = false };
+
+    insert_scorep_mpi_request( request, &data );
+}
+
+void
 scorep_mpi_request_io_create( MPI_Request             request,
                               scorep_mpi_request_type type,
                               uint64_t                bytes,
@@ -577,9 +604,10 @@ void
 scorep_mpi_check_request( scorep_mpi_request* req,
                           MPI_Status*         status )
 {
-    const int p2p_events_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P );
-    const int io_events_active  = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO );
-    const int xnb_active        = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int p2p_events_active  = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P );
+    const int io_events_active   = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO );
+    const int coll_events_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL );
+    const int xnb_active         = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
 
     if ( !req ||
          ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED ) ||
@@ -596,7 +624,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
     }
     if ( cancelled )
     {
-        if ( xnb_active && req->id != UINT64_MAX )
+        if ( ( xnb_active || req->request_type == SCOREP_MPI_REQUEST_TYPE_ICOLL ) && req->id != UINT64_MAX )
         {
             SCOREP_MpiRequestCancelled( req->id );
         }
@@ -685,6 +713,19 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                                                     ( uint64_t )sz * count,
                                                     req->id /* matching id */ );
                     }
+                }
+                break;
+
+            case SCOREP_MPI_REQUEST_TYPE_ICOLL:
+                if ( coll_events_active )
+                {
+                    SCOREP_MpiNonBlockingCollectiveComplete(
+                        req->payload.icoll.comm_handle,
+                        req->payload.icoll.root_loc,
+                        req->payload.icoll.coll_type,
+                        req->payload.icoll.bytes_sent,
+                        req->payload.icoll.bytes_recv,
+                        req->id );
                 }
                 break;
 

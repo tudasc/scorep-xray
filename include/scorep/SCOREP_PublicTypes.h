@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -178,7 +181,7 @@ typedef struct SCOREP_Task* SCOREP_TaskHandle;
 typedef enum SCOREP_CollectiveType
 {
     SCOREP_COLLECTIVE_BARRIER,                      /**< The collective is a barrier, e.g., MPI_Barrier(...), shmem_barrier(...), or shmem_barrier_all(...) */
-    SCOREP_COLLECTIVE_BROADCAST,                    /**< The collective is a barrier, e.g., MPI_Bcast(...), or shmem_broadcast32(...) */
+    SCOREP_COLLECTIVE_BROADCAST,                    /**< The collective is a broadcast, e.g., MPI_Bcast(...), or shmem_broadcast32(...) */
     SCOREP_COLLECTIVE_GATHER,                       /**< The collective is a simple gather operation, e.g., MPI_Gather(...) */
     SCOREP_COLLECTIVE_GATHERV,                      /**< The collective is a complex gather operation, e.g., MPI_Gatherv(...) */
     SCOREP_COLLECTIVE_SCATTER,                      /**< The collective is a simple scatter operation, e.g., MPI_Scatter(...) */

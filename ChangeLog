@@ -7,6 +7,8 @@ Features and improvements:
 - Record events for the ISO C I/O 'remove' function.
 - Score-P limitedly supports `MPI_THREAD_SERIALIZED`, and, if there is
   thread-local storage detected, `MPI_THREAD_MULTIPLE`.
+- Record detailed information about MPI non-blocking collective
+  operations.
 
 User tools and API improvements and changes:
 

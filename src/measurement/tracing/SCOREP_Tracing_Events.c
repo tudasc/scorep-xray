@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -630,6 +633,58 @@ mpi_collective_end( SCOREP_Location*                 location,
                                      root_rank,
                                      bytesSent,
                                      bytesReceived );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
+}
+
+
+static void
+mpi_non_blocking_collective_request( SCOREP_Location*    location,
+                                     uint64_t            timestamp,
+                                     SCOREP_MpiRequestId requestId )
+{
+    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+
+    OTF2_EvtWriter_NonBlockingCollectiveRequest( evt_writer,
+                                                 NULL,
+                                                 timestamp,
+                                                 requestId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
+}
+
+
+static void
+mpi_non_blocking_collective_complete( SCOREP_Location*                 location,
+                                      uint64_t                         timestamp,
+                                      SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                      SCOREP_MpiRank                   rootRank,
+                                      SCOREP_CollectiveType            collectiveType,
+                                      uint64_t                         bytesSent,
+                                      uint64_t                         bytesReceived,
+                                      SCOREP_MpiRequestId              requestId )
+{
+    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+
+    uint32_t root_rank;
+    if ( rootRank == SCOREP_INVALID_ROOT_RANK )
+    {
+        root_rank = OTF2_COLLECTIVE_ROOT_NONE;
+    }
+    else
+    {
+        root_rank = ( uint32_t )rootRank;
+    }
+
+    OTF2_EvtWriter_NonBlockingCollectiveComplete( evt_writer,
+                                                  NULL,
+                                                  timestamp,
+                                                  scorep_tracing_collective_type_to_otf2( collectiveType ),
+                                                  SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
+                                                  root_rank,
+                                                  bytesSent,
+                                                  bytesReceived,
+                                                  requestId );
 
     scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
@@ -2051,80 +2106,82 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
 {
     /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
     {
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramBegin,             PROGRAM_BEGIN,                program_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramEnd,               PROGRAM_END,                  program_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,              ENTER_REGION,                 enter ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,               EXIT_REGION,                  leave ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                   SAMPLE,                       sample ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextEnter,      CALLING_CONTEXT_ENTER,        calling_context_enter ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextExit,       CALLING_CONTEXT_EXIT,         calling_context_leave ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRewindRegion,        ENTER_REWIND_REGION,          store_rewind_point ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRewindRegion,         EXIT_REWIND_REGION,           exit_rewind_point ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                  MPI_SEND,                     mpi_send ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                  MPI_RECV,                     mpi_recv ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveBegin,       MPI_COLLECTIVE_BEGIN,         mpi_collective_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,         MPI_COLLECTIVE_END,           mpi_collective_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsendComplete,         MPI_ISEND_COMPLETE,           mpi_isend_complete ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecvRequest,          MPI_IRECV_REQUEST,            mpi_irecv_request ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestTested,         MPI_REQUEST_TESTED,           mpi_request_tested ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestCancelled,      MPI_REQUEST_CANCELLED,        mpi_request_cancelled ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                 MPI_ISEND,                    mpi_isend ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                 MPI_IRECV,                    mpi_irecv ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWinCreate,             RMA_WIN_CREATE,               rma_win_create ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWinDestroy,            RMA_WIN_DESTROY,              rma_win_destroy ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveBegin,       RMA_COLLECTIVE_BEGIN,         rma_collective_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveEnd,         RMA_COLLECTIVE_END,           rma_collective_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaTryLock,               RMA_TRY_LOCK,                 rma_try_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaAcquireLock,           RMA_ACQUIRE_LOCK,             rma_acquire_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaRequestLock,           RMA_REQUEST_LOCK,             rma_request_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaReleaseLock,           RMA_RELEASE_LOCK,             rma_release_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaSync,                  RMA_SYNC,                     rma_sync ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGroupSync,             RMA_GROUP_SYNC,               rma_group_sync ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaPut,                   RMA_PUT,                      rma_put ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGet,                   RMA_GET,                      rma_get ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaAtomic,                RMA_ATOMIC,                   rma_atomic ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWaitChange,            RMA_WAIT_CHANGE,              rma_wait_change ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteBlocking,    RMA_OP_COMPLETE_BLOCKING,     rma_op_complete_blocking ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteNonBlocking, RMA_OP_COMPLETE_NON_BLOCKING, rma_op_complete_non_blocking ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpTest,                RMA_OP_TEST,                  rma_op_test ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteRemote,      RMA_OP_COMPLETE_REMOTE,       rma_op_complete_remote ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadAcquireLock,        THREAD_ACQUIRE_LOCK,          thread_acquire_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadReleaseLock,        THREAD_RELEASE_LOCK,          thread_release_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterInt64,      TRIGGER_COUNTER_INT64,        trigger_counter_int64 ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterUint64,     TRIGGER_COUNTER_UINT64,       trigger_counter_uint64 ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterDouble,     TRIGGER_COUNTER_DOUBLE,       trigger_counter_double ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterInt64,    TRIGGER_PARAMETER_INT64,      parameter_int64 ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterUint64,   TRIGGER_PARAMETER_UINT64,     parameter_uint64 ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterString,   TRIGGER_PARAMETER_STRING,     parameter_string ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,       THREAD_FORK_JOIN_FORK,        thread_fork ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,       THREAD_FORK_JOIN_JOIN,        thread_join ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamBegin,  THREAD_FORK_JOIN_TEAM_BEGIN,  thread_team_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamEnd,    THREAD_FORK_JOIN_TEAM_END,    thread_team_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskCreate, THREAD_FORK_JOIN_TASK_CREATE, thread_task_create ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch, THREAD_FORK_JOIN_TASK_SWITCH, thread_task_switch ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,  THREAD_FORK_JOIN_TASK_BEGIN,  thread_task_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,    THREAD_FORK_JOIN_TASK_END,    thread_task_complete ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitCreate,   THREAD_CREATE_WAIT_CREATE,    thread_create ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,     THREAD_CREATE_WAIT_WAIT,      thread_wait ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,    THREAD_CREATE_WAIT_BEGIN,     thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,      THREAD_CREATE_WAIT_END,       thread_end ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoCreateHandle,           IO_CREATE_HANDLE,             io_create_handle ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDestroyHandle,          IO_DESTROY_HANDLE,            io_destroy_handle ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDuplicateHandle,        IO_DUPLICATE_HANDLE,          io_duplicate_handle ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoSeek,                   IO_SEEK,                      io_seek ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoChangeStatusFlags,      IO_CHANGE_STATUS_FLAGS,       io_change_status_flags ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDeleteFile,             IO_DELETE_FILE,               io_delete_file ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationBegin,         IO_OPERATION_BEGIN,           io_operation_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationIssued,        IO_OPERATION_ISSUED,          io_operation_issued ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationTest,          IO_OPERATION_TEST,            io_operation_test ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationComplete,      IO_OPERATION_COMPLETE,        io_operation_complete ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationCancelled,     IO_OPERATION_CANCELLED,       io_operation_cancelled ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoAcquireLock,            IO_ACQUIRE_LOCK,              io_acquire_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoReleaseLock,            IO_RELEASE_LOCK,              io_release_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoTryLock,                IO_TRY_LOCK,                  io_try_lock ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,          ENABLE_RECORDING,             enable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,         DISABLE_RECORDING,            disable_recording ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetrics,             WRITE_POST_MORTEM_METRICS,    write_metric ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramBegin,                      PROGRAM_BEGIN,                         program_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ProgramEnd,                        PROGRAM_END,                           program_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,                       ENTER_REGION,                          enter ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,                        EXIT_REGION,                           leave ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                            SAMPLE,                                sample ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextEnter,               CALLING_CONTEXT_ENTER,                 calling_context_enter ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextExit,                CALLING_CONTEXT_EXIT,                  calling_context_leave ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRewindRegion,                 ENTER_REWIND_REGION,                   store_rewind_point ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRewindRegion,                  EXIT_REWIND_REGION,                    exit_rewind_point ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                           MPI_SEND,                              mpi_send ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                           MPI_RECV,                              mpi_recv ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveBegin,                MPI_COLLECTIVE_BEGIN,                  mpi_collective_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,                  MPI_COLLECTIVE_END,                    mpi_collective_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiNonBlockingCollectiveRequest,   MPI_NON_BLOCKING_COLLECTIVE_REQUEST,   mpi_non_blocking_collective_request ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiNonBlockingCollectiveComplete,  MPI_NON_BLOCKING_COLLECTIVE_COMPLETE,  mpi_non_blocking_collective_complete ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsendComplete,                  MPI_ISEND_COMPLETE,                    mpi_isend_complete ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecvRequest,                   MPI_IRECV_REQUEST,                     mpi_irecv_request ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestTested,                  MPI_REQUEST_TESTED,                    mpi_request_tested ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestCancelled,               MPI_REQUEST_CANCELLED,                 mpi_request_cancelled ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                          MPI_ISEND,                             mpi_isend ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                          MPI_IRECV,                             mpi_irecv ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWinCreate,                      RMA_WIN_CREATE,                        rma_win_create ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWinDestroy,                     RMA_WIN_DESTROY,                       rma_win_destroy ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveBegin,                RMA_COLLECTIVE_BEGIN,                  rma_collective_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveEnd,                  RMA_COLLECTIVE_END,                    rma_collective_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaTryLock,                        RMA_TRY_LOCK,                          rma_try_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaAcquireLock,                    RMA_ACQUIRE_LOCK,                      rma_acquire_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaRequestLock,                    RMA_REQUEST_LOCK,                      rma_request_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaReleaseLock,                    RMA_RELEASE_LOCK,                      rma_release_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaSync,                           RMA_SYNC,                              rma_sync ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGroupSync,                      RMA_GROUP_SYNC,                        rma_group_sync ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaPut,                            RMA_PUT,                               rma_put ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGet,                            RMA_GET,                               rma_get ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaAtomic,                         RMA_ATOMIC,                            rma_atomic ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaWaitChange,                     RMA_WAIT_CHANGE,                       rma_wait_change ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteBlocking,             RMA_OP_COMPLETE_BLOCKING,              rma_op_complete_blocking ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteNonBlocking,          RMA_OP_COMPLETE_NON_BLOCKING,          rma_op_complete_non_blocking ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpTest,                         RMA_OP_TEST,                           rma_op_test ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaOpCompleteRemote,               RMA_OP_COMPLETE_REMOTE,                rma_op_complete_remote ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadAcquireLock,                 THREAD_ACQUIRE_LOCK,                   thread_acquire_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadReleaseLock,                 THREAD_RELEASE_LOCK,                   thread_release_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterInt64,               TRIGGER_COUNTER_INT64,                 trigger_counter_int64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterUint64,              TRIGGER_COUNTER_UINT64,                trigger_counter_uint64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterDouble,              TRIGGER_COUNTER_DOUBLE,                trigger_counter_double ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterInt64,             TRIGGER_PARAMETER_INT64,               parameter_int64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterUint64,            TRIGGER_PARAMETER_UINT64,              parameter_uint64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterString,            TRIGGER_PARAMETER_STRING,              parameter_string ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,                THREAD_FORK_JOIN_FORK,                 thread_fork ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,                THREAD_FORK_JOIN_JOIN,                 thread_join ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamBegin,           THREAD_FORK_JOIN_TEAM_BEGIN,           thread_team_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamEnd,             THREAD_FORK_JOIN_TEAM_END,             thread_team_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskCreate,          THREAD_FORK_JOIN_TASK_CREATE,          thread_task_create ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch,          THREAD_FORK_JOIN_TASK_SWITCH,          thread_task_switch ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,           THREAD_FORK_JOIN_TASK_BEGIN,           thread_task_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,             THREAD_FORK_JOIN_TASK_END,             thread_task_complete ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitCreate,            THREAD_CREATE_WAIT_CREATE,             thread_create ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,              THREAD_CREATE_WAIT_WAIT,               thread_wait ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,             THREAD_CREATE_WAIT_BEGIN,              thread_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,               THREAD_CREATE_WAIT_END,                thread_end ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoCreateHandle,                    IO_CREATE_HANDLE,                      io_create_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDestroyHandle,                   IO_DESTROY_HANDLE,                     io_destroy_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDuplicateHandle,                 IO_DUPLICATE_HANDLE,                   io_duplicate_handle ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoSeek,                            IO_SEEK,                               io_seek ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoChangeStatusFlags,               IO_CHANGE_STATUS_FLAGS,                io_change_status_flags ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoDeleteFile,                      IO_DELETE_FILE,                        io_delete_file ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationBegin,                  IO_OPERATION_BEGIN,                    io_operation_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationIssued,                 IO_OPERATION_ISSUED,                   io_operation_issued ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationTest,                   IO_OPERATION_TEST,                     io_operation_test ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationComplete,               IO_OPERATION_COMPLETE,                 io_operation_complete ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoOperationCancelled,              IO_OPERATION_CANCELLED,                io_operation_cancelled ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoAcquireLock,                     IO_ACQUIRE_LOCK,                       io_acquire_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoReleaseLock,                     IO_RELEASE_LOCK,                       io_release_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( IoTryLock,                         IO_TRY_LOCK,                           io_try_lock ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,                   ENABLE_RECORDING,                      enable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,                  DISABLE_RECORDING,                     disable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteMetrics,                      WRITE_POST_MORTEM_METRICS,             write_metric ),
     },
     /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
     {
