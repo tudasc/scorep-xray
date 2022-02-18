@@ -74,7 +74,7 @@ typedef enum SCOREP_HandleType
     SCOREP_HANDLE_TYPE_IO_FILE,                   /** The handle type is SCOREP_IoFileHandle */
     SCOREP_HANDLE_TYPE_IO_FILE_PROPERTY,          /** The handle type is SCOREP_IoFilePropertyHandle */
     SCOREP_HANDLE_TYPE_IO_HANDLE,                 /** The handle type is SCOREP_IoHandleHandle */
-    SCOREP_HANDLE_TYPE_IO_PARADIGM,               /** The handle type is SCOREP_IoParadigmHandle */
+    SCOREP_HANDLE_TYPE_IO_PARADIGM,               /** The handle type is SCOREP_AnyHandle */
 
     SCOREP_HANDLE_TYPE_NUM_HANDLES                /** Not ABI  */
 } SCOREP_HandleType;
@@ -92,6 +92,8 @@ typedef SCOREP_AnyHandle SCOREP_InterimCommunicatorHandle;
 typedef SCOREP_AnyHandle SCOREP_InterruptGeneratorHandle;
 
 typedef SCOREP_AnyHandle SCOREP_IoFileHandle;
+
+typedef SCOREP_AnyHandle SCOREP_IoFilePropertyHandle;
 
 typedef SCOREP_AnyHandle SCOREP_IoHandleHandle;
 
@@ -114,6 +116,5 @@ typedef SCOREP_AnyHandle SCOREP_StringHandle;
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
 
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodePropertyHandle;
-
 
 #endif /* SCOREP_PUBLIC_HANDLES_H */
