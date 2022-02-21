@@ -52,6 +52,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
     uint64_t                   global_location_id;
     SCOREP_StringHandle        name_handle;
     SCOREP_LocationType        location_type;
+    SCOREP_ParadigmType        paradigm;                // only valid for GPU locations
     SCOREP_LocationGroupHandle location_group_parent;
     uint64_t                   number_of_events;        // only known after measurement
 };
@@ -59,6 +60,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
 
 SCOREP_LocationHandle
 SCOREP_Definitions_NewLocation( SCOREP_LocationType        type,
+                                SCOREP_ParadigmType        paradigm,
                                 const char*                name,
                                 SCOREP_LocationGroupHandle locationGroupParent,
                                 size_t                     sizeOfPayload,

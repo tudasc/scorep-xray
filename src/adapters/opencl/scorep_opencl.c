@@ -492,6 +492,7 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
     queue->location = SCOREP_Location_CreateNonCPULocation(
         queue->host_location,
         SCOREP_LOCATION_TYPE_GPU,
+        SCOREP_PARADIGM_OPENCL,
         thread_name,
         queue->device->location_group );
 

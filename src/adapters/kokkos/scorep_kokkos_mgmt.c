@@ -116,6 +116,7 @@ scorep_kokkos_get_device_location( void )
         SCOREP_Location* location = SCOREP_Location_CreateNonCPULocation(
             SCOREP_Location_GetCurrentCPULocation(),
             SCOREP_LOCATION_TYPE_GPU,
+            SCOREP_PARADIGM_KOKKOS,
             "Kokkos Stream",
             SCOREP_AcceleratorMgmt_CreateContext(
                 SCOREP_Definitions_NewSystemTreeNode(

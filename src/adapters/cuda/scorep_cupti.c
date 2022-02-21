@@ -279,6 +279,7 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         stream->scorep_location =
             SCOREP_Location_CreateNonCPULocation( context->host_location,
                                                   SCOREP_LOCATION_TYPE_GPU,
+                                                  SCOREP_PARADIGM_CUDA,
                                                   thread_name,
                                                   context->location_group );
 

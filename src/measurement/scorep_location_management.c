@@ -126,6 +126,7 @@ SCOREP_Location_GetLastForkHash( const SCOREP_Location* location )
 
 SCOREP_Location*
 scorep_location_create_location( SCOREP_LocationType        type,
+                                 SCOREP_ParadigmType        paradigm,
                                  const char*                name,
                                  SCOREP_LocationGroupHandle locationGroup )
 {
@@ -138,6 +139,7 @@ scorep_location_create_location( SCOREP_LocationType        type,
        also the SCOREP_Location, will abort on out-of-memory */
     SCOREP_LocationHandle location_handle = SCOREP_Definitions_NewLocation(
         type,
+        paradigm,
         name,
         locationGroup,
         total_memory,
@@ -163,13 +165,17 @@ scorep_location_create_location( SCOREP_LocationType        type,
 SCOREP_Location*
 SCOREP_Location_CreateNonCPULocation( SCOREP_Location*           parent,
                                       SCOREP_LocationType        type,
+                                      SCOREP_ParadigmType        paradigm,
                                       const char*                name,
                                       SCOREP_LocationGroupHandle locationGroup )
 {
     UTILS_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
-    SCOREP_Location* new_location = scorep_location_create_location( type, name, locationGroup );
+    UTILS_BUG_ON( type != SCOREP_LOCATION_TYPE_GPU && paradigm != SCOREP_INVALID_PARADIGM_TYPE,
+                  "Only GPU locations support a paradigm." );
+
+    SCOREP_Location* new_location = scorep_location_create_location( type, paradigm, name, locationGroup );
     new_location->parent = parent;
     if ( !defer_init_locations )
     {
@@ -185,6 +191,7 @@ SCOREP_Location_CreateCPULocation( const char* name )
 {
     SCOREP_Location* new_location = scorep_location_create_location(
         SCOREP_LOCATION_TYPE_CPU_THREAD,
+        SCOREP_INVALID_PARADIGM_TYPE,
         name,
         SCOREP_GetProcessLocationGroup() );
 #if HAVE( THREAD_LOCAL_STORAGE )
@@ -221,6 +228,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
         per_process_metrics_location = SCOREP_Location_CreateNonCPULocation(
             SCOREP_Location_GetCurrentCPULocation(),
             SCOREP_LOCATION_TYPE_METRIC,
+            SCOREP_INVALID_PARADIGM_TYPE,
             scorep_per_process_metrics_location_name,
             SCOREP_GetProcessLocationGroup() );
     }

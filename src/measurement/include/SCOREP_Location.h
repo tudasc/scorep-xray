@@ -61,6 +61,8 @@ SCOREP_Location_GetLastForkHash( const SCOREP_Location* location );
  *
  * @param parent            Handle of parent location.
  * @param type              Type of new location.
+ * @param paradigm          Paradigm/adapter who created this location. Only
+ *                          legit for GPU locations.
  * @param name              Name of new location.
  *
  * @return Returns handle for new location.
@@ -68,6 +70,7 @@ SCOREP_Location_GetLastForkHash( const SCOREP_Location* location );
 SCOREP_Location*
 SCOREP_Location_CreateNonCPULocation( SCOREP_Location*           parent,
                                       SCOREP_LocationType        type,
+                                      SCOREP_ParadigmType        paradigm,
                                       const char*                name,
                                       SCOREP_LocationGroupHandle locationGroup );
 
