@@ -53,7 +53,7 @@
 #define PTR_TO_INT( ptr ) ( uintptr_t )( ptr )
 #define INT_TO_PTR( i ) ( void* )( i )
 #else /* ! SCOREP_GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
-#define PTR_PTR_TO_INT_PTR( ptr ) ( ptr )
+#define PTR_PTR_TO_INT_PTR( ptr ) ( void** )( ptr )
 #define PTR_TO_INT( ptr ) ( ptr )
 #define INT_TO_PTR( i ) ( i )
 #endif /* ! SCOREP_GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
@@ -88,97 +88,97 @@ SCOREP_Atomic_ThreadFence( SCOREP_Atomic_Memorder memorder )
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_LoadN_void_ptr( void** ptr, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_LoadN_void_ptr( void* ptr, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_load_n( PTR_PTR_TO_INT_PTR( ptr ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void
-SCOREP_Atomic_StoreN_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_StoreN_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     __atomic_store_n( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_ExchangeN_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_ExchangeN_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_exchange_n( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE bool
-SCOREP_Atomic_CompareExchangeN_void_ptr( void** ptr, void** expected, void* desired, bool weak, SCOREP_Atomic_Memorder successMemorder, SCOREP_Atomic_Memorder failureMemorder )
+SCOREP_Atomic_CompareExchangeN_void_ptr( void* ptr, void* expected, void* desired, bool weak, SCOREP_Atomic_Memorder successMemorder, SCOREP_Atomic_Memorder failureMemorder )
 {
     return __atomic_compare_exchange_n( PTR_PTR_TO_INT_PTR( ptr ), PTR_PTR_TO_INT_PTR( expected ), PTR_TO_INT( desired ), weak, gcc_memorder[ successMemorder ], gcc_memorder[ failureMemorder ] );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_AddFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_AddFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_add_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_SubFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_SubFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_sub_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_AndFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_AndFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_and_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_XorFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_XorFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_xor_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_OrFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_OrFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_or_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_NandFetch_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_NandFetch_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_nand_fetch( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchAdd_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchAdd_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_add( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchSub_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchSub_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_sub( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchAnd_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchAnd_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_and( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchXor_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchXor_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_xor( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchOr_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchOr_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_or( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchNand_void_ptr( void** ptr, void* val, SCOREP_Atomic_Memorder memorder )
+SCOREP_Atomic_FetchNand_void_ptr( void* ptr, void* val, SCOREP_Atomic_Memorder memorder )
 {
     return INT_TO_PTR( __atomic_fetch_nand( PTR_PTR_TO_INT_PTR( ptr ), PTR_TO_INT( val ), gcc_memorder[ memorder ] ) );
 }
