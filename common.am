@@ -98,6 +98,7 @@ INSTALL_DATA_HOOK_TARGETS =
 UNINSTALL_LOCAL_TARGETS =
 dist_bin_SCRIPTS =
 pkgdata_DATA =
+CONFIGURE_DEPENDENCIES =
 
 ## TESTS are handlend differently because of cross-, mpi- and openmp
 ## environments, see the component specific common.am or Makefile.am
