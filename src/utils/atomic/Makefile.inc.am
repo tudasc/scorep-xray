@@ -26,3 +26,5 @@ EXTRA_DIST += \
     $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.ppc64.s \
     $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.x86_64.s \
     $(SRC_ROOT)src/utils/atomic/SCOREP_Atomic.inc.aarch64.s
+
+CONFIGURE_DEPENDENCIES += $(srcdir)/../src/utils/atomic/SCOREP_Atomic.inc.c
