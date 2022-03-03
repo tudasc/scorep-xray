@@ -393,3 +393,15 @@ SCOREP_IoHandleHandle_GetPayload( SCOREP_IoHandleHandle handle )
 
     return ( char* )def + payload_offset;
 }
+
+SCOREP_IoHandleHandle
+SCOREP_IoHandleHandle_GetParentHandle( SCOREP_IoHandleHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->parent_handle;
+}
+
+SCOREP_IoHandleHandle
+SCOREP_IoHandleHandle_GetIoParadigm( SCOREP_IoHandleHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, IoHandle )->io_paradigm_type;
+}

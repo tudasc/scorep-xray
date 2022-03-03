@@ -87,85 +87,90 @@ SCOREP_Atomic_ThreadFence( SCOREP_Atomic_Memorder memorder );
 /* STATIC_INLINE bool
  * SCOREP_Atomic_IsLockFree( size_t size, void* ptr ); */
 
+/** @note For all *_void_ptr() functions, the @a ptr and @a expected arguments
+          are actually of type pointer-to-pointer, i.e., `void**`. Though that
+          requires a cast to `(void**)` on the callsite. To avoid warnings they
+          are just `void*` in the prototype. */
+
 STATIC_INLINE void*
-SCOREP_Atomic_LoadN_void_ptr( void**                 ptr,
+SCOREP_Atomic_LoadN_void_ptr( void*                  ptr,
                               SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void
-SCOREP_Atomic_StoreN_void_ptr( void**                 ptr,
+SCOREP_Atomic_StoreN_void_ptr( void*                  ptr,
                                void*                  val,
                                SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_ExchangeN_void_ptr( void**                 ptr,
+SCOREP_Atomic_ExchangeN_void_ptr( void*                  ptr,
                                   void*                  val,
                                   SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE bool
-SCOREP_Atomic_CompareExchangeN_void_ptr( void**                 ptr,
-                                         void**                 expected,
+SCOREP_Atomic_CompareExchangeN_void_ptr( void*                  ptr,
+                                         void*                  expected,
                                          void*                  desired,
                                          bool                   weak,
                                          SCOREP_Atomic_Memorder successMemorder,
                                          SCOREP_Atomic_Memorder failureMemorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_AddFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_AddFetch_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_SubFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_SubFetch_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_AndFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_AndFetch_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_XorFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_XorFetch_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_OrFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_OrFetch_void_ptr( void*                  ptr,
                                 void*                  val,
                                 SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_NandFetch_void_ptr( void**                 ptr,
+SCOREP_Atomic_NandFetch_void_ptr( void*                  ptr,
                                   void*                  val,
                                   SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchAdd_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchAdd_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchSub_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchSub_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchAnd_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchAnd_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchXor_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchXor_void_ptr( void*                  ptr,
                                  void*                  val,
                                  SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchOr_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchOr_void_ptr( void*                  ptr,
                                 void*                  val,
                                 SCOREP_Atomic_Memorder memorder );
 
 STATIC_INLINE void*
-SCOREP_Atomic_FetchNand_void_ptr( void**                 ptr,
+SCOREP_Atomic_FetchNand_void_ptr( void*                  ptr,
                                   void*                  val,
                                   SCOREP_Atomic_Memorder memorder );
 
