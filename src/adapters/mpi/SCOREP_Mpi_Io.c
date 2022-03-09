@@ -3831,7 +3831,7 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;
@@ -3912,7 +3912,7 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;
@@ -3993,7 +3993,7 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;
@@ -4074,7 +4074,7 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;
@@ -4155,7 +4155,7 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;
@@ -4236,7 +4236,7 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 int                 n_elements;
                 SCOREP_MpiRequestId matching_id;

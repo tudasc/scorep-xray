@@ -43,7 +43,7 @@ ${proto:c}
   {
     if ( event_gen_active_for_group )
     {
-      if( io_handle != SCOREP_INVALID_IO_HANDLE )
+      if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
       {
           int n_elements;
           SCOREP_MpiRequestId matching_id;
