@@ -3373,8 +3373,6 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3399,6 +3397,8 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3447,8 +3447,6 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3473,6 +3471,8 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3521,8 +3521,6 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3547,6 +3545,8 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3595,8 +3595,6 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3621,6 +3619,8 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3669,8 +3669,6 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3695,6 +3693,8 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3743,8 +3743,6 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
                 const int type_size = mpi_io_get_type_size( datatype );
                 req_id = scorep_mpi_get_request_id();
 
-                mpi_io_split_begin( io_handle, req_id, datatype );
-
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -3769,6 +3767,8 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
+                mpi_io_split_begin( io_handle, req_id, datatype );
+
                 SCOREP_IoOperationIssued( io_handle, req_id );
             }
             SCOREP_IoMgmt_PopHandle( io_handle );

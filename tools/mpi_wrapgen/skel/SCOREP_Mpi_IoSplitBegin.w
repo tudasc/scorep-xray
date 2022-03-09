@@ -29,8 +29,6 @@ ${proto:c}
          const int type_size = mpi_io_get_type_size( datatype );
          req_id = scorep_mpi_get_request_id();
 
-         mpi_io_split_begin(io_handle, req_id, datatype);
-
          SCOREP_IoOperationBegin( io_handle,
                                   SCOREP_IO_OPERATION_MODE_${attribute(operation_type)},
                                   SCOREP_IO_OPERATION_FLAG_${attribute(collective_type)} | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
@@ -55,6 +53,8 @@ ${proto:c}
     {
       if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
       {
+        mpi_io_split_begin(io_handle, req_id, datatype);
+
         SCOREP_IoOperationIssued( io_handle, req_id );
       }
       SCOREP_IoMgmt_PopHandle( io_handle );
