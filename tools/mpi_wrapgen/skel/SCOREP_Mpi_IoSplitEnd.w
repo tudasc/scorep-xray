@@ -53,6 +53,10 @@ ${proto:c}
 
           const int type_size = mpi_io_get_type_size( datatype );
           PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+          PMPI_Type_free( &datatype );
+#endif
+
           SCOREP_IoOperationComplete( io_handle,
                                       SCOREP_IO_OPERATION_MODE_${attribute(operation_type)},
                                       ( uint64_t ) n_elements * type_size,

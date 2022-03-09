@@ -201,8 +201,12 @@ mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
     }
 
     split_op->matching_id = matching_id;
-    split_op->datatype    = datatype;
-    split_op->is_active   = true;
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &split_op->datatype );
+#else
+    split_op->datatype = datatype;
+#endif
+    split_op->is_active = true;
 }
 
 static inline int
@@ -3837,6 +3841,10 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -3914,6 +3922,10 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -3991,6 +4003,10 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -4068,6 +4084,10 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,
@@ -4145,6 +4165,10 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,
@@ -4222,6 +4246,10 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,

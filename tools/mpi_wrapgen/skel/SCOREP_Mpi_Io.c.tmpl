@@ -201,7 +201,11 @@ mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
     }
 
     split_op->matching_id = matching_id;
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &split_op->datatype );
+#else
     split_op->datatype    = datatype;
+#endif
     split_op->is_active   = true;
 }
 
