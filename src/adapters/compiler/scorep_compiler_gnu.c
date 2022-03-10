@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -37,7 +37,7 @@
 
 #include <config.h>
 
-#define SCOREP_COMPILER_GNU_FUNC_ENTER __cyg_profile_func_enter
-#define SCOREP_COMPILER_GNU_FUNC_EXIT  __cyg_profile_func_exit
+#define SCOREP_COMPILER_CYG_PROFILE_FUNC_ENTER __cyg_profile_func_enter
+#define SCOREP_COMPILER_CYG_PROFILE_FUNC_EXIT  __cyg_profile_func_exit
 
 #include "scorep_compiler_gnu.inc.c"

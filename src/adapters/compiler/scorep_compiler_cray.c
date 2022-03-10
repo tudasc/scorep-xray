@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -38,7 +38,7 @@
 
 #include <config.h>
 
-#define SCOREP_COMPILER_GNU_FUNC_ENTER __pat_tp_func_entry
-#define SCOREP_COMPILER_GNU_FUNC_EXIT  __pat_tp_func_return
+#define SCOREP_COMPILER_CYG_PROFILE_FUNC_ENTER __pat_tp_func_entry
+#define SCOREP_COMPILER_CYG_PROFILE_FUNC_EXIT  __pat_tp_func_return
 
 #include "scorep_compiler_gnu.inc.c"

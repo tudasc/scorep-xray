@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2021,
+ * Copyright (c) 2009-2015, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,10 +39,10 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-#include "scorep_compiler_gnu.h"
 #include "SCOREP_Compiler_Init.h"
-#include <SCOREP_Addr2line.h>
 #include <SCOREP_RuntimeManagement.h>
+
+#include "scorep_compiler_mgmt_func_addr_hash.inc.c"
 
 /* ***************************************************************************************
    Adapter management
@@ -53,10 +53,7 @@ scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize GNU compiler adapter." );
 
-    if ( !SCOREP_IsUnwindingEnabled() )
-    {
-        SCOREP_Addr2line_RegisterObjcloseCb( scorep_compiler_func_addr_hash_dlclose_cb );
-    }
+    func_addr_hash_register_obj_close_cb();
 
     return SCOREP_SUCCESS;
 }
