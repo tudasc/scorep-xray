@@ -39,12 +39,10 @@
 
 #include <config.h>
 
-#include "SCOREP_Compiler_Init.h"
+#include <SCOREP_Subsystem.h>
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
-
-UTILS_Mutex scorep_compiler_region_mutex = UTILS_MUTEX_INIT;
 
 /**
    The adapter initialize function is compiler specific. Thus it is contained in each
@@ -53,44 +51,10 @@ UTILS_Mutex scorep_compiler_region_mutex = UTILS_MUTEX_INIT;
 extern SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void );
 
-extern SCOREP_ErrorCode
-scorep_compiler_subsystem_begin( void );
-
-extern void
-scorep_compiler_subsystem_end( void );
-
-/**
-   The adapter finalize function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
-extern void
-scorep_compiler_subsystem_finalize( void );
-
-/**
-   The location init function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
-extern SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
-                                         struct SCOREP_Location* parent );
-
-/**
-   The location finalize function.
- */
-static void
-compiler_subsystem_finalize_location( struct SCOREP_Location* location )
-{
-    UTILS_DEBUG( "compiler adapter finalize location!" );
-}
 
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
-    .subsystem_name              = "COMPILER",
-    .subsystem_init              = &scorep_compiler_subsystem_init,
-    .subsystem_begin             = &scorep_compiler_subsystem_begin,
-    .subsystem_end               = &scorep_compiler_subsystem_end,
-    .subsystem_finalize          = &scorep_compiler_subsystem_finalize,
-    .subsystem_init_location     = &scorep_compiler_subsystem_init_location,
-    .subsystem_finalize_location = &compiler_subsystem_finalize_location,
+    .subsystem_name = "COMPILER",
+    .subsystem_init = &scorep_compiler_subsystem_init,
 };

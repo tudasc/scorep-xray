@@ -36,6 +36,6 @@ __attribute__( ( aligned( 64 ) ) )
 scorep_compiler_region_description;
 
 void
-scorep_compiler_register_region( const scorep_compiler_region_description* region_descr );
+scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_description* region_descr );
 
 #endif /* SCOREP_COMPILER_GCC_PLUGIN_H */

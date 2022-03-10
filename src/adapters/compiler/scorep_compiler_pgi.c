@@ -60,8 +60,6 @@
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Task.h>
 
-#include "SCOREP_Compiler_Init.h"
-
 #include "scorep_compiler_demangle.h"
 
 static SCOREP_Mutex pgiinst_register_region_mutex = SCOREP_MUTEX_INIT;

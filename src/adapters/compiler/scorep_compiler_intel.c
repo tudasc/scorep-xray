@@ -52,8 +52,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filtering.h>
 
-#include "SCOREP_Compiler_Init.h"
-
 static SCOREP_Mutex vt_intel_register_region_mutex = SCOREP_MUTEX_INIT;
 
 /* Register a new region to the measurement system */

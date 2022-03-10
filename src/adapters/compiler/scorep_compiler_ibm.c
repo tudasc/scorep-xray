@@ -59,7 +59,6 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Filtering.h>
 
-#include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 #include "scorep_compiler_demangle.h"
 

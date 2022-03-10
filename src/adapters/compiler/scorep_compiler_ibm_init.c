@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,10 +38,10 @@
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include <SCOREP_RuntimeManagement.h>
 
-#include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 
 
@@ -61,37 +61,5 @@ scorep_compiler_subsystem_init( void )
         scorep_compiler_hash_init();
     }
 
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_begin( void )
-{
-    return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_subsystem_end( void )
-{
-}
-
-/* Finalize adapter */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    UTILS_DEBUG( "finalize IBM xl compiler adapter!" );
-
-    if ( !SCOREP_IsUnwindingEnabled() )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-    }
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
-                                         struct SCOREP_Location* parent )
-{
-    UTILS_DEBUG( "IBM xl compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }

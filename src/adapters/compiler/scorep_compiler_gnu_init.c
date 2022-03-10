@@ -38,9 +38,7 @@
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
-
-#include "SCOREP_Compiler_Init.h"
-#include <SCOREP_RuntimeManagement.h>
+#include <UTILS_Error.h>
 
 #include "scorep_compiler_mgmt_func_addr_hash.inc.c"
 
@@ -55,31 +53,5 @@ scorep_compiler_subsystem_init( void )
 
     func_addr_hash_register_obj_close_cb();
 
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_begin( void )
-{
-    return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_subsystem_end( void )
-{
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    UTILS_DEBUG( "finalize GNU compiler adapter." );
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
-                                         struct SCOREP_Location* parent )
-{
-    UTILS_DEBUG( "GNU compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }

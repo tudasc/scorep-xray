@@ -38,11 +38,7 @@
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
-
-#include <UTILS_Mutex.h>
-
-#include "SCOREP_Compiler_Init.h"
-
+#include <UTILS_Error.h>
 
 /* **************************************************************************************
  * Initialization / Finalization
@@ -54,32 +50,5 @@ scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize PGI compiler adapter!" );
 
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_begin( void )
-{
-    return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_subsystem_end( void )
-{
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    UTILS_DEBUG( "finalize PGI compiler adapter!" );
-}
-
-/* Location initialization */
-SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
-                                         struct SCOREP_Location* parent )
-{
-    UTILS_DEBUG( "PGI compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,9 +38,7 @@
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
-
-#include "SCOREP_Compiler_Init.h"
-
+#include <UTILS_Error.h>
 
 /* ***************************************************************************************
    Adapter management
@@ -53,31 +51,5 @@ scorep_compiler_subsystem_init( void )
 
     UTILS_DEBUG( "initialization of intel compiler adapter done." );
 
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_begin( void )
-{
-    return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_subsystem_end( void )
-{
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    UTILS_DEBUG( "finalize intel compiler adapter." );
-}
-
-SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
-                                         struct SCOREP_Location* parent )
-{
-    UTILS_DEBUG( "intel compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }

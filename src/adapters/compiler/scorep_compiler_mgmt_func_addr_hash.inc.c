@@ -18,7 +18,7 @@
 #include "scorep_compiler_func_addr_hash.h"
 
 #include <SCOREP_Addr2line.h>
-
+#include <SCOREP_RuntimeManagement.h>
 
 static void
 func_addr_hash_register_obj_close_cb( void )
