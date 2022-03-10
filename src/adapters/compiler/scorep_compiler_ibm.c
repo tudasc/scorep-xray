@@ -63,78 +63,71 @@
 #include "scorep_compiler_data.h"
 #include "scorep_compiler_demangle.h"
 
+static Utils_Mutex func_trace_register_region_mutex = UTILS_MUTEX_INIT;
+
 /**
  * Looks up the region name in the hash table, registers the region
  * if it is not already registered and returns the region handle.
  * If the region is filtered it returns SCOREP_INVALID_REGION.
- * @ param region_name function name
- * @ param file_name   file name
- * @ param line_no     line number
+ * @ param regionName function name
+ * @ param fileName   file name
+ * @ param lineNo     line number
  */
 static inline SCOREP_RegionHandle
-get_region_handle( const char* region_name,
-                   const char* file_name,
-                   int         line_no )
+func_trace_register_region( const char* regionName,
+                            const char* fileName,
+                            int         lineNo )
 {
-    UTILS_DEBUG_ENTRY( "%s in %s:%d", region_name, file_name, line_no );
+    UTILS_DEBUG_ENTRY( "%s in %s:%d", regionName, fileName, lineNo );
 
-    /* put function to list */
-    scorep_compiler_hash_node* hash_node;
-    long                       region_key = ( long )region_name;
-    if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
+    size_t file_name_len = strlen( fileName );
+    char   file_name[ file_name_len + 1 ];
+    memcpy( file_name, fileName, file_name_len );
+    file_name[ file_name_len ] = '\0';
+    UTILS_IO_SimplifyPath( file_name );
+    if ( SCOREP_Filtering_MatchFile( file_name ) )
     {
-        UTILS_MutexLock( &scorep_compiler_region_mutex );
-        if ( ( hash_node = scorep_compiler_hash_get( region_key ) ) == 0 )
-        {
-            char* file = UTILS_CStr_dup( file_name );
-            UTILS_IO_SimplifyPath( file );
-
-            const char* region_name_demangled;
-            scorep_compiler_demangle( region_name, region_name_demangled );
-
-            hash_node = scorep_compiler_hash_put( region_key,
-                                                  region_name,
-                                                  region_name_demangled,
-                                                  file, line_no );
-            UTILS_DEBUG( "number %ld and put name -- %s -- to list",
-                         region_key, region_name );
-
-            /* Check for filters:
-                 1. In case OpenMP is used, the XL compiler creates some
-                    functions like <func_name>:<func_name>$OL$OL.1 on BG/P or
-                    <func_name>@OL@1 on AIX which cause the measurement system
-                    to crash. Thus, filter functions which names contain a '$'
-                    or '@' symbol.
-                    or the symbol starts with '__xl_' and has '_OL_' in it
-                 2. POMP and POMP2 functions.
-             */
-            if ( strchr( region_name_demangled, '$' ) ||
-                 strchr( region_name_demangled, '@' ) ||
-                 strncmp( region_name_demangled, "POMP", 4 ) == 0 ||
-                 strncmp( region_name_demangled, "Pomp", 4 ) == 0 ||
-                 strncmp( region_name_demangled, "pomp", 4 ) == 0 ||
-                 strstr( region_name_demangled, "Kokkos::Tools" ) ||
-                 strstr( region_name_demangled, "Kokkos::Profiling" ) ||
-                 /* Best effort at mangled name in case we don't have a demangler
-                    and demangled == mangled */
-                 strstr( region_name_demangled, "6Kokkos5Tools" ) ||
-                 strstr( region_name_demangled, "6Kokkos9Profiling" ) ||
-                 ( strncmp( region_name_demangled, "__xl_", 5 ) == 0 && strstr( region_name_demangled, "_OL_" ) ) ||
-                 SCOREP_Filtering_Match( file, region_name_demangled, region_name ) )
-            {
-                hash_node->region_handle = SCOREP_INVALID_REGION;
-            }
-            else
-            {
-                scorep_compiler_register_region( hash_node );
-            }
-
-            free( file );
-            scorep_compiler_demangle_free( region_name, region_name_demangled );
-        }
-        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+        return SCOREP_FILTERED_REGION;
     }
-    return hash_node->region_handle;
+
+    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
+
+    const char* region_name_demangled;
+    scorep_compiler_demangle( regionName, region_name_demangled );
+    /* Check for filters:
+         1. In case OpenMP is used, the XL compiler creates some
+            functions like <func_name>:<func_name>$OL$OL.1 on BG/P or
+            <func_name>@OL@1 on AIX which cause the measurement system
+            to crash. Thus, filter functions which names contain a '$'
+            or '@' symbol.
+            or the symbol starts with '__xl_' and has '_OL_' in it
+         2. POMP and POMP2 functions.
+     */
+    if ( strchr( region_name_demangled, '$' ) ||
+         strchr( region_name_demangled, '@' ) ||
+         strncmp( region_name_demangled, "POMP", 4 ) == 0 ||
+         strncmp( region_name_demangled, "Pomp", 4 ) == 0 ||
+         strncmp( region_name_demangled, "pomp", 4 ) == 0 ||
+         strstr( region_name_demangled, "Kokkos::Tools" ) ||
+         strstr( region_name_demangled, "Kokkos::Profiling" ) ||
+         /* Best effort at mangled name in case we don't have a demangler
+            and demangled == mangled */
+         strstr( region_name_demangled, "6Kokkos5Tools" ) ||
+         strstr( region_name_demangled, "6Kokkos9Profiling" ) ||
+         ( strncmp( region_name_demangled, "__xl_", 5 ) == 0 && strstr( region_name_demangled, "_OL_" ) ) ||
+         SCOREP_Filtering_MatchFunction( region_name_demangled, regionName ) )
+    {
+        SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
+        region_handle = SCOREP_Definitions_NewRegion( region_name_demangled,
+                                                      regionName,
+                                                      file_handle,
+                                                      lineNo,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_PARADIGM_COMPILER,
+                                                      SCOREP_REGION_FUNCTION );
+    }
+
+    return region_handle;
 }
 
 /**
@@ -146,10 +139,10 @@ get_region_handle( const char* region_name,
  * @ param line_no     line number
  */
 void
-__func_trace_enter( const char*          region_name,
-                    const char*          file_name,
-                    int                  line_no,
-                    SCOREP_RegionHandle* handle )
+__func_trace_enter( const char*          regionName,
+                    const char*          fileName,
+                    int                  lineNo,
+                    SCOREP_RegionHandle* regionHandle )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
@@ -158,27 +151,29 @@ __func_trace_enter( const char*          region_name,
     }
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
-        *handle = SCOREP_INVALID_REGION;
+        UTILS_Atomic_StoreN_void_ptr( &regionHandle,
+                                      SCOREP_INVALID_REGION,
+                                      UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
+    SCOREP_RegionHandle* handle =
+        UTILS_Atomic_LoadN_void_ptr( &regionHandle,
+                                     UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( *handle == 0 )
     {
-        UTILS_MutexLock( &scorep_compiler_region_mutex );
+        UTILS_MutexLock( &func_trace_register_region_mutex );
+        handle = UTILS_Atomic_LoadN_void_ptr( &regionHandle,
+                                              UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         if ( *handle == 0 )
         {
-            SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
-            if ( region == SCOREP_INVALID_REGION )
-            {
-                *handle = SCOREP_FILTERED_REGION;
-            }
-            else
-            {
-                *handle = region;
-            }
+            *handle = func_trace_register_region( regionName, fileName, lineNo );
+            UTILS_Atomic_StoreN_void_ptr( &regionHandle,
+                                          handle,
+                                          UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
-        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &func_trace_register_region_mutex );
     }
     if ( *handle != SCOREP_FILTERED_REGION )
     {

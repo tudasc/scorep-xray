@@ -31,7 +31,7 @@
  * @file
  *
  * @brief Support for Intel Compiler
- * Will be triggered by the '-fcollect' flag of the intel
+ * Will be triggered by the '-tcollect' flag of the intel
  * compiler.
  */
 
@@ -54,10 +54,11 @@
 
 #include "SCOREP_Compiler_Init.h"
 
+static SCOREP_Mutex vt_intel_register_region_mutex = SCOREP_MUTEX_INIT;
 
 /* Register a new region to the measurement system */
 static SCOREP_RegionHandle
-register_region( const char* str )
+vt_intel_register_region( const char* str )
 {
     /* str is supposed to be of the form "file_name:region_name".
      * There are cases where the compiler just provides "file_name:";
@@ -161,25 +162,34 @@ __VT_IntelEntry( char*     str,
     UTILS_DEBUG_ENTRY( "%s, %u", str, *id );
 
     /* Register new region if unknown */
-    if ( *id == 0 )
+    uint32_t* handle =
+        UTILS_Atomic_LoadN_void_ptr( &id,
+                                     UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( *handle == 0 )
     {
-        UTILS_MutexLock( &scorep_compiler_region_mutex );
-        if ( *id == 0 )
+        UTILS_MutexLock( &vt_intel_register_region_mutex );
+        handle = UTILS_Atomic_LoadN_void_ptr( &id,
+                                              UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+        if ( *handle == 0 )
         {
-            *id = register_region( str );
+            *handle = vt_intel_register_region( str );
+            UTILS_Atomic_StoreN_void_ptr( &id,
+                                          handle,
+                                          UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
-        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &vt_intel_register_region_mutex );
     }
 
     /* Enter event */
-    if ( *id != SCOREP_FILTERED_REGION )
+    if ( *handle != SCOREP_FILTERED_REGION )
     {
-        UTILS_DEBUG( "enter the region with id %u ", *id );
-        SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
+        SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * handle );
     }
 
-    /* Set exit id */
-    *id2 = *id;
+    /* Set exit id. IIRC it is not sufficient to set id2 just once while
+       holding the lock. So far, there seemed no need for synchronization
+       here (id2 is very likely on the stack of the current thread). */
+    *id2 = *handle;
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

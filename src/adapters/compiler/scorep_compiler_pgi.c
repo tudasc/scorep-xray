@@ -64,6 +64,8 @@
 
 #include "scorep_compiler_demangle.h"
 
+static SCOREP_Mutex pgiinst_register_region_mutex = SCOREP_MUTEX_INIT;
+
 /* **************************************************************************************
  * Typedefs and global variables
  ***************************************************************************************/
@@ -312,51 +314,75 @@ __rouexit( void )
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static inline SCOREP_RegionHandle
+pgiinst_register_region( char* regionName,
+                         char* fileName,
+                         int   lineNo )
+{
+    UTILS_DEBUG_ENTRY( "%s in %s:%d", regionName, fileName, lineNo );
+
+    size_t file_name_len = strlen( fileName );
+    char   file_name[ file_name_len + 1 ];
+    memcpy( file_name, fileName, file_name_len );
+    file_name[ file_name_len ] = '\0';
+    UTILS_IO_SimplifyPath( file_name );
+    if ( SCOREP_Filtering_MatchFile( file_name ) )
+    {
+        return SCOREP_FILTERED_REGION;
+    }
+
+    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
+
+    char* region_name_demangled;
+    scorep_compiler_demangle( regionName, region_name_demangled );
+
+    if ( ( strncmp( region_name_demangled, "POMP", 4 ) != 0 ) &&
+         ( strncmp( region_name_demangled, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( region_name_demangled, "pomp", 4 ) != 0 ) &&
+         ( !strstr( region_name_demangled, "Kokkos::Tools" ) ) &&
+         ( !strstr( region_name_demangled, "Kokkos::Profiling" ) ) &&
+         /* Best effort at mangled name in case we don't have a demangler
+            and demangled == mangled */
+         ( !strstr( region_name_demangled, "6Kokkos5Tools" ) ) &&
+         ( !strstr( region_name_demangled, "6Kokkos9Profiling" )  ) &&
+         ( !strstr( region_name_demangled, "SCOREP_User_RegionClass" ) ) &&
+         ( !SCOREP_Filtering_MatchFunction( region_name_demangled, regionName ) ) )
+    {
+        region_handle = SCOREP_Definitions_NewRegion( region_name_demangled,
+                                                      regionName,
+                                                      SCOREP_Definitions_NewSourceFile( fileName ),
+                                                      lineNo,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_PARADIGM_COMPILER,
+                                                      SCOREP_REGION_FUNCTION );
+    }
+    scorep_compiler_demangle_free( regionName, region_name_demangled );
+    return region_handle;
+}
+
 static inline void
-check_region( SCOREP_RegionHandle* region,
-              char*                region_name,
-              char*                file_name,
-              int                  lineno )
+check_region( SCOREP_RegionHandle* regionHandle,
+              char*                regionName,
+              char*                fileName,
+              int                  lineNo )
 {
     /* Register new regions */
-    if ( !*region )
+    SCOREP_RegionHandle* handle =
+        UTILS_Atomic_LoadN_void_ptr( &regionHandle,
+                                     UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( *handle == 0 )
     {
-        UTILS_MutexLock( &scorep_compiler_region_mutex );
-        if ( !*region )
+        UTILS_MutexLock( &pgiinst_register_region_mutex );
+        handle = UTILS_Atomic_LoadN_void_ptr( &regionHandle,
+                                              UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+        if ( *handle == 0 )
         {
-            UTILS_IO_SimplifyPath( file_name );
-
-            char* region_name_demangled;
-            scorep_compiler_demangle( region_name, region_name_demangled );
-
-            if ( ( strncmp( region_name_demangled, "POMP", 4 ) != 0 ) &&
-                 ( strncmp( region_name_demangled, "Pomp", 4 ) != 0 ) &&
-                 ( strncmp( region_name_demangled, "pomp", 4 ) != 0 ) &&
-                 ( !strstr( region_name_demangled, "Kokkos::Tools" ) ) &&
-                 ( !strstr( region_name_demangled, "Kokkos::Profiling" ) ) &&
-                 /* Best effort at mangled name in case we don't have a demangler
-                    and demangled == mangled */
-                 ( !strstr( region_name_demangled, "6Kokkos5Tools" ) ) &&
-                 ( !strstr( region_name_demangled, "6Kokkos9Profiling" )  ) &&
-                 ( !strstr( region_name_demangled, "SCOREP_User_RegionClass" ) ) &&
-                 ( !SCOREP_Filtering_Match( file_name, region_name_demangled, region_name ) ) )
-            {
-                *region = SCOREP_Definitions_NewRegion( region_name_demangled,
-                                                        region_name,
-                                                        SCOREP_Definitions_NewSourceFile( file_name ),
-                                                        lineno,
-                                                        SCOREP_INVALID_LINE_NO,
-                                                        SCOREP_PARADIGM_COMPILER,
-                                                        SCOREP_REGION_FUNCTION );
-            }
-            else
-            {
-                *region = SCOREP_FILTERED_REGION;
-            }
-
-            scorep_compiler_demangle_free( region_name, region_name_demangled );
+            *handle = pgiinst_register_region( regionName, fileName, lineNo );
+            UTILS_Atomic_StoreN_void_ptr( &regionHandle,
+                                          handle,
+                                          UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
-        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &pgiinst_register_region_mutex );
     }
 }
 
