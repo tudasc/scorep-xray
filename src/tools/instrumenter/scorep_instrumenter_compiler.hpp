@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2022,
@@ -41,11 +41,6 @@ public:
 
     std::string
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
-
-    std::string
-    precompile( SCOREP_Instrumenter&         instrumenter,
-                SCOREP_Instrumenter_CmdLine& cmdLine,
-                const std::string&           source_file ) override;
 
     void
     prelink( SCOREP_Instrumenter&         instrumenter,
