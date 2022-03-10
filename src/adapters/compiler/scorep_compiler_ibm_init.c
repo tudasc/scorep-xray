@@ -40,10 +40,6 @@
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
-#include <SCOREP_RuntimeManagement.h>
-
-#include "scorep_compiler_data.h"
-
 
 /* ***************************************************************************************
    Adapter management
@@ -54,12 +50,5 @@ SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
     UTILS_DEBUG( "initialize IBM xl compiler adapter!" );
-
-    if ( !SCOREP_IsUnwindingEnabled() )
-    {
-        /* Initialize hash table */
-        scorep_compiler_hash_init();
-    }
-
     return SCOREP_SUCCESS;
 }
