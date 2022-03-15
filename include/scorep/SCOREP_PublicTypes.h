@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2018,
+ * Copyright (c) 2009-2011, 2018, 2022,
  *    Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -375,11 +375,10 @@ typedef enum SCOREP_ParameterType
  * \brief specifies a Region
  *
  * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). These types
- * are currently not used inside the measurement system. This @e may change in
+ * are currently not used inside the measurement system. This @e may change in the
  * future if we are going to implement phases/dynamic regions etc. inside the
  * measurement system as opposed to inside the adapters or as a postprocessing
- * step. The names should be self explanatory; most of them are already used
- * (whith a different prefix) in VampiTrace and Scalasca.
+ * step. The names should be self explanatory.
  *
  * Types:
  * - SCOREP_REGION_UNKNOWN The type of the region is unknown / not defined
@@ -461,8 +460,8 @@ typedef enum SCOREP_ParameterType
     SCOREP_REGION_TYPE( ALLOCATE,     "allocate" ) \
     SCOREP_REGION_TYPE( DEALLOCATE,   "deallocate" ) \
     SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" ) \
-    SCOREP_REGION_TYPE( FILE_IO,      "file_io" ) \
-    SCOREP_REGION_TYPE( FILE_IO_METADATA,  "file_io metadata" )
+    SCOREP_REGION_TYPE( FILE_IO,      "file io" ) \
+    SCOREP_REGION_TYPE( FILE_IO_METADATA,  "file io metadata" )
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \
