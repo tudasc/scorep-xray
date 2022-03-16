@@ -177,6 +177,6 @@ AC_SCOREP_COND_HAVE([COMPILER_CONSTRUCTOR_SUPPORT],
                     [test "x${scorep_compiler_constructor_mode}" != x],
                     [Compiler constructor support])
 
-AFS_SUMMARY([compiler constructor],
+AFS_SUMMARY([Compiler constructor],
             [${scorep_compiler_constructor_summary}])
 ])

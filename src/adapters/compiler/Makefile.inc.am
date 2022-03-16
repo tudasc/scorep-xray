@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2018-2019, 2021,
+## Copyright (c) 2009-2015, 2018-2019, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -34,7 +34,7 @@
 # --------------------------------------------------------------------
 # runtime management library for the compiler adapter
 
-if HAVE_COMPILER_INSTRUMENTATION
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 lib_LTLIBRARIES += libscorep_adapter_compiler_mgmt.la
 
@@ -75,13 +75,13 @@ endif SCOREP_COMPILER_CRAY
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU
 
-if !HAVE_GCC_PLUGIN_SUPPORT
+if !HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
 
 #--- GCC-Plugin specific settings
-else HAVE_GCC_PLUGIN_SUPPORT
+else HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
@@ -118,7 +118,7 @@ scorep_compiler_gcc_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/score
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_begin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_end.Po@am__quote@
 
-endif HAVE_GCC_PLUGIN_SUPPORT
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 endif SCOREP_COMPILER_GNU
 
@@ -221,17 +221,17 @@ endif PLATFORM_CRAY
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU
 
-if !HAVE_GCC_PLUGIN_SUPPORT
+if !HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
 
-else HAVE_GCC_PLUGIN_SUPPORT
+else HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.c
 
-endif HAVE_GCC_PLUGIN_SUPPORT
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 endif SCOREP_COMPILER_GNU
 
@@ -288,7 +288,7 @@ libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
 endif SCOREP_COMPILER_FUJITSU
 
-endif HAVE_COMPILER_INSTRUMENTATION
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_demangle.h \

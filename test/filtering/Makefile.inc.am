@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2014, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -66,11 +66,11 @@ TESTS_SERIAL += ./../test/filtering/run_filter_test.sh
 
 endif SCOREP_HAVE_FC
 
-if HAVE_COMPILER_INSTRUMENTATION
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 TESTS_SERIAL += ./../test/filtering/run_compiler_filter_test.sh
 
-endif HAVE_COMPILER_INSTRUMENTATION
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 EXTRA_DIST += \
     $(SRC_ROOT)test/filtering/filter.cfg            \

@@ -46,9 +46,9 @@ if SCOREP_COMPILER_PGI
 external_ldflags += -pgf90libs
 endif SCOREP_COMPILER_PGI
 
-if HAVE_COMPILER_INSTRUMENTATION
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
-endif HAVE_COMPILER_INSTRUMENTATION
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 ## MPI -------------------------------------------------------------------------
 

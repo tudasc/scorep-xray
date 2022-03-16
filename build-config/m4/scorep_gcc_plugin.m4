@@ -14,7 +14,62 @@ dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
 dnl
 
-AC_DEFUN([_SCOREP_GCC_PLUGIN_CHECK], [
+
+# SCOREP_GCC_PLUGIN_VENDORS()
+# ---------------------------
+# Provide scorep_gcc_plugin_target_vendor_c|cxx|fc. Sets
+# scorep_gcc_plugin_target_vendor to gnu if one of the
+# language-specific vendors is gnu.
+#
+AC_DEFUN([SCOREP_GCC_PLUGIN_VENDORS], [
+AS_UNSET([scorep_gcc_plugin_target_vendor])
+save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS=$GCC_PLUGIN_TARGET_CPPFLAGS
+dnl
+AC_LANG_PUSH([C])
+_GCC_PLUGIN_VENDOR
+AC_LANG_POP([C])
+dnl
+AC_LANG_PUSH([C++])
+_GCC_PLUGIN_VENDOR
+AC_LANG_POP([C++])
+dnl
+AC_CHECK_PROG([have_fc_compiler], [${GCC_PLUGIN_TARGET_FC}], [yes], [no])
+AS_IF([test "x${have_fc_compiler}" = xyes],
+    [AC_LANG_PUSH([Fortran])
+     AC_FC_PP_SRCEXT([F])
+     _GCC_PLUGIN_VENDOR
+     AC_LANG_POP([Fortran])])
+AS_UNSET([have_fc_compiler])
+dnl
+CPPFLAGS=$save_CPPFLAGS
+])dnl SCOREP_GCC_PLUGIN_VENDORS
+
+
+# _GCC_PLUGIN_VENDOR()
+# --------------------
+#
+m4_define([_GCC_PLUGIN_VENDOR], [
+AS_IF([test "x${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor}" != x],
+    [AC_MSG_ERROR([ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor must not be set])])
+save_[]_AC_CC[]=$[]_AC_CC
+save_[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
+_AC_CC[]=$GCC_PLUGIN_TARGET_[]_AC_CC
+_AC_LANG_PREFIX[]FLAGS=$GCC_PLUGIN_TARGET_[]_AC_LANG_PREFIX[]FLAGS
+AX_COMPILER_VENDOR
+scorep_gcc_plugin_target_vendor_[]_AC_LANG_ABBREV[]="${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor}"
+AS_UNSET([ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor])
+_AC_CC[]=$save_[]_AC_CC[]
+_AC_LANG_PREFIX[]FLAGS=$save_[]_AC_LANG_PREFIX[]FLAGS
+AS_IF([test "x${scorep_gcc_plugin_target_vendor_[]_AC_LANG_ABBREV[]}" = xgnu],
+    [scorep_gcc_plugin_target_vendor=gnu])
+])dnl _GCC_PLUGIN_VENDOR
+
+
+# _GCC_PLUGIN_CHECK()
+# -------------------
+#
+m4_define([_GCC_PLUGIN_CHECK], [
 AC_REQUIRE([LT_OUTPUT])
 
 AC_LANG_PUSH($1)
@@ -165,64 +220,96 @@ AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
 
 AS_UNSET([scorep_gcc_have_plugin_headers])
 AS_UNSET([scorep_gcc_have_working_plugin])
-])
+])dnl _GCC_PLUGIN_CHECK()
 
-# _SCOREP_GCC_PLUGIN_TARGET_VERSION
-# ---------------------------------
+
+# _GCC_PLUGIN_TARGET_VERSION()
+# ----------------------------
 # Provides the GCC version for the target GCC as a number
 # version = major * 1000 + minor
-AC_DEFUN([_SCOREP_GCC_PLUGIN_TARGET_VERSION], [
+m4_define([_GCC_PLUGIN_TARGET_VERSION], [
 
 # -dumpversion gives us only ever major.minor
-scorep_gcc_plugin_target_version_dump="$($GCC_PLUGIN_TARGET_CC -dumpversion)"
+scorep_gcc_plugin_target_version_dump_[]_AC_LANG_ABBREV[]="$($GCC_PLUGIN_TARGET_[]_AC_CC -dumpversion)"
 
-scorep_gcc_plugin_target_version=0
-AS_IF([test "x${scorep_gcc_plugin_target_version_dump}" != "x"],
-      [scorep_gcc_plugin_target_version_major=${scorep_gcc_plugin_target_version_dump%%.*}
-       scorep_gcc_plugin_target_version_minor=${scorep_gcc_plugin_target_version_dump#*.}
-       scorep_gcc_plugin_target_version_minor=${scorep_gcc_plugin_target_version_minor%%.*}
-       scorep_gcc_plugin_target_version=$(expr ${scorep_gcc_plugin_target_version_major} "*" 1000 + ${scorep_gcc_plugin_target_version_minor})])
-AC_DEFINE_UNQUOTED([SCOREP_GCC_PLUGIN_TARGET_VERSION],
-    [${scorep_gcc_plugin_target_version}],
-    [The GCC version for what we build the plug-in.])
-])
+scorep_gcc_plugin_target_version_[]_AC_LANG_ABBREV[]=0
+AS_IF([test "x${scorep_gcc_plugin_target_version_dump_[]_AC_LANG_ABBREV[]}" != "x"],
+      [scorep_gcc_plugin_target_version_major_[]_AC_LANG_ABBREV[]=${scorep_gcc_plugin_target_version_dump_[]_AC_LANG_ABBREV[]%%.*}
+       scorep_gcc_plugin_target_version_minor_[]_AC_LANG_ABBREV[]=${scorep_gcc_plugin_target_version_dump_[]_AC_LANG_ABBREV[]#*.}
+       scorep_gcc_plugin_target_version_minor_[]_AC_LANG_ABBREV[]=${scorep_gcc_plugin_target_version_minor_[]_AC_LANG_ABBREV[]%%.*}
+       scorep_gcc_plugin_target_version_[]_AC_LANG_ABBREV[]=$(expr ${scorep_gcc_plugin_target_version_major_[]_AC_LANG_ABBREV[]} "*" 1000 + ${scorep_gcc_plugin_target_version_minor_[]_AC_LANG_ABBREV[]})])
 
-# SCOREP_GCC_PLUGIN
-# -----------------
+AS_IF([test "x${scorep_gcc_plugin_target_version}" = x],
+    [scorep_gcc_plugin_target_version="${scorep_gcc_plugin_target_version_[]_AC_LANG_ABBREV[]}"
+     scorep_gcc_plugin_target_version_dump="scorep_gcc_plugin_target_version_dump_[]_AC_LANG_ABBREV[]"],
+    [AS_IF([test "x${scorep_gcc_plugin_target_version}" != "x${scorep_gcc_plugin_target_version_[]_AC_LANG_ABBREV[]}"],
+         [scorep_gcc_plugin_version_match=no])])
+])dnl _GCC_PLUGIN_TARGET_VERSION
+
+
+# SCOREP_GCC_PLUGIN()
+# -------------------
 # Performs checks whether the GCC compiler has plug-in support, and with which
 # compiler it was built. Produces the AFS conditional HAVE_GCC_PLUGIN_SUPPORT.
+# Communicate the support per language via the file gcc_plugin_supported_c|cxx|fc.
+#
 AC_DEFUN([SCOREP_GCC_PLUGIN], [
-AC_REQUIRE([_SCOREP_GCC_PLUGIN_TARGET_VERSION])dnl
-
+dnl
+scorep_gcc_plugin_version_match=yes
+AS_IF([test "x${scorep_gcc_plugin_target_vendor_c}" = xgnu],
+    [AC_LANG_PUSH([C])
+     _GCC_PLUGIN_TARGET_VERSION
+     AC_LANG_POP([C])])
+dnl
+AS_IF([test "x${scorep_gcc_plugin_target_vendor_cxx}" = xgnu],
+    [AC_LANG_PUSH([C++])
+     _GCC_PLUGIN_TARGET_VERSION
+     AC_LANG_POP([C++])])
+dnl
+AS_IF([test "x${scorep_gcc_plugin_target_vendor_fc}" = xgnu],
+    [AC_LANG_PUSH([Fortran])
+     _GCC_PLUGIN_TARGET_VERSION
+     AC_LANG_POP([Fortran])])
+dnl
 scorep_gcc_plugin_support="no"
+AS_IF([test "x${scorep_gcc_plugin_version_match}" = xno],
+    [AC_MSG_WARN([GCC plug-in target compiler versions do not match: ${scorep_gcc_plugin_target_version_c}|${scorep_gcc_plugin_target_version_cxx}|${scorep_gcc_plugin_target_version_fc}. Disabling GCC plug-in.])
+     scorep_gcc_plugin_support_reason="no, target compiler versions do not match: ${scorep_gcc_plugin_target_version_c}|${scorep_gcc_plugin_target_version_cxx}|${scorep_gcc_plugin_target_version_fc}"],
+    [# target compiler versions do match
+     AC_DEFINE_UNQUOTED([SCOREP_GCC_PLUGIN_TARGET_VERSION],
+         [${scorep_gcc_plugin_target_version}],
+         [The GCC version for what we build the plug-in.])
 
-# we need the include directory from the target CC
-scorep_gcc_plugin_includedir=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
-
-AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
-    [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is too old, no plug-in support"],
-    [test ${scorep_gcc_plugin_target_version} -lt 4009],
-    [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is unsupport"],
-    [# GCC 4.9 and onwards are always compiled with the C++ compiler
-    _SCOREP_GCC_PLUGIN_CHECK([C++], [scorep_gcc_plugin_support="yes"])])
+     # we need the include directory from the target CC
+     scorep_gcc_plugin_includedir=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
+     AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
+         [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is too old, no plug-in support"],
+         [test ${scorep_gcc_plugin_target_version} -lt 4009],
+         [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is unsupported"],
+         [# GCC 4.9 and onwards are always compiled with the C++ compiler
+          _GCC_PLUGIN_CHECK([C++], [scorep_gcc_plugin_support="yes"])])])
 
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test "x${scorep_gcc_plugin_support}" = "xyes"], [false])
 
-AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])
-    AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
-    AC_LANG_PUSH([C++])
+    [AS_IF([test "x${scorep_gcc_plugin_target_vendor_c}" = xgnu],
+         [touch gcc_plugin_supported_c])
+     AS_IF([test "x${scorep_gcc_plugin_target_vendor_cxx}" = xgnu],
+         [touch gcc_plugin_supported_cxx])
+     AS_IF([test "x${scorep_gcc_plugin_target_vendor_fc}" = xgnu],
+         [touch gcc_plugin_supported_fc])
+     AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])
+     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
+     AC_LANG_PUSH([C++])
 
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
+     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
         __builtin_unreachable();
 ]])], [AC_DEFINE([HAVE_BUILTIN_UNREACHABLE], [1], [Compiler provides __builtin_unreachable()])])
 
-    AC_LANG_POP([C++])
-    AFS_PROG_CXX_SUMMARY
-    AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
+     AC_LANG_POP([C++])
+     AFS_PROG_CXX_SUMMARY
+     AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 ])
 
 AS_UNSET([scorep_gcc_plugin_includedir])
-AS_UNSET([scorep_gcc_plugin_support_reason])
-])
+])dnl SCOREP_GCC_PLUGIN

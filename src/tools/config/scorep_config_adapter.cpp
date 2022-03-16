@@ -322,14 +322,14 @@ SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
         return true;
     }
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL
     /* Catch any compiler plug-in args */
     if ( arg.substr( 0, 15 ) == "--compiler-arg=" )
     {
         m_cflags += arg.substr( 15 ) + " ";
         return true;
     }
-#endif /*HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL*/
+#endif /*HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL*/
 #endif /*HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
 
     return false;
@@ -357,7 +357,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     }
     cflags += " ";
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     if ( build_check )
     {
         extern std::string path_to_binary;

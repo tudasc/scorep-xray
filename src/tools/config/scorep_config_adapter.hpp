@@ -297,7 +297,7 @@ public:
                 bool         build_check,
                 bool         nvcc ) override;
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL
 private:
     /** Any additional cflags */
     std::string m_cflags;

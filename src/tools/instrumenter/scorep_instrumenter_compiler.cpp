@@ -94,7 +94,7 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL
     return true;
 #else
     return false;
@@ -155,7 +155,7 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 
     std::string flags;
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     if ( cmdLine.getVerbosity() >= 1 )
     {
         std::ostringstream verbosity_arg;
@@ -227,7 +227,7 @@ void
 SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                               SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     if ( !cmdLine.isTargetSharedLib() )
     {
         if ( cmdLine.isBuildCheck() )
