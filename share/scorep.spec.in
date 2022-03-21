@@ -553,7 +553,7 @@
                         ${includesFILEIO} = 1;
                         ${fileio}[${i}]   = 1;
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] seq "file_io metadata" )
+                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] seq "file io metadata" )
                         {
                             ${fileio_meta}[${i}] = 1;
                         };
