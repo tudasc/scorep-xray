@@ -365,7 +365,6 @@
     ( *chunk )->values[ j ] = prefix ## _value_ctor( &( *chunk )->keys[ j ], ctorData ); \
     UTILS_BUG_ON( !prefix ## _equals( key, ( *chunk )->keys[ j ] ), "Key values are not equal" ); \
     SCOREP_Atomic_StoreN_uint32( &( bucket->size ), current_size + 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-    /* unlock */ \
     SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
     *inserted = true; \
     return ( *chunk )->values[ j ];
@@ -414,6 +413,7 @@
                          prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
+        SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
         *inserted = true; /* i.e. not found */ \
         prefix ## _value_t dummy; \
         return dummy; \
@@ -451,10 +451,10 @@
                                     bool* inserted, \
                                     prefix ## _bucket_t* bucket ) \
     { \
-        SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) \
-        SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
+        SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
+        SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) /* might return */ \
         SCOREP_HASH_TABLE_NEW_CHUNK_MONOTONIC( prefix, nPairsPerChunk ) \
-        SCOREP_HASH_TABLE_INSERT_2( prefix ) \
+        SCOREP_HASH_TABLE_INSERT_2( prefix ) /* returns */ \
     } \
 \
     static inline bool /* found */ \
@@ -550,10 +550,10 @@
                                     bool* inserted, \
                                     prefix ## _bucket_t* bucket ) \
     { \
-        SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) \
-        SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
+        SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
+        SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) /* might return */ \
         SCOREP_HASH_TABLE_NEW_CHUNK_NON_MONOTONIC( prefix, nPairsPerChunk ) \
-        SCOREP_HASH_TABLE_INSERT_2( prefix ) \
+        SCOREP_HASH_TABLE_INSERT_2( prefix ) /* returns */ \
     } \
 \
     static inline bool /* found */ \
