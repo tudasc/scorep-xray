@@ -47,7 +47,7 @@ scorep_tracing_location_type_to_otf2( SCOREP_LocationType scorepType )
         return OTF2_LOCATION_TYPE_ ## OTF2
 
         case_return( CPU_THREAD, CPU_THREAD );
-        case_return( GPU, GPU );
+        case_return( GPU, ACCELERATOR_STREAM );
         case_return( METRIC, METRIC );
 
 #undef case_return
