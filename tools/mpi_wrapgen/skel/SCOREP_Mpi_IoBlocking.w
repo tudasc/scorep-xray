@@ -37,7 +37,7 @@ ${proto:c}
                                 SCOREP_IO_OPERATION_FLAG_${attribute(collective_type)} | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                 ( uint64_t )count * type_size,
                                 req_id,
-                                SCOREP_IO_UNKNOWN_OFFSET );
+                                ${attribute(operation_offset)} );
 
         if ( status == MPI_STATUS_IGNORE )
         {

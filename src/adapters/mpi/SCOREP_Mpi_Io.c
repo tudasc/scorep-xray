@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018, 2020,
+ * Copyright (c) 2009-2018, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1678,7 +1678,7 @@ MPI_File_read_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Data
                                          SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
 
                 if ( status == MPI_STATUS_IGNORE )
                 {
@@ -1764,7 +1764,7 @@ MPI_File_read_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
 
                 if ( status == MPI_STATUS_IGNORE )
                 {
@@ -2194,7 +2194,7 @@ MPI_File_write_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* b
                                          SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
 
                 if ( status == MPI_STATUS_IGNORE )
                 {
@@ -2280,7 +2280,7 @@ MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL voi
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
 
                 if ( status == MPI_STATUS_IGNORE )
                 {
@@ -2712,7 +2712,7 @@ MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
                                          SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id /* matching id */,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -2795,7 +2795,7 @@ MPI_File_iread_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id /* matching id */,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -3127,7 +3127,7 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* 
                                          SCOREP_IO_OPERATION_FLAG_NON_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id /* matching id */,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -3210,7 +3210,7 @@ MPI_File_iwrite_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL vo
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id /* matching id */,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -3447,7 +3447,7 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -3654,7 +3654,7 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
                                          SCOREP_IO_OPERATION_FLAG_COLLECTIVE | SCOREP_IO_OPERATION_FLAG_NON_BLOCKING,
                                          ( uint64_t )count * type_size,
                                          req_id,
-                                         SCOREP_IO_UNKNOWN_OFFSET );
+                                         offset );
             }
         }
         else if ( SCOREP_IsUnwindingEnabled() )
