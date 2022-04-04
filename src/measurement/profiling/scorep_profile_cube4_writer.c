@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017, 2019,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1118,7 +1118,8 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
         cube_def_attr( write_set.my_cube, "Creator", "Score-P " PACKAGE_VERSION );
         cube_def_attr( write_set.my_cube, "CUBE_CT_AGGR", "SUM" );
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
-        cube_def_mirror( write_set.my_cube, "http://www.vi-hps.org/upload/packages/scorep/" );
+        cube_def_mirror( write_set.my_cube, "https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/scorep-" PACKAGE_VERSION "/profile/" );
+        cube_def_mirror( write_set.my_cube, "https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/latest/profile/" );
 
         char buffer[ 32 ];
         sprintf( buffer, "%u", scorep_unified_definition_manager->parameter.counter );
