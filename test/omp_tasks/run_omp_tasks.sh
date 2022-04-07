@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2018,
+## Copyright (c) 2009-2011, 2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -31,18 +31,20 @@
 
 ## file       run_omp_tasks.sh
 
-
-SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./omp_tasks
-if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp
-    exit 1
-fi
-
-if [ -f omp_tasks_untied ]; then
-    SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./omp_tasks_untied
+if [ -f omp_tasks ]; then
+    SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./omp_tasks
     if [ $? -ne 0 ]; then
         rm -rf scorep-measurement-tmp
         exit 1
     fi
 fi
+
+if [ -f omp_tasks ]; then
+    SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./omp_tasks
+    if [ $? -ne 0 ]; then
+        rm -rf scorep-measurement-tmp
+        exit 1
+    fi
+fi
+
 exit 0

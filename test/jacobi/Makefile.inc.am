@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2016, 2021,
+## Copyright (c) 2009-2011, 2013, 2016, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -53,7 +53,7 @@ TESTS_SERIAL += jacobi_serial_c
 
 ## OpenMP C
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -80,7 +80,7 @@ TESTS_OMP += jacobi_omp_c
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 ## Serial C++
 
@@ -102,7 +102,7 @@ TESTS_SERIAL += jacobi_serial_cxx
 
 ## OpenMP C++
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_CXX_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -129,7 +129,7 @@ TESTS_OMP += jacobi_omp_cxx
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_CXX_SUPPORT
 
 ## Serial Fortran
 if FORTRAN_SUPPORT_ALLOCATABLE
@@ -159,7 +159,7 @@ TESTS_SERIAL += jacobi_serial_f90
 
 ## OpenMP Fortran
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -203,7 +203,7 @@ endif ! SCOREP_COMPILER_CRAY
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_FC_SUPPORT
 
 endif FORTRAN_SUPPORT_ALLOCATABLE
 

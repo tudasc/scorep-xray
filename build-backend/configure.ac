@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2021,
+dnl Copyright (c) 2009-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -280,7 +280,7 @@ if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
     AC_MSG_ERROR([sizeof(void*) > sizeof(int64_t): internal thread handling will not work.])
 fi
 
-AC_SCOREP_OPENMP
+SCOREP_OPENMP_SUMMARY
 AFS_SUMMARY_SECTION_BEGIN
 SCOREP_OPENMP_TPD
 SCOREP_OPENMP_ANCESTRY

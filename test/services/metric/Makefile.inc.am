@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2018,
+## Copyright (c) 2009-2013, 2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -53,7 +53,7 @@ jacobi_serial_c_metric_test_LDFLAGS   = $(serial_ldflags)
 
 ## OpenMP
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -93,7 +93,7 @@ jacobi_omp_c_metric_test_LDFLAGS  = $(omp_ldflags)
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_serial_metric_test.sh.in \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_definitions.out \

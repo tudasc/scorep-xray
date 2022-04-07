@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2018,
+## Copyright (c) 2009-2011, 2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -52,7 +52,7 @@ XFAIL_TESTS_MPI_OMP =
 ## variables TESTS, XFAIL_TESTS and TESTs_ENVIRONMENT have been
 ## replaced with SERIAL/OMP/MPI/HYBRID versions.
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 if HAVE_MPI_SUPPORT
 check-run-mpi-omp: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-mpi-omp-am
@@ -64,10 +64,10 @@ else !HAVE_MPI_SUPPORT
 check-run-mpi-omp:
 check-file-mpi-omp:
 endif !HAVE_MPI_SUPPORT
-else !HAVE_OPENMP_SUPPORT
+else !HAVE_OPENMP_C_SUPPORT
 check-run-mpi-omp:
 check-file-mpi-omp:
-endif !HAVE_OPENMP_SUPPORT
+endif !HAVE_OPENMP_C_SUPPORT
 
 CLEANFILES += check-file-mpi-omp
 

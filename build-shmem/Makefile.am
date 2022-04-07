@@ -6,7 +6,7 @@
 ## Copyright (c) 2013-2015, 2017,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2015, 2017-2018,
+## Copyright (c) 2015, 2017-2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -122,13 +122,13 @@ instrumenter_check_paradigm_makefiles += \
     ../installcheck/instrumenter_checks/shmem/Makefile
 instrumenter_configuration_files += \
     ../installcheck/instrumenter_checks/configurations_shmem
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 PARADIGMS += shmem_omp
 instrumenter_check_paradigm_makefiles += \
     ../installcheck/instrumenter_checks/shmem_omp/Makefile
 instrumenter_configuration_files += \
     ../installcheck/instrumenter_checks/configurations_shmem_omp
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 endif HAVE_SHMEM_SUPPORT
 
 

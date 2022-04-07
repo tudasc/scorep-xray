@@ -19,7 +19,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2016, 2020,
+## Copyright (c) 2009-2016, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -54,19 +54,19 @@ file_prefix="../installcheck/instrumenter_checks/configurations_"
 # pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented
 
 omp_instrumenter_args=
-@HAVE_OPENMP_SUPPORT_TRUE@omp_instrumenter_args="openmp noopenmp "
+@HAVE_OPENMP_C_SUPPORT_TRUE@omp_instrumenter_args="openmp noopenmp "
 
 omp_backend_args=
-@HAVE_OPENMP_SUPPORT_TRUE@omp_backend_args="${omp_backend_args} thread=omp "
+@HAVE_OPENMP_C_SUPPORT_TRUE@omp_backend_args="${omp_backend_args} thread=omp "
 
 cd @abs_top_builddir@
 
 paradigm_list="serial"
-@HAVE_OPENMP_SUPPORT_TRUE@paradigm_list="${paradigm_list} omp"
+@HAVE_OPENMP_C_SUPPORT_TRUE@paradigm_list="${paradigm_list} omp"
 @HAVE_MPI_SUPPORT_TRUE@paradigm_list="${paradigm_list} mpi"
-@HAVE_OPENMP_SUPPORT_TRUE@@HAVE_MPI_SUPPORT_TRUE@paradigm_list="${paradigm_list} mpi_omp"
+@HAVE_OPENMP_C_SUPPORT_TRUE@@HAVE_MPI_SUPPORT_TRUE@paradigm_list="${paradigm_list} mpi_omp"
 @HAVE_SHMEM_SUPPORT_TRUE@paradigm_list="${paradigm_list} shmem"
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@paradigm_list="${paradigm_list} shmem_omp"
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@paradigm_list="${paradigm_list} shmem_omp"
 @HAVE_CUDA_SUPPORT_TRUE@paradigm_list="${paradigm_list} cuda"
 
 # remove files from previous invocation. clean all possible.
@@ -99,11 +99,11 @@ for comp_arg in $compilerargs; do
                 echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg" >> ${file_prefix}serial
 
                 # omp -------------------------------#
-@HAVE_OPENMP_SUPPORT_TRUE@                for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                     for omp_b_arg in $omp_backend_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                          echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $omp_i_arg $omp_b_arg " >> ${file_prefix}omp
-@HAVE_OPENMP_SUPPORT_TRUE@                     done
-@HAVE_OPENMP_SUPPORT_TRUE@                done
+@HAVE_OPENMP_C_SUPPORT_TRUE@                for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_OPENMP_C_SUPPORT_TRUE@                     for omp_b_arg in $omp_backend_args; do
+@HAVE_OPENMP_C_SUPPORT_TRUE@                          echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $omp_i_arg $omp_b_arg " >> ${file_prefix}omp
+@HAVE_OPENMP_C_SUPPORT_TRUE@                     done
+@HAVE_OPENMP_C_SUPPORT_TRUE@                done
 
                 # mpi -------------------------------#
 @HAVE_MPI_SUPPORT_TRUE@                for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
@@ -111,13 +111,13 @@ for comp_arg in $compilerargs; do
 @HAVE_MPI_SUPPORT_TRUE@                done
 
                 # mpi_omp ---------------------------#
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                              echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}mpi_omp
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                         done
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                              echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                         done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                    done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                done
 
                 # shmem -----------------------------#
 @HAVE_SHMEM_SUPPORT_TRUE@                for mpp_arg in "mpp=shmem"; do
@@ -125,13 +125,13 @@ for comp_arg in $compilerargs; do
 @HAVE_SHMEM_SUPPORT_TRUE@                done
 
                 # shmem_omp -------------------------#
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                for mpp_arg in "mpp=shmem"; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_b_arg in $omp_backend_args; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}shmem_omp
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                done
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                for mpp_arg in "mpp=shmem"; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                        for omp_b_arg in $omp_backend_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}shmem_omp
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                        done
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                    done
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@                done
 
                 # cuda ------------------------------#
 @HAVE_CUDA_SUPPORT_TRUE@                if [ $preprocess_user_arg = nopreprocess ]; then
@@ -156,25 +156,25 @@ if test -f "${file_prefix}serial"; then
     echo "  GEN    ${file_prefix}serial"
 fi
 
-@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}omp"; then
-@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}omp"
-@HAVE_OPENMP_SUPPORT_TRUE@fi
+@HAVE_OPENMP_C_SUPPORT_TRUE@if test -f "${file_prefix}omp"; then
+@HAVE_OPENMP_C_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}omp"
+@HAVE_OPENMP_C_SUPPORT_TRUE@fi
 
 @HAVE_MPI_SUPPORT_TRUE@if test -f "${file_prefix}mpi"; then
 @HAVE_MPI_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}mpi"
 @HAVE_MPI_SUPPORT_TRUE@fi
 
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}mpi_omp"; then
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}mpi_omp"
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@fi
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@if test -f "${file_prefix}mpi_omp"; then
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}mpi_omp"
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@fi
 
 @HAVE_SHMEM_SUPPORT_TRUE@if test -f "${file_prefix}shmem"; then
 @HAVE_SHMEM_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}shmem"
 @HAVE_SHMEM_SUPPORT_TRUE@fi
 
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}shmem_omp"; then
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}shmem_omp"
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@fi
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@if test -f "${file_prefix}shmem_omp"; then
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}shmem_omp"
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_C_SUPPORT_TRUE@fi
 
 @HAVE_CUDA_SUPPORT_TRUE@if test -f "${file_prefix}cuda"; then
 @HAVE_CUDA_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}cuda"

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014, 2021,
+## Copyright (c) 2009-2011, 2014, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -54,7 +54,7 @@ TESTS_MPI += jacobi_mpi_c
 
 ## MPI + OpenMP C
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -82,7 +82,7 @@ TESTS_MPI_OMP += jacobi_mpi_omp_c
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 ## MPI C++
 
@@ -104,7 +104,7 @@ TESTS_MPI += jacobi_mpi_cxx
 
 ## MPI + OpenMP C++
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_CXX_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -132,7 +132,7 @@ TESTS_MPI_OMP += jacobi_mpi_omp_cxx
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_CXX_SUPPORT
 
 ## MPI Fortran
 
@@ -166,7 +166,7 @@ TESTS_MPI += jacobi_mpi_f90
 
 ## MPI + OpenMP Fortran
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -207,7 +207,7 @@ endif !SCOREP_COMPILER_CRAY
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_FC_SUPPORT
 
 endif FORTRAN_SUPPORT_ALLOCATABLE
 

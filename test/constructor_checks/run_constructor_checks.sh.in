@@ -8,6 +8,8 @@
 ## Copyright (c) 2015, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
+##  Copyright (c) 2022,
+##  Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
@@ -50,7 +52,12 @@ languages="c cxx"
 @SCOREP_HAVE_FC_TRUE@languages="$languages f"
 
 paradigm_threads="none"
-@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp"
+@HAVE_OPENMP_C_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp"
+
+@HAVE_OPENMP_CXX_SUPPORT_TRUE@have_omp_cxx=true
+@HAVE_OPENMP_CXX_SUPPORT_FALSE@have_omp_cxx=false
+@HAVE_OPENMP_FC_SUPPORT_TRUE@have_omp_fc=true
+@HAVE_OPENMP_FC_SUPPORT_FALSE@have_omp_fc=false
 
 for thread in $paradigm_threads
 do
@@ -58,9 +65,21 @@ do
     for l in $languages
     do
         case $l in
-        (c)   L=C       ;;
-        (cxx) L=C++     ;;
-        (f)   L=Fortran ;;
+        (c)
+            L=C
+            ;;
+        (cxx)
+            L=C++
+            if test $thread = omp && ! $have_omp_cxx; then
+                continue
+            fi
+            ;;
+        (f)
+            L=Fortran
+            if test $thread = omp && ! $have_omp_fc; then
+                continue
+            fi
+            ;;
         esac
 
         cleanup

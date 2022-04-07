@@ -4,7 +4,7 @@ dnl
 dnl Copyright (c) 2013-2018, 2020,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2015-2016, 2018-2021,
+dnl Copyright (c) 2015-2016, 2018-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -197,7 +197,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       ])
 AC_SUBST([backend_suffix])
 
-AC_SCOREP_OPENMP
+SCOREP_OPENMP_SUMMARY
 AFS_SUMMARY_SECTION_BEGIN
 SCOREP_OPENMP_TPD
 SCOREP_OPENMP_ANCESTRY

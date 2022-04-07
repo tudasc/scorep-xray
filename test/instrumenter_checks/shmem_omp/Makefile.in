@@ -45,6 +45,7 @@ FCFLAGS  = -O3 @OPENMP_FCFLAGS@
 
 PARADIGM   = shmem_omp
 CODES      = heat
-LANGUAGES  = cc
+LANGUAGES  =
+@HAVE_OPENMP_C_SUPPORT_TRUE@LANGUAGES += cc
 
 include  @abs_top_builddir@/../installcheck/instrumenter_checks/Makefile.instrument_configurations

@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2016, 2018-2021,
+dnl Copyright (c) 2009-2016, 2018-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -223,7 +223,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       ])
 AC_SUBST([backend_suffix])
 
-AC_SCOREP_OPENMP
+SCOREP_OPENMP_SUMMARY
 AFS_SUMMARY_SECTION_BEGIN
 SCOREP_OPENMP_TPD
 SCOREP_OPENMP_ANCESTRY

@@ -45,7 +45,9 @@ FCFLAGS  = -O3 @OPENMP_FCFLAGS@
 
 PARADIGM   = omp
 CODES      = jacobi
-LANGUAGES  = cc cxx
-@SCOREP_HAVE_FC_TRUE@LANGUAGES  = cc cxx fc
+LANGUAGES  =
+@HAVE_OPENMP_C_SUPPORT_TRUE@LANGUAGES += cc
+@HAVE_OPENMP_CXX_SUPPORT_TRUE@LANGUAGES += cxx
+@HAVE_OPENMP_FC_SUPPORT_TRUE@@SCOREP_HAVE_FC_TRUE@LANGUAGES += fc
 
 include  @abs_top_builddir@/../installcheck/instrumenter_checks/Makefile.instrument_configurations
