@@ -4,15 +4,29 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011, 2022,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file  build-config/common/Makefile.tests-omp.inc.am
@@ -36,17 +50,17 @@ XFAIL_TESTS_OMP =
 ## variables TESTS, XFAIL_TESTS and TESTs_ENVIRONMENT have been
 ## replaced with SERIAL/OMP/MPI/HYBRID versions
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 check-run-omp: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-omp-am
 check-file-omp:
 	rm -f check-file-omp
 	echo "# Available OpenMP tests:" > check-file-omp
 	for i in $(TESTS_OMP); do echo "$$i" >> check-file-omp; done
-else !HAVE_OPENMP_SUPPORT
+else !HAVE_OPENMP_C_SUPPORT
 check-run-omp:
 check-file-omp:
-endif !HAVE_OPENMP_SUPPORT
+endif !HAVE_OPENMP_C_SUPPORT
 
 CLEANFILES += check-file-omp
 
