@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016-2017, 2020,
+ * Copyright (c) 2013-2014, 2016-2017, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -75,10 +75,7 @@ SCOREP_Instrumenter_Omp::SCOREP_Instrumenter_Omp(
                                     )
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    m_openmp_flags.insert( SCOREP_OPENMP_CFLAGS );
-    m_openmp_flags.insert( SCOREP_OPENMP_CXXFLAGS );
-    m_openmp_flags.insert( SCOREP_OPENMP_FFLAGS );
-    m_openmp_flags.insert( SCOREP_OPENMP_FCFLAGS );
+    m_openmp_flags = { SCOREP_OPENMP_CFLAGS, SCOREP_OPENMP_CXXFLAGS, SCOREP_OPENMP_FCFLAGS };
 
 #if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY && !SCOREP_BACKEND_HAVE_OMP_TPD
     unsupported();
@@ -115,22 +112,14 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
             return true;
         }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
-        if ( current == "-openmp" || current == "-qopenmp" )
+        // handle OpenMP options that are combined with other compiler options
+#if SCOREP_BACKEND_COMPILER_IBM
+        if ( ( current.length() > openmp_flag.length() ) &&
+             ( current.substr( 0, 6 ) == "-qsmp=" ) &&
+             find_string_in_list( current.substr( 6 ), "omp", ':' )
+             != std::string::npos )
         {
             return true;
-        }
-#endif
-#if SCOREP_BACKEND_COMPILER_IBM
-        std::string omp_string = "omp";
-        if ( ( current.length() > openmp_flag.length() ) &&
-             ( current.substr( 0, 6 ) == "-qsmp=" ) )
-        {
-            std::string sub_string = current.substr( 6 );
-            if ( find_string_in_list( sub_string, omp_string, ':' ) != std::string::npos )
-            {
-                return true;
-            }
         }
 #endif
 #if SCOREP_BACKEND_COMPILER_FUJITSU
