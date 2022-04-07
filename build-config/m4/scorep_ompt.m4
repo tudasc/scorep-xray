@@ -1,0 +1,284 @@
+dnl
+dnl This file is part of the Score-P software (http://www.score-p.org)
+dnl
+dnl Copyright (c) 2022,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
+dnl This software may be modified and distributed under the terms of
+dnl a BSD-style license.  See the COPYING file in the package base
+dnl directory for details.
+dnl
+
+
+# SCOREP_OMPT_SUMMARY()
+# ---------------------
+#
+AC_DEFUN_ONCE([SCOREP_OMPT_SUMMARY], [
+AC_REQUIRE([SCOREP_OMPT])
+AFS_SUMMARY_PUSH
+AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_have_openmp_c_support}" = xyesyesyes],
+    [AFS_SUMMARY([OMPT header], [$have_ompt_header])
+     AS_IF([test "x${have_ompt_header}" = xyes],
+         [AFS_SUMMARY([OMPT tool], [$have_ompt_tool])
+          AS_IF([test "x${have_ompt_tool}" = xyes],
+              [AFS_SUMMARY([OMPT C support], [$have_ompt_c_support${ompt_reason_c:+, $ompt_reason_c}])
+               AS_IF([test "x${scorep_have_openmp_cxx_support}" = xyes],
+                   [AFS_SUMMARY([OMPT C++ support], [$have_ompt_cxx_support${ompt_reason_cxx:+, $ompt_reason_cxx}])])
+               AS_IF([test "x${scorep_have_openmp_fc_support}" = xyes],
+                   [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])])])])
+AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
+])dnl SCOREP_OMPT_SUMMARY
+
+
+# SCOREP_OMPT()
+# -------------
+# Check whether OMPT is supported by checking for omp-tools.h,
+# building a tool with the C compiler, and using/running the tool with
+# the C, C++, and Fortran compiler. Don't call from MPI/SHMEM as they
+# need a launcher for running, but rely on build-backend|mpi|shmem
+# compatibility.
+#
+AC_DEFUN_ONCE([SCOREP_OMPT], [
+AC_REQUIRE([SCOREP_OPENMP])
+AC_REQUIRE([SCOREP_ADDR2LINE])
+AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])
+
+have_ompt_header=no
+have_ompt_tool=no
+have_ompt_support=no
+have_ompt_c_support=no
+have_ompt_cxx_support=no
+have_ompt_fc_support=no
+
+AS_IF([test "x${scorep_have_addr2line}" = xyes],
+    [AS_IF([test "x${afs_have_thread_local_storage}" = xyes],
+         [AS_IF([test "x${scorep_have_openmp_c_support}" = xyes],
+              [_CHECK_OMPT_HEADER
+               AS_IF([test "x${have_ompt_header}" = xyes],
+                   [_BUILD_OMPT_TOOL
+                    AS_IF([test "x${have_ompt_tool}" = xyes],
+                        [AC_LANG_PUSH([C])
+                         _CHECK_OMPT_SUPPORT
+                         AC_LANG_POP([C])
+                         AS_IF([test "x${scorep_have_openmp_cxx_support}" = xyes],
+                             [AC_LANG_PUSH([C++])
+                              _CHECK_OMPT_SUPPORT
+                              AC_LANG_POP([C++])])
+                         AS_IF([test "x${scorep_have_openmp_fc_support}" = xyes],
+                             [AC_LANG_PUSH([Fortran])
+                              _CHECK_OMPT_SUPPORT
+                              AC_LANG_POP([Fortran])])])
+                    rm -f tool.$ac_objext])],
+              [ompt_reason="OpenMP C support missing"])],
+         [ompt_reason="thread local storage support missing"])],
+    [ompt_reason="addr2line support missing"])
+dnl
+AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
+    [test "x$have_ompt_support" = xyes],
+    [Defined if OMPT is supported for at least one language])
+dnl TODO: DEFINES, CONDITIONALS, SUBST
+])dnl SCOREP_OMPT
+
+
+# _CHECK_OMPT_HEADER()
+# --------------------
+#
+m4_define([_CHECK_OMPT_HEADER], [
+AS_IF([test "x${ac_cv_prog_cc_openmp}" != xunsupported],
+    [AC_LANG_PUSH([C])
+     CFLAGS_save="${CFLAGS}"
+     CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+     AC_CHECK_HEADER([omp-tools.h],
+         [have_ompt_header=yes])
+     CFLAGS="$CFLAGS_save"
+     AC_LANG_POP([C])])
+])dnl _CHECK_OMPT_HEADER
+
+
+# _BUILD_OMPT_TOOL()
+# ------------------
+# Build tool.$ac_objext
+#
+m4_define([_BUILD_OMPT_TOOL], [
+AC_LANG_PUSH([C])
+CFLAGS_save="${CFLAGS}"
+CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OMPT_TOOL)],
+    [have_ompt_tool=yes
+     tool_o="tool.$ac_objext"
+     # preserve object file for use at a later time
+     cp conftest.$ac_objext $tool_o])
+CFLAGS="$CFLAGS_save"
+AC_LANG_POP([C])
+AC_MSG_CHECKING([whether an OMPT tool can be compiled])
+AC_MSG_RESULT([$have_ompt_tool])
+])dnl _BUILD_OMPT_TOOL
+
+
+# _CHECK_TOOL_ACTIVATION()
+# ------------------------
+# Common part of _CHECK_OMPT_SUPPORT (see below).
+#
+m4_define([_CHECK_TOOL_ACTIVATION], [
+AC_LINK_IFELSE([_INPUT_IGNORED],
+    [AFS_RUN_IFELSE(
+         [# do not try to run MPI or SHMEM programs (no launcher)
+          have_ompt_support=yes
+          have_ompt_[]_AC_LANG_ABBREV[]_support=yes
+          . ./ompt
+          rm -f ./ompt
+          AS_UNSET([ompt_reason_]_AC_LANG_ABBREV)],
+         [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"],
+         [AC_MSG_FAILURE([TODO: handle cross-compile and other run failures])])],
+    [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])
+])dnl _CHECK_TOOL_ACTIVATION
+
+
+# _CHECK_OMPT_SUPPORT()
+# ---------------------
+# Compile OpenMP application and link with tool.$ac_objext (see
+# _BUILD_OMPT_TOOL). Run the binary; the return value indicates
+# whether OMPT got activated. Call in C context first.
+#
+m4_define([_CHECK_OMPT_SUPPORT], [
+_AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
+_AC_LANG_PREFIX[]FLAGS="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $_AC_LANG_PREFIX[]FLAGS"
+AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
+    [cp conftest.$ac_objext main.$ac_objext
+     # use customized link command
+     ac_link_save="$ac_link"
+     m4_case(_AC_CC,
+         [CC], [ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS $tool_o main.$ac_objext $LIBS >&5'],
+         [CXX], [ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS $tool_o main.$ac_objext $LIBS >&5'],
+         [FC], [ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $tool_o main.$ac_objext $LIBS >&5'],
+         [m4_fatal([Unsupported language ]_AC_CC)])
+     #
+     # Compilers might need extra_ldflags to activate OMPT. Require the CC
+     # setup to work with CXX and FC as well (as we don't distinguish
+     # language at link time).
+     #
+     # NVHPC 22.5, 22.7: -mt=ompt
+     #
+     LDFLAGS_save="$LDFLAGS"
+     m4_case(_AC_CC,
+         [CC],
+             [for extra_ldflags in "" "-mp=ompt"; do
+                  LDFLAGS="$extra_ldflags $LDFLAGS_save"
+                  _CHECK_TOOL_ACTIVATION
+                  AS_IF([test "x${have_ompt_[]_AC_LANG_ABBREV[]_support}" = xyes],
+                      [break])
+              done
+              ompt_[]_AC_LANG_ABBREV[]_ldflags="${extra_ldflags}"
+              AC_SUBST([SCOREP_OMPT_LDFLAGS], [${ompt_[]_AC_LANG_ABBREV[]_ldflags}])],
+         [LDFLAGS="${ompt_c_ldflags} ${LDFLAGS}"
+          _CHECK_TOOL_ACTIVATION])
+     LDFLAGS="$LDFLAGS_save"
+     rm -f main.$ac_objext
+     ac_link="$ac_link_save"],
+    [ompt_reason_[]_AC_LANG_ABBREV="OpenMP program does not compile"])
+_AC_LANG_PREFIX[]FLAGS="$_AC_LANG_PREFIX[]FLAGS_save"
+AC_MSG_CHECKING([whether OMPT is supported for language ]_AC_LANG)
+AC_MSG_RESULT([$have_ompt_[]_AC_LANG_ABBREV[]_support${ompt_reason_[]_AC_LANG_ABBREV:+, $ompt_reason_[]_AC_LANG_ABBREV}])
+])dnl _CHECK_OMPT_SUPPORT
+
+
+# _INPUT_IGNORED()
+# ----------------
+#
+m4_define([_INPUT_IGNORED], [AC_LANG_PROGRAM([], [])])
+
+
+# _INPUT_OMPT_TOOL()
+# ------------------
+#
+m4_define([_INPUT_OMPT_TOOL], [[
+#include <omp-tools.h>
+#include <stdlib.h>
+#include <stdio.h>
+static int initialized;
+FILE* ompt;
+static int ompt_initialize( ompt_function_lookup_t lookup,
+                            int initial_device_num,
+                            ompt_data_t *tool_data )
+{
+    fprintf( ompt, "initial_device_num=\"%d\"\n", initial_device_num );
+    fclose( ompt );
+    ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    initialized = 1;
+    return 1; /* non-zero indicates success */
+}
+
+static void ompt_finalize( ompt_data_t *tool_data )
+{
+
+    if ( initialized == 1 )
+    {
+        _Exit( 0 ); /* Indicates that the tool got initialized and finalized. */
+    }
+}
+
+ompt_start_tool_result_t* ompt_start_tool( unsigned int omp_version, /* == _OPENMP */
+                                           const char*  runtime_version )
+{
+    ompt = fopen( "./ompt", "w");
+    fprintf( ompt, "omp_version=\"%d\"\nruntime_version=\"%s\"\n", omp_version, runtime_version );
+    static ompt_start_tool_result_t ompt_start_tool_result = { &ompt_initialize,
+                                                               &ompt_finalize,
+                                                               ompt_data_none };
+    return &ompt_start_tool_result;
+}
+
+void foo( int tid )
+{
+    /* called from main.o */
+}
+]])dnl _INPUT_OMPT_TOOL
+
+
+# _INPUT_OPENMP_C()
+# -----------------
+#
+m4_define([_INPUT_OPENMP_C], [[
+#include <omp.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+void foo( int tid ); /* defined in tool.o, thus the parallel region can't be optimized out */
+#ifdef __cplusplus
+}
+#endif
+
+int main()
+{
+    #pragma omp parallel num_threads( 2 )
+    foo( omp_get_thread_num() );
+    return 1; /* Indicates that the tool was not initialized and finalized. */
+}
+]])dnl _INPUT_OPENMP_C
+
+
+# _INPUT_OPENMP_CXX()
+# -------------------
+#
+m4_copy([_INPUT_OPENMP_C], [_INPUT_OPENMP_CXX])
+
+
+# _INPUT_OPENMP_FC()
+# ------------------
+#
+m4_define([_INPUT_OPENMP_FC], [[
+      PROGRAM main
+      USE OMP_LIB
+      INTERFACE
+      SUBROUTINE foo(tid) BIND(C)
+      USE, INTRINSIC :: ISO_C_BINDING, ONLY: C_INT
+      IMPLICIT NONE
+      INTEGER(C_INT) :: tid
+      END SUBROUTINE foo
+      END INTERFACE
+!\$OMP PARALLEL DEFAULT(NONE) NUM_THREADS(2)
+      call foo(OMP_GET_THREAD_NUM())
+!\$OMP END PARALLEL
+      CALL EXIT(1)
+      END
+]])dnl _INPUT_OPENMP_FC
