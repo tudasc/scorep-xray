@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2019, 2021,
+## Copyright (c) 2014-2015, 2019, 2021-2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## See the COPYING file in the package base directory for details.
@@ -23,10 +23,10 @@ trap cleanup EXIT
 cleanup
 
 # Get SRC_ROOT
-SRC_ROOT=@abs_top_srcdir@/..
+SRC_ROOT="@abs_top_srcdir@/.."
 
 # Get otf2print tool
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-opencl
@@ -37,10 +37,10 @@ OPENCL_TEST_SRC_DIR=$SRC_ROOT/test/adapters/opencl
 # Copy kernel.cl to current working dir
 cp $OPENCL_TEST_SRC_DIR/kernel.cl .
 
-OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
-CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
-CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+OTF2_LIBDIR="$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@"
+CUBEW_LIBDIR="$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@"
+CUBELIB_LIBDIR="$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@"
+export @SYS_LIB_SEARCH_PATH_VAR@="$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}"
 
 ./scorep --static -v --build-check @CC@ $OPENCL_TEST_SRC_DIR/opencl_test.c -o opencl_test @OPENCL_CPPFLAGS@ @OPENCL_LDFLAGS_FOR_TESTS@ @OPENCL_LIBS@
 

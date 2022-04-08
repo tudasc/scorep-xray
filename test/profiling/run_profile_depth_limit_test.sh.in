@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -44,7 +44,7 @@ if [ ! -e $RESULT_DIR/profile.cubex ]; then
 fi
 
 #NUM_CNODES=`GREP_OPTIONS= grep -c "<cnode id=" $RESULT_DIR/profile.cubex`
-NUM_CNODES=`@CUBELIB_BINDIR@/cube_calltree -m visits -f $RESULT_DIR/profile.cubex | wc -l`
+NUM_CNODES=`"@CUBELIB_BINDIR@/cube_calltree" -m visits -f $RESULT_DIR/profile.cubex | wc -l`
 if [ ! x$NUM_CNODES = x6 ]; then
   echo "Expected 6 callpath definitions, but found $NUM_CNODES"
   exit 1

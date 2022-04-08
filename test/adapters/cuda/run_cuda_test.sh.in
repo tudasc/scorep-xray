@@ -3,13 +3,13 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012
+## Copyright (c) 2009-2012,
 ## RWTH Aachen University, Germany
 ##
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014-2015, 2019, 2021,
+## Copyright (c) 2009-2012, 2014-2015, 2019, 2021-2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -39,13 +39,13 @@ echo "===== CUDA Compile and Run Test ====="
 rm -f cuda_test
 
 # Get SRC_ROOT
-SRC_ROOT=@abs_top_srcdir@/..
+SRC_ROOT="@abs_top_srcdir@/.."
 
 # Get otf2print tool
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 
 # Select gold files corresponding to current CUDA version
-cuda_gold_file_version=v@SCOREP_CUDA_VERSION@
+cuda_gold_file_version="v@SCOREP_CUDA_VERSION@"
 
 # Directory containing the gold files
 TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data/$cuda_gold_file_version
@@ -53,10 +53,10 @@ TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data/$cuda_gold_file_version
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-cuda
 
-OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
-CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
-CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+OTF2_LIBDIR="$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@"
+CUBEW_LIBDIR="$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@"
+CUBELIB_LIBDIR="$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@"
+export @SYS_LIB_SEARCH_PATH_VAR@="$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}"
 
 ./scorep -v --build-check --nocompiler --user nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 

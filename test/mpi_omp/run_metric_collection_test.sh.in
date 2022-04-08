@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013, 2019, 2021,
+## Copyright (c) 2009-2011, 2013, 2019, 2021-2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,10 +40,10 @@ rm -rf $RESULT_DIR
 # build test
 cp  @abs_srcdir@/mpi_omp_metric_collection_test.c mpi_omp_metric_collection_test.c
 
-OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
-CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
-CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+OTF2_LIBDIR="$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@"
+CUBEW_LIBDIR="$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@"
+CUBELIB_LIBDIR="$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@"
+export @SYS_LIB_SEARCH_PATH_VAR@="$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}"
 
 ../build-backend/scorep --user -v --build-check @CC@ -I. @OPENMP_CFLAGS@ mpi_omp_metric_collection_test.c -o metric_collection_test
 

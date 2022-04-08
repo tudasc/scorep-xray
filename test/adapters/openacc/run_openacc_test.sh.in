@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2016, 2019, 2021,
+## Copyright (c) 2016, 2019, 2021-2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## See the COPYING file in the package base directory for details.
@@ -16,17 +16,17 @@ echo "===== OpenACC Compile and Run Test ====="
 rm -f openacc_test
 
 # Get SRC_ROOT
-SRC_ROOT=@abs_top_srcdir@/..
+SRC_ROOT="@abs_top_srcdir@/.."
 
 # Get otf2print tool
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 
 RESULT_DIR=$PWD/scorep-openacc
 
-OTF2_LIBDIR=$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@
-CUBEW_LIBDIR=$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@
-CUBELIB_LIBDIR=$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@
-export @SYS_LIB_SEARCH_PATH_VAR@=$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}
+OTF2_LIBDIR="$PWD/../vendor/otf2/build-backend/@LT_OBJDIR@"
+CUBEW_LIBDIR="$PWD/../vendor/cubew/build-backend/@LT_OBJDIR@"
+CUBELIB_LIBDIR="$PWD/../vendor/cubelib/build-backend/@LT_OBJDIR@"
+export @SYS_LIB_SEARCH_PATH_VAR@="$PWD/@LT_OBJDIR@:${OTF2_LIBDIR}:${CUBEW_LIBDIR}:${CUBELIB_LIBDIR}${@SYS_LIB_SEARCH_PATH_VAR@:+:${@SYS_LIB_SEARCH_PATH_VAR@}}"
 
 ./scorep -v --build-check --nocompiler --openacc @CC@ @SCOREP_COMPILER_ACC_FLAGS@ $SRC_ROOT/test/adapters/openacc/openacc_test.c -o openacc_test -I.
 

@@ -4,27 +4,30 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
-##    RWTH Aachen University, Germany
+## RWTH Aachen University, Germany
 ##
 ## Copyright (c) 2009-2011,
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2019,
-##    Technische Universitaet Dresden, Germany
-##
-## Copyright (c) 2009-2011,
-##    University of Oregon, Eugene, USA
+## Copyright (c) 2009-2011, 2019, 2022,
+## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
-##    Forschungszentrum Juelich GmbH, Germany
+## University of Oregon, Eugene, USA
 ##
 ## Copyright (c) 2009-2011,
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
-##    Technische Universitaet Muenchen, Germany
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
 ##
 
 ## file       run_rusage_mpi_metric_test.sh
@@ -35,7 +38,7 @@
 ## are not available in MPI build mode. As a work-around we define needed
 ## variables manually.
 # Get SRC_ROOT and OTF2_PRINT
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 SRC_ROOT=../..
 
 MPIRUN=mpiexec
