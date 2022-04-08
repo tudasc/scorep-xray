@@ -50,7 +50,7 @@ defaults by using the following configure options:
                environment variable SCOREP_MACHINE_NAME.
 
 Score-P requires a full compiler suite with language support for C99,
-C++98 and optionally Fortran 77 and Fortran 90. The following section
+C++11 and optionally Fortran 77 and Fortran 90. The following section
 describes how to select supported compiler suits.
 
 In non-cross-compiling environments, the compiler suite used to build

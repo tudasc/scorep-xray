@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2015, 2017-2018, 2021,
+dnl Copyright (c) 2009-2015, 2017-2018, 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -71,7 +71,7 @@ AC_CANONICAL_HOST
 
 AFS_PROG_CC([99])
 AFS_PROG_CC_SUMMARY
-AFS_PROG_CXX
+AFS_PROG_CXX([11])
 AFS_PROG_CXX_SUMMARY
 
 LT_PREREQ([2.4.6])
