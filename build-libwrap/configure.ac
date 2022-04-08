@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2017, 2019,
+dnl Copyright (c) 2017, 2019, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2018, 2021-2022,
@@ -128,7 +128,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
 AFS_PROG_CC([99])
-AFS_PROG_CXX([11])
+AFS_PROG_CXX([11], [noext])
 
 LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])

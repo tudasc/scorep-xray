@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013, 2015, 2019,
+dnl Copyright (c) 2009-2013, 2015, 2019, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -80,7 +80,7 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
      CXX="`GREP_OPTIONS= ${GREP} ^CXX= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
-AFS_PROG_CXX([11])
+AFS_PROG_CXX([11], [noext])
 
 AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
     [intel],    [CC=icc],
