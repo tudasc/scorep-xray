@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2012-2016,
+dnl Copyright (c) 2012-2016, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2021,
@@ -213,20 +213,6 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
     [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_includedir} -isystem ${scorep_gcc_plugin_includedir} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
     AC_LANG_PUSH([C++])
-
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-class A { virtual void m( int, double ); };
-class B : A { void m( int, double ) override {} };
-]], [])], [: no flag needed], [
-        save_CXX="$CXX"
-        CXX="$CXX -std=c++11"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-class A { virtual void m( int, double ); };
-class B : A { void m( int, double ) override {} };
-]], [])],
-            [],
-            [: nothing worked
-             CXX="$save_CXX"])])
 
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [[
         __builtin_unreachable();
