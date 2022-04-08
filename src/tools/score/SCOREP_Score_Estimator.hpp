@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2019,
+ * Copyright (c) 2009-2012, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -154,7 +154,7 @@ public:
                 double   time,
                 uint64_t hits,
                 uint32_t numParameters,
-                uint32_t strParameters );
+                uint32_t strParameters ) override;
 
 private:
     /**
