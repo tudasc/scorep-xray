@@ -73,7 +73,7 @@ private:
 
         void
         set_value( const std::string& key,
-                   const std::string& value );
+                   const std::string& value ) override;
 
         std::string                        m_prefix;
         std::string                        m_name;

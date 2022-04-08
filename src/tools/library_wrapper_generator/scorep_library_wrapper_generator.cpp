@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2015-2017, 2019,
+ * Copyright (c) 2013, 2015-2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -259,8 +259,8 @@ public:
     ostream&                  out;
     bool                      internal;
 
-    virtual void
-    operator()( const macro_information& decl )
+    void
+    operator()( const macro_information& decl ) override
     {
         if ( internal )
         {
@@ -272,9 +272,9 @@ public:
         }
     }
 
-    virtual void
+    void
     operator()( const string& ns,
-                bool          openClose )
+                bool          openClose ) override
     {
         if ( ns.empty() )
         {
@@ -317,15 +317,15 @@ public:
     ostream&                  out;
     string                    current_namespace;
 
-    virtual void
-    operator()( const macro_information& decl )
+    void
+    operator()( const macro_information& decl ) override
     {
         generator.write_function_process_macro( decl, current_namespace, out );
     }
 
-    virtual void
+    void
     operator()( const string& ns,
-                bool          openClose )
+                bool          openClose ) override
     {
         if ( ns.empty() )
         {
@@ -364,8 +364,8 @@ public:
     ostream&                  out;
     bool                      first;
 
-    virtual void
-    operator()( const macro_information& decl )
+    void
+    operator()( const macro_information& decl ) override
     {
         if ( first )
         {
@@ -392,8 +392,8 @@ public:
     ostream&                  out;
     bool                      first;
 
-    virtual void
-    operator()( const macro_information& decl )
+    void
+    operator()( const macro_information& decl ) override
     {
         if ( first )
         {
