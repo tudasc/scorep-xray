@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -152,11 +152,11 @@ class SCOREP_Config_MockupMppSystem : public SCOREP_Config_MppSystem
 {
 public:
     SCOREP_Config_MockupMppSystem();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* ***************************************************************************
@@ -170,15 +170,15 @@ class SCOREP_Config_MpiMppSystem : public SCOREP_Config_MppSystem
 {
 public:
     SCOREP_Config_MpiMppSystem();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+                bool         nvcc ) override;
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* ***************************************************************************
@@ -192,15 +192,15 @@ class SCOREP_Config_ShmemMppSystem : public SCOREP_Config_MppSystem
 {
 public:
     SCOREP_Config_ShmemMppSystem();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+                bool         nvcc ) override;
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 #endif // SCOREP_CONFIG_MPP_HPP
