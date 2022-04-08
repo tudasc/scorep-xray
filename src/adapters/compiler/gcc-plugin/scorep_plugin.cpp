@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2014, 2016,
+ * Copyright (c) 2012-2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -158,19 +158,17 @@ public:
 
     /* opt_pass methods: */
     unsigned int
+    execute(
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 5000
-    execute( function* )
-#else
-    execute()
+        function*
 #endif
-    override
+        ) override
     {
         return scorep_plugin_pass_instrument_function();
     }
 
     opt_pass*
-    clone()
-    override
+    clone() override
     {
         return new pass_instrument( m_ctxt );
     }
