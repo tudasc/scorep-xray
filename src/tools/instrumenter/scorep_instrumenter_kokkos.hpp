@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,11 +33,11 @@ class SCOREP_Instrumenter_KokkosAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_KokkosAdapter( void );
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 };
 
 #endif

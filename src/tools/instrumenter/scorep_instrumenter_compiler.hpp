@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015,
+ * Copyright (c) 2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,19 +37,19 @@ public:
     SCOREP_Instrumenter_CompilerAdapter( void );
 
     bool
-    supportInstrumentFilters( void ) const;
+    supportInstrumentFilters( void ) const override;
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual std::string
+    std::string
     precompile( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
-                const std::string&           source_file );
+                const std::string&           source_file ) override;
 
-    virtual void
+    void
     prelink( SCOREP_Instrumenter&         instrumenter,
-             SCOREP_Instrumenter_CmdLine& cmdLine );
+             SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 };
 
 #endif // SCOREP_INSTRUMENTER_COMPILER_HPP

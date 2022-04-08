@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,45 +37,45 @@ class SCOREP_Instrumenter_OpariAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_OpariAdapter( void );
 
-    virtual bool
-    checkOption( const std::string& arg );
+    bool
+    checkOption( const std::string& arg ) override;
 
-    virtual bool
-    isEnabled( void ) const;
+    bool
+    isEnabled( void ) const override;
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
     /**
      * Instruments @a source_file with Opari.
      * @param source_file File name of the source file, that is instrumented.
      * @returns the file name of the instrumented source file.
      */
-    virtual std::string
+    std::string
     precompile( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
-                const std::string&           source_file );
+                const std::string&           source_file ) override;
 
     /**
      * Performs the necessary actions for linking Opari instrumented object
      * files and libraries. Thus, it runs the awk script on the objects,
      * creates the POMP2_Init Function, and compiles it.
      */
-    virtual void
+    void
     prelink( SCOREP_Instrumenter&         instrumenter,
-             SCOREP_Instrumenter_CmdLine& cmdLine );
+             SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual void
-    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
+    void
+    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual bool
+    bool
     checkCommand( const std::string& current,
-                  const std::string& next );
-    virtual void
-    checkDefaults( void );
+                  const std::string& next ) override;
+    void
+    checkDefaults( void ) override;
 
     void
     setTpdMode( const bool use_tpd );

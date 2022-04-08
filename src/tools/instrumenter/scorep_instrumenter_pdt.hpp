@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,21 +37,21 @@ class SCOREP_Instrumenter_PdtAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_PdtAdapter( void );
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
     /**
      * Instruments @a source_file with the Tau instrumentor.
      * @param source_file File name of the source file, that is instrumented.
      * @returns the file name of the instrumented source file.
      */
-    virtual std::string
+    std::string
     precompile( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
-                const std::string&           source_file );
+                const std::string&           source_file ) override;
 
-    virtual void
-    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
+    void
+    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
 private:
     std::string m_pdt_bin_path;

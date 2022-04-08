@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,10 +33,10 @@ class SCOREP_Instrumenter_OpenACCAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_OpenACCAdapter( void );
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
-    virtual void
-    printHelp( void );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    void
+    printHelp( void ) override;
 };
 
 #endif
