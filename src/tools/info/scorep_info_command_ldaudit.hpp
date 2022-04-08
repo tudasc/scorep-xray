@@ -4,6 +4,9 @@
  * Copyright (c) 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -33,7 +36,7 @@ public:
     ~SCOREP_Info_Command_Ldaudit();
 
     int
-    run( const std::vector<std::string>& args );
+    run( const std::vector<std::string>& args ) override;
 };
 
 

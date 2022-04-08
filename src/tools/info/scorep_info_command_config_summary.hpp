@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -38,7 +38,7 @@ public:
     ~SCOREP_Info_Command_ConfigSummary();
 
     int
-    run( const std::vector<std::string>& args );
+    run( const std::vector<std::string>& args ) override;
 };
 
 #endif // SCOREP_INFO_COMMAND_CONFIG_SUMMARY_HPP
