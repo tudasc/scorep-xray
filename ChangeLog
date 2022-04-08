@@ -17,6 +17,8 @@ Compatibility:
   environment variable is set to
   <prefix>/lib[/backend]/libscorep_rtld_audit.so when executing an
   instrumented binary.
+- The C++ compiler requirements to build Score-P were raised from
+  C++98 to C++11.
 
 ------------------- Released version 7.1 -----------------------------
 

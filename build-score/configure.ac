@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2015-2016, 2018, 2020-2021,
+dnl Copyright (c) 2009-2013, 2015-2016, 2018, 2020-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -80,7 +80,7 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
      CXX="`GREP_OPTIONS= ${GREP} ^CXX= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
-AFS_PROG_CXX
+AFS_PROG_CXX([11])
 
 AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
     [intel],    [CC=icc],

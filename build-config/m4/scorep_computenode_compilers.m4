@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013, 2020-2021,
+dnl Copyright (c) 2009-2013, 2020-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2012, 2014,
@@ -34,8 +34,8 @@ AFS_PROG_CC([99])
 
 
 AC_DEFUN([SCOREP_COMPUTENODE_CXX],[
-AFS_PROG_CXX dnl in cross mode, needed just for tests; in non-cross
-             dnl mode also for frontend tools
+AFS_PROG_CXX([11]) dnl in cross mode, needed just for tests; in non-cross
+                   dnl mode also for frontend tools
 ])
 
 
