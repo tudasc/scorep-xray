@@ -29,8 +29,8 @@
 
 ## file       run_papi_serial_metric_test.sh
 
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
-TEST_DATA_DIR=@abs_top_srcdir@/../test/services/metric/data
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
+TEST_DATA_DIR="@abs_top_srcdir@/../test/services/metric/data"
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-papi-metric-test-dir

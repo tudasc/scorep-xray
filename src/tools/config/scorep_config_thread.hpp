@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -228,8 +228,8 @@ class SCOREP_Config_MockupThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
     SCOREP_Config_MockupThreadSystem();
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 
@@ -245,22 +245,22 @@ class SCOREP_Config_OmpThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
     SCOREP_Config_OmpThreadSystem();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
     addCFlags( std::string&           cflags,
                bool                   build_check,
                SCOREP_Config_Language language,
-               bool                   nvcc );
+               bool                   nvcc ) override;
 
-    virtual void
+    void
     addIncFlags( std::string&           incflags,
                  bool                   build_check,
                  SCOREP_Config_Language language,
-                 bool                   nvcc );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+                 bool                   nvcc ) override;
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* ****************************************************************************
@@ -274,14 +274,14 @@ class SCOREP_Config_PthreadThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
     SCOREP_Config_PthreadThreadSystem();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
     addLdFlags( std::string& ldflags,
-                bool         nvcc );
-    virtual void
-    getInitStructName( std::deque<std::string>& init_structs );
+                bool         nvcc ) override;
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 #endif // SCOREP_CONFIG_THREAD_HPP

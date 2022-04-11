@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2015,
+## Copyright (c) 2009-2011, 2015, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -30,8 +30,8 @@
 ## file       run_selective_test.sh
 
 
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
-SRC_ROOT=@abs_top_srcdir@/..
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
+SRC_ROOT="@abs_top_srcdir@/.."
 RESULT_DIR=scorep-selective-f90-test-dir
 
 cleanup()

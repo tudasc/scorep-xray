@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016, 2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015, 2017,
+ * Copyright (c) 2015, 2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2017,
@@ -90,11 +90,11 @@ class SCOREP_Instrumenter_PthreadAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_PthreadAdapter( void );
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 };
 
 /* **************************************************************************************

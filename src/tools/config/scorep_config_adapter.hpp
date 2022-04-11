@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2019-2020,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2017, 2020,
+ * Copyright (c) 2014-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -260,18 +260,18 @@ class SCOREP_Config_MockupAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_MockupAdapter( const std::string& name );
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
-    virtual bool
-    checkArgument( const std::string& arg );
+    bool
+    checkArgument( const std::string& arg ) override;
 
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 
-    virtual void
-    appendInitStructName( std::deque<std::string>& init_structs );
+    void
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* **************************************************************************************
@@ -285,17 +285,17 @@ class SCOREP_Config_CompilerAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_CompilerAdapter();
-    virtual bool
-    checkArgument( const std::string& arg );
-    virtual void
+    bool
+    checkArgument( const std::string& arg ) override;
+    void
     addCFlags( std::string&           cflags,
                bool                   build_check,
                SCOREP_Config_Language language,
-               bool                   nvcc );
-    virtual void
+               bool                   nvcc ) override;
+    void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
+                bool         nvcc ) override;
 
 #if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
 private:
@@ -315,11 +315,11 @@ class SCOREP_Config_UserAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_UserAdapter();
-    virtual void
+    void
     addIncFlags( std::string&           cflags,
                  bool                   build_check,
                  SCOREP_Config_Language language,
-                 bool                   nvcc );
+                 bool                   nvcc ) override;
 };
 
 /* **************************************************************************************
@@ -333,9 +333,9 @@ class SCOREP_Config_CudaAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_CudaAdapter();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 };
 
 /* **************************************************************************************
@@ -349,9 +349,9 @@ class SCOREP_Config_OpenaccAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_OpenaccAdapter();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 };
 
 /* **************************************************************************************
@@ -365,17 +365,17 @@ class SCOREP_Config_OpenclAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_OpenclAdapter();
-    virtual void
-    printHelp( void );
-    virtual bool
-    checkArgument( const std::string& arg );
-    virtual void
+    void
+    printHelp( void ) override;
+    bool
+    checkArgument( const std::string& arg ) override;
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
-    virtual void
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
+                bool         nvcc ) override;
 
 private:
     std::string m_wrapmode;
@@ -392,9 +392,9 @@ class SCOREP_Config_KokkosAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_KokkosAdapter();
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 };
 
 /* **************************************************************************************
@@ -404,19 +404,19 @@ class SCOREP_Config_Opari2Adapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_Opari2Adapter();
-    virtual void
+    void
     addIncFlags( std::string&           incflags,
                  bool                   build_check,
                  SCOREP_Config_Language language,
-                 bool                   nvcc );
-    virtual void
+                 bool                   nvcc ) override;
+    void
     addCFlags( std::string&           cflags,
                bool                   build_check,
                SCOREP_Config_Language language,
-               bool                   nvcc );
+               bool                   nvcc ) override;
 
-    virtual void
-    appendInitStructName( std::deque<std::string>& init_structs );
+    void
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
 
     static void
     printOpariCFlags( bool                   build_check,
@@ -433,17 +433,17 @@ class SCOREP_Config_PreprocessAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_PreprocessAdapter();
 
-    virtual void
+    void
     addCFlags( std::string&           cflags,
                bool                   build_check,
                SCOREP_Config_Language language,
-               bool                   nvcc );
-    virtual void
+               bool                   nvcc ) override;
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 
-    virtual void
-    appendInitStructName( std::deque<std::string>& init_structs );
+    void
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
 /* **************************************************************************************
@@ -458,20 +458,20 @@ class SCOREP_Config_MemoryAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_MemoryAdapter();
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
-    virtual bool
-    checkArgument( const std::string& arg );
+    bool
+    checkArgument( const std::string& arg ) override;
 
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 
-    virtual void
+    void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
+                bool         nvcc ) override;
 
 private:
     std::set<std::string> m_categories;
@@ -490,22 +490,22 @@ public:
     SCOREP_Config_LibwrapAdapter();
 
     void
-    printHelp( void );
+    printHelp( void ) override;
 
     bool
-    checkArgument( const std::string& arg );
+    checkArgument( const std::string& arg ) override;
 
     void
     addLdFlags( std::string& ldflags,
                 bool         build_check,
-                bool         nvcc );
+                bool         nvcc ) override;
 
     void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 
     void
-    appendInitStructName( std::deque<std::string>& init_structs );
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
 
 private:
     std::map<std::string, std::pair<std::string, std::string> > m_wrappers;
@@ -523,23 +523,23 @@ class SCOREP_Config_IoAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_IoAdapter();
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
-    virtual bool
-    checkArgument( const std::string& arg );
+    bool
+    checkArgument( const std::string& arg ) override;
 
-    virtual void
+    void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps ) override;
 
-    virtual void
+    void
     addLdFlags( std::string& ldflags,
                 bool         buildCheck,
-                bool         nvcc );
+                bool         nvcc ) override;
 
-    virtual void
-    appendInitStructName( std::deque<std::string>& initStructs );
+    void
+    appendInitStructName( std::deque<std::string>& initStructs ) override;
 
 private:
     struct SCOREP_Config_SupportedIo

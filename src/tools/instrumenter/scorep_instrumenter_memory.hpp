@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -35,17 +35,17 @@ class SCOREP_Instrumenter_MemoryAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_MemoryAdapter( void );
 
-    virtual void
-    printHelp( void );
+    void
+    printHelp( void ) override;
 
-    virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
-    virtual void
-    checkObjects( SCOREP_Instrumenter& instrumenter );
+    void
+    checkObjects( SCOREP_Instrumenter& instrumenter ) override;
 
     bool
-    isInterpositionLibrary( const std::string& libraryName );
+    isInterpositionLibrary( const std::string& libraryName ) override;
 
 private:
     std::set<std::string> m_categories;

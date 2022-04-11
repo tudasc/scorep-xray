@@ -35,7 +35,7 @@
 ## are not available in MPI build mode. As a work-around we define needed
 ## variables manually.
 # Get SRC_ROOT and OTF2_PRINT
-OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
 SRC_ROOT=../..
 
 MPIRUN=mpiexec

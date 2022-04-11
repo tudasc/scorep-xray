@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2012,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2012, 2014, 2018-2019,
+dnl Copyright (c) 2009-2012, 2014, 2018-2019, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2012,
@@ -34,8 +34,8 @@ AFS_PROG_CC([99])
 
 
 AC_DEFUN([SCOREP_COMPUTENODE_CXX],[
-AFS_PROG_CXX([11]) dnl in cross mode, needed just for tests; in non-cross
-                   dnl mode also for frontend tools
+AFS_PROG_CXX([11], [noext]) dnl in cross mode, needed just for tests; in non-cross
+                            dnl mode also for frontend tools
 ])
 
 

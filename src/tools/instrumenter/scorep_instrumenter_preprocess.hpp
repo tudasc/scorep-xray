@@ -10,6 +10,9 @@
  * Copyright (c) 2016,
  * Technische Universitaet Darmstadt, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -44,10 +47,10 @@ public:
      * @param input_file  Source file which is preprocessed.
      * @returns Filename for the preprocessed source file.
      */
-    virtual std::string
+    std::string
     preprocess( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
-                const std::string&           source_file );
+                const std::string&           source_file ) override;
 };
 
 #endif // SCOREP_INSTRUMENTER_PREPROCESS_HPP

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,16 +41,16 @@ public:
     SCOREP_Instrumenter_LibwrapAdapter();
 
     void
-    printHelp( void );
+    printHelp( void ) override;
 
     bool
-    checkOption( const std::string& arg );
+    checkOption( const std::string& arg ) override;
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
     bool
-    isInterpositionLibrary( const std::string& libraryName );
+    isInterpositionLibrary( const std::string& libraryName ) override;
 
 private:
     void
@@ -73,7 +73,7 @@ private:
 
         void
         set_value( const std::string& key,
-                   const std::string& value );
+                   const std::string& value ) override;
 
         std::string                        m_prefix;
         std::string                        m_name;

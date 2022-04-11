@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -32,14 +32,14 @@ public:
     SCOREP_Instrumenter_LinktimeWrappingAdapter();
 
     void
-    printHelp( void );
+    printHelp( void ) override;
 
     bool
     checkCommand( const std::string& current,
-                  const std::string& next );
+                  const std::string& next ) override;
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 };
 
 

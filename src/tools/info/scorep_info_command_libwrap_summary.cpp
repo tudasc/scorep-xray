@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -72,7 +72,7 @@ struct Wrapper
 
     void
     set_value( const std::string& key,
-               const std::string& value )
+               const std::string& value ) override
     {
         m_values.insert( std::make_pair( key, value ) );
     }
