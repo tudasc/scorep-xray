@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016, 2020,
+ * Copyright (c) 2013-2014, 2016, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2017, 2022,
@@ -39,19 +39,18 @@ public:
 };
 
 /* *****************************************************************************
- * class SCOREP_Instrumenter_Omp
+ * class SCOREP_Instrumenter_Omp, base class for all OpenMP variants
  * ****************************************************************************/
 class SCOREP_Instrumenter_Omp : public SCOREP_Instrumenter_Paradigm
 {
 public:
-    SCOREP_Instrumenter_Omp( SCOREP_Instrumenter_Selector* selector );
+    SCOREP_Instrumenter_Omp( SCOREP_Instrumenter_Selector* selector,
+                             const std::string&            variant,
+                             const std::string&            description );
 
     bool
     checkCommand( const std::string& current,
                   const std::string& next ) override;
-
-    void
-    checkDependencies( void ) override;
 
 protected:
     std::set<std::string> m_openmp_flags; // provided by scorep_config_tool_backend.h
@@ -59,6 +58,42 @@ protected:
 private:
     bool
     checkForOpenmpOption( const std::string& current );
+};
+
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_OmpOpari2
+ * ****************************************************************************/
+class SCOREP_Instrumenter_OmpOpari2 : public SCOREP_Instrumenter_Omp
+{
+public:
+    SCOREP_Instrumenter_OmpOpari2( SCOREP_Instrumenter_Selector* selector );
+
+    void
+    checkDependencies( void ) override;
+};
+
+// why no class SCOREP_Instrumenter_Opari2Adapter : public SCOREP_Instrumenter_Adapter
+
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_OmpOmpt
+ * ****************************************************************************/
+class SCOREP_Instrumenter_OmpOmpt : public SCOREP_Instrumenter_Omp
+{
+public:
+    SCOREP_Instrumenter_OmpOmpt( SCOREP_Instrumenter_Selector* selector );
+};
+
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_OmptAdapter
+ * ****************************************************************************/
+class SCOREP_Instrumenter_OmptAdapter : public SCOREP_Instrumenter_Adapter
+{
+public:
+    SCOREP_Instrumenter_OmptAdapter( void );
+
+    std::string
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
 };
 
 /* *****************************************************************************

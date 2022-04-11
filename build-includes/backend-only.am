@@ -11,6 +11,7 @@ include ../src/adapters/hip/Makefile.inc.am
 include ../src/adapters/io/posix/Makefile.inc.am
 include ../src/adapters/kokkos/Makefile.inc.am
 include ../src/adapters/memory/Makefile.inc.am
+include ../src/adapters/ompt/Makefile.inc.am
 include ../src/adapters/opari2/Makefile.inc.am
 include ../src/adapters/opari2/openmp/Makefile.inc.am
 include ../src/adapters/opari2/user/Makefile.inc.am

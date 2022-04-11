@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2015, 2021,
+ * Copyright (c) 2009-2012, 2015, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -75,6 +75,7 @@
     UTILS_DEFINE_DEBUG_MODULE( MOUNTINFO,          30 ), \
     UTILS_DEFINE_DEBUG_MODULE( KOKKOS,             31 ), \
     UTILS_DEFINE_DEBUG_MODULE( ADDR2LINE,          32 ), \
-    UTILS_DEFINE_DEBUG_MODULE( HIP,                33 )
+    UTILS_DEFINE_DEBUG_MODULE( HIP,                33 ), \
+    UTILS_DEFINE_DEBUG_MODULE( OMPT,               34 )
 
 #endif /* CONFIG_CUSTOM_H */

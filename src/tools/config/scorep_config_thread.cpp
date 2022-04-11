@@ -41,8 +41,11 @@ void
 SCOREP_Config_ThreadSystem::init( void )
 {
     m_all.push_back( new SCOREP_Config_MockupThreadSystem() );
+#if HAVE( BACKEND_SCOREP_OMPT_SUPPORT )
+    m_all.push_back( new SCOREP_Config_OmptThreadSystem() );
+#endif // BACKEND_SCOREP_OMPT_SUPPORT
 #if SCOREP_BACKEND_HAVE_OMP_TPD || SCOREP_BACKEND_HAVE_OMP_ANCESTRY
-    m_all.push_back( new SCOREP_Config_OmpThreadSystem() );
+    m_all.push_back( new SCOREP_Config_Opari2ThreadSystem() );
 #endif
 #if SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
     m_all.push_back( new SCOREP_Config_PthreadThreadSystem() );
@@ -193,18 +196,51 @@ SCOREP_Config_MockupThreadSystem::getInitStructName( std::deque<std::string>& in
 }
 
 /* **************************************************************************************
- * class SCOREP_Config_OmpThreadSystem
+ * class SCOREP_Config_OmptThreadSystem
  * *************************************************************************************/
 
-SCOREP_Config_OmpThreadSystem::SCOREP_Config_OmpThreadSystem()
-    : SCOREP_Config_ThreadSystem( "omp", "", "scorep_thread_fork_join_omp",
-                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP )
+SCOREP_Config_OmptThreadSystem::SCOREP_Config_OmptThreadSystem()
+    : SCOREP_Config_ThreadSystem( "omp", "ompt", "scorep_thread_fork_join_omp",
+                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_OMPT )
 {
 }
 
 void
-SCOREP_Config_OmpThreadSystem::addLibs( std::deque<std::string>&           libs,
-                                        SCOREP_Config_LibraryDependencies& deps )
+SCOREP_Config_OmptThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                         SCOREP_Config_LibraryDependencies& deps )
+{
+    libs.push_back( "libscorep_adapter_ompt_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_ompt_mgmt" );
+    deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp" );
+}
+
+void
+SCOREP_Config_OmptThreadSystem::addLdFlags( std::string& ldflags,
+                                            bool         nvcc )
+{
+    ldflags += " " SCOREP_OMPT_LDFLAGS;
+}
+
+void
+SCOREP_Config_OmptThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_OmptAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_Opari2ThreadSystem
+ * *************************************************************************************/
+
+SCOREP_Config_Opari2ThreadSystem::SCOREP_Config_Opari2ThreadSystem()
+    : SCOREP_Config_ThreadSystem( "omp", "opari2", "scorep_thread_fork_join_omp",
+                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_OPARI2 )
+{
+}
+
+void
+SCOREP_Config_Opari2ThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                           SCOREP_Config_LibraryDependencies& deps )
 {
     libs.push_back( "libscorep_adapter_opari2_openmp_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_opari2_openmp_mgmt" );
@@ -212,10 +248,10 @@ SCOREP_Config_OmpThreadSystem::addLibs( std::deque<std::string>&           libs,
 }
 
 void
-SCOREP_Config_OmpThreadSystem::addCFlags( std::string&           cflags,
-                                          bool                   build_check,
-                                          SCOREP_Config_Language language,
-                                          bool                   nvcc )
+SCOREP_Config_Opari2ThreadSystem::addCFlags( std::string&           cflags,
+                                             bool                   build_check,
+                                             SCOREP_Config_Language language,
+                                             bool                   nvcc )
 {
     SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
                                                    true,
@@ -231,10 +267,10 @@ SCOREP_Config_OmpThreadSystem::addCFlags( std::string&           cflags,
 }
 
 void
-SCOREP_Config_OmpThreadSystem::addIncFlags( std::string&           incflags,
-                                            bool                   build_check,
-                                            SCOREP_Config_Language language,
-                                            bool                   nvcc )
+SCOREP_Config_Opari2ThreadSystem::addIncFlags( std::string&           incflags,
+                                               bool                   build_check,
+                                               SCOREP_Config_Language language,
+                                               bool                   nvcc )
 {
     SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
                                                    false,
@@ -243,7 +279,7 @@ SCOREP_Config_OmpThreadSystem::addIncFlags( std::string&           incflags,
 }
 
 void
-SCOREP_Config_OmpThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
+SCOREP_Config_Opari2ThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
     init_structs.push_back( "SCOREP_Subsystem_Opari2OpenmpAdapter" );
     init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
