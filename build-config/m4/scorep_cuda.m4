@@ -182,16 +182,9 @@ dnl ----------------------------------------------------------------------------
 # support.
 #
 m4_define([_CUDA_NVCC_WORKS], [
-
+# Intentionally ignore Score-P internal language standard settings and
+# CXXFLAGS. Check if a plain nvcc -ccbin $CXX, as a user would do it, works.
 ccbin=${CXX%% *}
-ccbin_flags=${CXX#* }
-AS_IF([test "x${ccbin_flags}" = "x${CXX}"],
-    [ccbin_flags=],
-    [# convert scorep's ordinary flags to -Xcompiler flags
-     ccbin_flags=`
-       echo $ccbin_flags |
-            sed -e 's/ /,/g' -e 's/,,*/,/g' -e 's/^,//' -e 's/,$//'`
-     ccbin_flags="${ccbin_flags:+-Xcompiler=}${ccbin_flags}"])
 
 # Some compiler-CUDA combinations are known to need extra -Xcompiler
 # variables:
