@@ -65,7 +65,7 @@ class SCOREP_Libwrap_Generator
 public:
 
     SCOREP_Libwrap_Generator( const generator_configuration& config );
-    ~SCOREP_Libwrap_Generator();
+    ~SCOREP_Libwrap_Generator() = default;
 
     int
     generate_source_code_files();

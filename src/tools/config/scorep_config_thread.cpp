@@ -127,10 +127,6 @@ SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( const std::string&      
 {
 }
 
-SCOREP_Config_ThreadSystem::~SCOREP_Config_ThreadSystem()
-{
-}
-
 void
 SCOREP_Config_ThreadSystem::printHelp( void )
 {

@@ -51,7 +51,7 @@ public:
      * Destructor.
      */
     virtual
-    ~SCOREP_Score_Event();
+    ~SCOREP_Score_Event() = default;
 
     /**
      * Returns the event name.

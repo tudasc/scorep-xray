@@ -62,7 +62,7 @@ public:
      * Deletes a SCOREP_Instrumenter_Paradigm instance.
      */
     virtual
-    ~SCOREP_Instrumenter_Paradigm();
+    ~SCOREP_Instrumenter_Paradigm() = default;
 
     /**
      * Ensures that required adapters are enabled and that no

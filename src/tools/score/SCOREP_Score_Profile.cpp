@@ -188,11 +188,6 @@ SCOREP_Score_Profile::getPathPrefix()
     return m_longest_common_path;
 }
 
-SCOREP_Score_Profile::~SCOREP_Score_Profile()
-{
-};
-
-
 bool
 SCOREP_Score_Profile::hasHits( void ) const
 {

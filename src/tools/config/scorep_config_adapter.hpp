@@ -129,7 +129,7 @@ public:
      * Destructs the adapter.
      */
     virtual
-    ~SCOREP_Config_Adapter();
+    ~SCOREP_Config_Adapter() = default;
 
     /**
      * Appends the name of the SCOREP_Subsystem struct associated with

@@ -39,10 +39,6 @@ SCOREP_Libwrap_Generator::SCOREP_Libwrap_Generator( const generator_configuratio
     }
 }
 
-SCOREP_Libwrap_Generator::~SCOREP_Libwrap_Generator()
-{
-}
-
 int
 SCOREP_Libwrap_Generator::generate_source_code_files()
 {

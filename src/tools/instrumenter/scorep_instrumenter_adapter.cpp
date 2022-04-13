@@ -56,10 +56,6 @@ SCOREP_Instrumenter_Adapter::SCOREP_Instrumenter_Adapter( SCOREP_Instrumenter_Ad
     m_use_params         = false;
 }
 
-SCOREP_Instrumenter_Adapter::~SCOREP_Instrumenter_Adapter()
-{
-}
-
 SCOREP_Instrumenter_AdapterId
 SCOREP_Instrumenter_Adapter::getId( void )
 {

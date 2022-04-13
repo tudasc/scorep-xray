@@ -68,7 +68,7 @@ public:
        Destroys a SCOREP_Instrumenter_InstallData object.
      */
     virtual
-    ~SCOREP_Instrumenter_InstallData();
+    ~SCOREP_Instrumenter_InstallData() = default;
 
     /**
        Returns the scorep-config tool.

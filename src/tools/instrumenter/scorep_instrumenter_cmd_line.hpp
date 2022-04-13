@@ -132,7 +132,7 @@ public:
        Destroys a SCOREP_Instrumenter_CmdLine object.
      */
     virtual
-    ~SCOREP_Instrumenter_CmdLine();
+    ~SCOREP_Instrumenter_CmdLine() = default;
 
     /**
        Parses the command line.

@@ -196,10 +196,6 @@ SCOREP_Config_Adapter::SCOREP_Config_Adapter( const std::string& name,
 {
 }
 
-SCOREP_Config_Adapter::~SCOREP_Config_Adapter()
-{
-}
-
 void
 SCOREP_Config_Adapter::printHelp( void )
 {

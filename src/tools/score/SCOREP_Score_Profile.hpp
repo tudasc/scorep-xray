@@ -75,7 +75,7 @@ public:
      * Destructor.
      */
     virtual
-    ~SCOREP_Score_Profile();
+    ~SCOREP_Score_Profile() = default;
 
     /**
      * Predicate whether this profile used sampling.

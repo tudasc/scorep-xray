@@ -61,7 +61,7 @@ public:
      * Destructor
      */
     virtual
-    ~SCOREP_Config_LibraryDependencies();
+    ~SCOREP_Config_LibraryDependencies() = default;
 
     /**
      * Inserts a new @a la_object into the @a m_la_objects database.

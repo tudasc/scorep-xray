@@ -95,10 +95,6 @@ SCOREP_Config_MppSystem::SCOREP_Config_MppSystem( const std::string& name )
 {
 }
 
-SCOREP_Config_MppSystem::~SCOREP_Config_MppSystem()
-{
-}
-
 void
 SCOREP_Config_MppSystem::printHelp( void )
 {
