@@ -34,9 +34,6 @@ class SCOREP_Info_Command_LibwrapSummary
 public:
     SCOREP_Info_Command_LibwrapSummary();
 
-    virtual
-    ~SCOREP_Info_Command_LibwrapSummary();
-
     void
     printHelp( bool full ) override;
 

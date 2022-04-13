@@ -43,12 +43,6 @@ public:
                                     const std::string&            description );
 
     /**
-     * Deletes a SCOREP_Instrumenter_IoParadigm instance.
-     */
-    virtual
-    ~SCOREP_Instrumenter_IoParadigm();
-
-    /**
      * Returns the name as used for the selection of the scorep-config tool.
      */
     std::string

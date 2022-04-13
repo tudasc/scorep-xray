@@ -32,9 +32,6 @@ class SCOREP_Info_Command_Ldaudit
 public:
     SCOREP_Info_Command_Ldaudit();
 
-    virtual
-    ~SCOREP_Info_Command_Ldaudit();
-
     int
     run( const std::vector<std::string>& args ) override;
 };

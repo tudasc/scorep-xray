@@ -34,9 +34,6 @@ class SCOREP_Info_Command_OpenIssues
 public:
     SCOREP_Info_Command_OpenIssues();
 
-    virtual
-    ~SCOREP_Info_Command_OpenIssues();
-
     int
     run( const std::vector<std::string>& args ) override;
 };

@@ -30,10 +30,6 @@ SCOREP_Info_Command_License::SCOREP_Info_Command_License()
 {
 }
 
-SCOREP_Info_Command_License::~SCOREP_Info_Command_License()
-{
-}
-
 int
 SCOREP_Info_Command_License::run( const std::vector<std::string>& args )
 {

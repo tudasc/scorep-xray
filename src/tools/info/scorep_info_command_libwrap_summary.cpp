@@ -43,10 +43,6 @@ SCOREP_Info_Command_LibwrapSummary::SCOREP_Info_Command_LibwrapSummary()
 {
 }
 
-SCOREP_Info_Command_LibwrapSummary::~SCOREP_Info_Command_LibwrapSummary()
-{
-}
-
 void
 SCOREP_Info_Command_LibwrapSummary::printHelp( bool full )
 {

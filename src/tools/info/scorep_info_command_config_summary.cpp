@@ -32,10 +32,6 @@ SCOREP_Info_Command_ConfigSummary::SCOREP_Info_Command_ConfigSummary()
 {
 }
 
-SCOREP_Info_Command_ConfigSummary::~SCOREP_Info_Command_ConfigSummary()
-{
-}
-
 int
 SCOREP_Info_Command_ConfigSummary::run( const std::vector<std::string>& args )
 {

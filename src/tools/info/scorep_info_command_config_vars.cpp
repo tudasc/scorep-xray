@@ -34,10 +34,6 @@ SCOREP_Info_Command_ConfigVars::SCOREP_Info_Command_ConfigVars()
 {
 }
 
-SCOREP_Info_Command_ConfigVars::~SCOREP_Info_Command_ConfigVars()
-{
-}
-
 void
 SCOREP_Info_Command_ConfigVars::printHelp( bool full )
 {

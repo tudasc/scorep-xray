@@ -47,10 +47,6 @@ SCOREP_Instrumenter_IoParadigm::SCOREP_Instrumenter_IoParadigm(
 {
 }
 
-SCOREP_Instrumenter_IoParadigm::~SCOREP_Instrumenter_IoParadigm()
-{
-}
-
 std::string
 SCOREP_Instrumenter_IoParadigm::getConfigName( void )
 {
