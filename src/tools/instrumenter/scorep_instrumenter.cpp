@@ -115,7 +115,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_io     = new SCOREP_Instrumenter_Io();
 }
 
-SCOREP_Instrumenter::~SCOREP_Instrumenter ()
+SCOREP_Instrumenter::~SCOREP_Instrumenter()
 {
     delete ( m_thread );
     SCOREP_Instrumenter_Adapter::destroyAll();
