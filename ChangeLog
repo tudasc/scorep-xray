@@ -1,5 +1,10 @@
 ------------------- Upcoming version 8.0 -----------------------------
 
+Features and improvements:
+
+- Add support for recording the offset parameter to MPI I/O
+  functions with explicit offsets.
+
 User tools and API improvements and changes:
 
 - Support for the online access interface was removed.
