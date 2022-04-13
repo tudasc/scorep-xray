@@ -61,7 +61,6 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
-#include <scorep_environment.h>
 #include <scorep_status.h>
 #include <scorep_system_tree_sequence.h>
 #include <scorep_type_utils.h>
@@ -2122,7 +2121,7 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     write_io_paradigms( global_definition_writer,
                         scorep_unified_definition_manager );
 
-    if ( SCOREP_Env_UseSystemTreeSequence() )
+    if ( SCOREP_Status_UseSystemTreeSequenceDefinitions() )
     {
         write_system_tree_sequence_definitions( global_definition_writer, scorep_unified_definition_manager );
     }

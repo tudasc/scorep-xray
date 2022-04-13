@@ -25,6 +25,8 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Mutex.h>
+
+#include <scorep_status.h>
 #include <scorep_subsystem_management.h>
 #include <scorep_substrates_definition.h>
 
@@ -32,6 +34,8 @@ SCOREP_LocationGroupHandle
 SCOREP_AcceleratorMgmt_CreateContext( SCOREP_SystemTreeNodeHandle deviceHandle,
                                       const char*                 name )
 {
+    SCOREP_Status_OnAccUsage();
+
     return SCOREP_Definitions_NewLocationGroup(
         name,
         deviceHandle,

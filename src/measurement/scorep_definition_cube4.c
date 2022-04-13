@@ -48,7 +48,7 @@
 #include <SCOREP_Memory.h>
 #include <SCOREP_Metric_Management.h>
 
-#include "scorep_environment.h"
+#include "scorep_status.h"
 #include "scorep_ipc.h"
 #include "scorep_type_utils.h"
 #include <SCOREP_Definitions.h>
@@ -1539,7 +1539,7 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
         write_region_definitions( myCube, manager, map );
         write_callpath_definitions( myCube, manager, map, maxNumberOfProgramArgs );
 
-        if ( SCOREP_Env_UseSystemTreeSequence() )
+        if ( SCOREP_Status_UseSystemTreeSequenceDefinitions() )
         {
             sequence_writer_data writer_data;
             writer_data.my_cube       = myCube;

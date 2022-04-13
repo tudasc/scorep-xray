@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,7 +42,6 @@
 #include "scorep_unify_helpers.h"
 
 #include <SCOREP_Config.h>
-#include "scorep_environment.h"
 #include "scorep_status.h"
 #include <SCOREP_Definitions.h>
 #include <stdlib.h>
@@ -104,7 +103,7 @@ SCOREP_Unify( void )
         &scorep_local_definition_manager.interim_communicator );
 
     /* Scalable system tree definitions need the string mappings */
-    if ( SCOREP_Env_UseSystemTreeSequence() )
+    if ( SCOREP_Status_UseSystemTreeSequenceDefinitions() )
     {
         scorep_system_tree_seq_unify();
     }
@@ -152,7 +151,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
 {
     UTILS_ASSERT( sourceDefinitionManager );
     UNIFY_DEFINITION( sourceDefinitionManager, String, string );
-    if ( !SCOREP_Env_UseSystemTreeSequence() )
+    if ( !SCOREP_Status_UseSystemTreeSequenceDefinitions() )
     {
         UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
         UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNodeProperty, system_tree_node_property );

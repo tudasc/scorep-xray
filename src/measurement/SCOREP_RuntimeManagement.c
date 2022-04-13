@@ -935,6 +935,8 @@ scorep_finalize( void )
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
 
+    SCOREP_Status_OnMeasurementEnd();
+
     /* Clock resolution might be calculated once. Do it at the beginning
      * of finalization. */
     SCOREP_Timer_GetClockResolution();

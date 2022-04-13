@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2015-2016, 2019,
+ * Copyright (c) 2009-2011, 2015-2016, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -50,7 +50,6 @@
 #include <SCOREP_Filtering_Management.h>
 #include <SCOREP_Timer_Utils.h>
 #include "scorep_subsystem_management.h"
-#include "scorep_system_tree_sequence.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -350,16 +349,7 @@ SCOREP_Env_DoForceCfgFiles( void )
 bool
 SCOREP_Env_UseSystemTreeSequence( void )
 {
-    if ( !scorep_system_tree_seq_has_support_for() &&
-         env_system_tree_sequence )
-    {
-        UTILS_WARNING( "Cannot use the system tree sequence definitions with "
-                       "current inter-process communication paradigm. "
-                       "Currently, system tree sequence definitions are only "
-                       "supported for MPI and single-process applications. "
-                       "Disable usage of system tree sequence definitions." );
-        env_system_tree_sequence = false;
-    }
+    assert( env_variables_initialized );
     return env_system_tree_sequence;
 }
 
