@@ -46,12 +46,12 @@ class SCOREP_Instrumenter_Omp : public SCOREP_Instrumenter_Paradigm
 public:
     SCOREP_Instrumenter_Omp( SCOREP_Instrumenter_Selector* selector );
 
-    virtual bool
+    bool
     checkCommand( const std::string& current,
-                  const std::string& next );
+                  const std::string& next ) override;
 
-    virtual void
-    checkDependencies( void );
+    void
+    checkDependencies( void ) override;
 
 protected:
     std::set<std::string> m_openmp_flags; // provided by scorep_config_tool_backend.h
@@ -69,9 +69,9 @@ class SCOREP_Instrumenter_Pthread : public SCOREP_Instrumenter_Paradigm
 public:
     SCOREP_Instrumenter_Pthread( SCOREP_Instrumenter_Selector* selector );
 
-    virtual bool
+    bool
     checkCommand( const std::string& current,
-                  const std::string& next );
+                  const std::string& next ) override;
 
 private:
     std::string m_pthread_cflag;
