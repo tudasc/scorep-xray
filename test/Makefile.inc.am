@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2018, 2020,
+## Copyright (c) 2014-2018, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2016, 2019,
@@ -169,7 +169,7 @@ serial_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 ## OpenMP ----------------------------------------------------------------------
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -191,12 +191,12 @@ omp_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 ## Hybrid ----------------------------------------------------------------------
 
 if HAVE_MPI_SUPPORT
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 if HAVE_SCOREP_OMP_TPD
 
 check_LTLIBRARIES                       += libscorep_mpi_omp_event.la
@@ -226,11 +226,11 @@ endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
 endif HAVE_SCOREP_OMP_TPD
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 endif HAVE_MPI_SUPPORT
 
 if HAVE_SHMEM_SUPPORT
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 check_LTLIBRARIES                       += libscorep_shmem_omp_event.la
 libscorep_shmem_omp_event_la_SOURCES              =
@@ -260,7 +260,7 @@ libscorep_shmem_omp_mgmt_la_LIBADD += libscorep_mutex.la
 endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
 libscorep_shmem_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 endif HAVE_SHMEM_SUPPORT
 
 # ------------------------------------------------------------------------------
@@ -277,13 +277,13 @@ check_LTLIBRARIES                      += libscorep_subsystems_serial.la
 libscorep_subsystems_serial_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_serial_la_CPPFLAGS = $(subsystems_paradigm_cppflags)
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 check_LTLIBRARIES                   += libscorep_subsystems_omp.la
 libscorep_subsystems_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_OMP
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 if HAVE_MPI_SUPPORT
 
@@ -291,13 +291,13 @@ check_LTLIBRARIES                   += libscorep_subsystems_mpi.la
 libscorep_subsystems_mpi_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_mpi_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 check_LTLIBRARIES                       += libscorep_subsystems_mpi_omp.la
 libscorep_subsystems_mpi_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_mpi_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI -DSCOREP_SUBSYSTEMS_OMP
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 endif HAVE_MPI_SUPPORT
 
@@ -307,13 +307,13 @@ check_LTLIBRARIES                     += libscorep_subsystems_shmem.la
 libscorep_subsystems_shmem_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_shmem_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 check_LTLIBRARIES                         += libscorep_subsystems_shmem_omp.la
 libscorep_subsystems_shmem_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_shmem_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM -DSCOREP_SUBSYSTEMS_OMP
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 endif HAVE_SHMEM_SUPPORT
 

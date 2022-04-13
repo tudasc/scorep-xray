@@ -54,7 +54,6 @@ public:
     checkDependencies( void );
 
 protected:
-    std::string           m_openmp_cflag;
     std::set<std::string> m_openmp_flags; // provided by scorep_config_tool_backend.h
 
 private:

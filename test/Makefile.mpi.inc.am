@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2017-2018,
+## Copyright (c) 2014-2015, 2017-2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015, 2019,
@@ -68,7 +68,7 @@ mpi_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 ## Hybrid ----------------------------------------------------------------------
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 if HAVE_SCOREP_OMP_TPD
 
 BACKEND_CHECK_TARGETS += \
@@ -84,6 +84,6 @@ mpi_omp_libadd = \
 mpi_omp_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
 endif HAVE_SCOREP_OMP_TPD
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 endif HAVE_MPI_SUPPORT

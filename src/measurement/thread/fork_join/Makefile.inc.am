@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2016,
+## Copyright (c) 2013-2016, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2015,
@@ -22,7 +22,7 @@
 INC_DIR_THREAD_FORK_JOIN = $(INC_ROOT)src/measurement/thread/fork_join/include_extern
 INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread/fork_join/include_intern
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 lib_LTLIBRARIES += libscorep_thread_fork_join_omp.la
 # OPENMP_CFLAGS needed for 'omp theradprivate TPD' only.
@@ -51,7 +51,7 @@ libscorep_thread_fork_join_omp_la_LIBADD = \
 libscorep_thread_fork_join_omp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-endif HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_C_SUPPORT
 
 
 noinst_LTLIBRARIES += libscorep_thread_fork_join_generic.la

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013-2014,
+## Copyright (c) 2009-2011, 2013-2014, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -77,9 +77,9 @@ TESTS_SERIAL += ./task_migration_test
 # -------------------------------------------- test scripts
 TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_format_serial_test.sh
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 TESTS_OMP += $(SRC_ROOT)test/profiling/run_format_omp_test.sh
-endif
+endif HAVE_OPENMP_C_SUPPORT
 
 EXTRA_DIST += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh \
               $(SRC_ROOT)test/profiling/run_format_serial_test.sh\

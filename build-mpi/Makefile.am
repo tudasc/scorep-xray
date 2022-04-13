@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017-2018,
+## Copyright (c) 2009-2015, 2017-2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -121,10 +121,10 @@ CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 PARADIGMS =
 if HAVE_MPI_SUPPORT
 PARADIGMS += mpi
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 PARADIGMS += mpi_omp
-endif
-endif
+endif HAVE_OPENMP_C_SUPPORT
+endif HAVE_MPI_SUPPORT
 
 INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files)

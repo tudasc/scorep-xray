@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015, 2017-2018,
+## Copyright (c) 2009-2015, 2017-2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -175,9 +175,9 @@ install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 PARADIGMS = serial
 # component separation will provide the HAVE_OPARI2 conditional
 #if HAVE_OPARI2
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 PARADIGMS += omp
-endif
+endif HAVE_OPENMP_C_SUPPORT
 #endif
 if HAVE_CUDA_SUPPORT
 PARADIGMS += cuda

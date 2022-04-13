@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2013, 2018,
+## Copyright (c) 2009-2011, 2013, 2018, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -32,24 +32,26 @@
 ## file       Makefile.inc.am
 
 
-if HAVE_OPENMP_SUPPORT
+if HAVE_OPENMP_C_SUPPORT
 
 check_PROGRAMS += omp_tasks_uninstrumented
 
 omp_tasks_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
 omp_tasks_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
-if SCOREP_HAVE_FC
+endif HAVE_OPENMP_C_SUPPORT
+
+if HAVE_OPENMP_FC_SUPPORT
 
 check_PROGRAMS += omp_tasks_untied_uninstrumented
 
 omp_tasks_untied_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks_untied.f90
 omp_tasks_untied_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 
-endif SCOREP_HAVE_FC
+endif HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
-
+if HAVE_OPENMP_C_SUPPORT
 check_PROGRAMS += omp_tasks
 
 omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
@@ -60,9 +62,12 @@ omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 omp_tasks_LDADD    = $(omp_libadd)
 omp_tasks_LDFLAGS  = $(omp_ldflags)
 
-if SCOREP_COMPILER_GNU
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 
-if SCOREP_HAVE_FC
+endif HAVE_OPENMP_C_SUPPORT
+
+if SCOREP_COMPILER_GNU
+if HAVE_OPENMP_FC_SUPPORT
 
 # Just use GNU here, makes name mangling easier (see omp_tasks_untied.pomp.c).
 check_PROGRAMS += omp_tasks_untied
@@ -75,20 +80,17 @@ omp_tasks_untied_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
 omp_tasks_untied_LDADD    = $(omp_libadd)
 omp_tasks_untied_LDFLAGS  = $(omp_ldflags)
 
-endif SCOREP_HAVE_FC
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_untied.sh
 
+endif HAVE_OPENMP_FC_SUPPORT
 endif SCOREP_COMPILER_GNU
 
-TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_tracing.sh
-
-TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profiling.sh
-
+if HAVE_OPENMP_C_SUPPORT
 if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_fibonacci_test.sh
-endif !SCOREP_COMPILER_PGI
-if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_single_loop_test.sh
 endif !SCOREP_COMPILER_PGI
+endif HAVE_OPENMP_C_SUPPORT
 
 CLEAN_LOCAL += clean-local-omp-tasks-experiments
 clean-local-omp-tasks-experiments:
@@ -97,10 +99,8 @@ clean-local-omp-tasks-experiments:
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif HAVE_OPENMP_SUPPORT
-
-EXTRA_DIST +=  $(SRC_ROOT)test/omp_tasks/run_omp_tasks_tracing.sh \
-               $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profiling.sh \
+EXTRA_DIST +=  $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh \
+               $(SRC_ROOT)test/omp_tasks/run_omp_tasks_untied.sh \
                $(SRC_ROOT)test/omp_tasks/run_fibonacci_test.sh.in \
                $(SRC_ROOT)test/omp_tasks/task_fibonacci.c \
                $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \

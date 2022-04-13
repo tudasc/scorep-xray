@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013, 2016-2017, 2021,
+dnl Copyright (c) 2013, 2016-2017, 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2019,
@@ -23,8 +23,7 @@ dnl file build-config/m4/scorep_omp_ancestry.m4
 # substitution SCOREP_OMP_ANCESTRY if the OpenMP implementation
 # supports the OpenMP 3.0 ancestry runtime library routines.
 AC_DEFUN([SCOREP_OPENMP_ANCESTRY], [
-AC_REQUIRE([AC_SCOREP_OPENMP])dnl
-AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
+AC_REQUIRE([SCOREP_OPENMP])dnl
 
 AC_LANG_PUSH([C])
 scorep_cflags_save=${CFLAGS}
