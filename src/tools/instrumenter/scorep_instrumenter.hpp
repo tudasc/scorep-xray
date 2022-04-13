@@ -74,7 +74,7 @@ class SCOREP_Instrumenter_Io;
  *  instrumentation. Makes the necessary modifications to the user command
  *  for instrumentation and executed the user command.
  */
-class SCOREP_Instrumenter
+class SCOREP_Instrumenter final
 {
     /* ****************************************************** Public methods */
 public:
@@ -88,13 +88,12 @@ public:
     /**
        Destroys a SCOREP_Instrumenter object.
      */
-    virtual
     ~SCOREP_Instrumenter();
 
     /**
        Performs the instrumentation of an application
      */
-    virtual int
+    int
     Run( void );
 
     /**

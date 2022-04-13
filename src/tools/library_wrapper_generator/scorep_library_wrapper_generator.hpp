@@ -60,7 +60,7 @@ struct generator_configuration
 };
 
 
-class SCOREP_Libwrap_Generator
+class SCOREP_Libwrap_Generator final
 {
 public:
 

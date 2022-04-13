@@ -55,7 +55,7 @@ class SCOREP_Instrumenter_CmdLine;
  * it uses values determined during configure time of the Score-P build.
  * However, it may read-in data from a config file.
  */
-class SCOREP_Instrumenter_InstallData
+class SCOREP_Instrumenter_InstallData final
 {
     /* ****************************************************** Public methods */
 public:
@@ -67,7 +67,6 @@ public:
     /**
        Destroys a SCOREP_Instrumenter_InstallData object.
      */
-    virtual
     ~SCOREP_Instrumenter_InstallData() = default;
 
     /**

@@ -49,7 +49,7 @@
    class SCOREP_Instrumenter_CmdLine
 ******************************************************************************/
 
-class SCOREP_Instrumenter_CmdLine
+class SCOREP_Instrumenter_CmdLine final
 {
     /* ******************************************************* Private Types */
 private:
@@ -131,7 +131,6 @@ public:
     /**
        Destroys a SCOREP_Instrumenter_CmdLine object.
      */
-    virtual
     ~SCOREP_Instrumenter_CmdLine() = default;
 
     /**
@@ -142,7 +141,7 @@ public:
        @return SCOREP_SUCCESS if the parsing was successful. Else an error
                code is returned.
      */
-    virtual void
+    void
     ParseCmdLine( int    argc,
                   char** argv );
 
@@ -275,7 +274,7 @@ private:
        Prints the results from parsing the command line and parsing the
        configuration file to screen.
      */
-    virtual void
+    void
     print_parameter( void );
 
     /**

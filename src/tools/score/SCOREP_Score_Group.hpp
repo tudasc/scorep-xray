@@ -100,7 +100,7 @@ struct SCOREP_Score_FieldWidths
  * region list (with -r) every region is a group, too.
  * It stores relevant data for that group.
  */
-class SCOREP_Score_Group
+class SCOREP_Score_Group final
 {
 public:
     /**
@@ -131,7 +131,6 @@ public:
     /**
      * Destructor.
      */
-    virtual
     ~SCOREP_Score_Group();
 
     /**
