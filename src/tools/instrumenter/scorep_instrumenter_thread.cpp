@@ -75,7 +75,7 @@ SCOREP_Instrumenter_Omp::SCOREP_Instrumenter_Omp(
                                     )
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    m_openmp_flags = { SCOREP_OPENMP_CFLAGS, SCOREP_OPENMP_CXXFLAGS, SCOREP_OPENMP_FCFLAGS };
+    m_openmp_flags = { SCOREP_OPENMP_FLAGS_ALL };
 
 #if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY && !SCOREP_BACKEND_HAVE_OMP_TPD
     unsupported();
