@@ -10,7 +10,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2019,
+## Copyright (c) 2009-2011, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -41,8 +41,11 @@ AC_DEFUN_ONCE([SCOREP_OPENMP_SUMMARY], [
 AC_REQUIRE([SCOREP_OPENMP])
 AFS_SUMMARY_PUSH
 AFS_SUMMARY([C support], [$scorep_have_openmp_c_support${openmp_c_summary:+, $openmp_c_summary}])
-AFS_SUMMARY([C++ support], [$scorep_have_openmp_cxx_support${openmp_cxx_summary:+, $openmp_cxx_summary}])
-AFS_SUMMARY([Fortran support], [$scorep_have_openmp_fc_support${openmp_fc_summary:+, $openmp_fc_summary}])
+AS_IF([test "x${scorep_have_openmp_c_support}" = xyes],
+    [AS_IF([test "x${afs_cv_prog_cxx_works}" = xyes],
+         [AFS_SUMMARY([C++ support], [$scorep_have_openmp_cxx_support${openmp_cxx_summary:+, $openmp_cxx_summary}])])
+     AS_IF([test "x${afs_cv_prog_fc_works}" = xyes],
+         [AFS_SUMMARY([Fortran support], [$scorep_have_openmp_fc_support${openmp_fc_summary:+, $openmp_fc_summary}])])])
 AFS_SUMMARY_POP([OpenMP support], [${scorep_have_openmp_c_support}])
 ])dnl SCOREP_OPENMP_SUMMARY
 
@@ -52,8 +55,10 @@ AFS_SUMMARY_POP([OpenMP support], [${scorep_have_openmp_c_support}])
 # Check for OpenMP support of CC, CXX, and FC compilers. Can be
 # AC_REQUIREd.
 # Provides substitutions OPENMP_<LANG>FLAG, as in AC_OPENMP and
-# OPENMP_<LANG>FLAGS_ALL, containing a comma-separated list of "
-# quoted flags that activate OpenMP.
+# OPENMP_<LANG>FLAGS_ALL, containing a space-separated list of flags
+# that activate OpenMP.
+# Provides SCOREP_OPENMP_FLAGS_ALL, containing a duplicate-free,
+# comma-separated list of "-quoted flags that activate OpenMP.
 # Provides the AM conditional HAVE_OPENMP_<LANG>_SUPPORT.
 # Sets scorep_have_openmp_(c|cxx|fc)_support=(yes|no).
 # Computes _OPENMP and provides it via scorep_openmp_(c|cxx)_version.
@@ -64,6 +69,7 @@ AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 AC_REQUIRE([SCOREP_COMPUTENODE_CXX])dnl
 dnl SCOREP_COMPUTENODE_FC can't be required
 dnl
+scorep_openmp_flags_all=""
 AC_LANG_PUSH([C])
 _CHECK_OPENMP_SUPPORT
 AC_LANG_POP([C])
@@ -78,6 +84,7 @@ AS_IF([test "x${scorep_have_openmp_c_support}" = xyes],
          [AC_LANG_PUSH([Fortran])
           _CHECK_OPENMP_SUPPORT
           AC_LANG_POP([Fortran])])])
+AC_SUBST([SCOREP_OPENMP_FLAGS_ALL], ["${scorep_openmp_flags_all}"])
 ])dnl SCOREP_OPENMP
 
 
@@ -156,7 +163,7 @@ dnl ============================================================================
 # support OpenMP. Set the (OPENMP_C|CXX|F|FC)FLAGS variable to these
 # options. In addition, find further options that would activate
 # OpenMP as well; make available via
-# SCOREP_ALL_OPENMP_(C|CXX|F|FC)FLAGS.
+# SCOREP_OPENMP_(C|CXX|F|FC)FLAGS_ALL.
 # TODO, document which variables get defined/set
 
 # The options are necessary at compile time (so the #pragmas are
@@ -207,7 +214,7 @@ for ac_option in -fopenmp -xopenmp -qopenmp -openmp -mp -omp -qsmp=omp -qsmp=aut
         [AC_LINK_IFELSE([_AC_LANG_OPENMP],
             [scorep_have_openmp_[]_AC_LANG_ABBREV[]_support=yes
              openmp_[]_AC_LANG_ABBREV[]flag="${openmp_[]_AC_LANG_ABBREV[]flag:-$ac_option}"
-             openmp_[]_AC_LANG_ABBREV[]flags_all="${openmp_[]_AC_LANG_ABBREV[]flags_all:+$openmp_[]_AC_LANG_ABBREV[]flags_all, }\"$ac_option\""])])
+             openmp_[]_AC_LANG_ABBREV[]flags_all="${openmp_[]_AC_LANG_ABBREV[]flags_all}${openmp_[]_AC_LANG_ABBREV[]flags_all:+ }$ac_option"])])
     _AC_LANG_PREFIX[]FLAGS=$ac_save_[]_AC_LANG_PREFIX[]FLAGS
 
 done
@@ -221,9 +228,20 @@ rm -f penmp mp
 AC_SUBST([OPENMP_]_AC_LANG_PREFIX[FLAGS], ["$openmp_[]_AC_LANG_ABBREV[]flag"])
 AC_SUBST([SCOREP_OPENMP_]_AC_LANG_PREFIX[FLAGS_ALL], ["$openmp_[]_AC_LANG_ABBREV[]flags_all"])
 AS_IF([test "x${scorep_have_openmp_[]_AC_LANG_ABBREV[]_support}" = xyes],
-    [openmp_[]_AC_LANG_ABBREV[]_summary="recognizing $(echo "$openmp_[]_AC_LANG_ABBREV[]flags_all" | sed 's/"//g')"
+    [openmp_[]_AC_LANG_ABBREV[]_summary="recognizing $openmp_[]_AC_LANG_ABBREV[]flags_all"
      # should be HAVE_SCOREP_OPENMP_]_AC_LANG_PREFIX[_SUPPORT
-     AFS_AM_CONDITIONAL([HAVE_OPENMP_]_AC_LANG_PREFIX[_SUPPORT], [test 1 -eq 1], [false])])
+     AFS_AM_CONDITIONAL([HAVE_OPENMP_]_AC_LANG_PREFIX[_SUPPORT], [test 1 -eq 1], [false])
+     # add flags to scorep_openmp_flags_all, omit duplicates
+     for flag in ${openmp_[]_AC_LANG_ABBREV[]flags_all}; do
+         case ', '"$scorep_openmp_flags_all"', ' in
+             (*', "'"$flag"'", '*) : # ignore duplicates
+                 ;;
+             (*)
+                 scorep_openmp_flags_all="${scorep_openmp_flags_all}${scorep_openmp_flags_all:+, }"'"'"$flag"'"'
+                 ;;
+         esac
+     done],
+    [openmp_[]_AC_LANG_ABBREV[]_summary="cannot be activated by compiler flag"])
 ])dnl _SCOREP_OPENMP
 
 
