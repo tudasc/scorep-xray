@@ -246,6 +246,9 @@ SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     putchar,     
 #if HAVE( POSIX_IO_SYMBOL_PUTS )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO,          int,     puts,         ( const char* s ) )
 #endif
+#if HAVE( POSIX_IO_SYMBOL_REMOVE )
+SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, int,     remove,       ( const char* pathname ) )
+#endif
 #if HAVE( POSIX_IO_SYMBOL_REWIND )
 SCOREP_POSIX_IO_PROCESS_FUNC( ISOC,     FILE_IO_METADATA, void,    rewind,       ( FILE* stream ) )
 #endif

@@ -1755,6 +1755,41 @@ SCOREP_LIBWRAP_FUNC_NAME( puts )( const char* s )
 }
 #endif
 
+#if HAVE( POSIX_IO_SYMBOL_REMOVE )
+int
+SCOREP_LIBWRAP_FUNC_NAME( remove )( const char* pathname )
+{
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
+    INITIALIZE_FUNCTION_POINTER( remove );
+    int ret;
+
+    if ( trigger && SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_EnterWrappedRegion( scorep_posix_io_region_remove );
+
+        SCOREP_IoFileHandle file_handle = SCOREP_IoMgmt_GetIoFileHandle( pathname );
+
+        SCOREP_ENTER_WRAPPED_REGION();
+        ret = SCOREP_LIBWRAP_FUNC_CALL( remove, ( pathname ) );
+        SCOREP_EXIT_WRAPPED_REGION();
+
+        if ( file_handle != SCOREP_INVALID_IO_FILE )
+        {
+            SCOREP_IoDeleteFile( SCOREP_IO_PARADIGM_ISOC,
+                                 file_handle );
+        }
+
+        SCOREP_ExitRegion( scorep_posix_io_region_remove );
+    }
+    else
+    {
+        ret = SCOREP_LIBWRAP_FUNC_CALL( remove, ( pathname ) );
+    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return ret;
+}
+#endif
+
 #if HAVE( POSIX_IO_SYMBOL_REWIND )
 void
 SCOREP_LIBWRAP_FUNC_NAME( rewind )( FILE* stream )
