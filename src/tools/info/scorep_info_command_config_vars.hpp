@@ -34,9 +34,6 @@ class SCOREP_Info_Command_ConfigVars
 public:
     SCOREP_Info_Command_ConfigVars();
 
-    virtual
-    ~SCOREP_Info_Command_ConfigVars();
-
     void
     printHelp( bool full ) override;
 

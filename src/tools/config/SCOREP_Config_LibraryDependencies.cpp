@@ -79,10 +79,6 @@ SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies( void )
     add_library_dependencies_score( libs, ldflags, rpaths, dependency_las, &m_la_objects );
 }
 
-SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()
-{
-}
-
 void
 SCOREP_Config_LibraryDependencies::insert( const string&        libName,
                                            const string&        buildDir,

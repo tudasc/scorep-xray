@@ -111,7 +111,7 @@ public:
      * Deletes a SCOREP_Instrumenter_Adapter instance.
      */
     virtual
-    ~SCOREP_Instrumenter_Adapter();
+    ~SCOREP_Instrumenter_Adapter() = default;
 
     /**
      * Returns the identifier of the instrumentation method.

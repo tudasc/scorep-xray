@@ -80,7 +80,7 @@ public:
      * Destroys the object.
      */
     virtual
-    ~SCOREP_Config_MppSystem();
+    ~SCOREP_Config_MppSystem() = default;
 
     /**
      * Adds required libraries of this paradigm to the list of libraries.

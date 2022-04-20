@@ -42,22 +42,22 @@ class SCOREP_Instrumenter_Mpi : public SCOREP_Instrumenter_Paradigm
 public:
     SCOREP_Instrumenter_Mpi( SCOREP_Instrumenter_Selector* selector );
 
-    virtual void
-    checkCompilerName( const std::string& compiler );
-
-    virtual bool
-    checkCommand( const std::string& current,
-                  const std::string& next );
-
-    virtual bool
-    checkWrapperOption( const std::string& current,
-                        const std::string& next );
-
-    virtual void
-    checkObjects( SCOREP_Instrumenter& instrumenter );
+    void
+    checkCompilerName( const std::string& compiler ) override;
 
     bool
-    isInterpositionLibrary( const std::string& libraryName );
+    checkCommand( const std::string& current,
+                  const std::string& next ) override;
+
+    bool
+    checkWrapperOption( const std::string& current,
+                        const std::string& next ) override;
+
+    void
+    checkObjects( SCOREP_Instrumenter& instrumenter ) override;
+
+    bool
+    isInterpositionLibrary( const std::string& libraryName ) override;
 
 private:
     /**
@@ -76,18 +76,18 @@ class SCOREP_Instrumenter_Shmem : public SCOREP_Instrumenter_Paradigm
 public:
     SCOREP_Instrumenter_Shmem( SCOREP_Instrumenter_Selector* selector );
 
-    virtual void
-    checkCompilerName( const std::string& compiler );
-
-    virtual bool
-    checkCommand( const std::string& current,
-                  const std::string& next );
-
-    virtual void
-    checkObjects( SCOREP_Instrumenter& instrumenter );
+    void
+    checkCompilerName( const std::string& compiler ) override;
 
     bool
-    isInterpositionLibrary( const std::string& libraryName );
+    checkCommand( const std::string& current,
+                  const std::string& next ) override;
+
+    void
+    checkObjects( SCOREP_Instrumenter& instrumenter ) override;
+
+    bool
+    isInterpositionLibrary( const std::string& libraryName ) override;
 
 private:
     /**

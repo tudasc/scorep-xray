@@ -43,16 +43,10 @@ public:
                                     const std::string&            description );
 
     /**
-     * Deletes a SCOREP_Instrumenter_IoParadigm instance.
-     */
-    virtual
-    ~SCOREP_Instrumenter_IoParadigm();
-
-    /**
      * Returns the name as used for the selection of the scorep-config tool.
      */
-    virtual std::string
-    getConfigName( void );
+    std::string
+    getConfigName( void ) override;
 
     /**
      * Evaluates an scorep option for this paradigm.
@@ -61,8 +55,8 @@ public:
      * @param arg  The option that is evaluated.
      * @returns true, if this argument selects this paradigm.
      */
-    virtual bool
-    checkOption( const std::string& arg );
+    bool
+    checkOption( const std::string& arg ) override;
 
     /* ----------------------------------------------------------------------- members */
 private:

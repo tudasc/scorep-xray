@@ -76,10 +76,6 @@ SCOREP_Info_Command::SCOREP_Info_Command( const std::string& command,
     all.insert( std::make_pair( command, this ) );
 }
 
-SCOREP_Info_Command::~SCOREP_Info_Command()
-{
-}
-
 void
 SCOREP_Info_Command::printHelp( bool /* full */ )
 {

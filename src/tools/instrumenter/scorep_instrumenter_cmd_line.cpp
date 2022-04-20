@@ -93,10 +93,6 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
 #endif
 }
 
-SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
-{
-}
-
 void
 SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
                                            char** argv )

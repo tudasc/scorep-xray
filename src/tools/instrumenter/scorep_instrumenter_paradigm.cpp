@@ -55,10 +55,6 @@ SCOREP_Instrumenter_Paradigm::SCOREP_Instrumenter_Paradigm( SCOREP_Instrumenter_
     m_unsupported = false;
 }
 
-SCOREP_Instrumenter_Paradigm::~SCOREP_Instrumenter_Paradigm()
-{
-}
-
 void
 SCOREP_Instrumenter_Paradigm::checkDependencies( void )
 {

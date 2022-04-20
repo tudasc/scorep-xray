@@ -32,9 +32,6 @@ class SCOREP_Info_Command_License
 public:
     SCOREP_Info_Command_License();
 
-    virtual
-    ~SCOREP_Info_Command_License();
-
     int
     run( const std::vector<std::string>& args ) override;
 };

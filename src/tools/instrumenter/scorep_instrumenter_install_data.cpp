@@ -60,10 +60,6 @@ SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
     m_fortran_compiler = SCOREP_FC;
 }
 
-SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
-{
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getScorepConfig( void )
 {

@@ -73,7 +73,7 @@ public:
      * Destructs the adapter.
      */
     virtual
-    ~SCOREP_Info_Command();
+    ~SCOREP_Info_Command() = default;
 
 protected:
     /**

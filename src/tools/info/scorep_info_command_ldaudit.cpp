@@ -32,11 +32,6 @@ SCOREP_Info_Command_Ldaudit::SCOREP_Info_Command_Ldaudit()
 }
 
 
-SCOREP_Info_Command_Ldaudit::~SCOREP_Info_Command_Ldaudit()
-{
-}
-
-
 int
 SCOREP_Info_Command_Ldaudit::run( const std::vector<std::string>& args )
 {

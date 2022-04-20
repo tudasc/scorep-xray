@@ -60,7 +60,7 @@ public:
 /**
  * This class encapsulates the access of the estimator to the CUBE4 profile.
  */
-class SCOREP_Score_Profile
+class SCOREP_Score_Profile final
 {
 public:
     /**
@@ -74,8 +74,7 @@ public:
     /**
      * Destructor.
      */
-    virtual
-    ~SCOREP_Score_Profile();
+    ~SCOREP_Score_Profile() = default;
 
     /**
      * Predicate whether this profile used sampling.

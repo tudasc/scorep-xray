@@ -66,7 +66,7 @@ typedef struct SCOREP_Filter SCOREP_Filter;
 /**
  * This class implements the estimation logic.
  */
-class SCOREP_Score_Estimator
+class SCOREP_Score_Estimator final
     : public SCOREP_Score_CalltreeVisitor
 {
 public:
@@ -83,7 +83,6 @@ public:
     /**
      * Destructor.
      */
-    virtual
     ~SCOREP_Score_Estimator();
 
     /**

@@ -103,7 +103,7 @@ public:
      * Destroys the object.
      */
     virtual
-    ~SCOREP_Config_ThreadSystem();
+    ~SCOREP_Config_ThreadSystem() = default;
 
     /**
      * Adds required libraries of this threading system to the list of libraries.

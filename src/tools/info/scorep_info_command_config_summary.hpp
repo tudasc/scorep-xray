@@ -34,9 +34,6 @@ class SCOREP_Info_Command_ConfigSummary
 public:
     SCOREP_Info_Command_ConfigSummary();
 
-    virtual
-    ~SCOREP_Info_Command_ConfigSummary();
-
     int
     run( const std::vector<std::string>& args ) override;
 };

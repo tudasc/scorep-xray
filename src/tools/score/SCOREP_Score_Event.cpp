@@ -42,10 +42,6 @@ SCOREP_Score_Event::SCOREP_Score_Event( const string& name )
     m_size = 0;
 }
 
-SCOREP_Score_Event::~SCOREP_Score_Event()
-{
-}
-
 const string&
 SCOREP_Score_Event::getName( void )
 {

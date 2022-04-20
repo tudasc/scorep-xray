@@ -32,10 +32,6 @@ SCOREP_Info_Command_OpenIssues::SCOREP_Info_Command_OpenIssues()
 {
 }
 
-SCOREP_Info_Command_OpenIssues::~SCOREP_Info_Command_OpenIssues()
-{
-}
-
 int
 SCOREP_Info_Command_OpenIssues::run( const std::vector<std::string>& args )
 {
