@@ -133,7 +133,7 @@ AC_SUBST([AFS_PACKAGE_TO_TOP], _afs_package_tmp)
 m4_define([AFS_PACKAGE_TO_TOP], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
 
-dnl when building inplace, $srcdir equals ., ignore $srcdir than
+dnl when building inplace, $srcdir equals ., ignore $srcdir then
 dnl AC_SUBST already in AFS_PACKAGE_INIT
 AS_CASE([$srcdir],
     [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],

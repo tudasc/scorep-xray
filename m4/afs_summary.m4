@@ -175,7 +175,7 @@ m4_pushdef([_AFS_SUMMARY_FILE], _AFS_SUMMARY_FILE[.x])dnl
 # AFS_SUMMARY_POP( DESCR, VALUE )
 # -------------------------------
 # Close a previously opened section with 'AFS_SUMMARY_PUSH'. Outputs the
-# section header with DESCR and VALUE, and than outputs the summary from the
+# section header with DESCR and VALUE, and then outputs the summary from the
 # hold space.
 AC_DEFUN([AFS_SUMMARY_POP], [
 AC_REQUIRE([AFS_SUMMARY_INIT])dnl
