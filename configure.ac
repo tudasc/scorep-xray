@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2019, 2021,
+dnl Copyright (c) 2009-2019, 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -184,7 +184,7 @@ AS_IF([test -n "${scorep_otf2_config_bin}" && \
              [AC_MSG_ERROR([cannot detect MIC support for external OTF2 installation. Either provide a suitable OTF2 library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-otf2' option to use the included OTF2 copy.])])
       ])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [3], [0])
-AC_SCOREP_HAVE_CONFIG_TOOL([cubew], [7], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([cubew], [11], [0])
 AS_IF([test -n "${scorep_cubew_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
       [scorep_cubew_have_mic=no
