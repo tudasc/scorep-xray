@@ -35,8 +35,8 @@ AC_MSG_CHECKING([Git controlled])
 ac_scorep_git_controlled="no"
 
 # test if ${afs_srcdir} is a git top-level, not any parent directory:
-# * if ${afs_srcdir} is a top-level, than the prefix is empty (e.g., we are git controlled)
-# * if ${afs_srcdir} is below a top-level, than it wont be empty (e.g., we operate in a
+# * if ${afs_srcdir} is a top-level, then the prefix is empty (e.g., we are git controlled)
+# * if ${afs_srcdir} is below a top-level, then it wont be empty (e.g., we operate in a
 #   tarball, which was extracted below a top-level)
 # * if git could not find any top-level, it prints an error to stderr and stop,
 #   we catch this error, which makes the test also fail (e.g., we operate in a

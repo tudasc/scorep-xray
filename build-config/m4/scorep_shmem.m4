@@ -569,7 +569,7 @@ AS_IF([test "x$scorep_shmem_openmpi_version" != "x"],
                  [1],
                  [Define if shmem_collect* cannot handle 0 nelems.])])
 
-dnl than check for an interception method
+dnl then check for an interception method
 shmem_interception_summary="no"
 scorep_shmem_has_pshmem_functions="no"
 scorep_shmem_has_pshmem_header="no"

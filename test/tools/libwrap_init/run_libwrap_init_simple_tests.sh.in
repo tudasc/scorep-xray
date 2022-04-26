@@ -26,8 +26,7 @@ so_ext=${so_ext_with_dot#.}
 libtool_shared=$(eval "$($LIBTOOL --config)"; test "$build_libtool_libs" = "yes" && echo true || echo false)
 libtool_static=$(eval "$($LIBTOOL --config)"; test "$build_old_libs" = "yes" && echo true || echo false)
 
-# if our libtool cannot build a shared library of the target library, than we
-# need to tell scorep-libwrap-init about it
+# if our libtool cannot build a shared library we need to skip the tests
 lwi_flags=
 if ! $libtool_shared; then
     runtime_support=false

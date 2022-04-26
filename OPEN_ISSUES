@@ -37,8 +37,8 @@ various Score-P components.
 
   - The same is true if your system features more than one compiler
     supporting automatic function instrumentation. Additionally if
-    the GNU compiler plug-in based instrumentation is used, than
-    different Major version of the GNU compiler suite are also
+    the GNU compiler plug-in based instrumentation is used, then
+    different major version of the GNU compiler suite are also
     incompatible. I.e., for each major version a separate Score-P
     installation must be provided.
 
@@ -109,10 +109,10 @@ various Score-P components.
     differ only in the argument list will be mapped to the same
     function definition by Score-P.
 
-  - When using any of the intrinsics headers from GCC (e.g.,
-    xmmintrin.h and friends), than, from GCC version 4.6 onwards and up to 5.4
-    and 6.3, it is known that the result of the compiler instrumentation will
-    fail at link time because of undefined reference. A work around is to pass
+  - When using any of the intrinsic headers (e.g., xmmintrin.h and friends)
+    from GCC version up to 6.3, it is known that the result of the compiler
+    instrumentation will fail at link time because of undefined reference.
+    A work around is to pass
 
       -finstrument-functions-exclude-file-list=intrin.h
 
@@ -157,7 +157,7 @@ various Score-P components.
   - The GCC compiler uses DWARF v4 as the default debug information
     format since version 4.8. But when used with an older binutils
     version this results in unreliably region meta data. If file name
-    information are missing in the resulting region meta data, than
+    information are missing in the resulting region meta data, then
     try recompiling with the -gdwarf-3 or -gdwarf-2 flag.
 
   - The Fujitsu compiler instrumentation does not handle inlined
@@ -377,7 +377,7 @@ various Score-P components.
     on GNU/Linux platforms.
     Also, if you encounter segmentation faults when running the
     instrumented application with Score-P attached, but the error
-    disappears magically on subsequent runs, than the OpenSHMEM
+    disappears magically on subsequent runs, then the OpenSHMEM
     reference implementation may not consider some of your global or
     static variables as symmetric objects.  Please allocate these
     objects with shmalloc() to ensure that they are in the symmetric
@@ -394,7 +394,7 @@ various Score-P components.
     + SGI SHMEM
     + Cray SHMEM
 
-  - When using the Cray SHMEM versions 7.2.2 or 7.2.3, than Score-P fails
+  - When using the Cray SHMEM versions 7.2.2 or 7.2.3, then Score-P fails
     to detect a number of SHMEM functions.  Please use a newer version of
     the module to circumvent this problem.
 
@@ -440,7 +440,7 @@ various Score-P components.
 
   - CUDA API calls are represented twice in the calling context.
 
-  - If PAPI is used as the interrupt source for sampling, than it is not
+  - If PAPI is used as the interrupt source for sampling, then it is not
     possible to measure also PAPI metrics.
 
   - The timer interrupt source only works for non-threaded applications.
@@ -631,7 +631,7 @@ various Score-P components.
 
   - Score-P uses an 'atexit' handler to finalize the measurement and produces
     the output files.  In case a run-time system also uses an 'atexit' handler
-    but does not allow previous registered 'atexit' handlers to run, than one
+    but does not allow previous registered 'atexit' handlers to run, then one
     can try to re-install the 'atexit' handler again, so that Score-P's will
     run before the malicious handler.  If that still does not work one can
     also trigger the finalization manually.  Here are the C prototypes for

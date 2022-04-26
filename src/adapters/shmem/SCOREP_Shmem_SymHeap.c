@@ -173,7 +173,7 @@ SHMEM_MEMALIGN( shmemalign )
             if ( scorep_shmem_memory_recording )                                        \
             {                                                                           \
                 /*                                                                      \
-                 * If ptr is a null pointer, than it is like malloc.                    \
+                 * If ptr is a null pointer, then it is like malloc.                    \
                  */                                                                     \
                 if ( ptr == NULL && result )                                            \
                 {                                                                       \
@@ -182,7 +182,7 @@ SHMEM_MEMALIGN( shmemalign )
                                                     size );                             \
                 }                                                                       \
                 /*                                                                      \
-                 * If size equals zero and ptr != NULL, than it is like free.           \
+                 * If size equals zero and ptr != NULL, then it is like free.           \
                  */                                                                     \
                 else if ( ptr != NULL && size == 0 )                                    \
                 {                                                                       \

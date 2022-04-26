@@ -253,7 +253,7 @@ SCOREP_ConfigManifestSectionEntry( FILE*       out,
 /**
  * Displays all config variables with there short description, type and default value.
  *
- * If @a full is set than the long description is also displayed.
+ * If @a full is set then the long description is also displayed.
  *
  * @param full Displays the long help description too.
  * @param html Use an html description list for the output.

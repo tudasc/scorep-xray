@@ -201,7 +201,7 @@ scorep_unwinding_region_insert( SCOREP_Unwinding_CpuLocationData* unwindData,
         }
         else
         {
-            /* start is the same, if the name matches, than just extend the end */
+            /* start is the same, if the name matches, then just extend the end */
             UTILS_BUG_ON( 0 != strcmp( name, unwindData->known_regions->name ),
                           "Region already known: %s@[%#" PRIx64 ", %#" PRIx64 ") "
                           "existing: %s@[%#" PRIx64 ", %#" PRIx64 ")",

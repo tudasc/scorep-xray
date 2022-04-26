@@ -155,7 +155,7 @@ scorep_mpi_unify_communicators( void )
 
         /*
          * Check, if my next interim-comm def is satisfied, if we don't have a
-         * next interim-comm, than this loop counts all ranks, which are also
+         * next interim-comm, then this loop counts all ranks, which are also
          * already done
          */
         uint32_t ranks_participating = 0;

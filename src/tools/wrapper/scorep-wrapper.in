@@ -90,7 +90,7 @@ prevented at this stage (the configuration step compiles and runs lots of
 small test programs; instrumenting these would in almost all cases result in
 failure of the configuration).  To do so, one needs to set the variable
 \`SCOREP_WRAPPER\` to \`off\` when invoking the configuration command.  The
-wrapper command from above will than expand to the original compile command:
+wrapper command from above will then expand to the original compile command:
 
     $ gcc COMPILER_FLAGS...
 

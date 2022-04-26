@@ -115,7 +115,7 @@ fn_20_two_dim_array__arg( int a[][2], int len );
 
 /* The idea here is to have something which libclang does not accept
    but other compilers do, but when clang is that 'other' compiler
-   than it already cannot build the target lib, thus exclude this test
+   then it already cannot build the target lib, thus exclude this test
    for Clang. this wont effect the libclang parsing, because we preprocess
    headers with the backend compiler. */
 #ifndef __clang__

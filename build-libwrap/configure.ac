@@ -160,9 +160,8 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
        LIBS="$LIBS $libwrap_libs"
 
        # Check whether the header exists, this is a hint, that the dev packages
-       # are not installed
-       # than we can compile and link a simple program, and finally
-       # whether the required functions are available.
+       # are not installed, then we can check that it compiles and links, and
+       # finally we can check whether the required functions are available.
        # These functions are provided since clang v3.6
        AC_CHECK_HEADER([clang-c/Index.h],
            [AC_MSG_CHECKING([linking against libclang])

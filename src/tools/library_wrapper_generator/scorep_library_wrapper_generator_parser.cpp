@@ -227,7 +227,7 @@ SCOREP_Libwrap_Parser::Visit( CXCursor cursor,
         /* We get the empty string if the symbol wont be mangled,
          * but only since clang 3.8
          * workaround to get the correct function name for extern "C" functions
-         * if it starts with "_Z" and ends in cursor_name, than it looks like
+         * if it starts with "_Z" and ends in cursor_name, then it looks like
          * a C function was mangled.
          */
         stringstream mangled;

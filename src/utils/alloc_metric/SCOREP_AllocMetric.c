@@ -451,9 +451,8 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
             *prevSize = allocation->size;
         }
 
-        /*
-         * If the allocation did not resulted in a new address, than assign
-         * the new size to the handle. */
+        /* Only assign the new size to the handle if the allocation did not
+         * result in a new address. */
         if ( allocation->address == resultAddr )
         {
             process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
