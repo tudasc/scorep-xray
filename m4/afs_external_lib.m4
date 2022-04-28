@@ -309,11 +309,11 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = xyes],
 #
 AC_DEFUN_ONCE([_AFS_LIB_DOWNLOAD_PREREQ], [
 # search for either wget or curl
-AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q], [no])
+AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q --content-disposition], [no])
 AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
     [AS_UNSET([AFS_LIB_DOWNLOAD_CMD])
      AS_UNSET([ac_cv_prog_AFS_LIB_DOWNLOAD_CMD])
-     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O], [no])
+     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O -J -L], [no])
      AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
          [AC_MSG_WARN([Neither wget nor curl found.])
           AFS_LIB_DOWNLOAD_CMD="echo \"Neither wget nor curl found. Cannot download package. See \$(THIS_FILE).\" && exit 1 && "])])
