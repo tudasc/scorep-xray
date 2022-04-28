@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2021,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
+dnl Copyright (c) 2022,
+dnl Technische Universitaet Dresden, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -124,17 +127,17 @@ dnl
 m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers. Superseded by --with-]_afs_lib_name[ variants.])])dnl
 AC_ARG_VAR(_afs_lib_NAME[]_LIB, [Path to ]_afs_lib_name[ libraries. Superseded by --with-]_afs_lib_name[ variants.])dnl
 dnl
-AS_IF([test "${_afs_lib_NAME[]_LIB_DIR:+set}" = set],
+AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_lib:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_LIB_DIR=${_afs_lib_NAME[]_LIB_DIR} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
-         [_afs_lib_withval_lib="${_afs_lib_NAME[]_LIB_DIR}"
-          AC_MSG_NOTICE([Using _afs_lib_NAME[]_LIB_DIR as --with-_afs_lib_name-lib=${_afs_lib_withval_lib}. Further mentioning of --with-_afs_lib_name-lib applies to _afs_lib_NAME[]_LIB_DIR.])])])
+         [AC_MSG_NOTICE([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
+         [_afs_lib_withval_lib="${_afs_lib_NAME[]_LIB}"
+          AC_MSG_NOTICE([Using _afs_lib_NAME[]_LIB as --with-_afs_lib_name-lib=${_afs_lib_withval_lib}. Further mentioning of --with-_afs_lib_name-lib applies to _afs_lib_NAME[]_LIB.])])])
 m4_ifnblank([$3], [dnl
-AS_IF([test "${_afs_lib_NAME[]_INCLUDE_DIR:+set}" = set],
+AS_IF([test "${_afs_lib_NAME[]_INCLUDE:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_include:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_INCLUDE_DIR=${_afs_lib_NAME[]_INCLUDE_DIR} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
-         [_afs_lib_withval_include="${_afs_lib_NAME[]_INCLUDE_DIR}"
-          AC_MSG_NOTICE([Using _afs_lib_NAME[]_INCLUDE_DIR as --with-_afs_lib_name-include=${_afs_lib_withval_include}. Further mentioning of --with-_afs_lib_name-include applies to _afs_lib_NAME[]_INCLUDE_DIR.])])])])
+         [AC_MSG_NOTICE([_afs_lib_NAME[]_INCLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
+         [_afs_lib_withval_include="${_afs_lib_NAME[]_INCLUDE}"
+          AC_MSG_NOTICE([Using _afs_lib_NAME[]_INCLUDE as --with-_afs_lib_name-include=${_afs_lib_withval_include}. Further mentioning of --with-_afs_lib_name-include applies to _afs_lib_NAME[]_INCLUDE.])])])])
 dnl
 # Check valid combinations of options and if directories and libs exist if <path> was provided.
 AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3], [${_afs_lib_withval_include:+set3}])"],
