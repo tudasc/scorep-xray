@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016,
+ * Copyright (c) 2013-2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -109,10 +109,9 @@ scorep_shmem_setup_comm_world( void )
 
     /* Create 'WORLD' window handle once for a process */
     scorep_shmem_world_window_handle =
-        SCOREP_Definitions_NewRmaWindow( WIN_WORLD_NAME, comm_world_handle );
+        SCOREP_Definitions_NewRmaWindow( WIN_WORLD_NAME, comm_world_handle,
+                                         SCOREP_RMA_WINDOW_FLAG_NONE );
     comm_world_payload->rma_win = scorep_shmem_world_window_handle;
-
-    SCOREP_RmaWinCreate( scorep_shmem_world_window_handle );
 
     if ( scorep_shmem_number_of_pes > 1 )
     {
@@ -123,10 +122,9 @@ scorep_shmem_setup_comm_world( void )
 
         /* Create 'SELF' window handle once for a process */
         scorep_shmem_self_window_handle =
-            SCOREP_Definitions_NewRmaWindow( WIN_SELF_NAME, comm_self_handle );
+            SCOREP_Definitions_NewRmaWindow( WIN_SELF_NAME, comm_self_handle,
+                                             SCOREP_RMA_WINDOW_FLAG_NONE );
         comm_self_payload->rma_win = scorep_shmem_self_window_handle;
-
-        SCOREP_RmaWinCreate( scorep_shmem_self_window_handle );
     }
     else
     {
@@ -150,31 +148,6 @@ scorep_shmem_teardown_comm_world( void )
     CALL_SHMEM( shmem_barrier_all )();
 
     free( scorep_shmem_pe_groups.hash_table );
-}
-
-/**
- * Trigger writing of RmaWinDestroy record for each window in the hash table.
- */
-void
-scorep_shmem_close_pe_group( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN(
-        &scorep_shmem_pe_groups,
-        InterimCommunicator,
-        SCOREP_Memory_GetLocalDefinitionPageManager() )
-    {
-        if ( definition->paradigm_type != SCOREP_PARADIGM_SHMEM )
-        {
-            continue;
-        }
-
-        scorep_shmem_comm_definition_payload* payload =
-            SCOREP_InterimCommunicatorHandle_GetPayload( handle );
-        SCOREP_RmaWinDestroy( payload->rma_win );
-    }
-    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 }
 
 /**
@@ -216,9 +189,8 @@ scorep_shmem_get_pe_group( int start,
 
         /* First time we encounter this PE group */
         new_payload->rma_win =
-            SCOREP_Definitions_NewRmaWindow( name, new_handle );
-
-        SCOREP_RmaWinCreate( new_payload->rma_win );
+            SCOREP_Definitions_NewRmaWindow( name, new_handle,
+                                             SCOREP_RMA_WINDOW_FLAG_NONE );
     }
     else
     {

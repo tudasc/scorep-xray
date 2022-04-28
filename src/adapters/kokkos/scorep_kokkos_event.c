@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -340,9 +340,6 @@ init_kokkos( void )
             SCOREP_RegionHandle_SetGroup( kokkos_deep_copy_region, "Kokkos deep copy" );
 
             kokkos_rma_window = scorep_kokkos_define_rma_win();
-
-            UTILS_DEBUG( "Creating host-side RMA window" );
-            SCOREP_RmaWinCreate( kokkos_rma_window );
         }
         kokkos_initialized = true;
     }
@@ -358,14 +355,6 @@ get_device_location_rank( void )
     SCOREP_Location*                 location = scorep_kokkos_get_device_location();
     scorep_kokkos_gpu_location_data* data     =
         SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
-    if ( !data->rma_win_created )
-    {
-        UTILS_DEBUG( "Creating device-side RMA window [rank %u]", data->rma_win_rank );
-        SCOREP_Location_RmaWinCreate( location,
-                                      SCOREP_Timer_GetClockTicks(),
-                                      kokkos_rma_window );
-        data->rma_win_created = true;
-    }
     return data->rma_win_rank;
 }
 
@@ -425,15 +414,6 @@ kokkosp_finalize_library( void )
         SCOREP_Location*                 location = scorep_kokkos_get_device_location();
         scorep_kokkos_gpu_location_data* data     =
             SCOREP_Location_GetSubsystemData( location, scorep_kokkos_subsystem_id );
-        if ( data->rma_win_created )
-        {
-            UTILS_DEBUG( "Destroying device-side RMA window [rank %u]", data->rma_win_rank );
-            SCOREP_Location_RmaWinDestroy( location,
-                                           SCOREP_Timer_GetClockTicks(),
-                                           kokkos_rma_window );
-        }
-        UTILS_DEBUG( "Destroying host-side RMA window" );
-        SCOREP_RmaWinDestroy( kokkos_rma_window );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

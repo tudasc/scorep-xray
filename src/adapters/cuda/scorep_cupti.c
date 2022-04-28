@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016, 2020,
+ * Copyright (c) 2009-2014, 2016, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -546,12 +546,6 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
         scorep_cuda_location_data* loc_data =
             SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
                                               scorep_cuda_subsystem_id );
-
-        if ( !loc_data->rma_window_active )
-        {
-            SCOREP_RmaWinCreate( scorep_cuda_window_handle );
-            loc_data->rma_window_active = true;
-        }
     }
 
     context->activity = NULL;
@@ -742,17 +736,8 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
         {
             scorep_cupti_stream* stream = context->streams;
 
-            if ( SCOREP_CUPTI_NO_ID != stream->location_id )
-            {
-                /* destroy window on every location, where it is used */
-                SCOREP_Location_RmaWinDestroy( stream->scorep_location,
-                                               SCOREP_Timer_GetClockTicks(),
-                                               scorep_cuda_window_handle );
-            }
-
             context->streams = context->streams->next;
 
-            /*free(scorepStrm);*/
             stream = NULL;
         }
     }
@@ -781,12 +766,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
         scorep_cuda_location_data* loc_data =
             SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
                                               scorep_cuda_subsystem_id );
-
-        if ( loc_data->rma_window_active )
-        {
-            SCOREP_RmaWinDestroy( scorep_cuda_window_handle );
-            loc_data->rma_window_active = false;
-        }
     }
 
     if ( context->activity != NULL )

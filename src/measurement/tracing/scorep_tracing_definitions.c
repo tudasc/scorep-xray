@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -763,7 +763,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
             comm_name_id,
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
             comm_parent_id,
-            OTF2_COMM_FLAG_NONE );
+            scorep_tracing_comm_flags_to_otf2( definition->flags ) );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Communicator" );
@@ -794,7 +794,7 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             comm_id,
-            OTF2_RMA_WIN_FLAG_CREATE_DESTROY_EVENTS );
+            scorep_tracing_rma_win_flags_to_otf2( definition->flags ) );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "RmaWindow" );

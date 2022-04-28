@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016-2017,
+ * Copyright (c) 2009-2013, 2016-2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -53,7 +53,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
     /* Number identifying this to be the i-th window on this comm */
     uint32_t creation_id;
     /* Flag indicating whether default name is still set */
-    bool has_default_name;
+    bool                 has_default_name;
+    SCOREP_RmaWindowFlag flags;
 };
 
 
@@ -74,7 +75,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
  */
 SCOREP_RmaWindowHandle
 SCOREP_Definitions_NewRmaWindow( const char*                      name,
-                                 SCOREP_InterimCommunicatorHandle communicatorHandle );
+                                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                 SCOREP_RmaWindowFlag             flags );
 
 
 void

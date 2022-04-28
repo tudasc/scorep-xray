@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016, 2020,
+ * Copyright (c) 2009-2013, 2016, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -172,7 +172,8 @@ scorep_mpi_win_create( const char* name,
 
     /* register mpi window definition */
     handle = SCOREP_Definitions_NewRmaWindow( name ? name : "MPI Window",
-                                              SCOREP_MPI_COMM_HANDLE( comm ) );
+                                              SCOREP_MPI_COMM_HANDLE( comm ),
+                                              SCOREP_RMA_WINDOW_FLAG_CREATE_DESTROY_EVENTS );
 
     /* enter win in scorep_mpi_windows[] array */
     scorep_mpi_windows[ scorep_mpi_last_window ].win    = win;

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -78,7 +78,7 @@ scorep_cuda_define_cuda_locations( void )
             group_handle,
             SCOREP_INVALID_STRING,
             SCOREP_INVALID_COMMUNICATOR,
-            0 );
+            0, SCOREP_COMMUNICATOR_FLAG_NONE );
 }
 
 void

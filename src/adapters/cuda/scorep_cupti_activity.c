@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -676,11 +676,6 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
     if ( SCOREP_CUPTI_NO_ID == stream->location_id )
     {
         stream->location_id = scorep_cupti_location_counter++;
-
-        /* create window on every location, where it is used */
-        SCOREP_Location_RmaWinCreate( stream->scorep_location,
-                                      start,
-                                      scorep_cuda_window_handle );
     }
 
     if ( kind == SCOREP_CUPTI_HOST2DEV )

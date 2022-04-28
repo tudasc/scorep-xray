@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2016,
+ * Copyright (c) 2013-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -130,7 +130,7 @@ scorep_shmem_define_shmem_group( void )
             SCOREP_Definitions_NewCommunicator( group,
                                                 SCOREP_INVALID_STRING,
                                                 SCOREP_INVALID_COMMUNICATOR,
-                                                0 );
+                                                0, SCOREP_COMMUNICATOR_FLAG_NONE );
     }
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
     free( members );
@@ -159,7 +159,7 @@ scorep_shmem_define_shmem_group( void )
             SCOREP_Definitions_NewCommunicator( self_group,
                                                 SCOREP_INVALID_STRING,
                                                 SCOREP_INVALID_COMMUNICATOR,
-                                                0 );
+                                                0, SCOREP_COMMUNICATOR_FLAG_NONE );
     }
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
 }

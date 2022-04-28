@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2016, 2019-2020,
+ * Copyright (c) 2014-2016, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -233,7 +233,7 @@ create_wait_subsystem_pre_unify( void )
             group_handle,
             SCOREP_INVALID_STRING,
             SCOREP_INVALID_COMMUNICATOR,
-            0 );
+            0, SCOREP_COMMUNICATOR_FLAG_NONE );
 
     return SCOREP_SUCCESS;
 }

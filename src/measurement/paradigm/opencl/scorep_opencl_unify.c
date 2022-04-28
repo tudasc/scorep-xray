@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016,
+ * Copyright (c) 2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -54,7 +54,7 @@ scorep_opencl_define_locations( void )
             group_handle,
             SCOREP_INVALID_STRING,
             SCOREP_INVALID_COMMUNICATOR,
-            0 );
+            0, SCOREP_COMMUNICATOR_FLAG_NONE );
 }
 
 void
