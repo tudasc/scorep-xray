@@ -43,7 +43,7 @@ scorep_openacc_register( size_t subsystemId )
                                       HAVE_BACKEND_OPENACC_SUPPORT );
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
 {
     .subsystem_name          = "OpenACC (config variables only)",
     .subsystem_register      = &scorep_openacc_register,

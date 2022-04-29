@@ -74,7 +74,7 @@ openacc_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
 {
     .subsystem_name          = "OPENACC",
     .subsystem_register      = &openacc_subsystem_register,
