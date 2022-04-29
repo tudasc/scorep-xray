@@ -11,10 +11,10 @@
 ## directory for details.
 ##
 
-INSTALLCHECK_LOCAL += installchecks-wrapper
-installchecks-wrapper: ../test/tools/wrapper/run_wrapper_checks.sh
+INSTALLCHECK_LOCAL += installcheck-wrapper
+installcheck-wrapper: ../test/tools/wrapper/run_wrapper_checks.sh
 	$(SHELL) ../test/tools/wrapper/run_wrapper_checks.sh
 
-CLEAN_LOCAL += clean-installchecks-wrapper
-clean-installchecks-wrapper:
+CLEAN_LOCAL += clean-installcheck-wrapper
+clean-installcheck-wrapper:
 	$(RM) run_wrapper_checks.*.out
