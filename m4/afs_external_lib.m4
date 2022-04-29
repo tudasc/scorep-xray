@@ -229,8 +229,8 @@ else])
         [AS_IF([test "x${_afs_lib_withval_lib}" != xyes],
              [dnl Search _afs_lib_withval_lib for LIBRARY-NAME (-Ldir).
               dnl Add _afs_lib_withval_lib to the run-time path of a program that
-              dnl links LIBRARY-NAME either directly or via a libtool library (-R dir).
-              _afs_lib_LDFLAGS="-L${_afs_lib_withval_lib} -R ${_afs_lib_withval_lib}"])
+              dnl links LIBRARY-NAME either directly or via a libtool library (-Rdir).
+              _afs_lib_LDFLAGS="-L${_afs_lib_withval_lib} -R${_afs_lib_withval_lib}"])
          m4_ifnblank([$3], [AS_IF([test "x${_afs_lib_withval_include}" != xyes],
              [_afs_lib_CPPFLAGS="-I${_afs_lib_withval_include}"])])])
     dnl
