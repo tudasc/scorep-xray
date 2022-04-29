@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2017, 2019,
+## Copyright (c) 2014-2015, 2017, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -179,10 +179,10 @@ m4_foreach([func],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_2_ADD_SYMBOLS], [
-m4_foreach([func],
+_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([])
+SCOREP_CHECK_SYMBOLS([OPENCL 2.2], [], $1,
            [clSetProgramSpecializationConstant,
-            clSetProgramReleaseCallback],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clSetProgramReleaseCallback])
 ])
 
 dnl ----------------------------------------------------------------------------

@@ -154,8 +154,15 @@ SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetDefaultDeviceCommandQueue, 
  * OpenCL API Version 2.2 Routines
  */
 #if HAVE( OPENCL_VERSION_2_2_SUPPORT )
+
+#if HAVE( OPENCL_22_SYMBOL_CLSETPROGRAMSPECIALIZATIONCONSTANT )
 SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetProgramSpecializationConstant,         ( cl_program, cl_uint, size_t, const void * ) )
+#endif
+
+#if HAVE( OPENCL_22_SYMBOL_CLSETPROGRAMRELEASECALLBACK )
 SCOREP_OPENCL_PROCESS_FUNC( cl_int,             clSetProgramReleaseCallback,                ( cl_program, void (CL_CALLBACK*)(cl_program, void * ), void * ) )
+#endif
+
 #endif
 
 #undef SCOREP_OPENCL_PROCESS_FUNC
