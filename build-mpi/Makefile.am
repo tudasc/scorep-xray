@@ -126,8 +126,19 @@ PARADIGMS += mpi_omp
 endif HAVE_OPENMP_C_SUPPORT
 endif HAVE_MPI_SUPPORT
 
+# These prerequisites are controlled by build-backend/Makefile
+foreign_instrumenter_check_prerequisites = \
+    ../installcheck/instrumenter_checks/Makefile.common_rules \
+    ../installcheck/instrumenter_checks/Makefile.instrument_configurations \
+    ../installcheck/instrumenter_checks/instrumenter-configurations.sh \
+    ../installcheck/instrumenter_checks/check-instrumentation.sh
+
+$(foreign_instrumenter_check_prerequisites):
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) $@
+
 INSTALLCHECK_LOCAL += instrumenter-checks
-instrumenter-checks: $(instrumenter_configuration_files)
+instrumenter-checks: $(instrumenter_configuration_files) \
+                     $(foreign_instrumenter_check_prerequisites)
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
 	  case $$f in \

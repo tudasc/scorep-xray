@@ -140,7 +140,7 @@ foreign_instrumenter_check_prerequisites = \
     ../installcheck/instrumenter_checks/check-instrumentation.sh
 
 $(foreign_instrumenter_check_prerequisites):
-	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) $@
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) $@
 
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
