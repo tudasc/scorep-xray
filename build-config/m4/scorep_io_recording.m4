@@ -158,7 +158,7 @@ AFS_SUMMARY_POP([POSIX I/O support], [${scorep_posix_io_support}${scorep_posix_i
 dnl Check for POSIX asynchronous I/O
 AFS_SUMMARY_PUSH
 
-scorep_posix_aio_support="yes"
+scorep_posix_aio_support=${scorep_posix_io_support}
 scorep_posix_aio_summary_reason=
 
 # check result of TLS
