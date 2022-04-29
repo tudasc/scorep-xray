@@ -49,7 +49,7 @@ SCOREP_AllocMetric_Destroy( SCOREP_AllocMetric* allocMetric );
  *  Acquires a previous allocation.
  *
  *  Locates a previous allocation of address @p addr and removes it from the
- *  the tracking. The allocation must than be passed to @a SCOREP_AllocMetric_HandleFree
+ *  the tracking. The allocation must then be passed to @a SCOREP_AllocMetric_HandleFree
  *  or @a SCOREP_AllocMetric_HandleRealloc to finalize the handling.
  *
  *  @param allocMetric      Object handle.

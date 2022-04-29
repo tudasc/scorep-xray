@@ -71,7 +71,7 @@ _ACEOF
 
     ], [
 
-        # if this was only one symbol, than we can be sure, that this does not exists
+        # if this was only one symbol, then we can be sure, that this does not exist
 
         if test $(($[]5 - $[]4 + 1)) -eq 1; then
 

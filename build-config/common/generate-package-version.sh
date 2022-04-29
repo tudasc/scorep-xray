@@ -19,7 +19,7 @@
 format="${2-}"
 
 major=0
-# if minor is not set in $1, than its the major.bugfix-suffix version scheme
+# if minor is not set in $1, then its the major.bugfix-suffix version scheme
 minor=
 bugfix=0
 suffix=

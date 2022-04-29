@@ -226,7 +226,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "a sequence of system tree nodes with one record instead of "
         "creating one record per system tree node, location group or "
         "location. It is more scalable and has less memory requirements "
-        "than single-node records. However, it costs inidividual names "
+        "then single-node records. However, it costs individual names "
         "of nodes, but simply enumerates them based on types. "
         "Currently, system tree sequence definitions support only MPI "
         "(and trivially single-process) applications."

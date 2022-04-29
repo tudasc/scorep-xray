@@ -64,8 +64,8 @@ scorep_plugin_enter_region( SCOREP_RegionHandle regionHandle )
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
     /*
-     * If SCOREP_IsUnwindingEnabled() is true, than this function will never be
-     * called, because we than have filtered out all regions.
+     * If SCOREP_IsUnwindingEnabled() is true, then this function will never be
+     * called, because we have filtered out all regions.
      */
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -80,8 +80,8 @@ scorep_plugin_exit_region( SCOREP_RegionHandle regionHandle )
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
     /*
-     * If SCOREP_IsUnwindingEnabled() is true, than this function will never be
-     * called, because we than have filtered out all regions.
+     * If SCOREP_IsUnwindingEnabled() is true, then this function will never be
+     * called, because we have filtered out all regions.
      */
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {

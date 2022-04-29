@@ -817,7 +817,7 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
     if ( SCOREP_IN_SIGNAL_CONTEXT() )
     {
         /* Let this be just a warning, SCOREP_Memory_HandleOutOfMemory will
-         * than abort for us. */
+         * then abort for us. */
         UTILS_WARNING( "Can't flush trace buffer when taking a sample." );
         SCOREP_Memory_HandleOutOfMemory();
     }

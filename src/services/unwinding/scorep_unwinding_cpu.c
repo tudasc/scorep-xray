@@ -782,7 +782,7 @@ scorep_unwinding_cpu_handle_enter( SCOREP_Unwinding_CpuLocationData* unwindData,
             return SCOREP_SUCCESS;
         }
 
-        /* If we are already in a wrapped region, than we just need to push all new
+        /* If we are already in a wrapped region, then we just need to push all new
          * surrogates onto the augmented stack and can return */
         if ( unwindData->augmented_stack
              && unwindData->augmented_stack->surrogates->is_wrapped )

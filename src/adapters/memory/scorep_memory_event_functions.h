@@ -416,7 +416,7 @@ SCOREP_LIBWRAP_FUNC_NAME( FUNCTION )( void*  ptr, \
     if ( scorep_memory_recording ) \
     { \
         /* \
-         * If ptr is a null pointer, than it is like malloc. \
+         * If ptr is a null pointer, then it is like malloc. \
          */ \
         if ( ptr == NULL && result ) \
         { \

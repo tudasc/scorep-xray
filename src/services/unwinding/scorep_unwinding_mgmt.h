@@ -124,7 +124,7 @@ typedef struct scorep_unwinding_surrogate
 /**
  * Stack frame in the augmented stack.
  *
- * If @p ::surrogates is NULL, than this frame represents a frame function
+ * If @p ::surrogates is NULL, then this frame represents a frame function
  *
  * Else
  *   @p ::surrogates->region is the instrumented region of this frame

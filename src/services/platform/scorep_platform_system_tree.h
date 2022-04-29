@@ -111,7 +111,7 @@ scorep_platform_system_tree_bottom_up_add(
  * @param property_value_len Strict upper bound for the length of the property
  *                           value for this property, including the trailing NUL.
  *                           As a special case, if @a property_value_len is zero,
- *                           than @a property_value_fmt should not have format
+ *                           then @a property_value_fmt should not have format
  *                           specifiers and the length is taken from the @a
  *                           property_value_fmt.
  * @param property_value_fmt A @a printf-like format string which forms the
