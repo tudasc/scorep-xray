@@ -101,7 +101,7 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
     {
         "references",
         SCOREP_CUDA_FEATURE_REFERENCES,
-        "Record references between CUDA activities"
+        "Record references between CUDA activities (tracing only)"
     },
     {
         "dontflushatexit",
@@ -122,9 +122,14 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
         SCOREP_CUDA_FEATURES_DEFAULT,
         "CUDA runtime API and GPU activities.\n"
         "Includes:\n"
-        "\240-\240runtime\n"
+        "\240-\240driver\n"
         "\240-\240kernel\n"
-        "\240-\240memcpy"
+        "\240-\240kernel_counter\n"
+        "\240-\240memcpy\n"
+        "\240-\240idle\n"
+        "\240-\240sync\n"
+        "\240-\240gpumemusage\n"
+        "\240-\240references\n"
     },
     { NULL, 0, NULL }
 };
@@ -139,9 +144,15 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         SCOREP_CONFIG_TYPE_BITSET, /* type */
         &scorep_cuda_features,     /* pointer to target variable */
         ( void* )cuda_enable_groups,
-        "no",                      /* default value */
+        "yes",                     /* default value */
         "CUDA measurement features",
-        "Sets the CUDA measurement mode to capture:"
+        "SCOREP_CUDA_ENABLE sets the CUDA measurement mode to capture.\n\n"
+        "Notes:\n"
+        "\240-\240Options required by other options will be included automatically.\n"
+        "\240-\240idle and pure idle are mutually exclusive.\n"
+        "\240-\240The tag (tracing only) indicates that profiling will not yield additional\n"
+        "\240\240\240data from this option.\n\n"
+        "The following options or sets are available:\n"
     },
     {
         "buffer",

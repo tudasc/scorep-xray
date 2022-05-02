@@ -126,11 +126,7 @@ static bool scorep_cupti_callbacks_enabled = false;
 /* flag: Are CUPTI callbacks driver API domain enabled? */
 static bool is_driver_domain_enabled = false;
 
-/* flag: tracing of CUDA runtime API enabled? */
-bool scorep_record_runtime_api = false;
 
-/* flag: tracing of CUDA driver API enabled? */
-bool scorep_record_driver_api = false;
 
 /* flag: callbacks state */
 uint8_t scorep_cupti_callbacks_state = 0;
@@ -2213,23 +2209,18 @@ scorep_cupti_callbacks_init( void )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                             "[CUPTI Callbacks] Initializing ... " );
 
-        /* check the CUDA APIs to be traced */
-        scorep_record_driver_api     = false;
-        scorep_record_runtime_api    = false;
         scorep_cupti_callbacks_state = SCOREP_CUPTI_CALLBACKS_STATE_NONE;
 
         /* check for CUDA runtime API */
-        if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_RUNTIME_API ) == SCOREP_CUDA_FEATURE_RUNTIME_API )
+        if ( scorep_record_runtime_api  )
         {
-            scorep_record_runtime_api     = true;
             scorep_cupti_callbacks_state |= SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME;
             cuda_runtime_file_handle      = SCOREP_Definitions_NewSourceFile( "CUDART" );
         }
 
         /* check for CUDA driver API */
-        if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DRIVER_API ) == SCOREP_CUDA_FEATURE_DRIVER_API )
+        if ( scorep_record_driver_api )
         {
-            scorep_record_driver_api      = true;
             scorep_cupti_callbacks_state |= SCOREP_CUPTI_CALLBACKS_STATE_DRIVER;
             cuda_driver_file_handle       = SCOREP_Definitions_NewSourceFile( "CUDRV" );
         }
