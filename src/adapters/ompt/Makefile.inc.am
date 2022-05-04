@@ -14,7 +14,6 @@
 ## file src/adapters/ompt/Makefile.inc.am
 
 if HAVE_SCOREP_OMPT_SUPPORT
-# TODO needs addr2line, here or in m4?
 
 lib_LTLIBRARIES += libscorep_adapter_ompt_mgmt.la
 
@@ -25,10 +24,12 @@ libscorep_adapter_ompt_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_MEASUREMENT)
+    -I$(INC_DIR_MEASUREMENT) \
+    -I$(INC_DIR_SERVICES)
 
 libscorep_adapter_ompt_mgmt_la_LIBADD = \
-    libutils.la
+    libutils.la \
+    libscorep_addr2line.la
 
 libscorep_adapter_ompt_mgmt_la_LDFLAGS = \
     $(library_api_version_ldflags)
@@ -37,17 +38,21 @@ libscorep_adapter_ompt_mgmt_la_LDFLAGS = \
 lib_LTLIBRARIES += libscorep_adapter_ompt_event.la
 
 libscorep_adapter_ompt_event_la_SOURCES = \
-    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_h \
-    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_events.c \
+    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_callbacks_device.h \
     $(SRC_ROOT)src/adapters/ompt/scorep_ompt_callbacks_host.h \
-    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_callbacks_device.h
+    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_events.c \
+    $(SRC_ROOT)src/adapters/ompt/scorep_ompt.h
 
 libscorep_adapter_ompt_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_DIR_MEASUREMENT) \
     -I$(INC_DIR_SERVICES) \
-    -I$(INC_DIR_MEASUREMENT)
+    -I$(INC_DIR_THREAD) \
+    -I$(INC_DIR_THREAD_FORK_JOIN)
 
 libscorep_adapter_ompt_event_la_LIBADD = \
     libscorep_addr2line.la \
@@ -62,4 +67,5 @@ endif HAVE_SCOREP_OMPT_SUPPORT
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/ompt/scorep_ompt_debug.inc.c \
     $(SRC_ROOT)src/adapters/ompt/scorep_ompt_events_device.inc.c \
-    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_events_host.inc.c
+    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_events_host.inc.c \
+    $(SRC_ROOT)src/adapters/ompt/scorep_ompt_regions.inc.c

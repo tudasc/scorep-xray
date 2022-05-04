@@ -32,6 +32,7 @@
 /src/adapters/ompt/scorep_ompt_debug.inc.c -hook-config
 /src/adapters/ompt/scorep_ompt_events_device.inc.c -hook-config
 /src/adapters/ompt/scorep_ompt_events_host.inc.c -hook-config
+/src/adapters/ompt/scorep_ompt_regions.inc.c -hook-config
 /src/adapters/opencl/scorep_opencl_function_list.inc -hook-beautifier -hook-config
 /src/adapters/opencl/scorep_opencl_confvars.inc.c -hook-config
 /src/adapters/opencl/scorep_opencl_wrap_version_1_0.inc.c -hook-config

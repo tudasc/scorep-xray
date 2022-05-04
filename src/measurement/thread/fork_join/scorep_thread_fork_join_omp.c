@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2017,
+ * Copyright (c) 2013-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015, 2019-2020, 2022,
@@ -39,16 +39,15 @@
 
 typedef struct scorep_thread_private_data scorep_thread_private_data;
 
-#ifdef __FUJITSU
+/* Don't use `#pragma omp threadprivate` for TPD as this triggers
+ * OMPT's ompt_start_tool() too early, i.e.,
+ * SCOREP_Location_GetCurrentCPULocation() could not be used for the
+ * first implicit task callback. In addition, with OMPT we explicitly
+ * shut down the OpenMP runtime at subsystem_end. OpenMP threadprivate
+ * variables might be invalid afterwards, as seen with icc. Using
+ * __thread/_Thread_local solves both issues. */
+static THREAD_LOCAL_STORAGE_SPECIFIER scorep_thread_private_data* TPD = NULL;
 
-static __thread scorep_thread_private_data* TPD = NULL;
-
-#else /* !__FUJITSU */
-
-static scorep_thread_private_data* TPD = NULL;
-#pragma omp threadprivate( TPD )
-
-#endif /* !__FUJITSU */
 
 /* *INDENT-OFF* */
 static void set_tpd_to( scorep_thread_private_data* newTpd );
@@ -347,7 +346,6 @@ scorep_thread_on_team_end( scorep_thread_private_data*  currentTpd,
                            uint32_t                     teamSize,
                            SCOREP_ParadigmType          paradigm )
 {
-    UTILS_BUG_ON( currentTpd != TPD, "" );
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_OPENMP, "" );
 
     scorep_thread_private_data_omp* model_data = scorep_thread_get_model_data( currentTpd );

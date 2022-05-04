@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -221,6 +221,28 @@ scorep_subsystems_initialize_location( SCOREP_Location* newLocation,
 
 
 void
+scorep_subsystems_trigger_overdue_events( SCOREP_Location* location )
+{
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_trigger_overdue_events )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error =
+            scorep_subsystems[ i ]->subsystem_trigger_overdue_events( location );
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "Cannot trigger overdue events for %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+}
+
+
+void
 scorep_subsystems_activate_cpu_location( SCOREP_Location*        locationData,
                                          SCOREP_Location*        parentLocation,
                                          uint32_t                forkSequenceCount,
@@ -293,7 +315,7 @@ scorep_subsystems_finalize_location( SCOREP_Location* locationData )
 
 
 /**
- * Called after the unification step.
+ * Called before the unification process starts.
  */
 void
 scorep_subsystems_pre_unify( void )
@@ -317,7 +339,7 @@ scorep_subsystems_pre_unify( void )
 
 
 /**
- * Called before the unification process starts.
+ * Called after the unification step.
  */
 void
 scorep_subsystems_post_unify( void )

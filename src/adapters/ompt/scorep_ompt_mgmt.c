@@ -20,19 +20,17 @@
 #include "scorep_ompt_callbacks_host.h"
 #include "scorep_ompt_callbacks_device.h"
 
-#include <UTILS_Error.h>
-#define SCOREP_DEBUG_MODULE_NAME OMPT
-#include <UTILS_Debug.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
 
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Subsystem.h>
-//#include <SCOREP_Events.h>
-//#include <SCOREP_Mutex.h>
-//#include <SCOREP_Definitions.h>
-//#include <SCOREP_Filtering.h>
-
+#include <SCOREP_Memory.h>
+#include <SCOREP_Paradigms.h>
+#include <SCOREP_Addr2line.h>
 
 
 /* *INDENT-OFF* */
@@ -67,7 +65,7 @@ ompt_start_tool( unsigned int omp_version, /* == _OPENMP */
     {
         SCOREP_InitMeasurement();
     }
-    // TODO decide against initialization if env var is set?
+    /* TODO decide against initialization if env var is set? */
     static ompt_start_tool_result_t tool = { &initialize_tool,
                                              &finalize_tool,
                                              ompt_data_none };
@@ -85,6 +83,7 @@ initialize_tool( ompt_function_lookup_t lookup,
     UTILS_DEBUG( "[%s] initial_device_num=%d",
                  UTILS_FUNCTION_NAME, initialDeviceNum );
 
+    /* Lookup runtime entry points: */
     /* According to the specification (Monitoring Activity on the Host with
        OMPT), calling the ompt_set_callback runtime entry point is only safe
        from a tool's initializer. This is unfortunate as registering at
@@ -93,15 +92,18 @@ initialize_tool( ompt_function_lookup_t lookup,
        to take care of by maintaining  'scorep_ompt_record_events'. */
     ompt_set_callback_t set_callback =
         ( ompt_set_callback_t )lookup( "ompt_set_callback" );
-    // TODO provide means to selectively register (groups of) callbacks
-    register_event_callbacks_host( set_callback );
-    register_event_callbacks_device( set_callback );
-
+    UTILS_BUG_ON( set_callback == 0 );
     scorep_ompt_mgmt_get_task_info =
         ( ompt_get_task_info_t )lookup( "ompt_get_task_info" );
     UTILS_BUG_ON( scorep_ompt_mgmt_get_task_info == 0 );
-    ompt_finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    ompt_finalize_tool =
+        ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
     UTILS_BUG_ON( ompt_finalize_tool == 0 );
+
+    /* Use runtime entry point set_callback to register callbacks:
+       TODO provide means to selectively register (groups of) callbacks? */
+    register_event_callbacks_host( set_callback );
+    register_event_callbacks_device( set_callback );
 
     tool_initialized = true;
     return 1; /* non-zero indicates success */
@@ -121,10 +123,59 @@ finalize_tool( ompt_data_t* toolData )
                                          ( ompt_callback_t )&scorep_ompt_cb_ ## PREFIX ## NAME ) )
 
 
+/* *INDENT-OFF* */
+#if 0
+callbacks available in 5.2:
+  ompt_callback_thread_begin            = 1,
+  ompt_callback_thread_end              = 2,
+  ompt_callback_parallel_begin          = 3,
+  ompt_callback_parallel_end            = 4,
+  ompt_callback_task_create             = 5,
+  ompt_callback_task_schedule           = 6,
+  ompt_callback_implicit_task           = 7,
+  ompt_callback_target                  = 8,
+  ompt_callback_target_data_op          = 9,
+  ompt_callback_target_submit           = 10,
+  ompt_callback_control_tool            = 11,
+  ompt_callback_device_initialize       = 12,
+  ompt_callback_device_finalize         = 13,
+  ompt_callback_device_load             = 14,
+  ompt_callback_device_unload           = 15,
+  ompt_callback_sync_region_wait        = 16,
+  ompt_callback_mutex_released          = 17,
+  ompt_callback_dependences             = 18,
+  ompt_callback_task_dependence         = 19,
+  ompt_callback_work                    = 20,
+  ompt_callback_masked                  = 21,
+  ompt_callback_master /*(deprecated)*/ = ompt_callback_masked,
+  ompt_callback_target_map              = 22,
+  ompt_callback_sync_region             = 23,
+  ompt_callback_lock_init               = 24,
+  ompt_callback_lock_destroy            = 25,
+  ompt_callback_mutex_acquire           = 26,
+  ompt_callback_mutex_acquired          = 27,
+  ompt_callback_nest_lock               = 28,
+  ompt_callback_flush                   = 29,
+  ompt_callback_cancel                  = 30,
+  ompt_callback_reduction               = 31,
+  ompt_callback_dispatch                = 32,
+  ompt_callback_target_emi              = 33,
+  ompt_callback_target_data_op_emi      = 34,
+  ompt_callback_target_submit_emi       = 35,
+  ompt_callback_target_map_emi          = 36,
+  ompt_callback_error                   = 37
+#endif
+/* *INDENT-ON* */
+
+
 static void
 register_event_callbacks_host( ompt_set_callback_t setCallback )
 {
     /* sort alphabetically */
+    REGISTER_CALLBACK( host_, implicit_task );
+    REGISTER_CALLBACK( host_, parallel_begin );
+    REGISTER_CALLBACK( host_, parallel_end );
+    REGISTER_CALLBACK( host_, sync_region );
     REGISTER_CALLBACK( host_, thread_begin );
     REGISTER_CALLBACK( host_, thread_end );
 }
@@ -180,6 +231,27 @@ ompt_subsystem_register( size_t id )
 
 
 static SCOREP_ErrorCode
+ompt_subsystem_init( void )
+{
+    UTILS_DEBUG( "[%s] register paradigm", UTILS_FUNCTION_NAME );
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_OPENMP,
+        SCOREP_PARADIGM_CLASS_THREAD_FORK_JOIN,
+        "OpenMP",
+        SCOREP_PARADIGM_FLAG_NONE );
+
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_OPENMP,
+                                        SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
+                                        "Thread team ${id}" );
+
+    SCOREP_Addr2line_RegisterObjcloseCb( scorep_ompt_codeptr_hash_dlclose_cb );
+
+    return SCOREP_SUCCESS;
+}
+
+
+static SCOREP_ErrorCode
 ompt_subsystem_begin( void )
 {
     UTILS_DEBUG( "[%s] start recording OMPT events", UTILS_FUNCTION_NAME );
@@ -208,10 +280,43 @@ ompt_subsystem_end( void )
 }
 
 
+static SCOREP_ErrorCode
+ompt_subsystem_init_location( struct SCOREP_Location* newLocation,
+                              struct SCOREP_Location* parentLocation )
+{
+    static bool already_called = false;
+    if ( !already_called )
+    {
+        already_called = true;
+        UTILS_DEBUG( "[%s] initial location %p", UTILS_FUNCTION_NAME, newLocation );
+        UTILS_BUG_ON( tool_initialized,
+                      "ompt tool initialization needs valid location" );
+    }
+    else
+    {
+        UTILS_DEBUG( "[%s] new location %p", UTILS_FUNCTION_NAME, newLocation );
+    }
+
+    if ( SCOREP_Location_GetType( newLocation ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        scorep_ompt_cpu_location_data* data =
+            SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, sizeof( *data ) );
+        memset( data, 0, sizeof( *data ) );
+        SCOREP_Location_SetSubsystemData( newLocation,
+                                          scorep_ompt_subsystem_id,
+                                          data );
+    }
+    return SCOREP_SUCCESS;
+}
+
+
 const SCOREP_Subsystem SCOREP_Subsystem_OmptAdapter =
 {
-    .subsystem_name     = "OMPT",
-    .subsystem_register = &ompt_subsystem_register,
-    .subsystem_begin    = &ompt_subsystem_begin,
-    .subsystem_end      = &ompt_subsystem_end
+    .subsystem_name                   = "OMPT",
+    .subsystem_register               = &ompt_subsystem_register,
+    .subsystem_init                   = &ompt_subsystem_init,
+    .subsystem_begin                  = &ompt_subsystem_begin,
+    .subsystem_end                    = &ompt_subsystem_end,
+    .subsystem_init_location          = &ompt_subsystem_init_location,
+    .subsystem_trigger_overdue_events = &scorep_ompt_subsystem_trigger_overdue_events
 };

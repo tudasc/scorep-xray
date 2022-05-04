@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2017,
+ * Copyright (c) 2009-2013, 2015, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -179,11 +179,12 @@ typedef struct SCOREP_Subsystem
     void ( * subsystem_finalize )( void );
 
     /**
-     *  The next 4 callbacks notify the subsystem about the lifetime of a
+     *  The next callbacks notify the subsystem about the lifetime of a
      *  location. For CPU locations:
      *
      *  - init_location
-     *  - activate_cpu_location(MGMT)                  \
+     *  - [trigger_overdue_events]                     \ (ForkJoin only)
+     *  - activate_cpu_location(MGMT)                  |
      *  - activate_cpu_location(EVENTS)                |
      *  - deactivate_cpu_location(PAUSE)   \ possible  | at least once
      *  - activate_cpu_location(PAUSE)     /           |
@@ -212,6 +213,28 @@ typedef struct SCOREP_Subsystem
      */
     SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* newLocation,
                                                     struct SCOREP_Location* parentLocation );
+
+    /**
+     * Callback to be notified to trigger overdue events on location @a location
+     * before the activation of @a location.
+     *
+     * For OMPT, ibarrier_end and itask_end events on worker threads might not get
+     * triggered by the runtime before either the next itask_begin (if any) on the
+     * same runtime thread or the shutdown of the runtime. I.e., there might be
+     * two overdue events for location M supposed to be triggered by thread N.
+     * There are cases, e.g., in a subsequent parallel region, where a different
+     * runtime thread, thread O, will write to location M. Before thread O triggers
+     * the itask_begin event on location M, the adapter needs to 1. write the
+     * overdue events to location M to preserve the event order and 2. prevent the
+     * adapter to act on the ibarrier_end and itask_end events on thread N that
+     * eventually get triggered.
+     *
+     * Currently triggered for fork-join threading only.
+     *
+     * @param location           The location the overdue events belong to.
+     * @return SCOREP_ErrorCode  SCOREP_SUCCESS if successful.
+     */
+    SCOREP_ErrorCode ( * subsystem_trigger_overdue_events )( struct SCOREP_Location* location );
 
     /**
      * Callback to be notified about a CPU location will get activated.

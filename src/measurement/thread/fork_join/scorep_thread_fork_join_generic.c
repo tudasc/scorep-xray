@@ -202,7 +202,6 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
 
     SCOREP_Location* parent_location  = scorep_thread_get_location( parent_tpd );
     SCOREP_Location* current_location = scorep_thread_get_location( *newTpd );
-    uint64_t         timestamp        = scorep_get_timestamp( current_location );
 
     if ( location_is_created )
     {
@@ -218,6 +217,8 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
         threadId );
     scorep_thread_set_team( *newTpd, team );
 
+    scorep_subsystems_trigger_overdue_events( current_location );
+
     /* Only call into the substrate for newly activated locations. */
     if ( threadId != 0 )
     {
@@ -229,6 +230,9 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
 
     uint64_t tid = SCOREP_Location_GetThreadId( current_location );
 
+    /* CPU location activation may also take timestamps, so take the TEAM_BEGIN
+     * timestamp not until immediately before the substrate triggers. */
+    uint64_t timestamp = scorep_get_timestamp( current_location );
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
                            ( current_location, timestamp, paradigm, team, tid ) );
 
@@ -249,10 +253,23 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm,
                                int                 threadId,
                                int                 teamSize )
 {
+    struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
+    uint64_t                           timestamp = scorep_get_timestamp( scorep_thread_get_location( tpd ) );
+
+    SCOREP_ThreadForkJoin_Tpd_TeamEnd( paradigm, tpd, timestamp, threadId, teamSize );
+}
+
+
+void
+SCOREP_ThreadForkJoin_Tpd_TeamEnd( SCOREP_ParadigmType                paradigm,
+                                   struct scorep_thread_private_data* tpd,
+                                   uint64_t                           timestamp,
+                                   int                                threadId,
+                                   int                                teamSize )
+{
     UTILS_ASSERT( threadId >= 0 && teamSize > 0 );
     UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
                   "Provided paradigm not of fork/join class" );
-    struct scorep_thread_private_data* tpd      = scorep_thread_get_private_data();
     struct scorep_thread_private_data* parent   = 0;
     SCOREP_Location*                   location = scorep_thread_get_location( tpd );
     SCOREP_InterimCommunicatorHandle   team     = scorep_thread_get_team( tpd );
@@ -268,7 +285,6 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm,
                                                ? SCOREP_CPU_LOCATION_PHASE_PAUSE
                                                : SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
-    uint64_t timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,
                            ( location, timestamp, paradigm, team ) );
 

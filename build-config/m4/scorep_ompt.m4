@@ -17,7 +17,7 @@ AC_DEFUN_ONCE([SCOREP_OMPT_SUMMARY], [
 AC_REQUIRE([SCOREP_OMPT])
 AFS_SUMMARY_PUSH
 AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_have_openmp_c_support}" = xyesyesyes],
-    [AFS_SUMMARY([OMPT header], [$have_ompt_header])
+    [AFS_SUMMARY([OMPT header], [$have_ompt_header${ompt_reason_header:+, $ompt_reason_header}])
      AS_IF([test "x${have_ompt_header}" = xyes],
          [AFS_SUMMARY([OMPT tool], [$have_ompt_tool])
           AS_IF([test "x${have_ompt_tool}" = xyes],
@@ -88,8 +88,37 @@ AS_IF([test "x${ac_cv_prog_cc_openmp}" != xunsupported],
     [AC_LANG_PUSH([C])
      CFLAGS_save="${CFLAGS}"
      CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+     # ompt-tools.h
      AC_CHECK_HEADER([omp-tools.h],
          [have_ompt_header=yes])
+     AS_IF([test "x${have_ompt_header}" = xyes],
+         [# check for required enum values
+          AC_COMPILE_IFELSE(
+              [AC_LANG_PROGRAM([#include <omp-tools.h>], [
+/* require version 5.1+ for sync_region */
+ompt_sync_region_t foo1 = ompt_sync_region_barrier_implicit_workshare;
+ompt_sync_region_t foo2 = ompt_sync_region_barrier_implicit_parallel;
+ompt_sync_region_t foo3 = ompt_sync_region_barrier_teams;
+          ])],
+              [# success
+               # check for optional enum values, if any
+               #
+               # ompt_scope_beginend: used in target-global-data-op,
+               # target-data-associate, target-data-disassociate
+               # events. Omission produces warnings.
+               #
+               # ompt_task_taskwait: to detect taskwait-init event
+               # (since 5.1)
+               #
+               AC_CHECK_DECLS([ompt_scope_beginend,
+                               ompt_task_taskwait,
+                               ompt_sync_region_barrier_implicit_workshare,
+                               ompt_sync_region_barrier_implicit_parallel,
+                               ompt_sync_region_barrier_teams], [], [], [[#include <omp-tools.h>]])],
+              [# failure
+               AC_MSG_WARN([OMPT header lacks version 5.1 enum values])
+               ompt_reason_header="lacks version 5.1 enum values"
+               have_ompt_header=no])])
      CFLAGS="$CFLAGS_save"
      AC_LANG_POP([C])])
 ])dnl _CHECK_OMPT_HEADER
