@@ -165,11 +165,13 @@ subroutine InitializeMatrix (myData)
     ! location. Put a statement before solves the issue.
 
 
-!$omp parallel do private (j)
+!$omp parallel private (j)
+!$omp do
     do j = myData%iRowFirst, myData%iRowLast
         call InitializeRow(myData, j)
     end do
-!$omp end parallel do
+!$omp end do
+!$omp end parallel
 end subroutine InitializeMatrix
 
 subroutine Finish(myData)

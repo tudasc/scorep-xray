@@ -155,13 +155,15 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
-!$omp parallel do
+!$omp parallel
+!$omp do
         do j = myData%iRowFirst + 1, myData%iRowLast - 1
             do i = 0, myData%iCols - 1
                 uold(i, j) = myData%afU(i, j)
             end do
         end do
-!$omp end parallel do
+!$omp end do
+!$omp end parallel
 
         call MPI_Waitall(iReqCnt, request, status, iErr)
     end subroutine ExchangeJacobiMpiData

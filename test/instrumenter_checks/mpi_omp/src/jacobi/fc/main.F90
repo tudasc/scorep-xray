@@ -285,7 +285,8 @@ subroutine InitializeMatrix (myData)
     ! location. Put a statement before solves the issue.
     xx=0
 
-!$omp parallel do private (j, i, xx, yy)
+!$omp parallel private (j, i, xx, yy)
+!$omp do
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
             xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
@@ -296,7 +297,8 @@ subroutine InitializeMatrix (myData)
                 - 2.0d0 * (1.0d0 - DBLE(yy*yy))
         end do
     end do
-!$omp end parallel do
+!$omp end do
+!$omp end parallel
 end subroutine InitializeMatrix
 
 subroutine Finish(myData)

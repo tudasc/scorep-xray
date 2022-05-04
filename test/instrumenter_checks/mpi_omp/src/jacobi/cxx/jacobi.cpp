@@ -171,7 +171,8 @@ ExchangeJacobiMpiData( JacobiData& data, double* uold,
                    &request[ iReqCnt ] );
         iReqCnt++;
     }
-#pragma omp parallel for
+#pragma omp parallel
+#pragma omp for
     for ( int j = data.iRowFirst + 1; j <= data.iRowLast - 1; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )
