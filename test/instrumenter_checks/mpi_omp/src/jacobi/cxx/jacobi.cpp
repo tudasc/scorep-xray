@@ -67,7 +67,7 @@ Jacobi( JacobiData& data )
            With Pragmas, the instrumenter would create initialization time
            initialization.
          */
-        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_USER_Region_handle pomp_user_region_handle = NULL;
         POMP2_Begin( &pomp_user_region_handle,
                      "82*regionType=userRegion*sscl=jacobi.cpp:63:63*escl=jacobi.cpp:102:102*userRegionName=loop**" );
 #endif
