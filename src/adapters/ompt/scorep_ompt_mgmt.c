@@ -184,7 +184,7 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
 static void
 register_event_callbacks_device( ompt_set_callback_t setCallback )
 {
-    // REGISTER_CALLBACK( , device_initialize );
+    REGISTER_CALLBACK(, device_initialize );
 }
 
 

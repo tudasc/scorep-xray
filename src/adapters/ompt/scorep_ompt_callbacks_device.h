@@ -15,4 +15,12 @@
 #define SCOREP_OMPT_CALLBACKS_TARGET_H
 
 
+void
+scorep_ompt_cb_device_initialize( int                    device_num,
+                                  const char*            type,
+                                  ompt_device_t*         device,
+                                  ompt_function_lookup_t lookup,
+                                  const char*            documentation );
+
+
 #endif /* SCOREP_OMPT_CALLBACKS_TARGET_H */
