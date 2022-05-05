@@ -41,7 +41,6 @@ include ../src/tools/libwrap_init/Makefile.inc.am
 include ../src/tools/preload_init/Makefile.inc.am
 include ../src/tools/wrapper/Makefile.inc.am
 include ../src/utils/alloc_metric/Makefile.inc.am
-include ../src/utils/atomic/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
 include ../src/utils/memory/Makefile.inc.am
 include ../src/utils/mutex/Makefile.inc.am

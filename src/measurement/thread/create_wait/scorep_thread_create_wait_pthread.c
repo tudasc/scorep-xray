@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016, 2018-2019, 2021,
+ * Copyright (c) 2014, 2016, 2018-2019, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2019-2020,
@@ -31,10 +31,10 @@
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Task.h>
@@ -298,8 +298,8 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
-            &pthread_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        uint32_t location_count = UTILS_Atomic_AddFetch_uint32(
+            &pthread_location_count, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         const int provided_length = 80;
         char      location_name[ provided_length ];
@@ -477,8 +477,8 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
-            &orphan_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        uint32_t location_count = UTILS_Atomic_AddFetch_uint32(
+            &orphan_location_count, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         char location_name[ 80 ];
         int  length = snprintf( location_name, 80, "Orphan thread %" PRIu32, location_count );

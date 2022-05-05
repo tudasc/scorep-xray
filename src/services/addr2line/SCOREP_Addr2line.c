@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2021,
+ * Copyright (c) 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -35,12 +35,12 @@
 #include <stdalign.h>
 #endif
 
-#include <SCOREP_Atomic.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_ReaderWriterLock.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 
@@ -951,26 +951,26 @@ uint8_t scorep_rt_objects_loaded[ BITSET_NSLOTS( MAX_RT_OBJOPEN_CALLS_TRACKED ) 
 static inline void
 bitset_set( uint8_t* bitset, uint16_t bit )
 {
-    SCOREP_Atomic_OrFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
-                                 BITSET_MASK( bit ),
-                                 SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    UTILS_Atomic_OrFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                BITSET_MASK( bit ),
+                                UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 
 static inline void
 bitset_clear( uint8_t* bitset, uint16_t bit )
 {
-    SCOREP_Atomic_AndFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
-                                  ~BITSET_MASK( bit ),
-                                  SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    UTILS_Atomic_AndFetch_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                 ~BITSET_MASK( bit ),
+                                 UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 
 static inline bool
 bitset_test( uint8_t* bitset, uint16_t bit )
 {
-    return SCOREP_Atomic_LoadN_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
-                                      SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT )
+    return UTILS_Atomic_LoadN_uint8( &( bitset[ BITSET_SLOT( bit ) ] ),
+                                     UTILS_ATOMIC_SEQUENTIAL_CONSISTENT )
            & BITSET_MASK( bit );
 }
 

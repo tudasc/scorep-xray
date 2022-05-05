@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017,
+ * Copyright (c) 2009-2014, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -45,9 +45,9 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_IoManagement.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_FastHashtab.h>
 #include <jenkins_hash.h>
@@ -301,7 +301,7 @@ insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
 SCOREP_MpiRequestId
 scorep_mpi_get_request_id( void )
 {
-    return SCOREP_Atomic_AddFetch_uint64( &mpi_last_request_id, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    return UTILS_Atomic_AddFetch_uint64( &mpi_last_request_id, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 void
@@ -455,7 +455,7 @@ scorep_mpi_request_get( MPI_Request request )
             scorep_mpi_request* current = value->payload.request;
             while ( current != NULL )
             {
-                if ( !SCOREP_Atomic_LoadN_bool( &( current->marker ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ) )
+                if ( !UTILS_Atomic_LoadN_bool( &( current->marker ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ) )
                 {
                     break;
                 }
@@ -471,7 +471,7 @@ scorep_mpi_request_get( MPI_Request request )
                 return NULL;
             }
 
-            SCOREP_Atomic_StoreN_bool( &( current->marker ), true, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            UTILS_Atomic_StoreN_bool( &( current->marker ), true, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
             SCOREP_MutexUnlock( &( value->request_lock ) );
             return current;
         }
@@ -489,7 +489,7 @@ scorep_mpi_unmark_request( scorep_mpi_request* req )
 {
     if ( req )
     {
-        SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        UTILS_Atomic_StoreN_bool( &( req->marker ), false, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     }
 }
 

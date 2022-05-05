@@ -23,7 +23,6 @@ nodist_libscorep_mutex_la_SOURCES = $(SRC_ROOT)src/utils/mutex/scorep_mutex.c
 libscorep_mutex_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
-libscorep_mutex_la_LIBADD = libscorep_atomic.la
 endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 

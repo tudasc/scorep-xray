@@ -4,6 +4,9 @@
  * Copyright (c) 2016, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,7 +30,8 @@
 #include <scorep_status.h>
 #include <SCOREP_IoManagement.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
+
+#include <UTILS_Atomic.h>
 
 typedef struct io_paradigm_node
 {
@@ -86,13 +90,13 @@ ensure_io_paradigm( io_paradigm_node*     ioParadigmNode,
     UTILS_BUG_ON( ioParadigm >= SCOREP_INVALID_IO_PARADIGM_TYPE, "invalid I/O paradigm passed" );
 
     io_paradigm_node* child =
-        SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
-                                      SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        UTILS_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                     UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( child == NULL )
     {
         SCOREP_MutexLock( &io_paradigm_mutex );
-        child = SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
-                                              SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        child = UTILS_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                             UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         if ( child == NULL )
         {
             /* not really per-location object, but MISC should survive location death */
@@ -124,15 +128,15 @@ ensure_io_paradigm( io_paradigm_node*     ioParadigmNode,
                                               ioParadigmNode->io_bytes_metric[ SCOREP_IO_OPERATION_MODE_WRITE ] );
 
             /* announce final node */
-            SCOREP_Atomic_StoreN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
-                                           child,
-                                           SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            UTILS_Atomic_StoreN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                          child,
+                                          UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
         SCOREP_MutexUnlock( &io_paradigm_mutex );
     }
 
-    return SCOREP_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
-                                         SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    return UTILS_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
+                                        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 static io_paradigm_node*

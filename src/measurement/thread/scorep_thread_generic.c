@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2016, 2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,10 +37,10 @@
 #include <scorep_thread_model_specific.h>
 
 #include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_Atomic.h>
 #include <scorep_location_management.h>
 #include <scorep_subsystem_management.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 
 #define SCOREP_DEBUG_MODULE_NAME THREAD
@@ -132,8 +132,8 @@ uint32_t
 scorep_thread_get_next_sequence_count( void )
 {
     UTILS_DEBUG_ENTRY();
-    return SCOREP_Atomic_FetchAdd_uint32( &sequence_count, 1,
-                                          SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    return UTILS_Atomic_FetchAdd_uint32( &sequence_count, 1,
+                                         UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 }
 
 

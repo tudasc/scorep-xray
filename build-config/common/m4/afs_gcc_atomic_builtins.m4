@@ -60,7 +60,7 @@ AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction
 # The substitution can be used for selecting precompiled instruction-set-dependent
 # SOURCES.
 #
-# For additional documentation, see src/utils/atomic/SCOREP_Atomic.inc.c.
+# For additional documentation, see common/utils/src/atomic/UTILS_Atomic.inc.c.
 #
 AC_DEFUN([AFS_GCC_ATOMIC_BUILTINS], [
 AC_REQUIRE([AFS_CPU_INSTRUCTION_SETS])
@@ -69,14 +69,14 @@ AC_MSG_CHECKING([for gcc atomic builtins])
 AC_LANG_PUSH([C])
 AC_LINK_IFELSE(
     [AC_LANG_PROGRAM(
-    [[#include "${srcdir}/../src/utils/atomic/SCOREP_Atomic.inc.c"]],
+    [[#include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
     [[]])],
     [afs_have_gcc_atomic_builtins=1
      gcc_atomic_builtins_result=yes],
     [AC_LINK_IFELSE(
          [AC_LANG_PROGRAM(
          [[#define HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS 1
-           #include "${srcdir}/../src/utils/atomic/SCOREP_Atomic.inc.c"]],
+           #include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
          [[]])],
          [afs_have_gcc_atomic_builtins=1
           AC_DEFINE([HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS], [1],
@@ -99,4 +99,9 @@ AFS_AM_CONDITIONAL([HAVE_GCC_ATOMIC_BUILTINS],
 AC_DEFINE_UNQUOTED([HAVE_GCC_ATOMIC_BUILTINS],
     [$afs_have_gcc_atomic_builtins],
     [Define to 1 if the compiler supports gcc atomic builtins.])
+# Only prepare the required assembly file and only if needed.  Note that the
+# file may be (over)written multiple times from different build directories,
+# though with identical contents.
+AS_IF([test "x$afs_have_gcc_atomic_builtins" = x0],
+    [AC_CONFIG_FILES([../common/utils/src/atomic/UTILS_Atomic.inc.${CPU_INSTRUCTION_SET}.s])])
 ]) # AFS_GCC_ATOMIC_BUILTINS

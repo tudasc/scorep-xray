@@ -54,7 +54,7 @@
 
 #include <stdbool.h>
 
-#include <SCOREP_Atomic.h>
+#include <UTILS_Atomic.h>
 
 #if HAVE( GCC_ATOMIC_BUILTINS )
 #include <stdlib.h>
@@ -87,8 +87,8 @@ SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
 
 /* Wait for a mutex state to be 'unlocked' */
 STATIC_INLINE void
-SCOREP_MutexWait( SCOREP_Mutex*          scorepMutex,
-                  SCOREP_Atomic_Memorder memorder );
+SCOREP_MutexWait( SCOREP_Mutex*         scorepMutex,
+                  UTILS_Atomic_Memorder memorder );
 
 #if HAVE( GCC_ATOMIC_BUILTINS )
 #include "../mutex/scorep_mutex.inc.c"

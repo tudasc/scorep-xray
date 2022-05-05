@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020-2021,
+ * Copyright (c) 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2020,
@@ -27,15 +27,15 @@ SCOREP_MutexLock( SCOREP_Mutex* scorepMutex )
     /* test-and-test-and-set lock */
     while ( true )
     {
-        while ( SCOREP_Atomic_LoadN_bool( scorepMutex, SCOREP_ATOMIC_RELAXED ) == true )
+        while ( UTILS_Atomic_LoadN_bool( scorepMutex, UTILS_ATOMIC_RELAXED ) == true )
         {
-            SCOREP_CPU_RELAX;
+            UTILS_CPU_RELAX;
         }
-        if ( SCOREP_Atomic_TestAndSet( scorepMutex, SCOREP_ATOMIC_ACQUIRE ) != true )
+        if ( UTILS_Atomic_TestAndSet( scorepMutex, UTILS_ATOMIC_ACQUIRE ) != true )
         {
             break;
         }
-        SCOREP_CPU_RELAX;
+        UTILS_CPU_RELAX;
     }
 }
 
@@ -44,15 +44,15 @@ SCOREP_MutexTrylock( SCOREP_Mutex* scorepMutex )
 {
     UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
-    if ( SCOREP_Atomic_LoadN_bool( scorepMutex, SCOREP_ATOMIC_RELAXED ) == true )
+    if ( UTILS_Atomic_LoadN_bool( scorepMutex, UTILS_ATOMIC_RELAXED ) == true )
     {
-        SCOREP_CPU_RELAX;
+        UTILS_CPU_RELAX;
         return false;
     }
 
-    if ( SCOREP_Atomic_TestAndSet( scorepMutex, SCOREP_ATOMIC_ACQUIRE ) == true )
+    if ( UTILS_Atomic_TestAndSet( scorepMutex, UTILS_ATOMIC_ACQUIRE ) == true )
     {
-        SCOREP_CPU_RELAX;
+        UTILS_CPU_RELAX;
         return false;
     }
 
@@ -64,16 +64,16 @@ SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex )
 {
     UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
-    SCOREP_Atomic_clear( scorepMutex, SCOREP_ATOMIC_RELEASE );
+    UTILS_Atomic_clear( scorepMutex, UTILS_ATOMIC_RELEASE );
 }
 
 STATIC_INLINE void
-SCOREP_MutexWait( SCOREP_Mutex* scorepMutex, SCOREP_Atomic_Memorder memorder )
+SCOREP_MutexWait( SCOREP_Mutex* scorepMutex, UTILS_Atomic_Memorder memorder )
 {
     UTILS_BUG_ON( scorepMutex == NULL, "Invalid mutex handle given." );
 
-    while ( SCOREP_Atomic_LoadN_bool( scorepMutex, ( memorder ) ) == true )
+    while ( UTILS_Atomic_LoadN_bool( scorepMutex, ( memorder ) ) == true )
     {
-        SCOREP_CPU_RELAX;
+        UTILS_CPU_RELAX;
     }
 }

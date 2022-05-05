@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -13,9 +13,9 @@
 
 #include <config.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 
 #define STATIC_INLINE
