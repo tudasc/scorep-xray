@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014, 2020,
+## Copyright (c) 2013-2014, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2017,
@@ -17,14 +17,14 @@
 ## file src/measurement/mutex/Makefile.inc.am
 
 
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 noinst_LTLIBRARIES += libscorep_mutex.la
 nodist_libscorep_mutex_la_SOURCES = $(SRC_ROOT)src/utils/mutex/scorep_mutex.c
 libscorep_mutex_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
 libscorep_mutex_la_LIBADD = libscorep_atomic.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 
 EXTRA_DIST += \

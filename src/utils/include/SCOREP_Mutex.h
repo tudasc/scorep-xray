@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2020-2021,
+ * Copyright (c) 2009-2011, 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -56,13 +56,13 @@
 
 #include <SCOREP_Atomic.h>
 
-#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#if HAVE( GCC_ATOMIC_BUILTINS )
 #include <stdlib.h>
 #include <UTILS_Error.h>
 #define STATIC_INLINE static inline
-#else /* !SCOREP_GCC_ATOMIC_BUILTINS */
+#else /* !GCC_ATOMIC_BUILTINS */
 #define STATIC_INLINE
-#endif /* !SCOREP_GCC_ATOMIC_BUILTINS */
+#endif /* !GCC_ATOMIC_BUILTINS */
 
 /**
  * A lock object is just a bool. Should be 0-initialized if allocated.
@@ -90,9 +90,9 @@ STATIC_INLINE void
 SCOREP_MutexWait( SCOREP_Mutex*          scorepMutex,
                   SCOREP_Atomic_Memorder memorder );
 
-#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#if HAVE( GCC_ATOMIC_BUILTINS )
 #include "../mutex/scorep_mutex.inc.c"
-#endif /* SCOREP_GCC_ATOMIC_BUILTINS */
+#endif /* GCC_ATOMIC_BUILTINS */
 
 #undef STATIC_INLINE
 

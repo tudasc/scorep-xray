@@ -35,17 +35,17 @@
  * must not be evaluated, but it is needed at make time. */
 #if defined( HAVE_CONFIG_H )
 
-#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#if HAVE( GCC_ATOMIC_BUILTINS )
 #define STATIC_INLINE static inline
-#else /* !SCOREP_GCC_ATOMIC_BUILTINS */
+#else /* !GCC_ATOMIC_BUILTINS */
 #define STATIC_INLINE
-#endif /* !SCOREP_GCC_ATOMIC_BUILTINS */
+#endif /* !GCC_ATOMIC_BUILTINS */
 
 /* define SCOREP_CPU_RELAX to be a 'PAUSE' instruction to improve the performance of spin-wait loops, if available. */
 #if defined( ASM_INLINE )
-#if HAVE( SCOREP_CPU_INSTRUCTION_SET_X86_64 )
+#if HAVE( CPU_INSTRUCTION_SET_X86_64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "pause" )
-#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_AARCH64 )
+#elif HAVE( CPU_INSTRUCTION_SET_AARCH64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "yield" )
 #endif
 #endif /* defined( ASM_INLINE ) */
@@ -1104,9 +1104,9 @@ SCOREP_Atomic_FetchNand_intptr( intptr_t*              ptr,
 /* At configure time, the following block must not be
  * evaluated, but it is needed at make time. */
 #if defined( HAVE_CONFIG_H )
-#if HAVE( SCOREP_GCC_ATOMIC_BUILTINS )
+#if HAVE( GCC_ATOMIC_BUILTINS )
 #include "../atomic/SCOREP_Atomic.inc.c"
-#endif /* SCOREP_GCC_ATOMIC_BUILTINS */
+#endif /* GCC_ATOMIC_BUILTINS */
 #undef STATIC_INLINE
 #endif /* defined( HAVE_CONFIG_H ) */
 

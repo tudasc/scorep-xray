@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019-2020,
+ * Copyright (c) 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -14,20 +14,20 @@
 /**
  * @file
  * If CC does not support gcc atomic builtins, which is checked at configure
- * time by SCOREP_GCC_ATOMIC_BUILTINS, use a precompiled, instruction-set
+ * time by AFS_GCC_ATOMIC_BUILTINS, use a precompiled, instruction-set
  * specific implementation:
- * src/utils/atomic/SCOREP_Atomic.inc.@SCOREP_CPU_INSTRUCTION_SET@.s
+ * src/utils/atomic/SCOREP_Atomic.inc.@CPU_INSTRUCTION_SET@.s
  *
  * If we encounter an unknown instruction set during configure
- * (see SCOREP_CPU_INSTRUCTION_SETS),
- * (1) adapt SCOREP_CPU_INSTRUCTION_SETS to detect this new instruction set,
+ * (see AFS_CPU_INSTRUCTION_SETS),
+ * (1) adapt AFS_CPU_INSTRUCTION_SETS to detect this new instruction set,
  * (2) provide SCOREP_Atomic.inc.<new_instruction_set>.s by compiling it using
  *     a gcc compiler that generates code for <new_instruction_set>, e.g.,
  *     gcc -Wall -march=<portable-arch> -mtune=generic -S -O3 SCOREP_Atomic.inc.c -o SCOREP_Atomic.inc.<new_instruction_set>.s
  * (3) Add SCOREP_Atomic.inc.<new_instruction_set>.s to EXTRA_DIST in
  *     src/utils/atomic/Makefile.inc.am
  *
- * If this file changes, the precompiled SCOREP_Atomic.inc.@SCOREP_CPU_INSTRUCTION_SET@.s
+ * If this file changes, the precompiled SCOREP_Atomic.inc.@CPU_INSTRUCTION_SET@.s
  * files need to be updated. As above, use this command with a gcc compiler that
  * generates code for <instruction_set>:
  * gcc -Wall -S -O3 SCOREP_Atomic.inc.c -o SCOREP_Atomic.inc.<instruction_set>.s
@@ -48,15 +48,15 @@
 #include "../include/SCOREP_Atomic.h"
 #endif /* !define( HAVE_CONFIG_H ) */
 
-#if HAVE_SCOREP_GCC_ATOMIC_BUILTINS_NEEDS_CASTS
+#if HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS
 #define PTR_PTR_TO_INT_PTR( ptr ) ( uintptr_t* )( ptr )
 #define PTR_TO_INT( ptr ) ( uintptr_t )( ptr )
 #define INT_TO_PTR( i ) ( void* )( i )
-#else /* ! SCOREP_GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
+#else /* ! GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
 #define PTR_PTR_TO_INT_PTR( ptr ) ( void** )( ptr )
 #define PTR_TO_INT( ptr ) ( ptr )
 #define INT_TO_PTR( i ) ( i )
-#endif /* ! SCOREP_GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
+#endif /* ! GCC_ATOMIC_BUILTINS_NEEDS_CASTS */
 
 
 static const int gcc_memorder[] = {

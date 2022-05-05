@@ -111,9 +111,9 @@ libscorep_mpi_mgmt_la_LIBADD   = \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(external_libadd)                                      \
     libscorep_thread_mockup.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_mpi_mgmt_la_LIBADD += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 libscorep_mpi_mgmt_la_LDFLAGS              = $(external_ldflags)
 
@@ -145,9 +145,9 @@ libscorep_shmem_mgmt_la_LIBADD   = \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     $(external_libadd)                                     \
     libscorep_thread_mockup.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_shmem_mgmt_la_LIBADD += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_shmem_mgmt_la_LDFLAGS              = $(external_ldflags)
 
 endif HAVE_SHMEM_SUPPORT
@@ -161,9 +161,9 @@ serial_libadd = \
     $(external_libadd) \
     libscorep_mpp_mockup.la \
     libscorep_thread_mockup.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 serial_libadd += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 serial_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 
@@ -182,9 +182,9 @@ omp_libadd = \
     libscorep_adapter_opari2_openmp_mgmt.la \
     libscorep_mpp_mockup.la \
     libscorep_thread_fork_join_omp.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 omp_libadd += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 
 omp_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
@@ -220,9 +220,9 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     libscorep_adapter_opari2_openmp_mgmt.la                 \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     libscorep_thread_fork_join_omp.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_mpi_omp_mgmt_la_LIBADD += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
 endif HAVE_SCOREP_OMP_TPD
@@ -255,9 +255,9 @@ libscorep_shmem_omp_mgmt_la_LIBADD   = \
     libscorep_adapter_opari2_user_mgmt.la                  \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_thread_fork_join_omp.la
-if ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+if ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_shmem_omp_mgmt_la_LIBADD += libscorep_mutex.la
-endif ! HAVE_SCOREP_GCC_ATOMIC_BUILTINS
+endif ! HAVE_GCC_ATOMIC_BUILTINS
 libscorep_shmem_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
 endif HAVE_OPENMP_C_SUPPORT

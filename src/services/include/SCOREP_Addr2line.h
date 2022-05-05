@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2021,
+ * Copyright (c) 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -63,11 +63,11 @@ SCOREP_Addr2line_Finalize( void );
 static inline uintptr_t
 SCOREP_Addr2line_ConvertRetAddr2PrgCntAddr( uintptr_t returnAddr )
 {
-#if HAVE( SCOREP_CPU_INSTRUCTION_SET_PPC64 )
+#if HAVE( CPU_INSTRUCTION_SET_PPC64 )
     return returnAddr - 4;
-#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_X86_64 )
+#elif HAVE( CPU_INSTRUCTION_SET_X86_64 )
     return returnAddr - 1;
-#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_AARCH64 )
+#elif HAVE( CPU_INSTRUCTION_SET_AARCH64 )
     return returnAddr - 4;
 #else
 #error Unknown instruction set
