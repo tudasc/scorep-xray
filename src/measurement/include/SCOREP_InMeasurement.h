@@ -4,6 +4,9 @@
  * Copyright (c) 2015, 2017,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -56,11 +59,11 @@ scorep_get_in_measurement( void );
 
 #else /* !__cplusplus */
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
+extern THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
 
 #if HAVE( SAMPLING_SUPPORT )
 
-extern SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
+extern THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context THREAD_LOCAL_STORAGE_MODEL( "initial-exec" );
 
 #endif /* HAVE( SAMPLING_SUPPORT ) */
 

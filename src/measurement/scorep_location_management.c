@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018, 2021,
+ * Copyright (c) 2009-2016, 2018, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,14 +58,14 @@
 #if HAVE( THREAD_LOCAL_STORAGE )
 
 /*  Declare and initialize thread local storage for in-measurement counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement
-SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
+THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement
+THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #if HAVE( SAMPLING_SUPPORT )
 
 /*  Declare and initialize thread local storage for in-signal-context counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
-SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
+THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
+THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #endif
 

@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -25,7 +28,7 @@
 #include <signal.h>
 
 /** Variable for thread-specific data key */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_sampling_is_known_pthread = SCOREP_SAMPLING_UNKNOWN_THREAD;
+THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_sampling_is_known_pthread = SCOREP_SAMPLING_UNKNOWN_THREAD;
 
 /** Signal handler for itimer interrupts */
 extern const scorep_sampling_interrupt_generator scorep_sampling_interrupt_generator_itimer;
