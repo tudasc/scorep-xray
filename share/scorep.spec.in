@@ -139,27 +139,32 @@
                 while ( ${i} < ${cube::#callpaths} )
                 {
                     ${execution}[${i}] = 1;
+                    ${regionid}        = ${cube::callpath::calleeid}[${i}];
+                    ${name}            = ${cube::region::name}[${regionid}];
+                    ${paradigm}        = ${cube::region::paradigm}[${regionid}];
+                    ${role}            = ${cube::region::role}[${regionid}];
+                    ${sourcefile}      = ${cube::region::mod}[${regionid}];
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "mpi" )
+                    if ( ${paradigm} eq "mpi" )
                     {
                         ${includesMPI} = 1;
                         ${mpi}[${i}]   = 1;
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
+                        if ( ${name} =~ /^MPI_(Init(_thread|ialized){0,1}|Finalize(d){0,1})$/ )
                         {
                             ${mpi_mgmt_startup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Cart_(coords|create|get|map|rank|shift|sub)|Cartdim_get|Comm_(accept|compare|connect|create(_group|_keyval){0,1}|delete_attr|disconnect|dup(_with_info){0,1}|free(_keyval){0,1}|get_(attr|info|name|parent)|group|idup|join|rank|remote_(group|size)|set_(attr|info|name)|size|spawn(_multiple){0,1}|split(_type){0,1}|test_inter)|Dims_create|Dist_graph_(create(_adjacent){0,1}|neighbors(_count){0,1})|Graph_(create|get|map|neighbors(_count){0,1})|Graphdims_get|Intercomm_(create|merge)|Topo_test|(Close|Open)_port|(Lookup|Publish|Unpublish)_name)$/ )
+                        if ( ${name} =~ /^MPI_(Cart_(coords|create|get|map|rank|shift|sub)|Cartdim_get|Comm_(accept|compare|connect|create(_group|_keyval){0,1}|delete_attr|disconnect|dup(_with_info){0,1}|free(_keyval){0,1}|get_(attr|info|name|parent)|group|idup|join|rank|remote_(group|size)|set_(attr|info|name)|size|spawn(_multiple){0,1}|split(_type){0,1}|test_inter)|Dims_create|Dist_graph_(create(_adjacent){0,1}|neighbors(_count){0,1})|Graph_(create|get|map|neighbors(_count){0,1})|Graphdims_get|Intercomm_(create|merge)|Topo_test|(Close|Open)_port|(Lookup|Publish|Unpublish)_name)$/ )
                         {
                             ${mpi_mgmt_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
+                        if ( ${name} =~ /^MPI_File_(close|delete|get_(amode|atomicity|byte_offset|group|info|position(_shared){0,1}|size|type_extent|view)|open|preallocate|seek(_shared){0,1}|set_(atomicity|info|size|view)|sync)$/ )
                         {
                             ${mpi_mgmt_file}[${i}] = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /(delete|get|seek)/ )
+                            if ( ${name} =~ /(delete|get|seek)/ )
                             {
                                 ${mpi_file_iops}[${i}] = 1;
                             }
@@ -169,70 +174,70 @@
                             };
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Win_(allocate(_shared){0,1}|attach|create(_dynamic|_keyval){0,1}|delete_attr|detach|free(_keyval){0,1}|get_(attr|group|info|name)|set_(attr|info|name)|shared_query)$/ )
+                        if ( ${name} =~ /^MPI_Win_(allocate(_shared){0,1}|attach|create(_dynamic|_keyval){0,1}|delete_attr|detach|free(_keyval){0,1}|get_(attr|group|info|name)|set_(attr|info|name)|shared_query)$/ )
                         {
                             ${mpi_mgmt_win}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        if ( ${role} eq "barrier" )
                         {
                             ${mpi_sync_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Win_(complete|fence|post|start|test|wait)$/ )
+                        if ( ${name} =~ /^MPI_Win_(complete|fence|post|start|test|wait)$/ )
                         {
                             ${mpi_sync_rma_active}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Win_((flush(_local){0,1}|lock|unlock)(_all){0,1}|sync)$/ )
+                        if ( ${name} =~ /^MPI_Win_((flush(_local){0,1}|lock|unlock)(_all){0,1}|sync)$/ )
                         {
                             ${mpi_sync_rma_passive}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "point2point" )
+                        if ( ${role} eq "point2point" )
                         {
                             ${mpi_comm_p2p}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Test_cancelled$/ )
+                        if ( ${name} =~ /^MPI_Test_cancelled$/ )
                         {
                             ${mpi_request_handling}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Start(all){0,1}$/ )
+                        if ( ${name} =~ /^MPI_Start(all){0,1}$/ )
                         {
                             ${mpi_request_handling}[${i}] = 1;
                             ${mpi_request_start}[${i}] = 1;
                         };
 
-                        if ( ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
+                        if ( ( ${name} =~ /^MPI_(Test|Wait)(all|any|some){0,1}$/ )
                              or
-                             ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Cancel$/ )
+                             ( ${name} =~ /^MPI_Cancel$/ )
                              or
-                             ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Request_free$/ )
+                             ( ${name} =~ /^MPI_Request_free$/ )
                              or
-                             ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Request_get_status$/ ) )
+                             ( ${name} =~ /^MPI_Request_get_status$/ ) )
                         {
                             ${mpi_request_handling}[${i}] = 1;
                             ${mpi_request_completion}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
+                        if ( ${role} =~ /^(one2all|all2one|all2all|other collective)$/ )
                         {
                             ${mpi_comm_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(rma|atomic)$/ )
+                        if ( ${role} =~ /^(rma|atomic)$/ )
                         {
                             ${mpi_comm_rma}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
+                        if ( ${name} =~ /^MPI_File_i{0,1}(read|write)(_at|_shared){0,1}$/ )
                         {
                             ${mpi_file_individual}[${i}] = 1;
                             ${mpi_file_iops}[${i}]       = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /read/ )
+                            if ( ${name} =~ /read/ )
                             {
                                 ${mpi_file_irops}[${i}] = 1;
                             }
@@ -242,12 +247,12 @@
                             };
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_((iread|iwrite)_(all|at_all)|(read|write)_(all|at_all|ordered)(_begin|_end){0,1})$/ )
+                        if ( ${name} =~ /^MPI_File_((iread|iwrite)_(all|at_all)|(read|write)_(all|at_all|ordered)(_begin|_end){0,1})$/ )
                         {
                             ${mpi_file_collective}[${i}] = 1;
                             ${mpi_file_cops}[${i}]       = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /read/ )
+                            if ( ${name} =~ /read/ )
                             {
                                 ${mpi_file_crops}[${i}] = 1;
                             }
@@ -258,198 +263,198 @@
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "shmem" )
+                    if ( ${paradigm} eq "shmem" )
                     {
                         ${includesSHMEM} = 1;
                         ${shmem}[${i}] = 1;
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_init(_thread){0,1}|start_pes|shmem_finalize)$/ )
+                        if ( ${name} =~ /^(shmem_init(_thread){0,1}|start_pes|shmem_finalize)$/ )
                         {
                             ${shmem_mgmt_initfini}[${i}] = 1;
                         };
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^((shmem_|_){0,1}(my_pe|num_pes)|shmem_team_(split|create_strided|free|npes|mype|translate_pe))$/ )
+                        if ( ${name} =~ /^((shmem_|_){0,1}(my_pe|num_pes)|shmem_team_(split|create_strided|free|npes|mype|translate_pe))$/ )
                         {
                             ${shmem_mgmt_activesets}[${i}] = 1;
                         };
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_((pe|adr)_accessible|ptr))$/ )
+                        if ( ${name} =~ /^(shmem_((pe|adr)_accessible|ptr))$/ )
                         {
                             ${shmem_mgmt_query}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "rma" )
+                        if ( ${role} eq "rma" )
                         {
                             ${shmem_comm_rma}[${i}] = 1;
                         };
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "atomic" )
+                        if ( ${role} eq "atomic" )
                         {
                             ${shmem_comm_atomic}[${i}] = 1;
                         };
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
+                        if ( ${role} =~ /^(one2all|all2one|all2all|other collective)$/ )
                         {
                             ${shmem_comm_coll}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem(short|int|long|longlong){0,1}_wait(_until){0,1})$/ )
+                        if ( ${name} =~ /^(shmem(short|int|long|longlong){0,1}_wait(_until){0,1})$/ )
                         {
                             ${shmem_sync_rma}[${i}] = 1;
                         };
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        if ( ${role} eq "barrier" )
                         {
                             ${shmem_sync_coll}[${i}] = 1;
                         };
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(set|test|clear)_lock)$/ )
+                        if ( ${name} =~ /^(shmem_(set|test|clear)_lock)$/ )
                         {
                             ${shmem_sync_locking}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^((de|re){0,1}allocate)$/ )
+                        if ( ${role} =~ /^((de|re){0,1}allocate)$/ )
                         {
                             ${shmem_memory_mgmt}[${i}] = 1;
                         };
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(fence|quiet))$/ )
+                        if ( ${name} =~ /^(shmem_(fence|quiet))$/ )
                         {
                             ${shmem_memory_ordering}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_(set|test|clear|wait)_event)$/ )
+                        if ( ${name} =~ /^(shmem_(set|test|clear|wait)_event)$/ )
                         {
                             ${shmem_event}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(shmem_((clear|set)_cache(_line){0,1}_inv|udcflush(_line){0,1}))$/ )
+                        if ( ${name} =~ /^(shmem_((clear|set)_cache(_line){0,1}_inv|udcflush(_line){0,1}))$/ )
                         {
                             ${shmem_cache}[${i}] = 1;
                         };
 
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openmp" )
+                    if ( ${paradigm} eq "openmp" )
                     {
                         ${includesOpenMP} = 1;
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        if ( ${role} eq "barrier" )
                         {
                             ${omp_sync_ebarrier}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "implicit barrier" )
+                        if ( ${role} eq "implicit barrier" )
                         {
                             ${omp_sync_ibarrier}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(atomic|critical)$/ )
+                        if ( ${role} =~ /^(atomic|critical)$/ )
                         {
                             ${omp_sync_critical}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^omp_(destroy|init|set|test|unset)(_nest){0,1}_lock$/ )
+                        if ( ${name} =~ /^omp_(destroy|init|set|test|unset)(_nest){0,1}_lock$/ )
                         {
                             ${omp_sync_lock_api}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "ordered" )
+                        if ( ${role} eq "ordered" )
                         {
                             ${omp_sync_ordered}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "taskwait" )
+                        if ( ${role} eq "taskwait" )
                         {
                             ${omp_sync_taskwait}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "flush" )
+                        if ( ${role} eq "flush" )
                         {
                             ${omp_flush}[${i}] = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "pthread" )
+                    if ( ${paradigm} eq "pthread" )
                     {
                         ${includesPthread} = 1;
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_(cancel|create|detach|exit|join)$/ )
+                        if ( ${name} =~ /^pthread_(cancel|create|detach|exit|join)$/ )
                         {
                             ${pthread_mgmt}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_mutex_(destroy|init|lock|trylock|unlock)$/ )
+                        if ( ${name} =~ /^pthread_mutex_(destroy|init|lock|trylock|unlock)$/ )
                         {
                             ${pthread_sync_mutex}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_cond_(broadcast|destroy|init|signal|timedwait|wait)$/ )
+                        if ( ${name} =~ /^pthread_cond_(broadcast|destroy|init|signal|timedwait|wait)$/ )
                         {
                             ${pthread_sync_condition}[${i}] = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openacc" )
+                    if ( ${paradigm} eq "openacc" )
                     {
                         ${includesOpenACC} = 1;
 
                         ${openacc}[${i}] = 1;
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(init|shutdown)(@.*)?$/ )
+                        if ( ${name} =~ /^acc_(init|shutdown)(@.*)?$/ )
                         {
                             ${openacc_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_(upload|download)(@.*)?$/ )
+                        if ( ${name} =~ /^acc_(upload|download)(@.*)?$/ )
                         {
                             ${openacc_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_wait(@.*)?$/ )
+                        if ( ${name} =~ /^acc_wait(@.*)?$/ )
                         {
                             ${openacc_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^acc_launch_kernel(@.*)?$/ )
+                        if ( ${name} =~ /^acc_launch_kernel(@.*)?$/ )
                         {
                             ${openacc_kernel_launches}[${i}] = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "opencl" )
+                    if ( ${paradigm} eq "opencl" )
                     {
                         ${includesOpenCL} = 1;
 
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" ) )
+                        if ( not ( ${name} eq "BUFFER FLUSH" ) )
                         {
                             ${opencl}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuiltInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|RetainKernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserEvent|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo|CreateProgramWithIL|GetKernelSubGroupInfo|GetHostTimer|GetDeviceAndHostTimer|CloneKernel|SetDefaultDeviceCommandQueue|SetProgramReleaseCallback|SetProgramSpecializationConstant)$/ )
+                        if ( ${name} =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuiltInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|RetainKernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserEvent|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo|CreateProgramWithIL|GetKernelSubGroupInfo|GetHostTimer|GetDeviceAndHostTimer|CloneKernel|SetDefaultDeviceCommandQueue|SetProgramReleaseCallback|SetProgramSpecializationConstant)$/ )
                         {
                             ${opencl_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObject|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject|EnqueueSVMMigrateMem)$/ )
+                        if ( ${name} =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObject|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject|EnqueueSVMMigrateMem)$/ )
                         {
                             ${opencl_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(Finish|WaitForEvents|EnqueueWaitForEvents|EnqueueBarrier|EnqueueMarker|EnqueueMarkerWithWaitList|EnqueueBarrierWithWaitList)$/ )
+                        if ( ${name} =~ /^cl(Finish|WaitForEvents|EnqueueWaitForEvents|EnqueueBarrier|EnqueueMarker|EnqueueMarkerWithWaitList|EnqueueBarrierWithWaitList)$/ )
                         {
                             ${opencl_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "WAIT FOR COMMAND QUEUE" )
+                        if ( ${name} eq "WAIT FOR COMMAND QUEUE" )
                         {
                             ${opencl_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask|EnqueueNativeKernel)$/ )
+                        if ( ${name} =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask|EnqueueNativeKernel)$/ )
                         {
                             ${opencl_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "OPENCL_KERNEL" )
+                        if ( ${sourcefile} seq "OPENCL_KERNEL" )
                         {
                             ${opencl_kernel_executions}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
+                        if ( ${name} eq "BUFFER FLUSH" )
                         {
                             ${opencl}[${i}]    = 0;
                             ${execution}[${i}] = 0;
@@ -457,83 +462,83 @@
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "cuda" )
+                    if ( ${paradigm} eq "cuda" )
                     {
                         ${includesCUDA} = 1;
 
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" ) )
+                        if ( not ( ${name} eq "BUFFER FLUSH" ) )
                         {
                             ${cuda}[${i}] = 1;
                         };
 
                         // CUDA Runtime API: general CUDA management, e.g. device, stream, event, execution, occupancy
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig|CtxResetPersistingL2Cache|DeviceGetNvSciSyncAttributes|DeviceGetP2PAttribute|DeviceGetTexture1DLinearMaxWidth|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlags|FuncGetAttributes|FuncSetAttribute|FuncSetSharedMemConfig|GetParameterBuffer|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|SetDoubleForDevice|SetDoubleForHost|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)$/ )
+                        if ( ${name} =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig|CtxResetPersistingL2Cache|DeviceGetNvSciSyncAttributes|DeviceGetP2PAttribute|DeviceGetTexture1DLinearMaxWidth|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlags|FuncGetAttributes|FuncSetAttribute|FuncSetSharedMemConfig|GetParameterBuffer|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|SetDoubleForDevice|SetDoubleForHost|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
                         // CUDA Runtime API: memory management (memset functions considered in kernel launch section)
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync|ArrayGetInfo|ArrayGetSparseProperties|GetMipmappedArrayLevel|GetSymbolAddress|GetSymbolSize|HostGetDevicePointer|HostGetFlags|HostRegister|HostUnregister|MemAdvise|MemGetInfo|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|Memcpy3DPeer|Memcpy3DPeerAsync|MipmappedArrayGetSparseProperties|PointerGetAttributes)$/ )
+                        if ( ${name} =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync|ArrayGetInfo|ArrayGetSparseProperties|GetMipmappedArrayLevel|GetSymbolAddress|GetSymbolSize|HostGetDevicePointer|HostGetFlags|HostRegister|HostUnregister|MemAdvise|MemGetInfo|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|Memcpy3DPeer|Memcpy3DPeerAsync|MipmappedArrayGetSparseProperties|PointerGetAttributes)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
                         // CUDA Runtime API: synchronization
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
+                        if ( ${name} =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
                         // CUDA Runtime API: kernel launches
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)$/ )
+                        if ( ${name} =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
                         // CUDA Driver API: general CUDA management, e.g. initialization, version, device,
                         // primary context, context, streams, events, occupancy
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCreate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|CtxResetPersistingL2Cache|DeviceGetLuid|DeviceGetNvSciSyncAttributes|DeviceGetTexture1DLinearMaxWidth|DeviceGetUuid|DriverGetVersion|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlagsFuncGetAttribute|FuncSetAttribute|FuncSetBlockShape|FuncSetCacheConfig|FuncSetSharedMemConfig|FuncSetSharedSize|LinkAddData|LinkAddFile|LinkComplete|ModuleGetFunction|ModuleGetGlobal|ModuleGetSurfRef|ModuleGetTexRef|ModuleLoad|ModuleLoadData|ModuleLoadDataEx|ModuleLoadFatBinary|ModuleUnload|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|OccupancyMaxPotentialBlockSize|OccupancyMaxPotentialBlockSizeWithFlags|ParamSetSize|ParamSetTexRef|ParamSetf|ParamSeti|ParamSetv|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetCtx|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)(_v[0-9]+)?$/ )
+                        if ( ${name} =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCreate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|CtxResetPersistingL2Cache|DeviceGetLuid|DeviceGetNvSciSyncAttributes|DeviceGetTexture1DLinearMaxWidth|DeviceGetUuid|DriverGetVersion|EventElapsedTime|EventQuery|EventRecord|EventRecordWithFlagsFuncGetAttribute|FuncSetAttribute|FuncSetBlockShape|FuncSetCacheConfig|FuncSetSharedMemConfig|FuncSetSharedSize|LinkAddData|LinkAddFile|LinkComplete|ModuleGetFunction|ModuleGetGlobal|ModuleGetSurfRef|ModuleGetTexRef|ModuleLoad|ModuleLoadData|ModuleLoadDataEx|ModuleLoadFatBinary|ModuleUnload|OccupancyAvailableDynamicSMemPerBlock|OccupancyMaxActiveBlocksPerMultiprocessor|OccupancyMaxActiveBlocksPerMultiprocessorWithFlags|OccupancyMaxPotentialBlockSize|OccupancyMaxPotentialBlockSizeWithFlags|ParamSetSize|ParamSetTexRef|ParamSetf|ParamSeti|ParamSetv|StreamAddCallback|StreamAttachMemAsync|StreamBeginCapture|StreamCopyAttributes|StreamEndCapture|StreamGetAttribute|StreamGetCaptureInfo|StreamGetCtx|StreamGetFlags|StreamGetPriority|StreamIsCapturing|StreamQuery|StreamSetAttribute|ThreadExchangeStreamCaptureMode)(_v[0-9]+)?$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
                         // CUDA Driver API: memory management, incl. virtual memory, unified addressing
                         // (memset functions considered in kernel launch section)
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MipmappedArrayCreate|MipmappedArrayDestroy|MemFree|MemFreeHost|MemHostAlloc|Array3DGetDescriptor|ArrayGetDescriptor|ArrayGetSparseProperties|DeviceGetByPCIBusId|DeviceGetPCIBusId|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|MemAddressFree|MemAddressReserve|MemAdvise|MemCreate|MemExportToShareableHandle|MemGetAccess|MemGetAddressRange|MemGetAllocationGranularity|MemGetAllocationPropertiesFromHandle|MemGetInfo|MemHostGetDevicePointer|MemHostGetFlags|MemHostRegister|MemHostUnregister|MemImportFromShareableHandle|MemMap|MemMapArrayAsync|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|MemRelease|MemRetainAllocationHandle|MemSetAccess|MemUnmap|MipmappedArrayGetLevel|MipmappedArrayGetSparseProperties|PointerGetAttribute|PointerGetAttributes|PointerSetAttribute)(_v[0-9]+)?$/ )
+                        if ( ${name} =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MipmappedArrayCreate|MipmappedArrayDestroy|MemFree|MemFreeHost|MemHostAlloc|Array3DGetDescriptor|ArrayGetDescriptor|ArrayGetSparseProperties|DeviceGetByPCIBusId|DeviceGetPCIBusId|IpcCloseMemHandle|IpcGetEventHandle|IpcGetMemHandle|IpcOpenEventHandle|IpcOpenMemHandle|MemAddressFree|MemAddressReserve|MemAdvise|MemCreate|MemExportToShareableHandle|MemGetAccess|MemGetAddressRange|MemGetAllocationGranularity|MemGetAllocationPropertiesFromHandle|MemGetInfo|MemHostGetDevicePointer|MemHostGetFlags|MemHostRegister|MemHostUnregister|MemImportFromShareableHandle|MemMap|MemMapArrayAsync|MemPrefetchAsync|MemRangeGetAttribute|MemRangeGetAttributes|MemRelease|MemRetainAllocationHandle|MemSetAccess|MemUnmap|MipmappedArrayGetLevel|MipmappedArrayGetSparseProperties|PointerGetAttribute|PointerGetAttributes|PointerSetAttribute)(_v[0-9]+)?$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
                         // CUDA Driver API: synchronization
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)(_v[0-9]+)?$/ )
+                        if ( ${name} =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)(_v[0-9]+)?$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
                         // CUDA Driver API: kernel launches
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)(_v[0-9]+)?$/ )
+                        if ( ${name} =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|LaunchCooperativeKernel|LaunchCooperativeKernelMultiDevice|LaunchHostFunc)(_v[0-9]+)?$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "DEVICE SYNCHRONIZE" )
+                        if ( ${name} eq "DEVICE SYNCHRONIZE" )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "CUDA_KERNEL" )
+                        if ( ${sourcefile} seq "CUDA_KERNEL" )
                         {
                             ${cuda_kernel_executions}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
+                        if ( ${name} eq "BUFFER FLUSH" )
                         {
                             ${cuda}[${i}]      = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "COMPUTE IDLE" )
+                        if ( ${name} eq "COMPUTE IDLE" )
                         {
                             ${includesIdleGPUs} = 1;
                             ${cuda}[${i}]       = 0;
@@ -542,85 +547,85 @@
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "hip" )
+                    if ( ${paradigm} eq "hip" )
                     {
                         ${includesHIP} = 1;
                         ${hip}[${i}]   = 1;
 
                         // HIP stream management
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^hip(Init|StreamCreate(With(Flags|Priority))?|ExtStreamCreateWithCUMask|StreamDestroy|SetDevice)/ )
+                        if ( ${name} =~ /^hip(Init|StreamCreate(With(Flags|Priority))?|ExtStreamCreateWithCUMask|StreamDestroy|SetDevice)/ )
                         {
                             ${hip_stream}[${i}] = 1;
                         };
 
                         // HIP kernel launches
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^hip(Module|ExtModule|HccModule)?LaunchKernel$/ )
+                        if ( ${name} =~ /^hip(Module|ExtModule|HccModule)?LaunchKernel$/ )
                         {
                             ${hip_kernel_launches}[${i}] = 1;
                         };
 
                         // HIP memory allocations
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_MALLOC" )
+                        if ( ${sourcefile} seq "HIP_MALLOC" )
                         {
                             ${hip_malloc}[${i}] = 1;
                         };
 
                         // HIP memory transfers
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_MEMCPY" )
+                        if ( ${sourcefile} seq "HIP_MEMCPY" )
                         {
                             ${hip_memcpy}[${i}] = 1;
                         };
 
                         // HIP synchronization
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_SYNC" )
+                        if ( ${sourcefile} seq "HIP_SYNC" )
                         {
                             ${hip_sync}[${i}] = 1;
                         };
 
                         // HIP kernels
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_KERNEL" )
+                        if ( ${sourcefile} seq "HIP_KERNEL" )
                         {
                             ${hip_kernel_executions}[${i}] = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
+                    if ( ${paradigm} eq "measurement" )
                     {
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "TRACE BUFFER FLUSH" )
+                        if ( ${name} eq "TRACE BUFFER FLUSH" )
                         {
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] =~ /^libwrap:(.+)$/ )
+                    if ( ${paradigm} =~ /^libwrap:(.+)$/ )
                     {
                         ${includesLIBWRAP} = 1;
                         ${libwrap}[${i}] = 1;
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "io" )
+                    if ( ${paradigm} eq "io" )
                     {
                         ${includesFILEIO} = 1;
                         ${fileio}[${i}]   = 1;
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] seq "file io metadata" )
+                        if ( ${role} seq "file io metadata" )
                         {
                             ${fileio_meta}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_read|fgetc|fgets|fread|fscanf|getc|getchar|gets|pread|pread64|preadv|preadv2|preadv64|preadv64v2|read|readv|scanf|vfscanf|vscanf)$/ )
+                        if ( ${name} =~ /^(aio_read|fgetc|fgets|fread|fscanf|getc|getchar|gets|pread|pread64|preadv|preadv2|preadv64|preadv64v2|read|readv|scanf|vfscanf|vscanf)$/ )
                         {
                             ${fileio_reading}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(aio_write|fflush|fprintf|fputc|fputs|fwrite|printf|putchar|puts|pwrite|pwrite64|pwritev|pwritev2|pwritev64|pwritev64v2|vfprintf|vprintf|write|writev)$/ )
+                        if ( ${name} =~ /^(aio_write|fflush|fprintf|fputc|fputs|fwrite|printf|putchar|puts|pwrite|pwrite64|pwritev|pwritev2|pwritev64|pwritev64v2|vfprintf|vprintf|write|writev)$/ )
                         {
                             ${fileio_writing}[${i}] = 1;
                         };
                     };
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "memory" )
+                    if ( ${paradigm} eq "memory" )
                     {
                         ${includesMEMORY} = 1;
                     };
