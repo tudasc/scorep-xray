@@ -140,10 +140,19 @@
                 {
                     ${execution}[${i}] = 1;
                     ${regionid}        = ${cube::callpath::calleeid}[${i}];
-                    ${name}            = ${cube::region::name}[${regionid}];
-                    ${paradigm}        = ${cube::region::paradigm}[${regionid}];
-                    ${role}            = ${cube::region::role}[${regionid}];
-                    ${sourcefile}      = ${cube::region::mod}[${regionid}];
+
+                    if ( ${cube::region::mangled_name}[${regionid}] eq "" )
+                    {
+                        ${name} = ${cube::region::name}[${regionid}];
+                    }
+                    else
+                    {
+                        ${name} = ${cube::region::mangled_name}[${regionid}];
+                    };
+
+                    ${paradigm}   = ${cube::region::paradigm}[${regionid}];
+                    ${role}       = ${cube::region::role}[${regionid}];
+                    ${sourcefile} = ${cube::region::mod}[${regionid}];
 
                     if ( ${paradigm} eq "mpi" )
                     {
