@@ -382,7 +382,7 @@ be used to build Score-P are as follows:
                and --with-libbfd-lib=<path/(lib64|lib)>. If this
                not the case, use the explicit options directly or
                provide paths via LIBBFD_LIB and LIBBFD_INCLUDE. Use
-               [download] to obtain and use libbfd via exernal
+               [download] to obtain and use libbfd via external
                tarball.
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>

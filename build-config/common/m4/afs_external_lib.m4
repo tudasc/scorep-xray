@@ -117,7 +117,7 @@ AC_ARG_WITH(_afs_lib_name,
                [ directly or provide path]m4_ifnblank([$3], [s])
                [ via ]_afs_lib_NAME[_LIB]
                m4_ifnblank([$3], [ and ]_afs_lib_NAME[_INCLUDE])[.]
-               m4_ifnblank([$4], [Use [[download]] to obtain and use an exernal tarball.])),
+               m4_ifnblank([$4], [Use [[download]] to obtain and use an external tarball.])),
          [$5])])
 m4_ifnblank([$3], [AC_ARG_WITH(_afs_lib_name[-include],
      AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers>], [], [79]))])
