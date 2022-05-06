@@ -38,8 +38,8 @@ AS_HELP_STRING([--with-]_afs_lib_name[@<:@=yes|download|<path to ]_afs_lib_name[
      --with-]_afs_lib_name[-lib=<path/(lib64|lib)>. If this
      not the case, use the explicit
      options directly or provide paths via ]_afs_lib_NAME[_LIB
-     and ]_afs_lib_NAME[_INCLUDE. Use [download] to obtain and
-     use ]_afs_lib_name[ via external tarball.])])dnl
+     and ]_afs_lib_NAME[_INCLUDE. Use [download] to automatically
+     obtain and use ]_afs_lib_name[ via external tarball.])])dnl
 AC_LANG_POP([C])
 dnl
 AS_IF([test "${libbfd_summary:+set}" != set],
