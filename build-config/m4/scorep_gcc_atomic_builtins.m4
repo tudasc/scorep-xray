@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2019-2020,
+dnl Copyright (c) 2019-2020, 2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -47,7 +47,7 @@ AC_SUBST([SCOREP_CPU_INSTRUCTION_SET], [${instruction_set}])
 # AC_DEFINE_UNQUOTED([$var], ...) does not work with AC_CONFIG_HEADERS, thus define all possible instruction sets
 AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_PPC64], $(if test "x${instruction_set}" = xppc64; then echo 1; else echo 0; fi), [Instruction set ppc64])
 AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_X86_64], $(if test "x${instruction_set}" = xx86_64; then echo 1; else echo 0; fi), [Instruction set x86_64])
-AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction_set}" = xaarch64; then echo 1; else echo 0; fi), [Instruction set aarch_64])
+AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction_set}" = xaarch64; then echo 1; else echo 0; fi), [Instruction set aarch64])
 ]) # SCOREP_CPU_INSTRUCTION_SETS
 
 
@@ -67,6 +67,7 @@ AC_DEFINE_UNQUOTED([HAVE_SCOREP_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${inst
 AC_DEFUN([SCOREP_GCC_ATOMIC_BUILTINS], [
 AC_REQUIRE([SCOREP_CPU_INSTRUCTION_SETS])
 AC_REQUIRE([AX_ASM_INLINE])
+AC_MSG_CHECKING([for gcc atomic builtins])
 AC_LANG_PUSH([C])
 AC_LINK_IFELSE(
     [AC_LANG_PROGRAM(
@@ -87,7 +88,6 @@ AC_LINK_IFELSE(
           gcc_atomic_builtins_result="no, using precompiled ${SCOREP_CPU_INSTRUCTION_SET} version"])])
 AC_LANG_POP([C])
 
-AC_MSG_CHECKING([for gcc atomic builtins])
 AC_MSG_RESULT([$gcc_atomic_builtins_result])
 AFS_SUMMARY([GCC atomic builtins], [$gcc_atomic_builtins_result])
 

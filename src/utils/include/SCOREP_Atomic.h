@@ -4,7 +4,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019-2020,
+ * Copyright (c) 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -45,7 +45,7 @@
 #if defined( ASM_INLINE )
 #if HAVE( SCOREP_CPU_INSTRUCTION_SET_X86_64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "pause" )
-#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_AARCH_64 )
+#elif HAVE( SCOREP_CPU_INSTRUCTION_SET_AARCH64 )
 #define SCOREP_CPU_RELAX ASM_INLINE volatile ( "yield" )
 #endif
 #endif /* defined( ASM_INLINE ) */
