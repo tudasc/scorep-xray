@@ -120,11 +120,11 @@ AC_ARG_WITH(_afs_lib_name,
                m4_ifnblank([$4], [Use [[download]] to automatically obtain and use ]_afs_lib_name[ via external tarball.])),
          [$5])])
 m4_ifnblank([$3], [AC_ARG_WITH(_afs_lib_name[-include],
-     AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers>], [], [79]))])
+     AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers: $3>], [], [79]))])
 AC_ARG_WITH(_afs_lib_name[-lib],
      AS_HELP_STRING([--with-_afs_lib_name-lib=<Path to _afs_lib_name libraries>], [], [79]))
 dnl
-m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers. Superseded by --with-]_afs_lib_name[ variants.])])dnl
+m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers: $3. Superseded by --with-]_afs_lib_name[ variants.])])dnl
 AC_ARG_VAR(_afs_lib_NAME[]_LIB, [Path to ]_afs_lib_name[ libraries. Superseded by --with-]_afs_lib_name[ variants.])dnl
 dnl
 AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],

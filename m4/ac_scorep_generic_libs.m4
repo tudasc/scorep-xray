@@ -54,7 +54,7 @@ dnl use the same transformation as AC_ARG_WITH
 m4_pushdef([lib_name], m4_translit([$1], [-+.], [___]))dnl
 m4_pushdef([lib_NAME], m4_toupper(lib_name))dnl
 
-AC_ARG_VAR(lib_NAME[]_INCLUDE, [Path to $1 headers.])
+AC_ARG_VAR(lib_NAME[]_INCLUDE, [Path to $1 headers: $2])
 AC_ARG_VAR(lib_NAME[]_LIB, [Path to $1 libraries.])
 
 AC_ARG_WITH([$1],
@@ -77,7 +77,7 @@ AC_ARG_WITH([$1],
 AS_IF([test "x${with_[]lib_name}" = "xnot_set"],
       #then
       [AC_ARG_WITH([$1-include],
-                   [  --with-$1-include=<Path to $1 headers>],
+                   [  --with-$1-include=<Path to $1 headers: $2>],
                    [],
                    [with_[]lib_name[]_include="${lib_NAME[]_INCLUDE:-yes}"])
 
@@ -124,7 +124,7 @@ m4_pushdef([lib_name], m4_translit([$1], [-+.], [___]))dnl
 m4_pushdef([lib_NAME], m4_toupper(lib_name))dnl
 
 m4_ifblank($5, [
-AC_ARG_VAR(lib_NAME[]_INCLUDE, [Path to $1 headers.])
+AC_ARG_VAR(lib_NAME[]_INCLUDE, [Path to $1 headers: $2])
 AC_ARG_VAR(lib_NAME[]_LIB, [Path to $1 libraries.])
 ])
 
@@ -159,7 +159,7 @@ AC_ARG_WITH([$1],
 
 AS_IF([test "x${with_[]lib_name}" = "xnot_set"],
       [AC_ARG_WITH([$1-include],
-                   [m4_ifblank($5, [  --with-$1-include=<Path to $1 headers>])],
+                   [m4_ifblank($5, [  --with-$1-include=<Path to $1 headers: $2>])],
                    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
                           [],
                           [AS_IF([test "x${withval}" = "xyes"],
