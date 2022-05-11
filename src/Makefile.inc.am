@@ -40,7 +40,8 @@ libutils_la_LIBADD = \
 
 if ! HAVE_GCC_ATOMIC_BUILTINS
 libutils_la_LIBADD += \
-    libutils_atomic.la
+    libutils_atomic.la \
+    libutils_mutex.la
 endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 EXTRA_DIST += \
