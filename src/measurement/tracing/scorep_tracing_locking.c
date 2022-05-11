@@ -4,6 +4,9 @@
  * Copyright (c) 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -31,14 +34,12 @@
 
 
 #include <UTILS_Error.h>
-
-
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 
 
 struct OTF2_LockObject
 {
-    SCOREP_Mutex mutex;
+    UTILS_Mutex mutex;
 };
 
 
@@ -66,7 +67,7 @@ static OTF2_CallbackCode
 lock_lock( void*     userData,
            OTF2_Lock lock )
 {
-    SCOREP_MutexLock( &lock->mutex );
+    UTILS_MutexLock( &lock->mutex );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -76,7 +77,7 @@ static OTF2_CallbackCode
 lock_unlock( void*     userData,
              OTF2_Lock lock )
 {
-    SCOREP_MutexUnlock( &lock->mutex );
+    UTILS_MutexUnlock( &lock->mutex );
 
     return OTF2_CALLBACK_SUCCESS;
 }

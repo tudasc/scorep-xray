@@ -4,6 +4,9 @@
  * Copyright (c) 2015, 2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -17,7 +20,6 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Subsystem.h>
@@ -28,6 +30,7 @@
 #include <UTILS_Debug.h>
 
 #include <UTILS_CStr.h>
+#include <UTILS_Mutex.h>
 
 #include "SCOREP_Sampling.h"
 
@@ -36,7 +39,7 @@
 #include "scorep_sampling_confvars.inc.c"
 
 /** Lock for adapter initialization */
-static SCOREP_Mutex init_sampling_mutex;
+static UTILS_Mutex init_sampling_mutex;
 /** Subsystem identifier */
 static size_t sampling_subsystem_id;
 /** Sampling sources */
@@ -207,7 +210,7 @@ sampling_subsystem_init_location( SCOREP_Location* location,
 
     if ( ( sampling_sources != NULL ) && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
-        SCOREP_MutexLock( &init_sampling_mutex );
+        UTILS_MutexLock( &init_sampling_mutex );
         SCOREP_Sampling_LocationData* sampling_data =
             SCOREP_Location_AllocForMisc( location,
                                           sizeof( *sampling_data ) );
@@ -225,7 +228,7 @@ sampling_subsystem_init_location( SCOREP_Location* location,
         scorep_create_interrupt_sources( sampling_data, sampling_sources, num_sampling_sources );
         sampling_data->nr_data = num_sampling_sources;
 
-        SCOREP_MutexUnlock( &init_sampling_mutex );
+        UTILS_MutexUnlock( &init_sampling_mutex );
 
         sig_atomic_t touch = scorep_sampling_is_known_pthread;
     }

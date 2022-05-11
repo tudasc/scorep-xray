@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2018, 2020,
@@ -66,7 +66,7 @@ FSUB( SCOREP_F_CartTopologyCreate )( SCOREP_Fortran_TopologyHandle* topologyHand
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_MutexLock( &scorep_user_topo_mutex );
+        UTILS_MutexLock( &scorep_user_topo_mutex );
         if ( *topologyHandle == SCOREP_USER_INVALID_TOPOLOGY )
         {
             /* Convert name to C-String, like in SCOREP_User_RegionF.c */
@@ -97,7 +97,7 @@ FSUB( SCOREP_F_CartTopologyCreate )( SCOREP_Fortran_TopologyHandle* topologyHand
         {
             UTILS_WARNING( "Initializing a non empty topology!" );
         }
-        SCOREP_MutexUnlock( &scorep_user_topo_mutex );
+        UTILS_MutexUnlock( &scorep_user_topo_mutex );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

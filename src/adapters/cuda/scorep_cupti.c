@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2020,
+ * Copyright (c) 2009-2013, 2015, 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,7 +61,7 @@
 static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KERNEL_HASHTABLE_SIZE ];
 
 /* mutex for locking the CUPTI environment */
-SCOREP_Mutex scorep_cupti_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_cupti_mutex = UTILS_MUTEX_INIT;
 
 /* attribute handles for CUDA references */
 scorep_cupti_attribute_handles scorep_cupti_attributes;

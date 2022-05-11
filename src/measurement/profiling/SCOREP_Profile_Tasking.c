@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2017,
+ * Copyright (c) 2009-2013, 2015, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
@@ -50,8 +50,8 @@
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Mutex.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 #include <scorep_location_management.h>
 
 #include <string.h>

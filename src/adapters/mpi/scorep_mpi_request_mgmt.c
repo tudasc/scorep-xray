@@ -47,7 +47,7 @@
 
 #include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_FastHashtab.h>
 #include <jenkins_hash.h>
@@ -70,7 +70,7 @@ struct request_table_entry
         scorep_mpi_request*  request;
         request_table_entry* next;
     } payload;
-    SCOREP_Mutex request_lock;
+    UTILS_Mutex request_lock;
 };
 
 typedef MPI_Request          request_table_key_t;
@@ -100,7 +100,7 @@ free_mpi_type( scorep_mpi_request* req )
 }
 
 static request_table_value_t request_table_entry_free_list;
-static SCOREP_Mutex          request_table_entry_free_list_mutex;
+static UTILS_Mutex           request_table_entry_free_list_mutex;
 
 /* Returns pointer to 0-initialized request_table_entry. */
 static inline request_table_value_t
@@ -108,10 +108,10 @@ get_request_table_entry_from_pool( void )
 {
     request_table_value_t ret;
 
-    SCOREP_MutexLock( &request_table_entry_free_list_mutex );
+    UTILS_MutexLock( &request_table_entry_free_list_mutex );
     if ( request_table_entry_free_list == NULL )
     {
-        SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
+        UTILS_MutexUnlock( &request_table_entry_free_list_mutex );
         ret = SCOREP_Memory_AllocForMisc( sizeof( *ret ) );
     }
     else
@@ -119,7 +119,7 @@ get_request_table_entry_from_pool( void )
         ret                           = request_table_entry_free_list;
         request_table_entry_free_list = request_table_entry_free_list->payload.next;
 
-        SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
+        UTILS_MutexUnlock( &request_table_entry_free_list_mutex );
     }
 
     memset( ret, 0, sizeof( *ret ) );
@@ -129,16 +129,16 @@ get_request_table_entry_from_pool( void )
 static inline void
 release_request_table_entry_to_pool( request_table_value_t data )
 {
-    SCOREP_MutexLock( &request_table_entry_free_list_mutex );
+    UTILS_MutexLock( &request_table_entry_free_list_mutex );
 
     data->payload.next            = request_table_entry_free_list;
     request_table_entry_free_list = data;
 
-    SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
+    UTILS_MutexUnlock( &request_table_entry_free_list_mutex );
 }
 
 static scorep_mpi_request* request_free_list;
-static SCOREP_Mutex        request_free_list_mutex;
+static UTILS_Mutex         request_free_list_mutex;
 
 /* Returns pointer to uninitialized request_table_entry. */
 static inline scorep_mpi_request*
@@ -146,11 +146,11 @@ get_scorep_request_from_pool( void )
 {
     scorep_mpi_request* ret;
 
-    SCOREP_MutexLock( &request_free_list_mutex );
+    UTILS_MutexLock( &request_free_list_mutex );
 
     if ( request_free_list == NULL )
     {
-        SCOREP_MutexUnlock( &request_free_list_mutex );
+        UTILS_MutexUnlock( &request_free_list_mutex );
 
         ret = SCOREP_Memory_AllocForMisc( sizeof( *ret ) );
     }
@@ -158,7 +158,7 @@ get_scorep_request_from_pool( void )
     {
         ret               = request_free_list;
         request_free_list = request_free_list->next;
-        SCOREP_MutexUnlock( &request_free_list_mutex );
+        UTILS_MutexUnlock( &request_free_list_mutex );
     }
 
     return ret;
@@ -167,12 +167,12 @@ get_scorep_request_from_pool( void )
 static inline void
 release_scorep_request_to_pool( scorep_mpi_request* req )
 {
-    SCOREP_MutexLock( &request_free_list_mutex );
+    UTILS_MutexLock( &request_free_list_mutex );
 
     req->next         = request_free_list;
     request_free_list = req;
 
-    SCOREP_MutexUnlock( &request_free_list_mutex );
+    UTILS_MutexUnlock( &request_free_list_mutex );
 }
 
 /* Requirements for NON_MONOTONIC_HASH_TABLE:                                */
@@ -257,7 +257,7 @@ insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
         do
         {
             // Lock the current entry, such that the new request can be inserted.
-            SCOREP_MutexLock( &( orig_value->request_lock ) );
+            UTILS_MutexLock( &( orig_value->request_lock ) );
 
             // Since another thread could have removed and possibly also reinserted
             // the entry with the same key, we need to double check.
@@ -267,7 +267,7 @@ insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
             // Unlock the old entry for consistency and release the scorep_mpi_request.
             if ( inserted )
             {
-                SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+                UTILS_MutexUnlock( &( orig_value->request_lock ) );
 
                 release_scorep_request_to_pool( new_request );
 
@@ -285,12 +285,12 @@ insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
                 current->next       = new_request;
                 current->next->next = NULL;
 
-                SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+                UTILS_MutexUnlock( &( orig_value->request_lock ) );
                 return;
             }
 
             // The entry was changed, but still remains in the hash-table. Update and retry.
-            SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+            UTILS_MutexUnlock( &( orig_value->request_lock ) );
             orig_value = control;
         }
         while ( true );
@@ -442,11 +442,11 @@ scorep_mpi_request_get( MPI_Request request )
 
     do
     {
-        SCOREP_MutexLock( &( value->request_lock ) );
+        UTILS_MutexLock( &( value->request_lock ) );
 
         if ( !request_table_get( request, &control ) )
         {
-            SCOREP_MutexUnlock( &( value->request_lock ) );
+            UTILS_MutexUnlock( &( value->request_lock ) );
             return NULL;
         }
 
@@ -467,16 +467,16 @@ scorep_mpi_request_get( MPI_Request request )
 
             if ( current == NULL )
             {
-                SCOREP_MutexUnlock( &( value->request_lock ) );
+                UTILS_MutexUnlock( &( value->request_lock ) );
                 return NULL;
             }
 
             UTILS_Atomic_StoreN_bool( &( current->marker ), true, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
-            SCOREP_MutexUnlock( &( value->request_lock ) );
+            UTILS_MutexUnlock( &( value->request_lock ) );
             return current;
         }
 
-        SCOREP_MutexUnlock( &( value->request_lock ) );
+        UTILS_MutexUnlock( &( value->request_lock ) );
         value = control;
     }
     while ( true );
@@ -507,14 +507,14 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 
     do
     {
-        SCOREP_MutexLock( &( value->request_lock ) );
+        UTILS_MutexLock( &( value->request_lock ) );
 
         if ( !request_table_get( req->request, &control ) )
         {
             UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
                          "Request to be freed, not found in hashtable on control." );
 
-            SCOREP_MutexUnlock( &( value->request_lock ) );
+            UTILS_MutexUnlock( &( value->request_lock ) );
             return;
         }
 
@@ -527,7 +527,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
                 UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
                              "Linked list empty, should be impossible." );
 
-                SCOREP_MutexUnlock( &( value->request_lock ) );
+                UTILS_MutexUnlock( &( value->request_lock ) );
                 return;
             }
 
@@ -539,7 +539,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
                                  "Removing hashtable entry failed." );
                 }
 
-                SCOREP_MutexUnlock( &( value->request_lock ) );
+                UTILS_MutexUnlock( &( value->request_lock ) );
                 return;
             }
 
@@ -556,7 +556,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
                 UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
                              "Request to be freed, not found in list of hashtable entry." );
 
-                SCOREP_MutexUnlock( &( value->request_lock ) );
+                UTILS_MutexUnlock( &( value->request_lock ) );
                 return;
             }
 
@@ -570,13 +570,13 @@ scorep_mpi_request_free( scorep_mpi_request* req )
             }
 
             free_mpi_type( current );
-            SCOREP_MutexUnlock( &( value->request_lock ) );
+            UTILS_MutexUnlock( &( value->request_lock ) );
 
             release_scorep_request_to_pool( current );
             return;
         }
 
-        SCOREP_MutexUnlock( &( value->request_lock ) );
+        UTILS_MutexUnlock( &( value->request_lock ) );
         value = control;
     }
     while ( true );

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2017,
+ * Copyright (c) 2016-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2020,
@@ -53,7 +53,7 @@ SCOREP_User_CartTopologyCreate( SCOREP_User_CartesianTopologyHandle* topologyHan
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
-        SCOREP_MutexLock( &scorep_user_topo_mutex );
+        UTILS_MutexLock( &scorep_user_topo_mutex );
         if ( *topologyHandle == SCOREP_USER_INVALID_CARTESIAN_TOPOLOGY )
         {
             if ( name == NULL || *name == '\0' )
@@ -77,7 +77,7 @@ SCOREP_User_CartTopologyCreate( SCOREP_User_CartesianTopologyHandle* topologyHan
         {
             UTILS_WARNING( "Initializing a non empty topology!" );
         }
-        SCOREP_MutexUnlock( &scorep_user_topo_mutex );
+        UTILS_MutexUnlock( &scorep_user_topo_mutex );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

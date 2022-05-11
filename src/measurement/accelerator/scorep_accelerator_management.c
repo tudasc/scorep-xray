@@ -4,6 +4,9 @@
  * Copyright (c) 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -24,7 +27,8 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Hashtab.h>
-#include <SCOREP_Mutex.h>
+
+#include <UTILS_Mutex.h>
 
 #include <scorep_status.h>
 #include <scorep_subsystem_management.h>

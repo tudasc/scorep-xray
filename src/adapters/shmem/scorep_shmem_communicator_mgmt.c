@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -28,10 +28,10 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <UTILS_CStr.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 #define SCOREP_DEBUG_MODULE_NAME SHMEM
 #include <UTILS_Debug.h>
 

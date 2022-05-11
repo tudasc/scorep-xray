@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -39,7 +39,7 @@
  */
 
 #include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 #include <stdint.h>
 
 /** Definition of the type of the lock handle */
@@ -79,7 +79,7 @@ struct SCOREP_Opari2_Openmp_Lock
 
 /** Mutex to ensure exclusive access to opari2_openmp_lock lock data structure.
  */
-extern SCOREP_Mutex scorep_opari2_openmp_lock;
+extern UTILS_Mutex scorep_opari2_openmp_lock;
 
 /** Initializes a new lock handle.
     @param lock The OMP lock which should be initialized

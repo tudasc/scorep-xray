@@ -47,7 +47,7 @@ SCOREP_IoHandleHandle scorep_posix_io_sync_all_handle = SCOREP_INVALID_IO_HANDLE
 #define AIO_REQUEST_TABLE_SIZE 16
 
 SCOREP_Hashtab* scorep_posix_io_aio_request_table       = NULL;
-SCOREP_Mutex    scorep_posix_io_aio_request_table_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex     scorep_posix_io_aio_request_table_mutex = UTILS_MUTEX_INIT;
 
 #endif
 

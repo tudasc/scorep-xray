@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -225,7 +225,7 @@ exit_with_refs( uint64_t*           time,
 /************************** CUDA function table *******************************/
 #define SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX 1024 /* "educated guess" */
 static SCOREP_RegionHandle cuda_function_table[ SCOREP_CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
-static SCOREP_Mutex        cuda_function_table_mutex;
+static UTILS_Mutex         cuda_function_table_mutex;
 
 /**
  * This is a pseudo hash function for CUPTI callbacks. No real hash is needed,
@@ -292,11 +292,11 @@ cuda_api_get_region( CUpti_CallbackDomain domain,
         return region_handle;
     }
 
-    SCOREP_MutexLock( &cuda_function_table_mutex );
+    UTILS_MutexLock( &cuda_function_table_mutex );
     region_handle = cuda_function_table[ idx ];
     if ( region_handle != SCOREP_INVALID_REGION )
     {
-        SCOREP_MutexUnlock( &cuda_function_table_mutex );
+        UTILS_MutexUnlock( &cuda_function_table_mutex );
         return region_handle;
     }
 
@@ -309,7 +309,7 @@ cuda_api_get_region( CUpti_CallbackDomain domain,
 
     cuda_function_table[ idx ] = region_handle;
 
-    SCOREP_MutexUnlock( &cuda_function_table_mutex );
+    UTILS_MutexUnlock( &cuda_function_table_mutex );
     return region_handle;
 }
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017,
+ * Copyright (c) 2009-2013, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -42,13 +42,13 @@
 #include <stdint.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filtering.h>
 
@@ -163,12 +163,12 @@ __VT_IntelEntry( char*     str,
     /* Register new region if unknown */
     if ( *id == 0 )
     {
-        SCOREP_MutexLock( &scorep_compiler_region_mutex );
+        UTILS_MutexLock( &scorep_compiler_region_mutex );
         if ( *id == 0 )
         {
             *id = register_region( str );
         }
-        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
     }
 
     /* Enter event */

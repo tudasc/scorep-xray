@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2015, 2017-2019,
+ * Copyright (c) 2009-2012, 2015, 2017-2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,7 +39,7 @@
 #include <config.h>
 #include <SCOREP_Memory.h>
 #include <UTILS_Error.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 #include "scorep_environment.h"
 #include "scorep_location_management.h"
 #include "scorep_status.h"
@@ -82,8 +82,8 @@ static SCOREP_Allocator_PageManagerStats stats_max[ SCORER_MEMORY_STATS_SIZE ];
 static SCOREP_Allocator_PageManagerStats stats[ SCORER_MEMORY_STATS_SIZE ];
 
 
-static SCOREP_Mutex memory_lock;
-static SCOREP_Mutex out_of_memory_mutex;
+static UTILS_Mutex memory_lock;
+static UTILS_Mutex out_of_memory_mutex;
 
 /// The one and only allocator for the measurement and the adapters
 static SCOREP_Allocator_Allocator* allocator;
@@ -136,8 +136,8 @@ SCOREP_Memory_Initialize( uint64_t totalMemory,
     allocator = SCOREP_Allocator_CreateAllocator(
         &total_memory,
         &page_size,
-        ( SCOREP_Allocator_Guard )SCOREP_MutexLock,
-        ( SCOREP_Allocator_Guard )SCOREP_MutexUnlock,
+        ( SCOREP_Allocator_Guard )UTILS_MutexLock,
+        ( SCOREP_Allocator_Guard )UTILS_MutexUnlock,
         ( SCOREP_Allocator_GuardObject )( &memory_lock ) );
 
     UTILS_BUG_ON( !allocator,
@@ -174,7 +174,7 @@ void
 SCOREP_Memory_HandleOutOfMemory( void )
 {
     /* let only first thread do the OOM handling */
-    SCOREP_MutexLock( &out_of_memory_mutex );
+    UTILS_MutexLock( &out_of_memory_mutex );
     if ( !out_of_memory )
     {
         out_of_memory = true;
@@ -203,7 +203,7 @@ SCOREP_Memory_HandleOutOfMemory( void )
     memory_dump_stats_full();
 
     abort();
-    SCOREP_MutexUnlock( &out_of_memory_mutex );
+    UTILS_MutexUnlock( &out_of_memory_mutex );
 }
 
 SCOREP_Allocator_PageManager*
@@ -234,10 +234,10 @@ SCOREP_Memory_CreateTracingPageManager( bool forEvents )
 
         new_entry->page_manager = page_manager;
 
-        SCOREP_MutexLock( &memory_lock );
+        UTILS_MutexLock( &memory_lock );
         new_entry->next            = tracing_page_managers_head;
         tracing_page_managers_head = new_entry;
-        SCOREP_MutexUnlock( &memory_lock );
+        UTILS_MutexUnlock( &memory_lock );
     }
 
     return page_manager;
@@ -266,7 +266,7 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
     {
         /* only called once per location at pre-unify, thus no reuse possible */
 
-        SCOREP_MutexLock( &memory_lock );
+        UTILS_MutexLock( &memory_lock );
         struct tracing_page_manager_list** it = &tracing_page_managers_head;
         while ( *it )
         {
@@ -281,7 +281,7 @@ SCOREP_Memory_DeleteTracingPageManager( SCOREP_Allocator_PageManager* pageManage
             /* Remove element from list */
             *it = ( *it )->next;
         }
-        SCOREP_MutexUnlock( &memory_lock );
+        UTILS_MutexUnlock( &memory_lock );
     }
 
     SCOREP_Allocator_DeletePageManager( pageManager );

@@ -37,12 +37,12 @@
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_ReaderWriterLock.h>
 
 #include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
+#include <UTILS_Mutex.h>
 
 #define SCOREP_DEBUG_MODULE_NAME ADDR2LINE
 #include <UTILS_Debug.h>
@@ -698,17 +698,17 @@ uintptr_t  scorep_rt_objects_max_addr = 0;
 struct rwlock
 {
     SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) int16_t pending;
-    int16_t      departing;
-    int16_t      release_n_readers;
-    int16_t      release_writer;
-    SCOREP_Mutex writer_mutex;
+    int16_t     departing;
+    int16_t     release_n_readers;
+    int16_t     release_writer;
+    UTILS_Mutex writer_mutex;
 } scorep_rt_objects_rwlock =
 {
     .pending           = 0,
     .departing         = 0,
     .release_n_readers = 0,
     .release_writer    = 0,
-    .writer_mutex      = SCOREP_MUTEX_INIT
+    .writer_mutex      = UTILS_MUTEX_INIT
 };
 
 
@@ -837,8 +837,8 @@ section_iterator( bfd* abfd, asection* section, void* payload )
 /* Keep dlcosed objects in as they might be accessed via
    SCOREP_Addr2line_SoLookup* */
 /* Must not be static as accessed from ld_audit library */
-rt_object*   scorep_rt_objects_dlclosed_head  = NULL;
-SCOREP_Mutex scorep_rt_objects_dlclosed_mutex = SCOREP_MUTEX_INIT;
+rt_object*  scorep_rt_objects_dlclosed_head  = NULL;
+UTILS_Mutex scorep_rt_objects_dlclosed_mutex = UTILS_MUTEX_INIT;
 
 
 void
@@ -1089,7 +1089,7 @@ struct rt_objclose_cb
     rt_objclose_cb*             next;
 };
 rt_objclose_cb* scorep_rt_objclose_cb_head  = NULL;
-SCOREP_Mutex    scorep_rt_objclose_cb_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex     scorep_rt_objclose_cb_mutex = UTILS_MUTEX_INIT;
 
 
 void
@@ -1097,10 +1097,10 @@ SCOREP_Addr2line_RegisterObjcloseCb( SCOREP_Addr2line_ObjcloseCb cb )
 {
     rt_objclose_cb* new = SCOREP_Memory_AllocForMisc( sizeof( rt_objclose_cb ) );
     new->cb = cb;
-    SCOREP_MutexLock( &scorep_rt_objclose_cb_mutex );
+    UTILS_MutexLock( &scorep_rt_objclose_cb_mutex );
     new->next                  = scorep_rt_objclose_cb_head;
     scorep_rt_objclose_cb_head = new;
-    SCOREP_MutexUnlock( &scorep_rt_objclose_cb_mutex );
+    UTILS_MutexUnlock( &scorep_rt_objclose_cb_mutex );
 }
 
 
@@ -1140,14 +1140,14 @@ scorep_la_objclose( uintptr_t* cookie /* corresponds to la_objopen */ )
         *obj   = ( *obj )->next;
 
         /* trigger objclose callbacks */
-        SCOREP_MutexLock( &scorep_rt_objclose_cb_mutex );
+        UTILS_MutexLock( &scorep_rt_objclose_cb_mutex );
         rt_objclose_cb* objclose_cb = scorep_rt_objclose_cb_head;
         while ( objclose_cb )
         {
             objclose_cb->cb( remove, remove->name, remove->base_addr, remove->token );
             objclose_cb = objclose_cb->next;
         }
-        SCOREP_MutexUnlock( &scorep_rt_objclose_cb_mutex );
+        UTILS_MutexUnlock( &scorep_rt_objclose_cb_mutex );
 
         bitset_clear( scorep_rt_objects_loaded, remove->token );
         scorep_rt_object_count--;
@@ -1179,10 +1179,10 @@ scorep_la_objclose( uintptr_t* cookie /* corresponds to la_objopen */ )
 
         /* keep dlclosed object representations, potentially accessed via
            SCOREP_Addr2line_SoLookup* later on */
-        SCOREP_MutexLock( &scorep_rt_objects_dlclosed_mutex );
+        UTILS_MutexLock( &scorep_rt_objects_dlclosed_mutex );
         remove->next                    = scorep_rt_objects_dlclosed_head;
         scorep_rt_objects_dlclosed_head = remove;
-        SCOREP_MutexUnlock( &scorep_rt_objects_dlclosed_mutex );
+        UTILS_MutexUnlock( &scorep_rt_objects_dlclosed_mutex );
     }
 }
 

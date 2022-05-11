@@ -42,9 +42,6 @@ io_mgmt_libadd = \
     $(external_libadd) \
     libscorep_mpp_mockup.la \
     libscorep_thread_mockup.la
-if ! HAVE_GCC_ATOMIC_BUILTINS
-io_mgmt_libadd += libscorep_mutex.la
-endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 io_mgmt_ldflags = $(external_ldflags) $(LINKMODE_FLAGS)
 

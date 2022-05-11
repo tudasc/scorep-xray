@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2019,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -21,7 +24,8 @@
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Hashtab.h>
-#include <SCOREP_Mutex.h>
+
+#include <UTILS_Mutex.h>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -64,7 +68,7 @@ extern SCOREP_IoHandleHandle scorep_posix_io_flush_all_handle;
 #if HAVE( POSIX_AIO_SUPPORT )
 
 extern SCOREP_Hashtab* scorep_posix_io_aio_request_table;
-extern SCOREP_Mutex    scorep_posix_io_aio_request_table_mutex;
+extern UTILS_Mutex     scorep_posix_io_aio_request_table_mutex;
 
 #endif
 

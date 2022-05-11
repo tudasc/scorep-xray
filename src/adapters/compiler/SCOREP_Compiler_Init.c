@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2021,
+ * Copyright (c) 2009-2015, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,7 +44,7 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-SCOREP_Mutex scorep_compiler_region_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_compiler_region_mutex = UTILS_MUTEX_INIT;
 
 /**
    The adapter initialize function is compiler specific. Thus it is contained in each

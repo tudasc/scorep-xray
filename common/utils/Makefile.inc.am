@@ -17,3 +17,4 @@ include ../common/utils/src/atomic/Makefile.inc.am
 include ../common/utils/src/cstr/Makefile.inc.am
 include ../common/utils/src/exception/Makefile.inc.am
 include ../common/utils/src/io/Makefile.inc.am
+include ../common/utils/src/mutex/Makefile.inc.am

@@ -4,6 +4,9 @@
  * Copyright (c) 2014, 2017, 2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -37,13 +40,13 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Events.h>
 #include <scorep/SCOREP_Libwrap.h>
 #include <scorep_libwrap_management.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
+#include <UTILS_Mutex.h>
 
 #include <SCOREP_Hashtab.h>
 
@@ -53,7 +56,7 @@ struct SCOREP_LibwrapHandle
 {
     const SCOREP_LibwrapAttributes* attributes;
     SCOREP_LibwrapHandle*           next;
-    SCOREP_Mutex                    region_definition_lock;
+    UTILS_Mutex                     region_definition_lock;
     uint32_t                        number_of_shared_lib_handles;
     void*                           shared_lib_handles[];
 };
@@ -62,7 +65,7 @@ struct SCOREP_LibwrapHandle
 static SCOREP_LibwrapHandle* libwrap_handles;
 
 /** Lock for definitions within Score-P library wrapping infrastructure */
-static SCOREP_Mutex libwrap_object_lock;
+static UTILS_Mutex libwrap_object_lock;
 
 /** Our own flag which indicates that the libwrapping is active, this
     is more or less MEASUREMENT_PHASE( WITHIN ), except that we are already
@@ -106,11 +109,11 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
         return;
     }
 
-    SCOREP_MutexLock( &handle->region_definition_lock );
+    UTILS_MutexLock( &handle->region_definition_lock );
 
     if ( *region != SCOREP_INVALID_REGION )
     {
-        SCOREP_MutexUnlock( &handle->region_definition_lock );
+        UTILS_MutexUnlock( &handle->region_definition_lock );
         return;
     }
 
@@ -128,7 +131,7 @@ SCOREP_Libwrap_DefineRegion( SCOREP_LibwrapHandle* handle,
         *regionFiltered = !!SCOREP_Filtering_Match( file, func, symbol );
     }
 
-    SCOREP_MutexUnlock( &handle->region_definition_lock );
+    UTILS_MutexUnlock( &handle->region_definition_lock );
 }
 
 void
@@ -158,11 +161,11 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
                      attributes->version );
     }
 
-    SCOREP_MutexLock( &libwrap_object_lock );
+    UTILS_MutexLock( &libwrap_object_lock );
 
     if ( *outHandle != NULL )
     {
-        SCOREP_MutexUnlock( &libwrap_object_lock );
+        UTILS_MutexUnlock( &libwrap_object_lock );
         return;
     }
 
@@ -250,7 +253,7 @@ SCOREP_Libwrap_Create( SCOREP_LibwrapHandle**          outHandle,
     /* Wrapper was successfuly created, make the result visible to others. */
     *outHandle = handle;
 
-    SCOREP_MutexUnlock( &libwrap_object_lock );
+    UTILS_MutexUnlock( &libwrap_object_lock );
 
     return;
 }

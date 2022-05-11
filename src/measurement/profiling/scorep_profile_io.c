@@ -29,9 +29,9 @@
 #include <SCOREP_Definitions.h>
 #include <scorep_status.h>
 #include <SCOREP_IoManagement.h>
-#include <SCOREP_Mutex.h>
 
 #include <UTILS_Atomic.h>
+#include <UTILS_Mutex.h>
 
 typedef struct io_paradigm_node
 {
@@ -44,7 +44,7 @@ typedef struct io_paradigm_node
 } io_paradigm_node;
 
 static io_paradigm_node io_paradigm_root;
-static SCOREP_Mutex     io_paradigm_mutex;
+static UTILS_Mutex      io_paradigm_mutex;
 
 /* *******************************************************************************
  * External interface
@@ -94,7 +94,7 @@ ensure_io_paradigm( io_paradigm_node*     ioParadigmNode,
                                      UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( child == NULL )
     {
-        SCOREP_MutexLock( &io_paradigm_mutex );
+        UTILS_MutexLock( &io_paradigm_mutex );
         child = UTILS_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],
                                              UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         if ( child == NULL )
@@ -132,7 +132,7 @@ ensure_io_paradigm( io_paradigm_node*     ioParadigmNode,
                                           child,
                                           UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
-        SCOREP_MutexUnlock( &io_paradigm_mutex );
+        UTILS_MutexUnlock( &io_paradigm_mutex );
     }
 
     return UTILS_Atomic_LoadN_void_ptr( &ioParadigmNode->children[ ioParadigm ],

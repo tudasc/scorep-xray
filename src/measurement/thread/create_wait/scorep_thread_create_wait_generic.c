@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2016, 2018,
+ * Copyright (c) 2014-2016, 2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2016, 2019-2020, 2022,
@@ -33,7 +33,6 @@
 #include <scorep_substrates_definition.h>
 
 #include <scorep_subsystem_management.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>
 #include <SCOREP_Memory.h>
@@ -48,6 +47,7 @@
 #include <UTILS_Debug.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 
 #include <stdbool.h>
@@ -71,10 +71,10 @@ static SCOREP_InterimCommunicatorHandle thread_team = SCOREP_INVALID_INTERIM_COM
 static bool is_initialized;
 static bool is_finalized;
 
-static uint32_t     active_locations;
-static SCOREP_Mutex thread_create_mutex; /* also protects subsystem_data_free_list */
-static SCOREP_Mutex thread_subsystem_data_mutex;
-static size_t       subsystem_id;
+static uint32_t    active_locations;
+static UTILS_Mutex thread_create_mutex; /* also protects subsystem_data_free_list */
+static UTILS_Mutex thread_subsystem_data_mutex;
+static size_t      subsystem_id;
 
 typedef struct subsystem_data
 {
@@ -260,9 +260,9 @@ SCOREP_Thread_InParallel( void )
         return false;
     }
 
-    SCOREP_MutexLock( &thread_create_mutex );
+    UTILS_MutexLock( &thread_create_mutex );
     bool in_parallel = ( active_locations > 1 );
-    SCOREP_MutexUnlock( &thread_create_mutex );
+    UTILS_MutexUnlock( &thread_create_mutex );
     return in_parallel;
 }
 
@@ -392,10 +392,10 @@ init_thread( SCOREP_InterimCommunicatorHandle team,
              SCOREP_Location*                 parentLocation,
              SCOREP_ParadigmType              paradigm )
 {
-    SCOREP_MutexLock( &thread_create_mutex );
+    UTILS_MutexLock( &thread_create_mutex );
     active_locations++;
     subsystem_data* data = get_subsystem_data_from_pool();
-    SCOREP_MutexUnlock( &thread_create_mutex );
+    UTILS_MutexUnlock( &thread_create_mutex );
 
     data->thread_team    = team;
     data->sequence_count = sequenceCount;
@@ -403,9 +403,9 @@ init_thread( SCOREP_InterimCommunicatorHandle team,
     data->paradigm       = paradigm;
 
     /* Locking here probably unnecessary */
-    SCOREP_MutexLock( &thread_subsystem_data_mutex );
+    UTILS_MutexLock( &thread_subsystem_data_mutex );
     SCOREP_Location_SetSubsystemData( location, subsystem_id, ( void* )data );
-    SCOREP_MutexUnlock( &thread_subsystem_data_mutex );
+    UTILS_MutexUnlock( &thread_subsystem_data_mutex );
 }
 
 
@@ -469,10 +469,10 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 static void
 terminate_thread( void* data )
 {
-    SCOREP_MutexLock( &thread_create_mutex );
+    UTILS_MutexLock( &thread_create_mutex );
     active_locations--;
     release_subsystem_data_to_pool( data );
-    SCOREP_MutexUnlock( &thread_create_mutex );
+    UTILS_MutexUnlock( &thread_create_mutex );
 }
 
 
@@ -526,10 +526,10 @@ SCOREP_ThreadCreateWait_TryTerminate( struct SCOREP_Location* location )
     UTILS_BUG_ON( is_finalized,
                   "Illegal call to SCOREP_ThreadCreateWait_TryTerminate. Measurement system has already terminated." );
 
-    SCOREP_MutexLock( &thread_subsystem_data_mutex );
+    UTILS_MutexLock( &thread_subsystem_data_mutex );
     void* terminate = SCOREP_Location_GetSubsystemData( location, subsystem_id );
     SCOREP_Location_SetSubsystemData( location, subsystem_id, NULL );
-    SCOREP_MutexUnlock( &thread_subsystem_data_mutex );
+    UTILS_MutexUnlock( &thread_subsystem_data_mutex );
     return terminate;
 }
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,10 +50,10 @@
 #include <SCOREP_Memory.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 #include <scorep_environment.h>
 #include <scorep_ipc.h>
 #include <SCOREP_Thread_Mgmt.h>
@@ -256,9 +256,9 @@ typedef struct scorep_clusterer_t
 scorep_clusterer_t* scorep_clusterer;
 
 /* Mutex */
-static SCOREP_Mutex cluster_distance_lock;
-static SCOREP_Mutex cluster_lock;
-static SCOREP_Mutex cluster_queue_elem_lock;
+static UTILS_Mutex cluster_distance_lock;
+static UTILS_Mutex cluster_lock;
+static UTILS_Mutex cluster_queue_elem_lock;
 
 /* Flag whether clustering is initialized and enabled */
 static bool clustering_enabled = false;
@@ -411,7 +411,7 @@ new_cluster_distance( SCOREP_Location*    location,
                       scorep_clusterer_t* clusterer )
 {
     scorep_cluster_distance_t* cluster_distance;
-    SCOREP_MutexLock( &cluster_distance_lock );
+    UTILS_MutexLock( &cluster_distance_lock );
 
     if ( NULL == clusterer->free_cluster_distances )
     {
@@ -425,7 +425,7 @@ new_cluster_distance( SCOREP_Location*    location,
     clusterer->free_cluster_distances = cluster_distance->next;
     cluster_distance->next            = NULL;
 
-    SCOREP_MutexUnlock( &cluster_distance_lock );
+    UTILS_MutexUnlock( &cluster_distance_lock );
     return cluster_distance;
 }
 
@@ -441,13 +441,13 @@ delete_cluster_distance( scorep_cluster_distance_t* distanceObj,
                          scorep_clusterer_t*        clusterer )
 {
     scorep_cluster_distance_t* next;
-    SCOREP_MutexLock( &cluster_distance_lock );
+    UTILS_MutexLock( &cluster_distance_lock );
 
     next                              = distanceObj->next;
     distanceObj->next                 = clusterer->free_cluster_distances;
     clusterer->free_cluster_distances = distanceObj;
 
-    SCOREP_MutexUnlock( &cluster_distance_lock );
+    UTILS_MutexUnlock( &cluster_distance_lock );
     return next;
 }
 
@@ -470,7 +470,7 @@ new_cluster( SCOREP_Location*              location,
              scorep_profile_node*          root )
 {
     scorep_cluster_t* cluster;
-    SCOREP_MutexLock( &cluster_lock );
+    UTILS_MutexLock( &cluster_lock );
 
     /* Create structural parts */
     if ( NULL == clusterer->free_clusters )
@@ -510,7 +510,7 @@ new_cluster( SCOREP_Location*              location,
     cluster->disjoint_set->parent       = NULL;
     cluster->next                       = NULL;
 
-    SCOREP_MutexUnlock( &cluster_lock );
+    UTILS_MutexUnlock( &cluster_lock );
     return cluster;
 }
 
@@ -527,7 +527,7 @@ delete_cluster( scorep_cluster_t*   cluster,
                 scorep_clusterer_t* clusterer )
 {
     scorep_cluster_t* next;
-    SCOREP_MutexLock( &cluster_lock );
+    UTILS_MutexLock( &cluster_lock );
 
     next = cluster->next;
     while ( NULL != cluster->d )
@@ -537,7 +537,7 @@ delete_cluster( scorep_cluster_t*   cluster,
     cluster->next            = clusterer->free_clusters;
     clusterer->free_clusters = cluster;
 
-    SCOREP_MutexUnlock( &cluster_lock );
+    UTILS_MutexUnlock( &cluster_lock );
     return next;
 }
 
@@ -627,7 +627,7 @@ new_cluster_queue_elem( SCOREP_Location*     location,
                         scorep_profile_node* path )
 {
     scorep_cluster_queue_elem_t* elem;
-    SCOREP_MutexLock( &cluster_queue_elem_lock );
+    UTILS_MutexLock( &cluster_queue_elem_lock );
 
     if ( NULL == clusterer->free_cluster_queue_elems )
     {
@@ -638,7 +638,7 @@ new_cluster_queue_elem( SCOREP_Location*     location,
     }
     elem                                = clusterer->free_cluster_queue_elems;
     clusterer->free_cluster_queue_elems = elem->next;
-    SCOREP_MutexUnlock( &cluster_queue_elem_lock );
+    UTILS_MutexUnlock( &cluster_queue_elem_lock );
 
     /* Initialize */
     elem->path = path;
@@ -656,12 +656,12 @@ static void
 delete_cluster_queue_elem( scorep_cluster_queue_elem_t* elem,
                            scorep_clusterer_t*          clusterer )
 {
-    SCOREP_MutexLock( &cluster_queue_elem_lock );
+    UTILS_MutexLock( &cluster_queue_elem_lock );
 
     elem->next                          = clusterer->free_cluster_queue_elems;
     clusterer->free_cluster_queue_elems = elem;
 
-    SCOREP_MutexUnlock( &cluster_queue_elem_lock );
+    UTILS_MutexUnlock( &cluster_queue_elem_lock );
 }
 
 /**

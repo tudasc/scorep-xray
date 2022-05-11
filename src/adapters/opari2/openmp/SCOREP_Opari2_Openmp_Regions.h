@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014, 2019,
+ * Copyright (c) 2009-2011, 2014, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -41,7 +41,7 @@
 
 #include "SCOREP_Opari2_Openmp_Lock.h"
 
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 #include <SCOREP_Opari2_Region_Info.h>
 #include <pomp2_user_region_info.h>
 
@@ -55,7 +55,7 @@
 /**
    Lock to protect on-the-fly assignments.
  */
-extern SCOREP_Mutex scorep_opari2_openmp_assign_lock;
+extern UTILS_Mutex scorep_opari2_openmp_assign_lock;
 
 /**
    @def SCOREP_OPARI2_OPENMP_HANDLE_UNINITIALIZED_REGION( handle, ctc_string )

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -48,11 +48,11 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
+#include <UTILS_Mutex.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
@@ -77,7 +77,7 @@
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
 
 
-extern SCOREP_Mutex    scorep_user_region_mutex;
+extern UTILS_Mutex     scorep_user_region_mutex;
 extern SCOREP_Hashtab* scorep_user_region_table;
 
 extern SCOREP_RegionType
@@ -366,7 +366,7 @@ region_init_fortran( SCOREP_Fortran_RegionHandle* regionHandle,
     SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
 
     /* Lock region definition */
-    SCOREP_MutexLock( &scorep_user_region_mutex );
+    UTILS_MutexLock( &scorep_user_region_mutex );
 
     /* Lookup the region name in the region table */
     SCOREP_User_RegionHandle region = find_region( region_name );
@@ -408,7 +408,7 @@ region_init_fortran( SCOREP_Fortran_RegionHandle* regionHandle,
     *regionHandle = SCOREP_C2F_REGION( region );
 
     /* Unlock region definition */
-    SCOREP_MutexUnlock( &scorep_user_region_mutex );
+    UTILS_MutexUnlock( &scorep_user_region_mutex );
 
     /* Cleanup */
     free( region_name );

@@ -93,13 +93,6 @@ libscorep_measurement_la_LIBADD += \
 
 endif HAVE_SAMPLING_SUPPORT
 
-if ! HAVE_GCC_ATOMIC_BUILTINS
-
-libscorep_measurement_la_LIBADD += \
-    libscorep_mutex.la
-
-endif ! HAVE_GCC_ATOMIC_BUILTINS
-
 if !HAVE_SCOREP_EXTERNAL_OTF2
 
 BUILT_SOURCES += @OTF2_LIBS@

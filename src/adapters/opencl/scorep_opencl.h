@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2017, 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -26,8 +29,8 @@
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 
 #define SCOREP_OPENCL_NO_ID          0xFFFFFFFF
@@ -121,7 +124,7 @@ typedef struct scorep_opencl_queue
     scorep_opencl_buffer_entry* buffer;                /**< OpenCL buffer pointer */
     scorep_opencl_buffer_entry* buf_pos;               /**< current buffer position */
     scorep_opencl_buffer_entry* buf_last;              /**< points to last buffer entry (scorep_opencl_buffer_entry) */
-    SCOREP_Mutex                mutex;                 /**< Is queue locked? */
+    UTILS_Mutex                 mutex;                 /**< Is queue locked? */
     scorep_opencl_vendor        vendor;                /**< vendor specification */
     struct scorep_opencl_queue* next;                  /**< Pointer to next element in the queue */
 } scorep_opencl_queue;

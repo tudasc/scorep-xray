@@ -26,7 +26,6 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Filtering.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_AllocMetric.h>
 #include <SCOREP_Timer_Ticks.h>
@@ -36,6 +35,7 @@
 #include <UTILS_Debug.h>
 
 #include <UTILS_CStr.h>
+#include <UTILS_Mutex.h>
 
 #include <jenkins_hash.h>
 
@@ -108,7 +108,7 @@ typedef struct scorep_kokkos_region_node
 #define KOKKOS_REGION_HASH_SIZE  hashsize( KOKKOS_REGION_HASH_SHIFT )
 
 static scorep_kokkos_region_node* kokkos_regions_hashtab[ KOKKOS_REGION_HASH_SIZE ];
-static SCOREP_Mutex               kokkos_regions_hashtab_mutex;
+static UTILS_Mutex                kokkos_regions_hashtab_mutex;
 
 static const char*
 scorep_kokkos_group_name( scorep_kokkos_group group )
@@ -153,7 +153,7 @@ get_region( scorep_kokkos_group group,
             const char*         name,
             const char*         mangledName )
 {
-    SCOREP_MutexLock( &kokkos_regions_hashtab_mutex );
+    UTILS_MutexLock( &kokkos_regions_hashtab_mutex );
 
     uint32_t hash = jenkins_hash( name, strlen( name ), 0 );
     uint32_t id   = hash & KOKKOS_REGION_HASH_MASK;
@@ -191,7 +191,7 @@ get_region( scorep_kokkos_group group,
     }
     SCOREP_RegionHandle region = node->region;
 
-    SCOREP_MutexUnlock( &kokkos_regions_hashtab_mutex );
+    UTILS_MutexUnlock( &kokkos_regions_hashtab_mutex );
 
     return region;
 }
@@ -208,12 +208,12 @@ typedef struct scorep_kokkos_metric_entry
 } scorep_kokkos_metric_entry;
 
 static scorep_kokkos_metric_entry* kokkos_alloc_metrics;
-static SCOREP_Mutex                kokkos_alloc_metrics_mutex;
+static UTILS_Mutex                 kokkos_alloc_metrics_mutex;
 
 static SCOREP_AllocMetric*
 get_metric( const char* name )
 {
-    SCOREP_MutexLock( &kokkos_alloc_metrics_mutex );
+    UTILS_MutexLock( &kokkos_alloc_metrics_mutex );
 
     scorep_kokkos_metric_entry* current = kokkos_alloc_metrics;
     while ( current && strcmp( current->kokkos_space, name ) )
@@ -222,7 +222,7 @@ get_metric( const char* name )
     }
     if ( current )
     {
-        SCOREP_MutexUnlock( &kokkos_alloc_metrics_mutex );
+        UTILS_MutexUnlock( &kokkos_alloc_metrics_mutex );
         return current->metric;
     }
 
@@ -234,7 +234,7 @@ get_metric( const char* name )
     SCOREP_AllocMetric_New( name, &allocMetric );
     new_entry->metric = allocMetric;
 
-    SCOREP_MutexUnlock( &kokkos_alloc_metrics_mutex );
+    UTILS_MutexUnlock( &kokkos_alloc_metrics_mutex );
 
     return allocMetric;
 }

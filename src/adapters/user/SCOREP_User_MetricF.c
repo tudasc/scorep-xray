@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,13 +38,14 @@
 #include <config.h>
 #include <scorep/SCOREP_User_Functions.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include <SCOREP_RuntimeManagement.h>
+
+#include <UTILS_Mutex.h>
 
 #include <stdlib.h>
 #include <string.h>

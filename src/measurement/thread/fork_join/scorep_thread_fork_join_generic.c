@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -44,7 +44,6 @@
 #include <scorep_substrates_definition.h>
 #include <scorep_subsystem_management.h>
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Memory.h>
@@ -52,11 +51,11 @@
 #include <scorep_location_management.h>
 #include <scorep_events_common.h>
 #include <scorep_task_internal.h>
-#include <SCOREP_Mutex.h>
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME THREAD_FORK_JOIN
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
 #include <string.h>
 
@@ -66,7 +65,7 @@
  * particular threading model. */
 
 static SCOREP_Location** first_fork_locations;
-static SCOREP_Mutex      first_fork_locations_mutex;
+static UTILS_Mutex       first_fork_locations_mutex;
 
 
 bool
@@ -171,7 +170,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
 
     if ( sequence_count == 1 && teamSize > 1 )
     {
-        SCOREP_MutexLock( &first_fork_locations_mutex );
+        UTILS_MutexLock( &first_fork_locations_mutex );
         if ( !first_fork_locations[ 0 ] )
         {
             char location_name[ 80 ];
@@ -181,7 +180,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
                 first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( location_name );
             }
         }
-        SCOREP_MutexUnlock( &first_fork_locations_mutex );
+        UTILS_MutexUnlock( &first_fork_locations_mutex );
     }
 
     *newTpd = NULL;

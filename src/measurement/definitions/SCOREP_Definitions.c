@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2021,
+ * Copyright (c) 2009-2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,7 +48,6 @@
 #include "scorep_environment.h"
 #include "scorep_runtime_management.h"
 #include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <scorep_system_tree_sequence.h>
 #include <stdbool.h>
@@ -60,6 +59,7 @@
 #include <tracing/SCOREP_Tracing.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;
 SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
@@ -67,18 +67,18 @@ static bool               definitions_initialized           = false;
 
 
 /* global definition lock */
-static SCOREP_Mutex definitions_lock;
+static UTILS_Mutex definitions_lock;
 
 void
 SCOREP_Definitions_Lock( void )
 {
-    SCOREP_MutexLock( &definitions_lock );
+    UTILS_MutexLock( &definitions_lock );
 }
 
 void
 SCOREP_Definitions_Unlock( void )
 {
-    SCOREP_MutexUnlock( &definitions_lock );
+    UTILS_MutexUnlock( &definitions_lock );
 }
 
 void

@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2013-2014, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
@@ -14,19 +14,17 @@
 ## directory for details.
 ##
 
-## file src/measurement/mutex/Makefile.inc.am
-
 
 if ! HAVE_GCC_ATOMIC_BUILTINS
-noinst_LTLIBRARIES += libscorep_mutex.la
-nodist_libscorep_mutex_la_SOURCES = $(SRC_ROOT)src/utils/mutex/scorep_mutex.c
-libscorep_mutex_la_CPPFLAGS = \
+noinst_LTLIBRARIES += libutils_mutex.la
+nodist_libutils_mutex_la_SOURCES = $(SRC_ROOT)common/utils/src/mutex/UTILS_Mutex.c
+libutils_mutex_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
 endif ! HAVE_GCC_ATOMIC_BUILTINS
 
 
 EXTRA_DIST += \
-    $(SRC_ROOT)src/utils/mutex/scorep_mutex.inc.c \
-    $(SRC_ROOT)src/utils/mutex/scorep_mutex.c \
-    $(SRC_ROOT)src/utils/include/SCOREP_Mutex.h
+    $(SRC_ROOT)common/utils/src/mutex/UTILS_Mutex.inc.c \
+    $(SRC_ROOT)common/utils/src/mutex/UTILS_Mutex.c \
+    $(SRC_ROOT)common/utils/include/UTILS_Mutex.h

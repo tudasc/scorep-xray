@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2017, 2019,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -37,6 +40,7 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
 
 #include <jenkins_hash.h>
@@ -45,7 +49,6 @@
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
 #include <scorep_type_utils.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 static SCOREP_IoFileHandle

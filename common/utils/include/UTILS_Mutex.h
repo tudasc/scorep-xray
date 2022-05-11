@@ -1,5 +1,5 @@
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
  * RWTH Aachen University, Germany
@@ -30,8 +30,8 @@
 
 
 
-#ifndef SCOREP_MUTEX_H
-#define SCOREP_MUTEX_H
+#ifndef UTILS_MUTEX_H
+#define UTILS_MUTEX_H
 
 
 /**
@@ -42,17 +42,19 @@
  *
  * Usage:
  * @code
- *     SCOREP_Mutex lock = SCOREP_MUTEX_INIT;
+ *     UTILS_Mutex lock = UTILS_MUTEX_INIT;
  *     :
- *     SCOREP_MutexLock( &lock );
+ *     UTILS_MutexLock( &lock );
  *     : <critical section>
- *     SCOREP_MutexUnlock( &lock );
+ *     UTILS_MutexUnlock( &lock );
  * @endcode
  *
  */
 
 
+#ifndef __cplusplus
 #include <stdbool.h>
+#endif
 
 #include <UTILS_Atomic.h>
 
@@ -67,33 +69,42 @@
 /**
  * A lock object is just a bool. Should be 0-initialized if allocated.
  */
-typedef bool SCOREP_Mutex;
+typedef bool UTILS_Mutex;
 
 /**
  * Initialize an mutex variable to the unlocked state.
  */
-#define SCOREP_MUTEX_INIT false
+#define UTILS_MUTEX_INIT false
 
 
+UTILS_BEGIN_C_DECLS
+
+#define UTILS_MutexLock PACKAGE_MANGLE_NAME( UTILS_MutexLock )
 STATIC_INLINE void
-SCOREP_MutexLock( SCOREP_Mutex* scorepMutex );
+UTILS_MutexLock( UTILS_Mutex* mutex );
 
 /* Try to acquire the lock, returns true on success */
+#define UTILS_MutexTrylock PACKAGE_MANGLE_NAME( UTILS_MutexTrylock )
 STATIC_INLINE bool
-SCOREP_MutexTrylock( SCOREP_Mutex* scorepMutex );
+UTILS_MutexTrylock( UTILS_Mutex* mutex );
 
+#define UTILS_MutexUnlock PACKAGE_MANGLE_NAME( UTILS_MutexUnlock )
 STATIC_INLINE void
-SCOREP_MutexUnlock( SCOREP_Mutex* scorepMutex );
+UTILS_MutexUnlock( UTILS_Mutex* mutex );
 
 /* Wait for a mutex state to be 'unlocked' */
+#define UTILS_MutexWait PACKAGE_MANGLE_NAME( UTILS_MutexWait )
 STATIC_INLINE void
-SCOREP_MutexWait( SCOREP_Mutex*         scorepMutex,
-                  UTILS_Atomic_Memorder memorder );
+UTILS_MutexWait( UTILS_Mutex*          mutex,
+                 UTILS_Atomic_Memorder memorder );
+
+UTILS_END_C_DECLS
+
 
 #if HAVE( GCC_ATOMIC_BUILTINS )
-#include "../mutex/scorep_mutex.inc.c"
+#include "../src/mutex/UTILS_Mutex.inc.c"
 #endif /* GCC_ATOMIC_BUILTINS */
 
 #undef STATIC_INLINE
 
-#endif /* SCOREP_MUTEX_H */
+#endif /* UTILS_MUTEX_H */

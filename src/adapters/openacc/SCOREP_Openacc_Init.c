@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -32,7 +32,7 @@
 #include "scorep_openacc_confvars.inc.c"
 
 /* OpenACC mutex */
-SCOREP_Mutex scorep_openacc_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_openacc_mutex = UTILS_MUTEX_INIT;
 
 /**
  * Registers the required configuration variables of the OpenACC adapter to the

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,13 +50,13 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
+#include <UTILS_Mutex.h>
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Task.h>
 
@@ -321,7 +321,7 @@ check_region( SCOREP_RegionHandle* region,
     /* Register new regions */
     if ( !*region )
     {
-        SCOREP_MutexLock( &scorep_compiler_region_mutex );
+        UTILS_MutexLock( &scorep_compiler_region_mutex );
         if ( !*region )
         {
             UTILS_IO_SimplifyPath( file_name );
@@ -356,7 +356,7 @@ check_region( SCOREP_RegionHandle* region,
 
             scorep_compiler_demangle_free( region_name, region_name_demangled );
         }
-        SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
     }
 }
 

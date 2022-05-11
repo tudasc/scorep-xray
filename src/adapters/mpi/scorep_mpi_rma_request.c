@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019,
+ * Copyright (c) 2017, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2019,
@@ -31,10 +31,10 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 #define SCOREP_SKIPLIST_TYPE scorep_mpi_rma_request
 #include <SCOREP_Skiplist.h>
@@ -49,7 +49,7 @@ static scorep_mpi_rma_request_skiplist_t* rma_requests;
  * @internal
  * @brief Mutex for rma_requests
  */
-static SCOREP_Mutex rma_request_mutex;
+static UTILS_Mutex rma_request_mutex;
 
 /**
  * @internal
@@ -99,8 +99,8 @@ scorep_mpi_rma_request_init( void )
 
     // Create a skiplist for 2^6 elements
     rma_requests = scorep_mpi_rma_request_create_list( height,
-                                                       ( SCOREP_Skiplist_Guard )SCOREP_MutexLock,
-                                                       ( SCOREP_Skiplist_Guard )SCOREP_MutexUnlock,
+                                                       ( SCOREP_Skiplist_Guard )UTILS_MutexLock,
+                                                       ( SCOREP_Skiplist_Guard )UTILS_MutexUnlock,
                                                        ( SCOREP_Skiplist_GuardObject )( &rma_request_mutex ) );
 }
 
