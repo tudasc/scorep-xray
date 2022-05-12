@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
@@ -308,6 +308,13 @@ SCOREP_Memory_CreateMovedPagedMemory( void );
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_GetLocalDefinitionPageManager( void );
 
+
+/**
+ * Returns the size of the Score-P-internal memory pages, see the environment
+ * variable SCOREP_PAGE_SIZE.
+ */
+uint64_t
+SCOREP_Memory_GetPageSize( void );
 
 /*@}*/
 

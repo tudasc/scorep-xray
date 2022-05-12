@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2020-2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
@@ -41,538 +41,47 @@
 
 #include "scorep_mpi_request_mgmt.h"
 #include "SCOREP_Mpi.h"
+#include "SCOREP_Fmpi.h"
 #include "scorep_mpi_communicator.h"
 #include <SCOREP_Events.h>
 #include <SCOREP_IoManagement.h>
 
 #include <UTILS_Error.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Atomic.h>
+#include <SCOREP_Memory.h>
+#include <SCOREP_FastHashtab.h>
+#include <jenkins_hash.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 /**
  * @internal
- * size of hash table
- */
-#define SCOREP_MPI_REQUEST_TABLE_SIZE 256
-
-/**
- * @internal
- * Hash access structure
- */
-struct scorep_mpi_request_hash
-{
-    struct scorep_mpi_request_block* head_block;
-    struct scorep_mpi_request_block* last_block;
-    scorep_mpi_request*              lastreq;
-    int                              lastidx;
-};
-
-/**
- * @internal
- * size of element list behind a hash entry
- */
-#define SCOREP_MPI_REQUEST_BLOCK_SIZE 16
-
-/**
- * @internal
- * Block of linked list of request blocks
- */
-struct scorep_mpi_request_block
-{
-    scorep_mpi_request               req[ SCOREP_MPI_REQUEST_BLOCK_SIZE ];
-    struct scorep_mpi_request_block* next;
-    struct scorep_mpi_request_block* prev;
-};
-
-
-/**
- * @internal
- * Data structure to store request info for effective request tracking
- */
-static struct scorep_mpi_request_hash
-    scorep_mpi_request_table[ SCOREP_MPI_REQUEST_TABLE_SIZE ] = {
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */ /* 128 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE } /*  32 */ /* 256 */
-};
-
-
-/**
- * @internal
  * Request id counter
  */
-static SCOREP_MpiRequestId scorep_mpi_last_request_id = 0;
+static SCOREP_MpiRequestId mpi_last_request_id;
 
-/**
- * @internal
- * @brief  Return entry in the hash table that holds the request tracking data
- * @param  req MPI request handle
- * @return Pointer to request hash entry
- */
-static struct scorep_mpi_request_hash*
-scorep_mpi_get_request_hash_entry( MPI_Request req )
+/* Type declarations for NON_MONOTONIC_HASH_TABLE */
+typedef struct request_table_entry request_table_entry;
+struct request_table_entry
 {
-    unsigned char* cptr = ( unsigned char* )&req;
-    unsigned char  h    = cptr[ 0 ];
-    /* int i; */
-
-    /*
-     * The hash function.
-     * At least on BlueGene and Jump, MPI_Request is a 32-bit integer, which
-     * more-or-less seems to represent a request count. Hence we can use a
-     * simple and fast hash like msb^lsb here.
-     *
-     * On Linux/LAM, MPI_Request is still 4 bytes, but the representation is
-     * different. The simple hash function would not use all hash bits; here,
-     * the loop over all bytes sketched below would be better:
-     *
-     *   for (i = 1; i < sizeof(MPI_Request); ++i)
-     *     h ^= cptr[i];
-     */
-
-    h ^= cptr[ sizeof( MPI_Request ) - 1 ];
-    return &scorep_mpi_request_table[ h ];
-}
-
-
-SCOREP_MpiRequestId
-scorep_mpi_get_request_id( void )
-{
-    return ++scorep_mpi_last_request_id;
-}
-
-static scorep_mpi_request*
-scorep_mpi_request_create_entry( MPI_Request             request,
-                                 SCOREP_MpiRequestId     id,
-                                 scorep_mpi_request_type request_type,
-                                 scorep_mpi_request_flag flags )
-{
-    struct scorep_mpi_request_block* new_block;
-    struct scorep_mpi_request_hash*  hash_entry = scorep_mpi_get_request_hash_entry( request );
-
-    hash_entry->lastidx++;
-    if ( hash_entry->lastidx >= SCOREP_MPI_REQUEST_BLOCK_SIZE )
+    union
     {
-        if ( hash_entry->head_block == 0 )
-        {
-            /* first time: allocate and initialize first block */
-            new_block              = malloc( sizeof( struct scorep_mpi_request_block ) );
-            new_block->next        = 0;
-            new_block->prev        = 0;
-            hash_entry->head_block = hash_entry->last_block = new_block;
-        }
-        else if ( hash_entry->last_block == 0 )
-        {
-            /* request list empty: re-initialize */
-            hash_entry->last_block = hash_entry->head_block;
-        }
-        else
-        {
-            if ( hash_entry->last_block->next == 0 )
-            {
-                /* request list full: expand */
-                new_block                    = malloc( sizeof( struct scorep_mpi_request_block ) );
-                new_block->next              = 0;
-                new_block->prev              = hash_entry->last_block;
-                hash_entry->last_block->next = new_block;
-            }
-            /* use next available block */
-            hash_entry->last_block = hash_entry->last_block->next;
-        }
-        hash_entry->lastreq = &( hash_entry->last_block->req[ 0 ] );
-        hash_entry->lastidx = 0;
-    }
-    else
-    {
-        hash_entry->lastreq++;
-    }
+        scorep_mpi_request*  request;
+        request_table_entry* next;
+    } payload;
+    SCOREP_Mutex request_lock;
+};
 
-    scorep_mpi_request* req = hash_entry->lastreq;
-    req->request      = request;
-    req->id           = id;
-    req->request_type = request_type;
-    req->flags        = flags;
-    return req;
-}
+typedef MPI_Request          request_table_key_t;
+typedef request_table_entry* request_table_value_t;
 
-void
-scorep_mpi_request_p2p_create( MPI_Request             request,
-                               scorep_mpi_request_type type,
-                               scorep_mpi_request_flag flags,
-                               int                     tag,
-                               int                     dest,
-                               uint64_t                bytes,
-                               MPI_Datatype            datatype,
-                               MPI_Comm                comm,
-                               SCOREP_MpiRequestId     id )
+/* ------------------------------------------------------------------------- */
+/* Free-lists and other helper stuff:                                        */
+static inline void
+free_mpi_type( scorep_mpi_request* req )
 {
-    scorep_mpi_request* req = scorep_mpi_request_create_entry( request, id, type, flags );
-
-    /* store request information */
-    req->payload.p2p.tag   = tag;
-    req->payload.p2p.dest  = dest;
-    req->payload.p2p.bytes = bytes;
-#if HAVE( DECL_PMPI_TYPE_DUP )
-    PMPI_Type_dup( datatype, &req->payload.p2p.datatype );
-#else
-    req->payload.p2p.datatype = datatype;
-#endif
-    req->payload.p2p.comm_handle = SCOREP_MPI_COMM_HANDLE( comm );
-}
-
-void
-scorep_mpi_request_io_create( MPI_Request             request,
-                              scorep_mpi_request_type type,
-                              uint64_t                bytes,
-                              MPI_Datatype            datatype,
-                              MPI_File                fh,
-                              SCOREP_MpiRequestId     id )
-{
-    scorep_mpi_request* req = scorep_mpi_request_create_entry( request, id, type,
-                                                               SCOREP_MPI_REQUEST_FLAG_NONE );
-
-    /* store request information */
-    req->payload.io.bytes = bytes;
-#if HAVE( DECL_PMPI_TYPE_DUP )
-    PMPI_Type_dup( datatype, &req->payload.io.datatype );
-#else
-    req->payload.io.datatype = datatype;
-#endif
-    req->payload.io.fh = fh;
-}
-
-void
-scorep_mpi_request_comm_idup_create( MPI_Request request,
-                                     MPI_Comm    parentComm,
-                                     MPI_Comm*   newComm )
-{
-    scorep_mpi_request* req = scorep_mpi_request_create_entry(
-        request,
-        UINT64_MAX, /* no events will be triggered, thus no ID needed */
-        SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
-        SCOREP_MPI_REQUEST_FLAG_NONE );
-
-    /* store request information */
-    req->payload.comm_idup.new_comm           = newComm;
-    req->payload.comm_idup.parent_comm_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
-    if ( parentComm != MPI_COMM_NULL )
-    {
-        req->payload.comm_idup.parent_comm_handle = SCOREP_MPI_COMM_HANDLE( parentComm );
-    }
-}
-
-void
-scorep_mpi_request_win_create( MPI_Request             mpiRequest,
-                               scorep_mpi_rma_request* rmaRequest )
-{
-    scorep_mpi_request* req = scorep_mpi_request_create_entry( mpiRequest,
-                                                               rmaRequest->matching_id,
-                                                               SCOREP_MPI_REQUEST_TYPE_RMA,
-                                                               SCOREP_MPI_REQUEST_FLAG_NONE );
-
-    /* store request information */
-    req->payload.rma.request_ptr = rmaRequest;
-}
-
-scorep_mpi_request*
-scorep_mpi_request_get( MPI_Request request )
-{
-    struct scorep_mpi_request_hash*  hash_entry = scorep_mpi_get_request_hash_entry( request );
-    int                              i;
-    struct scorep_mpi_request_block* block;
-    scorep_mpi_request*              curr;
-
-    /* list empty */
-    if ( !hash_entry->lastreq )
-    {
-        return 0;
-    }
-
-    /* search all requests in all blocks */
-    block = hash_entry->head_block;
-    while ( block )
-    {
-        curr = &( block->req[ 0 ] );
-        for ( i = 0; i < SCOREP_MPI_REQUEST_BLOCK_SIZE; ++i )
-        {
-            /* found? */
-            if ( curr->request == request )
-            {
-                return curr;
-            }
-
-            /* end of list? */
-            if ( curr == hash_entry->lastreq )
-            {
-                return 0;
-            }
-
-            curr++;
-        }
-        block = block->next;
-    }
-    return 0;
-}
-
-void
-scorep_mpi_request_free( scorep_mpi_request* req )
-{
-    struct scorep_mpi_request_hash* hash_entry = scorep_mpi_get_request_hash_entry( req->request );
-
     /*
      * Drop type duplicate, but only if we could have made a duplicate in the
      * first place
@@ -589,41 +98,468 @@ scorep_mpi_request_free( scorep_mpi_request* req )
         PMPI_Type_free( &req->payload.io.datatype );
     }
 #endif
+}
 
-    /* delete request by copying last request in place of req */
-    if ( !hash_entry->lastreq )
-    {
-        UTILS_ERROR( SCOREP_ERROR_MPI_NO_LAST_REQUEST,
-                     "Please tell me what you were trying to do!" );
-    }
-    *req                              = *( hash_entry->lastreq );
-    hash_entry->lastreq->request_type = SCOREP_MPI_REQUEST_TYPE_NONE;
-    hash_entry->lastreq->flags        = SCOREP_MPI_REQUEST_FLAG_NONE;
-    hash_entry->lastreq->request      = 0;
+static request_table_value_t request_table_entry_free_list;
+static SCOREP_Mutex          request_table_entry_free_list_mutex;
 
-    /* adjust pointer to last request */
-    hash_entry->lastidx--;
-    if ( hash_entry->lastidx < 0 )
+/* Returns pointer to 0-initialized request_table_entry. */
+static inline request_table_value_t
+get_request_table_entry_from_pool( void )
+{
+    request_table_value_t ret;
+
+    SCOREP_MutexLock( &request_table_entry_free_list_mutex );
+    if ( request_table_entry_free_list == NULL )
     {
-        /* reached low end of block */
-        if ( hash_entry->last_block->prev )
-        {
-            /* goto previous block if existing */
-            hash_entry->lastidx = SCOREP_MPI_REQUEST_BLOCK_SIZE - 1;
-            hash_entry->lastreq = &( hash_entry->last_block->prev->req[ hash_entry->lastidx ] );
-        }
-        else
-        {
-            /* no previous block: re-initialize */
-            hash_entry->lastidx = SCOREP_MPI_REQUEST_BLOCK_SIZE;
-            hash_entry->lastreq = 0;
-        }
-        hash_entry->last_block = hash_entry->last_block->prev;
+        SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
+        ret = SCOREP_Memory_AllocForMisc( sizeof( *ret ) );
     }
     else
     {
-        hash_entry->lastreq--;
+        ret                           = request_table_entry_free_list;
+        request_table_entry_free_list = request_table_entry_free_list->payload.next;
+
+        SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
     }
+
+    memset( ret, 0, sizeof( *ret ) );
+    return ret;
+}
+
+static inline void
+release_request_table_entry_to_pool( request_table_value_t data )
+{
+    SCOREP_MutexLock( &request_table_entry_free_list_mutex );
+
+    data->payload.next            = request_table_entry_free_list;
+    request_table_entry_free_list = data;
+
+    SCOREP_MutexUnlock( &request_table_entry_free_list_mutex );
+}
+
+static scorep_mpi_request* request_free_list;
+static SCOREP_Mutex        request_free_list_mutex;
+
+/* Returns pointer to uninitialized request_table_entry. */
+static inline scorep_mpi_request*
+get_scorep_request_from_pool( void )
+{
+    scorep_mpi_request* ret;
+
+    SCOREP_MutexLock( &request_free_list_mutex );
+
+    if ( request_free_list == NULL )
+    {
+        SCOREP_MutexUnlock( &request_free_list_mutex );
+
+        ret = SCOREP_Memory_AllocForMisc( sizeof( *ret ) );
+    }
+    else
+    {
+        ret               = request_free_list;
+        request_free_list = request_free_list->next;
+        SCOREP_MutexUnlock( &request_free_list_mutex );
+    }
+
+    return ret;
+}
+
+static inline void
+release_scorep_request_to_pool( scorep_mpi_request* req )
+{
+    SCOREP_MutexLock( &request_free_list_mutex );
+
+    req->next         = request_free_list;
+    request_free_list = req;
+
+    SCOREP_MutexUnlock( &request_free_list_mutex );
+}
+
+/* Requirements for NON_MONOTONIC_HASH_TABLE:                                */
+#define REQUEST_TABLE_HASH_EXPONENT 8
+static inline bool
+request_table_equals( request_table_key_t key1,
+                      request_table_key_t key2 )
+{
+    return key1 == key2;
+}
+
+static inline void*
+request_table_allocate_chunk( size_t chunkSize )
+{
+    void* chunk = SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+
+    return chunk;
+}
+
+static inline void
+request_table_free_chunk( void* chunk )
+{
+}
+
+static inline request_table_value_t
+request_table_value_ctor( request_table_key_t* key,
+                          const void*          ctorData )
+{
+    request_table_value_t new_request_table_entry = get_request_table_entry_from_pool();
+    scorep_mpi_request*   new_scorep_mpi_request  = get_scorep_request_from_pool();
+
+    memcpy( new_scorep_mpi_request, ctorData, sizeof( *new_scorep_mpi_request ) );
+    new_request_table_entry->payload.request = new_scorep_mpi_request;
+
+    return new_request_table_entry;
+}
+
+static inline void
+request_table_value_dtor( request_table_key_t   key,
+                          request_table_value_t value )
+{
+    scorep_mpi_request* req = value->payload.request;
+    free_mpi_type( req );
+
+    release_scorep_request_to_pool( value->payload.request );
+    release_request_table_entry_to_pool( value );
+}
+
+static inline uint32_t
+request_table_bucket_idx( request_table_key_t key )
+{
+    return jenkins_hash( &key, sizeof( key ), 0 ) & hashmask( REQUEST_TABLE_HASH_EXPONENT );
+}
+
+SCOREP_HASH_TABLE_NON_MONOTONIC( request_table, 11, hashsize( REQUEST_TABLE_HASH_EXPONENT ) );
+
+#undef REQUEST_TABLE_HASH_EXPONENT
+
+/*
+ * This insertion-function and the corresponding get- and remove-functions are a work-around for an
+ * optimization done by most MPI implementations. Most MPI Implementations may choose to immediately
+ * complete small non-blocking MPI calls, eg MPI_Isend with a single double, and then return a dummy
+ * value which is unequal to MPI_REQUEST_NULL. Since our hash-table does not support duplicates, our
+ * work-around is to maintain a simple list of requests for these dummy values and otherwise simply
+ * use the hash-table as intended.
+ */
+static inline void
+insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
+{
+    bool inserted;
+
+    // Try to insert request directly.
+    request_table_value_t orig_value = request_table_get_and_insert( key, data, &inserted );
+
+    // If the MPI_Request is a duplicate, we need to append a new scorep_mpi_request to the list.
+    if ( !inserted )
+    {
+        // Create the new request.
+        scorep_mpi_request* new_request = get_scorep_request_from_pool();
+        memcpy( new_request, data, sizeof( *new_request ) );
+
+        do
+        {
+            // Lock the current entry, such that the new request can be inserted.
+            SCOREP_MutexLock( &( orig_value->request_lock ) );
+
+            // Since another thread could have removed and possibly also reinserted
+            // the entry with the same key, we need to double check.
+            request_table_value_t control = request_table_get_and_insert( key, data, &inserted );
+
+            // Another thread has removed the entry. The request was inserted directly.
+            // Unlock the old entry for consistency and release the scorep_mpi_request.
+            if ( inserted )
+            {
+                SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+
+                release_scorep_request_to_pool( new_request );
+
+                return;
+            }
+
+            // The entry has not changed. Append the scorep_mpi_request to the list.
+            if ( !inserted && orig_value == control )
+            {
+                scorep_mpi_request* current = orig_value->payload.request;
+                while ( current->next != NULL )
+                {
+                    current = current->next;
+                }
+                current->next       = new_request;
+                current->next->next = NULL;
+
+                SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+                return;
+            }
+
+            // The entry was changed, but still remains in the hash-table. Update and retry.
+            SCOREP_MutexUnlock( &( orig_value->request_lock ) );
+            orig_value = control;
+        }
+        while ( true );
+    }
+}
+//-----------------------------------------------------------------------------
+
+SCOREP_MpiRequestId
+scorep_mpi_get_request_id( void )
+{
+    return SCOREP_Atomic_AddFetch_uint64( &mpi_last_request_id, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+}
+
+void
+scorep_mpi_request_p2p_create( MPI_Request             request,
+                               scorep_mpi_request_type type,
+                               scorep_mpi_request_flag flags,
+                               int                     tag,
+                               int                     dest,
+                               uint64_t                bytes,
+                               MPI_Datatype            datatype,
+                               MPI_Comm                comm,
+                               SCOREP_MpiRequestId     id )
+{
+    scorep_mpi_request data = { .request      = request,
+                                .request_type = type,
+                                .payload.p2p  = {
+                                    .tag         = tag,
+                                    .dest        = dest,
+                                    .bytes       = bytes,
+                                    .comm_handle = SCOREP_MPI_COMM_HANDLE( comm )
+                                },
+                                .flags  = flags,
+                                .id     = id,
+                                .next   = NULL,
+                                .marker = false };
+
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &data.payload.p2p.datatype );
+#else
+    data.payload.p2p.datatype = datatype;
+#endif
+
+    insert_scorep_mpi_request( request, &data );
+}
+
+void
+scorep_mpi_request_io_create( MPI_Request             request,
+                              scorep_mpi_request_type type,
+                              uint64_t                bytes,
+                              MPI_Datatype            datatype,
+                              MPI_File                fh,
+                              SCOREP_MpiRequestId     id )
+{
+    scorep_mpi_request data = { .request      = request,
+                                .request_type = type,
+                                .payload.io   = {
+                                    .bytes = bytes,
+                                    .fh    = fh
+                                },
+                                .flags  = SCOREP_MPI_REQUEST_FLAG_NONE,
+                                .id     = id,
+                                .next   = NULL,
+                                .marker = false };
+
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &data.payload.io.datatype );
+#else
+    data.payload.io.datatype = datatype;
+#endif
+
+    insert_scorep_mpi_request( request, &data );
+}
+
+void
+scorep_mpi_request_comm_idup_create( MPI_Request request,
+                                     MPI_Comm    parentComm,
+                                     MPI_Comm*   newComm )
+{
+    scorep_mpi_request data = { .request           = request,
+                                .request_type      = SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
+                                .payload.comm_idup = {
+                                    .new_comm           = newComm,
+                                    .parent_comm_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR
+                                },
+                                .flags  = SCOREP_MPI_REQUEST_FLAG_NONE,
+                                .id     = UINT64_MAX,
+                                .next   = NULL,
+                                .marker = false };
+
+    if ( parentComm != MPI_COMM_NULL )
+    {
+        data.payload.comm_idup.parent_comm_handle = SCOREP_MPI_COMM_HANDLE( parentComm );
+    }
+
+    insert_scorep_mpi_request( request, &data );
+}
+
+void
+scorep_mpi_request_win_create( MPI_Request             mpiRequest,
+                               scorep_mpi_rma_request* rmaRequest )
+{
+    scorep_mpi_request data = { .request      = mpiRequest,
+                                .request_type = SCOREP_MPI_REQUEST_TYPE_RMA,
+                                .payload.rma  = { .request_ptr = rmaRequest },
+                                .flags        = SCOREP_MPI_REQUEST_FLAG_NONE,
+                                .id           = rmaRequest->matching_id,
+                                .next         = NULL,
+                                .marker       = false };
+
+    insert_scorep_mpi_request( mpiRequest, &data );
+}
+
+scorep_mpi_request*
+scorep_mpi_request_get( MPI_Request request )
+{
+    request_table_value_t value, control;
+    if ( !request_table_get( request, &value ) )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
+                     "Request missing from management data structure." );
+
+        return NULL;
+    }
+
+    do
+    {
+        SCOREP_MutexLock( &( value->request_lock ) );
+
+        if ( !request_table_get( request, &control ) )
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
+                         "Request missing from management data structure on control." );
+
+            SCOREP_MutexUnlock( &( value->request_lock ) );
+            return NULL;
+        }
+
+        if ( control == value )
+        {
+            scorep_mpi_request* current = value->payload.request;
+            while ( current != NULL )
+            {
+                if ( !SCOREP_Atomic_LoadN_bool( &( current->marker ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ) )
+                {
+                    break;
+                }
+                else
+                {
+                    current = current->next;
+                }
+            }
+
+            if ( current == NULL )
+            {
+                UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
+                             "Request missing from management data structure in linked list." );
+
+                SCOREP_MutexUnlock( &( value->request_lock ) );
+                return NULL;
+            }
+
+            SCOREP_Atomic_StoreN_bool( &( current->marker ), true, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            SCOREP_MutexUnlock( &( value->request_lock ) );
+            return current;
+        }
+
+        SCOREP_MutexUnlock( &( value->request_lock ) );
+        value = control;
+    }
+    while ( true );
+
+    return NULL;
+}
+
+void
+scorep_mpi_unmark_request( scorep_mpi_request* req )
+{
+    SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+}
+
+void
+scorep_mpi_request_free( scorep_mpi_request* req )
+{
+    request_table_value_t value, control;
+    if ( !request_table_get( req->request, &value ) )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
+                     "Request to be freed, not found in hashtable." );
+
+        return;
+    }
+
+    do
+    {
+        SCOREP_MutexLock( &( value->request_lock ) );
+
+        if ( !request_table_get( req->request, &control ) )
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
+                         "Request to be freed, not found in hashtable on control." );
+
+            SCOREP_MutexUnlock( &( value->request_lock ) );
+            return;
+        }
+
+        if ( control == value )
+        {
+            scorep_mpi_request* current = value->payload.request;
+
+            if ( value->payload.request == NULL )
+            {
+                UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
+                             "Linked list empty, should be impossible." );
+
+                SCOREP_MutexUnlock( &( value->request_lock ) );
+                return;
+            }
+
+            if ( value->payload.request->next == NULL && value->payload.request == req )
+            {
+                if ( !request_table_remove( req->request ) )
+                {
+                    UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
+                                 "Removing hashtable entry failed." );
+                }
+
+                SCOREP_MutexUnlock( &( value->request_lock ) );
+                return;
+            }
+
+            scorep_mpi_request* previous = NULL;
+
+            while ( current != NULL && current != req )
+            {
+                previous = current;
+                current  = current->next;
+            }
+
+            if ( current == NULL )
+            {
+                UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_REMOVED,
+                             "Request to be freed, not found in list of hashtable entry." );
+
+                SCOREP_MutexUnlock( &( value->request_lock ) );
+                return;
+            }
+
+            if ( previous == NULL )
+            {
+                value->payload.request = current->next;
+            }
+            else
+            {
+                previous->next = current->next;
+            }
+
+            free_mpi_type( current );
+            SCOREP_MutexUnlock( &( value->request_lock ) );
+
+            release_scorep_request_to_pool( current );
+            return;
+        }
+
+        SCOREP_MutexUnlock( &( value->request_lock ) );
+        value = control;
+    }
+    while ( true );
 }
 
 void
@@ -793,51 +729,133 @@ scorep_mpi_cleanup_request( scorep_mpi_request* req )
     }
 }
 
-static MPI_Request* orig_req_arr      = 0;
-static int          orig_req_arr_size = 0;
+#ifdef NEED_F2C_CONV
+void*
+scorep_mpi_get_request_f2c_array( size_t size )
+{
+    SCOREP_Location*                         location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_mpi_req_mgmt_location_data* const storage  = SCOREP_Location_GetSubsystemData( location,
+                                                                                          scorep_mpi_subsystem_id );
+
+    if ( size > storage->f2c_arr_size )
+    {
+        size_t num_pages;
+        size_t num_bytes = size * sizeof( MPI_Request );
+
+        num_pages = ( num_bytes + SCOREP_Memory_GetPageSize() - 1 ) / SCOREP_Memory_GetPageSize();
+
+        storage->f2c_arr = SCOREP_Location_AllocForMisc( location,
+                                                         num_pages * SCOREP_Memory_GetPageSize() );
+
+        storage->f2c_arr_size = ( num_pages * SCOREP_Memory_GetPageSize() ) /
+                                sizeof( MPI_Request );
+
+        /*
+         * NOTE: We deliberately leak memory here since we do not have the option
+         * to free individual allocations.
+         *
+         * From src/measurement/include/SCOREP_Memory.h:
+         *     These functions are the replacement of malloc and free. Note that there is
+         *     no possibility to free a single allocation but only to free the entire
+         *     allocated memory of a specific type. Due to the usual memory access
+         *     patterns during measurement this design is hopefully justified.
+         *
+         * We do however try and reduce the memory leak by increasing the array
+         * in multiples of SCOREP_PAGE_SIZE.
+         */
+    }
+
+    return storage->f2c_arr;
+}
+#endif
 
 void
-scorep_mpi_save_request_array( MPI_Request* arr_req, int arr_req_size )
+scorep_mpi_save_request_array( MPI_Request* arr_req, size_t arr_req_size )
 {
-    if ( orig_req_arr_size == 0 )
+    SCOREP_Location*                         location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_mpi_req_mgmt_location_data* const storage  = SCOREP_Location_GetSubsystemData( location,
+                                                                                          scorep_mpi_subsystem_id );
+
+    if ( arr_req_size > storage->req_arr_size )
     {
-        /* -- never used: initialize -- */
-        orig_req_arr      = malloc( arr_req_size * sizeof( MPI_Request ) );
-        orig_req_arr_size = arr_req_size;
-    }
-    else if ( arr_req_size > orig_req_arr_size )
-    {
-        /* -- not enough room: expand -- */
-        orig_req_arr      = realloc( orig_req_arr, arr_req_size * sizeof( MPI_Request ) );
-        orig_req_arr_size = arr_req_size;
+        size_t num_pages;
+        size_t num_bytes = arr_req_size * sizeof( MPI_Request );
+
+        num_pages = ( num_bytes + SCOREP_Memory_GetPageSize() - 1 ) / SCOREP_Memory_GetPageSize();
+
+        storage->req_arr = SCOREP_Location_AllocForMisc( location,
+                                                         num_pages * SCOREP_Memory_GetPageSize() );
+
+        storage->req_arr_size = ( num_pages * SCOREP_Memory_GetPageSize() ) /
+                                sizeof( MPI_Request );
+
+        /*
+         * NOTE: We deliberately leak memory here since we do not have the option
+         * to free individual allocations.
+         *
+         * From src/measurement/include/SCOREP_Memory.h:
+         *     These functions are the replacement of malloc and free. Note that there is
+         *     no possibility to free a single allocation but only to free the entire
+         *     allocated memory of a specific type. Due to the usual memory access
+         *     patterns during measurement this design is hopefully justified.
+         *
+         * We do however try and reduce the memory leak by increasing the array
+         * in multiples of SCOREP_PAGE_SIZE.
+         */
     }
 
-    /* -- copy array -- */
-    /* for (i=0; i<arr_req_size; ++i) orig_req_arr[i] = arr_req[i]; */
-    memcpy( orig_req_arr, arr_req, arr_req_size * sizeof( MPI_Request ) );
+    memcpy( storage->req_arr, arr_req, arr_req_size * sizeof( MPI_Request ) );
 }
 
 scorep_mpi_request*
-scorep_mpi_saved_request_get( int i )
+scorep_mpi_saved_request_get( size_t i )
 {
-    return scorep_mpi_request_get( orig_req_arr[ i ] );
+    SCOREP_Location*                         location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_mpi_req_mgmt_location_data* const storage  = SCOREP_Location_GetSubsystemData( location,
+                                                                                          scorep_mpi_subsystem_id );
+
+    UTILS_ASSERT( i < storage->req_arr_size );
+    return scorep_mpi_request_get( storage->req_arr[ i ] );
 }
 
-void
-scorep_mpi_request_finalize( void )
+/**
+ * Get a pointer to a status array of at least 'size' statuses
+ * @param  size minimal requested size
+ * @return pointer to status array
+ */
+MPI_Status*
+scorep_mpi_get_status_array( size_t size )
 {
-    struct scorep_mpi_request_block* block;
-    int                              i;
+    SCOREP_Location*                         location = SCOREP_Location_GetCurrentCPULocation();
+    scorep_mpi_req_mgmt_location_data* const storage  = SCOREP_Location_GetSubsystemData( location,
+                                                                                          scorep_mpi_subsystem_id );
 
-    /* free request blocks */
-
-    for ( i = 0; i < SCOREP_MPI_REQUEST_TABLE_SIZE; ++i )
+    if ( size > storage->status_arr_size )
     {
-        while ( scorep_mpi_request_table[ i ].head_block )
-        {
-            block                                    = scorep_mpi_request_table[ i ].head_block;
-            scorep_mpi_request_table[ i ].head_block = scorep_mpi_request_table[ i ].head_block->next;
-            free( block );
-        }
+        size_t num_pages;
+        size_t num_bytes = size * sizeof( MPI_Status );
+
+        num_pages = ( num_bytes + SCOREP_Memory_GetPageSize() - 1 ) / SCOREP_Memory_GetPageSize();
+
+        storage->status_arr = SCOREP_Location_AllocForMisc( location,
+                                                            num_pages * SCOREP_Memory_GetPageSize() );
+
+        storage->status_arr_size = ( num_pages * SCOREP_Memory_GetPageSize() ) /
+                                   sizeof( MPI_Status );
+
+        /*
+         * NOTE: We deliberately leak memory here since we do not have the option to free individual allocations.
+         *
+         * From src/measurement/include/SCOREP_Memory.h:
+         *     These functions are the replacement of malloc and free. Note that there is
+         *     no possibility to free a single allocation but only to free the entire
+         *     allocated memory of a specific type. Due to the usual memory access
+         *     patterns during measurement this design is hopefully justified.
+         *
+         * We do however try and reduce the memory leak by increasing the array
+         * in multiples of SCOREP_PAGE_SIZE.
+         */
     }
+
+    return storage->status_arr;
 }

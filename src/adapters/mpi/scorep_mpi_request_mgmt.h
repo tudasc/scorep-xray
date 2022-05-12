@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2021-2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
@@ -42,6 +42,9 @@
 #include <mpi.h>
 
 #include "scorep_mpi_rma_request.h"
+#include "SCOREP_Fmpi.h"
+
+#include <stddef.h>
 
 typedef enum scorep_mpi_request_type
 {
@@ -70,6 +73,26 @@ enum scorep_mpi_requests_flags
 
 typedef uint64_t scorep_mpi_request_flag;
 
+/**
+ * @internal
+ * This struct contains the management information for the location-specific buffers
+ * which are used in the request management. We specifically need a continuous array
+ * for the status array.
+ */
+typedef struct scorep_mpi_req_mgmt_location_data
+{
+    size_t       req_arr_size;
+#ifdef NEED_F2C_CONV
+    size_t       f2c_arr_size;
+#endif
+    size_t       status_arr_size;
+    MPI_Request* req_arr;
+#ifdef NEED_F2C_CONV
+    MPI_Request* f2c_arr;
+#endif
+    MPI_Status*  status_arr;
+} scorep_mpi_req_mgmt_location_data;
+
 typedef struct
 {
     int                              tag;
@@ -97,7 +120,8 @@ typedef struct
     scorep_mpi_rma_request* request_ptr;
 } scorep_mpi_request_rma_data;
 
-typedef struct
+typedef struct scorep_mpi_request scorep_mpi_request;
+struct scorep_mpi_request
 {
     MPI_Request             request;
     scorep_mpi_request_type request_type;
@@ -110,7 +134,9 @@ typedef struct
         scorep_mpi_request_rma_data       rma;
     } payload;
     SCOREP_MpiRequestId id;
-} scorep_mpi_request;
+    scorep_mpi_request* next;
+    bool                marker;
+};
 
 
 /**
@@ -118,6 +144,12 @@ typedef struct
  */
 SCOREP_MpiRequestId
 scorep_mpi_get_request_id( void );
+
+/**
+ * @brief Unmark request after no more work needs to be done on the request
+ */
+void
+scorep_mpi_unmark_request( scorep_mpi_request* req );
 
 /**
  * @brief Create entry for a given MPI P2P request handle
@@ -142,6 +174,12 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
                                MPI_Comm                comm,
                                SCOREP_MpiRequestId     id );
 
+/**
+ * @brief Create entry for a given MPI Comm_Idup request handle
+ * @param request    MPI request handle
+ * @param parentComm Original Comm handle
+ * @param newcomm    Handle of copied Comm
+ */
 void
 scorep_mpi_request_comm_idup_create( MPI_Request request,
                                      MPI_Comm    parentComm,
@@ -188,9 +226,18 @@ scorep_mpi_request_get( MPI_Request request );
 void
 scorep_mpi_request_free( scorep_mpi_request* req );
 
+/**
+ * @brief Test a request entry
+ * @param req Pointer to request entry to be tested
+ */
 void
 scorep_mpi_test_request( scorep_mpi_request* req );
 
+/**
+ * @brief Check a completed request entry for nessecary measurement data
+ * @param req    Pointer to request entry to be checked
+ * @param status Corresponding status handle
+ */
 void
 scorep_mpi_check_request( scorep_mpi_request* req,
                           MPI_Status*         status );
@@ -198,13 +245,40 @@ scorep_mpi_check_request( scorep_mpi_request* req,
 void
 scorep_mpi_cleanup_request( scorep_mpi_request* req );
 
+#ifdef NEED_F2C_CONV
+/**
+ * @brief Provides thread-local request array for conversion of requests
+ *        between Fortran and C (aka F2C)
+ * @param size Size of array in number of requests
+ */
+void*
+scorep_mpi_get_request_f2c_array( size_t size );
+
+#endif
+
+/**
+ * @brief Copy request array into thread-local buffer for later use
+ * @param arr_req      Pointer to request array to be copied
+ * @param arr_req_size Size of array
+ */
 void
 scorep_mpi_save_request_array( MPI_Request* arr_req,
-                               int          arr_req_size );
-scorep_mpi_request*
-scorep_mpi_saved_request_get( int i );
+                               size_t       arr_req_size );
 
-void
-scorep_mpi_request_finalize( void );
+/**
+ * @brief  Retrieve internal request entry for the MPI request handle in thread-local buffer at a certain position
+ * @param  i Index of MPI Request handle in thread-local buffer
+ * @return Pointer to corresponding internal request entry
+ */
+scorep_mpi_request*
+scorep_mpi_saved_request_get( size_t i );
+
+/**
+ * Get a pointer to a status array of at least 'size' statuses
+ * @param  size minimal requested size
+ * @return pointer to status array
+ */
+MPI_Status*
+scorep_mpi_get_status_array( size_t size );
 
 #endif /* SCOREP_MPI_REQUEST_MGMT_H */

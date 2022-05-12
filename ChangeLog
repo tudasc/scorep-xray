@@ -5,6 +5,8 @@ Features and improvements:
 - Add support for recording the offset parameter to MPI I/O
   functions with explicit offsets.
 - Record events for the ISO C I/O 'remove' function.
+- Score-P limitedly supports `MPI_THREAD_SERIALIZED`, and, if there is
+  thread-local storage detected, `MPI_THREAD_MULTIPLE`.
 
 User tools and API improvements and changes:
 
@@ -29,6 +31,11 @@ Compatibility:
   instrumented binary.
 - The C++ compiler requirements to build Score-P were raised from
   C++98 to C++11.
+
+Bugfixes:
+- MPI request management now uses internal Score-P memory management.
+  However, a measurement will now have increased memory requirements.
+  Please be aware of this.
 
 ------------------- Released version 7.1 -----------------------------
 
