@@ -42,7 +42,6 @@
 #include <mpi.h>
 
 #include "scorep_mpi_rma_request.h"
-#include "SCOREP_Fmpi.h"
 
 #include <stddef.h>
 
@@ -82,14 +81,10 @@ typedef uint64_t scorep_mpi_request_flag;
 typedef struct scorep_mpi_req_mgmt_location_data
 {
     size_t       req_arr_size;
-#ifdef NEED_F2C_CONV
     size_t       f2c_arr_size;
-#endif
     size_t       status_arr_size;
     MPI_Request* req_arr;
-#ifdef NEED_F2C_CONV
     MPI_Request* f2c_arr;
-#endif
     MPI_Status*  status_arr;
 } scorep_mpi_req_mgmt_location_data;
 
@@ -245,7 +240,6 @@ scorep_mpi_check_request( scorep_mpi_request* req,
 void
 scorep_mpi_cleanup_request( scorep_mpi_request* req );
 
-#ifdef NEED_F2C_CONV
 /**
  * @brief Provides thread-local request array for conversion of requests
  *        between Fortran and C (aka F2C)
@@ -253,8 +247,6 @@ scorep_mpi_cleanup_request( scorep_mpi_request* req );
  */
 void*
 scorep_mpi_get_request_f2c_array( size_t size );
-
-#endif
 
 /**
  * @brief Copy request array into thread-local buffer for later use

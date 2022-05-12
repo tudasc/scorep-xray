@@ -51,7 +51,6 @@
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Location.h>
 #include "SCOREP_Mpi.h"
-#include "SCOREP_Fmpi.h"
 #include "scorep_mpi_fortran.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
@@ -363,12 +362,6 @@ mpi_init_location( struct SCOREP_Location* newLocation,
         storage->req_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Request );
         storage->req_arr      = SCOREP_Location_AllocForMisc( newLocation,
                                                               SCOREP_Memory_GetPageSize() );
-
-    #ifdef NEED_F2C_CONV
-        storage->f2c_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Request );
-        storage->f2c_arr      = SCOREP_Location_AllocForMisc( newLocation,
-                                                              SCOREP_Memory_GetPageSize() );
-    #endif
 
         storage->status_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Status );
         storage->status_arr      = SCOREP_Location_AllocForMisc( newLocation,
