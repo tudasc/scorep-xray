@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020-2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
@@ -47,7 +47,11 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_AllocMetric.h>
 #include <SCOREP_IoManagement.h>
+#include <scorep/SCOREP_PublicTypes.h>
+#include <SCOREP_ErrorCodes.h>
+#include <SCOREP_Location.h>
 #include "SCOREP_Mpi.h"
+#include "SCOREP_Fmpi.h"
 #include "scorep_mpi_fortran.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
@@ -73,8 +77,12 @@ int scorep_mpi_status_size = 0;
    Flag to indicate whether event generation is turned on or off. If
    it is set to true, events are generated. If it is set to false, no
    events are generated.
+   Default true, such that threads which are spawned after initialization
+   also record events.
+   If no thread-local storage specifier is availble we only support
+   MPI_THREAD_SERIALIZED.
  */
-bool scorep_mpi_generate_events = false;
+bool SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events = true;
 
 bool scorep_mpi_mountinfo_exists = false;
 
@@ -89,7 +97,7 @@ SCOREP_Hashtab* scorep_mpi_io_split_table = NULL;
 
 #include "scorep_mpi_confvars.inc.c"
 
-static size_t mpi_subsystem_id;
+size_t scorep_mpi_subsystem_id;
 
 static void
 enable_derived_groups( void )
@@ -169,7 +177,7 @@ mpi_subsystem_register( size_t subsystem_id )
 
     scorep_hint_No_MPI_startup_symbols_found_in_application();
 
-    mpi_subsystem_id = subsystem_id;
+    scorep_mpi_subsystem_id = subsystem_id;
 
     SCOREP_ConfigRegister( "mpi", scorep_mpi_confvars );
     SCOREP_ConfigRegister( "topology", scorep_mpi_topology_confvars );
@@ -277,7 +285,6 @@ mpi_subsystem_finalize( void )
 
     /* Finalize sub-systems */
     scorep_mpi_win_finalize();
-    scorep_mpi_request_finalize();
     scorep_mpi_comm_finalize();
 
     if ( scorep_mpi_memory_recording )
@@ -334,16 +341,58 @@ mpi_subsystem_deregister( void )
     }
 }
 
+static SCOREP_ErrorCode
+mpi_init_location( struct SCOREP_Location* newLocation,
+                   struct SCOREP_Location* parentLocation )
+{
+    UTILS_DEBUG_ENTRY();
+
+    if ( SCOREP_Location_GetType( newLocation ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        return SCOREP_SUCCESS;
+    }
+
+    scorep_mpi_req_mgmt_location_data* storage = SCOREP_Location_AllocForMisc( newLocation,
+                                                                               sizeof( *storage ) );
+
+    // 0-initialize object
+    memset( storage, 0, sizeof( *storage ) );
+
+    if ( SCOREP_Location_GetId( newLocation ) == 0 )
+    {
+        storage->req_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Request );
+        storage->req_arr      = SCOREP_Location_AllocForMisc( newLocation,
+                                                              SCOREP_Memory_GetPageSize() );
+
+    #ifdef NEED_F2C_CONV
+        storage->f2c_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Request );
+        storage->f2c_arr      = SCOREP_Location_AllocForMisc( newLocation,
+                                                              SCOREP_Memory_GetPageSize() );
+    #endif
+
+        storage->status_arr_size = SCOREP_Memory_GetPageSize() / sizeof( MPI_Status );
+        storage->status_arr      = SCOREP_Location_AllocForMisc( newLocation,
+                                                                 SCOREP_Memory_GetPageSize() );
+    }
+
+    SCOREP_Location_SetSubsystemData( newLocation,
+                                      scorep_mpi_subsystem_id,
+                                      storage );
+
+    return SCOREP_SUCCESS;
+}
+
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
-    .subsystem_name       = "MPI",
-    .subsystem_register   = &mpi_subsystem_register,
-    .subsystem_init       = &mpi_subsystem_init,
-    .subsystem_begin      = &mpi_subsystem_begin,
-    .subsystem_init_mpp   = &mpi_subsystem_init_mpp,
-    .subsystem_end        = &mpi_subsystem_end,
-    .subsystem_finalize   = &mpi_subsystem_finalize,
-    .subsystem_pre_unify  = &mpi_subsystem_pre_unify,
-    .subsystem_deregister = &mpi_subsystem_deregister
+    .subsystem_name          = "MPI",
+    .subsystem_register      = &mpi_subsystem_register,
+    .subsystem_init          = &mpi_subsystem_init,
+    .subsystem_init_location = &mpi_init_location,
+    .subsystem_begin         = &mpi_subsystem_begin,
+    .subsystem_init_mpp      = &mpi_subsystem_init_mpp,
+    .subsystem_end           = &mpi_subsystem_end,
+    .subsystem_finalize      = &mpi_subsystem_finalize,
+    .subsystem_pre_unify     = &mpi_subsystem_pre_unify,
+    .subsystem_deregister    = &mpi_subsystem_deregister
 };

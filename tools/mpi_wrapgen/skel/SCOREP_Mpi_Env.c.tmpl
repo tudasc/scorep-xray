@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2021-2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
@@ -220,7 +220,17 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
   {
     if ((required > MPI_THREAD_FUNNELED) && (*provided > MPI_THREAD_FUNNELED))
     {
-      UTILS_WARNING("MPI environment initialization request and provided level exceed MPI_THREAD_FUNNELED!");
+          #if HAVE( THREAD_LOCAL_STORAGE )
+            UTILS_WARNING( "Support for MPI_THREAD_(SERIALIZED|MULTIPLE) is currently experimental!\n"
+                           "Please report bugs and give feedback to support@score-p.org." );
+          #else
+            /* If no thread-local storage specifier is availble we only support MPI_THREAD_SERIALIZED. */
+
+            UTILS_WARNING( "No thread-local storage specifier detected during configure, therefore\n"
+                           "MPI_THREAD_MULTIPLE is not supported!\n\n"
+                           "Support for MPI_THREAD_SERIALIZED is currently experimental!\n"
+                           "Please report bugs and give feedback to support@score-p.org." );
+          #endif /* ! HAVE( THREAD_LOCAL_STORAGE ) */
     }
     if ((required == MPI_THREAD_FUNNELED) && (*provided >= MPI_THREAD_FUNNELED)
         && 0 != SCOREP_Location_GetId( SCOREP_Location_GetCurrentCPULocation() ) )

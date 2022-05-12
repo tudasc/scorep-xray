@@ -6,6 +6,9 @@
 ## Copyright (c) 2014-2015, 2017, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2022,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -63,10 +66,10 @@ AS_IF([test "x${scorep_have_thread_local_storage}" = "xno"], [
 
 AC_SCOREP_COND_HAVE([THREAD_LOCAL_STORAGE],
                     [test "x${scorep_have_thread_local_storage}" = "xyes"],
-                    [Defined if thread local storage support is available.],
-                    [AC_DEFINE_UNQUOTED([SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER],
-                                        [$scorep_thread_local_storage_specifier],
-                                        [Set specifier to mark a variable as thread-local storage (TLS)])])
+                    [Defined if thread local storage support is available.])
+AC_DEFINE_UNQUOTED([SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER],
+                   [$scorep_thread_local_storage_specifier],
+                   [Set specifier to mark a variable as thread-local storage (TLS)])
 ])
 
 # SCOREP_THREAD_LOCAL_STORAGE

@@ -212,13 +212,25 @@ various Score-P components.
     Score-P fails at link time due to unresolved symbols in the
     Score-P libraries.
 
-  - Score-P expects the MPI communication to be done on the master
-    thread only. It is not that it is not possible to measure
-    communication from other threads. But it is nearly impossible to
-    do reasonable analysis when only ranks but not the real
-    communication partners (threads) are known. There are efforts in
-    the MPI forum to address this issue (endpoints). Until then, only
-    MPI_THREAD_FUNNELED is supported.
+  - Multi-threaded MPI communication is limited/experimental in Score-P.
+    It is not that it is not possible to measure communication
+    from other threads. But it is nearly impossible to do reasonable analysis
+    when only ranks but not the real communication partners (threads)
+    are known. There are efforts in the MPI forum to address this
+    issue (endpoints).
+    The current version of Score-P is designed to stop the instrumented
+    application from crashing under multi-threaded MPI communication
+    but there are some limitations.
+    When thread-local storage is not detected during the configure
+    step `MPI_THREAD_MULTIPLE` is not supported.
+    All recorded MPI communication events will still be reported on
+    the master thread.
+    MPI implementations optimize small messages and create non-unique
+    requests, e.g., empty requests in OpenMPI, and can not be
+    distinguished by Score-P. A workaround is implemented. However,
+    the ordering and, therefore, association to the MPI calls is lost.
+    This effect was also present in previous versions of Score-P but went
+    unnoticed.
 
   - Open MPI 4.0.0 is known broken to build with Score-P, because it
     accidentally removed deprecated-only MPI functions, without
@@ -227,6 +239,12 @@ various Score-P components.
   - Score-P does not yet support the `USE mpi_f08` Fortran language
     binding. On detection of the use of this binding, Score-P aborts
     during MPI initialization.
+
+  - Score-P leaks memory in the MPI requests management as the Score-P
+    memory management does not allow freeing individual allocations.
+    We try to reduce this leakage. Gradually increasing the number of
+    requests will increase this effect. However, in practice,
+    it does not seem to have any impact on the measurement.
 
 --------------------------------------------------------------------------------
 

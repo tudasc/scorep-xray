@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,7 @@
  */
 
 #include <config.h>
+#include "scorep_mpi_request_mgmt.h"
 /* We do wrap deprecated functions here, but we don't want warnings */
 #include "SCOREP_Fmpi.h"
 
@@ -216,54 +217,6 @@ void FSUB(MPI_Testsome)(int*         incount,
 
 #else /* !NEED_F2C_CONV */
 
-/**
- * Wrapper for a statically allocated request array that can be reused
- * in different calls. It will be enlarged automatically, when needed.
- * @ingroup utility_functions
- */
-static MPI_Request *alloc_request_array(int count)
-{
-  static MPI_Request* local_req_arr = 0;
-  static int          local_req_arr_size = 0;
-
-  if (local_req_arr_size == 0)
-  {
-    /* -- never used: initialize -- */
-    local_req_arr      = malloc(2 * count * sizeof(MPI_Request));
-    local_req_arr_size = 2 * count;
-  }
-  else if (count > local_req_arr_size)
-  {
-    /* -- not enough room: expand -- */
-    local_req_arr      = realloc(local_req_arr, count * sizeof(MPI_Request));
-    local_req_arr_size = count;
-  }
-  return local_req_arr;
-}
-
-/**
- * Wrapper for a statically allocated status array that can be reused
- * in different calls. It will be enlarged automatically, when needed.
- * @ingroup utility_functions
- */
-static MPI_Status *alloc_status_array(int count)
-{
-  static MPI_Status* local_stat_arr = 0;
-  static int         local_stat_arr_size = 0;
-
-  if (local_stat_arr_size == 0)
-  {
-    /* -- never used: initialize -- */
-    local_stat_arr      = malloc(2 * count * sizeof(MPI_Status));
-    local_stat_arr_size = 2 * count;
-  } else if (count > local_stat_arr_size) {
-    /* -- not enough room: expand -- */
-    local_stat_arr      = realloc(local_stat_arr, count * sizeof(MPI_Status));
-    local_stat_arr_size = count;
-  }
-  return local_stat_arr;
-}
-
 #if HAVE(DECL_PMPI_WAIT) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Wait,
@@ -318,11 +271,11 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
 
   if (*count > 0)
   {
-    lrequest = alloc_request_array(*count);
+    lrequest = scorep_mpi_get_request_f2c_array( *count );
 
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     {
-      c_status = alloc_status_array(*count);
+      c_status = scorep_mpi_get_status_array( *count );
     }
     else
     {
@@ -376,7 +329,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
 
   if (*count > 0)
   {
-    lrequest = alloc_request_array(*count);
+    lrequest = scorep_mpi_get_request_f2c_array( *count );
     for (i=0; i<*count; i++)
     {
       lrequest[i] = PMPI_Request_f2c(array_of_requests[i]);
@@ -432,11 +385,11 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
   /* get addresses of internal buffers, and convert input requests */
   if (*incount > 0)
   {
-    lrequest = alloc_request_array(*incount);
+    lrequest = scorep_mpi_get_request_f2c_array( *incount );
 
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     {
-      c_status = alloc_status_array(*incount);
+      c_status = scorep_mpi_get_status_array( *incount );
     }
     else
     {
@@ -559,7 +512,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
 
   if (*count > 0)
   {
-    lrequest = alloc_request_array(*count);
+    lrequest = scorep_mpi_get_request_f2c_array( *count );
     for (i=0; i<*count; i++)
     {
       lrequest[i] = PMPI_Request_f2c(array_of_requests[i]);
@@ -614,11 +567,11 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
 
   if (*count > 0)
   {
-    lrequest = alloc_request_array(*count);
+    lrequest = scorep_mpi_get_request_f2c_array( *count );
 
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     {
-      c_status = alloc_status_array(*count);
+      c_status = scorep_mpi_get_status_array( *count );
     }
     else
     {
@@ -673,11 +626,11 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
 
   if (*incount > 0)
   {
-    lrequest = alloc_request_array(*incount);
+    lrequest = scorep_mpi_get_request_f2c_array( *incount );
 
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     {
-      c_status = alloc_status_array(*incount);
+      c_status = scorep_mpi_get_status_array( *incount );
     }
     else
     {
@@ -748,7 +701,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
 
   if (*count > 0)
   {
-    lrequest = alloc_request_array(*count);
+    lrequest = scorep_mpi_get_request_f2c_array( *count );
     for (i=0; i<*count; i++)
     {
       lrequest[i] = PMPI_Request_f2c(array_of_requests[i]);

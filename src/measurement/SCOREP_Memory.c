@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2012,
@@ -828,4 +828,11 @@ memory_dump_stats_full( void )
         fprintf( stderr, "[Score-P] %-55s %-15" PRIu32 "\n\n", "Number of pages used",
                  stats[ i ].pages_used );
     }
+}
+
+
+uint64_t
+SCOREP_Memory_GetPageSize( void )
+{
+    return SCOREP_Env_GetPageSize();
 }

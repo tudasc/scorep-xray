@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2021-2022,
 ## RWTH Aachen University, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -54,6 +54,7 @@ libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_ROOT)src/services/include    \
     -I$(INC_DIR_DEFINITIONS)             \
+    -I$(INC_DIR_COMMON_HASH)             \
     @SCOREP_TIMER_CPPFLAGS@
 
 BACKEND_TARGETS += $(LIB_DIR_SCOREP)libutils.la

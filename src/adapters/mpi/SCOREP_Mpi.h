@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2020-2022,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,6 +43,7 @@
 
 #include <mpi.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #if MPI_VERSION >= 3
 #define SCOREP_MPI_CONST_DECL const
@@ -107,8 +108,16 @@ extern int scorep_mpi_status_size;
 
 /**
  * Flag which indicates whether event generation is turned on/off.
+ * If no thread-local storage specifier is availble we only support MPI_THREAD_SERIALIZED.
  */
-extern bool scorep_mpi_generate_events;
+extern bool SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events;
+
+/**
+ * @internal
+ * The subsystem id which the MPI adapter acquires during the registration.
+ * It is needed for the location-specific memory management.
+ */
+extern size_t scorep_mpi_subsystem_id;
 
 /**
    Flag which indicates whether recording of MPI topologies is enabled.
