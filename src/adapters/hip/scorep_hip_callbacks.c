@@ -42,6 +42,10 @@
 
 #include <roctracer_hip.h>
 
+#if HAVE( ROCM_SMI_SUPPORT )
+#include <rocm_smi/rocm_smi.h>
+#endif
+
 #include <jenkins_hash.h>
 
 #include "scorep_hip.h"
@@ -129,11 +133,131 @@ SCOREP_HASH_TABLE_MONOTONIC( api_region_table,
                              15,
                              hashsize( API_REGION_TABLE_HASH_EXPONENT ) );
 
+#if HAVE( ROCM_SMI_SUPPORT )
+
+/************************** ROCm SMI devices **********************************/
+
+typedef uint64_t smi_device_table_key_t;
+typedef int      smi_device_table_value_t;
+
+#define SMI_DEVICE_TABLE_HASH_EXPONENT 3
+
+static inline uint32_t
+smi_device_table_bucket_idx( smi_device_table_key_t key )
+{
+    return jenkins_hash( &key, sizeof( key ), 0 ) & hashmask( SMI_DEVICE_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+smi_device_table_equals( smi_device_table_key_t key1,
+                         smi_device_table_key_t key2 )
+{
+    return key1 == key2;
+}
+
+static inline void*
+smi_device_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+smi_device_table_free_chunk( void* chunk )
+{
+}
+
+static inline smi_device_table_value_t
+smi_device_table_value_ctor( smi_device_table_key_t* key,
+                             void*                   ctorData )
+{
+    return *( int* )ctorData;
+}
+
+/* nPairsPerChunk: 8+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( smi_device_table,
+                             10,
+                             hashsize( SMI_DEVICE_TABLE_HASH_EXPONENT ) );
+
+#endif
+
+
+static void
+enumerate_smi_devices( void )
+{
+#if HAVE( ROCM_SMI_SUPPORT )
+
+// Macro to check ROCm-SMI calls status
+// Note that this applies only to calls returning `rsmi_status_t`!
+#define SCOREP_ROCMSMI_CALL( call ) \
+    do { \
+        rsmi_status_t err = call; \
+        if ( err != RSMI_STATUS_SUCCESS ) { \
+            const char* error_string; \
+            rsmi_status_string( err, &error_string ); \
+            UTILS_WARNING( "Call '%s' failed with: %s", #call, error_string ); \
+            return; \
+        } \
+    } while ( 0 )
+
+    SCOREP_ROCMSMI_CALL( rsmi_init( 0 ) );
+
+    uint32_t num_devices;
+    SCOREP_ROCMSMI_CALL( rsmi_num_monitor_devices( &num_devices ) );
+
+    for ( uint32_t i = 0; i < num_devices; ++i )
+    {
+        uint64_t uuid;
+        SCOREP_ROCMSMI_CALL( rsmi_dev_unique_id_get( i, &uuid ) );
+
+        smi_device_table_value_t ignored;
+        smi_device_table_get_and_insert( uuid, &i, &ignored );
+    }
+
+    SCOREP_ROCMSMI_CALL( rsmi_shut_down() );
+
+#undef SCOREP_ROCMSMI_CALL
+
+#endif
+}
+
+static int
+get_smi_device( int       deviceId,
+                uint64_t* uuidOut )
+{
+    UTILS_ASSERT( uuidOut );
+
+#if HAVE( ROCM_SMI_SUPPORT )
+
+    /* HIP returns only the hex string part of the UUID "GPI-XXXXXXXXXXXXXXXX"
+     * but without a terminating 0, hence the union with one more byte.
+     * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/inc/hsa_ext_amd.h#L291-L300 */
+    union
+    {
+        hipUUID hip_uuid;
+        char    terminated_bytes[ sizeof( hipUUID ) + 1 ];
+    } uuid_bytes;
+    hipDeviceGetUuid( &uuid_bytes.hip_uuid, deviceId );
+    uuid_bytes.terminated_bytes[ sizeof( hipUUID ) ] = '\0';
+    uint64_t uuid = strtoull( uuid_bytes.terminated_bytes, NULL, 16 );
+
+    int smi_device;
+    if ( smi_device_table_get( uuid, &smi_device ) )
+    {
+        *uuidOut = uuid;
+        return smi_device;
+    }
+
+#endif
+
+    return deviceId;
+}
+
 /************************** HIP devices ***************************************/
 
 typedef struct
 {
     int                         device_id;
+    int                         smi_device_id;
     SCOREP_SystemTreeNodeHandle system_tree_node;
     SCOREP_LocationGroupHandle  location_group;
     uint32_t                    stream_counter;
@@ -176,13 +300,25 @@ device_table_value_ctor( device_table_key_t* key,
 
     device->device_id = *key;
 
+    uint64_t uuid = 0;
+    device->smi_device_id = get_smi_device( *key, &uuid );
+
     char buffer[ 80 ];
-    snprintf( buffer, sizeof( buffer ), "%d", *key );
+    snprintf( buffer, sizeof( buffer ), "%d", device->smi_device_id );
     device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
         SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
         SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
         "ROCm Device",
         buffer );
+
+    if ( uuid != 0 )
+    {
+        /* ROCm uses "GPU-" as prefix for the UUID
+         * https://github.com/RadeonOpenCompute/ROCR-Runtime/blob/master/src/core/runtime/amd_gpu_agent.cpp#L993 */
+        char uuid_buffer[ 22 ];
+        snprintf( uuid_buffer, sizeof( uuid_buffer ), "GPU-%016" PRIx64, uuid );
+        SCOREP_SystemTreeNodeHandle_AddProperty( device->system_tree_node, "UUID", uuid_buffer );
+    }
 
     hipDeviceProp_t device_props;
     hipGetDeviceProperties( &device_props, *key );
@@ -306,6 +442,10 @@ device_table_value_ctor( device_table_key_t* key,
                                             device_props.pciDeviceID,
                                             UINT8_MAX );
 
+    /* ROCm/HIP does not have a "context", we add one per device. The "ID"
+     * is irrelevant regarding unification. But as this is already the
+     * software layer, we use the HIP device ID, not the ROCm SMI device index.
+     */
     snprintf( buffer, sizeof( buffer ), "HIP Context %d", *key );
     device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
         device->system_tree_node,
@@ -385,6 +525,9 @@ stream_table_value_ctor( stream_table_key_t* key,
     stream->stream_seq = stream_seq;
 
     char thread_name[ 32 ];
+    /* This is the software layer, thus we use the HIP device ID, not the
+     * ROCm SMI device index. See the comment on "HIP Context".
+     */
     snprintf( thread_name, sizeof( thread_name ), "HIP[%d:%u]", stream->device_id, stream->stream_seq );
 
     stream->device_location =
@@ -597,6 +740,8 @@ scorep_hip_callbacks_init( void )
 {
     UTILS_DEBUG( "######################### Init ROC tracer" );
     UTILS_DEBUG( "    Enabled features: %" PRIx64, scorep_hip_features );
+
+    enumerate_smi_devices();
 
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );
 }

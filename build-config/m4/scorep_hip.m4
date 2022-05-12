@@ -37,6 +37,7 @@ AC_ARG_WITH([rocm],
                      [*],   [AC_MSG_ERROR([Invalid value for --with-rocm: $withval])])])
 
 scorep_have_hip="${with_rocm:-no}"
+scorep_have_rocm_smi="yes"
 
 # hipcc is Clang-based, in contrast to nvcc which can use a different backend compiler.
 # Thus Score-P needs to be compiled with a Clang-based compiler, so that instrumentation
@@ -57,7 +58,10 @@ AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_libamdhip64}" = "xyes"],
              [with_libamdhip64_cppflags="-D__HIP_PLATFORM_AMD__ ${with_libamdhip64_cppflags}"
               CPPFLAGS="${with_libamdhip64_cppflags} ${scorep_hip_safe_CPPFLAGS}"
-              LDFLAGS="${with_libamdhip64_ldflags} $LDFLAGS"],
+              LDFLAGS="${with_libamdhip64_ldflags} $LDFLAGS"
+              AC_CHECK_DECLS([hipDeviceGetUuid], [], [], [[
+#include <hip/hip_runtime.h>
+]])],
              [scorep_have_hip="no, missing HIP runtime library"])])
 
 AS_IF([test "x${with_libamdhip64}" != xnot_set],
@@ -72,6 +76,14 @@ AC_SCOREP_BACKEND_LIB([libroctracer64], [roctracer_hip.h])
 AS_IF([test "x${scorep_have_hip}" = "xyes"],
       [AS_IF([test "x${scorep_have_libroctracer64}" != "xyes"],
              [scorep_have_hip="no, missing ROCm tracer library"])])
+
+AS_IF([test -d "${scorep_hip_root}/include/rocm_smi"],
+      [: ${with_librocm_smi64_include:=${scorep_hip_root}/include}])
+AC_SCOREP_BACKEND_LIB([librocm_smi64], [rocm_smi/rocm_smi.h])
+AS_IF([test "x${scorep_have_hip}" = "xyes"],
+      [AS_IF([test "x${scorep_have_librocm_smi64}" = "xyes"],
+             [AC_CHECK_TYPES([hipUUID], [], [scorep_have_rocm_smi="no"])],
+             [scorep_have_rocm_smi="no"])])
 
 # only reset CPPFLAGS
 CPPFLAGS=$scorep_hip_safe_CPPFLAGS
@@ -96,6 +108,16 @@ AC_SCOREP_COND_HAVE([HIP_SUPPORT],
                     [AC_SUBST(HIP_CPPFLAGS, [""])
                      AC_SUBST(HIP_LDFLAGS,  [""])
                      AC_SUBST(HIP_LIBS,     [""])])
+
+AC_SCOREP_COND_HAVE([ROCM_SMI_SUPPORT],
+                    [test "x${scorep_have_rocm_smi}" = "xyes"],
+                    [Defined if ROCm SMI is available.],
+                    [AC_SUBST(ROCM_SMI_CPPFLAGS, ["${with_librocm_smi64_cppflags}"])
+                     AC_SUBST(ROCM_SMI_LDFLAGS,  ["${with_librocm_smi64_ldflags} ${with_librocm_smi64_rpathflag}"])
+                     AC_SUBST(ROCM_SMI_LIBS,     ["${with_librocm_smi64_libs}"])],
+                    [AC_SUBST(ROCM_SMI_CPPFLAGS, [""])
+                     AC_SUBST(ROCM_SMI_LDFLAGS,  [""])
+                     AC_SUBST(ROCM_SMI_LIBS,     [""])])
 
 AFS_SUMMARY_POP([HIP support], [${scorep_have_hip}])
 
@@ -140,6 +162,30 @@ AS_IF([test "x${scorep_[]lib_name[]_error}" = "xno"],
                       [],
                       [AS_IF([test "x${with_[]lib_name[]}" != xnot_set || test "x${with_[]lib_name[]_lib}" != xnot_set],
                              [AC_MSG_NOTICE([no []lib_name[] found; check path to ROCTRACER library ...])])
+                       scorep_[]lib_name[]_error="yes"])])
+
+dnl final check for errors
+if test "x${scorep_[]lib_name[]_error}" = "xno"; then
+    with_[]lib_name[]_lib_checks_successful="yes"
+    with_[]lib_name[]_libs="-l${scorep_[]lib_name[]_lib_name}"
+else
+    with_[]lib_name[]_lib_checks_successful="no"
+    with_[]lib_name[]_libs=""
+fi
+])
+
+AC_DEFUN([_AC_SCOREP_LIBROCM_SMI64_LIB_CHECK], [
+scorep_[]lib_name[]_lib_name="rocm_smi64"
+scorep_[]lib_name[]_error="no"
+
+dnl checking for ROCM-SMI library
+AS_IF([test "x${scorep_[]lib_name[]_error}" = "xno"],
+      [AS_UNSET([ac_cv_search_rsmi_init])
+       AC_SEARCH_LIBS([rsmi_init],
+                      [${scorep_[]lib_name[]_lib_name}],
+                      [],
+                      [AS_IF([test "x${with_[]lib_name[]}" != xnot_set || test "x${with_[]lib_name[]_lib}" != xnot_set],
+                             [AC_MSG_NOTICE([no []lib_name[] found; check path to ROCM-SMI library ...])])
                        scorep_[]lib_name[]_error="yes"])])
 
 dnl final check for errors

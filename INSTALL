@@ -287,6 +287,21 @@ the following configure arguments:
                the explicit include and lib options directly.
   --with-libroctracer64-include=<Path to libroctracer64 headers: roctracer_hip.h>
   --with-libroctracer64-lib=<Path to libroctracer64 libraries>
+  --with-librocm_smi64=(yes|no|<Path to librocm_smi64 installation>)
+               If you want to build with librocm_smi64 support but
+               do not have a librocm_smi64 in a standard location,
+               you need to explicitly specify the directory where
+               it is installed. On non-cross-compile systems we
+               search the system include and lib paths per default
+               [yes]; on cross-compile systems, however, you have
+               to specify a path [no]. --with-librocm_smi64 is a
+               shorthand for
+               --with-librocm_smi64-include=<Path/include> and
+               --with-librocm_smi64-lib=<Path/lib>. If these
+               shorthand assumptions are not correct, you can use
+               the explicit include and lib options directly.
+  --with-librocm_smi64-include=<Path to librocm_smi64 headers: rocm_smi/rocm_smi.h>
+  --with-librocm_smi64-lib=<Path to librocm_smi64 libraries>
 
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
@@ -599,6 +614,10 @@ variables:
               Path to libroctracer64 headers: roctracer_hip.h
   LIBROCTRACER64_LIB
               Path to libroctracer64 libraries.
+  LIBROCM_SMI64_INCLUDE
+              Path to librocm_smi64 headers: rocm_smi/rocm_smi.h
+  LIBROCM_SMI64_LIB
+              Path to librocm_smi64 libraries.
   LIBPMI_INCLUDE
               Path to libpmi headers: pmi.h
   LIBPMI_LIB  Path to libpmi libraries.

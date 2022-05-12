@@ -940,6 +940,7 @@ If <b><tt>kernels</tt></b> is set additionally, then it is not allowed to filter
 
 For each HIP stream a location is created with the name <b>HIP[D:S]</tt></b>.
 Where <tt>D</tt> denotes the HIP device and <tt>S</tt> a stream identifier.
+The former number is corresponds to the visible devices for the process.
 The HIP <tt>NULL</tt>-stream always gets the identifier <tt>0</tt>.
 Additionally created streams get a number starting with <tt>1</tt> in creation order.
 The location for the HIP <tt>NULL</tt>-stream also gets a property named <tt>hipNullStream</tt> with a value of <tt>1</tt>.
@@ -954,7 +955,8 @@ The non-<tt>NULL</tt>-streams get properties for their flags and priority:
 </dl>
 
 All streams of a device are grouped into a location group named <b><tt>HIP Context D</tt></b> with the same value for <tt>D</tt> as the streams.
-This location group is attributed to a system tree node denoting the actual hardware device, which is named <b><tt>ROCm Device D</tt></b>.
+This location group is attributed to a system tree node denoting the actual hardware device, which is named <b><tt>ROCm Device H</tt></b>.
+Here <tt>H</tt> denotes the hardware identifier of the device, which might be different to <tt>D</tt>, if the visible devices were restricted for the process and @scorep was built with support for AMD's SMI library.
 
 The following values from <tt>hipDeviceProp_t</tt> are added as properties to the system tree node for each device (member -> property name mapping):
 
@@ -1030,6 +1032,8 @@ The following values from <tt>hipDeviceProp_t</tt> are added as properties to th
   <dd>Maximum resident threads per multi-processor</dd>
 
 </dl>
+
+Additionally the device gets the device's UUID as a property named <i>UUID</i>.
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}
