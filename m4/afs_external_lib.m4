@@ -127,15 +127,29 @@ dnl
 m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers: $3. Superseded by --with-]_afs_lib_name[ variants.])])dnl
 AC_ARG_VAR(_afs_lib_NAME[]_LIB, [Path to ]_afs_lib_name[ libraries. Superseded by --with-]_afs_lib_name[ variants.])dnl
 dnl
+# Supersede environment variables if --with-libLIBRARY-NAME option
+# given. Unset env variables to prevent further processing.
+AS_IF([test "${_afs_lib_withval:+set}" = set],
+    [AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],
+         [AC_MSG_WARN([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name=${_afs_lib_withval}])
+          AS_UNSET([_afs_lib_NAME[]_LIB])])
+     m4_ifnblank([$3], [dnl
+     AS_IF([test "${_afs_lib_NAME[]_INCLUDE:+set}" = set],
+         [AC_MSG_WARN([_afs_lib_NAME[]_INLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name=${_afs_lib_withval}])
+          AS_UNSET([_afs_lib_NAME[]_INCLUDE])])])])
+# Convert LIB<upcase(LIBRARY_NAME)>_(LIB|INCLUDE) env var to
+# --with-libLIBRARY-NAME-(lib|include) if the latter wasn't
+# provided. Otherwise, --with-libLIBRARY-NAME-(lib|include)
+# supersedes.
 AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_lib:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
+         [AC_MSG_WARN([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
          [_afs_lib_withval_lib="${_afs_lib_NAME[]_LIB}"
           AC_MSG_NOTICE([Using _afs_lib_NAME[]_LIB as --with-_afs_lib_name-lib=${_afs_lib_withval_lib}. Further mentioning of --with-_afs_lib_name-lib applies to _afs_lib_NAME[]_LIB.])])])
 m4_ifnblank([$3], [dnl
 AS_IF([test "${_afs_lib_NAME[]_INCLUDE:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_include:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_INCLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
+         [AC_MSG_WARN([_afs_lib_NAME[]_INCLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
          [_afs_lib_withval_include="${_afs_lib_NAME[]_INCLUDE}"
           AC_MSG_NOTICE([Using _afs_lib_NAME[]_INCLUDE as --with-_afs_lib_name-include=${_afs_lib_withval_include}. Further mentioning of --with-_afs_lib_name-include applies to _afs_lib_NAME[]_INCLUDE.])])])])
 dnl
@@ -147,11 +161,11 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
     [set2],
         [AC_MSG_ERROR([If --with-_afs_lib_name-lib is given, --with-_afs_lib_name-include is required.])],
     [set3],
-        [AC_MSG_ERROR([If --with-_afs_lib_name-include is given, --with-_afs_lib_name-lib is required.])]], [dnl
+        [AC_MSG_ERROR([If --with-_afs_lib_name-include is given, --with-_afs_lib_name-lib is required.])]], [dnl $3 blank
     [set1set2],
         [AC_MSG_ERROR([Use either shorthand --with-_afs_lib_name or explicit option --with-_afs_lib_name-lib.])],
     [set2],
-        [AS_CASE([${_afs_lib_withval_lib}${_afs_lib_withval_include}],
+        [AS_CASE([${_afs_lib_withval_lib}],
              [yes|no], [AC_MSG_ERROR([--with-_afs_lib_name-lib requires a <path>.])],
              [_LIB_CONSISTENCY_CHECKS])]]),
     [set1],
