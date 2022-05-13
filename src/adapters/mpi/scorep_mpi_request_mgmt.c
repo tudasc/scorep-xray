@@ -41,7 +41,6 @@
 
 #include "scorep_mpi_request_mgmt.h"
 #include "SCOREP_Mpi.h"
-#include "SCOREP_Fmpi.h"
 #include "scorep_mpi_communicator.h"
 #include <SCOREP_Events.h>
 #include <SCOREP_IoManagement.h>
@@ -729,7 +728,6 @@ scorep_mpi_cleanup_request( scorep_mpi_request* req )
     }
 }
 
-#ifdef NEED_F2C_CONV
 void*
 scorep_mpi_get_request_f2c_array( size_t size )
 {
@@ -767,7 +765,6 @@ scorep_mpi_get_request_f2c_array( size_t size )
 
     return storage->f2c_arr;
 }
-#endif
 
 void
 scorep_mpi_save_request_array( MPI_Request* arr_req, size_t arr_req_size )
