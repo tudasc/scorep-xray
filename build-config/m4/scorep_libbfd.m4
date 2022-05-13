@@ -115,7 +115,8 @@ all:
 	&& ../configure --prefix=\$(PREFIX) CC=\$(CC) --enable-shared --disable-static \\
 	&& make V=0 all-bfd \\
 	&& make install-bfd \\
-	&& rm \$(PREFIX)/lib/libbfd.la
+	&& rm -f \$(PREFIX)/lib/libbfd.la \\
+	&& rm -f \$(PREFIX)/lib64/libbfd.la
 clean:
 	rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
 uninstall:
