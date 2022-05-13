@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2021,
+dnl Copyright (c) 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2022,
@@ -17,24 +17,25 @@ dnl
 dnl file afs_external_lib.m4
 
 
-# AFS_EXTERNAL_LIB( LIBRARY-NAME, CHECK-MACRO, [HEADER], [DOWNLOAD-MACRO], [HELP-STRING] )
-# ----------------------------------------------------------------------------------------
+# AFS_EXTERNAL_LIB( LIBRARY-NAME, CHECK-MACRO, [HEADERS], [DOWNLOAD-MACRO], [HELP-STRING] )
+# -----------------------------------------------------------------------------------------
 # Provide configure options
 #
 # --with-libLIBRARY-NAME=(yes|no|[download|]<path>),
-# --with-libLIBRARY-NAME-lib=<path>, and, if HEADER given,
+# --with-libLIBRARY-NAME-lib=<path>, and, if HEADERS given,
 # --with-libLIBRARY-NAME-include=<path>
 #
 # for library libLIBRARY-NAME (e.g., LIBRARY-NAME=papi for libpapi).
 # See the help string below for defaults.
 #
 # Use either --with-libLIBRARY-NAME or --with-libLIBRARY-NAME-lib as
-# well as (if HEADER given) --with-libLIBRARY-NAME-include.  If <path>
-# is given, the former expects subdirectories 'include' (if HEADER
-# given), and '(lib64|lib)' to exist. HEADER (if given) must exist in
-# 'include'. libLIBRARY-NAME.* must exist in '(lib64|lib)'.  The
-# latter options expects the provided <path> to exist and to contain
-# HEADER and libLIBRARY-NAME.*, respectively.
+# well as (if HEADERS given) --with-libLIBRARY-NAME-include.  If
+# <path> is given, the former expects subdirectories 'include' (if
+# HEADERS given), and '(lib64|lib)' to exist. HEADERS -- white-space
+# separated -- (if given) must exist in 'include'. libLIBRARY-NAME.*
+# must exist in '(lib64|lib)'.  The latter options expects the
+# provided <path> to exist and to contain HEADERS and
+# libLIBRARY-NAME.*, respectively.
 #
 # Values for --with-libLIBRARY-NAME-lib and
 # --with-libLIBRARY-NAME-include can be provided by precious variables
@@ -42,7 +43,7 @@ dnl file afs_external_lib.m4
 #
 # If these prerquisites are given, execute CHECK-MACRO. Perform any
 # check you like, use (and modify) the AC_SUBST variables
-# _afs_lib_LIBS (=-lLIBRARY-NAME), _afs_lib_CPPFLAGS (if HEADER
+# _afs_lib_LIBS (=-lLIBRARY-NAME), _afs_lib_CPPFLAGS (if HEADERS
 # given), and _afs_lib_LDFLAGS. The latter two are either unset or
 # point to an existing directory. Note that saving and restoring LIBS,
 # CPPFLAGS, and LDFLAGS is taken care of here.
@@ -182,8 +183,13 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
               dnl header consistency checks, differ from the checks below
               AS_IF([! test -d "$_afs_lib_withval/include"],
                   [AC_MSG_ERROR([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not exist. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])])
-              AS_IF([! test -r "$_afs_lib_withval/include/$3"],
-                  [AC_MSG_ERROR([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not contain $3. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])])
+              for header in $3; do
+                  AS_IF([! test -r "$_afs_lib_withval/include/$header"],
+                      [AC_MSG_WARN([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not contain $header. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])
+                       header_consistent=no])
+              done
+              AS_IF([test "x${header_consistent}" = xno],
+                  [AC_MSG_ERROR([Header(s) check failed, see WARNING(s) above.])])
               _afs_lib_withval_include="$_afs_lib_withval/include"])
               dnl lib consistency checks, differ from LIB_CONSISTENCY_CHECKS
               AS_IF([test -d "${_afs_lib_withval}/lib64"],
@@ -203,8 +209,13 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
               AFS_CONSISTENT_DIR([_afs_lib_withval_include], [--with-_afs_lib_name-include])
               AS_IF([! test -d "$_afs_lib_withval_include"],
                   [AC_MSG_ERROR([Directory $_afs_lib_withval_include (from --with-_afs_lib_name-include) does not exist.])])
-              AS_IF([! test -r "$_afs_lib_withval_include/$3"],
-                  [AC_MSG_ERROR([Directory $_afs_lib_withval_include  (from --with-_afs_lib_name-include) does not contain $3.])])
+              for header in $3; do
+                  AS_IF([! test -r "$_afs_lib_withval_include/$header"],
+                      [AC_MSG_WARN([Directory $_afs_lib_withval_include  (from --with-_afs_lib_name-include) does not contain $header.])
+                       header_consistent=no])
+              done
+              AS_IF([test "x${header_consistent}" = xno],
+                  [AC_MSG_ERROR([Header(s) check failed, see WARNING(s) above.])])
               _LIB_CONSISTENCY_CHECKS])],])
     [""],
         [AS_IF([test "x${afs_lib_require_install_paths}" = xyes],
