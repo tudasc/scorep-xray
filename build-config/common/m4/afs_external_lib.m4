@@ -3,8 +3,11 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2021,
+dnl Copyright (c) 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
+dnl
+dnl Copyright (c) 2022,
+dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
@@ -14,24 +17,25 @@ dnl
 dnl file afs_external_lib.m4
 
 
-# AFS_EXTERNAL_LIB( LIBRARY-NAME, CHECK-MACRO, [HEADER], [DOWNLOAD-MACRO], [HELP-STRING] )
-# ----------------------------------------------------------------------------------------
+# AFS_EXTERNAL_LIB( LIBRARY-NAME, CHECK-MACRO, [HEADERS], [DOWNLOAD-MACRO], [HELP-STRING] )
+# -----------------------------------------------------------------------------------------
 # Provide configure options
 #
 # --with-libLIBRARY-NAME=(yes|no|[download|]<path>),
-# --with-libLIBRARY-NAME-lib=<path>, and, if HEADER given,
+# --with-libLIBRARY-NAME-lib=<path>, and, if HEADERS given,
 # --with-libLIBRARY-NAME-include=<path>
 #
 # for library libLIBRARY-NAME (e.g., LIBRARY-NAME=papi for libpapi).
 # See the help string below for defaults.
 #
 # Use either --with-libLIBRARY-NAME or --with-libLIBRARY-NAME-lib as
-# well as (if HEADER given) --with-libLIBRARY-NAME-include.  If <path>
-# is given, the former expects subdirectories 'include' (if HEADER
-# given), and '(lib64|lib)' to exist. HEADER (if given) must exist in
-# 'include'. libLIBRARY-NAME.* must exist in '(lib64|lib)'.  The
-# latter options expects the provided <path> to exist and to contain
-# HEADER and libLIBRARY-NAME.*, respectively.
+# well as (if HEADERS given) --with-libLIBRARY-NAME-include.  If
+# <path> is given, the former expects subdirectories 'include' (if
+# HEADERS given), and '(lib64|lib)' to exist. HEADERS -- white-space
+# separated -- (if given) must exist in 'include'. libLIBRARY-NAME.*
+# must exist in '(lib64|lib)'.  The latter options expects the
+# provided <path> to exist and to contain HEADERS and
+# libLIBRARY-NAME.*, respectively.
 #
 # Values for --with-libLIBRARY-NAME-lib and
 # --with-libLIBRARY-NAME-include can be provided by precious variables
@@ -39,7 +43,7 @@ dnl file afs_external_lib.m4
 #
 # If these prerquisites are given, execute CHECK-MACRO. Perform any
 # check you like, use (and modify) the AC_SUBST variables
-# _afs_lib_LIBS (=-lLIBRARY-NAME), _afs_lib_CPPFLAGS (if HEADER
+# _afs_lib_LIBS (=-lLIBRARY-NAME), _afs_lib_CPPFLAGS (if HEADERS
 # given), and _afs_lib_LDFLAGS. The latter two are either unset or
 # point to an existing directory. Note that saving and restoring LIBS,
 # CPPFLAGS, and LDFLAGS is taken care of here.
@@ -114,27 +118,41 @@ AC_ARG_WITH(_afs_lib_name,
                [ directly or provide path]m4_ifnblank([$3], [s])
                [ via ]_afs_lib_NAME[_LIB]
                m4_ifnblank([$3], [ and ]_afs_lib_NAME[_INCLUDE])[.]
-               m4_ifnblank([$4], [Use [[download]] to obtain and use an exernal tarball.])),
+               m4_ifnblank([$4], [Use [[download]] to automatically obtain and use ]_afs_lib_name[ via external tarball.])),
          [$5])])
 m4_ifnblank([$3], [AC_ARG_WITH(_afs_lib_name[-include],
-     AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers>], [], [79]))])
+     AS_HELP_STRING([--with-_afs_lib_name-include=<Path to _afs_lib_name headers: $3>], [], [79]))])
 AC_ARG_WITH(_afs_lib_name[-lib],
      AS_HELP_STRING([--with-_afs_lib_name-lib=<Path to _afs_lib_name libraries>], [], [79]))
 dnl
-m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers. Superseded by --with-]_afs_lib_name[ variants.])])dnl
+m4_ifnblank([$3], [AC_ARG_VAR(_afs_lib_NAME[]_INCLUDE, [Path to ]_afs_lib_name[ headers: $3. Superseded by --with-]_afs_lib_name[ variants.])])dnl
 AC_ARG_VAR(_afs_lib_NAME[]_LIB, [Path to ]_afs_lib_name[ libraries. Superseded by --with-]_afs_lib_name[ variants.])dnl
 dnl
-AS_IF([test "${_afs_lib_NAME[]_LIB_DIR:+set}" = set],
+# Supersede environment variables if --with-libLIBRARY-NAME option
+# given. Unset env variables to prevent further processing.
+AS_IF([test "${_afs_lib_withval:+set}" = set],
+    [AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],
+         [AC_MSG_WARN([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name=${_afs_lib_withval}])
+          AS_UNSET([_afs_lib_NAME[]_LIB])])
+     m4_ifnblank([$3], [dnl
+     AS_IF([test "${_afs_lib_NAME[]_INCLUDE:+set}" = set],
+         [AC_MSG_WARN([_afs_lib_NAME[]_INLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name=${_afs_lib_withval}])
+          AS_UNSET([_afs_lib_NAME[]_INCLUDE])])])])
+# Convert LIB<upcase(LIBRARY_NAME)>_(LIB|INCLUDE) env var to
+# --with-libLIBRARY-NAME-(lib|include) if the latter wasn't
+# provided. Otherwise, --with-libLIBRARY-NAME-(lib|include)
+# supersedes.
+AS_IF([test "${_afs_lib_NAME[]_LIB:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_lib:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_LIB_DIR=${_afs_lib_NAME[]_LIB_DIR} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
-         [_afs_lib_withval_lib="${_afs_lib_NAME[]_LIB_DIR}"
-          AC_MSG_NOTICE([Using _afs_lib_NAME[]_LIB_DIR as --with-_afs_lib_name-lib=${_afs_lib_withval_lib}. Further mentioning of --with-_afs_lib_name-lib applies to _afs_lib_NAME[]_LIB_DIR.])])])
+         [AC_MSG_WARN([_afs_lib_NAME[]_LIB=${_afs_lib_NAME[]_LIB} superseded with --with-_afs_lib_name-lib=${_afs_lib_withval_lib}])],
+         [_afs_lib_withval_lib="${_afs_lib_NAME[]_LIB}"
+          AC_MSG_NOTICE([Using _afs_lib_NAME[]_LIB as --with-_afs_lib_name-lib=${_afs_lib_withval_lib}. Further mentioning of --with-_afs_lib_name-lib applies to _afs_lib_NAME[]_LIB.])])])
 m4_ifnblank([$3], [dnl
-AS_IF([test "${_afs_lib_NAME[]_INCLUDE_DIR:+set}" = set],
+AS_IF([test "${_afs_lib_NAME[]_INCLUDE:+set}" = set],
     [AS_IF([test "${_afs_lib_withval_include:+set}" = set],
-         [AC_MSG_NOTICE([_afs_lib_NAME[]_INCLUDE_DIR=${_afs_lib_NAME[]_INCLUDE_DIR} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
-         [_afs_lib_withval_include="${_afs_lib_NAME[]_INCLUDE_DIR}"
-          AC_MSG_NOTICE([Using _afs_lib_NAME[]_INCLUDE_DIR as --with-_afs_lib_name-include=${_afs_lib_withval_include}. Further mentioning of --with-_afs_lib_name-include applies to _afs_lib_NAME[]_INCLUDE_DIR.])])])])
+         [AC_MSG_WARN([_afs_lib_NAME[]_INCLUDE=${_afs_lib_NAME[]_INCLUDE} superseded with --with-_afs_lib_name-include=${_afs_lib_withval_include}])],
+         [_afs_lib_withval_include="${_afs_lib_NAME[]_INCLUDE}"
+          AC_MSG_NOTICE([Using _afs_lib_NAME[]_INCLUDE as --with-_afs_lib_name-include=${_afs_lib_withval_include}. Further mentioning of --with-_afs_lib_name-include applies to _afs_lib_NAME[]_INCLUDE.])])])])
 dnl
 # Check valid combinations of options and if directories and libs exist if <path> was provided.
 AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3], [${_afs_lib_withval_include:+set3}])"],
@@ -144,11 +162,11 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
     [set2],
         [AC_MSG_ERROR([If --with-_afs_lib_name-lib is given, --with-_afs_lib_name-include is required.])],
     [set3],
-        [AC_MSG_ERROR([If --with-_afs_lib_name-include is given, --with-_afs_lib_name-lib is required.])]], [dnl
+        [AC_MSG_ERROR([If --with-_afs_lib_name-include is given, --with-_afs_lib_name-lib is required.])]], [dnl $3 blank
     [set1set2],
         [AC_MSG_ERROR([Use either shorthand --with-_afs_lib_name or explicit option --with-_afs_lib_name-lib.])],
     [set2],
-        [AS_CASE([${_afs_lib_withval_lib}${_afs_lib_withval_include}],
+        [AS_CASE([${_afs_lib_withval_lib}],
              [yes|no], [AC_MSG_ERROR([--with-_afs_lib_name-lib requires a <path>.])],
              [_LIB_CONSISTENCY_CHECKS])]]),
     [set1],
@@ -165,8 +183,13 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
               dnl header consistency checks, differ from the checks below
               AS_IF([! test -d "$_afs_lib_withval/include"],
                   [AC_MSG_ERROR([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not exist. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])])
-              AS_IF([! test -r "$_afs_lib_withval/include/$3"],
-                  [AC_MSG_ERROR([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not contain $3. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])])
+              for header in $3; do
+                  AS_IF([! test -r "$_afs_lib_withval/include/$header"],
+                      [AC_MSG_WARN([Directory $_afs_lib_withval/include (via --with-_afs_lib_name) does not contain $header. Consider using --with-_afs_lib_name-lib and --with-_afs_lib_name-include.])
+                       header_consistent=no])
+              done
+              AS_IF([test "x${header_consistent}" = xno],
+                  [AC_MSG_ERROR([Header(s) check failed, see WARNING(s) above.])])
               _afs_lib_withval_include="$_afs_lib_withval/include"])
               dnl lib consistency checks, differ from LIB_CONSISTENCY_CHECKS
               AS_IF([test -d "${_afs_lib_withval}/lib64"],
@@ -186,8 +209,13 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
               AFS_CONSISTENT_DIR([_afs_lib_withval_include], [--with-_afs_lib_name-include])
               AS_IF([! test -d "$_afs_lib_withval_include"],
                   [AC_MSG_ERROR([Directory $_afs_lib_withval_include (from --with-_afs_lib_name-include) does not exist.])])
-              AS_IF([! test -r "$_afs_lib_withval_include/$3"],
-                  [AC_MSG_ERROR([Directory $_afs_lib_withval_include  (from --with-_afs_lib_name-include) does not contain $3.])])
+              for header in $3; do
+                  AS_IF([! test -r "$_afs_lib_withval_include/$header"],
+                      [AC_MSG_WARN([Directory $_afs_lib_withval_include  (from --with-_afs_lib_name-include) does not contain $header.])
+                       header_consistent=no])
+              done
+              AS_IF([test "x${header_consistent}" = xno],
+                  [AC_MSG_ERROR([Header(s) check failed, see WARNING(s) above.])])
               _LIB_CONSISTENCY_CHECKS])],])
     [""],
         [AS_IF([test "x${afs_lib_require_install_paths}" = xyes],
@@ -226,8 +254,8 @@ else])
         [AS_IF([test "x${_afs_lib_withval_lib}" != xyes],
              [dnl Search _afs_lib_withval_lib for LIBRARY-NAME (-Ldir).
               dnl Add _afs_lib_withval_lib to the run-time path of a program that
-              dnl links LIBRARY-NAME either directly or via a libtool library (-R dir).
-              _afs_lib_LDFLAGS="-L${_afs_lib_withval_lib} -R ${_afs_lib_withval_lib}"])
+              dnl links LIBRARY-NAME either directly or via a libtool library (-Rdir).
+              _afs_lib_LDFLAGS="-L${_afs_lib_withval_lib} -R${_afs_lib_withval_lib}"])
          m4_ifnblank([$3], [AS_IF([test "x${_afs_lib_withval_include}" != xyes],
              [_afs_lib_CPPFLAGS="-I${_afs_lib_withval_include}"])])])
     dnl
@@ -306,11 +334,11 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = xyes],
 #
 AC_DEFUN_ONCE([_AFS_LIB_DOWNLOAD_PREREQ], [
 # search for either wget or curl
-AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q], [no])
+AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [wget], [$(which wget) -q --content-disposition], [no])
 AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
     [AS_UNSET([AFS_LIB_DOWNLOAD_CMD])
      AS_UNSET([ac_cv_prog_AFS_LIB_DOWNLOAD_CMD])
-     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O], [no])
+     AC_CHECK_PROG([AFS_LIB_DOWNLOAD_CMD], [curl], [$(which curl) -S -s -O -J -L], [no])
      AS_IF([test "x${AFS_LIB_DOWNLOAD_CMD}" = xno],
          [AC_MSG_WARN([Neither wget nor curl found.])
           AFS_LIB_DOWNLOAD_CMD="echo \"Neither wget nor curl found. Cannot download package. See \$(THIS_FILE).\" && exit 1 && "])])

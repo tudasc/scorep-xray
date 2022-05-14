@@ -184,7 +184,7 @@ Intel compilers:
                --with-libcudart-lib=<Path/lib>. If these shorthand
                assumptions are not correct, you can use the explicit
                include and lib options directly.
-  --with-libcudart-include=<Path to libcudart headers>
+  --with-libcudart-include=<Path to libcudart headers: cuda.h cuda_runtime_api.h>
   --with-libcudart-lib=<Path to libcudart libraries>
 
 For PGI compilers since version 16.10 you need at least two options,
@@ -205,7 +205,7 @@ does not work (unless you modify the NVIDIA CUDA runtime headers).
                --with-libcupti-lib=<Path/lib>. If these shorthand
                assumptions are not correct, you can use the
                explicit include and lib options directly.
-  --with-libcupti-include=<Path to libcupti headers>
+  --with-libcupti-include=<Path to libcupti headers: cupti.h>
   --with-libcupti-lib=<Path to libcupti libraries>
 
 If you want to use a CUDA library different from the system one you
@@ -245,7 +245,7 @@ can specify its location via:
                --with-libnvidia-ml-lib=<Path/lib>. If these
                shorthand assumptions are not correct, you can use
                the explicit include and lib options directly.
-  --with-libnvidia-ml-include=<Path to libnvidia-ml headers>
+  --with-libnvidia-ml-include=<Path to libnvidia-ml headers: nvml.h>
   --with-libnvidia-ml-lib=<Path to libnvidia-ml libraries>
 
 Options to further specify which features and external packages should
@@ -305,7 +305,7 @@ be used to build Score-P are as follows:
                --with-libunwind-lib=<Path/lib>. If these shorthand
                assumptions are not correct, you can use the
                explicit include and lib options directly.
-  --with-libunwind-include=<Path to libunwind headers>
+  --with-libunwind-include=<Path to libunwind headers: libunwind.h>
   --with-libunwind-lib=<Path to libunwind libraries>
   --with-openacc-include=<path-to-openacc.h>
                If openacc.h is not installed in the default
@@ -327,7 +327,7 @@ be used to build Score-P are as follows:
                --with-libOpenCL-lib=<Path/lib>. If these shorthand
                assumptions are not correct, you can use the
                explicit include and lib options directly.
-  --with-libOpenCL-include=<Path to libOpenCL headers>
+  --with-libOpenCL-include=<Path to libOpenCL headers: CL/cl.h OpenCL/opencl.h>
   --with-libOpenCL-lib=<Path to libOpenCL libraries>
   --with-libpmi=(yes|no|<Path to libpmi installation>)
                If you want to build with libpmi support but do not
@@ -341,7 +341,7 @@ be used to build Score-P are as follows:
                --with-libpmi-lib=<Path/lib>. If these shorthand
                assumptions are not correct, you can use the
                explicit include and lib options directly.
-  --with-libpmi-include=<Path to libpmi headers>
+  --with-libpmi-include=<Path to libpmi headers: pmi.h>
   --with-libpmi-lib=<Path to libpmi libraries>
   --with-librca=(yes|no|<Path to librca installation>)
                If you want to build with librca support but do not
@@ -370,7 +370,7 @@ be used to build Score-P are as follows:
                --with-liblustreapi-lib=<Path/lib>. If these
                shorthand assumptions are not correct, you can use
                the explicit include and lib options directly.
-  --with-liblustreapi-include=<Path to liblustreapi headers>
+  --with-liblustreapi-include=<Path to liblustreapi headers: lustre/lustreapi.h>
   --with-liblustreapi-lib=<Path to liblustreapi libraries>
   --with-libbfd[=yes|download|<path to libbfd installation>]
                A shared or PIC libbfd is required. Option defaults
@@ -382,9 +382,9 @@ be used to build Score-P are as follows:
                and --with-libbfd-lib=<path/(lib64|lib)>. If this
                not the case, use the explicit options directly or
                provide paths via LIBBFD_LIB and LIBBFD_INCLUDE. Use
-               [download] to obtain and use libbfd via exernal
-               tarball.
-  --with-libbfd-include=<Path to libbfd headers>
+               [download] to automatically obtain and use libbfd
+               via external tarball.
+  --with-libbfd-include=<Path to libbfd headers: bfd.h>
   --with-libbfd-lib=<Path to libbfd libraries>
   Please note that if a Score-P installation uses libbfd, the Score-P
   instrumented binaries may only be distributed under GPLv3 licensing.
@@ -502,44 +502,41 @@ variables:
   PAPI_INC    Include path to the papi.h header.
   PAPI_LIB    Library path to the papi library.
   LIBUNWIND_INCLUDE
-              Path to libunwind headers.
+              Path to libunwind headers: libunwind.h
   LIBUNWIND_LIB
               Path to libunwind libraries.
   LIBCUDART_INCLUDE
-              Path to libcudart headers.
+              Path to libcudart headers: cuda.h cuda_runtime_api.h
   LIBCUDART_LIB
               Path to libcudart libraries.
-  LIBCUDA_INCLUDE
-              Path to libcuda headers.
   LIBCUDA_LIB Path to libcuda libraries.
   LIBCUPTI_INCLUDE
-              Path to libcupti headers.
+              Path to libcupti headers: cupti.h
   LIBCUPTI_LIB
               Path to libcupti libraries.
   LIBNVIDIA_ML_INCLUDE
-              Path to libnvidia-ml headers.
+              Path to libnvidia-ml headers: nvml.h
   LIBNVIDIA_ML_LIB
               Path to libnvidia-ml libraries.
   LIBOPENCL_INCLUDE
-              Path to libOpenCL headers.
-  LIBLUSTREAPI_INCLUDE
-              Path to liblustreapi headers.
-  LIBLUSTREAPI_LIB
-              Path to liblustreapi libraries.
+              Path to libOpenCL headers: CL/cl.h OpenCL/opencl.h
   LIBOPENCL_LIB
               Path to libOpenCL libraries.
+  LIBLUSTREAPI_INCLUDE
+              Path to liblustreapi headers: lustre/lustreapi.h
+  LIBLUSTREAPI_LIB
+              Path to liblustreapi libraries.
   LIBBFD_INCLUDE
-              Path to libbfd headers. Superseded by --with-libbfd variants.
+              Path to libbfd headers: bfd.h. Superseded by --with-libbfd
+              variants.
   LIBBFD_LIB  Path to libbfd libraries. Superseded by --with-libbfd variants.
   OPENACC_INCLUDE
               Path to openacc.h header.
   OPENACC_PROFILING_INCLUDE
               Path to acc_prof.h header.
   LIBPMI_INCLUDE
-              Path to libpmi headers.
+              Path to libpmi headers: pmi.h
   LIBPMI_LIB  Path to libpmi libraries.
-  LIBRCA_INCLUDE
-              Path to librca headers.
   LIBRCA_LIB  Path to librca libraries.
   BACKEND_TEST_RUNS_NON_RECURSIVE
               Whether to prevent passing --enable-backend-test-runs to

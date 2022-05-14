@@ -38,8 +38,8 @@ AS_HELP_STRING([--with-]_afs_lib_name[@<:@=yes|download|<path to ]_afs_lib_name[
      --with-]_afs_lib_name[-lib=<path/(lib64|lib)>. If this
      not the case, use the explicit
      options directly or provide paths via ]_afs_lib_NAME[_LIB
-     and ]_afs_lib_NAME[_INCLUDE. Use [download] to obtain and
-     use ]_afs_lib_name[ via external tarball.])])dnl
+     and ]_afs_lib_NAME[_INCLUDE. Use [download] to automatically
+     obtain and use ]_afs_lib_name[ via external tarball.])])dnl
 AC_LANG_POP([C])
 dnl
 AS_IF([test "${libbfd_summary:+set}" != set],
@@ -57,7 +57,7 @@ AS_IF([test ${have_cplus_demangle+set} != set],
 # ------------------
 # Generate a Makefile.libbfd to download binutils and install libbfd
 # at make time. In addition, set automake conditional
-# HAVE_LIBBFD_MAKEFILE to trigger this process from
+# HAVE_SCOREP_LIBBFD_MAKEFILE to trigger this process from
 # build-backend/Makefile.
 # Remove the installed libbfd.la as it cannot be relied upon.
 # dependency_libs reference the build directory (which is OK for a
@@ -68,7 +68,7 @@ AS_IF([test ${have_cplus_demangle+set} != set],
 m4_define([_LIBBFD_DOWNLOAD], [
 _afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name"
 _afs_lib_MAKEFILE="Makefile.[]_afs_lib_name"
-_afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R $[]_afs_lib_PREFIX[]/lib"
+_afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
 _afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include"
 dnl
 AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [test 0 -eq 0], [false])dnl
@@ -115,7 +115,8 @@ all:
 	&& ../configure --prefix=\$(PREFIX) CC=\$(CC) --enable-shared --disable-static \\
 	&& make V=0 all-bfd \\
 	&& make install-bfd \\
-	&& rm \$(PREFIX)/lib/libbfd.la
+	&& rm -f \$(PREFIX)/lib/libbfd.la \\
+	&& rm -f \$(PREFIX)/lib64/libbfd.la
 clean:
 	rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
 uninstall:
