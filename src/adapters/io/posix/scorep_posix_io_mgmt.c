@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,7 +30,7 @@
 
 #include <unistd.h>
 
-#if HAVE( GETRLIMIT )
+#if HAVE( POSIX_GETRLIMIT )
 #include <sys/resource.h>
 #endif
 
@@ -328,7 +331,7 @@ scorep_posix_io_init( void )
                                     SCOREP_INVALID_IO_PARADIGM_PROPERTY );
 
     int nofile = 1024;
-#if HAVE( GETRLIMIT )
+#if HAVE( POSIX_GETRLIMIT )
     struct rlimit res_nofile;
     int           res = getrlimit( RLIMIT_NOFILE, &res_nofile );
     if ( 0 == res )

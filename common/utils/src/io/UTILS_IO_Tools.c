@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014, 2020,
+ * Copyright (c) 2009-2012, 2014, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -377,7 +377,7 @@ UTILS_IO_JoinPath( int nPaths, ... )
 }
 
 /* Declare gethostname if we can link against it but it is not declared */
-#if ( !HAVE( DECL_GETHOSTNAME ) ) && HAVE( GETHOSTNAME )
+#if ( !HAVE( C_DECL_POSIX_GETHOSTNAME ) ) && HAVE( POSIX_GETHOSTNAME )
 int
 gethostname( char*  name,
              size_t namelen );
@@ -387,7 +387,7 @@ gethostname( char*  name,
 PACKAGE_ErrorCode
 UTILS_IO_GetHostname( char* name, size_t namelen )
 {
-#if HAVE( GETHOSTNAME )
+#if HAVE( POSIX_GETHOSTNAME )
     if ( gethostname( name, namelen ) )
     {
         return PACKAGE_ABORT;
@@ -417,7 +417,7 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
 }
 
 /* Declare getcwd if we can link against it but it is not declared */
-#if ( !HAVE( DECL_GETCWD ) ) && HAVE( GETCWD )
+#if ( !HAVE( C_DECL_POSIX_GETCWD ) ) && HAVE( POSIX_GETCWD )
 char*
 getcwd( char*  buf,
         size_t size );
@@ -428,7 +428,7 @@ getcwd( char*  buf,
 char*
 UTILS_IO_GetCwd( char* buf, size_t size )
 {
-#if HAVE( GETCWD )
+#if HAVE( POSIX_GETCWD )
     return getcwd( buf, size );
 #else
     char* cwd = getenv( "PWD" );

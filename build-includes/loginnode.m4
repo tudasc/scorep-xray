@@ -27,4 +27,10 @@ AS_IF([test "x${afs_cv_have_posix_opendir}" = "xyes" && \
        test "x${afs_cv_have_posix_closedir}" = "xyes"],
     [AC_DEFINE([HAVE_POSIX_DIRENTRY_FUNCS], [1],
         [Define to 1 if directory entries can be read via POSIX functions])])
+AFS_POSIX_PCLOSE
+AFS_POSIX_POPEN
+AS_IF([test "x$afs_cv_have_posix_pclose" = "xyes" && \
+       test "x$afs_cv_have_posix_popen" = "xyes"],
+    [AC_DEFINE([HAVE_POSIX_PIPES], [1],
+        [Define to 1 if POSIX pipes are supported])])
 AC_LANG_POP([C++])

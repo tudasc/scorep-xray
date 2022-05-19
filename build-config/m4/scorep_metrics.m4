@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2015,
+## Copyright (c) 2009-2013, 2015, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -215,7 +215,8 @@ AS_UNSET([has_rusage_thread])
 
 
 AC_DEFUN_ONCE([_SCOREP_METRICS_CHECK_PERF], [
-AC_REQUIRE([AC_SCOREP_POSIX_FUNCTIONS])
+AC_REQUIRE([AFS_POSIX_CLOSE])
+AC_REQUIRE([AFS_POSIX_READ])
 
 dnl Do not check for prerequisite of metric perf on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for metric perf on frontend.])])
@@ -273,22 +274,13 @@ AS_IF([test "x${has_ioctl_support}" = "xyes"],
 
 AC_LANG_POP([C])
 
-## Check availability of POSIX read and close functions,
-## corresponding AM_CONDITIONALs provided by AC_SCOREP_POSIX_FUNCTIONS
-has_posix_functions="yes"
-AM_COND_IF([HAVE_READ],
-           [],
-           [has_posix_functions="no"])
-AM_COND_IF([HAVE_CLOSE],
-           [],
-           [has_posix_functions="no"])
-
 scorep_have_perf_support="no"
 metric_perf_summary_reason=
 AS_IF([test "x${has_metric_perf_headers}"     = "xyes" &&
        test "x${has_syscall_perf_event_open}" = "xyes" &&
        test "x${has_ioctl_support}"           = "xyes" &&
-       test "x${has_posix_functions}"         = "xyes" ], [
+       test "x${afs_cv_have_posix_close}"     = "xyes" &&
+       test "x${afs_cv_have_posix_read}"      = "xyes" ], [
     AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
           [metric_perf_summary_reason=", not supported on BG/Q"],
           [scorep_have_perf_support="yes"])

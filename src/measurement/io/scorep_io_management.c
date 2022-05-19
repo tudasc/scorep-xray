@@ -4,6 +4,9 @@
  * Copyright (c) 2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -682,7 +685,7 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
     char  buf[ PATH_MAX ];
     char* res = NULL;
 
-#if HAVE( REALPATH )
+#if HAVE( POSIX_REALPATH )
     res = realpath( pathname, buf );
 #endif
 

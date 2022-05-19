@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -212,7 +215,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fclose )( FILE* fp )
 
         SCOREP_IoHandleHandle handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_ISOC,
                                                                    &fp );
-        #if HAVE_BACKEND( FILENO )
+        #if HAVE_BACKEND( POSIX_FILENO )
         int                   fd        = fileno( fp );
         SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
         #endif
@@ -236,7 +239,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fclose )( FILE* fp )
             {
                 SCOREP_IoMgmt_ReinsertHandle( SCOREP_IO_PARADIGM_ISOC, handle );
 
-                #if HAVE_BACKEND( FILENO )
+                #if HAVE_BACKEND( POSIX_FILENO )
                 if ( fd_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoMgmt_ReinsertHandle( SCOREP_IO_PARADIGM_POSIX, fd_handle );
@@ -245,7 +248,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fclose )( FILE* fp )
             }
             else
             {
-                #if HAVE_BACKEND( FILENO )
+                #if HAVE_BACKEND( POSIX_FILENO )
                 if ( fd_handle != SCOREP_INVALID_IO_HANDLE )
                 {
                     SCOREP_IoMgmt_DestroyHandle( fd_handle );
@@ -625,7 +628,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen )( const char* path, const char* mode )
         {
             SCOREP_IoAccessMode access_mode = get_scorep_io_access_mode_from_string( mode );
 
-            #if HAVE_BACKEND( FILENO )
+            #if HAVE_BACKEND( POSIX_FILENO )
             int fd = fileno( ret );
 
             SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
@@ -634,7 +637,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen )( const char* path, const char* mode )
             {
                 create_posix_handle( fd, path, access_mode );
             }
-            #endif /* HAVE_BACKEND( FILENO ) */
+            #endif /* HAVE_BACKEND( POSIX_FILENO ) */
             SCOREP_IoFileHandle   file      = SCOREP_IoMgmt_GetIoFileHandle( path );
             SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_CompleteHandleCreation(
                 SCOREP_IO_PARADIGM_ISOC, file, &ret );
@@ -691,7 +694,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen64 )( const char* path, const char* mode )
         {
             SCOREP_IoAccessMode access_mode = get_scorep_io_access_mode_from_string( mode );
 
-            #if HAVE_BACKEND( FILENO )
+            #if HAVE_BACKEND( POSIX_FILENO )
             int fd = fileno( ret );
 
             SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
@@ -700,7 +703,7 @@ SCOREP_LIBWRAP_FUNC_NAME( fopen64 )( const char* path, const char* mode )
             {
                 create_posix_handle( fd, path, access_mode );
             }
-            #endif /* HAVE_BACKEND( FILENO ) */
+            #endif /* HAVE_BACKEND( POSIX_FILENO ) */
 
             SCOREP_IoFileHandle file = SCOREP_IoMgmt_GetIoFileHandle( path );
 
@@ -957,7 +960,7 @@ SCOREP_LIBWRAP_FUNC_NAME( freopen )( const char* path, const char* mode, FILE* s
         // Case: stream will be closed by freopen
         SCOREP_IoHandleHandle old_handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_ISOC, &stream );
 
-        #if HAVE_BACKEND( FILENO )
+        #if HAVE_BACKEND( POSIX_FILENO )
         int                   fd        = fileno( stream );
         SCOREP_IoHandleHandle fd_handle = SCOREP_IoMgmt_RemoveHandle( SCOREP_IO_PARADIGM_POSIX, &fd );
         #endif
@@ -979,15 +982,15 @@ SCOREP_LIBWRAP_FUNC_NAME( freopen )( const char* path, const char* mode, FILE* s
             }
             SCOREP_IoAccessMode access_mode = get_scorep_io_access_mode_from_string( mode );
 
+            #if HAVE_BACKEND( POSIX_FILENO )
             fd = fileno( ret );
-            #if HAVE_BACKEND( FILENO )
             if ( fd_handle != SCOREP_INVALID_IO_HANDLE )
             {
                 SCOREP_IoDestroyHandle( fd_handle );
                 SCOREP_IoMgmt_DestroyHandle( fd_handle );
             }
             create_posix_handle( fd, path, access_mode );
-            #endif /* HAVE_BACKEND( FILENO ) */
+            #endif /* HAVE_BACKEND( POSIX_FILENO ) */
 
             SCOREP_IoHandleHandle new_handle = SCOREP_IoMgmt_CompleteHandleDuplication(
                 SCOREP_IO_PARADIGM_ISOC, SCOREP_IoMgmt_GetIoFileHandle( path ), &ret );
