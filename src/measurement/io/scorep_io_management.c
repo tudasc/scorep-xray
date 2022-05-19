@@ -51,7 +51,7 @@ static UTILS_Mutex     io_file_handle_hashtable_mutex;
 typedef struct io_handle_payload
 {
     /** @brief Hash value of the paradigm specific I/O handle */
-    int64_t               hash;
+    uint32_t              hash;
     /** @brief Next handle entry in the active handle hash table */
     SCOREP_IoHandleHandle next;
 } io_handle_payload;
