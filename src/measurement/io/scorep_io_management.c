@@ -26,26 +26,23 @@
 
 #include <scorep_environment.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Hashtab.h>
 #include <SCOREP_IoManagement.h>
 #include <SCOREP_Platform.h>
 #include <SCOREP_Events.h>
-#include <jenkins_hash.h>
+#include <SCOREP_FastHashtab.h>
+
 #include <scorep_subsystem_management.h>
 #include <scorep_substrates_definition.h>
+
+#include <jenkins_hash.h>
 
 #define SCOREP_DEBUG_MODULE_NAME IO_MANAGEMENT
 #include <UTILS_Debug.h>
 #include <UTILS_Mutex.h>
 
-#define SCOREP_IO_FILE_HASHTABLE_SIZE 64
-
 #define SCOREP_IO_HANDLE_HASHTABLE_POWER 6
 #define SCOREP_IO_HANDLE_HASHTABLE_MASK hashmask( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 #define SCOREP_IO_HANDLE_HASHTABLE_SIZE hashsize( SCOREP_IO_HANDLE_HASHTABLE_POWER )
-
-static SCOREP_Hashtab* io_file_handle_hashtable;
-static UTILS_Mutex     io_file_handle_hashtable_mutex;
 
 /** @brief Payload in every IoHandleHandle definition. */
 typedef struct io_handle_payload
@@ -96,6 +93,64 @@ static size_t io_mgmt_subsystem_id;
 
 /** @brief All registered I/O paradigms. */
 static io_mgmt_paradigm* io_paradigms[ SCOREP_NUM_IO_PARADIGMS ];
+
+/************************** I/O file handle table *****************************/
+
+typedef struct
+{
+    const char* string_value;
+    uint32_t    hash_value;
+} io_file_table_key_t;
+typedef SCOREP_IoFileHandle io_file_table_value_t;
+
+#define IO_FILE_TABLE_HASH_EXPONENT 7
+
+static inline uint32_t
+io_file_table_bucket_idx( io_file_table_key_t key )
+{
+    return key.hash_value & hashmask( IO_FILE_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+io_file_table_equals( io_file_table_key_t key1,
+                      io_file_table_key_t key2 )
+{
+    return key1.hash_value == key2.hash_value
+           && strcmp( key1.string_value, key2.string_value ) == 0;
+}
+
+static inline void*
+io_file_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+io_file_table_free_chunk( void* chunk )
+{
+}
+
+static inline io_file_table_value_t
+io_file_table_value_ctor( io_file_table_key_t* key,
+                          void*                ctorData )
+{
+    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( key->string_value );
+    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( key->string_value,
+                                                                    SCOREP_Platform_GetTreeNodeHandle( mnt_info ) );
+
+    SCOREP_Platform_AddMountInfoProperties( file_handle, mnt_info );
+
+    key->string_value = SCOREP_IoFileHandle_GetFileName( file_handle );
+
+    return file_handle;
+}
+
+/* nPairsPerChunk: 16+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( io_file_table,
+                             6,
+                             hashsize( IO_FILE_TABLE_HASH_EXPONENT ) );
+
+/******************************************************************************/
 
 static inline io_mgmt_location_data*
 get_location_data( void )
@@ -698,35 +753,13 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
         res = ( char* )pathname;
     }
 
-    UTILS_BUG_ON( !io_file_handle_hashtable, "Hashtable is not initialized for storing %s", pathname );
+    io_file_table_key_t key = {
+        .hash_value   = jenkins_hash( res, strlen( res ), 0 ),
+        .string_value = res
+    };
 
-    UTILS_MutexLock( &io_file_handle_hashtable_mutex );
-
-    size_t                hash_hint;
-    SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( io_file_handle_hashtable,
-                                                       ( void* )res,
-                                                       &hash_hint );
-    if ( entry != NULL )
-    {
-        SCOREP_IoFileHandle file_handle = entry->value.handle;
-        UTILS_MutexUnlock( &io_file_handle_hashtable_mutex );
-        return file_handle;
-    }
-
-    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( res );
-    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( res,
-                                                                    SCOREP_Platform_GetTreeNodeHandle( mnt_info ) );
-
-    SCOREP_Platform_AddMountInfoProperties( file_handle, mnt_info );
-
-    SCOREP_Hashtab_InsertHandle( io_file_handle_hashtable,
-                                 ( void* )SCOREP_IoFileHandle_GetFileName( file_handle ),
-                                 file_handle,
-                                 &hash_hint );
-
-    UTILS_MutexUnlock( &io_file_handle_hashtable_mutex );
-
-    return file_handle;
+    bool inserted = false;
+    return io_file_table_get_and_insert( key, NULL, &inserted );
 }
 
 const char*
@@ -747,20 +780,12 @@ io_mgmt_subsystem_register( size_t subsystemId )
 static SCOREP_ErrorCode
 io_mgmt_subsystem_init( void )
 {
-    io_file_handle_hashtable = SCOREP_Hashtab_CreateSize( SCOREP_IO_FILE_HASHTABLE_SIZE,
-                                                          &SCOREP_Hashtab_HashString,
-                                                          &SCOREP_Hashtab_CompareStrings );
-
     return SCOREP_Platform_MountInfoInitialize();
 }
 
 static void
 io_mgmt_subsystem_finalize( void )
 {
-    SCOREP_Hashtab_FreeAll( io_file_handle_hashtable,
-                            &SCOREP_Hashtab_DeleteNone,
-                            &SCOREP_Hashtab_DeleteNone );
-
     SCOREP_Platform_MountInfoFinalize();
 }
 
