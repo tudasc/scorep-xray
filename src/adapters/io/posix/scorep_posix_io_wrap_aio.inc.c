@@ -30,7 +30,7 @@ aio_delete_request( const struct aiocb* aiocbp )
     UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 }
 
-static inline int
+static inline bool
 aio_find_request( const struct aiocb*     aiocbp,
                   SCOREP_IoOperationMode* mode )
 {
@@ -44,7 +44,7 @@ aio_find_request( const struct aiocb*     aiocbp,
     }
     UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
 
-    return ( e != NULL ) ? 0 : -1;
+    return e != NULL;
 }
 
 static inline void
@@ -146,7 +146,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_cancel )( int fd, struct aiocb* aiocbp )
             {
                 aio_cancel_all_requests_of_fd( fd, handle );
             }
-            else if ( aio_find_request( aiocbp, NULL ) == 0 )
+            else if ( aio_find_request( aiocbp, NULL ) )
             {
                 SCOREP_IoOperationCancelled( handle,
                                              ( uint64_t )aiocbp );
@@ -189,7 +189,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_error )( const struct aiocb* aiocbp )
         SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_IoOperationMode io_mode;
-        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) == 0 )
+        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) )
         {
             if ( ret == 0 )
             {
@@ -333,7 +333,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_return )( struct aiocb* aiocbp )
         SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_IoOperationMode io_mode;
-        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) == 0 )
+        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) )
         {
             SCOREP_IoOperationComplete( handle,
                                         io_mode,
