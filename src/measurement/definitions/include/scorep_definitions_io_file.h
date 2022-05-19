@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -40,7 +40,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( IoFile )
 };
 
 const char*
-SCOREP_Definitions_GetIoFileName( SCOREP_IoFileHandle handle );
+SCOREP_IoFileHandle_GetFileName( SCOREP_IoFileHandle handle );
 
 /**
  * Associate a name/path, file system, and a paradigm with a process unique handle of an I/O file.

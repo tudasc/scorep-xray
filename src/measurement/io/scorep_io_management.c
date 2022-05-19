@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017, 2019-2020,
+ * Copyright (c) 2017, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2022,
@@ -739,7 +739,7 @@ const char*
 SCOREP_IoMgmt_GetIoFile( SCOREP_IoHandleHandle handle )
 {
     SCOREP_IoFileHandle fh = SCOREP_IoHandleHandle_GetIoFile( handle );
-    return SCOREP_Definitions_GetIoFileName( fh );
+    return SCOREP_IoFileHandle_GetFileName( fh );
 }
 
 static SCOREP_ErrorCode

@@ -94,7 +94,7 @@ SCOREP_Definitions_NewIoFile( const char*                 fileName,
 }
 
 const char*
-SCOREP_Definitions_GetIoFileName( SCOREP_IoFileHandle handle )
+SCOREP_IoFileHandle_GetFileName( SCOREP_IoFileHandle handle )
 {
     SCOREP_IoFileDef* io_file = SCOREP_LOCAL_HANDLE_DEREF( handle, IoFile );
 
