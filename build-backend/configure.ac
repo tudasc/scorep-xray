@@ -262,8 +262,8 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
       [AC_SUBST([CUBELIB_BINDIR], ["${scorep_cubelib_bindir}"])],
       [AC_SUBST([CUBELIB_BINDIR], ["../vendor/cubelib/build-frontend"])])
 
-SCOREP_POSIX_READLINK
-SCOREP_POSIX_ACCESS
+AFS_POSIX_ACCESS
+AFS_POSIX_READLINK
 
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
