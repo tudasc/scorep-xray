@@ -35,21 +35,15 @@
 #endif
 
 #include <SCOREP_IoManagement.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_FastHashtab.h>
 
 #define SCOREP_DEBUG_MODULE_NAME IO
 #include <UTILS_Debug.h>
 
+#include <jenkins_hash.h>
+
 SCOREP_IoHandleHandle scorep_posix_io_sync_all_handle = SCOREP_INVALID_IO_HANDLE;
-
-#if HAVE( POSIX_AIO_SUPPORT )
-
-/** Hash table for tracking asynchronous I/O requests */
-#define AIO_REQUEST_TABLE_SIZE 16
-
-SCOREP_Hashtab* scorep_posix_io_aio_request_table       = NULL;
-UTILS_Mutex     scorep_posix_io_aio_request_table_mutex = UTILS_MUTEX_INIT;
-
-#endif
 
 /* *******************************************************************
  * Translate POSIX I/O types to Score-P representative
@@ -381,21 +375,119 @@ scorep_posix_io_init( void )
                                         NULL,
                                         SCOREP_IO_ACCESS_MODE_READ_WRITE,
                                         SCOREP_IO_STATUS_FLAG_NONE );
-
-#if HAVE( POSIX_AIO_SUPPORT )
-    scorep_posix_io_aio_request_table =
-        SCOREP_Hashtab_CreateSize( AIO_REQUEST_TABLE_SIZE,
-                                   SCOREP_Hashtab_HashPointer,
-                                   SCOREP_Hashtab_ComparePointer );
-#endif
 }
 
 void
 scorep_posix_io_fini( void )
 {
     SCOREP_IoMgmt_DeregisterParadigm( SCOREP_IO_PARADIGM_POSIX );
+}
 
 #if HAVE( POSIX_AIO_SUPPORT )
-    SCOREP_Hashtab_Free( scorep_posix_io_aio_request_table );
-#endif
+
+/************************** Async I/O request table ***************************/
+
+typedef const struct aiocb*    aio_request_table_key_t;
+typedef SCOREP_IoOperationMode aio_request_table_value_t;
+
+#define AIO_REQUEST_TABLE_HASH_EXPONENT 7
+
+static inline uint32_t
+aio_request_table_bucket_idx( aio_request_table_key_t key )
+{
+    return jenkins_hash( &key, sizeof( key ), 0 ) & hashmask( AIO_REQUEST_TABLE_HASH_EXPONENT );
 }
+
+static inline bool
+aio_request_table_equals( aio_request_table_key_t key1,
+                          aio_request_table_key_t key2 )
+{
+    return key1 == key2;
+}
+
+static inline void*
+aio_request_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+aio_request_table_free_chunk( void* chunk )
+{
+}
+
+static inline aio_request_table_value_t
+aio_request_table_value_ctor( aio_request_table_key_t* key,
+                              void*                    ctorData )
+{
+    return *( SCOREP_IoOperationMode* )ctorData;
+}
+
+static inline void
+aio_request_table_value_dtor( aio_request_table_key_t   key,
+                              aio_request_table_value_t value )
+{
+}
+
+/* nPairsPerChunk: 8+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_NON_MONOTONIC( aio_request_table,
+                                 10,
+                                 hashsize( AIO_REQUEST_TABLE_HASH_EXPONENT ) );
+
+void
+scorep_posix_io_aio_request_insert( const struct aiocb*    aiocbp,
+                                    SCOREP_IoOperationMode mode )
+{
+    bool ignored;
+    aio_request_table_get_and_insert( aiocbp, &mode, &ignored );
+}
+
+bool
+scorep_posix_io_aio_request_find( const struct aiocb*     aiocbp,
+                                  SCOREP_IoOperationMode* mode )
+{
+    return aio_request_table_get( aiocbp, mode );
+}
+
+void
+scorep_posix_io_aio_request_delete( const struct aiocb* aiocbp )
+{
+    aio_request_table_remove( aiocbp );
+}
+
+struct aio_cancel_data
+{
+    int                   fd;
+    SCOREP_IoHandleHandle handle;
+};
+
+static bool
+aio_request_match_fd_and_cancel( aio_request_table_key_t   key,
+                                 aio_request_table_value_t value,
+                                 void*                     cbData )
+{
+    struct aio_cancel_data* data = cbData;
+
+    if ( key->aio_fildes != data->fd )
+    {
+        return false;
+    }
+
+    SCOREP_IoOperationCancelled( data->handle, ( uint64_t )key );
+    return true;
+}
+
+void
+scorep_posix_io_aio_request_cancel_all( int                   fd,
+                                        SCOREP_IoHandleHandle handle )
+{
+    struct aio_cancel_data data =
+    {
+        .fd     = fd,
+        .handle = handle
+    };
+
+    aio_request_table_remove_if( aio_request_match_fd_and_cancel, &data );
+}
+
+#endif

@@ -2,78 +2,6 @@
  * Asynchronous I/O
  */
 
-static inline void
-aio_add_request( struct aiocb*          aiocbp,
-                 SCOREP_IoOperationMode mode )
-{
-    UTILS_MutexLock( &scorep_posix_io_aio_request_table_mutex );
-
-    SCOREP_Hashtab_InsertUint64( scorep_posix_io_aio_request_table,
-                                 ( void* )aiocbp,
-                                 mode,
-                                 NULL );
-
-    UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
-}
-
-static inline void
-aio_delete_request( const struct aiocb* aiocbp )
-{
-    UTILS_MutexLock( &scorep_posix_io_aio_request_table_mutex );
-
-    SCOREP_Hashtab_Remove( scorep_posix_io_aio_request_table,
-                           ( const void* )aiocbp,
-                           SCOREP_Hashtab_DeleteNone,
-                           SCOREP_Hashtab_DeleteNone,
-                           NULL );
-
-    UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
-}
-
-static inline bool
-aio_find_request( const struct aiocb*     aiocbp,
-                  SCOREP_IoOperationMode* mode )
-{
-    UTILS_MutexLock( &scorep_posix_io_aio_request_table_mutex );
-    SCOREP_Hashtab_Entry* e = SCOREP_Hashtab_Find( scorep_posix_io_aio_request_table,
-                                                   aiocbp,
-                                                   NULL );
-    if ( e != NULL && mode != NULL )
-    {
-        *mode = e->value.uint64;
-    }
-    UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
-
-    return e != NULL;
-}
-
-static inline void
-aio_cancel_all_requests_of_fd( int                   fd,
-                               SCOREP_IoHandleHandle handle )
-{
-    UTILS_MutexLock( &scorep_posix_io_aio_request_table_mutex );
-    SCOREP_Hashtab_Iterator* iter  = SCOREP_Hashtab_IteratorCreate( scorep_posix_io_aio_request_table );
-    SCOREP_Hashtab_Entry*    entry = SCOREP_Hashtab_IteratorFirst( iter );
-    while ( entry )
-    {
-        struct aiocb* tmp_aiocbp = ( struct aiocb* )entry->key;
-        if ( tmp_aiocbp->aio_fildes == fd )
-        {
-            SCOREP_IoOperationCancelled( handle,
-                                         ( uint64_t )tmp_aiocbp );
-
-            SCOREP_Hashtab_Remove( scorep_posix_io_aio_request_table,
-                                   ( const void* )tmp_aiocbp,
-                                   SCOREP_Hashtab_DeleteNone,
-                                   SCOREP_Hashtab_DeleteNone,
-                                   NULL );
-        }
-        entry = SCOREP_Hashtab_IteratorNext( iter );
-    }
-    SCOREP_Hashtab_IteratorFree( iter );
-    UTILS_MutexUnlock( &scorep_posix_io_aio_request_table_mutex );
-}
-
 static inline int
 aio_translate_opcode( int                     aioOpcode,
                       SCOREP_IoOperationMode* scorepMode )
@@ -144,13 +72,13 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_cancel )( int fd, struct aiocb* aiocbp )
         {
             if ( aiocbp == NULL )
             {
-                aio_cancel_all_requests_of_fd( fd, handle );
+                scorep_posix_io_aio_request_cancel_all( fd, handle );
             }
-            else if ( aio_find_request( aiocbp, NULL ) )
+            else if ( scorep_posix_io_aio_request_find( aiocbp, NULL ) )
             {
                 SCOREP_IoOperationCancelled( handle,
                                              ( uint64_t )aiocbp );
-                aio_delete_request( aiocbp );
+                scorep_posix_io_aio_request_delete( aiocbp );
             }
         }
 
@@ -189,7 +117,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_error )( const struct aiocb* aiocbp )
         SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_IoOperationMode io_mode;
-        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) )
+        if ( handle != SCOREP_INVALID_IO_HANDLE && scorep_posix_io_aio_request_find( aiocbp, &io_mode ) )
         {
             if ( ret == 0 )
             {
@@ -198,7 +126,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_error )( const struct aiocb* aiocbp )
                                             aio_get_transfer_size( aiocbp ),
                                             ( uint64_t )aiocbp );
 
-                aio_delete_request( aiocbp );
+                scorep_posix_io_aio_request_delete( aiocbp );
             }
             else
             {
@@ -295,7 +223,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_read )( struct aiocb* aiocbp )
             SCOREP_IoOperationIssued( io_handle,
                                       ( uint64_t )aiocbp );
 
-            aio_add_request( aiocbp, SCOREP_IO_OPERATION_MODE_READ );
+            scorep_posix_io_aio_request_insert( aiocbp, SCOREP_IO_OPERATION_MODE_READ );
         }
 
         SCOREP_IoMgmt_PopHandle( io_handle );
@@ -333,13 +261,13 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_return )( struct aiocb* aiocbp )
         SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_IoOperationMode io_mode;
-        if ( handle != SCOREP_INVALID_IO_HANDLE && aio_find_request( aiocbp, &io_mode ) )
+        if ( handle != SCOREP_INVALID_IO_HANDLE && scorep_posix_io_aio_request_find( aiocbp, &io_mode ) )
         {
             SCOREP_IoOperationComplete( handle,
                                         io_mode,
                                         ( ret != -1 ) ? ret : SCOREP_IO_UNKOWN_TRANSFER_SIZE,
                                         ( uint64_t )aiocbp );
-            aio_delete_request( aiocbp );
+            scorep_posix_io_aio_request_delete( aiocbp );
         }
 
         SCOREP_IoMgmt_PopHandle( handle );
@@ -419,7 +347,7 @@ SCOREP_LIBWRAP_FUNC_NAME( aio_write )( struct aiocb* aiocbp )
             SCOREP_IoOperationIssued( io_handle,
                                       ( uint64_t )aiocbp );
 
-            aio_add_request( aiocbp, SCOREP_IO_OPERATION_MODE_WRITE );
+            scorep_posix_io_aio_request_insert( aiocbp, SCOREP_IO_OPERATION_MODE_WRITE );
         }
 
         SCOREP_IoMgmt_PopHandle( io_handle );
@@ -512,7 +440,7 @@ SCOREP_LIBWRAP_FUNC_NAME( lio_listio )( int mode, struct aiocb* const aiocb_list
                     }
                     else if ( io_operation_flags & SCOREP_IO_OPERATION_FLAG_NON_BLOCKING )
                     {
-                        aio_add_request( aiocbp, io_mode );
+                        scorep_posix_io_aio_request_insert( aiocbp, io_mode );
                     }
                 }
             }
