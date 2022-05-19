@@ -713,20 +713,14 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
         return file_handle;
     }
 
-    /* Make a copy of pathname in Score-P memory */
-    size_t len               = strlen( res );
-    char*  buf_in_scorep_mem = SCOREP_Memory_AllocForMisc( ( len + 1 ) * sizeof( char ) );
-    strncpy( buf_in_scorep_mem, res, len );
-    buf_in_scorep_mem[ len ] = '\0';
-
-    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( buf_in_scorep_mem );
-    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( buf_in_scorep_mem,
+    SCOREP_MountInfo*   mnt_info    = SCOREP_Platform_GetMountInfo( res );
+    SCOREP_IoFileHandle file_handle = SCOREP_Definitions_NewIoFile( res,
                                                                     SCOREP_Platform_GetTreeNodeHandle( mnt_info ) );
 
     SCOREP_Platform_AddMountInfoProperties( file_handle, mnt_info );
 
     SCOREP_Hashtab_InsertHandle( io_file_handle_hashtable,
-                                 ( void* )buf_in_scorep_mem,
+                                 ( void* )SCOREP_IoFileHandle_GetFileName( file_handle ),
                                  file_handle,
                                  &hash_hint );
 
