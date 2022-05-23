@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2018, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -383,7 +383,8 @@ MPI_Waitsome( int          incount,
 
                 if ( j < *outcount )
                 {
-                    tmpstat = array_of_statuses[ cur ];
+                    tmpstat                  = array_of_statuses[ cur ];
+                    array_of_statuses[ cur ] = array_of_statuses[ j ];
                     scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
                     scorep_mpi_cleanup_request( scorep_req );
                     array_of_statuses[ j ] = tmpstat;
@@ -772,7 +773,8 @@ MPI_Testsome( int          incount,
 
                 if ( j < *outcount )
                 {
-                    tmpstat = array_of_statuses[ cur ];
+                    tmpstat                  = array_of_statuses[ cur ];
+                    array_of_statuses[ cur ] = array_of_statuses[ j ];
                     scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
                     scorep_mpi_cleanup_request( scorep_req );
                     array_of_statuses[ j ] = tmpstat;
