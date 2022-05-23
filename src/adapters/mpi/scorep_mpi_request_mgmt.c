@@ -460,7 +460,10 @@ scorep_mpi_request_get( MPI_Request request )
 void
 scorep_mpi_unmark_request( scorep_mpi_request* req )
 {
-    SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( req )
+    {
+        SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    }
 }
 
 void
