@@ -355,6 +355,14 @@ various Score-P components.
     `scorep-wrapper` via
     `make SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--thread=omp"`.
 
+  - For Fortran, PDT instrumentation inserts a specification statement
+    into the executable section (e.g., omp parallel do), which is
+    illegal. Subsequent OPARI2 processing fixes this issue. With OMPT
+    instead of OPARI2 the error persists, thus, the combination PDT
+    and OMPT instrumentation is invalid. Use compiler instrumentation
+    or user instrumentation instead of PDT instrumentation for all
+    languages.
+
 --------------------------------------------------------------------------------
 
 * CUDA support

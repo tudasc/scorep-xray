@@ -176,6 +176,13 @@ SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
 ) : SCOREP_Instrumenter_Omp( selector, "ompt", "OpenMP support using thread tracking via OMPT." )
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OMPT );
+    // For Fortran, pdt inserts a specification statement into the executable
+    // section (omp parallel do), which is illegal. Subsequent opari2
+    // processing fixes this issue. With ompt instead of opari2 the error
+    // persists, thus, forbid the combination pdt + ompt (not only for Fortran,
+    // but also for C and C++ as there enough alternatives to pdt
+    // instrumentation)
+    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 
 #if !HAVE( BACKEND_SCOREP_OMPT_SUPPORT )
     unsupported();
