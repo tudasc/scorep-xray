@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
 ## RWTH Aachen University, Germany
@@ -29,7 +29,6 @@
 ## directory for details.
 ##
 
-## file       build-config/common/platforms.inc.am
 
 # Create platform entries for EXTRA_DIST using e.g.:
 # cd build-config/common/platforms

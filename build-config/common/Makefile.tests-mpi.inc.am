@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
 ## RWTH Aachen University, Germany
@@ -29,11 +29,10 @@
 ## directory for details.
 ##
 
-## file  build-config/common/Makefile.tests-mpi.inc.am
-##       Intended to be included by the component's
-##       build-(front|back|mpi)end/Makefile.am. Defines targets and
-##       variablec for OpenMP tests.
-##
+
+## Intended to be included by the component's
+## build-(front|back|mpi)end/Makefile.am. Defines targets and
+## variables for MPI tests.
 
 
 ## Specify the number of MPI processess to be used for the TESTS. The

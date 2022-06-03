@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
 ## RWTH Aachen University, Germany
@@ -29,10 +29,9 @@
 ## directory for details.
 ##
 
-## file  build-config/common/common.am
-##       Intended to be included by the component's
-##       build-includes/common.am. Defines "common" entities that all
-##       components rely on.
+
+## Intended to be included by the component's build-includes/common.am.
+## Defines "common" entities that all components rely on.
 
 
 ## AM_CPPFLAGS: The contents of this variable are passed to every compilation
