@@ -134,8 +134,7 @@ LT_PREREQ([2.4.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
-AFS_DEBUG_OPTION
-AC_SCOREP_POSIX_FUNCTIONS
+AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 
 AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
       [llvm_cppflags=$(${scorep_llvm_config_bin} --cppflags)
@@ -228,8 +227,6 @@ AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],
        AFS_PROG_CXX_SUMMARY])
 
 AC_SCOREP_GIT_CONTROLLED
-
-AC_SCOREP_ERROR_CODES
 
 AFS_SET_SILENT_RULE_PREFIX([LIBWRAP ])
 AFS_CONFIG_MAKEFILE

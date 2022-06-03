@@ -131,7 +131,7 @@ AS_IF([test -n "${scorep_cubelib_bindir}"],
       [AC_SUBST([CUBELIB_BINDIR], [../vendor/cubelib/build-frontend])
 ])
 
-AC_SCOREP_ERROR_CODES
+AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([../test/profiling/run_profile_depth_limit_test.sh], \

@@ -140,7 +140,7 @@ SCOREP_CHECK_FORTRAN_CHARLEN_TYPE
 
 AC_C_BIGENDIAN
 
-AFS_DEBUG_OPTION
+AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 AC_CUTEST_COLOR_TESTS
 AC_SCOREP_POSIX_FUNCTIONS
 AC_SCOREP_DEFINE_REVISIONS
@@ -163,8 +163,6 @@ AC_DEFINE_UNQUOTED(
     [SCOREP_ALLOCATOR_ALIGNMENT],
     [$scorep_allocator_alignment],
     [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
-
-AC_SCOREP_ERROR_CODES
 # </AC_SCOREP_COMMON_CHECKS>
 
 AS_IF([test "x${ac_scorep_platform}" = "xbgq"],

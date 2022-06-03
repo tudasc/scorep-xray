@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2012-2016, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2021,
+dnl Copyright (c) 2021-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -220,6 +220,7 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
 
     AC_LANG_POP([C++])
     AFS_PROG_CXX_SUMMARY
+    AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 ])
 
 AS_UNSET([scorep_gcc_plugin_includedir])
