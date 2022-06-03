@@ -2,7 +2,7 @@
 #define COMMON_GENERATE_LIBRARY_DEPENDENCIES_LA_OBJECT_HPP
 
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
  * RWTH Aachen University, Germany

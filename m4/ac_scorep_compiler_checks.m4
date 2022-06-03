@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
 ## RWTH Aachen University, Germany
@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013, 2021,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2012, 2014
+## Copyright (c) 2009-2012, 2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -29,9 +29,6 @@
 ## directory for details.
 ##
 
-## file build-config/m4/ac_scorep_compiler_checks.m4
-
-dnl ------------------------------------------------------------------
 
 # used for pomp_tpd in scorep and opari2
 AC_DEFUN([AC_SCOREP_ATTRIBUTE_ALIGNMENT],[

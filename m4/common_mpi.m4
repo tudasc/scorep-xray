@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ##    RWTH Aachen University, Germany
@@ -29,8 +29,6 @@
 ## directory for details.
 ##
 
-
-## file build-config/m4/common_mpi.m4
 
 # The macros AC_SCOREP_MPI_COMPILER and AC_SCOREP_MPI_WORKING are based on
 # AX_MPI http://www.nongnu.org/autoconf-archive/ax_mpi.html by Steven G. Johnson

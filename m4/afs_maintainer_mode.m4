@@ -1,20 +1,19 @@
-dnl -*- mode: autoconf -*-
+## -*- mode: autoconf -*-
 
-dnl
-dnl This file is part of the Score-P software (http://www.score-p.org)
-dnl
-dnl Copyright (c) 2018,
-dnl Forschungszentrum Juelich GmbH, Germany
-dnl
-dnl Copyright (c) 2019,
-dnl Technische Universitaet Dresden, Germany
-dnl
-dnl This software may be modified and distributed under the terms of
-dnl a BSD-style license.  See the COPYING file in the package base
-dnl directory for details.
-dnl
+##
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
+##
+## Copyright (c) 2018,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2019,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
 
-dnl file afs_maintainer_mode.m4
 
 # AFS_MAINTAINER_MODE
 # -------------------

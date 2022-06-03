@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ## RWTH Aachen University, Germany
@@ -29,8 +29,6 @@
 ## directory for details.
 ##
 
-
-## file       ac_scorep_posix_functions.m4
 
 AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 

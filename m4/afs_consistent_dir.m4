@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ## The macro below is based code of autoconf-2-69's general.m4.
 ##
 ## Copyright (C) 1992-1996, 1998-2012 Free Software Foundation, Inc.

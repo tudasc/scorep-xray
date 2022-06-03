@@ -1,8 +1,7 @@
-
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
 ## RWTH Aachen University, Germany
@@ -30,10 +29,6 @@
 ## directory for details.
 ##
 
-## file       ac_scorep_generic_libs.m4
-
-
-dnl ------------------------------------------------------------------
 
 dnl $1: name of the library on the filesystem, without the extension,
 dnl     used for searching the file if a path is given
