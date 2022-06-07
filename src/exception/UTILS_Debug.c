@@ -1,5 +1,5 @@
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
  * RWTH Aachen University, Germany
@@ -30,7 +30,7 @@
 
 
 /**
- * @file            UTILS_Debug.c
+ * @file
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Implementation of debug output handling in SCOREP.
