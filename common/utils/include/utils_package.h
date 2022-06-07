@@ -1,5 +1,5 @@
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
  * RWTH Aachen University, Germany
@@ -32,7 +32,7 @@
 #define UTILS_INTERNAL_PACKAGE_H
 
 /**
- * @file            utils_package.h
+ * @file
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Module for error handling in SCOREP.

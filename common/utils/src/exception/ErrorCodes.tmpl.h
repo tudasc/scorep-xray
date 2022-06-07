@@ -1,5 +1,5 @@
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
  * RWTH Aachen University, Germany
@@ -33,7 +33,7 @@
 
 
 /**
- * @file            @AFS_PACKAGE_NAME@_ErrorCodes.h
+ * @file
  * @ingroup         @AFS_PACKAGE_NAME@_Exception_module
  *
  * @brief           Error codes and error handling.
