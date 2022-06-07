@@ -6,6 +6,9 @@
 ## Copyright (c) 2017,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2022,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -38,9 +41,6 @@ if HAVE_LIBRARY_WRAPPING_GENERATOR
 
 include ../src/tools/lib/Makefile.inc.am
 include ../src/utils/filter/Makefile.inc.am
-include ../common/utils/src/cstr/Makefile.inc.am
-include ../common/utils/src/io/Makefile.inc.am
-include ../common/utils/src/exception/Makefile.inc.am
-include ../common/utils/src/Makefile.inc.am
+include ../common/utils/Makefile.inc.am
 
 endif HAVE_LIBRARY_WRAPPING_GENERATOR

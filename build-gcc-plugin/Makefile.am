@@ -6,7 +6,7 @@
 ## Copyright (c) 2012-2015,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2015,
+## Copyright (c) 2015, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -26,10 +26,7 @@ AM_CPPFLAGS += -DGCC_PLUGIN_BUILD
 if HAVE_GCC_PLUGIN_SUPPORT
 
 include ../src/utils/filter/Makefile.inc.am
-include ../common/utils/src/cstr/Makefile.inc.am
-include ../common/utils/src/io/Makefile.inc.am
-include ../common/utils/src/exception/Makefile.inc.am
-include ../common/utils/src/Makefile.inc.am
+include ../common/utils/Makefile.inc.am
 
 DISTCLEANFILES += $(builddir)/gcc_plugin_supported
 

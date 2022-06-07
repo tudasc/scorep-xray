@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2015, 2021
+## Copyright (c) 2009-2013, 2015, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -45,7 +45,4 @@ include ../src/tools/config/Makefile.la_dependencies.inc.am
 include ../src/tools/lib/Makefile.inc.am
 include ../src/tools/score/Makefile.inc.am
 include ../src/utils/filter/Makefile.inc.am
-include ../common/utils/src/cstr/Makefile.inc.am
-include ../common/utils/src/io/Makefile.inc.am
-include ../common/utils/src/exception/Makefile.inc.am
-include ../common/utils/src/Makefile.inc.am
+include ../common/utils/Makefile.inc.am
