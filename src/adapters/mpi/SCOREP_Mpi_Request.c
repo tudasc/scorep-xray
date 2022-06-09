@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2018, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -383,7 +383,8 @@ MPI_Waitsome( int          incount,
 
                 if ( j < *outcount )
                 {
-                    tmpstat = array_of_statuses[ cur ];
+                    tmpstat                  = array_of_statuses[ cur ];
+                    array_of_statuses[ cur ] = array_of_statuses[ j ];
                     scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
                     scorep_mpi_cleanup_request( scorep_req );
                     array_of_statuses[ j ] = tmpstat;
@@ -772,7 +773,8 @@ MPI_Testsome( int          incount,
 
                 if ( j < *outcount )
                 {
-                    tmpstat = array_of_statuses[ cur ];
+                    tmpstat                  = array_of_statuses[ cur ];
+                    array_of_statuses[ cur ] = array_of_statuses[ j ];
                     scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
                     scorep_mpi_cleanup_request( scorep_req );
                     array_of_statuses[ j ] = tmpstat;
@@ -1192,7 +1194,6 @@ MPI_Request_get_status( MPI_Request request,
     const int           xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
     int                 return_val;
     scorep_mpi_request* scorep_req;
-    MPI_Status          mystatus;
     uint64_t            start_time_stamp;
 
     if ( event_gen_active )
@@ -1211,7 +1212,7 @@ MPI_Request_get_status( MPI_Request request,
 
     if ( status == MPI_STATUS_IGNORE )
     {
-        status = &mystatus;
+        status = scorep_mpi_get_status_array( 1 );
     }
     scorep_req = scorep_mpi_request_get( request );
     SCOREP_ENTER_WRAPPED_REGION();
@@ -1225,6 +1226,7 @@ MPI_Request_get_status( MPI_Request request,
         {
             scorep_req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED;
         }
+        scorep_mpi_unmark_request( scorep_req );
     }
     else if ( scorep_req && event_gen_active_for_group && xtest_active )
     {

@@ -410,9 +410,6 @@ scorep_mpi_request_get( MPI_Request request )
     request_table_value_t value, control;
     if ( !request_table_get( request, &value ) )
     {
-        UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
-                     "Request missing from management data structure." );
-
         return NULL;
     }
 
@@ -422,9 +419,6 @@ scorep_mpi_request_get( MPI_Request request )
 
         if ( !request_table_get( request, &control ) )
         {
-            UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
-                         "Request missing from management data structure on control." );
-
             SCOREP_MutexUnlock( &( value->request_lock ) );
             return NULL;
         }
@@ -446,9 +440,6 @@ scorep_mpi_request_get( MPI_Request request )
 
             if ( current == NULL )
             {
-                UTILS_ERROR( SCOREP_ERROR_MPI_REQUEST_NOT_FOUND,
-                             "Request missing from management data structure in linked list." );
-
                 SCOREP_MutexUnlock( &( value->request_lock ) );
                 return NULL;
             }
@@ -469,7 +460,10 @@ scorep_mpi_request_get( MPI_Request request )
 void
 scorep_mpi_unmark_request( scorep_mpi_request* req )
 {
-    SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( req )
+    {
+        SCOREP_Atomic_StoreN_bool( &( req->marker ), false, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    }
 }
 
 void
