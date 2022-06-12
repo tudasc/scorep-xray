@@ -94,6 +94,7 @@ nvtxDomainMarkEx( nvtxDomainHandle_t           domain,
 
     scorep_cuda_nvtx_apply_payload( eventAttrib );
     SCOREP_EnterRegion( region_handle );
+    scorep_cuda_nvtx_apply_category( domain, eventAttrib );
     SCOREP_ExitRegion( region_handle );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -232,6 +233,7 @@ nvtxDomainRangePushEx( nvtxDomainHandle_t           domain,
 
     scorep_cuda_nvtx_apply_payload( eventAttrib );
     SCOREP_EnterRegion( region_handle );
+    scorep_cuda_nvtx_apply_category( domain, eventAttrib );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
     // Return 0 on success, negative on error (compatible with SCOREP_Error values?)
@@ -393,7 +395,19 @@ nvtxDomainNameCategoryA( nvtxDomainHandle_t domain,
                          const char*        name )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    // Not implemented
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        /* scorep_cuda_nvtx_name_category needs Score-P memory */
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    scorep_cuda_nvtx_name_category( domain, category, name );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 

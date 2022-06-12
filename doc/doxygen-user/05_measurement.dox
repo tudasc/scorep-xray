@@ -903,6 +903,7 @@ The region group name for the default domain is <tt>"NVTX"</tt>, for user define
 Payloads in the <tt>nvtxEventAttributes_t</tt> arguments are converted to event attributes of the Enter event.
 These are only available in tracing mode, as they are potential non-categorical data and profiling does not support floating point parameters.
 Payload names are of the form <tt>"NVTX Payload <DATATYPE-NAME>"</tt>, where <tt><DATATYPE-NAME></tt> is derived from the NVTX datatype enum by removing the <tt>NVTX_PAYLOAD_TYPE_</tt> prefix.
+Categories in the <tt>nvtxEventAttributes_t</tt> arguments are converted to the parameter <tt>"NVTX Category"</tt> (see @secref{parameter_profiling}), hence are available in profiling and tracing.
 
 @note While NVTX considers different domains as disjoint range stacks, @scorep does not support overlapping ranges.
 

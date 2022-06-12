@@ -63,6 +63,8 @@ static SCOREP_AttributeHandle nvtx_attribute_int64;
 static SCOREP_AttributeHandle nvtx_attribute_float;
 static SCOREP_AttributeHandle nvtx_attribute_double;
 
+static SCOREP_ParameterHandle nvtx_parameter_category;
+
 /*************** Widestring table *********************************************/
 
 typedef struct
@@ -198,6 +200,56 @@ SCOREP_HASH_TABLE_MONOTONIC( region_table,
 
 #undef REGION_TABLE_HASH_EXPONENT
 
+/*************** Domain specific categories table *********************************/
+
+typedef struct
+{
+    nvtxDomainHandle_t domain;
+    uint32_t           category;
+} category_table_key_t;
+typedef SCOREP_StringHandle category_table_value_t;
+
+#define CATEGORY_TABLE_HASH_EXPONENT 4
+
+static inline uint32_t
+category_table_bucket_idx( category_table_key_t key )
+{
+    uint32_t hash_value = jenkins_hash( &key, sizeof( key ), 0 );
+    return hash_value & hashmask( CATEGORY_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+category_table_equals( category_table_key_t key1,
+                       category_table_key_t key2 )
+{
+    return key1.domain == key2.domain && key1.category == key2.category;
+}
+
+static inline void*
+category_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+category_table_free_chunk( void* chunk )
+{
+}
+
+static inline category_table_value_t
+category_table_value_ctor( category_table_key_t* key,
+                           void*                 ctorData )
+{
+    return SCOREP_Definitions_NewString( ctorData );
+}
+
+/* nPairsPerChunk: 16+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( category_table,
+                             6,
+                             hashsize( CATEGORY_TABLE_HASH_EXPONENT ) );
+
+#undef CATEGORY_TABLE_HASH_EXPONENT
+
 /*************** Functions ****************************************************/
 
 void
@@ -225,6 +277,9 @@ scorep_cuda_nvtx_init( void )
     nvtx_attribute_double = SCOREP_Definitions_NewAttribute(
         "NVTX Payload DOUBLE", "",
         SCOREP_ATTRIBUTE_TYPE_DOUBLE );
+
+    nvtx_parameter_category = SCOREP_Definitions_NewParameter(
+        "NVTX Category", SCOREP_PARAMETER_STRING );
 }
 
 const char*
@@ -350,5 +405,45 @@ scorep_cuda_nvtx_apply_payload( const nvtxEventAttributes_t* eventAttrib )
             break;
         default:
             return;
+    }
+}
+
+void
+scorep_cuda_nvtx_name_category( nvtxDomainHandle_t domain,
+                                uint32_t           category,
+                                const char*        name )
+{
+    if ( domain == SCOREP_CUDA_NVTX_DEFAULT_DOMAIN )
+    {
+        domain = default_domain;
+    }
+
+    category_table_key_t key = {
+        .domain   = domain,
+        .category = category
+    };
+
+    bool                ignored;
+    SCOREP_StringHandle string = category_table_get_and_insert( key, &name, &ignored );
+}
+
+void
+scorep_cuda_nvtx_apply_category( nvtxDomainHandle_t           domain,
+                                 const nvtxEventAttributes_t* eventAttrib )
+{
+    if ( domain == SCOREP_CUDA_NVTX_DEFAULT_DOMAIN )
+    {
+        domain = default_domain;
+    }
+
+    category_table_key_t key = {
+        .domain   = domain,
+        .category = eventAttrib->category
+    };
+
+    SCOREP_StringHandle category_name;
+    if ( category_table_get( key, &category_name ) )
+    {
+        SCOREP_TriggerParameterStringHandle( nvtx_parameter_category, category_name );
     }
 }

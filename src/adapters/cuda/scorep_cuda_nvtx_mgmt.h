@@ -52,4 +52,13 @@ scorep_cuda_nvtx_get_user_region( nvtxDomainHandle_t           domain,
 void
 scorep_cuda_nvtx_apply_payload( const nvtxEventAttributes_t* eventAttrib );
 
+void
+scorep_cuda_nvtx_name_category( nvtxDomainHandle_t domain,
+                                uint32_t           category,
+                                const char*        name );
+
+void
+scorep_cuda_nvtx_apply_category( nvtxDomainHandle_t           domain,
+                                 const nvtxEventAttributes_t* eventAttrib );
+
 #endif /* SCOREP_CUDA_NVTX_MGMT_H */

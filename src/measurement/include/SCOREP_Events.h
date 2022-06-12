@@ -1336,6 +1336,17 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value );
 
 
+/**
+ *
+ *
+ * @param parameterHandle
+ * @param value
+ */
+void
+SCOREP_TriggerParameterStringHandle( SCOREP_ParameterHandle parameterHandle,
+                                     SCOREP_StringHandle    stringHandle );
+
+
 void
 SCOREP_TrackAlloc( uint64_t addrAllocated,
                    size_t   bytesAllocated,
