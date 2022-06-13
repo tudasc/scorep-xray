@@ -49,7 +49,7 @@ are only stored in those nodes, where the metric was triggered.
 For enabling profiling, set the  \confvar{SCOREP_ENABLE_PROFILING} environment variable
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a file, named <tt>profile.cubex</tt> in your measurement directory, which you can display
-with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
+with the @cube4 with <tt>cube profile.cubex</tt>. The name of the profile can be
 changed through the environment variable \confvar{SCOREP_PROFILING_BASE_NAME}. The
 extension <tt>.cubex</tt> will be appended to the base name you specify in the
 environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
@@ -242,8 +242,8 @@ core file. Thus, it is not recommended, to enable this feature for large scale r
 \confvar{SCOREP_ENABLE_TRACING}, you can control whether a trace is recorded. If the
 value is <tt>0</tt> or <tt>false</tt> no trace is recorded, if the value is non-zero
 or <tt>true</tt>, a trace is recorded. If the variable is not specified,
-@scorep records traces on default.
-After trace recording you will find the OTF2 anchor file, named <tt>trace.otf2</tt>
+@scorep does not record traces.
+After trace recording you will find the OTF2 anchor file, named <tt>traces.otf2</tt>
 in the experiment directory, along with the trace data.
 
 
@@ -847,7 +847,7 @@ There are ways around this problem:
   <li> Make the <tt>nvcc</tt> host-code compiler match the @scorep compiler by adding <tt>-ccbin <SCOREP_COMPILER></tt> to the <tt>nvcc</tt> invocation.
   You can query <tt><SCOREP_COMPILER></tt> and the entire command using <tt>scorep-info config.summary | grep 'nvcc works'</tt>.
   E.g., if the <tt>.cu</tt> file does neither contain MPI nor SHMEM and @scorep uses an Intel compiler suite, the command could be <tt>nvcc -ccbin icpc -Xcompiler=-std=c++11</tt>.
-  By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc<\tt> invocations. </li>
+  By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc</tt> invocations. </li>
   <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>--nocompiler</tt>. </li>
   <li> Use a @scorep installation that is based on the GNU compiler tool chain. </li>
 </ul>
