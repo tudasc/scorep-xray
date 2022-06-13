@@ -330,7 +330,7 @@ do
 done
 LD_PRELOAD_VALUE="${LD_PRELOAD_VALUE}${LD_PRELOAD:+:${LD_PRELOAD}}"
 
-printf "${argv0} --clean \"${RESULTDIR}/${BINARY_TAG}.la\"\n" >"${RESULTDIR}/${BINARY_TAG}.clean"
+printf "${SCOREP_BINDIR}/${argv0} --clean \"${RESULTDIR}/${BINARY_TAG}.la\"\n" >"${RESULTDIR}/${BINARY_TAG}.clean"
 
 if ${VALUE_ONLY}
 then
