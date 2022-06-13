@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016,
+ * Copyright (c) 2009-2013, 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -64,20 +64,20 @@ print_short_usage( std::ostream& out )
     std::string usage =
         #include "scorep_backend_info_usage.h"
     ;
-    out << usage.c_str() << std::endl;
+    out << usage << std::endl;
 }
 
 /**
    Prints the long help text.
  */
 static void
-print_help( void )
+print_help()
 {
     print_short_usage( std::cout );
     std::string help =
         #include "scorep_backend_info_help.h"
     ;
-    std::cout << help.c_str() << std::endl;
+    std::cout << help << std::endl;
     std::cout << "Report bugs to <" << PACKAGE_BUGREPORT << ">" << std::endl;
 }
 

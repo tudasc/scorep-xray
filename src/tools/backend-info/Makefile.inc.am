@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,9 +40,9 @@ BUILT_SOURCES += \
 CLEANFILES += \
     scorep_backend_info_usage.h \
     scorep_backend_info_help.h
-scorep_backend_info_usage.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_help.dox.in
+scorep_backend_info_usage.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_usage.dox.in
 	$(AM_V_GEN)$(AWK) '{print "\"" $$0 "\\n\""}' $< >$@
-scorep_backend_info_help.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_usage.dox.in
+scorep_backend_info_help.h: $(srcdir)/../doc/doxygen-user/scorep_backend_info_help.dox.in
 	$(AM_V_GEN)$(AWK) '{print "\"" $$0 "\\n\""}' $< >$@
 
 scorep_backend_info_CPPFLAGS = \
