@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -32,7 +35,7 @@
 /**
  * @file
  *
- * @brief   Implmentation of MPP profiling events.
+ * @brief   Implementation of MPP profiling events.
  *
  */
 
@@ -194,6 +197,20 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
                               SCOREP_CollectiveType            collectiveType,
                               uint64_t                         bytesSent,
                               uint64_t                         bytesReceived )
+{
+    SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
+    SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );
+}
+
+void
+SCOREP_Profile_NonBlockingCollectiveComplete( SCOREP_Location*                 location,
+                                              uint64_t                         timestamp,
+                                              SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                              SCOREP_MpiRank                   rootRank,
+                                              SCOREP_CollectiveType            collectiveType,
+                                              uint64_t                         bytesSent,
+                                              uint64_t                         bytesReceived,
+                                              SCOREP_MpiRequestId              requestId )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );

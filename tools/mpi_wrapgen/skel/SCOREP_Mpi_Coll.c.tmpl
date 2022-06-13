@@ -25,6 +25,9 @@
  * Copyright (c) 2016,
  * Technische Universitaet Darmstadt, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -70,7 +73,7 @@
 
 #pragma wrapgen multiple restrict(gcoll+!nReduce_local+!nMPI_I) skel/SCOREP_Mpi_Coll.w
 
-#pragma wrapgen multiple restrict(gcoll+!nReduce_local+nMPI_I) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple restrict(gcoll+!nReduce_local+nMPI_I) skel/SCOREP_Mpi_Icoll.w
 
 #pragma wrapgen single MPI_Reduce_local skel/SCOREP_Mpi_Std.w
 /**

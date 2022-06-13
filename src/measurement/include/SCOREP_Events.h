@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -417,6 +420,48 @@ SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          SCOREP_CollectiveType            collectiveType,
                          uint64_t                         bytesSent,
                          uint64_t                         bytesReceived );
+
+
+/**
+ * Process a MPI non-blocking collective request event in the measurement system.
+ * This event marks the initiation of a non-blocking collective operation.
+ *
+ *
+ * @param requestId The request identifier, which specifies the request that was
+ *                  completed.
+ */
+void
+SCOREP_MpiNonBlockingCollectiveRequest( SCOREP_MpiRequestId requestId );
+
+/**
+ * Process a MPI non-blocking collective complete in the measurement system.
+ * This event marks the completion of a non-blocking collective operation.
+ *
+ *
+ * @param communicatorHandle The previously defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param rootRank Root rank of the collective operation in
+ * the communicator specified with @a communicatorHandle,
+ * or SCOREP_INVALID_ROOT_RANK.
+ *
+ * @param collectiveType The type of the collective operation.
+ *
+ * @param bytesSent The number of bytes send in the communication.
+ *
+ * @param bytesReceived The number of bytes received in the communication.
+ *
+ * @param requestId The request identifier, which specifies the request that was
+ *                  completed.
+ *
+ */
+void
+SCOREP_MpiNonBlockingCollectiveComplete( SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                         SCOREP_MpiRank                   rootRank,
+                                         SCOREP_CollectiveType            collectiveType,
+                                         uint64_t                         bytesSent,
+                                         uint64_t                         bytesReceived,
+                                         SCOREP_MpiRequestId              requestId );
 
 /**
  * Processs a MPI send complete event in the measurement system.

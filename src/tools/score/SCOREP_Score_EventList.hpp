@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2021,
+ * Copyright (c) 2021-2022,
  * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -99,6 +99,25 @@
     SCOREP_SCORE_EVENT( "MPI_Scan" ) \
     SCOREP_SCORE_EVENT( "MPI_Scatter" ) \
     SCOREP_SCORE_EVENT( "MPI_Scatterv" )
+
+#define SCOREP_SCORE_EVENT_MPI_NON_BLOCKING_COLLECTIVE \
+    SCOREP_SCORE_EVENT( "MPI_Iallgather" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iallgatherv" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iallreduce" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ialltoall" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ialltoallv" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ialltoallw" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ibarrier" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ibcast" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iexscan" ) \
+    SCOREP_SCORE_EVENT( "MPI_Igather" ) \
+    SCOREP_SCORE_EVENT( "MPI_Igatherv" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ireduce" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ireduce_scatter" ) \
+    SCOREP_SCORE_EVENT( "MPI_Ireduce_scatter_block" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iscan" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iscatter" ) \
+    SCOREP_SCORE_EVENT( "MPI_Iscatterv" )
 
 #define SCOREP_SCORE_EVENT_CUDASTREAMCREATE \
     SCOREP_SCORE_EVENT( "cuStreamCreate" ) \

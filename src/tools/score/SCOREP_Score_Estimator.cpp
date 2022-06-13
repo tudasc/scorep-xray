@@ -25,6 +25,9 @@
  * Copyright (c) 2016,
  * Technische Universitaet Darmstadt, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -304,6 +307,15 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile*    profile
                                                     region_set,
                                                     false ) );
     registerEvent( new SCOREP_Score_NameMatchEvent( "MpiCollectiveEnd",
+                                                    region_set,
+                                                    true ) );
+
+    region_set.clear();
+    SCOREP_SCORE_EVENT_MPI_NON_BLOCKING_COLLECTIVE;
+    registerEvent( new SCOREP_Score_NameMatchEvent( "NonBlockingCollectiveRequest",
+                                                    region_set,
+                                                    false ) );
+    registerEvent( new SCOREP_Score_NameMatchEvent( "NonBlockingCollectiveComplete",
                                                     region_set,
                                                     true ) );
 
