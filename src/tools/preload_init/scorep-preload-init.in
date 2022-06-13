@@ -15,13 +15,20 @@ set -e
 
 argv0=${0##*/}
 
+short_usage()
+{
+    printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
+    printf "This script is EXPERIMENTAL.\n"
+    printf "Try '%s --help' for more information.\n" "$argv0"
+}
+
 die()
 {
     (
         printf "%s: " "$argv0"
         printf "$@"
         printf "\n"
-        usage 1
+        short_usage
     ) >&2
     exit 1
 }
@@ -37,15 +44,12 @@ warn()
 
 usage()
 {
-    if test $# -gt 0
+    if test -t 1
     then
-        printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
-        printf "This script is EXPERIMENTAL.\n"
-        printf "Try '%s --help' for more information.\n" "$argv0"
-        return
-    fi
-
-    cat <<EOH
+        ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
+    else
+        cat
+    fi <<EOH
 Usage
 =====
 
@@ -104,12 +108,7 @@ while test $# -gt 0
 do
     case ${1} in
     (--help)
-        usage | if test -t 1
-        then
-            ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
-        else
-            cat
-        fi
+        usage
         exit 0
     ;;
     (--verbose)
@@ -219,6 +218,12 @@ then
     libtool_clean "${1}"
     rm -f "${1%*.la}.clean"
     exit
+fi
+
+if test $# -lt 1
+then
+    usage
+    exit 1
 fi
 
 if test $# -gt 2
