@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2017,
+## Copyright (c) 2017, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -15,13 +15,20 @@ set -e
 
 argv0=${0##*/}
 
+short_usage()
+{
+    printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
+    printf "This script is EXPERIMENTAL.\n"
+    printf "Try '%s --help' for more information.\n" "$argv0"
+}
+
 die()
 {
     (
         printf "%s: " "$argv0"
         printf "$@"
         printf "\n"
-        usage 1
+        short_usage
     ) >&2
     exit 1
 }
@@ -37,15 +44,12 @@ warn()
 
 usage()
 {
-    if test $# -gt 0
+    if test -t 1
     then
-        printf "Usage: ${argv0} <scorep-config flags> [--] <application> [<resultdir>]\n"
-        printf "Note that this script is still EXPERIMENTAL.\n"
-        printf "Try '%s --help' for more information.\n" "$argv0"
-        return
-    fi
-
-    cat <<EOH
+        ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
+    else
+        cat
+    fi <<EOH
 Usage
 =====
 
@@ -67,14 +71,14 @@ Description
 ===========
 
 \`scorep-preload-init\` is a script that prepares a measurement to be executed
-on an uninstrumented application with the help of the LD_PRELOAD mechanism.
+on an uninstrumented application with the help of the \`LD_PRELOAD\` mechanism.
 
-In case of an cross-machine, this preparation step must be executed on
-the login resources, <resultdir> must be available on the compute resources,
-and the value of LD_PRELOAD must only effect applications running on the
-compute resources.
+If the login and compute environments differ, this preparation step must be
+executed on the login resources, <resultdir> must be available on the compute
+resources, and the value of \`LD_PRELOAD\` must only affect applications running
+on the compute resources.
 
-Note that this script is still EXPERIMENTAL.
+This script is EXPERIMENTAL.
 
 Report bugs to <@PACKAGE_BUGREPORT@>
 EOH
@@ -104,12 +108,7 @@ while test $# -gt 0
 do
     case ${1} in
     (--help)
-        usage | if test -t 1
-        then
-            ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
-        else
-            cat
-        fi
+        usage
         exit 0
     ;;
     (--verbose)
@@ -221,6 +220,12 @@ then
     exit
 fi
 
+if test $# -lt 1
+then
+    usage
+    exit 1
+fi
+
 if test $# -gt 2
 then
     die "too many arguments"
@@ -325,7 +330,7 @@ do
 done
 LD_PRELOAD_VALUE="${LD_PRELOAD_VALUE}${LD_PRELOAD:+:${LD_PRELOAD}}"
 
-printf "${argv0} --clean \"${RESULTDIR}/${BINARY_TAG}.la\"\n" >"${RESULTDIR}/${BINARY_TAG}.clean"
+printf "${SCOREP_BINDIR}/${argv0} --clean \"${RESULTDIR}/${BINARY_TAG}.la\"\n" >"${RESULTDIR}/${BINARY_TAG}.clean"
 
 if ${VALUE_ONLY}
 then
@@ -344,6 +349,6 @@ To remove this preload result run:
 
     $SHELL "${RESULTDIR}/${BINARY_TAG}.clean"
 
-Note that this script is still EXPERIMENTAL.
+This script is EXPERIMENTAL.
 EOA
 fi
