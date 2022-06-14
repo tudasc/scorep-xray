@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019-2020,
+ * Copyright (c) 2009-2016, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -223,7 +223,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType                 paradigm,
                                                  SCOREP_CPU_LOCATION_PHASE_MGMT );
     }
 
-    uint64_t tid = SCOREP_Thread_GetOSId();
+    uint64_t tid = SCOREP_Location_GetThreadId( current_location );
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
                            ( current_location, timestamp, paradigm, team, tid ) );

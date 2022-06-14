@@ -84,6 +84,7 @@ struct SCOREP_Location
     uint64_t                      last_timestamp;
     SCOREP_LocationType           type;
     SCOREP_LocationHandle         location_handle;
+    uint64_t                      thread_id; /* only valid for CPU_THREAD */
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
     void*                         substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
 
@@ -124,8 +125,9 @@ scorep_location_create_location( SCOREP_LocationType        type,
     memset( new_location, 0, total_memory );
     new_location->location_handle = location_handle;
 
-    new_location->type = type;
-    new_location->next = NULL;
+    new_location->type      = type;
+    new_location->thread_id = UINT64_MAX;
+    new_location->next      = NULL;
 
     UTILS_MutexLock( &scorep_location_list_mutex );
 
@@ -174,7 +176,15 @@ SCOREP_Location_CreateCPULocation( const char* name )
 
 #endif
 
+    SCOREP_Location_UpdateThreadId( new_location );
+
     return new_location;
+}
+
+void
+SCOREP_Location_UpdateThreadId( SCOREP_Location* location )
+{
+    location->thread_id = SCOREP_Thread_GetOSId();
 }
 
 char scorep_per_process_metrics_location_name[] = "Per process metrics";
@@ -259,6 +269,17 @@ SCOREP_Location_GetId( SCOREP_Location* locationData )
      * We use the definition sequence number as the local ID
      */
     return SCOREP_LOCAL_HANDLE_TO_ID( locationData->location_handle, Location );
+}
+
+
+uint64_t
+SCOREP_Location_GetThreadId( SCOREP_Location* locationData )
+{
+    UTILS_ASSERT( locationData );
+    UTILS_BUG_ON( locationData->type != SCOREP_LOCATION_TYPE_CPU_THREAD,
+                  "ThreadId is only valid for CPU locations." );
+
+    return locationData->thread_id;
 }
 
 
@@ -467,4 +488,27 @@ SCOREP_Location_GetName( SCOREP_Location* locationData )
             locationData->location_handle,
             Location )->name_handle,
         String )->string_data;
+}
+
+bool
+SCOREP_Location_SetNameByThreadId( uint64_t    threadId,
+                                   const char* name )
+{
+    UTILS_MutexLock( &scorep_location_list_mutex );
+    for ( SCOREP_Location* location_data = location_list_head;
+          location_data;
+          location_data = location_data->next )
+    {
+        if ( location_data->thread_id == threadId )
+        {
+            SCOREP_LOCAL_HANDLE_DEREF(
+                location_data->location_handle,
+                Location )->name_handle = SCOREP_Definitions_NewString( name );
+            UTILS_MutexUnlock( &scorep_location_list_mutex );
+            return true;
+        }
+    }
+    UTILS_MutexUnlock( &scorep_location_list_mutex );
+
+    return false;
 }

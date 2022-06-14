@@ -453,7 +453,7 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
                                              sequenceCount,
                                              SCOREP_CPU_LOCATION_PHASE_MGMT );
 
-    uint64_t tid = SCOREP_Thread_GetOSId();
+    uint64_t tid = SCOREP_Location_GetThreadId( *location );
 
     /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
@@ -568,7 +568,7 @@ scorep_thread_create_wait_orphan_begin( SCOREP_Location** location )
                                              SCOREP_THREAD_INVALID_SEQUENCE_COUNT,
                                              SCOREP_CPU_LOCATION_PHASE_MGMT );
 
-    uint64_t tid = SCOREP_Thread_GetOSId();
+    uint64_t tid = SCOREP_Location_GetThreadId( *location );
 
     /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,

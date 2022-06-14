@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019-2021,
+ * Copyright (c) 2009-2016, 2019-2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -276,16 +276,4 @@ scorep_thread_set_team( struct scorep_thread_private_data* tpd,
     UTILS_DEBUG_ENTRY();
     UTILS_ASSERT( tpd );
     tpd->thread_team = team;
-}
-
-uint64_t
-SCOREP_Thread_GetOSId( void )
-{
-#if HAVE( DECL_SYS_GETTID )
-    return syscall( SYS_gettid );
-#elif HAVE( DECL_SYS_THREAD_SELFID )
-    return syscall( SYS_thread_selfid );
-#else
-    return SCOREP_INVALID_TID;
-#endif
 }

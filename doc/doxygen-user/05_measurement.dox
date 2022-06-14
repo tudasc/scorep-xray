@@ -907,6 +907,12 @@ Categories in the <tt>nvtxEventAttributes_t</tt> arguments are converted to the 
 
 @note While NVTX considers different domains as disjoint range stacks, @scorep does not support overlapping ranges.
 
+The following resource naming APIs are supported:
+
+<dl>
+  <dt><tt>nvtxNameOsThread{A,W}</tt></dt>
+    <dd>Name of CPU location</dd>
+</dl>
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}

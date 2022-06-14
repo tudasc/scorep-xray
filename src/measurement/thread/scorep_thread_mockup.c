@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2016, 2019-2020,
+ * Copyright (c) 2009-2016, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -94,10 +94,4 @@ bool
 SCOREP_Thread_IsIntialThread( void )
 {
     return true;
-}
-
-uint64_t
-SCOREP_Thread_GetOSId( void )
-{
-    return SCOREP_INVALID_TID;
 }

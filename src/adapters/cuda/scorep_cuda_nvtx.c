@@ -22,6 +22,7 @@
 
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Location.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Filtering.h>
@@ -453,12 +454,43 @@ nvtxNameCategoryW( uint32_t       category,
 
 /*************** Thread naming ************************************************/
 
+/* NVTX documentation:
+ *
+ * Annotate an OS thread.
+ *
+ * Allows the user to name an active thread of the current process. If an
+ * invalid thread ID is provided or a thread ID from a different process is
+ * used the behavior of the tool is implementation dependent.
+ *
+ * The thread name is associated to the default domain.  To support domains
+ * use resource objects via ::nvtxDomainResourceCreate.
+ *
+ * \param threadId - The ID of the thread to name.
+ * \param name     - The name of the thread.
+ *
+ * \par Example:
+ * \code
+ * nvtxNameOsThread(GetCurrentThreadId(), "MAIN_THREAD");
+ * \endcode
+ */
+
 NVTX_DECLSPEC void NVTX_API
 nvtxNameOsThreadA( uint32_t    threadId,
                    const char* name )
 {
-    // Not implemented
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    SCOREP_Location_SetNameByThreadId( threadId, name );
+
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
