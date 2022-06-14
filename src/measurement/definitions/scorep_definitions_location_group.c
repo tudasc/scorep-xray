@@ -150,7 +150,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
 
     SCOREP_DEFINITION_ALLOC( LocationGroup );
 
-    /* location groups wont be unfied, therefore no hash value needed */
+    /* location groups wont be unified, therefore no hash value needed */
     new_definition->global_location_group_id = globalLocationGroupId;
     new_definition->parent                   = parent;
     new_definition->name_handle              = nameHandle;

@@ -126,7 +126,7 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
 
     SCOREP_DEFINITION_ALLOC( LocationProperty );
 
-    /* locations wont be unfied, therefore no hash value needed */
+    /* location properties wont be unified, therefore no hash value needed */
     new_definition->location_handle = locationHandle;
     new_definition->name_handle     = nameHandle;
     new_definition->value_handle    = valueHandle;

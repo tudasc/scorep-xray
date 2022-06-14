@@ -161,7 +161,7 @@ define_location( SCOREP_DefinitionManager* definition_manager,
     memset( new_definition, 0, payload_offset + sizeOfPayload );
     SCOREP_INIT_DEFINITION_HEADER( new_definition );
 
-    /* locations wont be unfied, therefore no hash value needed */
+    /* locations wont be unified, therefore no hash value needed */
     new_definition->global_location_id = globalLocationId;
     new_definition->name_handle        = nameHandle;
     new_definition->location_type      = locationType;
