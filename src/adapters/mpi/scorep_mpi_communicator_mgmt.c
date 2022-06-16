@@ -391,7 +391,7 @@ scorep_mpi_setup_world( void )
      * Define the list of locations which are MPI ranks.
      *
      * If we support MPI_THREAD_FUNNELED, this needs to be the
-     * location, which has called MPI_Init/MPI_Thread_init.
+     * location, which has called MPI_Init/MPI_Init_thread.
      * For the moment, the location and rank ids match.
      *
      * This needs to be called early, so that the resulting definition
