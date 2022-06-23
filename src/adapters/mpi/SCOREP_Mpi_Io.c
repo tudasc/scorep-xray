@@ -59,23 +59,11 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_request_mgmt.h"
+#include "scorep_mpi_io_mgmt.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Hashtab.h>
 #include <SCOREP_IoManagement.h>
-
-/**
- * MPI-I/O hashtable for managing I/O split operations.
- */
-extern SCOREP_Hashtab* scorep_mpi_io_split_table;
-
-typedef struct mpi_io_split_op
-{
-    SCOREP_MpiRequestId matching_id;
-    MPI_Datatype        datatype;
-    bool                is_active;
-} mpi_io_split_op;
 
 static inline SCOREP_IoAccessMode
 mpi_io_get_access_mode( int amode )
@@ -148,64 +136,6 @@ mpi_io_get_seek_option( int whence )
     }
 
     return SCOREP_IO_SEEK_INVALID;
-}
-
-static inline mpi_io_split_op*
-mpi_io_find_split_op( SCOREP_IoHandleHandle ioHandle )
-{
-    int32_t               tmp_io_handle = ( int32_t )ioHandle;
-    SCOREP_Hashtab_Entry* entry         = SCOREP_Hashtab_Find( scorep_mpi_io_split_table,
-                                                               ( void* )&tmp_io_handle,
-                                                               NULL );
-
-    return ( !entry ) ? NULL : entry->value.ptr;
-}
-
-static inline void
-mpi_io_split_end( SCOREP_IoHandleHandle ioHandle,
-                  uint64_t*             matching_id,
-                  MPI_Datatype*         datatype )
-{
-    mpi_io_split_op* split_op = mpi_io_find_split_op( ioHandle );
-
-    UTILS_BUG_ON( !split_op && !split_op->is_active, "Started split operation not found" );
-
-    *matching_id = split_op->matching_id;
-    *datatype    = split_op->datatype;
-
-    split_op->is_active = false;
-}
-
-
-static inline void
-mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
-                    uint64_t              matching_id,
-                    MPI_Datatype          datatype )
-{
-    mpi_io_split_op* split_op = mpi_io_find_split_op( ioHandle );
-
-    if ( !split_op )
-    {
-        void* allocated_memory = SCOREP_Memory_AllocForMisc( sizeof( mpi_io_split_op ) + sizeof( SCOREP_IoHandleHandle ) );
-
-        split_op              = allocated_memory;
-        split_op->matching_id = matching_id;
-        split_op->datatype    = datatype;
-
-        SCOREP_IoHandleHandle* tmp_io_handle = ( void* )( ( char* )allocated_memory + sizeof( *split_op ) );
-        *tmp_io_handle = ioHandle;
-
-        SCOREP_Hashtab_InsertPtr( scorep_mpi_io_split_table,
-                                  ( void* )tmp_io_handle,
-                                  ( void* )split_op,
-                                  NULL );
-    }
-    else
-    {
-        split_op->matching_id = matching_id;
-        split_op->datatype    = datatype;
-        split_op->is_active   = true;
-    }
 }
 
 static inline int
@@ -2565,14 +2495,14 @@ MPI_File_iread( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Re
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_READ,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -2648,14 +2578,14 @@ MPI_File_iread_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MP
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_READ,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -2731,14 +2661,14 @@ MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_READ,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -2814,14 +2744,14 @@ MPI_File_iread_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_READ,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -2897,14 +2827,14 @@ MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_READ,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -2980,14 +2910,14 @@ MPI_File_iwrite( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Da
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3063,14 +2993,14 @@ MPI_File_iwrite_all( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MP
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3146,14 +3076,14 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* 
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3229,14 +3159,14 @@ MPI_File_iwrite_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL vo
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3312,14 +3242,14 @@ MPI_File_iwrite_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count,
         {
             if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                {
-                    scorep_mpi_request_io_create( *request,
-                                                  SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
-                                                  ( uint64_t )( count * type_size ),
-                                                  datatype,
-                                                  fh,
-                                                  req_id );
-                }
+                SCOREP_IoOperationIssued( io_handle, req_id );
+
+                scorep_mpi_request_io_create( *request,
+                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              ( uint64_t )( count * type_size ),
+                                              datatype,
+                                              fh,
+                                              req_id );
             }
 
             SCOREP_IoMgmt_PopHandle( io_handle );
@@ -3357,6 +3287,7 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3368,10 +3299,8 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
@@ -3395,6 +3324,12 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_BEGIN ] );
         }
@@ -3426,6 +3361,7 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3437,10 +3373,8 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
@@ -3464,6 +3398,12 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_BEGIN ] );
         }
@@ -3495,6 +3435,7 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3506,10 +3447,8 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_READ,
@@ -3533,6 +3472,12 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_BEGIN ] );
         }
@@ -3564,6 +3509,7 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3575,10 +3521,8 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
@@ -3602,6 +3546,12 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_BEGIN ] );
         }
@@ -3633,6 +3583,7 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3644,10 +3595,8 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
@@ -3671,6 +3620,12 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_BEGIN ] );
         }
@@ -3702,6 +3657,7 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
     const int             event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int             event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO );
     SCOREP_IoHandleHandle io_handle                  = SCOREP_INVALID_IO_HANDLE;
+    SCOREP_MpiRequestId   req_id;
     int                   return_val;
 
     if ( event_gen_active )
@@ -3713,10 +3669,8 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
             io_handle = SCOREP_IoMgmt_GetAndPushHandle( SCOREP_IO_PARADIGM_MPI, &fh );
             if ( io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                const int                 type_size = mpi_io_get_type_size( datatype );
-                const SCOREP_MpiRequestId req_id    = scorep_mpi_get_request_id();
-
-                mpi_io_split_begin( io_handle, req_id, datatype );
+                const int type_size = mpi_io_get_type_size( datatype );
+                req_id = scorep_mpi_get_request_id();
 
                 SCOREP_IoOperationBegin( io_handle,
                                          SCOREP_IO_OPERATION_MODE_WRITE,
@@ -3740,6 +3694,12 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
     {
         if ( event_gen_active_for_group )
         {
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
+            {
+                scorep_mpi_io_split_begin( io_handle, req_id, datatype );
+
+                SCOREP_IoOperationIssued( io_handle, req_id );
+            }
             SCOREP_IoMgmt_PopHandle( io_handle );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_BEGIN ] );
         }
@@ -3800,16 +3760,20 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -3877,16 +3841,20 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -3954,16 +3922,20 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_READ,
                                             ( uint64_t )n_elements * type_size,
@@ -4031,16 +4003,20 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,
@@ -4108,16 +4084,20 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,
@@ -4185,16 +4165,20 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
     {
         if ( event_gen_active_for_group )
         {
-            if ( io_handle != SCOREP_INVALID_IO_HANDLE )
+            if ( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
             {
-                int          n_elements;
-                uint64_t     matching_id;
-                MPI_Datatype datatype;
+                int                 n_elements;
+                SCOREP_MpiRequestId matching_id;
+                MPI_Datatype        datatype;
 
-                mpi_io_split_end( io_handle, &matching_id, &datatype );
+                scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
                 const int type_size = mpi_io_get_type_size( datatype );
                 PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+                PMPI_Type_free( &datatype );
+#endif
+
                 SCOREP_IoOperationComplete( io_handle,
                                             SCOREP_IO_OPERATION_MODE_WRITE,
                                             ( uint64_t )n_elements * type_size,

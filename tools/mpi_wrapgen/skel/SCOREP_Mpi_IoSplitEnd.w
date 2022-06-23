@@ -43,16 +43,20 @@ ${proto:c}
   {
     if ( event_gen_active_for_group )
     {
-      if( io_handle != SCOREP_INVALID_IO_HANDLE )
+      if( return_val == MPI_SUCCESS && io_handle != SCOREP_INVALID_IO_HANDLE )
       {
           int n_elements;
-          uint64_t matching_id;
+          SCOREP_MpiRequestId matching_id;
           MPI_Datatype datatype;
 
-          mpi_io_split_end( io_handle, &matching_id, &datatype );
+          scorep_mpi_io_split_end( io_handle, &matching_id, &datatype );
 
           const int type_size = mpi_io_get_type_size( datatype );
           PMPI_Get_count( status, datatype, &n_elements );
+#if HAVE( DECL_PMPI_TYPE_DUP )
+          PMPI_Type_free( &datatype );
+#endif
+
           SCOREP_IoOperationComplete( io_handle,
                                       SCOREP_IO_OPERATION_MODE_${attribute(operation_type)},
                                       ( uint64_t ) n_elements * type_size,

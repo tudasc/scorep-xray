@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2016, 2019,
+ * Copyright (c) 2009-2013, 2016, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,27 +41,22 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Config.h>
-#include <SCOREP_Hashtab.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_AllocMetric.h>
-#include <SCOREP_IoManagement.h>
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Location.h>
+
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_fortran.h"
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request_mgmt.h"
+#include "scorep_mpi_io_mgmt.h"
 
 #include <stdlib.h>
-
-/**
- * MPI-I/O: Hash table size for split operations
- */
-#define SCOREP_MPI_IO_SPLIT_TABLE_SIZE 10
 
 /**
    Stores the value of the Fortran MPI constant MPI_STATUS_SIZE. It is used for
@@ -88,11 +83,6 @@ bool scorep_mpi_mountinfo_exists = false;
 SCOREP_AllocMetric*    scorep_mpi_allocations_metric            = NULL;
 SCOREP_AttributeHandle scorep_mpi_memory_alloc_size_attribute   = SCOREP_INVALID_ATTRIBUTE;
 SCOREP_AttributeHandle scorep_mpi_memory_dealloc_size_attribute = SCOREP_INVALID_ATTRIBUTE;
-
-/**
- * MPI-I/O hashtable for managing I/O split operations.
- */
-SCOREP_Hashtab* scorep_mpi_io_split_table = NULL;
 
 #include "scorep_mpi_confvars.inc.c"
 
@@ -132,31 +122,6 @@ enable_derived_groups( void )
     {
         scorep_mpi_enabled |= SCOREP_MPI_ENABLED_REQUEST;
     }
-}
-
-static inline void
-mpi_io_init( void )
-{
-    scorep_mpi_io_split_table = SCOREP_Hashtab_CreateSize( SCOREP_MPI_IO_SPLIT_TABLE_SIZE,
-                                                           &SCOREP_Hashtab_HashInt32,
-                                                           &SCOREP_Hashtab_CompareInt32 );
-
-    SCOREP_IoMgmt_RegisterParadigm( SCOREP_IO_PARADIGM_MPI,
-                                    SCOREP_IO_PARADIGM_CLASS_PARALLEL,
-                                    "MPI-IO",
-                                    SCOREP_IO_PARADIGM_FLAG_NONE,
-                                    sizeof( MPI_File ),
-                                    SCOREP_INVALID_IO_PARADIGM_PROPERTY );
-}
-
-static inline void
-mpi_io_finish( void )
-{
-    SCOREP_Hashtab_FreeAll( scorep_mpi_io_split_table,
-                            &SCOREP_Hashtab_DeleteNone,
-                            &SCOREP_Hashtab_DeleteNone );
-
-    SCOREP_IoMgmt_DeregisterParadigm( SCOREP_IO_PARADIGM_MPI );
 }
 
 /**
@@ -232,7 +197,7 @@ mpi_subsystem_init( void )
             SCOREP_AllocMetric_GetDeallocationSizeAttribute();
     }
 
-    mpi_io_init();
+    scorep_mpi_io_init();
 
     return SCOREP_SUCCESS;
 }
@@ -291,7 +256,7 @@ mpi_subsystem_finalize( void )
         SCOREP_AllocMetric_Destroy( scorep_mpi_allocations_metric );
     }
 
-    mpi_io_finish();
+    scorep_mpi_io_finalize();
 
     UTILS_DEBUG_EXIT();
 }
