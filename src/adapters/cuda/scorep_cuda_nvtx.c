@@ -92,6 +92,7 @@ nvtxDomainMarkEx( nvtxDomainHandle_t           domain,
 
     SCOREP_RegionHandle region_handle = scorep_cuda_nvtx_get_user_region( domain, eventAttrib );
 
+    scorep_cuda_nvtx_apply_payload( eventAttrib );
     SCOREP_EnterRegion( region_handle );
     SCOREP_ExitRegion( region_handle );
 
@@ -229,6 +230,7 @@ nvtxDomainRangePushEx( nvtxDomainHandle_t           domain,
 
     SCOREP_RegionHandle region_handle = scorep_cuda_nvtx_get_user_region( domain, eventAttrib );
 
+    scorep_cuda_nvtx_apply_payload( eventAttrib );
     SCOREP_EnterRegion( region_handle );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();

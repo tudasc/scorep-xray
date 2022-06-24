@@ -19,6 +19,7 @@
 #include "scorep_cuda_nvtx_mgmt.h"
 
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
 #include <SCOREP_FastHashtab.h>
 
 #include <UTILS_Error.h>
@@ -54,6 +55,13 @@ struct nvtxResourceHandle
 /*************** Variables ****************************************************/
 
 static nvtxDomainHandle_t default_domain = NULL;
+
+static SCOREP_AttributeHandle nvtx_attribute_uint32;
+static SCOREP_AttributeHandle nvtx_attribute_uint64;
+static SCOREP_AttributeHandle nvtx_attribute_int32;
+static SCOREP_AttributeHandle nvtx_attribute_int64;
+static SCOREP_AttributeHandle nvtx_attribute_float;
+static SCOREP_AttributeHandle nvtx_attribute_double;
 
 /*************** Widestring table *********************************************/
 
@@ -196,6 +204,27 @@ void
 scorep_cuda_nvtx_init( void )
 {
     default_domain = scorep_cuda_nvtx_create_domain( NULL );
+
+    nvtx_attribute_uint32 = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload UNSIGNED_INT32", "",
+        SCOREP_ATTRIBUTE_TYPE_UINT32 );
+    nvtx_attribute_uint64 = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload UNSIGNED_INT64", "",
+        SCOREP_ATTRIBUTE_TYPE_UINT64 );
+
+    nvtx_attribute_int32 = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload INT32", "",
+        SCOREP_ATTRIBUTE_TYPE_INT32 );
+    nvtx_attribute_int64 = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload INT64", "",
+        SCOREP_ATTRIBUTE_TYPE_INT64 );
+
+    nvtx_attribute_float = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload FLOAT", "",
+        SCOREP_ATTRIBUTE_TYPE_FLOAT );
+    nvtx_attribute_double = SCOREP_Definitions_NewAttribute(
+        "NVTX Payload DOUBLE", "",
+        SCOREP_ATTRIBUTE_TYPE_DOUBLE );
 }
 
 const char*
@@ -292,4 +321,34 @@ scorep_cuda_nvtx_get_user_region( nvtxDomainHandle_t           domain,
 
     bool ignored;
     return region_table_get_and_insert( key, NULL, &ignored );
+}
+
+void
+scorep_cuda_nvtx_apply_payload( const nvtxEventAttributes_t* eventAttrib )
+{
+    switch ( eventAttrib->payloadType )
+    {
+        case NVTX_PAYLOAD_TYPE_UNSIGNED_INT32:
+            SCOREP_AddAttribute( nvtx_attribute_uint32, &eventAttrib->payload.uiValue );
+            break;
+        case NVTX_PAYLOAD_TYPE_UNSIGNED_INT64:
+            SCOREP_AddAttribute( nvtx_attribute_uint64, &eventAttrib->payload.ullValue );
+            break;
+
+        case NVTX_PAYLOAD_TYPE_INT32:
+            SCOREP_AddAttribute( nvtx_attribute_int32, &eventAttrib->payload.iValue );
+            break;
+        case NVTX_PAYLOAD_TYPE_INT64:
+            SCOREP_AddAttribute( nvtx_attribute_int64, &eventAttrib->payload.llValue );
+            break;
+
+        case NVTX_PAYLOAD_TYPE_FLOAT:
+            SCOREP_AddAttribute( nvtx_attribute_float, &eventAttrib->payload.fValue );
+            break;
+        case NVTX_PAYLOAD_TYPE_DOUBLE:
+            SCOREP_AddAttribute( nvtx_attribute_double, &eventAttrib->payload.dValue );
+            break;
+        default:
+            return;
+    }
 }

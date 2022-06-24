@@ -900,6 +900,9 @@ The Start/Stop Range events are not supported, because they allow to span differ
 NVTX Mark events are modelled as a short sequence of Enter and Leave events.
 NVTX user regions are grouped by the NVTX domain.
 The region group name for the default domain is <tt>"NVTX"</tt>, for user defined domains it is <tt>"NVTX Domain '<DOMAIN-NAME>'"</tt>.
+Payloads in the <tt>nvtxEventAttributes_t</tt> arguments are converted to event attributes of the Enter event.
+These are only available in tracing mode, as they are potential non-categorical data and profiling does not support floating point parameters.
+Payload names are of the form <tt>"NVTX Payload <DATATYPE-NAME>"</tt>, where <tt><DATATYPE-NAME></tt> is derived from the NVTX datatype enum by removing the <tt>NVTX_PAYLOAD_TYPE_</tt> prefix.
 
 @note While NVTX considers different domains as disjoint range stacks, @scorep does not support overlapping ranges.
 
