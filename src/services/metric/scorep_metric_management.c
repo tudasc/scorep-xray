@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2018, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -849,7 +849,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                             /* Get handle of current location as recorder */
                             SCOREP_LocationHandle      current_location_handle = SCOREP_Location_GetLocationHandle( location );
                             SCOREP_MetricScope         scope                   = SCOREP_METRIC_SCOPE_LOCATION_GROUP;
-                            SCOREP_LocationGroupHandle scope_handle            = SCOREP_GetLocationGroup();
+                            SCOREP_LocationGroupHandle scope_handle            = SCOREP_GetProcessLocationGroup();
                             UTILS_BUG_ON( scope_handle == SCOREP_INVALID_LOCATION_GROUP,
                                           "Cannot get handle for location group." );
                             current_location_metric_set->sampling_sets[ recent_sampling_set_index++ ]
@@ -952,7 +952,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
-                                                                    "" );
+                                                                    "",
+                                                                    SCOREP_GetProcessLocationGroup() );
                     }
                     current_location_metric_set->sampling_sets
                         = malloc( current_overall_number_of_metrics * sizeof( SCOREP_SamplingSetHandle ) );
@@ -1014,7 +1015,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                     break;
                                 case SCOREP_METRIC_PER_PROCESS:
                                     scope        = SCOREP_METRIC_SCOPE_LOCATION_GROUP;
-                                    scope_handle = SCOREP_GetLocationGroup();
+                                    scope_handle = SCOREP_GetProcessLocationGroup();
                                     if ( scope_handle == SCOREP_INVALID_LOCATION_GROUP )
                                     {
                                         UTILS_WARNING( "Cannot get handle for location group." );
@@ -1650,7 +1651,8 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
-                                                                    "" );
+                                                                    "",
+                                                                    SCOREP_GetProcessLocationGroup() );
                     }
                     current_location_metric_set->sampling_sets
                         = malloc( current_overall_number_of_metrics * sizeof( SCOREP_SamplingSetHandle ) );

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2019,
+ * Copyright (c) 2009-2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -69,25 +69,24 @@
 
 
 static SCOREP_LocationHandle
-define_location( SCOREP_DefinitionManager* definition_manager,
-                 uint64_t                  globalLocationId,
-                 SCOREP_StringHandle       nameHandle,
-                 SCOREP_LocationType       locationType,
-                 uint64_t                  numberOfEvents,
-                 uint64_t                  locationGroupId,
-                 size_t                    sizeOfPayload,
-                 void**                    payloadOut );
+define_location( SCOREP_DefinitionManager*  definition_manager,
+                 uint64_t                   globalLocationId,
+                 SCOREP_StringHandle        nameHandle,
+                 SCOREP_LocationType        locationType,
+                 SCOREP_LocationGroupHandle locationGroupParent,
+                 uint64_t                   numberOfEvents,
+                 size_t                     sizeOfPayload,
+                 void**                     payloadOut );
 
 /**
  * Registers a new location into the definitions.
- *
- * @in internal
  */
 SCOREP_LocationHandle
-SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
-                                const char*         name,
-                                size_t              sizeOfPayload,
-                                void**              payload )
+SCOREP_Definitions_NewLocation( SCOREP_LocationType        locationType,
+                                const char*                name,
+                                SCOREP_LocationGroupHandle locationGroupParent,
+                                size_t                     sizeOfPayload,
+                                void**                     payload )
 {
     SCOREP_Definitions_Lock();
 
@@ -97,7 +96,9 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "", NULL ),
-        type, 0, 0,
+        locationType,
+        locationGroupParent,
+        0,
         sizeOfPayload, payload );
 
     SCOREP_Definitions_Unlock();
@@ -113,6 +114,17 @@ scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );
 
+    SCOREP_LocationGroupHandle unified_location_group_parent = SCOREP_INVALID_LOCATION_GROUP;
+    if ( definition->location_group_parent != SCOREP_INVALID_LOCATION_GROUP )
+    {
+        unified_location_group_parent = SCOREP_HANDLE_GET_UNIFIED(
+            definition->location_group_parent,
+            LocationGroup,
+            handlesPageManager );
+        UTILS_BUG_ON( unified_location_group_parent == SCOREP_INVALID_LOCATION_GROUP,
+                      "Invalid unification order of location definition: location group not yet unified" );
+    }
+
     definition->unified = define_location(
         scorep_unified_definition_manager,
         definition->global_location_id,
@@ -121,8 +133,8 @@ scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
             String,
             handlesPageManager ),
         definition->location_type,
+        unified_location_group_parent,
         definition->number_of_events,
-        definition->location_group_id,
         0, NULL );
 }
 
@@ -136,14 +148,14 @@ equal_location( const SCOREP_LocationDef* existingDefinition,
 
 
 SCOREP_LocationHandle
-define_location( SCOREP_DefinitionManager* definition_manager,
-                 uint64_t                  globalLocationId,
-                 SCOREP_StringHandle       nameHandle,
-                 SCOREP_LocationType       locationType,
-                 uint64_t                  numberOfEvents,
-                 uint64_t                  locationGroupId,
-                 size_t                    sizeOfPayload,
-                 void**                    payloadOut )
+define_location( SCOREP_DefinitionManager*  definition_manager,
+                 uint64_t                   globalLocationId,
+                 SCOREP_StringHandle        nameHandle,
+                 SCOREP_LocationType        locationType,
+                 SCOREP_LocationGroupHandle locationGroupParent,
+                 uint64_t                   numberOfEvents,
+                 size_t                     sizeOfPayload,
+                 void**                     payloadOut )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -161,12 +173,12 @@ define_location( SCOREP_DefinitionManager* definition_manager,
     memset( new_definition, 0, payload_offset + sizeOfPayload );
     SCOREP_INIT_DEFINITION_HEADER( new_definition );
 
-    /* locations wont be unfied, therefore no hash value needed */
-    new_definition->global_location_id = globalLocationId;
-    new_definition->name_handle        = nameHandle;
-    new_definition->location_type      = locationType;
-    new_definition->number_of_events   = numberOfEvents;
-    new_definition->location_group_id  = locationGroupId;
+    /* locations wont be unified, therefore no hash value needed */
+    new_definition->global_location_id    = globalLocationId;
+    new_definition->name_handle           = nameHandle;
+    new_definition->location_type         = locationType;
+    new_definition->location_group_parent = locationGroupParent;
+    new_definition->number_of_events      = numberOfEvents;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Location, location );

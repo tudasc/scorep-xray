@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -134,11 +134,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         return;
     }
 
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
     SCOREP_CUPTI_CALL( cuptiActivityFlushAll( 0 ) );
-#else
-    SCOREP_CUPTI_CALL( cuptiActivityFlush( context->cuda_context, 0, 0 ) );
-#endif
 
     SCOREP_CUPTI_LOCK();
     {

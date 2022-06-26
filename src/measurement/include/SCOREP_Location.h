@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014-2016,
+ * Copyright (c) 2009-2012, 2014-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -60,9 +60,10 @@ typedef struct SCOREP_Location SCOREP_Location;
  * @return Returns handle for new location.
  */
 SCOREP_Location*
-SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
-                                      SCOREP_LocationType type,
-                                      const char*         name );
+SCOREP_Location_CreateNonCPULocation( SCOREP_Location*           parent,
+                                      SCOREP_LocationType        type,
+                                      const char*                name,
+                                      SCOREP_LocationGroupHandle locationGroup );
 
 
 /**

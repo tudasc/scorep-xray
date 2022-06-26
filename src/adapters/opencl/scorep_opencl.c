@@ -25,9 +25,12 @@
 #include "scorep_opencl.h"
 #include "scorep_opencl_config.h"
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_AcceleratorManagement.h>
+#include <scorep_system_tree.h>
 
 #include <jenkins_hash.h>
 
@@ -125,6 +128,10 @@ static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
 
 /** Score-P mutex for access to global variables in the OpenCL adapter */
 static SCOREP_Mutex opencl_mutex;
+
+static scorep_opencl_device*  opencl_device_list;
+static scorep_opencl_device** opencl_device_list_tail = &opencl_device_list;
+static uint32_t               opencl_context_counter;
 
 /**
  * Internal location mapping for unification (needed for OpenCL communication)
@@ -314,40 +321,41 @@ scorep_opencl_finalize( void )
     }
 }
 
-
 /**
- * Create a Score-P OpenCL command queue.
+ * Create a Score-P OpenCL device.
  *
- * @param clQueue           OpenCL command queue
  * @param clDeviceID        OpenCL device ID
  *
  * @return pointer to created Score-P OpenCL command queue
  */
-scorep_opencl_queue*
-scorep_opencl_queue_create( cl_command_queue clQueue,
-                            cl_device_id     clDeviceID )
+static scorep_opencl_device*
+opencl_device_get_create( cl_device_id clDeviceID )
 {
-    scorep_opencl_queue* queue = NULL;
+    SCOREP_OPENCL_LOCK();
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Create command queue %p",
-                        clQueue );
+    scorep_opencl_device* device = opencl_device_list;
+    while ( device )
+    {
+        if ( device->device_id == clDeviceID )
+        {
+            SCOREP_OPENCL_UNLOCK();
+            return device;
+        }
+    }
 
-    queue = ( scorep_opencl_queue* )SCOREP_Memory_AllocForMisc(
-        sizeof( scorep_opencl_queue ) );
-    memset( queue, 0, sizeof( scorep_opencl_queue ) );
-    queue->queue         = clQueue;
-    queue->host_location = SCOREP_Location_GetCurrentCPULocation();
+    device = SCOREP_Memory_AllocForMisc( sizeof( *device ) );
+    memset( device, 0, sizeof( *device ) );
+    device->device_id = clDeviceID;
 
-    /* create Score-P location with name and parent id */
-    char thread_name[ 64 ];
-
+    char device_name_buffer[ 64 ];
     SCOREP_OPENCL_CALL( clGetDeviceInfo, ( clDeviceID, CL_DEVICE_NAME,
-                                           sizeof( thread_name ),
-                                           thread_name, NULL ) );
-
-    queue->device_location = SCOREP_Location_CreateNonCPULocation(
-        queue->host_location,
-        SCOREP_LOCATION_TYPE_GPU, thread_name );
+                                           64, device_name_buffer,
+                                           NULL ) );
+    device->system_tree_node = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "OpenCL Device",
+        device_name_buffer );
 
     /* Use NVIDIA OpenCL extension to query PCI domain/bus/device IDs for
        node-level unique identification of the used GPU analog to CUDA
@@ -384,11 +392,11 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
                                                               NULL ) );
         if ( error_domain == CL_SUCCESS  &&  error_bus == CL_SUCCESS && error_device == CL_SUCCESS )
         {
-            SCOREP_Location_AddPCIProperties( queue->device_location,
-                                              domain_id,
-                                              bus_id,
-                                              slot_id,
-                                              UINT8_MAX );
+            SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
+                                                    domain_id,
+                                                    bus_id,
+                                                    slot_id,
+                                                    UINT8_MAX );
         }
     }
 
@@ -430,13 +438,62 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
                                                      NULL ) );
         if ( CL_SUCCESS == err && topology.raw.type == CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD )
         {
-            SCOREP_Location_AddPCIProperties( queue->device_location,
-                                              UINT16_MAX,
-                                              topology.pcie.bus,
-                                              topology.pcie.device,
-                                              topology.pcie.function );
+            SCOREP_SystemTreeNode_AddPCIProperties( device->system_tree_node,
+                                                    UINT16_MAX,
+                                                    topology.pcie.bus,
+                                                    topology.pcie.device,
+                                                    topology.pcie.function );
         }
     }
+
+    char context_name_buffer[ 64 ];
+    sprintf( context_name_buffer, "OpenCL Context %u", opencl_context_counter++ );
+    device->location_group = SCOREP_AcceleratorMgmt_CreateContext(
+        device->system_tree_node,
+        context_name_buffer );
+
+    device->next             = NULL;
+    *opencl_device_list_tail = device;
+    opencl_device_list_tail  = &device->next;
+
+    SCOREP_OPENCL_UNLOCK();
+
+    return device;
+}
+
+/**
+ * Create a Score-P OpenCL command queue.
+ *
+ * @param clQueue           OpenCL command queue
+ * @param clDeviceID        OpenCL device ID
+ *
+ * @return pointer to created Score-P OpenCL command queue
+ */
+scorep_opencl_queue*
+scorep_opencl_queue_create( cl_command_queue clQueue,
+                            cl_device_id     clDeviceID )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Create command queue %p",
+                        clQueue );
+
+    scorep_opencl_queue* queue = SCOREP_Memory_AllocForMisc( sizeof( *queue ) );
+    memset( queue, 0, sizeof( scorep_opencl_queue ) );
+    queue->queue         = clQueue;
+    queue->host_location = SCOREP_Location_GetCurrentCPULocation();
+
+    /* create Score-P location with name and parent id */
+    char thread_name[ 64 ];
+    SCOREP_OPENCL_CALL( clGetDeviceInfo, ( clDeviceID, CL_DEVICE_NAME,
+                                           sizeof( thread_name ),
+                                           thread_name, NULL ) );
+
+    queue->device = opencl_device_get_create( clDeviceID );
+
+    queue->location = SCOREP_Location_CreateNonCPULocation(
+        queue->host_location,
+        SCOREP_LOCATION_TYPE_GPU,
+        thread_name,
+        queue->device->location_group );
 
     SCOREP_OPENCL_CALL( clRetainCommandQueue, ( clQueue ) );
 
@@ -468,7 +525,7 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
 
     queue->scorep_last_timestamp = queue->sync.scorep_time;
 
-    queue->device_location_id = SCOREP_OPENCL_NO_ID;
+    queue->location_id = SCOREP_OPENCL_NO_ID;
 
     /* allocate buffer for OpenCL device activities */
     queue->buffer = ( scorep_opencl_buffer_entry* )SCOREP_Memory_AllocForMisc( scorep_opencl_queue_size );
@@ -686,11 +743,11 @@ scorep_opencl_retain_buffer( scorep_opencl_queue*        queue,
     }
 
     // set queue location ID and create RMA window, if not already done
-    if ( SCOREP_OPENCL_NO_ID == queue->device_location_id )
+    if ( SCOREP_OPENCL_NO_ID == queue->location_id )
     {
         SCOREP_OPENCL_LOCK();
         // set location counter and create RMA window
-        queue->device_location_id = scorep_opencl_global_location_number++;
+        queue->location_id = scorep_opencl_global_location_number++;
         SCOREP_OPENCL_UNLOCK();
     }
 
@@ -1055,8 +1112,8 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
 
             // write Score-P events for this kernel
             // TODO: out of order queues!!!
-            SCOREP_Location_EnterRegion( queue->device_location, host_start, regionHandle );
-            SCOREP_Location_ExitRegion( queue->device_location, host_stop, regionHandle );
+            SCOREP_Location_EnterRegion( queue->location, host_start, regionHandle );
+            SCOREP_Location_ExitRegion( queue->location, host_stop, regionHandle );
 
             // release kernel that has been retained by this wrapper
             if ( kernel )
@@ -1073,28 +1130,28 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
 
             if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_HOST2DEV )
             {
-                SCOREP_Location_RmaGet( queue->device_location, host_start,
+                SCOREP_Location_RmaGet( queue->location, host_start,
                                         scorep_opencl_window_handle,
                                         host_location_id, mcpy_bytes, 42 );
             }
             else if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_DEV2HOST )
             {
-                SCOREP_Location_RmaPut( queue->device_location, host_start,
+                SCOREP_Location_RmaPut( queue->location, host_start,
                                         scorep_opencl_window_handle,
                                         host_location_id, mcpy_bytes, 42 );
             }
             else if ( mcpy_kind == SCOREP_ENQUEUE_BUFFER_DEV2DEV )
             {
-                SCOREP_Location_RmaGet( queue->device_location, host_start,
+                SCOREP_Location_RmaGet( queue->location, host_start,
                                         scorep_opencl_window_handle,
-                                        queue->device_location_id, mcpy_bytes,
+                                        queue->location_id, mcpy_bytes,
                                         42 );
             }
 
             if ( mcpy_kind != SCOREP_ENQUEUE_BUFFER_HOST2HOST )
             {
                 SCOREP_Location_RmaOpCompleteBlocking(
-                    queue->device_location, host_stop,
+                    queue->location, host_stop,
                     scorep_opencl_window_handle, 42 );
             }
         }
@@ -1346,10 +1403,10 @@ opencl_create_comm_group( void )
     {
         if ( count < scorep_opencl_global_location_number )
         {
-            if ( SCOREP_OPENCL_NO_ID != queue->device_location_id )
+            if ( SCOREP_OPENCL_NO_ID != queue->location_id )
             {
-                scorep_opencl_global_location_ids[ queue->device_location_id ] =
-                    SCOREP_Location_GetGlobalId( queue->device_location );
+                scorep_opencl_global_location_ids[ queue->location_id ] =
+                    SCOREP_Location_GetGlobalId( queue->location );
 
                 count++;
             }

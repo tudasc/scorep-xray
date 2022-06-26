@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014, 2017, 2019-2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2020,
+ * Copyright (c) 2014-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -449,6 +449,13 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
 }
 
+void
+SCOREP_Config_CudaAdapter::appendInitStructName( std::deque<std::string>& initStructs )
+{
+    initStructs.push_back( "SCOREP_Subsystem_AcceleratorManagement" );
+    SCOREP_Config_Adapter::appendInitStructName( initStructs );
+}
+
 /* **************************************************************************************
  * OpenACC adapter
  * *************************************************************************************/
@@ -553,6 +560,13 @@ SCOREP_Config_OpenclAdapter::addLdFlags( std::string& ldflags,
     }
 }
 
+void
+SCOREP_Config_OpenclAdapter::appendInitStructName( std::deque<std::string>& initStructs )
+{
+    initStructs.push_back( "SCOREP_Subsystem_AcceleratorManagement" );
+    SCOREP_Config_Adapter::appendInitStructName( initStructs );
+}
+
 /* **************************************************************************************
  * Kokkos adapter
  * *************************************************************************************/
@@ -569,6 +583,13 @@ SCOREP_Config_KokkosAdapter::addLibs( std::deque<std::string>&           libs,
        KOKKOS_PROFILE_LIBRARY */
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
     deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
+}
+
+void
+SCOREP_Config_KokkosAdapter::appendInitStructName( std::deque<std::string>& initStructs )
+{
+    initStructs.push_back( "SCOREP_Subsystem_AcceleratorManagement" );
+    SCOREP_Config_Adapter::appendInitStructName( initStructs );
 }
 
 /* **************************************************************************************

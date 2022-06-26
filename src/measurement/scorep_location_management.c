@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019-2020,
+ * Copyright (c) 2009-2017, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -104,8 +104,9 @@ static SCOREP_Mutex per_process_metrics_location_mutex;
 
 
 SCOREP_Location*
-scorep_location_create_location( SCOREP_LocationType type,
-                                 const char*         name )
+scorep_location_create_location( SCOREP_LocationType        type,
+                                 const char*                name,
+                                 SCOREP_LocationGroupHandle locationGroup )
 {
     SCOREP_Location* new_location;
     size_t           total_memory = sizeof( *new_location )
@@ -117,6 +118,7 @@ scorep_location_create_location( SCOREP_LocationType type,
     SCOREP_LocationHandle location_handle = SCOREP_Definitions_NewLocation(
         type,
         name,
+        locationGroup,
         total_memory,
         ( void* )&new_location );
     memset( new_location, 0, total_memory );
@@ -135,15 +137,17 @@ scorep_location_create_location( SCOREP_LocationType type,
     return new_location;
 }
 
+
 SCOREP_Location*
-SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
-                                      SCOREP_LocationType type,
-                                      const char*         name )
+SCOREP_Location_CreateNonCPULocation( SCOREP_Location*           parent,
+                                      SCOREP_LocationType        type,
+                                      const char*                name,
+                                      SCOREP_LocationGroupHandle locationGroup )
 {
     UTILS_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
-    SCOREP_Location* new_location = scorep_location_create_location( type, name );
+    SCOREP_Location* new_location = scorep_location_create_location( type, name, locationGroup );
     new_location->parent = parent;
     if ( !defer_init_locations )
     {
@@ -157,8 +161,10 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( const char* name )
 {
-    SCOREP_Location* new_location =
-        scorep_location_create_location( SCOREP_LOCATION_TYPE_CPU_THREAD, name );
+    SCOREP_Location* new_location = scorep_location_create_location(
+        SCOREP_LOCATION_TYPE_CPU_THREAD,
+        name,
+        SCOREP_GetProcessLocationGroup() );
 #if HAVE( THREAD_LOCAL_STORAGE )
     sig_atomic_t touch = scorep_in_measurement;
 
@@ -185,7 +191,8 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
         per_process_metrics_location = SCOREP_Location_CreateNonCPULocation(
             SCOREP_Location_GetCurrentCPULocation(),
             SCOREP_LOCATION_TYPE_METRIC,
-            scorep_per_process_metrics_location_name );
+            scorep_per_process_metrics_location_name,
+            SCOREP_GetProcessLocationGroup() );
     }
 
     if ( timestamp )

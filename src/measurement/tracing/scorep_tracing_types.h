@@ -69,6 +69,7 @@ scorep_tracing_location_group_type_to_otf2( SCOREP_LocationGroupType scorepType 
         return OTF2_LOCATION_GROUP_TYPE_ ## OTF2
 
         case_return( PROCESS, PROCESS );
+        case_return( ACCELERATOR, ACCELERATOR );
 
 #undef case_return
         default:
@@ -441,6 +442,8 @@ scorep_tracing_domain_to_otf2( SCOREP_SystemTreeDomain* domains )
     flag_return( CACHE )
     flag_return( CORE )
     flag_return( PU )
+    flag_return( ACCELERATOR_DEVICE )
+    flag_return( NETWORKING_DEVICE )
 
 #undef flag_return
 
@@ -655,6 +658,7 @@ scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
         case_return( SOURCE_CODE_LOCATION, SOURCE_CODE_LOCATION );
         case_return( CALLING_CONTEXT, CALLING_CONTEXT );
         case_return( INTERRUPT_GENERATOR, INTERRUPT_GENERATOR );
+        case_return( LOCATION_GROUP, LOCATION_GROUP );
 
 #undef case_return
         default:

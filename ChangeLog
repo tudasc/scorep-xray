@@ -9,6 +9,10 @@ Features and improvements:
   thread-local storage detected, `MPI_THREAD_MULTIPLE`.
 - Record detailed information about MPI non-blocking collective
   operations.
+- Score-P now supports only version 7 and up of the CUDA Toolkit.
+- Score-P now requires OTF2 3.0 and CubeLib/W 4.7.
+- The `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS` feature is now
+  also disabled when recording accelerator applications.
 
 User tools and API improvements and changes:
 

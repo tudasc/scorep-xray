@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019-2020,
+ * Copyright (c) 2009-2017, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -107,8 +107,8 @@ static bool finalized = false;
 
 volatile SCOREP_MeasurementPhase scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_PRE;
 
-/** @brief Location group handle */
-static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
+/** @brief Process location group handle */
+static SCOREP_LocationGroupHandle process_location_group_handle;
 
 #define max_exit_callbacks 1
 static SCOREP_ExitCallback exit_callbacks[ max_exit_callbacks ];
@@ -522,7 +522,7 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
      *
      * @dependsOn SystemTree
      */
-    location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
+    process_location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
 
     /* Data structure containing path in system tree is not needed any longer */
     SCOREP_FreeSystemTree( system_tree_path );
@@ -645,9 +645,9 @@ SCOREP_InitMeasurementWithArgs( int argc, char* argv[] )
 
 
 SCOREP_LocationGroupHandle
-SCOREP_GetLocationGroup( void )
+SCOREP_GetProcessLocationGroup( void )
 {
-    return location_group_handle;
+    return process_location_group_handle;
 }
 
 
@@ -934,6 +934,8 @@ scorep_finalize( void )
     end_epoch( SCOREP_INVALID_EXIT_STATUS );
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
+
+    SCOREP_Status_OnMeasurementEnd();
 
     /* Clock resolution might be calculated once. Do it at the beginning
      * of finalization. */

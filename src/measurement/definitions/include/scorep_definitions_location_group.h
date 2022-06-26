@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,16 +48,18 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
 
-    /* don't use the sequence number for the id, this is generated */
-    uint32_t                    global_location_group_id;
-    SCOREP_SystemTreeNodeHandle parent;
     SCOREP_StringHandle         name_handle;
+    SCOREP_SystemTreeNodeHandle system_tree_parent;
     SCOREP_LocationGroupType    location_group_type;
+    SCOREP_LocationGroupHandle  creating_location_group;
 };
 
 
 SCOREP_LocationGroupHandle
-SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent );
+SCOREP_Definitions_NewLocationGroup( const char*                 name,
+                                     SCOREP_SystemTreeNodeHandle systemTreeParent,
+                                     SCOREP_LocationGroupType    locationGroupType,
+                                     SCOREP_LocationGroupHandle  creatingLocationGroup );
 
 
 void

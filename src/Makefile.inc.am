@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2015, 2017,
+## Copyright (c) 2009-2015, 2017, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -65,6 +65,7 @@ libscorep_measurement_la_LIBADD =        \
     libscorep_allocator.la               \
     libscorep_adapter_utils.la           \
     libscorep_io_management.la           \
+    libscorep_accelerator_management.la  \
     libutils.la                          \
     libjenkins_hash.la                   \
     @SCOREP_PAPI_LIBS@                   \

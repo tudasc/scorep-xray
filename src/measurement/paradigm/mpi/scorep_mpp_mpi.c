@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -24,7 +24,7 @@
 #include <config.h>
 #include "scorep_mpp.h"
 #include "scorep_ipc.h"
-#include <scorep_environment.h>
+#include <scorep_status.h>
 
 #include <stdio.h>
 
@@ -40,7 +40,7 @@ SCOREP_Mpp_GetLocationGroupName( void )
     // in the definitions, but construct them from a base name and a
     // number when they are written to disk. Thus, return only the
     // base name in this case.
-    if ( SCOREP_Env_UseSystemTreeSequence() )
+    if ( SCOREP_Status_UseSystemTreeSequenceDefinitions() )
     {
         return "MPI Rank";
     }

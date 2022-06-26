@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,6 +45,7 @@
 #include <SCOREP_Platform.h>
 #include "scorep_environment.h"
 #include "scorep_runtime_management_timings.h"
+#include "scorep_system_tree_sequence.h"
 
 #include <stdlib.h>
 #include <limits.h>
@@ -69,19 +70,21 @@ struct scorep_status
     bool is_profiling_enabled;
     bool is_tracing_enabled;
     bool otf2_has_flushed;
+    bool use_system_tree_sequence_definitions;
 };
 
 
 static scorep_status scorep_process_local_status = {
-    .mpp_rank                  = INT_MAX,
-    .mpp_rank_is_set           = false,
-    .mpp_is_initialized        = false,
-    .mpp_is_finalized          = false,
-    .mpp_comm_world_size       = 0,
-    .is_process_master_on_node = false,
-    .is_profiling_enabled      = true,
-    .is_tracing_enabled        = true,
-    .otf2_has_flushed          = false
+    .mpp_rank                             = INT_MAX,
+    .mpp_rank_is_set                      = false,
+    .mpp_is_initialized                   = false,
+    .mpp_is_finalized                     = false,
+    .mpp_comm_world_size                  = 0,
+    .is_process_master_on_node            = false,
+    .is_profiling_enabled                 = true,
+    .is_tracing_enabled                   = true,
+    .otf2_has_flushed                     = false,
+    .use_system_tree_sequence_definitions = false
 };
 
 #if HAVE( UNWINDING_SUPPORT )
@@ -96,6 +99,8 @@ SCOREP_Status_Initialize( void )
 #if HAVE( UNWINDING_SUPPORT )
     scorep_is_unwinding_enabled = SCOREP_Env_DoUnwinding();
 #endif
+    scorep_process_local_status.use_system_tree_sequence_definitions =
+        SCOREP_Env_UseSystemTreeSequence() && scorep_system_tree_seq_has_support_for();
 }
 
 
@@ -103,6 +108,22 @@ void
 SCOREP_Status_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
+}
+
+
+void
+SCOREP_Status_OnMeasurementEnd( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    int local_truth_value = scorep_process_local_status.use_system_tree_sequence_definitions ? 1 : 0;
+    int global_truth_value;
+    SCOREP_Ipc_Allreduce( &local_truth_value,
+                          &global_truth_value,
+                          1,
+                          SCOREP_IPC_INT,
+                          SCOREP_IPC_MIN );
+    scorep_process_local_status.use_system_tree_sequence_definitions = !!global_truth_value;
 }
 
 
@@ -235,4 +256,28 @@ bool
 SCOREP_Status_HasOtf2Flushed( void )
 {
     return scorep_process_local_status.otf2_has_flushed;
+}
+
+
+void
+SCOREP_Status_OnAccUsage( void )
+{
+    scorep_process_local_status.use_system_tree_sequence_definitions = false;
+}
+
+bool
+SCOREP_Status_UseSystemTreeSequenceDefinitions( void )
+{
+    if ( !scorep_process_local_status.use_system_tree_sequence_definitions
+         && SCOREP_Env_UseSystemTreeSequence() )
+    {
+        UTILS_WARN_ONCE( "Cannot use the system tree sequence definitions with "
+                         "current inter-process communication paradigm or GPU usage. "
+                         "Currently, system tree sequence definitions are only "
+                         "supported for MPI and single-process applications "
+                         "without using GPU accelerators. "
+                         "Disable usage of system tree sequence definitions." );
+    }
+
+    return scorep_process_local_status.use_system_tree_sequence_definitions;
 }

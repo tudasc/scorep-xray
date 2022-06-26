@@ -10,6 +10,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -35,7 +38,9 @@
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_AcceleratorManagement.h>
 #include <scorep_task_internal.h>
+#include <scorep_system_tree.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,10 +54,20 @@ main( int argc, char** argv )
     SCOREP_InitMeasurement();
 
     SCOREP_Location* location1 = SCOREP_Location_GetCurrentCPULocation();
+
+    SCOREP_SystemTreeNodeHandle device = SCOREP_Definitions_NewSystemTreeNode(
+        SCOREP_GetSystemTreeNodeHandleForSharedMemory(),
+        SCOREP_SYSTEM_TREE_DOMAIN_ACCELERATOR_DEVICE,
+        "Device", "0" );
+
+    SCOREP_LocationGroupHandle device_context = SCOREP_AcceleratorMgmt_CreateContext(
+        device, "Context 0" );
+
     SCOREP_Location* location2 =
         SCOREP_Location_CreateNonCPULocation( location1,
                                               SCOREP_LOCATION_TYPE_GPU,
-                                              "test_thread_2" );
+                                              "test_gpu",
+                                              device_context );
 
     SCOREP_RegionHandle parallel = SCOREP_Definitions_NewRegion( "parallel",
                                                                  "parallel",

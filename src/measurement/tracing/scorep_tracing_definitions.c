@@ -61,7 +61,6 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
-#include <scorep_environment.h>
 #include <scorep_status.h>
 #include <scorep_system_tree_sequence.h>
 #include <scorep_type_utils.h>
@@ -143,13 +142,22 @@ scorep_write_location_definitions(
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Location, location )
     {
+        OTF2_LocationGroupRef location_group_parent = OTF2_UNDEFINED_LOCATION_GROUP;
+        if ( definition->location_group_parent != SCOREP_INVALID_LOCATION_GROUP )
+        {
+            location_group_parent = SCOREP_HANDLE_TO_ID(
+                definition->location_group_parent,
+                LocationGroup,
+                definitionManager->page_manager );
+        }
+
         OTF2_ErrorCode status = defLocation(
             writerHandle,
             definition->global_location_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_type_to_otf2( definition->location_type ),
             definition->number_of_events,
-            definition->location_group_id );
+            location_group_parent );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Location" );
@@ -221,21 +229,30 @@ scorep_write_location_group_definitions( void*                     writerHandle,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, LocationGroup, location_group )
     {
         OTF2_SystemTreeNodeRef system_tree_parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
-        if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
+        if ( definition->system_tree_parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             system_tree_parent = SCOREP_HANDLE_TO_ID(
-                definition->parent,
+                definition->system_tree_parent,
                 SystemTreeNode,
+                definitionManager->page_manager );
+        }
+
+        OTF2_LocationGroupRef creating_location_group = OTF2_UNDEFINED_LOCATION_GROUP;
+        if ( definition->creating_location_group != SCOREP_INVALID_LOCATION_GROUP )
+        {
+            creating_location_group = SCOREP_HANDLE_TO_ID(
+                definition->creating_location_group,
+                LocationGroup,
                 definitionManager->page_manager );
         }
 
         OTF2_ErrorCode status = defLocationGroup(
             writerHandle,
-            definition->global_location_group_id,
+            definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
             system_tree_parent,
-            OTF2_UNDEFINED_LOCATION_GROUP );
+            creating_location_group );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "LocationGroup" );
@@ -1080,9 +1097,9 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                     break;
 
                 case SCOREP_METRIC_SCOPE_LOCATION_GROUP:
-                    scope = SCOREP_HANDLE_DEREF( scoped_definition->scope_handle,
+                    scope = SCOREP_HANDLE_TO_ID( scoped_definition->scope_handle,
                                                  LocationGroup,
-                                                 definitionManager->page_manager )->global_location_group_id;
+                                                 definitionManager->page_manager );
                     break;
 
                 case SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE:
@@ -1846,6 +1863,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
      */
     WRITE_MAPPING( localDefinitionWriter, 64, location, LOCATION );
 
+    WRITE_MAPPING( localDefinitionWriter, 32, location_group, LOCATION_GROUP );
     WRITE_MAPPING( localDefinitionWriter, 32, region, REGION );
     WRITE_MAPPING( localDefinitionWriter, 32, group, GROUP );
     WRITE_MAPPING( localDefinitionWriter, 32, interim_communicator, COMM );
@@ -2103,7 +2121,7 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     write_io_paradigms( global_definition_writer,
                         scorep_unified_definition_manager );
 
-    if ( SCOREP_Env_UseSystemTreeSequence() )
+    if ( SCOREP_Status_UseSystemTreeSequenceDefinitions() )
     {
         write_system_tree_sequence_definitions( global_definition_writer, scorep_unified_definition_manager );
     }
