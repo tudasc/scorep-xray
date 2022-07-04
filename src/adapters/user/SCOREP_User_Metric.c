@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -68,7 +68,7 @@ SCOREP_User_InitMetric( SCOREP_SamplingSetHandle*    metricHandle,
     }
 
     /* Lock metric definition */
-    SCOREP_MutexLock( &scorep_user_metric_mutex );
+    UTILS_MutexLock( &scorep_user_metric_mutex );
 
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SCOREP_INVALID_SAMPLING_SET )
@@ -116,7 +116,7 @@ SCOREP_User_InitMetric( SCOREP_SamplingSetHandle*    metricHandle,
 
 out:
     /* Unlock metric definition */
-    SCOREP_MutexUnlock( &scorep_user_metric_mutex );
+    UTILS_MutexUnlock( &scorep_user_metric_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

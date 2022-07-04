@@ -149,8 +149,6 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
     [AS_IF([test "x${scorep_enable_gcc_plugin}" = "xyes"],
         [AC_MSG_ERROR([Request to enable the GCC plug-in could not be fulfilled. Run configure with --disable-gcc-plugin or run without --enable-gcc-plugin to see the reason.])])])
 
-AC_SCOREP_ERROR_CODES
-
 AFS_SET_SILENT_RULE_PREFIX([GCC PLUGIN ])
 AFS_CONFIG_MAKEFILE
 

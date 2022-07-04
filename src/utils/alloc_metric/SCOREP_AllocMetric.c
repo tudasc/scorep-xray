@@ -4,7 +4,7 @@
  * Copyright (c) 2016-2018, 2020-2022,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -33,17 +33,17 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Memory.h>
 #include <scorep_substrates_definition.h>
 
+#include <UTILS_Atomic.h>
 #define SCOREP_DEBUG_MODULE_NAME MEMORY
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 /*
  * The key is a pointer address of an allocation,
@@ -67,7 +67,7 @@ typedef struct free_list_item
 
 struct SCOREP_AllocMetric
 {
-    SCOREP_Mutex             mutex;
+    UTILS_Mutex              mutex;
 
     allocation_item*         allocations;
     free_list_item*          free_list;
@@ -367,7 +367,7 @@ SCOREP_AllocMetric_AcquireAlloc( SCOREP_AllocMetric* allocMetric,
                                  uint64_t            addr,
                                  void**              allocation )
 {
-    SCOREP_MutexLock( &allocMetric->mutex );
+    UTILS_MutexLock( &allocMetric->mutex );
 
     UTILS_DEBUG_ENTRY( "%p", ( void* )addr );
 
@@ -386,7 +386,7 @@ SCOREP_AllocMetric_AcquireAlloc( SCOREP_AllocMetric* allocMetric,
 
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
 
-    SCOREP_MutexUnlock( &allocMetric->mutex );
+    UTILS_MutexUnlock( &allocMetric->mutex );
 }
 
 
@@ -395,12 +395,12 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
                                 uint64_t            resultAddr,
                                 size_t              size )
 {
-    SCOREP_MutexLock( &allocMetric->mutex );
+    UTILS_MutexLock( &allocMetric->mutex );
 
     UTILS_DEBUG_ENTRY( "%p , %zu", ( void* )resultAddr, size );
 
-    uint64_t process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
-        &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    uint64_t process_allocated_memory_save = UTILS_Atomic_AddFetch_uint64(
+        &process_allocated_memory, size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     allocMetric->total_allocated_memory += size;
     allocation_item* allocation =
@@ -423,7 +423,7 @@ SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
 
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
 
-    SCOREP_MutexUnlock( &allocMetric->mutex );
+    UTILS_MutexUnlock( &allocMetric->mutex );
 }
 
 
@@ -434,7 +434,7 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
                                   void*               prevAllocation,
                                   uint64_t*           prevSize )
 {
-    SCOREP_MutexLock( &allocMetric->mutex );
+    UTILS_MutexLock( &allocMetric->mutex );
 
     UTILS_DEBUG_ENTRY( "%p , %zu, %p", ( void* )resultAddr, size, prevAllocation );
 
@@ -455,9 +455,9 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
          * result in a new address. */
         if ( allocation->address == resultAddr )
         {
-            process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
+            process_allocated_memory_save = UTILS_Atomic_AddFetch_uint64(
                 &process_allocated_memory, size - allocation->size,
-                SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+                UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
             allocMetric->total_allocated_memory += ( size - allocation->size );
             total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -476,11 +476,11 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
          * about freed_mem. */
         else
         {
-            process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
-                &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
-            SCOREP_Atomic_SubFetch_uint64( &process_allocated_memory,
-                                           allocation->size,
-                                           SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            process_allocated_memory_save = UTILS_Atomic_AddFetch_uint64(
+                &process_allocated_memory, size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+            UTILS_Atomic_SubFetch_uint64( &process_allocated_memory,
+                                          allocation->size,
+                                          UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
             allocMetric->total_allocated_memory += size;
             total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -505,8 +505,8 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
             *prevSize = 0;
         }
 
-        process_allocated_memory_save = SCOREP_Atomic_AddFetch_uint64(
-            &process_allocated_memory, size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        process_allocated_memory_save = UTILS_Atomic_AddFetch_uint64(
+            &process_allocated_memory, size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         allocMetric->total_allocated_memory += size;
         total_allocated_memory_save          = allocMetric->total_allocated_memory;
@@ -530,7 +530,7 @@ SCOREP_AllocMetric_HandleRealloc( SCOREP_AllocMetric* allocMetric,
 
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
 
-    SCOREP_MutexUnlock( &allocMetric->mutex );
+    UTILS_MutexUnlock( &allocMetric->mutex );
 }
 
 
@@ -539,7 +539,7 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
                                void*               allocation_,
                                uint64_t*           size )
 {
-    SCOREP_MutexLock( &allocMetric->mutex );
+    UTILS_MutexLock( &allocMetric->mutex );
 
     UTILS_DEBUG_ENTRY( "%p", allocation_ );
 
@@ -553,16 +553,16 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
             *size = 0;
         }
 
-        SCOREP_MutexUnlock( &allocMetric->mutex );
+        UTILS_MutexUnlock( &allocMetric->mutex );
         return;
     }
 
     uint64_t allocation_addr   = allocation->address;
     uint64_t deallocation_size = allocation->size;
 
-    uint64_t process_allocated_memory_save = SCOREP_Atomic_SubFetch_uint64(
+    uint64_t process_allocated_memory_save = UTILS_Atomic_SubFetch_uint64(
         &process_allocated_memory, deallocation_size,
-        SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     allocMetric->total_allocated_memory -= deallocation_size;
 
@@ -593,7 +593,7 @@ SCOREP_AllocMetric_HandleFree( SCOREP_AllocMetric* allocMetric,
 
     UTILS_DEBUG_EXIT( "Total Memory: %" PRIu64, allocMetric->total_allocated_memory );
 
-    SCOREP_MutexUnlock( &allocMetric->mutex );
+    UTILS_MutexUnlock( &allocMetric->mutex );
 }
 
 

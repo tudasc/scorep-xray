@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
 ## RWTH Aachen University, Germany
@@ -28,8 +28,6 @@
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
-
-## file ac_scorep_compiler_and_flags.m4
 
 
 AC_DEFUN([AC_SCOREP_CONVERT_FOR_BUILD_FLAGS],

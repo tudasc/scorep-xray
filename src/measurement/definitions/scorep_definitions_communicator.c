@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017-2018,
+ * Copyright (c) 2009-2014, 2017-2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -52,6 +52,7 @@
 #include <inttypes.h>
 
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
@@ -64,7 +65,6 @@
 #include <scorep_substrates_definition.h>
 #include <scorep_type_utils.h>
 #include <scorep_location_management.h>
-#include <SCOREP_Atomic.h>
 #include <SCOREP_Memory.h>
 
 
@@ -298,9 +298,9 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
     }
     *managerEntry->tail             = new_handle;
     managerEntry->tail              = &new_definition->next;
-    new_definition->sequence_number = SCOREP_Atomic_FetchAdd_uint32(
+    new_definition->sequence_number = UTILS_Atomic_FetchAdd_uint32(
         &scorep_local_definition_manager.interim_communicator.counter,
-        1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
     if ( sizeOfPayload && payloadOut )
     {

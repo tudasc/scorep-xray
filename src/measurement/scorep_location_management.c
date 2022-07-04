@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018, 2021,
+ * Copyright (c) 2009-2016, 2018, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,7 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SCOREP_Mutex.h>
 #include "scorep_subsystem_management.h"
 #include "scorep_substrates_definition.h"
 #include "scorep_status.h"
@@ -54,18 +53,19 @@
 #include "scorep_events_common.h"
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 #if HAVE( THREAD_LOCAL_STORAGE )
 
 /*  Declare and initialize thread local storage for in-measurement counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement
-SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
+THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement
+THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #if HAVE( SAMPLING_SUPPORT )
 
 /*  Declare and initialize thread local storage for in-signal-context counter */
-SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
-SCOREP_THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
+THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context
+THREAD_LOCAL_STORAGE_MODEL( "initial-exec" ) = 0;
 
 #endif
 
@@ -99,8 +99,8 @@ static struct SCOREP_Location** location_list_tail = &location_list_head;
 /* We defer all new locations until the SCOREP_Location_ActivateInitLocations() call */
 static bool defer_init_locations = true;
 
-static SCOREP_Mutex scorep_location_list_mutex;
-static SCOREP_Mutex per_process_metrics_location_mutex;
+static UTILS_Mutex scorep_location_list_mutex;
+static UTILS_Mutex per_process_metrics_location_mutex;
 
 
 SCOREP_Location*
@@ -127,12 +127,12 @@ scorep_location_create_location( SCOREP_LocationType        type,
     new_location->type = type;
     new_location->next = NULL;
 
-    SCOREP_MutexLock( &scorep_location_list_mutex );
+    UTILS_MutexLock( &scorep_location_list_mutex );
 
     *location_list_tail = new_location;
     location_list_tail  = &new_location->next;
 
-    SCOREP_MutexUnlock( &scorep_location_list_mutex );
+    UTILS_MutexUnlock( &scorep_location_list_mutex );
 
     return new_location;
 }
@@ -184,7 +184,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 {
     static SCOREP_Location* per_process_metrics_location;
 
-    SCOREP_MutexLock( &per_process_metrics_location_mutex );
+    UTILS_MutexLock( &per_process_metrics_location_mutex );
 
     if ( !per_process_metrics_location )
     {
@@ -207,7 +207,7 @@ SCOREP_Location_AcquirePerProcessMetricsLocation( uint64_t* timestamp )
 void
 SCOREP_Location_ReleasePerProcessMetricsLocation( void )
 {
-    SCOREP_MutexUnlock( &per_process_metrics_location_mutex );
+    UTILS_MutexUnlock( &per_process_metrics_location_mutex );
 }
 
 

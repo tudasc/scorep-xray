@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2021,
+ * Copyright (c) 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -22,9 +22,9 @@
 
 #include <stdint.h>
 
-#include <SCOREP_Atomic.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 
 /*
@@ -44,11 +44,11 @@
  *
  * Users of this RW lock need to define following shared variables:
  *
- * int16_t      pending; // initially 0
- * int16_t      departing; // initially 0
- * int16_t      release_n_readers; // initially 0
- * int16_t      release_writer; // initially 0
- * SCOREP_Mutex writer_mutex; // initially unlocked
+ * int16_t     pending; // initially 0
+ * int16_t     departing; // initially 0
+ * int16_t     release_n_readers; // initially 0
+ * int16_t     release_writer; // initially 0
+ * UTILS_Mutex writer_mutex; // initially unlocked
  *
  * We don't provide a struct to increase flexibility on the user side
  * on how to layout the RW lock data structure, e.g.,
@@ -80,8 +80,8 @@ SCOREP_RWLock_ReaderLock( int16_t* rwlockPending,
                           int16_t* rwlockReleaseNReaders )
 {
     /* increment number of active readers */
-    int16_t pending = SCOREP_Atomic_AddFetch_int16( rwlockPending, 1,
-                                                    SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    int16_t pending = UTILS_Atomic_AddFetch_int16( rwlockPending, 1,
+                                                   UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( pending < 0 )
     {
         /* writer operation in progress, wait for writer signalling to
@@ -89,18 +89,18 @@ SCOREP_RWLock_ReaderLock( int16_t* rwlockPending,
         int16_t release_n_readers;
         do
         {
-            SCOREP_CPU_RELAX;
-            release_n_readers = SCOREP_Atomic_LoadN_int16( rwlockReleaseNReaders,
-                                                           SCOREP_ATOMIC_RELAXED );
+            UTILS_CPU_RELAX;
+            release_n_readers = UTILS_Atomic_LoadN_int16( rwlockReleaseNReaders,
+                                                          UTILS_ATOMIC_RELAXED );
         }
         while ( release_n_readers == 0 ||
-                !SCOREP_Atomic_CompareExchangeN_int16( rwlockReleaseNReaders,
-                                                       &release_n_readers,
-                                                       /* release one at a time: */
-                                                       release_n_readers - 1,
-                                                       true /* weak */,
-                                                       SCOREP_ATOMIC_ACQUIRE_RELEASE,
-                                                       SCOREP_ATOMIC_RELAXED ) );
+                !UTILS_Atomic_CompareExchangeN_int16( rwlockReleaseNReaders,
+                                                      &release_n_readers,
+                                                      /* release one at a time: */
+                                                      release_n_readers - 1,
+                                                      true /* weak */,
+                                                      UTILS_ATOMIC_ACQUIRE_RELEASE,
+                                                      UTILS_ATOMIC_RELAXED ) );
     }
 }
 
@@ -111,18 +111,18 @@ SCOREP_RWLock_ReaderUnlock( int16_t* rwlockPending,
                             int16_t* rwlockReleaseWriter )
 {
     /* decrement number of active readers */
-    int16_t pending = SCOREP_Atomic_AddFetch_int16( rwlockPending, -1,
-                                                    SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    int16_t pending = UTILS_Atomic_AddFetch_int16( rwlockPending, -1,
+                                                   UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( pending < 0 )
     {
         /* write operation in progress, writer waiting in SCOREP_RWLock_WriterLock() */
-        int16_t departing = SCOREP_Atomic_AddFetch_int16( rwlockDeparting, -1,
-                                                          SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        int16_t departing = UTILS_Atomic_AddFetch_int16( rwlockDeparting, -1,
+                                                         UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         if ( departing == 0 )
         {
             /* last departing reader releases waiting writer */
-            int16_t swapped = SCOREP_Atomic_ExchangeN_int16( rwlockReleaseWriter, 1,
-                                                             SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+            int16_t swapped = UTILS_Atomic_ExchangeN_int16( rwlockReleaseWriter, 1,
+                                                            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
             UTILS_BUG_ON( swapped != 0 );
         }
     }
@@ -130,61 +130,61 @@ SCOREP_RWLock_ReaderUnlock( int16_t* rwlockPending,
 
 
 static inline void
-SCOREP_RWLock_WriterLock( SCOREP_Mutex* rwlockWriterMutex,
-                          int16_t*      rwlockPending,
-                          int16_t*      rwlockDeparting,
-                          int16_t*      rwlockReleaseWriter )
+SCOREP_RWLock_WriterLock( UTILS_Mutex* rwlockWriterMutex,
+                          int16_t*     rwlockPending,
+                          int16_t*     rwlockDeparting,
+                          int16_t*     rwlockReleaseWriter )
 {
-    SCOREP_MutexLock( rwlockWriterMutex );
+    UTILS_MutexLock( rwlockWriterMutex );
     /* get number of active readers but make rwlockPending < 0, thus
        readers know that a writer is active */
-    int16_t pending = SCOREP_Atomic_AddFetch_int16( rwlockPending, -RWLOCK_MAX_READERS,
-                                                    SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT )
+    int16_t pending = UTILS_Atomic_AddFetch_int16( rwlockPending, -RWLOCK_MAX_READERS,
+                                                   UTILS_ATOMIC_SEQUENTIAL_CONSISTENT )
                       + RWLOCK_MAX_READERS;
     if ( pending != 0 )
     {
         /* reading operation(s) in progress (not the ones waiting in
            SCOREP_RWLock_ReaderLock()) */
-        int16_t departing = SCOREP_Atomic_AddFetch_int16( rwlockDeparting, pending,
-                                                          SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        int16_t departing = UTILS_Atomic_AddFetch_int16( rwlockDeparting, pending,
+                                                         UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         if ( departing != 0 )
         {
             /* wait for last departing reader signaling to release writer */
             int16_t release_writer;
             do
             {
-                SCOREP_CPU_RELAX;
-                release_writer = SCOREP_Atomic_LoadN_int16( rwlockReleaseWriter,
-                                                            SCOREP_ATOMIC_RELAXED );
+                UTILS_CPU_RELAX;
+                release_writer = UTILS_Atomic_LoadN_int16( rwlockReleaseWriter,
+                                                           UTILS_ATOMIC_RELAXED );
             }
             while ( release_writer == 0 ||
-                    !SCOREP_Atomic_CompareExchangeN_int16( rwlockReleaseWriter,
-                                                           &release_writer,
-                                                           release_writer - 1,
-                                                           true /* weak */,
-                                                           SCOREP_ATOMIC_ACQUIRE_RELEASE,
-                                                           SCOREP_ATOMIC_RELAXED ) );
+                    !UTILS_Atomic_CompareExchangeN_int16( rwlockReleaseWriter,
+                                                          &release_writer,
+                                                          release_writer - 1,
+                                                          true /* weak */,
+                                                          UTILS_ATOMIC_ACQUIRE_RELEASE,
+                                                          UTILS_ATOMIC_RELAXED ) );
         }
     }
 }
 
 
 static inline void
-SCOREP_RWLock_WriterUnlock( SCOREP_Mutex* rwlockWriterMutex,
-                            int16_t*      rwlockPending,
-                            int16_t*      rwlockReleaseNReaders )
+SCOREP_RWLock_WriterUnlock( UTILS_Mutex* rwlockWriterMutex,
+                            int16_t*     rwlockPending,
+                            int16_t*     rwlockReleaseNReaders )
 {
     /* 'restore' rwlockPending by making it > 0 again */
-    uint16_t pending = SCOREP_Atomic_AddFetch_int16( rwlockPending, RWLOCK_MAX_READERS,
-                                                     SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    uint16_t pending = UTILS_Atomic_AddFetch_int16( rwlockPending, RWLOCK_MAX_READERS,
+                                                    UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
     if ( pending > 0 )
     {
         /* release readers waiting in SCOREP_RWLock_ReaderLock() */
-        int16_t swapped = SCOREP_Atomic_ExchangeN_int16( rwlockReleaseNReaders, pending,
-                                                         SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        int16_t swapped = UTILS_Atomic_ExchangeN_int16( rwlockReleaseNReaders, pending,
+                                                        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         UTILS_BUG_ON( swapped != 0 );
     }
-    SCOREP_MutexUnlock( rwlockWriterMutex );
+    UTILS_MutexUnlock( rwlockWriterMutex );
 }
 
 

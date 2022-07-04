@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2017, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2015, 2020,
+ * Copyright (c) 2015, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -119,15 +119,15 @@ static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
  * @def SCOREP_OPENCL_LOCK
  * Lock mutex of the OpenCL adapter
  */
-# define SCOREP_OPENCL_LOCK() SCOREP_MutexLock( &opencl_mutex )
+# define SCOREP_OPENCL_LOCK() UTILS_MutexLock( &opencl_mutex )
 /**
  * @def SCOREP_OPENCL_UNLOCK
  * Unlock mutex of the OpenCL adapter
  */
-# define SCOREP_OPENCL_UNLOCK() SCOREP_MutexUnlock( &opencl_mutex )
+# define SCOREP_OPENCL_UNLOCK() UTILS_MutexUnlock( &opencl_mutex )
 
 /** Score-P mutex for access to global variables in the OpenCL adapter */
-static SCOREP_Mutex opencl_mutex;
+static UTILS_Mutex opencl_mutex;
 
 static scorep_opencl_device*  opencl_device_list;
 static scorep_opencl_device** opencl_device_list_tail = &opencl_device_list;
@@ -289,14 +289,14 @@ scorep_opencl_finalize( void )
             scorep_opencl_queue* queue = cl_queue_list;
             while ( queue != NULL )
             {
-                SCOREP_MutexLock( &queue->mutex );
+                UTILS_MutexLock( &queue->mutex );
 
                 if ( queue->buffer < queue->buf_pos )
                 {
                     scorep_opencl_queue_flush( queue );
                 }
 
-                SCOREP_MutexUnlock( &queue->mutex );
+                UTILS_MutexUnlock( &queue->mutex );
 
                 if ( queue->queue )
                 {
@@ -671,7 +671,7 @@ scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
     }
 
     // lock work on the queue's buffer
-    SCOREP_MutexLock( &queue->mutex );
+    UTILS_MutexLock( &queue->mutex );
 
     scorep_opencl_guarantee_buffer( queue );
 
@@ -681,7 +681,7 @@ scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
     queue->buf_last = queue->buf_pos;
     queue->buf_pos++;
 
-    SCOREP_MutexUnlock( &queue->mutex );
+    UTILS_MutexUnlock( &queue->mutex );
 
 
     entry->is_enqueued = false;
@@ -906,7 +906,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     }
 
     // lock work on the queue's buffer
-    // SCOREP_MutexLock( &queue->mutex );
+    // UTILS_MutexLock( &queue->mutex );
 
     buf_entry = queue->buffer;
 
@@ -1174,7 +1174,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     queue->buf_pos  = queue->buffer;
     queue->buf_last = queue->buffer;
 
-    //SCOREP_MutexUnlock( &queue->mutex );
+    //UTILS_MutexUnlock( &queue->mutex );
 
     SCOREP_ExitRegion( opencl_flush_region_handle );
 

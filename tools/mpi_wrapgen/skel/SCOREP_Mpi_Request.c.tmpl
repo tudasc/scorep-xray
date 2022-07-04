@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2019,
+ * Copyright (c) 2009-2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -61,10 +61,10 @@
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_request_mgmt.h"
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 #include <stddef.h>

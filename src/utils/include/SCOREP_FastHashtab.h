@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019-2021,
+ * Copyright (c) 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -10,11 +10,11 @@
  *
  */
 
-#include <SCOREP_Atomic.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_ReaderWriterLock.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -213,7 +213,7 @@
     struct prefix ## _bucket_t \
     { \
         SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size;	\
-        SCOREP_Mutex                                    insert_lock; \
+        UTILS_Mutex                                     insert_lock; \
         prefix ## _chunk_t*                             chunk; \
     };
 
@@ -225,8 +225,8 @@
     struct prefix ## _bucket_t \
     { \
         SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size; \
-        SCOREP_Mutex                                    insert_lock; \
-        SCOREP_Mutex                                    remove_lock; \
+        UTILS_Mutex                                     insert_lock; \
+        UTILS_Mutex                                     remove_lock; \
         int16_t                                         pending; \
         int16_t                                         departing; \
         int16_t                                         release_n_readers; \
@@ -239,7 +239,7 @@
 #define SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) \
     uint32_t i                 = 0; \
     uint32_t j                 = 0; \
-    uint32_t current_size      = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+    uint32_t current_size      = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     prefix ## _chunk_t** chunk = &( bucket->chunk ); \
     uint32_t old_size; \
     /* search until end of chunks */ \
@@ -259,19 +259,19 @@
             } \
         } \
         old_size     = current_size; \
-        current_size = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     } \
     while ( current_size > old_size );  \
     /* not found, search again while waiting for 'insert_lock' */ \
     while ( true ) \
     { \
-        if ( SCOREP_MutexTrylock( &( bucket->insert_lock ) ) == true ) \
+        if ( UTILS_MutexTrylock( &( bucket->insert_lock ) ) == true ) \
         { \
             break; \
         } \
         else \
         { \
-            current_size = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+            current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
             if ( current_size > old_size ) \
             { \
                 for (; i < current_size; ++i, ++j ) \
@@ -296,7 +296,7 @@
 /* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
     /* 'insert_lock' acquired: search again, inserts might have taken place in between */ \
-    current_size = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+    current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     for (; i < current_size; ++i, ++j ) \
     { \
         if ( j == ( nPairsPerChunk ) ) \
@@ -306,7 +306,7 @@
         } \
         if ( prefix ## _equals( key, ( *chunk )->keys[ j ] ) ) \
         { \
-            SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
+            UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
             *inserted = false; \
             return ( *chunk )->values[ j ]; \
         } \
@@ -340,16 +340,16 @@
     } \
     else if ( j == ( nPairsPerChunk ) ) \
     { \
-        SCOREP_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+        UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
         if ( prefix ## _chunk_free_list != NULL ) \
         { \
             ( *chunk )->next = prefix ## _chunk_free_list; \
             prefix ## _chunk_free_list = prefix ## _chunk_free_list->next; \
-            SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
         } \
         else \
         { \
-            SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
             ( *chunk )->next = prefix ## _allocate_chunk( sizeof( prefix ## _chunk_t ) ); \
         } \
         ( *chunk )->next->next = NULL; \
@@ -364,8 +364,8 @@
     ( *chunk )->keys[ j ]   = key; \
     ( *chunk )->values[ j ] = prefix ## _value_ctor( &( *chunk )->keys[ j ], ctorData ); \
     UTILS_BUG_ON( !prefix ## _equals( key, ( *chunk )->keys[ j ] ), "Key values are not equal" ); \
-    SCOREP_Atomic_StoreN_uint32( &( bucket->size ), current_size + 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
-    SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
+    UTILS_Atomic_StoreN_uint32( &( bucket->size ), current_size + 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+    UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
     *inserted = true; \
     return ( *chunk )->values[ j ];
 
@@ -413,7 +413,7 @@
                          prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
-        SCOREP_MutexUnlock( &( bucket->insert_lock ) ); \
+        UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
         *inserted = true; /* i.e. not found */ \
         prefix ## _value_t dummy; \
         return dummy; \
@@ -521,12 +521,12 @@
             previous_chunk->next = NULL; \
         } \
         /* lock chunk_free_list as it is per hash table, not per bucket */ \
-        SCOREP_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+        UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
         chunk->next = prefix ## _chunk_free_list; \
         prefix ## _chunk_free_list = chunk; \
-        SCOREP_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+        UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
     } \
-    SCOREP_Atomic_StoreN_uint32( &( bucket->size ), --current_size, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+    UTILS_Atomic_StoreN_uint32( &( bucket->size ), --current_size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
 /*
    SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
@@ -537,9 +537,9 @@
     /* _chunk_free_list handling could be done with a lock-free stack implementation. */ \
     /* This implementation needs to deal with the ABA problem and a potential counter */ \
     /* overflow. As an implementation doesn't exist and there is no evidence that it */ \
-    /* performs better than a SCOREP_Mutex in real world scenarios, use a mutex for now. */ \
+    /* performs better than a UTILS_Mutex in real world scenarios, use a mutex for now. */ \
     static struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
-    static SCOREP_Mutex               prefix ## _chunk_free_list_lock; \
+    static UTILS_Mutex                prefix ## _chunk_free_list_lock; \
     SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix ) \
     SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
@@ -618,7 +618,7 @@
         prefix ## _value_t* free_value; \
         SCOREP_RWLock_WriterLock( &( bucket->remove_lock ), &( bucket->pending ), \
                                   &( bucket->departing ), &( bucket->release_writer ) ); \
-        uint32_t current_size     = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+        uint32_t current_size     = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
         prefix ## _chunk_t* chunk = bucket->chunk; \
         /* search until end of chunks */ \
         for (; i < current_size; ++i, ++j ) \
@@ -663,7 +663,7 @@
                                       &( bucket->departing ), &( bucket->release_writer ) ); \
             prefix ## _chunk_t* outer_chunk = bucket->chunk; \
             int32_t outer_i                 = 0; \
-            uint32_t current_size           = SCOREP_Atomic_LoadN_uint32( &( bucket->size ), SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT ); \
+            uint32_t current_size           = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
             while ( outer_chunk != NULL ) \
             { \
                 for ( int32_t outer_j = 0; outer_i < current_size && outer_j < ( nPairsPerChunk ); ++outer_i, ++outer_j ) \

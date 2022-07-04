@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ## RWTH Aachen University, Germany
@@ -28,8 +28,6 @@
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
-
-## file build-config/m4/ac_scorep_external_components.m4
 
 
 dnl $1: name of the component, e.g., otf2, opari2.

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015, 2020,
@@ -38,7 +38,7 @@
 SCOREP_Opari2_User_Region* scorep_opari2_user_regions = NULL;
 
 /** Lock to protect on-the-fly assignments.*/
-SCOREP_Mutex scorep_opari2_user_assign_lock = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_opari2_user_assign_lock = UTILS_MUTEX_INIT;
 
 
 /* *****************************************************************************

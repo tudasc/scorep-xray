@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2013,
 ## Forschungszentrum Juelich GmbH, Germany
@@ -13,8 +13,6 @@
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
-
-## file build-config/m4/afs_compiler_backend.m4
 
 
 # AFS_CUSTOM_COMPILERS

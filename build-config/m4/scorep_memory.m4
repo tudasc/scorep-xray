@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2016-2017,
 dnl Technische Universitaet Dresden, Germany
 dnl
+dnl Copyright (c) 2022,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -19,7 +22,7 @@ dnl file build-config/m4/scorep_memory.m4
 # SCOREP_MEMORY_SUPPORT
 # --------------
 AC_DEFUN([SCOREP_MEMORY_SUPPORT], [
-AC_REQUIRE([SCOREP_CHECK_THREAD_LOCAL_STORAGE])dnl
+AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
 
 AFS_SUMMARY_PUSH

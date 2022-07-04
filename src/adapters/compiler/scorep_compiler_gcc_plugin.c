@@ -4,6 +4,9 @@
  * Copyright (c) 2012-2013, 2015-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -22,7 +25,8 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Mutex.h>
+
+#include <UTILS_Mutex.h>
 
 #include "SCOREP_Compiler_Init.h"
 
@@ -46,14 +50,14 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
         return;
     }
 
-    SCOREP_MutexLock( &scorep_compiler_region_mutex );
+    UTILS_MutexLock( &scorep_compiler_region_mutex );
 
     if ( *regionDescr->handle == SCOREP_INVALID_REGION )
     {
         scorep_compiler_register_region( regionDescr );
     }
 
-    SCOREP_MutexUnlock( &scorep_compiler_region_mutex );
+    UTILS_MutexUnlock( &scorep_compiler_region_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

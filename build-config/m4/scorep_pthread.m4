@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2014,
+dnl Copyright (c) 2013-2014, 2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013, 2017,
@@ -139,7 +139,7 @@ _SCOREP_PTHREAD_FEATURE([mutex],
 AC_DEFUN([SCOREP_PTHREAD], [
 AC_REQUIRE([SCOREP_CHECK_PTHREAD])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
-AC_REQUIRE([SCOREP_CHECK_THREAD_LOCAL_STORAGE])dnl
+AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])dnl
 
 scorep_pthread_support=${scorep_have_pthread}
 scorep_pthread_summary_reason=

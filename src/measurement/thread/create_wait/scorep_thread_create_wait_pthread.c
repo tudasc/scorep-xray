@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2016, 2018-2019, 2021,
+ * Copyright (c) 2014, 2016, 2018-2019, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2019-2020,
@@ -31,10 +31,10 @@
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>
 
+#include <UTILS_Atomic.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
-#include <SCOREP_Mutex.h>
-#include <SCOREP_Atomic.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Task.h>
@@ -88,7 +88,7 @@ struct tpd_reuse_pool
 #define TPD_REUSE_POOL_MASK   ( TPD_REUSE_POOL_SIZE -  1 )
 static struct tpd_reuse_pool  tpd_reuse_pool[ TPD_REUSE_POOL_SIZE ];
 static struct reuse_pool_tpd* tpd_reuse_pool_free_list;
-static SCOREP_Mutex           tpd_reuse_pool_mutex;
+static UTILS_Mutex            tpd_reuse_pool_mutex;
 
 
 struct SCOREP_Location*
@@ -298,8 +298,8 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
-            &pthread_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        uint32_t location_count = UTILS_Atomic_AddFetch_uint32(
+            &pthread_location_count, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         const int provided_length = 80;
         char      location_name[ provided_length ];
@@ -335,7 +335,7 @@ pop_from_tpd_reuse_pool( uintptr_t reuseKey )
     struct scorep_thread_private_data* tpd_to_reuse = NULL;
     if ( reuseKey )
     {
-        SCOREP_MutexLock( &tpd_reuse_pool_mutex );
+        UTILS_MutexLock( &tpd_reuse_pool_mutex );
 
         /* find a tpd to reuse */
         size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuseKey );
@@ -367,7 +367,7 @@ pop_from_tpd_reuse_pool( uintptr_t reuseKey )
 
             pool = pool->next;
         }
-        SCOREP_MutexUnlock( &tpd_reuse_pool_mutex );
+        UTILS_MutexUnlock( &tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
     return tpd_to_reuse;
@@ -402,7 +402,7 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
     if ( reuse_key )
     {
         /* Returning the tpd into the pool identified by reuse_key */
-        SCOREP_MutexLock( &tpd_reuse_pool_mutex );
+        UTILS_MutexLock( &tpd_reuse_pool_mutex );
 
         size_t                 hash        = SCOREP_Hashtab_HashPointer( ( void* )reuse_key );
         size_t                 hash_bucket = hash & TPD_REUSE_POOL_MASK;
@@ -456,7 +456,7 @@ push_to_tpd_reuse_pool( struct scorep_thread_private_data* tpd )
         pool_tpd->next    = pool->unused_tpds;
         pool->unused_tpds = pool_tpd;
 
-        SCOREP_MutexUnlock( &tpd_reuse_pool_mutex );
+        UTILS_MutexUnlock( &tpd_reuse_pool_mutex );
     }
     UTILS_DEBUG_EXIT();
 }
@@ -477,8 +477,8 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
     if ( !*currentTpd )
     {
         /* No tpd to reuse available. Create new tpd and location. */
-        uint32_t location_count = SCOREP_Atomic_AddFetch_uint32(
-            &orphan_location_count, 1, SCOREP_ATOMIC_SEQUENTIAL_CONSISTENT );
+        uint32_t location_count = UTILS_Atomic_AddFetch_uint32(
+            &orphan_location_count, 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
         char location_name[ 80 ];
         int  length = snprintf( location_name, 80, "Orphan thread %" PRIu32, location_count );

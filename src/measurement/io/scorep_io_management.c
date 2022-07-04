@@ -4,6 +4,9 @@
  * Copyright (c) 2017, 2019-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -25,7 +28,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_IoManagement.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Platform.h>
 #include <SCOREP_Events.h>
 #include <jenkins_hash.h>
@@ -34,6 +36,7 @@
 
 #define SCOREP_DEBUG_MODULE_NAME IO_MANAGEMENT
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
 #define SCOREP_IO_FILE_HASHTABLE_SIZE 64
 
@@ -42,7 +45,7 @@
 #define SCOREP_IO_HANDLE_HASHTABLE_SIZE hashsize( SCOREP_IO_HANDLE_HASHTABLE_POWER )
 
 static SCOREP_Hashtab* io_file_handle_hashtable;
-static SCOREP_Mutex    io_file_handle_hashtable_mutex;
+static UTILS_Mutex     io_file_handle_hashtable_mutex;
 
 /** @brief Payload in every IoHandleHandle definition. */
 typedef struct io_handle_payload
@@ -77,7 +80,7 @@ typedef struct io_mgmt_paradigm
     /** @brief Hash table of all active I/O handles. */
     SCOREP_IoHandleHandle handles[ SCOREP_IO_HANDLE_HASHTABLE_SIZE ];
     /** @brief mutex to protect @a handles table for this I/O paradigm */
-    SCOREP_Mutex          mutex;
+    UTILS_Mutex           mutex;
 } io_mgmt_paradigm;
 
 /** @brief The per-location data, which holds the locations handle stack. */
@@ -337,13 +340,13 @@ SCOREP_IoMgmt_CreatePreCreatedHandle( SCOREP_IoParadigmType            paradigm,
     memcpy( payload_get_handle( payload ), ioHandle, io_paradigms[ paradigm ]->payload_size );
     size_t index = payload->hash & SCOREP_IO_HANDLE_HASHTABLE_MASK;
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     /* do we need to check for duplicates? */
     payload->next                              = io_paradigms[ paradigm ]->handles[ index ];
     io_paradigms[ paradigm ]->handles[ index ] = handle;
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 }
 
 void
@@ -427,11 +430,11 @@ SCOREP_IoMgmt_CompleteHandleCreation( SCOREP_IoParadigmType paradigm,
     entry->hash = jenkins_hash( ioHandle, io_paradigms[ paradigm ]->payload_size, 0 );
     memcpy( payload_get_handle( entry ), ioHandle, io_paradigms[ paradigm ]->payload_size );
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     insert_handle( paradigm, handle, payload_get_handle( entry ), entry->hash );
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
     SCOREP_IoHandleHandle_SetIoFile( handle, file );
 
@@ -518,11 +521,11 @@ SCOREP_IoMgmt_CompleteHandleDuplication( SCOREP_IoParadigmType paradigm,
     entry->hash = jenkins_hash( ioHandle, io_paradigms[ paradigm ]->payload_size, 0 );
     memcpy( payload_get_handle( entry ), ioHandle, io_paradigms[ paradigm ]->payload_size );
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     insert_handle( paradigm, handle, payload_get_handle( entry ), entry->hash );
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
     SCOREP_IoHandleHandle_SetIoFile( handle, file );
 
@@ -558,7 +561,7 @@ SCOREP_IoMgmt_RemoveHandle( SCOREP_IoParadigmType paradigm,
 {
     io_mgmt_location_data* data = get_location_data();
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     io_handle_payload*     entry;
     SCOREP_IoHandleHandle* handle_iterator = get_handle_ref( paradigm, ioHandle, 0, &entry );
@@ -566,7 +569,7 @@ SCOREP_IoMgmt_RemoveHandle( SCOREP_IoParadigmType paradigm,
     {
         UTILS_WARNING( "[Paradigm: %d] Could not find I/O handle in hashtable", paradigm );
 
-        SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+        UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
         return SCOREP_INVALID_IO_HANDLE;
     }
@@ -574,7 +577,7 @@ SCOREP_IoMgmt_RemoveHandle( SCOREP_IoParadigmType paradigm,
     *handle_iterator = entry->next;
     entry->next      = SCOREP_INVALID_IO_HANDLE;
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
     return old_handle;
 }
@@ -591,11 +594,11 @@ SCOREP_IoMgmt_ReinsertHandle( SCOREP_IoParadigmType paradigm,
 
     UTILS_BUG_ON( entry->hash == 0, "Reinserted I/O handle without initialized hash value" );
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     insert_handle( paradigm, handle, payload_get_handle( entry ), entry->hash );
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 }
 
 void
@@ -660,7 +663,7 @@ SCOREP_IoMgmt_GetIoHandle( SCOREP_IoParadigmType paradigm,
                   "Invalid I/O paradigm %d", paradigm );
     UTILS_BUG_ON( !io_paradigms[ paradigm ], "The given paradigm was not registered" );
 
-    SCOREP_MutexLock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexLock( &io_paradigms[ paradigm ]->mutex );
 
     io_handle_payload*     entry;
     SCOREP_IoHandleHandle* handle_iterator = get_handle_ref( paradigm, ioHandle, 0, &entry );
@@ -671,7 +674,7 @@ SCOREP_IoMgmt_GetIoHandle( SCOREP_IoParadigmType paradigm,
                             paradigm );
     }
 
-    SCOREP_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
+    UTILS_MutexUnlock( &io_paradigms[ paradigm ]->mutex );
 
     return *handle_iterator;
 }
@@ -682,7 +685,7 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
     char  buf[ PATH_MAX ];
     char* res = NULL;
 
-#if HAVE( REALPATH )
+#if HAVE( POSIX_REALPATH )
     res = realpath( pathname, buf );
 #endif
 
@@ -697,7 +700,7 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
 
     UTILS_BUG_ON( !io_file_handle_hashtable, "Hashtable is not initialized for storing %s", pathname );
 
-    SCOREP_MutexLock( &io_file_handle_hashtable_mutex );
+    UTILS_MutexLock( &io_file_handle_hashtable_mutex );
 
     size_t                hash_hint;
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( io_file_handle_hashtable,
@@ -706,7 +709,7 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
     if ( entry != NULL )
     {
         SCOREP_IoFileHandle file_handle = entry->value.handle;
-        SCOREP_MutexUnlock( &io_file_handle_hashtable_mutex );
+        UTILS_MutexUnlock( &io_file_handle_hashtable_mutex );
         return file_handle;
     }
 
@@ -727,7 +730,7 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
                                  file_handle,
                                  &hash_hint );
 
-    SCOREP_MutexUnlock( &io_file_handle_hashtable_mutex );
+    UTILS_MutexUnlock( &io_file_handle_hashtable_mutex );
 
     return file_handle;
 }

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017, 2019,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -76,7 +76,7 @@ int scorep_mpi_status_size = 0;
    If no thread-local storage specifier is availble we only support
    MPI_THREAD_SERIALIZED.
  */
-bool SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events = true;
+bool THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events = true;
 
 bool scorep_mpi_mountinfo_exists = false;
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2019-2020,
+ * Copyright (c) 2013, 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013-2016, 2019, 2021,
@@ -40,7 +40,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
 
-#if HAVE( POPEN )
+#if HAVE( POSIX_PIPES )
 static void
 scorep_get_ibm_compiler_version( const std::string& compiler,
                                  int&               major,
@@ -230,7 +230,7 @@ SCOREP_Instrumenter_CompilerAdapter::precompile( SCOREP_Instrumenter&         in
 {
     /* For the XL compiler we have two interfaces. Check whether the version
        of the compilers match the used interface. */
-#if SCOREP_BACKEND_COMPILER_IBM && HAVE( POPEN )
+#if SCOREP_BACKEND_COMPILER_IBM && HAVE( POSIX_PIPES )
     /* When using nvcc with XL, the application and the Score-P
        installation are using at least XL 13.1.1. Thus, we don't need
        to check for an interface version mismatch. The check would fail

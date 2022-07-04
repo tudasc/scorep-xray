@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ## RWTH Aachen University, Germany
@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -30,317 +30,70 @@
 ##
 
 
-## file       ac_scorep_posix_functions.m4
-
-AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
+AU_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 
     ##
-    ## check function declarations
+    ## C
     ##
 
     AC_LANG_PUSH(C)
-
-    ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([realpath, gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
-      #include <unistd.h>
-      #include <stdio.h>
-      #include <stdlib.h>
-    ]])
-
-    ##
-    ## try to link
-    ##
-    has_getrlimit_func="yes"
-    AC_MSG_CHECKING([for getrlimit])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <sys/resource.h>
-
-            #if !HAVE_DECL_GETRLIMIT
-            int getrlimit(int resource, struct rlimit *rlp);
-            #endif
-            int main()
-            {
-                struct rlimit res_nofile;
-                int res = getrlimit( RLIMIT_NOFILE, &res_nofile );
-                return 0;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETRLIMIT, 1, [Can link a getrlimit function])],
-        [AC_MSG_RESULT(no)
-         has_getrlimit_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_realpath_func="yes"
-    AC_MSG_CHECKING([for realpath])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdlib.h>
-
-            #if !HAVE_DECL_REALPATH
-            char *realpath(const char *path, char *resolved_path);
-            #endif
-
-            int main()
-            {
-                const char * path = "/tmp";
-                char * resolved_path = realpath( path, NULL );
-                free( resolved_path );
-                return 0;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_REALPATH, 1, [Can link a realpath function])],
-        [AC_MSG_RESULT(no)
-         has_realpath_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_gethostid_func="yes"
-    AC_MSG_CHECKING([for gethostid])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <unistd.h>
-
-            #if !HAVE_DECL_GETHOSTID
-            long gethostid(void);
-            #endif
-
-            int main()
-            {
-                long host_id = gethostid();
-                return 0;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETHOSTID, 1, [Can link a gethostid function])],
-        [AC_MSG_RESULT(no)
-         has_gethostid_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_gethostname_func="yes"
-    AC_MSG_CHECKING([for gethostname])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <unistd.h>
-
-            #if !HAVE_DECL_GETHOSTNAME
-            int gethostname(char *name, size_t namelen);
-            #endif
-
-            int main()
-            {
-                char* name;
-                return gethostname(name, 256);
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETHOSTNAME, 1, [Can link a gethostname function])],
-        [AC_MSG_RESULT(no)
-         has_gethostname_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_fileno_func="yes"
-    AC_MSG_CHECKING([for fileno])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdio.h>
-            #include <fcntl.h>
-
-            #if !HAVE_DECL_FILENO
-            int fileno(FILE *stream);
-            #endif
-
-            int main()
-            {
-                FILE* stream;
-                return fileno(stream);
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_FILENO, 1, [Can link a fileno function])],
-        [AC_MSG_RESULT(no)
-         has_fileno_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_fseeko_func="yes"
-    AC_MSG_CHECKING([for fseeko])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdio.h>
-            #include <fcntl.h>
-
-            #if !HAVE_DECL_FSEEKO
-            int fseeko(FILE *stream, off_t offset, int whence);
-            #endif
-
-            int main()
-            {
-                FILE* stream;
-                return fseeko(stream, 256, 0);
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_FSEEKO, 1, [Can link a fseeko function])],
-        [AC_MSG_RESULT(no)
-         has_fseeko_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_fseeko64_func="yes"
-    AC_MSG_CHECKING([for fseeko64])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdio.h>
-            #include <unistd.h>
-            #include <fcntl.h>
-
-            #if !HAVE_DECL_FSEEKO64
-            int fseeko64(FILE *stream, off64_t offset, int whence);
-            #endif
-
-            int main()
-            {
-                FILE* stream;
-                return fseeko64(stream, 256lu, 0);
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_FSEEKO64, 1, [Can link a fseeko64 function])],
-        [AC_MSG_RESULT(no)
-         has_fseeko64_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_getcwd_func="yes"
-    AC_MSG_CHECKING([for getcwd])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdio.h>
-            #include <unistd.h>
-            #include <stdlib.h>
-
-            #if !HAVE_DECL_GETCWD
-            char* getcwd(char* buf, size_t size);
-            #endif
-
-            int main()
-            {
-                char* cwd = getcwd(NULL, 0);
-                return (cwd == NULL ? EXIT_FAILURE : EXIT_SUCCESS);
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETCWD, 1, [Can link a getcwd function])],
-        [AC_MSG_RESULT(no)
-         has_getcwd_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_read_func="yes"
-    AC_MSG_CHECKING([for read])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdlib.h>
-            #include <unistd.h>
-
-            #if !HAVE_DECL_READ
-            ssize_t read(int fd, void *buf, size_t count);
-            #endif
-
-            int main()
-            {
-                ssize_t result = read(0, NULL, 0);
-                return EXIT_SUCCESS;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_READ, 1, [Can link a read function])],
-        [AC_MSG_RESULT(no)
-         has_read_func="no"]
-    ) # AC_LINK_IF_ELSE
-
-    has_close_func="yes"
-    AC_MSG_CHECKING([for close])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdlib.h>
-            #include <unistd.h>
-
-            #if !HAVE_DECL_CLOSE
-            int close(int fd);
-            #endif
-
-            int main()
-            {
-                int result = close(0);
-                return EXIT_SUCCESS;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_CLOSE, 1, [Can link a close function])],
-        [AC_MSG_RESULT(no)
-         has_close_func="no"]
-    ) # AC_LINK_IF_ELSE
-
+    _COMPAT_POSIX_CHECK([close])
+    _COMPAT_POSIX_CHECK([fileno])
+    _COMPAT_POSIX_CHECK([fseeko])
+    _COMPAT_POSIX_CHECK([fseeko64])
+    _COMPAT_POSIX_CHECK([getcwd])
+    _COMPAT_POSIX_CHECK([gethostid])
+    _COMPAT_POSIX_CHECK([gethostname])
+    _COMPAT_POSIX_CHECK([getrlimit])
+    _COMPAT_POSIX_CHECK([read])
+    _COMPAT_POSIX_CHECK([realpath])
     AC_LANG_POP(C)
-
-    ##
-    ## result
-    ##
-    AM_CONDITIONAL([HAVE_GETRLIMIT], [test "x${has_getrlimit_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_REALPATH], [test "x${has_realpath_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_GETHOSTID], [test "x${has_gethostid_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_GETHOSTNAME], [test "x${has_gethostname_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_FILENO], [test "x${has_fileno_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_FSEEKO], [test "x${has_fseeko_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_FSEEKO64], [test "x${has_fseeko64_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_GETCWD], [test "x${has_getcwd_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_READ], [test "x${has_read_func}" = "xyes"])
-    AM_CONDITIONAL([HAVE_CLOSE], [test "x${has_close_func}" = "xyes"])
-
 
     ##
     ## CXX
     ##
 
-    ##
-    ## check function declarations
-    ##
+    AFS_CXX_DECL_POSIX_CLOSE
+    AFS_CXX_DECL_POSIX_FILENO
+    AFS_CXX_DECL_POSIX_FSEEKO
+    AFS_CXX_DECL_POSIX_FSEEKO64
+    AFS_CXX_DECL_POSIX_GETCWD
+    AFS_CXX_DECL_POSIX_GETHOSTID
+    AFS_CXX_DECL_POSIX_GETHOSTNAME
+    AFS_CXX_DECL_POSIX_READ
 
     AC_LANG_PUSH(C++)
-
-    ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fileno, fseeko, fseeko64, getcwd, read, close], [], [], [[
-      #include <stdio.h>
-      #include <unistd.h>
-    ]])
-
-    ##
-    ## try to link
-    ##
-
-    has_popen_func="yes"
-    AC_MSG_CHECKING([for popen and pclose])
-    AC_LINK_IFELSE([
-        AC_LANG_SOURCE([
-            #include <stdio.h>
-
-            int main()
-            {
-                FILE *fh = popen( "echo test", "r" );
-                pclose( fh );
-                return 0;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_POPEN, 1, [Can link against popen and pclose])],
-        [AC_MSG_RESULT(no)
-         has_popen_func="no"]
-    ) # AC_LINK_IF_ELSE
-
+    _COMPAT_POSIX_CHECK([pclose])
+    _COMPAT_POSIX_CHECK([popen])
     AC_LANG_POP(C++)
+], [
+    The AC_SCOREP_POSIX_FUNCTIONS macro has been superseded by
+    AFS_COMMON_UTILS to configure the common utils code and a
+    set of AFS_POSIX_FOO checks for individual POSIX functions.
 
-    ##
-    ## result
-    ##
+    !!! ATTENTION !!!
+    The new macros use differently named configuration defines,
+    Automake conditionals, and shell variables.  That is, code
+    has to be adapted accordingly!
+])
 
-    AM_CONDITIONAL([HAVE_POPEN], [test "x${has_popen_func}" = "xyes"])
+
+m4_define([_COMPAT_POSIX_CHECK], [
+    AC_REQUIRE([AFS_POSIX_]m4_toupper($1))
+    dnl Declaration
+    ac_cv_have_decl_$1=afs_cv_have_[]_AC_LANG_ABBREV[]_decl_posix_$1
+    AS_IF([test "x$afs_cv_have_[]_AC_LANG_ABBREV[]_decl_posix_$1" = "xyes"],
+        [_afs_have_decl=1],
+        [_afs_have_decl=0])
+    AC_DEFINE_UNQUOTED([HAVE_DECL_]m4_toupper($1),
+        [$_afs_have_decl],
+        [Define to 1 if you have the declaration of `$1',
+         and to 0 if you don't.])
+    dnl Definition
+    has_$1_func=$afs_cv_have_posix_$1
+    AS_IF([test "x$afs_cv_have_posix_$1" = "xyes"],
+        [AC_DEFINE_UNQUOTED([HAVE_]m4_toupper($1), 1,
+            [Define to 1 if `$1' can be linked])])
+    dnl Conditional
+    AM_CONDITIONAL([HAVE_]m4_toupper($1), [test "x$afs_cv_have_posix_$1" = "xyes"])
 ])

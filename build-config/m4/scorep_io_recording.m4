@@ -6,6 +6,9 @@
 ## Copyright (c) 2015-2017, 2020,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2022,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license. See the COPYING file in the package base
 ## directory for details.
@@ -114,7 +117,7 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_IO_RECORDING_POSIX], [
-AC_REQUIRE([SCOREP_THREAD_LOCAL_STORAGE])dnl
+AC_REQUIRE([AFS_THREAD_LOCAL_STORAGE])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
 
 # will be used for IO and AIO
@@ -135,7 +138,7 @@ AS_IF([test x"${scorep_libwrap_linktime_support}" != x"yes" &&
 
 # check result of TLS
 AS_IF([test x"${scorep_posix_io_support}" = x"yes"],
-      [AS_IF([test x"${scorep_have_thread_local_storage}" != x"yes"],
+      [AS_IF([test x"${afs_have_thread_local_storage}" != x"yes"],
              [scorep_posix_io_support="no"
               scorep_posix_io_summary_reason+=", missing TLS support"])])
 
@@ -159,7 +162,7 @@ scorep_posix_aio_support="yes"
 scorep_posix_aio_summary_reason=
 
 # check result of TLS
-AS_IF([test x"${scorep_have_thread_local_storage}" != x"yes"],
+AS_IF([test x"${afs_have_thread_local_storage}" != x"yes"],
       [scorep_posix_aio_support="no"
        scorep_posix_aio_summary_reason+=", missing TLS support"])
 

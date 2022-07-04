@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
 ## RWTH Aachen University, Germany
@@ -29,8 +29,7 @@
 ## directory for details.
 ##
 
-## file generate_library_dependencies.sh
-##
+
 ##      usage: ./generate_library_dependencies.sh <tag> <file_1>.la [<file_2>.la] > <result>
 ##
 ##      see also build-config/generate-library-dependencies-la-object.hpp

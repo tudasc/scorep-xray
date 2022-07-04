@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,7 +45,7 @@
 
 /* Provide gethostid declaration if we are able to
  * link against gethostid, but found no declaration */
-#if !( HAVE( DECL_GETHOSTID ) ) && HAVE( GETHOSTID )
+#if !( HAVE( C_DECL_POSIX_GETHOSTID ) ) && HAVE( POSIX_GETHOSTID )
 long
 gethostid( void );
 

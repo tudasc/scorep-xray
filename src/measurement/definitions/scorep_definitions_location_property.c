@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015, 2019,
@@ -38,11 +38,11 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_substrates_definition.h>
 #include <scorep_type_utils.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 #include <jenkins_hash.h>

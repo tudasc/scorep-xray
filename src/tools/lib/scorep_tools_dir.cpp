@@ -4,6 +4,9 @@
  * Copyright (c) 2017,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -18,7 +21,7 @@
 
 #include "scorep_tools_dir.hpp"
 
-#if HAVE( DIRENT )
+#if HAVE( POSIX_DIRENTRY_FUNCS )
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -45,7 +48,7 @@ SCOREP_Tools_Dir::SCOREP_Tools_Dir( const string& directory,
     ,   m_handle( 0 )
     ,   m_goodbit( false )
 {
-#if HAVE( DIRENT )
+#if HAVE( POSIX_DIRENTRY_FUNCS )
     m_handle = opendir( m_directory.c_str() );
 #endif
 
@@ -54,7 +57,7 @@ SCOREP_Tools_Dir::SCOREP_Tools_Dir( const string& directory,
 
 SCOREP_Tools_Dir::~SCOREP_Tools_Dir()
 {
-#if HAVE( DIRENT )
+#if HAVE( POSIX_DIRENTRY_FUNCS )
     if ( m_handle )
     {
         closedir( ( DIR* )m_handle );
@@ -65,7 +68,7 @@ SCOREP_Tools_Dir::~SCOREP_Tools_Dir()
 void
 SCOREP_Tools_Dir::next()
 {
-#if HAVE( DIRENT )
+#if HAVE( POSIX_DIRENTRY_FUNCS )
     m_goodbit = false;
     while ( m_handle )
     {
@@ -134,7 +137,7 @@ SCOREP_Tools_Dir::operator*()
 bool
 SCOREP_Tools_Dir::supported()
 {
-#if HAVE( DIRENT )
+#if HAVE( POSIX_DIRENTRY_FUNCS )
     return true;
 #else
     return false;

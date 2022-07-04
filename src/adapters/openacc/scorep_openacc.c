@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2016, 2020,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -31,8 +31,8 @@
 #include <string.h>
 
 /****************************** OpenACC mutex *********************************/
-#define ACC_LOCK() SCOREP_MutexLock( &scorep_openacc_mutex )
-#define ACC_UNLOCK() SCOREP_MutexUnlock( &scorep_openacc_mutex )
+#define ACC_LOCK() UTILS_MutexLock( &scorep_openacc_mutex )
+#define ACC_UNLOCK() UTILS_MutexUnlock( &scorep_openacc_mutex )
 /**************************** END: OpenACC mutex ******************************/
 
 /************************* Hashing of OpenACC regions *************************/

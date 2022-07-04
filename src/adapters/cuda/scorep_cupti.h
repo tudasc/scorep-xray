@@ -41,7 +41,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <SCOREP_Mutex.h>
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Location.h"
 #include "SCOREP_Memory.h"
@@ -52,6 +51,7 @@
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 
 #include <cupti.h>
 
@@ -85,9 +85,9 @@
 #define SCOREP_CUDA_KERNEL_HASHTABLE_SIZE 1024
 
 /* thread (un)locking macros for CUPTI interfaces */
-extern SCOREP_Mutex scorep_cupti_mutex;
-# define SCOREP_CUPTI_LOCK() SCOREP_MutexLock( &scorep_cupti_mutex )
-# define SCOREP_CUPTI_UNLOCK() SCOREP_MutexUnlock( &scorep_cupti_mutex )
+extern UTILS_Mutex scorep_cupti_mutex;
+# define SCOREP_CUPTI_LOCK() UTILS_MutexLock( &scorep_cupti_mutex )
+# define SCOREP_CUPTI_UNLOCK() UTILS_MutexUnlock( &scorep_cupti_mutex )
 
 typedef struct scorep_cuda_location_data
 {

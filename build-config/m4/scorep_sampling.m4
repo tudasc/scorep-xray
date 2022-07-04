@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2021,
+## Copyright (c) 2009-2012, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -35,9 +35,9 @@
 AC_DEFUN([SCOREP_SAMPLING], [
 AC_REQUIRE([SCOREP_ADDR2LINE])dnl
 # check whether the compiler provides support for thread-local storage
-# (TLS), the sampling check uses scorep_have_thread_local_storage to
+# (TLS), the sampling check uses afs_have_thread_local_storage to
 # determine whether TLS is supported or not
-AC_REQUIRE([SCOREP_CHECK_THREAD_LOCAL_STORAGE])
+AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])
 # Check whether we can use PAPI as interrupt generator
 AC_REQUIRE([_SCOREP_METRICS_CHECK_LIBPAPI])
 # Check whether we can use perf as interrupt generator
@@ -95,7 +95,7 @@ AS_IF([test "x${scorep_have_libunwind}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+=", missing libunwind support"])
 
-AS_IF([test "x${scorep_have_thread_local_storage}" != "xyes"],
+AS_IF([test "x${afs_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
        scorep_unwinding_summary_reason+=", missing TLS support"])
 

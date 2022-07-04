@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2018, 2020-2021,
+ * Copyright (c) 2009-2018, 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -45,7 +45,6 @@
 #include <config.h>
 #include <SCOREP_Profile.h>
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Definitions.h>
@@ -57,6 +56,7 @@
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
+#include <UTILS_Mutex.h>
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
@@ -83,7 +83,7 @@
 /**
    Mutex for exclusive execution when adding a new location to the profile.
  */
-static SCOREP_Mutex scorep_profile_location_mutex;
+static UTILS_Mutex scorep_profile_location_mutex;
 
 static SCOREP_MetricHandle bytes_allocated_metric           = SCOREP_INVALID_METRIC;
 static SCOREP_MetricHandle bytes_freed_metric               = SCOREP_INVALID_METRIC;
@@ -349,18 +349,18 @@ on_location_creation( SCOREP_Location* locationData,
         /* It is the initial thread. Insert as first new root node. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
 
-        SCOREP_MutexLock( &scorep_profile_location_mutex );
+        UTILS_MutexLock( &scorep_profile_location_mutex );
         node->next_sibling             = scorep_profile.first_root_node;
         scorep_profile.first_root_node = node;
-        SCOREP_MutexUnlock( &scorep_profile_location_mutex );
+        UTILS_MutexUnlock( &scorep_profile_location_mutex );
     }
     else
     {
         /* Append after parent root node */
-        SCOREP_MutexLock( &scorep_profile_location_mutex );
+        UTILS_MutexLock( &scorep_profile_location_mutex );
         node->next_sibling                   = parent_data->root_node->next_sibling;
         parent_data->root_node->next_sibling = node;
-        SCOREP_MutexUnlock( &scorep_profile_location_mutex );
+        UTILS_MutexUnlock( &scorep_profile_location_mutex );
     }
 
     /* Make the root node the current node of the location.

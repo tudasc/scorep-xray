@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017, 2019,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -116,24 +116,24 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 /**
    Mutex to avoid parallel assignments to the same user metric.
  */
-SCOREP_Mutex scorep_user_metric_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_user_metric_mutex = UTILS_MUTEX_INIT;
 
 
 /** Mutex to avoid parallel allocation of local topology data
  */
-SCOREP_Mutex scorep_user_topo_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_user_topo_mutex = UTILS_MUTEX_INIT;
 
 
 /**
    Mutex for @ref scorep_user_file_table.
  */
-SCOREP_Mutex scorep_user_file_table_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_user_file_table_mutex = UTILS_MUTEX_INIT;
 
 /**
    Mutex to avoid parallel assignement of region handles to the same region.
  */
-SCOREP_Mutex scorep_user_region_mutex         = SCOREP_MUTEX_INIT;
-SCOREP_Mutex scorep_user_region_by_name_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex scorep_user_region_mutex         = UTILS_MUTEX_INIT;
+UTILS_Mutex scorep_user_region_by_name_mutex = UTILS_MUTEX_INIT;
 
 /**
     @internal

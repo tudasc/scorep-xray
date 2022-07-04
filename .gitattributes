@@ -2,7 +2,7 @@
 /bootstrap -hook-indent-tabs
 **/Makefile* -hook-indent-tabs
 **/*.am -hook-indent-tabs
-**/*.s -hook-indent-tabs
+**/*.s.in -hook-indent-tabs
 **/*.eps binary
 **/*.pdf binary
 **/*.svg binary

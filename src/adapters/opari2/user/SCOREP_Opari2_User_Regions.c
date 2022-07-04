@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -199,7 +199,7 @@ void
 POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2Handle,
                           const char                initString[] )
 {
-    SCOREP_MutexLock( &scorep_opari2_user_assign_lock );
+    UTILS_MutexLock( &scorep_opari2_user_assign_lock );
     if ( *opari2Handle == NULL )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPARI2, "In POMP2_USER_Assign_handle" );
@@ -230,7 +230,7 @@ POMP2_USER_Assign_handle( POMP2_USER_Region_handle* opari2Handle,
         /* Increase array index */
         ++count;
     }
-    SCOREP_MutexUnlock( &scorep_opari2_user_assign_lock );
+    UTILS_MutexUnlock( &scorep_opari2_user_assign_lock );
 }
 
 /** @} */

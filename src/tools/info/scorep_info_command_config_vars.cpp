@@ -4,6 +4,9 @@
  * Copyright (c) 2017,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,6 +30,7 @@
 #include <scorep_config_tool_backend.h>
 
 #include "scorep_info.hpp"
+
 
 SCOREP_Info_Command_ConfigVars::SCOREP_Info_Command_ConfigVars()
     : SCOREP_Info_Command( "config-vars",
@@ -101,7 +105,7 @@ SCOREP_Info_Command_ConfigVars::run( const std::vector<std::string>& args )
     }
 
     FILE* out = stdout;
-#if HAVE( POPEN )
+#if HAVE( POSIX_PIPES )
     if ( !html )
     {
         out = popen( PAGER_COMMAND, "w" );
@@ -127,7 +131,7 @@ SCOREP_Info_Command_ConfigVars::run( const std::vector<std::string>& args )
 
     SCOREP_ConfigFini();
 
-#if HAVE( POPEN )
+#if HAVE( POSIX_PIPES )
     if ( !html )
     {
         pclose( out );

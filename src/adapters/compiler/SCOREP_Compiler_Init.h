@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -40,7 +40,7 @@
  */
 
 #include <SCOREP_Subsystem.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_Mutex.h>
 
 #include <stdbool.h>
 
@@ -53,7 +53,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 /** @internal
      Mutex to avoid parallel assignment of region handles to the same region.
  */
-extern SCOREP_Mutex scorep_compiler_region_mutex;
+extern UTILS_Mutex scorep_compiler_region_mutex;
 
 
 #endif /* SCOREP_COMPILER_INIT_H */

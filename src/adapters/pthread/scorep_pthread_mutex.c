@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2020,
@@ -26,10 +26,10 @@
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 #include <UTILS_Error.h>
+#include <UTILS_Mutex.h>
 #include <jenkins_hash.h>
 
 #include <stdlib.h>
@@ -44,7 +44,7 @@ static inline uint32_t get_bucket( pthread_mutex_t* pthreadMutex );
 /* *INDENT-ON*  */
 
 
-static SCOREP_Mutex hash_table_mutex;
+static UTILS_Mutex hash_table_mutex;
 /* hash_table_size = 2^^HASH_TABLE_SIZE_EXP */
 #define HASH_TABLE_SIZE_EXP 8
 #define HASH_INITIAL ( uint32_t )0
@@ -55,7 +55,7 @@ static scorep_pthread_mutex* free_list_head;
 scorep_pthread_mutex*
 scorep_pthread_mutex_hash_put( pthread_mutex_t* pthreadMutex )
 {
-    SCOREP_MutexLock( &hash_table_mutex );
+    UTILS_MutexLock( &hash_table_mutex );
     scorep_pthread_mutex* new_mutex = mutex_hash_get( pthreadMutex );
     if ( !new_mutex )
     {
@@ -84,7 +84,7 @@ scorep_pthread_mutex_hash_put( pthread_mutex_t* pthreadMutex )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PTHREAD, "Mutex:%" PRIu32 " in bucket:%"
                             PRIu32 "", new_mutex->id, bucket );
     }
-    SCOREP_MutexUnlock( &hash_table_mutex );
+    UTILS_MutexUnlock( &hash_table_mutex );
     return new_mutex;
 }
 
@@ -130,9 +130,9 @@ get_bucket( pthread_mutex_t* pthreadMutex )
 scorep_pthread_mutex*
 scorep_pthread_mutex_hash_get( pthread_mutex_t* pthreadMutex )
 {
-    SCOREP_MutexLock( &hash_table_mutex );
+    UTILS_MutexLock( &hash_table_mutex );
     scorep_pthread_mutex* iterator = mutex_hash_get( pthreadMutex );
-    SCOREP_MutexUnlock( &hash_table_mutex );
+    UTILS_MutexUnlock( &hash_table_mutex );
 
     return iterator;
 }
@@ -141,7 +141,7 @@ scorep_pthread_mutex_hash_get( pthread_mutex_t* pthreadMutex )
 void
 scorep_pthread_mutex_hash_remove( pthread_mutex_t* pthreadMutex )
 {
-    SCOREP_MutexLock( &hash_table_mutex );
+    UTILS_MutexLock( &hash_table_mutex );
     uint32_t              bucket   = get_bucket( pthreadMutex );
     scorep_pthread_mutex* iterator = hash_table[ bucket ];
     if ( iterator )
@@ -177,5 +177,5 @@ scorep_pthread_mutex_hash_remove( pthread_mutex_t* pthreadMutex )
     {
         UTILS_WARNING( "Pthread mutex not in hash table." );
     }
-    SCOREP_MutexUnlock( &hash_table_mutex );
+    UTILS_MutexUnlock( &hash_table_mutex );
 }

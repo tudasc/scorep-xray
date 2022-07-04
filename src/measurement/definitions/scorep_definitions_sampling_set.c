@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -55,6 +55,7 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
+#include <UTILS_Mutex.h>
 
 
 #include <jenkins_hash.h>
@@ -64,7 +65,6 @@
 #include <scorep_substrates_definition.h>
 #include <scorep_type_utils.h>
 #include <SCOREP_Tracing_Events.h>
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
 

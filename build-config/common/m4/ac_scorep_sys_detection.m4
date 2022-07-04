@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ##
-## This file is part of the Score-P software (http://www.score-p.org)
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
 ## RWTH Aachen University, Germany
@@ -29,7 +29,6 @@
 ## directory for details.
 ##
 
-## file ac_scorep_sys_detection.m4
 
 # The purpose of platform detection is to provide reasonable default
 # compilers, MPI implementations, etc. The user always has the

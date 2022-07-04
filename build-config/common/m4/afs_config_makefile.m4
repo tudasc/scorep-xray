@@ -1,13 +1,16 @@
-dnl
-dnl This file is part of the Score-P software (http://www.score-p.org)
-dnl
-dnl Copyright (c) 2014, 2019-2020,
-dnl Technische Universitaet Dresden, Germany
-dnl
-dnl This software may be modified and distributed under the terms of
-dnl a BSD-style license.  See the COPYING file in the package base
-dnl directory for details.
-dnl
+## -*- mode: autoconf -*-
+
+##
+## This file is part of the Score-P software ecosystem (http://www.score-p.org)
+##
+## Copyright (c) 2014, 2019-2020,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
 
 ## AFS_SET_SILENT_RULE_PREFIX( PREFIX )
 ## ======================================

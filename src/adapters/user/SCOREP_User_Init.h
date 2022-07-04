@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2017,
+ * Copyright (c) 2009-2014, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,8 +38,8 @@
 
 
 #include "SCOREP_Subsystem.h"
-#include <SCOREP_Mutex.h>
 #include "SCOREP_Hashtab.h"
+#include <UTILS_Mutex.h>
 #include <stdbool.h>
 
 /** @ingroup SCOREP_User_External
@@ -53,18 +53,18 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 /**
    Mutex to avoid parallel assignments to the same user metric.
  */
-extern SCOREP_Mutex scorep_user_metric_mutex;
+extern UTILS_Mutex scorep_user_metric_mutex;
 
 /**
    Mutex for @ref scorep_user_file_table.
  */
-extern SCOREP_Mutex scorep_user_file_table_mutex;
+extern UTILS_Mutex scorep_user_file_table_mutex;
 
 /**
    Mutex to avoid parallel assignement of region handles to the same region.
  */
-extern SCOREP_Mutex scorep_user_region_mutex;
-extern SCOREP_Mutex scorep_user_region_by_name_mutex;
+extern UTILS_Mutex scorep_user_region_mutex;
+extern UTILS_Mutex scorep_user_region_by_name_mutex;
 
 /**
    Maximum size of by name region hash table
@@ -103,7 +103,7 @@ typedef struct SCOREP_User_Topology
 
 /** Mutex to avoid parallel allocation of local topology data
  */
-extern SCOREP_Mutex scorep_user_topo_mutex;
+extern UTILS_Mutex scorep_user_topo_mutex;
 
 /**
    Dumps file information into the manifest file and copies files depending on the

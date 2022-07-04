@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2019,
+ * Copyright (c) 2009-2013, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -110,7 +110,7 @@ extern int scorep_mpi_status_size;
  * Flag which indicates whether event generation is turned on/off.
  * If no thread-local storage specifier is availble we only support MPI_THREAD_SERIALIZED.
  */
-extern bool SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events;
+extern bool THREAD_LOCAL_STORAGE_SPECIFIER scorep_mpi_generate_events;
 
 /**
  * @internal

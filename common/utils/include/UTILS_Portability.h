@@ -1,5 +1,5 @@
 /*
- * This file is part of the Score-P software (http://www.score-p.org)
+ * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
  * Copyright (c) 2016,
  * Forschungszentrum Juelich GmbH, Germany

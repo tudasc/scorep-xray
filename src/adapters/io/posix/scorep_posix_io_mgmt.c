@@ -4,6 +4,9 @@
  * Copyright (c) 2016-2020,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,7 +30,7 @@
 
 #include <unistd.h>
 
-#if HAVE( GETRLIMIT )
+#if HAVE( POSIX_GETRLIMIT )
 #include <sys/resource.h>
 #endif
 
@@ -44,7 +47,7 @@ SCOREP_IoHandleHandle scorep_posix_io_sync_all_handle = SCOREP_INVALID_IO_HANDLE
 #define AIO_REQUEST_TABLE_SIZE 16
 
 SCOREP_Hashtab* scorep_posix_io_aio_request_table       = NULL;
-SCOREP_Mutex    scorep_posix_io_aio_request_table_mutex = SCOREP_MUTEX_INIT;
+UTILS_Mutex     scorep_posix_io_aio_request_table_mutex = UTILS_MUTEX_INIT;
 
 #endif
 
@@ -328,7 +331,7 @@ scorep_posix_io_init( void )
                                     SCOREP_INVALID_IO_PARADIGM_PROPERTY );
 
     int nofile = 1024;
-#if HAVE( GETRLIMIT )
+#if HAVE( POSIX_GETRLIMIT )
     struct rlimit res_nofile;
     int           res = getrlimit( RLIMIT_NOFILE, &res_nofile );
     if ( 0 == res )
