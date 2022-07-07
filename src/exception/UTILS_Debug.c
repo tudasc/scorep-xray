@@ -54,6 +54,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
+#include <UTILS_Mutex.h>
 
 
 #include "normalize_file.h"
@@ -61,6 +62,11 @@
 
 bool     utils_debug_initialized = false;
 uint64_t utils_debug_level       = 0;
+
+static UTILS_Mutex debug_mutex = UTILS_MUTEX_INIT;
+
+static THREAD_LOCAL_STORAGE_SPECIFIER int32_t thread_id = -1;
+
 
 static bool
 is_base_digit( int        c,
@@ -283,6 +289,13 @@ modify_level:
 void
 utils_debug_init( void )
 {
+    UTILS_MutexLock( &debug_mutex );
+    if ( utils_debug_initialized )
+    {
+        UTILS_MutexUnlock( &debug_mutex );
+        return;
+    }
+
     const char* env_name           = UTILS_STRINGIFY( PACKAGE_MANGLE_NAME( DEBUG ) );
     const char* debug_level_string = getenv( env_name );
 
@@ -316,6 +329,7 @@ utils_debug_init( void )
     }
 
     utils_debug_initialized = true;
+    UTILS_MutexUnlock( &debug_mutex );
 }
 
 
@@ -337,6 +351,13 @@ UTILS_Debug_Printf( uint64_t    kind,
 
     const char* normalized_file = normalize_file( srcdir, file );
 
+    UTILS_MutexLock( &debug_mutex );
+    if ( thread_id == -1 )
+    {
+        static int32_t thread_count = 0;
+
+        thread_id = thread_count++;
+    }
     if ( kind )
     {
         const char* kind_str = "Entering";
@@ -346,8 +367,9 @@ UTILS_Debug_Printf( uint64_t    kind,
         }
 
         fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": %s function '%s'%s",
+                 "[%s - %" PRId32 "] %s:%" PRIu64 ": %s function '%s'%s",
                  PACKAGE_NAME,
+                 thread_id,
                  normalized_file,
                  line,
                  kind_str,
@@ -357,8 +379,9 @@ UTILS_Debug_Printf( uint64_t    kind,
     else
     {
         fprintf( stdout,
-                 "[%s] %s:%" PRIu64 "%s",
+                 "[%s - %" PRId32 "] %s:%" PRIu64 "%s",
                  PACKAGE_NAME,
+                 thread_id,
                  normalized_file,
                  line,
                  msg_format_string_length ? ": " : "\n" );
@@ -372,4 +395,5 @@ UTILS_Debug_Printf( uint64_t    kind,
         fprintf( stdout, "\n" );
         va_end( va );
     }
+    UTILS_MutexUnlock( &debug_mutex );
 }
