@@ -40,6 +40,7 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
 #ifndef __cplusplus
 #include <stdbool.h>
 #endif
@@ -61,7 +62,8 @@ UTILS_BEGIN_C_DECLS
  *
  * For debug output the macro @ref UTILS_DEBUG_PRINTF is provided. For each debug
  * message, a debug level must be provided. The print out of the messages can be filtered
- * depending on the debug level.
+ * depending on the debug level.  By default, debug messages are printed to @c stdout;
+ * an alternative output stream can be set using @ref UTILS_Debug_SetLogStream.
  * The second debug macro is @ref UTILS_ASSERT which ensures that a condition holds.
  *
  * The debug macros resolve to nothing if HAVE_UTILS_DEBUG is not defined or zero.
@@ -234,6 +236,17 @@ enum
 
 #endif /* HAVE_UTILS_DEBUG */
 
+
+/**
+ * Set the output stream for debug messages to @p stream.  Client code is
+ * responsible for properly opening/closing @p stream.  Passing @c NULL
+ * resets the stream to @c stdout (the default).
+ *
+ * @param stream Valid output stream
+ */
+#define UTILS_Debug_SetLogStream PACKAGE_MANGLE_NAME( UTILS_Debug_SetLogStream )
+void
+UTILS_Debug_SetLogStream( FILE* stream );
 
 /**
  * Checks whether the given debug level is enabled.

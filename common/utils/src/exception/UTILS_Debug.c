@@ -44,7 +44,6 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
 #include <assert.h>
@@ -63,7 +62,8 @@
 bool     utils_debug_initialized = false;
 uint64_t utils_debug_level       = 0;
 
-static UTILS_Mutex debug_mutex = UTILS_MUTEX_INIT;
+static UTILS_Mutex debug_mutex  = UTILS_MUTEX_INIT;
+static FILE*       debug_stream = NULL;
 
 static THREAD_LOCAL_STORAGE_SPECIFIER int32_t thread_id = -1;
 
@@ -332,6 +332,13 @@ utils_debug_init( void )
     UTILS_MutexUnlock( &debug_mutex );
 }
 
+void
+UTILS_Debug_SetLogStream( FILE* stream )
+{
+    UTILS_MutexLock( &debug_mutex );
+    debug_stream = stream;
+    UTILS_MutexUnlock( &debug_mutex );
+}
 
 void
 UTILS_Debug_Printf( uint64_t    kind,
@@ -352,6 +359,10 @@ UTILS_Debug_Printf( uint64_t    kind,
     const char* normalized_file = normalize_file( srcdir, file );
 
     UTILS_MutexLock( &debug_mutex );
+    if ( !debug_stream )
+    {
+        debug_stream = stdout;
+    }
     if ( thread_id == -1 )
     {
         static int32_t thread_count = 0;
@@ -366,7 +377,7 @@ UTILS_Debug_Printf( uint64_t    kind,
             kind_str = "Leaving";
         }
 
-        fprintf( stdout,
+        fprintf( debug_stream,
                  "[%s - %" PRId32 "] %s:%" PRIu64 ": %s function '%s'%s",
                  PACKAGE_NAME,
                  thread_id,
@@ -378,7 +389,7 @@ UTILS_Debug_Printf( uint64_t    kind,
     }
     else
     {
-        fprintf( stdout,
+        fprintf( debug_stream,
                  "[%s - %" PRId32 "] %s:%" PRIu64 "%s",
                  PACKAGE_NAME,
                  thread_id,
@@ -391,8 +402,8 @@ UTILS_Debug_Printf( uint64_t    kind,
     {
         va_list va;
         va_start( va, msgFormatString );
-        vfprintf( stdout, msgFormatString, va );
-        fprintf( stdout, "\n" );
+        vfprintf( debug_stream, msgFormatString, va );
+        fprintf( debug_stream, "\n" );
         va_end( va );
     }
     UTILS_MutexUnlock( &debug_mutex );
