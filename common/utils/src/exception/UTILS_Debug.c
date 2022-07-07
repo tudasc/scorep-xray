@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -385,76 +385,5 @@ UTILS_Debug_Printf( uint64_t    bitMask,
         vfprintf( stdout, msgFormatString, va );
         fprintf( stdout, "\n" );
         va_end( va );
-    }
-}
-
-
-void
-UTILS_Debug_RawPrintf( uint64_t    bitMask,
-                       const char* msgFormatString,
-                       ... )
-{
-    debug_init();
-
-    /* enter/exit does not make sense for the raw one */
-    uint64_t kind = bitMask & ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-    assert( kind == 0 );
-
-    if ( debug_level == 0 || ( debug_level & bitMask ) != bitMask )
-    {
-        return;
-    }
-
-    va_list va;
-    va_start( va, msgFormatString );
-    vfprintf( stdout, msgFormatString, va );
-    va_end( va );
-}
-
-
-void
-UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* file,
-                    uint64_t    line,
-                    const char* function )
-{
-    debug_init();
-
-    uint64_t kind = bitMask & ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-    bitMask &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-
-    if ( debug_level == 0 || ( debug_level & bitMask ) != bitMask )
-    {
-        return;
-    }
-
-    assert( kind != ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT ) );
-
-    const char* normalized_file = normalize_file( srcdir, file );
-
-    if ( kind )
-    {
-        const char* kind_str = "Entering";
-        if ( bitMask & UTILS_DEBUG_FUNCTION_EXIT )
-        {
-            kind_str = "Leaving";
-        }
-
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": %s function '%s': ",
-                 PACKAGE_NAME,
-                 normalized_file,
-                 line,
-                 kind_str,
-                 function );
-    }
-    else
-    {
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": ",
-                 PACKAGE_NAME,
-                 normalized_file,
-                 line );
     }
 }
