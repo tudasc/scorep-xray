@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016, 2021
+ * Copyright (c) 2009-2012, 2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -189,44 +189,6 @@ enum
 
 
 /**
- * Use this if you don't want the prefix and newline of UTILS_DEBUG_PRINTF()
- *
- * @param ... The first needs to be the debug level. Remaining arguments are
- *            used for a printf call.
- */
-#if HAVE( UTILS_DEBUG )
-
-#define UTILS_DEBUG_RAW_PRINTF( ... )  \
-    UTILS_Debug_RawPrintf( __VA_ARGS__ )
-
-#else
-
-#define UTILS_DEBUG_RAW_PRINTF( ... ) do { } while ( 0 )
-
-#endif /* HAVE_UTILS_DEBUG */
-
-
-/**
- * Use this if you just want the prefix and no new line.
- */
-#if HAVE( UTILS_DEBUG )
-
-#define UTILS_DEBUG_PREFIX( debugLevel ) \
-    UTILS_Debug_Prefix( \
-        debugLevel, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME )
-
-#else
-
-#define UTILS_DEBUG_PREFIX( ... ) do { } while ( 0 )
-
-#endif /* HAVE_UTILS_DEBUG */
-
-
-/**
  * Use this to hide code, especially variables, which are only accessed in
  * debug mode.
  *
@@ -269,37 +231,6 @@ UTILS_Debug_Printf( uint64_t    bitMask,
                     const char* function,
                     const char* msgFormatString,
                     ... );
-
-/**
- * The same as @a UTILS_Debug_Printf. Except it does not print the prefix and no
- * newline at the end.
- *
- * @param bitMask    The debug level which must be enabled to print out the
- *                   message.
- * @param msgFormatString A format string followed by the parameters defined in
- *                        the format string. The format string and the
- *                        parameters have thesame syntax like in the POSIX
- *                        printf function.
- */
-#define UTILS_Debug_RawPrintf PACKAGE_MANGLE_NAME( UTILS_Debug_RawPrintf )
-void
-UTILS_Debug_RawPrintf( uint64_t    bitMask,
-                       const char* msgFormatString,
-                       ... );
-
-/**
- * The same as @a UTILS_Debug_Printf. Except it prints only the prefix.
- *
- * @param bitMask    The debug level which must be enabled to print out the
- *                   message.
- */
-#define UTILS_Debug_Prefix PACKAGE_MANGLE_NAME( UTILS_Debug_Prefix )
-void
-UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* file,
-                    uint64_t    line,
-                    const char* function );
 
 UTILS_END_C_DECLS
 
