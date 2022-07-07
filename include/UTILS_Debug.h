@@ -40,6 +40,9 @@
  */
 
 #include <stdint.h>
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
 
 #include <UTILS_Portability.h>
 
@@ -115,13 +118,20 @@ enum
 /* *INDENT-OFF* */
 
 #define UTILS_DEBUG_PRINTF( debugLevel, ... ) \
-    UTILS_Debug_Printf( \
-        debugLevel, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( debugLevel ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                debugLevel, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define HAVE_DEBUG_MODULE_NAME_( sym ) defined( sym ## _DEBUG_MODULE_NAME )
 #define HAVE_DEBUG_MODULE_NAME( sym )  HAVE_DEBUG_MODULE_NAME_( sym )
@@ -129,39 +139,58 @@ enum
 #if HAVE_DEBUG_MODULE_NAME( AFS_PACKAGE_NAME )
 
 #define UTILS_DEBUG( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ), \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                0, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define UTILS_DEBUG_ENTRY( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_ENTRY, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                UTILS_DEBUG_FUNCTION_ENTRY, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define UTILS_DEBUG_EXIT( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_EXIT, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                UTILS_DEBUG_FUNCTION_EXIT, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #else
 
@@ -207,10 +236,40 @@ enum
 
 
 /**
+ * Checks whether the given debug level is enabled.
+ *
+ * @param bitMask The debug level to be tested.
+ * @return Returns @c true if enabled, @c false otherwise.
+ */
+#define UTILS_Debug_IsEnabled PACKAGE_MANGLE_NAME( UTILS_Debug_IsEnabled )
+static inline bool
+UTILS_Debug_IsEnabled( uint64_t bitMask )
+{
+    /* Internal variables set by `utils_debug_init` -- read only! */
+    #define utils_debug_initialized PACKAGE_MANGLE_name( utils_debug_initialized )
+    #define utils_debug_level       PACKAGE_MANGLE_name( utils_debug_level )
+    extern bool     utils_debug_initialized;
+    extern uint64_t utils_debug_level;
+
+    if ( !utils_debug_initialized )
+    {
+        #define utils_debug_init PACKAGE_MANGLE_name( utils_debug_init )
+        extern void utils_debug_init( void );
+
+        utils_debug_init();
+    }
+
+    bitMask &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
+
+    return ( utils_debug_level & bitMask ) == bitMask;
+}
+
+/**
  * Function implementation called by @ref UTILS_DEBUG_PRINTF. It prints a debug message
  * in the given debug level. Furthermore, it provides the function name, file name and
  * line number.
- * @param bitMask    The debug level which must be enabled to print out the message.
+ * @param kind       The "kind" part of the debug level (zero, UTILS_DEBUG_FUNCTION_ENTRY,
+ *                   or UTILS_DEBUG_FUNCTION_EXIT; all other bits are ignored).
  * @param function   A string containing the name of the function where the debug messages
  *                   was called.
  * @param file       The file name of the file which contains the source code where the
@@ -224,7 +283,7 @@ enum
  */
 #define UTILS_Debug_Printf PACKAGE_MANGLE_NAME( UTILS_Debug_Printf )
 void
-UTILS_Debug_Printf( uint64_t    bitMask,
+UTILS_Debug_Printf( uint64_t    kind,
                     const char* srcdir,
                     const char* file,
                     uint64_t    line,

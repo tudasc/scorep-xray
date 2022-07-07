@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -87,20 +87,20 @@
 /* *INDENT-OFF* */
 
 #define UTILS_DLOG \
-    AFS_PACKAGE_name::utils::DebugStream( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ), \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME )
+    if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                    UTILS_JOIN_SYMS( _DEBUG_, \
+                                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        AFS_PACKAGE_name::utils::DebugStream( \
+            __FILE__, \
+            __LINE__, \
+            UTILS_FUNCTION_NAME )
 
 #define UTILS_DLOG_LEVEL( debugLevel ) \
-    AFS_PACKAGE_name::utils::DebugStream( \
-        debugLevel, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME )
+    if ( UTILS_Debug_IsEnabled( debugLevel ) ) \
+        AFS_PACKAGE_name::utils::DebugStream( \
+            __FILE__, \
+            __LINE__, \
+            UTILS_FUNCTION_NAME )
 
 /* *INDENT-ON* */
 
@@ -127,17 +127,14 @@ public:
      * Creates a new instance and stores the given parameters in member
      * variables.
      *
-     * @param bitMask   Debug level bit mask
      * @param file      Source file name
      * @param line      Source line number
      * @param function  Function name
      */
-    DebugStream( uint64_t    bitMask,
-                 const char* file,
+    DebugStream( const char* file,
                  uint64_t    line,
                  const char* function )
-        : m_bit_mask( bitMask ),
-        m_file( file ),
+        : m_file( file ),
         m_line( line ),
         m_function( function )
     {
@@ -150,7 +147,7 @@ public:
      */
     ~DebugStream()
     {
-        UTILS_Debug_Printf( m_bit_mask,
+        UTILS_Debug_Printf( 0,
                             AFS_PACKAGE_SRCDIR,
                             m_file.c_str(),
                             m_line,
@@ -178,7 +175,6 @@ public:
 
 
 private:
-    uint64_t           m_bit_mask; /**< Debug level bit mask */
     std::string        m_file;     /**< Source file name */
     uint64_t           m_line;     /**< Source line number */
     std::string        m_function; /**< Function name */
