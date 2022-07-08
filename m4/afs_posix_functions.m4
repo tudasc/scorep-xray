@@ -139,7 +139,7 @@ _AFS_CHECK_POSIX_SYMBOL([fileno],
     [int fileno( FILE* stream );],
     [
 FILE* stream;
-int fileno = fileno( stream );
+int fno = fileno( stream );
     ])
 ]) # AFS_POSIX_FILENO
 
