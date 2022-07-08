@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -38,14 +38,11 @@
 #include <UTILS_IO.h>
 
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <sys/stat.h>
 
 #include <utils_package.h>
 
-#include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 
 bool

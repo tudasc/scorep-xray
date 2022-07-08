@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016, 2021,
+ * Copyright (c) 2009-2012, 2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,11 +39,8 @@
  *
  */
 
+#include <errno.h>
 #include <stdint.h>
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
-#include <stdarg.h>
 
 #include <UTILS_Portability.h>
 

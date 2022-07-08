@@ -59,8 +59,6 @@
 #include <UTILS_Atomic.h>
 
 #if HAVE( GCC_ATOMIC_BUILTINS )
-#include <stdlib.h>
-#include <UTILS_Error.h>
 #define STATIC_INLINE static inline
 #else /* !GCC_ATOMIC_BUILTINS */
 #define STATIC_INLINE

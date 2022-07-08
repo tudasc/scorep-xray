@@ -42,6 +42,7 @@
 #include <config.h>
 #include <UTILS_Debug.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -50,9 +51,7 @@
 #include <ctype.h>
 
 
-#include <UTILS_Error.h>
 #include <UTILS_CStr.h>
-#include <UTILS_IO.h>
 #include <UTILS_Mutex.h>
 
 

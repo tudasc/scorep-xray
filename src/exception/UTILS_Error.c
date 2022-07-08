@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2017, 2021,
+ * Copyright (c) 2009-2012, 2017, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -44,11 +44,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <stdint.h>
 #include <inttypes.h>
-
-#include <UTILS_CStr.h>
-#include <UTILS_IO.h>
 
 #include <utils_package.h>
 
