@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,6 +45,8 @@
 #define SCOREP_METRIC_SOURCE_H
 
 #include <scorep/SCOREP_MetricTypes.h>
+
+#include <stdbool.h>
 
 #include <UTILS_Error.h>
 

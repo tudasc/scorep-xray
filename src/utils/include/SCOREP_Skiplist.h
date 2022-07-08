@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2017,
+ * Copyright (c) 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -61,6 +61,7 @@
 #endif
 
 #include <limits.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 

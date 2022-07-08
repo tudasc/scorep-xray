@@ -37,7 +37,8 @@
 #include <config.h>
 #include <UTILS_IO.h>
 
-#include <stdio.h>
+#include <stdarg.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,10 +48,9 @@
 
 #include <utils_package.h>
 
-#include <UTILS_Error.h>
-#include <UTILS_Debug.h>
+#if !HAVE( POSIX_GETCWD )
 #include <UTILS_CStr.h>
-
+#endif
 #if HAVE( PLATFORM_MINGW )
 #include <windows.h>
 #endif

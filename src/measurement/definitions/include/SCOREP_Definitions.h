@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015-2016,
+ * Copyright (c) 2009-2013, 2015-2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -82,6 +82,7 @@ struct SCOREP_Allocator_PageManager;
 #include <SCOREP_Types.h>
 #include <UTILS_Error.h>
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

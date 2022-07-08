@@ -28,7 +28,6 @@
 #ifndef __cplusplus
 #include <stdbool.h>
 #endif
-#include <stddef.h>
 #include <stdint.h>
 
 /* This file is used during configure where it is included from
