@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2021,
+## Copyright (c) 2009-2014, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -38,6 +38,7 @@ have_compiler_instrumentation=yes
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
     [ibm],      [],
+    [nvhpc],    [],
     [portland], [],
     [gnu],      [],
     [cray],     [],

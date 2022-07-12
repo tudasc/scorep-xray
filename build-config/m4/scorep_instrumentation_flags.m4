@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013, 2015, 2020-2021,
+dnl Copyright (c) 2013, 2015, 2020-2022,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013-2015, 2019, 2021,
@@ -59,6 +59,9 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cflags="-tcollect"],
     [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qdebug=function_trace])
                  SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qfunctrace])],
+    [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
+                 scorep_compiler_instrumentation_cflags="-Minstrument=functions"
+                 scorep_compiler_instrumentation_needs_addr2line="yes"],
     [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
                       scorep_compiler_instrumentation_cflags="-Minstrument=functions"
                       scorep_compiler_instrumentation_needs_addr2line="yes"],
@@ -87,6 +90,7 @@ AS_IF([test "x${ax_cv_c_compiler_vendor}" != "x${ax_cv_fc_compiler_vendor}"],
     [AS_CASE([${ax_cv_fc_compiler_vendor}],
          [cray], [scorep_compiler_instrumentation_fflags="-hfunc_trace"
                   scorep_compiler_instrumentation_ldflags="$scorep_compiler_instrumentation_ldflags -Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
+         [portland/llvm], [scorep_compiler_instrumentation_fflags="-Minstrument=functions"],
          [scorep_compiler_instrumentation_fflags=unsupported])dnl
     ])
 
@@ -140,6 +144,7 @@ AS_UNSET([scorep_instrumentation_ldflags])
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
     [ibm],      [],
+    [nvhpc],    [],
     [portland], [],
     [gnu],      [AS_CASE([${ac_scorep_platform}],
                      [bg*], [# Link shared variant of (system) libs, if available.

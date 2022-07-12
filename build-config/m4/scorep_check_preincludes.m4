@@ -23,7 +23,8 @@ AC_DEFUN([SCOREP_CHECK_PREINCLUDES], [
 AC_REQUIRE([SCOREP_OPENMP])dnl
 
 scorep_c_no_preinclude_flag=""
-AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland],
+AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xnvhpc ||
+       test "x${ax_cv_c_compiler_vendor%/*}" = xportland],
 [
     AS_IF([${CC} -show 2>&1 | GREP_OPTIONS= grep -q preinclude],
     [
@@ -39,7 +40,8 @@ AC_SUBST([SCOREP_C_NO_PREINCLUDE_FLAG], [${scorep_c_no_preinclude_flag}])
 AC_REQUIRE([SCOREP_COMPUTENODE_CXX])dnl
 
 scorep_cxx_no_preinclude_flag=""
-AS_IF([test "x${ax_cv_cxx_compiler_vendor%/*}" = xportland],
+AS_IF([test "x${ax_cv_cxx_compiler_vendor%/*}" = xnvhpc ||
+       test "x${ax_cv_cxx_compiler_vendor%/*}" = xportland],
 [
     AS_IF([${CXX} ${CXXFLAGS} ${OPENMP_CXXFLAGS} -show 2>&1 | GREP_OPTIONS= grep -q preinclude],
     [

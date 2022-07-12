@@ -6,7 +6,7 @@
 ## Copyright (c) 2015-2016, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2021,
+## Copyright (c) 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -154,6 +154,7 @@ AS_IF([test "x$scorep_enable_openacc" = "xyes"],[
 AS_IF([test "x${scorep_have_openacc_prof}" = xyes],
       [dnl check for OpenACC compiler flags
        AS_CASE([${ax_cv_c_compiler_vendor%/*}],
+           [nvhpc],    [SCOREP_OPENACC_FLAG_TEST([-acc])],
            [portland], [SCOREP_OPENACC_FLAG_TEST([-acc])],
            [gnu],      [],
            [cray],     [SCOREP_OPENACC_FLAG_TEST([-h pragma=acc])],
