@@ -82,6 +82,7 @@ various Score-P components.
   undocumented) compiler switches
 
   - GNU    : tested with GCC 4.9 and higher
+  - NVHPC  : tested with version 20.7 and higher
   - PGI    : tested with version 10.1 and higher
              Note that PGI 13.8 is currently not supported as it is not
              recognized as an PGI compiler anymore. PGI 16 supports
@@ -125,7 +126,7 @@ various Score-P components.
     versions.
 
   - Measurement filtering can only be applied to functions
-    instrumented by the IBM, GNU, Intel, or PGI compilers as
+    instrumented by the IBM, GNU, Intel, NVHPC, or PGI compilers as
     well as functions instrumented by PDT, Kokkos, and user functions.
     Filtering of MPI, SHMEM, and OpenMP runtime functions is always
     ineffective.

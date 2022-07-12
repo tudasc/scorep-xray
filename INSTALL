@@ -58,7 +58,7 @@ the backend parts can be specified explicitly if desired. On Linux
 clusters it is currently recommended to use this option to select a
 compiler suite other than GCC.
 
-  --with-nocross-compiler-suite=(gcc|ibm|intel|pgi|clang|aocc)
+  --with-nocross-compiler-suite=(gcc|ibm|intel|nvhpc|pgi|clang|aocc)
                The compiler suite used to build this package in
                non-cross-compiling environments. Needs to be in $PATH.
                [Default: gcc]
@@ -68,12 +68,11 @@ compiler suite other than GCC.
   prior to 16.1, you might want to use 'pgCC' instead if your MPI and
   SHMEM compiler wrappers use this one. To select pgCC, please add
   'CXX=pgCC' to your configure line.
-  Note: for the NVIDIA HPC SDK, select 'pgi'.
 
 In cross-compiling environments, the compiler suite used to build the
 frontend parts can be specified explicitly if desired.
 
-  --with-frontend-compiler-suite=(gcc|ibm|intel|pgi|clang|aocc)
+  --with-frontend-compiler-suite=(gcc|ibm|intel|nvhpc|pgi|clang|aocc)
                The compiler suite used to build the frontend parts of
                this package in cross-compiling environments.  Needs to
                be in $PATH.

@@ -13,6 +13,8 @@ Features and improvements:
 - Score-P now requires OTF2 3.0 and CubeLib/W 4.7.
 - The `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS` feature is now
   also disabled when recording accelerator applications.
+- Add proper support for NVIDIA HPC SDK compilers to build system
+  via `--with-nocross-compiler-suite=nvhpc`.
 
 User tools and API improvements and changes:
 
