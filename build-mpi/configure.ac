@@ -101,8 +101,6 @@ AC_SUBST([LIBTOOL_DEPS])
 AFS_LINKMODE
 AFS_SUMMARY([Link mode], [static=$enable_static, shared=$enable_shared])
 
-AM_PROG_AS
-
 AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 
 ac_scorep_backend=yes
