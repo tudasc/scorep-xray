@@ -113,14 +113,17 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
 
     if ( 0 == rank )
     {
-        /*
-         * Don't define this in the unified manager, it disturbs greatly
-         * the string mapping
-         */
-        SCOREP_Definitions_NewGroup( type,
-                                     name,
-                                     total_number_of_locations,
-                                     all_locations );
+        if ( total_number_of_locations != 0 )
+        {
+            /*
+             * Don't define this in the unified manager, it disturbs greatly
+             * the string mapping
+             */
+            SCOREP_Definitions_NewGroup( type,
+                                         name,
+                                         total_number_of_locations,
+                                         all_locations );
+        }
         free( all_locations );
     }
 
