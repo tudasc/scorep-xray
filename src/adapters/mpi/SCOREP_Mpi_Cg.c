@@ -594,16 +594,19 @@ int
 MPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
-    int       return_val;
+    const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
+    int                 return_val;
+    SCOREP_MpiRequestId reqid;
 
     if ( event_gen_active )
     {
+        reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_IDUP ] );
+            SCOREP_MpiNonBlockingCollectiveRequest( reqid );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -616,7 +619,7 @@ MPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request )
     SCOREP_EXIT_WRAPPED_REGION();
     if ( return_val == MPI_SUCCESS )
     {
-        scorep_mpi_request_comm_idup_create( *request, comm, newcomm );
+        scorep_mpi_request_comm_idup_create( *request, comm, newcomm, reqid );
     }
 
     if ( event_gen_active )

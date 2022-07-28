@@ -393,9 +393,10 @@ scorep_mpi_request_io_create( MPI_Request             request,
 }
 
 void
-scorep_mpi_request_comm_idup_create( MPI_Request request,
-                                     MPI_Comm    parentComm,
-                                     MPI_Comm*   newComm )
+scorep_mpi_request_comm_idup_create( MPI_Request         request,
+                                     MPI_Comm            parentComm,
+                                     MPI_Comm*           newComm,
+                                     SCOREP_MpiRequestId id )
 {
     scorep_mpi_request data = { .request           = request,
                                 .request_type      = SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
@@ -404,7 +405,7 @@ scorep_mpi_request_comm_idup_create( MPI_Request request,
                                     .parent_comm_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR
                                 },
                                 .flags  = SCOREP_MPI_REQUEST_FLAG_NONE,
-                                .id     = UINT64_MAX,
+                                .id     = id,
                                 .next   = NULL,
                                 .marker = false };
 
@@ -666,6 +667,13 @@ scorep_mpi_check_request( scorep_mpi_request* req,
             case SCOREP_MPI_REQUEST_TYPE_COMM_IDUP:
                 scorep_mpi_comm_create_finalize( *req->payload.comm_idup.new_comm,
                                                  req->payload.comm_idup.parent_comm_handle );
+                SCOREP_CommCreate( SCOREP_MPI_COMM_HANDLE( *req->payload.comm_idup.new_comm ) );
+                SCOREP_MpiNonBlockingCollectiveComplete( req->payload.comm_idup.parent_comm_handle,
+                                                         SCOREP_INVALID_ROOT_RANK,
+                                                         SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                                         0,
+                                                         0,
+                                                         req->id );
                 break;
 
             case SCOREP_MPI_REQUEST_TYPE_RMA:
