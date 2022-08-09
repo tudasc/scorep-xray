@@ -15,13 +15,8 @@
 #include "scorep_compiler_func_addr_hash.h"
 #include "scorep_compiler_demangle.h"
 
-#include <SCOREP_Addr2line.h>
-#include <SCOREP_Definitions.h>
 #include <SCOREP_FastHashtab.h>
-#include <SCOREP_Filtering.h>
-
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
-#include <UTILS_Debug.h>
+#include <SCOREP_Addr2line.h>
 
 #include <jenkins_hash.h>
 
@@ -29,7 +24,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
-
+#include <fnmatch.h>
 
 /* Hash table for compiler instrumentation address lookup. The
    hashtable has 512 buckets, each chunk contains up to 3 key-value
@@ -132,7 +127,8 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                        && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
                        && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
                        && ( !strstr( function_name_demangled, "6Kokkos5Tools" ) )
-                       && ( !strstr( function_name_demangled, "6Kokkos9Profiling" )  );
+                       && ( !strstr( function_name_demangled, "6Kokkos9Profiling" ) )
+                       && ( fnmatch( "__nv_*_F[0-9]*L[0-9]*_[0-9]*", function_name_demangled, 0 ) != 0 );
         /* Usage of UTILS_IO_SimplifyPath on a copy of file_name not needed as libbfd lookup provides absolute paths. */
         use_address &= ( !SCOREP_Filtering_Match( file_name, function_name_demangled, function_name ) );
         if ( use_address )

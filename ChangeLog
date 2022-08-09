@@ -26,6 +26,9 @@ Features and improvements:
   - `MPI_Win_allocate`
   - `MPI_Win_allocate_shared`
   - `MPI_Win_shared_query`
+- With NVHPC compilers from version 21.1 on, Score-P now automatically
+  ignores OpenMP outlined functions that caused measurement aborts
+  when not manually filtered.
 
 User tools and API improvements and changes:
 
