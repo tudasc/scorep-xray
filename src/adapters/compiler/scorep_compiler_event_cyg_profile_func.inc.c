@@ -39,9 +39,6 @@
 
 #include "scorep_compiler_event_func_addr_hash.inc.c"
 
-#include <SCOREP_Events.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_RuntimeManagement.h>
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation

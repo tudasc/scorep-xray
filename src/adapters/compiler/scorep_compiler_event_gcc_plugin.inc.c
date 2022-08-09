@@ -18,15 +18,7 @@
  *
  */
 
-#include <config.h>
-
 #include "scorep_compiler_gcc_plugin.h"
-
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_Events.h>
-
-#include <UTILS_Mutex.h>
 
 
 static UTILS_Mutex gcc_plugin_register_region_mutex = UTILS_MUTEX_INIT;

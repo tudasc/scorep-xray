@@ -39,12 +39,11 @@ if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 lib_LTLIBRARIES += libscorep_adapter_compiler_mgmt.la
 
 libscorep_adapter_compiler_mgmt_la_SOURCES =                \
-    $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
-    $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt.c
 
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                            \
-    -I$(INC_ROOT)src/measurement/include      \
+    -I$(INC_DIR_MEASUREMENT)                  \
     -I$(PUBLIC_INC_DIR)                       \
     $(UTILS_CPPFLAGS)                         \
     -I$(INC_DIR_DEFINITIONS)
@@ -65,27 +64,11 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 
 
-#--- Cray specific settings
-if SCOREP_COMPILER_CRAY
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
-endif SCOREP_COMPILER_CRAY
-
-
-#--- GNU specific settings
-if SCOREP_COMPILER_GNU
-
-if !HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
-
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
-
 #--- GCC-Plugin specific settings
-else HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_init.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c
 
 object_DATA += \
@@ -95,7 +78,7 @@ object_DATA += \
 gccplugin_objects_cppflags = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/adapters/compiler \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_DIR_MEASUREMENT)
 
 scorep_compiler_gcc_plugin_begin.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
                                             $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
@@ -120,66 +103,21 @@ scorep_compiler_gcc_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/score
 
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
 
-endif SCOREP_COMPILER_GNU
-
-
-#--- Clang specific settings
-if SCOREP_COMPILER_CLANG
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
-endif SCOREP_COMPILER_CLANG
-
-#--- Fujitsu specific settings, same as GNU non-plug-in
-if SCOREP_COMPILER_FUJITSU
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
-endif SCOREP_COMPILER_FUJITSU
-
-
-#--- IBM specific settings
-if SCOREP_COMPILER_IBM
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
-endif SCOREP_COMPILER_IBM
-
-
-#--- Intel specific settings
-if SCOREP_COMPILER_INTEL
-libscorep_adapter_compiler_mgmt_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c
-endif SCOREP_COMPILER_INTEL
-
-
-#--- PGI specific settings
-if SCOREP_COMPILER_PGI
-
-if SCOREP_COMPILER_PGI_LLVM
-
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c
-
-else !SCOREP_COMPILER_PGI_LLVM
-
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c
-
-endif !SCOREP_COMPILER_PGI_LLVM
-
-endif SCOREP_COMPILER_PGI
-
 
 # --------------------------------------------------------------------
 # event library for the compiler adapter
 
 lib_LTLIBRARIES += libscorep_adapter_compiler_event.la
 
-libscorep_adapter_compiler_event_la_SOURCES =
+libscorep_adapter_compiler_event_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event.c
+
+libscorep_adapter_compiler_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 libscorep_adapter_compiler_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
-    -I$(INC_ROOT)src/measurement/include       \
+    -I$(INC_DIR_MEASUREMENT)                   \
     -I$(PUBLIC_INC_DIR)                        \
     $(UTILS_CPPFLAGS)                          \
     -I$(INC_DIR_DEFINITIONS)
@@ -198,101 +136,28 @@ else !HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
 if HAVE_SCOREP_DEMANGLE
 libscorep_adapter_compiler_event_la_CPPFLAGS += \
     -I$(INC_DIR_SERVICES)
+
+libscorep_adapter_compiler_event_la_LDFLAGS += \
+    @SCOREP_LIBBFD_LDFLAGS@
+
+libscorep_adapter_compiler_event_la_LIBADD += \
+    @SCOREP_LIBBFD_LIBS@
 endif HAVE_SCOREP_DEMANGLE
 endif !HAVE_SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE
-
-libscorep_adapter_compiler_event_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
-
-#--- Cray specific settings
-if SCOREP_COMPILER_CRAY
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
-endif SCOREP_COMPILER_CRAY
-
-if PLATFORM_CRAY
-if SCOREP_COMPILER_CLANG
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
-endif SCOREP_COMPILER_CLANG
-endif PLATFORM_CRAY
-
-#--- GNU specific settings
-if SCOREP_COMPILER_GNU
-
-if !HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
-
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-
-else HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
-
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.c
-
-endif HAVE_SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN
-
-endif SCOREP_COMPILER_GNU
-
-#--- Clang specific settings
-if SCOREP_COMPILER_CLANG
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-endif SCOREP_COMPILER_CLANG
-
-#--- IBM specific settings
-if SCOREP_COMPILER_IBM
-
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
-
-libscorep_adapter_compiler_event_la_LIBADD += \
-    $(SCOREP_LIBBFD_LIBS)
-libscorep_adapter_compiler_event_la_LDFLAGS += \
-    $(SCOREP_LIBBFD_LDFLAGS)
-
-endif SCOREP_COMPILER_IBM
-
-#--- Intel specific settings
-if SCOREP_COMPILER_INTEL
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
-endif SCOREP_COMPILER_INTEL
-
-#--- PGI specific settings
-if SCOREP_COMPILER_PGI
-
-if SCOREP_COMPILER_PGI_LLVM
-
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-
-else !SCOREP_COMPILER_PGI_LLVM
-
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
-
-libscorep_adapter_compiler_event_la_LIBADD += \
-    $(SCOREP_LIBBFD_LIBS)
-libscorep_adapter_compiler_event_la_LDFLAGS += \
-    $(SCOREP_LIBBFD_LDFLAGS)
-
-endif !SCOREP_COMPILER_PGI_LLVM
-
-endif SCOREP_COMPILER_PGI
-
-#--- Fujitsu specific settings, same as GNU non-plug-in
-if SCOREP_COMPILER_FUJITSU
-libscorep_adapter_compiler_event_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-endif SCOREP_COMPILER_FUJITSU
 
 endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_demangle.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_cyg_profile_func.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_func_addr_hash.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_func_trace.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_gcc_plugin.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_event_vt_intel.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_func_addr_hash.h \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.h \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.inc.c
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt_func_addr_hash.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_mgmt_gcc_plugin.inc.c

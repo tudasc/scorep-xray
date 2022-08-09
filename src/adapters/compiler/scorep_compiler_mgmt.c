@@ -30,31 +30,47 @@
 
 /**
  * @file
- *
- * @brief Compiler adapter interface support to the measurement system.
- *
- * This file contains compiler adapter initialization and finalization functions
- * which are common for all compiler adapters.
  */
 
 #include <config.h>
 
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-/**
-   The adapter initialize function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
-extern SCOREP_ErrorCode
-scorep_compiler_subsystem_init( void );
+
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+#include "scorep_compiler_mgmt_gcc_plugin.inc.c"
+#endif /* SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN */
+
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
+#include "scorep_compiler_mgmt_func_addr_hash.inc.c"
+#endif /* HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE ) */
+
+
+static SCOREP_ErrorCode
+compiler_subsystem_init( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
+    gcc_plugin_register_regions();
+#endif /* SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN */
+
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE )
+    func_addr_hash_register_obj_close_cb();
+#endif /* HAVE( SCOREP_COMPILER_INSTRUMENTATION_NEEDS_ADDR2LINE ) */
+
+    UTILS_DEBUG_EXIT();
+    return SCOREP_SUCCESS;
+}
 
 
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name = "COMPILER",
-    .subsystem_init = &scorep_compiler_subsystem_init,
+    .subsystem_init = &compiler_subsystem_init,
 };

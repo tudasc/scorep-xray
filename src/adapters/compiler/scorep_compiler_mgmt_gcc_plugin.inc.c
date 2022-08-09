@@ -20,16 +20,15 @@
  * Will be triggered by the '-fplugin' flag of the GNU compiler.
  */
 
-#include <config.h>
+
+#include "scorep_compiler_gcc_plugin.h"
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filtering.h>
 
-#include "scorep_compiler_gcc_plugin.h"
 
 /**
  * section markers for runtime instrumentation
@@ -76,11 +75,9 @@ scorep_compiler_gcc_plugin_register_region( const scorep_compiler_region_descrip
 }
 
 
-SCOREP_ErrorCode
-scorep_compiler_subsystem_init( void )
+static void
+gcc_plugin_register_regions( void )
 {
-    UTILS_DEBUG( "initialize GCC plugin compiler adapter" );
-
     /* Initialize plugin instrumentation */
     for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
           region_descr < &scorep_region_descriptions_end;
@@ -89,6 +86,4 @@ scorep_compiler_subsystem_init( void )
         /* This handles SCOREP_IsUnwindingEnabled() and sets all regions handles to `FILTERED`. */
         scorep_compiler_gcc_plugin_register_region( region_descr );
     }
-
-    return SCOREP_SUCCESS;
 }
