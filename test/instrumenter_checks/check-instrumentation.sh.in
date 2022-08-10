@@ -87,7 +87,7 @@ valid_thread()
 
 # Initialize defaults
 COMP=yes
-@HAVE_COMPILER_INSTRUMENTATION_FALSE@unset COMP
+@HAVE_SCOREP_COMPILER_INSTRUMENTATION_FALSE@unset COMP
 unset MPP
 unset THREAD
 unset OPARI2_USER

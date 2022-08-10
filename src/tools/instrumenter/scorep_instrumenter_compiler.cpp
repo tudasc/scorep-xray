@@ -86,9 +86,9 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 {
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 
-#if !HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if !HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     unsupported();
-#endif /*!HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
+#endif /*!HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 }
 
 bool

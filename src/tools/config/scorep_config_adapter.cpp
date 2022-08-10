@@ -42,7 +42,7 @@ std::deque<SCOREP_Config_Adapter*> SCOREP_Config_Adapter::all;
 void
 SCOREP_Config_Adapter::init( void )
 {
-#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     all.push_back( new SCOREP_Config_CompilerAdapter() );
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "compiler" ) );
@@ -316,7 +316,7 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 bool
 SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
 {
-#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     if ( SCOREP_Config_Adapter::checkArgument( arg ) )
     {
         return true;
@@ -330,7 +330,7 @@ SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
         return true;
     }
 #endif /*HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL*/
-#endif /*HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
+#endif /*HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 
     return false;
 }
