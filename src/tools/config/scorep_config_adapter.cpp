@@ -350,7 +350,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
             cflags += SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS;
             break;
         case SCOREP_CONFIG_LANGUAGE_FORTRAN:
-            cflags += SCOREP_COMPILER_INSTRUMENTATION_FFLAGS;
+            cflags += SCOREP_COMPILER_INSTRUMENTATION_FCFLAGS;
             break;
         default:
             break;
