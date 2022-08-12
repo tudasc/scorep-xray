@@ -591,7 +591,7 @@ $4
         [AS_VAR_SET([afs_CacheVar], [yes])],
         [AS_VAR_SET([afs_CacheVar], [no])])])
 AS_VAR_IF([afs_CacheVar], [yes],
-    [AC_DEFINE_UNQUOTED(AS_TR_CPP([HAVE_POSIX_$1]), 1,
+    [AC_DEFINE(AS_TR_CPP([HAVE_POSIX_$1]), 1,
         [Define to 1 if `$1' function can be linked])])
 AS_VAR_POPDEF([afs_CacheVar])
 ]) # _AFS_CHECK_SYMBOL

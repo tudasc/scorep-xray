@@ -116,7 +116,7 @@ m4_case([$#],
     [m4_fatal([$0: too many arguments: $@])])dnl
 
 m4_pushdef([_afs_package_tmp], m4_normalize($1))dnl
-AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD], "_afs_package_tmp",
+AC_DEFINE([AFS_PACKAGE_BUILD], "_afs_package_tmp",
     [Name of the sub-build.])
 m4_define([AFS_PACKAGE_BUILD], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
@@ -145,7 +145,7 @@ afs_srcdir=${afs_srcdir%/}
 
 m4_pushdef([_afs_package_tmp],
     m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
-AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_name], _afs_package_tmp,
+AC_DEFINE([AFS_PACKAGE_BUILD_name], _afs_package_tmp,
     [Symbol name of the sub-build in lower case.])
 AC_SUBST([AFS_PACKAGE_BUILD_name], _afs_package_tmp)
 m4_define([AFS_PACKAGE_BUILD_name], _afs_package_tmp)dnl
@@ -153,16 +153,16 @@ m4_popdef([_afs_package_tmp])dnl
 
 m4_pushdef([_afs_package_tmp],
     m4_toupper(AFS_PACKAGE_BUILD_name))dnl
-AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp,
+AC_DEFINE([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp,
     [Symbol name of the sub-build in upper case.])
 AC_SUBST([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)
 m4_define([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
 
-AC_DEFINE_UNQUOTED([[AFS_PACKAGE_name]], AFS_PACKAGE_name,
+AC_DEFINE([[AFS_PACKAGE_name]], AFS_PACKAGE_name,
     [The package name usable as a symbol in lower case.])
 
-AC_DEFINE_UNQUOTED([[AFS_PACKAGE_NAME]], AFS_PACKAGE_NAME,
+AC_DEFINE([[AFS_PACKAGE_NAME]], AFS_PACKAGE_NAME,
     [The package name usable as a symbol in upper case.])
 ])
 
