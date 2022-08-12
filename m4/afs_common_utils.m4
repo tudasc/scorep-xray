@@ -64,7 +64,7 @@ m4_ifblank([$2], [m4_fatal([missing second argument to $0])])
 m4_ifblank([$3], [m4_fatal([missing third argument to $0])])
 dnl
 AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [$3])
-AC_DEFINE_UNQUOTED([PACKAGE_ERROR_CODES_HEADER], [$2],
+AC_DEFINE([PACKAGE_ERROR_CODES_HEADER], [$2],
     [The #include argument used to include this packages error codes header.])
 ]) # AFS_COMMON_UTILS
 

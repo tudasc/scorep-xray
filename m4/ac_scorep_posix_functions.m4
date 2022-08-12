@@ -92,7 +92,7 @@ m4_define([_COMPAT_POSIX_CHECK], [
     dnl Definition
     has_$1_func=$afs_cv_have_posix_$1
     AS_IF([test "x$afs_cv_have_posix_$1" = "xyes"],
-        [AC_DEFINE_UNQUOTED([HAVE_]m4_toupper($1), 1,
+        [AC_DEFINE([HAVE_]m4_toupper($1), 1,
             [Define to 1 if `$1' can be linked])])
     dnl Conditional
     AM_CONDITIONAL([HAVE_]m4_toupper($1), [test "x$afs_cv_have_posix_$1" = "xyes"])
