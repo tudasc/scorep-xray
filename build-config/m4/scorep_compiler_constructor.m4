@@ -6,7 +6,7 @@
 ## Copyright (c) 2015, 2019,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2021,
+## Copyright (c) 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -26,6 +26,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [sun],      [scorep_compiler_constructor_mode=pragma
                  scorep_compiler_constructor_cflags=""],
     [ibm],      [scorep_compiler_constructor_mode=attribute
+                 scorep_compiler_constructor_cflags=""],
+    [nvhpc],    [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
     [portland],      [scorep_compiler_constructor_mode=pragma
                       scorep_compiler_constructor_cflags=""],

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013, 2021,
+## Copyright (c) 2009-2013, 2021-2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012, 2014,
@@ -58,6 +58,7 @@ dnl FIX REQUIRE: Needs AFS_PROG_CC
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INTEL],   [test 1 -eq 1], [false])],
     [ibm],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_IBM],     [test 1 -eq 1], [false])],
+    [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],     [test 1 -eq 1], [false])],
     [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],     [test 1 -eq 1], [false])],
     [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_GNU],     [test 1 -eq 1], [false])],
     [clang],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CLANG],   [test 1 -eq 1], [false])],
@@ -76,6 +77,7 @@ afs_compiler_fujitsu=0
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [afs_compiler_intel=1],
     [ibm],      [afs_compiler_ibm=1],
+    [nvhpc],    [afs_compiler_portland=1],
     [portland], [afs_compiler_portland=1],
     [gnu],      [afs_compiler_gnu=1],
     [clang],    [afs_compiler_clang=1],
