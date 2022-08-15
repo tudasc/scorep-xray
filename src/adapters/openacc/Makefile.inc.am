@@ -32,8 +32,8 @@ libscorep_adapter_openacc_mgmt_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS)                    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
-     -I$(INC_ROOT)src/measurement/include \
-    @SCOREP_OPENACC_CPPFLAGS@
+    -I$(INC_ROOT)src/measurement/include \
+    $(SCOREP_OPENACC_CPPFLAGS)
 
 libscorep_adapter_openacc_mgmt_la_LDFLAGS = \
     $(library_api_version_ldflags)
@@ -53,7 +53,8 @@ libscorep_adapter_openacc_event_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS)                    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_DEFINITIONS)             \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_ROOT)src/measurement/include \
+    $(SCOREP_OPENACC_CPPFLAGS)
 
 libscorep_adapter_openacc_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
