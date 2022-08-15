@@ -149,8 +149,8 @@ AC_SCOREP_COND_HAVE([POSIX_IO_SUPPORT],
                      # do not wrap 'vfprintf' on Cray platform
                      AS_CASE([${ac_scorep_platform}],
                              [cray*], [# as we do not check for vfprintf corresponding symbol should not be defined
-                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_VFPRINTF], [0])
-                                     AC_DEFINE_UNQUOTED([HAVE_POSIX_IO_SYMBOL_FPRINTF], [0])],
+                                     AC_DEFINE([HAVE_POSIX_IO_SYMBOL_VFPRINTF], [0])
+                                     AC_DEFINE([HAVE_POSIX_IO_SYMBOL_FPRINTF], [0])],
                              [SCOREP_CHECK_SYMBOLS([POSIX I/O], [], [scorep_posix_io_wrap_symbols], [vfprintf,fprintf])])])
 
 AFS_SUMMARY_POP([POSIX I/O support], [${scorep_posix_io_support}${scorep_posix_io_summary_reason}])

@@ -60,7 +60,7 @@ AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],
          [__attribute__((aligned (16)))],
          [Makes C variable alignment consistent with Fortran])
      AC_SUBST([SCOREP_OMP_TPD], [1])
-     AC_DEFINE_UNQUOTED([HAVE_SCOREP_OMP_TPD], [1],
+     AC_DEFINE([HAVE_SCOREP_OMP_TPD], [1],
          [Define to 1 if OpenMP tpd functionality is available.])
     ],
     [AC_SUBST([SCOREP_OMP_TPD], [0])])
