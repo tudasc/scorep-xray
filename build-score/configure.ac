@@ -46,8 +46,10 @@ AS_IF([test "x${afs_cross_compiling}" != "xyes" && \
        test "x${afs_cross_compiling}" != "xno"],
     [AC_MSG_ERROR([invalid value '$afs_cross_compiling' for variable \$afs_cross_compiling.], [1])])
 
-# Compilers etc. are set according to Cube installation (see below),
-# so ignore environment variables set in the environment.
+# Compilers etc. are set according to cubelib installation (see
+# below), so intentionally ignore environment variables set in the
+# environment. For CFLAGS, CXXFLAGS, and LDFLAGS see
+# *FLAGS_FOR_BUILD_SCORE below.
 AS_UNSET([CC])
 AS_UNSET([CFLAGS])
 AS_UNSET([LDFLAGS])
@@ -59,50 +61,46 @@ AS_UNSET([CXX])
 AS_UNSET([CXXFLAGS])
 AS_UNSET([CXXCPP])
 
-AC_ARG_VAR([CXXFLAGS_FOR_BUILD_SCORE],
-    [C++ compiler flags for building scorep-score])
-AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_set}" = xset],
-    [CXXFLAGS="${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_value}"])
-
 AC_PROG_AWK
 AC_PROG_GREP
 AC_PROG_SED
 
-# Get CXX (without leading whitespace) that was used to build cube
-# reader libraries. Might contain language and architecture options
-# like '-std=c++11' or '-q64'.
+# Get CC and CXX (without leading whitespace) that was used to build
+# cubelib. Might contain language and architecture options like
+# '-std=c++11' or '-q64'.
 AS_IF([test -n "${scorep_cubelib_bindir}"],
     [# Get from external cube installation
+     CC="`${scorep_cubelib_bindir}/cubelib-config --cc | ${SED} 's/^[ \t]*//'`"
      CXX="`${scorep_cubelib_bindir}/cubelib-config --cxx | ${SED} 's/^[ \t]*//'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 1])],
-    [# Get from internal cube. cube's build-backend defines FRONTEND_CXX
-     # in cross and non-cross mode.
+    [# Get from internal cubelib
+     CC="`GREP_OPTIONS= ${GREP} ^CC= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      CXX="`GREP_OPTIONS= ${GREP} ^CXX= ../vendor/cubelib/build-frontend/config.log | ${AWK} -F\' '{gsub(/^ +/,"",$2); print $2}'`"
      AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBELIB], [test 1 -eq 0])])
 
-AFS_PROG_CXX([11], [noext])
+# Provide CFLAGS, CXXFLAGS, ands LDFLAGS for build-score via
+# *FLAGS_FOR_BUILD_SCORE environment variables. If not set,
+# use autoconf's defaults.
+AC_ARG_VAR([CFLAGS_FOR_BUILD_SCORE],
+    [C compiler flags for building scorep-score. Please note that CC comes from cubelib.])
+AS_IF([test "x${ac_cv_env_CFLAGS_FOR_BUILD_SCORE_set}" != xset],
+    [AS_UNSET([CFLAGS])],
+    [CFLAGS="${ac_cv_env_CFLAGS_FOR_BUILD_SCORE_value}"])
+AC_ARG_VAR([CXXFLAGS_FOR_BUILD_SCORE],
+    [C++ compiler flags for building scorep-score. Please note that CXX comes from cubelib.])
+AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_set}" != xset],
+    [AS_UNSET([CXXFLAGS])],
+    [CXXFLAGS="${ac_cv_env_CXXFLAGS_FOR_BUILD_SCORE_value}"])
+AC_ARG_VAR([LDFLAGS_FOR_BUILD_SCORE],
+    [Linker flags for building scorep-score.])
+AS_IF([test "x${ac_cv_env_LDFLAGS_FOR_BUILD_SCORE_set}" != xset],
+    [AS_UNSET([LDFLAGS])],
+    [LDFLAGS="${ac_cv_env_LDFLAGS_FOR_BUILD_SCORE_value}"])
 
-AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
-    [intel],    [CC=icc],
-    [ibm],      [CC=xlc_r],
-    [gnu],      [CC=gcc],
-    [sun],      [CC=cc],
-    [portland], [CC=pgcc], # TODO: that may have been 'pgc++ -Mllvm' from the default target, thus 'pgcc' may not be the LLVM variant
-    [clang],    [CC=clang],
-    [AC_MSG_WARN([invalid value of CXX vendor (${ax_cv_cxx_compiler_vendor}), cannot determine corresponding CC. Using gcc as fall-back.])
-     CC=gcc
-     fallback=" (fall-back)"])
-
-# Use CXX arguments like -q64 on CC as well to prevent build errors relating
-# to incompatible architectures if we are not using the fall-back. Omit C++
-# language options though:
-# -h std=<option>   # Cray
-# -std=<option>     # GNU, Intel, PGI/NVIDIA
-# -qlangvl=<option> # IBM
-# --c++<option>     # PGI
-CXX_ARGS="`echo $CXX_FULL | ${SED} -E -e 's/-h +std=\S+( |$)//g' -e 's/-std=\S+( |$)//g' -e 's/-qlangvl=\S+( |$)//g' -e 's/--c\+\+\S+( |$)//g' | ${AWK} '{$1 = ""; print $0}'`"
-AS_IF([test "x${fallback}" = x],
-    [CC="${CC} ${CXX_ARGS}"])
+# Don't use any options to AFS_PROG_* but use the dialect provided
+# (from 4.7 on) by cubelib-config.
+AFS_PROG_CC
+AFS_PROG_CXX
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
@@ -112,13 +110,11 @@ AFS_MAINTAINER_MODE
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AFS_PROG_CC([99])
-
 LT_PREREQ([2.4.6])
 LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
-AFS_PROG_CC_SUMMARY([], [${fallback}])
+AFS_PROG_CC_SUMMARY
 AFS_PROG_CXX_SUMMARY
 
 AC_SCOREP_GIT_CONTROLLED

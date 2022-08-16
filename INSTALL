@@ -488,8 +488,14 @@ variables:
   SHMEM_LIB_NAME
               name of the SHMEM library
   SHMEM_NAME  name of the implemented SHMEM specification
+  CFLAGS_FOR_BUILD_SCORE
+              C compiler flags for building scorep-score. Please note
+              that CC comes from cubelib.
   CXXFLAGS_FOR_BUILD_SCORE
-              C++ compiler flags for building scorep-score
+              C++ compiler flags for building scorep-score. Please
+              note that CXX comes from cubelib.
+  LDFLAGS_FOR_BUILD_SCORE
+              Linker flags for building scorep-score.
   PTHREAD_CFLAGS
               CFLAGS used to compile Pthread programs
   PTHREAD_LIBS
