@@ -80,8 +80,6 @@ AC_SUBST([LIBTOOL_DEPS])
 AFS_LINKMODE
 AFS_SUMMARY([Link mode], [static=$enable_static, shared=$enable_shared])
 
-AM_PROG_AS
-
 AC_CONFIG_HEADERS([../src/config-backend.h])
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [AC_CONFIG_HEADERS([../src/config-backend-for-frontend.h])])

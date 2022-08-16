@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -42,26 +42,30 @@
 #include <config.h>
 #include <UTILS_Debug.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 #include <inttypes.h>
-#include <stdbool.h>
 #include <assert.h>
 #include <ctype.h>
 
 
-#include <UTILS_Error.h>
 #include <UTILS_CStr.h>
-#include <UTILS_IO.h>
+#include <UTILS_Mutex.h>
 
 
 #include "normalize_file.h"
 
 
-static uint64_t debug_level;
+bool     utils_debug_initialized = false;
+uint64_t utils_debug_level       = 0;
+
+static UTILS_Mutex debug_mutex  = UTILS_MUTEX_INIT;
+static FILE*       debug_stream = NULL;
+
+static THREAD_LOCAL_STORAGE_SPECIFIER int32_t thread_id = -1;
+
 
 static bool
 is_base_digit( int        c,
@@ -277,56 +281,66 @@ modify_level:
 }
 
 /**
- * This is the init function for the debug system, which is mainly used to
- * collect all needed information from the system and warn that the debug mode
- * was set on compile time.
+ * Initialize the debug system.  Retrieve the enabled debug modules from the
+ * @c <PACKAGE>_DEBUG environment variable and print a corresponding status
+ * message to @c stderr.
  */
-static void
-debug_init( void )
+void
+utils_debug_init( void )
 {
-    static uint32_t init_flag;
-
-    if ( init_flag == 0 )
+    UTILS_MutexLock( &debug_mutex );
+    if ( utils_debug_initialized )
     {
-        init_flag = 1;
+        UTILS_MutexUnlock( &debug_mutex );
+        return;
+    }
 
-        const char* env_name           = UTILS_STRINGIFY( PACKAGE_MANGLE_NAME( DEBUG ) );
-        const char* debug_level_string = getenv( env_name );
+    const char* env_name           = UTILS_STRINGIFY( PACKAGE_MANGLE_NAME( DEBUG ) );
+    const char* debug_level_string = getenv( env_name );
 
-        debug_level = 0;
-        if ( debug_level_string )
+    utils_debug_level = 0;
+    if ( debug_level_string )
+    {
+        int ret = parse_debug_level( debug_level_string, &utils_debug_level );
+        if ( ret )
         {
-            int ret = parse_debug_level( debug_level_string, &debug_level );
-            if ( ret )
-            {
-                fprintf( stderr, "[%s] Invalid value for %s: %s\n",
-                         PACKAGE_NAME, env_name, debug_level_string );
-            }
-        }
-
-        debug_level &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-        if ( debug_level )
-        {
-            fprintf( stderr, "[%s] Active debug module(s):", PACKAGE_NAME );
-            uint64_t     level_mod   = 1;
-            const char** module_name = debug_module_names;
-            while ( *module_name )
-            {
-                if ( debug_level & level_mod )
-                {
-                    fprintf( stderr, " %s", *module_name );
-                }
-                level_mod <<= 1;
-                module_name++;
-            }
-            fprintf( stderr, "\n" );
+            fprintf( stderr, "[%s] Invalid value for %s: %s\n",
+                     PACKAGE_NAME, env_name, debug_level_string );
         }
     }
+
+    utils_debug_level &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
+    if ( utils_debug_level )
+    {
+        fprintf( stderr, "[%s] Active debug module(s):", PACKAGE_NAME );
+        uint64_t     level_mod   = 1;
+        const char** module_name = debug_module_names;
+        while ( *module_name )
+        {
+            if ( utils_debug_level & level_mod )
+            {
+                fprintf( stderr, " %s", *module_name );
+            }
+            level_mod <<= 1;
+            module_name++;
+        }
+        fprintf( stderr, "\n" );
+    }
+
+    utils_debug_initialized = true;
+    UTILS_MutexUnlock( &debug_mutex );
 }
 
+void
+UTILS_Debug_SetLogStream( FILE* stream )
+{
+    UTILS_MutexLock( &debug_mutex );
+    debug_stream = stream;
+    UTILS_MutexUnlock( &debug_mutex );
+}
 
 void
-UTILS_Debug_Printf( uint64_t    bitMask,
+UTILS_Debug_Printf( uint64_t    kind,
                     const char* srcdir,
                     const char* file,
                     uint64_t    line,
@@ -334,16 +348,8 @@ UTILS_Debug_Printf( uint64_t    bitMask,
                     const char* msgFormatString,
                     ... )
 {
-    debug_init();
-
-    uint64_t kind = bitMask & ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-    bitMask &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-
-    if ( debug_level == 0 || ( debug_level & bitMask ) != bitMask )
-    {
-        return;
-    }
-
+    /* Extract the "kind" bits and ensure they are not all set simultaneously */
+    kind &= ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
     assert( kind != ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT ) );
 
     size_t msg_format_string_length = msgFormatString ?
@@ -351,6 +357,17 @@ UTILS_Debug_Printf( uint64_t    bitMask,
 
     const char* normalized_file = normalize_file( srcdir, file );
 
+    UTILS_MutexLock( &debug_mutex );
+    if ( !debug_stream )
+    {
+        debug_stream = stdout;
+    }
+    if ( thread_id == -1 )
+    {
+        static int32_t thread_count = 0;
+
+        thread_id = thread_count++;
+    }
     if ( kind )
     {
         const char* kind_str = "Entering";
@@ -359,9 +376,10 @@ UTILS_Debug_Printf( uint64_t    bitMask,
             kind_str = "Leaving";
         }
 
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": %s function '%s'%s",
+        fprintf( debug_stream,
+                 "[%s - %" PRId32 "] %s:%" PRIu64 ": %s function '%s'%s",
                  PACKAGE_NAME,
+                 thread_id,
                  normalized_file,
                  line,
                  kind_str,
@@ -370,9 +388,10 @@ UTILS_Debug_Printf( uint64_t    bitMask,
     }
     else
     {
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 "%s",
+        fprintf( debug_stream,
+                 "[%s - %" PRId32 "] %s:%" PRIu64 "%s",
                  PACKAGE_NAME,
+                 thread_id,
                  normalized_file,
                  line,
                  msg_format_string_length ? ": " : "\n" );
@@ -382,79 +401,9 @@ UTILS_Debug_Printf( uint64_t    bitMask,
     {
         va_list va;
         va_start( va, msgFormatString );
-        vfprintf( stdout, msgFormatString, va );
-        fprintf( stdout, "\n" );
+        vfprintf( debug_stream, msgFormatString, va );
+        fprintf( debug_stream, "\n" );
         va_end( va );
     }
-}
-
-
-void
-UTILS_Debug_RawPrintf( uint64_t    bitMask,
-                       const char* msgFormatString,
-                       ... )
-{
-    debug_init();
-
-    /* enter/exit does not make sense for the raw one */
-    uint64_t kind = bitMask & ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-    assert( kind == 0 );
-
-    if ( debug_level == 0 || ( debug_level & bitMask ) != bitMask )
-    {
-        return;
-    }
-
-    va_list va;
-    va_start( va, msgFormatString );
-    vfprintf( stdout, msgFormatString, va );
-    va_end( va );
-}
-
-
-void
-UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* file,
-                    uint64_t    line,
-                    const char* function )
-{
-    debug_init();
-
-    uint64_t kind = bitMask & ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-    bitMask &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
-
-    if ( debug_level == 0 || ( debug_level & bitMask ) != bitMask )
-    {
-        return;
-    }
-
-    assert( kind != ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT ) );
-
-    const char* normalized_file = normalize_file( srcdir, file );
-
-    if ( kind )
-    {
-        const char* kind_str = "Entering";
-        if ( bitMask & UTILS_DEBUG_FUNCTION_EXIT )
-        {
-            kind_str = "Leaving";
-        }
-
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": %s function '%s': ",
-                 PACKAGE_NAME,
-                 normalized_file,
-                 line,
-                 kind_str,
-                 function );
-    }
-    else
-    {
-        fprintf( stdout,
-                 "[%s] %s:%" PRIu64 ": ",
-                 PACKAGE_NAME,
-                 normalized_file,
-                 line );
-    }
+    UTILS_MutexUnlock( &debug_mutex );
 }

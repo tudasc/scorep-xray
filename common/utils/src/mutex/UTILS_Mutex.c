@@ -13,10 +13,6 @@
 
 #include <config.h>
 #include <UTILS_Mutex.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <UTILS_Atomic.h>
-#include <UTILS_Error.h>
 
 #define STATIC_INLINE
 #include "UTILS_Mutex.inc.c"

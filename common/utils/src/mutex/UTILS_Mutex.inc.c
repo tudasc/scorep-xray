@@ -17,6 +17,8 @@
 #error STATIC_INLINE needs to be defined
 #endif /* STATIC_INLINE */
 
+#include <stddef.h>
+
 #include <UTILS_Error.h>
 
 STATIC_INLINE void

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -31,6 +31,9 @@
 
 #ifndef UTILS_NORMALIZE_FILE_H
 #define UTILS_NORMALIZE_FILE_H
+
+
+#include <string.h>
 
 
 /**

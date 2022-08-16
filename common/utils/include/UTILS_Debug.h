@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016,
+ * Copyright (c) 2009-2012, 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,6 +40,10 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
 
 #include <UTILS_Portability.h>
 
@@ -58,7 +62,8 @@ UTILS_BEGIN_C_DECLS
  *
  * For debug output the macro @ref UTILS_DEBUG_PRINTF is provided. For each debug
  * message, a debug level must be provided. The print out of the messages can be filtered
- * depending on the debug level.
+ * depending on the debug level.  By default, debug messages are printed to @c stdout;
+ * an alternative output stream can be set using @ref UTILS_Debug_SetLogStream.
  * The second debug macro is @ref UTILS_ASSERT which ensures that a condition holds.
  *
  * The debug macros resolve to nothing if HAVE_UTILS_DEBUG is not defined or zero.
@@ -115,13 +120,20 @@ enum
 /* *INDENT-OFF* */
 
 #define UTILS_DEBUG_PRINTF( debugLevel, ... ) \
-    UTILS_Debug_Printf( \
-        debugLevel, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( debugLevel ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                debugLevel, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define HAVE_DEBUG_MODULE_NAME_( sym ) defined( sym ## _DEBUG_MODULE_NAME )
 #define HAVE_DEBUG_MODULE_NAME( sym )  HAVE_DEBUG_MODULE_NAME_( sym )
@@ -129,39 +141,58 @@ enum
 #if HAVE_DEBUG_MODULE_NAME( AFS_PACKAGE_NAME )
 
 #define UTILS_DEBUG( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ), \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                0, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define UTILS_DEBUG_ENTRY( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_ENTRY, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                UTILS_DEBUG_FUNCTION_ENTRY, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #define UTILS_DEBUG_EXIT( ... ) \
-    UTILS_Debug_Printf( \
-        UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
-                UTILS_JOIN_SYMS( _DEBUG_, \
-                        PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_EXIT, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME, \
-        "" __VA_ARGS__ )
+    do \
+    { \
+        if ( UTILS_Debug_IsEnabled( UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
+                                        UTILS_JOIN_SYMS( _DEBUG_, \
+                                            PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) ) ) \
+        { \
+            UTILS_Debug_Printf( \
+                UTILS_DEBUG_FUNCTION_EXIT, \
+                AFS_PACKAGE_SRCDIR, \
+                __FILE__, \
+                __LINE__, \
+                UTILS_FUNCTION_NAME, \
+                "" __VA_ARGS__ ); \
+        } \
+    } \
+    while ( 0 )
 
 #else
 
@@ -189,44 +220,6 @@ enum
 
 
 /**
- * Use this if you don't want the prefix and newline of UTILS_DEBUG_PRINTF()
- *
- * @param ... The first needs to be the debug level. Remaining arguments are
- *            used for a printf call.
- */
-#if HAVE( UTILS_DEBUG )
-
-#define UTILS_DEBUG_RAW_PRINTF( ... )  \
-    UTILS_Debug_RawPrintf( __VA_ARGS__ )
-
-#else
-
-#define UTILS_DEBUG_RAW_PRINTF( ... ) do { } while ( 0 )
-
-#endif /* HAVE_UTILS_DEBUG */
-
-
-/**
- * Use this if you just want the prefix and no new line.
- */
-#if HAVE( UTILS_DEBUG )
-
-#define UTILS_DEBUG_PREFIX( debugLevel ) \
-    UTILS_Debug_Prefix( \
-        debugLevel, \
-        AFS_PACKAGE_SRCDIR, \
-        __FILE__, \
-        __LINE__, \
-        UTILS_FUNCTION_NAME )
-
-#else
-
-#define UTILS_DEBUG_PREFIX( ... ) do { } while ( 0 )
-
-#endif /* HAVE_UTILS_DEBUG */
-
-
-/**
  * Use this to hide code, especially variables, which are only accessed in
  * debug mode.
  *
@@ -245,10 +238,51 @@ enum
 
 
 /**
+ * Set the output stream for debug messages to @p stream.  Client code is
+ * responsible for properly opening/closing @p stream.  Passing @c NULL
+ * resets the stream to @c stdout (the default).
+ *
+ * @param stream Valid output stream
+ */
+#define UTILS_Debug_SetLogStream PACKAGE_MANGLE_NAME( UTILS_Debug_SetLogStream )
+void
+UTILS_Debug_SetLogStream( FILE* stream );
+
+/**
+ * Checks whether the given debug level is enabled.
+ *
+ * @param bitMask The debug level to be tested.
+ * @return Returns @c true if enabled, @c false otherwise.
+ */
+#define UTILS_Debug_IsEnabled PACKAGE_MANGLE_NAME( UTILS_Debug_IsEnabled )
+static inline bool
+UTILS_Debug_IsEnabled( uint64_t bitMask )
+{
+    /* Internal variables set by `utils_debug_init` -- read only! */
+    #define utils_debug_initialized PACKAGE_MANGLE_name( utils_debug_initialized )
+    #define utils_debug_level       PACKAGE_MANGLE_name( utils_debug_level )
+    extern bool     utils_debug_initialized;
+    extern uint64_t utils_debug_level;
+
+    if ( !utils_debug_initialized )
+    {
+        #define utils_debug_init PACKAGE_MANGLE_name( utils_debug_init )
+        extern void utils_debug_init( void );
+
+        utils_debug_init();
+    }
+
+    bitMask &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
+
+    return ( utils_debug_level & bitMask ) == bitMask;
+}
+
+/**
  * Function implementation called by @ref UTILS_DEBUG_PRINTF. It prints a debug message
  * in the given debug level. Furthermore, it provides the function name, file name and
  * line number.
- * @param bitMask    The debug level which must be enabled to print out the message.
+ * @param kind       The "kind" part of the debug level (zero, UTILS_DEBUG_FUNCTION_ENTRY,
+ *                   or UTILS_DEBUG_FUNCTION_EXIT; all other bits are ignored).
  * @param function   A string containing the name of the function where the debug messages
  *                   was called.
  * @param file       The file name of the file which contains the source code where the
@@ -262,44 +296,13 @@ enum
  */
 #define UTILS_Debug_Printf PACKAGE_MANGLE_NAME( UTILS_Debug_Printf )
 void
-UTILS_Debug_Printf( uint64_t    bitMask,
+UTILS_Debug_Printf( uint64_t    kind,
                     const char* srcdir,
                     const char* file,
                     uint64_t    line,
                     const char* function,
                     const char* msgFormatString,
                     ... );
-
-/**
- * The same as @a UTILS_Debug_Printf. Except it does not print the prefix and no
- * newline at the end.
- *
- * @param bitMask    The debug level which must be enabled to print out the
- *                   message.
- * @param msgFormatString A format string followed by the parameters defined in
- *                        the format string. The format string and the
- *                        parameters have thesame syntax like in the POSIX
- *                        printf function.
- */
-#define UTILS_Debug_RawPrintf PACKAGE_MANGLE_NAME( UTILS_Debug_RawPrintf )
-void
-UTILS_Debug_RawPrintf( uint64_t    bitMask,
-                       const char* msgFormatString,
-                       ... );
-
-/**
- * The same as @a UTILS_Debug_Printf. Except it prints only the prefix.
- *
- * @param bitMask    The debug level which must be enabled to print out the
- *                   message.
- */
-#define UTILS_Debug_Prefix PACKAGE_MANGLE_NAME( UTILS_Debug_Prefix )
-void
-UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* file,
-                    uint64_t    line,
-                    const char* function );
 
 UTILS_END_C_DECLS
 

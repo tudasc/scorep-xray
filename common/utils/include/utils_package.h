@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -38,13 +38,6 @@
  * @brief           Module for error handling in SCOREP.
  */
 
-#include <stdint.h>
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
-#include <stdarg.h>
-
-#include <UTILS_Error.h>
 
 /*
  * The angle brackets need to tightly enclose the header name, else
