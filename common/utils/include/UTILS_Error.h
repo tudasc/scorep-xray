@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016, 2022,
+ * Copyright (c) 2009-2012, 2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -164,7 +164,7 @@ UTILS_Error_Handler( const char*       srcdir,
  */
 #define UTILS_Error_FromPosix PACKAGE_MANGLE_NAME( UTILS_Error_FromPosix )
 PACKAGE_ErrorCode
-UTILS_Error_FromPosix( const int posixErrorCode );
+UTILS_Error_FromPosix( int posixErrorCode );
 
 #define HAVE_UTILS_NO_ASSERT UTILS_JOIN_SYMS( HAVE_, PACKAGE_MANGLE_NAME( NO_ASSERT ) )
 

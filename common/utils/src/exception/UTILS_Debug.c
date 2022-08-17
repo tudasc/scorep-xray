@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2022,
+ * Copyright (c) 2009-2012, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -121,12 +121,12 @@ parse_number( const char*     numberString,
 
     /* determine base of number */
     int base = 10;
-    if ( numberString[ 0 ] == '0' && tolower( numberString[ 1 ] ) == 'x' )
+    if ( numberString[ 0 ] == '0' && tolower( ( unsigned char )numberString[ 1 ] ) == 'x' )
     {
         base          = 16;
         numberString += 2;
     }
-    else if ( numberString[ 0 ] == '0' && tolower( numberString[ 1 ] ) == 'b' )
+    else if ( numberString[ 0 ] == '0' && tolower( ( unsigned char )numberString[ 1 ] ) == 'b' )
     {
         base          = 2;
         numberString += 2;
@@ -138,7 +138,7 @@ parse_number( const char*     numberString,
     }
     const char* value_iterator = numberString;
     int         digit;
-    while ( is_base_digit( tolower( *value_iterator ), base, &digit ) )
+    while ( is_base_digit( tolower( ( unsigned char )*value_iterator ), base, &digit ) )
     {
         uint64_t new_number = base * number + digit;
 
@@ -185,7 +185,7 @@ string_equal_icase( const char* s1,
 {
     while ( *s1 && *s2 )
     {
-        if ( toupper( *s1 ) != toupper( *s2 ) )
+        if ( toupper( ( unsigned char )*s1 ) != toupper( ( unsigned char )*s2 ) )
         {
             return false;
         }

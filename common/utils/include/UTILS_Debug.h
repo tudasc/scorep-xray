@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016, 2022,
+ * Copyright (c) 2009-2012, 2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -86,7 +86,7 @@ enum
      * src/config-custom.h
      */
     #define UTILS_DEFINE_DEBUG_MODULE( name, bit ) \
-    PACKAGE_MANGLE_NAME( DEBUG_ ## name ) = ( UINT64_C( 1 ) << bit )
+    PACKAGE_MANGLE_NAME( DEBUG_ ## name ) = ( UINT64_C( 1 ) << ( bit ) )
     UTILS_DEBUG_MODULES
     #undef UTILS_DEFINE_DEBUG_MODULE
 };

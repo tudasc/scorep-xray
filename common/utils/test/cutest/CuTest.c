@@ -474,13 +474,13 @@ CuSuiteInit( const char*   name,
     testSuite->head        = NULL;
     testSuite->tail        = &testSuite->head;
     testSuite->currentRank = currentRank;
-    testSuite->masterRank  = currentRank;
+    testSuite->primaryRank = currentRank;
 
     if ( testAllreduce )
     {
         testSuite->testAllreduce = testAllreduce;
-        /* determine the lowest rank and use this as the master rank */
-        testSuite->testAllreduce( &testSuite->masterRank );
+        /* determine the lowest rank and use this as the primary rank */
+        testSuite->testAllreduce( &testSuite->primaryRank );
     }
     else
     {
@@ -561,7 +561,7 @@ CuSuiteRun( CuSuite* testSuite )
     int     i        = 1;
     CuTest* testCase = testSuite->head;
 
-    if ( testSuite->masterRank == testSuite->currentRank )
+    if ( testSuite->primaryRank == testSuite->currentRank )
     {
         printf( "%s%s:%s\n", color_yel, testSuite->name, color_std );
     }
@@ -598,7 +598,7 @@ CuSuiteRun( CuSuite* testSuite )
         }
         else
         {
-            if ( testSuite->masterRank == testSuite->currentRank )
+            if ( testSuite->primaryRank == testSuite->currentRank )
             {
                 printf( "   %sok%s %d: %s\n", color_grn, color_std,
                         i, testCase->name );
@@ -617,7 +617,7 @@ CuSuiteSummary( CuSuite*  testSuite,
     int         runCount = 0;
     const char* testWord;
 
-    if ( testSuite->masterRank != testSuite->currentRank )
+    if ( testSuite->primaryRank != testSuite->currentRank )
     {
         return;
     }

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2022,
+ * Copyright (c) 2009-2012, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -44,6 +44,7 @@
  * the additional spaces are taken into account for the file name
  */
 /* *INDENT-OFF* */
+/* NOLINTNEXTLINE(bugprone-macro-parentheses) */
 #define PACKAGE_INCLUDE_( f ) <f>
 /* *INDENT-ON* */
 
