@@ -1,5 +1,7 @@
 # no indent tab check for Makefiles
 **/Makefile*    -hook-indent-tabs
 **/*.am         -hook-indent-tabs
+# no indent tab check for assembly sources
+**/*.s.in       -hook-indent-tabs
 # Hand beatified for OTF2
 /src/exception/ErrorCodes.tmpl.h -hook-beautifier
