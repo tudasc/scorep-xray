@@ -55,17 +55,46 @@ dnl ------------------------------------------------------------------
 AC_DEFUN([AC_SCOREP_COMPILER_CHECKS],[
 dnl FIX REQUIRE: Needs AFS_PROG_CC
 
+# The SCOREP_COMPILER_* automake conditionals are exclusively used by
+# scorep. Thus, define only the ones that are used.
+# Later on, move from common to scorep.
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
-    [intel],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INTEL],   [test 1 -eq 1], [false])],
-    [ibm],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_IBM],     [test 1 -eq 1], [false])],
-    [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],     [test 1 -eq 1], [false])],
-    [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],     [test 1 -eq 1], [false])],
-    [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_GNU],     [test 1 -eq 1], [false])],
-    [clang],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CLANG],   [test 1 -eq 1], [false])],
-    [cray],     [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CRAY],    [test 1 -eq 1], [false])],
-    [fujitsu],  [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FUJITSU], [test 1 -eq 1], [false])],
-    [unknown],  [AC_MSG_WARN([Could not determine compiler vendor. AC_PACKAGE_NAME might not function properly.])],
-    [AC_MSG_WARN([Compiler vendor '${ax_cv_c_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])dnl
+    [intel],    [],
+    [ibm],      [],
+    [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_PGI],     [test 1 -eq 1], [false])],
+    [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_PGI],     [test 1 -eq 1], [false])],
+    [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_GNU],     [test 1 -eq 1], [false])],
+    [clang],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_CLANG],   [test 1 -eq 1], [false])],
+    [cray],     [],
+    [fujitsu],  [],
+    [unknown],  [AC_MSG_WARN([Could not determine C compiler vendor. AC_PACKAGE_NAME might not function properly.])],
+    [AC_MSG_WARN([C compiler vendor '${ax_cv_c_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])dnl
+
+AS_IF([test x$afs_cv_prog_cxx_works = xyes], [
+    AS_CASE([${ax_cv_cxx_compiler_vendor%/*}],
+        [intel],    [],
+        [ibm],      [],
+        [nvhpc],    [],
+        [portland], [],
+        [gnu],      [],
+        [clang],    [],
+        [cray],     [],
+        [fujitsu],  [],
+        [unknown],  [AC_MSG_WARN([Could not determine C++ compiler vendor. AC_PACKAGE_NAME might not function properly.])],
+        [AC_MSG_WARN([C++ compiler vendor '${ax_cv_cxx_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])])
+
+AS_IF([test x$afs_cv_prog_fc_works = xyes], [
+    AS_CASE([${ax_cv_fc_compiler_vendor%/*}],
+        [intel],       [],
+        [ibm],         [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_IBM],     [test 1 -eq 1], [false])],
+        [nvhpc],       [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_PGI],     [test 1 -eq 1], [false])],
+        [portland],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_PGI],     [test 1 -eq 1], [false])],
+        [gnu],         [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_GNU],     [test 1 -eq 1], [false])],
+        [clang|flang], [],
+        [cray],        [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_CRAY],    [test 1 -eq 1], [false])],
+        [fujitsu],     [AFS_AM_CONDITIONAL([SCOREP_COMPILER_FC_FUJITSU], [test 1 -eq 1], [false])],
+        [unknown],     [AC_MSG_WARN([Could not determine Fortran compiler vendor. AC_PACKAGE_NAME might not function properly.])],
+        [AC_MSG_WARN([Fortran compiler vendor '${ax_cv_fc_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])])
 
 afs_compiler_intel=0
 afs_compiler_ibm=0
