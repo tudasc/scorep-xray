@@ -4,7 +4,7 @@
  * Copyright (c) 2014, 2016, 2018-2019, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014, 2019-2020,
+ * Copyright (c) 2014, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -315,6 +315,9 @@ scorep_thread_create_wait_on_begin( struct scorep_thread_private_data*  parentTp
     {
         /* Reuse tpd and its location, update parent. */
         scorep_thread_set_parent( *currentTpd, parentTpd );
+        /* Set new OS thread ID */
+        SCOREP_Location* location = scorep_thread_get_location( *currentTpd );
+        SCOREP_Location_UpdateThreadId( location );
     }
 
     int status = pthread_setspecific( tpd_key, *currentTpd );
@@ -493,6 +496,9 @@ scorep_thread_create_wait_on_orphan_begin( struct scorep_thread_private_data** c
     {
         /* Reuse tpd and its location, update parent. */
         scorep_thread_set_parent( *currentTpd, NULL /* parent */ );
+        /* Set new OS thread ID */
+        SCOREP_Location* location = scorep_thread_get_location( *currentTpd );
+        SCOREP_Location_UpdateThreadId( location );
     }
 
     int status = pthread_setspecific( tpd_key, *currentTpd );

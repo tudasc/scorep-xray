@@ -59,6 +59,7 @@
 
 #include "scorep_cuda_confvars.inc.c"
 #include "scorep_cupti.h"
+#include "scorep_cuda_nvtx_mgmt.h"
 
 #if HAVE( NVML_SUPPORT )
 
@@ -214,6 +215,8 @@ cuda_subsystem_init( void )
     {
         scorep_cupti_callbacks_init();
     }
+
+    scorep_cuda_nvtx_init();
 
     return SCOREP_SUCCESS;
 }

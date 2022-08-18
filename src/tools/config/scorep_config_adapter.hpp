@@ -334,9 +334,13 @@ class SCOREP_Config_CudaAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_CudaAdapter();
     void
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc ) override;
+    void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps ) override;
-
     void
     appendInitStructName( std::deque<std::string>& init_structs ) override;
 };

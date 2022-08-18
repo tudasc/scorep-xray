@@ -309,6 +309,16 @@ scorep_cupti_context_get_by_id( uint32_t contextId );
 scorep_cupti_context*
 scorep_cupti_context_get_create( CUcontext cudaContext );
 
+/**
+ * Set the name for the given CUDA context
+ *
+ * @param context the CUDA context
+ * @param name the name
+ */
+void
+scorep_cupti_context_set_name( scorep_cupti_context* context,
+                               const char*           name );
+
 /*
  * Remove a context from the global context list and return it.
  *
@@ -367,6 +377,24 @@ scorep_cupti_stream*
 scorep_cupti_stream_get_create(
     scorep_cupti_context* context,
     uint32_t              streamId );
+
+/**
+ * Get a Score-P CUPTI stream by CUDA stream handle
+ * @param cudaStream the CUPTI stream handle
+ *
+ * @return Score-P CUPTI stream
+ */
+scorep_cupti_stream*
+scorep_cupti_stream_get( CUstream cudaStream );
+
+/**
+ * Set the Score-P location name for a stream
+ * @param stream the Score-P stream handle
+ * @param name the name for the location
+ */
+void
+scorep_cupti_stream_set_name( scorep_cupti_stream* stream,
+                              const char*          name );
 
 /*
  * Collect all Score-P locations, which are involved in CUDA communication.

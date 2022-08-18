@@ -76,8 +76,7 @@ SCOREP_Unify( void )
 
     /* ensure, that the empty string gets id 0 */
     SCOREP_StringHandle empty_string =
-        scorep_definitions_new_string( scorep_unified_definition_manager,
-                                       "", NULL );
+        scorep_definitions_new_string( scorep_unified_definition_manager, "" );
 
     /* Let the subsystems do some stuff */
     scorep_subsystems_pre_unify();

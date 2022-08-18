@@ -1,5 +1,9 @@
 ------------------- Upcoming version 8.0 -----------------------------
 
+Major features:
+
+-Add support to record CUDA NVTX instrumentation.
+
 Features and improvements:
 
 - Add support for recording the offset parameter to MPI I/O

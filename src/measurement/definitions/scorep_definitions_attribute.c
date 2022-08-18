@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2019,
+ * Copyright (c) 2009-2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -98,10 +98,10 @@ SCOREP_Definitions_NewAttribute( const char*          name,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unknown attribute>", NULL ),
+            name ? name : "<unknown attribute>" ),
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            description ? description : "", NULL ),
+            description ? description : "" ),
         type );
 
     SCOREP_Definitions_Unlock();

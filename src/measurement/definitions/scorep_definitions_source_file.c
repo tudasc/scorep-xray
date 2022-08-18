@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2019,
+ * Copyright (c) 2009-2015, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -79,6 +79,15 @@ equal_source_file( const SCOREP_SourceFileDef* existingDefinition,
                    const SCOREP_SourceFileDef* newDefinition );
 
 
+static void
+simplify_path( size_t strLen,
+               char*  str,
+               void*  arg )
+{
+    memcpy( str, arg, strLen + 1 );
+    UTILS_IO_SimplifyPath( str );
+}
+
 /**
  * Associate a file name with a process unique file handle.
  */
@@ -89,12 +98,14 @@ SCOREP_Definitions_NewSourceFile( const char* fileName )
 
     SCOREP_Definitions_Lock();
 
+    fileName = fileName ? fileName : "<unknown source file>";
+
     SCOREP_SourceFileHandle new_handle = define_source_file(
         &scorep_local_definition_manager,
-        scorep_definitions_new_string(
+        scorep_definitions_new_string_generator(
             &scorep_local_definition_manager,
-            fileName ? fileName : "<unknown source file>",
-            UTILS_IO_SimplifyPath ) );
+            strlen( fileName ),
+            simplify_path, ( void* )fileName ) );
 
     SCOREP_Definitions_Unlock();
 

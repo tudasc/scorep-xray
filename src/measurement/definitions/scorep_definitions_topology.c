@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014, 2019,
+ * Copyright (c) 2009-2014, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -108,7 +108,7 @@ SCOREP_Definitions_NewCartesianTopology( const char*                      topolo
         {
             name_handle =  scorep_definitions_new_string(
                 &scorep_local_definition_manager,
-                dimensionNames[ i ], NULL );
+                dimensionNames[ i ] );
         }
         else
         {
@@ -117,7 +117,7 @@ SCOREP_Definitions_NewCartesianTopology( const char*                      topolo
             snprintf( buffer, 20, "dimension %d", i );
             name_handle = scorep_definitions_new_string(
                 &scorep_local_definition_manager,
-                buffer, NULL );
+                buffer );
         }
 
         cartesian_dimensions[ i ].dimension_name      = name_handle;
@@ -130,14 +130,14 @@ SCOREP_Definitions_NewCartesianTopology( const char*                      topolo
     {
         topo_name_handle =  scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            topologyName, NULL );
+            topologyName );
     }
     else
     {
         /* initialize default topology name for any unnamed topologies */
         topo_name_handle = scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            "unnamed topology", NULL );
+            "unnamed topology" );
     }
     /** The handle to be returned from this function is actually
      *  defined in the define_topology internal function.

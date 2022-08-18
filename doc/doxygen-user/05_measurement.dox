@@ -49,7 +49,7 @@ are only stored in those nodes, where the metric was triggered.
 For enabling profiling, set the  \confvar{SCOREP_ENABLE_PROFILING} environment variable
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a file, named <tt>profile.cubex</tt> in your measurement directory, which you can display
-with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
+with the @cube4 with <tt>cube profile.cubex</tt>. The name of the profile can be
 changed through the environment variable \confvar{SCOREP_PROFILING_BASE_NAME}. The
 extension <tt>.cubex</tt> will be appended to the base name you specify in the
 environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
@@ -242,8 +242,8 @@ core file. Thus, it is not recommended, to enable this feature for large scale r
 \confvar{SCOREP_ENABLE_TRACING}, you can control whether a trace is recorded. If the
 value is <tt>0</tt> or <tt>false</tt> no trace is recorded, if the value is non-zero
 or <tt>true</tt>, a trace is recorded. If the variable is not specified,
-@scorep records traces on default.
-After trace recording you will find the OTF2 anchor file, named <tt>trace.otf2</tt>
+@scorep does not record traces.
+After trace recording you will find the OTF2 anchor file, named <tt>traces.otf2</tt>
 in the experiment directory, along with the trace data.
 
 
@@ -847,7 +847,7 @@ There are ways around this problem:
   <li> Make the <tt>nvcc</tt> host-code compiler match the @scorep compiler by adding <tt>-ccbin <SCOREP_COMPILER></tt> to the <tt>nvcc</tt> invocation.
   You can query <tt><SCOREP_COMPILER></tt> and the entire command using <tt>scorep-info config.summary | grep 'nvcc works'</tt>.
   E.g., if the <tt>.cu</tt> file does neither contain MPI nor SHMEM and @scorep uses an Intel compiler suite, the command could be <tt>nvcc -ccbin icpc -Xcompiler=-std=c++11</tt>.
-  By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc<\tt> invocations. </li>
+  By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc</tt> invocations. </li>
   <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>--nocompiler</tt>. </li>
   <li> Use a @scorep installation that is based on the GNU compiler tool chain. </li>
 </ul>
@@ -892,6 +892,31 @@ Filtering does not remove CUDA activities inserted by @scorep or CUDA data trans
 If a kernel is filtered, no kernel launch properties activated in \confvar{SCOREP_CUDA_ENABLE} using <tt>kernel_counter</tt> are inserted for this kernel.
 GPU idle time is not affected by kernel filtering.
 
+@subsection cuda_adapter_nvtx CUDA NVTX Measurement
+@seclabel{cuda_adapter_nvtx}
+
+NVTX intrumentation is enabled if instrumented with <tt>\--cuda</tt>.
+The Start/Stop Range events are not supported, because they allow to span different threads and do not need to be nested.
+NVTX Mark events are modelled as a short sequence of Enter and Leave events.
+NVTX user regions are grouped by the NVTX domain.
+The region group name for the default domain is <tt>"NVTX"</tt>, for user defined domains it is <tt>"NVTX Domain '<DOMAIN-NAME>'"</tt>.
+Payloads in the <tt>nvtxEventAttributes_t</tt> arguments are converted to event attributes of the Enter event.
+These are only available in tracing mode, as they are potential non-categorical data and profiling does not support floating point parameters.
+Payload names are of the form <tt>"NVTX Payload <DATATYPE-NAME>"</tt>, where <tt><DATATYPE-NAME></tt> is derived from the NVTX datatype enum by removing the <tt>NVTX_PAYLOAD_TYPE_</tt> prefix.
+Categories in the <tt>nvtxEventAttributes_t</tt> arguments are converted to the parameter <tt>"NVTX Category"</tt> (see @secref{parameter_profiling}), hence are available in profiling and tracing.
+
+@note While NVTX considers different domains as disjoint range stacks, @scorep does not support overlapping ranges.
+
+The following resource naming APIs are supported:
+
+<dl>
+  <dt><tt>nvtxNameOsThread{A,W}</tt></dt>
+    <dd>Name of CPU location</dd>
+  <dt><tt>nvtxNameCuStream{A,W}</tt></dt>
+    <dd>Name of GPU location</dd>
+  <dt><tt>nvtxNameCuContext{A,W}</tt></dt>
+    <dd>Name of GPU location group</dd>
+</dl>
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}

@@ -63,6 +63,11 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
 
 
 void
+SCOREP_LocationGroupHandle_SetName( SCOREP_LocationGroupHandle handle,
+                                    const char*                name );
+
+
+void
 scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*             definition,
                                          struct SCOREP_Allocator_PageManager* handlesPageManager );
 

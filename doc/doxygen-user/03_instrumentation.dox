@@ -202,11 +202,11 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
-      <td align="left" valign="middle"> CUDA </td>
+      <td align="left" valign="middle"> CUDA<br>(incl. NVTX) </td>
       <td align="center" valign="middle"> \--[no]cuda </td>
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> all </td>
-      <td align="center" valign="middle"> @secref{cuda_adapter} </td>
+      <td align="center" valign="middle"> @secref{cuda_adapter}<br>(@secref{cuda_adapter_nvtx}) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenCL </td>

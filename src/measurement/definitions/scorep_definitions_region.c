@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2017, 2019,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -124,16 +124,16 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
         /* region name (use it for demangled name) */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            regionName ? regionName : "<unknown region>", NULL ),
+            regionName ? regionName : "<unknown region>" ),
         /* canonical region name (use it for mangled name) */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             regionCanonicalName ? regionCanonicalName :
-            regionName ? regionName : "<unknown region>", NULL ),
+            regionName ? regionName : "<unknown region>" ),
         /* description currently not used */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            "", NULL ),
+            "" ),
         file_name_handle,
         beginLine,
         endLine,
@@ -156,9 +156,7 @@ SCOREP_RegionHandle_SetGroup( SCOREP_RegionHandle handle,
     SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
     region->group_name_handle = scorep_definitions_new_string(
-        &scorep_local_definition_manager,
-        groupName,
-        NULL );
+        &scorep_local_definition_manager, groupName );
 
     SCOREP_Definitions_Unlock();
 }

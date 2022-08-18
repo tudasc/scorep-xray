@@ -97,6 +97,25 @@ SCOREP_Location_GetCurrentCPULocation( void );
 uint32_t
 SCOREP_Location_GetId( SCOREP_Location* locationData );
 
+/**
+ *  Returns the OS thread ID of the location.
+ *
+ * @param locationData  The location to query the OS thread ID from.
+ *
+ * @return OS thread ID from @a locationData.
+ */
+uint64_t
+SCOREP_Location_GetThreadId( SCOREP_Location* locationData );
+
+/**
+ *  Updates the OS thread ID.
+ *
+ * Call after reusing the location.
+ *
+ * @param locationData  The location to update.
+ */
+void
+SCOREP_Location_UpdateThreadId( SCOREP_Location* locationData );
 
 /**
  *  Returns the type of the location.
@@ -167,5 +186,27 @@ SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
 
 const char*
 SCOREP_Location_GetName( SCOREP_Location* locationData );
+
+/**
+ *  Sets the name of the location.
+ *
+ * @param location  The location.
+ * @param name      The name for the location.
+ */
+void
+SCOREP_Location_SetName( SCOREP_Location* locationData,
+                         const char*      name );
+
+/**
+ *  Sets the location name based on the OS thread ID.
+ *
+ * @param threadID  The OS thread Id to identify the location.
+ * @param name      The name for the location.
+ *
+ * @return True if location was found by @a threadId.
+ */
+bool
+SCOREP_Location_SetNameByThreadId( uint64_t    threadId,
+                                   const char* name );
 
 #endif /* SCOREP_LOCATION_H */

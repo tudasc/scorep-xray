@@ -9,7 +9,7 @@
 ## Copyright (c) 2015,
 ## Technische Universitaet Muenchen, Germany
 ##
-## Copyright (c) 2016,
+## Copyright (c) 2016, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -56,6 +56,7 @@ endif HAVE_OPENMP_C_SUPPORT
 
 noinst_LTLIBRARIES += libscorep_thread_fork_join_generic.la
 libscorep_thread_fork_join_generic_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/thread/scorep_thread.c                                                   \
     $(SRC_ROOT)src/measurement/thread/scorep_thread_generic.c                                           \
     $(SRC_ROOT)src/measurement/thread/include_intern/scorep_thread_model_specific.h                     \
     $(SRC_ROOT)src/measurement/thread/include_intern/scorep_thread_generic.h                            \

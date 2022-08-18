@@ -95,7 +95,7 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType        locationType,
         UINT64_MAX,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "", NULL ),
+            name ? name : "" ),
         locationType,
         locationGroupParent,
         0,

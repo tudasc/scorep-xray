@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2017, 2019,
+ * Copyright (c) 2009-2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -98,7 +98,7 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
         members,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "", NULL ),
+            name ? name : "" ),
         false /* no need to converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
@@ -125,7 +125,7 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
         ( const uint64_t* )members,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "", NULL ),
+            name ? name : "" ),
         true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
@@ -153,7 +153,7 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
         ( const uint64_t* )members,
         scorep_definitions_new_string(
             scorep_unified_definition_manager,
-            name, NULL ),
+            name ),
         false /* no need to converted from uint32_t */ );
 }
 
@@ -177,7 +177,7 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
         ( const uint64_t* )members,
         scorep_definitions_new_string(
             scorep_unified_definition_manager,
-            name ? name : "", NULL ),
+            name ? name : "" ),
         true /* need to be converted from uint32_t */ );
 }
 

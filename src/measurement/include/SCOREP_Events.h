@@ -225,7 +225,7 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
  */
 void
 SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
-                     void*                  value );
+                     const void*            value );
 
 
 /**
@@ -240,7 +240,7 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
 void
 SCOREP_Location_AddAttribute( SCOREP_Location*       location,
                               SCOREP_AttributeHandle attributeHandle,
-                              void*                  value );
+                              const void*            value );
 
 
 /**
@@ -1334,6 +1334,17 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value );
+
+
+/**
+ *
+ *
+ * @param parameterHandle
+ * @param value
+ */
+void
+SCOREP_TriggerParameterStringHandle( SCOREP_ParameterHandle parameterHandle,
+                                     SCOREP_StringHandle    stringHandle );
 
 
 void

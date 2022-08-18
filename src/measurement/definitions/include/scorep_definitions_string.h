@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,26 @@ SCOREP_DEFINE_DEFINITION_TYPE( String )
 SCOREP_StringHandle
 SCOREP_Definitions_NewString( const char* str );
 
+typedef void ( * scorep_string_definition_generator )( size_t stringLength,
+                                                       char*  stringStorage,
+                                                       void*  generatorArg );
+
+/**
+ *  Custom string definition generation.
+ *
+ *  Allocates (@a stringLength + 1) bytes and calls
+ *      @a generator( @a stringLength, <storage>, @a generatorArg )
+ *  to generate the string content before searching for duplicates.
+ *
+ *  This is helpful, if the string value is available via a generator function.
+ *  For example a string conversion from UTF-8 to ASCII, can be done without an
+ *  intermediate allocated buffer.
+ */
+SCOREP_StringHandle
+SCOREP_Definitions_NewStringGenerator( size_t                             stringLength,
+                                       scorep_string_definition_generator generator,
+                                       void*                              generatorArg );
+
 const char*
 SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
 
@@ -67,17 +87,20 @@ scorep_definitions_unify_string( SCOREP_StringDef*                    definition
                                  struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-typedef void ( * scorep_string_definition_modifier )( char* str );
+SCOREP_StringHandle
+scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
+                               const char*               str );
 
 SCOREP_StringHandle
-scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_manager,
-                               const char*                       str,
-                               scorep_string_definition_modifier modifier );
+scorep_definitions_new_string_generator( SCOREP_DefinitionManager*          definition_manager,
+                                         size_t                             stringLength,
+                                         scorep_string_definition_generator generator,
+                                         void*                              generatorArg );
 
 SCOREP_StringHandle
 scorep_definitions_new_string_va( SCOREP_DefinitionManager* definition_manager,
-                                  size_t                    strLen,
-                                  const char*               strFmt,
+                                  size_t                    stringLength,
+                                  const char*               formatString,
                                   va_list                   va );
 
 

@@ -423,7 +423,7 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
  */
 void
 SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
-                     void*                  value )
+                     const void*            value )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
@@ -437,7 +437,7 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
 void
 SCOREP_Location_AddAttribute( SCOREP_Location*       location,
                               SCOREP_AttributeHandle attributeHandle,
-                              void*                  value )
+                              const void*            value )
 {
     SCOREP_CALL_SUBSTRATE_MGMT( AddAttribute, ADD_ATTRIBUTE,
                                 ( location, attributeHandle, value ) );
@@ -1457,16 +1457,26 @@ void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value )
 {
+    SCOREP_StringHandle string_handle = SCOREP_Definitions_NewString( value );
+    SCOREP_TriggerParameterStringHandle( parameterHandle, string_handle );
+}
+
+
+/**
+ *
+ */
+void
+SCOREP_TriggerParameterStringHandle( SCOREP_ParameterHandle parameterHandle,
+                                     SCOREP_StringHandle    stringHandle )
+{
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_StringHandle string_handle = SCOREP_Definitions_NewString( value );
-
     SCOREP_CALL_SUBSTRATE( TriggerParameterString, TRIGGER_PARAMETER_STRING,
                            ( location, timestamp,
-                             parameterHandle, string_handle ) );
+                             parameterHandle, stringHandle ) );
 }
 
 

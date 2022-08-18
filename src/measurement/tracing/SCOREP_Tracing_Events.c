@@ -78,7 +78,7 @@
 static void
 add_attribute( SCOREP_Location*       location,
                SCOREP_AttributeHandle attributeHandle,
-               void*                  value );
+               const void*            value );
 
 /**
  * Enables tracing recording. This function activates tracing recording.
@@ -406,7 +406,7 @@ sample( SCOREP_Location*                location,
 void
 add_attribute( SCOREP_Location*       location,
                SCOREP_AttributeHandle attributeHandle,
-               void*                  value )
+               const void*            value )
 {
     if ( !SCOREP_RecordingEnabled() )
     {
@@ -422,117 +422,117 @@ add_attribute( SCOREP_Location*       location,
     switch ( attrType )
     {
         case SCOREP_ATTRIBUTE_TYPE_FLOAT:
-            otf_val.float32 = *( ( float* )value );
+            otf_val.float32 = *( ( const float* )value );
             otf_type        = OTF2_TYPE_FLOAT;
             break;
         case SCOREP_ATTRIBUTE_TYPE_DOUBLE:
-            otf_val.float64 = *( ( double* )value );
+            otf_val.float64 = *( ( const double* )value );
             otf_type        = OTF2_TYPE_DOUBLE;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_INT8:
-            otf_val.int8 = *( ( int8_t* )value );
+            otf_val.int8 = *( ( const int8_t* )value );
             otf_type     = OTF2_TYPE_INT8;
             break;
         case SCOREP_ATTRIBUTE_TYPE_INT16:
-            otf_val.int16 = *( ( int16_t* )value );
+            otf_val.int16 = *( ( const int16_t* )value );
             otf_type      = OTF2_TYPE_INT16;
             break;
         case SCOREP_ATTRIBUTE_TYPE_INT32:
-            otf_val.int32 = *( ( int32_t* )value );
+            otf_val.int32 = *( ( const int32_t* )value );
             otf_type      = OTF2_TYPE_INT32;
             break;
         case SCOREP_ATTRIBUTE_TYPE_INT64:
-            otf_val.int64 = *( ( int64_t* )value );
+            otf_val.int64 = *( ( const int64_t* )value );
             otf_type      = OTF2_TYPE_INT64;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_UINT8:
-            otf_val.uint8 = *( ( uint8_t* )value );
+            otf_val.uint8 = *( ( const uint8_t* )value );
             otf_type      = OTF2_TYPE_UINT8;
             break;
         case SCOREP_ATTRIBUTE_TYPE_UINT16:
-            otf_val.uint16 = *( ( uint16_t* )value );
+            otf_val.uint16 = *( ( const uint16_t* )value );
             otf_type       = OTF2_TYPE_UINT16;
             break;
         case SCOREP_ATTRIBUTE_TYPE_UINT32:
-            otf_val.uint32 = *( ( uint32_t* )value );
+            otf_val.uint32 = *( ( const uint32_t* )value );
             otf_type       = OTF2_TYPE_UINT32;
             break;
         case SCOREP_ATTRIBUTE_TYPE_UINT64:
-            otf_val.uint64 = *( ( uint64_t* )value );
+            otf_val.uint64 = *( ( const uint64_t* )value );
             otf_type       = OTF2_TYPE_UINT64;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_ATTRIBUTE:
             otf_val.attributeRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_AttributeHandle* )value ), Attribute );
+                *( ( const SCOREP_AttributeHandle* )value ), Attribute );
             otf_type = OTF2_TYPE_ATTRIBUTE;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_INTERIM_COMMUNICATOR:
             otf_val.commRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_InterimCommunicatorHandle* )value ), InterimCommunicator );
+                *( ( const SCOREP_InterimCommunicatorHandle* )value ), InterimCommunicator );
             otf_type = OTF2_TYPE_COMM;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_GROUP:
             otf_val.groupRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_GroupHandle* )value ), Group );
+                *( ( const SCOREP_GroupHandle* )value ), Group );
             otf_type = OTF2_TYPE_GROUP;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_LOCATION:
             otf_val.locationRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_LocationHandle* )value ), Location );
+                *( ( const SCOREP_LocationHandle* )value ), Location );
             otf_type = OTF2_TYPE_LOCATION;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_METRIC:
             otf_val.metricRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_MetricHandle* )value ), Metric );
+                *( ( const SCOREP_MetricHandle* )value ), Metric );
             otf_type = OTF2_TYPE_METRIC;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_PARAMETER:
             otf_val.parameterRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_ParameterHandle* )value ), Parameter );
+                *( ( const SCOREP_ParameterHandle* )value ), Parameter );
             otf_type = OTF2_TYPE_PARAMETER;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_REGION:
             otf_val.regionRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_RegionHandle* )value ), Region );
+                *( ( const SCOREP_RegionHandle* )value ), Region );
             otf_type = OTF2_TYPE_REGION;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_RMA_WINDOW:
             otf_val.rmaWinRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_RmaWindowHandle* )value ), RmaWindow );
+                *( ( const SCOREP_RmaWindowHandle* )value ), RmaWindow );
             otf_type = OTF2_TYPE_RMA_WIN;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_STRING:
             otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_StringHandle* )value ), String );
+                *( ( const SCOREP_StringHandle* )value ), String );
             otf_type = OTF2_TYPE_STRING;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION:
             otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_SourceCodeLocationHandle* )value ), SourceCodeLocation );
+                *( ( const SCOREP_SourceCodeLocationHandle* )value ), SourceCodeLocation );
             otf_type = OTF2_TYPE_SOURCE_CODE_LOCATION;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_CALLING_CONTEXT:
             otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_SourceCodeLocationHandle* )value ), CallingContext );
+                *( ( const SCOREP_SourceCodeLocationHandle* )value ), CallingContext );
             otf_type = OTF2_TYPE_CALLING_CONTEXT;
             break;
 
         case SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR:
             otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
-                *( ( SCOREP_SourceCodeLocationHandle* )value ), InterruptGenerator );
+                *( ( const SCOREP_SourceCodeLocationHandle* )value ), InterruptGenerator );
             otf_type = OTF2_TYPE_INTERRUPT_GENERATOR;
             break;
 

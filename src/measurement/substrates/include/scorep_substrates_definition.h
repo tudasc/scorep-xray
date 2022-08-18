@@ -7,7 +7,7 @@
  * Copyright (c) 2015-2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2015-2018
+ * Copyright (c) 2015-2018, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -373,7 +373,7 @@ typedef void ( * SCOREP_Substrates_NewDefinitionHandleCb )(
 typedef void ( * SCOREP_Substrates_AddAttributeCb )(
     struct SCOREP_Location* location,
     SCOREP_AttributeHandle  attributeHandle,
-    void*                   value );
+    const void*             value );
 
 
 /**

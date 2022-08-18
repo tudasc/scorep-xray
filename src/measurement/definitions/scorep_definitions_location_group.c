@@ -75,6 +75,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
                        SCOREP_LocationGroupType    locationGroupType,
                        SCOREP_LocationGroupHandle  creatingLocationGroup );
 
+
 /**
  * Registers a new local location group into the definitions.
  *
@@ -94,7 +95,7 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unknown location group>", NULL ),
+            name ? name : "<unknown location group>" ),
         systemTreeParent,
         locationGroupType,
         creatingLocationGroup );
@@ -103,6 +104,16 @@ SCOREP_Definitions_NewLocationGroup( const char*                 name,
 
     return new_handle;
 }
+
+
+void
+SCOREP_LocationGroupHandle_SetName( SCOREP_LocationGroupHandle handle,
+                                    const char*                name )
+{
+    SCOREP_LOCAL_HANDLE_DEREF(
+        handle, LocationGroup )->name_handle = SCOREP_Definitions_NewString( name );
+}
+
 
 void
 scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definition,
@@ -143,6 +154,7 @@ scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definitio
         definition->location_group_type,
         unified_creating_location_group );
 }
+
 
 static inline bool
 equal_location_group( const SCOREP_LocationGroupDef* existingDefinition,

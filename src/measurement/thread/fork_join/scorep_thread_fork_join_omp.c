@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2017,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015, 2019-2020,
+ * Copyright (c) 2014-2015, 2019-2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -247,6 +247,8 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
                     /* For the first fork, use locations created in order corresponding to threadId. */
                     UTILS_ASSERT( firstForkLocations[ threadId - 1 ] );
                     location = firstForkLocations[ threadId - 1 ];
+                    /* Set new OS thread ID, OpenMP might create a new OS thread */
+                    SCOREP_Location_UpdateThreadId( location );
                 }
                 else
                 {

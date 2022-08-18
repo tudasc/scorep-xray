@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015, 2017, 2019,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -105,10 +105,10 @@ SCOREP_IoFileHandle_AddProperty( SCOREP_IoFileHandle ioFileHandle,
             ioFileHandle,
             scorep_definitions_new_string(
                 &scorep_local_definition_manager,
-                propertyName, NULL ),
+                propertyName ),
             scorep_definitions_new_string(
                 &scorep_local_definition_manager,
-                propertyValue, NULL ) );
+                propertyValue ) );
 
     SCOREP_Definitions_Unlock();
 
