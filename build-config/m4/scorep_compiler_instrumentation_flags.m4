@@ -142,6 +142,8 @@ dnl
 # Intel compilers
 # API allows storing a handle, thus, no addr lookup needed
 _CHECK_COMPILER_INSTRUMENTATION_FLAG([-tcollect], ['__VT_IntelEntry$'], ['__VT_IntelExit$'], [VT_INTEL])
+AS_IF([ test "x$have_instrumentation_[]_AC_LANG_ABBREV[]_api_vt_intel" = xyes],
+    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_INSTRUMENTATION_NEEDS_LIBVT], [test 1 -eq 1], [false])])
 dnl
 # XL compilers
 # -qfunctrace provides filtering capabilities

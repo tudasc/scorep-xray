@@ -140,11 +140,9 @@ if HAVE_MPIFC
 if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
-if PLATFORM_CRAY
-if SCOREP_COMPILER_CLANG
-variabledef.mod: VariableDef.$(OBJEXT)
-endif SCOREP_COMPILER_CLANG
-endif PLATFORM_CRAY
+if SCOREP_COMPILER_FC_CRAY
+variabledef.mod: jacobi_mpi_f90-VariableDef.$(OBJEXT)
+endif SCOREP_COMPILER_FC_CRAY
 jacobi_mpi_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_mpi_f90-main.$(OBJEXT): variabledef.mod
 
@@ -170,7 +168,7 @@ if HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
-if ! SCOREP_COMPILER_CRAY
+if !SCOREP_COMPILER_FC_CRAY
 # The cray fortran compiler bails out on #line directives so we just
 # deactivate the tests with opari2-preinstrumented fortran sources.
 
@@ -203,7 +201,7 @@ jacobi_mpi_omp_f90_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_f90
 
-endif !SCOREP_COMPILER_CRAY
+endif !SCOREP_COMPILER_FC_CRAY
 
 endif HAVE_SCOREP_OMP_TPD
 

@@ -41,10 +41,10 @@ external_ldflags += -Wl,--no-as-needed
 endif BUILD_SHARED_LIBRARIES
 endif HAVE_GNU_LINKER
 
-if SCOREP_COMPILER_PGI
+if SCOREP_COMPILER_FC_PGI
 # see 'Linking issues with PGI compilers and Open MPI 1.8' #951
 external_ldflags += -pgf90libs
-endif SCOREP_COMPILER_PGI
+endif SCOREP_COMPILER_FC_PGI
 
 if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)

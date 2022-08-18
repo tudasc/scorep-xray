@@ -74,7 +74,7 @@ TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 
 endif HAVE_SCOREP_OMP_TPD
 
-if ! SCOREP_COMPILER_PGI
+if ! SCOREP_COMPILER_CC_PGI
 # The PGI compilers do currently not support nested
 # parallelism. Therefore testing this functionality does not make any
 # sense.
@@ -102,7 +102,7 @@ TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested_profile.sh
 
 endif HAVE_SCOREP_OMP_TPD
 
-endif !SCOREP_COMPILER_PGI
+endif !SCOREP_COMPILER_CC_PGI
 
 endif HAVE_OPENMP_C_SUPPORT
 

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2015, 2017,
+## Copyright (c) 2009-2011, 2015, 2017, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -70,9 +70,10 @@ endif PLATFORM_BGP
 
 ## Blue Gene Q
 if PLATFORM_BGQ
-if SCOREP_COMPILER_GNU
+if SCOREP_COMPILER_CC_GNU
+# we assume that if the CC compiler on BGQ is GNU, then this holds for CXX and FC as well
 scorep_backend_info_LDFLAGS += -Wl,-Bdynamic
-endif SCOREP_COMPILER_GNU
+endif SCOREP_COMPILER_CC_GNU
 endif PLATFORM_BGQ
 
 ## Cray systems

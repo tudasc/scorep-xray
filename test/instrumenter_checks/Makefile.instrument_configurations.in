@@ -46,8 +46,8 @@ PREPS_FILE      = @abs_top_builddir@/../installcheck/instrumenter_checks/configu
 # we build these checks always without memory instrumentation
 SCOREP_ARGS     = --nomemory
 
-@SCOREP_COMPILER_IBM_TRUE@FD_FLAG="-WF,"
-@SCOREP_COMPILER_IBM_FALSE@FD_FLAG=""
+@SCOREP_COMPILER_FC_IBM_TRUE@FD_FLAG="-WF,"
+@SCOREP_COMPILER_FC_IBM_FALSE@FD_FLAG=""
 
 SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
 

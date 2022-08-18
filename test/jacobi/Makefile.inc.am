@@ -163,7 +163,7 @@ if HAVE_OPENMP_FC_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
-if ! SCOREP_COMPILER_CRAY
+if ! SCOREP_COMPILER_FC_CRAY
 # The cray fortran compiler bails out on #line directives so we just
 # deactivate the tests with opari2-preinstrumented fortran sources.
 
@@ -199,7 +199,7 @@ jacobi_omp_f90_uninstrumented_LDADD    = -lm
 
 TESTS_OMP += jacobi_omp_f90
 
-endif ! SCOREP_COMPILER_CRAY
+endif ! SCOREP_COMPILER_FC_CRAY
 
 endif HAVE_SCOREP_OMP_TPD
 
