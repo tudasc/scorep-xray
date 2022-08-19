@@ -117,6 +117,19 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return ( arg == "-shared" ) || ( arg == "-dynamiclib" ) || ( arg == "-qmkshrobj" );
 }
 
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+#if SCOREP_BACKEND_COMPILER_CC_GNU || SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CC_CLANG
+    return "-E -o " + output_file;
+#elif SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CC_FUJITSU
+    return "-E > " + output_file;
+#else
+#error Compiler not handled
+#endif
+}
+
 bool
 SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
@@ -152,12 +165,6 @@ SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 
 /* *************************************** CRAY */
 #if SCOREP_BACKEND_COMPILER_CRAY
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
@@ -201,13 +208,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
@@ -235,13 +235,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
 std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
@@ -266,13 +259,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
@@ -299,12 +285,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
@@ -331,13 +311,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 }
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
@@ -368,13 +341,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
  *       optional extensions. One such extension uses GCC functionality.
  */
 #elif SCOREP_BACKEND_COMPILER_CLANG
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
