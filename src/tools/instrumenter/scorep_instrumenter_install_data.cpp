@@ -143,6 +143,34 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
 #endif
 }
 
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return "-eP && mv "
+           + remove_extension( remove_path( input_file ) ) + ".i "
+           + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return "-cpp -E -o " + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    std::string basename      = remove_extension( remove_path( input_file ) );
+    std::string prep_file_v13 = "F" + basename + ".f";
+    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
+    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_PGI || SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return "-E > " + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return "";
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return "";
+}
+
 bool
 SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
@@ -345,16 +373,6 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
     return arg == "-ffixed";
 }
 
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-eP && mv "
-           + remove_extension( remove_path( input_file ) ) + ".i "
-           + output_file;
-}
-
 #else // !SCOREP_BACKEND_COMPILER_FC_CRAY
 
 #if SCOREP_BACKEND_COMPILER_GNU
@@ -370,13 +388,6 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
     return arg == "-ffixed-form";
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-cpp -E -o " + output_file;
-}
-
 #elif SCOREP_BACKEND_COMPILER_IBM
 bool
 SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
@@ -388,17 +399,6 @@ bool
 SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-qfixed";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    std::string basename      = remove_extension( remove_path( input_file ) );
-    std::string prep_file_v13 = "F" + basename + ".f";
-    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
-
-    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
 }
 
 #elif SCOREP_BACKEND_COMPILER_INTEL
@@ -414,13 +414,6 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
     return arg == "-nofree";
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
 SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
@@ -432,13 +425,6 @@ bool
 SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-Mnofree" || arg == "-Mnofreeform";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
 }
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
@@ -454,13 +440,6 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
     return arg == "-Fixed";
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
 #elif SCOREP_BACKEND_COMPILER_CLANG
 bool
 SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
@@ -474,14 +453,6 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     /* No Fortran support yet */
     return false;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    /* No Fortran support yet */
-    return "";
 }
 
 #else
