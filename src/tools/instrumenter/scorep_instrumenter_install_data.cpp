@@ -95,6 +95,12 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
 ******************************************************************************/
 
 bool
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
+{
+    return ( arg == "-shared" ) || ( arg == "-dynamiclib" ) || ( arg == "-qmkshrobj" );
+}
+
+bool
 SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
 #if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
@@ -129,12 +135,6 @@ SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 
 /* *************************************** CRAY */
 #if SCOREP_BACKEND_COMPILER_CRAY
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -195,12 +195,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -247,12 +241,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-qmkshrobj";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -297,12 +285,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -349,12 +331,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -399,12 +375,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 }
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -454,12 +424,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
  *       optional extensions. One such extension uses GCC functionality.
  */
 #elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
