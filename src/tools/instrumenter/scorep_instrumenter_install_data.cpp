@@ -94,6 +94,16 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
    Compiler dependent implementations
 ******************************************************************************/
 
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+#if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
+    /* We are responsible for the final space character. */
+    return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" ";
+#endif
+    return "";
+}
+
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
@@ -147,12 +157,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
 }
 
 bool
@@ -209,12 +213,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
     return "-E -o " + output_file;
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
@@ -255,12 +253,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
     return "-E > " + output_file;
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
@@ -297,13 +289,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    /* We are responsible for the final space charachter. */
-    return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" ";
 }
 
 bool
@@ -345,12 +330,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
     return "-E -o " + output_file;
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
@@ -387,12 +366,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
 }
 
 bool
@@ -436,12 +409,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
 }
 
 bool
