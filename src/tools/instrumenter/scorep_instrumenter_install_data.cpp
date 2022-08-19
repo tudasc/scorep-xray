@@ -203,13 +203,11 @@ SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
     return false;
 }
 
-
-/* *************************************** CRAY */
-#if SCOREP_BACKEND_COMPILER_CRAY
 bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY && SCOREP_BACKEND_COMPILER_CXX_CRAY && SCOREP_BACKEND_COMPILER_FC_CRAY
     if ( ( current == "-A" ) ||
          ( current == "-b" ) ||
          ( current == "-d" ) ||
@@ -228,10 +226,53 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
     {
         return true;
     }
-
     return false;
+#elif SCOREP_BACKEND_COMPILER_CC_GNU && SCOREP_BACKEND_COMPILER_CXX_GNU && SCOREP_BACKEND_COMPILER_FC_GNU
+    if ( ( current == "-x" ) ||
+         ( current == "-include" ) )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_IBM && SCOREP_BACKEND_COMPILER_CXX_IBM && SCOREP_BACKEND_COMPILER_FC_IBM
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL && SCOREP_BACKEND_COMPILER_CXX_INTEL && SCOREP_BACKEND_COMPILER_FC_INTEL
+    if ( current == "-include" )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_PGI && SCOREP_BACKEND_COMPILER_CXX_PGI && SCOREP_BACKEND_COMPILER_FC_PGI
+    if ( current == "-tp" )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_FUJITSU && SCOREP_BACKEND_COMPILER_CXX_FUJITSU && SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    if ( current == "-x" )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG && SCOREP_BACKEND_COMPILER_CXX_CLANG
+    if ( current == "-x" )
+    {
+        return true;
+    }
+    return false;
+#else
+    // Non-unique vendor installation: -x || -include might cover lots of cases.
+    if ( ( current == "-x" ) ||
+         ( current == "-include" ) )
+    {
+        return true;
+    }
+    return false;
+#endif
 }
 
+/* *************************************** CRAY */
+#if SCOREP_BACKEND_COMPILER_CRAY
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
@@ -241,18 +282,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( ( current == "-x" ) ||
-         ( current == "-include" ) )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
     return false;
@@ -260,13 +289,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    return false;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
@@ -279,17 +301,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( current == "-include" )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
     return false;
@@ -298,34 +309,12 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( current == "-tp" )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
     return false;
 }
 
 #elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( current == "-x" )
-    {
-        return true;
-    }
-    return false;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
@@ -338,17 +327,6 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
  *       optional extensions. One such extension uses GCC functionality.
  */
 #elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( current == "-x" )
-    {
-        return true;
-    }
-    return false;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
