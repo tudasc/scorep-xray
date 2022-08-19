@@ -271,71 +271,19 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
 #endif
 }
 
-/* *************************************** CRAY */
-#if SCOREP_BACKEND_COMPILER_CRAY
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
-    return false;
-}
-
-/* *************************************** GNU */
-#elif SCOREP_BACKEND_COMPILER_GNU
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** IBM */
-#elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
+    // Assumption: it is likely that if the IBM compiler is used, then it is
+    // used for all languages.
+#if SCOREP_BACKEND_COMPILER_CC_IBM && SCOREP_BACKEND_COMPILER_CXX_IBM && SCOREP_BACKEND_COMPILER_FC_IBM
     return arg == "-O4" ||
            arg == "-O5" ||
            arg == "-qipa" ||
            arg.substr( 0, 6 ) == "-qipa=";
-}
-
-/* *************************************** INTEL */
-#elif SCOREP_BACKEND_COMPILER_INTEL
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** PGI */
-#elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** CLANG */
-/*
- * @note Clang currently (2019) supports no Fortran and only brings it in
- *       optional extensions. One such extension uses GCC functionality.
- */
-#elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-#else
-#error "Missing OPARI specific OpenMP C/C++ compiler handling for your compiler, extension required."
 #endif
+    return false;
+}
 
 #if SCOREP_BACKEND_COMPILER_FC_CRAY
 
