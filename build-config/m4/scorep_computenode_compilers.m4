@@ -76,6 +76,7 @@ dnl if FC is defunct. This might be fixable by patching autoconf.
 m4_define([SCOREP_COMPUTENODE_FC],[
     AFS_PROG_FC([optional])
     AM_CONDITIONAL([SCOREP_HAVE_FC], [test "x${afs_cv_prog_fc_works}" = "xyes"])
+    AC_SUBST([SCOREP_HAVE_FC], $(if test "x${afs_cv_prog_fc_works}" = "xyes"; then echo 1; else echo 0; fi))
     dnl do not use AS_IF here, as this epands AC_F77_LIBRARY_LDFLAGS before AS_IF,
     dnl which renders the if ineffective
     if test "x${afs_cv_prog_fc_works}" = "xyes"; then
