@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020-2021,
+ * Copyright (c) 2009-2013, 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -94,6 +94,39 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
    Compiler dependent implementations
 ******************************************************************************/
 
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
+{
+#if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
+    // Following options have been seen with the Intel compilers only. Using
+    // with other compilers is probably safe.
+    return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
+           ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
+           ( arg.substr( 0, 14 ) == "-openmp-report" ) ||
+           ( arg.substr( 0, 17 ) == "-opt-block-factor" ) ||
+           ( arg.substr( 0, 16 ) == "-opt-jump-tables" ) ||
+           ( arg == "-opt-loadpair" ) ||
+           ( arg.substr( 0, 19 ) == "-opt-malloc-options" ) ||
+           ( arg.substr( 0, 18 ) == "-opt-mem-bandwidth" ) ||
+           ( arg == "-opt-mod-versioning" ) ||
+           ( arg == "-opt-multi-version-aggressive" ) ||
+           ( arg.substr( 0, 13 ) == "-opt-prefetch" ) ||
+           ( arg.substr( 0, 23 ) == "-opt-ra-region-strategy" ) ||
+           ( arg.substr( 0, 21 ) == "-opt-streaming-stores" ) ||
+           ( arg == "-opt-subscript-in-range" ) ||
+           ( arg.substr( 0, 11 ) == "-openmp-lib" ) ||
+           ( arg == "-openmp-profile" ) ||
+           ( arg == "-openmp-stubs" ) ||
+           ( arg.substr( 0, 12 ) == "-openmp-link" ) ||
+           ( arg.substr( 0, 21 ) == "-openmp-threadprivate" ) ||
+           ( arg.substr( 0, 11 ) == "-opt-report" ) ||
+           ( arg == "-onetrip" ) ||
+           ( arg == "-openmp" );
+#endif
+    return false;
+}
+
+
 /* *************************************** CRAY */
 #if SCOREP_BACKEND_COMPILER_CRAY
 bool
@@ -120,12 +153,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
 }
 
 bool
@@ -195,12 +222,6 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
@@ -250,12 +271,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
 }
 
 bool
@@ -310,33 +325,6 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
-           ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
-           ( arg.substr( 0, 14 ) == "-openmp-report" ) ||
-           ( arg.substr( 0, 17 ) == "-opt-block-factor" ) ||
-           ( arg.substr( 0, 16 ) == "-opt-jump-tables" ) ||
-           ( arg == "-opt-loadpair" ) ||
-           ( arg.substr( 0, 19 ) == "-opt-malloc-options" ) ||
-           ( arg.substr( 0, 18 ) == "-opt-mem-bandwidth" ) ||
-           ( arg == "-opt-mod-versioning" ) ||
-           ( arg == "-opt-multi-version-aggressive" ) ||
-           ( arg.substr( 0, 13 ) == "-opt-prefetch" ) ||
-           ( arg.substr( 0, 23 ) == "-opt-ra-region-strategy" ) ||
-           ( arg.substr( 0, 21 ) == "-opt-streaming-stores" ) ||
-           ( arg == "-opt-subscript-in-range" ) ||
-           ( arg.substr( 0, 11 ) == "-openmp-lib" ) ||
-           ( arg == "-openmp-profile" ) ||
-           ( arg == "-openmp-stubs" ) ||
-           ( arg.substr( 0, 12 ) == "-openmp-link" ) ||
-           ( arg.substr( 0, 21 ) == "-openmp-threadprivate" ) ||
-           ( arg.substr( 0, 11 ) == "-opt-report" ) ||
-           ( arg == "-onetrip" ) ||
-           ( arg == "-openmp" );
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
@@ -388,12 +376,6 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
     return arg == "-E";
@@ -441,12 +423,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
 }
 
 bool
@@ -502,12 +478,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
 }
 
 bool
