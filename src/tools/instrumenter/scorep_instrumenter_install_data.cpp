@@ -117,6 +117,58 @@ SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
     return ( arg == "-shared" ) || ( arg == "-dynamiclib" ) || ( arg == "-qmkshrobj" );
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return arg == "-ffree";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return arg == "-ffree-form";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    return arg == "-qfree";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+    return arg == "-free";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+    return arg == "-Mfree" || arg == "-Mfreeform";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return arg == "-Free";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return false;
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return arg == "-ffixed";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return arg == "-ffixed-form";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    return arg == "-qfixed";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+    return arg == "-nofree";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+    return arg == "-Mnofree" || arg == "-Mnofreeform";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return arg == "-Fixed";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return false;
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return false;
+}
+
 std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
@@ -284,105 +336,3 @@ SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::strin
 #endif
     return false;
 }
-
-#if SCOREP_BACKEND_COMPILER_FC_CRAY
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed";
-}
-
-#else // !SCOREP_BACKEND_COMPILER_FC_CRAY
-
-#if SCOREP_BACKEND_COMPILER_GNU
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree-form";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed-form";
-}
-
-#elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-qfree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-qfixed";
-}
-
-#elif SCOREP_BACKEND_COMPILER_INTEL
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-nofree";
-}
-
-#elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Mfree" || arg == "-Mfreeform";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Mnofree" || arg == "-Mnofreeform";
-}
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Fixed";
-}
-
-#elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    /* No Fortran support yet */
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    /* No Fortran support yet */
-    return false;
-}
-
-#else
-#error "Missing OPARI specific OpenMP compiler handling for your Fortran compiler, extension required."
-#endif
-
-#endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
