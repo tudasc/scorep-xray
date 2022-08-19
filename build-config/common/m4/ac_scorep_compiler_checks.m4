@@ -150,6 +150,13 @@ AC_SUBST([SCOREP_COMPILER_FC_CLANG],   $(if test "x${fc_compiler}" = xclang || t
 AC_SUBST([SCOREP_COMPILER_FC_CRAY],    $(if test "x${fc_compiler}" = xcray; then echo 1; else echo 0; fi))
 AC_SUBST([SCOREP_COMPILER_FC_FUJITSU], $(if test "x${fc_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
 
+# Keep -mmic support for a while. Assumption: for HAVE( PLATFORM_MIC )
+# || HAVE( MIC_SUPPORT ), if intel is used, then it is used for all
+# languages. If this is not the case, the instrumenter will not provide
+# MIC support. As # MIC will be removed in scorep-9, we are not going to
+# make this rock-solid.
+AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${cc_compiler}" = xintel && test "x${cxx_compiler}" = xintel && test "x${fc_compiler}" = xintel; then echo 1; else echo 0; fi))
+
 dnl strip epoch (Borland only)
 _scorep_compiler_version=${ax_cv_c_compiler_version##*:}
 dnl extract major

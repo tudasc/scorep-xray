@@ -63,9 +63,9 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_parallel     = detect;
     m_pomp         = detect;
     m_use_tpd      = false;
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     m_mmic_set = false;
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 }
 
 bool
@@ -245,12 +245,12 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
         return current == "-f";
     }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     if ( arg == "-mmic" )
     {
         m_mmic_set = true;
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
     return false;
 }
@@ -440,12 +440,12 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
 {
     std::string target_flags = "";
 
-#if SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT )
+#if SCOREP_BACKEND_COMPILER_MIC && HAVE( MIC_SUPPORT )
     if ( m_mmic_set )
     {
         target_flags += " -mmic ";
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT ) */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC && HAVE( MIC_SUPPORT ) */
 
     std::string command = m_c_compiler
                           + target_flags

@@ -425,12 +425,12 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
         mode += " --dynamic";
     }
 
-#if SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
+#if SCOREP_BACKEND_COMPILER_MIC && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
     if ( m_command_line.isMmicSet() )
     {
         target += " --target mic";
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
     // Generate calls
     m_config_base = scorep_config + target + mode;
 }
@@ -596,12 +596,12 @@ SCOREP_Instrumenter::create_subsystem_initialization( void )
         std::string       target_flags = "";
         std::stringstream command;
 
-#if SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
+#if SCOREP_BACKEND_COMPILER_MIC && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
         if ( m_command_line.isMmicSet() )
         {
             target_flags += " -mmic";
         }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
 
         command << m_install_data.getCC()
                 << target_flags

@@ -183,11 +183,11 @@ public:
     bool
     isInterpositionLibSet( void );
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     bool
     isMmicSet( void );
 
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
     bool
     isDryRun( void );
@@ -499,12 +499,12 @@ private:
      */
     bool m_interposition_lib_set;
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     /**
        True, if -mmic was specified.
      */
     bool m_mmic_set;
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
     /* --------------------------------------------
        Instrumenter flags

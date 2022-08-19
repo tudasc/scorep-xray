@@ -78,9 +78,9 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_define_flags                   = "";
     m_output_name                    = "";
     m_interposition_lib_set          = false;
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     m_mmic_set = false;
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -136,21 +136,21 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
         print_parameter();
     }
 
-#if SCOREP_BACKEND_COMPILER_INTEL && HAVE( PLATFORM_MIC )
+#if SCOREP_BACKEND_COMPILER_MIC && HAVE( PLATFORM_MIC )
     if ( !m_mmic_set )
     {
         std::cerr << "[Score-P] ERROR: Could not detect '-mmic' flag\n"
                   << "                 Host compilation not supported by this installation" << std::endl;
         exit( EXIT_FAILURE );
     }
-#endif /* SCOREP_BACKEND_COMPILER_INTEL */
-#if SCOREP_BACKEND_COMPILER_INTEL && !HAVE( PLATFORM_MIC ) && !HAVE( MIC_SUPPORT )
+#endif /* SCOREP_BACKEND_COMPILER_MIC && HAVE( PLATFORM_MIC ) */
+#if SCOREP_BACKEND_COMPILER_MIC && !HAVE( PLATFORM_MIC ) && !HAVE( MIC_SUPPORT )
     if ( m_mmic_set )
     {
         std::cerr << "[Score-P] ERROR: MIC compilation not supported by this installation" << std::endl;
         exit( EXIT_FAILURE );
     }
-#endif
+#endif /* SCOREP_BACKEND_COMPILER_MIC && !HAVE( PLATFORM_MIC ) && !HAVE( MIC_SUPPORT ) */
 }
 
 const std::string&
@@ -253,13 +253,13 @@ SCOREP_Instrumenter_CmdLine::isInterpositionLibSet( void )
     return m_interposition_lib_set;
 }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
 bool
 SCOREP_Instrumenter_CmdLine::isMmicSet( void )
 {
     return m_mmic_set;
 }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
 bool
 SCOREP_Instrumenter_CmdLine::isDryRun( void )
@@ -623,12 +623,12 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         /* Ignore header files in command */
         return scorep_parse_mode_command;
     }
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     else if ( current == "-mmic" )
     {
         m_mmic_set = true;
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
     else if ( current == "-c" )
     {
         m_is_linking = false;
