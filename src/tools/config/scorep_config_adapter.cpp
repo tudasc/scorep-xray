@@ -683,31 +683,75 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
                                                SCOREP_Config_Language language,
                                                bool                   nvcc )
 {
-    #if SCOREP_BACKEND_COMPILER_CRAY
-    #define SCOREP_COMPILER_TYPE "cray"
-
-    #elif SCOREP_BACKEND_COMPILER_GNU
-    #define SCOREP_COMPILER_TYPE "gnu"
-
-    #elif SCOREP_BACKEND_COMPILER_IBM
-    #define SCOREP_COMPILER_TYPE "ibm"
-
-    #elif SCOREP_BACKEND_COMPILER_INTEL
-    #define SCOREP_COMPILER_TYPE "intel"
-
-    #elif SCOREP_BACKEND_COMPILER_PGI
-    #define SCOREP_COMPILER_TYPE "pgi"
-
-    #elif SCOREP_BACKEND_COMPILER_FUJITSU
-    #define SCOREP_COMPILER_TYPE "fujitsu"
-
-    #elif SCOREP_BACKEND_COMPILER_CLANG
-    #define SCOREP_COMPILER_TYPE "gnu"
-
-    #else
-    #error "Missing compiler specific handling, extension required."
-    #endif
-
+    std::string compiler_type;
+    switch ( language )
+    {
+        case SCOREP_CONFIG_LANGUAGE_C:
+        {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_CC_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CC_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CC_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CC_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+            break;
+        }
+        case SCOREP_CONFIG_LANGUAGE_CXX:
+        {
+#if SCOREP_BACKEND_COMPILER_CXX_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_CXX_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CXX_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CXX_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CXX_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CXX_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CXX_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+            break;
+        }
+        case SCOREP_CONFIG_LANGUAGE_FORTRAN:
+        {
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+#endif      /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+            break;
+        }
+    }
 
     static bool printed_once = false;
     if ( !printed_once )
@@ -727,18 +771,10 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::string opari_config = "`" OPARI_CONFIG " --cflags";
         if ( with_cflags )
         {
+            opari_config += "=" + compiler_type;
             if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
             {
-                #ifdef SCOREP_BACKEND_COMPILER_FC_CRAY
-                opari_config += "=cray";
-                #else
-                opari_config += "=" SCOREP_COMPILER_TYPE;
-                #endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
                 opari_config += " --fortran";
-            }
-            else
-            {
-                opari_config += "=" SCOREP_COMPILER_TYPE;
             }
         }
         opari_config += "` ";
@@ -761,7 +797,6 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::cout << " ";
         std::cout.flush();
     }
-    #undef SCOREP_COMPILER_TYPE
 }
 
 /* **************************************************************************************
