@@ -113,6 +113,8 @@ AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [cray],     [afs_compiler_cray=1],
     [fujitsu],  [afs_compiler_fujitsu=1],
     [])
+# Substitutions are exclusively used by scorep.
+# Later on, move from common to scorep.
 AC_SUBST([SCOREP_COMPILER_INTEL],   [${afs_compiler_intel}])dnl
 AC_SUBST([SCOREP_COMPILER_IBM],     [${afs_compiler_ibm}])dnl
 AC_SUBST([SCOREP_COMPILER_PGI],     [${afs_compiler_portland}])dnl
@@ -120,6 +122,33 @@ AC_SUBST([SCOREP_COMPILER_GNU],     [${afs_compiler_gnu}])dnl
 AC_SUBST([SCOREP_COMPILER_CLANG],   [${afs_compiler_clang}])dnl
 AC_SUBST([SCOREP_COMPILER_CRAY],    [${afs_compiler_cray}])dnl
 AC_SUBST([SCOREP_COMPILER_FUJITSU], [${afs_compiler_fujitsu}])dnl
+
+cc_compiler="${ax_cv_c_compiler_vendor%/*}"
+AC_SUBST([SCOREP_COMPILER_CC_INTEL],   $(if test "x${cc_compiler}" = xintel; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_IBM],     $(if test "x${cc_compiler}" = xibm; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_PGI],     $(if test "x${cc_compiler}" = xnvhpc || test "x${cc_compiler}" = xpgi; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_GNU],     $(if test "x${cc_compiler}" = xgnu; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_CLANG],   $(if test "x${cc_compiler}" = xclang; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_CRAY],    $(if test "x${cc_compiler}" = xcray; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CC_FUJITSU], $(if test "x${cc_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
+
+cxx_compiler="${ax_cv_cxx_compiler_vendor%/*}"
+AC_SUBST([SCOREP_COMPILER_CXX_INTEL],   $(if test "x${cxx_compiler}" = xintel; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_IBM],     $(if test "x${cxx_compiler}" = xibm; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_PGI],     $(if test "x${cxx_compiler}" = xnvhpc || test "x${cxx_compiler}" = xpgi; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_GNU],     $(if test "x${cxx_compiler}" = xgnu; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_CLANG],   $(if test "x${cxx_compiler}" = xclang; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_CRAY],    $(if test "x${cxx_compiler}" = xcray; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_CXX_FUJITSU], $(if test "x${cxx_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
+
+fc_compiler="${ax_cv_fc_compiler_vendor%/*}"
+AC_SUBST([SCOREP_COMPILER_FC_INTEL],   $(if test "x${fc_compiler}" = xintel; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_IBM],     $(if test "x${fc_compiler}" = xibm; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_PGI],     $(if test "x${fc_compiler}" = xnvhpc || test "x${fc_compiler}" = xpgi; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_GNU],     $(if test "x${fc_compiler}" = xgnu; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_CLANG],   $(if test "x${fc_compiler}" = xclang || test "x${fc_compiler}" = xflang; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_CRAY],    $(if test "x${fc_compiler}" = xcray; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_FC_FUJITSU], $(if test "x${fc_compiler}" = xfujitsu; then echo 1; else echo 0; fi))
 
 dnl strip epoch (Borland only)
 _scorep_compiler_version=${ax_cv_c_compiler_version##*:}
