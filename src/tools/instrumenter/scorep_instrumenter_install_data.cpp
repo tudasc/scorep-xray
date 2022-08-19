@@ -94,6 +94,13 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
    Compiler dependent implementations
 ******************************************************************************/
 
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
+{
+    return ( arg == "-E" ) || ( arg == "-eP" ) || ( arg == "-qnoobject" );
+}
+
 std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
@@ -160,12 +167,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return ( arg == "-E" ) || ( arg == "-eP" );
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
@@ -214,12 +215,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
@@ -254,12 +249,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return ( arg == "-E" ) || ( arg == "-qnoobject" );
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
@@ -289,12 +278,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
 }
 
 bool
@@ -331,12 +314,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
@@ -366,12 +343,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E > " + output_file;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
 }
 
 bool
@@ -409,12 +380,6 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
                                                            const std::string& output_file )
 {
     return "-E -o " + output_file;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
 }
 
 bool
