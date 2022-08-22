@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016, 2020,
+ * Copyright (c) 2013-2014, 2016, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2017,
@@ -222,12 +222,12 @@ SCOREP_Config_OmpThreadSystem::addCFlags( std::string&           cflags,
                                                    language,
                                                    nvcc );
 
-#if SCOREP_BACKEND_COMPILER_IBM
     if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
     {
+#if SCOREP_BACKEND_COMPILER_FC_IBM
         cflags += "-d -WF,-qlanglvl=classic ";
+#endif  // SCOREP_BACKEND_COMPILER_FC_IBM
     }
-#endif
 }
 
 void

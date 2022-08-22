@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017, 2019-2021,
+ * Copyright (c) 2013-2014, 2017, 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2020, 2022,
@@ -420,9 +420,9 @@ SCOREP_Config_UserAdapter::addIncFlags( std::string&           cflags,
 {
     if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
     {
-#if SCOREP_BACKEND_COMPILER_IBM
+#if SCOREP_BACKEND_COMPILER_FC_IBM
         cflags += "-WF,";
-#endif      // SCOREP_BACKEND_COMPILER_IBM
+#endif  // SCOREP_BACKEND_COMPILER_FC_IBM
         cflags += "-DSCOREP_USER_ENABLE ";
     }
     else
