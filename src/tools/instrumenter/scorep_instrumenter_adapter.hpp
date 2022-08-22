@@ -241,7 +241,8 @@ public:
      * this behavior, e.g., if you do not pass anything at all.
      */
     virtual std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile );
 
     /**
      * Changes the behavior of the adapter to use not the installed files, but the
@@ -428,7 +429,8 @@ public:
      * Returns the config tool flags for all adapters. It has a leading space.
      */
     static std::string
-    getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine );
+    getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine,
+                           const std::string&           inputFile );
 
     /**
      * Call the setBuildCheck function in all adapters.

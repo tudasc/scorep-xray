@@ -66,7 +66,8 @@ public:
              SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
 
     void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine ) override;

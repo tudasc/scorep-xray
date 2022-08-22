@@ -94,14 +94,20 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || SCOREP_BACKEND_COMPILER_INTEL
+    // So far, this method is used to print a warning if filtering was requested
+    // but is not supported by the instrumentation method. With language specific
+    // instrumentation methods and the language not available here, be pragmatic
+    // and return true if any of the configured instrumentation methods supports
+    // filtering.
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     return true;
 #else
     return false;
 #endif
 }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 // Converts a Score-P filter regex expression by the Intel tcollect format
 static std::string
 convert_regex_to_tcollect2( std::string rule )
@@ -142,12 +148,79 @@ write_tcollect_file_rules( void*       userData,
     *stream << " '" << convert_regex_to_tcollect2( pattern )
             << ":' " << ( isExclude  ? "OFF" : "ON" ) << std::endl;
 }
-#endif // SCOREP_BACKEND_COMPILER_INTEL
+#endif // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 
 
 std::string
-SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine )
+SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                                                        const std::string&           inputFile )
 {
+#define FILTER_GCC_PLUGIN \
+    if ( cmdLine.getVerbosity() >= 1 ) \
+    { \
+        std::ostringstream verbosity_arg; \
+        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity="; \
+        verbosity_arg << cmdLine.getVerbosity(); \
+        flags += verbosity_arg.str(); \
+    } \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it; \
+    }
+
+#define FILTER_INTEL \
+    SCOREP_Filter * filter = SCOREP_Filter_New(); \
+    std::string outfname; \
+    bool        have_usable_filter = false; \
+    \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        std::string fname = *file_it; \
+        /* Parsing filter files. */ \
+        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( filter,  fname.c_str() ); \
+        if ( err != SCOREP_SUCCESS ) \
+        { \
+            std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl; \
+        } \
+        else \
+        { \
+            outfname          += fname + "."; \
+            have_usable_filter = true; \
+        } \
+    } \
+         \
+    if ( have_usable_filter ) \
+    { \
+        /* Using an unique temp file to avoid data races when calling scorep multiple times. */ \
+        outfname += create_random_string() +  ".tcollect"; \
+        /* Converting the aggregated filter data to tcollect format. */ \
+        std::ofstream filter_file( outfname.c_str() ); \
+        if ( filter_file.is_open() ) \
+        { \
+            SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file ); \
+            SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file ); \
+            filter_file.close(); \
+        } \
+        else \
+        { \
+            UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'", \
+                                outfname.c_str() ); \
+        } \
+                 \
+        cmdLine.addTempFile( outfname ); \
+        flags += " --compiler-arg=-tcollect-filter"; \
+        flags += " --compiler-arg=" + outfname; \
+        /* Add tcollect reporting flags. */ \
+        flags += " --compiler-arg=-qopt-report-file=stderr"; \
+        flags += " --compiler-arg=-qopt-report-phase=tcollect"; \
+    }
+
     if ( !isEnabled() )
     {
         return " --no" + m_name;
@@ -155,72 +228,35 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 
     std::string flags;
 
-#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
-    if ( cmdLine.getVerbosity() >= 1 )
+    if ( is_c_file( inputFile ) )
     {
-        std::ostringstream verbosity_arg;
-        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity=";
-        verbosity_arg << cmdLine.getVerbosity();
-        flags += verbosity_arg.str();
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
     }
-    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
-          file_it != filter_files.end();
-          ++file_it )
+    else if ( is_cpp_file( inputFile ) )
     {
-        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it;
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
-#elif SCOREP_BACKEND_COMPILER_INTEL
-    SCOREP_Filter* filter = SCOREP_Filter_New();
-    std::string    outfname;
-    bool           have_usable_filter = false;
-
-    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
-          file_it != filter_files.end();
-          ++file_it )
+    else if ( is_fortran_file( inputFile ) )
     {
-        std::string fname = *file_it;
-        /* Parsing filter files. */
-        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( filter,  fname.c_str() );
-        if ( err != SCOREP_SUCCESS )
-        {
-            std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl;
-        }
-        else
-        {
-            outfname          += fname + ".";
-            have_usable_filter = true;
-        }
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
     }
 
-    if ( have_usable_filter )
-    {
-        /* Using an unique temp file to avoid data races when calling scorep multiple times. */
-        outfname += create_random_string() +  ".tcollect";
-        /* Converting the aggregated filter data to tcollect format. */
-        std::ofstream filter_file( outfname.c_str() );
-        if ( filter_file.is_open() )
-        {
-            SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
-            SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file );
-            filter_file.close();
-        }
-        else
-        {
-            UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'",
-                                outfname.c_str() );
-        }
-
-        cmdLine.addTempFile( outfname );
-        flags += " --compiler-arg=-tcollect-filter";
-        flags += " --compiler-arg=" + outfname;
-        /* Add tcollect reporting flags. */
-        flags += " --compiler-arg=-qopt-report-file=stderr";
-        flags += " --compiler-arg=-qopt-report-phase=tcollect";
-    }
-#endif
     return flags;
+
+#undef FILTER_GCC_PLUGIN
+#undef FILTER_INTEL
 }
 
 void

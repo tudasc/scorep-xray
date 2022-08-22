@@ -34,7 +34,8 @@ SCOREP_Instrumenter_KokkosAdapter::SCOREP_Instrumenter_KokkosAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_KokkosAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_KokkosAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                      const std::string& /* inputFile */ )
 {
     std::string flags;
 

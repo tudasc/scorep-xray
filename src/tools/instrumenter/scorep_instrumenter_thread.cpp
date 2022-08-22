@@ -229,7 +229,8 @@ SCOREP_Instrumenter_PthreadAdapter::printHelp( void )
 }
 
 std::string
-SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                       const std::string& /* inputFile */ )
 {
     return "";
 }

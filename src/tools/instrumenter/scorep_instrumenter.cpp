@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2021,
+ * Copyright (c) 2009-2013, 2015, 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -414,7 +414,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     std::string scorep_config = m_install_data.getScorepConfig();
 
     mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags( m_command_line );
-    mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags( m_command_line );
+    mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags( m_command_line, input_file );
 
     if ( m_command_line.enforceStaticLinking() )
     {

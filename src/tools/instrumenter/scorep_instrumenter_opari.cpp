@@ -116,7 +116,8 @@ SCOREP_Instrumenter_OpariAdapter::isEnabled( void ) const
 }
 
 std::string
-SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                     const std::string& /* inputFile */ )
 {
     if ( m_pomp == enabled )
     {
