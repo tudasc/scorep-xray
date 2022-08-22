@@ -122,7 +122,7 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
             return true;
         }
 #endif  // SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_FC_IBM
-#if SCOREP_BACKEND_COMPILER_FUJITSU
+#if SCOREP_BACKEND_COMPILER_CC_FUJITSU || SCOREP_BACKEND_COMPILER_CXX_FUJITSU || SCOREP_BACKEND_COMPILER_FC_FUJITSU
         if ( ( current.length() > openmp_flag.length() ) &&
              ( current.substr( 0, 2 ) == "-K" ) &&
              ( find_string_in_list( current.substr( 2 ), "openmp", ',' )
@@ -130,7 +130,7 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
         {
             return true;
         }
-#endif
+#endif  // SCOREP_BACKEND_COMPILER_CC_FUJITSU || SCOREP_BACKEND_COMPILER_CXX_FUJITSU || SCOREP_BACKEND_COMPILER_FC_FUJITSU
     }
     return false;
 }
