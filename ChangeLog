@@ -61,6 +61,7 @@ Compatibility:
   `((CPP|C|CXX|LD)FLAGS|LIBS)_FOR_BUILD_LIBWRAP`. The latter supersedes the
   previous `LIBCLANG_((CPP|CXX|LD)FLAGS|LIBS)`.
 - Support for Intel MIC platforms is deprecated.
+- Support for IBM Blue Gene/Q platforms is deprecated.
 
 Bugfixes:
 
