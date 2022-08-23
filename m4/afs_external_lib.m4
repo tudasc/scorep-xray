@@ -58,7 +58,7 @@
 #
 # Both, CHECK-MACRO and DOWNLOAD-MACRO should honor
 # _afs_lib_prevent_check=(yes|no) and, if 'yes'
-# _afs_lib_prevent_check_reason.
+# _afs_lib_prevent_check_reason=(disabled|crosscompile).
 #
 # Both, CHECK-MACRO and DOWNLOAD-MACRO are supposed to prepare a summary
 # output that could be used in the calling macro.
@@ -169,10 +169,15 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
              [_LIB_CONSISTENCY_CHECKS])]]),
     [set1],
         [AS_CASE([$_afs_lib_withval],
-             [yes], [_afs_lib_withval_lib=yes[]m4_ifnblank([$3], [; _afs_lib_withval_include=yes])],
+             [yes], [AS_IF([test "x${afs_lib_require_install_paths}" = xyes],
+                         [_afs_lib_withval=no; _afs_lib_withval_lib=no[]m4_ifnblank([$3], [; _afs_lib_withval_include=no])
+                          _afs_lib_prevent_check=yes
+                          _afs_lib_prevent_check_reason="crosscompile"
+                          AC_MSG_WARN([In cross-compile mode, you need to provide a path to --with-_afs_lib_name (or --with-_afs_lib_name-lib[]m4_ifnblank([$3], [ and --with-_afs_lib_name-lib-include])) in order to activate $1 support.[]m4_ifnblank([$4], [ Alternatively, use --with-_afs_lib_name[]=download.])])],
+                         [_afs_lib_withval_lib=yes[]m4_ifnblank([$3], [; _afs_lib_withval_include=yes])])],
              [no], [_afs_lib_withval_lib=no[]m4_ifnblank([$3], [; _afs_lib_withval_include=no])
                     _afs_lib_prevent_check=yes
-                    _afs_lib_prevent_check_reason="no, explicitly disabled"],
+                    _afs_lib_prevent_check_reason="disabled"],
              m4_ifnblank([$4], [[download], [_afs_lib_withval_lib=download; m4_ifnblank([$3], [_afs_lib_withval_include=download; ])_afs_lib_download=yes],])
              [AFS_CONSISTENT_DIR([_afs_lib_withval], [--with-_afs_lib_name])
               AS_IF([! test -d "$_afs_lib_withval"],
@@ -219,8 +224,8 @@ AS_CASE(["${_afs_lib_withval:+set1}${_afs_lib_withval_lib:+set2}m4_ifnblank([$3]
         [AS_IF([test "x${afs_lib_require_install_paths}" = xyes],
             [_afs_lib_withval=no; _afs_lib_withval_lib=no[]m4_ifnblank([$3], [; _afs_lib_withval_include=no])
              _afs_lib_prevent_check=yes
-             _afs_lib_prevent_check_reason="no, path required in cross-compile mode"
-             AC_MSG_WARN([In cross-compile mode, you need to provide a path to --with-_afs_lib_name (or --with-_afs_lib_name-lib[]m4_ifnblank([$3], [ and --with-_afs_lib_name-lib-include])) in order to activate $1 support.])],
+             _afs_lib_prevent_check_reason="crosscompile"
+             AC_MSG_WARN([In cross-compile mode, you need to provide a path to --with-_afs_lib_name (or --with-_afs_lib_name-lib[]m4_ifnblank([$3], [ and --with-_afs_lib_name-lib-include])) in order to activate $1 support.[]m4_ifnblank([$4], [ Alternatively, use --with-_afs_lib_name[]=download.])])],
             [_afs_lib_withval=yes; _afs_lib_withval_lib=yes[]m4_ifnblank([$3], [; _afs_lib_withval_include=yes])])]
 )
 dnl
