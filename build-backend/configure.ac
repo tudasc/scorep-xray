@@ -40,6 +40,7 @@ AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIRS([../build-config/m4 ../build-config/common/m4])
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
+m4_define([AFS_COMPUTENODE])
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
