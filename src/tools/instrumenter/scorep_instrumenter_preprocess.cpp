@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2021,
+ * Copyright (c) 2013, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -58,26 +58,36 @@ SCOREP_Instrumenter_PreprocessAdapter::SCOREP_Instrumenter_PreprocessAdapter( vo
 std::string
 SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         instrumenter,
                                                    SCOREP_Instrumenter_CmdLine& cmdLine,
-                                                   const std::string&           source_file )
+                                                   const std::string&           sourceFile )
 {
-    std::string orig_ext    = get_extension( source_file );
-    std::string output_file = source_file;
+    std::string orig_ext    = get_extension( sourceFile );
+    std::string output_file = sourceFile;
     std::string command;
 
     // Remove problematic arguments from command line
-#if SCOREP_BACKEND_COMPILER_CRAY
-    cmdLine.removeUserArg( "-eZ" );
-#elif SCOREP_BACKEND_COMPILER_FC_CRAY
-    if ( is_fortran_file( source_file ) )
+    if ( is_c_file( sourceFile ) )
     {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY
         cmdLine.removeUserArg( "-eZ" );
+#endif  // SCOREP_BACKEND_COMPILER_CC_CRAY
     }
-#endif
+    else if ( is_cpp_file( sourceFile ) )
+    {
+#if SCOREP_BACKEND_COMPILER_CXX_CRAY
+        cmdLine.removeUserArg( "-eZ" );
+#endif  // SCOREP_BACKEND_COMPILER_CXX_CRAY
+    }
+    else if ( is_fortran_file( sourceFile ) )
+    {
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+        cmdLine.removeUserArg( "-eZ" );
+#endif  // SCOREP_BACKEND_COMPILER_FC_CRAY
+    }
 
     // Prepare file for preprocessing
-    if ( !is_fortran_file( source_file ) )
+    if ( !is_fortran_file( sourceFile ) )
     {
-        output_file = remove_extension( remove_path( source_file ) )
+        output_file = remove_extension( remove_path( sourceFile ) )
                       + create_random_string()
                       + ".input"
                       + orig_ext;
@@ -86,29 +96,29 @@ SCOREP_Instrumenter_PreprocessAdapter::preprocess( SCOREP_Instrumenter&         
                   "#include <opari2/pomp2_lib.h>\n"
                   "#include <opari2/pomp2_user_lib.h>\n"
                   "___POMP2_INCLUDE___\n"
-                  "#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
+                  "#line 1 \\\"" + undo_backslashing( sourceFile ) + "\\\"\" > " + output_file;
         instrumenter.executeCommand( command );
 
-        command = "cat " + source_file + " >> " + output_file;
+        command = "cat " + sourceFile + " >> " + output_file;
         instrumenter.executeCommand( command );
         instrumenter.addTempFile( output_file );
     }
     // Some Fortran compiler preprocess only if extension is in upper case
     else if ( orig_ext != scorep_toupper( orig_ext ) )
     {
-        output_file = remove_extension( remove_path( source_file ) )
+        output_file = remove_extension( remove_path( sourceFile ) )
                       + ".input"
                       + scorep_toupper( orig_ext );
 
-        command = "echo \"#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
+        command = "echo \"#line 1 \\\"" + undo_backslashing( sourceFile ) + "\\\"\" > " + output_file;
         #if SCOREP_BACKEND_COMPILER_FC_CRAY
         // Cray ftn does chokes on '#line number' but accepts
         // '# number'. If the semantics is the same is investigated.
-        command = "echo \"# 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + output_file;
-        #endif
+        command = "echo \"# 1 \\\"" + undo_backslashing( sourceFile ) + "\\\"\" > " + output_file;
+        #endif // SCOREP_BACKEND_COMPILER_FC_CRAY
         instrumenter.executeCommand( command );
 
-        instrumenter.executeCommand( "cat " + source_file + " >> " + output_file );
+        instrumenter.executeCommand( "cat " + sourceFile + " >> " + output_file );
         instrumenter.addTempFile( output_file );
     }
 
