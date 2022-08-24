@@ -47,7 +47,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
 # PGI's implementation of omp_get_ancestor_thread_num returns
 # 'Error: omp_get_ancestor_thread_num: not implemented'.
 AS_IF([test "x${ax_cv_c_compiler_vendor%/*}" = xportland &&
-       test ${afs_compiler_version_major} -lt 18],
+       test ${afs_compiler_cc_version_major} -lt 18],
     [scorep_have_omp_ancestry=1])
 
 AS_IF([test 1 -eq ${scorep_have_omp_ancestry}],
