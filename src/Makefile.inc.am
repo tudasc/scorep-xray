@@ -112,35 +112,62 @@ endif !HAVE_SCOREP_EXTERNAL_CUBEW
 libscorep_measurement_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     @OTF2_LDFLAGS@                 \
-    @LIBUNWIND_LDFLAGS@            \
+    $(SCOREP_LIBUNWIND_LDFLAGS)    \
     @SCOREP_PAPI_LDFLAGS@          \
     @CUBEW_LDFLAGS@
 
 
-# In case of --with-libbfd=download, we need to build and install
-# libbfd before files including bfd.h are compiled. Otherwise a system
-# bfd.h might get included during the first make after
-# configure. Linking to the downloaded libbfd.so will work, but
-# runtime errors are to expect.
+# In case of --with-foo=download, we need to build and install
+# the library before files including any headers are compiled.
+# Otherwise a system installation of the library might get included
+# during the first make after configure. Linking to the downloaded
+# library will work, but runtime errors are to expect.
 # The BUILT_SOURCES mechanism might not work as we trigger some
 # Makefiles not via `make all` but `make foo`. In the latter case,
 # BUILT_SOURCES are ignored.
-# A pragmatic way to introduce the bfd.h dependency is to have the
-# source files depend on @SCOREP_LIBBFD_PREFIX@/include/bfd.h. Thus,
-# add all files that include bfd.h to FILES_THAT_INCLUDE_BFD_H.
+# A pragmatic way to introduce the dependencies is to have the
+# source files depend on our installed library header. Thus, add
+# all files that include the header to the corresponding FILES_THAT_INCLUDE_*
+# variable.
 FILES_THAT_INCLUDE_BFD_H =
+FILES_THAT_INCLUDE_LIBUNDWIND_H =
 
 if HAVE_SCOREP_LIBBFD_MAKEFILE
 BUILT_SOURCES += @SCOREP_LIBBFD_PREFIX@/include/bfd.h
 $(FILES_THAT_INCLUDE_BFD_H): @SCOREP_LIBBFD_PREFIX@/include/bfd.h
 @SCOREP_LIBBFD_PREFIX@/include/bfd.h:
-	$(MAKE) all -f @SCOREP_LIBBFD_MAKEFILE@
+	@$(am__tty_colors); \
+	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBBFD_MAKEFILE@"; \
+	              else echo "  DEPLOY   $${blu}libbfd into @SCOREP_LIBBFD_PREFIX@$$std"; \
+	fi; \
+	$(MAKE) -s all -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 CLEAN_LOCAL += @SCOREP_LIBBFD_PREFIX@-clean
 @SCOREP_LIBBFD_PREFIX@-clean:
-	$(MAKE) clean -f @SCOREP_LIBBFD_MAKEFILE@
+	@$(MAKE) clean -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 
 UNINSTALL_HOOK += @SCOREP_LIBBFD_PREFIX@-uninstall
 @SCOREP_LIBBFD_PREFIX@-uninstall:
-	$(MAKE) uninstall -f @SCOREP_LIBBFD_MAKEFILE@
+	@$(MAKE) uninstall -f @SCOREP_LIBBFD_MAKEFILE@ $(SCOREP_V_DEVNULL)
 endif HAVE_SCOREP_LIBBFD_MAKEFILE
+
+if HAVE_SCOREP_LIBUNWIND_MAKEFILE
+
+BUILT_SOURCES += @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
+$(FILES_THAT_INCLUDE_LIBUNDWIND_H): @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
+@SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h:
+	@$(am__tty_colors); \
+	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBUNWIND_MAKEFILE@"; \
+	              else echo "  DEPLOY   $${blu}libunwind into @SCOREP_LIBUNWIND_PREFIX@$$std"; \
+	fi; \
+	$(MAKE) -s all -f @SCOREP_LIBUNWIND_MAKEFILE@ $(SCOREP_V_DEVNULL)
+
+CLEAN_LOCAL += @SCOREP_LIBUNWIND_PREFIX@-clean
+@SCOREP_LIBUNWIND_PREFIX@-clean:
+	@$(MAKE) clean -f @SCOREP_LIBUNWIND_MAKEFILE@ $(SCOREP_V_DEVNULL)
+
+UNINSTALL_HOOK += @SCOREP_LIBUNWIND_PREFIX@-uninstall
+@SCOREP_LIBUNWIND_PREFIX@-uninstall:
+	@$(MAKE) uninstall -f @SCOREP_LIBUNWIND_MAKEFILE@ $(SCOREP_V_DEVNULL)
+
+endif HAVE_SCOREP_LIBUNWIND_MAKEFILE

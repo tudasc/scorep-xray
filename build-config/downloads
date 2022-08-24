@@ -10,3 +10,9 @@
 # $binutils_base_url/$binutils_package.tar.gz
 binutils_package=binutils-2.36.1
 binutils_base_url=https://ftp.gnu.org/gnu/binutils
+
+# Given --with-libunwind=download, we download this libunwind tarball:
+# https://github.com/libunwind/libunwind/releases/download/v${libunwind_version}/libunwind-${libunwind_version}.tar.gz
+libunwind_version=1.6.2
+libunwind_package=libunwind-${libunwind_version}
+libunwind_base_url=https://github.com/libunwind/libunwind/releases/download/v${libunwind_version}

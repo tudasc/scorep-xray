@@ -38,11 +38,11 @@ libscorep_unwinding_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_DEFINITIONS) \
     -I$(INC_DIR_SUBSTRATES) \
-    @LIBUNWIND_CPPFLAGS@
+    $(SCOREP_LIBUNWIND_CPPFLAGS)
 libscorep_unwinding_la_LIBADD = \
-    @LIBUNWIND_LIBS@
+    $(SCOREP_LIBUNWIND_LIBS)
 libscorep_unwinding_la_LDFLAGS = \
-    @LIBUNWIND_LDFLAGS@
+    $(SCOREP_LIBUNWIND_LDFLAG)
 
 libscorep_unwinding_la_CPPFLAGS += \
     @SCOREP_LIBBFD_CPPFLAGS@
@@ -50,6 +50,9 @@ libscorep_measurement_la_LIBADD += \
     @SCOREP_LIBBFD_LIBS@
 libscorep_measurement_la_LDFLAGS += \
     @SCOREP_LIBBFD_LDFLAGS@
+
+FILES_THAT_INCLUDE_LIBUNDWIND_H += \
+    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_mgmt.h
 
 else !HAVE_UNWINDING_SUPPORT
 

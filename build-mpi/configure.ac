@@ -55,6 +55,7 @@ AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIRS([../build-config/m4 ../build-config/common/m4])
 
 AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
+m4_define([AFS_COMPUTENODE])
 
 AC_SCOREP_PRECIOUS_VARS_MPI
 

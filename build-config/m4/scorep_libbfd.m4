@@ -108,19 +108,25 @@ PACKAGE = $binutils_package
 PREFIX = $[]_afs_lib_PREFIX
 CC = gcc
 all:
-	$AFS_LIB_DOWNLOAD_CMD \$(URL)/\$(PACKAGE).tar.gz \\
+	@$AFS_LIB_DOWNLOAD_CMD \$(URL)/\$(PACKAGE).tar.gz \\
 	&& tar xf \$(PACKAGE).tar.gz \\
 	&& mkdir \$(PACKAGE)/_build \\
 	&& cd \$(PACKAGE)/_build \\
-	&& ../configure --prefix=\$(PREFIX) CC=\$(CC) --enable-shared --disable-static \\
-	&& make V=0 all-bfd \\
-	&& make install-bfd \\
+	&& ../configure \\
+	    --prefix=\$(PREFIX) \\
+	    CC=\$(CC) \\
+	    --enable-shared \\
+	    --disable-static \\
+	    --enable-silent-rules \\
+	    --silent \\
+	&& make -s all-bfd \\
+	&& make -s install-bfd \\
 	&& rm -f \$(PREFIX)/lib/libbfd.la \\
 	&& rm -f \$(PREFIX)/lib64/libbfd.la
 clean:
-	rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
+	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
 uninstall:
-	rm -rf \$(PREFIX)
+	@rm -rf \$(PREFIX)
 _SCOREPEOF
 m4_changecom([#])
 ])# _LIBBFD_DOWNLOAD
@@ -133,10 +139,12 @@ m4_changecom([#])
 # libtool archive and then into a binary.
 #
 m4_define([_LIBBFD_CHECK], [
-AS_IF([test "x${_afs_lib_prevent_check}" = xyes],
-    [AS_IF([test "x${afs_lib_require_install_paths}" = xyes],
-         [AC_MSG_ERROR([A working _afs_lib_name installation is required. Provide a path on cross-compile systems, see --with-_afs_lib_name.])],
-         [AC_MSG_ERROR([A working _afs_lib_name installation is required. Either provide a path or use the download option, see --with-_afs_lib_name.])])])
+AS_IF([test "x${_afs_lib_prevent_check}" = xyes], [
+    AS_IF([test "x${_afs_lib_prevent_check_reason}" = xdisabled],
+        [AC_MSG_ERROR([A working _afs_lib_name installation is required, --without-_afs_lib_name is not a valid option. See --with-_afs_lib_name in INSTALL.])],
+	[test "x${_afs_lib_prevent_check_reason}" = xcrosscompile],
+	[AC_MSG_ERROR([A working _afs_lib_name installation is required. Either provide a path or use the download option, see --with-_afs_lib_name in INSTALL.])],
+	[AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason \"${_afs_lib_prevent_check_reason}\".])])])
 dnl
 CPPFLAGS=$_afs_lib_CPPFLAGS
 AC_CHECK_HEADER([bfd.h],

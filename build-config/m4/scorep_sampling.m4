@@ -80,7 +80,9 @@ AC_LANG_POP([C])
 AFS_SUMMARY_PUSH
 
 # check for libunwind
-AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_GNU_SOURCE])
+AC_LANG_PUSH([C])
+AFS_EXTERNAL_LIB([unwind], [_LIBUNWIND_CHECK], [libunwind.h], [_LIBUNWIND_DOWNLOAD])dnl
+AC_LANG_POP([C])
 
 # check that we have at least one interrupt generator
 AS_IF([test "x${scorep_have_papi_support}" = "xyes" ||
@@ -89,11 +91,8 @@ AS_IF([test "x${scorep_have_papi_support}" = "xyes" ||
       [have_interrupt_generators=yes],
       [have_interrupt_generators=no])
 
-scorep_unwinding_support=yes
-scorep_unwinding_summary_reason=
-AS_IF([test "x${scorep_have_libunwind}" != "xyes"],
-      [scorep_unwinding_support=no
-       scorep_unwinding_summary_reason+=", missing libunwind support"])
+scorep_unwinding_support=${have_libunwind}
+scorep_unwinding_summary_reason=${scorep_libunwind_summary_reason}
 
 AS_IF([test "x${afs_have_thread_local_storage}" != "xyes"],
       [scorep_unwinding_support=no
@@ -138,10 +137,7 @@ AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_support}${scorep_unwind
 # generating output
 AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
                     [test "x${scorep_unwinding_support}" = "xyes"],
-                    [Defined if unwinding support is available.],
-                    [AC_SUBST([LIBUNWIND_CPPFLAGS], ["${with_libunwind_cppflags}"])
-                     AC_SUBST([LIBUNWIND_LDFLAGS],  ["${with_libunwind_ldflags} ${with_libunwind_rpathflag}"])
-                     AC_SUBST([LIBUNWIND_LIBS],     ["${with_libunwind_libs}"])])
+                    [Defined if unwinding support is available.])
 
 AC_SCOREP_COND_HAVE([SAMPLING_SUPPORT],
                     [test "x${scorep_unwinding_support}" = "xyes" &&
@@ -169,43 +165,138 @@ AFS_SUMMARY([Sampling support], [${sampling_summary}])
 
 dnl ----------------------------------------------------------------------------
 
-AC_DEFUN([_AC_SCOREP_LIBUNWIND_LIB_CHECK], [
+# _LIBUNWIND_DOWNLOAD()
+# ---------------------
+# Generate a Makefile.libunwind to download libunwind and install libunwind
+# at make time. In addition, set automake conditional
+# HAVE_SCOREP_LIBUNWIND_MAKEFILE to trigger this process from
+# build-backend/Makefile.
+#
+m4_define([_LIBUNWIND_DOWNLOAD], [
+_afs_lib_PREFIX="$prefix/vendor/[]_afs_lib_name"
+_afs_lib_MAKEFILE="Makefile.[]_afs_lib_name"
+_afs_lib_LDFLAGS="-L$[]_afs_lib_PREFIX[]/lib -R$[]_afs_lib_PREFIX[]/lib"
+_afs_lib_CPPFLAGS="-I$[]_afs_lib_PREFIX/include -D_GNU_SOURCE"
+dnl
+AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [true], [false])dnl
+dnl libunwind_package and libunwind_base_url are sourced from build-config/downloads
+have_libunwind="yes"
+scorep_libunwind_summary_reason=", from downloaded $libunwind_base_url/${libunwind_package}.tar.gz"
+dnl
+m4_changecom([])
+cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
+#
+# $(pwd)/$_afs_lib_MAKEFILE
+#
+# Executing 'make -f $_afs_lib_MAKEFILE' downloads a libunwind
+# package and installs a shared _afs_lib_name into
+# $prefix/vendor/[]_afs_lib_name
+# using CC=gcc that was found in PATH.
+#
+# Usually, this process is triggered during Score-P's build-backend
+# make. If _afs_lib_name's configure or make fail, or if there are
+# failures in the subsequent build process of Score-P, consider
+# modifying CC above to point to a compiler (gcc recommended) that is
+# compatible with the compute node compiler that you are using for
+# Score-P (i.e., $CC) and try (manually) again. Note that PGI/NVIDIA
+# and well as non-clang-based Cray compilers fail to build
+# _afs_lib_name.
+#
+# You can also modify the installation prefix if, e.g., you want to
+# share the _afs_lib_name installation between several Score-P
+# installations (which then need to be configured using
+# --with-[]_afs_lib_name=<prefix>).
+#
+# Please report bugs to <support@score-p.org>.
+#
+THIS_FILE = $(pwd)/$_afs_lib_MAKEFILE
+URL = $libunwind_base_url
+PACKAGE = $libunwind_package
+PREFIX = $[]_afs_lib_PREFIX
+CC = gcc
+all:
+	@$AFS_LIB_DOWNLOAD_CMD \$(URL)/\$(PACKAGE).tar.gz
+	@tar xf \$(PACKAGE).tar.gz
+	@mkdir \$(PACKAGE)/_build
+	@cd \$(PACKAGE)/_build && \\
+	    ../configure \\
+	        --silent \\
+	        --enable-silent-rules \\
+	        --prefix=\$(PREFIX) \\
+	        CC=\$(CC) \\
+	        --enable-shared \\
+	        --disable-static \\
+	        --disable-ptrace \\
+	        --disable-coredump \\
+	        --disable-setjmp \\
+	        --disable-weak-backtrace \\
+	        --disable-documentation \\
+	        --disable-tests \\
+	        --disable-per-thread-cache && \\
+	    make -s install
+	@rm -f \$(PREFIX)/lib/libunwind.la \$(PREFIX)/lib64/libunwind.la
+clean:
+	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
+uninstall:
+	@rm -rf \$(PREFIX)
+_SCOREPEOF
+m4_changecom([#])
+])# _LIBUNWIND_DOWNLOAD
+
+dnl ----------------------------------------------------------------------------
+
+AC_DEFUN([_LIBUNWIND_CHECK], [
 have_libunwind="no"
-LIBS="-lunwind"
+AS_IF([test "x${_afs_lib_prevent_check}" = xyes],
+    [AS_IF([test "x${_afs_lib_prevent_check_reason}" = xdisabled],
+        [scorep_libunwind_summary_reason=", explicitly disabled"],
+        [test "x${_afs_lib_prevent_check_reason}" = xcrosscompile],
+        [scorep_libunwind_summary_reason=", --with-_afs_lib_name needs path or download in cross-compile mode"],
+        [AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason \"${_afs_lib_prevent_check_reason}\".])])],
+    [CPPFLAGS=$_afs_lib_CPPFLAGS
+     AC_CHECK_HEADER([libunwind.h],
+         [LTLDFLAGS=$_afs_lib_LDFLAGS
+          LTLIBS=$_afs_lib_LIBS
+          AFS_LTLINK_LA_IFELSE([_LIBUNWIND_MAIN], [_LIBUNWIND_LA],
+              [have_libunwind="yes"
+               scorep_libunwind_summary_reason="${_afs_lib_LDFLAGS:+, using $_afs_lib_LDFLAGS}${_afs_lib_CPPFLAGS:+ and $_afs_lib_CPPFLAGS}"],
+              [scorep_libunwind_summary_reason=", cannot link against $_afs_lib_LIBS"])
+         ],
+         [scorep_libunwind_summary_reason=", missing libunwind.h header, try --with-_afs_lib_name[]=download"])])
+])# _LIBUNWIND_CHECK
 
-_AC_SCOREP_LIBUNWIND_LINK_TEST
-AS_IF([test "x${have_libunwind}" = "xno"],
-      [LIBS="${LIBS} -llzma";
-       _AC_SCOREP_LIBUNWIND_LINK_TEST])
-
-with_[]lib_name[]_lib_checks_successful=${have_libunwind}
-with_[]lib_name[]_libs=${LIBS}
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBUNWIND_LINK_TEST], [
-AC_LINK_IFELSE([_AC_SCOREP_LIBUNWIND_TEST_PROGRAM],
-               [have_libunwind="yes"])
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBUNWIND_TEST_PROGRAM], [
-AC_LANG_PROGRAM([[
+# _LIBUNWIND_LA()
+# ---------------
+# The source code for the libtool archive.
+#
+m4_define([_LIBUNWIND_LA], [
+AC_LANG_SOURCE([[
 /* see man libunwind */
 #define UNW_LOCAL_ONLY
-#include <libunwind.h>]],
-                [[
-unw_cursor_t cursor;
-unw_context_t uc;
-unw_word_t ip, sp;
+#include <libunwind.h>
+char test_backtrace ()
+{
+    unw_cursor_t cursor;
+    unw_context_t uc;
+    unw_word_t ip, sp;
 
-unw_getcontext(&uc);
-unw_init_local(&cursor, &uc);
+    unw_getcontext(&uc);
+    unw_init_local(&cursor, &uc);
 
-while (unw_step(&cursor) > 0) {
-    unw_get_reg(&cursor, UNW_REG_IP, &ip);
-    unw_get_reg(&cursor, UNW_REG_SP, &sp);
-}]])
-])
+    while (unw_step(&cursor) > 0) {
+        unw_get_reg(&cursor, UNW_REG_IP, &ip);
+        unw_get_reg(&cursor, UNW_REG_SP, &sp);
+    }
+}
+]])])#_LIBUNWIND_LA
+
+
+# _LIBUNWIND_MAIN()
+# -----------------
+# The source code using the libtool archive.
+#
+m4_define([_LIBUNWIND_MAIN], [
+AC_LANG_PROGRAM(dnl
+[[char test_backtrace ();]],
+[[test_backtrace ();]]
+)])#_LIBUNWIND_MAIN
