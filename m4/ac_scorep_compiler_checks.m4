@@ -133,15 +133,13 @@ AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${cc_compiler}" = xintel && test "x$
 dnl strip epoch (Borland only)
 _scorep_compiler_version=${ax_cv_c_compiler_version##*:}
 dnl extract major
-afs_compiler_version_major=${_scorep_compiler_version%%.*}
+afs_compiler_cc_version_major=${_scorep_compiler_version%%.*}
 dnl fallback to 0
 : ${afs_compiler_version_major:=0}
 _scorep_compiler_version=${_scorep_compiler_version#*.}
 dnl extract minor
-afs_compiler_version_minor=${_scorep_compiler_version%%.*}
+afs_compiler_cc_version_minor=${_scorep_compiler_version%%.*}
 dnl fallback to 0
 : ${afs_compiler_version_minor:=0}
 AS_UNSET([_scorep_compiler_version])
-AC_SUBST([SCOREP_COMPILER_VERSION_MAJOR], [${afs_compiler_version_major}])dnl
-AC_SUBST([SCOREP_COMPILER_VERSION_MINOR], [${afs_compiler_version_minor}])dnl
 ])dnl
