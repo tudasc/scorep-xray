@@ -96,33 +96,6 @@ AS_IF([test x$afs_cv_prog_fc_works = xyes], [
         [unknown],     [AC_MSG_WARN([Could not determine Fortran compiler vendor. AC_PACKAGE_NAME might not function properly.])],
         [AC_MSG_WARN([Fortran compiler vendor '${ax_cv_fc_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])])
 
-afs_compiler_intel=0
-afs_compiler_ibm=0
-afs_compiler_portland=0
-afs_compiler_gnu=0
-afs_compiler_clang=0
-afs_compiler_cray=0
-afs_compiler_fujitsu=0
-AS_CASE([${ax_cv_c_compiler_vendor%/*}],
-    [intel],    [afs_compiler_intel=1],
-    [ibm],      [afs_compiler_ibm=1],
-    [nvhpc],    [afs_compiler_portland=1],
-    [portland], [afs_compiler_portland=1],
-    [gnu],      [afs_compiler_gnu=1],
-    [clang],    [afs_compiler_clang=1],
-    [cray],     [afs_compiler_cray=1],
-    [fujitsu],  [afs_compiler_fujitsu=1],
-    [])
-# Substitutions are exclusively used by scorep.
-# Later on, move from common to scorep.
-AC_SUBST([SCOREP_COMPILER_INTEL],   [${afs_compiler_intel}])dnl
-AC_SUBST([SCOREP_COMPILER_IBM],     [${afs_compiler_ibm}])dnl
-AC_SUBST([SCOREP_COMPILER_PGI],     [${afs_compiler_portland}])dnl
-AC_SUBST([SCOREP_COMPILER_GNU],     [${afs_compiler_gnu}])dnl
-AC_SUBST([SCOREP_COMPILER_CLANG],   [${afs_compiler_clang}])dnl
-AC_SUBST([SCOREP_COMPILER_CRAY],    [${afs_compiler_cray}])dnl
-AC_SUBST([SCOREP_COMPILER_FUJITSU], [${afs_compiler_fujitsu}])dnl
-
 cc_compiler="${ax_cv_c_compiler_vendor%/*}"
 AC_SUBST([SCOREP_COMPILER_CC_INTEL],   $(if test "x${cc_compiler}" = xintel; then echo 1; else echo 0; fi))
 AC_SUBST([SCOREP_COMPILER_CC_IBM],     $(if test "x${cc_compiler}" = xibm; then echo 1; else echo 0; fi))
