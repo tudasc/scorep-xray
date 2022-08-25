@@ -105,6 +105,7 @@ typedef struct scorep_mpi_comm_definition_payload
 {
     uint32_t comm_size;
     uint32_t local_rank;
+    uint32_t remote_comm_size;
     uint32_t global_root_rank;
     uint32_t root_id;
     uint32_t io_handle_counter;
