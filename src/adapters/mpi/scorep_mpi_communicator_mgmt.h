@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2017,
+ * Copyright (c) 2013, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2018,
@@ -185,8 +185,9 @@ scorep_mpi_comm_init( void );
  * makes the definition of the given communicator to the measurement system.
  * @param comm       MPI communicator handle.
  * @param parentComm Possible MPI communicator parent.
+ * @return           returns newly created communicator handle.
  */
-extern void
+extern SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_create( MPI_Comm comm,
                         MPI_Comm parentComm );
 
@@ -195,8 +196,9 @@ scorep_mpi_comm_create( MPI_Comm comm,
  * @brief Finalize the creation of an MPI communicator to track.
  * @param comm             MPI communicator handle.
  * @param parentCommHandle Possible MPI communicator parent as Score-P handle.
+ * @return                 returns newly created communicator handle.
  */
-extern void
+extern SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
                                  SCOREP_InterimCommunicatorHandle parentCommHandle );
 
