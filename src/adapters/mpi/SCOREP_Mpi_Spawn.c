@@ -402,9 +402,10 @@ int
 MPI_Comm_disconnect( MPI_Comm* comm )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle freed_handle               = SCOREP_MPI_COMM_HANDLE( *comm );
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -412,6 +413,7 @@ MPI_Comm_disconnect( MPI_Comm* comm )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DISCONNECT ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -428,6 +430,12 @@ MPI_Comm_disconnect( MPI_Comm* comm )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommDestroy( freed_handle );
+            SCOREP_MpiCollectiveEnd( freed_handle,
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_DESTROY_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DISCONNECT ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )

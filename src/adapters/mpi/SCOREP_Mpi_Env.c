@@ -317,6 +317,7 @@ MPI_Finalize( void )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -346,6 +347,14 @@ MPI_Finalize( void )
         if ( event_gen_active_for_group )
         {
             /* Exit MPI_Finalize region */
+            SCOREP_InterimCommunicatorHandle world_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_WORLD );
+            SCOREP_CommDestroy( world_comm_handle );
+            SCOREP_CommDestroy( SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF ) );
+            SCOREP_MpiCollectiveEnd( world_comm_handle,
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_DESTROY_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
