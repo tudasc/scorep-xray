@@ -19,6 +19,8 @@ Features and improvements:
   also disabled when recording accelerator applications.
 - Add proper support for NVIDIA HPC SDK compilers to build system
   via `--with-nocross-compiler-suite=nvhpc`.
+- Add events for communicator creation and destruction to Score-P
+  corresponding to the new records in OTF2 3.0.
 
 User tools and API improvements and changes:
 
