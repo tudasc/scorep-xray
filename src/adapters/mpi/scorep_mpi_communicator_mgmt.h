@@ -242,5 +242,25 @@ scorep_mpi_comm_finalize( void );
 void
 scorep_mpi_unify_communicators( void );
 
+/**
+ * @internal
+ * Converts a MPI rank to SCOREP_MpiRank
+ *
+ * This function converts to SCOREP_MpiRank with specific regard to using
+ * internal SCOREP constants for MPI_ROOT and MPI_PROC_NULL.
+ */
+static inline SCOREP_MpiRank
+scorep_mpi_get_scorep_mpi_rank( int rank )
+{
+    if ( rank == MPI_ROOT )
+    {
+        return SCOREP_MPI_ROOT;
+    }
+    if ( rank == MPI_PROC_NULL )
+    {
+        return SCOREP_MPI_PROC_NULL;
+    }
+    return rank;
+}
 
 #endif /* SCOREP_MPI_COMMUNICATOR_MGMT_H */

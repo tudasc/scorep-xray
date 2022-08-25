@@ -622,13 +622,19 @@ mpi_collective_end( SCOREP_Location*                 location,
     OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
 
     uint32_t root_rank;
-    if ( rootRank == SCOREP_INVALID_ROOT_RANK )
+    switch ( rootRank )
     {
-        root_rank = OTF2_UNDEFINED_UINT32;
-    }
-    else
-    {
-        root_rank = ( uint32_t )rootRank;
+        case SCOREP_INVALID_ROOT_RANK:
+            root_rank = OTF2_COLLECTIVE_ROOT_NONE;
+            break;
+        case SCOREP_MPI_ROOT:
+            root_rank = OTF2_COLLECTIVE_ROOT_SELF;
+            break;
+        case SCOREP_MPI_PROC_NULL:
+            root_rank = OTF2_COLLECTIVE_ROOT_THIS_GROUP;
+            break;
+        default:
+            root_rank = ( uint32_t )rootRank;
     }
 
     OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,

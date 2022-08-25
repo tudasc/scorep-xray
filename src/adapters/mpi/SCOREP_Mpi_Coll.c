@@ -750,7 +750,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
 
     int32_t        sz, N, me;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )
@@ -925,7 +925,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
 
     int            sendsz, recvsz, N, me;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )
@@ -1023,7 +1023,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
 
     int            recvsz, sendsz, me, N, i;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )
@@ -1124,7 +1124,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
 
     int            sz, me, N;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )
@@ -1495,7 +1495,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
 
     int            sendsz, recvsz, N, me;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )
@@ -1596,7 +1596,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
 
     int            sendcount, sendsz, recvsz, me, N, i;
     uint64_t       sendbytes = 0, recvbytes = 0;
-    SCOREP_MpiRank root_loc  = root;
+    SCOREP_MpiRank root_loc  = scorep_mpi_get_scorep_mpi_rank( root );
 
 
     if ( event_gen_active )

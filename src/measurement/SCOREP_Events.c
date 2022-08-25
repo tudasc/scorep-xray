@@ -666,8 +666,9 @@ SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          uint64_t                         bytesSent,
                          uint64_t                         bytesReceived )
 {
-    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
-                  "Invalid rank passed to SCOREP_MpiCollectiveEnd" );
+    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK
+                    && rootRank != SCOREP_MPI_ROOT && rootRank != SCOREP_MPI_PROC_NULL ),
+                  "Invalid rank passed (%d) to SCOREP_MpiCollectiveEnd\n",  rootRank );
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
@@ -707,8 +708,9 @@ SCOREP_MpiNonBlockingCollectiveComplete( SCOREP_InterimCommunicatorHandle commun
                                          uint64_t                         bytesReceived,
                                          SCOREP_MpiRequestId              requestId )
 {
-    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
-                  "Invalid rank passed to SCOREP_MpiNonBlockingCollectiveComplete" );
+    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK
+                    && rootRank != SCOREP_MPI_ROOT && rootRank != SCOREP_MPI_PROC_NULL ),
+                  "Invalid rank passed (%d) to SCOREP_MpiCollectiveEnd\n",  rootRank );
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );

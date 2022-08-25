@@ -584,5 +584,6 @@ scorep_mpi_comm_handle( MPI_Comm comm )
     }
 }
 
+
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
