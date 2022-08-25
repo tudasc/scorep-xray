@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2017,
+ * Copyright (c) 2009-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -779,13 +779,32 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                                   definitionManager->page_manager );
         }
 
-        OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteComm(
-            writerHandle,
-            definition->sequence_number,
-            comm_name_id,
-            SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-            comm_parent_id,
-            scorep_tracing_comm_flags_to_otf2( definition->flags ) );
+        uint32_t group_a_id = SCOREP_HANDLE_TO_ID( definition->group_a_handle, Group, definitionManager->page_manager );
+        uint32_t group_b_id = SCOREP_HANDLE_TO_ID( definition->group_b_handle, Group, definitionManager->page_manager );
+        OTF2_ErrorCode status;
+
+        if ( group_a_id == group_b_id )
+        {
+            status = OTF2_GlobalDefWriter_WriteComm(
+                writerHandle,
+                definition->sequence_number,
+                comm_name_id,
+                group_a_id,
+                comm_parent_id,
+                scorep_tracing_comm_flags_to_otf2( definition->flags ) );
+        }
+        else
+        {
+            status = OTF2_GlobalDefWriter_WriteInterComm(
+                writerHandle,
+                definition->sequence_number,
+                comm_name_id,
+                group_a_id,
+                group_b_id,
+                comm_parent_id,
+                scorep_tracing_comm_flags_to_otf2( definition->flags ) );
+        }
+
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Communicator" );

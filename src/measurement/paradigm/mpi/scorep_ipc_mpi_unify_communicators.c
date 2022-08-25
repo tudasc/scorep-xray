@@ -50,6 +50,25 @@
 #include <SCOREP_Memory.h>
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME MPI
+#include <UTILS_Debug.h>
+
+#define NUMBER_OF_PAYLOAD_ELEMENTS 4
+
+/**
+ * Decide for a MPI comm payload if the respective communicator is
+ * MPI_COMM_SELF like based on group sizes.
+ */
+static bool
+payload_belongs_to_comm_self( scorep_mpi_comm_definition_payload* payload )
+{
+    if ( payload->comm_size == 1 && payload->remote_comm_size == 0 )
+    {
+        return true;
+    }
+    return false;
+}
+
 
 /**
  * Unifies the communicator ids. The (root, local_id) pair is already unique.
@@ -85,7 +104,9 @@ scorep_mpi_unify_communicators( void )
         scorep_mpi_comm_definition_payload* comm_payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
-        if ( comm_payload->comm_size == 1 )
+        /* Sorting out intra comm selfs for later creation, while keeping one element
+           groups of inter comms, as those are required. */
+        if ( payload_belongs_to_comm_self( comm_payload ) )
         {
             continue;
         }
@@ -114,7 +135,9 @@ scorep_mpi_unify_communicators( void )
         scorep_mpi_comm_definition_payload* comm_payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
-        if ( comm_payload->comm_size == 1 )
+        /* Sorting out intra comm selfs for later creation, while keeping one element
+           groups of inter comms, as those are required. */
+        if ( payload_belongs_to_comm_self( comm_payload ) )
         {
             continue;
         }
@@ -126,32 +149,59 @@ scorep_mpi_unify_communicators( void )
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     uint32_t* all_next_interim_comm_def =
-        calloc( 3 * comm_world_size, sizeof( *all_next_interim_comm_def ) );
+        calloc( NUMBER_OF_PAYLOAD_ELEMENTS * comm_world_size, sizeof( *all_next_interim_comm_def ) );
     UTILS_ASSERT( all_next_interim_comm_def );
 
-    uint32_t* group_ranks =
-        calloc( comm_world_size, sizeof( *group_ranks ) );
-    UTILS_ASSERT( group_ranks );
+    uint32_t* group_a_ranks =
+        calloc( comm_world_size, sizeof( *group_a_ranks ) );
+    UTILS_ASSERT( group_a_ranks );
+
+    uint32_t* group_b_ranks =
+        calloc( comm_world_size, sizeof( *group_b_ranks ) );
+    UTILS_ASSERT( group_b_ranks );
+
 
     /* Now iterate until all ranks processed their comms */
     interim_comm_defs_processed = 0;
+    #if HAVE( UTILS_DEBUG )
+    uint32_t loopcount = 0;
+    #endif
+    UTILS_DEBUG( "[rank%d] Begin Unify loop of non-self comms", rank );
     while ( true )
     {
-        uint32_t next_interim_comm_def[ 3 ] = { UINT32_MAX, UINT32_MAX, UINT32_MAX };
-        uint32_t comm_size                  = comm_world_size;
+        UTILS_DEBUG( "[rank%d] loop iteration no=%u ================================================", rank, loopcount++ );
+
+        uint32_t next_interim_comm_def[ NUMBER_OF_PAYLOAD_ELEMENTS ] = { UINT32_MAX, UINT32_MAX, UINT32_MAX,  UINT32_MAX };
+        uint32_t comm_size                                           = comm_world_size;
+        uint32_t remote_comm_size                                    = comm_world_size;
+        uint32_t combined_size                                       = comm_world_size;
+        uint32_t high_bit                                            = 0;
         if ( interim_comm_defs_processed < n_interim_comm_defs )
         {
             /* We still have a interim-comm left, announce our next def */
             scorep_mpi_comm_definition_payload* payload = local_interim_comm_defs[ interim_comm_defs_processed ].payload;
+
+            /* Extract the high bit from the remote_comm_size. */
+            high_bit = ( payload->remote_comm_size >> 31 ) & 1U;
+            uint32_t extracted_remote_size = payload->remote_comm_size;
+            extracted_remote_size &= ~( 1UL << 31 );
+            UTILS_DEBUG( "[rank%d] Bit extraction -  original payload->remote_comm_size=%u high bit=%u extracted_remote_size %u",
+                         rank, payload->remote_comm_size, high_bit, extracted_remote_size );
+
             next_interim_comm_def[ 0 ] = payload->global_root_rank;
             next_interim_comm_def[ 1 ] = payload->root_id;
             next_interim_comm_def[ 2 ] = payload->local_rank;
+            next_interim_comm_def[ 3 ] = high_bit;
             comm_size                  = payload->comm_size;
+            remote_comm_size           = extracted_remote_size;
+            combined_size              = payload->comm_size + extracted_remote_size;
         }
+        UTILS_DEBUG( "[rank%d] Before SCOREP_Ipc_Allgather own payload - global_root_rank=%u, root_id=%u, local_rank=%u, group_high=%u, comm_size=%u remote size=%u",
+                     rank,  next_interim_comm_def[ 0 ],   next_interim_comm_def[ 1 ], next_interim_comm_def[ 2 ], next_interim_comm_def[ 3 ], comm_size, remote_comm_size );
 
         SCOREP_Ipc_Allgather( next_interim_comm_def,
                               all_next_interim_comm_def,
-                              3, SCOREP_IPC_UINT32_T );
+                              NUMBER_OF_PAYLOAD_ELEMENTS, SCOREP_IPC_UINT32_T );
 
         /*
          * Check, if my next interim-comm def is satisfied, if we don't have a
@@ -161,17 +211,25 @@ scorep_mpi_unify_communicators( void )
         uint32_t ranks_participating = 0;
         for ( uint32_t i = 0; i < comm_world_size; i++ )
         {
-            uint32_t* this_interim_comm_def = all_next_interim_comm_def + 3 * i;
+            uint32_t* this_interim_comm_def = all_next_interim_comm_def + NUMBER_OF_PAYLOAD_ELEMENTS * i;
             if ( this_interim_comm_def[ 0 ] == next_interim_comm_def[ 0 ]
                  && this_interim_comm_def[ 1 ] == next_interim_comm_def[ 1 ] )
             {
                 ranks_participating++;
             }
         }
+        UTILS_DEBUG( "[rank%d] number of participants:%u ", rank, ranks_participating );
 
-        if ( ranks_participating != comm_size )
+        /*
+         * The exit condition for the case that this rank isn't working on a communicator the remaining ranks are working on
+         *  is based on the combined size. For intra comms this is the same as the size of their group, for inter comms this
+         *  is the combined size of group a and group b as all ranks of boths groups have to be participating for this to be the
+         *  correct time to process this inter comm.
+         */
+        if ( ranks_participating != combined_size )
         {
             /* Not all my ranks participate, thus I wont participate either */
+            UTILS_DEBUG( "[rank%d] Exit condition for participation participants=%u size=%u", rank, ranks_participating, combined_size );
             continue;
         }
 
@@ -188,23 +246,57 @@ scorep_mpi_unify_communicators( void )
         SCOREP_InterimCommunicatorDef*      definition = local_interim_comm_defs[ interim_comm_defs_processed ].definition;
         scorep_mpi_comm_definition_payload* payload    = local_interim_comm_defs[ interim_comm_defs_processed ].payload;
 
+
         for ( uint32_t i = 0; i < comm_world_size; i++ )
         {
-            uint32_t* this_interim_comm_def = all_next_interim_comm_def + 3 * i;
+            uint32_t* this_interim_comm_def = all_next_interim_comm_def + NUMBER_OF_PAYLOAD_ELEMENTS * i;
             if ( this_interim_comm_def[ 0 ] != next_interim_comm_def[ 0 ]
                  || this_interim_comm_def[ 1 ] != next_interim_comm_def[ 1 ] )
             {
                 continue;
             }
-            group_ranks[ this_interim_comm_def[ 2 ] ] = i;
+            /*
+             * Add ranks to respective groups.
+             * Group a is for either intra comms or lower group of a inter comm.
+             */
+            if ( this_interim_comm_def[ 3 ] == 0 )
+            {
+                group_a_ranks[ this_interim_comm_def[ 2 ] ] = i;
+                UTILS_DEBUG( "[rank%d] Add '%u' to group a", rank, i );
+            }
+            else
+            {
+                group_b_ranks[ this_interim_comm_def[ 2 ] ] = i;
+                UTILS_DEBUG( "[rank%d] Add '%u' to group b", rank, i );
+            }
         }
 
-        SCOREP_GroupHandle group = SCOREP_Definitions_NewGroupFrom32(
+        /*
+         * Match output sizes based on being the low or high group - as the order of
+         * group a/b has to be the same for both sides and not from the local perspective.
+         */
+        uint32_t output_size_a = next_interim_comm_def[ 3 ] != 1 ? comm_size : remote_comm_size;
+        uint32_t output_size_b = next_interim_comm_def[ 3 ] != 1 ? remote_comm_size : comm_size;
+        UTILS_DEBUG( "[rank%d] Match output size - high=%u  size_a=%u  size_b==%u",
+                     rank, next_interim_comm_def[ 3 ], output_size_a, output_size_b );
+
+        /* Group a is either the only group in an intra comm or represents group a for an inter comm. */
+        SCOREP_GroupHandle group_a = SCOREP_Definitions_NewGroupFrom32(
             SCOREP_GROUP_MPI_GROUP,
             "",
-            payload->comm_size,
-            ( const uint32_t* )group_ranks );
+            output_size_a,
+            ( const uint32_t* )group_a_ranks );
 
+        /* In case of inter comms create group b, which has to be non zero in size. */
+        SCOREP_GroupHandle group_b = SCOREP_INVALID_GROUP;
+        if ( output_size_b > 0 )
+        {
+            group_b = SCOREP_Definitions_NewGroupFrom32(
+                SCOREP_GROUP_MPI_GROUP,
+                "",
+                output_size_b,
+                ( const uint32_t* )group_b_ranks );
+        }
         SCOREP_CommunicatorHandle unified_parent_handle = SCOREP_INVALID_COMMUNICATOR;
         if ( definition->parent_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
         {
@@ -213,15 +305,33 @@ scorep_mpi_unify_communicators( void )
             unified_parent_handle = parent_defintion->unified;
         }
 
-        definition->unified = SCOREP_Definitions_NewCommunicator(
-            group,
-            definition->name_handle,
-            unified_parent_handle,
-            payload->root_id,
-            SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS );
+        /* Only for inter comms we have a group b of size > 0. */
+        if ( output_size_b == 0 )
+        {
+            UTILS_DEBUG( "[rank%d] New intra comm definition", rank  );
+            definition->unified = SCOREP_Definitions_NewCommunicator(
+                group_a,
+                definition->name_handle,
+                unified_parent_handle,
+                payload->root_id,
+                SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS );
+        }
+        else
+        {
+            UTILS_DEBUG( "[rank%d] New inter comm definition", rank  );
+            definition->unified = SCOREP_Definitions_NewInterCommunicator(
+                group_a,
+                group_b,
+                definition->name_handle,
+                unified_parent_handle,
+                payload->root_id,
+                SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS );
+        }
+
 
         interim_comm_defs_processed++;
     }
+    UTILS_DEBUG( "[rank%d] End Unify loop of non-self comms", rank );
 
     interim_comm_defs_processed = 0;
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
@@ -235,7 +345,7 @@ scorep_mpi_unify_communicators( void )
         scorep_mpi_comm_definition_payload* comm_payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
-        if ( comm_payload->comm_size != 1 )
+        if ( !payload_belongs_to_comm_self( comm_payload ) )
         {
             continue;
         }
@@ -256,5 +366,6 @@ scorep_mpi_unify_communicators( void )
 
     free( local_interim_comm_defs );
     free( all_next_interim_comm_def );
-    free( group_ranks );
+    free( group_a_ranks );
+    free( group_b_ranks );
 }

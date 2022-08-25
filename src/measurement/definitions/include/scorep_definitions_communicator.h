@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017,
+ * Copyright (c) 2009-2013, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,7 +60,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( Communicator );
 
-    SCOREP_GroupHandle        group_handle;
+    SCOREP_GroupHandle        group_a_handle;
+    SCOREP_GroupHandle        group_b_handle;
     SCOREP_StringHandle       name_handle;
     SCOREP_CommunicatorHandle parent_handle;
     uint32_t                  unify_key;
@@ -209,10 +210,17 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
                                     uint32_t                  unifyKey,
                                     SCOREP_CommunicatorFlag   flags );
 
-
 void
 scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*              definition,
                                        struct SCOREP_Allocator_PageManager* handlesPageManager );
 
+
+SCOREP_CommunicatorHandle
+SCOREP_Definitions_NewInterCommunicator( SCOREP_GroupHandle        groupA,
+                                         SCOREP_GroupHandle        groupB,
+                                         SCOREP_StringHandle       name,
+                                         SCOREP_CommunicatorHandle parent,
+                                         uint32_t                  unifyKey,
+                                         SCOREP_CommunicatorFlag   flags );
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_COMMUNICATOR_H */

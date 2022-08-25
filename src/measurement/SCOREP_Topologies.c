@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016-2019,
+ * Copyright (c) 2016-2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2022,
@@ -959,7 +959,7 @@ topologies_subsystem_post_unify( void )
                                 SCOREP_CommunicatorHandle topo_comm =  SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_handle,
                                                                                                     CartesianTopology )->communicator_handle;
 
-                                SCOREP_GroupHandle group_handle         = SCOREP_UNIFIED_HANDLE_DEREF( topo_comm, Communicator )->group_handle;
+                                SCOREP_GroupHandle group_handle         = SCOREP_UNIFIED_HANDLE_DEREF( topo_comm, Communicator )->group_a_handle;
                                 uint64_t*          locations_user_group = SCOREP_UNIFIED_HANDLE_DEREF( group_handle,
                                                                                                        Group )->members;
                                 uint64_t count =  SCOREP_UNIFIED_HANDLE_DEREF( group_handle,
@@ -1017,7 +1017,7 @@ SCOREP_Topologies_CoordRankFromGroupIndex( uint32_t                       index,
                     SCOREP_UNIFIED_HANDLE_DEREF(
                         SCOREP_UNIFIED_HANDLE_DEREF( topoHandle,
                                                      CartesianTopology )->communicator_handle,
-                        Communicator )->group_handle,
+                        Communicator )->group_a_handle,
                     Group )->members;
             index = locations_user_group[ index ];
             break;
@@ -1055,7 +1055,7 @@ SCOREP_Topologies_CoordThreadFromGroupIndex( uint32_t                       inde
                     SCOREP_UNIFIED_HANDLE_DEREF(
                         SCOREP_UNIFIED_HANDLE_DEREF( topoHandle,
                                                      CartesianTopology )->communicator_handle,
-                        Communicator )->group_handle,
+                        Communicator )->group_a_handle,
                     Group )->members;
             index = locations_user_group[ index ];
             break;
