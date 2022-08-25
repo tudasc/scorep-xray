@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2018, 2022,
+ * Copyright (c) 2009-2018, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1454,6 +1454,29 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
  *
  */
 void
+SCOREP_Location_TriggerParameterUint64( SCOREP_Location*       location,
+                                        uint64_t               timestamp,
+                                        SCOREP_ParameterHandle parameterHandle,
+                                        uint64_t               value )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( !location )
+    {
+        location = SCOREP_Location_GetCurrentCPULocation();
+    }
+
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
+
+    SCOREP_CALL_SUBSTRATE( TriggerParameterUint64, TRIGGER_PARAMETER_UINT64,
+                           ( location, timestamp, parameterHandle, value ) );
+}
+
+
+/**
+ *
+ */
+void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value )
 {
@@ -1477,6 +1500,32 @@ SCOREP_TriggerParameterStringHandle( SCOREP_ParameterHandle parameterHandle,
     SCOREP_CALL_SUBSTRATE( TriggerParameterString, TRIGGER_PARAMETER_STRING,
                            ( location, timestamp,
                              parameterHandle, stringHandle ) );
+}
+
+
+/**
+ *
+ */
+void
+SCOREP_Location_TriggerParameterString( SCOREP_Location*       location,
+                                        uint64_t               timestamp,
+                                        SCOREP_ParameterHandle parameterHandle,
+                                        const char*            value )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( !location )
+    {
+        location = SCOREP_Location_GetCurrentCPULocation();
+    }
+
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
+
+    SCOREP_StringHandle string_handle = SCOREP_Definitions_NewString( value );
+
+    SCOREP_CALL_SUBSTRATE( TriggerParameterString, TRIGGER_PARAMETER_STRING,
+                           ( location, timestamp,
+                             parameterHandle, string_handle ) );
 }
 
 
