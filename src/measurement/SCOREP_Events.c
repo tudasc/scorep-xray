@@ -1568,3 +1568,17 @@ SCOREP_CommCreate( SCOREP_InterimCommunicatorHandle communicatorHandle )
     SCOREP_CALL_SUBSTRATE( CommCreate, COMM_CREATE,
                            ( location, timestamp, communicatorHandle ) );
 }
+
+
+void
+SCOREP_CommDestroy( SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Comm:%u",
+                        SCOREP_Definitions_HandleToId( communicatorHandle ) );
+
+    SCOREP_CALL_SUBSTRATE( CommDestroy, COMM_DESTROY,
+                           ( location, timestamp, communicatorHandle ) );
+}

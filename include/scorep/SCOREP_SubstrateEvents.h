@@ -152,6 +152,7 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_MPI_NON_BLOCKING_COLLECTIVE_REQUEST,  /**< marks the initiation of a non-blocking MPI collective operation, see SCOREP_Substrates_MpiNonBlockingCollectiveRequestCb() */
     SCOREP_EVENT_MPI_NON_BLOCKING_COLLECTIVE_COMPLETE, /**< marks the completion of a non-blocking MPI collective operation, see SCOREP_Substrates_MpiNonBlockingCollectiveCompleteCb() */
     SCOREP_EVENT_COMM_CREATE,                          /**< marks the creation of a communicator, providing the respective handle */
+    SCOREP_EVENT_COMM_DESTROY,                         /**< marks the destruction of a communicator, providing the respective handle */
 
     SCOREP_SUBSTRATES_NUM_EVENTS                       /**< Non-ABI, marks the end of the currently supported events and can change with different versions of Score-P (increases with increasing Score-P version) */
 } SCOREP_Substrates_EventType;
@@ -1737,6 +1738,18 @@ typedef void ( * SCOREP_Substrates_IoTryLockCb )(
  * @param communicatorHandle communicator handle of the created communicator.
  */
 typedef void ( * SCOREP_Substrates_CommCreateCb )(
+    struct SCOREP_Location*          location,
+    uint64_t                         timestamp,
+    SCOREP_InterimCommunicatorHandle communicatorHandle );
+
+/**
+ * Records communicator destruction, tracking Score-P communicator handles.
+ *
+ * @param location location which creates this event
+ * @param timestamp timestamp for this event
+ * @param communicatorHandle communicator handle of the destroyed communicator.
+ */
+typedef void ( * SCOREP_Substrates_CommDestroyCb )(
     struct SCOREP_Location*          location,
     uint64_t                         timestamp,
     SCOREP_InterimCommunicatorHandle communicatorHandle );

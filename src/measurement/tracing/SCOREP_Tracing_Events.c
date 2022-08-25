@@ -2123,6 +2123,21 @@ comm_create( SCOREP_Location*                 location,
     scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
+static void
+comm_destroy( SCOREP_Location*                 location,
+              uint64_t                         timestamp,
+              SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    OTF2_EvtWriter* evt_writer = scorep_tracing_get_trace_data( location )->otf_writer;
+
+    OTF2_EvtWriter_CommDestroy( evt_writer,
+                                NULL,
+                                timestamp,
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ) );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
+}
+
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
@@ -2135,6 +2150,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextEnter,               CALLING_CONTEXT_ENTER,                 calling_context_enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextExit,                CALLING_CONTEXT_EXIT,                  calling_context_leave ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CommCreate,                        COMM_CREATE,                           comm_create ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CommDestroy,                       COMM_DESTROY,                          comm_destroy ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRewindRegion,                 ENTER_REWIND_REGION,                   store_rewind_point ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRewindRegion,                  EXIT_REWIND_REGION,                    exit_rewind_point ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                           MPI_SEND,                              mpi_send ),

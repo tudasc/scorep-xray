@@ -1388,6 +1388,15 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
 void
 SCOREP_CommCreate( SCOREP_InterimCommunicatorHandle communicatorHandle );
 
+
+/**
+ * Process a CommDestroy event in the measurement system.
+ *
+ * @param communicatorHandle The handle of the destroyed communicator.
+ */
+void
+SCOREP_CommDestroy( SCOREP_InterimCommunicatorHandle communicatorHandle );
+
 /*@}*/
 
 #endif /* SCOREP_EVENTS_H */
