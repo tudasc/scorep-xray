@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2018,
+ * Copyright (c) 2009-2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -1553,4 +1553,18 @@ SCOREP_LeakedMemory( uint64_t addrLeaked,
 {
     SCOREP_CALL_SUBSTRATE_MGMT( LeakedMemory, LEAKED_MEMORY,
                                 ( addrLeaked, bytesLeaked, substrateData ) );
+}
+
+
+void
+SCOREP_CommCreate( SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Comm:%u",
+                        SCOREP_Definitions_HandleToId( communicatorHandle ) );
+
+    SCOREP_CALL_SUBSTRATE( CommCreate, COMM_CREATE,
+                           ( location, timestamp, communicatorHandle ) );
 }
