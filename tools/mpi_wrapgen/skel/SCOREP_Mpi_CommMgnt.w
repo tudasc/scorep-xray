@@ -13,6 +13,7 @@ ${proto:c}
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
+    SCOREP_InterimCommunicatorHandle new_comm_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
     ${rtype} return_val;
 
     if (event_gen_active)
@@ -21,6 +22,7 @@ ${proto:c}
         if (event_gen_active_for_group)
         {
             SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -33,13 +35,19 @@ ${proto:c}
     SCOREP_EXIT_WRAPPED_REGION();
     if (*${comm:new} != MPI_COMM_NULL)
     {
-        scorep_mpi_comm_create(*${comm:new}, ${comm:parent});
+        new_comm_handle = scorep_mpi_comm_create(*${comm:new}, ${comm:parent});
     }
 
     if (event_gen_active)
     {
         if (event_gen_active_for_group)
         {
+            SCOREP_CommCreate(new_comm_handle);
+            SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(${comm:parent}),
+                                    SCOREP_INVALID_ROOT_RANK,
+                                    SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                    0,
+                                    0);
             SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
         }
         else if ( SCOREP_IsUnwindingEnabled() )

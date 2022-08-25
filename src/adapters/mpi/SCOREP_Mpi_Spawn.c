@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2015, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -83,9 +83,10 @@ int
 MPI_Comm_accept( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle new_comm_handle            = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -93,6 +94,7 @@ MPI_Comm_accept( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root,
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_ACCEPT ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -105,13 +107,19 @@ MPI_Comm_accept( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root,
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm, comm );
+        new_comm_handle = scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommCreate( new_comm_handle );
+            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_ACCEPT ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -139,9 +147,10 @@ int
 MPI_Comm_connect( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle new_comm_handle            = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -149,6 +158,7 @@ MPI_Comm_connect( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CONNECT ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -161,13 +171,19 @@ MPI_Comm_connect( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm, comm );
+        new_comm_handle = scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommCreate( new_comm_handle );
+            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CONNECT ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -195,9 +211,10 @@ int
 MPI_Comm_join( int fd, MPI_Comm* newcomm )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle new_comm_handle            = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -205,6 +222,7 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_JOIN ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -217,13 +235,19 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
+        new_comm_handle = scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
     }
 
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommCreate( new_comm_handle );
+            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( MPI_COMM_NULL ),
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_JOIN ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -251,9 +275,10 @@ int
 MPI_Comm_spawn( SCOREP_MPI_CONST_DECL char* command, char* argv[], int maxprocs, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle new_comm_handle            = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -261,6 +286,7 @@ MPI_Comm_spawn( SCOREP_MPI_CONST_DECL char* command, char* argv[], int maxprocs,
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -273,13 +299,19 @@ MPI_Comm_spawn( SCOREP_MPI_CONST_DECL char* command, char* argv[], int maxprocs,
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm, comm );
+        new_comm_handle = scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommCreate( new_comm_handle );
+            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -307,9 +339,10 @@ int
 MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_argv[], SCOREP_MPI_CONST_DECL int array_of_maxprocs[], SCOREP_MPI_CONST_DECL MPI_Info array_of_info[], int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
-    int       return_val;
+    const int                        event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int                        event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
+    SCOREP_InterimCommunicatorHandle new_comm_handle            = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              return_val;
 
     if ( event_gen_active )
     {
@@ -317,6 +350,7 @@ MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_a
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN_MULTIPLE ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -329,13 +363,19 @@ MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_a
     SCOREP_EXIT_WRAPPED_REGION();
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm, comm );
+        new_comm_handle = scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_CommCreate( new_comm_handle );
+            SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
+                                     SCOREP_INVALID_ROOT_RANK,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN_MULTIPLE ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )

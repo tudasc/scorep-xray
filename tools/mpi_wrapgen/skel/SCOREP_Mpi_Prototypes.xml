@@ -3821,7 +3821,7 @@
 <prototype name="MPI_Intercomm_create" rtype="int" group="cg" >
     <param access="i" type_modifier="" type="MPI_Comm" name="local_comm" />
     <param access="i" type_modifier="" type="int" name="local_leader" />
-    <param access="i" type_modifier="" type="MPI_Comm" name="peer_comm" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="peer_comm" special="commparent" />
     <param access="i" type_modifier="" type="int" name="remote_leader" />
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
@@ -3829,7 +3829,7 @@
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
-    <param access="i" type_modifier="" type="MPI_Comm" name="intercomm" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="intercomm" special="commparent" />
     <param access="i" type_modifier="" type="int" name="high" />
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />

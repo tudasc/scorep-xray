@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2016, 2018,
+ * Copyright (c) 2009-2016, 2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -104,9 +104,10 @@ MPI_Init( int* argc, char*** argv )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    int return_val;
-    int fflag;
-    int iflag;
+    int            return_val;
+    int            fflag;
+    int            iflag;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
@@ -126,6 +127,7 @@ MPI_Init( int* argc, char*** argv )
         {
             /* Enter the init region */
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -150,6 +152,14 @@ MPI_Init( int* argc, char*** argv )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_InterimCommunicatorHandle world_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_WORLD );
+            SCOREP_CommCreate( world_comm_handle );
+            SCOREP_CommCreate( SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF ) );
+            SCOREP_MpiCollectiveEnd( world_comm_handle,
+                                     root_loc,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
@@ -184,9 +194,10 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    int return_val;
-    int fflag;
-    int iflag;
+    int            return_val;
+    int            fflag;
+    int            iflag;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
@@ -205,6 +216,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         if ( event_gen_active_for_group )
         {
             SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT_THREAD ] );
+            SCOREP_MpiCollectiveBegin();
         }
         else if ( SCOREP_IsUnwindingEnabled() )
         {
@@ -256,6 +268,14 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
     {
         if ( event_gen_active_for_group )
         {
+            SCOREP_InterimCommunicatorHandle world_comm_handle = SCOREP_MPI_COMM_HANDLE( MPI_COMM_WORLD );
+            SCOREP_CommCreate( world_comm_handle );
+            SCOREP_CommCreate( SCOREP_MPI_COMM_HANDLE( MPI_COMM_SELF ) );
+            SCOREP_MpiCollectiveEnd( world_comm_handle,
+                                     root_loc,
+                                     SCOREP_COLLECTIVE_CREATE_HANDLE,
+                                     0,
+                                     0 );
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT_THREAD ] );
         }
         else if ( SCOREP_IsUnwindingEnabled() )
