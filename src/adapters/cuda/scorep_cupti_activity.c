@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -458,6 +458,18 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
         if ( !SCOREP_Filtering_MatchFunction( kernel->name, NULL ) )
         {
             SCOREP_Location_EnterRegion( stream_location, start, regionHandle );
+
+            if ( scorep_cuda_record_callsites )
+            {
+                uint32_t callsite_hash;
+                if ( !scorep_cupti_callsite_hash_get_and_remove( kernel->correlationId, &callsite_hash ) )
+                {
+                    UTILS_WARN_ONCE( "[CUPTI Activity] Error retrieving hash value for CUPTI correlationId %u!",
+                                     kernel->correlationId );
+                }
+
+                SCOREP_Location_TriggerParameterUint64( stream_location, start, scorep_cupti_parameter_callsite_id, callsite_hash );
+            }
 
             /* use counter to provide additional information for kernels */
             if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -59,11 +59,13 @@
 #define SCOREP_CUDA_FEATURE_FLUSHATEXIT         ( 1 << 10 )
 #define SCOREP_CUDA_FEATURE_REFERENCES          ( 1 << 11 )
 #define SCOREP_CUDA_FEATURE_DONTFLUSHATEXIT     ( 1 << 12 )
+#define SCOREP_CUDA_FEATURE_KERNEL_CALLSITE     ( 1 << 13 )
 #define SCOREP_CUDA_FEATURES_DEFAULT \
     ( SCOREP_CUDA_FEATURE_DRIVER_API | SCOREP_CUDA_FEATURE_KERNEL | \
       SCOREP_CUDA_FEATURE_KERNEL_COUNTER | SCOREP_CUDA_FEATURE_MEMCPY | \
       SCOREP_CUDA_FEATURE_IDLE | SCOREP_CUDA_FEATURE_SYNC | \
-      SCOREP_CUDA_FEATURE_GPUMEMUSAGE | SCOREP_CUDA_FEATURE_REFERENCES )
+      SCOREP_CUDA_FEATURE_GPUMEMUSAGE | SCOREP_CUDA_FEATURE_REFERENCES | \
+      SCOREP_CUDA_FEATURE_KERNEL_CALLSITE )
 
 
 /*
@@ -145,6 +147,11 @@ extern uint8_t scorep_cuda_record_gpumemusage;
  * flag: Shall record reference information for CUDA activities?
  */
 extern bool scorep_cuda_record_references;
+
+/*
+ * flag: Shall record callsite information for CUDA kernel launches?
+ */
+extern bool scorep_cuda_record_callsites;
 
 /*
  * The default buffer size for the CUPTI activity buffer.

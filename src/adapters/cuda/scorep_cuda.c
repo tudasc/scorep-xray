@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -60,6 +60,8 @@ bool scorep_record_driver_api = false;
 
 bool scorep_record_runtime_api = false;
 
+bool scorep_cuda_record_callsites = false;
+
 /* handles for CUDA communication unification */
 SCOREP_InterimCommunicatorHandle scorep_cuda_interim_communicator_handle =
     SCOREP_INVALID_INTERIM_COMMUNICATOR;
@@ -75,7 +77,8 @@ scorep_cuda_set_features( void )
 {
     /* check for CUDA APIs */
     if ( ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DRIVER_API ) == SCOREP_CUDA_FEATURE_DRIVER_API ) ||
-         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) )
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_CALLSITE ) )
     {
         scorep_record_driver_api = true;
     }
@@ -92,7 +95,8 @@ scorep_cuda_set_features( void )
          ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) ||
          ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_COUNTER ) ||
          ( scorep_cuda_features & SCOREP_CUDA_FEATURE_IDLE ) ||
-         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) )
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_CALLSITE ) )
     {
         scorep_cuda_record_kernels = SCOREP_CUDA_KERNEL;
 
@@ -110,6 +114,11 @@ scorep_cuda_set_features( void )
         if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_REFERENCES )
         {
             scorep_cuda_record_references = true;
+        }
+
+        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_CALLSITE )
+        {
+            scorep_cuda_record_callsites = true;
         }
     }
 
