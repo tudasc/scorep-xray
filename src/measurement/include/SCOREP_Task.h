@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015, 2018,
+ * Copyright (c) 2015, 2018, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -23,6 +23,8 @@
  */
 
 #include <SCOREP_Types.h>
+#include <SCOREP_FastHashtab.h>
+
 #include <stddef.h>
 
 struct SCOREP_Location;
@@ -140,5 +142,88 @@ void
 SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
                               size_t            substrateId,
                               void*             data );
+
+/**
+ * Returns the jenkinshash of the current region handle stack for @a task.
+ * @param task The task.
+ * @returns the hash value of the region handle stack for @a task.
+ */
+uint32_t
+SCOREP_Task_GetRegionStackHash( SCOREP_TaskHandle task );
+
+/* *INDENT-OFF* */
+
+/**
+ * Standardized FastHashTab for callsites based on region stack hashes.
+ * The SCOREP_CALLSITE_HASH_TABLE is instantiated in the launch site context
+ * with static access to insert to the `callsite_hash_get_and_insert` function.
+ * The callsitePrefix creates wrapper for the get and remove functions for
+ * the execution side, which may be called in a different compilation unit.
+ * The `keyType` may vary depending on use case, but the value type is the same
+ * for any callsites based on the region stack hash.
+ * Requires inclusion of `SCOREP_FastHashtab.h` and `jenkins_hash.h` on use.
+ */
+#define SCOREP_CALLSITE_HASH_TABLE( callsitePrefix, keyType ) \
+\
+    typedef keyType  callsite_hash_key_t; \
+    typedef uint32_t callsite_hash_value_t; \
+\
+    static inline bool \
+    callsite_hash_equals( callsite_hash_key_t key1, callsite_hash_key_t key2 ) \
+    { \
+        return key1 == key2; \
+    } \
+\
+    static void* \
+    callsite_hash_allocate_chunk( size_t chunkSize ) \
+    { \
+        void* chunk = SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize ); \
+        return chunk; \
+    } \
+\
+    static void \
+    callsite_hash_free_chunk( void* chunk ) \
+    { \
+    } \
+\
+    static callsite_hash_value_t \
+    callsite_hash_value_ctor( callsite_hash_key_t* addr, \
+                              const void*          ctorDataUnused ) \
+    { \
+        return SCOREP_Task_GetRegionStackHash( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) ); \
+    } \
+\
+    static void \
+    callsite_hash_value_dtor( callsite_hash_key_t key, callsite_hash_value_t value ) \
+    { \
+    } \
+\
+    static inline uint32_t \
+    callsite_hash_bucket_idx( callsite_hash_key_t key ) \
+    { \
+        uint32_t idx = jenkins_hash( &key, sizeof( key ), 0 ) & hashmask( 9 ); \
+        return idx; \
+    } \
+\
+    SCOREP_HASH_TABLE_NON_MONOTONIC(  callsite_hash, 15, hashsize( 9 ) ) \
+\
+    bool \
+    scorep_ ## callsitePrefix ## _callsite_hash_get_and_remove( keyType                key, \
+                                                                callsite_hash_value_t* value ) \
+    { \
+        if ( callsite_hash_get( key, value ) ) \
+        { \
+            return callsite_hash_remove( key ); \
+        } \
+        return false; \
+    } \
+\
+    callsite_hash_value_t \
+    scorep_ ## callsitePrefix ## _callsite_hash_get_and_insert( keyType idx ) \
+    { \
+        bool inserted = false; \
+        return callsite_hash_get_and_insert( idx, NULL, &inserted ); \
+    } \
+
 
 #endif /* SCOREP_TASK_H */

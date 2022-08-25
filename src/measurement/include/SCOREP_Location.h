@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2018
+ * Copyright (c) 2009-2014, 2018, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -49,6 +49,12 @@
 
 typedef struct SCOREP_Location SCOREP_Location;
 
+void
+SCOREP_Location_SetLastForkHash( SCOREP_Location* location,
+                                 uint32_t         hash );
+
+uint32_t
+SCOREP_Location_GetLastForkHash( const SCOREP_Location* location );
 
 /**
  * This function can be used by subsystems to create new locations.
