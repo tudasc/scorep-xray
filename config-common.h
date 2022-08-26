@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -108,6 +108,11 @@
 #define UTILS_FOOL_LINKER( name ) \
     extern bool name ## _fool_linker; \
     name ## _fool_linker = true
+
+/** Use this macro from within a function to generate a compile-time error if
+ *  @a condition is true. No code is generated if condition is false.
+ */
+#define UTILS_BUILD_BUG_ON( condition ) ( ( void )sizeof( char[ 1 - 2 * !!( condition ) ] ) )
 
 /**
  * @}
