@@ -252,7 +252,7 @@ AS_IF([test "x${_afs_lib_prevent_check}" = xyes],
         [scorep_libunwind_summary_reason=", explicitly disabled"],
         [test "x${_afs_lib_prevent_check_reason}" = xcrosscompile],
         [scorep_libunwind_summary_reason=", --with-_afs_lib_name needs path or download in cross-compile mode"],
-        [AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason \"${_afs_lib_prevent_check_reason}\".])])],
+        [AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason "${_afs_lib_prevent_check_reason}".])])],
     [CPPFLAGS=$_afs_lib_CPPFLAGS
      AC_CHECK_HEADER([libunwind.h],
          [LTLDFLAGS=$_afs_lib_LDFLAGS

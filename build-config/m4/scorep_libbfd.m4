@@ -144,7 +144,7 @@ AS_IF([test "x${_afs_lib_prevent_check}" = xyes], [
         [AC_MSG_ERROR([A working _afs_lib_name installation is required, --without-_afs_lib_name is not a valid option. See --with-_afs_lib_name in INSTALL.])],
 	[test "x${_afs_lib_prevent_check_reason}" = xcrosscompile],
 	[AC_MSG_ERROR([A working _afs_lib_name installation is required. Either provide a path or use the download option, see --with-_afs_lib_name in INSTALL.])],
-	[AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason \"${_afs_lib_prevent_check_reason}\".])])])
+	[AC_MSG_ERROR([Unknown _afs_lib_prevent_check_reason "${_afs_lib_prevent_check_reason}".])])])
 dnl
 CPPFLAGS=$_afs_lib_CPPFLAGS
 AC_CHECK_HEADER([bfd.h],
