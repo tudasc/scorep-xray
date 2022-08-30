@@ -62,6 +62,10 @@ Bugfixes:
   - `MPI_Alloc_mem`
   - `MPI_Free_mem`
   - `MPI_Win_shared_query`
+- Non-blocking MPI I/O events now produce the correct `IoOperationTest`
+  event instead of the erroneous `MpiRequestTested` event for an
+  unsuccessful MPI_Test on the request.
+
 
 ------------------- Released version 7.1 -----------------------------
 

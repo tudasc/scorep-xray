@@ -279,7 +279,7 @@ MPI_Waitany( int          count,
             }
             else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
-                SCOREP_MpiRequestTested( scorep_req->id );
+                scorep_mpi_request_tested( scorep_req );
             }
 
             scorep_mpi_unmark_request( scorep_req );
@@ -397,7 +397,7 @@ MPI_Waitsome( int          incount,
                 }
                 else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
                 {
-                    SCOREP_MpiRequestTested( scorep_req->id );
+                    scorep_mpi_request_tested( scorep_req );
                 }
             }
             scorep_mpi_unmark_request( scorep_req );
@@ -493,7 +493,7 @@ MPI_Test( MPI_Request* request,
     }
     else if ( scorep_req && event_gen_active_for_group && xtest_active )
     {
-        SCOREP_MpiRequestTested( scorep_req->id );
+        scorep_mpi_request_tested( scorep_req );
     }
     scorep_mpi_unmark_request( scorep_req );
 
@@ -577,7 +577,7 @@ MPI_Testany( int          count,
             }
             else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
-                SCOREP_MpiRequestTested( scorep_req->id );
+                scorep_mpi_request_tested( scorep_req );
             }
             scorep_mpi_unmark_request( scorep_req );
         }
@@ -677,7 +677,7 @@ MPI_Testall( int          count,
             scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
             if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
             {
-                SCOREP_MpiRequestTested( scorep_req->id );
+                scorep_mpi_request_tested( scorep_req );
             }
             scorep_mpi_unmark_request( scorep_req );
         }
@@ -787,7 +787,7 @@ MPI_Testsome( int          incount,
                 }
                 else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
                 {
-                    SCOREP_MpiRequestTested( scorep_req->id );
+                    scorep_mpi_request_tested( scorep_req );
                 }
             }
             scorep_mpi_unmark_request( scorep_req );
@@ -1230,7 +1230,7 @@ MPI_Request_get_status( MPI_Request request,
     }
     else if ( scorep_req && event_gen_active_for_group && xtest_active )
     {
-        SCOREP_MpiRequestTested( scorep_req->id );
+        scorep_mpi_request_tested( scorep_req );
     }
 
     if ( event_gen_active )

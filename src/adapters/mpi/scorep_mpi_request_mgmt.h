@@ -257,11 +257,11 @@ void
 scorep_mpi_request_free( scorep_mpi_request* req );
 
 /**
- * @brief Test a request entry
+ * @brief Trigger a "tested" event for this MPI request
  * @param req Pointer to request entry to be tested
  */
 void
-scorep_mpi_test_request( scorep_mpi_request* req );
+scorep_mpi_request_tested( scorep_mpi_request* req );
 
 /**
  * @brief Check a completed request entry for nessecary measurement data

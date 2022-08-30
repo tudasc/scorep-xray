@@ -584,7 +584,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 }
 
 void
-scorep_mpi_test_request( scorep_mpi_request* req )
+scorep_mpi_request_tested( scorep_mpi_request* req )
 {
     if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
