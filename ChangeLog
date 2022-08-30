@@ -2,7 +2,7 @@
 
 Major features:
 
--Add support to record CUDA NVTX instrumentation.
+- Add support to record CUDA NVTX instrumentation.
 
 Features and improvements:
 
@@ -49,6 +49,7 @@ Compatibility:
   but allow for individual flags via (C|CXX|LD)FLAGS_FOR_BUILD_SCORE.
 
 Bugfixes:
+
 - MPI request management now uses internal Score-P memory management.
   However, a measurement will now have increased memory requirements.
   Please be aware of this.
