@@ -21,6 +21,11 @@ Features and improvements:
   via `--with-nocross-compiler-suite=nvhpc`.
 - Add events for communicator creation and destruction to Score-P
   corresponding to the new records in OTF2 3.0.
+- Add Fortran TYPE(C_PTR) overload wrappers to the MPI adapter for
+  - `MPI_Alloc_mem`
+  - `MPI_Win_allocate`
+  - `MPI_Win_allocate_shared`
+  - `MPI_Win_shared_query`
 
 User tools and API improvements and changes:
 

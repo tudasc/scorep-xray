@@ -218,7 +218,23 @@ proto_c
 std::string
 proto_fortran
 (
+    const SCOREP::Wrapgen::Func& func,
+    const std::string&           name_suffix
+);
+
+/** Creates a prototype of the function for Fortran-wrappers.
+ */
+std::string
+proto_fortran
+(
     const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+proto_f2c_c2f
+(
+    const SCOREP::Wrapgen::Func& func,
+    const std::string&           name_suffix
 );
 
 std::string

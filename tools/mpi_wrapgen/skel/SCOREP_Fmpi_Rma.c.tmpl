@@ -61,12 +61,16 @@
 /* uppercase defines */
 #pragma wrapgen multiple restrict(grma)      skel/SCOREP_Fmpi_DefineU.w
 
+#pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|shared_query)) skel/SCOREP_Fmpi_DefineU_Cptr.w
+
 #pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Fmpi_DefineU.w
 
 #pragma wrapgen multiple restrict(grma_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineU.w
 
 /* lowercase defines */
 #pragma wrapgen multiple restrict(grma)      skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|shared_query)) skel/SCOREP_Fmpi_DefineL_Cptr.w
 
 #pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Fmpi_DefineL.w
 
@@ -122,6 +126,7 @@
   */
 #pragma wrapgen multiple regex(MPI_(Raccumulate|Rget_accumulate|Rget|Rput|Get_accumulate|Fetch_and_op|Compare_and_swap)$) skel/SCOREP_Fmpi_Std.w
 #pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|create_dynamic|lock_all|unlock_all|flush|flush_all|flush_local|flush_local_all|shared_query)$) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|shared_query)) skel/SCOREP_Fmpi_Std_Cptr.w
 
 #else /* !NEED_F2C_CONV */
 
@@ -168,6 +173,7 @@
   */
 #pragma wrapgen multiple regex(MPI_(Raccumulate|Rget_accumulate|Rget|Rput|Get_accumulate|Fetch_and_op|Compare_and_swap)$) skel/SCOREP_Mpi_F2c_C2f.w
 #pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|create_dynamic|lock_all|unlock_all|flush|flush_all|flush_local|flush_local_all|shared_query)$) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(MPI_Win_(allocate|allocate_shared|shared_query)) skel/SCOREP_Mpi_F2c_C2f_Cptr.w
 
 /**
  * @}
