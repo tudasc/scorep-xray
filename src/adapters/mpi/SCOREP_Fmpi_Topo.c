@@ -61,181 +61,181 @@
 /* uppercase defines */
 
 /** @def MPI_Cart_coords_U
-    Exchange MPI_Cart_coords_U by MPI_CART_COORDS.
+    Exchanges MPI_Cart_coords_U with MPI_CART_COORDS.
     It is used for the Fortran wrappers of MPI_Cart_coords.
  */
 #define MPI_Cart_coords_U MPI_CART_COORDS
 
 /** @def MPI_Cart_create_U
-    Exchange MPI_Cart_create_U by MPI_CART_CREATE.
+    Exchanges MPI_Cart_create_U with MPI_CART_CREATE.
     It is used for the Fortran wrappers of MPI_Cart_create.
  */
 #define MPI_Cart_create_U MPI_CART_CREATE
 
 /** @def MPI_Cart_get_U
-    Exchange MPI_Cart_get_U by MPI_CART_GET.
+    Exchanges MPI_Cart_get_U with MPI_CART_GET.
     It is used for the Fortran wrappers of MPI_Cart_get.
  */
 #define MPI_Cart_get_U MPI_CART_GET
 
 /** @def MPI_Cart_map_U
-    Exchange MPI_Cart_map_U by MPI_CART_MAP.
+    Exchanges MPI_Cart_map_U with MPI_CART_MAP.
     It is used for the Fortran wrappers of MPI_Cart_map.
  */
 #define MPI_Cart_map_U MPI_CART_MAP
 
 /** @def MPI_Cart_rank_U
-    Exchange MPI_Cart_rank_U by MPI_CART_RANK.
+    Exchanges MPI_Cart_rank_U with MPI_CART_RANK.
     It is used for the Fortran wrappers of MPI_Cart_rank.
  */
 #define MPI_Cart_rank_U MPI_CART_RANK
 
 /** @def MPI_Cart_shift_U
-    Exchange MPI_Cart_shift_U by MPI_CART_SHIFT.
+    Exchanges MPI_Cart_shift_U with MPI_CART_SHIFT.
     It is used for the Fortran wrappers of MPI_Cart_shift.
  */
 #define MPI_Cart_shift_U MPI_CART_SHIFT
 
 /** @def MPI_Cart_sub_U
-    Exchange MPI_Cart_sub_U by MPI_CART_SUB.
+    Exchanges MPI_Cart_sub_U with MPI_CART_SUB.
     It is used for the Fortran wrappers of MPI_Cart_sub.
  */
 #define MPI_Cart_sub_U MPI_CART_SUB
 
 /** @def MPI_Cartdim_get_U
-    Exchange MPI_Cartdim_get_U by MPI_CARTDIM_GET.
+    Exchanges MPI_Cartdim_get_U with MPI_CARTDIM_GET.
     It is used for the Fortran wrappers of MPI_Cartdim_get.
  */
 #define MPI_Cartdim_get_U MPI_CARTDIM_GET
 
 /** @def MPI_Dims_create_U
-    Exchange MPI_Dims_create_U by MPI_DIMS_CREATE.
+    Exchanges MPI_Dims_create_U with MPI_DIMS_CREATE.
     It is used for the Fortran wrappers of MPI_Dims_create.
  */
 #define MPI_Dims_create_U MPI_DIMS_CREATE
 
 /** @def MPI_Dist_graph_create_U
-    Exchange MPI_Dist_graph_create_U by MPI_DIST_GRAPH_CREATE.
+    Exchanges MPI_Dist_graph_create_U with MPI_DIST_GRAPH_CREATE.
     It is used for the Fortran wrappers of MPI_Dist_graph_create.
  */
 #define MPI_Dist_graph_create_U MPI_DIST_GRAPH_CREATE
 
 /** @def MPI_Dist_graph_create_adjacent_U
-    Exchange MPI_Dist_graph_create_adjacent_U by MPI_DIST_GRAPH_CREATE_ADJACENT.
+    Exchanges MPI_Dist_graph_create_adjacent_U with MPI_DIST_GRAPH_CREATE_ADJACENT.
     It is used for the Fortran wrappers of MPI_Dist_graph_create_adjacent.
  */
 #define MPI_Dist_graph_create_adjacent_U MPI_DIST_GRAPH_CREATE_ADJACENT
 
 /** @def MPI_Dist_graph_neighbors_U
-    Exchange MPI_Dist_graph_neighbors_U by MPI_DIST_GRAPH_NEIGHBORS.
+    Exchanges MPI_Dist_graph_neighbors_U with MPI_DIST_GRAPH_NEIGHBORS.
     It is used for the Fortran wrappers of MPI_Dist_graph_neighbors.
  */
 #define MPI_Dist_graph_neighbors_U MPI_DIST_GRAPH_NEIGHBORS
 
 /** @def MPI_Dist_graph_neighbors_count_U
-    Exchange MPI_Dist_graph_neighbors_count_U by MPI_DIST_GRAPH_NEIGHBORS_COUNT.
+    Exchanges MPI_Dist_graph_neighbors_count_U with MPI_DIST_GRAPH_NEIGHBORS_COUNT.
     It is used for the Fortran wrappers of MPI_Dist_graph_neighbors_count.
  */
 #define MPI_Dist_graph_neighbors_count_U MPI_DIST_GRAPH_NEIGHBORS_COUNT
 
 /** @def MPI_Graph_create_U
-    Exchange MPI_Graph_create_U by MPI_GRAPH_CREATE.
+    Exchanges MPI_Graph_create_U with MPI_GRAPH_CREATE.
     It is used for the Fortran wrappers of MPI_Graph_create.
  */
 #define MPI_Graph_create_U MPI_GRAPH_CREATE
 
 /** @def MPI_Graph_get_U
-    Exchange MPI_Graph_get_U by MPI_GRAPH_GET.
+    Exchanges MPI_Graph_get_U with MPI_GRAPH_GET.
     It is used for the Fortran wrappers of MPI_Graph_get.
  */
 #define MPI_Graph_get_U MPI_GRAPH_GET
 
 /** @def MPI_Graph_map_U
-    Exchange MPI_Graph_map_U by MPI_GRAPH_MAP.
+    Exchanges MPI_Graph_map_U with MPI_GRAPH_MAP.
     It is used for the Fortran wrappers of MPI_Graph_map.
  */
 #define MPI_Graph_map_U MPI_GRAPH_MAP
 
 /** @def MPI_Graph_neighbors_U
-    Exchange MPI_Graph_neighbors_U by MPI_GRAPH_NEIGHBORS.
+    Exchanges MPI_Graph_neighbors_U with MPI_GRAPH_NEIGHBORS.
     It is used for the Fortran wrappers of MPI_Graph_neighbors.
  */
 #define MPI_Graph_neighbors_U MPI_GRAPH_NEIGHBORS
 
 /** @def MPI_Graph_neighbors_count_U
-    Exchange MPI_Graph_neighbors_count_U by MPI_GRAPH_NEIGHBORS_COUNT.
+    Exchanges MPI_Graph_neighbors_count_U with MPI_GRAPH_NEIGHBORS_COUNT.
     It is used for the Fortran wrappers of MPI_Graph_neighbors_count.
  */
 #define MPI_Graph_neighbors_count_U MPI_GRAPH_NEIGHBORS_COUNT
 
 /** @def MPI_Graphdims_get_U
-    Exchange MPI_Graphdims_get_U by MPI_GRAPHDIMS_GET.
+    Exchanges MPI_Graphdims_get_U with MPI_GRAPHDIMS_GET.
     It is used for the Fortran wrappers of MPI_Graphdims_get.
  */
 #define MPI_Graphdims_get_U MPI_GRAPHDIMS_GET
 
 /** @def MPI_Ineighbor_allgather_U
-    Exchange MPI_Ineighbor_allgather_U by MPI_INEIGHBOR_ALLGATHER.
+    Exchanges MPI_Ineighbor_allgather_U with MPI_INEIGHBOR_ALLGATHER.
     It is used for the Fortran wrappers of MPI_Ineighbor_allgather.
  */
 #define MPI_Ineighbor_allgather_U MPI_INEIGHBOR_ALLGATHER
 
 /** @def MPI_Ineighbor_allgatherv_U
-    Exchange MPI_Ineighbor_allgatherv_U by MPI_INEIGHBOR_ALLGATHERV.
+    Exchanges MPI_Ineighbor_allgatherv_U with MPI_INEIGHBOR_ALLGATHERV.
     It is used for the Fortran wrappers of MPI_Ineighbor_allgatherv.
  */
 #define MPI_Ineighbor_allgatherv_U MPI_INEIGHBOR_ALLGATHERV
 
 /** @def MPI_Ineighbor_alltoall_U
-    Exchange MPI_Ineighbor_alltoall_U by MPI_INEIGHBOR_ALLTOALL.
+    Exchanges MPI_Ineighbor_alltoall_U with MPI_INEIGHBOR_ALLTOALL.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoall.
  */
 #define MPI_Ineighbor_alltoall_U MPI_INEIGHBOR_ALLTOALL
 
 /** @def MPI_Ineighbor_alltoallv_U
-    Exchange MPI_Ineighbor_alltoallv_U by MPI_INEIGHBOR_ALLTOALLV.
+    Exchanges MPI_Ineighbor_alltoallv_U with MPI_INEIGHBOR_ALLTOALLV.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoallv.
  */
 #define MPI_Ineighbor_alltoallv_U MPI_INEIGHBOR_ALLTOALLV
 
 /** @def MPI_Ineighbor_alltoallw_U
-    Exchange MPI_Ineighbor_alltoallw_U by MPI_INEIGHBOR_ALLTOALLW.
+    Exchanges MPI_Ineighbor_alltoallw_U with MPI_INEIGHBOR_ALLTOALLW.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoallw.
  */
 #define MPI_Ineighbor_alltoallw_U MPI_INEIGHBOR_ALLTOALLW
 
 /** @def MPI_Neighbor_allgather_U
-    Exchange MPI_Neighbor_allgather_U by MPI_NEIGHBOR_ALLGATHER.
+    Exchanges MPI_Neighbor_allgather_U with MPI_NEIGHBOR_ALLGATHER.
     It is used for the Fortran wrappers of MPI_Neighbor_allgather.
  */
 #define MPI_Neighbor_allgather_U MPI_NEIGHBOR_ALLGATHER
 
 /** @def MPI_Neighbor_allgatherv_U
-    Exchange MPI_Neighbor_allgatherv_U by MPI_NEIGHBOR_ALLGATHERV.
+    Exchanges MPI_Neighbor_allgatherv_U with MPI_NEIGHBOR_ALLGATHERV.
     It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
  */
 #define MPI_Neighbor_allgatherv_U MPI_NEIGHBOR_ALLGATHERV
 
 /** @def MPI_Neighbor_alltoall_U
-    Exchange MPI_Neighbor_alltoall_U by MPI_NEIGHBOR_ALLTOALL.
+    Exchanges MPI_Neighbor_alltoall_U with MPI_NEIGHBOR_ALLTOALL.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoall.
  */
 #define MPI_Neighbor_alltoall_U MPI_NEIGHBOR_ALLTOALL
 
 /** @def MPI_Neighbor_alltoallv_U
-    Exchange MPI_Neighbor_alltoallv_U by MPI_NEIGHBOR_ALLTOALLV.
+    Exchanges MPI_Neighbor_alltoallv_U with MPI_NEIGHBOR_ALLTOALLV.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
  */
 #define MPI_Neighbor_alltoallv_U MPI_NEIGHBOR_ALLTOALLV
 
 /** @def MPI_Neighbor_alltoallw_U
-    Exchange MPI_Neighbor_alltoallw_U by MPI_NEIGHBOR_ALLTOALLW.
+    Exchanges MPI_Neighbor_alltoallw_U with MPI_NEIGHBOR_ALLTOALLW.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
  */
 #define MPI_Neighbor_alltoallw_U MPI_NEIGHBOR_ALLTOALLW
 
 /** @def MPI_Topo_test_U
-    Exchange MPI_Topo_test_U by MPI_TOPO_TEST.
+    Exchanges MPI_Topo_test_U with MPI_TOPO_TEST.
     It is used for the Fortran wrappers of MPI_Topo_test.
  */
 #define MPI_Topo_test_U MPI_TOPO_TEST
@@ -243,181 +243,181 @@
 /* lowercase defines */
 
 /** @def MPI_Cart_coords_L
-    Exchanges MPI_Cart_coords_L by mpi_cart_coords.
+    Exchanges MPI_Cart_coords_L with mpi_cart_coords.
     It is used for the Fortran wrappers of MPI_Cart_coords.
  */
 #define MPI_Cart_coords_L mpi_cart_coords
 
 /** @def MPI_Cart_create_L
-    Exchanges MPI_Cart_create_L by mpi_cart_create.
+    Exchanges MPI_Cart_create_L with mpi_cart_create.
     It is used for the Fortran wrappers of MPI_Cart_create.
  */
 #define MPI_Cart_create_L mpi_cart_create
 
 /** @def MPI_Cart_get_L
-    Exchanges MPI_Cart_get_L by mpi_cart_get.
+    Exchanges MPI_Cart_get_L with mpi_cart_get.
     It is used for the Fortran wrappers of MPI_Cart_get.
  */
 #define MPI_Cart_get_L mpi_cart_get
 
 /** @def MPI_Cart_map_L
-    Exchanges MPI_Cart_map_L by mpi_cart_map.
+    Exchanges MPI_Cart_map_L with mpi_cart_map.
     It is used for the Fortran wrappers of MPI_Cart_map.
  */
 #define MPI_Cart_map_L mpi_cart_map
 
 /** @def MPI_Cart_rank_L
-    Exchanges MPI_Cart_rank_L by mpi_cart_rank.
+    Exchanges MPI_Cart_rank_L with mpi_cart_rank.
     It is used for the Fortran wrappers of MPI_Cart_rank.
  */
 #define MPI_Cart_rank_L mpi_cart_rank
 
 /** @def MPI_Cart_shift_L
-    Exchanges MPI_Cart_shift_L by mpi_cart_shift.
+    Exchanges MPI_Cart_shift_L with mpi_cart_shift.
     It is used for the Fortran wrappers of MPI_Cart_shift.
  */
 #define MPI_Cart_shift_L mpi_cart_shift
 
 /** @def MPI_Cart_sub_L
-    Exchanges MPI_Cart_sub_L by mpi_cart_sub.
+    Exchanges MPI_Cart_sub_L with mpi_cart_sub.
     It is used for the Fortran wrappers of MPI_Cart_sub.
  */
 #define MPI_Cart_sub_L mpi_cart_sub
 
 /** @def MPI_Cartdim_get_L
-    Exchanges MPI_Cartdim_get_L by mpi_cartdim_get.
+    Exchanges MPI_Cartdim_get_L with mpi_cartdim_get.
     It is used for the Fortran wrappers of MPI_Cartdim_get.
  */
 #define MPI_Cartdim_get_L mpi_cartdim_get
 
 /** @def MPI_Dims_create_L
-    Exchanges MPI_Dims_create_L by mpi_dims_create.
+    Exchanges MPI_Dims_create_L with mpi_dims_create.
     It is used for the Fortran wrappers of MPI_Dims_create.
  */
 #define MPI_Dims_create_L mpi_dims_create
 
 /** @def MPI_Dist_graph_create_L
-    Exchanges MPI_Dist_graph_create_L by mpi_dist_graph_create.
+    Exchanges MPI_Dist_graph_create_L with mpi_dist_graph_create.
     It is used for the Fortran wrappers of MPI_Dist_graph_create.
  */
 #define MPI_Dist_graph_create_L mpi_dist_graph_create
 
 /** @def MPI_Dist_graph_create_adjacent_L
-    Exchanges MPI_Dist_graph_create_adjacent_L by mpi_dist_graph_create_adjacent.
+    Exchanges MPI_Dist_graph_create_adjacent_L with mpi_dist_graph_create_adjacent.
     It is used for the Fortran wrappers of MPI_Dist_graph_create_adjacent.
  */
 #define MPI_Dist_graph_create_adjacent_L mpi_dist_graph_create_adjacent
 
 /** @def MPI_Dist_graph_neighbors_L
-    Exchanges MPI_Dist_graph_neighbors_L by mpi_dist_graph_neighbors.
+    Exchanges MPI_Dist_graph_neighbors_L with mpi_dist_graph_neighbors.
     It is used for the Fortran wrappers of MPI_Dist_graph_neighbors.
  */
 #define MPI_Dist_graph_neighbors_L mpi_dist_graph_neighbors
 
 /** @def MPI_Dist_graph_neighbors_count_L
-    Exchanges MPI_Dist_graph_neighbors_count_L by mpi_dist_graph_neighbors_count.
+    Exchanges MPI_Dist_graph_neighbors_count_L with mpi_dist_graph_neighbors_count.
     It is used for the Fortran wrappers of MPI_Dist_graph_neighbors_count.
  */
 #define MPI_Dist_graph_neighbors_count_L mpi_dist_graph_neighbors_count
 
 /** @def MPI_Graph_create_L
-    Exchanges MPI_Graph_create_L by mpi_graph_create.
+    Exchanges MPI_Graph_create_L with mpi_graph_create.
     It is used for the Fortran wrappers of MPI_Graph_create.
  */
 #define MPI_Graph_create_L mpi_graph_create
 
 /** @def MPI_Graph_get_L
-    Exchanges MPI_Graph_get_L by mpi_graph_get.
+    Exchanges MPI_Graph_get_L with mpi_graph_get.
     It is used for the Fortran wrappers of MPI_Graph_get.
  */
 #define MPI_Graph_get_L mpi_graph_get
 
 /** @def MPI_Graph_map_L
-    Exchanges MPI_Graph_map_L by mpi_graph_map.
+    Exchanges MPI_Graph_map_L with mpi_graph_map.
     It is used for the Fortran wrappers of MPI_Graph_map.
  */
 #define MPI_Graph_map_L mpi_graph_map
 
 /** @def MPI_Graph_neighbors_L
-    Exchanges MPI_Graph_neighbors_L by mpi_graph_neighbors.
+    Exchanges MPI_Graph_neighbors_L with mpi_graph_neighbors.
     It is used for the Fortran wrappers of MPI_Graph_neighbors.
  */
 #define MPI_Graph_neighbors_L mpi_graph_neighbors
 
 /** @def MPI_Graph_neighbors_count_L
-    Exchanges MPI_Graph_neighbors_count_L by mpi_graph_neighbors_count.
+    Exchanges MPI_Graph_neighbors_count_L with mpi_graph_neighbors_count.
     It is used for the Fortran wrappers of MPI_Graph_neighbors_count.
  */
 #define MPI_Graph_neighbors_count_L mpi_graph_neighbors_count
 
 /** @def MPI_Graphdims_get_L
-    Exchanges MPI_Graphdims_get_L by mpi_graphdims_get.
+    Exchanges MPI_Graphdims_get_L with mpi_graphdims_get.
     It is used for the Fortran wrappers of MPI_Graphdims_get.
  */
 #define MPI_Graphdims_get_L mpi_graphdims_get
 
 /** @def MPI_Ineighbor_allgather_L
-    Exchanges MPI_Ineighbor_allgather_L by mpi_ineighbor_allgather.
+    Exchanges MPI_Ineighbor_allgather_L with mpi_ineighbor_allgather.
     It is used for the Fortran wrappers of MPI_Ineighbor_allgather.
  */
 #define MPI_Ineighbor_allgather_L mpi_ineighbor_allgather
 
 /** @def MPI_Ineighbor_allgatherv_L
-    Exchanges MPI_Ineighbor_allgatherv_L by mpi_ineighbor_allgatherv.
+    Exchanges MPI_Ineighbor_allgatherv_L with mpi_ineighbor_allgatherv.
     It is used for the Fortran wrappers of MPI_Ineighbor_allgatherv.
  */
 #define MPI_Ineighbor_allgatherv_L mpi_ineighbor_allgatherv
 
 /** @def MPI_Ineighbor_alltoall_L
-    Exchanges MPI_Ineighbor_alltoall_L by mpi_ineighbor_alltoall.
+    Exchanges MPI_Ineighbor_alltoall_L with mpi_ineighbor_alltoall.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoall.
  */
 #define MPI_Ineighbor_alltoall_L mpi_ineighbor_alltoall
 
 /** @def MPI_Ineighbor_alltoallv_L
-    Exchanges MPI_Ineighbor_alltoallv_L by mpi_ineighbor_alltoallv.
+    Exchanges MPI_Ineighbor_alltoallv_L with mpi_ineighbor_alltoallv.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoallv.
  */
 #define MPI_Ineighbor_alltoallv_L mpi_ineighbor_alltoallv
 
 /** @def MPI_Ineighbor_alltoallw_L
-    Exchanges MPI_Ineighbor_alltoallw_L by mpi_ineighbor_alltoallw.
+    Exchanges MPI_Ineighbor_alltoallw_L with mpi_ineighbor_alltoallw.
     It is used for the Fortran wrappers of MPI_Ineighbor_alltoallw.
  */
 #define MPI_Ineighbor_alltoallw_L mpi_ineighbor_alltoallw
 
 /** @def MPI_Neighbor_allgather_L
-    Exchanges MPI_Neighbor_allgather_L by mpi_neighbor_allgather.
+    Exchanges MPI_Neighbor_allgather_L with mpi_neighbor_allgather.
     It is used for the Fortran wrappers of MPI_Neighbor_allgather.
  */
 #define MPI_Neighbor_allgather_L mpi_neighbor_allgather
 
 /** @def MPI_Neighbor_allgatherv_L
-    Exchanges MPI_Neighbor_allgatherv_L by mpi_neighbor_allgatherv.
+    Exchanges MPI_Neighbor_allgatherv_L with mpi_neighbor_allgatherv.
     It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
  */
 #define MPI_Neighbor_allgatherv_L mpi_neighbor_allgatherv
 
 /** @def MPI_Neighbor_alltoall_L
-    Exchanges MPI_Neighbor_alltoall_L by mpi_neighbor_alltoall.
+    Exchanges MPI_Neighbor_alltoall_L with mpi_neighbor_alltoall.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoall.
  */
 #define MPI_Neighbor_alltoall_L mpi_neighbor_alltoall
 
 /** @def MPI_Neighbor_alltoallv_L
-    Exchanges MPI_Neighbor_alltoallv_L by mpi_neighbor_alltoallv.
+    Exchanges MPI_Neighbor_alltoallv_L with mpi_neighbor_alltoallv.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
  */
 #define MPI_Neighbor_alltoallv_L mpi_neighbor_alltoallv
 
 /** @def MPI_Neighbor_alltoallw_L
-    Exchanges MPI_Neighbor_alltoallw_L by mpi_neighbor_alltoallw.
+    Exchanges MPI_Neighbor_alltoallw_L with mpi_neighbor_alltoallw.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
  */
 #define MPI_Neighbor_alltoallw_L mpi_neighbor_alltoallw
 
 /** @def MPI_Topo_test_L
-    Exchanges MPI_Topo_test_L by mpi_topo_test.
+    Exchanges MPI_Topo_test_L with mpi_topo_test.
     It is used for the Fortran wrappers of MPI_Topo_test.
  */
 #define MPI_Topo_test_L mpi_topo_test

@@ -62,73 +62,73 @@
 /* uppercase defines */
 
 /** @def MPI_Abort_U
-    Exchange MPI_Abort_U by MPI_ABORT.
+    Exchanges MPI_Abort_U with MPI_ABORT.
     It is used for the Fortran wrappers of MPI_Abort.
  */
 #define MPI_Abort_U MPI_ABORT
 
 /** @def MPI_Get_count_U
-    Exchange MPI_Get_count_U by MPI_GET_COUNT.
+    Exchanges MPI_Get_count_U with MPI_GET_COUNT.
     It is used for the Fortran wrappers of MPI_Get_count.
  */
 #define MPI_Get_count_U MPI_GET_COUNT
 
 /** @def MPI_Get_elements_U
-    Exchange MPI_Get_elements_U by MPI_GET_ELEMENTS.
+    Exchanges MPI_Get_elements_U with MPI_GET_ELEMENTS.
     It is used for the Fortran wrappers of MPI_Get_elements.
  */
 #define MPI_Get_elements_U MPI_GET_ELEMENTS
 
 /** @def MPI_Get_elements_x_U
-    Exchange MPI_Get_elements_x_U by MPI_GET_ELEMENTS_X.
+    Exchanges MPI_Get_elements_x_U with MPI_GET_ELEMENTS_X.
     It is used for the Fortran wrappers of MPI_Get_elements_x.
  */
 #define MPI_Get_elements_x_U MPI_GET_ELEMENTS_X
 
 /** @def MPI_Get_processor_name_U
-    Exchange MPI_Get_processor_name_U by MPI_GET_PROCESSOR_NAME.
+    Exchanges MPI_Get_processor_name_U with MPI_GET_PROCESSOR_NAME.
     It is used for the Fortran wrappers of MPI_Get_processor_name.
  */
 #define MPI_Get_processor_name_U MPI_GET_PROCESSOR_NAME
 
 /** @def MPI_Grequest_complete_U
-    Exchange MPI_Grequest_complete_U by MPI_GREQUEST_COMPLETE.
+    Exchanges MPI_Grequest_complete_U with MPI_GREQUEST_COMPLETE.
     It is used for the Fortran wrappers of MPI_Grequest_complete.
  */
 #define MPI_Grequest_complete_U MPI_GREQUEST_COMPLETE
 
 /** @def MPI_Grequest_start_U
-    Exchange MPI_Grequest_start_U by MPI_GREQUEST_START.
+    Exchanges MPI_Grequest_start_U with MPI_GREQUEST_START.
     It is used for the Fortran wrappers of MPI_Grequest_start.
  */
 #define MPI_Grequest_start_U MPI_GREQUEST_START
 
 /** @def MPI_Status_set_cancelled_U
-    Exchange MPI_Status_set_cancelled_U by MPI_STATUS_SET_CANCELLED.
+    Exchanges MPI_Status_set_cancelled_U with MPI_STATUS_SET_CANCELLED.
     It is used for the Fortran wrappers of MPI_Status_set_cancelled.
  */
 #define MPI_Status_set_cancelled_U MPI_STATUS_SET_CANCELLED
 
 /** @def MPI_Status_set_elements_U
-    Exchange MPI_Status_set_elements_U by MPI_STATUS_SET_ELEMENTS.
+    Exchanges MPI_Status_set_elements_U with MPI_STATUS_SET_ELEMENTS.
     It is used for the Fortran wrappers of MPI_Status_set_elements.
  */
 #define MPI_Status_set_elements_U MPI_STATUS_SET_ELEMENTS
 
 /** @def MPI_Status_set_elements_x_U
-    Exchange MPI_Status_set_elements_x_U by MPI_STATUS_SET_ELEMENTS_X.
+    Exchanges MPI_Status_set_elements_x_U with MPI_STATUS_SET_ELEMENTS_X.
     It is used for the Fortran wrappers of MPI_Status_set_elements_x.
  */
 #define MPI_Status_set_elements_x_U MPI_STATUS_SET_ELEMENTS_X
 
 /** @def MPI_Wtick_U
-    Exchange MPI_Wtick_U by MPI_WTICK.
+    Exchanges MPI_Wtick_U with MPI_WTICK.
     It is used for the Fortran wrappers of MPI_Wtick.
  */
 #define MPI_Wtick_U MPI_WTICK
 
 /** @def MPI_Wtime_U
-    Exchange MPI_Wtime_U by MPI_WTIME.
+    Exchanges MPI_Wtime_U with MPI_WTIME.
     It is used for the Fortran wrappers of MPI_Wtime.
  */
 #define MPI_Wtime_U MPI_WTIME
@@ -136,73 +136,73 @@
 /* lowercase defines */
 
 /** @def MPI_Abort_L
-    Exchanges MPI_Abort_L by mpi_abort.
+    Exchanges MPI_Abort_L with mpi_abort.
     It is used for the Fortran wrappers of MPI_Abort.
  */
 #define MPI_Abort_L mpi_abort
 
 /** @def MPI_Get_count_L
-    Exchanges MPI_Get_count_L by mpi_get_count.
+    Exchanges MPI_Get_count_L with mpi_get_count.
     It is used for the Fortran wrappers of MPI_Get_count.
  */
 #define MPI_Get_count_L mpi_get_count
 
 /** @def MPI_Get_elements_L
-    Exchanges MPI_Get_elements_L by mpi_get_elements.
+    Exchanges MPI_Get_elements_L with mpi_get_elements.
     It is used for the Fortran wrappers of MPI_Get_elements.
  */
 #define MPI_Get_elements_L mpi_get_elements
 
 /** @def MPI_Get_elements_x_L
-    Exchanges MPI_Get_elements_x_L by mpi_get_elements_x.
+    Exchanges MPI_Get_elements_x_L with mpi_get_elements_x.
     It is used for the Fortran wrappers of MPI_Get_elements_x.
  */
 #define MPI_Get_elements_x_L mpi_get_elements_x
 
 /** @def MPI_Get_processor_name_L
-    Exchanges MPI_Get_processor_name_L by mpi_get_processor_name.
+    Exchanges MPI_Get_processor_name_L with mpi_get_processor_name.
     It is used for the Fortran wrappers of MPI_Get_processor_name.
  */
 #define MPI_Get_processor_name_L mpi_get_processor_name
 
 /** @def MPI_Grequest_complete_L
-    Exchanges MPI_Grequest_complete_L by mpi_grequest_complete.
+    Exchanges MPI_Grequest_complete_L with mpi_grequest_complete.
     It is used for the Fortran wrappers of MPI_Grequest_complete.
  */
 #define MPI_Grequest_complete_L mpi_grequest_complete
 
 /** @def MPI_Grequest_start_L
-    Exchanges MPI_Grequest_start_L by mpi_grequest_start.
+    Exchanges MPI_Grequest_start_L with mpi_grequest_start.
     It is used for the Fortran wrappers of MPI_Grequest_start.
  */
 #define MPI_Grequest_start_L mpi_grequest_start
 
 /** @def MPI_Status_set_cancelled_L
-    Exchanges MPI_Status_set_cancelled_L by mpi_status_set_cancelled.
+    Exchanges MPI_Status_set_cancelled_L with mpi_status_set_cancelled.
     It is used for the Fortran wrappers of MPI_Status_set_cancelled.
  */
 #define MPI_Status_set_cancelled_L mpi_status_set_cancelled
 
 /** @def MPI_Status_set_elements_L
-    Exchanges MPI_Status_set_elements_L by mpi_status_set_elements.
+    Exchanges MPI_Status_set_elements_L with mpi_status_set_elements.
     It is used for the Fortran wrappers of MPI_Status_set_elements.
  */
 #define MPI_Status_set_elements_L mpi_status_set_elements
 
 /** @def MPI_Status_set_elements_x_L
-    Exchanges MPI_Status_set_elements_x_L by mpi_status_set_elements_x.
+    Exchanges MPI_Status_set_elements_x_L with mpi_status_set_elements_x.
     It is used for the Fortran wrappers of MPI_Status_set_elements_x.
  */
 #define MPI_Status_set_elements_x_L mpi_status_set_elements_x
 
 /** @def MPI_Wtick_L
-    Exchanges MPI_Wtick_L by mpi_wtick.
+    Exchanges MPI_Wtick_L with mpi_wtick.
     It is used for the Fortran wrappers of MPI_Wtick.
  */
 #define MPI_Wtick_L mpi_wtick
 
 /** @def MPI_Wtime_L
-    Exchanges MPI_Wtime_L by mpi_wtime.
+    Exchanges MPI_Wtime_L with mpi_wtime.
     It is used for the Fortran wrappers of MPI_Wtime.
  */
 #define MPI_Wtime_L mpi_wtime

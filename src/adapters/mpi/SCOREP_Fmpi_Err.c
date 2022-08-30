@@ -61,31 +61,31 @@
 /* uppercase defines */
 
 /** @def MPI_Add_error_class_U
-    Exchange MPI_Add_error_class_U by MPI_ADD_ERROR_CLASS.
+    Exchanges MPI_Add_error_class_U with MPI_ADD_ERROR_CLASS.
     It is used for the Fortran wrappers of MPI_Add_error_class.
  */
 #define MPI_Add_error_class_U MPI_ADD_ERROR_CLASS
 
 /** @def MPI_Add_error_code_U
-    Exchange MPI_Add_error_code_U by MPI_ADD_ERROR_CODE.
+    Exchanges MPI_Add_error_code_U with MPI_ADD_ERROR_CODE.
     It is used for the Fortran wrappers of MPI_Add_error_code.
  */
 #define MPI_Add_error_code_U MPI_ADD_ERROR_CODE
 
 /** @def MPI_Add_error_string_U
-    Exchange MPI_Add_error_string_U by MPI_ADD_ERROR_STRING.
+    Exchanges MPI_Add_error_string_U with MPI_ADD_ERROR_STRING.
     It is used for the Fortran wrappers of MPI_Add_error_string.
  */
 #define MPI_Add_error_string_U MPI_ADD_ERROR_STRING
 
 /** @def MPI_Error_class_U
-    Exchange MPI_Error_class_U by MPI_ERROR_CLASS.
+    Exchanges MPI_Error_class_U with MPI_ERROR_CLASS.
     It is used for the Fortran wrappers of MPI_Error_class.
  */
 #define MPI_Error_class_U MPI_ERROR_CLASS
 
 /** @def MPI_Error_string_U
-    Exchange MPI_Error_string_U by MPI_ERROR_STRING.
+    Exchanges MPI_Error_string_U with MPI_ERROR_STRING.
     It is used for the Fortran wrappers of MPI_Error_string.
  */
 #define MPI_Error_string_U MPI_ERROR_STRING
@@ -93,31 +93,31 @@
 /* lowercase defines */
 
 /** @def MPI_Add_error_class_L
-    Exchanges MPI_Add_error_class_L by mpi_add_error_class.
+    Exchanges MPI_Add_error_class_L with mpi_add_error_class.
     It is used for the Fortran wrappers of MPI_Add_error_class.
  */
 #define MPI_Add_error_class_L mpi_add_error_class
 
 /** @def MPI_Add_error_code_L
-    Exchanges MPI_Add_error_code_L by mpi_add_error_code.
+    Exchanges MPI_Add_error_code_L with mpi_add_error_code.
     It is used for the Fortran wrappers of MPI_Add_error_code.
  */
 #define MPI_Add_error_code_L mpi_add_error_code
 
 /** @def MPI_Add_error_string_L
-    Exchanges MPI_Add_error_string_L by mpi_add_error_string.
+    Exchanges MPI_Add_error_string_L with mpi_add_error_string.
     It is used for the Fortran wrappers of MPI_Add_error_string.
  */
 #define MPI_Add_error_string_L mpi_add_error_string
 
 /** @def MPI_Error_class_L
-    Exchanges MPI_Error_class_L by mpi_error_class.
+    Exchanges MPI_Error_class_L with mpi_error_class.
     It is used for the Fortran wrappers of MPI_Error_class.
  */
 #define MPI_Error_class_L mpi_error_class
 
 /** @def MPI_Error_string_L
-    Exchanges MPI_Error_string_L by mpi_error_string.
+    Exchanges MPI_Error_string_L with mpi_error_string.
     It is used for the Fortran wrappers of MPI_Error_string.
  */
 #define MPI_Error_string_L mpi_error_string
