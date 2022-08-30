@@ -53,8 +53,7 @@ typedef enum scorep_mpi_request_type
     SCOREP_MPI_REQUEST_TYPE_NONE,
     SCOREP_MPI_REQUEST_TYPE_SEND,
     SCOREP_MPI_REQUEST_TYPE_RECV,
-    SCOREP_MPI_REQUEST_TYPE_IO_READ,
-    SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+    SCOREP_MPI_REQUEST_TYPE_IO,
     SCOREP_MPI_REQUEST_TYPE_RMA,
     SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
     SCOREP_MPI_REQUEST_TYPE_ICOLL
@@ -110,9 +109,10 @@ typedef struct
 
 typedef struct
 {
-    uint64_t     bytes;
-    MPI_Datatype datatype;
-    MPI_File     fh;
+    SCOREP_IoOperationMode mode;
+    uint64_t               bytes;
+    MPI_Datatype           datatype;
+    MPI_File               fh;
 } scorep_mpi_request_io_data;
 
 typedef struct
@@ -234,12 +234,12 @@ scorep_mpi_request_win_create( MPI_Request             mpiRequest,
  * @param id        Request id
  */
 void
-scorep_mpi_request_io_create( MPI_Request             request,
-                              scorep_mpi_request_type type,
-                              uint64_t                bytes,
-                              MPI_Datatype            datatype,
-                              MPI_File                fh,
-                              SCOREP_MpiRequestId     id );
+scorep_mpi_request_io_create( MPI_Request            request,
+                              SCOREP_IoOperationMode mode,
+                              uint64_t               bytes,
+                              MPI_Datatype           datatype,
+                              MPI_File               fh,
+                              SCOREP_MpiRequestId    id );
 
 /**
  * @brief  Retrieve internal request entry for an MPI request handle

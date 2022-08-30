@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018-2019,
+ * Copyright (c) 2009-2011, 2018-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -91,8 +91,7 @@ free_mpi_type( scorep_mpi_request* req )
     {
         PMPI_Type_free( &req->payload.p2p.datatype );
     }
-    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
-         || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
         PMPI_Type_free( &req->payload.io.datatype );
     }
@@ -365,16 +364,17 @@ scorep_mpi_request_icoll_create( MPI_Request             request,
 }
 
 void
-scorep_mpi_request_io_create( MPI_Request             request,
-                              scorep_mpi_request_type type,
-                              uint64_t                bytes,
-                              MPI_Datatype            datatype,
-                              MPI_File                fh,
-                              SCOREP_MpiRequestId     id )
+scorep_mpi_request_io_create( MPI_Request            request,
+                              SCOREP_IoOperationMode mode,
+                              uint64_t               bytes,
+                              MPI_Datatype           datatype,
+                              MPI_File               fh,
+                              SCOREP_MpiRequestId    id )
 {
     scorep_mpi_request data = { .request      = request,
-                                .request_type = type,
+                                .request_type = SCOREP_MPI_REQUEST_TYPE_IO,
                                 .payload.io   = {
+                                    .mode  = mode,
                                     .bytes = bytes,
                                     .fh    = fh
                                 },
@@ -586,7 +586,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 void
 scorep_mpi_test_request( scorep_mpi_request* req )
 {
-    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
         SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_MPI,
                                                                      &( req->payload.io.fh ) );
@@ -703,8 +703,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                 }
                 break;
 
-            case SCOREP_MPI_REQUEST_TYPE_IO_READ:
-            case SCOREP_MPI_REQUEST_TYPE_IO_WRITE:
+            case SCOREP_MPI_REQUEST_TYPE_IO:
                 if ( io_events_active )
                 {
                     PMPI_Type_size( req->payload.io.datatype, &sz );
@@ -715,9 +714,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                     if ( io_handle != SCOREP_INVALID_IO_HANDLE )
                     {
                         SCOREP_IoOperationComplete( io_handle,
-                                                    req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
-                                                    ? SCOREP_IO_OPERATION_MODE_READ
-                                                    : SCOREP_IO_OPERATION_MODE_WRITE,
+                                                    req->payload.io.mode,
                                                     ( uint64_t )sz * count,
                                                     req->id /* matching id */ );
                     }
