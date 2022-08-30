@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018-2019,
+ * Copyright (c) 2009-2011, 2018-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -56,8 +56,6 @@ typedef enum scorep_mpi_request_type
     SCOREP_MPI_REQUEST_TYPE_IO_READ,
     SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
     SCOREP_MPI_REQUEST_TYPE_RMA,
-    SCOREP_MPI_REQUEST_TYPE_COLL_COMM,
-    SCOREP_MPI_REQUEST_TYPE_COLL_SYNC,
     SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
     SCOREP_MPI_REQUEST_TYPE_ICOLL
 } scorep_mpi_request_type;
