@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -218,7 +218,7 @@ scorep_mpi_unify_communicators( void )
             definition->name_handle,
             unified_parent_handle,
             payload->root_id,
-            SCOREP_COMMUNICATOR_FLAG_NONE );
+            SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS );
 
         interim_comm_defs_processed++;
     }
@@ -249,7 +249,7 @@ scorep_mpi_unify_communicators( void )
             definition->name_handle,
             SCOREP_INVALID_COMMUNICATOR,
             comm_payload->root_id,
-            SCOREP_COMMUNICATOR_FLAG_NONE );
+            SCOREP_COMMUNICATOR_FLAG_CREATE_DESTROY_EVENTS );
         interim_comm_defs_processed++;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();

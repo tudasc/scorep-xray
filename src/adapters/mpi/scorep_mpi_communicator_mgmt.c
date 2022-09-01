@@ -271,7 +271,7 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
     }
 }
 
-void
+SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
                                  SCOREP_InterimCommunicatorHandle parentCommHandle )
 {
@@ -291,7 +291,7 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
         UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
                      "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
                      "configuration variable" );
-        return;
+        return SCOREP_INVALID_INTERIM_COMMUNICATOR;
     }
 
     /* fill in local data */
@@ -320,9 +320,10 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
 
     /* clean up */
     UTILS_MutexUnlock( &scorep_mpi_communicator_mutex );
+    return handle;
 }
 
-void
+SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
 {
     /* Check if communicator handling has been initialized.
@@ -343,7 +344,7 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
             UTILS_WARNING( "Skipping attempt to create communicator "
                            "outside init->finalize scope" );
         }
-        return;
+        return SCOREP_INVALID_INTERIM_COMMUNICATOR;
     }
 
     SCOREP_InterimCommunicatorHandle parent_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
@@ -357,7 +358,7 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parentComm )
         parent_handle = SCOREP_MPI_COMM_HANDLE( parentComm );
     }
 
-    scorep_mpi_comm_create_finalize( comm, parent_handle );
+    return scorep_mpi_comm_create_finalize( comm, parent_handle );
 }
 
 /* no static, because this is called from the mpi unification test */

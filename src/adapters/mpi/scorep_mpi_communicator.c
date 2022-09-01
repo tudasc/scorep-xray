@@ -366,7 +366,8 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
      * Set the name only for the root rank in the communicator and
      * for non-SELF-like communicators
      */
-    if ( 0 == comm_payload->local_rank && comm_payload->comm_size != 1 )
+    if ( 0 == comm_payload->local_rank
+         && ( comm_payload->comm_size != 1 || scorep_mpi_world.size == 1 ) )
     {
         /*
          * Does set the name only the first time

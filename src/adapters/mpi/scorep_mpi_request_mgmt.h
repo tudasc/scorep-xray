@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2017-2019
+ * Copyright (c) 2009-2013, 2017-2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -209,11 +209,13 @@ scorep_mpi_request_icoll_create( MPI_Request             request,
  * @param request    MPI request handle
  * @param parentComm Original Comm handle
  * @param newcomm    Handle of copied Comm
+ * @param id         Request id
  */
 void
-scorep_mpi_request_comm_idup_create( MPI_Request request,
-                                     MPI_Comm    parentComm,
-                                     MPI_Comm*   newcomm );
+scorep_mpi_request_comm_idup_create( MPI_Request         request,
+                                     MPI_Comm            parentComm,
+                                     MPI_Comm*           newcomm,
+                                     SCOREP_MpiRequestId id  );
 
 /**
  * @brief Create entry for an RMA request handle

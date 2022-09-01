@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016,
+ * Copyright (c) 2009-2014, 2016, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1378,6 +1378,24 @@ void
 SCOREP_LeakedMemory( uint64_t addrLeaked,
                      size_t   bytesLeaked,
                      void*    substrateData[] );
+
+
+/**
+ * Process a CommCreate event in the measurement system.
+ *
+ * @param communicatorHandle The handle of the new communicator.
+ */
+void
+SCOREP_CommCreate( SCOREP_InterimCommunicatorHandle communicatorHandle );
+
+
+/**
+ * Process a CommDestroy event in the measurement system.
+ *
+ * @param communicatorHandle The handle of the destroyed communicator.
+ */
+void
+SCOREP_CommDestroy( SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 /*@}*/
 
