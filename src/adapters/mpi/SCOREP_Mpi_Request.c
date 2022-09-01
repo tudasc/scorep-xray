@@ -92,7 +92,6 @@ MPI_Wait( MPI_Request* request,
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -162,7 +161,6 @@ MPI_Waitall( int          count,
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     int       i;
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -237,7 +235,6 @@ MPI_Waitany( int          count,
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -334,7 +331,6 @@ MPI_Waitsome( int          incount,
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -458,7 +454,6 @@ MPI_Test( MPI_Request* request,
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -537,7 +532,6 @@ MPI_Testany( int          count,
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -630,7 +624,6 @@ MPI_Testall( int          count,
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -721,7 +714,6 @@ MPI_Testsome( int          incount,
     const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -843,7 +835,6 @@ MPI_Start( MPI_Request* request )
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -929,7 +920,6 @@ MPI_Startall( int          count,
     const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -1191,7 +1181,6 @@ MPI_Request_get_status( MPI_Request request,
     const int           xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int                 return_val;
     scorep_mpi_request* scorep_req;
-    uint64_t            start_time_stamp;
 
     if ( event_gen_active )
     {
