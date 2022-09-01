@@ -277,7 +277,7 @@ MPI_Waitany( int          count,
                 scorep_mpi_check_request( scorep_req, status );
                 scorep_mpi_cleanup_request( scorep_req );
             }
-            else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+            else
             {
                 scorep_mpi_request_tested( scorep_req );
             }
@@ -395,7 +395,7 @@ MPI_Waitsome( int          incount,
 
                     ++cur;
                 }
-                else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
+                else
                 {
                     scorep_mpi_request_tested( scorep_req );
                 }
@@ -491,7 +491,7 @@ MPI_Test( MPI_Request* request,
         scorep_mpi_check_request( scorep_req, status );
         scorep_mpi_cleanup_request( scorep_req );
     }
-    else if ( scorep_req && event_gen_active_for_group && xtest_active )
+    else if ( event_gen_active_for_group && xtest_active )
     {
         scorep_mpi_request_tested( scorep_req );
     }
@@ -575,7 +575,7 @@ MPI_Testany( int          count,
             {
                 scorep_mpi_check_request( scorep_req, status );
             }
-            else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+            else
             {
                 scorep_mpi_request_tested( scorep_req );
             }
@@ -675,10 +675,7 @@ MPI_Testall( int          count,
         for ( i = 0; i < count; i++ )
         {
             scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-            if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
-            {
-                scorep_mpi_request_tested( scorep_req );
-            }
+            scorep_mpi_request_tested( scorep_req );
             scorep_mpi_unmark_request( scorep_req );
         }
     }
@@ -785,7 +782,7 @@ MPI_Testsome( int          incount,
 
                     ++cur;
                 }
-                else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
+                else
                 {
                     scorep_mpi_request_tested( scorep_req );
                 }
@@ -1228,7 +1225,7 @@ MPI_Request_get_status( MPI_Request request,
         }
         scorep_mpi_unmark_request( scorep_req );
     }
-    else if ( scorep_req && event_gen_active_for_group && xtest_active )
+    else if ( event_gen_active_for_group && xtest_active )
     {
         scorep_mpi_request_tested( scorep_req );
     }

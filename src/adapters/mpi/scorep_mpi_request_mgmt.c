@@ -586,6 +586,11 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 void
 scorep_mpi_request_tested( scorep_mpi_request* req )
 {
+    if ( !req ||
+         !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+    {
+        return;
+    }
     if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
         SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_MPI,
