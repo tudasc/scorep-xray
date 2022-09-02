@@ -21,7 +21,12 @@ AFS_EXTERNAL_LIB([lustreapi], [_LIBLUSTREAPI_CHECK], [lustre/lustreapi.h])dnl
 AC_LANG_POP([C])
 
 scorep_lustreapi_support=${have_liblustreapi}
-AS_IF([test x"${scorep_lustreapi_support}" != x"yes"],
+AS_IF([test x"${scorep_lustreapi_support}" = x"yes"],
+      [save_CPPFLAGS=$CPPFLAGS
+       CPPFLAGS="$CPPFLAGS ${with_liblustreapi_cppflags}"
+       AC_CHECK_DECLS([llapi_layout_get_by_path],
+                      [], [], [[#include <lustre/lustreapi.h>]])
+       CPPFLAGS=$save_CPPFLAGS],
       [scorep_lustreapi_support="no"])
 
 AC_SCOREP_COND_HAVE([LUSTRE_API_SUPPORT],
