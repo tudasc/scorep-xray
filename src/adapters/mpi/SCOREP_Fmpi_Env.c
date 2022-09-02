@@ -64,49 +64,49 @@
 /* uppercase defines */
 
 /** @def MPI_Finalize_U
-    Exchange MPI_Finalize_U by MPI_FINALIZE.
+    Exchanges MPI_Finalize_U with MPI_FINALIZE.
     It is used for the Fortran wrappers of MPI_Finalize.
  */
 #define MPI_Finalize_U MPI_FINALIZE
 
 /** @def MPI_Finalized_U
-    Exchange MPI_Finalized_U by MPI_FINALIZED.
+    Exchanges MPI_Finalized_U with MPI_FINALIZED.
     It is used for the Fortran wrappers of MPI_Finalized.
  */
 #define MPI_Finalized_U MPI_FINALIZED
 
 /** @def MPI_Get_library_version_U
-    Exchange MPI_Get_library_version_U by MPI_GET_LIBRARY_VERSION.
+    Exchanges MPI_Get_library_version_U with MPI_GET_LIBRARY_VERSION.
     It is used for the Fortran wrappers of MPI_Get_library_version.
  */
 #define MPI_Get_library_version_U MPI_GET_LIBRARY_VERSION
 
 /** @def MPI_Init_U
-    Exchange MPI_Init_U by MPI_INIT.
+    Exchanges MPI_Init_U with MPI_INIT.
     It is used for the Fortran wrappers of MPI_Init.
  */
 #define MPI_Init_U MPI_INIT
 
 /** @def MPI_Init_thread_U
-    Exchange MPI_Init_thread_U by MPI_INIT_THREAD.
+    Exchanges MPI_Init_thread_U with MPI_INIT_THREAD.
     It is used for the Fortran wrappers of MPI_Init_thread.
  */
 #define MPI_Init_thread_U MPI_INIT_THREAD
 
 /** @def MPI_Initialized_U
-    Exchange MPI_Initialized_U by MPI_INITIALIZED.
+    Exchanges MPI_Initialized_U with MPI_INITIALIZED.
     It is used for the Fortran wrappers of MPI_Initialized.
  */
 #define MPI_Initialized_U MPI_INITIALIZED
 
 /** @def MPI_Is_thread_main_U
-    Exchange MPI_Is_thread_main_U by MPI_IS_THREAD_MAIN.
+    Exchanges MPI_Is_thread_main_U with MPI_IS_THREAD_MAIN.
     It is used for the Fortran wrappers of MPI_Is_thread_main.
  */
 #define MPI_Is_thread_main_U MPI_IS_THREAD_MAIN
 
 /** @def MPI_Query_thread_U
-    Exchange MPI_Query_thread_U by MPI_QUERY_THREAD.
+    Exchanges MPI_Query_thread_U with MPI_QUERY_THREAD.
     It is used for the Fortran wrappers of MPI_Query_thread.
  */
 #define MPI_Query_thread_U MPI_QUERY_THREAD
@@ -114,49 +114,49 @@
 /* lowercase defines */
 
 /** @def MPI_Finalize_L
-    Exchanges MPI_Finalize_L by mpi_finalize.
+    Exchanges MPI_Finalize_L with mpi_finalize.
     It is used for the Fortran wrappers of MPI_Finalize.
  */
 #define MPI_Finalize_L mpi_finalize
 
 /** @def MPI_Finalized_L
-    Exchanges MPI_Finalized_L by mpi_finalized.
+    Exchanges MPI_Finalized_L with mpi_finalized.
     It is used for the Fortran wrappers of MPI_Finalized.
  */
 #define MPI_Finalized_L mpi_finalized
 
 /** @def MPI_Get_library_version_L
-    Exchanges MPI_Get_library_version_L by mpi_get_library_version.
+    Exchanges MPI_Get_library_version_L with mpi_get_library_version.
     It is used for the Fortran wrappers of MPI_Get_library_version.
  */
 #define MPI_Get_library_version_L mpi_get_library_version
 
 /** @def MPI_Init_L
-    Exchanges MPI_Init_L by mpi_init.
+    Exchanges MPI_Init_L with mpi_init.
     It is used for the Fortran wrappers of MPI_Init.
  */
 #define MPI_Init_L mpi_init
 
 /** @def MPI_Init_thread_L
-    Exchanges MPI_Init_thread_L by mpi_init_thread.
+    Exchanges MPI_Init_thread_L with mpi_init_thread.
     It is used for the Fortran wrappers of MPI_Init_thread.
  */
 #define MPI_Init_thread_L mpi_init_thread
 
 /** @def MPI_Initialized_L
-    Exchanges MPI_Initialized_L by mpi_initialized.
+    Exchanges MPI_Initialized_L with mpi_initialized.
     It is used for the Fortran wrappers of MPI_Initialized.
  */
 #define MPI_Initialized_L mpi_initialized
 
 /** @def MPI_Is_thread_main_L
-    Exchanges MPI_Is_thread_main_L by mpi_is_thread_main.
+    Exchanges MPI_Is_thread_main_L with mpi_is_thread_main.
     It is used for the Fortran wrappers of MPI_Is_thread_main.
  */
 #define MPI_Is_thread_main_L mpi_is_thread_main
 
 /** @def MPI_Query_thread_L
-    Exchanges MPI_Query_thread_L by mpi_query_thread.
+    Exchanges MPI_Query_thread_L with mpi_query_thread.
     It is used for the Fortran wrappers of MPI_Query_thread.
  */
 #define MPI_Query_thread_L mpi_query_thread

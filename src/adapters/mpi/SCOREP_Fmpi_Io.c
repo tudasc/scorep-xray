@@ -61,337 +61,337 @@
 /* lowercase defines */
 
 /** @def MPI_File_close_L
-    Exchanges MPI_File_close_L by mpi_file_close.
+    Exchanges MPI_File_close_L with mpi_file_close.
     It is used for the Fortran wrappers of MPI_File_close.
  */
 #define MPI_File_close_L mpi_file_close
 
 /** @def MPI_File_delete_L
-    Exchanges MPI_File_delete_L by mpi_file_delete.
+    Exchanges MPI_File_delete_L with mpi_file_delete.
     It is used for the Fortran wrappers of MPI_File_delete.
  */
 #define MPI_File_delete_L mpi_file_delete
 
 /** @def MPI_File_get_amode_L
-    Exchanges MPI_File_get_amode_L by mpi_file_get_amode.
+    Exchanges MPI_File_get_amode_L with mpi_file_get_amode.
     It is used for the Fortran wrappers of MPI_File_get_amode.
  */
 #define MPI_File_get_amode_L mpi_file_get_amode
 
 /** @def MPI_File_get_atomicity_L
-    Exchanges MPI_File_get_atomicity_L by mpi_file_get_atomicity.
+    Exchanges MPI_File_get_atomicity_L with mpi_file_get_atomicity.
     It is used for the Fortran wrappers of MPI_File_get_atomicity.
  */
 #define MPI_File_get_atomicity_L mpi_file_get_atomicity
 
 /** @def MPI_File_get_byte_offset_L
-    Exchanges MPI_File_get_byte_offset_L by mpi_file_get_byte_offset.
+    Exchanges MPI_File_get_byte_offset_L with mpi_file_get_byte_offset.
     It is used for the Fortran wrappers of MPI_File_get_byte_offset.
  */
 #define MPI_File_get_byte_offset_L mpi_file_get_byte_offset
 
 /** @def MPI_File_get_group_L
-    Exchanges MPI_File_get_group_L by mpi_file_get_group.
+    Exchanges MPI_File_get_group_L with mpi_file_get_group.
     It is used for the Fortran wrappers of MPI_File_get_group.
  */
 #define MPI_File_get_group_L mpi_file_get_group
 
 /** @def MPI_File_get_info_L
-    Exchanges MPI_File_get_info_L by mpi_file_get_info.
+    Exchanges MPI_File_get_info_L with mpi_file_get_info.
     It is used for the Fortran wrappers of MPI_File_get_info.
  */
 #define MPI_File_get_info_L mpi_file_get_info
 
 /** @def MPI_File_get_position_L
-    Exchanges MPI_File_get_position_L by mpi_file_get_position.
+    Exchanges MPI_File_get_position_L with mpi_file_get_position.
     It is used for the Fortran wrappers of MPI_File_get_position.
  */
 #define MPI_File_get_position_L mpi_file_get_position
 
 /** @def MPI_File_get_position_shared_L
-    Exchanges MPI_File_get_position_shared_L by mpi_file_get_position_shared.
+    Exchanges MPI_File_get_position_shared_L with mpi_file_get_position_shared.
     It is used for the Fortran wrappers of MPI_File_get_position_shared.
  */
 #define MPI_File_get_position_shared_L mpi_file_get_position_shared
 
 /** @def MPI_File_get_size_L
-    Exchanges MPI_File_get_size_L by mpi_file_get_size.
+    Exchanges MPI_File_get_size_L with mpi_file_get_size.
     It is used for the Fortran wrappers of MPI_File_get_size.
  */
 #define MPI_File_get_size_L mpi_file_get_size
 
 /** @def MPI_File_get_type_extent_L
-    Exchanges MPI_File_get_type_extent_L by mpi_file_get_type_extent.
+    Exchanges MPI_File_get_type_extent_L with mpi_file_get_type_extent.
     It is used for the Fortran wrappers of MPI_File_get_type_extent.
  */
 #define MPI_File_get_type_extent_L mpi_file_get_type_extent
 
 /** @def MPI_File_get_view_L
-    Exchanges MPI_File_get_view_L by mpi_file_get_view.
+    Exchanges MPI_File_get_view_L with mpi_file_get_view.
     It is used for the Fortran wrappers of MPI_File_get_view.
  */
 #define MPI_File_get_view_L mpi_file_get_view
 
 /** @def MPI_File_iread_L
-    Exchanges MPI_File_iread_L by mpi_file_iread.
+    Exchanges MPI_File_iread_L with mpi_file_iread.
     It is used for the Fortran wrappers of MPI_File_iread.
  */
 #define MPI_File_iread_L mpi_file_iread
 
 /** @def MPI_File_iread_all_L
-    Exchanges MPI_File_iread_all_L by mpi_file_iread_all.
+    Exchanges MPI_File_iread_all_L with mpi_file_iread_all.
     It is used for the Fortran wrappers of MPI_File_iread_all.
  */
 #define MPI_File_iread_all_L mpi_file_iread_all
 
 /** @def MPI_File_iread_at_L
-    Exchanges MPI_File_iread_at_L by mpi_file_iread_at.
+    Exchanges MPI_File_iread_at_L with mpi_file_iread_at.
     It is used for the Fortran wrappers of MPI_File_iread_at.
  */
 #define MPI_File_iread_at_L mpi_file_iread_at
 
 /** @def MPI_File_iread_at_all_L
-    Exchanges MPI_File_iread_at_all_L by mpi_file_iread_at_all.
+    Exchanges MPI_File_iread_at_all_L with mpi_file_iread_at_all.
     It is used for the Fortran wrappers of MPI_File_iread_at_all.
  */
 #define MPI_File_iread_at_all_L mpi_file_iread_at_all
 
 /** @def MPI_File_iread_shared_L
-    Exchanges MPI_File_iread_shared_L by mpi_file_iread_shared.
+    Exchanges MPI_File_iread_shared_L with mpi_file_iread_shared.
     It is used for the Fortran wrappers of MPI_File_iread_shared.
  */
 #define MPI_File_iread_shared_L mpi_file_iread_shared
 
 /** @def MPI_File_iwrite_L
-    Exchanges MPI_File_iwrite_L by mpi_file_iwrite.
+    Exchanges MPI_File_iwrite_L with mpi_file_iwrite.
     It is used for the Fortran wrappers of MPI_File_iwrite.
  */
 #define MPI_File_iwrite_L mpi_file_iwrite
 
 /** @def MPI_File_iwrite_all_L
-    Exchanges MPI_File_iwrite_all_L by mpi_file_iwrite_all.
+    Exchanges MPI_File_iwrite_all_L with mpi_file_iwrite_all.
     It is used for the Fortran wrappers of MPI_File_iwrite_all.
  */
 #define MPI_File_iwrite_all_L mpi_file_iwrite_all
 
 /** @def MPI_File_iwrite_at_L
-    Exchanges MPI_File_iwrite_at_L by mpi_file_iwrite_at.
+    Exchanges MPI_File_iwrite_at_L with mpi_file_iwrite_at.
     It is used for the Fortran wrappers of MPI_File_iwrite_at.
  */
 #define MPI_File_iwrite_at_L mpi_file_iwrite_at
 
 /** @def MPI_File_iwrite_at_all_L
-    Exchanges MPI_File_iwrite_at_all_L by mpi_file_iwrite_at_all.
+    Exchanges MPI_File_iwrite_at_all_L with mpi_file_iwrite_at_all.
     It is used for the Fortran wrappers of MPI_File_iwrite_at_all.
  */
 #define MPI_File_iwrite_at_all_L mpi_file_iwrite_at_all
 
 /** @def MPI_File_iwrite_shared_L
-    Exchanges MPI_File_iwrite_shared_L by mpi_file_iwrite_shared.
+    Exchanges MPI_File_iwrite_shared_L with mpi_file_iwrite_shared.
     It is used for the Fortran wrappers of MPI_File_iwrite_shared.
  */
 #define MPI_File_iwrite_shared_L mpi_file_iwrite_shared
 
 /** @def MPI_File_open_L
-    Exchanges MPI_File_open_L by mpi_file_open.
+    Exchanges MPI_File_open_L with mpi_file_open.
     It is used for the Fortran wrappers of MPI_File_open.
  */
 #define MPI_File_open_L mpi_file_open
 
 /** @def MPI_File_preallocate_L
-    Exchanges MPI_File_preallocate_L by mpi_file_preallocate.
+    Exchanges MPI_File_preallocate_L with mpi_file_preallocate.
     It is used for the Fortran wrappers of MPI_File_preallocate.
  */
 #define MPI_File_preallocate_L mpi_file_preallocate
 
 /** @def MPI_File_read_L
-    Exchanges MPI_File_read_L by mpi_file_read.
+    Exchanges MPI_File_read_L with mpi_file_read.
     It is used for the Fortran wrappers of MPI_File_read.
  */
 #define MPI_File_read_L mpi_file_read
 
 /** @def MPI_File_read_all_L
-    Exchanges MPI_File_read_all_L by mpi_file_read_all.
+    Exchanges MPI_File_read_all_L with mpi_file_read_all.
     It is used for the Fortran wrappers of MPI_File_read_all.
  */
 #define MPI_File_read_all_L mpi_file_read_all
 
 /** @def MPI_File_read_all_begin_L
-    Exchanges MPI_File_read_all_begin_L by mpi_file_read_all_begin.
+    Exchanges MPI_File_read_all_begin_L with mpi_file_read_all_begin.
     It is used for the Fortran wrappers of MPI_File_read_all_begin.
  */
 #define MPI_File_read_all_begin_L mpi_file_read_all_begin
 
 /** @def MPI_File_read_all_end_L
-    Exchanges MPI_File_read_all_end_L by mpi_file_read_all_end.
+    Exchanges MPI_File_read_all_end_L with mpi_file_read_all_end.
     It is used for the Fortran wrappers of MPI_File_read_all_end.
  */
 #define MPI_File_read_all_end_L mpi_file_read_all_end
 
 /** @def MPI_File_read_at_L
-    Exchanges MPI_File_read_at_L by mpi_file_read_at.
+    Exchanges MPI_File_read_at_L with mpi_file_read_at.
     It is used for the Fortran wrappers of MPI_File_read_at.
  */
 #define MPI_File_read_at_L mpi_file_read_at
 
 /** @def MPI_File_read_at_all_L
-    Exchanges MPI_File_read_at_all_L by mpi_file_read_at_all.
+    Exchanges MPI_File_read_at_all_L with mpi_file_read_at_all.
     It is used for the Fortran wrappers of MPI_File_read_at_all.
  */
 #define MPI_File_read_at_all_L mpi_file_read_at_all
 
 /** @def MPI_File_read_at_all_begin_L
-    Exchanges MPI_File_read_at_all_begin_L by mpi_file_read_at_all_begin.
+    Exchanges MPI_File_read_at_all_begin_L with mpi_file_read_at_all_begin.
     It is used for the Fortran wrappers of MPI_File_read_at_all_begin.
  */
 #define MPI_File_read_at_all_begin_L mpi_file_read_at_all_begin
 
 /** @def MPI_File_read_at_all_end_L
-    Exchanges MPI_File_read_at_all_end_L by mpi_file_read_at_all_end.
+    Exchanges MPI_File_read_at_all_end_L with mpi_file_read_at_all_end.
     It is used for the Fortran wrappers of MPI_File_read_at_all_end.
  */
 #define MPI_File_read_at_all_end_L mpi_file_read_at_all_end
 
 /** @def MPI_File_read_ordered_L
-    Exchanges MPI_File_read_ordered_L by mpi_file_read_ordered.
+    Exchanges MPI_File_read_ordered_L with mpi_file_read_ordered.
     It is used for the Fortran wrappers of MPI_File_read_ordered.
  */
 #define MPI_File_read_ordered_L mpi_file_read_ordered
 
 /** @def MPI_File_read_ordered_begin_L
-    Exchanges MPI_File_read_ordered_begin_L by mpi_file_read_ordered_begin.
+    Exchanges MPI_File_read_ordered_begin_L with mpi_file_read_ordered_begin.
     It is used for the Fortran wrappers of MPI_File_read_ordered_begin.
  */
 #define MPI_File_read_ordered_begin_L mpi_file_read_ordered_begin
 
 /** @def MPI_File_read_ordered_end_L
-    Exchanges MPI_File_read_ordered_end_L by mpi_file_read_ordered_end.
+    Exchanges MPI_File_read_ordered_end_L with mpi_file_read_ordered_end.
     It is used for the Fortran wrappers of MPI_File_read_ordered_end.
  */
 #define MPI_File_read_ordered_end_L mpi_file_read_ordered_end
 
 /** @def MPI_File_read_shared_L
-    Exchanges MPI_File_read_shared_L by mpi_file_read_shared.
+    Exchanges MPI_File_read_shared_L with mpi_file_read_shared.
     It is used for the Fortran wrappers of MPI_File_read_shared.
  */
 #define MPI_File_read_shared_L mpi_file_read_shared
 
 /** @def MPI_File_seek_L
-    Exchanges MPI_File_seek_L by mpi_file_seek.
+    Exchanges MPI_File_seek_L with mpi_file_seek.
     It is used for the Fortran wrappers of MPI_File_seek.
  */
 #define MPI_File_seek_L mpi_file_seek
 
 /** @def MPI_File_seek_shared_L
-    Exchanges MPI_File_seek_shared_L by mpi_file_seek_shared.
+    Exchanges MPI_File_seek_shared_L with mpi_file_seek_shared.
     It is used for the Fortran wrappers of MPI_File_seek_shared.
  */
 #define MPI_File_seek_shared_L mpi_file_seek_shared
 
 /** @def MPI_File_set_atomicity_L
-    Exchanges MPI_File_set_atomicity_L by mpi_file_set_atomicity.
+    Exchanges MPI_File_set_atomicity_L with mpi_file_set_atomicity.
     It is used for the Fortran wrappers of MPI_File_set_atomicity.
  */
 #define MPI_File_set_atomicity_L mpi_file_set_atomicity
 
 /** @def MPI_File_set_info_L
-    Exchanges MPI_File_set_info_L by mpi_file_set_info.
+    Exchanges MPI_File_set_info_L with mpi_file_set_info.
     It is used for the Fortran wrappers of MPI_File_set_info.
  */
 #define MPI_File_set_info_L mpi_file_set_info
 
 /** @def MPI_File_set_size_L
-    Exchanges MPI_File_set_size_L by mpi_file_set_size.
+    Exchanges MPI_File_set_size_L with mpi_file_set_size.
     It is used for the Fortran wrappers of MPI_File_set_size.
  */
 #define MPI_File_set_size_L mpi_file_set_size
 
 /** @def MPI_File_set_view_L
-    Exchanges MPI_File_set_view_L by mpi_file_set_view.
+    Exchanges MPI_File_set_view_L with mpi_file_set_view.
     It is used for the Fortran wrappers of MPI_File_set_view.
  */
 #define MPI_File_set_view_L mpi_file_set_view
 
 /** @def MPI_File_sync_L
-    Exchanges MPI_File_sync_L by mpi_file_sync.
+    Exchanges MPI_File_sync_L with mpi_file_sync.
     It is used for the Fortran wrappers of MPI_File_sync.
  */
 #define MPI_File_sync_L mpi_file_sync
 
 /** @def MPI_File_write_L
-    Exchanges MPI_File_write_L by mpi_file_write.
+    Exchanges MPI_File_write_L with mpi_file_write.
     It is used for the Fortran wrappers of MPI_File_write.
  */
 #define MPI_File_write_L mpi_file_write
 
 /** @def MPI_File_write_all_L
-    Exchanges MPI_File_write_all_L by mpi_file_write_all.
+    Exchanges MPI_File_write_all_L with mpi_file_write_all.
     It is used for the Fortran wrappers of MPI_File_write_all.
  */
 #define MPI_File_write_all_L mpi_file_write_all
 
 /** @def MPI_File_write_all_begin_L
-    Exchanges MPI_File_write_all_begin_L by mpi_file_write_all_begin.
+    Exchanges MPI_File_write_all_begin_L with mpi_file_write_all_begin.
     It is used for the Fortran wrappers of MPI_File_write_all_begin.
  */
 #define MPI_File_write_all_begin_L mpi_file_write_all_begin
 
 /** @def MPI_File_write_all_end_L
-    Exchanges MPI_File_write_all_end_L by mpi_file_write_all_end.
+    Exchanges MPI_File_write_all_end_L with mpi_file_write_all_end.
     It is used for the Fortran wrappers of MPI_File_write_all_end.
  */
 #define MPI_File_write_all_end_L mpi_file_write_all_end
 
 /** @def MPI_File_write_at_L
-    Exchanges MPI_File_write_at_L by mpi_file_write_at.
+    Exchanges MPI_File_write_at_L with mpi_file_write_at.
     It is used for the Fortran wrappers of MPI_File_write_at.
  */
 #define MPI_File_write_at_L mpi_file_write_at
 
 /** @def MPI_File_write_at_all_L
-    Exchanges MPI_File_write_at_all_L by mpi_file_write_at_all.
+    Exchanges MPI_File_write_at_all_L with mpi_file_write_at_all.
     It is used for the Fortran wrappers of MPI_File_write_at_all.
  */
 #define MPI_File_write_at_all_L mpi_file_write_at_all
 
 /** @def MPI_File_write_at_all_begin_L
-    Exchanges MPI_File_write_at_all_begin_L by mpi_file_write_at_all_begin.
+    Exchanges MPI_File_write_at_all_begin_L with mpi_file_write_at_all_begin.
     It is used for the Fortran wrappers of MPI_File_write_at_all_begin.
  */
 #define MPI_File_write_at_all_begin_L mpi_file_write_at_all_begin
 
 /** @def MPI_File_write_at_all_end_L
-    Exchanges MPI_File_write_at_all_end_L by mpi_file_write_at_all_end.
+    Exchanges MPI_File_write_at_all_end_L with mpi_file_write_at_all_end.
     It is used for the Fortran wrappers of MPI_File_write_at_all_end.
  */
 #define MPI_File_write_at_all_end_L mpi_file_write_at_all_end
 
 /** @def MPI_File_write_ordered_L
-    Exchanges MPI_File_write_ordered_L by mpi_file_write_ordered.
+    Exchanges MPI_File_write_ordered_L with mpi_file_write_ordered.
     It is used for the Fortran wrappers of MPI_File_write_ordered.
  */
 #define MPI_File_write_ordered_L mpi_file_write_ordered
 
 /** @def MPI_File_write_ordered_begin_L
-    Exchanges MPI_File_write_ordered_begin_L by mpi_file_write_ordered_begin.
+    Exchanges MPI_File_write_ordered_begin_L with mpi_file_write_ordered_begin.
     It is used for the Fortran wrappers of MPI_File_write_ordered_begin.
  */
 #define MPI_File_write_ordered_begin_L mpi_file_write_ordered_begin
 
 /** @def MPI_File_write_ordered_end_L
-    Exchanges MPI_File_write_ordered_end_L by mpi_file_write_ordered_end.
+    Exchanges MPI_File_write_ordered_end_L with mpi_file_write_ordered_end.
     It is used for the Fortran wrappers of MPI_File_write_ordered_end.
  */
 #define MPI_File_write_ordered_end_L mpi_file_write_ordered_end
 
 /** @def MPI_File_write_shared_L
-    Exchanges MPI_File_write_shared_L by mpi_file_write_shared.
+    Exchanges MPI_File_write_shared_L with mpi_file_write_shared.
     It is used for the Fortran wrappers of MPI_File_write_shared.
  */
 #define MPI_File_write_shared_L mpi_file_write_shared
 
 /** @def MPI_Register_datarep_L
-    Exchanges MPI_Register_datarep_L by mpi_register_datarep.
+    Exchanges MPI_Register_datarep_L with mpi_register_datarep.
     It is used for the Fortran wrappers of MPI_Register_datarep.
  */
 #define MPI_Register_datarep_L mpi_register_datarep
@@ -400,337 +400,337 @@
 /* uppercase defines */
 
 /** @def MPI_File_close_U
-    Exchange MPI_File_close_U by MPI_FILE_CLOSE.
+    Exchanges MPI_File_close_U with MPI_FILE_CLOSE.
     It is used for the Fortran wrappers of MPI_File_close.
  */
 #define MPI_File_close_U MPI_FILE_CLOSE
 
 /** @def MPI_File_delete_U
-    Exchange MPI_File_delete_U by MPI_FILE_DELETE.
+    Exchanges MPI_File_delete_U with MPI_FILE_DELETE.
     It is used for the Fortran wrappers of MPI_File_delete.
  */
 #define MPI_File_delete_U MPI_FILE_DELETE
 
 /** @def MPI_File_get_amode_U
-    Exchange MPI_File_get_amode_U by MPI_FILE_GET_AMODE.
+    Exchanges MPI_File_get_amode_U with MPI_FILE_GET_AMODE.
     It is used for the Fortran wrappers of MPI_File_get_amode.
  */
 #define MPI_File_get_amode_U MPI_FILE_GET_AMODE
 
 /** @def MPI_File_get_atomicity_U
-    Exchange MPI_File_get_atomicity_U by MPI_FILE_GET_ATOMICITY.
+    Exchanges MPI_File_get_atomicity_U with MPI_FILE_GET_ATOMICITY.
     It is used for the Fortran wrappers of MPI_File_get_atomicity.
  */
 #define MPI_File_get_atomicity_U MPI_FILE_GET_ATOMICITY
 
 /** @def MPI_File_get_byte_offset_U
-    Exchange MPI_File_get_byte_offset_U by MPI_FILE_GET_BYTE_OFFSET.
+    Exchanges MPI_File_get_byte_offset_U with MPI_FILE_GET_BYTE_OFFSET.
     It is used for the Fortran wrappers of MPI_File_get_byte_offset.
  */
 #define MPI_File_get_byte_offset_U MPI_FILE_GET_BYTE_OFFSET
 
 /** @def MPI_File_get_group_U
-    Exchange MPI_File_get_group_U by MPI_FILE_GET_GROUP.
+    Exchanges MPI_File_get_group_U with MPI_FILE_GET_GROUP.
     It is used for the Fortran wrappers of MPI_File_get_group.
  */
 #define MPI_File_get_group_U MPI_FILE_GET_GROUP
 
 /** @def MPI_File_get_info_U
-    Exchange MPI_File_get_info_U by MPI_FILE_GET_INFO.
+    Exchanges MPI_File_get_info_U with MPI_FILE_GET_INFO.
     It is used for the Fortran wrappers of MPI_File_get_info.
  */
 #define MPI_File_get_info_U MPI_FILE_GET_INFO
 
 /** @def MPI_File_get_position_U
-    Exchange MPI_File_get_position_U by MPI_FILE_GET_POSITION.
+    Exchanges MPI_File_get_position_U with MPI_FILE_GET_POSITION.
     It is used for the Fortran wrappers of MPI_File_get_position.
  */
 #define MPI_File_get_position_U MPI_FILE_GET_POSITION
 
 /** @def MPI_File_get_position_shared_U
-    Exchange MPI_File_get_position_shared_U by MPI_FILE_GET_POSITION_SHARED.
+    Exchanges MPI_File_get_position_shared_U with MPI_FILE_GET_POSITION_SHARED.
     It is used for the Fortran wrappers of MPI_File_get_position_shared.
  */
 #define MPI_File_get_position_shared_U MPI_FILE_GET_POSITION_SHARED
 
 /** @def MPI_File_get_size_U
-    Exchange MPI_File_get_size_U by MPI_FILE_GET_SIZE.
+    Exchanges MPI_File_get_size_U with MPI_FILE_GET_SIZE.
     It is used for the Fortran wrappers of MPI_File_get_size.
  */
 #define MPI_File_get_size_U MPI_FILE_GET_SIZE
 
 /** @def MPI_File_get_type_extent_U
-    Exchange MPI_File_get_type_extent_U by MPI_FILE_GET_TYPE_EXTENT.
+    Exchanges MPI_File_get_type_extent_U with MPI_FILE_GET_TYPE_EXTENT.
     It is used for the Fortran wrappers of MPI_File_get_type_extent.
  */
 #define MPI_File_get_type_extent_U MPI_FILE_GET_TYPE_EXTENT
 
 /** @def MPI_File_get_view_U
-    Exchange MPI_File_get_view_U by MPI_FILE_GET_VIEW.
+    Exchanges MPI_File_get_view_U with MPI_FILE_GET_VIEW.
     It is used for the Fortran wrappers of MPI_File_get_view.
  */
 #define MPI_File_get_view_U MPI_FILE_GET_VIEW
 
 /** @def MPI_File_iread_U
-    Exchange MPI_File_iread_U by MPI_FILE_IREAD.
+    Exchanges MPI_File_iread_U with MPI_FILE_IREAD.
     It is used for the Fortran wrappers of MPI_File_iread.
  */
 #define MPI_File_iread_U MPI_FILE_IREAD
 
 /** @def MPI_File_iread_all_U
-    Exchange MPI_File_iread_all_U by MPI_FILE_IREAD_ALL.
+    Exchanges MPI_File_iread_all_U with MPI_FILE_IREAD_ALL.
     It is used for the Fortran wrappers of MPI_File_iread_all.
  */
 #define MPI_File_iread_all_U MPI_FILE_IREAD_ALL
 
 /** @def MPI_File_iread_at_U
-    Exchange MPI_File_iread_at_U by MPI_FILE_IREAD_AT.
+    Exchanges MPI_File_iread_at_U with MPI_FILE_IREAD_AT.
     It is used for the Fortran wrappers of MPI_File_iread_at.
  */
 #define MPI_File_iread_at_U MPI_FILE_IREAD_AT
 
 /** @def MPI_File_iread_at_all_U
-    Exchange MPI_File_iread_at_all_U by MPI_FILE_IREAD_AT_ALL.
+    Exchanges MPI_File_iread_at_all_U with MPI_FILE_IREAD_AT_ALL.
     It is used for the Fortran wrappers of MPI_File_iread_at_all.
  */
 #define MPI_File_iread_at_all_U MPI_FILE_IREAD_AT_ALL
 
 /** @def MPI_File_iread_shared_U
-    Exchange MPI_File_iread_shared_U by MPI_FILE_IREAD_SHARED.
+    Exchanges MPI_File_iread_shared_U with MPI_FILE_IREAD_SHARED.
     It is used for the Fortran wrappers of MPI_File_iread_shared.
  */
 #define MPI_File_iread_shared_U MPI_FILE_IREAD_SHARED
 
 /** @def MPI_File_iwrite_U
-    Exchange MPI_File_iwrite_U by MPI_FILE_IWRITE.
+    Exchanges MPI_File_iwrite_U with MPI_FILE_IWRITE.
     It is used for the Fortran wrappers of MPI_File_iwrite.
  */
 #define MPI_File_iwrite_U MPI_FILE_IWRITE
 
 /** @def MPI_File_iwrite_all_U
-    Exchange MPI_File_iwrite_all_U by MPI_FILE_IWRITE_ALL.
+    Exchanges MPI_File_iwrite_all_U with MPI_FILE_IWRITE_ALL.
     It is used for the Fortran wrappers of MPI_File_iwrite_all.
  */
 #define MPI_File_iwrite_all_U MPI_FILE_IWRITE_ALL
 
 /** @def MPI_File_iwrite_at_U
-    Exchange MPI_File_iwrite_at_U by MPI_FILE_IWRITE_AT.
+    Exchanges MPI_File_iwrite_at_U with MPI_FILE_IWRITE_AT.
     It is used for the Fortran wrappers of MPI_File_iwrite_at.
  */
 #define MPI_File_iwrite_at_U MPI_FILE_IWRITE_AT
 
 /** @def MPI_File_iwrite_at_all_U
-    Exchange MPI_File_iwrite_at_all_U by MPI_FILE_IWRITE_AT_ALL.
+    Exchanges MPI_File_iwrite_at_all_U with MPI_FILE_IWRITE_AT_ALL.
     It is used for the Fortran wrappers of MPI_File_iwrite_at_all.
  */
 #define MPI_File_iwrite_at_all_U MPI_FILE_IWRITE_AT_ALL
 
 /** @def MPI_File_iwrite_shared_U
-    Exchange MPI_File_iwrite_shared_U by MPI_FILE_IWRITE_SHARED.
+    Exchanges MPI_File_iwrite_shared_U with MPI_FILE_IWRITE_SHARED.
     It is used for the Fortran wrappers of MPI_File_iwrite_shared.
  */
 #define MPI_File_iwrite_shared_U MPI_FILE_IWRITE_SHARED
 
 /** @def MPI_File_open_U
-    Exchange MPI_File_open_U by MPI_FILE_OPEN.
+    Exchanges MPI_File_open_U with MPI_FILE_OPEN.
     It is used for the Fortran wrappers of MPI_File_open.
  */
 #define MPI_File_open_U MPI_FILE_OPEN
 
 /** @def MPI_File_preallocate_U
-    Exchange MPI_File_preallocate_U by MPI_FILE_PREALLOCATE.
+    Exchanges MPI_File_preallocate_U with MPI_FILE_PREALLOCATE.
     It is used for the Fortran wrappers of MPI_File_preallocate.
  */
 #define MPI_File_preallocate_U MPI_FILE_PREALLOCATE
 
 /** @def MPI_File_read_U
-    Exchange MPI_File_read_U by MPI_FILE_READ.
+    Exchanges MPI_File_read_U with MPI_FILE_READ.
     It is used for the Fortran wrappers of MPI_File_read.
  */
 #define MPI_File_read_U MPI_FILE_READ
 
 /** @def MPI_File_read_all_U
-    Exchange MPI_File_read_all_U by MPI_FILE_READ_ALL.
+    Exchanges MPI_File_read_all_U with MPI_FILE_READ_ALL.
     It is used for the Fortran wrappers of MPI_File_read_all.
  */
 #define MPI_File_read_all_U MPI_FILE_READ_ALL
 
 /** @def MPI_File_read_all_begin_U
-    Exchange MPI_File_read_all_begin_U by MPI_FILE_READ_ALL_BEGIN.
+    Exchanges MPI_File_read_all_begin_U with MPI_FILE_READ_ALL_BEGIN.
     It is used for the Fortran wrappers of MPI_File_read_all_begin.
  */
 #define MPI_File_read_all_begin_U MPI_FILE_READ_ALL_BEGIN
 
 /** @def MPI_File_read_all_end_U
-    Exchange MPI_File_read_all_end_U by MPI_FILE_READ_ALL_END.
+    Exchanges MPI_File_read_all_end_U with MPI_FILE_READ_ALL_END.
     It is used for the Fortran wrappers of MPI_File_read_all_end.
  */
 #define MPI_File_read_all_end_U MPI_FILE_READ_ALL_END
 
 /** @def MPI_File_read_at_U
-    Exchange MPI_File_read_at_U by MPI_FILE_READ_AT.
+    Exchanges MPI_File_read_at_U with MPI_FILE_READ_AT.
     It is used for the Fortran wrappers of MPI_File_read_at.
  */
 #define MPI_File_read_at_U MPI_FILE_READ_AT
 
 /** @def MPI_File_read_at_all_U
-    Exchange MPI_File_read_at_all_U by MPI_FILE_READ_AT_ALL.
+    Exchanges MPI_File_read_at_all_U with MPI_FILE_READ_AT_ALL.
     It is used for the Fortran wrappers of MPI_File_read_at_all.
  */
 #define MPI_File_read_at_all_U MPI_FILE_READ_AT_ALL
 
 /** @def MPI_File_read_at_all_begin_U
-    Exchange MPI_File_read_at_all_begin_U by MPI_FILE_READ_AT_ALL_BEGIN.
+    Exchanges MPI_File_read_at_all_begin_U with MPI_FILE_READ_AT_ALL_BEGIN.
     It is used for the Fortran wrappers of MPI_File_read_at_all_begin.
  */
 #define MPI_File_read_at_all_begin_U MPI_FILE_READ_AT_ALL_BEGIN
 
 /** @def MPI_File_read_at_all_end_U
-    Exchange MPI_File_read_at_all_end_U by MPI_FILE_READ_AT_ALL_END.
+    Exchanges MPI_File_read_at_all_end_U with MPI_FILE_READ_AT_ALL_END.
     It is used for the Fortran wrappers of MPI_File_read_at_all_end.
  */
 #define MPI_File_read_at_all_end_U MPI_FILE_READ_AT_ALL_END
 
 /** @def MPI_File_read_ordered_U
-    Exchange MPI_File_read_ordered_U by MPI_FILE_READ_ORDERED.
+    Exchanges MPI_File_read_ordered_U with MPI_FILE_READ_ORDERED.
     It is used for the Fortran wrappers of MPI_File_read_ordered.
  */
 #define MPI_File_read_ordered_U MPI_FILE_READ_ORDERED
 
 /** @def MPI_File_read_ordered_begin_U
-    Exchange MPI_File_read_ordered_begin_U by MPI_FILE_READ_ORDERED_BEGIN.
+    Exchanges MPI_File_read_ordered_begin_U with MPI_FILE_READ_ORDERED_BEGIN.
     It is used for the Fortran wrappers of MPI_File_read_ordered_begin.
  */
 #define MPI_File_read_ordered_begin_U MPI_FILE_READ_ORDERED_BEGIN
 
 /** @def MPI_File_read_ordered_end_U
-    Exchange MPI_File_read_ordered_end_U by MPI_FILE_READ_ORDERED_END.
+    Exchanges MPI_File_read_ordered_end_U with MPI_FILE_READ_ORDERED_END.
     It is used for the Fortran wrappers of MPI_File_read_ordered_end.
  */
 #define MPI_File_read_ordered_end_U MPI_FILE_READ_ORDERED_END
 
 /** @def MPI_File_read_shared_U
-    Exchange MPI_File_read_shared_U by MPI_FILE_READ_SHARED.
+    Exchanges MPI_File_read_shared_U with MPI_FILE_READ_SHARED.
     It is used for the Fortran wrappers of MPI_File_read_shared.
  */
 #define MPI_File_read_shared_U MPI_FILE_READ_SHARED
 
 /** @def MPI_File_seek_U
-    Exchange MPI_File_seek_U by MPI_FILE_SEEK.
+    Exchanges MPI_File_seek_U with MPI_FILE_SEEK.
     It is used for the Fortran wrappers of MPI_File_seek.
  */
 #define MPI_File_seek_U MPI_FILE_SEEK
 
 /** @def MPI_File_seek_shared_U
-    Exchange MPI_File_seek_shared_U by MPI_FILE_SEEK_SHARED.
+    Exchanges MPI_File_seek_shared_U with MPI_FILE_SEEK_SHARED.
     It is used for the Fortran wrappers of MPI_File_seek_shared.
  */
 #define MPI_File_seek_shared_U MPI_FILE_SEEK_SHARED
 
 /** @def MPI_File_set_atomicity_U
-    Exchange MPI_File_set_atomicity_U by MPI_FILE_SET_ATOMICITY.
+    Exchanges MPI_File_set_atomicity_U with MPI_FILE_SET_ATOMICITY.
     It is used for the Fortran wrappers of MPI_File_set_atomicity.
  */
 #define MPI_File_set_atomicity_U MPI_FILE_SET_ATOMICITY
 
 /** @def MPI_File_set_info_U
-    Exchange MPI_File_set_info_U by MPI_FILE_SET_INFO.
+    Exchanges MPI_File_set_info_U with MPI_FILE_SET_INFO.
     It is used for the Fortran wrappers of MPI_File_set_info.
  */
 #define MPI_File_set_info_U MPI_FILE_SET_INFO
 
 /** @def MPI_File_set_size_U
-    Exchange MPI_File_set_size_U by MPI_FILE_SET_SIZE.
+    Exchanges MPI_File_set_size_U with MPI_FILE_SET_SIZE.
     It is used for the Fortran wrappers of MPI_File_set_size.
  */
 #define MPI_File_set_size_U MPI_FILE_SET_SIZE
 
 /** @def MPI_File_set_view_U
-    Exchange MPI_File_set_view_U by MPI_FILE_SET_VIEW.
+    Exchanges MPI_File_set_view_U with MPI_FILE_SET_VIEW.
     It is used for the Fortran wrappers of MPI_File_set_view.
  */
 #define MPI_File_set_view_U MPI_FILE_SET_VIEW
 
 /** @def MPI_File_sync_U
-    Exchange MPI_File_sync_U by MPI_FILE_SYNC.
+    Exchanges MPI_File_sync_U with MPI_FILE_SYNC.
     It is used for the Fortran wrappers of MPI_File_sync.
  */
 #define MPI_File_sync_U MPI_FILE_SYNC
 
 /** @def MPI_File_write_U
-    Exchange MPI_File_write_U by MPI_FILE_WRITE.
+    Exchanges MPI_File_write_U with MPI_FILE_WRITE.
     It is used for the Fortran wrappers of MPI_File_write.
  */
 #define MPI_File_write_U MPI_FILE_WRITE
 
 /** @def MPI_File_write_all_U
-    Exchange MPI_File_write_all_U by MPI_FILE_WRITE_ALL.
+    Exchanges MPI_File_write_all_U with MPI_FILE_WRITE_ALL.
     It is used for the Fortran wrappers of MPI_File_write_all.
  */
 #define MPI_File_write_all_U MPI_FILE_WRITE_ALL
 
 /** @def MPI_File_write_all_begin_U
-    Exchange MPI_File_write_all_begin_U by MPI_FILE_WRITE_ALL_BEGIN.
+    Exchanges MPI_File_write_all_begin_U with MPI_FILE_WRITE_ALL_BEGIN.
     It is used for the Fortran wrappers of MPI_File_write_all_begin.
  */
 #define MPI_File_write_all_begin_U MPI_FILE_WRITE_ALL_BEGIN
 
 /** @def MPI_File_write_all_end_U
-    Exchange MPI_File_write_all_end_U by MPI_FILE_WRITE_ALL_END.
+    Exchanges MPI_File_write_all_end_U with MPI_FILE_WRITE_ALL_END.
     It is used for the Fortran wrappers of MPI_File_write_all_end.
  */
 #define MPI_File_write_all_end_U MPI_FILE_WRITE_ALL_END
 
 /** @def MPI_File_write_at_U
-    Exchange MPI_File_write_at_U by MPI_FILE_WRITE_AT.
+    Exchanges MPI_File_write_at_U with MPI_FILE_WRITE_AT.
     It is used for the Fortran wrappers of MPI_File_write_at.
  */
 #define MPI_File_write_at_U MPI_FILE_WRITE_AT
 
 /** @def MPI_File_write_at_all_U
-    Exchange MPI_File_write_at_all_U by MPI_FILE_WRITE_AT_ALL.
+    Exchanges MPI_File_write_at_all_U with MPI_FILE_WRITE_AT_ALL.
     It is used for the Fortran wrappers of MPI_File_write_at_all.
  */
 #define MPI_File_write_at_all_U MPI_FILE_WRITE_AT_ALL
 
 /** @def MPI_File_write_at_all_begin_U
-    Exchange MPI_File_write_at_all_begin_U by MPI_FILE_WRITE_AT_ALL_BEGIN.
+    Exchanges MPI_File_write_at_all_begin_U with MPI_FILE_WRITE_AT_ALL_BEGIN.
     It is used for the Fortran wrappers of MPI_File_write_at_all_begin.
  */
 #define MPI_File_write_at_all_begin_U MPI_FILE_WRITE_AT_ALL_BEGIN
 
 /** @def MPI_File_write_at_all_end_U
-    Exchange MPI_File_write_at_all_end_U by MPI_FILE_WRITE_AT_ALL_END.
+    Exchanges MPI_File_write_at_all_end_U with MPI_FILE_WRITE_AT_ALL_END.
     It is used for the Fortran wrappers of MPI_File_write_at_all_end.
  */
 #define MPI_File_write_at_all_end_U MPI_FILE_WRITE_AT_ALL_END
 
 /** @def MPI_File_write_ordered_U
-    Exchange MPI_File_write_ordered_U by MPI_FILE_WRITE_ORDERED.
+    Exchanges MPI_File_write_ordered_U with MPI_FILE_WRITE_ORDERED.
     It is used for the Fortran wrappers of MPI_File_write_ordered.
  */
 #define MPI_File_write_ordered_U MPI_FILE_WRITE_ORDERED
 
 /** @def MPI_File_write_ordered_begin_U
-    Exchange MPI_File_write_ordered_begin_U by MPI_FILE_WRITE_ORDERED_BEGIN.
+    Exchanges MPI_File_write_ordered_begin_U with MPI_FILE_WRITE_ORDERED_BEGIN.
     It is used for the Fortran wrappers of MPI_File_write_ordered_begin.
  */
 #define MPI_File_write_ordered_begin_U MPI_FILE_WRITE_ORDERED_BEGIN
 
 /** @def MPI_File_write_ordered_end_U
-    Exchange MPI_File_write_ordered_end_U by MPI_FILE_WRITE_ORDERED_END.
+    Exchanges MPI_File_write_ordered_end_U with MPI_FILE_WRITE_ORDERED_END.
     It is used for the Fortran wrappers of MPI_File_write_ordered_end.
  */
 #define MPI_File_write_ordered_end_U MPI_FILE_WRITE_ORDERED_END
 
 /** @def MPI_File_write_shared_U
-    Exchange MPI_File_write_shared_U by MPI_FILE_WRITE_SHARED.
+    Exchanges MPI_File_write_shared_U with MPI_FILE_WRITE_SHARED.
     It is used for the Fortran wrappers of MPI_File_write_shared.
  */
 #define MPI_File_write_shared_U MPI_FILE_WRITE_SHARED
 
 /** @def MPI_Register_datarep_U
-    Exchange MPI_Register_datarep_U by MPI_REGISTER_DATAREP.
+    Exchanges MPI_Register_datarep_U with MPI_REGISTER_DATAREP.
     It is used for the Fortran wrappers of MPI_Register_datarep.
  */
 #define MPI_Register_datarep_U MPI_REGISTER_DATAREP

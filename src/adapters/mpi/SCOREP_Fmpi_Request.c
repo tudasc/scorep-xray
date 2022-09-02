@@ -63,85 +63,85 @@
 /* uppercase defines */
 
 /** @def MPI_Cancel_U
-    Exchange MPI_Cancel_U by MPI_CANCEL.
+    Exchanges MPI_Cancel_U with MPI_CANCEL.
     It is used for the Fortran wrappers of MPI_Cancel.
  */
 #define MPI_Cancel_U MPI_CANCEL
 
 /** @def MPI_Request_free_U
-    Exchange MPI_Request_free_U by MPI_REQUEST_FREE.
+    Exchanges MPI_Request_free_U with MPI_REQUEST_FREE.
     It is used for the Fortran wrappers of MPI_Request_free.
  */
 #define MPI_Request_free_U MPI_REQUEST_FREE
 
 /** @def MPI_Request_get_status_U
-    Exchange MPI_Request_get_status_U by MPI_REQUEST_GET_STATUS.
+    Exchanges MPI_Request_get_status_U with MPI_REQUEST_GET_STATUS.
     It is used for the Fortran wrappers of MPI_Request_get_status.
  */
 #define MPI_Request_get_status_U MPI_REQUEST_GET_STATUS
 
 /** @def MPI_Start_U
-    Exchange MPI_Start_U by MPI_START.
+    Exchanges MPI_Start_U with MPI_START.
     It is used for the Fortran wrappers of MPI_Start.
  */
 #define MPI_Start_U MPI_START
 
 /** @def MPI_Startall_U
-    Exchange MPI_Startall_U by MPI_STARTALL.
+    Exchanges MPI_Startall_U with MPI_STARTALL.
     It is used for the Fortran wrappers of MPI_Startall.
  */
 #define MPI_Startall_U MPI_STARTALL
 
 /** @def MPI_Test_U
-    Exchange MPI_Test_U by MPI_TEST.
+    Exchanges MPI_Test_U with MPI_TEST.
     It is used for the Fortran wrappers of MPI_Test.
  */
 #define MPI_Test_U MPI_TEST
 
 /** @def MPI_Test_cancelled_U
-    Exchange MPI_Test_cancelled_U by MPI_TEST_CANCELLED.
+    Exchanges MPI_Test_cancelled_U with MPI_TEST_CANCELLED.
     It is used for the Fortran wrappers of MPI_Test_cancelled.
  */
 #define MPI_Test_cancelled_U MPI_TEST_CANCELLED
 
 /** @def MPI_Testall_U
-    Exchange MPI_Testall_U by MPI_TESTALL.
+    Exchanges MPI_Testall_U with MPI_TESTALL.
     It is used for the Fortran wrappers of MPI_Testall.
  */
 #define MPI_Testall_U MPI_TESTALL
 
 /** @def MPI_Testany_U
-    Exchange MPI_Testany_U by MPI_TESTANY.
+    Exchanges MPI_Testany_U with MPI_TESTANY.
     It is used for the Fortran wrappers of MPI_Testany.
  */
 #define MPI_Testany_U MPI_TESTANY
 
 /** @def MPI_Testsome_U
-    Exchange MPI_Testsome_U by MPI_TESTSOME.
+    Exchanges MPI_Testsome_U with MPI_TESTSOME.
     It is used for the Fortran wrappers of MPI_Testsome.
  */
 #define MPI_Testsome_U MPI_TESTSOME
 
 /** @def MPI_Wait_U
-    Exchange MPI_Wait_U by MPI_WAIT.
+    Exchanges MPI_Wait_U with MPI_WAIT.
     It is used for the Fortran wrappers of MPI_Wait.
  */
 #define MPI_Wait_U MPI_WAIT
 
 /** @def MPI_Waitall_U
-    Exchange MPI_Waitall_U by MPI_WAITALL.
+    Exchanges MPI_Waitall_U with MPI_WAITALL.
     It is used for the Fortran wrappers of MPI_Waitall.
  */
 #define MPI_Waitall_U MPI_WAITALL
 
 /** @def MPI_Waitany_U
-    Exchange MPI_Waitany_U by MPI_WAITANY.
+    Exchanges MPI_Waitany_U with MPI_WAITANY.
     It is used for the Fortran wrappers of MPI_Waitany.
  */
 #define MPI_Waitany_U MPI_WAITANY
 
 /** @def MPI_Waitsome_U
-    Exchange MPI_Waitsome_U by MPI_WAITSOME.
+    Exchanges MPI_Waitsome_U with MPI_WAITSOME.
     It is used for the Fortran wrappers of MPI_Waitsome.
  */
 #define MPI_Waitsome_U MPI_WAITSOME
@@ -149,85 +149,85 @@
 /* lowercase defines */
 
 /** @def MPI_Cancel_L
-    Exchanges MPI_Cancel_L by mpi_cancel.
+    Exchanges MPI_Cancel_L with mpi_cancel.
     It is used for the Fortran wrappers of MPI_Cancel.
  */
 #define MPI_Cancel_L mpi_cancel
 
 /** @def MPI_Request_free_L
-    Exchanges MPI_Request_free_L by mpi_request_free.
+    Exchanges MPI_Request_free_L with mpi_request_free.
     It is used for the Fortran wrappers of MPI_Request_free.
  */
 #define MPI_Request_free_L mpi_request_free
 
 /** @def MPI_Request_get_status_L
-    Exchanges MPI_Request_get_status_L by mpi_request_get_status.
+    Exchanges MPI_Request_get_status_L with mpi_request_get_status.
     It is used for the Fortran wrappers of MPI_Request_get_status.
  */
 #define MPI_Request_get_status_L mpi_request_get_status
 
 /** @def MPI_Start_L
-    Exchanges MPI_Start_L by mpi_start.
+    Exchanges MPI_Start_L with mpi_start.
     It is used for the Fortran wrappers of MPI_Start.
  */
 #define MPI_Start_L mpi_start
 
 /** @def MPI_Startall_L
-    Exchanges MPI_Startall_L by mpi_startall.
+    Exchanges MPI_Startall_L with mpi_startall.
     It is used for the Fortran wrappers of MPI_Startall.
  */
 #define MPI_Startall_L mpi_startall
 
 /** @def MPI_Test_L
-    Exchanges MPI_Test_L by mpi_test.
+    Exchanges MPI_Test_L with mpi_test.
     It is used for the Fortran wrappers of MPI_Test.
  */
 #define MPI_Test_L mpi_test
 
 /** @def MPI_Test_cancelled_L
-    Exchanges MPI_Test_cancelled_L by mpi_test_cancelled.
+    Exchanges MPI_Test_cancelled_L with mpi_test_cancelled.
     It is used for the Fortran wrappers of MPI_Test_cancelled.
  */
 #define MPI_Test_cancelled_L mpi_test_cancelled
 
 /** @def MPI_Testall_L
-    Exchanges MPI_Testall_L by mpi_testall.
+    Exchanges MPI_Testall_L with mpi_testall.
     It is used for the Fortran wrappers of MPI_Testall.
  */
 #define MPI_Testall_L mpi_testall
 
 /** @def MPI_Testany_L
-    Exchanges MPI_Testany_L by mpi_testany.
+    Exchanges MPI_Testany_L with mpi_testany.
     It is used for the Fortran wrappers of MPI_Testany.
  */
 #define MPI_Testany_L mpi_testany
 
 /** @def MPI_Testsome_L
-    Exchanges MPI_Testsome_L by mpi_testsome.
+    Exchanges MPI_Testsome_L with mpi_testsome.
     It is used for the Fortran wrappers of MPI_Testsome.
  */
 #define MPI_Testsome_L mpi_testsome
 
 /** @def MPI_Wait_L
-    Exchanges MPI_Wait_L by mpi_wait.
+    Exchanges MPI_Wait_L with mpi_wait.
     It is used for the Fortran wrappers of MPI_Wait.
  */
 #define MPI_Wait_L mpi_wait
 
 /** @def MPI_Waitall_L
-    Exchanges MPI_Waitall_L by mpi_waitall.
+    Exchanges MPI_Waitall_L with mpi_waitall.
     It is used for the Fortran wrappers of MPI_Waitall.
  */
 #define MPI_Waitall_L mpi_waitall
 
 /** @def MPI_Waitany_L
-    Exchanges MPI_Waitany_L by mpi_waitany.
+    Exchanges MPI_Waitany_L with mpi_waitany.
     It is used for the Fortran wrappers of MPI_Waitany.
  */
 #define MPI_Waitany_L mpi_waitany
 
 /** @def MPI_Waitsome_L
-    Exchanges MPI_Waitsome_L by mpi_waitsome.
+    Exchanges MPI_Waitsome_L with mpi_waitsome.
     It is used for the Fortran wrappers of MPI_Waitsome.
  */
 #define MPI_Waitsome_L mpi_waitsome

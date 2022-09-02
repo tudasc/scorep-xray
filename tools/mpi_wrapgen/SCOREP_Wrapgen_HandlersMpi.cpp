@@ -87,7 +87,9 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     ()
 {
     /** - Func-object template handlers */
-    funcarg_handlers[ "attribute" ] = handler::mpi::attribute;
+    funcarg_handlers[ "attribute" ]     = handler::mpi::attribute;
+    funcarg_handlers[ "proto:fortran" ] = handler::mpi::proto_fortran;
+    funcarg_handlers[ "proto:f2c_c2f" ] = handler::mpi::proto_f2c_c2f;
 
     func_handlers[ "call:f2c_c2f" ]    = handler::mpi::call_f2c_c2f;
     func_handlers[ "call:fortran" ]    = handler::mpi::call_fortran;
@@ -869,10 +871,11 @@ SCOREP::Wrapgen::handler::mpi::proto_c
 string
 SCOREP::Wrapgen::handler::mpi::proto_fortran
 (
-    const Func& func
+    const Func&        func,
+    const std::string& name_suffix
 )
 {
-    string str = "void FSUB(" + func.get_name() + ")(";
+    string str = "void FSUB(" + func.get_name() + name_suffix + ")(";
     //string str = "void " + func.get_name() + "(";
     string c_str_lengths;
 
@@ -962,12 +965,22 @@ SCOREP::Wrapgen::handler::mpi::proto_fortran
 }
 
 string
-SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
+SCOREP::Wrapgen::handler::mpi::proto_fortran
 (
     const Func& func
 )
 {
-    string str = "void FSUB(" + func.get_name() + ")(";
+    return proto_fortran( func, "" );
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
+(
+    const Func&        func,
+    const std::string& name_suffix
+)
+{
+    string str = "void FSUB(" + func.get_name() + name_suffix + ")(";
     //string str = "void " + func.get_name() + "(";
     string c_str_lengths;
 
@@ -1039,6 +1052,15 @@ SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
     str += "MPI_Fint* ierr" + c_str_lengths + ")";
 
     return str;
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
+(
+    const Func& func
+)
+{
+    return proto_f2c_c2f( func, "" );
 }
 
 string
