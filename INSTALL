@@ -356,19 +356,19 @@ be used to build Score-P are as follows:
                explicit include and lib options directly.
   --with-librca-include=<Path to librca headers>
   --with-librca-lib=<Path to librca libraries>
-  --with-liblustreapi=(yes|no|<Path to liblustreapi installation>)
-               If you want to build with liblustreapi support but
-               do not have a liblustreapi in a standard location,
-               you need to explicitly specify the directory where
-               it is installed. On non-cross-compile systems we
-               search the system include and lib paths per default
-               [yes]; on cross-compile systems, however, you have
-               to specify a path [no]. --with-liblustreapi is a
-               shorthand for
-               --with-liblustreapi-include=<Path/include> and
-               --with-liblustreapi-lib=<Path/lib>. If these
-               shorthand assumptions are not correct, you can use
-               the explicit include and lib options directly.
+  --with-liblustreapi[=yes|no|<path to liblustreapi installation>]
+               Try to use liblustreapi. Defaults to [yes] on
+               non-cross-compile systems and expects library and
+               headers to be found in system locations. Defaults to
+               [no] on cross-compile systems. Provide
+               liblustreapi's installation prefix [path] to
+               override the defaults. --with-liblustreapi=<path> is
+               a shorthand for
+               --with-liblustreapi-include=<path/include> and
+               --with-liblustreapi-lib=<path/(lib64|lib)>. If this
+               is not the case, use the explicit options directly
+               or provide paths via LIBLUSTREAPI_LIB and
+               LIBLUSTREAPI_INCLUDE.
   --with-liblustreapi-include=<Path to liblustreapi headers: lustre/lustreapi.h>
   --with-liblustreapi-lib=<Path to liblustreapi libraries>
   --with-libbfd[=yes|download|<path to libbfd installation>]
