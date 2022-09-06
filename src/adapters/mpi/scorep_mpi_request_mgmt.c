@@ -600,7 +600,7 @@ scorep_mpi_request_tested( scorep_mpi_request* req )
             SCOREP_IoOperationTest( io_handle, req->id );
         }
     }
-    else
+    else if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK ) )
     {
         SCOREP_MpiRequestTested( req->id );
     }
