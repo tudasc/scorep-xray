@@ -3,6 +3,18 @@
 Major features:
 
 - Add support to record CUDA NVTX instrumentation.
+- Support compiler instrumentation even if compilers use different
+  flags and different instrumentation interface per language (C, C++,
+  Fortran). This applies to combinations where the C/C++ compilers are
+  Clang-based but Fortran still support the traditions vendor's
+  instrumentation only (e.g., Cray and Fujitsu).
+  Intel's `-tcollect` instrumentation and compile-time filtering
+  fades out. `-tcollect` is only used if no alternative is
+  available. Usually `-finstrument-functions(-after-inlining)`
+  serves as the replacement with classic/oneAPI compilers.
+  Support for IBM XL older than version 11 was removed.
+  Support for PGI compilers that don't support the
+  `__cyg_profile_func` instrumentation API was removed.
 
 Features and improvements:
 
