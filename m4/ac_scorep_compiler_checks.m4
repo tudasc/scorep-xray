@@ -29,29 +29,6 @@
 ## directory for details.
 ##
 
-
-# used for pomp_tpd in scorep and opari2
-AC_DEFUN([AC_SCOREP_ATTRIBUTE_ALIGNMENT],[
-AC_LANG_PUSH([C])
-AC_MSG_CHECKING([for alignment attribute])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
-[[int __attribute__((aligned (16))) tpd;]])],
-                [ac_scorep_has_alignment_attribute="yes"],
-                [ac_scorep_has_alignment_attribute="no"]
-)
-
-if test "x${ac_scorep_has_alignment_attribute}" = "xyes"; then
-  AC_DEFINE([FORTRAN_ALIGNED],[__attribute__((aligned (16)))],[Makes C variable alignment consistent with Fortran])
-else
-  AC_DEFINE([FORTRAN_ALIGNED],[],[Alignment attribute not supported])
-fi
-
-AC_MSG_RESULT([$ac_scorep_has_alignment_attribute])
-AC_LANG_POP([C])
-])
-
-dnl ------------------------------------------------------------------
-
 AC_DEFUN([AC_SCOREP_COMPILER_CHECKS],[
 dnl FIX REQUIRE: Needs AFS_PROG_CC
 
