@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-AC_DEFUN([AC_SCOREP_COMPILER_CHECKS],[
+AC_DEFUN([SCOREP_COMPILER_COND_AND_SUBST],[
 dnl FIX REQUIRE: Needs AFS_PROG_CC
 
 # The SCOREP_COMPILER_* automake conditionals are exclusively used by
