@@ -30,11 +30,10 @@
 ##
 
 AC_DEFUN([SCOREP_COMPILER_COND_AND_SUBST],[
-dnl FIX REQUIRE: Needs AFS_PROG_CC
+dnl Cannot easily require AFS_PROG_CC|CXX|FC
 
 # The SCOREP_COMPILER_* automake conditionals are exclusively used by
 # scorep. Thus, define only the ones that are used.
-# Later on, move from common to scorep.
 AS_CASE([${ax_cv_c_compiler_vendor%/*}],
     [intel],    [],
     [ibm],      [],
