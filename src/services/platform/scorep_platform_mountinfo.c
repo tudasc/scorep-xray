@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016, 2020,
+ * Copyright (c) 2016, 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -130,7 +130,9 @@ is_distributed_fs( SCOREP_MountInfo* entry )
          || strstr( entry->fstype, "lustre" ) != NULL
          || strstr( entry->fstype, "gpfs" )   != NULL
          || strstr( entry->fstype, "cifs" )   != NULL
-         || strstr( entry->fstype, "sshfs" )  != NULL )
+         || strstr( entry->fstype, "sshfs" )  != NULL
+         || strstr( entry->fstype, "beegfs" ) != NULL
+         || strstr( entry->fstype, "wekafs" ) != NULL )
     {
         return true;
     }

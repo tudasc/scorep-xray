@@ -49,6 +49,7 @@ Features and improvements:
   different callpaths.
   This feature currently supports CUDA based kernels and is controlled via
   the `kernel_callsite` option to `SCOREP_CUDA_ENABLE`.
+- Detect BeeGFS and WEKA as distributed filesystems.
 
 User tools and API improvements and changes:
 
