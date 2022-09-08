@@ -583,6 +583,135 @@ scorep_mpi_request_free( scorep_mpi_request* req )
     while ( true );
 }
 
+
+void
+scorep_mpi_check_all_or_test_all( int count, int flag, MPI_Status* array_of_statuses )
+{
+    if ( flag )
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+    else
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_request_tested( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_all_or_none( int count, int flag, MPI_Status* array_of_statuses )
+{
+    if ( flag )
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_some_test_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+{
+    /* For all requests in the input array_of_requests, do one of two things:
+     * 1. Process the request if it has been been completed by the MPI_Waitsome
+     * 2. or record an MpiRequestTested event if it has not been completed.
+     *
+     * Because of 2. we iterate over the input array and search for the matching index
+     * in array_of_indices (rather than iterating over array_of_indices directly).
+     *
+     * The search in array_of_indices is optimized such that it only needs to look at
+     * the entries that have not been processed already.
+     * This is achieved by reordering (with a swap) array_of_indices and array_of_statuses such that
+     * the entries corresponding to processed requests are a the start.
+     */
+
+    /* Position of first entry in array_of_indices (and array_of_statuses) that belongs
+     * to a not yet processed request.
+     */
+    int cur = 0;
+
+    for ( int req_idx = 0; req_idx < incount; ++req_idx )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( req_idx );
+        if ( scorep_req )
+        {
+            /* Search for j such that array_of_indices[j] == req_idx */
+            int j = cur;
+            while ( j < outcount && req_idx != array_of_indices[ j ] )
+            {
+                ++j;
+            }
+
+            /* Found j:
+             * The request array_of_requests[req_idx] has been completed by this MPI_Waitsome
+             * and the corresponding status has been returned in array_of_statuses[j]
+             */
+            if ( j < outcount )
+            {
+                /* Swap j <-> cur in array_of_indices */
+                int tmp = array_of_indices[ cur ];
+                array_of_indices[ cur ] = array_of_indices[ j ];
+                array_of_indices[ j ]   = tmp;
+
+                /* Swap j <-> cur in array_of_statuses */
+                MPI_Status tmpstat = array_of_statuses[ cur ];
+                array_of_statuses[ cur ] = array_of_statuses[ j ];
+                array_of_statuses[ j ]   = tmpstat;
+
+                /* Process the completed request */
+                scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
+                scorep_mpi_cleanup_request( scorep_req );
+
+                ++cur;
+            }
+            /* Did not find j:
+             * The request has not been completed by this MPI_Waitsome. */
+            else
+            {
+                scorep_mpi_request_tested( scorep_req );
+            }
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+{
+    for ( int j  = 0; j < outcount; ++j )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( array_of_indices[ j ] );
+        scorep_mpi_check_request( scorep_req, &( array_of_statuses[ j ] ) );
+        scorep_mpi_cleanup_request( scorep_req );
+        scorep_mpi_unmark_request( scorep_req );
+    }
+}
+
+void
+scorep_mpi_test_all( int count )
+{
+    for ( int i = 0; i < count; i++ )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+        scorep_mpi_request_tested( scorep_req );
+        scorep_mpi_unmark_request( scorep_req );
+    }
+}
+
 void
 scorep_mpi_request_tested( scorep_mpi_request* req )
 {
