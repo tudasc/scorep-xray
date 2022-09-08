@@ -440,6 +440,80 @@ int MPI_Test(MPI_Request* request,
 }
 #endif
 
+#if HAVE(DECL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
+/**
+ * Measurement wrapper for MPI_Testall
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup request
+ * Triggers an enter and exit event.
+ */
+int MPI_Testall(int count,
+                MPI_Request *array_of_requests,
+                int *flag,
+                MPI_Status *array_of_statuses)
+{
+  SCOREP_IN_MEASUREMENT_INCREMENT();
+  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_REQUEST);
+  const int           xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_XREQTEST);
+  int                 return_val;
+
+  if (event_gen_active)
+  {
+    SCOREP_MPI_EVENT_GEN_OFF();
+
+    if (event_gen_active_for_group)
+    {
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+    else if ( SCOREP_IsUnwindingEnabled() )
+    {
+      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+  }
+
+  if (array_of_statuses == MPI_STATUSES_IGNORE)
+  {
+    /* allocate status array for internal use */
+    array_of_statuses = scorep_mpi_get_status_array(count);
+  }
+
+  scorep_mpi_save_request_array(array_of_requests, count);
+
+  SCOREP_ENTER_WRAPPED_REGION();
+  return_val = PMPI_Testall(count, array_of_requests, flag, array_of_statuses);
+  SCOREP_EXIT_WRAPPED_REGION();
+
+  if ( event_gen_active_for_group && xtest_active )
+  {
+    scorep_mpi_check_all_or_test_all( count, *flag, array_of_statuses );
+  }
+  else
+  {
+    scorep_mpi_check_all_or_none( count, *flag, array_of_statuses );
+  }
+
+  if (event_gen_active)
+  {
+    if (event_gen_active_for_group)
+    {
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+    else if ( SCOREP_IsUnwindingEnabled() )
+    {
+      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
+    }
+
+    SCOREP_MPI_EVENT_GEN_ON();
+  }
+
+  SCOREP_IN_MEASUREMENT_DECREMENT();
+  return return_val;
+}
+#endif
+
 #if HAVE(DECL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Testany
@@ -516,80 +590,6 @@ int MPI_Testany(int count,
     else if ( SCOREP_IsUnwindingEnabled() )
     {
       SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
-    }
-
-    SCOREP_MPI_EVENT_GEN_ON();
-  }
-
-  SCOREP_IN_MEASUREMENT_DECREMENT();
-  return return_val;
-}
-#endif
-
-#if HAVE(DECL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
-/**
- * Measurement wrapper for MPI_Testall
- * @note Manually adapted wrapper
- * @note C interface
- * @note Introduced with MPI-1
- * @ingroup request
- * Triggers an enter and exit event.
- */
-int MPI_Testall(int count,
-                MPI_Request *array_of_requests,
-                int *flag,
-                MPI_Status *array_of_statuses)
-{
-  SCOREP_IN_MEASUREMENT_INCREMENT();
-  const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-  const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_REQUEST);
-  const int           xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_XREQTEST);
-  int                 return_val;
-
-  if (event_gen_active)
-  {
-    SCOREP_MPI_EVENT_GEN_OFF();
-
-    if (event_gen_active_for_group)
-    {
-      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
-    }
-    else if ( SCOREP_IsUnwindingEnabled() )
-    {
-      SCOREP_EnterWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
-    }
-  }
-
-  if (array_of_statuses == MPI_STATUSES_IGNORE)
-  {
-    /* allocate status array for internal use */
-    array_of_statuses = scorep_mpi_get_status_array(count);
-  }
-
-  scorep_mpi_save_request_array(array_of_requests, count);
-
-  SCOREP_ENTER_WRAPPED_REGION();
-  return_val = PMPI_Testall(count, array_of_requests, flag, array_of_statuses);
-  SCOREP_EXIT_WRAPPED_REGION();
-
-  if ( event_gen_active_for_group && xtest_active )
-  {
-    scorep_mpi_check_all_or_test_all( count, *flag, array_of_statuses );
-  }
-  else
-  {
-    scorep_mpi_check_all_or_none( count, *flag, array_of_statuses );
-  }
-
-  if (event_gen_active)
-  {
-    if (event_gen_active_for_group)
-    {
-      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
-    }
-    else if ( SCOREP_IsUnwindingEnabled() )
-    {
-      SCOREP_ExitWrapper(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
     }
 
     SCOREP_MPI_EVENT_GEN_ON();
