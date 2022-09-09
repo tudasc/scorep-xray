@@ -38,6 +38,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-frontend-gcc  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-ibm  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-intel  \
+              $(srcdir)/build-config/common/platforms/compiler-frontend-oneapi  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-pgi  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-nvhpc  \
               $(srcdir)/build-config/common/platforms/compiler-frontend-clang \
@@ -73,6 +74,7 @@ EXTRA_DIST += $(srcdir)/build-config/common/process_arguments.awk \
               $(srcdir)/build-config/common/platforms/compiler-nocross-gcc  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-ibm  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-intel  \
+              $(srcdir)/build-config/common/platforms/compiler-nocross-oneapi  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-pgi  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-nvhpc  \
               $(srcdir)/build-config/common/platforms/compiler-nocross-clang  \
