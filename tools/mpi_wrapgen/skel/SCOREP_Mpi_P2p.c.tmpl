@@ -242,6 +242,9 @@ int MPI_Irecv(void* buf,
 
 #pragma wrapgen single MPI_Iprobe skel/SCOREP_Mpi_Std.w
 
+#pragma wrapgen single MPI_Isendrecv skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Isendrecv_replace skel/SCOREP_Mpi_Std.w
 /**
  * @}
  * @name Persistent requests

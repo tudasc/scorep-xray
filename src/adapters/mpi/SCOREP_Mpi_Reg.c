@@ -3018,6 +3018,32 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
+#if HAVE( DECL_PMPI_ISENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISENDRECV ] =
+            SCOREP_Definitions_NewRegion( "MPI_Isendrecv",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
+#if HAVE( DECL_PMPI_ISENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv_replace )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISENDRECV_REPLACE ] =
+            SCOREP_Definitions_NewRegion( "MPI_Isendrecv_replace",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( DECL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {

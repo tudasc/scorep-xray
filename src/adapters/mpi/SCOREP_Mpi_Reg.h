@@ -669,6 +669,10 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_ISCATTERV,
     /** Score-P region ID for MPI_Isend */
     SCOREP_MPI_REGION__MPI_ISEND,
+    /** Score-P region ID for MPI_Isendrecv */
+    SCOREP_MPI_REGION__MPI_ISENDRECV,
+    /** Score-P region ID for MPI_Isendrecv_replace */
+    SCOREP_MPI_REGION__MPI_ISENDRECV_REPLACE,
     /** Score-P region ID for MPI_Issend */
     SCOREP_MPI_REGION__MPI_ISSEND,
     /** Score-P region ID for MPI_Keyval_create */

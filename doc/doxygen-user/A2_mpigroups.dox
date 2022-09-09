@@ -933,6 +933,14 @@ these groups are disabled as well.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Isendrecv</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Isendrecv_replace</td>
+  <td>P2P</td>
+</tr>
+<tr>
   <td>MPI_Issend</td>
   <td>P2P</td>
 </tr>
@@ -1873,6 +1881,8 @@ MPI_Iprobe,
 MPI_Irecv,
 MPI_Irsend,
 MPI_Isend,
+MPI_Isendrecv,
+MPI_Isendrecv_replace,
 MPI_Issend,
 MPI_Mprobe,
 MPI_Mrecv,

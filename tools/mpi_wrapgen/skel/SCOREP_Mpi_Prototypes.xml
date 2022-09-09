@@ -1,5 +1,5 @@
 
-<prototypes count="381" family="mpi" >
+<prototypes count="383" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -4156,6 +4156,35 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Isendrecv" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
+<prototype name="MPI_Isendrecv_replace" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Iscatter" rtype="int" group="coll" guard="coll" >
