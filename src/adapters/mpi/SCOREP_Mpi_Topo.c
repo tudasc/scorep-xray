@@ -166,7 +166,10 @@ MPI_Cart_create( MPI_Comm                   comm_old,
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm_old ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -268,7 +271,10 @@ MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* n
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -333,7 +339,10 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, SCOREP_MPI_CONST_DECL int* inde
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm_old ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -398,7 +407,10 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, SCOREP_MPI_CONST_DECL int sourc
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm_old ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -462,7 +474,10 @@ MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, SCOREP_MPI_CONS
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm_old ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
