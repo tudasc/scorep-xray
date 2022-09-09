@@ -42,7 +42,10 @@ ${proto:c}
     {
         if (event_gen_active_for_group)
         {
-            SCOREP_CommCreate(new_comm_handle);
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+              SCOREP_CommCreate(new_comm_handle);
+            }
             SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(${comm:parent}),
                                     SCOREP_INVALID_ROOT_RANK,
                                     SCOREP_COLLECTIVE_CREATE_HANDLE,

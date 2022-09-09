@@ -114,7 +114,10 @@ MPI_Comm_accept( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root,
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -178,7 +181,10 @@ MPI_Comm_connect( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -242,7 +248,10 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( MPI_COMM_NULL ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -306,7 +315,10 @@ MPI_Comm_spawn( SCOREP_MPI_CONST_DECL char* command, char* argv[], int maxprocs,
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
@@ -370,7 +382,10 @@ MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_a
     {
         if ( event_gen_active_for_group )
         {
-            SCOREP_CommCreate( new_comm_handle );
+            if ( new_comm_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+            {
+                SCOREP_CommCreate( new_comm_handle );
+            }
             SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                      SCOREP_INVALID_ROOT_RANK,
                                      SCOREP_COLLECTIVE_CREATE_HANDLE,
