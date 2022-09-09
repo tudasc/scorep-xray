@@ -747,10 +747,22 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_PACK_EXTERNAL_SIZE,
     /** Score-P region ID for MPI_Pack_size */
     SCOREP_MPI_REGION__MPI_PACK_SIZE,
+    /** Score-P region ID for MPI_Parrived */
+    SCOREP_MPI_REGION__MPI_PARRIVED,
     /** Score-P region ID for MPI_Pcontrol */
     SCOREP_MPI_REGION__MPI_PCONTROL,
+    /** Score-P region ID for MPI_Pready */
+    SCOREP_MPI_REGION__MPI_PREADY,
+    /** Score-P region ID for MPI_Pready_list */
+    SCOREP_MPI_REGION__MPI_PREADY_LIST,
+    /** Score-P region ID for MPI_Pready_range */
+    SCOREP_MPI_REGION__MPI_PREADY_RANGE,
+    /** Score-P region ID for MPI_Precv_init */
+    SCOREP_MPI_REGION__MPI_PRECV_INIT,
     /** Score-P region ID for MPI_Probe */
     SCOREP_MPI_REGION__MPI_PROBE,
+    /** Score-P region ID for MPI_Psend_init */
+    SCOREP_MPI_REGION__MPI_PSEND_INIT,
     /** Score-P region ID for MPI_Publish_name */
     SCOREP_MPI_REGION__MPI_PUBLISH_NAME,
     /** Score-P region ID for MPI_Put */

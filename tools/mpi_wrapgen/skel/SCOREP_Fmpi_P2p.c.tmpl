@@ -70,10 +70,12 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#pragma wrapgen multiple restrict(gp2p) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple restrict(gp2p+!nPsend_init) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen single MPI_Psend_init skel/SCOREP_Fmpi_StdCompl.w
 
 #else /* !NEED_F2C_CONV */
 
-#pragma wrapgen multiple restrict(gp2p) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gp2p+!nPsend_init) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen single MPI_Psend_init skel/SCOREP_Mpi_F2c_C2f_Compl.w
 
 #endif

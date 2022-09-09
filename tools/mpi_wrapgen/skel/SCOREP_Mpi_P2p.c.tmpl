@@ -321,6 +321,19 @@ int MPI_Recv_init(void* buf,
 #endif
 
 /**
+ * @name Partitioned communication
+ * @{
+ */
+
+#pragma wrapgen single MPI_Precv_init skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Psend_init skel/SCOREP_Mpi_StdWithProto.w
+
+/**
+ * @}
+ */
+
+/**
  * @}
  * @name Auxiliary functions
  * @{
