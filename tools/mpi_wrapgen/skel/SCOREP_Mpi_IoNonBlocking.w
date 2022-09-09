@@ -58,7 +58,7 @@ ${proto:c}
         SCOREP_IoOperationIssued( io_handle, req_id );
 
         scorep_mpi_request_io_create( *request,
-                                      SCOREP_MPI_REQUEST_TYPE_IO_${attribute(operation_type)},
+                                      SCOREP_IO_OPERATION_MODE_${attribute(operation_type)},
                                       (uint64_t)(count * type_size),
                                       datatype,
                                       fh,

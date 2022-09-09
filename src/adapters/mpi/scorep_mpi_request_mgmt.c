@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018-2019,
+ * Copyright (c) 2009-2011, 2018-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -91,8 +91,7 @@ free_mpi_type( scorep_mpi_request* req )
     {
         PMPI_Type_free( &req->payload.p2p.datatype );
     }
-    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
-         || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
         PMPI_Type_free( &req->payload.io.datatype );
     }
@@ -365,16 +364,17 @@ scorep_mpi_request_icoll_create( MPI_Request             request,
 }
 
 void
-scorep_mpi_request_io_create( MPI_Request             request,
-                              scorep_mpi_request_type type,
-                              uint64_t                bytes,
-                              MPI_Datatype            datatype,
-                              MPI_File                fh,
-                              SCOREP_MpiRequestId     id )
+scorep_mpi_request_io_create( MPI_Request            request,
+                              SCOREP_IoOperationMode mode,
+                              uint64_t               bytes,
+                              MPI_Datatype           datatype,
+                              MPI_File               fh,
+                              SCOREP_MpiRequestId    id )
 {
     scorep_mpi_request data = { .request      = request,
-                                .request_type = type,
+                                .request_type = SCOREP_MPI_REQUEST_TYPE_IO,
                                 .payload.io   = {
+                                    .mode  = mode,
                                     .bytes = bytes,
                                     .fh    = fh
                                 },
@@ -583,10 +583,144 @@ scorep_mpi_request_free( scorep_mpi_request* req )
     while ( true );
 }
 
+
 void
-scorep_mpi_test_request( scorep_mpi_request* req )
+scorep_mpi_check_all_or_test_all( int count, int flag, MPI_Status* array_of_statuses )
 {
-    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ || req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_WRITE )
+    if ( flag )
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+    else
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_request_tested( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_all_or_none( int count, int flag, MPI_Status* array_of_statuses )
+{
+    if ( flag )
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
+            scorep_mpi_cleanup_request( scorep_req );
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_some_test_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+{
+    /* For all requests in the input array_of_requests, do one of two things:
+     * 1. Process the request if it has been been completed by the MPI_Waitsome
+     * 2. or record an MpiRequestTested event if it has not been completed.
+     *
+     * Because of 2. we iterate over the input array and search for the matching index
+     * in array_of_indices (rather than iterating over array_of_indices directly).
+     *
+     * The search in array_of_indices is optimized such that it only needs to look at
+     * the entries that have not been processed already.
+     * This is achieved by reordering (with a swap) array_of_indices and array_of_statuses such that
+     * the entries corresponding to processed requests are a the start.
+     */
+
+    /* Position of first entry in array_of_indices (and array_of_statuses) that belongs
+     * to a not yet processed request.
+     */
+    int cur = 0;
+
+    for ( int req_idx = 0; req_idx < incount; ++req_idx )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( req_idx );
+        if ( scorep_req )
+        {
+            /* Search for j such that array_of_indices[j] == req_idx */
+            int j = cur;
+            while ( j < outcount && req_idx != array_of_indices[ j ] )
+            {
+                ++j;
+            }
+
+            /* Found j:
+             * The request array_of_requests[req_idx] has been completed by this MPI_Waitsome
+             * and the corresponding status has been returned in array_of_statuses[j]
+             */
+            if ( j < outcount )
+            {
+                /* Swap j <-> cur in array_of_indices */
+                int tmp = array_of_indices[ cur ];
+                array_of_indices[ cur ] = array_of_indices[ j ];
+                array_of_indices[ j ]   = tmp;
+
+                /* Swap j <-> cur in array_of_statuses */
+                MPI_Status tmpstat = array_of_statuses[ cur ];
+                array_of_statuses[ cur ] = array_of_statuses[ j ];
+                array_of_statuses[ j ]   = tmpstat;
+
+                /* Process the completed request */
+                scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
+                scorep_mpi_cleanup_request( scorep_req );
+
+                ++cur;
+            }
+            /* Did not find j:
+             * The request has not been completed by this MPI_Waitsome. */
+            else
+            {
+                scorep_mpi_request_tested( scorep_req );
+            }
+            scorep_mpi_unmark_request( scorep_req );
+        }
+    }
+}
+
+void
+scorep_mpi_check_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+{
+    for ( int j  = 0; j < outcount; ++j )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( array_of_indices[ j ] );
+        scorep_mpi_check_request( scorep_req, &( array_of_statuses[ j ] ) );
+        scorep_mpi_cleanup_request( scorep_req );
+        scorep_mpi_unmark_request( scorep_req );
+    }
+}
+
+void
+scorep_mpi_test_all( int count )
+{
+    for ( int i = 0; i < count; i++ )
+    {
+        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
+        scorep_mpi_request_tested( scorep_req );
+        scorep_mpi_unmark_request( scorep_req );
+    }
+}
+
+void
+scorep_mpi_request_tested( scorep_mpi_request* req )
+{
+    if ( !req ||
+         !( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
+    {
+        return;
+    }
+    if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_IO )
     {
         SCOREP_IoHandleHandle io_handle = SCOREP_IoMgmt_GetIoHandle( SCOREP_IO_PARADIGM_MPI,
                                                                      &( req->payload.io.fh ) );
@@ -595,7 +729,7 @@ scorep_mpi_test_request( scorep_mpi_request* req )
             SCOREP_IoOperationTest( io_handle, req->id );
         }
     }
-    else
+    else if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK ) )
     {
         SCOREP_MpiRequestTested( req->id );
     }
@@ -703,8 +837,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                 }
                 break;
 
-            case SCOREP_MPI_REQUEST_TYPE_IO_READ:
-            case SCOREP_MPI_REQUEST_TYPE_IO_WRITE:
+            case SCOREP_MPI_REQUEST_TYPE_IO:
                 if ( io_events_active )
                 {
                     PMPI_Type_size( req->payload.io.datatype, &sz );
@@ -715,9 +848,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                     if ( io_handle != SCOREP_INVALID_IO_HANDLE )
                     {
                         SCOREP_IoOperationComplete( io_handle,
-                                                    req->request_type == SCOREP_MPI_REQUEST_TYPE_IO_READ
-                                                    ? SCOREP_IO_OPERATION_MODE_READ
-                                                    : SCOREP_IO_OPERATION_MODE_WRITE,
+                                                    req->payload.io.mode,
                                                     ( uint64_t )sz * count,
                                                     req->id /* matching id */ );
                     }

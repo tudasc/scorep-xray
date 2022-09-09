@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2018-2019,
+ * Copyright (c) 2009-2011, 2018-2019, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -53,11 +53,8 @@ typedef enum scorep_mpi_request_type
     SCOREP_MPI_REQUEST_TYPE_NONE,
     SCOREP_MPI_REQUEST_TYPE_SEND,
     SCOREP_MPI_REQUEST_TYPE_RECV,
-    SCOREP_MPI_REQUEST_TYPE_IO_READ,
-    SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+    SCOREP_MPI_REQUEST_TYPE_IO,
     SCOREP_MPI_REQUEST_TYPE_RMA,
-    SCOREP_MPI_REQUEST_TYPE_COLL_COMM,
-    SCOREP_MPI_REQUEST_TYPE_COLL_SYNC,
     SCOREP_MPI_REQUEST_TYPE_COMM_IDUP,
     SCOREP_MPI_REQUEST_TYPE_ICOLL
 } scorep_mpi_request_type;
@@ -112,9 +109,10 @@ typedef struct
 
 typedef struct
 {
-    uint64_t     bytes;
-    MPI_Datatype datatype;
-    MPI_File     fh;
+    SCOREP_IoOperationMode mode;
+    uint64_t               bytes;
+    MPI_Datatype           datatype;
+    MPI_File               fh;
 } scorep_mpi_request_io_data;
 
 typedef struct
@@ -236,12 +234,12 @@ scorep_mpi_request_win_create( MPI_Request             mpiRequest,
  * @param id        Request id
  */
 void
-scorep_mpi_request_io_create( MPI_Request             request,
-                              scorep_mpi_request_type type,
-                              uint64_t                bytes,
-                              MPI_Datatype            datatype,
-                              MPI_File                fh,
-                              SCOREP_MpiRequestId     id );
+scorep_mpi_request_io_create( MPI_Request            request,
+                              SCOREP_IoOperationMode mode,
+                              uint64_t               bytes,
+                              MPI_Datatype           datatype,
+                              MPI_File               fh,
+                              SCOREP_MpiRequestId    id );
 
 /**
  * @brief  Retrieve internal request entry for an MPI request handle
@@ -259,11 +257,94 @@ void
 scorep_mpi_request_free( scorep_mpi_request* req );
 
 /**
- * @brief Test a request entry
+ * @brief Either check all or test all of the saved requests.
+ *
+ * @param count Number of saved requests to check or test.
+ * @param flag The 'flag' argument of MPI_Test|MPI_Testall.
+ * @param arry_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
+ *
+ * Assumes that the requests have been saved by a call to @ref scorep_mpi_save_request_array(..., count) before.
+ * Assumes that:
+ * - If flag is true, all operations for the active saved requests have been completed and the requests were deallocated|marked inactive by MPI_(Test|Wait)[all]. In this case, calls @ref scorep_mpi_check_request for all requests.
+ * - If flag is false, not all operations have been completed and no request was modified by MPI_Test[all]. In this case calls @ref scorep_mpi_request_tested for all requests. The array_of_statuses is ignored.
+ */
+void
+scorep_mpi_check_all_or_test_all( int         count,
+                                  int         flag,
+                                  MPI_Status* array_of_statuses );
+
+/**
+ * @brief Either check all or none of the saved requests.
+ *
+ * @param count Number of saved requests to check.
+ * @param flag The 'flag' argument of MPI_Test|MPI_Testall.
+ * @param arry_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
+ *
+ * Assumes that the requests have been saved by a call to @ref scorep_mpi_save_request_array(..., count) before.
+ * Assumes that:
+ * - If flag is true, all operations for the active saved requests have been completed and the requests were deallocated|marked inactive by MPI_(Test|Wait)[all]. In this case, calls @ref scorep_mpi_check_request for all requests.
+ * - If flag is false, not all operations have been completed and no request was modified by MPI_Test[all]. In this case nothing is done. The array_of_statuses is ignored.
+ */
+void
+scorep_mpi_check_all_or_none( int         count,
+                              int         flag,
+                              MPI_Status* array_of_statuses );
+
+/**
+ * @brief Check some of the saved requests and test all others.
+ *
+ * @param incount The 'incount' argument as given to MPI_(Test|Wait)some. Number of saved requests.
+ * @param outcount The 'outcount' argument as returned by MPI_(Test|Wait)some: Number of completed operations. Number of saved requests to check.
+ * @param array_of_indices The 'array_of_indices' argument of MPI_(Test|Wait)some: Indices of completed requests in the input array. Indices of saved requests to check.
+ * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)some: Statuses of completed requests.
+ *
+ * Assumes that the input requests have been saved by a call to @ref scorep_mpi_save_request_array(..., incount) before.
+ * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, arry_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
+ * Assumes that the first outcount entries in array_of_indices denote all completed operations for which the corresponding saved active requests have been deallocated/marked inactive by MPI_(Test|Wait)[any|some] (For MPI_(Test|Wait)any, the arrays are of lenght one). For those requests, @ref scorep_mpi_check_request is called. For all other saved requests, @ref scorep_mpi_request_tested is called.
+ */
+void
+scorep_mpi_check_some_test_some( int         incount,
+                                 int         outcount,
+                                 int*        array_of_indices,
+                                 MPI_Status* array_of_statuses );
+
+/**
+ * @brief Check some of the saved requests.
+ *
+ * @param incount The 'incount' argument as given to MPI_(Test|Wait)some. Number of saved requests.
+ * @param outcount The 'outcount' argument as returned by MPI_(Test|Wait)some: Number of completed operations. Number of saved requests to check.
+ * @param array_of_indices The 'array_of_indices' argument of MPI_(Test|Wait)some: Indices of completed requests in the input array. Indices of saved requests to check.
+ * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)some: Statuses of completed requests.
+ *
+ * Assumes that the input requests have been saved by a call to @ref scorep_mpi_save_request_array(..., incount) before.
+ * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, arry_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
+ * Assumes that the first outcount entries in array_of_indices denote all completed operations for which the corresponding saved active requests have been deallocated/marked inactive by MPI_(Test|Wait)[any|some] (For MPI_(Test|Wait)any, the arrays are of lenght one). For those requests, @ref scorep_mpi_check_request is called. Nothing is done for the other requests.
+ */
+void
+scorep_mpi_check_some( int         incount,
+                       int         outcount,
+                       int*        array_of_indices,
+                       MPI_Status* array_of_statuses );
+
+/**
+ * @brief Test all saved requests
+ *
+ * @param count Number of saved requests to test
+ *
+ * Assumes that the input requests have been saved by a call to @ref scorep_mpi_save_request_array(..., incount) before.
+ * Assumes that none of the operations belonging to the saved requests have been completed.
+ *
+ * Equivalent to (but more efficient than) @ref scorep_mpi_check_some_test_some( incount, 0, NULL, NULL).
+ */
+void
+scorep_mpi_test_all( int count );
+
+/**
+ * @brief Trigger a "tested" event for this MPI request
  * @param req Pointer to request entry to be tested
  */
 void
-scorep_mpi_test_request( scorep_mpi_request* req );
+scorep_mpi_request_tested( scorep_mpi_request* req );
 
 /**
  * @brief Check a completed request entry for nessecary measurement data

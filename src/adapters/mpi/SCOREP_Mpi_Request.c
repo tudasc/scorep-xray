@@ -92,7 +92,6 @@ MPI_Wait( MPI_Request* request,
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -119,10 +118,7 @@ MPI_Wait( MPI_Request* request,
     return_val = PMPI_Wait( request, status );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( 0 );
-    scorep_mpi_check_request( scorep_req, status );
-    scorep_mpi_cleanup_request( scorep_req );
-    scorep_mpi_unmark_request( scorep_req );
+    scorep_mpi_check_all_or_none( 1, 1, status );
 
     if ( event_gen_active )
     {
@@ -162,7 +158,6 @@ MPI_Waitall( int          count,
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
     int       i;
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -190,13 +185,7 @@ MPI_Waitall( int          count,
     return_val = PMPI_Waitall( count, requests, array_of_statuses );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    for ( i = 0; i < count; i++ )
-    {
-        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-        scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
-        scorep_mpi_cleanup_request( scorep_req );
-        scorep_mpi_unmark_request( scorep_req );
-    }
+    scorep_mpi_check_all_or_none( count, 1, array_of_statuses );
 
     if ( event_gen_active )
     {
@@ -235,9 +224,8 @@ MPI_Waitany( int          count,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -264,33 +252,17 @@ MPI_Waitany( int          count,
     return_val = PMPI_Waitany( count, requests, index, status );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( event_gen_active_for_group && xnb_active )
+    /* array_of_requests contains active handles */
+    if ( *index != MPI_UNDEFINED )
     {
-        int i;
-
-        for ( i = 0; i < count; ++i )
+        if ( event_gen_active_for_group && xtest_active )
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-
-            if ( i == *index )
-            {
-                scorep_mpi_check_request( scorep_req, status );
-                scorep_mpi_cleanup_request( scorep_req );
-            }
-            else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
-            {
-                SCOREP_MpiRequestTested( scorep_req->id );
-            }
-
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_check_some_test_some( count, 1, index, status );
         }
-    }
-    else
-    {
-        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( *index );
-        scorep_mpi_check_request( scorep_req, status );
-        scorep_mpi_cleanup_request( scorep_req );
-        scorep_mpi_unmark_request( scorep_req );
+        else
+        {
+            scorep_mpi_check_some( count, 1, index, status );
+        }
     }
 
     if ( event_gen_active )
@@ -331,10 +303,9 @@ MPI_Waitsome( int          incount,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -363,54 +334,16 @@ MPI_Waitsome( int          incount,
                                 array_of_indices, array_of_statuses );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( event_gen_active_for_group && xnb_active )
+    /* array_of_requests contains active handles */
+    if ( *outcount != MPI_UNDEFINED )
     {
-        int        j, tmp, cur;
-        MPI_Status tmpstat;
-
-        cur = 0;
-
-        for ( i = 0; i < incount; ++i )
+        if ( event_gen_active_for_group && xtest_active )
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-
-            if ( scorep_req )
-            {
-                for ( j = cur; j < *outcount && i != array_of_indices[ j ]; ++j )
-                {
-                    ;
-                }
-
-                if ( j < *outcount )
-                {
-                    tmpstat                  = array_of_statuses[ cur ];
-                    array_of_statuses[ cur ] = array_of_statuses[ j ];
-                    scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
-                    scorep_mpi_cleanup_request( scorep_req );
-                    array_of_statuses[ j ] = tmpstat;
-
-                    tmp                     = array_of_indices[ cur ];
-                    array_of_indices[ cur ] = array_of_indices[ j ];
-                    array_of_indices[ j ]   = tmp;
-
-                    ++cur;
-                }
-                else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
-                {
-                    SCOREP_MpiRequestTested( scorep_req->id );
-                }
-            }
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_check_some_test_some( incount, *outcount, array_of_indices, array_of_statuses );
         }
-    }
-    else
-    {
-        for ( i = 0; i < *outcount; ++i )
+        else
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
-            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
-            scorep_mpi_cleanup_request( scorep_req );
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_check_some( incount, *outcount, array_of_indices, array_of_statuses );
         }
     }
 
@@ -456,9 +389,8 @@ MPI_Test( MPI_Request* request,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -485,17 +417,14 @@ MPI_Test( MPI_Request* request,
     return_val = PMPI_Test( request, flag, status );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( 0 );
-    if ( *flag )
+    if ( event_gen_active_for_group && xtest_active )
     {
-        scorep_mpi_check_request( scorep_req, status );
-        scorep_mpi_cleanup_request( scorep_req );
+        scorep_mpi_check_all_or_test_all( 1, *flag, status );
     }
-    else if ( scorep_req && event_gen_active_for_group && xtest_active )
+    else
     {
-        SCOREP_MpiRequestTested( scorep_req->id );
+        scorep_mpi_check_all_or_none( 1, *flag, status );
     }
-    scorep_mpi_unmark_request( scorep_req );
 
     if ( event_gen_active )
     {
@@ -506,6 +435,81 @@ MPI_Test( MPI_Request* request,
         else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TEST ] );
+        }
+
+        SCOREP_MPI_EVENT_GEN_ON();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return return_val;
+}
+#endif
+
+#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Measurement wrapper for MPI_Testall
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup request
+ * Triggers an enter and exit event.
+ */
+int
+MPI_Testall( int          count,
+             MPI_Request* array_of_requests,
+             int*         flag,
+             MPI_Status*  array_of_statuses )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
+    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
+    int       return_val;
+
+    if ( event_gen_active )
+    {
+        SCOREP_MPI_EVENT_GEN_OFF();
+
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
+        }
+        else if ( SCOREP_IsUnwindingEnabled() )
+        {
+            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
+        }
+    }
+
+    if ( array_of_statuses == MPI_STATUSES_IGNORE )
+    {
+        /* allocate status array for internal use */
+        array_of_statuses = scorep_mpi_get_status_array( count );
+    }
+
+    scorep_mpi_save_request_array( array_of_requests, count );
+
+    SCOREP_ENTER_WRAPPED_REGION();
+    return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
+    SCOREP_EXIT_WRAPPED_REGION();
+
+    if ( event_gen_active_for_group && xtest_active )
+    {
+        scorep_mpi_check_all_or_test_all( count, *flag, array_of_statuses );
+    }
+    else
+    {
+        scorep_mpi_check_all_or_none( count, *flag, array_of_statuses );
+    }
+
+    if ( event_gen_active )
+    {
+        if ( event_gen_active_for_group )
+        {
+            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
+        }
+        else if ( SCOREP_IsUnwindingEnabled() )
+        {
+            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
         }
 
         SCOREP_MPI_EVENT_GEN_ON();
@@ -535,9 +539,8 @@ MPI_Testany( int          count,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -563,32 +566,27 @@ MPI_Testany( int          count,
     return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( event_gen_active_for_group && xtest_active )
+    /* array_of_requests contains active handles, but none were completed */
+    if ( !*flag )
     {
-        int i;
-
-        for ( i = 0; i < count; ++i )
+        if ( event_gen_active_for_group && xtest_active )
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-
-            if ( *index == i )
-            {
-                scorep_mpi_check_request( scorep_req, status );
-            }
-            else if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
-            {
-                SCOREP_MpiRequestTested( scorep_req->id );
-            }
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_test_all( count );
         }
     }
-    else if ( *flag && *index != MPI_UNDEFINED )
+    /* array_of_requests contains active handles, and one was completed */
+    else if ( *index != MPI_UNDEFINED )
     {
-        scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( *index );
-        scorep_mpi_check_request( scorep_req, status );
-        scorep_mpi_cleanup_request( scorep_req );
-        scorep_mpi_unmark_request( scorep_req );
+        if ( event_gen_active_for_group && xtest_active )
+        {
+            scorep_mpi_check_some_test_some( count, 1, index, status );
+        }
+        else
+        {
+            scorep_mpi_check_some( count, 1, index, status );
+        }
     }
+    /* else, array_of_requests contains no active handles */
 
     if ( event_gen_active )
     {
@@ -599,99 +597,6 @@ MPI_Testany( int          count,
         else if ( SCOREP_IsUnwindingEnabled() )
         {
             SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTANY ] );
-        }
-
-        SCOREP_MPI_EVENT_GEN_ON();
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-    return return_val;
-}
-#endif
-
-#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
-/**
- * Measurement wrapper for MPI_Testall
- * @note Manually adapted wrapper
- * @note C interface
- * @note Introduced with MPI-1
- * @ingroup request
- * Triggers an enter and exit event.
- */
-int
-MPI_Testall( int          count,
-             MPI_Request* array_of_requests,
-             int*         flag,
-             MPI_Status*  array_of_statuses )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
-    const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
-    int       return_val;
-    int       i;
-    uint64_t  start_time_stamp;
-
-    if ( event_gen_active )
-    {
-        SCOREP_MPI_EVENT_GEN_OFF();
-
-        if ( event_gen_active_for_group )
-        {
-            SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
-        }
-        else if ( SCOREP_IsUnwindingEnabled() )
-        {
-            SCOREP_EnterWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
-        }
-    }
-
-    if ( array_of_statuses == MPI_STATUSES_IGNORE )
-    {
-        /* allocate status array for internal use */
-        array_of_statuses = scorep_mpi_get_status_array( count );
-    }
-
-    scorep_mpi_save_request_array( array_of_requests, count );
-
-    SCOREP_ENTER_WRAPPED_REGION();
-    return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
-    SCOREP_EXIT_WRAPPED_REGION();
-
-    if ( *flag )
-    {
-        for ( i = 0; i < count; i++ )
-        {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
-            scorep_mpi_cleanup_request( scorep_req );
-            scorep_mpi_unmark_request( scorep_req );
-        }
-    }
-    else if ( event_gen_active_for_group && xtest_active )
-    {
-        int i;
-
-        for ( i = 0; i < count; i++ )
-        {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-            if ( scorep_req && ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE ) )
-            {
-                SCOREP_MpiRequestTested( scorep_req->id );
-            }
-            scorep_mpi_unmark_request( scorep_req );
-        }
-    }
-
-    if ( event_gen_active )
-    {
-        if ( event_gen_active_for_group )
-        {
-            SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
-        }
-        else if ( SCOREP_IsUnwindingEnabled() )
-        {
-            SCOREP_ExitWrapper( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] );
         }
 
         SCOREP_MPI_EVENT_GEN_ON();
@@ -721,10 +626,8 @@ MPI_Testsome( int          incount,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
+    const int xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int       return_val;
-    int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -753,54 +656,16 @@ MPI_Testsome( int          incount,
                                 array_of_indices, array_of_statuses );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    if ( event_gen_active_for_group && xtest_active )
+    /* array_of_requests contains active handles */
+    if ( *outcount != MPI_UNDEFINED )
     {
-        int        cur, j, tmp;
-        MPI_Status tmpstat;
-
-        cur = 0;
-
-        for ( i = 0; i < incount; ++i )
+        if ( event_gen_active_for_group && xtest_active )
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( i );
-
-            if ( scorep_req )
-            {
-                for ( j = cur; j < *outcount && i != array_of_indices[ j ]; ++j )
-                {
-                    ;
-                }
-
-                if ( j < *outcount )
-                {
-                    tmpstat                  = array_of_statuses[ cur ];
-                    array_of_statuses[ cur ] = array_of_statuses[ j ];
-                    scorep_mpi_check_request( scorep_req, &( array_of_statuses[ cur ] ) );
-                    scorep_mpi_cleanup_request( scorep_req );
-                    array_of_statuses[ j ] = tmpstat;
-
-                    tmp                     = array_of_indices[ cur ];
-                    array_of_indices[ cur ] = array_of_indices[ j ];
-                    array_of_indices[ j ]   = tmp;
-
-                    ++cur;
-                }
-                else if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE )
-                {
-                    SCOREP_MpiRequestTested( scorep_req->id );
-                }
-            }
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_check_some_test_some( incount, *outcount, array_of_indices, array_of_statuses );
         }
-    }
-    else
-    {
-        for ( i = 0; i < *outcount; ++i )
+        else
         {
-            scorep_mpi_request* scorep_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
-            scorep_mpi_check_request( scorep_req, &( array_of_statuses[ i ] ) );
-            scorep_mpi_cleanup_request( scorep_req );
-            scorep_mpi_unmark_request( scorep_req );
+            scorep_mpi_check_some( incount, *outcount, array_of_indices, array_of_statuses );
         }
     }
 
@@ -844,9 +709,8 @@ MPI_Start( MPI_Request* request )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -929,10 +793,9 @@ MPI_Startall( int          count,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
     int       i;
-    uint64_t  start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -1015,7 +878,7 @@ MPI_Request_free( MPI_Request* request )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       orig_req_null              = ( *request == MPI_REQUEST_NULL );
     int       return_val;
 
@@ -1191,10 +1054,9 @@ MPI_Request_get_status( MPI_Request request,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int           xtest_active               = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
+    const int           xtest_active               = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XREQTEST );
     int                 return_val;
     scorep_mpi_request* scorep_req;
-    uint64_t            start_time_stamp;
 
     if ( event_gen_active )
     {
@@ -1228,9 +1090,9 @@ MPI_Request_get_status( MPI_Request request,
         }
         scorep_mpi_unmark_request( scorep_req );
     }
-    else if ( scorep_req && event_gen_active_for_group && xtest_active )
+    else if ( event_gen_active_for_group && xtest_active )
     {
-        SCOREP_MpiRequestTested( scorep_req->id );
+        scorep_mpi_request_tested( scorep_req );
     }
 
     if ( event_gen_active )

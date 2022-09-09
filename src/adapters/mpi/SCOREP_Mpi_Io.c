@@ -2498,7 +2498,7 @@ MPI_File_iread( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Re
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              SCOREP_IO_OPERATION_MODE_READ,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2581,7 +2581,7 @@ MPI_File_iread_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MP
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              SCOREP_IO_OPERATION_MODE_READ,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2664,7 +2664,7 @@ MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              SCOREP_IO_OPERATION_MODE_READ,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2747,7 +2747,7 @@ MPI_File_iread_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              SCOREP_IO_OPERATION_MODE_READ,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2830,7 +2830,7 @@ MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_READ,
+                                              SCOREP_IO_OPERATION_MODE_READ,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2913,7 +2913,7 @@ MPI_File_iwrite( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Da
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              SCOREP_IO_OPERATION_MODE_WRITE,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -2996,7 +2996,7 @@ MPI_File_iwrite_all( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MP
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              SCOREP_IO_OPERATION_MODE_WRITE,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -3079,7 +3079,7 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* 
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              SCOREP_IO_OPERATION_MODE_WRITE,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -3162,7 +3162,7 @@ MPI_File_iwrite_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL vo
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              SCOREP_IO_OPERATION_MODE_WRITE,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
@@ -3245,7 +3245,7 @@ MPI_File_iwrite_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count,
                 SCOREP_IoOperationIssued( io_handle, req_id );
 
                 scorep_mpi_request_io_create( *request,
-                                              SCOREP_MPI_REQUEST_TYPE_IO_WRITE,
+                                              SCOREP_IO_OPERATION_MODE_WRITE,
                                               ( uint64_t )( count * type_size ),
                                               datatype,
                                               fh,
