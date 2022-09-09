@@ -2940,6 +2940,19 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
+#if HAVE( DECL_PMPI_INFO_GET_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_string )
+    if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET_STRING ] =
+            SCOREP_Definitions_NewRegion( "MPI_Info_get_string",
+                                          NULL,
+                                          file_id,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_MPI,
+                                          SCOREP_REGION_NONE );
+    }
+#endif
 #if HAVE( DECL_PMPI_INFO_GET_VALUELEN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_valuelen )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {

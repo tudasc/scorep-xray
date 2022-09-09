@@ -657,6 +657,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_INFO_GET_NKEYS,
     /** Score-P region ID for MPI_Info_get_nthkey */
     SCOREP_MPI_REGION__MPI_INFO_GET_NTHKEY,
+    /** Score-P region ID for MPI_Info_get_string */
+    SCOREP_MPI_REGION__MPI_INFO_GET_STRING,
     /** Score-P region ID for MPI_Info_get_valuelen */
     SCOREP_MPI_REGION__MPI_INFO_GET_VALUELEN,
     /** Score-P region ID for MPI_Info_set */

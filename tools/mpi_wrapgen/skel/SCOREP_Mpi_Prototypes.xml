@@ -1,5 +1,5 @@
 
-<prototypes count="412" family="mpi" >
+<prototypes count="413" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -3931,6 +3931,15 @@
     <param access="i" type_modifier="" type="int" name="n" />
     <param access="o" type_modifier="" type="char*" name="key" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Info_get_string" rtype="int" group="misc" guard="extra, misc">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="const" type="char*" name="key" />
+    <param access="b" type_modifier="" type="int*" name="buflen" />
+    <param access="o" type_modifier="" type="char*" name="value" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
 </prototype>
 
 <prototype name="MPI_Info_get_valuelen" rtype="int" group="misc" guard="extra,misc" >
