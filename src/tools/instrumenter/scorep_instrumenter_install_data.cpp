@@ -127,7 +127,7 @@ SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
     return arg == "-ffree-form";
 #elif SCOREP_BACKEND_COMPILER_FC_IBM
     return arg == "-qfree";
-#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
     return arg == "-free";
 #elif SCOREP_BACKEND_COMPILER_FC_PGI
     return arg == "-Mfree" || arg == "-Mfreeform";
@@ -153,7 +153,7 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
     return arg == "-ffixed-form";
 #elif SCOREP_BACKEND_COMPILER_FC_IBM
     return arg == "-qfixed";
-#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
     return arg == "-nofree";
 #elif SCOREP_BACKEND_COMPILER_FC_PGI
     return arg == "-Mnofree" || arg == "-Mnofreeform";
@@ -173,7 +173,7 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-#if SCOREP_BACKEND_COMPILER_CC_GNU || SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CC_CLANG
+#if SCOREP_BACKEND_COMPILER_CC_GNU || SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CC_CLANG
     return "-E -o " + output_file;
 #elif SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CC_FUJITSU
     return "-E > " + output_file;
@@ -186,7 +186,7 @@ std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-#if SCOREP_BACKEND_COMPILER_CXX_GNU || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_CXX_CLANG
+#if SCOREP_BACKEND_COMPILER_CXX_GNU || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_CXX_CLANG
     return "-E -o " + output_file;
 #elif SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_CXX_FUJITSU
     return "-E > " + output_file;
@@ -211,7 +211,7 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
     std::string prep_file_v13 = "F" + basename + ".f";
     std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
     return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
-#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_PGI || SCOREP_BACKEND_COMPILER_FC_FUJITSU
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_FC_PGI || SCOREP_BACKEND_COMPILER_FC_FUJITSU
     return "-E > " + output_file;
 #elif SCOREP_BACKEND_COMPILER_FC_CLANG
     /* No Fortran support yet */

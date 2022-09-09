@@ -90,8 +90,9 @@ various Score-P components.
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on Blue Gene systems
   - Intel  : only works with Intel icc/icpc/ifort version 11 and higher
-             compilers. Note that the Clang-based ixc/icpx/ifx
-             compilers from Intel oneAPI toolkit are not supported.
+             compilers or the Clang-based ixc/icpx compilers from
+             Intel oneAPI toolkit. Note that the Fortran ifx compiler
+             does not support compiler instrumentation.
   - Cray   : tested with version 8.1.8 and later, uses the GNU interface
   - Fujitsu: tested with different versions of the language
              environment K-1.2.0 on K computer and compiler version

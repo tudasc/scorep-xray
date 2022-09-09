@@ -75,7 +75,7 @@ AC_DEFUN([AX_COMPILER_VENDOR], [dnl
         dnl  are very slow to start (such as Intel) are listed first.
 
         vendors="
-                intel:          __ICC,__ECC,__INTEL_COMPILER
+                intel:          __ICC,__ECC,__INTEL_COMPILER,__INTEL_LLVM_COMPILER
                 ibm:            __xlc__,__xlC__,__IBMC__,__IBMCPP__,__ibmxl__clang__,__ibmxl__
                 pathscale:      __PATHCC__,__PATHSCALE__
                 clang:          __clang__
@@ -123,6 +123,7 @@ AC_DEFUN([AX_COMPILER_VENDOR], [dnl
 
         flang_variants="classic: __PGLLVM__"
         portland_variants="llvm: __PGLLVM__"
+        intel_variants="oneapi: __INTEL_LLVM_COMPILER"
         eval variants=\"\$${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor}_variants : NONE\"
         for vartest in $variants; do
             case $vartest in #(

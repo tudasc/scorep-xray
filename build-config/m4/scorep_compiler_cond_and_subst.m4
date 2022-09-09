@@ -32,6 +32,7 @@
 m4_define(_SCOREP_COMPILER_SUBST, [
 AS_CASE(${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor},
     [intel],              SCOREP_COMPILER_[]_AC_CC[]_INTEL=1,
+    [intel/oneapi],       SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI=1,
     [ibm],                SCOREP_COMPILER_[]_AC_CC[]_IBM=1,
     [nvhpc|pgi|pgi/llvm], SCOREP_COMPILER_[]_AC_CC[]_PGI=1,
     [gnu],                SCOREP_COMPILER_[]_AC_CC[]_GNU=1,
@@ -39,13 +40,14 @@ AS_CASE(${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor},
     [cray],               SCOREP_COMPILER_[]_AC_CC[]_CRAY=1,
     [fujitsu],            SCOREP_COMPILER_[]_AC_CC[]_FUJITSU=1)
 
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL,   ${SCOREP_COMPILER_[]_AC_CC[]_INTEL-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_IBM,     ${SCOREP_COMPILER_[]_AC_CC[]_IBM-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_PGI,     ${SCOREP_COMPILER_[]_AC_CC[]_PGI-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_GNU,     ${SCOREP_COMPILER_[]_AC_CC[]_GNU-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CLANG,   ${SCOREP_COMPILER_[]_AC_CC[]_CLANG-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CRAY,    ${SCOREP_COMPILER_[]_AC_CC[]_CRAY-0})
-AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_FUJITSU, ${SCOREP_COMPILER_[]_AC_CC[]_FUJITSU-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL,        ${SCOREP_COMPILER_[]_AC_CC[]_INTEL-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI, ${SCOREP_COMPILER_[]_AC_CC[]_INTEL_ONEAPI-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_IBM,          ${SCOREP_COMPILER_[]_AC_CC[]_IBM-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_PGI,          ${SCOREP_COMPILER_[]_AC_CC[]_PGI-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_GNU,          ${SCOREP_COMPILER_[]_AC_CC[]_GNU-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CLANG,        ${SCOREP_COMPILER_[]_AC_CC[]_CLANG-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_CRAY,         ${SCOREP_COMPILER_[]_AC_CC[]_CRAY-0})
+AC_SUBST(SCOREP_COMPILER_[]_AC_CC[]_FUJITSU,      ${SCOREP_COMPILER_[]_AC_CC[]_FUJITSU-0})
 ])
 
 AC_DEFUN([SCOREP_COMPILER_COND_AND_SUBST],[
@@ -53,11 +55,14 @@ dnl Cannot easily require AFS_PROG_CC|CXX|FC
 
 # The SCOREP_COMPILER_* automake conditionals are exclusively used by
 # scorep. Thus, define only the ones that are used.
-AS_CASE([${ax_cv_c_compiler_vendor%/*}],
+AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [],
+    [intel/oneapi],
+                [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_CLANG],   [test 1 -eq 1], [false])],
     [ibm],      [],
     [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_PGI],     [test 1 -eq 1], [false])],
-    [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_PGI],     [test 1 -eq 1], [false])],
+    [portland|portland/*],
+                [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_PGI],     [test 1 -eq 1], [false])],
     [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_GNU],     [test 1 -eq 1], [false])],
     [clang],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CC_CLANG],   [test 1 -eq 1], [false])],
     [cray],     [],
@@ -108,7 +113,7 @@ AC_LANG_POP([Fortran])
 # languages. If this is not the case, the instrumenter will not provide
 # MIC support. As # MIC will be removed in scorep-9, we are not going to
 # make this rock-solid.
-AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${ax_cv_c_compiler_vendor%/*}" = xintel && test "x${ax_cv_cxx_compiler_vendor%/*}" = xintel && test "x${ax_cv_fc_compiler_vendor%/*}" = xintel; then echo 1; else echo 0; fi))
+AC_SUBST([SCOREP_COMPILER_MIC], $(if test "x${ax_cv_c_compiler_vendor}" = xintel && test "x${ax_cv_cxx_compiler_vendor}" = xintel && test "x${ax_cv_fc_compiler_vendor}" = xintel; then echo 1; else echo 0; fi))
 
 dnl strip epoch (Borland only)
 _scorep_compiler_version=${ax_cv_c_compiler_version##*:}

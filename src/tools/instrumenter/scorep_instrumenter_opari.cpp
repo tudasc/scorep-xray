@@ -340,7 +340,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         tpd_mangling_scheme = "pgi";
 #elif SCOREP_BACKEND_COMPILER_CC_FUJITSU
         tpd_mangling_scheme = "fujitsu";
-#elif SCOREP_BACKEND_COMPILER_CC_CLANG
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG || SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI
         tpd_mangling_scheme = "clang";
 #else
 #error "Missing OPARI specific OpenMP compiler handling for your C compiler, extension required."
@@ -360,7 +360,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         tpd_mangling_scheme = "pgi";
 #elif SCOREP_BACKEND_COMPILER_CXX_FUJITSU
         tpd_mangling_scheme = "fujitsu";
-#elif SCOREP_BACKEND_COMPILER_CXX_CLANG
+#elif SCOREP_BACKEND_COMPILER_CXX_CLANG || SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI
         tpd_mangling_scheme = "clang";
 #else
 #error "Missing OPARI specific OpenMP compiler handling for your C++ compiler, extension required."
@@ -382,7 +382,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         tpd_mangling_scheme = "pgi";
 #elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
         tpd_mangling_scheme = "fujitsu";
-#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
         tpd_mangling_scheme = "clang";
 #else
 #error "Missing OPARI specific OpenMP compiler handling for your Fortran compiler, extension required."

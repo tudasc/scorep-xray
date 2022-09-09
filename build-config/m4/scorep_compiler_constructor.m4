@@ -21,7 +21,8 @@ AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
 
 scorep_compiler_constructor_mode=
 AS_CASE([${ax_cv_c_compiler_vendor}],
-    [intel],    [scorep_compiler_constructor_mode=attribute
+    [intel|intel/oneapi],
+                [scorep_compiler_constructor_mode=attribute
                  scorep_compiler_constructor_cflags=""],
     [sun],      [scorep_compiler_constructor_mode=pragma
                  scorep_compiler_constructor_cflags=""],

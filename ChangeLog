@@ -31,6 +31,8 @@ Features and improvements:
   also disabled when recording accelerator applications.
 - Add proper support for NVIDIA HPC SDK compilers to build system
   via `--with-nocross-compiler-suite=nvhpc`.
+- Add proper support for Intel oneAPI compilers to build system
+  via `--with-nocross-compiler-suite=oneapi`.
 - Add events for communicator creation and destruction to Score-P
   corresponding to the new records in OTF2 3.0.
 - Add Fortran TYPE(C_PTR) overload wrappers to the MPI adapter for
