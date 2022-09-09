@@ -343,6 +343,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_COMM_GROUP,
     /** Score-P region ID for MPI_Comm_idup */
     SCOREP_MPI_REGION__MPI_COMM_IDUP,
+    /** Score-P region ID for MPI_Comm_idup_with_info */
+    SCOREP_MPI_REGION__MPI_COMM_IDUP_WITH_INFO,
     /** Score-P region ID for MPI_Comm_join */
     SCOREP_MPI_REGION__MPI_COMM_JOIN,
     /** Score-P region ID for MPI_Comm_rank */

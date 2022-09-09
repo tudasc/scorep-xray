@@ -1,5 +1,5 @@
 
-<prototypes count="411" family="mpi" >
+<prototypes count="412" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -905,6 +905,14 @@
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Comm_idup_with_info" rtype="int" group="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >

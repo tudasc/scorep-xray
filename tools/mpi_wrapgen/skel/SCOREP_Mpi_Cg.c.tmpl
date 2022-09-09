@@ -129,6 +129,8 @@ MPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request )
 }
 #endif
 
+#pragma wrapgen single MPI_Comm_idup_with_info skel/SCOREP_Mpi_Std.w
+
 /**
  * @}
  * @name C wrappers for communicator destructors
