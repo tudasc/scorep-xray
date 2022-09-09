@@ -66,11 +66,23 @@
  */
 #define MPI_Allgather_U MPI_ALLGATHER
 
+/** @def MPI_Allgather_init_U
+    Exchanges MPI_Allgather_init_U with MPI_ALLGATHER_INIT.
+    It is used for the Fortran wrappers of MPI_Allgather_init.
+ */
+#define MPI_Allgather_init_U MPI_ALLGATHER_INIT
+
 /** @def MPI_Allgatherv_U
     Exchanges MPI_Allgatherv_U with MPI_ALLGATHERV.
     It is used for the Fortran wrappers of MPI_Allgatherv.
  */
 #define MPI_Allgatherv_U MPI_ALLGATHERV
+
+/** @def MPI_Allgatherv_init_U
+    Exchanges MPI_Allgatherv_init_U with MPI_ALLGATHERV_INIT.
+    It is used for the Fortran wrappers of MPI_Allgatherv_init.
+ */
+#define MPI_Allgatherv_init_U MPI_ALLGATHERV_INIT
 
 /** @def MPI_Allreduce_U
     Exchanges MPI_Allreduce_U with MPI_ALLREDUCE.
@@ -78,11 +90,23 @@
  */
 #define MPI_Allreduce_U MPI_ALLREDUCE
 
+/** @def MPI_Allreduce_init_U
+    Exchanges MPI_Allreduce_init_U with MPI_ALLREDUCE_INIT.
+    It is used for the Fortran wrappers of MPI_Allreduce_init.
+ */
+#define MPI_Allreduce_init_U MPI_ALLREDUCE_INIT
+
 /** @def MPI_Alltoall_U
     Exchanges MPI_Alltoall_U with MPI_ALLTOALL.
     It is used for the Fortran wrappers of MPI_Alltoall.
  */
 #define MPI_Alltoall_U MPI_ALLTOALL
+
+/** @def MPI_Alltoall_init_U
+    Exchanges MPI_Alltoall_init_U with MPI_ALLTOALL_INIT.
+    It is used for the Fortran wrappers of MPI_Alltoall_init.
+ */
+#define MPI_Alltoall_init_U MPI_ALLTOALL_INIT
 
 /** @def MPI_Alltoallv_U
     Exchanges MPI_Alltoallv_U with MPI_ALLTOALLV.
@@ -90,11 +114,23 @@
  */
 #define MPI_Alltoallv_U MPI_ALLTOALLV
 
+/** @def MPI_Alltoallv_init_U
+    Exchanges MPI_Alltoallv_init_U with MPI_ALLTOALLV_INIT.
+    It is used for the Fortran wrappers of MPI_Alltoallv_init.
+ */
+#define MPI_Alltoallv_init_U MPI_ALLTOALLV_INIT
+
 /** @def MPI_Alltoallw_U
     Exchanges MPI_Alltoallw_U with MPI_ALLTOALLW.
     It is used for the Fortran wrappers of MPI_Alltoallw.
  */
 #define MPI_Alltoallw_U MPI_ALLTOALLW
+
+/** @def MPI_Alltoallw_init_U
+    Exchanges MPI_Alltoallw_init_U with MPI_ALLTOALLW_INIT.
+    It is used for the Fortran wrappers of MPI_Alltoallw_init.
+ */
+#define MPI_Alltoallw_init_U MPI_ALLTOALLW_INIT
 
 /** @def MPI_Barrier_U
     Exchanges MPI_Barrier_U with MPI_BARRIER.
@@ -102,11 +138,23 @@
  */
 #define MPI_Barrier_U MPI_BARRIER
 
+/** @def MPI_Barrier_init_U
+    Exchanges MPI_Barrier_init_U with MPI_BARRIER_INIT.
+    It is used for the Fortran wrappers of MPI_Barrier_init.
+ */
+#define MPI_Barrier_init_U MPI_BARRIER_INIT
+
 /** @def MPI_Bcast_U
     Exchanges MPI_Bcast_U with MPI_BCAST.
     It is used for the Fortran wrappers of MPI_Bcast.
  */
 #define MPI_Bcast_U MPI_BCAST
+
+/** @def MPI_Bcast_init_U
+    Exchanges MPI_Bcast_init_U with MPI_BCAST_INIT.
+    It is used for the Fortran wrappers of MPI_Bcast_init.
+ */
+#define MPI_Bcast_init_U MPI_BCAST_INIT
 
 /** @def MPI_Exscan_U
     Exchanges MPI_Exscan_U with MPI_EXSCAN.
@@ -114,17 +162,35 @@
  */
 #define MPI_Exscan_U MPI_EXSCAN
 
+/** @def MPI_Exscan_init_U
+    Exchanges MPI_Exscan_init_U with MPI_EXSCAN_INIT.
+    It is used for the Fortran wrappers of MPI_Exscan_init.
+ */
+#define MPI_Exscan_init_U MPI_EXSCAN_INIT
+
 /** @def MPI_Gather_U
     Exchanges MPI_Gather_U with MPI_GATHER.
     It is used for the Fortran wrappers of MPI_Gather.
  */
 #define MPI_Gather_U MPI_GATHER
 
+/** @def MPI_Gather_init_U
+    Exchanges MPI_Gather_init_U with MPI_GATHER_INIT.
+    It is used for the Fortran wrappers of MPI_Gather_init.
+ */
+#define MPI_Gather_init_U MPI_GATHER_INIT
+
 /** @def MPI_Gatherv_U
     Exchanges MPI_Gatherv_U with MPI_GATHERV.
     It is used for the Fortran wrappers of MPI_Gatherv.
  */
 #define MPI_Gatherv_U MPI_GATHERV
+
+/** @def MPI_Gatherv_init_U
+    Exchanges MPI_Gatherv_init_U with MPI_GATHERV_INIT.
+    It is used for the Fortran wrappers of MPI_Gatherv_init.
+ */
+#define MPI_Gatherv_init_U MPI_GATHERV_INIT
 
 /** @def MPI_Iallgather_U
     Exchanges MPI_Iallgather_U with MPI_IALLGATHER.
@@ -234,6 +300,12 @@
  */
 #define MPI_Reduce_U MPI_REDUCE
 
+/** @def MPI_Reduce_init_U
+    Exchanges MPI_Reduce_init_U with MPI_REDUCE_INIT.
+    It is used for the Fortran wrappers of MPI_Reduce_init.
+ */
+#define MPI_Reduce_init_U MPI_REDUCE_INIT
+
 /** @def MPI_Reduce_local_U
     Exchanges MPI_Reduce_local_U with MPI_REDUCE_LOCAL.
     It is used for the Fortran wrappers of MPI_Reduce_local.
@@ -252,11 +324,29 @@
  */
 #define MPI_Reduce_scatter_block_U MPI_REDUCE_SCATTER_BLOCK
 
+/** @def MPI_Reduce_scatter_block_init_U
+    Exchanges MPI_Reduce_scatter_block_init_U with MPI_REDUCE_SCATTER_BLOCK_INIT.
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_block_init.
+ */
+#define MPI_Reduce_scatter_block_init_U MPI_REDUCE_SCATTER_BLOCK_INIT
+
+/** @def MPI_Reduce_scatter_init_U
+    Exchanges MPI_Reduce_scatter_init_U with MPI_REDUCE_SCATTER_INIT.
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_init.
+ */
+#define MPI_Reduce_scatter_init_U MPI_REDUCE_SCATTER_INIT
+
 /** @def MPI_Scan_U
     Exchanges MPI_Scan_U with MPI_SCAN.
     It is used for the Fortran wrappers of MPI_Scan.
  */
 #define MPI_Scan_U MPI_SCAN
+
+/** @def MPI_Scan_init_U
+    Exchanges MPI_Scan_init_U with MPI_SCAN_INIT.
+    It is used for the Fortran wrappers of MPI_Scan_init.
+ */
+#define MPI_Scan_init_U MPI_SCAN_INIT
 
 /** @def MPI_Scatter_U
     Exchanges MPI_Scatter_U with MPI_SCATTER.
@@ -264,11 +354,23 @@
  */
 #define MPI_Scatter_U MPI_SCATTER
 
+/** @def MPI_Scatter_init_U
+    Exchanges MPI_Scatter_init_U with MPI_SCATTER_INIT.
+    It is used for the Fortran wrappers of MPI_Scatter_init.
+ */
+#define MPI_Scatter_init_U MPI_SCATTER_INIT
+
 /** @def MPI_Scatterv_U
     Exchanges MPI_Scatterv_U with MPI_SCATTERV.
     It is used for the Fortran wrappers of MPI_Scatterv.
  */
 #define MPI_Scatterv_U MPI_SCATTERV
+
+/** @def MPI_Scatterv_init_U
+    Exchanges MPI_Scatterv_init_U with MPI_SCATTERV_INIT.
+    It is used for the Fortran wrappers of MPI_Scatterv_init.
+ */
+#define MPI_Scatterv_init_U MPI_SCATTERV_INIT
 
 /* lowercase defines */
 
@@ -278,11 +380,23 @@
  */
 #define MPI_Allgather_L mpi_allgather
 
+/** @def MPI_Allgather_init_L
+    Exchanges MPI_Allgather_init_L with mpi_allgather_init.
+    It is used for the Fortran wrappers of MPI_Allgather_init.
+ */
+#define MPI_Allgather_init_L mpi_allgather_init
+
 /** @def MPI_Allgatherv_L
     Exchanges MPI_Allgatherv_L with mpi_allgatherv.
     It is used for the Fortran wrappers of MPI_Allgatherv.
  */
 #define MPI_Allgatherv_L mpi_allgatherv
+
+/** @def MPI_Allgatherv_init_L
+    Exchanges MPI_Allgatherv_init_L with mpi_allgatherv_init.
+    It is used for the Fortran wrappers of MPI_Allgatherv_init.
+ */
+#define MPI_Allgatherv_init_L mpi_allgatherv_init
 
 /** @def MPI_Allreduce_L
     Exchanges MPI_Allreduce_L with mpi_allreduce.
@@ -290,11 +404,23 @@
  */
 #define MPI_Allreduce_L mpi_allreduce
 
+/** @def MPI_Allreduce_init_L
+    Exchanges MPI_Allreduce_init_L with mpi_allreduce_init.
+    It is used for the Fortran wrappers of MPI_Allreduce_init.
+ */
+#define MPI_Allreduce_init_L mpi_allreduce_init
+
 /** @def MPI_Alltoall_L
     Exchanges MPI_Alltoall_L with mpi_alltoall.
     It is used for the Fortran wrappers of MPI_Alltoall.
  */
 #define MPI_Alltoall_L mpi_alltoall
+
+/** @def MPI_Alltoall_init_L
+    Exchanges MPI_Alltoall_init_L with mpi_alltoall_init.
+    It is used for the Fortran wrappers of MPI_Alltoall_init.
+ */
+#define MPI_Alltoall_init_L mpi_alltoall_init
 
 /** @def MPI_Alltoallv_L
     Exchanges MPI_Alltoallv_L with mpi_alltoallv.
@@ -302,11 +428,23 @@
  */
 #define MPI_Alltoallv_L mpi_alltoallv
 
+/** @def MPI_Alltoallv_init_L
+    Exchanges MPI_Alltoallv_init_L with mpi_alltoallv_init.
+    It is used for the Fortran wrappers of MPI_Alltoallv_init.
+ */
+#define MPI_Alltoallv_init_L mpi_alltoallv_init
+
 /** @def MPI_Alltoallw_L
     Exchanges MPI_Alltoallw_L with mpi_alltoallw.
     It is used for the Fortran wrappers of MPI_Alltoallw.
  */
 #define MPI_Alltoallw_L mpi_alltoallw
+
+/** @def MPI_Alltoallw_init_L
+    Exchanges MPI_Alltoallw_init_L with mpi_alltoallw_init.
+    It is used for the Fortran wrappers of MPI_Alltoallw_init.
+ */
+#define MPI_Alltoallw_init_L mpi_alltoallw_init
 
 /** @def MPI_Barrier_L
     Exchanges MPI_Barrier_L with mpi_barrier.
@@ -314,11 +452,23 @@
  */
 #define MPI_Barrier_L mpi_barrier
 
+/** @def MPI_Barrier_init_L
+    Exchanges MPI_Barrier_init_L with mpi_barrier_init.
+    It is used for the Fortran wrappers of MPI_Barrier_init.
+ */
+#define MPI_Barrier_init_L mpi_barrier_init
+
 /** @def MPI_Bcast_L
     Exchanges MPI_Bcast_L with mpi_bcast.
     It is used for the Fortran wrappers of MPI_Bcast.
  */
 #define MPI_Bcast_L mpi_bcast
+
+/** @def MPI_Bcast_init_L
+    Exchanges MPI_Bcast_init_L with mpi_bcast_init.
+    It is used for the Fortran wrappers of MPI_Bcast_init.
+ */
+#define MPI_Bcast_init_L mpi_bcast_init
 
 /** @def MPI_Exscan_L
     Exchanges MPI_Exscan_L with mpi_exscan.
@@ -326,17 +476,35 @@
  */
 #define MPI_Exscan_L mpi_exscan
 
+/** @def MPI_Exscan_init_L
+    Exchanges MPI_Exscan_init_L with mpi_exscan_init.
+    It is used for the Fortran wrappers of MPI_Exscan_init.
+ */
+#define MPI_Exscan_init_L mpi_exscan_init
+
 /** @def MPI_Gather_L
     Exchanges MPI_Gather_L with mpi_gather.
     It is used for the Fortran wrappers of MPI_Gather.
  */
 #define MPI_Gather_L mpi_gather
 
+/** @def MPI_Gather_init_L
+    Exchanges MPI_Gather_init_L with mpi_gather_init.
+    It is used for the Fortran wrappers of MPI_Gather_init.
+ */
+#define MPI_Gather_init_L mpi_gather_init
+
 /** @def MPI_Gatherv_L
     Exchanges MPI_Gatherv_L with mpi_gatherv.
     It is used for the Fortran wrappers of MPI_Gatherv.
  */
 #define MPI_Gatherv_L mpi_gatherv
+
+/** @def MPI_Gatherv_init_L
+    Exchanges MPI_Gatherv_init_L with mpi_gatherv_init.
+    It is used for the Fortran wrappers of MPI_Gatherv_init.
+ */
+#define MPI_Gatherv_init_L mpi_gatherv_init
 
 /** @def MPI_Iallgather_L
     Exchanges MPI_Iallgather_L with mpi_iallgather.
@@ -446,6 +614,12 @@
  */
 #define MPI_Reduce_L mpi_reduce
 
+/** @def MPI_Reduce_init_L
+    Exchanges MPI_Reduce_init_L with mpi_reduce_init.
+    It is used for the Fortran wrappers of MPI_Reduce_init.
+ */
+#define MPI_Reduce_init_L mpi_reduce_init
+
 /** @def MPI_Reduce_local_L
     Exchanges MPI_Reduce_local_L with mpi_reduce_local.
     It is used for the Fortran wrappers of MPI_Reduce_local.
@@ -464,11 +638,29 @@
  */
 #define MPI_Reduce_scatter_block_L mpi_reduce_scatter_block
 
+/** @def MPI_Reduce_scatter_block_init_L
+    Exchanges MPI_Reduce_scatter_block_init_L with mpi_reduce_scatter_block_init.
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_block_init.
+ */
+#define MPI_Reduce_scatter_block_init_L mpi_reduce_scatter_block_init
+
+/** @def MPI_Reduce_scatter_init_L
+    Exchanges MPI_Reduce_scatter_init_L with mpi_reduce_scatter_init.
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_init.
+ */
+#define MPI_Reduce_scatter_init_L mpi_reduce_scatter_init
+
 /** @def MPI_Scan_L
     Exchanges MPI_Scan_L with mpi_scan.
     It is used for the Fortran wrappers of MPI_Scan.
  */
 #define MPI_Scan_L mpi_scan
+
+/** @def MPI_Scan_init_L
+    Exchanges MPI_Scan_init_L with mpi_scan_init.
+    It is used for the Fortran wrappers of MPI_Scan_init.
+ */
+#define MPI_Scan_init_L mpi_scan_init
 
 /** @def MPI_Scatter_L
     Exchanges MPI_Scatter_L with mpi_scatter.
@@ -476,11 +668,23 @@
  */
 #define MPI_Scatter_L mpi_scatter
 
+/** @def MPI_Scatter_init_L
+    Exchanges MPI_Scatter_init_L with mpi_scatter_init.
+    It is used for the Fortran wrappers of MPI_Scatter_init.
+ */
+#define MPI_Scatter_init_L mpi_scatter_init
+
 /** @def MPI_Scatterv_L
     Exchanges MPI_Scatterv_L with mpi_scatterv.
     It is used for the Fortran wrappers of MPI_Scatterv.
  */
 #define MPI_Scatterv_L mpi_scatterv
+
+/** @def MPI_Scatterv_init_L
+    Exchanges MPI_Scatterv_init_L with mpi_scatterv_init.
+    It is used for the Fortran wrappers of MPI_Scatterv_init.
+ */
+#define MPI_Scatterv_init_L mpi_scatterv_init
 
 /**
  * @name Fortran wrappers
@@ -526,6 +730,25 @@ FSUB( MPI_Allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, vo
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgather_init )
+/**
+ * Measurement wrapper for MPI_Allgather_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Allgather_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Allgather_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_ALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv )
 /**
  * Measurement wrapper for MPI_Allgatherv
@@ -555,6 +778,25 @@ FSUB( MPI_Allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, v
 
 
     *ierr = MPI_Allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv_init )
+/**
+ * Measurement wrapper for MPI_Allgatherv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Allgatherv_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int recvcounts[], int displs[], MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Allgatherv_init( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -592,6 +834,25 @@ FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* d
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_ALLREDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce_init )
+/**
+ * Measurement wrapper for MPI_Allreduce_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Allreduce_init )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Allreduce_init( sendbuf, recvbuf, *count, *datatype, *op, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_ALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall )
 /**
  * Measurement wrapper for MPI_Alltoall
@@ -621,6 +882,25 @@ FSUB( MPI_Alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 
 
     *ierr = MPI_Alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall_init )
+/**
+ * Measurement wrapper for MPI_Alltoall_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Alltoall_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Alltoall_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -658,6 +938,25 @@ FSUB( MPI_Alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatyp
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv_init )
+/**
+ * Measurement wrapper for MPI_Alltoallv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Alltoallv_init )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype* sendtype, void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Alltoallv_init( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_ALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw )
 /**
  * Measurement wrapper for MPI_Alltoallw
@@ -691,6 +990,25 @@ FSUB( MPI_Alltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datat
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw_init )
+/**
+ * Measurement wrapper for MPI_Alltoallw_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Alltoallw_init )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Alltoallw_init( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_BARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier )
 /**
  * Measurement wrapper for MPI_Barrier
@@ -706,6 +1024,25 @@ FSUB( MPI_Barrier )( MPI_Comm* comm, int* ierr )
 
 
     *ierr = MPI_Barrier( *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_BARRIER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier_init )
+/**
+ * Measurement wrapper for MPI_Barrier_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Barrier_init )( MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Barrier_init( *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -731,6 +1068,25 @@ FSUB( MPI_Bcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, 
 
 
     *ierr = MPI_Bcast( buffer, *count, *datatype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_BCAST_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast_init )
+/**
+ * Measurement wrapper for MPI_Bcast_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Bcast_init )( void* buffer, int* count, MPI_Datatype* datatype, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Bcast_init( buffer, *count, *datatype, *root, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -768,6 +1124,25 @@ FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_EXSCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan_init )
+/**
+ * Measurement wrapper for MPI_Exscan_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Exscan_init )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Exscan_init( sendbuf, recvbuf, *count, *datatype, *op, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_GATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather )
 /**
  * Measurement wrapper for MPI_Gather
@@ -801,6 +1176,25 @@ FSUB( MPI_Gather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void*
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_GATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather_init )
+/**
+ * Measurement wrapper for MPI_Gather_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Gather_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Gather_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_GATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv )
 /**
  * Measurement wrapper for MPI_Gatherv
@@ -830,6 +1224,25 @@ FSUB( MPI_Gatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 
 
     *ierr = MPI_Gatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_GATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv_init )
+/**
+ * Measurement wrapper for MPI_Gatherv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Gatherv_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int recvcounts[], int displs[], MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Gatherv_init( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *root, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -1406,6 +1819,25 @@ FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_REDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_init )
+/**
+ * Measurement wrapper for MPI_Reduce_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Reduce_init )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Reduce_init( sendbuf, recvbuf, *count, *datatype, *op, *root, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_REDUCE_LOCAL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
 /**
  * Measurement wrapper for MPI_Reduce_local
@@ -1491,6 +1923,44 @@ FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block_init )
+/**
+ * Measurement wrapper for MPI_Reduce_scatter_block_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Reduce_scatter_block_init )( void* sendbuf, void* recvbuf, int* recvcount, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Reduce_scatter_block_init( sendbuf, recvbuf, *recvcount, *datatype, *op, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_REDUCE_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_init )
+/**
+ * Measurement wrapper for MPI_Reduce_scatter_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Reduce_scatter_init )( void* sendbuf, void* recvbuf, int recvcounts[], MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Reduce_scatter_init( sendbuf, recvbuf, recvcounts, *datatype, *op, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
 /**
  * Measurement wrapper for MPI_Scan
@@ -1520,6 +1990,25 @@ FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dataty
 
 
     *ierr = MPI_Scan( sendbuf, recvbuf, *count, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan_init )
+/**
+ * Measurement wrapper for MPI_Scan_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Scan_init )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Scan_init( sendbuf, recvbuf, *count, *datatype, *op, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -1557,6 +2046,25 @@ FSUB( MPI_Scatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter_init )
+/**
+ * Measurement wrapper for MPI_Scatter_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Scatter_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Scatter_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_SCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv )
 /**
  * Measurement wrapper for MPI_Scatterv
@@ -1586,6 +2094,25 @@ FSUB( MPI_Scatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype*
 
 
     *ierr = MPI_Scatterv( sendbuf, sendcounts, displs, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SCATTERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv_init )
+/**
+ * Measurement wrapper for MPI_Scatterv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup coll
+ */
+void
+FSUB( MPI_Scatterv_init )( void* sendbuf, int sendcounts[], int displs[], MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Scatterv_init( sendbuf, sendcounts, displs, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
