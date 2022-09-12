@@ -56,10 +56,50 @@ AS_IF([test "x${afs_cross_compiling}" = "xyes"], [
     AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([CXX])
 ])
 
-AC_ARG_VAR([LIBCLANG_CPPFLAGS], [Additional C preprocessor flags when compiling against libclang])
-AC_ARG_VAR([LIBCLANG_CXXFLAGS], [Additional C++ compile flags when compiling against libclang])
-AC_ARG_VAR([LIBCLANG_LDFLAGS],  [Additional linker flags when linking against libclang])
-AC_ARG_VAR([LIBCLANG_LIBS],     [Additional libs when linking against libclang])
+# Provide CC, CXX, CPPFLAGS, CFLAGS, CXXFLAGS, ands LDFLAGS for build-libwrap via
+# *FLAGS_FOR_BUILD_LIBWRAP environment variables. If not set,
+# use autoconf's defaults.
+AC_ARG_VAR([CC_FOR_BUILD_LIBWRAP],
+    [C compiler used for building library wrapper generator. Defaults to CC from llvm-config or gcc.])
+AS_IF([test "x${ac_cv_env_CC_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([CC])],
+    [CC="${ac_cv_env_CC_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([CXX_FOR_BUILD_LIBWRAP],
+    [C++ compiler used for building library wrapper generator. Defaults to CXX from llvm-config or g++.])
+AS_IF([test "x${ac_cv_env_CXX_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([CXX])],
+    [CXX="${ac_cv_env_CXX_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([CPPFLAGS_FOR_BUILD_LIBWRAP],
+    [C preprocesser flags for building library wrapper generator. Will be amended with 'llvm-config --cppflags'.])
+AS_IF([test "x${ac_cv_env_CPPFLAGS_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([CPPFLAGS])],
+    [CPPFLAGS="${ac_cv_env_CPPFLAGS_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([CFLAGS_FOR_BUILD_LIBWRAP],
+    [C compiler flags for building library wrapper generator.])
+AS_IF([test "x${ac_cv_env_CFLAGS_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([CFLAGS])],
+    [CFLAGS="${ac_cv_env_CFLAGS_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([CXXFLAGS_FOR_BUILD_LIBWRAP],
+    [C++ compiler flags for building library wrapper generator.])
+AS_IF([test "x${ac_cv_env_CXXFLAGS_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([CXXFLAGS])],
+    [CXXFLAGS="${ac_cv_env_CXXFLAGS_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([LDFLAGS_FOR_BUILD_LIBWRAP],
+    [Linker flags for building library wrapper generator. Will be amended with 'llvm-config --ldflags'.])
+AS_IF([test "x${ac_cv_env_LDFLAGS_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([LDFLAGS])],
+    [LDFLAGS="${ac_cv_env_LDFLAGS_FOR_BUILD_LIBWRAP_value}"])
+
+AC_ARG_VAR([LIBS_FOR_BUILD_LIBWRAP],
+    [Libraries for building library wrapper generator. Will be amended with '-lclang'.])
+AS_IF([test "x${ac_cv_env_LIBS_FOR_BUILD_LIBWRAP_set}" != xset],
+    [AS_UNSET([LIBS])],
+    [LIBS="${ac_cv_env_LIBS_FOR_BUILD_LIBWRAP_value}"])
 
 AC_ARG_WITH([llvm],
             [AS_HELP_STRING([--with-llvm[[=<llvm-bindir>]]],
@@ -94,18 +134,19 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
       [# try executing llvm-config to rule out that it doesn't work due to not finding linked libs e.g.
        llvm_config_version='${scorep_llvm_config_bin} --version >&AS_MESSAGE_LOG_FD'
        AS_IF([_AC_DO_VAR([llvm_config_version])],
-             [llvm_bindir=`${scorep_llvm_config_bin} --bindir`
-              AS_IF([AS_EXECUTABLE_P([${llvm_bindir}/clang]) && AS_EXECUTABLE_P([${llvm_bindir}/clang++])],
-                    [CC=${llvm_bindir}/clang
-                     CXX=${llvm_bindir}/clang++],
-                    [test "x${afs_cross_compiling}" = "xyes" && AS_EXECUTABLE_P([/usr/bin/gcc]) && AS_EXECUTABLE_P([/usr/bin/g++])],
-                    [CC=/usr/bin/gcc
-                     CXX=/usr/bin/g++],
-                    [AS_EXECUTABLE_P([`which gcc`]) && AS_EXECUTABLE_P([`which g++`])],
-                    [CC=`which gcc`
-                     CXX=`which g++`],
-                    [scorep_have_llvm_config=no
-                     reason="no suitable compiler found, only Clang and GCC compiler supported"])],
+             [AS_IF([test "x${CC:+set}${CXX:+set}" != "xsetset"],
+                    [llvm_bindir=`${scorep_llvm_config_bin} --bindir`
+                     AS_IF([AS_EXECUTABLE_P([${llvm_bindir}/clang]) && AS_EXECUTABLE_P([${llvm_bindir}/clang++])],
+                           [CC=${llvm_bindir}/clang
+                            CXX=${llvm_bindir}/clang++],
+                           [test "x${afs_cross_compiling}" = "xyes" && AS_EXECUTABLE_P([/usr/bin/gcc]) && AS_EXECUTABLE_P([/usr/bin/g++])],
+                           [CC=/usr/bin/gcc
+                            CXX=/usr/bin/g++],
+                           [AS_EXECUTABLE_P([`which gcc`]) && AS_EXECUTABLE_P([`which g++`])],
+                           [CC=`which gcc`
+                            CXX=`which g++`],
+                           [scorep_have_llvm_config=no
+                            reason="no suitable compiler found, only Clang and GCC compiler supported"])])],
              [scorep_have_llvm_config=no
               reason="${scorep_llvm_config_bin} crashes when executed"])],
       [AS_IF([test "x${with_llvm}" != "xno"],
@@ -137,26 +178,21 @@ AC_SUBST([LIBTOOL_DEPS])
 AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 
 AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
-      [llvm_cppflags=$(${scorep_llvm_config_bin} --cppflags)
+      [# the CFLAGS,CXXFLAGS from llvm-config may only be understood by clang/clang++,
+       # but not by CC/CXX, thus ignore
+       llvm_cppflags=$(${scorep_llvm_config_bin} --cppflags)
        llvm_ldflags=$(${scorep_llvm_config_bin} --ldflags)
        llvm_libdir=$(${scorep_llvm_config_bin} --libdir)
-
-       libwrap_cppflags="${llvm_cppflags} ${LIBCLANG_CPPFLAGS}"
-       # the CXXFLAGS from llvm-config may only be understood by clang++, but not by g++, thus ignore
-       libwrap_cxxflags="${LIBCLANG_CXXFLAGS}"
-       libwrap_ldflags="${llvm_ldflags} ${LIBCLANG_LDFLAGS}"
-       libwrap_libs="-lclang ${LIBCLANG_LIBS}"
+       llvm_libs="-lclang"
 
        AC_LANG_PUSH([C++])
 
        save_CPPFLAGS=$CPPFLAGS
-       save_CXXFLAGS=$CXXFLAGS
        save_LDFLAGS=$LDFLAGS
        save_LIBS=$LIBS
-       CPPFLAGS="$CPPFLAGS $libwrap_cppflags"
-       CXXFLAGS="$CXXFLAGS $libwrap_cxxflags"
-       LDFLAGS="$LDFLAGS $libwrap_ldflags"
-       LIBS="$LIBS $libwrap_libs"
+       CPPFLAGS="$CPPFLAGS $llvm_cppflags"
+       LDFLAGS="$LDFLAGS $llvm_ldflags"
+       LIBS="$LIBS $llvm_libs"
 
        # Check whether the header exists, this is a hint, that the dev packages
        # are not installed, then we can check that it compiles and links, and
@@ -198,11 +234,9 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
             reason="missing <clang-c/Index.h>, please install developer packages for libclang"])
 
        CPPFLAGS=$save_CPPFLAGS
-       CXXFLAGS=$save_CXXFLAGS
        LDFLAGS=$save_LDFLAGS
        LIBS=$save_LIBS
        AS_UNSET([save_CPPFLAGS])
-       AS_UNSET([save_CXXFLAGS])
        AS_UNSET([save_LDFLAGS])
        AS_UNSET([save_LIBS])
 
@@ -221,11 +255,15 @@ AFS_AM_CONDITIONAL([HAVE_LIBRARY_WRAPPING_GENERATOR],
 
 AM_COND_IF([HAVE_LIBRARY_WRAPPING_GENERATOR],
            [scorep_have_libwrap_generator=yes
-            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CPPFLAGS], ["${libwrap_cppflags}"])
-            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CXXFLAGS], ["${libwrap_cxxflags}"])
-            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LDFLAGS],  ["${libwrap_ldflags} -R${llvm_libdir}"])
-            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LIBS],     ["${libwrap_libs}"])],
+            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_CPPFLAGS], ["${llvm_cppflags}"])
+            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LDFLAGS],  ["${llvm_ldflags} -R${llvm_libdir}"])
+            AC_SUBST([SCOREP_LIBRARY_WRAPPING_GENERATOR_LIBS],     ["${llvm_libs}"])],
            [scorep_have_libwrap_generator=no])
+
+AS_UNSET([llvm_cppflags])
+AS_UNSET([llvm_ldflags])
+AS_UNSET([llvm_libdir])
+AS_UNSET([llvm_libs])
 
 AFS_SUMMARY([Library wrapper support], [${scorep_have_libwrap_generator}${reason:+, }${reason}])
 AS_UNSET([reason])
