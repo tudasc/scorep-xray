@@ -187,13 +187,15 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
     clang_getCursorSpelling( arg );
     clang_Cursor_getMangling( cursor );]])],
                      [AC_MSG_RESULT([yes])
-                      touch library_wrapping_supported
                       reason="using ${scorep_llvm_config_bin}"],
                      [AC_MSG_RESULT([no])
+                      scorep_have_llvm_config=no
                       reason="libclang version not sufficient (minimum v3.6)"])],
               [AC_MSG_RESULT([no])
+               scorep_have_llvm_config=no
                reason="could not compile and link minimal program"])],
-           [reason="missing <clang-c/Index.h>, please install developer packages for libclang"])
+           [scorep_have_llvm_config=no
+            reason="missing <clang-c/Index.h>, please install developer packages for libclang"])
 
        CPPFLAGS=$save_CPPFLAGS
        CXXFLAGS=$save_CXXFLAGS
@@ -206,6 +208,12 @@ AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
 
        AC_LANG_POP([C++])])
 
+AS_IF([test "x${scorep_have_llvm_config}" != "xno"],
+      [touch library_wrapping_supported],
+      [AS_IF([test "x${with_llvm}" = "xnot_given"],
+             [:],
+             [test "x${with_llvm}" != "xno"],
+             [AC_MSG_ERROR([Library wrapper generator requested with --with-llvm but could not be fulfilled: ${reason}])])])
 
 AFS_AM_CONDITIONAL([HAVE_LIBRARY_WRAPPING_GENERATOR],
                    [test -e library_wrapping_supported],
