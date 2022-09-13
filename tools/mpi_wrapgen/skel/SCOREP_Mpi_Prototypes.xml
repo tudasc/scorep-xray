@@ -1,5 +1,5 @@
 
-<prototypes count="413" family="mpi" >
+<prototypes count="426" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -805,6 +805,15 @@
     <param access="i" type_modifier="" type="MPI_Comm_errhandler_fn*" name="function" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Comm_create_from_group" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="const" type="char*" name="stringtag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" />
 </prototype>
 
 <prototype name="MPI_Comm_create_group" rtype="int" group="cg" >
@@ -2914,6 +2923,13 @@
     <version id="1.0" />
 </prototype>
 
+<prototype name="MPI_Group_from_session_pset" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="const" type="char*" name="pset_name" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
+</prototype>
+
 <prototype name="MPI_Group_incl" rtype="int" group="cg" guard="cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
     <param access="i" type_modifier="" type="int" name="n" />
@@ -3984,6 +4000,18 @@
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Intercomm_create_from_groups" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Group" name="local_group" />
+    <param access="i" type_modifier="" type="int" name="local_leader" />
+    <param access="i" type_modifier="" type="MPI_Group" name="remote_group" />
+    <param access="i" type_modifier="" type="int" name="remote_leader" />
+    <param access="i" type_modifier="const" type="char*" name="stringtag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newintercomm" />
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
@@ -5975,6 +6003,71 @@
       c_status_ptr = MPI_STATUS_IGNORE;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Session_call_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
+</prototype>
+
+<prototype name="MPI_Session_create_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session_errhandler_function*" name="session_errhandler_fn" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_finalize" rtype="int" group="env">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="MPI_Session*" name="session" />
+</prototype>
+
+<prototype name="MPI_Session_get_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_get_info" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info_used" />
+</prototype>
+
+<prototype name="MPI_Session_get_nth_pset" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="b" type_modifier="" type="int*" name="pset_len" />
+    <param access="o" type_modifier="" type="char*" name="pset_name" />
+</prototype>
+
+<prototype name="MPI_Session_get_num_psets" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="int*" name="npset_names" />
+</prototype>
+
+<prototype name="MPI_Session_get_pset_info" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="const" type="char*" name="pset_name" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info" />
+</prototype>
+
+<prototype name="MPI_Session_init" rtype="int" group="env">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Session*" name="session" />
+</prototype>
+
+<prototype name="MPI_Session_set_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
 </prototype>
 
 <prototype name="MPI_Sizeof" rtype="int" group="type" guard="extra,type" >

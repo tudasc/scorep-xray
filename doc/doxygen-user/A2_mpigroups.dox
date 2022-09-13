@@ -217,6 +217,10 @@ these groups are disabled as well.
   <td>CG_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Comm_create_from_group</td>
+  <td>CG</td>
+</tr>
+<tr>
   <td>MPI_Comm_create_group</td>
   <td>CG</td>
 </tr>
@@ -765,6 +769,10 @@ these groups are disabled as well.
   <td>CG</td>
 </tr>
 <tr>
+  <td>MPI_Group_from_session_pset</td>
+  <td>CG</td>
+</tr>
+<tr>
   <td>MPI_Group_incl</td>
   <td>CG</td>
 </tr>
@@ -934,6 +942,10 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Intercomm_create</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Intercomm_create_from_groups</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -1259,6 +1271,46 @@ these groups are disabled as well.
 <tr>
   <td>MPI_Sendrecv_replace</td>
   <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Session_call_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_create_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_finalize</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_info</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_nth_pset</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_num_psets</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_pset_info</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_init</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_set_errhandler</td>
+  <td>ENV</td>
 </tr>
 <tr>
   <td>MPI_Sizeof</td>
@@ -1691,6 +1743,7 @@ these groups are disabled as well.
 <tr><td>
 MPI_Comm_compare,
 MPI_Comm_create,
+MPI_Comm_create_from_group,
 MPI_Comm_create_group,
 MPI_Comm_dup,
 MPI_Comm_dup_with_info,
@@ -1709,6 +1762,7 @@ MPI_Group_compare,
 MPI_Group_difference,
 MPI_Group_excl,
 MPI_Group_free,
+MPI_Group_from_session_pset,
 MPI_Group_incl,
 MPI_Group_intersection,
 MPI_Group_range_excl,
@@ -1718,6 +1772,7 @@ MPI_Group_size,
 MPI_Group_translate_ranks,
 MPI_Group_union,
 MPI_Intercomm_create,
+MPI_Intercomm_create_from_groups,
 MPI_Intercomm_merge,
 </td></tr>
 </table>
@@ -1844,6 +1899,16 @@ MPI_Init_thread,
 MPI_Initialized,
 MPI_Is_thread_main,
 MPI_Query_thread,
+MPI_Session_call_errhandler,
+MPI_Session_create_errhandler,
+MPI_Session_finalize,
+MPI_Session_get_errhandler,
+MPI_Session_get_info,
+MPI_Session_get_nth_pset,
+MPI_Session_get_num_psets,
+MPI_Session_get_pset_info,
+MPI_Session_init,
+MPI_Session_set_errhandler,
 </td></tr>
 </table>
 

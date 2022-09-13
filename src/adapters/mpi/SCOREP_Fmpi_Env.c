@@ -111,6 +111,66 @@
  */
 #define MPI_Query_thread_U MPI_QUERY_THREAD
 
+/** @def MPI_Session_call_errhandler_U
+    Exchanges MPI_Session_call_errhandler_U with MPI_SESSION_CALL_ERRHANDLER.
+    It is used for the Fortran wrappers of MPI_Session_call_errhandler.
+ */
+#define MPI_Session_call_errhandler_U MPI_SESSION_CALL_ERRHANDLER
+
+/** @def MPI_Session_create_errhandler_U
+    Exchanges MPI_Session_create_errhandler_U with MPI_SESSION_CREATE_ERRHANDLER.
+    It is used for the Fortran wrappers of MPI_Session_create_errhandler.
+ */
+#define MPI_Session_create_errhandler_U MPI_SESSION_CREATE_ERRHANDLER
+
+/** @def MPI_Session_finalize_U
+    Exchanges MPI_Session_finalize_U with MPI_SESSION_FINALIZE.
+    It is used for the Fortran wrappers of MPI_Session_finalize.
+ */
+#define MPI_Session_finalize_U MPI_SESSION_FINALIZE
+
+/** @def MPI_Session_get_errhandler_U
+    Exchanges MPI_Session_get_errhandler_U with MPI_SESSION_GET_ERRHANDLER.
+    It is used for the Fortran wrappers of MPI_Session_get_errhandler.
+ */
+#define MPI_Session_get_errhandler_U MPI_SESSION_GET_ERRHANDLER
+
+/** @def MPI_Session_get_info_U
+    Exchanges MPI_Session_get_info_U with MPI_SESSION_GET_INFO.
+    It is used for the Fortran wrappers of MPI_Session_get_info.
+ */
+#define MPI_Session_get_info_U MPI_SESSION_GET_INFO
+
+/** @def MPI_Session_get_nth_pset_U
+    Exchanges MPI_Session_get_nth_pset_U with MPI_SESSION_GET_NTH_PSET.
+    It is used for the Fortran wrappers of MPI_Session_get_nth_pset.
+ */
+#define MPI_Session_get_nth_pset_U MPI_SESSION_GET_NTH_PSET
+
+/** @def MPI_Session_get_num_psets_U
+    Exchanges MPI_Session_get_num_psets_U with MPI_SESSION_GET_NUM_PSETS.
+    It is used for the Fortran wrappers of MPI_Session_get_num_psets.
+ */
+#define MPI_Session_get_num_psets_U MPI_SESSION_GET_NUM_PSETS
+
+/** @def MPI_Session_get_pset_info_U
+    Exchanges MPI_Session_get_pset_info_U with MPI_SESSION_GET_PSET_INFO.
+    It is used for the Fortran wrappers of MPI_Session_get_pset_info.
+ */
+#define MPI_Session_get_pset_info_U MPI_SESSION_GET_PSET_INFO
+
+/** @def MPI_Session_init_U
+    Exchanges MPI_Session_init_U with MPI_SESSION_INIT.
+    It is used for the Fortran wrappers of MPI_Session_init.
+ */
+#define MPI_Session_init_U MPI_SESSION_INIT
+
+/** @def MPI_Session_set_errhandler_U
+    Exchanges MPI_Session_set_errhandler_U with MPI_SESSION_SET_ERRHANDLER.
+    It is used for the Fortran wrappers of MPI_Session_set_errhandler.
+ */
+#define MPI_Session_set_errhandler_U MPI_SESSION_SET_ERRHANDLER
+
 /* lowercase defines */
 
 /** @def MPI_Finalize_L
@@ -160,6 +220,66 @@
     It is used for the Fortran wrappers of MPI_Query_thread.
  */
 #define MPI_Query_thread_L mpi_query_thread
+
+/** @def MPI_Session_call_errhandler_L
+    Exchanges MPI_Session_call_errhandler_L with mpi_session_call_errhandler.
+    It is used for the Fortran wrappers of MPI_Session_call_errhandler.
+ */
+#define MPI_Session_call_errhandler_L mpi_session_call_errhandler
+
+/** @def MPI_Session_create_errhandler_L
+    Exchanges MPI_Session_create_errhandler_L with mpi_session_create_errhandler.
+    It is used for the Fortran wrappers of MPI_Session_create_errhandler.
+ */
+#define MPI_Session_create_errhandler_L mpi_session_create_errhandler
+
+/** @def MPI_Session_finalize_L
+    Exchanges MPI_Session_finalize_L with mpi_session_finalize.
+    It is used for the Fortran wrappers of MPI_Session_finalize.
+ */
+#define MPI_Session_finalize_L mpi_session_finalize
+
+/** @def MPI_Session_get_errhandler_L
+    Exchanges MPI_Session_get_errhandler_L with mpi_session_get_errhandler.
+    It is used for the Fortran wrappers of MPI_Session_get_errhandler.
+ */
+#define MPI_Session_get_errhandler_L mpi_session_get_errhandler
+
+/** @def MPI_Session_get_info_L
+    Exchanges MPI_Session_get_info_L with mpi_session_get_info.
+    It is used for the Fortran wrappers of MPI_Session_get_info.
+ */
+#define MPI_Session_get_info_L mpi_session_get_info
+
+/** @def MPI_Session_get_nth_pset_L
+    Exchanges MPI_Session_get_nth_pset_L with mpi_session_get_nth_pset.
+    It is used for the Fortran wrappers of MPI_Session_get_nth_pset.
+ */
+#define MPI_Session_get_nth_pset_L mpi_session_get_nth_pset
+
+/** @def MPI_Session_get_num_psets_L
+    Exchanges MPI_Session_get_num_psets_L with mpi_session_get_num_psets.
+    It is used for the Fortran wrappers of MPI_Session_get_num_psets.
+ */
+#define MPI_Session_get_num_psets_L mpi_session_get_num_psets
+
+/** @def MPI_Session_get_pset_info_L
+    Exchanges MPI_Session_get_pset_info_L with mpi_session_get_pset_info.
+    It is used for the Fortran wrappers of MPI_Session_get_pset_info.
+ */
+#define MPI_Session_get_pset_info_L mpi_session_get_pset_info
+
+/** @def MPI_Session_init_L
+    Exchanges MPI_Session_init_L with mpi_session_init.
+    It is used for the Fortran wrappers of MPI_Session_init.
+ */
+#define MPI_Session_init_L mpi_session_init
+
+/** @def MPI_Session_set_errhandler_L
+    Exchanges MPI_Session_set_errhandler_L with mpi_session_set_errhandler.
+    It is used for the Fortran wrappers of MPI_Session_set_errhandler.
+ */
+#define MPI_Session_set_errhandler_L mpi_session_set_errhandler
 
 /**
  * @name Fortran wrappers
@@ -334,6 +454,213 @@ FSUB( MPI_Query_thread )( int* provided, int* ierr )
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_call_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_call_errhandler )( MPI_Session* session, int* errorcode, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_call_errhandler( *session, *errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_create_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_create_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_create_errhandler )( MPI_Session_errhandler_function* session_errhandler_fn, MPI_Errhandler* errhandler, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_create_errhandler( session_errhandler_fn, errhandler );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_FINALIZE )
+/**
+ * Measurement wrapper for MPI_Session_finalize
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_finalize )( MPI_Session* session, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_finalize( session );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_get_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_get_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_get_errhandler )( MPI_Session* session, MPI_Errhandler* errhandler, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_get_errhandler( *session, errhandler );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_info )
+/**
+ * Measurement wrapper for MPI_Session_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_get_info )( MPI_Session* session, MPI_Info* info_used, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_get_info( *session, info_used );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_NTH_PSET ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_nth_pset )
+/**
+ * Measurement wrapper for MPI_Session_get_nth_pset
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_get_nth_pset )( MPI_Session* session, MPI_Info* info, int* n, int* pset_len, char* pset_name, int* ierr, scorep_fortran_charlen_t pset_name_len )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    char*  c_pset_name     = NULL;
+    size_t c_pset_name_len = 0;
+    c_pset_name = ( char* )malloc( ( pset_name_len + 1 ) * sizeof( char ) );
+    if ( !c_pset_name )
+    {
+        exit( EXIT_FAILURE );
+    }
+
+
+
+    *ierr = MPI_Session_get_nth_pset( *session, *info, *n, pset_len, c_pset_name );
+
+
+    c_pset_name_len = strlen( c_pset_name );
+    memcpy( pset_name, c_pset_name, c_pset_name_len );
+    memset( pset_name + c_pset_name_len, ' ', pset_name_len - c_pset_name_len );
+    free( c_pset_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_NUM_PSETS ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_num_psets )
+/**
+ * Measurement wrapper for MPI_Session_get_num_psets
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_get_num_psets )( MPI_Session* session, MPI_Info* info, int* npset_names, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_get_num_psets( *session, *info, npset_names );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_PSET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_pset_info )
+/**
+ * Measurement wrapper for MPI_Session_get_pset_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_get_pset_info )( MPI_Session* session, char* pset_name, MPI_Info* info, int* ierr, scorep_fortran_charlen_t pset_name_len )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    char* c_pset_name = NULL;
+    c_pset_name = scorep_mpi_f2c_string( pset_name, pset_name_len );
+
+
+
+    *ierr = MPI_Session_get_pset_info( *session, c_pset_name, info );
+
+    free( c_pset_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_INIT )
+/**
+ * Measurement wrapper for MPI_Session_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_init )( MPI_Info* info, MPI_Errhandler* errhandler, MPI_Session* session, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_init( *info, *errhandler, session );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_set_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_set_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ */
+void
+FSUB( MPI_Session_set_errhandler )( MPI_Session* session, MPI_Errhandler* errhandler, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_set_errhandler( *session, *errhandler );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 
 #else /* !NEED_F2C_CONV */
 
@@ -490,6 +817,227 @@ FSUB( MPI_Query_thread )( MPI_Fint* provided, MPI_Fint* ierr )
 
 
     *ierr = MPI_Query_thread( provided );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_call_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_call_errhandler
+ */
+void
+FSUB( MPI_Session_call_errhandler )( MPI_Fint* session, MPI_Fint* errorcode, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_call_errhandler( *session, *errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_create_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_create_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_create_errhandler
+ */
+void
+FSUB( MPI_Session_create_errhandler )( void* session_errhandler_fn, void* errhandler, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_create_errhandler( ( MPI_Session_errhandler_function* )session_errhandler_fn, ( MPI_Errhandler* )errhandler );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_FINALIZE )
+/**
+ * Measurement wrapper for MPI_Session_finalize
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_finalize
+ */
+void
+FSUB( MPI_Session_finalize )( MPI_Fint* session, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_finalize( session );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_get_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_get_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_get_errhandler
+ */
+void
+FSUB( MPI_Session_get_errhandler )( MPI_Fint* session, void* errhandler, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_get_errhandler( *session, ( MPI_Errhandler* )errhandler );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_info )
+/**
+ * Measurement wrapper for MPI_Session_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_get_info
+ */
+void
+FSUB( MPI_Session_get_info )( MPI_Fint* session, MPI_Fint* info_used, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Info c_info_used;
+
+
+    *ierr = MPI_Session_get_info( *session, &c_info_used );
+
+    *info_used = PMPI_Info_c2f( c_info_used );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_NTH_PSET ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_nth_pset )
+/**
+ * Measurement wrapper for MPI_Session_get_nth_pset
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_get_nth_pset
+ */
+void
+FSUB( MPI_Session_get_nth_pset )( MPI_Fint* session, MPI_Fint* info, MPI_Fint* n, MPI_Fint* pset_len, char* pset_name, MPI_Fint* ierr, scorep_fortran_charlen_t pset_name_len )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    char*  c_pset_name     = NULL;
+    size_t c_pset_name_len = 0;
+    c_pset_name = ( char* )malloc( ( pset_name_len + 1 ) * sizeof( char ) );
+    if ( !c_pset_name )
+    {
+        exit( EXIT_FAILURE );
+    }
+
+
+
+    *ierr = MPI_Session_get_nth_pset( *session, PMPI_Info_f2c( *info ), *n, pset_len, c_pset_name );
+
+
+    c_pset_name_len = strlen( c_pset_name );
+    memcpy( pset_name, c_pset_name, c_pset_name_len );
+    memset( pset_name + c_pset_name_len, ' ', pset_name_len - c_pset_name_len );
+    free( c_pset_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_NUM_PSETS ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_num_psets )
+/**
+ * Measurement wrapper for MPI_Session_get_num_psets
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_get_num_psets
+ */
+void
+FSUB( MPI_Session_get_num_psets )( MPI_Fint* session, MPI_Fint* info, MPI_Fint* npset_names, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_get_num_psets( *session, PMPI_Info_f2c( *info ), npset_names );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_GET_PSET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_pset_info )
+/**
+ * Measurement wrapper for MPI_Session_get_pset_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_get_pset_info
+ */
+void
+FSUB( MPI_Session_get_pset_info )( MPI_Fint* session, char* pset_name, MPI_Fint* info, MPI_Fint* ierr, scorep_fortran_charlen_t pset_name_len )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    char*    c_pset_name = NULL;
+    MPI_Info c_info;
+    c_pset_name = scorep_mpi_f2c_string( pset_name, pset_name_len );
+
+
+
+    *ierr = MPI_Session_get_pset_info( *session, c_pset_name, &c_info );
+
+    free( c_pset_name );
+    *info = PMPI_Info_c2f( c_info );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_INIT )
+/**
+ * Measurement wrapper for MPI_Session_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_init
+ */
+void
+FSUB( MPI_Session_init )( MPI_Fint* info, void* errhandler, MPI_Fint* session, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_init( PMPI_Info_f2c( *info ), *( ( MPI_Errhandler* )errhandler ), session );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_SESSION_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_set_errhandler )
+/**
+ * Measurement wrapper for MPI_Session_set_errhandler
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup env
+ * For the order of events see @ref MPI_Session_set_errhandler
+ */
+void
+FSUB( MPI_Session_set_errhandler )( MPI_Fint* session, void* errhandler, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Session_set_errhandler( *session, *( ( MPI_Errhandler* )errhandler ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

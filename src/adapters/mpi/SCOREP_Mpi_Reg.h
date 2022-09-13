@@ -311,6 +311,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_COMM_CREATE,
     /** Score-P region ID for MPI_Comm_create_errhandler */
     SCOREP_MPI_REGION__MPI_COMM_CREATE_ERRHANDLER,
+    /** Score-P region ID for MPI_Comm_create_from_group */
+    SCOREP_MPI_REGION__MPI_COMM_CREATE_FROM_GROUP,
     /** Score-P region ID for MPI_Comm_create_group */
     SCOREP_MPI_REGION__MPI_COMM_CREATE_GROUP,
     /** Score-P region ID for MPI_Comm_create_keyval */
@@ -585,6 +587,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_GROUP_F2C,
     /** Score-P region ID for MPI_Group_free */
     SCOREP_MPI_REGION__MPI_GROUP_FREE,
+    /** Score-P region ID for MPI_Group_from_session_pset */
+    SCOREP_MPI_REGION__MPI_GROUP_FROM_SESSION_PSET,
     /** Score-P region ID for MPI_Group_incl */
     SCOREP_MPI_REGION__MPI_GROUP_INCL,
     /** Score-P region ID for MPI_Group_intersection */
@@ -671,6 +675,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_INITIALIZED,
     /** Score-P region ID for MPI_Intercomm_create */
     SCOREP_MPI_REGION__MPI_INTERCOMM_CREATE,
+    /** Score-P region ID for MPI_Intercomm_create_from_groups */
+    SCOREP_MPI_REGION__MPI_INTERCOMM_CREATE_FROM_GROUPS,
     /** Score-P region ID for MPI_Intercomm_merge */
     SCOREP_MPI_REGION__MPI_INTERCOMM_MERGE,
     /** Score-P region ID for MPI_Iprobe */
@@ -833,6 +839,26 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_SENDRECV,
     /** Score-P region ID for MPI_Sendrecv_replace */
     SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE,
+    /** Score-P region ID for MPI_Session_call_errhandler */
+    SCOREP_MPI_REGION__MPI_SESSION_CALL_ERRHANDLER,
+    /** Score-P region ID for MPI_Session_create_errhandler */
+    SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER,
+    /** Score-P region ID for MPI_Session_finalize */
+    SCOREP_MPI_REGION__MPI_SESSION_FINALIZE,
+    /** Score-P region ID for MPI_Session_get_errhandler */
+    SCOREP_MPI_REGION__MPI_SESSION_GET_ERRHANDLER,
+    /** Score-P region ID for MPI_Session_get_info */
+    SCOREP_MPI_REGION__MPI_SESSION_GET_INFO,
+    /** Score-P region ID for MPI_Session_get_nth_pset */
+    SCOREP_MPI_REGION__MPI_SESSION_GET_NTH_PSET,
+    /** Score-P region ID for MPI_Session_get_num_psets */
+    SCOREP_MPI_REGION__MPI_SESSION_GET_NUM_PSETS,
+    /** Score-P region ID for MPI_Session_get_pset_info */
+    SCOREP_MPI_REGION__MPI_SESSION_GET_PSET_INFO,
+    /** Score-P region ID for MPI_Session_init */
+    SCOREP_MPI_REGION__MPI_SESSION_INIT,
+    /** Score-P region ID for MPI_Session_set_errhandler */
+    SCOREP_MPI_REGION__MPI_SESSION_SET_ERRHANDLER,
     /** Score-P region ID for MPI_Sizeof */
     SCOREP_MPI_REGION__MPI_SIZEOF,
     /** Score-P region ID for MPI_Ssend */
