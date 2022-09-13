@@ -647,6 +647,8 @@ enum scorep_mpi_regions
     SCOREP_MPI_REGION__MPI_INFO_C2F,
     /** Score-P region ID for MPI_Info_create */
     SCOREP_MPI_REGION__MPI_INFO_CREATE,
+    /** Score-P region ID for MPI_Info_create_env */
+    SCOREP_MPI_REGION__MPI_INFO_CREATE_ENV,
     /** Score-P region ID for MPI_Info_delete */
     SCOREP_MPI_REGION__MPI_INFO_DELETE,
     /** Score-P region ID for MPI_Info_dup */

@@ -1,5 +1,5 @@
 
-<prototypes count="426" family="mpi" >
+<prototypes count="427" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -3903,6 +3903,13 @@
 <prototype name="MPI_Info_create" rtype="int" group="misc" guard="extra,misc" >
     <param access="o" type_modifier="" type="MPI_Info*" name="info" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Info_create_env" rtype="int" group="misc" guard="extra,misc">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="int" name="argc" />
+    <param access="b" type_modifier="" type="char*" name="argv" suffix="[]" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info" />
 </prototype>
 
 <prototype name="MPI_Info_delete" rtype="int" group="misc" guard="extra,misc" >

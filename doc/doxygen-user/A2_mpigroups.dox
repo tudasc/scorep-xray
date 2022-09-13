@@ -889,6 +889,10 @@ these groups are disabled as well.
   <td>MISC</td>
 </tr>
 <tr>
+  <td>MPI_Info_create_env</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Info_delete</td>
   <td>MISC</td>
 </tr>
@@ -2047,6 +2051,7 @@ MPI_Get_address,
 MPI_Get_version,
 MPI_Info_c2f,
 MPI_Info_create,
+MPI_Info_create_env,
 MPI_Info_delete,
 MPI_Info_dup,
 MPI_Info_f2c,
