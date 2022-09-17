@@ -26,7 +26,7 @@ scorep_have_kokkos_reason=""
 
 AS_IF([test "x$enable_shared" = xyes],
       [scorep_have_kokkos="yes"],
-      [scorep_have_kokkos="no",
+      [scorep_have_kokkos="no"
        scorep_have_kokkos_reason=", configure with --enable-shared"])
 
 AC_SCOREP_COND_HAVE([KOKKOS_SUPPORT],
