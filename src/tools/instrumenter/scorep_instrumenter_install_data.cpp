@@ -104,7 +104,9 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
-#if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
+#if SCOREP_BACKEND_COMPILER_CC_INTEL || \
+    SCOREP_BACKEND_COMPILER_CXX_INTEL || \
+    SCOREP_BACKEND_COMPILER_FC_INTEL
     /* We are responsible for the final space character. */
     return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" ";
 #endif
@@ -134,8 +136,7 @@ SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 #elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
     return arg == "-Free";
 #elif SCOREP_BACKEND_COMPILER_FC_CLANG
-    /* No Fortran support yet */
-    return false;
+    return arg == "-Mfree" || arg == "-Mfreeform";
 #else
 #error Compiler not handled
 #endif
@@ -156,12 +157,11 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 #elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
     return arg == "-nofree";
 #elif SCOREP_BACKEND_COMPILER_FC_PGI
-    return arg == "-Mnofree" || arg == "-Mnofreeform";
+    return arg == "-Mfixed" || arg == "-Mnofree" || arg == "-Mnofreeform";
 #elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
     return arg == "-Fixed";
 #elif SCOREP_BACKEND_COMPILER_FC_CLANG
-    /* No Fortran support yet */
-    return false;
+    return arg == "-Mfixed" || arg == "-Mnofree" || arg == "-Mnofreeform";
 #else
 #error Compiler not handled
 #endif
@@ -173,9 +173,15 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-#if SCOREP_BACKEND_COMPILER_CC_GNU || SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CC_CLANG
+#if SCOREP_BACKEND_COMPILER_CC_GNU || \
+    SCOREP_BACKEND_COMPILER_CC_INTEL || \
+    SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI || \
+    SCOREP_BACKEND_COMPILER_CC_CLANG
     return "-E -o " + output_file;
-#elif SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CC_FUJITSU
+#elif SCOREP_BACKEND_COMPILER_CC_CRAY || \
+    SCOREP_BACKEND_COMPILER_CC_IBM || \
+    SCOREP_BACKEND_COMPILER_CC_PGI || \
+    SCOREP_BACKEND_COMPILER_CC_FUJITSU
     return "-E > " + output_file;
 #else
 #error Compiler not handled
@@ -186,9 +192,15 @@ std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-#if SCOREP_BACKEND_COMPILER_CXX_GNU || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_CXX_CLANG
+#if SCOREP_BACKEND_COMPILER_CXX_GNU || \
+    SCOREP_BACKEND_COMPILER_CXX_INTEL || \
+    SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI || \
+    SCOREP_BACKEND_COMPILER_CXX_PGI || \
+    SCOREP_BACKEND_COMPILER_CXX_CLANG
     return "-E -o " + output_file;
-#elif SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_CXX_FUJITSU
+#elif SCOREP_BACKEND_COMPILER_CXX_CRAY || \
+    SCOREP_BACKEND_COMPILER_CXX_IBM || \
+    SCOREP_BACKEND_COMPILER_CXX_FUJITSU
     return "-E > " + output_file;
 #else
 #error Compiler not handled
@@ -211,11 +223,12 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
     std::string prep_file_v13 = "F" + basename + ".f";
     std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
     return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
-#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI || SCOREP_BACKEND_COMPILER_FC_PGI || SCOREP_BACKEND_COMPILER_FC_FUJITSU
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || \
+    SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI || \
+    SCOREP_BACKEND_COMPILER_FC_PGI || \
+    SCOREP_BACKEND_COMPILER_FC_FUJITSU || \
+    SCOREP_BACKEND_COMPILER_FC_CLANG
     return "-E > " + output_file;
-#elif SCOREP_BACKEND_COMPILER_FC_CLANG
-    /* No Fortran support yet */
-    return "";
 #else
 #error Compiler not handled
 #endif

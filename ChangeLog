@@ -33,6 +33,8 @@ Features and improvements:
   via `--with-nocross-compiler-suite=nvhpc`.
 - Add proper support for Intel oneAPI compilers to build system
   via `--with-nocross-compiler-suite=oneapi`.
+- Add proper support for AMD ROCm compilers to build system via
+  `--with-nocross-compiler-suite=amdclang`.
 - Add events for communicator creation and destruction to Score-P
   corresponding to the new records in OTF2 3.0.
 - Add Fortran TYPE(C_PTR) overload wrappers to the MPI adapter for
