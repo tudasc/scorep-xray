@@ -51,7 +51,8 @@ include build-config/common/platforms.am
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST += $(srcdir)/OPEN_ISSUES                                       \
+EXTRA_DIST += $(srcdir)/README.md                                         \
+              $(srcdir)/OPEN_ISSUES                                       \
               $(srcdir)/THANKS                                            \
               $(srcdir)/build-config/downloads                            \
               $(srcdir)/doc/doxygen-user/main_1.dox.in                    \
