@@ -51,8 +51,12 @@ libscorep_measurement_la_LIBADD += \
 libscorep_measurement_la_LDFLAGS += \
     @SCOREP_LIBBFD_LDFLAGS@
 
-FILES_THAT_INCLUDE_LIBUNDWIND_H += \
-    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_mgmt.h
+FILES_THAT_INCLUDE_LIBUNWIND_H += \
+    $(SRC_ROOT)src/services/unwinding/SCOREP_Unwinding.c \
+    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_cpu.c \
+    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_gpu.c \
+    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_region.c \
+    $(SRC_ROOT)src/services/unwinding/scorep_unwinding_unify.c
 
 else !HAVE_UNWINDING_SUPPORT
 
