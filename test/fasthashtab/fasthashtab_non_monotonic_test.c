@@ -27,8 +27,8 @@
 
 /************************** table *********************************************/
 
-typedef uint32_t table_key_t;
-typedef uint32_t table_value_t;
+typedef uint64_t table_key_t;
+typedef uint64_t table_value_t;
 
 #define TABLE_HASH_EXPONENT 8
 
