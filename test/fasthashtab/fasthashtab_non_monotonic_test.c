@@ -104,7 +104,7 @@ test_01( CuTest* tc )
 static void
 test_02( CuTest* tc )
 {
-    uint32_t value = 0;
+    table_key_t value = 0;
     CuAssertTrue( tc, !table_get( value, &value ) );
     CuAssertIntEquals( tc, 0, count() );
 }
@@ -112,9 +112,9 @@ test_02( CuTest* tc )
 static void
 test_03( CuTest* tc )
 {
-    uint32_t key = 0;
+    table_key_t key = 0;
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -125,9 +125,9 @@ test_03( CuTest* tc )
 static void
 test_04( CuTest* tc )
 {
-    uint32_t key = 0;
+    table_key_t key = 0;
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, !inserted );
     CuAssertIntEquals( tc, 1, count() );
 }
@@ -135,8 +135,8 @@ test_04( CuTest* tc )
 static void
 test_05( CuTest* tc )
 {
-    uint32_t key = 0;
-    uint32_t value;
+    table_key_t key = 0;
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 1, count() );
@@ -145,9 +145,9 @@ test_05( CuTest* tc )
 static void
 test_06( CuTest* tc )
 {
-    uint32_t key = 1;
+    table_key_t key = 1;
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -158,9 +158,9 @@ test_06( CuTest* tc )
 static void
 test_07( CuTest* tc )
 {
-    uint32_t key = hashsize( TABLE_HASH_EXPONENT );
+    table_key_t key = hashsize( TABLE_HASH_EXPONENT );
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -171,8 +171,8 @@ test_07( CuTest* tc )
 static void
 test_08( CuTest* tc )
 {
-    uint32_t key = 0;
-    uint32_t value;
+    table_key_t key = 0;
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 3, count() );
@@ -181,8 +181,8 @@ test_08( CuTest* tc )
 static void
 test_09( CuTest* tc )
 {
-    uint32_t key = hashsize( TABLE_HASH_EXPONENT );
-    uint32_t value;
+    table_key_t key = hashsize( TABLE_HASH_EXPONENT );
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 3, count() );
@@ -191,7 +191,7 @@ test_09( CuTest* tc )
 static void
 test_10( CuTest* tc )
 {
-    uint32_t key = 2;
+    table_key_t key = 2;
     CuAssertTrue( tc, !table_remove( key ) );
     CuAssertIntEquals( tc, 3, count() );
 }
@@ -199,10 +199,10 @@ test_10( CuTest* tc )
 static void
 test_11( CuTest* tc )
 {
-    uint32_t key = 1;
+    table_key_t key = 1;
     CuAssertTrue( tc, table_remove( key ) );
     CuAssertIntEquals( tc, 2, count() );
-    uint32_t value;
+    table_value_t value;
     CuAssertTrue( tc, !table_get( key, &value ) );
     CuAssertIntEquals( tc, 2, count() );
 }
@@ -210,9 +210,9 @@ test_11( CuTest* tc )
 static void
 test_12( CuTest* tc )
 {
-    uint32_t key = 1;
+    table_key_t key = 1;
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -223,10 +223,10 @@ test_12( CuTest* tc )
 static void
 test_13( CuTest* tc )
 {
-    uint32_t key = hashsize( TABLE_HASH_EXPONENT );
+    table_key_t key = hashsize( TABLE_HASH_EXPONENT );
     CuAssertTrue( tc, table_remove( key ) );
     CuAssertIntEquals( tc, 2, count() );
-    uint32_t value;
+    table_value_t value;
     CuAssertTrue( tc, !table_get( key, &value ) );
     CuAssertIntEquals( tc, 2, count() );
 }
@@ -234,9 +234,9 @@ test_13( CuTest* tc )
 static void
 test_14( CuTest* tc )
 {
-    uint32_t key = 2 * hashsize( TABLE_HASH_EXPONENT );
+    table_key_t key = 2 * hashsize( TABLE_HASH_EXPONENT );
     bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_value_t value = table_get_and_insert( key, &key, &inserted );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
