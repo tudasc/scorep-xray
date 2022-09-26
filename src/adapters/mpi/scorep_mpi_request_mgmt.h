@@ -257,11 +257,16 @@ void
 scorep_mpi_request_free( scorep_mpi_request* req );
 
 /**
+ * @brief Use as the flag argument of @ref scorep_mpi_check_all_or_test_all and @ref scorep_mpi_check_all_or_none.
+ */
+static const int REQUESTS_COMPLETED = 1;
+
+/**
  * @brief Either check all or test all of the saved requests.
  *
  * @param count Number of saved requests to check or test.
  * @param flag The 'flag' argument of MPI_Test|MPI_Testall.
- * @param arry_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
+ * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
  *
  * Assumes that the requests have been saved by a call to @ref scorep_mpi_save_request_array(..., count) before.
  * Assumes that:
@@ -278,7 +283,7 @@ scorep_mpi_check_all_or_test_all( int         count,
  *
  * @param count Number of saved requests to check.
  * @param flag The 'flag' argument of MPI_Test|MPI_Testall.
- * @param arry_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
+ * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)_all, or the 'status' argument of MPI_(Test|Wait).
  *
  * Assumes that the requests have been saved by a call to @ref scorep_mpi_save_request_array(..., count) before.
  * Assumes that:
@@ -299,7 +304,7 @@ scorep_mpi_check_all_or_none( int         count,
  * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)some: Statuses of completed requests.
  *
  * Assumes that the input requests have been saved by a call to @ref scorep_mpi_save_request_array(..., incount) before.
- * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, arry_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
+ * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, array_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
  * Assumes that the first outcount entries in array_of_indices denote all completed operations for which the corresponding saved active requests have been deallocated/marked inactive by MPI_(Test|Wait)[any|some] (For MPI_(Test|Wait)any, the arrays are of lenght one). For those requests, @ref scorep_mpi_check_request is called. For all other saved requests, @ref scorep_mpi_request_tested is called.
  */
 void
@@ -317,7 +322,7 @@ scorep_mpi_check_some_test_some( int         incount,
  * @param array_of_statuses The 'array_of_statuses' argument of MPI_(Test|Wait)some: Statuses of completed requests.
  *
  * Assumes that the input requests have been saved by a call to @ref scorep_mpi_save_request_array(..., incount) before.
- * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, arry_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
+ * Assumes that outcount != MPI_UNDEFINED. If outcount == 0, the contents of array_of_indices, array_of_statuses are ignored (array_of_indices is allowed to contain MPI_UNDEFINED).
  * Assumes that the first outcount entries in array_of_indices denote all completed operations for which the corresponding saved active requests have been deallocated/marked inactive by MPI_(Test|Wait)[any|some] (For MPI_(Test|Wait)any, the arrays are of lenght one). For those requests, @ref scorep_mpi_check_request is called. Nothing is done for the other requests.
  */
 void

@@ -118,7 +118,7 @@ MPI_Wait( MPI_Request* request,
     return_val = PMPI_Wait( request, status );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    scorep_mpi_check_all_or_none( 1, 1, status );
+    scorep_mpi_check_all_or_none( 1, REQUESTS_COMPLETED, status );
 
     if ( event_gen_active )
     {
@@ -185,7 +185,7 @@ MPI_Waitall( int          count,
     return_val = PMPI_Waitall( count, requests, array_of_statuses );
     SCOREP_EXIT_WRAPPED_REGION();
 
-    scorep_mpi_check_all_or_none( count, 1, array_of_statuses );
+    scorep_mpi_check_all_or_none( count, REQUESTS_COMPLETED, array_of_statuses );
 
     if ( event_gen_active )
     {
