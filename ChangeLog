@@ -52,6 +52,11 @@ Compatibility:
   C++98 to C++11.
 - For building scorep-score, use CC and CXX provided by cubelib-config
   but allow for individual flags via (C|CXX|LD)FLAGS_FOR_BUILD_SCORE.
+- For building the library-wrapper generator used by `scorep-libwrap-init`,
+  use CC and CXX provided by `llvm-config` or via `(CC|CXX)_FOR_BUILD_LIBWRAP`.
+  Additionally, allow for individual flags via
+  `((CPP|C|CXX|LD)FLAGS|LIBS)_FOR_BUILD_LIBWRAP`. The latter supersedes the
+  previous `LIBCLANG_((CPP|CXX|LD)FLAGS|LIBS)`.
 
 Bugfixes:
 

@@ -442,14 +442,24 @@ variables:
   LIBS_FOR_BUILD
               libraries to pass to the linker for the frontend build, e.g.
               -l<library>
-  LIBCLANG_CPPFLAGS
-              Additional C preprocessor flags when compiling against libclang
-  LIBCLANG_CXXFLAGS
-              Additional C++ compile flags when compiling against libclang
-  LIBCLANG_LDFLAGS
-              Additional linker flags when linking against libclang
-  LIBCLANG_LIBS
-              Additional libs when linking against libclang
+  CC_FOR_BUILD_LIBWRAP
+              C compiler used for building library wrapper generator. Defaults
+              to CC from llvm-config or gcc.
+  CXX_FOR_BUILD_LIBWRAP
+              C++ compiler used for building library wrapper generator.
+              Defaults to CXX from llvm-config or g++.
+  CPPFLAGS_FOR_BUILD_LIBWRAP
+              C preprocesser flags for building library wrapper generator.
+              Will be amended with 'llvm-config --cppflags'.
+  CFLAGS_FOR_BUILD_LIBWRAP
+              C compiler flags for building library wrapper generator.
+  CXXFLAGS_FOR_BUILD_LIBWRAP
+              C++ compiler flags for building library wrapper generator.
+  LDFLAGS_FOR_BUILD_LIBWRAP
+              Linker flags for building library wrapper generator.
+  LIBS_FOR_BUILD_LIBWRAP
+              Libraries for building library wrapper generator. Will be
+              amended with '-lclang'.
   MPICC       MPI C compiler command
   MPICXX      MPI C++ compiler command
   MPIF77      MPI Fortran 77 compiler command
