@@ -40,6 +40,7 @@ external_libadd = \
 external_ldflags = \
     @OTF2_LDFLAGS@        \
     @SCOREP_LIBBFD_LDFLAGS@      \
+    @SCOREP_LIBUNWIND_LDFLAGS@      \
     @SCOREP_PAPI_LDFLAGS@ \
     @CUBEW_LDFLAGS@ \
     @CUDA_LDFLAGS@        \
