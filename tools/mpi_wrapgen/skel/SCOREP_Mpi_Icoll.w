@@ -20,7 +20,8 @@ ${proto:c}
   const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
   SCOREP_MpiRequestId reqid;
-  ${decl}
+
+  uint64_t sendbytes = 0, recvbytes = 0;
 
   if (event_gen_active)
     {
@@ -28,7 +29,7 @@ ${proto:c}
       SCOREP_MPI_EVENT_GEN_OFF();
       if (event_gen_active_for_group)
         {
-          ${xblock}
+          ${mpi:sendrecvbytes}
 
           SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
           SCOREP_MpiNonBlockingCollectiveRequest(reqid);
@@ -50,7 +51,7 @@ ${proto:c}
           if (return_val == MPI_SUCCESS)
           {
             scorep_mpi_request_icoll_create(*request, SCOREP_MPI_REQUEST_FLAG_NONE, SCOREP_MPI_COLLECTIVE__${name|uppercase},
-                                root_loc, ${mpi:sendcount}, ${mpi:recvcount}, comm, reqid);
+                                ${root}, sendbytes, recvbytes, comm, reqid);
           }
           SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
         }

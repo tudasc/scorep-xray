@@ -388,9 +388,20 @@ comm_parent_handle
     const SCOREP::Wrapgen::Func& func
 );
 
-
 std::string
 group_new
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+sendrecvbytes
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+root
 (
     const SCOREP::Wrapgen::Func& func
 );
