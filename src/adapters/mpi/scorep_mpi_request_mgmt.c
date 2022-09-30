@@ -585,7 +585,9 @@ scorep_mpi_request_free( scorep_mpi_request* req )
 
 
 void
-scorep_mpi_check_all_or_test_all( int count, int flag, MPI_Status* array_of_statuses )
+scorep_mpi_check_all_or_test_all( int         count,
+                                  int         flag,
+                                  MPI_Status* array_of_statuses )
 {
     if ( flag )
     {
@@ -609,7 +611,9 @@ scorep_mpi_check_all_or_test_all( int count, int flag, MPI_Status* array_of_stat
 }
 
 void
-scorep_mpi_check_all_or_none( int count, int flag, MPI_Status* array_of_statuses )
+scorep_mpi_check_all_or_none( int         count,
+                              int         flag,
+                              MPI_Status* array_of_statuses )
 {
     if ( flag )
     {
@@ -624,7 +628,10 @@ scorep_mpi_check_all_or_none( int count, int flag, MPI_Status* array_of_statuses
 }
 
 void
-scorep_mpi_check_some_test_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+scorep_mpi_check_some_test_some( int         incount,
+                                 int         outcount,
+                                 int*        array_of_indices,
+                                 MPI_Status* array_of_statuses )
 {
     /* For all requests in the input array_of_requests, do one of two things:
      * 1. Process the request if it has been been completed by the MPI_Waitsome
@@ -690,7 +697,10 @@ scorep_mpi_check_some_test_some( int incount, int outcount, int* array_of_indice
 }
 
 void
-scorep_mpi_check_some( int incount, int outcount, int* array_of_indices, MPI_Status* array_of_statuses )
+scorep_mpi_check_some( int         incount,
+                       int         outcount,
+                       int*        array_of_indices,
+                       MPI_Status* array_of_statuses )
 {
     for ( int j  = 0; j < outcount; ++j )
     {
