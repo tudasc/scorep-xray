@@ -71,9 +71,8 @@ SCOREP_COMPILER_CYG_PROFILE_FUNC_ENTER( void* func,
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
-    bool                   ignored = false;
-    func_addr_hash_value_t value;
-    value = func_addr_hash_get_and_insert( ( uintptr_t )func, NULL, &ignored );
+    func_addr_hash_value_t value = { SCOREP_INVALID_REGION, 0 };
+    func_addr_hash_get_and_insert( ( uintptr_t )func, NULL, &value );
     if ( value.region != SCOREP_FILTERED_REGION )
     {
         UTILS_DEBUG( "Enter %" PRIuPTR ": %s@%s:%d",

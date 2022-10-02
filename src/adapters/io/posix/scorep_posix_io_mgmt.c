@@ -438,8 +438,8 @@ void
 scorep_posix_io_aio_request_insert( const struct aiocb*    aiocbp,
                                     SCOREP_IoOperationMode mode )
 {
-    bool ignored;
-    aio_request_table_get_and_insert( aiocbp, &mode, &ignored );
+    aio_request_table_value_t value;
+    aio_request_table_get_and_insert( aiocbp, &mode, &value );
 }
 
 bool

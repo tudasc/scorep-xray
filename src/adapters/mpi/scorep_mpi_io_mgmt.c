@@ -135,8 +135,8 @@ scorep_mpi_io_split_begin( SCOREP_IoHandleHandle ioHandle,
         .is_active   = false     /* newly ctored objects are not active */
     };
 
-    bool                   inserted;
-    io_split_table_value_t split_op = io_split_table_get_and_insert( ioHandle, &io_split_ctor_data, &inserted );
+    io_split_table_value_t split_op = NULL;
+    io_split_table_get_and_insert( ioHandle, &io_split_ctor_data, &split_op );
 
     UTILS_BUG_ON( split_op->is_active, "Already active split I/O operation on handle %u", ioHandle );
 

@@ -293,8 +293,8 @@ scorep_cuda_nvtx_unicode_to_ascii( const wchar_t* wide )
         .wide_string = wide
     };
 
-    bool                ignored;
-    SCOREP_StringHandle string = widestring_table_get_and_insert( key, &bytes, &ignored );
+    SCOREP_StringHandle string = SCOREP_INVALID_STRING;
+    widestring_table_get_and_insert( key, &bytes, &string );
 
     return SCOREP_StringHandle_Get( string );
 }
@@ -376,8 +376,10 @@ scorep_cuda_nvtx_get_user_region( nvtxDomainHandle_t           domain,
         .region_name = name
     };
 
-    bool ignored;
-    return region_table_get_and_insert( key, NULL, &ignored );
+    SCOREP_RegionHandle region = SCOREP_INVALID_REGION;
+    region_table_get_and_insert( key, NULL, &region );
+
+    return region;
 }
 
 void
@@ -425,8 +427,8 @@ scorep_cuda_nvtx_name_category( nvtxDomainHandle_t domain,
         .category = category
     };
 
-    bool                ignored;
-    SCOREP_StringHandle string = category_table_get_and_insert( key, &name, &ignored );
+    SCOREP_StringHandle string = SCOREP_INVALID_STRING;
+    category_table_get_and_insert( key, &name, &string );
 }
 
 void

@@ -28,6 +28,22 @@ fasthashtab_monotonic_test_CPPFLAGS = \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_DIR_COMMON_CUTEST)
 
+check_PROGRAMS += fasthashtab_monotonic_jenkins_test
+fasthashtab_monotonic_jenkins_test_SOURCES = \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_monotonic_test.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
+fasthashtab_monotonic_jenkins_test_LDADD = \
+    $(LIB_ROOT)libutils.la
+fasthashtab_monotonic_jenkins_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_MEASUREMENT) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_COMMON_CUTEST) \
+    -DUSE_JENKINS
+
 check_PROGRAMS += fasthashtab_non_monotonic_test
 fasthashtab_non_monotonic_test_SOURCES = \
     $(SRC_ROOT)test/fasthashtab/fasthashtab_non_monotonic_test.c \
@@ -61,5 +77,6 @@ fasthashtab_non_monotonic_jenkins_test_CPPFLAGS = \
 
 TESTS_SERIAL += \
     fasthashtab_monotonic_test \
+    fasthashtab_monotonic_jenkins_test \
     fasthashtab_non_monotonic_test \
     fasthashtab_non_monotonic_jenkins_test
