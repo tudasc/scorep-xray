@@ -46,6 +46,14 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
 
 #include "jenkins_hash.h"
 
+#if WORDS_BIGENDIAN
+# define HASH_LITTLE_ENDIAN 0
+# define HASH_BIG_ENDIAN 1
+#else
+# define HASH_LITTLE_ENDIAN 1
+# define HASH_BIG_ENDIAN 0
+#endif
+
 /*
 --------------------------------------------------------------------
  This works on all machines.  To be useful, it requires
