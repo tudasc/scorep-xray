@@ -34,14 +34,6 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 )
 AC_LANG_POP([C])
 
-AS_IF([test "x${ac_scorep_platform}" = xk ||
-       test "x${ac_scorep_platform}" = xfx10 ||
-       test "x${ac_scorep_platform}" = xfx100],
-    [# Can't get OPENMP_TPD working reliably on Fujitsu. Compiler options
-     # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD.
-     # Using OpenMP_ANCESTRY as alternative.
-     scorep_has_alignment_attribute="no"])
-
 AS_CASE([${ac_scorep_platform}],
     [bg*], [# Switch of tpd on BlueGene systems because:
             # 1. On Juqueen with gfortan all OpenMP tpd installchecks fail,
@@ -53,7 +45,17 @@ AS_CASE([${ac_scorep_platform}],
             #      _Pragma( "omp threadprivate( pomp_tpd )" )
             #      int64_t __attribute__((aligned (16))) pomp_tpd;
             #    Newer xlc (e.g. V13.1.4) work as expected.
-            scorep_has_alignment_attribute="no"])
+            scorep_has_alignment_attribute="no"],
+    [k|fx10|fx100],
+    [# Can't get OPENMP_TPD working reliably on Fujitsu. Compiler options
+     # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD.
+     # Using OpenMP_ANCESTRY as alternative.
+     scorep_has_alignment_attribute="no"])
+
+AS_CASE([${ax_cv_c_compiler_vendor}],
+    [intel/oneapi],
+    [# Don't get it working, pomp_tpd is non-TLS in Fortran code.
+     scorep_has_alignment_attribute="no"])
 
 AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],
     [AC_DEFINE([FORTRAN_ALIGNED],
