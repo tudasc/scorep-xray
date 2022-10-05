@@ -39,7 +39,8 @@ public:
     printHelp( void ) override;
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
 
     void
     checkObjects( SCOREP_Instrumenter& instrumenter ) override;

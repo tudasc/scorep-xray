@@ -1,51 +1,22 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
- * RWTH Aachen University, Germany
- *
- * Copyright (c) 2009-2012,
- * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *
- * Copyright (c) 2009-2012, 2015-2016, 2020,
- * Technische Universitaet Dresden, Germany
- *
- * Copyright (c) 2009-2012,
- * University of Oregon, Eugene, USA
- *
- * Copyright (c) 2009-2013, 2020-2021,
+ * Copyright (c) 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
- *
- * Copyright (c) 2009-2012,
- * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *
- * Copyright (c) 2009-2012,
- * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  */
 
-#if !defined( SCOREP_COMPILER_GNU_FUNC_ENTER ) || !defined( SCOREP_COMPILER_GNU_FUNC_EXIT )
-#error SCOREP_COMPILER_GNU_FUNC_ENTER and SCOREP_COMPILER_GNU_FUNC_EXIT must be #defined before including this template
-#endif
+#ifndef SCOREP_COMPILER_FUNC_ADDR_HASH_INC_C
+#define SCOREP_COMPILER_FUNC_ADDR_HASH_INC_C
 
-/**
- * @file
- *
- * @brief Template for common compiler instrumention APIs
- */
-
-#include "scorep_compiler_gnu.h"
+#include "scorep_compiler_func_addr_hash.h"
 #include "scorep_compiler_demangle.h"
-#include <SCOREP_Addr2line.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Events.h>
+
 #include <SCOREP_FastHashtab.h>
-#include <SCOREP_Filtering.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Addr2line.h>
 
 #include <jenkins_hash.h>
 
@@ -53,9 +24,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <fnmatch.h>
 
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
-#include <UTILS_Debug.h>
+/* Hash table for compiler instrumentation address lookup. The
+   hashtable has 512 buckets, each chunk contains up to 3 key-value
+   pairs. The hash table starts empty and gets filled at
+   enter-function events. */
 
 typedef uintptr_t                     func_addr_hash_key_t;
 typedef struct func_addr_hash_value_t func_addr_hash_value_t;
@@ -64,121 +38,6 @@ struct func_addr_hash_value_t
     SCOREP_RegionHandle region;
     uint16_t            so_token;
 };
-
-/* *INDENT-OFF* */
-static inline func_addr_hash_value_t func_addr_hash_get_and_insert( func_addr_hash_key_t key, void* ctorData, bool* inserted );
-static inline bool func_addr_hash_get( func_addr_hash_key_t key, func_addr_hash_value_t* value );
-static inline bool func_addr_hash_remove( func_addr_hash_key_t key );
-/* *INDENT-ON* */
-
-/* ***************************************************************************************
-   Implementation of functions called by compiler instrumentation
-*****************************************************************************************/
-
-/**
- * @brief This function is called just after the entry of a function.
- * @param func      The address of the start of the current function.
- * @param callsite  The call site of the current function.
- */
-void
-SCOREP_COMPILER_GNU_FUNC_ENTER( void* func,
-                                void* callsite )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
-    {
-        SCOREP_InitMeasurement();
-    }
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return;
-    }
-
-#if ( defined __ARM_ARCH && __ARM_ARCH <= 7 ) || ( defined __arm__ )
-    /* On ARMv7 and earlier, the LSB of an address indicates whether it is thumb
-       code or arm code.  That is, thumb code addresses differ from the real
-       function address that we get from libbfd or nm by 1.  Thus, clear LSB. */
-    func = ( void* )( ( ( long )func | 1 ) - 1 );
-#endif
-
-    bool                   ignored = false;
-    func_addr_hash_value_t value;
-    value = func_addr_hash_get_and_insert( ( uintptr_t )func, NULL, &ignored );
-    if ( value.region != SCOREP_FILTERED_REGION )
-    {
-        UTILS_DEBUG( "Enter %" PRIuPTR ": %s@%s:%d",
-                     ( uintptr_t )func,
-                     SCOREP_RegionHandle_GetName( value.region ),
-                     SCOREP_RegionHandle_GetFileName( value.region ),
-                     SCOREP_RegionHandle_GetBeginLine( value.region ) );
-        SCOREP_EnterRegion( value.region );
-    }
-    else
-    {
-        UTILS_DEBUG( "Enter %ld: filtered", ( uintptr_t )func );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-#undef SCOREP_COMPILER_GNU_FUNC_ENTER
-
-/**
- * @brief This function is called just before the exit of a function.
- * @param func      The address of the end of the current function.
- * @param callsite  The call site of the current function.
- */
-void
-SCOREP_COMPILER_GNU_FUNC_EXIT( void* func,
-                               void* callsite )
-{
-    SCOREP_IN_MEASUREMENT_INCREMENT();
-
-    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
-    {
-        SCOREP_IN_MEASUREMENT_DECREMENT();
-        return;
-    }
-
-#if ( defined __ARM_ARCH && __ARM_ARCH <= 7 ) || ( defined __arm__ )
-    /* On ARMv7 and earlier, the LSB of an address indicates whether it is thumb
-       code or arm code.  That is, thumb code addresses differ from the real
-       function address that we get from libbfd or nm by 1.  Thus, clear LSB. */
-    func = ( void* )( ( ( long )func | 1 ) - 1 );
-#endif
-
-    func_addr_hash_value_t value;
-    if ( func_addr_hash_get( ( uintptr_t )func, &value ) )
-    {
-        if ( value.region != SCOREP_FILTERED_REGION )
-        {
-            UTILS_DEBUG( "Exit %" PRIuPTR ": %s@%s:%d",
-                         ( uintptr_t )func,
-                         SCOREP_RegionHandle_GetName( value.region ),
-                         SCOREP_RegionHandle_GetFileName( value.region ),
-                         SCOREP_RegionHandle_GetBeginLine( value.region ) );
-            SCOREP_ExitRegion( value.region );
-        }
-        else
-        {
-            UTILS_DEBUG( "Exit %ld: filtered",  ( uintptr_t )func );
-        }
-    }
-    else
-    {
-        UTILS_BUG( "Function %ld exited that hasn't been entered", ( uintptr_t )func );
-    }
-
-    SCOREP_IN_MEASUREMENT_DECREMENT();
-}
-#undef SCOREP_COMPILER_GNU_FUNC_EXIT
-
-
-
-/* Hash table for compiler instrumentation address lookup. The
-   hashtable has 512 buckets, each chunk contains up to 3 key-value
-   pairs. The hash table starts empty and gets filled at
-   enter-function events. */
 
 #define FUNC_ADDR_HASH_EXPONENT 9
 
@@ -268,7 +127,8 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                        && ( !strstr( function_name_demangled, "Kokkos::Tools" ) )
                        && ( !strstr( function_name_demangled, "Kokkos::Profiling" ) )
                        && ( !strstr( function_name_demangled, "6Kokkos5Tools" ) )
-                       && ( !strstr( function_name_demangled, "6Kokkos9Profiling" )  );
+                       && ( !strstr( function_name_demangled, "6Kokkos9Profiling" ) )
+                       && ( fnmatch( "__nv_*_F[0-9]*L[0-9]*_[0-9]*", function_name_demangled, 0 ) != 0 );
         /* Usage of UTILS_IO_SimplifyPath on a copy of file_name not needed as libbfd lookup provides absolute paths. */
         use_address &= ( !SCOREP_Filtering_Match( file_name, function_name_demangled, function_name ) );
         if ( use_address )
@@ -350,3 +210,6 @@ scorep_compiler_func_addr_hash_dlclose_cb( void*       soHandle,
     UTILS_DEBUG( "Remove key-value pairs of dlclosed %s; token=%d", soFileName, soToken );
     func_addr_hash_remove_if( token_matches, ( void* )&soToken );
 }
+
+
+#endif /* SCOREP_COMPILER_FUNC_ADDR_HASH_INC_C */

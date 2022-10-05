@@ -66,7 +66,7 @@ TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 
 endif HAVE_OPENMP_C_SUPPORT
 
-if SCOREP_COMPILER_GNU
+if SCOREP_COMPILER_FC_GNU
 if HAVE_OPENMP_FC_SUPPORT
 
 # Just use GNU here, makes name mangling easier (see omp_tasks_untied.pomp.c).
@@ -83,13 +83,13 @@ omp_tasks_untied_LDFLAGS  = $(omp_ldflags)
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_untied.sh
 
 endif HAVE_OPENMP_FC_SUPPORT
-endif SCOREP_COMPILER_GNU
+endif SCOREP_COMPILER_FC_GNU
 
 if HAVE_OPENMP_C_SUPPORT
-if !SCOREP_COMPILER_PGI
+if !SCOREP_COMPILER_CC_PGI
 TESTS_OMP += ./../test/omp_tasks/run_fibonacci_test.sh
 TESTS_OMP += ./../test/omp_tasks/run_single_loop_test.sh
-endif !SCOREP_COMPILER_PGI
+endif !SCOREP_COMPILER_CC_PGI
 endif HAVE_OPENMP_C_SUPPORT
 
 CLEAN_LOCAL += clean-local-omp-tasks-experiments

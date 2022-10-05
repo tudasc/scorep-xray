@@ -35,7 +35,7 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_UnwindingService;
 #if HAVE( SAMPLING_SUPPORT )
 extern const SCOREP_Subsystem SCOREP_Subsystem_SamplingService;
 #endif
-#if HAVE( COMPILER_INSTRUMENTATION )
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION )
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 #endif
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
@@ -59,7 +59,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
 #if HAVE( SAMPLING_SUPPORT )
     &SCOREP_Subsystem_SamplingService,
 #endif
-#if HAVE( COMPILER_INSTRUMENTATION )
+#if HAVE( SCOREP_COMPILER_INSTRUMENTATION )
     &SCOREP_Subsystem_CompilerAdapter,
 #endif
     &SCOREP_Subsystem_UserAdapter,

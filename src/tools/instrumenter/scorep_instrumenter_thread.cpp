@@ -113,7 +113,7 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
         }
 
         // handle OpenMP options that are combined with other compiler options
-#if SCOREP_BACKEND_COMPILER_IBM
+#if SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_FC_IBM
         if ( ( current.length() > openmp_flag.length() ) &&
              ( current.substr( 0, 6 ) == "-qsmp=" ) &&
              find_string_in_list( current.substr( 6 ), "omp", ':' )
@@ -121,8 +121,8 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
         {
             return true;
         }
-#endif
-#if SCOREP_BACKEND_COMPILER_FUJITSU
+#endif  // SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_FC_IBM
+#if SCOREP_BACKEND_COMPILER_CC_FUJITSU || SCOREP_BACKEND_COMPILER_CXX_FUJITSU || SCOREP_BACKEND_COMPILER_FC_FUJITSU
         if ( ( current.length() > openmp_flag.length() ) &&
              ( current.substr( 0, 2 ) == "-K" ) &&
              ( find_string_in_list( current.substr( 2 ), "openmp", ',' )
@@ -130,7 +130,7 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
         {
             return true;
         }
-#endif
+#endif  // SCOREP_BACKEND_COMPILER_CC_FUJITSU || SCOREP_BACKEND_COMPILER_CXX_FUJITSU || SCOREP_BACKEND_COMPILER_FC_FUJITSU
     }
     return false;
 }
@@ -229,7 +229,8 @@ SCOREP_Instrumenter_PthreadAdapter::printHelp( void )
 }
 
 std::string
-SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_PthreadAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                       const std::string& /* inputFile */ )
 {
     return "";
 }

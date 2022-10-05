@@ -31,33 +31,25 @@
  * @file
  *
  * @brief Support for Intel Compiler
- * Will be triggered by the '-fcollect' flag of the intel
- * compiler.
+ * Will be triggered by the '-tcollect' flag of the intel compiler.
+ *
+ * With the advent of oneAPI compilers, the __VT_Intel instrumentation,
+ * activated by -tcollect, is fading out.
+ * If Intel compilers support -finstrument-functions, this method will be
+ * choosen since scorep-8.0.
  */
-
-#include <config.h>
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 
-#include <UTILS_Error.h>
-#include <UTILS_Mutex.h>
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
-#include <UTILS_Debug.h>
 
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_Events.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Filtering.h>
-
-#include "SCOREP_Compiler_Init.h"
+static UTILS_Mutex vt_intel_register_region_mutex = UTILS_MUTEX_INIT;
 
 
 /* Register a new region to the measurement system */
 static SCOREP_RegionHandle
-register_region( const char* str )
+vt_intel_register_region( const char* str )
 {
     /* str is supposed to be of the form "file_name:region_name".
      * There are cases where the compiler just provides "file_name:";
@@ -147,6 +139,8 @@ __VT_IntelEntry( char*     str,
                  uint32_t* id,
                  uint32_t* id2 )
 {
+    UTILS_BUILD_BUG_ON( sizeof( SCOREP_RegionHandle ) > sizeof( uint32_t ) );
+
     SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
@@ -161,25 +155,35 @@ __VT_IntelEntry( char*     str,
     UTILS_DEBUG_ENTRY( "%s, %u", str, *id );
 
     /* Register new region if unknown */
-    if ( *id == 0 )
+    SCOREP_RegionHandle handle = ( SCOREP_RegionHandle )
+                                 UTILS_Atomic_LoadN_uint32( &( *id ),
+                                                            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+    if ( handle == 0 )
     {
-        UTILS_MutexLock( &scorep_compiler_region_mutex );
-        if ( *id == 0 )
+        UTILS_MutexLock( &vt_intel_register_region_mutex );
+        handle = ( SCOREP_RegionHandle )
+                 UTILS_Atomic_LoadN_uint32( &( *id ),
+                                            UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
+        if ( handle == 0 )
         {
-            *id = register_region( str );
+            handle = vt_intel_register_region( str );
+            UTILS_Atomic_StoreN_uint32( &( *id ),
+                                        ( uint32_t )handle,
+                                        UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
         }
-        UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+        UTILS_MutexUnlock( &vt_intel_register_region_mutex );
     }
 
     /* Enter event */
-    if ( *id != SCOREP_FILTERED_REGION )
+    if ( handle != SCOREP_FILTERED_REGION )
     {
-        UTILS_DEBUG( "enter the region with id %u ", *id );
-        SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
+        SCOREP_EnterRegion( handle );
     }
 
-    /* Set exit id */
-    *id2 = *id;
+    /* Set exit id. IIRC it is not sufficient to set id2 just once while
+       holding the lock. So far, there seemed no need for synchronization
+       here (id2 is very likely on the stack of the current thread). */
+    *id2 = handle;
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

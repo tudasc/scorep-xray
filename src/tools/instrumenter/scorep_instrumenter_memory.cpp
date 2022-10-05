@@ -65,7 +65,8 @@ SCOREP_Instrumenter_MemoryAdapter::printHelp( void )
 }
 
 std::string
-SCOREP_Instrumenter_MemoryAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_MemoryAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                      const std::string& /* inputFile */ )
 {
     /* Explicit user arguments */
     if ( isEnabled() && m_params != "" )

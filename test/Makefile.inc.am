@@ -58,7 +58,7 @@ common_mgmt_libadd = \
     libscorep_adapter_user_mgmt.la      \
     libscorep_measurement.la
 
-if HAVE_COMPILER_INSTRUMENTATION
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 common_event_libadd += \
     libscorep_adapter_compiler_event.la
@@ -68,7 +68,7 @@ common_mgmt_libadd += \
 
 external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
 
-endif HAVE_COMPILER_INSTRUMENTATION
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 if HAVE_CUDA_TESTS
 common_mgmt_libadd += \

@@ -28,7 +28,10 @@ if HAVE_GCC_PLUGIN_SUPPORT
 include ../src/utils/filter/Makefile.inc.am
 include ../common/utils/Makefile.inc.am
 
-DISTCLEANFILES += $(builddir)/gcc_plugin_supported
+DISTCLEANFILES += \
+    $(builddir)/gcc_plugin_supported_c \
+    $(builddir)/gcc_plugin_supported_cxx \
+    $(builddir)/gcc_plugin_supported_fc
 
 endif HAVE_GCC_PLUGIN_SUPPORT
 

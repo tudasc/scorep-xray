@@ -18,17 +18,10 @@
  *
  */
 
-#include <config.h>
-
 #include "scorep_compiler_gcc_plugin.h"
 
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_InMeasurement.h>
-#include <SCOREP_Events.h>
 
-#include <UTILS_Mutex.h>
-
-#include "SCOREP_Compiler_Init.h"
+static UTILS_Mutex gcc_plugin_register_region_mutex = UTILS_MUTEX_INIT;
 
 /* Called from the instrumented function, if the automatic register failed
  * for example, if the function lives in an shared library */
@@ -42,7 +35,7 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
     }
     /*
      * Do not handle SCOREP_IsUnwindingEnabled() here, will be done in
-     * scorep_compiler_register_region
+     * scorep_compiler_gcc_plugin_register_region
      */
     if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
@@ -50,14 +43,14 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
         return;
     }
 
-    UTILS_MutexLock( &scorep_compiler_region_mutex );
+    UTILS_MutexLock( &gcc_plugin_register_region_mutex );
 
     if ( *regionDescr->handle == SCOREP_INVALID_REGION )
     {
-        scorep_compiler_register_region( regionDescr );
+        scorep_compiler_gcc_plugin_register_region( regionDescr );
     }
 
-    UTILS_MutexUnlock( &scorep_compiler_region_mutex );
+    UTILS_MutexUnlock( &gcc_plugin_register_region_mutex );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

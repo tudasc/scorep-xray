@@ -56,11 +56,15 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 
-# this is the target gcc for which we want to build the plug-in.
-# this is always the initial value of $CC and the corresponding flags variables
+# this is the target gcc, g++, gfortran for which we want to build the plug-in.
+# this is always the initial value of $CC etc. and the corresponding flags variables
 GCC_PLUGIN_TARGET_CC=$CC
-GCC_PLUGIN_TARGET_CPPFLAGS=$CPPFLAGS
 GCC_PLUGIN_TARGET_CFLAGS=$CFLAGS
+GCC_PLUGIN_TARGET_CXX=$CXX
+GCC_PLUGIN_TARGET_CXXFLAGS=$CXXFLAGS
+GCC_PLUGIN_TARGET_FC=$FC
+GCC_PLUGIN_TARGET_FCFLAGS=$FCFLAGS
+GCC_PLUGIN_TARGET_CPPFLAGS=$CPPFLAGS
 GCC_PLUGIN_TARGET_LDFLAGS=$LDFLAGS
 GCC_PLUGIN_TARGET_LIBS=$LIBS
 
@@ -97,25 +101,7 @@ AC_CANONICAL_HOST
 
 AC_SCOREP_PLATFORM_SETTINGS
 
-AC_LANG_PUSH([C])
-# get vendor for the target CC first
-save_CC=$CC
-save_CPPFLAGS=$CPPFLAGS
-save_CFLAGS=$CFLAGS
-CC=$GCC_PLUGIN_TARGET_CC
-CPPFLAGS=$GCC_PLUGIN_TARGET_CPPFLAGS
-CFLAGS=$GCC_PLUGIN_TARGET_CFLAGS
-
-AX_COMPILER_VENDOR
-scorep_gcc_plugin_target_vendor=${ax_cv_c_compiler_vendor}
-AS_UNSET([ax_cv_c_compiler_vendor])
-CC=$save_CC
-CPPFLAGS=$save_CPPFLAGS
-CFLAGS=$save_CFLAGS
-
-# get vendor for the plug-in builder
-AX_COMPILER_VENDOR
-AC_LANG_POP([C])
+SCOREP_GCC_PLUGIN_VENDORS
 
 # Checks for programs.
 AFS_PROG_CC([99])
@@ -128,24 +114,29 @@ AC_SUBST([LIBTOOL_DEPS])
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
 AC_SUBST([PKGDATADIR])
 
-rm -f gcc_plugin_supported
+rm -f gcc_plugin_supported_c
+rm -f gcc_plugin_supported_cxx
+rm -f gcc_plugin_supported_fc
 
 # Only if the platform supports shared libraries, try to check for plug-in
 # support in GCC
 AS_CASE([${ac_scorep_platform},${scorep_gcc_plugin_target_vendor},${enable_shared},${scorep_enable_gcc_plugin}],
     [*,*,*,no], dnl early avoid checks if the user disabled detection
-        [AFS_SUMMARY([GCC plug-in support], [no, explicitly disabled via --disable-gcc-plugin])],
+        [scorep_gcc_plugin_support_reason="no, explicitly disabled via --disable-gcc-plugin"],
     [bg*,gnu,*,detect],
-        [AFS_SUMMARY([GCC plug-in support], [no, currently not available on Blue Gene platforms])],
+        [scorep_gcc_plugin_support_reason="no, currently not available on Blue Gene platforms"],
     [*,gnu,yes,*],
         [SCOREP_GCC_PLUGIN],
     [*,*,no,*],
-        [AFS_SUMMARY([GCC plug-in support], [no, need support for shared libraries])],
+        [scorep_gcc_plugin_support_reason="no, need support for shared libraries"],
     [*,*,*,*],
-        [AFS_SUMMARY([GCC plug-in support], [no, only GNU compilers supported])])
+        [scorep_gcc_plugin_support_reason="no, only GNU compilers supported"])
+
+AFS_SUMMARY([GCC plug-in support], [$scorep_gcc_plugin_support_reason])
+AS_UNSET([scorep_gcc_plugin_support_reason])
 
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [touch gcc_plugin_supported],
+    [],
     [AS_IF([test "x${scorep_enable_gcc_plugin}" = "xyes"],
         [AC_MSG_ERROR([Request to enable the GCC plug-in could not be fulfilled. Run configure with --disable-gcc-plugin or run without --enable-gcc-plugin to see the reason.])])])
 

@@ -334,16 +334,20 @@ various Score-P components.
 
   - Like other compilers, the NVIDIA HPC SDK compilers add outlined
     functions to implement OpenMP directives. These functions get
-    potentially instrumented but need to be ignored by scorep to
+    potentially instrumented but need to be ignored by Score-P to
     prevent 'TPD==0' errors. Unfortunately, NVIDIA's naming convention
-    for these functions currently prevent scorep from providing a
-    robust automatic filter. For SDKs predating 21.2, the outlined
-    functions seem to be of the form <FUNCTION>_<SOMETHING>L<LINENO>,
-    which could be filtered with this very generic EXCLUDE rule:
-      *_*L[0-9]*
-    For version 21.2 of the SDK, this EXCLUDE rule worked for a hello
-    world example:
+    for these functions isn't documented and changed between versions
+    of the SDK. However, since version 21.2 of the SDK, the outlined
+    functions appear to follow this naming scheme:
       __nv_*_F[0-9]*L[0-9]*_[0-9]*
+    Outlined functions following this scheme are automatically
+    filtered by Score-P.
+
+    For SDKs predating 21.2, the outlined functions seem to be of the
+    form <FUNCTION>_<SOMETHING>L<LINENO>. This isn't handled
+    automatically by Score-P, but could be filtered with this very
+    generic EXCLUDE rule:
+      *_*L[0-9]*
 
   - With CMake, OpenMP might get enabled at link time not via a
     compiler flag like `-fopenmp`, but by explicit linking of the

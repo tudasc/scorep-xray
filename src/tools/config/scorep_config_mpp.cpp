@@ -166,10 +166,11 @@ SCOREP_Config_MpiMppSystem::addLdFlags( std::string& ldflags,
                                         bool         buildCheck,
                                         bool /* nvcc */ )
 {
-#if SCOREP_BACKEND_COMPILER_PGI
-    // see 'Linking issues with PGI compilers and Open MPI 1.8' #951
+#if SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_FC_PGI
+    // See 'Linking issues with PGI compilers and Open MPI 1.8':
+    // https://gitlab.jsc.fz-juelich.de/perftools-svntogit/scorep-trac/-/blob/master/ticket/951.tracwiki
     ldflags += " -pgf90libs";
-#endif // SCOREP_BACKEND_COMPILER_PGI
+#endif // SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_FC_PGI
 }
 
 void

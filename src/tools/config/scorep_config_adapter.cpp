@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2017, 2019-2021,
+ * Copyright (c) 2013-2014, 2017, 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2020, 2022,
@@ -42,7 +42,7 @@ std::deque<SCOREP_Config_Adapter*> SCOREP_Config_Adapter::all;
 void
 SCOREP_Config_Adapter::init( void )
 {
-#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     all.push_back( new SCOREP_Config_CompilerAdapter() );
 #else
     all.push_back( new SCOREP_Config_MockupAdapter( "compiler" ) );
@@ -316,21 +316,22 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 bool
 SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
 {
-#if HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     if ( SCOREP_Config_Adapter::checkArgument( arg ) )
     {
         return true;
     }
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     /* Catch any compiler plug-in args */
     if ( arg.substr( 0, 15 ) == "--compiler-arg=" )
     {
         m_cflags += arg.substr( 15 ) + " ";
         return true;
     }
-#endif /*HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL*/
-#endif /*HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_{GCC_PLUGIN,VT_INTEL} ) */
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 
     return false;
 }
@@ -350,14 +351,14 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
             cflags += SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS;
             break;
         case SCOREP_CONFIG_LANGUAGE_FORTRAN:
-            cflags += SCOREP_COMPILER_INSTRUMENTATION_FFLAGS;
+            cflags += SCOREP_COMPILER_INSTRUMENTATION_FCFLAGS;
             break;
         default:
             break;
     }
     cflags += " ";
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     if ( build_check )
     {
         extern std::string path_to_binary;
@@ -368,9 +369,9 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
         cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function.so ";
     }
     cflags += m_cflags;
-#elif SCOREP_BACKEND_COMPILER_INTEL
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     cflags += m_cflags;
-#endif /*SCOREP_BACKEND_COMPILER_INTEL*/
+#endif /* HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL ) */
 }
 
 void
@@ -384,22 +385,16 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
     }
     else
     {
-        /*
-         * Add compiler instrumentation cflags, because we encountered a
-         * case on JUQUEEN with the XLC compiler, that performed
-         * rebuilding of code during linking on high optimization
-         * levels. If the link command does not contain compiler
-         * instrumentation flags, the code was not instrumented.
+        /* We used to add compiler instrumentation cflags here because the
+         * xlc compiler on BG/Q (deprecated) rebuild code at link time if ipo
+         * optimization levels were used. For PGI, adding flags failed as it then
+         * linked its own profiling libraries.
+         * Given that compiler instrumentation flags are now language dependent
+         * and calls are inserted at compile time, cflags should
+         * not be needed at link time.
          *
-         * However, we got errors with PGI on Todi, because compiler instrumentation
-         * functions were defined twice. Thus do not add the
-         * compiler instrumentation for PGI.
-         *
-         * See also ticket #855.
+         * See https://gitlab.jsc.fz-juelich.de/perftools-svntogit/scorep-trac/-/blob/master/ticket/855.tracwiki
          */
-#if !SCOREP_BACKEND_COMPILER_PGI
-        ldflags += " " SCOREP_COMPILER_INSTRUMENTATION_CFLAGS;
-#endif
         ldflags += " " SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS;
     }
 }
@@ -420,9 +415,9 @@ SCOREP_Config_UserAdapter::addIncFlags( std::string&           cflags,
 {
     if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
     {
-#if SCOREP_BACKEND_COMPILER_IBM
+#if SCOREP_BACKEND_COMPILER_FC_IBM
         cflags += "-WF,";
-#endif      // SCOREP_BACKEND_COMPILER_IBM
+#endif  // SCOREP_BACKEND_COMPILER_FC_IBM
         cflags += "-DSCOREP_USER_ENABLE ";
     }
     else
@@ -683,31 +678,75 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
                                                SCOREP_Config_Language language,
                                                bool                   nvcc )
 {
-    #if SCOREP_BACKEND_COMPILER_CRAY
-    #define SCOREP_COMPILER_TYPE "cray"
-
-    #elif SCOREP_BACKEND_COMPILER_GNU
-    #define SCOREP_COMPILER_TYPE "gnu"
-
-    #elif SCOREP_BACKEND_COMPILER_IBM
-    #define SCOREP_COMPILER_TYPE "ibm"
-
-    #elif SCOREP_BACKEND_COMPILER_INTEL
-    #define SCOREP_COMPILER_TYPE "intel"
-
-    #elif SCOREP_BACKEND_COMPILER_PGI
-    #define SCOREP_COMPILER_TYPE "pgi"
-
-    #elif SCOREP_BACKEND_COMPILER_FUJITSU
-    #define SCOREP_COMPILER_TYPE "fujitsu"
-
-    #elif SCOREP_BACKEND_COMPILER_CLANG
-    #define SCOREP_COMPILER_TYPE "gnu"
-
-    #else
-    #error "Missing compiler specific handling, extension required."
-    #endif
-
+    std::string compiler_type;
+    switch ( language )
+    {
+        case SCOREP_CONFIG_LANGUAGE_C:
+        {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_CC_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CC_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CC_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CC_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+            break;
+        }
+        case SCOREP_CONFIG_LANGUAGE_CXX:
+        {
+#if SCOREP_BACKEND_COMPILER_CXX_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_CXX_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CXX_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CXX_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CXX_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CXX_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CXX_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+            break;
+        }
+        case SCOREP_CONFIG_LANGUAGE_FORTRAN:
+        {
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+            compiler_type = "cray";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+            compiler_type = "gnu";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+            compiler_type = "ibm";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+            compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+            compiler_type = "pgi";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+            compiler_type = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+            compiler_type = "gnu";
+#else
+#error "Missing compiler specific handling, extension required."
+#endif
+#endif      /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+            break;
+        }
+    }
 
     static bool printed_once = false;
     if ( !printed_once )
@@ -727,18 +766,10 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::string opari_config = "`" OPARI_CONFIG " --cflags";
         if ( with_cflags )
         {
+            opari_config += "=" + compiler_type;
             if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
             {
-                #ifdef SCOREP_BACKEND_COMPILER_FC_CRAY
-                opari_config += "=cray";
-                #else
-                opari_config += "=" SCOREP_COMPILER_TYPE;
-                #endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
                 opari_config += " --fortran";
-            }
-            else
-            {
-                opari_config += "=" SCOREP_COMPILER_TYPE;
             }
         }
         opari_config += "` ";
@@ -761,7 +792,6 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
         std::cout << " ";
         std::cout.flush();
     }
-    #undef SCOREP_COMPILER_TYPE
 }
 
 /* **************************************************************************************
@@ -886,12 +916,12 @@ SCOREP_Config_MemoryAdapter::addLdFlags( std::string& ldflags,
                                          bool         build_check,
                                          bool         nvcc )
 {
-#if SCOREP_BACKEND_COMPILER_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
+#if SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
     // For clang-based cc/CC '-h system_alloc' issues a warning (argument
     // unused during compilation). To prevent the warning, we would need to
     // take the linking-language into account. Addressed in #16.
     ldflags += " -h system_alloc";
-#endif
+#endif // SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_FC_CRAY
 
     if ( m_categories.count( "libc" ) )
     {

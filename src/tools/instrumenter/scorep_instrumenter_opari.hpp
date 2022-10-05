@@ -66,7 +66,8 @@ public:
              SCOREP_Instrumenter_CmdLine& cmdLine ) override;
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
 
     void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
@@ -168,13 +169,13 @@ private:
      */
     bool m_use_tpd;
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     /**
      * Specifies whether -mmic was given on the command line.
      */
     bool m_mmic_set;
 
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 };
 
 #endif // SCOREP_INSTRUMENTER_OPARI_HPP

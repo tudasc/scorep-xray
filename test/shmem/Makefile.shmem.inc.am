@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014, 2017,
+## Copyright (c) 2014, 2017, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015, 2019,
@@ -40,9 +40,9 @@ external_ldflags += -Wl,--no-as-needed
 endif BUILD_SHARED_LIBRARIES
 endif HAVE_GNU_LINKER
 
-if HAVE_COMPILER_INSTRUMENTATION
+if HAVE_SCOREP_COMPILER_INSTRUMENTATION
 external_ldflags += $(SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS)
-endif HAVE_COMPILER_INSTRUMENTATION
+endif HAVE_SCOREP_COMPILER_INSTRUMENTATION
 
 ## SHMEM -------------------------------------------------------------------------
 

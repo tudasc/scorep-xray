@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2021,
+ * Copyright (c) 2009-2013, 2015, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,9 +63,9 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_parallel     = detect;
     m_pomp         = detect;
     m_use_tpd      = false;
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     m_mmic_set = false;
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 }
 
 bool
@@ -116,7 +116,8 @@ SCOREP_Instrumenter_OpariAdapter::isEnabled( void ) const
 }
 
 std::string
-SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                     const std::string& /* inputFile */ )
 {
     if ( m_pomp == enabled )
     {
@@ -245,12 +246,12 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
         return current == "-f";
     }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if SCOREP_BACKEND_COMPILER_MIC
     if ( arg == "-mmic" )
     {
         m_mmic_set = true;
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC */
 
     return false;
 }
@@ -315,51 +316,81 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
                                                 const std::string&   output_file )
 {
     /*
-     * SCOREP_OPARI_MANGLING_SCHEME is used in opari2 option --omp-tpd-mangling.
+     * tpd_mangling_scheme is used in opari2 option --omp-tpd-mangling.
      * This option is only used if the compiler doesn't support OpenMP ancestry
      * functions. These functions were introduced in OpenMP 3.0.
-     */
-    #if SCOREP_BACKEND_COMPILER_CRAY
-    #define SCOREP_OPARI_MANGLING_SCHEME "cray"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " --nosrc "
-
-    #elif SCOREP_BACKEND_COMPILER_GNU
-    #define SCOREP_OPARI_MANGLING_SCHEME "gnu"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-    #elif SCOREP_BACKEND_COMPILER_IBM
-    #define SCOREP_OPARI_MANGLING_SCHEME "ibm"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-    #elif SCOREP_BACKEND_COMPILER_INTEL
-    #define SCOREP_OPARI_MANGLING_SCHEME "intel"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-    #elif SCOREP_BACKEND_COMPILER_PGI
-    #define SCOREP_OPARI_MANGLING_SCHEME "pgi"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-    #elif SCOREP_BACKEND_COMPILER_FUJITSU
-    #define SCOREP_OPARI_MANGLING_SCHEME "fujitsu"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-    #elif SCOREP_BACKEND_COMPILER_CLANG
-    /* --omp-tpd-mangling=clang is not implemented in opari2. But as ancestry
+     * --omp-tpd-mangling=clang is not implemented in opari2. But as ancestry
      * is the default since scorep 4.0 and supported by clang, tpd options
-     * wont get used. */
-    #define SCOREP_OPARI_MANGLING_SCHEME "clang"
-    #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+     * wont get used.
+     */
+    std::string tpd_mangling_scheme;
+    std::string language_flags;
 
-    #else
-    #error "Missing OPARI specific OpenMP compiler handling for your compiler, extension required."
-    #endif
+    if ( is_c_file( input_file ) )
+    {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY
+        tpd_mangling_scheme = "cray";
+#elif SCOREP_BACKEND_COMPILER_CC_GNU
+        tpd_mangling_scheme = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CC_IBM
+        tpd_mangling_scheme = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL
+        tpd_mangling_scheme = "intel";
+#elif SCOREP_BACKEND_COMPILER_CC_PGI
+        tpd_mangling_scheme = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CC_FUJITSU
+        tpd_mangling_scheme = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG
+        tpd_mangling_scheme = "clang";
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your C compiler, extension required."
+#endif
+    }
+    else if ( is_cpp_file( input_file ) )
+    {
+#if SCOREP_BACKEND_COMPILER_CXX_CRAY
+        tpd_mangling_scheme = "cray";
+#elif SCOREP_BACKEND_COMPILER_CXX_GNU
+        tpd_mangling_scheme = "gnu";
+#elif SCOREP_BACKEND_COMPILER_CXX_IBM
+        tpd_mangling_scheme = "ibm";
+#elif SCOREP_BACKEND_COMPILER_CXX_INTEL
+        tpd_mangling_scheme = "intel";
+#elif SCOREP_BACKEND_COMPILER_CXX_PGI
+        tpd_mangling_scheme = "pgi";
+#elif SCOREP_BACKEND_COMPILER_CXX_FUJITSU
+        tpd_mangling_scheme = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_CXX_CLANG
+        tpd_mangling_scheme = "clang";
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your C++ compiler, extension required."
+#endif
+    }
+    else if ( is_fortran_file( input_file ) )
+    {
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+        tpd_mangling_scheme = "cray";
+        language_flags      = " --nosrc";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+        tpd_mangling_scheme = "gnu";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+        tpd_mangling_scheme = "ibm";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+        tpd_mangling_scheme = "intel";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+        tpd_mangling_scheme = "pgi";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+        tpd_mangling_scheme = "fujitsu";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+        tpd_mangling_scheme = "clang";
+#else
+#error "Missing OPARI specific OpenMP compiler handling for your Fortran compiler, extension required."
+#endif
+#endif  /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    }
 
-    #if SCOREP_BACKEND_COMPILER_FC_CRAY
-    std::string command = m_opari + m_params + " --nosrc ";
-    #else
-    std::string command = m_opari + m_params +
-                          SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " ";
-    #endif // !SCOREP_BACKEND_COMPILER_FC_CRAY
+    std::string command = m_opari + m_params + language_flags + " ";
 
     add_param( command, "--omp-task-untied=keep", "--omp-task-untied=" );
     if ( m_use_tpd )
@@ -367,7 +398,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         // Combination of cc/CC Clang and ftn Cray won't use tpd
         add_param( command, "--omp-tpd", "--omp-tpd" );
         add_param( command,
-                   "--omp-tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME,
+                   "--omp-tpd-mangling=" + tpd_mangling_scheme,
                    "--omp-tpd-mangling=" );
     }
 
@@ -412,9 +443,6 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
     command += input_file + " " + output_file;
 
     instrumenter.executeCommand( command );
-
-    #undef SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-    #undef SCOREP_OPARI_MANGLING_SCHEME
 }
 
 void
@@ -440,12 +468,12 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
 {
     std::string target_flags = "";
 
-#if SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT )
+#if SCOREP_BACKEND_COMPILER_MIC && HAVE( MIC_SUPPORT )
     if ( m_mmic_set )
     {
         target_flags += " -mmic ";
     }
-#endif  /* SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT ) */
+#endif  /* SCOREP_BACKEND_COMPILER_MIC && HAVE( MIC_SUPPORT ) */
 
     std::string command = m_c_compiler
                           + target_flags

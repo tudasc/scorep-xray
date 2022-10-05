@@ -63,7 +63,8 @@ SCOREP_Instrumenter_PdtAdapter::SCOREP_Instrumenter_PdtAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_PdtAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_PdtAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                   const std::string& /* inputFile */ )
 {
     return "";
 }

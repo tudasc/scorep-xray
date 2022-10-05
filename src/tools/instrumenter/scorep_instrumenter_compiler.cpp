@@ -86,22 +86,28 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 {
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 
-#if !HAVE_BACKEND( COMPILER_INSTRUMENTATION )
+#if !HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )
     unsupported();
-#endif /*!HAVE_BACKEND( COMPILER_INSTRUMENTATION )*/
+#endif /*!HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION )*/
 }
 
 bool
 SCOREP_Instrumenter_CompilerAdapter::supportInstrumentFilters( void ) const
 {
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT ) || SCOREP_BACKEND_COMPILER_INTEL
+    // So far, this method is used to print a warning if filtering was requested
+    // but is not supported by the instrumentation method. With language specific
+    // instrumentation methods and the language not available here, be pragmatic
+    // and return true if any of the configured instrumentation methods supports
+    // filtering.
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN ) || \
+    HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
     return true;
 #else
     return false;
 #endif
 }
 
-#if SCOREP_BACKEND_COMPILER_INTEL
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 // Converts a Score-P filter regex expression by the Intel tcollect format
 static std::string
 convert_regex_to_tcollect2( std::string rule )
@@ -142,12 +148,79 @@ write_tcollect_file_rules( void*       userData,
     *stream << " '" << convert_regex_to_tcollect2( pattern )
             << ":' " << ( isExclude  ? "OFF" : "ON" ) << std::endl;
 }
-#endif // SCOREP_BACKEND_COMPILER_INTEL
+#endif // HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_VT_INTEL )
 
 
 std::string
-SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine )
+SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                                                        const std::string&           inputFile )
 {
+#define FILTER_GCC_PLUGIN \
+    if ( cmdLine.getVerbosity() >= 1 ) \
+    { \
+        std::ostringstream verbosity_arg; \
+        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity="; \
+        verbosity_arg << cmdLine.getVerbosity(); \
+        flags += verbosity_arg.str(); \
+    } \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it; \
+    }
+
+#define FILTER_INTEL \
+    SCOREP_Filter * filter = SCOREP_Filter_New(); \
+    std::string outfname; \
+    bool        have_usable_filter = false; \
+    \
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles(); \
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin(); \
+          file_it != filter_files.end(); \
+          ++file_it ) \
+    { \
+        std::string fname = *file_it; \
+        /* Parsing filter files. */ \
+        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( filter,  fname.c_str() ); \
+        if ( err != SCOREP_SUCCESS ) \
+        { \
+            std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl; \
+        } \
+        else \
+        { \
+            outfname          += fname + "."; \
+            have_usable_filter = true; \
+        } \
+    } \
+         \
+    if ( have_usable_filter ) \
+    { \
+        /* Using an unique temp file to avoid data races when calling scorep multiple times. */ \
+        outfname += create_random_string() +  ".tcollect"; \
+        /* Converting the aggregated filter data to tcollect format. */ \
+        std::ofstream filter_file( outfname.c_str() ); \
+        if ( filter_file.is_open() ) \
+        { \
+            SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file ); \
+            SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file ); \
+            filter_file.close(); \
+        } \
+        else \
+        { \
+            UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'", \
+                                outfname.c_str() ); \
+        } \
+                 \
+        cmdLine.addTempFile( outfname ); \
+        flags += " --compiler-arg=-tcollect-filter"; \
+        flags += " --compiler-arg=" + outfname; \
+        /* Add tcollect reporting flags. */ \
+        flags += " --compiler-arg=-qopt-report-file=stderr"; \
+        flags += " --compiler-arg=-qopt-report-phase=tcollect"; \
+    }
+
     if ( !isEnabled() )
     {
         return " --no" + m_name;
@@ -155,130 +228,42 @@ SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdL
 
     std::string flags;
 
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
-    if ( cmdLine.getVerbosity() >= 1 )
+    if ( is_c_file( inputFile ) )
     {
-        std::ostringstream verbosity_arg;
-        verbosity_arg << " --compiler-arg=-fplugin-arg-scorep_instrument_function-verbosity=";
-        verbosity_arg << cmdLine.getVerbosity();
-        flags += verbosity_arg.str();
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CC_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_CC_INTEL */
     }
-    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
-          file_it != filter_files.end();
-          ++file_it )
+    else if ( is_cpp_file( inputFile ) )
     {
-        flags += " --compiler-arg=-fplugin-arg-scorep_instrument_function-filter="  + *file_it;
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_CXX_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_CXX_INTEL */
     }
-#elif SCOREP_BACKEND_COMPILER_INTEL
-    SCOREP_Filter* filter = SCOREP_Filter_New();
-    std::string    outfname;
-    bool           have_usable_filter = false;
-
-    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
-    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
-          file_it != filter_files.end();
-          ++file_it )
+    else if ( is_fortran_file( inputFile ) )
     {
-        std::string fname = *file_it;
-        /* Parsing filter files. */
-        SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( filter,  fname.c_str() );
-        if ( err != SCOREP_SUCCESS )
-        {
-            std::cerr << "[Score-P] ERROR: Unable to parse filter file '" << fname << "' !" << std::endl;
-        }
-        else
-        {
-            outfname          += fname + ".";
-            have_usable_filter = true;
-        }
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_GCC_PLUGIN )
+        FILTER_GCC_PLUGIN
+#elif HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_FC_VT_INTEL )
+        FILTER_INTEL
+#endif  /* SCOREP_BACKEND_COMPILER_FC_INTEL */
     }
 
-    if ( have_usable_filter )
-    {
-        /* Using an unique temp file to avoid data races when calling scorep multiple times. */
-        outfname += create_random_string() +  ".tcollect";
-        /* Converting the aggregated filter data to tcollect format. */
-        std::ofstream filter_file( outfname.c_str() );
-        if ( filter_file.is_open() )
-        {
-            SCOREP_Filter_ForAllFunctionRules( filter, write_tcollect_function_rules, &filter_file );
-            SCOREP_Filter_ForAllFileRules( filter, write_tcollect_file_rules, &filter_file );
-            filter_file.close();
-        }
-        else
-        {
-            UTILS_ERROR_POSIX(  "Unable to open output filter specification file '%s'",
-                                outfname.c_str() );
-        }
-
-        cmdLine.addTempFile( outfname );
-        flags += " --compiler-arg=-tcollect-filter";
-        flags += " --compiler-arg=" + outfname;
-        /* Add tcollect reporting flags. */
-        flags += " --compiler-arg=-qopt-report-file=stderr";
-        flags += " --compiler-arg=-qopt-report-phase=tcollect";
-    }
-#endif
     return flags;
-}
 
-std::string
-SCOREP_Instrumenter_CompilerAdapter::precompile( SCOREP_Instrumenter&         instrumenter,
-                                                 SCOREP_Instrumenter_CmdLine& cmdLine,
-                                                 const std::string&           input_file )
-{
-    /* For the XL compiler we have two interfaces. Check whether the version
-       of the compilers match the used interface. */
-#if SCOREP_BACKEND_COMPILER_IBM && HAVE( POSIX_PIPES )
-    /* When using nvcc with XL, the application and the Score-P
-       installation are using at least XL 13.1.1. Thus, we don't need
-       to check for an interface version mismatch. The check would fail
-       as -qversion is passed to nvcc. */
-    if ( cmdLine.getCompilerName().find( "nvcc" ) == std::string::npos )
-    {
-        int major, minor, scorep_version, app_version;
-        scorep_get_ibm_compiler_version( cmdLine.getInstallData()->getCC(), major, minor );
-        scorep_version = major * 100 + minor;
-        scorep_get_ibm_compiler_version( cmdLine.getCompilerName(), major, minor );
-        app_version =  major * 100 + minor;
-
-        if ( scorep_version > 1100 )
-        {
-            if ( app_version <= 1100 ||
-                 ( is_fortran_file( input_file ) && app_version <= 1300 ) )
-            {
-                std::cerr << "[Score-P] ERROR: This compiler version is too old to be used with this "
-                          << "Score-P installation\n"
-                          << "                 You need to use a Score-P installation that was compiled"
-                          << " with XLC 11.0 or earlier" << std::endl;
-                exit( EXIT_FAILURE );
-            }
-        }
-        else
-        {
-            if ( app_version > 1300 ||
-                 ( !is_fortran_file( input_file ) && app_version > 1100 ) )
-            {
-                std::cerr << "[Score-P] ERROR: This compiler version is too new to be used with this "
-                          << "Score-P installation\n"
-                          << "                 You need to use a Score-P installation that was compiled"
-                          << " with XLC 11.1 or higher" << std::endl;
-                exit( EXIT_FAILURE );
-            }
-        }
-    }
-
-#endif // SCOREP_BACKEND_COMPILER_IBM
-
-    return input_file;
+#undef FILTER_GCC_PLUGIN
+#undef FILTER_INTEL
 }
 
 void
 SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                               SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+#if HAVE_BACKEND( SCOREP_COMPILER_INSTRUMENTATION_GCC_PLUGIN )
     if ( !cmdLine.isTargetSharedLib() )
     {
         if ( cmdLine.isBuildCheck() )

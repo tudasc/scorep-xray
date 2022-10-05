@@ -34,7 +34,8 @@ public:
     SCOREP_Instrumenter_OpenACCAdapter( void );
 
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
     void
     printHelp( void ) override;
 };

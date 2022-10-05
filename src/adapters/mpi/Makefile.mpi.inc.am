@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2017, 2020,
+## Copyright (c) 2009-2014, 2017, 2020, 2022,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -77,12 +77,12 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     $(LIB_DIR_SCOREP)libutils.la
 
 if PLATFORM_CRAY
-if SCOREP_COMPILER_CLANG
+if SCOREP_COMPILER_CC_CLANG
 # cc/CC are Clang, ftn is Cray
 # FLIBS needed for static linking only, provides symbol 'mpi_' references
 # in SCOREP_Fmpi_Init.f
 libscorep_adapter_mpi_mgmt_la_LIBADD += $(FLIBS)
-endif SCOREP_COMPILER_CLANG
+endif SCOREP_COMPILER_CC_CLANG
 endif PLATFORM_CRAY
 
 noinst_LTLIBRARIES += \
@@ -131,20 +131,20 @@ noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la
 libscorep_adapter_mpi_fortran_conv_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Init.f
 
-if SCOREP_COMPILER_PGI
+if SCOREP_COMPILER_FC_PGI
 # due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
 # PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
 # applications to libscorep_adapter_mpi_mgmt.la. The language option
 # noref_externals prevents this.
 libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
-endif
+endif SCOREP_COMPILER_FC_PGI
 
-if SCOREP_COMPILER_FUJITSU
+if SCOREP_COMPILER_FC_FUJITSU
 # due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
 # PMPI_WTIME in the Fujitsu mpif.h we get four undeclared symbols when linking
 # applications to libscorep_adapter_mpi_mgmt.la.
 libscorep_adapter_mpi_fortran_conv_la_LIBADD = $(FLIBS)
-endif SCOREP_COMPILER_FUJITSU
+endif SCOREP_COMPILER_FC_FUJITSU
 
 else !HAVE_MPI_FORTRAN_SUPPORT
 

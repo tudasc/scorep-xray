@@ -87,7 +87,7 @@ valid_thread()
 
 # Initialize defaults
 COMP=yes
-@HAVE_COMPILER_INSTRUMENTATION_FALSE@unset COMP
+@HAVE_SCOREP_COMPILER_INSTRUMENTATION_FALSE@unset COMP
 unset MPP
 unset THREAD
 unset OPARI2_USER
@@ -304,7 +304,7 @@ if test -n "${STATIC}${SHARED}"; then
 fi
 
 # Compiler instrumentation?     (custom check)
-STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_compiler_region_mutex`
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_Subsystem_CompilerAdapter`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }comp"

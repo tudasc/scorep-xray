@@ -61,7 +61,8 @@ SCOREP_Instrumenter_LinktimeWrappingAdapter::checkCommand( const std::string& cu
 }
 
 std::string
-SCOREP_Instrumenter_LinktimeWrappingAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_LinktimeWrappingAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                                const std::string& /* inputFile */ )
 {
     return "";
 }

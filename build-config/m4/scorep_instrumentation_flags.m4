@@ -19,152 +19,79 @@ dnl
 
 dnl file build-config/m4/scorep_instrumentation_flags.m4
 
-AC_DEFUN([SCOREP_CC_FLAG_TEST],[
-    AC_LANG_PUSH([C])
-    save_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS $2"
 
-    AC_MSG_CHECKING([whether compiler understands $2])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-        [AC_MSG_RESULT([yes])
-         $1="$2"],
-        [AC_MSG_RESULT([no])])
-
-   CFLAGS="$save_CFLAGS"
-   AC_LANG_POP([C])
-])
-
-
-AC_DEFUN([SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
+# SCOREP_INSTRUMENTATION_FLAGS()
+# ------------------------------
+# Provides additional flags as substitutions
+# (SCOREP_INSTRUMENTATION_<LANG>FLAGS and
+# SCOREP_INSTRUMENTATION_LDFLAGS) needed for general instrumentation
+# (see SCOREP_COMPILER_INSTRUMENTATION_FLAGS for compiler
+# instrumentation).
+#
+AC_DEFUN_ONCE([SCOREP_INSTRUMENTATION_FLAGS], [
 AC_REQUIRE([SCOREP_COMPUTENODE_CC])dnl
-dnl SCOREP_COMPUTENODE_FC cannot be AC_REQUIREd due to Fortan macro
-dnl dependencies that lead to configure errors if FC is defunct.
+AC_REQUIRE([SCOREP_COMPUTENODE_CXX])dnl
 dnl AC_REQUIRE([SCOREP_COMPUTENODE_FC])dnl
-AC_ARG_WITH([extra-instrumentation-flags],
-    [],
-    [AC_MSG_WARN([ignoring --with-extra-instrumentation-flags, functionality got removed])],
-    [])dnl
-
-AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
-                    [test -f ../build-gcc-plugin/gcc_plugin_supported],
-                    [Defined if GCC plug-in support is available.],
-                    [scorep_compiler_gnu_with_plugin=yes],
-                    [scorep_compiler_gnu_with_plugin=no])
-
-scorep_compiler_instrumentation_needs_addr2line="no"
-scorep_compiler_instrumentation_cflags=
-scorep_compiler_instrumentation_cxxflags=
-scorep_compiler_instrumentation_fflags=
-AS_CASE([${ax_cv_c_compiler_vendor}],
-    [intel],    [scorep_compiler_instrumentation_cflags="-tcollect"],
-    [ibm],      [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qdebug=function_trace])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-qfunctrace])],
-    [nvhpc],    [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
-                 scorep_compiler_instrumentation_cflags="-Minstrument=functions"
-                 scorep_compiler_instrumentation_needs_addr2line="yes"],
-    [portland/llvm], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI_LLVM], [test 1 -eq 1], [false])
-                      scorep_compiler_instrumentation_cflags="-Minstrument=functions"
-                      scorep_compiler_instrumentation_needs_addr2line="yes"],
-    [portland], [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Mprof=func])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-Minstrument=functions])],
-    [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xno"],
-                       [scorep_compiler_instrumentation_cflags="-g -finstrument-functions"
-                        scorep_compiler_instrumentation_needs_addr2line="yes"])],
-    [cray],     [scorep_compiler_instrumentation_cflags="-hfunc_trace"
-                 scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"
-                 scorep_compiler_instrumentation_needs_addr2line=yes],
-    [fujitsu],  [scorep_compiler_instrumentation_cflags="-g -Ntl_vtrc -Ntl_notrt"
-                 scorep_compiler_instrumentation_needs_addr2line="yes"],
-    [clang],    [SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions])
-                 SCOREP_CC_FLAG_TEST([scorep_compiler_instrumentation_cflags], [-g -finstrument-functions-after-inlining])
-                 scorep_compiler_instrumentation_needs_addr2line="yes"
-                 AS_CASE([${ac_scorep_platform}],
-                         [mac*], [# Disable position independent executable, which
-                                  # also disables address space randomization,
-                                  # which avoids matching addresses between NM and
-                                  # __cyg_profile_func_*
-                                  scorep_compiler_instrumentation_ldflags="-Wl,-no_pie"])],
-    [])dnl
-
-AS_IF([test "x${ax_cv_c_compiler_vendor}" != "x${ax_cv_fc_compiler_vendor}"],
-    [AS_CASE([${ax_cv_fc_compiler_vendor}],
-         [cray], [scorep_compiler_instrumentation_fflags="-hfunc_trace"
-                  scorep_compiler_instrumentation_ldflags="$scorep_compiler_instrumentation_ldflags -Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
-         [portland/llvm], [scorep_compiler_instrumentation_fflags="-Minstrument=functions"],
-         [scorep_compiler_instrumentation_fflags=unsupported])dnl
-    ])
-
-AS_IF([test "x${scorep_compiler_instrumentation_cflags}" != x],
-    [# Use cflags also for C++ and Fortran if not already set
-     AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" = x],
-         [scorep_compiler_instrumentation_cxxflags="${scorep_compiler_instrumentation_cflags}"])
-     AS_IF([test "x${scorep_compiler_instrumentation_fflags}" = x],
-         [scorep_compiler_instrumentation_fflags="${scorep_compiler_instrumentation_cflags}"])
-
-     AC_MSG_NOTICE([using C compiler instrumentation flags: ${scorep_compiler_instrumentation_cflags}])
-     AFS_SUMMARY_VERBOSE([C compiler instrumentation flags], [${scorep_compiler_instrumentation_cflags}])
-])
-
-AS_IF([test "x${scorep_compiler_instrumentation_cxxflags}" != x],
-    [AC_MSG_NOTICE([using C++ compiler instrumentation flags: ${scorep_compiler_instrumentation_cxxflags}])
-     AFS_SUMMARY_VERBOSE([C++ compiler instrumentation flags], [${scorep_compiler_instrumentation_cxxflags}])
-])
-
-AS_IF([test "x${scorep_compiler_instrumentation_fflags}" = xunsupported],
-    [AC_MSG_WARN([Fortran compiler instrumentation not supported yet. Please contact <AC_PACKAGE_BUGREPORT>.])
-     AFS_SUMMARY_VERBOSE([Fortran compiler instrumentation not supported yet])],
-    [test "x${scorep_compiler_instrumentation_fflags}" != x],
-    [AC_MSG_NOTICE([using Fortran compiler instrumentation flags: ${scorep_compiler_instrumentation_fflags}])
-     AFS_SUMMARY_VERBOSE([Fortran compiler instrumentation flags], [${scorep_compiler_instrumentation_fflags}])
-])
-
-AS_IF([test "x${scorep_compiler_instrumentation_ldflags}" != x],
-    [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${scorep_compiler_instrumentation_ldflags}])
-     AFS_SUMMARY_VERBOSE([compiler instrumentation ldflags], [${scorep_compiler_instrumentation_ldflags}])
-])
-
-AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CFLAGS], ["${scorep_compiler_instrumentation_cflags}"])
-AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_CXXFLAGS], ["${scorep_compiler_instrumentation_cxxflags}"])
-AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_FFLAGS], ["${scorep_compiler_instrumentation_fflags}"])
-
-AC_SUBST([SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS], ["${scorep_compiler_instrumentation_ldflags}"])
-])
-
-dnl ------------------------------------------------------------------
+dnl
+# Since version 5 the GCC compiler performs 'Identical Code Folding' [1] on
+# functions which have the exact same instructions. This "disturb unwind stacks",
+# thus disable ICF when instrumenting application code via -fno-ipa-icf
+# [1] https://gcc.gnu.org/onlinedocs/gcc-5.5.0/gcc//Optimize-Options.html#index-fipa-icf
+dnl
+# K Computer used to require -Ntl_notrt at link time to prevent
+# linkage of Fujitsu's profiling tools. Newer Fujistu compilers might
+# need -Nnofjprof (in traditional mode) or -ffj-no-fjprof (in clang
+# mode) for C/C++ linkage. The Fortran option would be
+# -Nnofjprof. More investigation needed.
+dnl
+# For BG/Q with GNU compilers we used to add -dynamic in conjunction
+# with nm instrumentation. Both, BG/Q and nm instrumentation are gone.
+dnl
+AC_LANG_PUSH([C])
+_CHECK_INSTRUMENTATION_FLAGS
+AC_LANG_POP([C])
+AS_IF([test x$afs_cv_prog_cxx_works = xyes], [
+    AC_LANG_PUSH([C++])
+    _CHECK_INSTRUMENTATION_FLAGS
+    AC_LANG_POP([C++])])
+AS_IF([test x$afs_cv_prog_fc_works = xyes], [
+    AC_LANG_PUSH([Fortran])
+    _CHECK_INSTRUMENTATION_FLAGS
+    AC_LANG_POP([Fortran])])
+dnl
+AC_SUBST([SCOREP_INSTRUMENTATION_LDFLAGS], [])
+])dnl SCOREP_INSTRUMENTATION_FLAGS
 
 
-# Flags that are needed by all adapters, e.g., you would always want
-# to add -Ntl_notrt on K, independent on the instrumentation method
-# used. Different from compiler instrumentation flags.
-AC_DEFUN([SCOREP_INSTRUMENTATION_FLAGS], [
-#AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+# _CHECK_INSTRUMENTATION_FLAGS()
+# ------------------------------
+#
+m4_define([_CHECK_INSTRUMENTATION_FLAGS], [
+AS_CASE([${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor%/*}],
+    [gnu], [_FLAG_TEST([scorep_instrumentation_[]_AC_LANG_ABBREV[]flags], [-fno-ipa-icf])],
+    [])
+dnl
+AC_SUBST(SCOREP_INSTRUMENTATION_[]_AC_LANG_PREFIX[]FLAGS, ["${scorep_instrumentation_[]_AC_LANG_ABBREV[]flags}"])
+AS_IF([test "x${scorep_instrumentation_[]_AC_LANG_ABBREV[]flags}" != x],
+    [AC_MSG_NOTICE([using instrumentation []_AC_LANG_ABBREV[]flags: ${scorep_instrumentation_[]_AC_LANG_ABBREV[]flags}])])
+])dnl _CHECK_INSTRUMENTATION_FLAGS
 
-AS_UNSET([scorep_instrumentation_cppflags])
-AS_UNSET([scorep_instrumentation_ldflags])
-AS_CASE([${ax_cv_c_compiler_vendor%/*}],
-    [intel],    [],
-    [ibm],      [],
-    [nvhpc],    [],
-    [portland], [],
-    [gnu],      [AS_CASE([${ac_scorep_platform}],
-                     [bg*], [# Link shared variant of (system) libs, if available.
-                             # This reduces the nm time and brings the number of
-                             # symbols into a reasonable range.
-                             scorep_instrumentation_ldflags="-dynamic"])
-                 SCOREP_CC_FLAG_TEST([scorep_instrumentation_cppflags], [-fno-ipa-icf])],
-    [cray],     [],
-    [fujitsu],  [scorep_instrumentation_ldflags="-Ntl_notrt"],
-    [clang],    [],
-    [])dnl
 
-AS_IF([test "x${scorep_instrumentation_cppflags}" != x],
-    [AC_MSG_NOTICE([using instrumentation cppflags: ${scorep_instrumentation_cppflags}])
-     AFS_SUMMARY_VERBOSE([instrumentation cppflags], [${scorep_instrumentation_cppflags}])])
-
-AS_IF([test "x${scorep_instrumentation_ldflags}" != x],
-    [AC_MSG_NOTICE([using instrumentation ldflags: ${scorep_instrumentation_ldflags}])
-     AFS_SUMMARY_VERBOSE([instrumentation ldflags], [${scorep_instrumentation_ldflags}])])
-
-AC_SUBST([SCOREP_INSTRUMENTATION_CPPFLAGS], ["${scorep_instrumentation_cppflags}"])
-AC_SUBST([SCOREP_INSTRUMENTATION_LDFLAGS], ["${scorep_instrumentation_ldflags}"])
-])
+# _FLAG_TEST()
+# ------------
+# Check whether compiler accepts flag $2. Note that some compilers
+# rarely choke on unknown flags, e.g., Intel compiler.  Append
+# accepted flag to $1.
+#
+m4_define([_FLAG_TEST], [
+_AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
+_AC_LANG_PREFIX[]FLAGS="$_AC_LANG_PREFIX[]FLAGS $2"
+dnl
+AC_MSG_CHECKING([whether _AC_LANG compiler understands $2])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
+    [AC_MSG_RESULT([yes])
+     $1="$[]$1 $2"],
+    [AC_MSG_RESULT([no])])
+dnl
+_AC_LANG_PREFIX[]FLAGS="$_AC_LANG_PREFIX[]FLAGS_save"
+])dnl _FLAG_TEST

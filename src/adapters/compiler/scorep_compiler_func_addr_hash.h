@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef SCOREP_COMPILER_GNU_H
-#define SCOREP_COMPILER_GNU_H
+#ifndef SCOREP_COMPILER_FUNC_ADDR_HASH_H
+#define SCOREP_COMPILER_FUNC_ADDR_HASH_H
 
 
 #include <stdint.h>
@@ -23,4 +23,4 @@ scorep_compiler_func_addr_hash_dlclose_cb( void*       soHandle,
                                            uint16_t    soToken );
 
 
-#endif /* SCOREP_COMPILER_GNU_H */
+#endif /* SCOREP_COMPILER_FUNC_ADDR_HASH_H */

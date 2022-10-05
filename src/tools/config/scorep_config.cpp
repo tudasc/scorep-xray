@@ -683,7 +683,21 @@ main( int    argc,
         case ACTION_CFLAGS:
             if ( SCOREP_Config_Adapter::isActive() )
             {
-                str += SCOREP_INSTRUMENTATION_CPPFLAGS " ";
+                switch ( language )
+                {
+                    case SCOREP_CONFIG_LANGUAGE_C:
+                        str += SCOREP_INSTRUMENTATION_CFLAGS;
+                        break;
+                    case SCOREP_CONFIG_LANGUAGE_CXX:
+                        str += SCOREP_INSTRUMENTATION_CXXFLAGS;
+                        break;
+                    case SCOREP_CONFIG_LANGUAGE_FORTRAN:
+                        str += SCOREP_INSTRUMENTATION_FCFLAGS;
+                        break;
+                    default:
+                        break;
+                }
+                str += " ";
             }
             SCOREP_Config_Adapter::addCFlagsAll( str, !install, language, nvcc );
             SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, language, nvcc );

@@ -263,7 +263,8 @@ SCOREP_Instrumenter_LibwrapAdapter::checkOption( const std::string& arg )
 }
 
 std::string
-SCOREP_Instrumenter_LibwrapAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_LibwrapAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                       const std::string& /* inputFile */ )
 {
     std::string result;
     for ( std::vector<int>::size_type i = 0; i < m_wrappers.size(); ++i )

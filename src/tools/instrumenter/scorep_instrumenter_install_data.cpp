@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020-2021,
+ * Copyright (c) 2009-2013, 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -94,224 +94,141 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
    Compiler dependent implementations
 ******************************************************************************/
 
-/* *************************************** CRAY */
-#if SCOREP_BACKEND_COMPILER_CRAY
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
 
 bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
 {
-    return ( arg == "-E" ) || ( arg == "-eP" );
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( ( current == "-A" ) ||
-         ( current == "-b" ) ||
-         ( current == "-d" ) ||
-         ( current == "-e" ) ||
-         ( current == "-h" ) ||
-         ( current == "-m" ) ||
-         ( current == "-M" ) ||
-         ( current == "-N" ) ||
-         ( current == "-O" ) ||
-         ( current == "-r" ) ||
-         ( current == "-R" ) ||
-         ( current == "-s" ) ||
-         ( current == "-x" ) ||
-         ( current == "-X" ) ||
-         ( current == "-Y" ) )
-    {
-        return true;
-    }
-
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** GNU */
-#elif SCOREP_BACKEND_COMPILER_GNU
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E -o " + output_file;
+    return ( arg == "-E" ) || ( arg == "-eP" ) || ( arg == "-qnoobject" );
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    if ( ( current == "-x" ) ||
-         ( current == "-include" ) )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** IBM */
-#elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-qmkshrobj";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return ( arg == "-E" ) || ( arg == "-qnoobject" );
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return arg == "-O4" ||
-           arg == "-O5" ||
-           arg == "-qipa" ||
-           arg.substr( 0, 6 ) == "-qipa=";
-}
-
-/* *************************************** INTEL */
-#elif SCOREP_BACKEND_COMPILER_INTEL
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    /* We are responsible for the final space charachter. */
+#if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
+    /* We are responsible for the final space character. */
     return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" ";
+#endif
+    return "";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
+{
+    return ( arg == "-shared" ) || ( arg == "-dynamiclib" ) || ( arg == "-qmkshrobj" );
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return arg == "-ffree";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return arg == "-ffree-form";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    return arg == "-qfree";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+    return arg == "-free";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+    return arg == "-Mfree" || arg == "-Mfreeform";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return arg == "-Free";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return false;
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return arg == "-ffixed";
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return arg == "-ffixed-form";
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    return arg == "-qfixed";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+    return arg == "-nofree";
+#elif SCOREP_BACKEND_COMPILER_FC_PGI
+    return arg == "-Mnofree" || arg == "-Mnofreeform";
+#elif SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return arg == "-Fixed";
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return false;
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return false;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+#if SCOREP_BACKEND_COMPILER_CC_GNU || SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CC_CLANG
+    return "-E -o " + output_file;
+#elif SCOREP_BACKEND_COMPILER_CC_CRAY || SCOREP_BACKEND_COMPILER_CC_IBM || SCOREP_BACKEND_COMPILER_CC_PGI || SCOREP_BACKEND_COMPILER_CC_FUJITSU
+    return "-E > " + output_file;
+#else
+#error Compiler not handled
+#endif
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+#if SCOREP_BACKEND_COMPILER_CXX_GNU || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_CXX_PGI || SCOREP_BACKEND_COMPILER_CXX_CLANG
+    return "-E -o " + output_file;
+#elif SCOREP_BACKEND_COMPILER_CXX_CRAY || SCOREP_BACKEND_COMPILER_CXX_IBM || SCOREP_BACKEND_COMPILER_CXX_FUJITSU
+    return "-E > " + output_file;
+#else
+#error Compiler not handled
+#endif
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+#if SCOREP_BACKEND_HAVE_FC_COMPILER
+#if SCOREP_BACKEND_COMPILER_FC_CRAY
+    return "-eP && mv "
+           + remove_extension( remove_path( input_file ) ) + ".i "
+           + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_GNU
+    return "-cpp -E -o " + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_IBM
+    std::string basename      = remove_extension( remove_path( input_file ) );
+    std::string prep_file_v13 = "F" + basename + ".f";
+    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
+    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_PGI || SCOREP_BACKEND_COMPILER_FC_FUJITSU
+    return "-E > " + output_file;
+#elif SCOREP_BACKEND_COMPILER_FC_CLANG
+    /* No Fortran support yet */
+    return "";
+#else
+#error Compiler not handled
+#endif
+#endif /* SCOREP_BACKEND_HAVE_FC_COMPILER */
+    return "";
 }
 
 bool
 SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
 {
+#if SCOREP_BACKEND_COMPILER_CC_INTEL || SCOREP_BACKEND_COMPILER_CXX_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL
+    // Following options have been seen with the Intel compilers only. Using
+    // with other compilers is probably safe.
     return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
            ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
            ( arg.substr( 0, 14 ) == "-openmp-report" ) ||
@@ -334,364 +251,88 @@ SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
            ( arg.substr( 0, 11 ) == "-opt-report" ) ||
            ( arg == "-onetrip" ) ||
            ( arg == "-openmp" );
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
+#endif
+    return false;
 }
 
 bool
 SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
                                                  const std::string& next )
 {
+#if SCOREP_BACKEND_COMPILER_CC_CRAY && SCOREP_BACKEND_COMPILER_CXX_CRAY && SCOREP_BACKEND_COMPILER_FC_CRAY
+    if ( ( current == "-A" ) ||
+         ( current == "-b" ) ||
+         ( current == "-d" ) ||
+         ( current == "-e" ) ||
+         ( current == "-h" ) ||
+         ( current == "-m" ) ||
+         ( current == "-M" ) ||
+         ( current == "-N" ) ||
+         ( current == "-O" ) ||
+         ( current == "-r" ) ||
+         ( current == "-R" ) ||
+         ( current == "-s" ) ||
+         ( current == "-x" ) ||
+         ( current == "-X" ) ||
+         ( current == "-Y" ) )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_GNU && SCOREP_BACKEND_COMPILER_CXX_GNU && SCOREP_BACKEND_COMPILER_FC_GNU
+    if ( ( current == "-x" ) ||
+         ( current == "-include" ) )
+    {
+        return true;
+    }
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_IBM && SCOREP_BACKEND_COMPILER_CXX_IBM && SCOREP_BACKEND_COMPILER_FC_IBM
+    return false;
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL && SCOREP_BACKEND_COMPILER_CXX_INTEL && SCOREP_BACKEND_COMPILER_FC_INTEL
     if ( current == "-include" )
     {
         return true;
     }
     return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** PGI */
-#elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
+#elif SCOREP_BACKEND_COMPILER_CC_PGI && SCOREP_BACKEND_COMPILER_CXX_PGI && SCOREP_BACKEND_COMPILER_FC_PGI
     if ( current == "-tp" )
     {
         return true;
     }
     return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
+#elif SCOREP_BACKEND_COMPILER_CC_FUJITSU && SCOREP_BACKEND_COMPILER_CXX_FUJITSU && SCOREP_BACKEND_COMPILER_FC_FUJITSU
     if ( current == "-x" )
     {
         return true;
     }
     return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
-{
-    return false;
-}
-
-/* *************************************** CLANG */
-/*
- * @note Clang currently (2019) supports no Fortran and only brings it in
- *       optional extensions. One such extension uses GCC functionality.
- */
-#elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
-{
-    return arg == "-shared";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
-                                                         const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
-                                                           const std::string& output_file )
-{
-    return "-E -o " + output_file;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
-{
-    return "";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgWithO( const std::string& arg )
-{
-    return false;
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isPreprocessFlag( const std::string& arg )
-{
-    return arg == "-E";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isCompositeArg( const std::string& current,
-                                                 const std::string& next )
-{
+#elif SCOREP_BACKEND_COMPILER_CC_CLANG && SCOREP_BACKEND_COMPILER_CXX_CLANG
     if ( current == "-x" )
     {
         return true;
     }
     return false;
+#else
+    // Non-unique vendor installation: -x || -include might cover lots of cases.
+    if ( ( current == "-x" ) ||
+         ( current == "-include" ) )
+    {
+        return true;
+    }
+    return false;
+#endif
 }
 
 bool
 SCOREP_Instrumenter_InstallData::conflictsWithLinktimeWrapping( const std::string& arg )
 {
-    return false;
-}
-
-#else
-#error "Missing OPARI specific OpenMP C/C++ compiler handling for your compiler, extension required."
+    // Assumption: it is likely that if the IBM compiler is used, then it is
+    // used for all languages.
+#if SCOREP_BACKEND_COMPILER_CC_IBM && SCOREP_BACKEND_COMPILER_CXX_IBM && SCOREP_BACKEND_COMPILER_FC_IBM
+    return arg == "-O4" ||
+           arg == "-O5" ||
+           arg == "-qipa" ||
+           arg.substr( 0, 6 ) == "-qipa=";
 #endif
-
-#if SCOREP_BACKEND_COMPILER_FC_CRAY
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed";
-}
-
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-eP && mv "
-           + remove_extension( remove_path( input_file ) ) + ".i "
-           + output_file;
-}
-
-#else // !SCOREP_BACKEND_COMPILER_FC_CRAY
-
-#if SCOREP_BACKEND_COMPILER_GNU
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-ffree-form";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-ffixed-form";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-cpp -E -o " + output_file;
-}
-
-#elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-qfree";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-qfixed";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    std::string basename      = remove_extension( remove_path( input_file ) );
-    std::string prep_file_v13 = "F" + basename + ".f";
-    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
-
-    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
-}
-
-#elif SCOREP_BACKEND_COMPILER_INTEL
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-nofree";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-#elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Mfree" || arg == "-Mfreeform";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Mnofree" || arg == "-Mnofreeform";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-#elif SCOREP_BACKEND_COMPILER_FUJITSU
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    return arg == "-Free";
-}
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    return arg == "-Fixed";
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    return "-E > " + output_file;
-}
-
-#elif SCOREP_BACKEND_COMPILER_CLANG
-bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
-{
-    /* No Fortran support yet */
     return false;
 }
-
-bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
-{
-    /* No Fortran support yet */
-    return false;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
-                                                               const std::string& output_file )
-{
-    /* No Fortran support yet */
-    return "";
-}
-
-#else
-#error "Missing OPARI specific OpenMP compiler handling for your Fortran compiler, extension required."
-#endif
-
-#endif // !SCOREP_BACKEND_COMPILER_FC_CRAY

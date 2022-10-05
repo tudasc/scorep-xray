@@ -43,7 +43,8 @@ public:
     checkCommand( const std::string& current,
                   const std::string& next ) override;
     std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
+                       const std::string&           inputFile ) override;
     bool
     isNvcc( void );
 

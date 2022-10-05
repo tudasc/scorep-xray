@@ -45,7 +45,8 @@ SCOREP_Instrumenter_OpenACCAdapter::SCOREP_Instrumenter_OpenACCAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_OpenACCAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_OpenACCAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                       const std::string& /* inputFile */ )
 {
     std::string flags;
 

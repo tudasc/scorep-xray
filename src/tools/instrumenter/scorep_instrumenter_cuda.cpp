@@ -92,7 +92,8 @@ SCOREP_Instrumenter_CudaAdapter::checkCommand( const std::string& current,
 }
 
 std::string
-SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
+SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                    const std::string& /* inputFile */ )
 {
     std::string flags;
 
