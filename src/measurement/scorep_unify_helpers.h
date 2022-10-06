@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -107,5 +107,12 @@ struct scorep_definitions_manager_entry;
 void
 scorep_unify_helper_create_interim_comm_mapping( struct scorep_definitions_manager_entry* entry );
 
+
+/**
+ * Helper function to check validity of callpath hashes for callpath parameters
+ * post unification.
+ */
+void
+scorep_unify_helper_check_callsite_hashes( void );
 
 #endif /* SCOREP_INTERNAL_UNIFY_HELPERS_H */

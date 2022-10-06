@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015, 2018,
+ * Copyright (c) 2015, 2018, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2015,
@@ -34,6 +34,9 @@
 #include <scorep_substrates_definition.h>
 #include <SCOREP_Substrates_Management.h>
 #include <SCOREP_InMeasurement.h>
+#include <SCOREP_Definitions.h>
+
+#include <jenkins_hash.h>
 
 #include <string.h>
 
@@ -52,6 +55,7 @@ typedef struct SCOREP_Task
     uint32_t                 current_index;
     uint32_t                 thread_id;
     uint32_t                 generation_number;
+    uint32_t                 parent_hash_value;
     SCOREP_TaskHandle        next;
     void*                    substrate_data[];
 } SCOREP_Task;
@@ -130,7 +134,9 @@ task_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* parent
     subsystem_data->current_task = scorep_task_create( location,
                                                        SCOREP_Location_GetId( location ),
                                                        0 );
-    subsystem_data->implicit_task = subsystem_data->current_task;
+    subsystem_data->implicit_task                   = subsystem_data->current_task;
+    subsystem_data->current_task->parent_hash_value =  SCOREP_Location_GetLastForkHash( parent );
+
 
     return SCOREP_SUCCESS;
 }
@@ -197,6 +203,14 @@ scorep_task_create( SCOREP_Location* location,
     new_task->current_index     = SCOREP_TASK_STACK_SIZE - 1;
     new_task->thread_id         = threadId;
     new_task->generation_number = generationNumber;
+
+    if ( subsystem_data->current_task != NULL )
+    {
+        /* Will only be used for explicit tasks, not implicit ones. */
+        new_task->parent_hash_value = SCOREP_Task_GetRegionStackHash( subsystem_data->current_task );
+    }
+
+
     memset( new_task->substrate_data, 0, SCOREP_Substrates_NumberOfRegisteredSubstrates() * sizeof( void* ) );
 
     /* Ignore return value 'substrate_id', only needed for re-initialization in OA. */
@@ -364,4 +378,40 @@ SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
                               void*             data )
 {
     task->substrate_data[ substrateId ] = data;
+}
+
+static uint32_t
+stack_frame_aggregation( const scorep_task_stack_frame* frame,
+                         uint32_t                       frameSize,
+                         SCOREP_TaskHandle              task )
+{
+    if ( !frame )
+    {
+        return task->parent_hash_value;
+    }
+    /* All previous frames are full, thus always pass `( SCOREP_TASK_STACK_SIZE - 1 )` */
+    uint32_t aggregated_jenkinshash_value = stack_frame_aggregation( frame->prev, ( SCOREP_TASK_STACK_SIZE - 1 ), task );
+
+    for ( uint32_t i = 0; i <= frameSize; i++ )
+    {
+        uint32_t region_hash = SCOREP_LOCAL_HANDLE_DEREF( frame->regions[ i ], Region )->hash_value;
+        aggregated_jenkinshash_value = jenkins_hash( &region_hash, sizeof( region_hash ), aggregated_jenkinshash_value );
+    }
+
+    return aggregated_jenkinshash_value;
+}
+
+uint32_t
+SCOREP_Task_GetRegionStackHash( SCOREP_TaskHandle task )
+{
+    if ( task->current_frame == NULL )
+    {
+        return 0;
+    }
+
+    /* The aggregation of previous full frames has to happen from the bottom to
+     * the top of the stack to allow the integration of the parent thread/task
+     * hash values and to match the master thread callpaths.
+     */
+    return stack_frame_aggregation( task->current_frame, task->current_index, task );
 }

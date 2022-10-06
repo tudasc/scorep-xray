@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2022,
+ * Copyright (c) 2009-2013, 2015, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -43,6 +43,10 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Filtering.h>
 #include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Task.h>
+
+#include <jenkins_hash.h>
+
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -140,6 +144,8 @@ static SCOREP_SourceFileHandle cuda_driver_file_handle  = SCOREP_INVALID_SOURCE_
 
 static SCOREP_RegionHandle cuda_sync_region_handle = SCOREP_INVALID_REGION;
 
+
+SCOREP_CALLSITE_HASH_TABLE( cupti, uint32_t )
 
 /**************** The callback functions to be registered *********************/
 
@@ -1176,6 +1182,15 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         /* With 'location == NULL' SCOREP_Location_EnterRegion will
                          * write the event on the current CPU location */
                         SCOREP_Location_EnterRegion( NULL, time, region_handle );
+                }
+
+                if ( ( scorep_cuda_record_callsites ) && ( callbackId == CUPTI_DRIVER_TRACE_CBID_cuLaunchKernel ) )
+                {
+                    uint32_t callsite_hash = scorep_cupti_callsite_hash_get_and_insert( cbInfo->correlationId );
+
+                    /* With 'location == NULL' SCOREP_Location_TriggerParameterUint64 will
+                     * write the parameter on the current CPU location */
+                    SCOREP_Location_TriggerParameterUint64( NULL, time, scorep_cupti_parameter_callsite_id, callsite_hash );
                 }
             }
             else if ( cbInfo->callbackSite == CUPTI_API_EXIT )

@@ -101,6 +101,10 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
         memset( first_fork_locations, 0, first_fork_locations_size );
     }
 
+    UTILS_ASSERT( location );
+    SCOREP_TaskHandle parent_task = SCOREP_Task_GetCurrentTask( location );
+    SCOREP_Location_SetLastForkHash( location, SCOREP_Task_GetRegionStackHash( parent_task ) );
+
     scorep_thread_on_fork( nRequestedThreads,
                            paradigm,
                            scorep_thread_get_model_data( tpd ),

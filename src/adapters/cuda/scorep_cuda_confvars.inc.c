@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2014, 2021,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -72,6 +72,11 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
         "kernel_counter",
         SCOREP_CUDA_FEATURE_KERNEL_COUNTER,
         "Fixed CUDA kernel metrics"
+    },
+    {
+        "kernel_callsite",
+        SCOREP_CUDA_FEATURE_KERNEL_CALLSITE,
+        "Track kernel callsites between launch and execution"
     },
     {
         "memcpy",

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2020, 2022,
+ * Copyright (c) 2009-2013, 2015, 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -69,6 +69,9 @@ scorep_cupti_attribute_handles scorep_cupti_attributes;
 /* List of CUPTI devices */
 static scorep_cupti_device*  cupti_device_list;
 static scorep_cupti_device** cupti_device_list_tail = &cupti_device_list;
+
+/* parameter handle for CUDA callsites */
+SCOREP_ParameterHandle scorep_cupti_parameter_callsite_id = SCOREP_INVALID_PARAMETER;
 
 /* set the list of CUPTI contexts to 'empty' */
 scorep_cupti_context* scorep_cupti_context_list = NULL;
@@ -179,6 +182,13 @@ scorep_cupti_init( void )
                 SCOREP_CUPTI_CUDA_CURESULT_KEY,
                 "CUDA driver API function result",
                 SCOREP_ATTRIBUTE_TYPE_UINT32 );
+        }
+
+        if ( scorep_cuda_record_callsites )
+        {
+            /* The name "callsite id" is not free to choose as it used in other
+               parts of the measurement system. */
+            scorep_cupti_parameter_callsite_id = SCOREP_Definitions_NewParameter( "callsite id", SCOREP_PARAMETER_UINT64 );
         }
 
         scorep_cupti_initialized = true;

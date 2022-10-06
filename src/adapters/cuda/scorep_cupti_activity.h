@@ -139,4 +139,20 @@ scorep_cupti_activity_is_buffer_empty( scorep_cupti_context* context );
 void
 scorep_cupti_activity_context_flush( scorep_cupti_context* context );
 
+/*
+ * Get the callsite hash from the local hash tab for the kernel
+ * instance based on the correlationId provided by CUPTI and remove
+ * this instance from the local hash tab.
+ *
+ * @param key   the contextId of the kernel
+ * @param value the hash return value
+ *
+ * @return true if a key was found in the hash table
+ */
+bool
+scorep_cupti_callsite_hash_get_and_remove( uint32_t  key,
+                                           uint32_t* value );
+
+
+
 #endif /* SCOREP_CUPTI_ACTIVITY_H */

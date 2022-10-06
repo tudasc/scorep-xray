@@ -82,6 +82,7 @@ scorep_get_in_measurement( void )
 struct SCOREP_Location
 {
     uint64_t                      last_timestamp;
+    uint32_t                      last_fork_hash;
     SCOREP_LocationType           type;
     SCOREP_LocationHandle         location_handle;
     uint64_t                      thread_id; /* only valid for CPU_THREAD */
@@ -103,6 +104,25 @@ static bool defer_init_locations = true;
 static UTILS_Mutex scorep_location_list_mutex;
 static UTILS_Mutex per_process_metrics_location_mutex;
 
+void
+SCOREP_Location_SetLastForkHash( SCOREP_Location* location,
+                                 uint32_t         hash )
+{
+    if ( location != NULL )
+    {
+        location->last_fork_hash = hash;
+    }
+}
+
+uint32_t
+SCOREP_Location_GetLastForkHash( const SCOREP_Location* location )
+{
+    if ( location != NULL )
+    {
+        return location->last_fork_hash;
+    }
+    return 0;
+}
 
 SCOREP_Location*
 scorep_location_create_location( SCOREP_LocationType        type,

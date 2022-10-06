@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2016, 2022,
+ * Copyright (c) 2009-2014, 2016, 2021-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1332,6 +1332,19 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
  * @param value
  */
 void
+SCOREP_Location_TriggerParameterUint64(  SCOREP_Location*       location,
+                                         uint64_t               timestamp,
+                                         SCOREP_ParameterHandle parameterHandle,
+                                         uint64_t               value );
+
+
+/**
+ *
+ *
+ * @param parameterHandle
+ * @param value
+ */
+void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value );
 
@@ -1345,6 +1358,13 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 void
 SCOREP_TriggerParameterStringHandle( SCOREP_ParameterHandle parameterHandle,
                                      SCOREP_StringHandle    stringHandle );
+
+
+void
+SCOREP_Location_TriggerParameterString(  SCOREP_Location*       location,
+                                         uint64_t               timestamp,
+                                         SCOREP_ParameterHandle parameterHandle,
+                                         const char*            value );
 
 
 void

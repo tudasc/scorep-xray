@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2019-2020, 2022,
+ * Copyright (c) 2009-2013, 2015, 2019-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -211,6 +211,8 @@ typedef struct
 } scorep_cupti_attribute_handles;
 
 extern scorep_cupti_attribute_handles scorep_cupti_attributes;
+
+extern SCOREP_ParameterHandle scorep_cupti_parameter_callsite_id;
 
 extern scorep_cupti_context* scorep_cupti_context_list;
 

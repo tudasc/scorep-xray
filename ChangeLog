@@ -43,6 +43,12 @@ Features and improvements:
 - With NVHPC compilers from version 21.1 on, Score-P now automatically
   ignores OpenMP outlined functions that caused measurement aborts
   when not manually filtered.
+- Score-P now matches kernel launch sites to their execution instances
+  during measurement by providing a numeric parameter, useful for
+  distinguishing kernel instances when the same kernel is launched from
+  different callpaths.
+  This feature currently supports CUDA based kernels and is controlled via
+  the `kernel_callsite` option to `SCOREP_CUDA_ENABLE`.
 
 User tools and API improvements and changes:
 
