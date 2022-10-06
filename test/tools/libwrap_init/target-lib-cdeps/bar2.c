@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "bar.h"
 
 #include <foo.h>

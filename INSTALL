@@ -58,7 +58,7 @@ the backend parts can be specified explicitly if desired. On Linux
 clusters it is currently recommended to use this option to select a
 compiler suite other than GCC.
 
-  --with-nocross-compiler-suite=(gcc|ibm|intel|nvhpc|pgi|clang|aocc)
+  --with-nocross-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc)
                The compiler suite used to build this package in
                non-cross-compiling environments. Needs to be in $PATH.
                [Default: gcc]
@@ -72,7 +72,7 @@ compiler suite other than GCC.
 In cross-compiling environments, the compiler suite used to build the
 frontend parts can be specified explicitly if desired.
 
-  --with-frontend-compiler-suite=(gcc|ibm|intel|nvhpc|pgi|clang|aocc)
+  --with-frontend-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc)
                The compiler suite used to build the frontend parts of
                this package in cross-compiling environments.  Needs to
                be in $PATH.

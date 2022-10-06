@@ -691,6 +691,8 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
             compiler_type = "ibm";
 #elif SCOREP_BACKEND_COMPILER_CC_INTEL
             compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CC_INTEL_ONEAPI
+            compiler_type = "gnu";
 #elif SCOREP_BACKEND_COMPILER_CC_PGI
             compiler_type = "pgi";
 #elif SCOREP_BACKEND_COMPILER_CC_FUJITSU
@@ -712,6 +714,8 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
             compiler_type = "ibm";
 #elif SCOREP_BACKEND_COMPILER_CXX_INTEL
             compiler_type = "intel";
+#elif SCOREP_BACKEND_COMPILER_CXX_INTEL_ONEAPI
+            compiler_type = "gnu";
 #elif SCOREP_BACKEND_COMPILER_CXX_PGI
             compiler_type = "pgi";
 #elif SCOREP_BACKEND_COMPILER_CXX_FUJITSU
@@ -732,7 +736,7 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
             compiler_type = "gnu";
 #elif SCOREP_BACKEND_COMPILER_FC_IBM
             compiler_type = "ibm";
-#elif SCOREP_BACKEND_COMPILER_FC_INTEL
+#elif SCOREP_BACKEND_COMPILER_FC_INTEL || SCOREP_BACKEND_COMPILER_FC_INTEL_ONEAPI
             compiler_type = "intel";
 #elif SCOREP_BACKEND_COMPILER_FC_PGI
             compiler_type = "pgi";
