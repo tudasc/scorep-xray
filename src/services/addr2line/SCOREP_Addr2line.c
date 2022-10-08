@@ -169,8 +169,8 @@ is_obj_relevant( const char* name )
                don't." might have no use case */
          )
     {
-        return false;
         UTILS_DEBUG( "'%s' not relevant", name );
+        return false;
     }
     return true;
 }

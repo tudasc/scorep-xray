@@ -169,7 +169,7 @@ grab_page_memory( SCOREP_Allocator_Page* page,
     }
 
     page->memory_alignment_loss += ( char* )memory - ( char* )page->memory_current_address;
-    page->memory_current_address = memory + requestedSize;
+    page->memory_current_address = ( char* )memory + requestedSize;
     *memoryOut                   = memory;
     return true;
 }

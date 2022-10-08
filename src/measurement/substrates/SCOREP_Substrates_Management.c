@@ -106,7 +106,7 @@ aligned_malloc( size_t size )
                   "scorep_substrates array could not be allocated " );
 
     /* create aligned address */
-    void** aligned = ( void** )( ( uintptr_t )( super + CACHE_LINE_SIZE + sizeof( void* ) ) & ( uintptr_t ) ~( CACHE_LINE_SIZE - 1 ) );
+    void** aligned = ( void** )( ( ( uintptr_t )super + CACHE_LINE_SIZE + sizeof( void* ) ) & ( uintptr_t ) ~( CACHE_LINE_SIZE - 1 ) );
 
     /* store original address */
     aligned[ -1 ] = super;

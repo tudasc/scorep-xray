@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_Paradigms.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
