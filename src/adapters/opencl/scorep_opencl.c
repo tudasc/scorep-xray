@@ -1101,7 +1101,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
                     SCOREP_Definitions_NewRegion( kernel_name, NULL,
                                                   opencl_kernel_file_handle, 0, 0,
                                                   SCOREP_PARADIGM_OPENCL,
-                                                  SCOREP_REGION_FUNCTION );
+                                                  SCOREP_REGION_KERNEL );
 
                 hashNode = kernel_hash_put( kernel_name, regionHandle );
 

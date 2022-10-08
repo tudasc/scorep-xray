@@ -736,7 +736,7 @@ kernel_table_value_ctor( kernel_table_key_t* key,
                                                                               hip_file_handle,
                                                                               0, 0,
                                                                               SCOREP_PARADIGM_HIP,
-                                                                              SCOREP_REGION_FUNCTION );
+                                                                              SCOREP_REGION_KERNEL );
 
     SCOREP_RegionHandle_SetGroup( new_region, "HIP_KERNEL" );
 
@@ -1177,7 +1177,7 @@ kernel_cb( uint32_t    domain,
 
     if ( data->phase == ACTIVITY_API_PHASE_ENTER )
     {
-        api_region_enter( cid, SCOREP_REGION_WRAPPER, "HIP_API", false );
+        api_region_enter( cid, SCOREP_REGION_KERNEL_LAUNCH, "HIP_API", false );
     }
 
     // Only store the correlation record on exit

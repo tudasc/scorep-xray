@@ -364,7 +364,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
         // create a new region definition for this kernel
         regionHandle = SCOREP_Definitions_NewRegion( knName, kernel->name,
                                                      scorep_cupti_kernel_file_handle, 0, 0,
-                                                     SCOREP_PARADIGM_CUDA, SCOREP_REGION_FUNCTION );
+                                                     SCOREP_PARADIGM_CUDA, SCOREP_REGION_KERNEL );
 
         hashNode = scorep_cupti_kernel_hash_put( kernel->name, regionHandle );
     }

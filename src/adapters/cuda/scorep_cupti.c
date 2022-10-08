@@ -186,9 +186,7 @@ scorep_cupti_init( void )
 
         if ( scorep_cuda_record_callsites )
         {
-            /* The name "callsite id" is not free to choose as it used in other
-               parts of the measurement system. */
-            scorep_cupti_parameter_callsite_id = SCOREP_Definitions_NewParameter( "callsite id", SCOREP_PARAMETER_UINT64 );
+            scorep_cupti_parameter_callsite_id = SCOREP_AcceleratorMgmt_GetCallsiteParameter();
         }
 
         scorep_cupti_initialized = true;

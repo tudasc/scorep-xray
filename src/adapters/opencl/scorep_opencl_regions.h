@@ -38,8 +38,8 @@
  * - Declaration of Score-P region handles for wrapped OpenCL functions
  * - Function declaration of wrapped OpenCL functions
  */
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args )   \
-    extern SCOREP_RegionHandle scorep_opencl_region__ ## func;       \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args ) \
+    extern SCOREP_RegionHandle scorep_opencl_region__ ## func; \
     return_type func func_args;
 
 #elif SCOREP_LIBWRAP_SHARED
@@ -48,7 +48,7 @@
  * In shared mode:
  * - Declaration of Score-P region handles for wrapped OpenCL functions
  */
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args )   \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args ) \
     extern SCOREP_RegionHandle scorep_opencl_region__ ## func;
 
 #else

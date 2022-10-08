@@ -118,9 +118,6 @@ SCOREP_Unify( void )
 
         /* Create region groups */
         create_region_groups();
-
-        /* Check callsite callpaths hashes */
-        scorep_unify_helper_check_callsite_hashes();
     }
 
     /* fool linker, so that the scorep_unify_helpers.c unit is always linked
