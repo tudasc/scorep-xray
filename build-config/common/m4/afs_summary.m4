@@ -373,7 +373,20 @@ BEGIN {
         descr_post = ""
         if (descr in refsections) {
             # we are here, because the values differ
-            descr_pre = "\033@<:@0;31m"
+            # if the first word of the values are equal (yes, no, ...)
+            # color as warning/yellow, else red/attention
+
+            match(value, "^@<:@a-z@:>@*")
+            word = substr(value, RSTART, RLENGTH)
+
+            ref_value = refsections@<:@descr@:>@
+            match(ref_value, "^@<:@a-z@:>@*")
+            ref_word = substr(ref_value, RSTART, RLENGTH)
+
+            if (word == ref_word)
+                descr_pre = "\033@<:@0;33m"
+            else
+                descr_pre = "\033@<:@0;31m"
             descr_post = "\033@<:@m"
         }
         printsummary(descr "" value, descr_pre, descr_post)
