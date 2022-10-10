@@ -65,13 +65,6 @@ extern SCOREP_IoHandleHandle scorep_posix_io_sync_all_handle;
 /** Artificial ISO C I/O handle representing all currently active I/O handles */
 extern SCOREP_IoHandleHandle scorep_posix_io_flush_all_handle;
 
-#if HAVE( POSIX_AIO_SUPPORT )
-
-extern SCOREP_Hashtab* scorep_posix_io_aio_request_table;
-extern UTILS_Mutex     scorep_posix_io_aio_request_table_mutex;
-
-#endif
-
 /**
  * Translate the POSIX I/O mode of an open operation to its Score-P equivalent.
  *
@@ -141,5 +134,24 @@ scorep_posix_io_isoc_init( void );
 
 void
 scorep_posix_io_isoc_fini( void );
+
+#if HAVE( POSIX_AIO_SUPPORT )
+
+void
+scorep_posix_io_aio_request_insert( const struct aiocb*    aiocbp,
+                                    SCOREP_IoOperationMode mode );
+
+bool
+scorep_posix_io_aio_request_find( const struct aiocb*     aiocbp,
+                                  SCOREP_IoOperationMode* mode );
+
+void
+scorep_posix_io_aio_request_delete( const struct aiocb* aiocbp );
+
+void
+scorep_posix_io_aio_request_cancel_all( int                   fd,
+                                        SCOREP_IoHandleHandle handle );
+
+#endif
 
 #endif  /* SCOREP_POSIX_IO_H */
