@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020,
+ * Copyright (c) 2020, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -44,7 +44,7 @@ allocate_lum( void )
 void
 SCOREP_Platform_AddLustreProperties( SCOREP_IoFileHandle ioFileHandle )
 {
-    const char*         file_path = SCOREP_Definitions_GetIoFileName( ioFileHandle );
+    const char*         file_path = SCOREP_IoFileHandle_GetFileName( ioFileHandle );
     struct lov_user_md* lum_file  = allocate_lum();
     int                 ret       = llapi_file_get_stripe( file_path, lum_file );
     if ( ret == 0 )
