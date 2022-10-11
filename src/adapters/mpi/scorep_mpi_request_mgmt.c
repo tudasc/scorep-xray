@@ -241,10 +241,9 @@ SCOREP_HASH_TABLE_NON_MONOTONIC( request_table, 11, hashsize( REQUEST_TABLE_HASH
 static inline void
 insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
 {
-    bool inserted;
-
     // Try to insert request directly.
-    request_table_value_t orig_value = request_table_get_and_insert( key, data, &inserted );
+    request_table_value_t orig_value = NULL;
+    bool                  inserted   = request_table_get_and_insert( key, data, &orig_value );
 
     // If the MPI_Request is a duplicate, we need to append a new scorep_mpi_request to the list.
     if ( !inserted )
@@ -260,7 +259,8 @@ insert_scorep_mpi_request( MPI_Request key, scorep_mpi_request* data )
 
             // Since another thread could have removed and possibly also reinserted
             // the entry with the same key, we need to double check.
-            request_table_value_t control = request_table_get_and_insert( key, data, &inserted );
+            request_table_value_t control = NULL;
+            inserted = request_table_get_and_insert( key, data, &control );
 
             // Another thread has removed the entry. The request was inserted directly.
             // Unlock the old entry for consistency and release the scorep_mpi_request.

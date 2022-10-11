@@ -35,8 +35,12 @@ typedef uint32_t table_value_t;
 static inline uint32_t
 table_bucket_idx( table_key_t key )
 {
+#if defined( USE_JENKINS )
+    return jenkins_hash( &key, sizeof( key ), 0 ) & hashmask( TABLE_HASH_EXPONENT );
+#else
     /* use key directly to allow to trigger collisions */
     return key & hashmask( TABLE_HASH_EXPONENT );
+#endif
 }
 
 static inline bool
@@ -98,7 +102,7 @@ test_01( CuTest* tc )
 static void
 test_02( CuTest* tc )
 {
-    uint32_t value = 0;
+    table_value_t value = 0;
     CuAssertTrue( tc, !table_get( value, &value ) );
     CuAssertIntEquals( tc, 0, count() );
 }
@@ -106,9 +110,9 @@ test_02( CuTest* tc )
 static void
 test_03( CuTest* tc )
 {
-    uint32_t key = 0;
-    bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_key_t   key      = 0;
+    table_value_t value    = 0;
+    bool          inserted = table_get_and_insert( key, &key, &value );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -119,9 +123,9 @@ test_03( CuTest* tc )
 static void
 test_04( CuTest* tc )
 {
-    uint32_t key = 0;
-    bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_key_t   key      = 0;
+    table_value_t value    = 0;
+    bool          inserted = table_get_and_insert( key, &key, &value );
     CuAssertTrue( tc, !inserted );
     CuAssertIntEquals( tc, 1, count() );
 }
@@ -129,8 +133,8 @@ test_04( CuTest* tc )
 static void
 test_05( CuTest* tc )
 {
-    uint32_t key = 0;
-    uint32_t value;
+    table_key_t   key = 0;
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 1, count() );
@@ -139,9 +143,9 @@ test_05( CuTest* tc )
 static void
 test_06( CuTest* tc )
 {
-    uint32_t key = 1;
-    bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_key_t   key      = 1;
+    table_value_t value    = 0;
+    bool          inserted = table_get_and_insert( key, &key, &value );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -152,9 +156,9 @@ test_06( CuTest* tc )
 static void
 test_07( CuTest* tc )
 {
-    uint32_t key = hashsize( TABLE_HASH_EXPONENT );
-    bool     inserted;
-    uint32_t value = table_get_and_insert( key, &key, &inserted );
+    table_key_t   key      = hashsize( TABLE_HASH_EXPONENT );
+    table_value_t value    = 0;
+    bool          inserted = table_get_and_insert( key, &key, &value );
     CuAssertTrue( tc, inserted );
     CuAssertIntEquals( tc, key, value );
     CuAssertTrue( tc, table_get( key, &value ) );
@@ -165,8 +169,8 @@ test_07( CuTest* tc )
 static void
 test_08( CuTest* tc )
 {
-    uint32_t key = 0;
-    uint32_t value;
+    table_key_t   key = 0;
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 3, count() );
@@ -175,8 +179,8 @@ test_08( CuTest* tc )
 static void
 test_09( CuTest* tc )
 {
-    uint32_t key = hashsize( TABLE_HASH_EXPONENT );
-    uint32_t value;
+    table_key_t   key = hashsize( TABLE_HASH_EXPONENT );
+    table_value_t value;
     CuAssertTrue( tc, table_get( key, &value ) );
     CuAssertIntEquals( tc, key, value );
     CuAssertIntEquals( tc, 3, count() );
@@ -187,7 +191,11 @@ main( int argc, char** argv )
 {
     CuUseColors();
     CuString* output = CuStringNew();
-    CuSuite*  suite  = CuSuiteNew( "FastHashtab: monotonic" );
+#if defined( USE_JENKINS )
+    CuSuite* suite = CuSuiteNew( "FastHashtab: monotonic jenkins" );
+#else
+    CuSuite* suite = CuSuiteNew( "FastHashtab: monotonic" );
+#endif
 
     SUITE_ADD_TEST_NAME( suite, test_01, "empty" );
     SUITE_ADD_TEST_NAME( suite, test_02, "get from empty" );

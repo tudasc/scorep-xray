@@ -114,12 +114,12 @@
    // Note that the new key value needs to be identicial to @a key in
    // terms of <prefix>_equals( key, internal-key-storage ).
    // If the table needs to allocate new internal data during insert,
-   // it calls <prefix>_allocate_chunk(). @a inserted indicates if the
-   // a new key-values pair was inserted.
-   static inline <prefix>_value_t
-   <prefix>_get_and_insert( <prefix>_key_t key,
-                            void* ctorData,
-                            bool* inserted );
+   // it calls <prefix>_allocate_chunk(). Returns true if a new key-value
+   // pair was inserted.
+   static inline bool
+   <prefix>_get_and_insert( <prefix>_key_t    key,
+                            void*             ctorData,
+                            <prefix>_value_t* value );
 
    // <prefix>_iterate_key_value_pairs() will iterate over the entire
    // table and call cb( key, value, cbData ) for each key-value pair.
@@ -212,7 +212,7 @@
     typedef struct prefix ## _bucket_t prefix ## _bucket_t; \
     struct prefix ## _bucket_t \
     { \
-        SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size;	\
+        SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size; \
         UTILS_Mutex                                     insert_lock; \
         prefix ## _chunk_t*                             chunk; \
     };
@@ -254,8 +254,8 @@
             } \
             if ( prefix ## _equals( key, ( *chunk )->keys[ j ] ) ) \
             { \
-                *inserted = false; \
-                return ( *chunk )->values[ j ]; \
+                *value = ( *chunk )->values[ j ]; \
+                return false; \
             } \
         } \
         old_size     = current_size; \
@@ -283,8 +283,8 @@
                     } \
                     if ( prefix ## _equals( key, ( *chunk )->keys[ j ] ) ) \
                     { \
-                        *inserted = false; \
-                        return ( *chunk )->values[ j ]; \
+                        *value = ( *chunk )->values[ j ]; \
+                        return false; \
                     } \
                 } \
                 old_size = current_size; \
@@ -307,8 +307,8 @@
         if ( prefix ## _equals( key, ( *chunk )->keys[ j ] ) ) \
         { \
             UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
-            *inserted = false; \
-            return ( *chunk )->values[ j ]; \
+            *value = ( *chunk )->values[ j ]; \
+            return false; \
         } \
     }
 
@@ -343,7 +343,7 @@
         UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
         if ( prefix ## _chunk_free_list != NULL ) \
         { \
-            ( *chunk )->next = prefix ## _chunk_free_list; \
+            ( *chunk )->next           = prefix ## _chunk_free_list; \
             prefix ## _chunk_free_list = prefix ## _chunk_free_list->next; \
             UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
         } \
@@ -366,8 +366,8 @@
     UTILS_BUG_ON( !prefix ## _equals( key, ( *chunk )->keys[ j ] ), "Key values are not equal" ); \
     UTILS_Atomic_StoreN_uint32( &( bucket->size ), current_size + 1, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
-    *inserted = true; \
-    return ( *chunk )->values[ j ];
+    *value = ( *chunk )->values[ j ]; \
+    return true;
 
 
 /* implementation detail, do not use directly */
@@ -407,16 +407,14 @@
     } \
 \
     /* implementation detail, do not use directly */ \
-    static inline prefix ## _value_t \
-    prefix ## _get_impl( prefix ## _key_t key, \
-                         bool* inserted, \
+    static inline bool \
+    prefix ## _get_impl( prefix ## _key_t     key, \
+                         prefix ## _value_t*  value, \
                          prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
         UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
-        *inserted = true; /* i.e. not found */ \
-        prefix ## _value_t dummy; \
-        return dummy; \
+        return true; /* i.e. not found */ \
     }
 
 /* implementation detail, do not use directly */
@@ -445,10 +443,10 @@
     SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     /* implementation detail, do not use directly */ \
-    static inline prefix ## _value_t \
-    prefix ## _get_and_insert_impl( prefix ## _key_t key, \
-                                    void* ctorData, \
-                                    bool* inserted, \
+    static inline bool \
+    prefix ## _get_and_insert_impl( prefix ## _key_t     key, \
+                                    void*                ctorData, \
+                                    prefix ## _value_t*  value, \
                                     prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
@@ -458,31 +456,26 @@
     } \
 \
     static inline bool /* found */ \
-    prefix ## _get( prefix ## _key_t key, \
+    prefix ## _get( prefix ## _key_t    key, \
                     prefix ## _value_t* value ) \
     { \
+        UTILS_ASSERT( value ); \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
-        bool inserted; \
-        prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
-        if ( !inserted ) \
-        { \
-            *value = ret_val; \
-            return true; \
-        } \
-        return false; \
+        return !prefix ## _get_impl( key, value, bucket ); \
     } \
 \
-    static inline prefix ## _value_t \
-    prefix ## _get_and_insert( prefix ## _key_t key, \
-                               void* ctorData, \
-                               bool* inserted ) \
+    static inline bool \
+    prefix ## _get_and_insert( prefix ## _key_t    key, \
+                               void*               ctorData, \
+                               prefix ## _value_t* value ) \
     { \
+        UTILS_ASSERT( value ); \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
-        return prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
+        return prefix ## _get_and_insert_impl( key, ctorData, value, bucket ); \
     } \
 \
     /* Do not call concurrently */ \
@@ -544,10 +537,10 @@
     SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     /* implementation detail, do not use directly */ \
-    static inline prefix ## _value_t \
-    prefix ## _get_and_insert_impl( prefix ## _key_t key, \
-                                    void* ctorData, \
-                                    bool* inserted, \
+    static inline bool \
+    prefix ## _get_and_insert_impl( prefix ## _key_t     key, \
+                                    void*                ctorData, \
+                                    prefix ## _value_t*  value, \
                                     prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
@@ -557,36 +550,32 @@
     } \
 \
     static inline bool /* found */ \
-    prefix ## _get( prefix ## _key_t key, \
+    prefix ## _get( prefix ## _key_t    key, \
                     prefix ## _value_t* value ) \
     { \
+        UTILS_ASSERT( value ); \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
-        bool inserted; \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
-        prefix ## _value_t ret_val = prefix ## _get_impl( key, &inserted, bucket ); \
+        bool inserted = prefix ## _get_impl( key, value, bucket ); \
         SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
-        if ( !inserted ) \
-        { \
-            *value = ret_val; \
-            return true; \
-        } \
-        return false; \
+        return !inserted; \
     } \
 \
-    static inline prefix ## _value_t \
-    prefix ## _get_and_insert( prefix ## _key_t key, \
-                               void* ctorData, \
-                               bool* inserted ) \
+    static inline bool \
+    prefix ## _get_and_insert( prefix ## _key_t    key, \
+                               void*               ctorData, \
+                               prefix ## _value_t* value ) \
     { \
+        UTILS_ASSERT( value ); \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
         SCOREP_RWLock_ReaderLock( &( bucket->pending ), &( bucket->release_n_readers ) ); \
-        prefix ## _value_t value = prefix ## _get_and_insert_impl( key, ctorData, inserted, bucket ); \
+        bool inserted = prefix ## _get_and_insert_impl( key, ctorData, value, bucket ); \
         SCOREP_RWLock_ReaderUnlock( &( bucket->pending ), &( bucket->departing ), &( bucket->release_writer ) ); \
-        return value; \
+        return inserted; \
     } \
 \
     /* Do not call concurrently */ \
@@ -654,7 +643,8 @@
     typedef bool ( *prefix ## _condition_t )( prefix ## _key_t, prefix ## _value_t, void* data ); \
 \
     static inline void \
-    prefix ## _remove_if( prefix ## _condition_t condition, void* data ) \
+    prefix ## _remove_if( prefix ## _condition_t condition, \
+                          void*                  data ) \
     { \
         for ( uint32_t b = 0; b < ( hashTableSize ); ++b ) \
         { \

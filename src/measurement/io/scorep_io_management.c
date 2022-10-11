@@ -758,8 +758,9 @@ SCOREP_IoMgmt_GetIoFileHandle( const char* pathname )
         .string_value = res
     };
 
-    bool inserted = false;
-    return io_file_table_get_and_insert( key, NULL, &inserted );
+    SCOREP_IoFileHandle value = SCOREP_INVALID_IO_FILE;
+    io_file_table_get_and_insert( key, NULL, &value );
+    return value;
 }
 
 const char*

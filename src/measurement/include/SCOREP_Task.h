@@ -221,8 +221,9 @@ SCOREP_Task_GetRegionStackHash( SCOREP_TaskHandle task );
     callsite_hash_value_t \
     scorep_ ## callsitePrefix ## _callsite_hash_get_and_insert( keyType idx ) \
     { \
-        bool inserted = false; \
-        return callsite_hash_get_and_insert( idx, NULL, &inserted ); \
+        callsite_hash_value_t value = 0; \
+        callsite_hash_get_and_insert( idx, NULL, &value ); \
+        return value; \
     } \
 
 
