@@ -1084,7 +1084,8 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
 
             if ( sendbuf == MPI_IN_PLACE )
             {
-                sendbytes = ( uint64_t )( count - 1 ) * sz;
+                count    -= recvcounts[ me ];
+                sendbytes = ( uint64_t )count * sz;
                 recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
             }
             else
