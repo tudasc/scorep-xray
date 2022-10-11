@@ -73,6 +73,8 @@ static SCOREP_AllocMetric*    host_alloc_metric;
 static SCOREP_AttributeHandle attribute_allocation_size;
 static SCOREP_AttributeHandle attribute_deallocation_size;
 
+static SCOREP_ParameterHandle callsite_id_parameter;
+
 static uint32_t local_rank_counter;
 
 /* will be defined when the first device will be created */
@@ -786,6 +788,7 @@ typedef struct
         {
             scorep_hip_stream*  stream;
             SCOREP_RegionHandle kernel_region;
+            uint32_t            callsite_hash;
         } launch;
         struct
         {
@@ -1178,39 +1181,51 @@ kernel_cb( uint32_t    domain,
     if ( data->phase == ACTIVITY_API_PHASE_ENTER )
     {
         api_region_enter( cid, SCOREP_REGION_KERNEL_LAUNCH, "HIP_API", false );
+
+        correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
+        if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
+        {
+            e->payload.launch.callsite_hash = SCOREP_Task_GetRegionStackHash( SCOREP_Task_GetCurrentTask( SCOREP_Location_GetCurrentCPULocation() ) );
+            // other parameters are only valid in the EXIT phase
+
+            SCOREP_TriggerParameterUint64( callsite_id_parameter, e->payload.launch.callsite_hash );
+        }
     }
 
     // Only store the correlation record on exit
     if ( data->phase == ACTIVITY_API_PHASE_EXIT )
     {
-        const char* kernel_name = NULL;
-        uint64_t    stream      = 0;
-        switch ( cid )
+        correlation_entry* e = get_correlation_entry( data->correlation_id );
+        if ( e )
         {
-            case HIP_API_ID_hipModuleLaunchKernel:
-                kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
-                stream      = ( uint64_t )( data->args.hipModuleLaunchKernel.stream );
-                break;
-            case HIP_API_ID_hipExtModuleLaunchKernel:
-                kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
-                stream      = ( uint64_t )( data->args.hipExtModuleLaunchKernel.hStream );
-                break;
-            case HIP_API_ID_hipHccModuleLaunchKernel:
-                kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
-                stream      = ( uint64_t )( data->args.hipHccModuleLaunchKernel.hStream );
-                break;
-            case HIP_API_ID_hipLaunchKernel:
-                kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
-                                                     data->args.hipLaunchKernel.stream );
-                stream = ( uint64_t )data->args.hipLaunchKernel.stream;
-                break;
-            default:
-                UTILS_BUG( "Unhandled kernel call" );
-                break;
+            const char* kernel_name = NULL;
+            uint64_t    stream      = 0;
+            switch ( cid )
+            {
+                case HIP_API_ID_hipModuleLaunchKernel:
+                    kernel_name = hipKernelNameRef( data->args.hipModuleLaunchKernel.f );
+                    stream      = ( uint64_t )( data->args.hipModuleLaunchKernel.stream );
+                    break;
+                case HIP_API_ID_hipExtModuleLaunchKernel:
+                    kernel_name = hipKernelNameRef( data->args.hipExtModuleLaunchKernel.f );
+                    stream      = ( uint64_t )( data->args.hipExtModuleLaunchKernel.hStream );
+                    break;
+                case HIP_API_ID_hipHccModuleLaunchKernel:
+                    kernel_name = hipKernelNameRef( data->args.hipHccModuleLaunchKernel.f );
+                    stream      = ( uint64_t )( data->args.hipHccModuleLaunchKernel.hStream );
+                    break;
+                case HIP_API_ID_hipLaunchKernel:
+                    kernel_name = hipKernelNameRefByPtr( data->args.hipLaunchKernel.function_address,
+                                                         data->args.hipLaunchKernel.stream );
+                    stream = ( uint64_t )data->args.hipLaunchKernel.stream;
+                    break;
+                default:
+                    UTILS_BUG( "Unhandled kernel call" );
+                    break;
+            }
+            e->payload.launch.stream        = get_stream( stream );
+            e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
         }
-        correlation_entry* e = create_correlation_entry( data->correlation_id, cid );
-        e->payload.launch.stream        = get_stream( stream );
-        e->payload.launch.kernel_region = get_kernel_region_by_name( kernel_name );
 
         api_region_exit( cid );
     }
@@ -1657,6 +1672,14 @@ activity_cb( const char* begin,
                                              begin_time,
                                              e->payload.launch.kernel_region );
 
+                if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
+                {
+                    SCOREP_Location_TriggerParameterUint64( e->payload.launch.stream->device_location,
+                                                            begin_time,
+                                                            callsite_id_parameter,
+                                                            e->payload.launch.callsite_hash );
+                }
+
                 SCOREP_Location_ExitRegion( e->payload.launch.stream->device_location,
                                             end_time,
                                             e->payload.launch.kernel_region );
@@ -1803,6 +1826,14 @@ scorep_hip_callbacks_init( void )
     enumerate_smi_devices();
 
     hip_file_handle = SCOREP_Definitions_NewSourceFile( "HIP" );
+
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
+    {
+        /* callsites need kernel tracking */
+        scorep_hip_features |= SCOREP_HIP_FEATURE_KERNELS;
+
+        callsite_id_parameter = SCOREP_AcceleratorMgmt_GetCallsiteParameter();
+    }
 
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_MALLOC )
     {

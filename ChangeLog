@@ -51,8 +51,9 @@ Features and improvements:
   during measurement by providing a numeric parameter, useful for
   distinguishing kernel instances when the same kernel is launched from
   different callpaths.
-  This feature currently supports CUDA based kernels and is controlled via
-  the `kernel_callsite` option to `SCOREP_CUDA_ENABLE`.
+  This feature currently supports CUDA and HIP based kernels and is
+  controlled via the `kernel_callsite` option to `SCOREP_CUDA_ENABLE` or
+  'SCOREP_HIP_ENABLE' respectivly.
 - Detect BeeGFS and WEKA as distributed filesystems.
 - Score-P now generates ENTER and EXIT events for MPI procedures added in version
   4.0 of the MPI Standard.
