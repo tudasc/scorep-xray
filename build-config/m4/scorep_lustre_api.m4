@@ -31,13 +31,7 @@ AS_IF([test x"${scorep_lustreapi_support}" = x"yes"],
 
 AC_SCOREP_COND_HAVE([LUSTRE_API_SUPPORT],
                     [test x"${scorep_lustreapi_support}" = x"yes"],
-                    [Defined if recording calls to Lustre-API is possible.],
-                    [AC_SUBST([SCOREP_LUSTRE_CPPFLAGS],["${with_liblustreapi_cppflags}"])
-                     AC_SUBST([SCOREP_LUSTRE_LDFLAGS], ["${with_liblustreapi_ldflags} ${with_liblustreapi_rpathflag}"])
-                     AC_SUBST([SCOREP_LUSTRE_LIBS],    ["${with_liblustreapi_libs}"])],
-                    [AC_SUBST([SCOREP_LUSTRE_CPPFLAGS],[""])
-                     AC_SUBST([SCOREP_LUSTRE_LDFLAGS], [""])
-                     AC_SUBST([SCOREP_LUSTRE_LIBS],    [""])])
+                    [Defined if recording calls to Lustre-API is possible.])
 
 AFS_SUMMARY_POP([Lustre stripe info support], [${scorep_lustreapi_support}${scorep_liblustreapi_summary_reason}])
 
