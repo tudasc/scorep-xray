@@ -105,6 +105,7 @@ Bugfixes:
 - Events for unsuccessful MPI_Test on a request are now consistently triggered
   by the `xreqtest` group.
 - Fix a crash in the MPI adapter when no active requests are given to MPI_Waitany.
+- Fix the calculation of sent bytes in MPI_Reduce_scatter with MPI_IN_PLACE.
 
 ------------------- Released version 7.1 -----------------------------
 
