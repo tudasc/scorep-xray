@@ -50,6 +50,17 @@ Features and improvements:
   This feature currently supports CUDA based kernels and is controlled via
   the `kernel_callsite` option to `SCOREP_CUDA_ENABLE`.
 - Detect BeeGFS and WEKA as distributed filesystems.
+- Score-P now generates ENTER and EXIT events for MPI procedures added in version
+  4.0 of the MPI Standard.
+  In particular, the following wrappers for procedures listed in section
+  B.1.2 were added:
+  - Item 6: `MPI_Isendrecv`, `MPI_Isendrecv_replace`
+  - Item 7: persistent collectives and persistent neighborhood collectives
+  - Item 9: partitioned communication
+  - Item 13: `MPI_Comm_idup_with_info`
+  - Item 22: `MPI_Info_get_string`
+  - Item 24: Sessions model
+  - Item 25: `MPI_Info_create_env`
 
 User tools and API improvements and changes:
 
