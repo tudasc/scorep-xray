@@ -192,9 +192,9 @@ endif !MOUNT_INFO_SUPPORT
 
 if HAVE_LUSTRE_API_SUPPORT
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_lustre.c
-libscorep_platform_la_LDFLAGS += $(SCOREP_LUSTRE_LDFLAGS)
-libscorep_platform_la_LIBADD += $(SCOREP_LUSTRE_LIBS)
-libscorep_platform_la_CPPFLAGS += $(SCOREP_LUSTRE_CPPFLAGS)
+libscorep_platform_la_LDFLAGS += $(SCOREP_LIBLUSTREAPI_LDFLAGS)
+libscorep_platform_la_LIBADD += $(SCOREP_LIBLUSTREAPI_LIBS)
+libscorep_platform_la_CPPFLAGS += $(SCOREP_LIBLUSTREAPI_CPPFLAGS)
 else !HAVE_LUSTRE_API_SUPPORT
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_lustre_mockup.c
 endif !HAVE_LUSTRE_API_SUPPORT
