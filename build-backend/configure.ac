@@ -433,6 +433,8 @@ AM_COND_IF([HAVE_CUDA_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/cuda/Makefile:../test/instrumenter_checks/cuda/Makefile.in])])
 AM_COND_IF([HAVE_POSIX_IO_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/io/Makefile:../test/instrumenter_checks/io/Makefile.in])])
+AM_COND_IF([HAVE_HIP_CHECK_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/hip/Makefile:../test/instrumenter_checks/hip/Makefile.in])])
 
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])

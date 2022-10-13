@@ -129,6 +129,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             F77="$(F77)" \
                             FC="$(FC)" \
                             NVCC="$(NVCC)" \
+                            HIPCC="$(HIPCC)" \
                             LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS) $$POMP_CFLAGS" \
                             CXXFLAGS="$(CXXFLAGS) $$POMP_CFLAGS" \

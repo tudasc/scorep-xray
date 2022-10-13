@@ -104,6 +104,12 @@ CPPFLAGS=$scorep_hip_safe_CPPFLAGS
 LDFLAGS=$scorep_hip_safe_LDFLAGS
 LIBS=$scorep_hip_safe_LIBS
 
+AS_IF([test "x${scorep_have_hip}" = "xyes"],
+      [AC_PATH_PROG([HIPCC], [hipcc], [:], [${scorep_hip_root}/bin])
+       AS_IF([test "x$HIPCC" != "x:"],
+             [AFS_AM_CONDITIONAL([HAVE_HIP_CHECK_SUPPORT], [:], [false])
+              AC_SUBST([HIPCC])])])
+
 AS_CASE([$with_rocm,$scorep_have_hip],
         [yes,no*],
         [AC_MSG_ERROR([Could not fulfill requested support for HIP.])],

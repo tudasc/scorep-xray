@@ -88,6 +88,10 @@ EXTRA_DIST += \
     $(INSTRUMENTERCHECK_DIR)/cuda/src/jacobi/cu/main.cu \
     $(INSTRUMENTERCHECK_DIR)/cuda/src/jacobi/cu/kernel.cu \
     $(INSTRUMENTERCHECK_DIR)/cuda/src/jacobi/cu/definitions.cuh \
+    $(INSTRUMENTERCHECK_DIR)/hip/src/jacobi/cxx/Makefile \
+    $(INSTRUMENTERCHECK_DIR)/hip/src/jacobi/cxx/main.cpp \
+    $(INSTRUMENTERCHECK_DIR)/hip/src/jacobi/cxx/kernel.cpp \
+    $(INSTRUMENTERCHECK_DIR)/hip/src/jacobi/cxx/definitions.h \
     $(INSTRUMENTERCHECK_DIR)/shmem/src/heat/cc/Makefile \
     $(INSTRUMENTERCHECK_DIR)/shmem/src/heat/cc/heat.c \
     $(INSTRUMENTERCHECK_DIR)/shmem_omp/src/heat/cc/Makefile \
