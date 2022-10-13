@@ -23,11 +23,13 @@ CFLAGS   =
 CXX      = @CXX@
 CXXFLAGS =
 
-BINDIR = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
-SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/memory
-INCDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
-TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config $(INCDIR)/check-instrumentation.sh
-PREP   = "@BINDIR@/scorep"
+TOOLS_BINDIR               = @BINDIR@
+INSTRUMENTERCHECK_SRCDIR   = @abs_top_srcdir@/../test/instrumenter_checks
+SRCDIR                     = $(INSTRUMENTERCHECK_SRCDIR)/memory
+INSTRUMENTERCHECK_BUILDDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
+BINDIR                     = $(INSTRUMENTERCHECK_BUILDDIR)/bin
+TOOLS                      = $(TOOLS_BINDIR)/scorep $(TOOLS_BINDIR)/scorep-config $(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh
+PREP                       = "$(TOOLS_BINDIR)/scorep"
 
 scorep__tty_colors = \
 red=; grn=; blu=; mgn=; std=; \
@@ -68,12 +70,12 @@ all: $(TESTS)
 $(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CC)$(PREP) $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
 
 $(BINDIR)/%: $(SRCDIR)/%.cpp $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CXX)$(PREP) $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(SCOREP_V_verbose)
 
 clean:
 	@rm -f $(TESTS)

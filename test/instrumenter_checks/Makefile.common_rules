@@ -1,7 +1,5 @@
 ## -*- mode: makefile -*-
 
-## @configure_input@
-
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
@@ -11,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -31,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       test/instrumenter_checks/Makefile.common_rules.in
+## file       test/instrumenter_checks/Makefile.common_rules
 
 all:
 
@@ -41,7 +39,7 @@ all:
 
 EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANGUAGE)$(SUFFIX)
 
-TOOLS = @BINDIR@/scorep @BINDIR@/scorep-config
+TOOLS = $(TOOLS_BINDIR)/scorep $(TOOLS_BINDIR)/scorep-config
 
 scorep__tty_colors = \
 red=; grn=; blu=; mgn=; std=; \

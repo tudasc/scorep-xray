@@ -60,4 +60,4 @@ $(OBJDIR)/VariableDef.o: $(SRCDIR)/VariableDef.f90
 #------------------------------------------------------------------------------
 
 SRP = MPI
-include $(INCDIR)/Makefile.common_rules
+include $(INSTRUMENTERCHECK_SRCDIR)/Makefile.common_rules

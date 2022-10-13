@@ -30,11 +30,13 @@ SCOREP_OPTIONS = --nomemory
 @HAVE_PTHREAD_WITHOUT_FLAGS_TRUE@suffix = _pthread
 @HAVE_PTHREAD_WITHOUT_FLAGS_FALSE@suffix =
 
-BINDIR = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
-SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/create_wait/pthread
-INCDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
-TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config $(INCDIR)/check-instrumentation.sh
-PREP   = "@BINDIR@/scorep"
+TOOLS_BINDIR               = @BINDIR@
+INSTRUMENTERCHECK_SRCDIR   = @abs_top_srcdir@/../test/instrumenter_checks
+SRCDIR                     = $(INSTRUMENTERCHECK_SRCDIR)/create_wait/pthread
+INSTRUMENTERCHECK_BUILDDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
+BINDIR                     = $(INSTRUMENTERCHECK_BUILDDIR)/bin
+TOOLS                      = $(TOOLS_BINDIR)/scorep $(TOOLS_BINDIR)/scorep-config $(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh
+PREP                       = "$(TOOLS_BINDIR)/scorep"
 
 scorep__tty_colors = \
 red=; grn=; blu=; mgn=; std=; \
@@ -73,7 +75,7 @@ all: $(TESTS)
 $(BINDIR)/%$(suffix): $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CC)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_V_verbose) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@ $< @PTHREAD_LIBS@ -lm
-	@$(INCDIR)/check-instrumentation.sh pthread $@ $(SCOREP_INSTRUMENTING_VERBOSE2) $(PTHREAD_OPTION) $(SCOREP_OPTIONS)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh pthread $@ $(SCOREP_INSTRUMENTING_VERBOSE2) $(PTHREAD_OPTION) $(SCOREP_OPTIONS)
 
 clean:
 	@rm -f $(TESTS)

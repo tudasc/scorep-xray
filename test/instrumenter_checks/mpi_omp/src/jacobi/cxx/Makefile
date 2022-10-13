@@ -58,4 +58,4 @@ $(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(SRCDIR)/jacobi.h
 #------------------------------------------------------------------------------
 
 SRP = MPI
-include $(INCDIR)/Makefile.common_rules
+include $(INSTRUMENTERCHECK_SRCDIR)/Makefile.common_rules
