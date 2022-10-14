@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_Paradigms.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPENACC
 #include <UTILS_Debug.h>
@@ -74,7 +75,7 @@ openacc_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_OpenaccAdapter =
 {
     .subsystem_name          = "OPENACC",
     .subsystem_register      = &openacc_subsystem_register,

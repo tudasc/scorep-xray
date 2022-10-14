@@ -89,7 +89,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_preprocess_adapter = new SCOREP_Instrumenter_PreprocessAdapter();
     m_pdt_adapter        = new SCOREP_Instrumenter_PdtAdapter();
     m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
-    m_pthread_adapter    = new SCOREP_Instrumenter_PthreadAdapter();
     m_openacc_adapter    = new SCOREP_Instrumenter_OpenACCAdapter();
     m_opencl_adapter     = new SCOREP_Instrumenter_OpenCLAdapter();
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();

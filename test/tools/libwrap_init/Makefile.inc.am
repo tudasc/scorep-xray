@@ -13,14 +13,14 @@
 
 if HAVE_LIBRARY_WRAPPING_GENERATOR
 
-INSTALLCHECK_LOCAL += installchecks-libwrap-init
-installchecks-libwrap-init: ../test/tools/libwrap_init/common.sh ../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh ../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh
+INSTALLCHECK_LOCAL += installcheck-libwrap-init
+installcheck-libwrap-init: ../test/tools/libwrap_init/common.sh ../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh ../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh
 	$(SHELL) ../test/tools/libwrap_init/run_libwrap_init_arguments_tests.sh
 	$(SHELL) ../test/tools/libwrap_init/run_libwrap_init_simple_tests.sh
 	$(SHELL) ../test/tools/libwrap_init/run_libwrap_init_filter_tests.sh
 
-CLEAN_LOCAL += clean-installchecks-libwrap-init
-clean-installchecks-libwrap-init:
+CLEAN_LOCAL += clean-installcheck-libwrap-init
+clean-installcheck-libwrap-init:
 	$(RM) run_libwrap_init_arguments_tests.*.out*
 	$(RM) run_libwrap_init_simple_tests.*.out*
 	$(RM) run_libwrap_init_filter_tests.*.out*

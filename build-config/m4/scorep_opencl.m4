@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014-2015, 2017, 2019,
+## Copyright (c) 2014-2015, 2017, 2019, 2022,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -179,10 +179,10 @@ m4_foreach([func],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_2_ADD_SYMBOLS], [
-m4_foreach([func],
+_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([])
+SCOREP_CHECK_SYMBOLS([OPENCL 2.2], [], $1,
            [clSetProgramSpecializationConstant,
-            clSetProgramReleaseCallback],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clSetProgramReleaseCallback])
 ])
 
 dnl ----------------------------------------------------------------------------
@@ -216,34 +216,39 @@ AM_COND_IF([HAVE_LIBWRAP_SUPPORT],
        AM_CONDITIONAL(HAVE_LIBOPENCL, [test 1 -eq 0])
        AC_MSG_NOTICE([OpenCL instrumentation disabled, no library wrapping available])])
 
+AC_DEFINE_UNQUOTED(
+    [CL_TARGET_OPENCL_VERSION],
+    [${scorep_opencl_target_version}],
+    [Declare target OpenCL version to suppress warning from OpenCL header.])
+
 scorep_opencl_wrap_symbols=""
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_1_0_SUPPORT],
-                    [test "x${scorep_opencl_version_1_0}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 100 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 1.0 is supported.],
                     [_SCOREP_OPENCL_1_0_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_1_1_SUPPORT],
-                    [test "x${scorep_opencl_version_1_1}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 110 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 1.1 is supported.],
                     [_SCOREP_OPENCL_1_1_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_1_2_SUPPORT],
-                    [test "x${scorep_opencl_version_1_2}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 120 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 1.2 is supported.],
                     [_SCOREP_OPENCL_1_2_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_2_0_SUPPORT],
-                    [test "x${scorep_opencl_version_2_0}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 200 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 2.0 is supported.],
                     [_SCOREP_OPENCL_2_0_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_2_1_SUPPORT],
-                    [test "x${scorep_opencl_version_2_1}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 210 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 2.1 is supported.],
                     [_SCOREP_OPENCL_2_1_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
 AC_SCOREP_COND_HAVE([OPENCL_VERSION_2_2_SUPPORT],
-                    [test "x${scorep_opencl_version_2_2}" = "xyes" && \
+                    [test ${scorep_opencl_target_version-0} -ge 220 &&
                      test "x${scorep_opencl_error}" = "xno" ],
                     [Defined if OpenCL API version 2.2 is supported.],
                     [_SCOREP_OPENCL_2_2_ADD_SYMBOLS([scorep_opencl_wrap_symbols])])
@@ -279,12 +284,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
                              [AC_MSG_NOTICE([no libOpenCL found; check path to OpenCL library ...])])
                        scorep_opencl_error="yes"])])
 
-scorep_opencl_version_1_0="no"
-scorep_opencl_version_1_1="no"
-scorep_opencl_version_1_2="no"
-scorep_opencl_version_2_0="no"
-scorep_opencl_version_2_1="no"
-scorep_opencl_version_2_2="no"
+scorep_opencl_target_version=
 
 dnl check the version of the OPENCL API
 AS_IF([test "x$scorep_opencl_error" = "xno"],
@@ -304,7 +304,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 1.0])
-         scorep_opencl_version_1_0="yes"])
+         scorep_opencl_target_version=100])
 
        # check for OpenCL API version 1.1
        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -321,7 +321,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 1.1])
-         scorep_opencl_version_1_1="yes"])
+         scorep_opencl_target_version=110])
 
        # check for OpenCL API version 1.0
        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -338,7 +338,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 1.2])
-         scorep_opencl_version_1_2="yes"])
+         scorep_opencl_target_version=120])
 
        # check for OpenCL API version 2.0
        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -355,7 +355,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 2.0])
-         scorep_opencl_version_2_0="yes"])
+         scorep_opencl_target_version=200])
 
        # check for OpenCL API version 2.1
        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -372,7 +372,7 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 2.1])
-         scorep_opencl_version_2_1="yes"])
+         scorep_opencl_target_version=210])
 
        # check for OpenCL API version 2.2
        AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -389,16 +389,11 @@ AS_IF([test "x$scorep_opencl_error" = "xno"],
 #endif
         ]])],
         [AC_MSG_NOTICE([OpenCL API version 2.2])
-         scorep_opencl_version_2_2="yes"])
+         scorep_opencl_target_version=220])
 
          ])
 
-AS_IF([ test "x${scorep_opencl_version_1_0}" = "xno" && \
-        test "x${scorep_opencl_version_1_1}" = "xno" && \
-        test "x${scorep_opencl_version_1_2}" = "xno" && \
-        test "x${scorep_opencl_version_2_0}" = "xno" && \
-        test "x${scorep_opencl_version_2_1}" = "xno" && \
-        test "x${scorep_opencl_version_2_2}" = "xno" ],
+AS_IF([test "x${scorep_opencl_target_version}" = "x"],
     [AC_MSG_NOTICE([OpenCL API version could not be determined. See 'config.log' for more details.])
      scorep_opencl_error="yes" ])
 

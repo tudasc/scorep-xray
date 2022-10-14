@@ -25,6 +25,6 @@
 /**
    The POSIX I/O adapter structure
  */
-extern struct SCOREP_Subsystem SCOREP_Subsystem_PosixIoAdapter;
+extern const struct SCOREP_Subsystem SCOREP_Subsystem_PosixIoAdapter;
 
 #endif /* SCOREP_POSIX_IO_INIT_H */

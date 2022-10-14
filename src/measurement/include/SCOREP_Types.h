@@ -380,10 +380,6 @@ typedef enum SCOREP_ConfigType
      * SCOREP_ConfigVariable::variableReference should point to a variable of
      * type char*. The value of the variable should always be a valid pointer
      * returned from the @a malloc family of functions or @a NULL.
-     *
-     * SCOREP_ConfigVariable::variableContext if it contains a default file name
-     * the respective file will be copied to the measurement archive by use of
-     * SCOREP_ConfigCopyFile(). If it is NULL it will be skipped.
      */
     SCOREP_CONFIG_TYPE_STRING,
 
@@ -391,7 +387,8 @@ typedef enum SCOREP_ConfigType
      * A string value. But the documentation indicates, that a path is expected.
      *
      * SCOREP_ConfigVariable::variableReference should point to a variable of
-     * type char*.
+     * type char*. The value of the variable should always be a valid pointer
+     * returned from the @a malloc family of functions or @a NULL.
      */
     SCOREP_CONFIG_TYPE_PATH,
 

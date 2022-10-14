@@ -128,9 +128,9 @@ libscorep_measurement_la_LDFLAGS = \
 # A pragmatic way to introduce the dependencies is to have the
 # source files depend on our installed library header. Thus, add
 # all files that include the header to the corresponding FILES_THAT_INCLUDE_*
-# variable.
+# variable. Only add compile units, not headers.
 FILES_THAT_INCLUDE_BFD_H =
-FILES_THAT_INCLUDE_LIBUNDWIND_H =
+FILES_THAT_INCLUDE_LIBUNWIND_H =
 
 if HAVE_SCOREP_LIBBFD_MAKEFILE
 BUILT_SOURCES += @SCOREP_LIBBFD_PREFIX@/include/bfd.h
@@ -154,7 +154,7 @@ endif HAVE_SCOREP_LIBBFD_MAKEFILE
 if HAVE_SCOREP_LIBUNWIND_MAKEFILE
 
 BUILT_SOURCES += @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
-$(FILES_THAT_INCLUDE_LIBUNDWIND_H): @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
+$(FILES_THAT_INCLUDE_LIBUNWIND_H): @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h
 @SCOREP_LIBUNWIND_PREFIX@/include/libunwind.h:
 	@$(am__tty_colors); \
 	if $(AM_V_P); then echo "$(MAKE) all -f @SCOREP_LIBUNWIND_MAKEFILE@"; \

@@ -182,6 +182,8 @@ AFS_AM_CONDITIONAL(HAVE_[]_afs_lib_MAKEFILE, [true], [false])dnl
 dnl libunwind_package and libunwind_base_url are sourced from build-config/downloads
 have_libunwind="yes"
 scorep_libunwind_summary_reason=", from downloaded $libunwind_base_url/${libunwind_package}.tar.gz"
+dnl check will fail, used version provides unw_init_local2
+ac_cv_have_decl_unw_init_local2=yes
 dnl
 m4_changecom([])
 cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE

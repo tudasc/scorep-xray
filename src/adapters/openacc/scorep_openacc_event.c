@@ -30,6 +30,7 @@
 #include <SCOREP_Task.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
+#include <SCOREP_AllocMetric.h>
 
 #include "scorep_openacc.h"
 #include "scorep_openacc_confvars.h"

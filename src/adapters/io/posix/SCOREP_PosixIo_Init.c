@@ -86,7 +86,7 @@ posix_io_subsystem_finalize( void )
 }
 
 /** POSIX I/O adapter with its callbacks */
-SCOREP_Subsystem SCOREP_Subsystem_PosixIoAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_PosixIoAdapter =
 {
     .subsystem_name              = "POSIX IO",
     .subsystem_register          = &posix_io_subsystem_register,

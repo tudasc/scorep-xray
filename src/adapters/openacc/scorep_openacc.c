@@ -27,6 +27,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Memory.h>
+#include <SCOREP_AllocMetric.h>
 
 #include <string.h>
 

@@ -13,7 +13,7 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelSubGroupInfo )( cl_kernel                ke
     SCOREP_OPENCL_WRAP_ENTER();
     cl_int ret = SCOREP_LIBWRAP_FUNC_CALL(
         clGetKernelSubGroupInfo,
-        ( kernel, device, paramName, inputValueSize, inputValue, paramValueSize, paramValue, paramValueRet ) );
+        ( kernel, device, paramName, inputValueSize, inputValue, paramValueSize, paramValue, paramValueSizeRet ) );
     SCOREP_OPENCL_WRAP_EXIT();
 
     SCOREP_OPENCL_FUNC_EXIT( clGetKernelSubGroupInfo );

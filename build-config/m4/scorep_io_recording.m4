@@ -117,7 +117,7 @@ SCOREP_CHECK_SYMBOLS([POSIX I/O], [], $1,
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_IO_RECORDING_POSIX], [
-AC_REQUIRE([AFS_THREAD_LOCAL_STORAGE])dnl
+AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])dnl
 AC_REQUIRE([SCOREP_LIBRARY_WRAPPING])dnl
 
 # will be used for IO and AIO
@@ -158,7 +158,7 @@ AFS_SUMMARY_POP([POSIX I/O support], [${scorep_posix_io_support}${scorep_posix_i
 dnl Check for POSIX asynchronous I/O
 AFS_SUMMARY_PUSH
 
-scorep_posix_aio_support="yes"
+scorep_posix_aio_support=${scorep_posix_io_support}
 scorep_posix_aio_summary_reason=
 
 # check result of TLS

@@ -135,7 +135,7 @@ SCOREP_CHECK_FORTRAN_CHARLEN_TYPE
 
 AC_C_BIGENDIAN
 
-AFS_COMMON_UTILS([use-only], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
+AFS_COMMON_UTILS([build], [<SCOREP_ErrorCodes.h>], [../src/utils/include])
 AC_CUTEST_COLOR_TESTS
 AC_SCOREP_DEFINE_REVISIONS
 

@@ -81,22 +81,6 @@ private:
     is_pthread_library( const std::string& libraryName );
 };
 
-/* *****************************************************************************
- * class SCOREP_Instrumenter_PthreadAdapter
- * ****************************************************************************/
-class SCOREP_Instrumenter_PthreadAdapter : public SCOREP_Instrumenter_Adapter
-{
-public:
-    SCOREP_Instrumenter_PthreadAdapter( void );
-
-    void
-    printHelp( void ) override;
-
-    std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
-                       const std::string&           inputFile ) override;
-};
-
 /* **************************************************************************************
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/

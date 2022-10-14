@@ -184,7 +184,8 @@ PARADIGMS += cuda
 endif HAVE_CUDA_SUPPORT
 
 INSTALLCHECK_LOCAL += instrumenter-checks
-instrumenter-checks: $(instrumenter_configuration_files)
+instrumenter-checks: $(instrumenter_configuration_files) \
+                     ../installcheck/instrumenter_checks/check-instrumentation.sh
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
 	  case $$f in \

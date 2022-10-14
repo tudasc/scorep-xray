@@ -158,8 +158,7 @@ endif !HAVE_MPI_FORTRAN_SUPPORT
 
 libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags) \
-    $(SCOREP_UNWINDING_LDFLAGS)
+    $(library_api_version_ldflags)
 
 # event library for the MPI adapter
 

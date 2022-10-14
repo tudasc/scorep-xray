@@ -143,3 +143,9 @@
 #if HAVE( OPENCL_VERSION_2_0_SUPPORT )
 #include "scorep_opencl_wrap_version_2_0.inc.c"
 #endif
+#if HAVE( OPENCL_VERSION_2_1_SUPPORT )
+#include "scorep_opencl_wrap_version_2_1.inc.c"
+#endif
+#if HAVE( OPENCL_VERSION_2_2_SUPPORT )
+#include "scorep_opencl_wrap_version_2_2.inc.c"
+#endif

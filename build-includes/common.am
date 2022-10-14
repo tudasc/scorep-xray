@@ -74,3 +74,8 @@ object_DATA =
 
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d
+
+SCOREP_V_DEVNULL = $(scorep__v_DEVNULL_@AM_V@)
+scorep__v_DEVNULL_ = $(scorep__v_DEVNULL_@AM_DEFAULT_V@)
+scorep__v_DEVNULL_0 = >/dev/null
+scorep__v_DEVNULL_1 =
