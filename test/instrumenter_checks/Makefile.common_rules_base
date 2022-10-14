@@ -1,0 +1,108 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012, 2022,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       test/instrumenter_checks/Makefile.common_rules
+
+all:
+
+#------------------------------------------------------------------------------
+# Common rules to instrument codes using the instrumenter-checks rule
+#------------------------------------------------------------------------------
+
+EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANGUAGE)$(SUFFIX)
+
+TOOLS = $(TOOLS_BINDIR)/scorep $(TOOLS_BINDIR)/scorep-config
+
+scorep__tty_colors = \
+red=; grn=; blu=; mgn=; std=; \
+test "X$(AM_COLOR_TESTS)" != Xno \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  blu='[1;34m'; \
+  mgn='[0;35m'; \
+  std='[m'; \
+}
+
+SCOREP_V_CC = $(scorep__v_cc_$(V))
+scorep__v_cc_ = $(scorep__v_cc_0)
+scorep__v_cc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CC      $${blu}$@$$std";
+
+SCOREP_V_CCLD = $(scorep__v_ccld_$(V))
+scorep__v_ccld_ = $(scorep__v_ccld_0)
+scorep__v_ccld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CCLD    $${grn}$@$$std";
+
+SCOREP_V_CXX = $(scorep__v_cxx_$(V))
+scorep__v_cxx_ = $(scorep__v_cxx_0)
+scorep__v_cxx_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CXX     $${blu}$@$$std";
+
+SCOREP_V_CXXLD = $(scorep__v_cxxld_$(V))
+scorep__v_cxxld_ = $(scorep__v_cxxld_0)
+scorep__v_cxxld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)CXXLD   $${grn}$@$$std";
+
+SCOREP_V_F77 = $(scorep__v_f77_$(V))
+scorep__v_f77_ = $(scorep__v_f77_0)
+scorep__v_f77_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)F77     $${blu}$@$$std";
+
+SCOREP_V_F77LD = $(scorep__v_f77ld_$(V))
+scorep__v_f77ld_ = $(scorep__v_f77ld_0)
+scorep__v_f77ld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)F77LD   $${grn}$@$$std";
+
+SCOREP_V_FC = $(scorep__v_fc_$(V))
+scorep__v_fc_ = $(scorep__v_fc_0)
+scorep__v_fc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)FC      $${blu}$@$$std";
+
+SCOREP_V_FCLD = $(scorep__v_fcld_$(V))
+scorep__v_fcld_ = $(scorep__v_fcld_0)
+scorep__v_fcld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)FCLD    $${grn}$@$$std";
+
+SCOREP_V_NVCC = $(scorep__v_nvcc_$(V))
+scorep__v_nvcc_ = $(scorep__v_nvcc_0)
+scorep__v_nvcc_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)NVCC    $${blu}$@$$std";
+
+SCOREP_V_NVCCLD = $(scorep__v_nvccld_$(V))
+scorep__v_nvccld_ = $(scorep__v_nvccld_0)
+scorep__v_nvccld_0 = @$(scorep__tty_colors); echo "  SCOREP $(SRP)NVCCLD  $${grn}$@$$std";
+
+SCOREP_V_verbose = $(scorep__v_verbose_$(V))
+scorep__v_verbose_ =
+scorep__v_verbose_1 = --verbose
+
+all:
+
+$(CODE): $(EXE)
+
+clean:
+	rm -f $(EXE) $(OBJECTS)
+
+.PHONY: $(CODE) clean

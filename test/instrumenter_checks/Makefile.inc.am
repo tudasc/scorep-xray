@@ -34,6 +34,7 @@
 INSTRUMENTERCHECK_DIR = $(SRC_ROOT)test/instrumenter_checks
 
 EXTRA_DIST += \
+    $(INSTRUMENTERCHECK_DIR)/Makefile.common_rules_base \
     $(INSTRUMENTERCHECK_DIR)/Makefile.common_rules \
     $(INSTRUMENTERCHECK_DIR)/mpi/src/jacobi/cc/Makefile \
     $(INSTRUMENTERCHECK_DIR)/mpi/src/jacobi/cc/jacobi.c \
