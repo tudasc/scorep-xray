@@ -65,6 +65,7 @@ User tools and API improvements and changes:
   begin offsets. This and the existing `Stripe Count` and `Stripe
   Size` attributes are now a comma separated list of values. Some
   values can also be constants like `DEFAULT` or `WIDE`.
+- Deprecate measurements without extended non-blocking communication events.
 
 Compatibility:
 

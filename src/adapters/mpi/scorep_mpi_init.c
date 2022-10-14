@@ -124,6 +124,28 @@ enable_derived_groups( void )
     }
 }
 
+static void
+deprecate_xnonblock( void )
+{
+    /* Plan for future versions:
+     * 8.0:  Deprecate disabling extended non-blocking comm events
+     *       - warn if a measurement is run with SCOREP_MPI_ENABLED_XNONBLOCK==false
+     * >8.0: Only support extended non-blocking comm events
+     *       - remove the 'xnonblock' group from the 'default' and 'all' presets
+     *       - warn if the 'xnonblock' group is given explicitly (does nothing anymore)
+     */
+    if ( !( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK ) )
+    {
+        int rank;
+        PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
+        if ( rank == 0 )
+        {
+            UTILS_DEPRECATED( "Running a measurement without extended non-blocking communication events.\n"
+                              "To enable extended non-blocking comm events, include 'xnonblock' in SCOREP_MPI_ENABLE_GROUPS or use one of the presets 'default' or 'all'.\n" );
+        }
+    }
+}
+
 /**
    Implementation of the adapter_register function of the @ref
    SCOREP_Subsystem struct for the initialization process of the MPI
@@ -218,6 +240,8 @@ mpi_subsystem_init_mpp( void )
 #if !defined( SCOREP_MPI_NO_RMA )
     scorep_mpi_win_init();
 #endif
+
+    deprecate_xnonblock();
 
     return SCOREP_SUCCESS;
 }
