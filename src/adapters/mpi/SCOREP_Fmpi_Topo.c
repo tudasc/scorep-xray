@@ -1399,7 +1399,7 @@ FSUB( MPI_Neighbor_alltoallw )( void*     sendbuf,
  * @ingroup topo
  */
 void
-FSUB( MPI_INeighbor_alltoallw )( void*     sendbuf,
+FSUB( MPI_Ineighbor_alltoallw )( void*     sendbuf,
                                  MPI_Fint* sendcounts,
                                  MPI_Aint* sdispls,
                                  MPI_Fint* sendtypes,
