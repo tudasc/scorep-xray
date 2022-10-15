@@ -179,10 +179,15 @@ m4_foreach([func],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_2_ADD_SYMBOLS], [
-_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([])
+scorep_opencl_save_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS ${with_libOpenCL_ldflags}"
+scorep_opencl_save_LIBS=$LIBS
+LIBS="$LIBS ${with_libOpenCL_libs}"
 SCOREP_CHECK_SYMBOLS([OPENCL 2.2], [], $1,
            [clSetProgramSpecializationConstant,
             clSetProgramReleaseCallback])
+LDFLAGS=$scorep_opencl_save_LDFLAGS
+LIBS=$scorep_opencl_save_LIBS
 ])
 
 dnl ----------------------------------------------------------------------------
