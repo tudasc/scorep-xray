@@ -1,3 +1,4 @@
+#if HAVE( OPENCL_2_1_SYMBOL_CLGETKERNELSUBGROUPINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetKernelSubGroupInfo )( cl_kernel                kernel,
                                                      cl_device_id             device,
@@ -20,9 +21,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelSubGroupInfo )( cl_kernel                ke
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLCREATEPROGRAMWITHIL )
 cl_program
 SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithIL )( cl_context  context,
                                                    const void* il,
@@ -41,9 +44,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithIL )( cl_context  context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLGETHOSTTIMER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetHostTimer )( cl_device_id device,
                                             cl_ulong*    hostTimestamp )
@@ -60,9 +65,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetHostTimer )( cl_device_id device,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLGETDEVICEANDHOSTTIMER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceAndHostTimer )( cl_device_id device,
                                                      cl_ulong*    deviceTimestamp,
@@ -80,9 +87,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceAndHostTimer )( cl_device_id device,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLENQUEUESVMMIGRATEMEM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMigrateMem )( cl_command_queue       commandQueue,
                                                     cl_uint                numSvmPointers,
@@ -105,9 +114,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMigrateMem )( cl_command_queue       comma
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLCLONEKERNEL )
 cl_kernel
 SCOREP_LIBWRAP_FUNC_NAME( clCloneKernel )( cl_kernel sourceKernel,
                                            cl_int*   errCodeRet )
@@ -124,9 +135,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCloneKernel )( cl_kernel sourceKernel,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_2_1_SYMBOL_CLSETDEFAULTDEVICECOMMANDQUEUE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetDefaultDeviceCommandQueue )( cl_context       context,
                                                             cl_device_id     device,
@@ -144,3 +157,4 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetDefaultDeviceCommandQueue )( cl_context       con
 
     return ret;
 }
+#endif

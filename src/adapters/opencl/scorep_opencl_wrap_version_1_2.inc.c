@@ -1,3 +1,4 @@
+#if HAVE( OPENCL_1_2_SYMBOL_CLCREATESUBDEVICES )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clCreateSubDevices )( cl_device_id                        inDevice,
                                                 const cl_device_partition_property* properties,
@@ -17,9 +18,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSubDevices )( cl_device_id                    
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLRETAINDEVICE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainDevice )( cl_device_id device )
 {
@@ -33,9 +36,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainDevice )( cl_device_id device )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLRELEASEDEVICE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseDevice )( cl_device_id device )
 {
@@ -49,9 +54,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseDevice )( cl_device_id device )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLCREATEIMAGE )
 cl_mem
 SCOREP_LIBWRAP_FUNC_NAME( clCreateImage )( cl_context             context,
                                            cl_mem_flags           flags,
@@ -72,9 +79,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateImage )( cl_context             context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLCREATEPROGRAMWITHBUILTINKERNELS )
 cl_program
 SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBuiltInKernels )( cl_context          context,
                                                                cl_uint             numDevices,
@@ -94,9 +103,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBuiltInKernels )( cl_context       
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLCOMPILEPROGRAM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clCompileProgram )( cl_program          program,
                                               cl_uint             numDevices,
@@ -122,9 +133,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCompileProgram )( cl_program          program,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLLINKPROGRAM )
 cl_program
 SCOREP_LIBWRAP_FUNC_NAME( clLinkProgram )( cl_context          context,
                                            cl_uint             numDevices,
@@ -150,9 +163,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clLinkProgram )( cl_context          context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLUNLOADPLATFORMCOMPILER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clUnloadPlatformCompiler )( cl_platform_id platform )
 {
@@ -167,9 +182,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clUnloadPlatformCompiler )( cl_platform_id platform )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLGETKERNELARGINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetKernelArgInfo )( cl_kernel          kernel,
                                                 cl_uint            argIndex,
@@ -190,9 +207,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelArgInfo )( cl_kernel          kernel,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLENQUEUEFILLBUFFER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueFillBuffer )( cl_command_queue commandQueue,
                                                  cl_mem           buffer,
@@ -217,9 +236,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueFillBuffer )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLENQUEUEFILLIMAGE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueFillImage )( cl_command_queue command_queue,
                                                 cl_mem           image,
@@ -243,9 +264,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueFillImage )( cl_command_queue command_queue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLENQUEUEMIGRATEMEMOBJECTS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMigrateMemObjects )( cl_command_queue       commandQueue,
                                                         cl_uint                numMemObjects,
@@ -268,9 +291,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMigrateMemObjects )( cl_command_queue       c
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLENQUEUEMARKERWITHWAITLIST )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMarkerWithWaitList )( cl_command_queue commandQueue,
                                                          cl_uint          numEventsInWaitList,
@@ -289,9 +314,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMarkerWithWaitList )( cl_command_queue comman
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLENQUEUEBARRIERWITHWAITLIST )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueBarrierWithWaitList )( cl_command_queue commandQueue,
                                                           cl_uint          numEventsInWaitList,
@@ -310,9 +337,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueBarrierWithWaitList )( cl_command_queue comma
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_2_SYMBOL_CLGETEXTENSIONFUNCTIONADDRESSFORPLATFORM )
 void*
 SCOREP_LIBWRAP_FUNC_NAME( clGetExtensionFunctionAddressForPlatform )( cl_platform_id platform,
                                                                       const char*    funcName )
@@ -328,3 +357,4 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetExtensionFunctionAddressForPlatform )( cl_platfor
 
     return ret;
 }
+#endif
