@@ -259,23 +259,16 @@ static void*
 codeptr_hash_allocate_chunk( size_t chunkSize )
 {
     /* We might enter this function from a (device) callback on a thread that
-       has (intentionally) no location associated, i.e.,
-       SCOREP_Memory_AlignedAllocForMisc() will fail. Thus, use plain malloc
-       here and manually align to 64. */
-    #define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-    void* raw   = malloc( chunkSize + 64 );
-    void* chunk = ( void* )roundupto( raw, 64 );
-    #undef roundupto
-    /* To free the allocated memory, we would need to track the 'raw'
-       pointers. This would be possible, though as we need the chunks
-       until the end of the program, this additional effort doesn't
-       seem to be justified. */
+       has (intentionally) no location associated. */
+    void* chunk = SCOREP_Memory_AlignedMalloc( SCOREP_CACHELINESIZE, chunkSize );
+    UTILS_BUG_ON( chunk == 0 );
     return chunk;
 }
 
 static void
 codeptr_hash_free_chunk( void* chunk )
 {
+    SCOREP_Memory_AlignedFree( chunk );
 }
 
 static codeptr_hash_value_t
