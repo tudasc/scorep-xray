@@ -907,3 +907,11 @@ SCOREP_Memory_GetPageSize( void )
 {
     return SCOREP_Env_GetPageSize();
 }
+
+
+uint32_t
+SCOREP_Memory_GetDefinitionHandlesBitWidth( void )
+{
+    return SCOREP_Allocator_GetPageOffsetBitWidth( allocator ) +
+           SCOREP_Allocator_GetNPagesBitWidth( allocator );
+}

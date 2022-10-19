@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2015, 2017-2019,
+ * Copyright (c) 2009-2011, 2015, 2017-2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -351,6 +351,14 @@ SCOREP_Memory_GetLocalDefinitionPageManager( void );
  */
 uint64_t
 SCOREP_Memory_GetPageSize( void );
+
+
+/**
+ * Return the number of bits needed to address definition handles in
+ * movable memory pages, i.e., page_id + page_offset.
+ */
+uint32_t
+SCOREP_Memory_GetDefinitionHandlesBitWidth( void );
 
 /*@}*/
 
