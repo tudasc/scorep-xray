@@ -35,6 +35,17 @@
 #include <SCOREP_Timer_Ticks.h>
 
 
+/* Squeeze explicit task creation data into 64 bits, see also parallel_t's
+   (shift|mask)_requested_parallelism/task_generation_number. task creation
+   data is encoded into 64-bit like this:
+   [region|requested-parallelism|task-generation-number|new-task-bit] */
+static uint8_t  nbits_region;
+static uint8_t  shift_region;
+static uint8_t  shift_new_task;
+static uint64_t mask_region;
+static uint64_t mask_new_task;
+
+
 /* Objects corresponding to implicit and explicit tasks. Will be passed from
    callback to callback via argument 'ompt_data_t* task_data'. */
 typedef struct task_t
@@ -65,6 +76,9 @@ typedef struct task_t
     uint8_t              workshare_regions_capacity;
     uint8_t              workshare_regions_current;
 
+    struct SCOREP_Task*  scorep_task; /* Score-P task object, mainly for explicit
+                                         tasks, see also implicit-task-begin. */
+
     /* for implicit tasks only */
     struct scorep_thread_private_data* tpd; /* Use the tpd stored at itask_begin
                                              * also for itask_end, as runtime
@@ -86,7 +100,11 @@ typedef struct task_t
                                              * tasks wont create events in the first
                                              * installment. */
 
-    struct task_t* next;                    /* free list handling */
+    /* for explicit tasks only */
+    bool                is_undeferred; /* Undeferred tasks don't create SCOREP_ events. */
+    SCOREP_RegionHandle region;
+
+    struct task_t*      next;               /* free list handling */
 } task_t;
 
 
@@ -122,6 +140,24 @@ typedef struct parallel_t
                                 * Such parallel objects wont create
                                 * events in the first installment. */
 
+    /* For explicit tasking: */
+    /* Squeeze explicit task creation data into 64 bits, see also
+     * (shift|mask)_region/new_task */
+    uint8_t   shift_requested_parallelism;
+    uint8_t   shift_task_generation_number;
+    uint32_t  max_explicit_tasks; /* check for overflow */
+    uint64_t  mask_requested_parallelism;
+    uint64_t  mask_task_generation_number;
+
+    uint32_t* task_generation_numbers; /* implicit-task-local task generation number,
+                                          array of size requested_parallelism, indexed
+                                          by thread_num in task-create. */
+
+    /* Have a single undeferred task object per parallel region to be able to
+       ignore undeferred tasks in task-schedule. Will be passed via
+       task_data->ptr. */
+    struct task_t      undeferred_task;
+
     struct parallel_t* next; /* free list */
 } parallel_t;
 
@@ -136,6 +172,7 @@ static void barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCa
 static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrRa, ompt_region_type regionType );
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
+static inline uint64_t get_mask( uint32_t width, uint32_t shift );
 /* *INDENT-ON* */
 
 
@@ -183,10 +220,12 @@ get_parallel_region_from_pool( void )
 {
     UTILS_MutexLock( &parallel_regions_free_list_mutex );
     parallel_t* parallel_region;
+    uint32_t*   task_generation_numbers = NULL;
     if ( parallel_regions_free_list != NULL )
     {
         parallel_region            = parallel_regions_free_list;
         parallel_regions_free_list = parallel_regions_free_list->next;
+        task_generation_numbers    = parallel_region->task_generation_numbers;
     }
     else
     {
@@ -196,6 +235,7 @@ get_parallel_region_from_pool( void )
         UTILS_BUG_ON( parallel_region == NULL );
     }
     memset( parallel_region, 0,  sizeof( *parallel_region ) );
+    parallel_region->task_generation_numbers = task_generation_numbers;
     UTILS_MutexUnlock( &parallel_regions_free_list_mutex );
     return parallel_region;
 }
@@ -273,12 +313,48 @@ scorep_ompt_cb_host_thread_begin( ompt_thread_t thread_type,
     {
         tpd = SCOREP_Thread_GetInitialTpd();
         init_region_fallbacks();
+
+        /* Init the per process shift/mask for explicit task creation. */
+        nbits_region = SCOREP_Memory_GetDefinitionHandlesBitWidth();
+        shift_region = 64 - nbits_region;
+        mask_region  = get_mask( nbits_region, shift_region );
+        /* new task bit, makes task_data->value odd. Used in first task-schedule
+            to identify 'new task'. From there on, task is even. */
+        shift_new_task = 0;
+        mask_new_task  = get_mask( 1, shift_new_task );
     }
 
     UTILS_DEBUG( "[%s] atid %" PRIu32 " | thread_type %s",
                  UTILS_FUNCTION_NAME, adapter_tid, thread2string( thread_type ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline uint64_t
+get_mask( uint32_t width /* [1,64] */, uint32_t shift /* [0,63] */ )
+{
+    UTILS_BUG_ON( width - 1 > 63, "width = %" PRIu32 "", width );
+    UTILS_BUG_ON( shift > 63, "shift =%" PRIu32 "", shift );
+    UTILS_BUG_ON( width + shift > 64, "width = %" PRIu32 " | shift =%" PRIu32 "", width, shift );
+
+    uint64_t mask = UINT64_MAX;
+    mask <<= 64 - width;
+    mask >>= ( 64 - width - shift );
+
+#if HAVE( UTILS_DEBUG )
+    char msg[ 128 ];
+    int  len = snprintf( msg, 128, "mask(%" PRIu32 ",%" PRIu32 ")\t", width, shift );
+    for ( int i = 64; i >= 1; i-- )
+    {
+        uint64_t bit = mask << ( 64 - i );
+        bit >>= 63;
+        snprintf( &msg[ len++ ], 2, "%" PRIu64, bit );
+    }
+    UTILS_DEBUG( "%s", msg );
+#endif /* HAVE( UTILS_DEBUG ) */
+
+    return mask;
 }
 
 
@@ -349,6 +425,41 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     parallel_region->team_size  = requested_parallelism;
     parallel_region->codeptr_ra = ( uintptr_t )codeptr_ra;
 
+    /* Init a parallel_t object cont. for explicit tasking */
+
+    /* shift/mask for requested_parallelism and task_creation_number are per
+       parallel-region. requested_parallelism is out of [1,N], thus encode
+       thread_num values [0,N-1]. Use remaining bits for task_creation_number,
+       but no more than 32 bits. */
+    UTILS_BUG_ON( requested_parallelism == 0 );
+    uint8_t nbits_req_parallelism = 1;
+    while ( ( requested_parallelism - 1 ) >> nbits_req_parallelism )
+    {
+        nbits_req_parallelism++;
+    }
+    UTILS_BUG_ON( 64 - nbits_region - nbits_req_parallelism - 1 <= 0,
+                  "Not enough space to encode task-creation-numbers" );
+    parallel_region->shift_requested_parallelism = shift_region - nbits_req_parallelism;
+    parallel_region->mask_requested_parallelism  = get_mask( nbits_req_parallelism,
+                                                             parallel_region->shift_requested_parallelism );
+    uint8_t nbits_remaining       = 64 - nbits_region - nbits_req_parallelism - 1 /* new task bit */;
+    uint8_t nbits_task_gen_number = ( nbits_remaining > 32 ) ? 32 : nbits_remaining;
+    parallel_region->max_explicit_tasks           = ( ( uint64_t )1 << nbits_task_gen_number ) - 1;
+    parallel_region->shift_task_generation_number = parallel_region->shift_requested_parallelism - nbits_task_gen_number;
+    parallel_region->mask_task_generation_number  = get_mask( nbits_task_gen_number,
+                                                              parallel_region->shift_task_generation_number );
+
+    /* Reserve memory for task-generation-number per implicit-task */
+    size_t mem = sizeof( uint32_t ) * requested_parallelism;
+    parallel_region->task_generation_numbers = realloc( parallel_region->task_generation_numbers, mem );
+    memset( parallel_region->task_generation_numbers, 0, mem );
+
+    /* Init task_t object that gets passed around for undeferred tasks. */
+    parallel_region->undeferred_task.is_undeferred   = true;
+    parallel_region->undeferred_task.parallel_region = parallel_region;
+
+    /* parallel_t object ready */
+
     UTILS_BUG_ON( !( flags & ompt_parallel_team ) );
 
     /* codeptr_ra is also used for the (contended) ibarrier begin later on.
@@ -369,9 +480,11 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     UTILS_BUG_ON( stored_task == NULL );
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | parallel_data->ptr %p | "
-                      "encountering_task_data->ptr %p | parallel_region->region %d",
+                      "encountering_task_data->ptr %p | parallel_region->region %d | "
+                      "max_explicit_tasks %" PRIu32,
                       adapter_tid, parallel_data->ptr, encountering_task_data->ptr,
-                      SCOREP_RegionHandle_GetId( parallel_region->region ) );
+                      SCOREP_RegionHandle_GetId( parallel_region->region ),
+                      parallel_region->max_explicit_tasks );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
@@ -659,6 +772,7 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
             task->parallel_region = parallel_region;
             task->tpd             = new_tpd;
             task->scorep_location = location;
+            task->scorep_task     = scorep_task;
 
             task_data->ptr = task;
 
@@ -1473,4 +1587,298 @@ work_end( task_t* task )
     task->workshare_regions[ task->workshare_regions_current ] = SCOREP_INVALID_REGION;
     UTILS_BUG_ON( region == SCOREP_INVALID_REGION );
     return region;
+}
+
+
+/*
+   typedef enum ompt_task_flag_t {
+    ompt_task_initial    = 0x00000001,
+    ompt_task_implicit   = 0x00000002,
+    ompt_task_explicit   = 0x00000004,
+    ompt_task_target     = 0x00000008,
+    ompt_task_taskwait   = 0x00000010,
+    ompt_task_undeferred = 0x08000000,
+    ompt_task_untied     = 0x10000000,
+    ompt_task_final      = 0x20000000,
+    ompt_task_mergeable  = 0x40000000,
+    ompt_task_merged     = 0x80000000
+   } ompt_task_flag_t;
+ */
+
+
+void
+scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
+                                 const ompt_frame_t* encountering_task_frame,
+                                 ompt_data_t*        new_task_data,
+                                 int                 flags,
+                                 int                 has_dependences,
+                                 const void*         codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu64 " | encountering_task_data->ptr %p | "
+                       "new_task_data->ptr %p | flags %s", adapter_tid,
+                       encountering_task_data == NULL ? NULL : encountering_task_data->ptr,
+                       new_task_data == NULL ? NULL : new_task_data->ptr,
+                       task_flag2string( flags ) );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    /* For now, prevent league events */
+    task_t* task = encountering_task_data->ptr;
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league task-create event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu64 " | encountering_task_data->ptr %p | "
+                          "new_task_data->ptr %p | flags %s | belongs_to_league", adapter_tid,
+                          encountering_task_data == NULL ? NULL : encountering_task_data->ptr,
+                          new_task_data == NULL ? NULL : new_task_data->ptr,
+                          task_flag2string( flags ) );
+        new_task_data->value = 0;
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_BUG_ON( !( flags & ompt_task_explicit ), "Expected explicit task only." );
+
+    /* No scheduling events occur when switching to or from a merged task ... */
+    if ( flags & ompt_task_merged )
+    {
+        new_task_data->ptr = encountering_task_data->ptr;
+        UTILS_DEBUG_EXIT( "ompt_task_merged: atid %" PRIu32, adapter_tid );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    /* ...; for the others, assume they trigger task-schedule events. */
+
+    /* We need to transfer the following to task-schedule:
+       - for SCOREP_ThreadForkJoin_TaskBegin:
+         - this thread's thread_num,
+         - a thread-local and parallel-region-local task generation number,
+         - a region handle generated from codeptr_ra,
+       - communicate 'undeferred' (no creation of Score-P events), and
+       - a flag that this task is new, i.e., created but waiting to be resumed.
+       We use the 64 bit available in new_task_data->value. This way we prevent
+       an additional allocation on thread A that might be released on thread B,
+       which would lead to draining one thread's memory pool faster than others. */
+
+    /* Undeferred tasks:
+       Execute immediately, thus don't generate
+       SCOREP_ThreadForkJoin_TaskCreate|Switch|End events. Communicate
+       'undeferred' to task-schedule by passing SCOREP_INVALID_REGION. */
+    if ( flags & ompt_task_undeferred )
+    {
+        uint64_t new_task = 0;
+        new_task = ( uint64_t )SCOREP_INVALID_REGION << shift_region |
+                   ( uint64_t )1 << shift_new_task;
+        new_task_data->value = new_task;
+        UTILS_DEBUG_EXIT( "(creating) undeferred task: atid %" PRIu32, adapter_tid );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    /* Other tasks:
+       Assign region names as known from OPARI2. Finer grained naming possible,
+       though. */
+    SCOREP_RegionHandle task_region;
+    if ( flags & ompt_task_untied )
+    {
+        task_region = get_region( codeptr_ra, OMPT_TASK_UNTIED );
+    }
+    else
+    {
+        task_region = get_region( codeptr_ra, OMPT_TASK );
+    }
+    UTILS_BUG_ON( task_region == SCOREP_INVALID_REGION );
+
+    /* Collect and encode data into new_task */
+    /* TODO: deal with task creation outside a parallel region. In this situation
+       we don't have a parallel_t, thus the code below crashes. */
+
+    int thread_num;
+    scorep_ompt_get_task_info( 0, NULL, NULL, NULL, NULL, &thread_num );
+    parallel_t* parallel = ( ( task_t* )encountering_task_data->ptr )->parallel_region;
+    /* TODO: What todo on overflow? */
+    UTILS_BUG_ON( parallel->max_explicit_tasks == parallel->task_generation_numbers[ thread_num ],
+                  "Cannot handle more than " PRIu32 " task creations.",
+                  parallel->max_explicit_tasks );
+    uint32_t task_generation_number = ++( parallel->task_generation_numbers[ thread_num ] );
+
+    uint64_t new_task = 0;
+    new_task = ( uint64_t )task_region << shift_region |
+               ( uint64_t )thread_num << parallel->shift_requested_parallelism |
+               ( uint64_t )task_generation_number << parallel->shift_task_generation_number |
+               ( uint64_t )1 << shift_new_task;
+
+    new_task_data->value = new_task;
+
+    /* Corresponding OPARI2 instrumentation and
+       POMP2_Task_create_begin/POMP2_Task_create_end create a different event
+       sequence: the exit appears after the structured block of the task. With
+       OMPT, we cannot intercept this point.
+       The duration of 'task_create' here is pure scorep time, thus
+       provide same timestamp to enter/exit(task_create). */
+    SCOREP_RegionHandle task_create = get_region( codeptr_ra, OMPT_TASK_CREATE );
+    SCOREP_Location*    location    = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t            timestamp   = SCOREP_Timer_GetClockTicks();
+
+    SCOREP_Location_EnterRegion( location, timestamp, task_create );
+    SCOREP_ThreadForkJoin_TaskCreate( SCOREP_PARADIGM_OPENMP,
+                                      thread_num,
+                                      task_generation_number );
+    SCOREP_Location_ExitRegion( location, timestamp, task_create );
+
+    UTILS_DEBUG_EXIT( "(creating) task: atid %" PRIu32 " | thread_num % d | "
+                      "task_generation_number % " PRIu32 " | task % " PRIu64,
+                      adapter_tid, thread_num, task_generation_number, new_task );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+/*
+   typedef enum ompt_task_status_t {
+     ompt_task_complete      = 1,
+     ompt_task_yield         = 2,
+     ompt_task_cancel        = 3,
+     ompt_task_detach        = 4,
+     ompt_task_early_fulfill = 5,
+     ompt_task_late_fulfill  = 6,
+     ompt_task_switch        = 7,
+     ompt_taskwait_complete  = 8
+   } ompt_task_status_t;
+ */
+
+
+void
+scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
+                                   ompt_task_status_t prior_task_status,
+                                   ompt_data_t*       next_task_data )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | prior_task_data->ptr %p | prior_task_status %s | "
+                       "next_task_data->ptr %p | next_task_data->value %" PRIu64,
+                       adapter_tid, prior_task_data == NULL ? NULL : prior_task_data->ptr,
+                       task_status2string( prior_task_status ),
+                       next_task_data == NULL ? NULL : next_task_data->ptr,
+                       next_task_data == NULL ? 0 : next_task_data->value );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    UTILS_BUG_ON( !( prior_task_status == ompt_task_switch )
+                  && !( prior_task_status == ompt_task_complete ),
+                  "Only prior_task_status complete and switch supported." );
+
+    task_t* prior_task = prior_task_data->ptr;
+
+    /* For now, prevent league events. We need to take prior and next task
+       into account. This is asking for trouble. */
+    if ( prior_task->belongs_to_league || next_task_data->value == 0 )
+    {
+        UTILS_WARN_ONCE( "OpenMP league task-schedule event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | prior_task_data->ptr %p | prior_task_status %s | "
+                          "next_task_data->ptr %p | next_task_data->value %" PRIu64 " | "
+                          "belongs_to_league",
+                          adapter_tid, prior_task_data == NULL ? NULL : prior_task_data->ptr,
+                          task_status2string( prior_task_status ),
+                          next_task_data == NULL ? NULL : next_task_data->ptr,
+                          next_task_data == NULL ? 0 : next_task_data->value );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    /* Handle prior_task */
+    if ( prior_task_status == ompt_task_complete )
+    {
+        if ( !prior_task->is_undeferred )
+        {
+            UTILS_BUG_ON( !( prior_task->type & ompt_task_explicit ),
+                          "Expected only explicit tasks to show up with status "
+                          "ompt_task_complete." );
+            SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
+                                           prior_task->region,
+                                           prior_task->scorep_task );
+            release_task_to_pool( prior_task );
+            UTILS_DEBUG( "(completing) task %p | atid %" PRIu32,
+                         prior_task, adapter_tid );
+        }
+        else
+        {
+            UTILS_DEBUG( "(completing) undeferred task %p | atid %" PRIu32,
+                         prior_task, adapter_tid );
+        }
+        prior_task_data->ptr = NULL;
+    }
+    else
+    {
+        UTILS_DEBUG( "(suspending) task %p | atid %" PRIu32,
+                     prior_task, adapter_tid );
+    }
+
+
+    /* Handle next_task. */
+    UTILS_BUG_ON( next_task_data->ptr == NULL,
+                  "task_data not initialized, should not happen." );
+
+    if ( next_task_data->value & mask_new_task )
+    {
+        /* First task-schedule for next_task. Extract data collected in
+           task-create which was passed via next_task_data->value and create
+           real task object. */
+        uint64_t            task_create_data = next_task_data->value;
+        SCOREP_RegionHandle region           = ( task_create_data & mask_region ) >> shift_region;
+        parallel_t*         parallel_region  = prior_task->parallel_region;
+
+        if ( region == SCOREP_INVALID_REGION )
+        {
+            /* Undeferred task, don't trigger SCOREP_ThreadForkJoin_TaskBegin.
+               Pass parallel-region's undeferred_task around. */
+            next_task_data->ptr = &( parallel_region->undeferred_task );
+            UTILS_DEBUG( "(starting) undeferred task %p | atid %" PRIu32,
+                         next_task_data->ptr, adapter_tid );
+        }
+        else
+        {
+            uint32_t thread_num = ( task_create_data
+                                    & parallel_region->mask_requested_parallelism )
+                                  >> parallel_region->shift_requested_parallelism;
+            uint32_t task_generation_number = ( task_create_data
+                                                & parallel_region->mask_task_generation_number )
+                                              >> parallel_region->shift_task_generation_number;
+
+            task_t* next_task = get_task_from_pool();
+            next_task->type            = ompt_task_explicit;
+            next_task->parallel_region = parallel_region;
+            next_task->region          = region;
+            next_task->scorep_task     = SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
+                                                                          region,
+                                                                          thread_num,
+                                                                          task_generation_number );
+
+            next_task_data->ptr = next_task;
+
+            UTILS_DEBUG( "(starting) task %p | atid %" PRIu32 " | thread_num %d | "
+                         "task_generation_number %" PRIu32 " | task % " PRIu64,
+                         next_task, adapter_tid, thread_num, task_generation_number,
+                         next_task_data->value );
+        }
+    }
+    else
+    {
+        task_t* next_task = next_task_data->ptr;
+        if ( !next_task->is_undeferred )
+        {
+            SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP, next_task->scorep_task );
+            UTILS_DEBUG( "(resuming) task %p | atid %" PRIu32,
+                         next_task, adapter_tid );
+        }
+        else
+        {
+            UTILS_DEBUG( "(resuming) undeferred task %p | atid %" PRIu32,
+                         next_task, adapter_tid );
+        }
+    }
+
+    UTILS_DEBUG_EXIT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

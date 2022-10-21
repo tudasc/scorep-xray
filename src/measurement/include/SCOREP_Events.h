@@ -185,6 +185,13 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle,
  * Special version that allows to supply a specific context instead
  * of using the current CPU thread/time/metrics.
  *
+ * Use with care and only when you need to! Prefer
+ * SCOREP_ExitRegion(). Valid use cases are e.g., when you want to
+ * provide the same timestamp for enter and exit or when when
+ * processing overdue OMPT events. Make sure not to create race
+ * conditions where different threads concurrently write into the same
+ * location.
+ *
  * @param location     A LocationData handle that specifies where this event is recorded.
  *                     May be NULL to record event for current location.
  * @param timestamp    Time that this event happened at.

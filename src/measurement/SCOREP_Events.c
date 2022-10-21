@@ -232,9 +232,6 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
                              uint64_t            timestamp,
                              SCOREP_RegionHandle regionHandle )
 {
-    UTILS_BUG_ON( location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
-                  "SCOREP_Location_EnterRegion() must not be used for CPU thread locations." );
-
     if ( !location )
     {
         location = SCOREP_Location_GetCurrentCPULocation();

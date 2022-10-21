@@ -176,6 +176,8 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
     REGISTER_CALLBACK( host_, parallel_begin );
     REGISTER_CALLBACK( host_, parallel_end );
     REGISTER_CALLBACK( host_, sync_region );
+    REGISTER_CALLBACK( host_, task_create );
+    REGISTER_CALLBACK( host_, task_schedule );
     REGISTER_CALLBACK( host_, thread_begin );
     REGISTER_CALLBACK( host_, thread_end );
     REGISTER_CALLBACK( host_, work );
@@ -277,6 +279,9 @@ ompt_subsystem_end( void )
 
     /* ignore subsequent events */
     scorep_ompt_record_events = false;
+
+    // TODO: free task and parallel (+task_generation_numbers) pools at finalization
+
     UTILS_DEBUG( "[%s] stop recording OMPT events", UTILS_FUNCTION_NAME );
 }
 

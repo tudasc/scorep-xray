@@ -241,6 +241,32 @@ task_flag2string( ompt_task_flag_t t )
     return "";
 }
 
+static const char*
+task_status2string( ompt_task_status_t t )
+{
+    switch ( t )
+    {
+        case ompt_task_complete:
+            return "complete";
+        case ompt_task_yield:
+            return "yield";
+        case ompt_task_cancel:
+            return "cancel";
+        case ompt_task_detach:
+            return "detach";
+        case ompt_task_early_fulfill:
+            return "early_fulfill";
+        case ompt_task_late_fulfill:
+            return "late_fulfill";
+        case ompt_task_switch:
+            return "switch";
+        case ompt_taskwait_complete:
+            return "taskwait_complete";
+    }
+    UTILS_BUG();
+    return "";
+}
+
 #endif /* HAVE( UTILS_DEBUG ) */
 
 static const char*

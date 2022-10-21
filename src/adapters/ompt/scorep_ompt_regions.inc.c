@@ -1,6 +1,8 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
+ * Copyright (c) 2022,
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
@@ -29,6 +31,9 @@ typedef enum ompt_region_type
     OMPT_IMPLICIT_BARRIER,
     OMPT_SINGLE,
     OMPT_SINGLE_SBLOCK,
+    OMPT_TASK,
+    OMPT_TASK_UNTIED,
+    OMPT_TASK_CREATE,
 #if 0
     OMPT_LOOP,
     OMPT_BARRIER,
@@ -37,9 +42,6 @@ typedef enum ompt_region_type
     OMPT_CRITICAL_SBLOCK,
     OMPT_ORDERED,
     OMPT_ORDERED_SBLOCK,
-    OMPT_TASK,
-    OMPT_TASK_UNTIED,
-    OMPT_TASK_CREATE,
     OMPT_SECTIONS,
     OMPT_SECTION,
     OMPT_WORKSHARE,
@@ -69,6 +71,9 @@ typedef struct region_fallback_t
 #define REGION_OMP_IBARRIER "!$omp implicit barrier"
 #define REGION_OMP_SINGLE "!$omp single"
 #define REGION_OMP_SINGLE_SBLOCK "!$omp single sblock"
+#define REGION_OMP_TASK "!$omp task"
+#define REGION_OMP_TASK_UNTIED "!$omp task untied"
+#define REGION_OMP_CREATE_TASK "!$omp create task"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -78,7 +83,10 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_PARALLEL,        sizeof( REGION_OMP_PARALLEL ) - 1,        SCOREP_REGION_PARALLEL,         SCOREP_INVALID_REGION },
     { REGION_OMP_IBARRIER,        sizeof( REGION_OMP_IBARRIER ) - 1,        SCOREP_REGION_IMPLICIT_BARRIER, SCOREP_INVALID_REGION },
     { REGION_OMP_SINGLE,          sizeof( REGION_OMP_SINGLE ) - 1,          SCOREP_REGION_SINGLE,           SCOREP_INVALID_REGION },
-    { REGION_OMP_SINGLE_SBLOCK  , sizeof( REGION_OMP_SINGLE_SBLOCK ) - 1,   SCOREP_REGION_SINGLE_SBLOCK,    SCOREP_INVALID_REGION },
+    { REGION_OMP_SINGLE_SBLOCK,   sizeof( REGION_OMP_SINGLE_SBLOCK ) - 1,   SCOREP_REGION_SINGLE_SBLOCK,    SCOREP_INVALID_REGION },
+    { REGION_OMP_TASK,            sizeof( REGION_OMP_TASK ) - 1,            SCOREP_REGION_TASK,             SCOREP_INVALID_REGION },
+    { REGION_OMP_TASK_UNTIED,     sizeof( REGION_OMP_TASK_UNTIED ) - 1,     SCOREP_REGION_TASK_UNTIED,      SCOREP_INVALID_REGION },
+    { REGION_OMP_CREATE_TASK,     sizeof( REGION_OMP_CREATE_TASK ) - 1,     SCOREP_REGION_TASK_CREATE,      SCOREP_INVALID_REGION },
 #if 0
     { "!$omp for",             SCOREP_REGION_LOOP,                    SCOREP_INVALID_REGION },
     { "!$omp barrier",         SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
@@ -87,9 +95,6 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { "!$omp critical sblock", SCOREP_REGION_CRITICAL_SBLOCK,         SCOREP_INVALID_REGION },
     { "!$omp ordered",         SCOREP_REGION_ORDERED,                 SCOREP_INVALID_REGION },
     { "!$omp ordered sblock",  SCOREP_REGION_ORDERED_SBLOCK,          SCOREP_INVALID_REGION },
-    { "!$omp task",            SCOREP_REGION_TASK,                    SCOREP_INVALID_REGION },
-    { "!$omp task untied",     SCOREP_REGION_TASK_UNTIED,             SCOREP_INVALID_REGION },
-    { "!$omp create task",     SCOREP_REGION_TASK_CREATE,             SCOREP_INVALID_REGION },
     { "!$omp sections",        SCOREP_REGION_SECTIONS,                SCOREP_INVALID_REGION },
     { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
     { "!$omp workshare",       SCOREP_REGION_WORKSHARE,               SCOREP_INVALID_REGION },
@@ -107,6 +112,9 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_IBARRIER
 #undef REGION_OMP_SINGLE
 #undef REGION_OMP_SINGLE_SBLOCK
+#undef REGION_OMP_TASK
+#undef REGION_OMP_TASK_UNTIED
+#undef REGION_OMP_CREATE_TASK
 
 #if 0
 typedef enum ompt_lock_region_type

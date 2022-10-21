@@ -72,6 +72,19 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                                  const void*           codeptr_ra );
 
 void
+scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
+                                 const ompt_frame_t* encountering_task_frame,
+                                 ompt_data_t*        new_task_data,
+                                 int                 flags,
+                                 int                 has_dependences,
+                                 const void*         codeptr_ra );
+
+void
+scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
+                                   ompt_task_status_t prior_task_status,
+                                   ompt_data_t*       next_task_data );
+
+void
 scorep_ompt_cb_host_thread_begin( ompt_thread_t thread_type,
                                   ompt_data_t*  thread_data );
 
