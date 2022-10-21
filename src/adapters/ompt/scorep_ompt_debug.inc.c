@@ -278,3 +278,45 @@ sync_region2string( ompt_sync_region_t t )
     UTILS_BUG();
     return "";
 }
+
+static const char*
+work2string( ompt_work_t t )
+{
+    switch ( t )
+    {
+        case ompt_work_loop:
+            return "loop";
+        case ompt_work_sections:
+            return "sections";
+        case ompt_work_single_executor:
+            return "single_executor";
+        case ompt_work_single_other:
+            return "single_other";
+        case ompt_work_workshare:
+            return "workshare";
+        case ompt_work_distribute:
+            return "distribute";
+        case ompt_work_taskloop:
+            return "taskloop";
+        case ompt_work_scope:
+            return "scope";
+        #if HAVE( DECL_OMPT_WORK_LOOP_STATIC )
+        case ompt_work_loop_static:
+            return "loop_static";
+        #endif
+        #if HAVE( DECL_OMPT_WORK_LOOP_DYNAMIC )
+        case ompt_work_loop_dynamic:
+            return "loop_dynamic";
+        #endif
+        #if HAVE( DECL_OMPT_WORK_LOOP_GUIDED )
+        case ompt_work_loop_guided:
+            return "loop_guided";
+        #endif
+        #if HAVE( DECL_OMPT_WORK_LOOP_OTHER )
+        case ompt_work_loop_other:
+            return "loop_other";
+        #endif
+    }
+    UTILS_BUG();
+    return "";
+}

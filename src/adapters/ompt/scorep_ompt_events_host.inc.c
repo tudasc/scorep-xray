@@ -57,6 +57,14 @@ typedef struct task_t
        Unused if task does not take part in synchronization. */
     SCOREP_RegionHandle barrier_handle;
 
+    /* Workshare regions are assigned in <workshare>-begin and passed via task_t
+       to <workshare>-end. As workshare constructs might be nested, we keep a
+       cacheline-size aligned task-local stack of region handles. For omp single
+       we already need two regions, although no nesting of constructs. */
+    SCOREP_RegionHandle* workshare_regions; /* aligned */
+    uint8_t              workshare_regions_capacity;
+    uint8_t              workshare_regions_current;
+
     /* for implicit tasks only */
     struct scorep_thread_private_data* tpd; /* Use the tpd stored at itask_begin
                                              * also for itask_end, as runtime
@@ -125,6 +133,9 @@ static void implicit_task_end_impl( task_t* task, char* utilsDebugcaller );
 static void barrier_implicit_parallel_end( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_finalize_tool( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCaller );
+static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrRa, ompt_region_type regionType );
+static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
+static inline SCOREP_RegionHandle work_end( task_t* task );
 /* *INDENT-ON* */
 
 
@@ -214,11 +225,15 @@ release_parallel_region( parallel_t* parallelRegion )
 static inline task_t*
 get_task_from_pool( void )
 {
-    task_t* data;
+    task_t*              data;
+    SCOREP_RegionHandle* workshare_regions          = NULL;
+    uint8_t              workshare_regions_capacity = 0;
     if ( tasks_free_list != NULL )
     {
-        data            = tasks_free_list;
-        tasks_free_list = tasks_free_list->next;
+        data                       = tasks_free_list;
+        workshare_regions          = data->workshare_regions;
+        workshare_regions_capacity = data->workshare_regions_capacity;
+        tasks_free_list            = tasks_free_list->next;
     }
     else
     {
@@ -228,6 +243,8 @@ get_task_from_pool( void )
         UTILS_BUG_ON( data == NULL );
     }
     memset( data, 0,  sizeof( *data ) );
+    data->workshare_regions          = workshare_regions;
+    data->workshare_regions_capacity = workshare_regions_capacity;
     return data;
 }
 
@@ -956,6 +973,8 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
     switch ( endpoint )
     {
         case ompt_scope_begin:
+        {
+            const void* ibarrier_codeptr_ra = NULL;
             switch ( kind )
             {
                 case ompt_sync_region_barrier:
@@ -968,7 +987,21 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                 case ompt_sync_region_barrier_implicit:
                 {
                     UTILS_WARN_ONCE( "Deprecated enum ompt_sync_region_barrier_implicit encountered." );
-                } /* fall-through into ompt_sync_region_barrier_implicit_parallel intended */
+                    /* We need to create an ibarrier region handle for either the
+                       barrier_implicit_parallel or barrier_implicit_workshare
+                       case. In the former case, codeptr_ra might be NULL (as seen
+                       in the oneAPI 2022.1.2, 2018 LLVM RT. But then,
+                       barrier_implicit_parallel's codeptr_ra and
+                       parallel_region->codeptr_ra were identical. */
+                    if ( codeptr_ra == NULL )
+                    {
+                        ibarrier_codeptr_ra = ( const void* )task->parallel_region->codeptr_ra;
+                    }
+                    else
+                    {
+                        ibarrier_codeptr_ra = codeptr_ra;
+                    }
+                }  /* fall-through into ompt_sync_region_barrier_implicit_parallel intended */
                 case ompt_sync_region_barrier_implicit_parallel:
                 {
                     /* TODO: distinguish between implicit-barrier-begin and
@@ -976,16 +1009,12 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                        explicit task get executed. This gives us more information
                        than opari2 can provide */
 
-                    /* oneAPI 2022.1.2, 2018 LLVM RT:
-                       - codeptr_ra == NULL for non-master
-                       - ibarrier codeptr_ra == parallel_region->codeptr_ra
-                       Due to spec (5.2 p488:27ff) codeptr_ra may be NULL. Thus,
-                       Be pragmatic and always use the parallel_region's
-                       codeptr_ra. */
-                    const void* parallel_codeptr_ra =
-                        ( const void* )task->parallel_region->codeptr_ra;
+                    if ( ibarrier_codeptr_ra == NULL )
+                    {
+                        ibarrier_codeptr_ra = ( const void* )task->parallel_region->codeptr_ra;
+                    }
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( parallel_codeptr_ra,
+                    task->barrier_handle = get_region( ibarrier_codeptr_ra,
                                                        OMPT_IMPLICIT_BARRIER );
                     SCOREP_EnterRegion( task->barrier_handle );
 
@@ -1005,6 +1034,14 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
 
                     break;
                 }
+                case ompt_sync_region_barrier_implicit_workshare:
+                {
+                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
+                    task->barrier_handle = get_region( codeptr_ra,
+                                                       OMPT_IMPLICIT_BARRIER );
+                    SCOREP_EnterRegion( task->barrier_handle );
+                    break;
+                }
                 default:
                 {
                     UTILS_WARNING( "ompt_sync_region_t %s not implemented yet ",
@@ -1012,6 +1049,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                 }
             }
             break;
+        }
         case ompt_scope_end:
             switch ( kind )
             {
@@ -1025,6 +1063,13 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                 case ompt_sync_region_barrier_implicit:
                 {
                     UTILS_WARN_ONCE( "Deprecated enum ompt_sync_region_barrier_implicit encountered." );
+                    if ( parallel_data != NULL ) /* ibarrier inside parallel region */
+                    {
+                        task_t* task = task_data->ptr;
+                        SCOREP_ExitRegion( task->barrier_handle );
+                        task->barrier_handle = SCOREP_INVALID_REGION;
+                        break;
+                    }
                 } /* fall-through into ompt_sync_region_barrier_implicit_parallel intended */
                 case ompt_sync_region_barrier_implicit_parallel:
                 {
@@ -1059,6 +1104,13 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     {
                         barrier_implicit_parallel_end( task_data );
                     }
+                    break;
+                }
+                case ompt_sync_region_barrier_implicit_workshare:
+                {
+                    task_t* task = task_data->ptr;
+                    SCOREP_ExitRegion( task->barrier_handle );
+                    task->barrier_handle = SCOREP_INVALID_REGION;
                     break;
                 }
                 default:
@@ -1270,4 +1322,155 @@ barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCaller )
                                 timestamp,
                                 task->barrier_handle );
     task->barrier_handle = SCOREP_INVALID_REGION;
+}
+
+
+/*
+   typedef enum ompt_work_t {
+   ompt_work_loop = 1,
+   ompt_work_sections = 2,
+   ompt_work_single_executor = 3,
+   ompt_work_single_other = 4,
+   ompt_work_workshare = 5,
+   ompt_work_distribute = 6,
+   ompt_work_taskloop = 7,
+   ompt_work_scope = 8,
+   ompt_work_loop_static = 10,
+   ompt_work_loop_dynamic = 11,
+   ompt_work_loop_guided = 12,
+   ompt_work_loop_other = 13
+   } ompt_work_t;
+ */
+
+void
+scorep_ompt_cb_host_work( ompt_work_t           work_type,
+                          ompt_scope_endpoint_t endpoint,
+                          ompt_data_t*          parallel_data,
+                          ompt_data_t*          task_data,
+                          uint64_t              count,
+                          const void*           codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | endpoint %s | wstype %s | "
+                       "parallel_data->ptr %p | task_data->ptr %p | count %"
+                       PRIu64 " | codeptr_ra %p",
+                       adapter_tid, scope_endpoint2string( endpoint ), work2string( work_type ),
+                       parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
+                       count, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = task_data->ptr;
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league workshare event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | wstype %s | "
+                          "parallel_data->ptr %p | task_data->ptr %p | count %"
+                          PRIu64 " | codeptr_ra %p | belongs_to_league",
+                          adapter_tid, work2string( work_type ), scope_endpoint2string( endpoint ),
+                          parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
+                          count, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( endpoint )
+    {
+        case ompt_scope_begin:
+            switch ( work_type )
+            {
+                case ompt_work_single_executor:
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE_SBLOCK ) );
+                    break;
+                case ompt_work_single_other:
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
+                    break;
+                default:
+                    UTILS_WARNING( "ompt_work_t %s not implemented yet ",
+                                   work2string( work_type ) );
+            }
+            break;
+        case ompt_scope_end:
+            switch ( work_type )
+            {
+                case ompt_work_single_executor:
+                    SCOREP_ExitRegion( work_end( task ) );
+                    SCOREP_ExitRegion( work_end( task ) );
+                    break;
+                case ompt_work_single_other:
+                    SCOREP_ExitRegion( work_end( task ) );
+                    break;
+                default:
+                    UTILS_WARNING( "ompt_work_t %s not implemented yet ",
+                                   work2string( work_type ) );
+            }
+            break;
+        #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
+        case ompt_scope_beginend:
+            UTILS_BUG( "ompt_scope_beginend not allowed in work callback" );
+            break;
+        #endif /* DECL_OMPT_SCOPE_BEGINEND */
+    }
+
+    UTILS_DEBUG_EXIT();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline SCOREP_RegionHandle
+work_begin( task_t*          task,
+            const void*      codeptrRa,
+            ompt_region_type regionType )
+{
+    if ( task->workshare_regions_current == task->workshare_regions_capacity )
+    {
+        enlarge_region_array( &( task->workshare_regions_capacity ), &( task->workshare_regions ) );
+    }
+
+    UTILS_BUG_ON( task->workshare_regions[ task->workshare_regions_current ] != SCOREP_INVALID_REGION );
+    SCOREP_RegionHandle region = get_region( codeptrRa, regionType );
+    task->workshare_regions[ task->workshare_regions_current++ ] = region;
+    return region;
+}
+
+
+/* Aligned-enlarge @a regions array by one SCOREP_CACHELINESIZE and update
+   @a capacity. Contents gets copied. @a capacity up to UINT8_MAX is supported */
+static inline void
+enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions )
+{
+    UTILS_BUG_ON( *capacity + SCOREP_CACHELINESIZE / sizeof( SCOREP_RegionHandle ) > UINT8_MAX,
+                  "Cannot handle capacity of region array > " PRIu8 ".", UINT8_MAX );
+
+    size_t size = *capacity == 0 ?
+                  SCOREP_CACHELINESIZE :
+                  *capacity * sizeof( SCOREP_RegionHandle ) + SCOREP_CACHELINESIZE;
+
+    SCOREP_RegionHandle* new_regions = SCOREP_Memory_AlignedMalloc( SCOREP_CACHELINESIZE, size );
+    UTILS_BUG_ON( new_regions == NULL );
+    memcpy( new_regions, *regions, *capacity * sizeof( SCOREP_RegionHandle ) );
+    SCOREP_Memory_AlignedFree( *regions );
+
+    unsigned new_capacity = size / sizeof( SCOREP_RegionHandle );
+    for ( unsigned i = *capacity; i < new_capacity; i++ )
+    {
+        new_regions[ i ] = SCOREP_INVALID_REGION;
+    }
+
+    *regions  = new_regions;
+    *capacity = ( uint8_t )new_capacity;
+}
+
+
+static inline SCOREP_RegionHandle
+work_end( task_t* task )
+{
+    UTILS_BUG_ON( task->workshare_regions_current == 0 );
+    SCOREP_RegionHandle region = task->workshare_regions[ --task->workshare_regions_current ];
+    task->workshare_regions[ task->workshare_regions_current ] = SCOREP_INVALID_REGION;
+    UTILS_BUG_ON( region == SCOREP_INVALID_REGION );
+    return region;
 }

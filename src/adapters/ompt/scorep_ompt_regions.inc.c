@@ -27,10 +27,10 @@ typedef enum ompt_region_type
 
     OMPT_PARALLEL,
     OMPT_IMPLICIT_BARRIER,
-#if 0
-    OMPT_LOOP,
     OMPT_SINGLE,
     OMPT_SINGLE_SBLOCK,
+#if 0
+    OMPT_LOOP,
     OMPT_BARRIER,
     OMPT_MASTER,
     OMPT_CRITICAL,
@@ -67,19 +67,20 @@ typedef struct region_fallback_t
 #define REGION_OMP_PARALLEL "!$omp parallel"
 /* Note: OpenMP 5.1+ allows us to distinguish between several barrier types */
 #define REGION_OMP_IBARRIER "!$omp implicit barrier"
+#define REGION_OMP_SINGLE "!$omp single"
+#define REGION_OMP_SINGLE_SBLOCK "!$omp single sblock"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
     /* uncrustify adds unnecessary whitespace at every invocation */
     /* *INDENT-OFF* */
-    { REGION_OMP_UNKNOWN,   sizeof( REGION_OMP_UNKNOWN ) - 1,   SCOREP_REGION_UNKNOWN,          SCOREP_INVALID_REGION },
-    { REGION_OMP_PARALLEL,  sizeof( REGION_OMP_PARALLEL ) - 1,  SCOREP_REGION_PARALLEL,         SCOREP_INVALID_REGION },
-    { REGION_OMP_IBARRIER,  sizeof( REGION_OMP_IBARRIER ) - 1,  SCOREP_REGION_IMPLICIT_BARRIER, SCOREP_INVALID_REGION },
-
+    { REGION_OMP_UNKNOWN,         sizeof( REGION_OMP_UNKNOWN ) - 1,         SCOREP_REGION_UNKNOWN,          SCOREP_INVALID_REGION },
+    { REGION_OMP_PARALLEL,        sizeof( REGION_OMP_PARALLEL ) - 1,        SCOREP_REGION_PARALLEL,         SCOREP_INVALID_REGION },
+    { REGION_OMP_IBARRIER,        sizeof( REGION_OMP_IBARRIER ) - 1,        SCOREP_REGION_IMPLICIT_BARRIER, SCOREP_INVALID_REGION },
+    { REGION_OMP_SINGLE,          sizeof( REGION_OMP_SINGLE ) - 1,          SCOREP_REGION_SINGLE,           SCOREP_INVALID_REGION },
+    { REGION_OMP_SINGLE_SBLOCK  , sizeof( REGION_OMP_SINGLE_SBLOCK ) - 1,   SCOREP_REGION_SINGLE_SBLOCK,    SCOREP_INVALID_REGION },
 #if 0
     { "!$omp for",             SCOREP_REGION_LOOP,                    SCOREP_INVALID_REGION },
-    { "!$omp single",          SCOREP_REGION_SINGLE,                  SCOREP_INVALID_REGION },
-    { "!$omp single sblock",   SCOREP_REGION_SINGLE_SBLOCK,           SCOREP_INVALID_REGION },
     { "!$omp barrier",         SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
     { "!$omp master",          SCOREP_REGION_MASTER,                  SCOREP_INVALID_REGION },
     { "!$omp critical",        SCOREP_REGION_CRITICAL,                SCOREP_INVALID_REGION },
@@ -104,6 +105,8 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_UNKNOWN
 #undef REGION_OMP_PARALLEL
 #undef REGION_OMP_IBARRIER
+#undef REGION_OMP_SINGLE
+#undef REGION_OMP_SINGLE_SBLOCK
 
 #if 0
 typedef enum ompt_lock_region_type
