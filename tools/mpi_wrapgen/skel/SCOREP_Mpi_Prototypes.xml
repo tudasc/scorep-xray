@@ -1,5 +1,5 @@
 
-<prototypes count="381" family="mpi" >
+<prototypes count="427" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -127,6 +127,19 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Allgather_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Allgatherv" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -197,6 +210,20 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Allgatherv_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="displs" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Alloc_mem" rtype="int" group="misc" guard="extra,misc" >
     <attribute id="kind">ALLOCATE</attribute>
     <param access="i" type_modifier="" type="MPI_Aint" name="size" />
@@ -263,6 +290,18 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Allreduce_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Alltoall" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -317,6 +356,19 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Alltoall_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Alltoallv" rtype="int" group="coll" guard="coll" >
@@ -389,6 +441,21 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Alltoallv_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Alltoallw" rtype="int" group="coll" guard="coll" >
@@ -469,6 +536,21 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Alltoallw_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]"/>
+    <param access="i" type_modifier="const" type="int" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Attr_delete" rtype="int" group="cg_ext" guard="extra,cg,ext" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="i" type_modifier="" type="int" name="keyval" />
@@ -495,6 +577,13 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <decl>SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
+</prototype>
+
+<prototype name="MPI_Barrier_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Bcast" rtype="int" group="coll" guard="coll" >
@@ -534,6 +623,17 @@
         buffer = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Bcast_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="void*" name="buffer" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Bsend" rtype="int" group="p2p" guard="p2p" >
@@ -707,6 +807,15 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Comm_create_from_group" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="const" type="char*" name="stringtag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" />
+</prototype>
+
 <prototype name="MPI_Comm_create_group" rtype="int" group="cg" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
     <param access="i" type_modifier="" type="MPI_Group" name="group" />
@@ -805,6 +914,14 @@
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Comm_idup_with_info" rtype="int" group="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >
@@ -1173,6 +1290,18 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Exscan_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Fetch_and_op" rtype="int" group="rma" guard="rma" >
@@ -2473,6 +2602,20 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Gather_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Gatherv" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ALL2ONE</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -2539,6 +2682,21 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Gatherv_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="displs" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Get" rtype="int" group="rma" guard="rma" >
@@ -2763,6 +2921,13 @@
 <prototype name="MPI_Group_free" rtype="int" group="cg" guard="cg" >
     <param access="b" type_modifier="" type="MPI_Group*" name="group" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Group_from_session_pset" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="const" type="char*" name="pset_name" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
 </prototype>
 
 <prototype name="MPI_Group_incl" rtype="int" group="cg" guard="cg" >
@@ -3740,6 +3905,13 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Info_create_env" rtype="int" group="misc" guard="extra,misc">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="int" name="argc" />
+    <param access="b" type_modifier="" type="char*" name="argv" suffix="[]" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info" />
+</prototype>
+
 <prototype name="MPI_Info_delete" rtype="int" group="misc" guard="extra,misc" >
     <param access="b" type_modifier="" type="MPI_Info" name="info" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
@@ -3784,6 +3956,15 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Info_get_string" rtype="int" group="misc" guard="extra, misc">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="const" type="char*" name="key" />
+    <param access="b" type_modifier="" type="int*" name="buflen" />
+    <param access="o" type_modifier="" type="char*" name="value" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+</prototype>
+
 <prototype name="MPI_Info_get_valuelen" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
@@ -3826,6 +4007,18 @@
     <param access="i" type_modifier="" type="int" name="tag" />
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Intercomm_create_from_groups" rtype="int" group="cg" guard="cg">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Group" name="local_group" />
+    <param access="i" type_modifier="" type="int" name="local_leader" />
+    <param access="i" type_modifier="" type="MPI_Group" name="remote_group" />
+    <param access="i" type_modifier="" type="int" name="remote_leader" />
+    <param access="i" type_modifier="const" type="char*" name="stringtag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newintercomm" />
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
@@ -4158,6 +4351,35 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Isendrecv" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
+<prototype name="MPI_Isendrecv_replace" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Iscatter" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -4461,6 +4683,19 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Neighbor_allgather_init" rtype="int" group="topo" guard="topo">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Neighbor_allgatherv" rtype="int" group="topo" guard="topo" >
     <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -4502,6 +4737,20 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Neighbor_allgatherv_init" rtype="int" group="topo" guard="topo">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="displs" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Neighbor_alltoall" rtype="int" group="topo" guard="topo" >
     <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -4540,6 +4789,19 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_alltoall_init" rtype="int" group="topo" guard="topo">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Neighbor_alltoallv" rtype="int" group="topo" guard="topo" >
@@ -4584,6 +4846,21 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Neighbor_alltoallv_init" rtype="int" group="topo" guard="topo">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Neighbor_alltoallw" rtype="int" group="topo" guard="topo" >
     <attribute id="kind">COLL_ALL2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -4624,6 +4901,21 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_alltoallw_init" rtype="int" group="topo" guard="topo">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Aint" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Aint" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="const" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Op_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
@@ -4722,10 +5014,50 @@
     <version id="1.0" />
 </prototype>
 
+<prototype name="MPI_Parrived" rtype="int" group="request" guard="request">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
+    <param access="i" type_modifier="" type="int" name="partition" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+</prototype>
+
 <prototype name="MPI_Pcontrol" rtype="int" group="perf" guard="perf,extra" >
     <param access="i" type_modifier="" type="const int" name="level" />
     <param access="i" type_modifier="" type="..." name="" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Pready" rtype="int" group="request" guard="request">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="int" name="partition" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
+</prototype>
+
+<prototype name="MPI_Pready_list" rtype="int" group="request" guard="request">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="int" name="length" />
+    <param access="i" type_modifier="const" type="int" name="array_of_partitions" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
+</prototype>
+
+<prototype name="MPI_Pready_range" rtype="int" group="request" guard="request">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="int" name="partition_low" />
+    <param access="i" type_modifier="" type="int" name="partition_high" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
+</prototype>
+
+<prototype name="MPI_Precv_init" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="partitions" />
+    <param access="i" type_modifier="" type="MPI_Count" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Probe" rtype="int" group="p2p" guard="p2p" >
@@ -4748,6 +5080,19 @@
       c_status_ptr = MPI_STATUS_IGNORE;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Psend_init" rtype="int" group="p2p" guard="p2p">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="partitions" />
+    <param access="i" type_modifier="" type="MPI_Count" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Publish_name" rtype="int" group="spawn" guard="spawn,extra" >
@@ -4946,6 +5291,19 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Reduce_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Reduce_local" rtype="int" group="coll" guard="coll" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
     <param access="b" type_modifier="" type="void*" name="inoutbuf" />
@@ -5073,6 +5431,30 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Reduce_scatter_block_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
+<prototype name="MPI_Reduce_scatter_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="const" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Register_datarep" rtype="int" group="io" guard="io,extra" >
@@ -5315,6 +5697,18 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Scan_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Scatter" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -5385,6 +5779,20 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Scatter_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+</prototype>
+
 <prototype name="MPI_Scatterv" rtype="int" group="coll" guard="coll" >
     <attribute id="kind">COLL_ONE2ALL</attribute>
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
@@ -5452,6 +5860,21 @@
         recvbuf = MPI_BOTTOM;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Scatterv_init" rtype="int" group="coll" guard="coll">
+    <version id="4.0" />
+    <param access="i" type_modifier="const" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="const" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="const" type="int" name="displs" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
 </prototype>
 
 <prototype name="MPI_Send" rtype="int" group="p2p" guard="p2p" >
@@ -5587,6 +6010,71 @@
       c_status_ptr = MPI_STATUS_IGNORE;
     }
 ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Session_call_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
+</prototype>
+
+<prototype name="MPI_Session_create_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session_errhandler_function*" name="session_errhandler_fn" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_finalize" rtype="int" group="env">
+    <version id="4.0" />
+    <param access="b" type_modifier="" type="MPI_Session*" name="session" />
+</prototype>
+
+<prototype name="MPI_Session_get_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
+</prototype>
+
+<prototype name="MPI_Session_get_info" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info_used" />
+</prototype>
+
+<prototype name="MPI_Session_get_nth_pset" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="b" type_modifier="" type="int*" name="pset_len" />
+    <param access="o" type_modifier="" type="char*" name="pset_name" />
+</prototype>
+
+<prototype name="MPI_Session_get_num_psets" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="int*" name="npset_names" />
+</prototype>
+
+<prototype name="MPI_Session_get_pset_info" rtype="int" group="env" guard="env,ext">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="const" type="char*" name="pset_name" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info" />
+</prototype>
+
+<prototype name="MPI_Session_init" rtype="int" group="env">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
+    <param access="o" type_modifier="" type="MPI_Session*" name="session" />
+</prototype>
+
+<prototype name="MPI_Session_set_errhandler" rtype="int" group="env" guard="env,err">
+    <version id="4.0" />
+    <param access="i" type_modifier="" type="MPI_Session" name="session" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
 </prototype>
 
 <prototype name="MPI_Sizeof" rtype="int" group="type" guard="extra,type" >

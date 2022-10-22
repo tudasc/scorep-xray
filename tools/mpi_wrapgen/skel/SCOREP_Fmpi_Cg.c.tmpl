@@ -90,7 +90,8 @@
  * @{
  */
 
-#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|idup|merge|split|split_type)$) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|idup|idup_with_info|merge|split|split_type)$) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Fmpi_Std.w
 
 /**
  * @}
@@ -108,6 +109,7 @@
 
 #pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SCOREP_Fmpi_Std.w
 #pragma wrapgen multiple regex(Comm.*group$)                               skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple regex(Group_from_session_pset)                    skel/SCOREP_Fmpi_Std.w
 
 /**
  * @}
@@ -156,7 +158,8 @@
  * @{
  */
 
-#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|idup|merge|split|split_type)$) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|dup_with_info|idup|idup_with_info|merge|split|split_type)$) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen single MPI_Intercomm_create_from_groups skel/SCOREP_Mpi_F2c_C2f.w
 
 /**
  * @}
@@ -174,6 +177,7 @@
 
 #pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SCOREP_Mpi_F2c_C2f.w
 #pragma wrapgen multiple regex(Comm.*group$)                               skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(Group_from_session_pset)                    skel/SCOREP_Mpi_F2c_C2f.w
 
 /**
  * @}

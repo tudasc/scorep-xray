@@ -62,11 +62,11 @@
 #include <UTILS_Debug.h>
 
 /* uppercase defines */
-#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress) skel/SCOREP_Fmpi_DefineU.w
+#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress+!nInfo_create_env) skel/SCOREP_Fmpi_DefineU.w
 #pragma wrapgen single MPI_Alloc_mem skel/SCOREP_Fmpi_DefineU_Cptr.w
 
 /* lowercase defines */
-#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress) skel/SCOREP_Fmpi_DefineL.w
+#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress+!nInfo_create_env) skel/SCOREP_Fmpi_DefineL.w
 #pragma wrapgen single MPI_Alloc_mem skel/SCOREP_Fmpi_DefineL_Cptr.w
 
 /**
@@ -80,12 +80,12 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress+!nInfo_create_env) skel/SCOREP_Fmpi_Std.w
 #pragma wrapgen single MPI_Alloc_mem skel/SCOREP_Fmpi_Std_Cptr.w
 
 #else /* !NEED_F2C_CONV */
 
-#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gmisc+!n_c2f+!n_f2c+!nddress+!nInfo_create_env) skel/SCOREP_Mpi_F2c_C2f.w
 #pragma wrapgen single MPI_Alloc_mem skel/SCOREP_Mpi_F2c_C2f_Cptr.w
 
 #endif

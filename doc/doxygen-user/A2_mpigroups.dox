@@ -57,7 +57,15 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Allgather_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Allgatherv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Allgatherv_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -69,7 +77,15 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Allreduce_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Alltoall</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Alltoall_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -77,7 +93,15 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Alltoallv_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Alltoallw</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Alltoallw_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -97,7 +121,15 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Barrier_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Bcast</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Bcast_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -185,6 +217,10 @@ these groups are disabled as well.
   <td>CG_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Comm_create_from_group</td>
+  <td>CG</td>
+</tr>
+<tr>
   <td>MPI_Comm_create_group</td>
   <td>CG</td>
 </tr>
@@ -246,6 +282,10 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Comm_idup</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Comm_idup_with_info</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -354,6 +394,10 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Exscan</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Exscan_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -621,7 +665,15 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Gather_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Gatherv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Gatherv_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -714,6 +766,10 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Group_free</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Group_from_session_pset</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -833,6 +889,10 @@ these groups are disabled as well.
   <td>MISC</td>
 </tr>
 <tr>
+  <td>MPI_Info_create_env</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Info_delete</td>
   <td>MISC</td>
 </tr>
@@ -861,6 +921,10 @@ these groups are disabled as well.
   <td>MISC</td>
 </tr>
 <tr>
+  <td>MPI_Info_get_string</td>
+  <td>MISC</td>
+</tr>
+<tr>
   <td>MPI_Info_get_valuelen</td>
   <td>MISC</td>
 </tr>
@@ -882,6 +946,10 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Intercomm_create</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Intercomm_create_from_groups</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -933,6 +1001,14 @@ these groups are disabled as well.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Isendrecv</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Isendrecv_replace</td>
+  <td>P2P</td>
+</tr>
+<tr>
   <td>MPI_Issend</td>
   <td>P2P</td>
 </tr>
@@ -961,7 +1037,15 @@ these groups are disabled as well.
   <td>TOPO</td>
 </tr>
 <tr>
+  <td>MPI_Neighbor_allgather_init</td>
+  <td>TOPO</td>
+</tr>
+<tr>
   <td>MPI_Neighbor_allgatherv</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_allgatherv_init</td>
   <td>TOPO</td>
 </tr>
 <tr>
@@ -969,11 +1053,23 @@ these groups are disabled as well.
   <td>TOPO</td>
 </tr>
 <tr>
+  <td>MPI_Neighbor_alltoall_init</td>
+  <td>TOPO</td>
+</tr>
+<tr>
   <td>MPI_Neighbor_alltoallv</td>
   <td>TOPO</td>
 </tr>
 <tr>
+  <td>MPI_Neighbor_alltoallv_init</td>
+  <td>TOPO</td>
+</tr>
+<tr>
   <td>MPI_Neighbor_alltoallw</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_alltoallw_init</td>
   <td>TOPO</td>
 </tr>
 <tr>
@@ -1017,11 +1113,35 @@ these groups are disabled as well.
   <td>TYPE</td>
 </tr>
 <tr>
+  <td>MPI_Parrived</td>
+  <td>REQUEST</td>
+</tr>
+<tr>
   <td>MPI_Pcontrol</td>
   <td>PERF</td>
 </tr>
 <tr>
+  <td>MPI_Pready</td>
+  <td>REQUEST</td>
+</tr>
+<tr>
+  <td>MPI_Pready_list</td>
+  <td>REQUEST</td>
+</tr>
+<tr>
+  <td>MPI_Pready_range</td>
+  <td>REQUEST</td>
+</tr>
+<tr>
+  <td>MPI_Precv_init</td>
+  <td>P2P</td>
+</tr>
+<tr>
   <td>MPI_Probe</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Psend_init</td>
   <td>P2P</td>
 </tr>
 <tr>
@@ -1053,6 +1173,10 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Reduce_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Reduce_local</td>
   <td>COLL</td>
 </tr>
@@ -1062,6 +1186,14 @@ these groups are disabled as well.
 </tr>
 <tr>
   <td>MPI_Reduce_scatter_block</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Reduce_scatter_block_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Reduce_scatter_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -1109,11 +1241,23 @@ these groups are disabled as well.
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Scan_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Scatter</td>
   <td>COLL</td>
 </tr>
 <tr>
+  <td>MPI_Scatter_init</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Scatterv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Scatterv_init</td>
   <td>COLL</td>
 </tr>
 <tr>
@@ -1131,6 +1275,46 @@ these groups are disabled as well.
 <tr>
   <td>MPI_Sendrecv_replace</td>
   <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Session_call_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_create_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_finalize</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_errhandler</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_info</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_nth_pset</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_num_psets</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_get_pset_info</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_init</td>
+  <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Session_set_errhandler</td>
+  <td>ENV</td>
 </tr>
 <tr>
   <td>MPI_Sizeof</td>
@@ -1563,12 +1747,14 @@ these groups are disabled as well.
 <tr><td>
 MPI_Comm_compare,
 MPI_Comm_create,
+MPI_Comm_create_from_group,
 MPI_Comm_create_group,
 MPI_Comm_dup,
 MPI_Comm_dup_with_info,
 MPI_Comm_free,
 MPI_Comm_group,
 MPI_Comm_idup,
+MPI_Comm_idup_with_info,
 MPI_Comm_rank,
 MPI_Comm_remote_group,
 MPI_Comm_remote_size,
@@ -1580,6 +1766,7 @@ MPI_Group_compare,
 MPI_Group_difference,
 MPI_Group_excl,
 MPI_Group_free,
+MPI_Group_from_session_pset,
 MPI_Group_incl,
 MPI_Group_intersection,
 MPI_Group_range_excl,
@@ -1589,6 +1776,7 @@ MPI_Group_size,
 MPI_Group_translate_ranks,
 MPI_Group_union,
 MPI_Intercomm_create,
+MPI_Intercomm_create_from_groups,
 MPI_Intercomm_merge,
 </td></tr>
 </table>
@@ -1648,16 +1836,27 @@ MPI_Group_f2c,
 </td></tr>
 <tr><td>
 MPI_Allgather,
+MPI_Allgather_init,
 MPI_Allgatherv,
+MPI_Allgatherv_init,
 MPI_Allreduce,
+MPI_Allreduce_init,
 MPI_Alltoall,
+MPI_Alltoall_init,
 MPI_Alltoallv,
+MPI_Alltoallv_init,
 MPI_Alltoallw,
+MPI_Alltoallw_init,
 MPI_Barrier,
+MPI_Barrier_init,
 MPI_Bcast,
+MPI_Bcast_init,
 MPI_Exscan,
+MPI_Exscan_init,
 MPI_Gather,
+MPI_Gather_init,
 MPI_Gatherv,
+MPI_Gatherv_init,
 MPI_Iallgather,
 MPI_Iallgatherv,
 MPI_Iallreduce,
@@ -1676,12 +1875,18 @@ MPI_Iscan,
 MPI_Iscatter,
 MPI_Iscatterv,
 MPI_Reduce,
+MPI_Reduce_init,
 MPI_Reduce_local,
 MPI_Reduce_scatter,
 MPI_Reduce_scatter_block,
+MPI_Reduce_scatter_block_init,
+MPI_Reduce_scatter_init,
 MPI_Scan,
+MPI_Scan_init,
 MPI_Scatter,
+MPI_Scatter_init,
 MPI_Scatterv,
+MPI_Scatterv_init,
 </td></tr>
 </table>
 
@@ -1698,6 +1903,16 @@ MPI_Init_thread,
 MPI_Initialized,
 MPI_Is_thread_main,
 MPI_Query_thread,
+MPI_Session_call_errhandler,
+MPI_Session_create_errhandler,
+MPI_Session_finalize,
+MPI_Session_get_errhandler,
+MPI_Session_get_info,
+MPI_Session_get_nth_pset,
+MPI_Session_get_num_psets,
+MPI_Session_get_pset_info,
+MPI_Session_init,
+MPI_Session_set_errhandler,
 </td></tr>
 </table>
 
@@ -1836,6 +2051,7 @@ MPI_Get_address,
 MPI_Get_version,
 MPI_Info_c2f,
 MPI_Info_create,
+MPI_Info_create_env,
 MPI_Info_delete,
 MPI_Info_dup,
 MPI_Info_f2c,
@@ -1843,6 +2059,7 @@ MPI_Info_free,
 MPI_Info_get,
 MPI_Info_get_nkeys,
 MPI_Info_get_nthkey,
+MPI_Info_get_string,
 MPI_Info_get_valuelen,
 MPI_Info_set,
 MPI_Op_c2f,
@@ -1873,10 +2090,14 @@ MPI_Iprobe,
 MPI_Irecv,
 MPI_Irsend,
 MPI_Isend,
+MPI_Isendrecv,
+MPI_Isendrecv_replace,
 MPI_Issend,
 MPI_Mprobe,
 MPI_Mrecv,
+MPI_Precv_init,
 MPI_Probe,
+MPI_Psend_init,
 MPI_Recv,
 MPI_Recv_init,
 MPI_Rsend,
@@ -1905,6 +2126,10 @@ MPI_Pcontrol,
 </td></tr>
 <tr><td>
 MPI_Cancel,
+MPI_Parrived,
+MPI_Pready,
+MPI_Pready_list,
+MPI_Pready_range,
 MPI_Request_free,
 MPI_Request_get_status,
 MPI_Start,
@@ -2055,10 +2280,15 @@ MPI_Ineighbor_alltoall,
 MPI_Ineighbor_alltoallv,
 MPI_Ineighbor_alltoallw,
 MPI_Neighbor_allgather,
+MPI_Neighbor_allgather_init,
 MPI_Neighbor_allgatherv,
+MPI_Neighbor_allgatherv_init,
 MPI_Neighbor_alltoall,
+MPI_Neighbor_alltoall_init,
 MPI_Neighbor_alltoallv,
+MPI_Neighbor_alltoallv_init,
 MPI_Neighbor_alltoallw,
+MPI_Neighbor_alltoallw_init,
 MPI_Topo_test,
 </td></tr>
 </table>

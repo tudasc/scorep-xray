@@ -844,6 +844,23 @@ int MPI_Startall(int count,
 #endif
 
 /**
+ * @name Partitioned communication
+ * @{
+ */
+
+#pragma wrapgen single MPI_Parrived skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Pready skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Pready_list skel/SCOREP_Mpi_StdWithProto.w
+
+#pragma wrapgen single MPI_Pready_range skel/SCOREP_Mpi_Std.w
+
+/**
+ * @}
+ */
+
+/**
  * @}
  * @name Miscelleaneous
  * @{

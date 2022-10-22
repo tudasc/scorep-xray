@@ -213,7 +213,7 @@ void FSUB(MPI_Testsome)(int*         incount,
 }
 #endif
 
-#pragma wrapgen multiple restrict(grequest+!nsome+!nany) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple restrict(grequest+!nsome+!nany+!nPready+!nParrived) skel/SCOREP_Fmpi_Std.w
 
 #else /* !NEED_F2C_CONV */
 
@@ -765,6 +765,7 @@ void FSUB(MPI_Cancel)(MPI_Fint *request,
 
 #pragma wrapgen single MPI_Test_cancelled skel/SCOREP_Mpi_F2c_C2f.w
 
-#pragma wrapgen multiple restrict(grequest+!nCancel+!nStartall+!nWait+!nTest+!nRequest_free) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(grequest+!nCancel+!nStartall+!nWait+!nTest+!nRequest_free+!nPready_list) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen single MPI_Pready_list skel/SCOREP_Mpi_F2c_C2f_Compl.w
 
 #endif

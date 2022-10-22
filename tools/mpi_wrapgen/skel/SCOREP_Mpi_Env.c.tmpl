@@ -366,7 +366,7 @@ int MPI_Finalize( void )
   return return_val;
 }
 
-##pragma wrapgen multiple restrict(genv+!nMPI_Init+!nMPI_Init_thread+!nMPI_Finalize+!nMPI_)Initialized) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple restrict(genv+!nMPI_Session+!nMPI_Init+!nMPI_Init_thread+!nMPI_Finalize+!nMPI_Initialized) skel/SCOREP_Mpi_Std.w
 
 #if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
 /**
@@ -476,6 +476,8 @@ MPI_Initialized( int* flag )
     return return_val;
 }
 #endif
+
+#pragma wrapgen multiple restrict(genv+nMPI_Session) skel/SCOREP_Mpi_Std.w
 
 
 /**

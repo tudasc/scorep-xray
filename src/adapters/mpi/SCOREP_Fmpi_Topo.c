@@ -210,11 +210,23 @@
  */
 #define MPI_Neighbor_allgather_U MPI_NEIGHBOR_ALLGATHER
 
+/** @def MPI_Neighbor_allgather_init_U
+    Exchanges MPI_Neighbor_allgather_init_U with MPI_NEIGHBOR_ALLGATHER_INIT.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgather_init.
+ */
+#define MPI_Neighbor_allgather_init_U MPI_NEIGHBOR_ALLGATHER_INIT
+
 /** @def MPI_Neighbor_allgatherv_U
     Exchanges MPI_Neighbor_allgatherv_U with MPI_NEIGHBOR_ALLGATHERV.
     It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
  */
 #define MPI_Neighbor_allgatherv_U MPI_NEIGHBOR_ALLGATHERV
+
+/** @def MPI_Neighbor_allgatherv_init_U
+    Exchanges MPI_Neighbor_allgatherv_init_U with MPI_NEIGHBOR_ALLGATHERV_INIT.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgatherv_init.
+ */
+#define MPI_Neighbor_allgatherv_init_U MPI_NEIGHBOR_ALLGATHERV_INIT
 
 /** @def MPI_Neighbor_alltoall_U
     Exchanges MPI_Neighbor_alltoall_U with MPI_NEIGHBOR_ALLTOALL.
@@ -222,17 +234,35 @@
  */
 #define MPI_Neighbor_alltoall_U MPI_NEIGHBOR_ALLTOALL
 
+/** @def MPI_Neighbor_alltoall_init_U
+    Exchanges MPI_Neighbor_alltoall_init_U with MPI_NEIGHBOR_ALLTOALL_INIT.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoall_init.
+ */
+#define MPI_Neighbor_alltoall_init_U MPI_NEIGHBOR_ALLTOALL_INIT
+
 /** @def MPI_Neighbor_alltoallv_U
     Exchanges MPI_Neighbor_alltoallv_U with MPI_NEIGHBOR_ALLTOALLV.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
  */
 #define MPI_Neighbor_alltoallv_U MPI_NEIGHBOR_ALLTOALLV
 
+/** @def MPI_Neighbor_alltoallv_init_U
+    Exchanges MPI_Neighbor_alltoallv_init_U with MPI_NEIGHBOR_ALLTOALLV_INIT.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallv_init.
+ */
+#define MPI_Neighbor_alltoallv_init_U MPI_NEIGHBOR_ALLTOALLV_INIT
+
 /** @def MPI_Neighbor_alltoallw_U
     Exchanges MPI_Neighbor_alltoallw_U with MPI_NEIGHBOR_ALLTOALLW.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
  */
 #define MPI_Neighbor_alltoallw_U MPI_NEIGHBOR_ALLTOALLW
+
+/** @def MPI_Neighbor_alltoallw_init_U
+    Exchanges MPI_Neighbor_alltoallw_init_U with MPI_NEIGHBOR_ALLTOALLW_INIT.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallw_init.
+ */
+#define MPI_Neighbor_alltoallw_init_U MPI_NEIGHBOR_ALLTOALLW_INIT
 
 /** @def MPI_Topo_test_U
     Exchanges MPI_Topo_test_U with MPI_TOPO_TEST.
@@ -392,11 +422,23 @@
  */
 #define MPI_Neighbor_allgather_L mpi_neighbor_allgather
 
+/** @def MPI_Neighbor_allgather_init_L
+    Exchanges MPI_Neighbor_allgather_init_L with mpi_neighbor_allgather_init.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgather_init.
+ */
+#define MPI_Neighbor_allgather_init_L mpi_neighbor_allgather_init
+
 /** @def MPI_Neighbor_allgatherv_L
     Exchanges MPI_Neighbor_allgatherv_L with mpi_neighbor_allgatherv.
     It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
  */
 #define MPI_Neighbor_allgatherv_L mpi_neighbor_allgatherv
+
+/** @def MPI_Neighbor_allgatherv_init_L
+    Exchanges MPI_Neighbor_allgatherv_init_L with mpi_neighbor_allgatherv_init.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgatherv_init.
+ */
+#define MPI_Neighbor_allgatherv_init_L mpi_neighbor_allgatherv_init
 
 /** @def MPI_Neighbor_alltoall_L
     Exchanges MPI_Neighbor_alltoall_L with mpi_neighbor_alltoall.
@@ -404,17 +446,35 @@
  */
 #define MPI_Neighbor_alltoall_L mpi_neighbor_alltoall
 
+/** @def MPI_Neighbor_alltoall_init_L
+    Exchanges MPI_Neighbor_alltoall_init_L with mpi_neighbor_alltoall_init.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoall_init.
+ */
+#define MPI_Neighbor_alltoall_init_L mpi_neighbor_alltoall_init
+
 /** @def MPI_Neighbor_alltoallv_L
     Exchanges MPI_Neighbor_alltoallv_L with mpi_neighbor_alltoallv.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
  */
 #define MPI_Neighbor_alltoallv_L mpi_neighbor_alltoallv
 
+/** @def MPI_Neighbor_alltoallv_init_L
+    Exchanges MPI_Neighbor_alltoallv_init_L with mpi_neighbor_alltoallv_init.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallv_init.
+ */
+#define MPI_Neighbor_alltoallv_init_L mpi_neighbor_alltoallv_init
+
 /** @def MPI_Neighbor_alltoallw_L
     Exchanges MPI_Neighbor_alltoallw_L with mpi_neighbor_alltoallw.
     It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
  */
 #define MPI_Neighbor_alltoallw_L mpi_neighbor_alltoallw
+
+/** @def MPI_Neighbor_alltoallw_init_L
+    Exchanges MPI_Neighbor_alltoallw_init_L with mpi_neighbor_alltoallw_init.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallw_init.
+ */
+#define MPI_Neighbor_alltoallw_init_L mpi_neighbor_alltoallw_init
 
 /** @def MPI_Topo_test_L
     Exchanges MPI_Topo_test_L with mpi_topo_test.
@@ -1020,6 +1080,25 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sen
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgather_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgather_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_allgather_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Neighbor_allgather_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
 /**
  * Measurement wrapper for MPI_Neighbor_allgatherv
@@ -1049,6 +1128,25 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* se
 
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgatherv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_allgatherv_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int recvcounts[], int displs[], MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Neighbor_allgatherv_init( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -1086,6 +1184,25 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* send
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoall_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoall_init )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Neighbor_alltoall_init( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
 /**
  * Measurement wrapper for MPI_Neighbor_alltoallv
@@ -1119,6 +1236,25 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MP
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoallv_init )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype* sendtype, void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Neighbor_alltoallv_init( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, *info, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
 /**
  * Measurement wrapper for MPI_Neighbor_alltoallw
@@ -1148,6 +1284,25 @@ FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispl
 
 
     *ierr = MPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallw_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoallw_init )( void* sendbuf, int sendcounts[], MPI_Aint sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], MPI_Aint rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, MPI_Info* info, MPI_Request* request, int* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
+    *ierr = MPI_Neighbor_alltoallw_init( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, *info, request );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -1900,6 +2055,28 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgather_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgather_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_allgather_init
+ */
+void
+FSUB( MPI_Neighbor_allgather_init )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* info, MPI_Fint* request, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Request c_request;
+
+
+    *ierr = MPI_Neighbor_allgather_init( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), PMPI_Info_f2c( *info ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
 /**
  * Measurement wrapper for MPI_Neighbor_allgatherv
@@ -1931,6 +2108,28 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgatherv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_allgatherv_init
+ */
+void
+FSUB( MPI_Neighbor_allgatherv_init )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* info, MPI_Fint* request, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Request c_request;
+
+
+    *ierr = MPI_Neighbor_allgatherv_init( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), PMPI_Info_f2c( *info ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
@@ -1968,6 +2167,28 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sen
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoall_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_alltoall_init
+ */
+void
+FSUB( MPI_Neighbor_alltoall_init )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* info, MPI_Fint* request, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Request c_request;
+
+
+    *ierr = MPI_Neighbor_alltoall_init( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), PMPI_Info_f2c( *info ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
 /**
  * Measurement wrapper for MPI_Neighbor_alltoallv
@@ -1999,6 +2220,28 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* s
 
     *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv_init )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallv_init
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-4
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_alltoallv_init
+ */
+void
+FSUB( MPI_Neighbor_alltoallv_init )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* info, MPI_Fint* request, MPI_Fint* ierr )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Request c_request;
+
+
+    *ierr = MPI_Neighbor_alltoallv_init( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), PMPI_Info_f2c( *info ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
