@@ -722,7 +722,7 @@ SCOREP::Wrapgen::is_selected
             {
                 const MPIFunc& mpifunc = dynamic_cast<const MPIFunc&>( func );
                 ret_val = ret_val &&
-                          ( ( mpifunc.get_version() == string2int( rule_body ) ) ^
+                          ( ( mpifunc.version_equal( rule_body ) ) ^
                             invert_selection );
                 break;
             }

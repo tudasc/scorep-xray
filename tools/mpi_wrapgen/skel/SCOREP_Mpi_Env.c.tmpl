@@ -89,7 +89,7 @@ scorep_hint_No_MPI_startup_symbols_found_in_application( void )
  * Measurement wrapper for MPI_Init.
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup env
  * If the measurement system is not initialized, it will initialize the measurement
  * system and enter a special region named "parallel" which is exited when MPI is
@@ -178,7 +178,7 @@ int MPI_Init(int* argc, char*** argv )
  * alternative to MPI_Init.
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup env
  * If the measurement system is not initialized, it will initialize the measurement
  * system and enter a special region named "parallel" which is exited when MPI is
@@ -292,7 +292,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
  * Measurement wrapper for MPI_Finalize
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup env
  * Generates an enter event at function start and an exit event at function end.
  * If the "parallel" region was entered in MPI_Init, it exits the "parallel" region.
@@ -372,7 +372,7 @@ int MPI_Finalize( void )
 /**
  * Measurement wrapper for MPI_Finalized
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup env
  * Triggers an enter and exit event but only when within the measurement phase.
  * It wraps the MPI_Finalized call with enter and exit events.
@@ -429,7 +429,7 @@ MPI_Finalized( int* flag )
 /**
  * Measurement wrapper for MPI_Initialized
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup env
  * Triggers an enter and exit event but only when within the measurement phase.
  * It wraps the MPI_Initialized call with enter and exit events.

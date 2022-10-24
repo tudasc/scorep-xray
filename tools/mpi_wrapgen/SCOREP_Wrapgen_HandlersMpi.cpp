@@ -1072,7 +1072,7 @@ SCOREP::Wrapgen::handler::mpi::version
 {
     const MPIFunc mpifunc = dynamic_cast<const MPIFunc&>( func );
     // return MPI Version this call was introduced
-    return int2string( mpifunc.get_version() );
+    return mpifunc.get_version();
 }
 
 string

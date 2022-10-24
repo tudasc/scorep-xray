@@ -156,7 +156,7 @@ mpi_io_get_type_size( MPI_Datatype datatype )
  * Measurement wrapper for MPI_File_open
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_open call with enter and exit events.
@@ -235,7 +235,7 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
  * Measurement wrapper for MPI_File_close
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_close call with enter and exit events.
@@ -311,7 +311,7 @@ MPI_File_close( MPI_File* fh )
  * Measurement wrapper for MPI_File_seek
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_seek call with enter and exit events.
@@ -379,7 +379,7 @@ MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
  * Measurement wrapper for MPI_File_seek_shared
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_seek_shared call with enter and exit events.
@@ -447,7 +447,7 @@ MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
  * Measurement wrapper for MPI_File_delete
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_delete call with enter and exit events.

@@ -54,9 +54,53 @@
 #include <config.h>
 
 #include <string>
+#include <iostream>
 #include "SCOREP_Wrapgen_Util.h"
 #include "SCOREP_Wrapgen_MpiFunc.h"
 using namespace SCOREP::Wrapgen;
+
+namespace
+{
+std::pair<int, int>
+version_from_string( const string& s )
+{
+    istringstream str( s );
+
+    int major;
+    if ( !( str >> major ) )
+    {
+        return std::make_pair( -1, -1 );
+    }
+
+    char dot;
+    if ( !( str >> dot ) )
+    {
+        /* in a match rule with just the major version, minor is a wildcard */
+        return std::make_pair( major, -1 );
+    }
+    if ( dot != '.' )
+    {
+        return std::make_pair( -1, -1 );
+    }
+
+    int minor;
+    if ( !( str >> minor ) )
+    {
+        return std::make_pair( -1, -1 );
+    }
+
+    return std::make_pair( major, minor );
+}
+
+string
+version_to_string( const std::pair<int, int>& v,
+                   char s = '.' )
+{
+    ostringstream o;
+    o << v.first << s << v.second;
+    return o.str();
+}
+}
 
 SCOREP::Wrapgen::MPIFunc::MPIFunc( const string&      rtype,
                                    const string&      name,
@@ -65,12 +109,20 @@ SCOREP::Wrapgen::MPIFunc::MPIFunc( const string&      rtype,
                                    const string&      version,
                                    const paramlist_t& params ) :
     Func( rtype, name, group, guard, params ), m_scnt( "0" ), m_rcnt( "0" ),
-    m_version( string2int( version ) )
+    m_version( version_from_string( version ) )
 {
     set_family( "mpi" );
     set_attribute( "kind", "NONE" );
     set_attribute( "operation_type", "" );
     set_attribute( "collective_type", "" );
+
+    /* we do not accept a wildcard version */
+    if ( m_version.second == -1 )
+    {
+        std::cerr << "ERROR: Invalid MPI version for function '"
+                  << get_name() << "': " << version << std::endl;
+        exit( EXIT_FAILURE );
+    }
 };
 
 string
@@ -90,7 +142,7 @@ SCOREP::Wrapgen::MPIFunc::write_conf
              << param.get_name() << "\" suffix=\"" << param.get_suffix()
              << "\" />\n";
     }
-    conf << "    <version id=\"" << m_version << "\" />\n";
+    conf << "    <version id=\"" << version_to_string( m_version ) << "\" />\n";
     conf << "    <countrules send=\"" << m_scnt << "\" recv=\""
          << m_rcnt << "\" />\n";
     conf << "<init>\n" << m_init << "</init>\n";
@@ -99,6 +151,38 @@ SCOREP::Wrapgen::MPIFunc::write_conf
 
     return conf.str();
 }
+
+string
+SCOREP::Wrapgen::MPIFunc::get_version( char separator ) const
+{
+    return version_to_string( m_version, separator );
+}
+
+bool
+SCOREP::Wrapgen::MPIFunc::version_equal( const string& s ) const
+{
+    std::pair<int, int> v = version_from_string( s );
+
+    if ( v.first == -1 )
+    {
+        std::cerr << "ERROR: Invalid MPI version in match rule '"
+                  << s << "'" << std::endl;
+        exit( EXIT_FAILURE );
+    }
+
+    if ( m_version.first != v.first )
+    {
+        return false;
+    }
+
+    if ( v.second == -1 || m_version.second == v.second )
+    {
+        return true;
+    }
+
+    return false;
+}
+
 
 void
 SCOREP::Wrapgen::MPIFunc::set_sendcount_rule
