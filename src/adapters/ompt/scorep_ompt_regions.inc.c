@@ -34,17 +34,17 @@ typedef enum ompt_region_type
     OMPT_TASK,
     OMPT_TASK_UNTIED,
     OMPT_TASK_CREATE,
-#if 0
     OMPT_LOOP,
+    OMPT_SECTIONS,
+    OMPT_WORKSHARE,
+#if 0
     OMPT_BARRIER,
     OMPT_MASTER,
     OMPT_CRITICAL,
     OMPT_CRITICAL_SBLOCK,
     OMPT_ORDERED,
     OMPT_ORDERED_SBLOCK,
-    OMPT_SECTIONS,
     OMPT_SECTION,
-    OMPT_WORKSHARE,
     OMPT_TASKLOOP,
     OMPT_FLUSH,
     OMPT_TASKWAIT,
@@ -74,6 +74,9 @@ typedef struct region_fallback_t
 #define REGION_OMP_TASK "!$omp task"
 #define REGION_OMP_TASK_UNTIED "!$omp task untied"
 #define REGION_OMP_CREATE_TASK "!$omp create task"
+#define REGION_OMP_LOOP "!$omp for/do"
+#define REGION_OMP_SECTIONS "!$omp sections"
+#define REGION_OMP_WORKSHARE "!$omp workshare"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -87,17 +90,18 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_TASK,            sizeof( REGION_OMP_TASK ) - 1,            SCOREP_REGION_TASK,             SCOREP_INVALID_REGION },
     { REGION_OMP_TASK_UNTIED,     sizeof( REGION_OMP_TASK_UNTIED ) - 1,     SCOREP_REGION_TASK_UNTIED,      SCOREP_INVALID_REGION },
     { REGION_OMP_CREATE_TASK,     sizeof( REGION_OMP_CREATE_TASK ) - 1,     SCOREP_REGION_TASK_CREATE,      SCOREP_INVALID_REGION },
+    { REGION_OMP_LOOP,            sizeof( REGION_OMP_LOOP ) - 1,            SCOREP_REGION_LOOP,             SCOREP_INVALID_REGION },
+    { REGION_OMP_SECTIONS,        sizeof( REGION_OMP_SECTIONS ) - 1,        SCOREP_REGION_SECTIONS,         SCOREP_INVALID_REGION },
+    { REGION_OMP_WORKSHARE,       sizeof( REGION_OMP_WORKSHARE ) - 1,       SCOREP_REGION_WORKSHARE,        SCOREP_INVALID_REGION },
+
 #if 0
-    { "!$omp for",             SCOREP_REGION_LOOP,                    SCOREP_INVALID_REGION },
     { "!$omp barrier",         SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
     { "!$omp master",          SCOREP_REGION_MASTER,                  SCOREP_INVALID_REGION },
     { "!$omp critical",        SCOREP_REGION_CRITICAL,                SCOREP_INVALID_REGION },
     { "!$omp critical sblock", SCOREP_REGION_CRITICAL_SBLOCK,         SCOREP_INVALID_REGION },
     { "!$omp ordered",         SCOREP_REGION_ORDERED,                 SCOREP_INVALID_REGION },
     { "!$omp ordered sblock",  SCOREP_REGION_ORDERED_SBLOCK,          SCOREP_INVALID_REGION },
-    { "!$omp sections",        SCOREP_REGION_SECTIONS,                SCOREP_INVALID_REGION },
     { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
-    { "!$omp workshare",       SCOREP_REGION_WORKSHARE,               SCOREP_INVALID_REGION },
     { "!$omp taskloop",        SCOREP_REGION_TASKLOOP,                SCOREP_INVALID_REGION },
     { "!$omp flush",           SCOREP_REGION_FLUSH,                   SCOREP_INVALID_REGION },
     { "!$omp taskwait",        SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
@@ -115,6 +119,9 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_TASK
 #undef REGION_OMP_TASK_UNTIED
 #undef REGION_OMP_CREATE_TASK
+#undef REGION_OMP_LOOP
+#undef REGION_OMP_SECTIONS
+#undef REGION_OMP_WORKSHARE
 
 #if 0
 typedef enum ompt_lock_region_type

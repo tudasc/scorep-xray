@@ -1495,12 +1495,21 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
         case ompt_scope_begin:
             switch ( work_type )
             {
+                case ompt_work_loop:
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_LOOP ) );
+                    break;
+                case ompt_work_sections:
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SECTIONS ) );
+                    break;
                 case ompt_work_single_executor:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE_SBLOCK ) );
                     break;
                 case ompt_work_single_other:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
+                    break;
+                case ompt_work_workshare:
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_WORKSHARE ) );
                     break;
                 default:
                     UTILS_WARNING( "ompt_work_t %s not implemented yet ",
@@ -1510,11 +1519,20 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
         case ompt_scope_end:
             switch ( work_type )
             {
+                case ompt_work_loop:
+                    SCOREP_ExitRegion( work_end( task ) );
+                    break;
+                case ompt_work_sections:
+                    SCOREP_ExitRegion( work_end( task ) );
+                    break;
                 case ompt_work_single_executor:
                     SCOREP_ExitRegion( work_end( task ) );
                     SCOREP_ExitRegion( work_end( task ) );
                     break;
                 case ompt_work_single_other:
+                    SCOREP_ExitRegion( work_end( task ) );
+                    break;
+                case ompt_work_workshare:
                     SCOREP_ExitRegion( work_end( task ) );
                     break;
                 default:
