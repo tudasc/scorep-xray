@@ -836,7 +836,7 @@ FSUB( MPI_Session_call_errhandler )( MPI_Fint* session, MPI_Fint* errorcode, MPI
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    *ierr = MPI_Session_call_errhandler( *session, *errorcode );
+    *ierr = MPI_Session_call_errhandler( PMPI_Session_f2c( *session ), *errorcode );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -874,10 +874,12 @@ void
 FSUB( MPI_Session_finalize )( MPI_Fint* session, MPI_Fint* ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Session c_session = PMPI_Session_f2c( *session );
 
 
-    *ierr = MPI_Session_finalize( session );
+    *ierr = MPI_Session_finalize( &c_session );
 
+    *session = PMPI_Session_c2f( c_session );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
@@ -896,7 +898,7 @@ FSUB( MPI_Session_get_errhandler )( MPI_Fint* session, void* errhandler, MPI_Fin
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    *ierr = MPI_Session_get_errhandler( *session, ( MPI_Errhandler* )errhandler );
+    *ierr = MPI_Session_get_errhandler( PMPI_Session_f2c( *session ), ( MPI_Errhandler* )errhandler );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -917,7 +919,7 @@ FSUB( MPI_Session_get_info )( MPI_Fint* session, MPI_Fint* info_used, MPI_Fint* 
     MPI_Info c_info_used;
 
 
-    *ierr = MPI_Session_get_info( *session, &c_info_used );
+    *ierr = MPI_Session_get_info( PMPI_Session_f2c( *session ), &c_info_used );
 
     *info_used = PMPI_Info_c2f( c_info_used );
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -946,7 +948,7 @@ FSUB( MPI_Session_get_nth_pset )( MPI_Fint* session, MPI_Fint* info, MPI_Fint* n
 
 
 
-    *ierr = MPI_Session_get_nth_pset( *session, PMPI_Info_f2c( *info ), *n, pset_len, c_pset_name );
+    *ierr = MPI_Session_get_nth_pset( PMPI_Session_f2c( *session ), PMPI_Info_f2c( *info ), *n, pset_len, c_pset_name );
 
 
     c_pset_name_len = strlen( c_pset_name );
@@ -971,7 +973,7 @@ FSUB( MPI_Session_get_num_psets )( MPI_Fint* session, MPI_Fint* info, MPI_Fint* 
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    *ierr = MPI_Session_get_num_psets( *session, PMPI_Info_f2c( *info ), npset_names );
+    *ierr = MPI_Session_get_num_psets( PMPI_Session_f2c( *session ), PMPI_Info_f2c( *info ), npset_names );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
@@ -995,7 +997,7 @@ FSUB( MPI_Session_get_pset_info )( MPI_Fint* session, char* pset_name, MPI_Fint*
 
 
 
-    *ierr = MPI_Session_get_pset_info( *session, c_pset_name, &c_info );
+    *ierr = MPI_Session_get_pset_info( PMPI_Session_f2c( *session ), c_pset_name, &c_info );
 
     free( c_pset_name );
     *info = PMPI_Info_c2f( c_info );
@@ -1015,10 +1017,12 @@ void
 FSUB( MPI_Session_init )( MPI_Fint* info, void* errhandler, MPI_Fint* session, MPI_Fint* ierr )
 {
     SCOREP_IN_MEASUREMENT_INCREMENT();
+    MPI_Session c_session;
 
 
-    *ierr = MPI_Session_init( PMPI_Info_f2c( *info ), *( ( MPI_Errhandler* )errhandler ), session );
+    *ierr = MPI_Session_init( PMPI_Info_f2c( *info ), *( ( MPI_Errhandler* )errhandler ), &c_session );
 
+    *session = PMPI_Session_c2f( c_session );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
@@ -1037,7 +1041,7 @@ FSUB( MPI_Session_set_errhandler )( MPI_Fint* session, void* errhandler, MPI_Fin
     SCOREP_IN_MEASUREMENT_INCREMENT();
 
 
-    *ierr = MPI_Session_set_errhandler( *session, *( ( MPI_Errhandler* )errhandler ) );
+    *ierr = MPI_Session_set_errhandler( PMPI_Session_f2c( *session ), *( ( MPI_Errhandler* )errhandler ) );
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }

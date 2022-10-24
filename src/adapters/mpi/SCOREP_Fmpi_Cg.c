@@ -2064,7 +2064,7 @@ FSUB( MPI_Group_from_session_pset )( MPI_Fint* session, char* pset_name, MPI_Fin
 
 
 
-    *ierr = MPI_Group_from_session_pset( *session, c_pset_name, &c_newgroup );
+    *ierr = MPI_Group_from_session_pset( PMPI_Session_f2c( *session ), c_pset_name, &c_newgroup );
 
     free( c_pset_name );
     *newgroup = PMPI_Group_c2f( c_newgroup );

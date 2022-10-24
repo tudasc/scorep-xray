@@ -134,6 +134,7 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     f2c_types[ "MPI_Datatype" ] = "PMPI_Type";
     f2c_types[ "MPI_Info" ]     = "PMPI_Info";
     f2c_types[ "MPI_Message" ]  = "PMPI_Message";
+    f2c_types[ "MPI_Session" ]  = "PMPI_Session";
 }
 
 string
