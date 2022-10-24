@@ -3574,7 +3574,7 @@ FSUB( MPI_Scatterv_init )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* displs
  * Measurement wrapper for MPI_Alltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 1.0
+ * @note Introduced with MPI-1.0
  * @ingroup coll
  */
 void
@@ -3645,7 +3645,7 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
  * Measurement wrapper for MPI_Ialltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 3.0
+ * @note Introduced with MPI-3.0
  * @ingroup coll
  */
 void

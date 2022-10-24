@@ -72,7 +72,7 @@
  * Measurement wrapper for MPI_Abort
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI 1.0
+ * @note Introduced with MPI-1.0
  * @ingroup ext
  */
 int

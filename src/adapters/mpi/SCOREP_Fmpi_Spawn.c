@@ -225,7 +225,7 @@
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @note Manually adapted wrapper
  * @note Fortran interface
- * @note Introduced with MPI 2.0
+ * @note Introduced with MPI-2.0
  * @ingroup spawn
  */
 void

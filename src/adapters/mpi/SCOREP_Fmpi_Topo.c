@@ -1334,7 +1334,7 @@ FSUB( MPI_Topo_test )( MPI_Comm* comm, int* status, int* ierr )
  * Measurement wrapper for MPI_Neighbor_alltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 3.0
+ * @note Introduced with MPI-3.0
  * @ingroup topo
  */
 void
@@ -1395,7 +1395,7 @@ FSUB( MPI_Neighbor_alltoallw )( void*     sendbuf,
  * Measurement wrapper for MPI_Ineighbor_alltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 3.0
+ * @note Introduced with MPI-3.0
  * @ingroup topo
  */
 void
