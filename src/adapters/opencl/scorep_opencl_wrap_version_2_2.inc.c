@@ -1,4 +1,4 @@
-#if HAVE( OPENCL_22_SYMBOL_CLSETPROGRAMSPECIALIZATIONCONSTANT )
+#if HAVE( OPENCL_2_2_SYMBOL_CLSETPROGRAMSPECIALIZATIONCONSTANT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetProgramSpecializationConstant )( cl_program  program,
                                                                 cl_uint     specId,
@@ -21,7 +21,7 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetProgramSpecializationConstant )( cl_program  prog
 
 
 
-#if HAVE( OPENCL_22_SYMBOL_CLSETPROGRAMRELEASECALLBACK )
+#if HAVE( OPENCL_2_2_SYMBOL_CLSETPROGRAMRELEASECALLBACK )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetProgramReleaseCallback )( cl_program program,
                                                          void( CL_CALLBACK * pfn_notify )( cl_program program, void* user_data ),
