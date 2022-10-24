@@ -71,7 +71,7 @@
 
 #pragma wrapgen multiple restrict(gspawn+!n_name+!n_port+!ndisconnect+!n_parent) skel/SCOREP_Mpi_CommMgnt.w
 
-#if HAVE(DECL_PMPI_COMM_DISCONNECT) && ! defined(SCOREP_MPI_NO_SPAWN)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_COMM_DISCONNECT) && ! defined(SCOREP_MPI_NO_SPAWN)
 /**
  * Measurement wrapper for MPI_Comm_disconnect
  * @note C interface

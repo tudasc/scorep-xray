@@ -70,7 +70,7 @@
  */
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end$) skel/SCOREP_Mpi_PtpSend.w
 
-#if HAVE(DECL_PMPI_RECV) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_RECV) && !defined(SCOREP_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Recv
  * @note Manually adapted wrapper
@@ -166,7 +166,7 @@ int MPI_Recv( void* buf,
 
 #pragma wrapgen multiple regex(MPI_I(s|bs|rs|ss)end$) skel/SCOREP_Mpi_PtpIsend.w
 
-#if HAVE(DECL_PMPI_IRECV) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_IRECV) && !defined(SCOREP_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Irecv
  * @note Manually adapted wrapper
@@ -253,7 +253,7 @@ int MPI_Irecv(void* buf,
 
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_PtpSendinit.w
 
-#if HAVE(DECL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Recv_init
  * @note Manually adapted wrapper

@@ -71,7 +71,7 @@
  * @{
  */
 
-#if HAVE(DECL_PMPI_CART_CREATE)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_CART_CREATE)
 /**
  * Measurement wrapper for MPI_Cart_create
  * @note Manually adapted wrapper
@@ -188,7 +188,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
 }
 #endif
 
-#if HAVE( DECL_PMPI_CART_SUB )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_SUB )
 /**
  * Measurement wrapper for MPI_Cart_sub
  * @note Manually adapted wrapper

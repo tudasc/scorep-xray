@@ -272,8 +272,8 @@ name
 /** Returns the opening statement of the guard.
     The guard prevents the building of wrappers for functions for which no corresponding
     PMPI function exists or which belong to a group which should not be build.
-    it inserts an '#if HAVE(DECL_PMPI_name)' and appends ' && ! defined SCOREP_MPI_NO_GUARD'
-    for every entry listed in the prototypes in guard.
+    it inserts an '#if HAVE(MPI_<major>_<minor>_SYMBOL_PMPI_name)' and appends
+    ' && ! defined SCOREP_MPI_NO_GUARD' for every entry listed in the prototypes in guard.
  */
 std::string
 guard_start

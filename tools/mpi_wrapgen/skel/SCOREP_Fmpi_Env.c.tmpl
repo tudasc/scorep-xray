@@ -80,7 +80,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if HAVE(DECL_PMPI_INIT_THREAD)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper
@@ -116,7 +116,7 @@ void FSUB(MPI_Init)(int* ierr)
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_PMPI_INIT_THREAD)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper

@@ -111,7 +111,7 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SCOREP_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_PMPI_TYPE_CREATE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
  * @ingroup manual_wrapper
@@ -147,7 +147,7 @@ void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TYPE_GET_CONTENTS) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_TYPE_GET_CONTENTS) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_get_contents
  * @ingroup manual_wrapper

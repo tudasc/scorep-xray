@@ -80,7 +80,7 @@ scorep_mpi_register_regions( void )
     /* Define source file handle for MPI functions */
     SCOREP_SourceFileHandle file_id = SCOREP_Definitions_NewSourceFile( "MPI" );
 
-#if HAVE( DECL_PMPI_ABORT )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ABORT )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] =
@@ -93,7 +93,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Accumulate )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Accumulate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ACCUMULATE ] =
@@ -106,7 +106,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_ADD_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_class )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ADD_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_class )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ADD_ERROR_CLASS ] =
@@ -119,7 +119,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ADD_ERROR_CODE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_code )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ADD_ERROR_CODE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_code )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ADD_ERROR_CODE ] =
@@ -132,7 +132,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ADD_ERROR_STRING ] =
@@ -145,7 +145,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ADDRESS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Address )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ADDRESS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Address )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ADDRESS ] =
@@ -158,7 +158,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLGATHER )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ALLGATHER )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] =
@@ -171,7 +171,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgather_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgather_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER_INIT ] =
@@ -184,7 +184,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] =
@@ -197,7 +197,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV_INIT ] =
@@ -210,7 +210,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLOC_MEM ] =
@@ -223,7 +223,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ALLOCATE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] =
@@ -236,7 +236,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLREDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLREDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE_INIT ] =
@@ -249,7 +249,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] =
@@ -262,7 +262,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL_INIT ] =
@@ -275,7 +275,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] =
@@ -288,7 +288,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV_INIT ] =
@@ -301,7 +301,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_ALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] =
@@ -314,7 +314,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW_INIT ] =
@@ -327,7 +327,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ATTR_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_delete )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ATTR_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_delete )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ATTR_DELETE ] =
@@ -340,7 +340,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ATTR_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ATTR_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ATTR_GET ] =
@@ -353,7 +353,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ATTR_PUT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_put )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ATTR_PUT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Attr_put )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ATTR_PUT ] =
@@ -366,7 +366,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_BARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] =
@@ -379,7 +379,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_BARRIER );
     }
 #endif
-#if HAVE( DECL_PMPI_BARRIER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_BARRIER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER_INIT ] =
@@ -392,7 +392,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_BCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] =
@@ -405,7 +405,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_BCAST_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_BCAST_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST_INIT ] =
@@ -418,7 +418,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_BSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BSEND ] =
@@ -431,7 +431,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_BSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend_init )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BSEND_INIT ] =
@@ -444,7 +444,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_BUFFER_ATTACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_attach )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BUFFER_ATTACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_attach )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BUFFER_ATTACH ] =
@@ -457,7 +457,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_BUFFER_DETACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_detach )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_BUFFER_DETACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_detach )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BUFFER_DETACH ] =
@@ -470,7 +470,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Cancel )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Cancel )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CANCEL ] =
@@ -483,7 +483,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_COORDS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_coords )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_COORDS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_coords )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_COORDS ] =
@@ -496,7 +496,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_CREATE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_CREATE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_CREATE ] =
@@ -509,7 +509,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_GET ] =
@@ -522,7 +522,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_map )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_map )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_MAP ] =
@@ -535,7 +535,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_rank )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_rank )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_RANK ] =
@@ -548,7 +548,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_SHIFT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_shift )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_SHIFT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_shift )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_SHIFT ] =
@@ -561,7 +561,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CART_SUB )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CART_SUB )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CART_SUB ] =
@@ -574,7 +574,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CARTDIM_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cartdim_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CARTDIM_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cartdim_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CARTDIM_GET ] =
@@ -587,7 +587,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_CLOSE_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Close_port )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_CLOSE_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Close_port )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_CLOSE_PORT ] =
@@ -600,7 +600,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_ACCEPT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_accept )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_ACCEPT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_accept )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_ACCEPT ] =
@@ -613,7 +613,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Comm_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Comm_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_C2F ] =
@@ -626,7 +626,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_call_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CALL_ERRHANDLER ] =
@@ -639,7 +639,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_compare )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_compare )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_COMPARE ] =
@@ -652,7 +652,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_connect )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_CONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_connect )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CONNECT ] =
@@ -665,7 +665,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CREATE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_CREATE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CREATE ] =
@@ -678,7 +678,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_create_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_create_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CREATE_ERRHANDLER ] =
@@ -691,7 +691,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CREATE_FROM_GROUP ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_create_from_group )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_COMM_CREATE_FROM_GROUP ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_create_from_group )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CREATE_FROM_GROUP ] =
@@ -704,7 +704,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CREATE_GROUP )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_CREATE_GROUP )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CREATE_GROUP ] =
@@ -717,7 +717,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_create_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_create_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_CREATE_KEYVAL ] =
@@ -730,7 +730,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_delete_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_delete_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DELETE_ATTR ] =
@@ -743,7 +743,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_DISCONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_disconnect )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_DISCONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_disconnect )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DISCONNECT ] =
@@ -756,7 +756,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_DUP )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_DUP )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DUP ] =
@@ -769,7 +769,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_DUP_WITH_INFO )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_DUP_WITH_INFO )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_DUP_WITH_INFO ] =
@@ -782,7 +782,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Comm_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Comm_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_F2C ] =
@@ -795,7 +795,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_FREE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_FREE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_FREE ] =
@@ -808,7 +808,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_free_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_free_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_FREE_KEYVAL ] =
@@ -821,7 +821,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GET_ATTR ] =
@@ -834,7 +834,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_get_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_get_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GET_ERRHANDLER ] =
@@ -847,7 +847,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GET_INFO ] =
@@ -860,7 +860,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GET_NAME ] =
@@ -873,7 +873,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GET_PARENT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_get_parent )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_GET_PARENT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_get_parent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GET_PARENT ] =
@@ -886,7 +886,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_GROUP )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_GROUP )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_GROUP ] =
@@ -899,7 +899,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_IDUP )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_IDUP )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_IDUP ] =
@@ -912,7 +912,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_IDUP_WITH_INFO )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_COMM_IDUP_WITH_INFO )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_IDUP_WITH_INFO ] =
@@ -925,7 +925,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_JOIN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_join )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_JOIN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_join )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_JOIN ] =
@@ -938,7 +938,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_rank )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_rank )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_RANK ] =
@@ -951,7 +951,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_REMOTE_GROUP )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_REMOTE_GROUP )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_REMOTE_GROUP ] =
@@ -964,7 +964,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_REMOTE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_remote_size )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_REMOTE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_remote_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_REMOTE_SIZE ] =
@@ -977,7 +977,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_ATTR ] =
@@ -990,7 +990,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_set_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Comm_set_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_ERRHANDLER ] =
@@ -1003,7 +1003,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_INFO ] =
@@ -1016,7 +1016,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] =
@@ -1029,7 +1029,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_size )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SIZE ] =
@@ -1042,7 +1042,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SPAWN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_spawn )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SPAWN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_spawn )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN ] =
@@ -1055,7 +1055,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SPAWN_MULTIPLE ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_spawn_multiple )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SPAWN_MULTIPLE ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_spawn_multiple )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPAWN_MULTIPLE ] =
@@ -1068,7 +1068,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SPLIT )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_SPLIT )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPLIT ] =
@@ -1081,7 +1081,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_SPLIT_TYPE )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_SPLIT_TYPE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SPLIT_TYPE ] =
@@ -1094,7 +1094,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMM_TEST_INTER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_test_inter )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_COMM_TEST_INTER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_test_inter )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_TEST_INTER ] =
@@ -1107,7 +1107,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_COMPARE_AND_SWAP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Compare_and_swap )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_COMPARE_AND_SWAP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Compare_and_swap )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] =
@@ -1120,7 +1120,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_DIMS_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dims_create )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_DIMS_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dims_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_DIMS_CREATE ] =
@@ -1133,7 +1133,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_DIST_GRAPH_CREATE ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_DIST_GRAPH_CREATE ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_DIST_GRAPH_CREATE ] =
@@ -1146,7 +1146,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_DIST_GRAPH_CREATE_ADJACENT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create_adjacent )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_DIST_GRAPH_CREATE_ADJACENT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create_adjacent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_DIST_GRAPH_CREATE_ADJACENT ] =
@@ -1159,7 +1159,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_DIST_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS ] =
@@ -1172,7 +1172,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_DIST_GRAPH_NEIGHBORS_COUNT ] =
@@ -1185,7 +1185,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERRHANDLER_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_create )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERRHANDLER_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_CREATE ] =
@@ -1198,7 +1198,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERRHANDLER_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERRHANDLER_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_FREE ] =
@@ -1211,7 +1211,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERRHANDLER_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERRHANDLER_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_GET ] =
@@ -1224,7 +1224,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERRHANDLER_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_set )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERRHANDLER_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_set )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERRHANDLER_SET ] =
@@ -1237,7 +1237,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_class )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_class )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERROR_CLASS ] =
@@ -1250,7 +1250,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_string )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_string )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ERROR_STRING ] =
@@ -1263,7 +1263,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_EXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_EXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] =
@@ -1276,7 +1276,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
-#if HAVE( DECL_PMPI_EXSCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_EXSCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN_INIT ] =
@@ -1289,7 +1289,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FETCH_AND_OP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Fetch_and_op )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_FETCH_AND_OP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Fetch_and_op )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] =
@@ -1302,7 +1302,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_C2F ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_File_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_C2F ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_File_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_C2F ] =
@@ -1315,7 +1315,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_call_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CALL_ERRHANDLER ] =
@@ -1328,7 +1328,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CLOSE ] =
@@ -1341,7 +1341,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO_METADATA );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_create_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_create_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CREATE_ERRHANDLER ] =
@@ -1354,7 +1354,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_DELETE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_delete )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_DELETE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_delete )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_DELETE ] =
@@ -1367,7 +1367,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO_METADATA );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_F2C ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_File_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_F2C ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_File_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_F2C ] =
@@ -1380,7 +1380,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_AMODE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_amode )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_AMODE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_amode )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_AMODE ] =
@@ -1393,7 +1393,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_atomicity )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_atomicity )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ATOMICITY ] =
@@ -1406,7 +1406,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_BYTE_OFFSET ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_byte_offset )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_BYTE_OFFSET ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_byte_offset )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_BYTE_OFFSET ] =
@@ -1419,7 +1419,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_get_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_get_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ERRHANDLER ] =
@@ -1432,7 +1432,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_GROUP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_group )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_GROUP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_group )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_GROUP ] =
@@ -1445,7 +1445,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_info )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_INFO ] =
@@ -1458,7 +1458,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_POSITION ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_POSITION ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION ] =
@@ -1471,7 +1471,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_POSITION_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_POSITION_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION_SHARED ] =
@@ -1484,7 +1484,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_size )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_SIZE ] =
@@ -1497,7 +1497,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_type_extent )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_type_extent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_TYPE_EXTENT ] =
@@ -1510,7 +1510,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_GET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_view )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_GET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_view )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_VIEW ] =
@@ -1523,7 +1523,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IREAD ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IREAD ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD ] =
@@ -1536,7 +1536,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IREAD_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_all )
+#if HAVE( MPI_3_1_SYMBOL_PMPI_FILE_IREAD_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_ALL ] =
@@ -1549,7 +1549,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IREAD_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IREAD_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT ] =
@@ -1562,7 +1562,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IREAD_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at_all )
+#if HAVE( MPI_3_1_SYMBOL_PMPI_FILE_IREAD_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT_ALL ] =
@@ -1575,7 +1575,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IREAD_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IREAD_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_SHARED ] =
@@ -1588,7 +1588,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IWRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IWRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE ] =
@@ -1601,7 +1601,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IWRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_all )
+#if HAVE( MPI_3_1_SYMBOL_PMPI_FILE_IWRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_ALL ] =
@@ -1614,7 +1614,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IWRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IWRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT ] =
@@ -1627,7 +1627,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IWRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at_all )
+#if HAVE( MPI_3_1_SYMBOL_PMPI_FILE_IWRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT_ALL ] =
@@ -1640,7 +1640,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_IWRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_IWRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_SHARED ] =
@@ -1653,7 +1653,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_OPEN ] =
@@ -1666,7 +1666,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO_METADATA );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_PREALLOCATE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_preallocate )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_PREALLOCATE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_preallocate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_PREALLOCATE ] =
@@ -1679,7 +1679,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ ] =
@@ -1692,7 +1692,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL ] =
@@ -1705,7 +1705,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_BEGIN ] =
@@ -1718,7 +1718,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_END ] =
@@ -1731,7 +1731,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT ] =
@@ -1744,7 +1744,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL ] =
@@ -1757,7 +1757,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_BEGIN ] =
@@ -1770,7 +1770,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_END ] =
@@ -1783,7 +1783,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED ] =
@@ -1796,7 +1796,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_BEGIN ] =
@@ -1809,7 +1809,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_END ] =
@@ -1822,7 +1822,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_READ_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_READ_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_SHARED ] =
@@ -1835,7 +1835,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK ] =
@@ -1848,7 +1848,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO_METADATA );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK_SHARED ] =
@@ -1861,7 +1861,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO_METADATA );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_atomicity )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_atomicity )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ATOMICITY ] =
@@ -1874,7 +1874,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_set_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_File_set_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ERRHANDLER ] =
@@ -1887,7 +1887,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_info )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_INFO ] =
@@ -1900,7 +1900,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_size )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_SIZE ] =
@@ -1913,7 +1913,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_view )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_view )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_VIEW ] =
@@ -1926,7 +1926,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_SYNC ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_sync )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SYNC ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_sync )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SYNC ] =
@@ -1939,7 +1939,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE ] =
@@ -1952,7 +1952,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL ] =
@@ -1965,7 +1965,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_BEGIN ] =
@@ -1978,7 +1978,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_END ] =
@@ -1991,7 +1991,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT ] =
@@ -2004,7 +2004,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL ] =
@@ -2017,7 +2017,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_BEGIN ] =
@@ -2030,7 +2030,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_END ] =
@@ -2043,7 +2043,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED ] =
@@ -2056,7 +2056,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_begin )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_begin )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_BEGIN ] =
@@ -2069,7 +2069,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_end )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_end )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_END ] =
@@ -2082,7 +2082,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FILE_WRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_WRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_SHARED ] =
@@ -2095,7 +2095,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_FILE_IO );
     }
 #endif
-#if HAVE( DECL_PMPI_FINALIZE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_FINALIZE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZE ] =
@@ -2108,7 +2108,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FINALIZED ] =
@@ -2121,7 +2121,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_FREE_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Free_mem )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FREE_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Free_mem )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FREE_MEM ] =
@@ -2134,7 +2134,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_DEALLOCATE );
     }
 #endif
-#if HAVE( DECL_PMPI_GATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] =
@@ -2147,7 +2147,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_GATHER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER_INIT ] =
@@ -2160,7 +2160,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] =
@@ -2173,7 +2173,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_GATHERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV_INIT ] =
@@ -2186,7 +2186,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET ] =
@@ -2199,7 +2199,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_RMA );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get_accumulate )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_GET_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get_accumulate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] =
@@ -2212,7 +2212,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_ADDRESS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Get_address )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GET_ADDRESS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Get_address )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ADDRESS ] =
@@ -2225,7 +2225,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_count )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GET_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_count )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] =
@@ -2238,7 +2238,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] =
@@ -2251,7 +2251,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements_x )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_GET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements_x )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] =
@@ -2264,7 +2264,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_LIBRARY_VERSION ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Get_library_version )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_GET_LIBRARY_VERSION ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Get_library_version )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_LIBRARY_VERSION ] =
@@ -2277,7 +2277,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] =
@@ -2290,7 +2290,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GET_VERSION ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Get_version )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GET_VERSION ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Get_version )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_VERSION ] =
@@ -2303,7 +2303,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPH_CREATE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPH_CREATE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPH_CREATE ] =
@@ -2316,7 +2316,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPH_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPH_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPH_GET ] =
@@ -2329,7 +2329,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPH_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_map )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPH_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_map )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPH_MAP ] =
@@ -2342,7 +2342,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPH_NEIGHBORS ] =
@@ -2355,7 +2355,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors_count )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors_count )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPH_NEIGHBORS_COUNT ] =
@@ -2368,7 +2368,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GRAPHDIMS_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graphdims_get )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GRAPHDIMS_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graphdims_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GRAPHDIMS_GET ] =
@@ -2381,7 +2381,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GREQUEST_COMPLETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_complete )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GREQUEST_COMPLETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_complete )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] =
@@ -2394,7 +2394,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GREQUEST_START ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_start )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GREQUEST_START ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_start )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] =
@@ -2407,7 +2407,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Group_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GROUP_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Group_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_C2F ] =
@@ -2420,7 +2420,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_compare )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_compare )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_COMPARE ] =
@@ -2433,7 +2433,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_DIFFERENCE ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_difference )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_DIFFERENCE ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_difference )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_DIFFERENCE ] =
@@ -2446,7 +2446,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_excl )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_excl )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_EXCL ] =
@@ -2459,7 +2459,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Group_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_GROUP_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Group_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_F2C ] =
@@ -2472,7 +2472,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_FREE ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_FREE ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_FREE ] =
@@ -2485,7 +2485,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_FROM_SESSION_PSET ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_from_session_pset )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_GROUP_FROM_SESSION_PSET ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_from_session_pset )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_FROM_SESSION_PSET ] =
@@ -2498,7 +2498,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_incl )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_incl )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_INCL ] =
@@ -2511,7 +2511,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_INTERSECTION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_intersection )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_INTERSECTION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_intersection )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_INTERSECTION ] =
@@ -2524,7 +2524,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_RANGE_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_excl )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_RANGE_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_excl )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_RANGE_EXCL ] =
@@ -2537,7 +2537,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_RANGE_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_incl )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_RANGE_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_incl )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_RANGE_INCL ] =
@@ -2550,7 +2550,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_rank )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_rank )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_RANK ] =
@@ -2563,7 +2563,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_size )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_SIZE ] =
@@ -2576,7 +2576,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_TRANSLATE_RANKS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_translate_ranks )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_TRANSLATE_RANKS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_translate_ranks )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_TRANSLATE_RANKS ] =
@@ -2589,7 +2589,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_GROUP_UNION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_union )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_GROUP_UNION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_union )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GROUP_UNION ] =
@@ -2602,7 +2602,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgather )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgather )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] =
@@ -2615,7 +2615,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgatherv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] =
@@ -2628,7 +2628,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallreduce )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallreduce )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] =
@@ -2641,7 +2641,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoall )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] =
@@ -2654,7 +2654,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] =
@@ -2667,7 +2667,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallw )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallw )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] =
@@ -2680,7 +2680,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IBARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibarrier )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IBARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibarrier )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] =
@@ -2693,7 +2693,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_BARRIER );
     }
 #endif
-#if HAVE( DECL_PMPI_IBCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibcast )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IBCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibcast )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] =
@@ -2706,7 +2706,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IBSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ibsend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_IBSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ibsend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBSEND ] =
@@ -2719,7 +2719,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_IEXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iexscan )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IEXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iexscan )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] =
@@ -2732,7 +2732,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
-#if HAVE( DECL_PMPI_IGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igather )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igather )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] =
@@ -2745,7 +2745,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_IGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igatherv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] =
@@ -2758,7 +2758,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_IMPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Improbe )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IMPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Improbe )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IMPROBE ] =
@@ -2771,7 +2771,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_IMRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Imrecv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IMRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Imrecv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IMRECV ] =
@@ -2784,7 +2784,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHER )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLGATHER )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INEIGHBOR_ALLGATHER ] =
@@ -2797,7 +2797,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INEIGHBOR_ALLGATHERV ] =
@@ -2810,7 +2810,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INEIGHBOR_ALLTOALL ] =
@@ -2823,7 +2823,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INEIGHBOR_ALLTOALLV ] =
@@ -2836,7 +2836,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallw )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallw )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INEIGHBOR_ALLTOALLW ] =
@@ -2849,7 +2849,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_C2F ] =
@@ -2862,7 +2862,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_CREATE ] =
@@ -2875,7 +2875,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_CREATE_ENV ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create_env )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_INFO_CREATE_ENV ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create_env )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_CREATE_ENV ] =
@@ -2888,7 +2888,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_delete )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_delete )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_DELETE ] =
@@ -2901,7 +2901,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_dup )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_dup )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_DUP ] =
@@ -2914,7 +2914,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_F2C ] =
@@ -2927,7 +2927,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_free )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_FREE ] =
@@ -2940,7 +2940,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET ] =
@@ -2953,7 +2953,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_GET_NKEYS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nkeys )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_GET_NKEYS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nkeys )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET_NKEYS ] =
@@ -2966,7 +2966,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_GET_NTHKEY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nthkey )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_GET_NTHKEY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nthkey )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET_NTHKEY ] =
@@ -2979,7 +2979,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_GET_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_string )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_INFO_GET_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_string )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET_STRING ] =
@@ -2992,7 +2992,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_GET_VALUELEN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_valuelen )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_GET_VALUELEN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_valuelen )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_GET_VALUELEN ] =
@@ -3005,7 +3005,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INFO_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_set )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INFO_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_set )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INFO_SET ] =
@@ -3018,7 +3018,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INIT )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_INIT )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT ] =
@@ -3031,7 +3031,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INIT_THREAD )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_INIT_THREAD )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INIT_THREAD ] =
@@ -3044,7 +3044,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INITIALIZED ] =
@@ -3057,7 +3057,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INTERCOMM_CREATE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_INTERCOMM_CREATE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INTERCOMM_CREATE ] =
@@ -3070,7 +3070,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INTERCOMM_CREATE_FROM_GROUPS ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Intercomm_create_from_groups )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_INTERCOMM_CREATE_FROM_GROUPS ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Intercomm_create_from_groups )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INTERCOMM_CREATE_FROM_GROUPS ] =
@@ -3083,7 +3083,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_INTERCOMM_MERGE )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_INTERCOMM_MERGE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_INTERCOMM_MERGE ] =
@@ -3096,7 +3096,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_IPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Iprobe )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_IPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Iprobe )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IPROBE ] =
@@ -3109,7 +3109,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_IRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irecv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_IRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irecv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IRECV ] =
@@ -3122,7 +3122,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_IREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] =
@@ -3135,7 +3135,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_IREDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IREDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] =
@@ -3148,7 +3148,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IREDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter_block )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_IREDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter_block )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] =
@@ -3161,7 +3161,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_IRSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irsend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_IRSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irsend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IRSEND ] =
@@ -3174,7 +3174,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_IS_THREAD_MAIN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Is_thread_main )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_IS_THREAD_MAIN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Is_thread_main )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IS_THREAD_MAIN ] =
@@ -3187,7 +3187,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ISCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscan )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_ISCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscan )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] =
@@ -3200,7 +3200,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
-#if HAVE( DECL_PMPI_ISCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatter )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_ISCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatter )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] =
@@ -3213,7 +3213,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ISCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatterv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_ISCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatterv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] =
@@ -3226,7 +3226,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_ISEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ISEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISEND ] =
@@ -3239,7 +3239,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_ISENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ISENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISENDRECV ] =
@@ -3252,7 +3252,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ISENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv_replace )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_ISENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isendrecv_replace )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISENDRECV_REPLACE ] =
@@ -3265,7 +3265,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISSEND ] =
@@ -3278,7 +3278,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_KEYVAL_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_create )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_KEYVAL_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_KEYVAL_CREATE ] =
@@ -3291,7 +3291,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_KEYVAL_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_KEYVAL_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_CG_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_KEYVAL_FREE ] =
@@ -3304,7 +3304,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_LOOKUP_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Lookup_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_LOOKUP_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Lookup_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_LOOKUP_NAME ] =
@@ -3317,7 +3317,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_MPROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mprobe )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_MPROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mprobe )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_MPROBE ] =
@@ -3330,7 +3330,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_MRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mrecv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_MRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mrecv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_MRECV ] =
@@ -3343,7 +3343,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLGATHER )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLGATHER ] =
@@ -3356,7 +3356,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgather_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_NEIGHBOR_ALLGATHER_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgather_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLGATHER_INIT ] =
@@ -3369,7 +3369,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLGATHERV ] =
@@ -3382,7 +3382,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_NEIGHBOR_ALLGATHERV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLGATHERV_INIT ] =
@@ -3395,7 +3395,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALL ] =
@@ -3408,7 +3408,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALL_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALL_INIT ] =
@@ -3421,7 +3421,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALLV ] =
@@ -3434,7 +3434,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALLV_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALLV_INIT ] =
@@ -3447,7 +3447,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALLW ] =
@@ -3460,7 +3460,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALLW_INIT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_NEIGHBOR_ALLTOALLW_INIT ] =
@@ -3473,7 +3473,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OP_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_OP_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OP_C2F ] =
@@ -3486,7 +3486,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OP_COMMUTATIVE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_OP_COMMUTATIVE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OP_COMMUTATIVE ] =
@@ -3499,7 +3499,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OP_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_create )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_OP_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OP_CREATE ] =
@@ -3512,7 +3512,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OP_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_OP_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OP_F2C ] =
@@ -3525,7 +3525,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OP_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_OP_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OP_FREE ] =
@@ -3538,7 +3538,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_OPEN_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Open_port )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_OPEN_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Open_port )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_OPEN_PORT ] =
@@ -3551,7 +3551,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Pack )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_PACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Pack )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PACK ] =
@@ -3564,7 +3564,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_PACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PACK_EXTERNAL ] =
@@ -3577,7 +3577,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PACK_EXTERNAL_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external_size )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_PACK_EXTERNAL_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PACK_EXTERNAL_SIZE ] =
@@ -3590,7 +3590,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PACK_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_size )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_PACK_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PACK_SIZE ] =
@@ -3603,7 +3603,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PARRIVED ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Parrived )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PARRIVED ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Parrived )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PARRIVED ] =
@@ -3616,7 +3616,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PCONTROL ) && !defined( SCOREP_MPI_NO_PERF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Pcontrol )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_PCONTROL ) && !defined( SCOREP_MPI_NO_PERF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Pcontrol )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_PERF || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PCONTROL ] =
@@ -3629,7 +3629,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PREADY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PREADY ] =
@@ -3642,7 +3642,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PREADY_LIST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_list )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_LIST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_list )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PREADY_LIST ] =
@@ -3655,7 +3655,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PREADY_RANGE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_range )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_RANGE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_range )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PREADY_RANGE ] =
@@ -3668,7 +3668,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PRECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Precv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PRECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Precv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PRECV_INIT ] =
@@ -3681,7 +3681,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Probe )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_PROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Probe )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PROBE ] =
@@ -3694,7 +3694,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_PSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Psend_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Psend_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PSEND_INIT ] =
@@ -3707,7 +3707,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUBLISH_NAME ] =
@@ -3720,7 +3720,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_PUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Put )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_PUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Put )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUT ] =
@@ -3733,7 +3733,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_RMA );
     }
 #endif
-#if HAVE( DECL_PMPI_QUERY_THREAD ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Query_thread )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_QUERY_THREAD ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Query_thread )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_QUERY_THREAD ] =
@@ -3746,7 +3746,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_RACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Raccumulate )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_RACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Raccumulate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] =
@@ -3759,7 +3759,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_RECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_RECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RECV ] =
@@ -3772,7 +3772,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_RECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv_init )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_RECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RECV_INIT ] =
@@ -3785,7 +3785,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_REDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] =
@@ -3798,7 +3798,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_REDUCE_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_INIT ] =
@@ -3811,7 +3811,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_LOCAL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_REDUCE_LOCAL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] =
@@ -3824,7 +3824,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_REDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] =
@@ -3837,7 +3837,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block )
+#if HAVE( MPI_2_2_SYMBOL_PMPI_REDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] =
@@ -3850,7 +3850,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_REDUCE_SCATTER_BLOCK_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK_INIT ] =
@@ -3863,7 +3863,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REDUCE_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_REDUCE_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_INIT ] =
@@ -3876,7 +3876,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REGISTER_DATAREP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Register_datarep )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_REGISTER_DATAREP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Register_datarep )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REGISTER_DATAREP ] =
@@ -3889,7 +3889,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_REQUEST_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_C2F ] =
@@ -3902,7 +3902,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_REQUEST_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_F2C ] =
@@ -3915,7 +3915,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_FREE ] =
@@ -3928,7 +3928,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_get_status )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Request_get_status )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REQUEST_GET_STATUS ] =
@@ -3941,7 +3941,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_RGET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rget )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_RGET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rget )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] =
@@ -3954,7 +3954,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_RMA );
     }
 #endif
-#if HAVE( DECL_PMPI_RGET_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rget_accumulate )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_RGET_ACCUMULATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rget_accumulate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] =
@@ -3967,7 +3967,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ATOMIC );
     }
 #endif
-#if HAVE( DECL_PMPI_RPUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rput )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_RPUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Rput )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] =
@@ -3980,7 +3980,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_RMA );
     }
 #endif
-#if HAVE( DECL_PMPI_RSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_RSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RSEND ] =
@@ -3993,7 +3993,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_RSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend_init )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_RSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RSEND_INIT ] =
@@ -4006,7 +4006,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] =
@@ -4019,7 +4019,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
-#if HAVE( DECL_PMPI_SCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SCAN_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN_INIT ] =
@@ -4032,7 +4032,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] =
@@ -4045,7 +4045,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SCATTER_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER_INIT ] =
@@ -4058,7 +4058,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] =
@@ -4071,7 +4071,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
-#if HAVE( DECL_PMPI_SCATTERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv_init )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SCATTERV_INIT ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV_INIT ] =
@@ -4084,7 +4084,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SEND ] =
@@ -4097,7 +4097,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send_init )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SEND_INIT ] =
@@ -4110,7 +4110,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV ] =
@@ -4123,7 +4123,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv_replace )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv_replace )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SENDRECV_REPLACE ] =
@@ -4136,7 +4136,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_CALL_ERRHANDLER ] =
@@ -4149,7 +4149,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_create_errhandler )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_create_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_CREATE_ERRHANDLER ] =
@@ -4162,7 +4162,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_FINALIZE )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_FINALIZE )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_FINALIZE ] =
@@ -4175,7 +4175,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_get_errhandler )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_get_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_GET_ERRHANDLER ] =
@@ -4188,7 +4188,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_GET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_info )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_GET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_GET_INFO ] =
@@ -4201,7 +4201,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_GET_NTH_PSET ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_nth_pset )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_GET_NTH_PSET ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_nth_pset )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_GET_NTH_PSET ] =
@@ -4214,7 +4214,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_GET_NUM_PSETS ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_num_psets )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_GET_NUM_PSETS ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_num_psets )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_GET_NUM_PSETS ] =
@@ -4227,7 +4227,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_GET_PSET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_pset_info )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_GET_PSET_INFO ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Session_get_pset_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_GET_PSET_INFO ] =
@@ -4240,7 +4240,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_INIT )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_INIT )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_INIT ] =
@@ -4253,7 +4253,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SESSION_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_set_errhandler )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_SESSION_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Session_set_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_ENV || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SESSION_SET_ERRHANDLER ] =
@@ -4266,7 +4266,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SIZEOF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Sizeof )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_SIZEOF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Sizeof )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SIZEOF ] =
@@ -4279,7 +4279,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_SSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SSEND ] =
@@ -4292,7 +4292,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_SSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend_init )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_SSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend_init )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SSEND_INIT ] =
@@ -4305,7 +4305,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
-#if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Start )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_START ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Start )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_START ] =
@@ -4318,7 +4318,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Startall )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Startall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STARTALL ] =
@@ -4331,7 +4331,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STATUS_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_C2F ] =
@@ -4344,7 +4344,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STATUS_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Status_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_F2C ] =
@@ -4357,7 +4357,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STATUS_SET_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_cancelled )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_SET_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_cancelled )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] =
@@ -4370,7 +4370,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] =
@@ -4383,7 +4383,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements_x )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_STATUS_SET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements_x )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] =
@@ -4396,7 +4396,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TEST ] =
@@ -4409,7 +4409,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test_cancelled )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test_cancelled )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TEST_CANCELLED ] =
@@ -4422,7 +4422,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testall )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTALL ] =
@@ -4435,7 +4435,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testany )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testany )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTANY ] =
@@ -4448,7 +4448,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testsome )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Testsome )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TESTSOME ] =
@@ -4461,7 +4461,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TOPO || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TOPO_TEST ] =
@@ -4474,7 +4474,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Type_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_C2F ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Type_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_C2F ] =
@@ -4487,7 +4487,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_COMMIT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_commit )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_COMMIT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_commit )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_COMMIT ] =
@@ -4500,7 +4500,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CONTIGUOUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_contiguous )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_CONTIGUOUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_contiguous )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CONTIGUOUS ] =
@@ -4513,7 +4513,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_DARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_darray )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_DARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_darray )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_DARRAY ] =
@@ -4526,7 +4526,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_F90_COMPLEX ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_complex )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_F90_COMPLEX ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_complex )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_F90_COMPLEX ] =
@@ -4539,7 +4539,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_F90_INTEGER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_integer )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_F90_INTEGER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_integer )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_F90_INTEGER ] =
@@ -4552,7 +4552,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_F90_REAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_real )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_F90_REAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_f90_real )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_F90_REAL ] =
@@ -4565,7 +4565,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_HINDEXED ] =
@@ -4578,7 +4578,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed_block )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_TYPE_CREATE_HINDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed_block )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_HINDEXED_BLOCK ] =
@@ -4591,7 +4591,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hvector )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hvector )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_HVECTOR ] =
@@ -4604,7 +4604,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_INDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_indexed_block )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_INDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_indexed_block )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_INDEXED_BLOCK ] =
@@ -4617,7 +4617,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_create_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_create_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_KEYVAL ] =
@@ -4630,7 +4630,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_RESIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_resized )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_RESIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_resized )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_RESIZED ] =
@@ -4643,7 +4643,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_struct )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_struct )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_STRUCT ] =
@@ -4656,7 +4656,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_CREATE_SUBARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_subarray )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_CREATE_SUBARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_subarray )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_CREATE_SUBARRAY ] =
@@ -4669,7 +4669,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_delete_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_delete_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_DELETE_ATTR ] =
@@ -4682,7 +4682,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_dup )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_dup )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_DUP ] =
@@ -4695,7 +4695,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_extent )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_extent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_EXTENT ] =
@@ -4708,7 +4708,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Type_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_F2C ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Type_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_F2C ] =
@@ -4721,7 +4721,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_FREE ] =
@@ -4734,7 +4734,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_free_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_free_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_FREE_KEYVAL ] =
@@ -4747,7 +4747,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_ATTR ] =
@@ -4760,7 +4760,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_CONTENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_contents )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_CONTENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_contents )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_CONTENTS ] =
@@ -4773,7 +4773,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_ENVELOPE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_envelope )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_ENVELOPE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_envelope )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_ENVELOPE ] =
@@ -4786,7 +4786,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_EXTENT ] =
@@ -4799,7 +4799,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent_x )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_TYPE_GET_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent_x )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_EXTENT_X ] =
@@ -4812,7 +4812,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_NAME ] =
@@ -4825,7 +4825,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_GET_TRUE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_TRUE_EXTENT ] =
@@ -4838,7 +4838,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent_x )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_TYPE_GET_TRUE_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent_x )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_GET_TRUE_EXTENT_X ] =
@@ -4851,7 +4851,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hindexed )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hindexed )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_HINDEXED ] =
@@ -4864,7 +4864,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hvector )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hvector )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_HVECTOR ] =
@@ -4877,7 +4877,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_INDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_indexed )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_INDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_indexed )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_INDEXED ] =
@@ -4890,7 +4890,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_LB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_lb )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_LB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_lb )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_LB ] =
@@ -4903,7 +4903,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_MATCH_SIZE ] =
@@ -4916,7 +4916,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_SET_ATTR ] =
@@ -4929,7 +4929,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_SET_NAME ] =
@@ -4942,7 +4942,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_SIZE ] =
@@ -4955,7 +4955,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_SIZE_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size_x )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_TYPE_SIZE_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size_x )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_SIZE_X ] =
@@ -4968,7 +4968,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_struct )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_struct )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_STRUCT ] =
@@ -4981,7 +4981,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_UB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_ub )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_UB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_ub )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_UB ] =
@@ -4994,7 +4994,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_TYPE_VECTOR ] =
@@ -5007,7 +5007,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_UNPACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_UNPACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_UNPACK ] =
@@ -5020,7 +5020,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_UNPACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack_external )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_UNPACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack_external )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_TYPE || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_UNPACK_EXTERNAL ] =
@@ -5033,7 +5033,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_UNPUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Unpublish_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_UNPUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Unpublish_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_SPAWN || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_UNPUBLISH_NAME ] =
@@ -5046,7 +5046,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Wait )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Wait )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAIT ] =
@@ -5059,7 +5059,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitall )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitall )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITALL ] =
@@ -5072,7 +5072,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitany )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitany )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITANY ] =
@@ -5085,7 +5085,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitsome )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Waitsome )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_REQUEST || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WAITSOME ] =
@@ -5098,7 +5098,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_ALLOCATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_allocate )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_ALLOCATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_allocate )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE ] =
@@ -5111,7 +5111,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ALLOCATE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_ALLOCATE_SHARED ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_allocate_shared )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_ALLOCATE_SHARED ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_allocate_shared )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ALLOCATE_SHARED ] =
@@ -5124,7 +5124,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_ALLOCATE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_ATTACH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_attach )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_ATTACH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_attach )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_ATTACH ] =
@@ -5137,7 +5137,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_C2F ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_c2f )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_C2F ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_c2f )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_C2F ] =
@@ -5150,7 +5150,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_call_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_CALL_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_call_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CALL_ERRHANDLER ] =
@@ -5163,7 +5163,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_COMPLETE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_complete )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_COMPLETE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_complete )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_COMPLETE ] =
@@ -5176,7 +5176,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_CREATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_create )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_CREATE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_create )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE ] =
@@ -5189,7 +5189,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_CREATE_DYNAMIC ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_create_dynamic )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_CREATE_DYNAMIC ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_create_dynamic )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_DYNAMIC ] =
@@ -5202,7 +5202,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_create_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_create_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_ERRHANDLER ] =
@@ -5215,7 +5215,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_create_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_CREATE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_create_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_CREATE_KEYVAL ] =
@@ -5228,7 +5228,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_delete_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_delete_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DELETE_ATTR ] =
@@ -5241,7 +5241,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_DETACH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_detach )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_DETACH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_detach )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_DETACH ] =
@@ -5254,7 +5254,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_F2C ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_f2c )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_F2C ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_f2c )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_MISC || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_F2C ] =
@@ -5267,7 +5267,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FENCE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_fence )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_FENCE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_fence )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FENCE ] =
@@ -5280,7 +5280,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FLUSH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH ] =
@@ -5293,7 +5293,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FLUSH_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_all )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_ALL ] =
@@ -5306,7 +5306,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FLUSH_LOCAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_LOCAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL ] =
@@ -5319,7 +5319,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FLUSH_LOCAL_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local_all )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_LOCAL_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FLUSH_LOCAL_ALL ] =
@@ -5332,7 +5332,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE ] =
@@ -5345,7 +5345,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_FREE_KEYVAL ] =
@@ -5358,7 +5358,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_GET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_GET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ATTR ] =
@@ -5371,7 +5371,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_get_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_GET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_get_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_ERRHANDLER ] =
@@ -5384,7 +5384,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_GET_GROUP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_group )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_GET_GROUP ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_group )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_GROUP ] =
@@ -5397,7 +5397,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_INFO ] =
@@ -5410,7 +5410,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_GET_NAME ] =
@@ -5423,7 +5423,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_LOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_LOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK ] =
@@ -5436,7 +5436,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_LOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock_all )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_LOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_LOCK_ALL ] =
@@ -5449,7 +5449,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_POST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_post )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_POST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_post )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_POST ] =
@@ -5462,7 +5462,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Win_set_attr )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_SET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Win_set_attr )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ATTR ] =
@@ -5475,7 +5475,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_set_errhandler )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_SET_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_set_errhandler )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_ERR || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_ERRHANDLER ] =
@@ -5488,7 +5488,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_INFO ] =
@@ -5501,7 +5501,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SET_NAME ] =
@@ -5514,7 +5514,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SHARED_QUERY ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_shared_query )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_SHARED_QUERY ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_shared_query )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SHARED_QUERY ] =
@@ -5527,7 +5527,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_START ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_start )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_START ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_start )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_START ] =
@@ -5540,7 +5540,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_SYNC ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_sync )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_SYNC ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_sync )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_SYNC ] =
@@ -5553,7 +5553,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_TEST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_test )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_TEST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_test )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_TEST ] =
@@ -5566,7 +5566,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_UNLOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_UNLOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK ] =
@@ -5579,7 +5579,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_UNLOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock_all )
+#if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_UNLOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock_all )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_UNLOCK_ALL ] =
@@ -5592,7 +5592,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WIN_WAIT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_wait )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_WAIT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_wait )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WIN_WAIT ] =
@@ -5605,7 +5605,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WTICK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Wtick )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WTICK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Wtick )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WTICK ] =
@@ -5618,7 +5618,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_REGION_NONE );
     }
 #endif
-#if HAVE( DECL_PMPI_WTIME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Wtime )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WTIME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Wtime )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_EXT || SCOREP_IsUnwindingEnabled() )
     {
         scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_WTIME ] =

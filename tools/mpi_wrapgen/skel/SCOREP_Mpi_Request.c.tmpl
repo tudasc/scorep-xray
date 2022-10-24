@@ -75,7 +75,7 @@
  * @{
  */
 
-#if HAVE(DECL_PMPI_WAIT) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAIT) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Wait
  * @note Manually adapted wrapper
@@ -138,7 +138,7 @@ int MPI_Wait(MPI_Request* request,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITALL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITALL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Waitall
  * @note Manually adapted wrapper
@@ -204,7 +204,7 @@ int MPI_Waitall(int count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Waitany
  * @note Manually adapted wrapper
@@ -281,7 +281,7 @@ int MPI_Waitany(int count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Waitsome
  * @note Manually adapted wrapper
@@ -368,7 +368,7 @@ int MPI_Waitsome(int incount,
  * @{
  */
 
-#if HAVE(DECL_PMPI_TEST) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TEST) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Test
  * @note Manually adapted wrapper
@@ -440,7 +440,7 @@ int MPI_Test(MPI_Request* request,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Testall
  * @note Manually adapted wrapper
@@ -514,7 +514,7 @@ int MPI_Testall(int count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Testany
  * @note Manually adapted wrapper
@@ -600,7 +600,7 @@ int MPI_Testany(int count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Testsome
  * @note Manually adapted wrapper
@@ -686,7 +686,7 @@ int MPI_Testsome(int incount,
  * @{
  */
 
-#if HAVE(DECL_PMPI_START) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_START) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Start
  * @note Manually adapted wrapper
@@ -764,7 +764,7 @@ int MPI_Start(MPI_Request* request)
 }
 #endif
 
-#if HAVE(DECL_PMPI_STARTALL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_STARTALL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Startall
  * @note Manually adapted wrapper
@@ -866,7 +866,7 @@ int MPI_Startall(int count,
  * @{
  */
 
-#if HAVE(DECL_PMPI_REQUEST_FREE) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_REQUEST_FREE) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Request_free
  * @note Manually adapted wrapper
@@ -966,7 +966,7 @@ int MPI_Request_free( MPI_Request* request )
 }
 #endif
 
-#if HAVE(DECL_PMPI_CANCEL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_CANCEL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Cancel
  * @note Manually adapted wrapper
@@ -1034,7 +1034,7 @@ int MPI_Cancel( MPI_Request* request )
 }
 #endif
 
-#if HAVE(DECL_PMPI_REQUEST_GET_STATUS) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_REQUEST_GET_STATUS) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Measurement wrapper for MPI_Request_get_status
  * @note Manually adapted wrapper

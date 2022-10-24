@@ -79,7 +79,7 @@
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_PMPI_NEIGHBOR_ALLTOALLW) && ! defined(SCOREP_MPI_NO_TOPO)
+#if HAVE(MPI_3_0_SYMBOL_PMPI_NEIGHBOR_ALLTOALLW) && ! defined(SCOREP_MPI_NO_TOPO)
 /**
  * Measurement wrapper for MPI_Neighbor_alltoallw
  * @note Manually created wrapper
@@ -139,7 +139,7 @@ void FSUB(MPI_Neighbor_alltoallw)(void*     sendbuf,
 }
 #endif
 
-#if HAVE(DECL_PMPI_INEIGHBOR_ALLTOALLW) && ! defined(SCOREP_MPI_NO_TOPO)
+#if HAVE(MPI_3_0_SYMBOL_PMPI_INEIGHBOR_ALLTOALLW) && ! defined(SCOREP_MPI_NO_TOPO)
 /**
  * Measurement wrapper for MPI_Ineighbor_alltoallw
  * @note Manually created wrapper

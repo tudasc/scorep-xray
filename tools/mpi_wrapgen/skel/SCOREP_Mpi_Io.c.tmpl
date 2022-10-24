@@ -151,7 +151,7 @@ mpi_io_get_type_size( MPI_Datatype datatype )
  * @{
  */
 
-#if HAVE( DECL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
 /**
  * Measurement wrapper for MPI_File_open
  * @note Manually adapted wrapper
@@ -230,7 +230,7 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
 /**
  * Measurement wrapper for MPI_File_close
  * @note Manually adapted wrapper
@@ -306,7 +306,7 @@ MPI_File_close( MPI_File* fh )
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
 /**
  * Measurement wrapper for MPI_File_seek
  * @note Manually adapted wrapper
@@ -374,7 +374,7 @@ MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
 /**
  * Measurement wrapper for MPI_File_seek_shared
  * @note Manually adapted wrapper
@@ -442,7 +442,7 @@ MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
     return return_val;
 }
 #endif
-#if HAVE(DECL_PMPI_FILE_DELETE) && ! defined(SCOREP_MPI_NO_IO) && ! defined( MPI_File_delete )
+#if HAVE(MPI_2_0_SYMBOL_PMPI_FILE_DELETE) && ! defined(SCOREP_MPI_NO_IO) && ! defined( MPI_File_delete )
 /**
  * Measurement wrapper for MPI_File_delete
  * @note Manually adapted wrapper

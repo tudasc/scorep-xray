@@ -78,7 +78,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if HAVE(DECL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SCOREP_MPI_NO_SPAWN) && ! defined(SCOREP_MPI_NO_EXTRA)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SCOREP_MPI_NO_SPAWN) && ! defined(SCOREP_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @note Manually adapted wrapper
@@ -369,7 +369,7 @@ void FSUB(MPI_Comm_spawn)(char*     command,
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SCOREP_MPI_NO_SPAWN) && ! defined(SCOREP_MPI_NO_EXTRA)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SCOREP_MPI_NO_SPAWN) && ! defined(SCOREP_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper

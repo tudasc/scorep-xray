@@ -72,7 +72,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if HAVE(DECL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitany
  * @note C indices have to be converted to Fortran indices, when the
@@ -101,7 +101,7 @@ void FSUB(MPI_Waitany)(int*         count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitsome
  * @note C indices have to be converted to Fortran indices, when the
@@ -139,7 +139,7 @@ void FSUB(MPI_Waitsome)(int*         incount,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testany
  * @note C indices have to be converted to Fortran indices, when the
@@ -173,7 +173,7 @@ void FSUB(MPI_Testany)(int*         count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testsome
  * @note C indices have to be converted to Fortran indices, when the
@@ -217,7 +217,7 @@ void FSUB(MPI_Testsome)(int*         incount,
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_PMPI_WAIT) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAIT) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Wait,
  * when handle conversion is needed.
@@ -253,7 +253,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITALL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITALL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitall,
  * when handle conversion is needed.
@@ -307,7 +307,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitany,
  * when handle conversion is needed.
@@ -362,7 +362,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_WAITSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitsome,
  * when handle conversion is needed.
@@ -450,7 +450,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TEST) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TEST) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Test,
  * when handle conversion is needed.
@@ -489,7 +489,7 @@ void FSUB(MPI_Test)(MPI_Fint* request,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTANY) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testany,
  * when handle conversion is needed.
@@ -547,7 +547,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTALL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testall,
  * when handle conversion is needed.
@@ -604,7 +604,7 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_TESTSOME) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testsome,
  * when handle conversion is needed.
@@ -685,7 +685,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
 }
 #endif
 
-#if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Startall,
  * when handle conversion is needed.
@@ -721,7 +721,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_PMPI_REQUEST_FREE) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_REQUEST_FREE) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Request_free,
  * when handle conversion is needed.
@@ -743,7 +743,7 @@ void FSUB(MPI_Request_free)(MPI_Fint* request,
 }
 #endif
 
-#if HAVE(DECL_PMPI_CANCEL) && !defined(SCOREP_MPI_NO_REQUEST)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_CANCEL) && !defined(SCOREP_MPI_NO_REQUEST)
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Cancel,
  * when handle conversion is needed.

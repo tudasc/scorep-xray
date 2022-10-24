@@ -81,7 +81,7 @@
 
 #pragma wrapgen multiple restrict(gcoll+!nAlltoallw+!nIalltoallw) skel/SCOREP_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
 /**
  * Measurement wrapper for MPI_Alltoallw
  * @note Manually created wrapper
@@ -151,7 +151,7 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
 }
 #endif
 
-#if HAVE(DECL_PMPI_IALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+#if HAVE(MPI_3_0_SYMBOL_PMPI_IALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
 /**
  * Measurement wrapper for MPI_Ialltoallw
  * @note Manually created wrapper

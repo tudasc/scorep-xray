@@ -91,12 +91,12 @@ extern void* scorep_mpi_fortran_statuses_ignore;
 /** pointer representing the Fortran value for MPI_UNWEIGHTED */
 extern void* scorep_mpi_fortran_unweighted;
 
-#if !( HAVE( DECL_PMPI_STATUS_F2C ) )
+#if !( HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_F2C ) )
 #define PMPI_Status_f2c( f, c ) memcpy( ( c ), ( f ), scorep_mpi_status_size )
-#endif /* !HAVE( DECL_PMPI_STATUS_F2C ) */
+#endif /* !HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_F2C ) */
 
-#if !( HAVE( DECL_PMPI_STATUS_C2F ) )
+#if !( HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_C2F ) )
 #define PMPI_Status_c2f( c, f ) memcpy( ( f ), ( c ), scorep_mpi_status_size )
-#endif /* !HAVE( DECL_PMPI_STATUS_C2F ) */
+#endif /* !HAVE( MPI_2_0_SYMBOL_PMPI_STATUS_C2F ) */
 
 #endif /* SCOREP_FMPI_H */

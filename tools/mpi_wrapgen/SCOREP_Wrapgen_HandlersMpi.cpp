@@ -1150,8 +1150,11 @@ SCOREP::Wrapgen::handler::mpi::guard_start
     string tmp = func.get_name();
     toupper( tmp );
 
+    const MPIFunc& mpifunc = dynamic_cast<const MPIFunc&>( func );
+    string         version = mpifunc.get_version( '_' );
+
     // individual guard check by generated header
-    guard += "HAVE(DECL_P" + tmp + ")";
+    guard += "HAVE(MPI_" + version + "_SYMBOL_P" + tmp + ")";
 
     if ( func.get_guard().length() > 0 )
     {

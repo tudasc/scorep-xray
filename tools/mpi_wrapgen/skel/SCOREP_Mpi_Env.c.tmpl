@@ -172,7 +172,7 @@ int MPI_Init(int* argc, char*** argv )
   return return_val;
 }
 
-#if HAVE(DECL_PMPI_INIT_THREAD)
+#if HAVE(MPI_2_0_SYMBOL_PMPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_thread, the thread-capable
  * alternative to MPI_Init.
@@ -368,7 +368,7 @@ int MPI_Finalize( void )
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Session+!nMPI_Init+!nMPI_Init_thread+!nMPI_Finalize+!nMPI_Initialized) skel/SCOREP_Mpi_Std.w
 
-#if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
 /**
  * Measurement wrapper for MPI_Finalized
  * @note C interface
@@ -425,7 +425,7 @@ MPI_Finalized( int* flag )
 }
 #endif
 
-#if HAVE( DECL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
 /**
  * Measurement wrapper for MPI_Initialized
  * @note C interface

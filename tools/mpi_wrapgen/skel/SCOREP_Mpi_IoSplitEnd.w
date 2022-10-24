@@ -53,7 +53,7 @@ ${proto:c}
 
           const int type_size = mpi_io_get_type_size( datatype );
           PMPI_Get_count( status, datatype, &n_elements );
-#if HAVE( DECL_PMPI_TYPE_DUP )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
           PMPI_Type_free( &datatype );
 #endif
 
