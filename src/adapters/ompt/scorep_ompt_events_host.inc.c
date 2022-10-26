@@ -1153,6 +1153,11 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     task->barrier_handle = get_region( codeptr_ra, OMPT_TASKWAIT );
                     SCOREP_EnterRegion( task->barrier_handle );
                     break;
+                case ompt_sync_region_taskgroup:
+                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
+                    task->barrier_handle = get_region( codeptr_ra, OMPT_TASKGROUP );
+                    SCOREP_EnterRegion( task->barrier_handle );
+                    break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
@@ -1226,6 +1231,11 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     break;
                 }
                 case ompt_sync_region_taskwait:
+                    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
+                    SCOREP_ExitRegion( task->barrier_handle );
+                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    break;
+                case ompt_sync_region_taskgroup:
                     UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
                     SCOREP_ExitRegion( task->barrier_handle );
                     task->barrier_handle = SCOREP_INVALID_REGION;
