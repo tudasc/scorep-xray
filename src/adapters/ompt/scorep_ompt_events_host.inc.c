@@ -1148,6 +1148,11 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
 
                     break;
                 }
+                case ompt_sync_region_taskwait:
+                    UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
+                    task->barrier_handle = get_region( codeptr_ra, OMPT_TASKWAIT );
+                    SCOREP_EnterRegion( task->barrier_handle );
+                    break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
@@ -1220,6 +1225,11 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     }
                     break;
                 }
+                case ompt_sync_region_taskwait:
+                    UTILS_BUG_ON( task->barrier_handle == SCOREP_INVALID_REGION );
+                    SCOREP_ExitRegion( task->barrier_handle );
+                    task->barrier_handle = SCOREP_INVALID_REGION;
+                    break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     task_t* task = task_data->ptr;
@@ -1658,6 +1668,8 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
 
     UTILS_BUG_ON( !( flags & ompt_task_explicit ), "Expected explicit task only." );
 
+    UTILS_BUG_ON( flags & ompt_task_taskwait, "taskwait-init not supported yet." );
+
     /* No scheduling events occur when switching to or from a merged task ... */
     if ( flags & ompt_task_merged )
     {
@@ -1804,6 +1816,9 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
+
+    UTILS_BUG_ON( prior_task_status == ompt_taskwait_complete,
+                  "taskwait-complete not supported yet" );
 
     /* Handle prior_task */
     if ( prior_task_status == ompt_task_complete )

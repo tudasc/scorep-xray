@@ -37,6 +37,7 @@ typedef enum ompt_region_type
     OMPT_LOOP,
     OMPT_SECTIONS,
     OMPT_WORKSHARE,
+    OMPT_TASKWAIT,
 #if 0
     OMPT_BARRIER,
     OMPT_MASTER,
@@ -47,7 +48,6 @@ typedef enum ompt_region_type
     OMPT_SECTION,
     OMPT_TASKLOOP,
     OMPT_FLUSH,
-    OMPT_TASKWAIT,
     OMPT_TASKGROUP,
 #endif
     OMPT_REGIONS,
@@ -77,6 +77,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_LOOP "!$omp for/do"
 #define REGION_OMP_SECTIONS "!$omp sections"
 #define REGION_OMP_WORKSHARE "!$omp workshare"
+#define REGION_OMP_TASKWAIT "!$omp taskwait"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -93,6 +94,7 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_LOOP,            sizeof( REGION_OMP_LOOP ) - 1,            SCOREP_REGION_LOOP,             SCOREP_INVALID_REGION },
     { REGION_OMP_SECTIONS,        sizeof( REGION_OMP_SECTIONS ) - 1,        SCOREP_REGION_SECTIONS,         SCOREP_INVALID_REGION },
     { REGION_OMP_WORKSHARE,       sizeof( REGION_OMP_WORKSHARE ) - 1,       SCOREP_REGION_WORKSHARE,        SCOREP_INVALID_REGION },
+    { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
 
 #if 0
     { "!$omp barrier",         SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
@@ -104,7 +106,6 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
     { "!$omp taskloop",        SCOREP_REGION_TASKLOOP,                SCOREP_INVALID_REGION },
     { "!$omp flush",           SCOREP_REGION_FLUSH,                   SCOREP_INVALID_REGION },
-    { "!$omp taskwait",        SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
     { "!$omp taskgroup",       SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION }
     /* TODO barrier does not really fit for taskgroup (not handled by opari2). Invent something new? */
 #endif
@@ -122,6 +123,7 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_LOOP
 #undef REGION_OMP_SECTIONS
 #undef REGION_OMP_WORKSHARE
+#undef REGION_OMP_TASKWAIT
 
 #if 0
 typedef enum ompt_lock_region_type
