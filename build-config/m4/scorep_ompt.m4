@@ -121,7 +121,13 @@ AC_MSG_RESULT([$have_ompt_tool])
 #
 m4_define([_CHECK_TOOL_ACTIVATION], [
 AC_LINK_IFELSE([_INPUT_IGNORED],
-    [AFS_RUN_IFELSE(
+    [# Assumption: Cray systems use same architecture for login- and
+     # compute-nodes. Thus, running conftest programs is ok. To do
+     # so, set cross_compiling temporarily to "no".
+     cross_compiling_save="${cross_compiling}"
+     AS_IF([test "x${afs_platform_cray}" = xyes],
+         [cross_compiling=no])
+     AFS_RUN_IFELSE(
          [# do not try to run MPI or SHMEM programs (no launcher)
           have_ompt_support=yes
           have_ompt_[]_AC_LANG_ABBREV[]_support=yes
@@ -129,7 +135,8 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
           rm -f ./ompt
           AS_UNSET([ompt_reason_]_AC_LANG_ABBREV)],
          [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"],
-         [AC_MSG_FAILURE([TODO: handle cross-compile and other run failures])])],
+         [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
+     cross_compiling="${cross_compiling_save}"],
     [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])
 ])dnl _CHECK_TOOL_ACTIVATION
 
