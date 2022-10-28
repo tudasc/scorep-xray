@@ -1720,40 +1720,7 @@ handle_cuda_malloc( CUcontext cudaContext,
 
     scorep_cupti_context* context = scorep_cupti_context_get_create( cudaContext );
 
-    /* lock the work on the context */
-    SCOREP_CUPTI_LOCK();
-
-    scorep_cupti_gpumem* gpu_memory = context->free_cuda_mallocs;
-    if ( gpu_memory )
-    {
-        context->free_cuda_mallocs = gpu_memory->next;
-    }
-    else
-    {
-        gpu_memory = SCOREP_Memory_AllocForMisc( sizeof( *gpu_memory ) );
-    }
-
-    /* set address and size of the allocated GPU memory */
-    gpu_memory->address = address;
-    gpu_memory->size    = size;
-
-    /* add malloc entry to list */
-    gpu_memory->next      = context->cuda_mallocs;
-    context->cuda_mallocs = gpu_memory;
-
-    /* increase the context global allocated memory counter */
-    context->gpu_memory_allocated += size;
-
-    /* check if first CUDA stream is available */
-    if ( context->streams == NULL )
-    {
-        scorep_cupticb_create_default_stream( context );
-
-        SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                              context->streams->scorep_last_timestamp, scorep_cupti_sampling_set_gpumemusage, 0 );
-    }
-
-    SCOREP_CUPTI_UNLOCK();
+    SCOREP_AllocMetric_HandleAlloc( context->alloc_metric, address, size );
 
     /* synchronize context before (implicit activity buffer flush)
        (assume that the given context is the current one) */
@@ -1762,30 +1729,6 @@ handle_cuda_malloc( CUcontext cudaContext,
            !scorep_cupti_activity_is_buffer_empty( context ) ) )
     {
         scorep_cupticb_synchronize_context();
-    }
-
-    /* write counter value */
-    {
-        uint64_t time = SCOREP_Timer_GetClockTicks();
-
-        if ( time < context->streams->scorep_last_timestamp )
-        {
-            UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaMalloc: time stamp < last written "
-                             "timestamp! (CUDA device: %d)",
-                             context->device->cuda_device );
-
-            time = context->streams->scorep_last_timestamp;
-        }
-        else
-        {
-            /* remember the last written time stamp on the default stream */
-            context->streams->scorep_last_timestamp = time;
-        }
-
-        SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                              time,
-                                              scorep_cupti_sampling_set_gpumemusage,
-                                              ( uint64_t )( context->gpu_memory_allocated ) );
     }
 }
 
@@ -1815,51 +1758,13 @@ handle_cuda_free( CUcontext cudaContext,
         scorep_cupticb_synchronize_context();
     }
 
-    SCOREP_CUPTI_LOCK();
-    scorep_cupti_gpumem** gpumem_it = &context->cuda_mallocs;
-    while ( *gpumem_it != NULL )
+    void* allocation = NULL;
+    SCOREP_AllocMetric_AcquireAlloc( context->alloc_metric, devicePtr, &allocation );
+    if ( allocation )
     {
-        scorep_cupti_gpumem* current_gpumem = *gpumem_it;
-        if ( devicePtr == current_gpumem->address )
-        {
-            uint64_t time = SCOREP_Timer_GetClockTicks();
-
-            if ( time < context->streams->scorep_last_timestamp )
-            {
-                UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaFree: time stamp < last written "
-                                 "timestamp! (CUDA device: %d)",
-                                 context->device->cuda_device );
-
-                time = context->streams->scorep_last_timestamp;
-            }
-            else
-            {
-                /* remember the last written time stamp on the default stream */
-                context->streams->scorep_last_timestamp = time;
-            }
-
-            SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                                  time,
-                                                  scorep_cupti_sampling_set_gpumemusage,
-                                                  ( uint64_t )( context->gpu_memory_allocated ) );
-
-            /* decrease allocated counter value */
-            context->gpu_memory_allocated -= current_gpumem->size;
-
-            /* set pointer over current element to next one */
-            *gpumem_it = current_gpumem->next;
-
-            /* put to free list */
-            current_gpumem->next       = context->free_cuda_mallocs;
-            context->free_cuda_mallocs = current_gpumem;
-
-            SCOREP_CUPTI_UNLOCK();
-            return;
-        }
-        gpumem_it = &current_gpumem->next;
+        SCOREP_AllocMetric_HandleFree( context->alloc_metric, allocation, NULL );
+        return;
     }
-
-    SCOREP_CUPTI_UNLOCK();
 
     UTILS_WARNING( "[CUPTI Callbacks] Free CUDA memory, which has not been allocated!" );
 }

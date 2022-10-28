@@ -456,6 +456,7 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
     libs.push_back( "lib" + m_library + "_event" );
     libs.push_back( "libscorep_measurement" );
     deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    deps.addDependency( "lib" + m_library + "_mgmt", "libscorep_alloc_metric" );
 }
 
 void
