@@ -505,15 +505,6 @@ scorep_cupti_context_create( CUcontext cudaContext )
     /* set the CUDA context */
     context->cuda_context = cudaContext;
 
-    // create window on every CPU location, where communication might occur
-    if ( scorep_cuda_record_memcpy )
-    {
-        // ensure to not create the RMA window twice on the same host location
-        scorep_cuda_location_data* loc_data =
-            SCOREP_Location_GetSubsystemData( context->host_location,
-                                              scorep_cuda_subsystem_id );
-    }
-
     context->activity = NULL;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
@@ -699,19 +690,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
                                     scorep_cupti_idle_region_handle );
     }
 
-    /* cleanup stream list */
-    /* currently there are only RMA windows destroyed */
-    if ( scorep_cuda_record_memcpy )
-    {
-        while ( context->streams != NULL )
-        {
-            scorep_cupti_stream* stream = context->streams;
-
-            context->streams = context->streams->next;
-
-            stream = NULL;
-        }
-    }
     context->streams = NULL;
 
     while ( context->cuda_mallocs != NULL )
@@ -725,15 +703,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
 
         context->cuda_mallocs = scorepMem->next;
         scorepMem             = NULL;
-    }
-
-    // destroy the RMA window on the host
-    if ( scorep_cuda_record_memcpy )
-    {
-        // ensure to not destroy the RMA window twice on the same host location
-        scorep_cuda_location_data* loc_data =
-            SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
-                                              scorep_cuda_subsystem_id );
     }
 
     if ( context->activity != NULL )
