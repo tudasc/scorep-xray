@@ -27,6 +27,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Filtering.h>
+#include <SCOREP_Task.h>
 #include <SCOREP_AcceleratorManagement.h>
 #include <SCOREP_FastHashtab.h>
 #include <SCOREP_Demangle.h>
@@ -45,6 +46,7 @@
 #include <inttypes.h>
 
 #include <roctracer_hip.h>
+#include <roctracer_roctx.h>
 
 #if HAVE( ROCM_SMI_SUPPORT )
 #include <rocm_smi/rocm_smi.h>
@@ -907,6 +909,123 @@ create_correlation_entry( uint64_t correlationId,
     return correlation;
 }
 
+/*************************** ROCTX user regions *******************************/
+
+typedef struct
+{
+    uint32_t    hash_value;
+    const char* string_value;
+} user_region_table_key_t;
+typedef SCOREP_RegionHandle user_region_table_value_t;
+
+#define USER_REGION_TABLE_HASH_EXPONENT 8
+
+static inline uint32_t
+user_region_table_bucket_idx( user_region_table_key_t key )
+{
+    return key.hash_value & hashmask( USER_REGION_TABLE_HASH_EXPONENT );
+}
+
+static inline bool
+user_region_table_equals( user_region_table_key_t key1,
+                          user_region_table_key_t key2 )
+{
+    return key1.hash_value == key2.hash_value && strcmp( key1.string_value, key2.string_value ) == 0;
+}
+
+static inline void*
+user_region_table_allocate_chunk( size_t chunkSize )
+{
+    return SCOREP_Memory_AlignedAllocForMisc( SCOREP_CACHELINESIZE, chunkSize );
+}
+
+static inline void
+user_region_table_free_chunk( void* chunk )
+{
+}
+
+static inline user_region_table_value_t
+user_region_table_value_ctor( user_region_table_key_t* key,
+                              void*                    ctorData )
+{
+    SCOREP_RegionHandle new_region;
+
+    if ( SCOREP_Filtering_MatchFunction( key->string_value, NULL ) )
+    {
+        new_region = SCOREP_FILTERED_REGION;
+
+        SCOREP_StringHandle region_name = SCOREP_Definitions_NewString( key->string_value );
+        key->string_value = SCOREP_StringHandle_Get( region_name );
+    }
+    else
+    {
+        new_region = SCOREP_Definitions_NewRegion( key->string_value, NULL,
+                                                   hip_file_handle,
+                                                   0, 0,
+                                                   SCOREP_PARADIGM_HIP,
+                                                   SCOREP_REGION_USER );
+
+        SCOREP_RegionHandle_SetGroup( new_region, "ROCTX" );
+
+        key->string_value = SCOREP_RegionHandle_GetName( new_region );
+    }
+
+    return new_region;
+}
+
+/* nPairsPerChunk: 16+4 bytes per pair, 0 wasted bytes on x86-64 in 128 bytes */
+SCOREP_HASH_TABLE_MONOTONIC( user_region_table,
+                             5,
+                             hashsize( USER_REGION_TABLE_HASH_EXPONENT ) );
+
+static void
+push_user_region( const char* name )
+{
+    size_t                  name_length = strlen( name );
+    user_region_table_key_t key         = {
+        .hash_value   = jenkins_hash( name, name_length, 0 ),
+        .string_value = name
+    };
+
+    SCOREP_RegionHandle region = SCOREP_INVALID_REGION;
+    if ( user_region_table_get_and_insert( key, NULL, &region ) )
+    {
+        UTILS_DEBUG( "Added ROCTX region for %s", name );
+    }
+
+    if ( region != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( region );
+    }
+    else
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), region );
+    }
+}
+
+static void
+pop_user_region( void )
+{
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    UTILS_ASSERT( location != NULL );
+
+    scorep_hip_cpu_location_data* location_data = SCOREP_Location_GetSubsystemData(
+        location, scorep_hip_subsystem_id );
+
+    SCOREP_RegionHandle region_handle =
+        SCOREP_Task_GetTopRegion( SCOREP_Task_GetCurrentTask( location ) );
+    UTILS_ASSERT( region_handle != SCOREP_INVALID_REGION );
+
+    if ( region_handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_ExitRegion( region_handle );
+    }
+    else
+    {
+        SCOREP_Task_Exit( location );
+    }
+}
+
 // Runtime API callback function
 static void
 api_region_enter( uint32_t          cid,
@@ -1602,6 +1721,54 @@ activity_cb( const char* begin,
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
+static void
+user_cb( uint32_t    domain,
+         uint32_t    cid,
+         const void* callbackData,
+         void*       arg )
+{
+    ( void )arg;
+
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    const roctx_api_data_t* data = ( const roctx_api_data_t* )callbackData;
+
+    UTILS_DEBUG( "CID %d", cid );
+
+    switch ( cid )
+    {
+        case ROCTX_API_ID_roctxMarkA:
+        case ROCTX_API_ID_roctxRangePushA:
+            if ( !data->args.message )
+            {
+                UTILS_WARNING( "missing message for CID %d", cid );
+                SCOREP_IN_MEASUREMENT_DECREMENT();
+                return;
+            }
+
+            push_user_region( data->args.message );
+            if ( cid != ROCTX_API_ID_roctxMarkA )
+            {
+                break;
+            }
+        /* fall through */
+
+        case ROCTX_API_ID_roctxRangePop:
+            pop_user_region();
+            break;
+
+        default:
+            break;
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
 #if ROCTRACER_VERSION_MAJOR > 4 || ( ROCTRACER_VERSION_MAJOR == 4 && ROCTRACER_VERSION_MINOR >= 1 )
 static void
 activity_alloc_cb( char** ptr, size_t size, void* arg )
@@ -1826,6 +1993,21 @@ scorep_hip_callbacks_enable( void )
         SCOREP_ROCTRACER_CALL( roctracer_enable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
     }
 
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_USER )
+    {
+        /* we do not support RangeStart/Stop */
+
+        SCOREP_ROCTRACER_CALL(
+            roctracer_enable_op_callback( ACTIVITY_DOMAIN_ROCTX,
+                                          ROCTX_API_ID_roctxMarkA, user_cb, NULL ) );
+        SCOREP_ROCTRACER_CALL(
+            roctracer_enable_op_callback( ACTIVITY_DOMAIN_ROCTX,
+                                          ROCTX_API_ID_roctxRangePushA, user_cb, NULL ) );
+        SCOREP_ROCTRACER_CALL(
+            roctracer_enable_op_callback( ACTIVITY_DOMAIN_ROCTX,
+                                          ROCTX_API_ID_roctxRangePop, user_cb, NULL ) );
+    }
+
     /* Enable adapter internal event phase which lasts till scorep_hip_callbacks_disable,
      * thus extending WITHIN */
     event_phase = 1;
@@ -1855,6 +2037,7 @@ scorep_hip_callbacks_disable( void )
 {
     SCOREP_ROCTRACER_CALL( roctracer_disable_domain_callback( ACTIVITY_DOMAIN_HIP_API ) );
     SCOREP_ROCTRACER_CALL( roctracer_disable_domain_activity( ACTIVITY_DOMAIN_HIP_OPS ) );
+    SCOREP_ROCTRACER_CALL( roctracer_disable_domain_callback( ACTIVITY_DOMAIN_ROCTX ) );
     SCOREP_ROCTRACER_CALL( roctracer_flush_activity() );
     UTILS_DEBUG( "############################## Stop HIP tracing" );
 #if HAVE( UTILS_DEBUG )

@@ -1038,6 +1038,12 @@ The following values from <tt>hipDeviceProp_t</tt> are added as properties to th
 
 Additionally the device gets the device's UUID as a property named <i>UUID</i>.
 
+Recording code annotations via the ROCTX API must be instrumented with the @scorep flag <tt>\--hip</tt> and enabled by setting <b><tt>user</tt></b> in \confvar{SCOREP_HIP_ENABLE}.
+The Start/Stop Range events are not supported, because they allow to span different threads and do not need to be nested.
+The Mark events are modeled as a short sequence of Enter and Leave events.
+All regions are in the <tt>"ROCTX"</tt> group and are subject to the filtering rules (see Section @secref{filtering}).
+
+
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}
 
