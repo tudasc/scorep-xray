@@ -2273,64 +2273,6 @@ scorep_cupti_callbacks_init( void )
                         SCOREP_RMA_WINDOW_FLAG_NONE );
             }
 
-            /* get global counter group IDs */
-            if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
-            {
-                {
-                    SCOREP_MetricHandle metric_handle_bpg =
-                        SCOREP_Definitions_NewMetric( "blocks_per_grid",
-                                                      "blocks per grid",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_blocks_per_grid =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_bpg,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-
-                {
-                    SCOREP_MetricHandle metric_handle_tpb =
-                        SCOREP_Definitions_NewMetric( "threads_per_block",
-                                                      "threads per block",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_threads_per_block =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpb,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-
-                {
-                    SCOREP_MetricHandle metric_handle_tpk =
-                        SCOREP_Definitions_NewMetric( "threads_per_kernel",
-                                                      "threads per kernel",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_threads_per_kernel =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpk,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-            }
-
             {
                 SCOREP_SourceFileHandle scorep_cuda_sync_file_handle =
                     SCOREP_Definitions_NewSourceFile( "CUDA_SYNC" );
@@ -2341,8 +2283,7 @@ scorep_cupti_callbacks_init( void )
 
 
             scorep_cupti_activity_init();
-        }     /* scorep_cuda_record_kernels || scorep_cuda_record_memcpy || scorep_cuda_record_gpumemusage */
-              /*}  scorep_gpu_get_config() != 0 */
+        }
 
         scorep_cupti_callbacks_initialized = true;
 

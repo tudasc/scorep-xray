@@ -66,6 +66,8 @@ Features and improvements:
   - Item 22: `MPI_Info_get_string`
   - Item 24: Sessions model
   - Item 25: `MPI_Info_create_env`
+- Kernel parameters for CUDA kernels are now recorded as parameters in Cube and
+  OTF2, instead of metrics.
 
 User tools and API improvements and changes:
 

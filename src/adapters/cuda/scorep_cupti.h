@@ -224,16 +224,6 @@ extern SCOREP_SourceFileHandle scorep_cupti_kernel_file_handle;
 /* handle CUDA idle regions */
 extern SCOREP_RegionHandle scorep_cupti_idle_region_handle;
 
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_kernel;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_block;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_blocks_per_grid;
-
-/* CUPTI activity specific kernel counter IDs */
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_static_shared_mem;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_dynamic_shared_mem;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread;
-
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_gpumemusage;
 
 /*

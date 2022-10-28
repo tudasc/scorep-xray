@@ -88,23 +88,6 @@ SCOREP_RegionHandle scorep_cupti_idle_region_handle = SCOREP_INVALID_REGION;
 SCOREP_SamplingSetHandle scorep_cupti_sampling_set_gpumemusage =
     SCOREP_INVALID_SAMPLING_SET;
 
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_kernel =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_block =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_blocks_per_grid =
-    SCOREP_INVALID_SAMPLING_SET;
-
-/* CUPTI activity specific kernel counter IDs */
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_static_shared_mem =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_dynamic_shared_mem =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread =
-    SCOREP_INVALID_SAMPLING_SET;
-
 static scorep_cupti_device*
 cupti_device_get( CUdevice cudaDevice );
 static scorep_cupti_device*
@@ -314,41 +297,6 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
             SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
                                                   stream->scorep_last_timestamp,
                                                   scorep_cupti_sampling_set_gpumemusage, 0 );
-        }
-    }
-
-    if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
-    {
-        /* set count values to zero */
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_blocks_per_grid, 0 );
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_threads_per_block, 0 );
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_threads_per_kernel, 0 );
-
-        if ( scorep_cupti_sampling_set_static_shared_mem != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_static_shared_mem, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_dynamic_shared_mem != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_dynamic_shared_mem, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_local_mem_total != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_local_mem_total, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_registers_per_thread != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_registers_per_thread, 0 );
         }
     }
 
