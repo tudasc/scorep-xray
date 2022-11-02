@@ -39,8 +39,8 @@ typedef enum ompt_region_type
     OMPT_WORKSHARE,
     OMPT_TASKWAIT,
     OMPT_TASKGROUP,
-#if 0
     OMPT_BARRIER,
+#if 0
     OMPT_MASTER,
     OMPT_CRITICAL,
     OMPT_CRITICAL_SBLOCK,
@@ -79,6 +79,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_WORKSHARE "!$omp workshare"
 #define REGION_OMP_TASKWAIT "!$omp taskwait"
 #define REGION_OMP_TASKGROUP "!$omp taskgroup"
+#define REGION_OMP_BARRIER "!$omp barrier"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -97,9 +98,9 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_WORKSHARE,       sizeof( REGION_OMP_WORKSHARE ) - 1,       SCOREP_REGION_WORKSHARE,        SCOREP_INVALID_REGION },
     { REGION_OMP_TASKWAIT,        sizeof( REGION_OMP_TASKWAIT ) - 1,        SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_TASKGROUP,       sizeof( REGION_OMP_TASKGROUP ) - 1,       SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
+    { REGION_OMP_BARRIER,         sizeof( REGION_OMP_BARRIER ) - 1,         SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
 
 #if 0
-    { "!$omp barrier",         SCOREP_REGION_BARRIER,                 SCOREP_INVALID_REGION },
     { "!$omp master",          SCOREP_REGION_MASTER,                  SCOREP_INVALID_REGION },
     { "!$omp critical",        SCOREP_REGION_CRITICAL,                SCOREP_INVALID_REGION },
     { "!$omp critical sblock", SCOREP_REGION_CRITICAL_SBLOCK,         SCOREP_INVALID_REGION },
@@ -126,6 +127,7 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_WORKSHARE
 #undef REGION_OMP_TASKWAIT
 #undef REGION_OMP_TASKGROUP
+#undef REGION_OMP_BARRIER
 
 #if 0
 typedef enum ompt_lock_region_type
