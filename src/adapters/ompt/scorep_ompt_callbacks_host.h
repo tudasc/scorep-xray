@@ -99,4 +99,10 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                           uint64_t              count,
                           const void*           codeptr_ra );
 
+void
+scorep_ompt_cb_host_masked( ompt_scope_endpoint_t endpoint,
+                            ompt_data_t*          parallel_data,
+                            ompt_data_t*          task_data,
+                            const void*           codeptr_ra );
+
 #endif /* SCOREP_OMPT_CALLBACKS_HOST_H */

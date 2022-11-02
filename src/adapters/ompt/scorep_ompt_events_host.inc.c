@@ -1937,3 +1937,57 @@ scorep_ompt_cb_host_task_schedule( ompt_data_t*       prior_task_data,
     UTILS_DEBUG_EXIT();
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
+
+
+void
+scorep_ompt_cb_host_masked( ompt_scope_endpoint_t endpoint,
+                            ompt_data_t*          parallel_data,
+                            ompt_data_t*          task_data,
+                            const void*           codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | endpoint %s | parallel_data->ptr %p | "
+                       "task_data->ptr %p | codeptr_ra %p",
+                       adapter_tid, scope_endpoint2string( endpoint ),
+                       parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
+                       codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = task_data->ptr;
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league masked event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | parallel_data->ptr %p | "
+                          "task_data->ptr %p | codeptr_ra %p",
+                          adapter_tid, scope_endpoint2string( endpoint ),
+                          parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
+                          codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( endpoint )
+    {
+        case ompt_scope_begin:
+            SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_MASKED ) );
+            break;
+        case ompt_scope_end:
+            SCOREP_ExitRegion( work_end( task ) );
+            break;
+        #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
+        case ompt_scope_beginend:
+            UTILS_BUG( "ompt_scope_beginend not allowed in masked callback" );
+            break;
+        #endif /* DECL_OMPT_SCOPE_BEGINEND */
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | parallel_data->ptr %p | "
+                      "task_data->ptr %p | codeptr_ra %p",
+                      adapter_tid, scope_endpoint2string( endpoint ),
+                      parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
+                      codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
