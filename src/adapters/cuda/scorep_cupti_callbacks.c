@@ -482,13 +482,16 @@ create_references_list( SCOREP_Location* location,
 
         SCOREP_CUPTI_CALL( cuptiGetStreamId( context, stream, &strm_id ) );
         SCOREP_CUPTI_LOCK();
-        scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, strm_id );
+        scorep_strm = scorep_cupti_stream_get_by_id( scorep_ctx, strm_id );
         SCOREP_CUPTI_UNLOCK();
 
-        SCOREP_LocationHandle location_handle =
-            SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
+        if ( scorep_strm )
+        {
+            SCOREP_LocationHandle location_handle =
+                SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
 
-        SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
+            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
+        }
     }
 }
 
