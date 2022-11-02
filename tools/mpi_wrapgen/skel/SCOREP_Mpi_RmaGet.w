@@ -33,10 +33,11 @@ ${proto:c}
          * definition specifies:
          *    <attribute id="rma_explicit_handle">true</attribute>
          */
-        #if ${attribute(rma_explicit_handle)} // is explicit request?
+#if ${attribute(rma_explicit_handle)}
+        // is explicit request?
         // Explicit request always get a new matching id
         matching_id = scorep_mpi_get_request_id();
-        #else
+#else
         // Implicit request may already have a valid matching id
         rma_request = scorep_mpi_rma_request_find( win_handle,
                                                    target_rank,
@@ -51,7 +52,7 @@ ${proto:c}
         {
           matching_id = rma_request->matching_id;
         }
-        #endif
+#endif
 
         SCOREP_RmaGet( win_handle, target_rank,
                        origin_count * origin_datatype_size,
@@ -79,7 +80,8 @@ ${proto:c}
          * definition specifies:
          *    <attribute id="rma_explicit_handle">true</attribute>
          */
-        #if ${attribute(rma_explicit_handle)} // rma_explicit_handle
+#if ${attribute(rma_explicit_handle)}
+        // rma_explicit_handle
         // Both implicit _and_ explicit request tracking needed.
 
         // Start implicit request tracking
@@ -92,7 +94,7 @@ ${proto:c}
 
         // Start explicit request tracking
         scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
         // Only implicit request tracking needed
         if (rma_request == NULL)
         {
@@ -102,7 +104,7 @@ ${proto:c}
                                          SCOREP_MPI_RMA_REQUEST_${attribute(rma_remote_completion)}_COMPLETION,
                                          matching_id );
         }
-        #endif
+#endif
       }
       SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     }

@@ -110,10 +110,11 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -128,7 +129,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_ACCUMULATE,
@@ -156,8 +157,9 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -169,7 +171,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Only implicit request tracking needed
                 if ( rma_request == NULL )
                 {
@@ -181,7 +183,7 @@ MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_D
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ACCUMULATE ] );
         }
@@ -232,10 +234,11 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -250,7 +253,7 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_COMPARE_AND_SWAP,
@@ -278,8 +281,9 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -291,7 +295,7 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Create a new request for key tuple (win, target, completion)
                 if ( rma_request == NULL )
                 {
@@ -301,7 +305,7 @@ MPI_Compare_and_swap SCOREP_MPI_COMPARE_AND_SWAP_PROTO_ARGS
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMPARE_AND_SWAP ] );
         }
@@ -352,10 +356,11 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -370,7 +375,7 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_ACCUMULATE,
@@ -398,8 +403,9 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -411,7 +417,7 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Create a new request for key tuple (win, target, completion)
                 if ( rma_request == NULL )
                 {
@@ -421,7 +427,7 @@ MPI_Fetch_and_op SCOREP_MPI_FETCH_AND_OP_PROTO_ARGS
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FETCH_AND_OP ] );
         }
@@ -472,10 +478,11 @@ MPI_Get( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int 
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -490,7 +497,7 @@ MPI_Get( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int 
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaGet( win_handle, target_rank,
                                origin_count * origin_datatype_size,
@@ -518,8 +525,9 @@ MPI_Get( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int 
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -531,7 +539,7 @@ MPI_Get( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int 
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Only implicit request tracking needed
                 if ( rma_request == NULL )
                 {
@@ -541,7 +549,7 @@ MPI_Get( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int 
                                                    SCOREP_MPI_RMA_REQUEST_COMBINED_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET ] );
         }
@@ -592,10 +600,11 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -610,7 +619,7 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_ACCUMULATE,
@@ -638,8 +647,9 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -651,7 +661,7 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Only implicit request tracking needed
                 if ( rma_request == NULL )
                 {
@@ -663,7 +673,7 @@ MPI_Get_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, M
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ACCUMULATE ] );
         }
@@ -715,10 +725,11 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // is explicit request?
-                  // Explicit request always get a new matching id
+#if false
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -733,7 +744,7 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaPut( scorep_mpi_win_handle( win ), target_rank,
                                ( uint64_t )origin_count * origin_datatype_size,
@@ -761,8 +772,9 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if false // rma_explicit_handle
-                  // Both implicit _and_ explicit request tracking needed.
+#if false
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -774,7 +786,7 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 if ( rma_request == NULL )
                 {
                     // Create a new request for key tuple
@@ -785,7 +797,7 @@ MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_PUT ] );
         }
@@ -836,10 +848,11 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // is explicit request?
-                 // Explicit request always get a new matching id
+#if true
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -854,7 +867,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_ACCUMULATE,
@@ -882,8 +895,9 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // rma_explicit_handle
-                 // Both implicit _and_ explicit request tracking needed.
+#if true
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -895,7 +909,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Create a new request for key tuple (win, target, completion)
                 if ( rma_request == NULL )
                 {
@@ -905,7 +919,7 @@ MPI_Raccumulate SCOREP_MPI_RACCUMULATE_PROTO_ARGS
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RACCUMULATE ] );
         }
@@ -956,10 +970,11 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // is explicit request?
-                 // Explicit request always get a new matching id
+#if true
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -974,7 +989,7 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaGet( win_handle, target_rank,
                                origin_count * origin_datatype_size,
@@ -1002,8 +1017,9 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // rma_explicit_handle
-                 // Both implicit _and_ explicit request tracking needed.
+#if true
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -1015,7 +1031,7 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Only implicit request tracking needed
                 if ( rma_request == NULL )
                 {
@@ -1025,7 +1041,7 @@ MPI_Rget( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int
                                                    SCOREP_MPI_RMA_REQUEST_COMBINED_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET ] );
         }
@@ -1076,10 +1092,11 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // is explicit request?
-                 // Explicit request always get a new matching id
+#if true
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -1094,7 +1111,7 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaAtomic( win_handle, target_rank,
                                   SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_ACCUMULATE,
@@ -1122,8 +1139,9 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // rma_explicit_handle
-                 // Both implicit _and_ explicit request tracking needed.
+#if true
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -1135,7 +1153,7 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 // Only implicit request tracking needed
                 if ( rma_request == NULL )
                 {
@@ -1147,7 +1165,7 @@ MPI_Rget_accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, 
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RGET_ACCUMULATE ] );
         }
@@ -1199,10 +1217,11 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // is explicit request?
-                 // Explicit request always get a new matching id
+#if true
+                // is explicit request?
+                // Explicit request always get a new matching id
                 matching_id = scorep_mpi_get_request_id();
-        #else
+#else
                 // Implicit request may already have a valid matching id
                 rma_request = scorep_mpi_rma_request_find( win_handle,
                                                            target_rank,
@@ -1217,7 +1236,7 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
                 {
                     matching_id = rma_request->matching_id;
                 }
-        #endif
+#endif
 
                 SCOREP_RmaPut( scorep_mpi_win_handle( win ), target_rank,
                                ( uint64_t )origin_count * origin_datatype_size,
@@ -1245,8 +1264,9 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
                  * definition specifies:
                  *    <attribute id="rma_explicit_handle">true</attribute>
                  */
-        #if true // rma_explicit_handle
-                 // Both implicit _and_ explicit request tracking needed.
+#if true
+                // rma_explicit_handle
+                // Both implicit _and_ explicit request tracking needed.
 
                 // Start implicit request tracking
                 rma_request =
@@ -1258,7 +1278,7 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
 
                 // Start explicit request tracking
                 scorep_mpi_request_win_create( *request, rma_request );
-        #else
+#else
                 if ( rma_request == NULL )
                 {
                     // Create a new request for key tuple
@@ -1269,7 +1289,7 @@ MPI_Rput( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatyp
                                                    SCOREP_MPI_RMA_REQUEST_SEPARATE_COMPLETION,
                                                    matching_id );
                 }
-        #endif
+#endif
             }
             SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_RPUT ] );
         }
