@@ -2045,6 +2045,9 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
             break;
+        case ompt_mutex_ordered:
+            construct_mutex_acquire( task, codeptr_ra );
+            break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
     }
@@ -2108,6 +2111,9 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
     {
         case ompt_mutex_critical:
             construct_mutex_acquired( task, OMPT_CRITICAL, OMPT_CRITICAL_SBLOCK, kind, wait_id );
+            break;
+        case ompt_mutex_ordered:
+            construct_mutex_acquired( task, OMPT_ORDERED, OMPT_ORDERED_SBLOCK, kind, wait_id );
             break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
@@ -2188,6 +2194,9 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
     switch ( kind )
     {
         case ompt_mutex_critical:
+            construct_mutex_released( kind, wait_id );
+            break;
+        case ompt_mutex_ordered:
             construct_mutex_released( kind, wait_id );
             break;
         default:

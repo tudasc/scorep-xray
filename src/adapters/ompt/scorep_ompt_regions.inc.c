@@ -43,9 +43,9 @@ typedef enum ompt_region_type
     OMPT_MASKED,
     OMPT_CRITICAL,
     OMPT_CRITICAL_SBLOCK,
-#if 0
     OMPT_ORDERED,
     OMPT_ORDERED_SBLOCK,
+#if 0
     OMPT_SECTION,
     OMPT_TASKLOOP,
     OMPT_FLUSH,
@@ -83,6 +83,8 @@ typedef struct region_fallback_t
 #define REGION_OMP_MASKED "!$omp masked"
 #define REGION_OMP_CRITICAL "!$omp critical"
 #define REGION_OMP_CRITICAL_SBLOCK "!$omp critical sblock"
+#define REGION_OMP_ORDERED "!$omp ordered"
+#define REGION_OMP_ORDERED_SBLOCK "!$omp ordered sblock"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -105,10 +107,10 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_MASKED,          sizeof( REGION_OMP_MASKED ) - 1,          SCOREP_REGION_MASTER,           SCOREP_INVALID_REGION },
     { REGION_OMP_CRITICAL,        sizeof( REGION_OMP_CRITICAL ) - 1,        SCOREP_REGION_CRITICAL,         SCOREP_INVALID_REGION },
     { REGION_OMP_CRITICAL_SBLOCK, sizeof( REGION_OMP_CRITICAL_SBLOCK ) - 1, SCOREP_REGION_CRITICAL_SBLOCK,  SCOREP_INVALID_REGION },
+    { REGION_OMP_ORDERED,         sizeof( REGION_OMP_ORDERED ) - 1,         SCOREP_REGION_ORDERED,          SCOREP_INVALID_REGION },
+    { REGION_OMP_ORDERED_SBLOCK,  sizeof( REGION_OMP_ORDERED_SBLOCK ) - 1,  SCOREP_REGION_ORDERED_SBLOCK,   SCOREP_INVALID_REGION },
 
 #if 0
-    { "!$omp ordered",         SCOREP_REGION_ORDERED,                 SCOREP_INVALID_REGION },
-    { "!$omp ordered sblock",  SCOREP_REGION_ORDERED_SBLOCK,          SCOREP_INVALID_REGION },
     { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
     { "!$omp taskloop",        SCOREP_REGION_TASKLOOP,                SCOREP_INVALID_REGION },
     { "!$omp flush",           SCOREP_REGION_FLUSH,                   SCOREP_INVALID_REGION },
@@ -134,6 +136,8 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_MASKED
 #undef REGION_OMP_CRITICAL
 #undef REGION_OMP_CRITICAL_SBLOCK
+#undef REGION_OMP_ORDERED
+#undef REGION_OMP_ORDERED_SBLOCK
 
 #if 0
 typedef enum ompt_lock_region_type
