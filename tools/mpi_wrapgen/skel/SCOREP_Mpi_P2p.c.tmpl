@@ -72,6 +72,11 @@
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_RECV) && !defined(SCOREP_MPI_NO_P2P)
 /**
+ * Declaration of PMPI-symbol for MPI_Recv
+ */
+int PMPI_Recv( void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status );
+
+/**
  * Measurement wrapper for MPI_Recv
  * @note Manually adapted wrapper
  * @note C interface
@@ -168,6 +173,11 @@ int MPI_Recv( void* buf,
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_IRECV) && !defined(SCOREP_MPI_NO_P2P)
 /**
+ * Declaration of PMPI-symbol for MPI_Irecv
+ */
+int PMPI_Irecv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request* request);
+
+/**
  * Measurement wrapper for MPI_Irecv
  * @note Manually adapted wrapper
  * @note C interface
@@ -254,6 +264,11 @@ int MPI_Irecv(void* buf,
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_PtpSendinit.w
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
+/**
+ * Declaration of PMPI-symbol for MPI_Recv_init
+ */
+int PMPI_Recv_init(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request* request);
+
 /**
  * Measurement wrapper for MPI_Recv_init
  * @note Manually adapted wrapper

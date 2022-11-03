@@ -86,6 +86,11 @@ scorep_hint_No_MPI_startup_symbols_found_in_application( void )
  */
 
 /**
+ * Declaration of PMPI-symbol for MPI_Init
+ */
+int PMPI_Init(int* argc, char*** argv );
+
+/**
  * Measurement wrapper for MPI_Init.
  * @note Manually adapted wrapper
  * @note C interface
@@ -173,6 +178,11 @@ int MPI_Init(int* argc, char*** argv )
 }
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_INIT_THREAD)
+/**
+ * Declaration of PMPI-symbol for MPI_Init_thread
+ */
+int PMPI_Init_thread(int* argc, char*** argv, int required, int* provided );
+
 /**
  * Measurement wrapper for MPI_Init_thread, the thread-capable
  * alternative to MPI_Init.
@@ -289,6 +299,11 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
 #endif
 
 /**
+ * Declaration of PMPI-symbol for MPI_Finalize
+ */
+int PMPI_Finalize( void );
+
+/**
  * Measurement wrapper for MPI_Finalize
  * @note Manually adapted wrapper
  * @note C interface
@@ -370,6 +385,11 @@ int MPI_Finalize( void )
 
 #if HAVE( MPI_2_0_SYMBOL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
 /**
+ * Declaration of PMPI-symbol for MPI_Finalized
+ */
+int PMPI_Finalized( int* flag );
+
+/**
  * Measurement wrapper for MPI_Finalized
  * @note C interface
  * @note Introduced with MPI-2.0
@@ -426,6 +446,11 @@ MPI_Finalized( int* flag )
 #endif
 
 #if HAVE( MPI_1_0_SYMBOL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
+/**
+ * Declaration of PMPI-symbol for MPI_Initialized
+ */
+int PMPI_Initialized( int* flag );
+
 /**
  * Measurement wrapper for MPI_Initialized
  * @note C interface

@@ -206,6 +206,21 @@ init_fortran
  * @{
  */
 /** Creates a prototype of the function for C-wrappers.
+ *  The function name is prefixed with @a name_prefix.
+ */
+std::string
+proto_c
+(
+    const SCOREP::Wrapgen::Func& func,
+    const std::string&           name_prefix
+);
+
+/**
+ * @}
+ * @name Prototype handlers
+ * @{
+ */
+/** Creates a prototype of the function for C-wrappers.
  */
 std::string
 proto_c

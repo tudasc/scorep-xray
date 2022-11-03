@@ -75,6 +75,11 @@
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_COMM_IDUP )
 /**
+ * Declaration of PMPI-symbol for MPI_Comm_idup
+ */
+int PMPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request );
+
+/**
  * Measurement wrapper for MPI_Comm_idup
  * @note C interface
  * @note Introduced with MPI-3.0
@@ -140,6 +145,11 @@ MPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request )
  */
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_COMM_FREE)
+/**
+ * Declaration of PMPI-symbol for MPI_Comm_free
+ */
+int PMPI_Comm_free(MPI_Comm* comm);
+
 /**
  * Measurement wrapper for MPI_Comm_free
  * @note Manually adapted wrapper
@@ -218,6 +228,11 @@ int MPI_Comm_free(MPI_Comm* comm)
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_GROUP_FREE)
 /**
+ * Declaration of PMPI-symbol for MPI_Group_free
+ */
+int PMPI_Group_free(MPI_Group* group);
+
+/**
  * Measurement wrapper for MPI_Group_free
  * @note Manually adapted wrapper
  * @note C interface
@@ -291,6 +306,11 @@ int MPI_Group_free(MPI_Group* group)
  */
 
 #if HAVE( MPI_2_0_SYMBOL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
+/**
+ * Declaration of PMPI-symbol for MPI_Comm_set_name
+ */
+int PMPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name );
+
 /**
  * Measurement wrapper for MPI_Comm_set_name
  * @note Manually adapted wrapper

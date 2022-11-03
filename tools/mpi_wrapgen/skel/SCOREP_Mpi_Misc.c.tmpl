@@ -72,6 +72,11 @@
 
 #if HAVE( MPI_2_0_SYMBOL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
 /**
+ * Declaration of PMPI-symbol for MPI_Alloc_mem
+ */
+int PMPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr );
+
+/**
  * Measurement wrapper for MPI_Alloc_mem
  * @note Manually adapted wrapper
  * @note C interface
@@ -138,6 +143,11 @@ MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
 #endif
 
 #if HAVE( MPI_2_0_SYMBOL_PMPI_FREE_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Free_mem )
+/**
+ * Declaration of PMPI-symbol for MPI_Free_mem
+ */
+int PMPI_Free_mem( void* base );
+
 /**
  * Measurement wrapper for MPI_Free_mem
  * @note Manually adapted wrapper

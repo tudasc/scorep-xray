@@ -88,6 +88,7 @@ SCOREP::Wrapgen::handler::mpi::_initialize
 {
     /** - Func-object template handlers */
     funcarg_handlers[ "attribute" ]     = handler::mpi::attribute;
+    funcarg_handlers[ "proto:c" ]       = handler::mpi::proto_c;
     funcarg_handlers[ "proto:fortran" ] = handler::mpi::proto_fortran;
     funcarg_handlers[ "proto:f2c_c2f" ] = handler::mpi::proto_f2c_c2f;
 
@@ -838,10 +839,11 @@ SCOREP::Wrapgen::handler::mpi::name
 string
 SCOREP::Wrapgen::handler::mpi::proto_c
 (
-    const Func& func
+    const Func&        func,
+    const std::string& name_prefix
 )
 {
-    string str = func.get_rtype() + " " + func.get_name() + "(";
+    string str = func.get_rtype() + " " + name_prefix + func.get_name() + "(";
 
     for ( size_t i = 0; i < func.get_param_count(); ++i )
     {
@@ -867,6 +869,15 @@ SCOREP::Wrapgen::handler::mpi::proto_c
     }
     str += ")";
     return str;
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::proto_c
+(
+    const Func& func
+)
+{
+    return proto_c( func, "" );
 }
 
 string

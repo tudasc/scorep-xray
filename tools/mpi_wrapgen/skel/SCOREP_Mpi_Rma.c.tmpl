@@ -100,6 +100,11 @@ static int scorep_rma_id = 0;
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_FREE) && !defined(SCOREP_MPI_NO_RMA)
 /**
+ * Declaration of PMPI-symbol for MPI_Win_free
+ */
+int PMPI_Win_free(MPI_Win* win);
+
+/**
  * Measurement wrapper for MPI_Win_free
  * @note Manually adapted wrapper
  * @note C interface
@@ -193,6 +198,11 @@ int MPI_Win_free(MPI_Win* win)
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_COMPLETE) && !defined(SCOREP_MPI_NO_RMA)
 /**
+ * Declaration of PMPI-symbol for MPI_Win_complete
+ */
+int PMPI_Win_complete(MPI_Win win);
+
+/**
  * Measurement wrapper for MPI_Win_complete
  * @note Manually adapted wrapper
  * @note C interface
@@ -255,6 +265,11 @@ int MPI_Win_complete(MPI_Win win)
 #endif
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_FENCE) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_fence
+ */
+int PMPI_Win_fence(int assert, MPI_Win win);
+
 /**
  * Measurement wrapper for MPI_Win_fence
  * @note Manually adapted wrapper
@@ -327,6 +342,11 @@ int MPI_Win_fence(int     assert,
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush )
 /**
+ * Declaration of PMPI-symbol for MPI_Win_flush
+ */
+int PMPI_Win_flush( int rank, MPI_Win win );
+
+/**
  * Measurement wrapper for MPI_Win_flush
  * @note Manually adapted wrapper
  * @note C interface
@@ -383,6 +403,11 @@ MPI_Win_flush( int rank, MPI_Win win )
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_all )
 /**
+ * Declaration of PMPI-symbol for MPI_Win_flush_all
+ */
+int PMPI_Win_flush_all( MPI_Win win );
+
+/**
  * Measurement wrapper for MPI_Win_flush_all
  * @note Manually adapted wrapper
  * @note C interface
@@ -437,6 +462,11 @@ MPI_Win_flush_all( MPI_Win win )
 #endif
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_LOCAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local )
+/**
+ * Declaration of PMPI-symbol for MPI_Win_flush_local
+ */
+int PMPI_Win_flush_local( int rank, MPI_Win win );
+
 /**
  * Measurement wrapper for MPI_Win_flush_local
  * @note Manually adapted wrapper
@@ -494,6 +524,11 @@ MPI_Win_flush_local( int rank, MPI_Win win )
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_FLUSH_LOCAL_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_flush_local_all )
 /**
+ * Declaration of PMPI-symbol for MPI_Win_flush_local_all
+ */
+int PMPI_Win_flush_local_all( MPI_Win win );
+
+/**
  * Measurement wrapper for MPI_Win_flush_local_all
  * @note Manually adapted wrapper
  * @note C interface
@@ -548,6 +583,11 @@ MPI_Win_flush_local_all( MPI_Win win )
 #endif
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_LOCK) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_lock
+ */
+int PMPI_Win_lock(int lock_type, int rank, int assert, MPI_Win win);
+
 /**
  * Measurement wrapper for MPI_Win_lock
  * @note Manually adapted wrapper
@@ -607,6 +647,11 @@ int MPI_Win_lock(int     lock_type,
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_LOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock_all )
 /**
+ * Declaration of PMPI-symbol for MPI_Win_lock_all
+ */
+int PMPI_Win_lock_all( int assert, MPI_Win win );
+
+/**
  * Measurement wrapper for MPI_Win_lock_all
  * @note Manually adapted wrapper
  * @note C interface
@@ -662,6 +707,11 @@ MPI_Win_lock_all( int assert, MPI_Win win )
 #endif
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_POST) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_post
+ */
+int PMPI_Win_post(MPI_Group group, int assert, MPI_Win win);
+
 /**
  * Measurement wrapper for MPI_Win_post
  * @note Manually adapted wrapper
@@ -721,6 +771,11 @@ int MPI_Win_post(MPI_Group group,
 #endif
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_START) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_start
+ */
+int PMPI_Win_start(MPI_Group group, int assert, MPI_Win win);
+
 /**
  * Measurement wrapper for MPI_Win_start
  * @note Manually adapted wrapper
@@ -783,6 +838,11 @@ int MPI_Win_start(MPI_Group group,
 #pragma wrapgen single MPI_Win_sync skel/SCOREP_Mpi_Std.w
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_TEST) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_test
+ */
+int PMPI_Win_test(MPI_Win win, int* flag);
+
 /**
  * Measurement wrapper for MPI_Win_test
  * @note Manually adapted wrapper
@@ -856,6 +916,11 @@ int MPI_Win_test(MPI_Win win,
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_UNLOCK) && !defined(SCOREP_MPI_NO_RMA)
 /**
+ * Declaration of PMPI-symbol for MPI_Win_unlock
+ */
+int PMPI_Win_unlock(int rank, MPI_Win win);
+
+/**
  * Measurement wrapper for MPI_Win_unlock
  * @note Manually adapted wrapper
  * @note C interface
@@ -918,6 +983,11 @@ int MPI_Win_unlock(int     rank,
 
 #if HAVE( MPI_3_0_SYMBOL_PMPI_WIN_UNLOCK_ALL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock_all )
 /**
+ * Declaration of PMPI-symbol for MPI_Win_unlock_all
+ */
+int PMPI_Win_unlock_all( MPI_Win win );
+
+/**
  * Measurement wrapper for MPI_Win_unlock_all
  * @note Manually adapted wrapper
  * @note C interface
@@ -979,6 +1049,11 @@ MPI_Win_unlock_all( MPI_Win win )
 #endif
 
 #if HAVE(MPI_2_0_SYMBOL_PMPI_WIN_WAIT) && !defined(SCOREP_MPI_NO_RMA)
+/**
+ * Declaration of PMPI-symbol for MPI_Win_wait
+ */
+int PMPI_Win_wait(MPI_Win win);
+
 /**
  * Measurement wrapper for MPI_Win_wait
  * @note Manually adapted wrapper
@@ -1058,6 +1133,11 @@ int MPI_Win_wait(MPI_Win win)
 #pragma wrapgen multiple restrict(grma_ext+!nset_name)  skel/SCOREP_Mpi_Std.w
 
 #if HAVE( MPI_2_0_SYMBOL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
+/**
+ * Declaration of PMPI-symbol for MPI_Win_set_name
+ */
+int PMPI_Win_set_name( MPI_Win win, SCOREP_MPI_CONST_DECL char* win_name );
+
 /**
  * Measurement wrapper for MPI_Win_set_name
  * @note Manually adapted wrapper

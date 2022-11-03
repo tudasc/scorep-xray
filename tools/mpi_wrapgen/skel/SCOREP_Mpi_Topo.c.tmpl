@@ -73,6 +73,11 @@
 
 #if HAVE(MPI_1_0_SYMBOL_PMPI_CART_CREATE)
 /**
+ * Declaration of PMPI-symbol for MPI_Cart_create
+ */
+int PMPI_Cart_create( MPI_Comm comm_old, int ndims, SCOREP_MPI_CONST_DECL int* dims, SCOREP_MPI_CONST_DECL int* periodv, int reorder, MPI_Comm* comm_cart);
+
+/**
  * Measurement wrapper for MPI_Cart_create
  * @note Manually adapted wrapper
  * @note C interface
@@ -189,6 +194,11 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
 #endif
 
 #if HAVE( MPI_1_0_SYMBOL_PMPI_CART_SUB )
+/**
+ * Declaration of PMPI-symbol for MPI_Cart_sub
+ */
+int PMPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* newcomm );
+
 /**
  * Measurement wrapper for MPI_Cart_sub
  * @note Manually adapted wrapper
