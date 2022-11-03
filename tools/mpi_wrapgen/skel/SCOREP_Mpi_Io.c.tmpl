@@ -151,12 +151,17 @@ mpi_io_get_type_size( MPI_Datatype datatype )
  * @{
  */
 
-#if HAVE( DECL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
+/**
+ * Declaration of PMPI-symbol for MPI_File_open
+ */
+int PMPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, MPI_Info info, MPI_File* fh );
+
 /**
  * Measurement wrapper for MPI_File_open
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_open call with enter and exit events.
@@ -230,12 +235,17 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_CLOSE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_close )
+/**
+ * Declaration of PMPI-symbol for MPI_File_close
+ */
+int PMPI_File_close( MPI_File* fh );
+
 /**
  * Measurement wrapper for MPI_File_close
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_close call with enter and exit events.
@@ -306,12 +316,17 @@ MPI_File_close( MPI_File* fh )
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
+/**
+ * Declaration of PMPI-symbol for MPI_File_seek
+ */
+int MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence );
+
 /**
  * Measurement wrapper for MPI_File_seek
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_seek call with enter and exit events.
@@ -374,12 +389,17 @@ MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
     return return_val;
 }
 #endif
-#if HAVE( DECL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
+/**
+ * Declaration of PMPI-symbol for MPI_File_seek_shared
+ */
+int PMPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence );
+
 /**
  * Measurement wrapper for MPI_File_seek_shared
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_seek_shared call with enter and exit events.
@@ -442,12 +462,17 @@ MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
     return return_val;
 }
 #endif
-#if HAVE(DECL_PMPI_FILE_DELETE) && ! defined(SCOREP_MPI_NO_IO) && ! defined( MPI_File_delete )
+#if HAVE(MPI_2_0_SYMBOL_PMPI_FILE_DELETE) && ! defined(SCOREP_MPI_NO_IO) && ! defined( MPI_File_delete )
+/**
+ * Declaration of PMPI-symbol for MPI_File_delete
+ */
+int MPI_File_delete(SCOREP_MPI_CONST_DECL char* filename, MPI_Info info);
+
 /**
  * Measurement wrapper for MPI_File_delete
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-2
+ * @note Introduced with MPI-2.0
  * @ingroup io
  * Triggers an enter and exit event.
  * It wraps the MPI_File_delete call with enter and exit events.

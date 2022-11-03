@@ -75,12 +75,19 @@
  * @{
  */
 
-#if HAVE( DECL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Wait
+ */
+int
+PMPI_Wait( MPI_Request* request,
+           MPI_Status*  status );
+
 /**
  * Measurement wrapper for MPI_Wait
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -139,12 +146,20 @@ MPI_Wait( MPI_Request* request,
 }
 #endif
 
-#if HAVE( DECL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Waitall
+ */
+int
+PMPI_Waitall( int          count,
+              MPI_Request* requests,
+              MPI_Status*  array_of_statuses );
+
 /**
  * Measurement wrapper for MPI_Waitall
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -206,12 +221,21 @@ MPI_Waitall( int          count,
 }
 #endif
 
-#if HAVE( DECL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITANY ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Waitany
+ */
+int
+PMPI_Waitany( int          count,
+              MPI_Request* requests,
+              int*         index,
+              MPI_Status*  status );
+
 /**
  * Measurement wrapper for MPI_Waitany
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -284,12 +308,22 @@ MPI_Waitany( int          count,
 }
 #endif
 
-#if HAVE( DECL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_WAITSOME ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Waitsome
+ */
+int
+PMPI_Waitsome( int          incount,
+               MPI_Request* array_of_requests,
+               int*         outcount,
+               int*         array_of_indices,
+               MPI_Status*  array_of_statuses );
+
 /**
  * Measurement wrapper for MPI_Waitsome
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -372,12 +406,20 @@ MPI_Waitsome( int          incount,
  * @{
  */
 
-#if HAVE( DECL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Test
+ */
+int
+PMPI_Test( MPI_Request* request,
+           int*         flag,
+           MPI_Status*  status );
+
 /**
  * Measurement wrapper for MPI_Test
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -445,12 +487,21 @@ MPI_Test( MPI_Request* request,
 }
 #endif
 
-#if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Testall
+ */
+int
+PMPI_Testall( int          count,
+              MPI_Request* array_of_requests,
+              int*         flag,
+              MPI_Status*  array_of_statuses );
+
 /**
  * Measurement wrapper for MPI_Testall
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -520,12 +571,22 @@ MPI_Testall( int          count,
 }
 #endif
 
-#if HAVE( DECL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTANY ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Testany
+ */
+int
+PMPI_Testany( int          count,
+              MPI_Request* array_of_requests,
+              int*         index,
+              int*         flag,
+              MPI_Status*  status );
+
 /**
  * Measurement wrapper for MPI_Testany
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -607,12 +668,22 @@ MPI_Testany( int          count,
 }
 #endif
 
-#if HAVE( DECL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TESTSOME ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Testsome
+ */
+int
+PMPI_Testsome( int          incount,
+               MPI_Request* array_of_requests,
+               int*         outcount,
+               int*         array_of_indices,
+               MPI_Status*  array_of_statuses );
+
 /**
  * Measurement wrapper for MPI_Testsome
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -694,12 +765,18 @@ MPI_Testsome( int          incount,
  * @{
  */
 
-#if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_START ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Start
+ */
+int
+PMPI_Start( MPI_Request* request );
+
 /**
  * Measurement wrapper for MPI_Start
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -777,12 +854,19 @@ MPI_Start( MPI_Request* request )
 }
 #endif
 
-#if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Startall
+ */
+int
+PMPI_Startall( int          count,
+               MPI_Request* array_of_requests );
+
 /**
  * Measurement wrapper for MPI_Startall
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -862,12 +946,20 @@ MPI_Startall( int          count,
  * @{
  */
 
-#if HAVE( DECL_PMPI_PARRIVED ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Parrived )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PARRIVED ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Parrived )
+/**
+ * Declaration of PMPI-symbol for MPI_Parrived
+ */
+int
+PMPI_Parrived( MPI_Request request,
+               int         partition,
+               int*        flag );
+
 /**
  * Measurement wrapper for MPI_Parrived
  * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
- * @note Introduced with MPI-4
+ * @note Introduced with MPI-4.0
  * @ingroup request
  * Triggers an enter and exit event.
  * It wraps the MPI_Parrived call with enter and exit events.
@@ -915,12 +1007,19 @@ MPI_Parrived( MPI_Request request, int partition, int* flag )
 }
 #endif
 
-#if HAVE( DECL_PMPI_PREADY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready )
+/**
+ * Declaration of PMPI-symbol for MPI_Pready
+ */
+int
+PMPI_Pready( int         partition,
+             MPI_Request request );
+
 /**
  * Measurement wrapper for MPI_Pready
  * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
- * @note Introduced with MPI-4
+ * @note Introduced with MPI-4.0
  * @ingroup request
  * Triggers an enter and exit event.
  * It wraps the MPI_Pready call with enter and exit events.
@@ -969,12 +1068,18 @@ MPI_Pready( int partition, MPI_Request request )
 #endif
 
 
-#if HAVE( DECL_PMPI_PREADY_LIST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_list ) && defined( SCOREP_MPI_PREADY_LIST_PROTO_ARGS )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_LIST ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_list ) && defined( SCOREP_MPI_PREADY_LIST_PROTO_ARGS )
+/**
+ * Declaration of PMPI-symbol for MPI_Pready_list
+ */
+int
+PMPI_Pready_list SCOREP_MPI_PREADY_LIST_PROTO_ARGS;
+
 /**
  * Measurement wrapper for MPI_Pready_list
  * @note Auto-generated by wrapgen from template: SCOREP_Mpi_StdWithProto.w
  * @note C interface
- * @note Introduced with MPI-4
+ * @note Introduced with MPI-4.0
  * @ingroup request
  * Triggers an enter and exit event.
  * It wraps the MPI_Pready_list call with enter and exit events.
@@ -1022,12 +1127,20 @@ MPI_Pready_list SCOREP_MPI_PREADY_LIST_PROTO_ARGS
 }
 #endif
 
-#if HAVE( DECL_PMPI_PREADY_RANGE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_range )
+#if HAVE( MPI_4_0_SYMBOL_PMPI_PREADY_RANGE ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Pready_range )
+/**
+ * Declaration of PMPI-symbol for MPI_Pready_range
+ */
+int
+PMPI_Pready_range( int         partition_low,
+                   int         partition_high,
+                   MPI_Request request );
+
 /**
  * Measurement wrapper for MPI_Pready_range
  * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
- * @note Introduced with MPI-4
+ * @note Introduced with MPI-4.0
  * @ingroup request
  * Triggers an enter and exit event.
  * It wraps the MPI_Pready_range call with enter and exit events.
@@ -1085,12 +1198,18 @@ MPI_Pready_range( int partition_low, int partition_high, MPI_Request request )
  * @{
  */
 
-#if HAVE( DECL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Request_free
+ */
+int
+PMPI_Request_free( MPI_Request* request );
+
 /**
  * Measurement wrapper for MPI_Request_free
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -1188,12 +1307,18 @@ MPI_Request_free( MPI_Request* request )
 }
 #endif
 
-#if HAVE( DECL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Cancel
+ */
+int
+PMPI_Cancel( MPI_Request* request );
+
 /**
  * Measurement wrapper for MPI_Cancel
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -1259,12 +1384,16 @@ MPI_Cancel( MPI_Request* request )
 }
 #endif
 
-#if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_REQUEST )
+/**
+ * Declaration of PMPI-symbol for MPI_Recv
+ */
+
 /**
  * Measurement wrapper for MPI_Request_get_status
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  */
@@ -1336,12 +1465,19 @@ MPI_Request_get_status( MPI_Request request,
 }
 #endif
 
-#if HAVE( DECL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test_cancelled )
+#if HAVE( MPI_1_0_SYMBOL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_REQUEST ) && !defined( MPI_Test_cancelled )
+/**
+ * Declaration of PMPI-symbol for MPI_Test_cancelled
+ */
+int
+PMPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status,
+                     int*                              flag );
+
 /**
  * Measurement wrapper for MPI_Test_cancelled
  * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup request
  * Triggers an enter and exit event.
  * It wraps the MPI_Test_cancelled call with enter and exit events.

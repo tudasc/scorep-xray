@@ -88,6 +88,7 @@ SCOREP::Wrapgen::handler::mpi::_initialize
 {
     /** - Func-object template handlers */
     funcarg_handlers[ "attribute" ]     = handler::mpi::attribute;
+    funcarg_handlers[ "proto:c" ]       = handler::mpi::proto_c;
     funcarg_handlers[ "proto:fortran" ] = handler::mpi::proto_fortran;
     funcarg_handlers[ "proto:f2c_c2f" ] = handler::mpi::proto_f2c_c2f;
 
@@ -134,6 +135,7 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     f2c_types[ "MPI_Datatype" ] = "PMPI_Type";
     f2c_types[ "MPI_Info" ]     = "PMPI_Info";
     f2c_types[ "MPI_Message" ]  = "PMPI_Message";
+    f2c_types[ "MPI_Session" ]  = "PMPI_Session";
 }
 
 string
@@ -837,10 +839,11 @@ SCOREP::Wrapgen::handler::mpi::name
 string
 SCOREP::Wrapgen::handler::mpi::proto_c
 (
-    const Func& func
+    const Func&        func,
+    const std::string& name_prefix
 )
 {
-    string str = func.get_rtype() + " " + func.get_name() + "(";
+    string str = func.get_rtype() + " " + name_prefix + func.get_name() + "(";
 
     for ( size_t i = 0; i < func.get_param_count(); ++i )
     {
@@ -866,6 +869,15 @@ SCOREP::Wrapgen::handler::mpi::proto_c
     }
     str += ")";
     return str;
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::proto_c
+(
+    const Func& func
+)
+{
+    return proto_c( func, "" );
 }
 
 string
@@ -1071,7 +1083,7 @@ SCOREP::Wrapgen::handler::mpi::version
 {
     const MPIFunc mpifunc = dynamic_cast<const MPIFunc&>( func );
     // return MPI Version this call was introduced
-    return int2string( mpifunc.get_version() );
+    return mpifunc.get_version();
 }
 
 string
@@ -1149,8 +1161,11 @@ SCOREP::Wrapgen::handler::mpi::guard_start
     string tmp = func.get_name();
     toupper( tmp );
 
+    const MPIFunc& mpifunc = dynamic_cast<const MPIFunc&>( func );
+    string         version = mpifunc.get_version( '_' );
+
     // individual guard check by generated header
-    guard += "HAVE(DECL_P" + tmp + ")";
+    guard += "HAVE(MPI_" + version + "_SYMBOL_P" + tmp + ")";
 
     if ( func.get_guard().length() > 0 )
     {

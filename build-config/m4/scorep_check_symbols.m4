@@ -120,7 +120,7 @@ AC_DEFUN([_SCOREP_CHECK_SYMBOLS_BISECT], [
 #
 AC_DEFUN([SCOREP_CHECK_SYMBOLS], [
 m4_pushdef([_scorep_check_symbols_tag],
-    m4_bpatsubst(m4_normalize($1), [[^A-Za-z0-9 ]+], []))dnl
+    m4_bpatsubst(m4_bpatsubst(m4_normalize($1), [[^A-Za-z0-9. ]+], []), [\.+], [_]))dnl
 
 cat <<_ACEOF >confsymbols
 m4_foreach([func],

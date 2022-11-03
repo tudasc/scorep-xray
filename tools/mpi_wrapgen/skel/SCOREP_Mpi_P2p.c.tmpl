@@ -70,12 +70,17 @@
  */
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end$) skel/SCOREP_Mpi_PtpSend.w
 
-#if HAVE(DECL_PMPI_RECV) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_RECV) && !defined(SCOREP_MPI_NO_P2P)
+/**
+ * Declaration of PMPI-symbol for MPI_Recv
+ */
+int PMPI_Recv( void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status );
+
 /**
  * Measurement wrapper for MPI_Recv
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup p2p
  * Sequence of events:
  * @li enter region 'MPI_Recv'
@@ -166,12 +171,17 @@ int MPI_Recv( void* buf,
 
 #pragma wrapgen multiple regex(MPI_I(s|bs|rs|ss)end$) skel/SCOREP_Mpi_PtpIsend.w
 
-#if HAVE(DECL_PMPI_IRECV) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_IRECV) && !defined(SCOREP_MPI_NO_P2P)
+/**
+ * Declaration of PMPI-symbol for MPI_Irecv
+ */
+int PMPI_Irecv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request* request);
+
 /**
  * Measurement wrapper for MPI_Irecv
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup p2p
  * Triggers an enter and exit event.
  */
@@ -253,12 +263,17 @@ int MPI_Irecv(void* buf,
 
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_PtpSendinit.w
 
-#if HAVE(DECL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
+/**
+ * Declaration of PMPI-symbol for MPI_Recv_init
+ */
+int PMPI_Recv_init(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request* request);
+
 /**
  * Measurement wrapper for MPI_Recv_init
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI-1
+ * @note Introduced with MPI-1.0
  * @ingroup p2p
  * Triggers an enter and exit event.
  */

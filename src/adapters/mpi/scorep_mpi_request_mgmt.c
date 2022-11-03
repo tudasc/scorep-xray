@@ -85,7 +85,7 @@ free_mpi_type( scorep_mpi_request* req )
      * Drop type duplicate, but only if we could have made a duplicate in the
      * first place
      */
-#if HAVE( DECL_PMPI_TYPE_DUP )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
     if ( req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND
          || req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV )
     {
@@ -327,7 +327,7 @@ scorep_mpi_request_p2p_create( MPI_Request             request,
                                 .next   = NULL,
                                 .marker = false };
 
-#if HAVE( DECL_PMPI_TYPE_DUP )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
     PMPI_Type_dup( datatype, &data.payload.p2p.datatype );
 #else
     data.payload.p2p.datatype = datatype;
@@ -383,7 +383,7 @@ scorep_mpi_request_io_create( MPI_Request            request,
                                 .next   = NULL,
                                 .marker = false };
 
-#if HAVE( DECL_PMPI_TYPE_DUP )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
     PMPI_Type_dup( datatype, &data.payload.io.datatype );
 #else
     data.payload.io.datatype = datatype;

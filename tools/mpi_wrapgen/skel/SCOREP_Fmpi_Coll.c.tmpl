@@ -79,14 +79,14 @@
 
 #else /* !NEED_F2C_CONV */
 
-#pragma wrapgen multiple restrict(v1+gcoll) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gcoll+!nAlltoallw+!nIalltoallw) skel/SCOREP_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
 /**
  * Measurement wrapper for MPI_Alltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 1.0
+ * @note Introduced with MPI-1.0
  * @ingroup coll
  */
 void FSUB(MPI_Alltoallw)(void*     sendbuf,
@@ -151,12 +151,12 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
 }
 #endif
 
-#if HAVE(DECL_PMPI_IALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+#if HAVE(MPI_3_0_SYMBOL_PMPI_IALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
 /**
  * Measurement wrapper for MPI_Ialltoallw
  * @note Manually created wrapper
  * @note Fortran interface
- * @note Introduced with MPI 3.0
+ * @note Introduced with MPI-3.0
  * @ingroup coll
  */
 void FSUB(MPI_Ialltoallw)(void*     sendbuf,
@@ -224,7 +224,6 @@ void FSUB(MPI_Ialltoallw)(void*     sendbuf,
 }
 #endif
 
-#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw+!nIalltoallw) skel/SCOREP_Mpi_F2c_C2f.w
 #endif
 
 /**

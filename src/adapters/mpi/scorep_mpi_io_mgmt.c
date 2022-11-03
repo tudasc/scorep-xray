@@ -111,7 +111,7 @@ io_split_table_value_ctor( io_split_table_key_t* key,
 
     io_split_table_value_t value = SCOREP_Memory_AllocForMisc( sizeof( *value ) );
     *value = *io_split_ctor_data;
-#if HAVE( DECL_PMPI_TYPE_DUP )
+#if HAVE( MPI_2_0_SYMBOL_PMPI_TYPE_DUP )
     PMPI_Type_dup( value->datatype, &value->datatype );
 #endif
 

@@ -1,3 +1,4 @@
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETPLATFORMIDS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformIDs )( cl_uint         numEntries,
                                               cl_platform_id* platforms,
@@ -14,9 +15,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformIDs )( cl_uint         numEntries,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETPLATFORMINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformInfo )( cl_platform_id   platform,
                                                cl_platform_info paramName,
@@ -36,9 +39,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformInfo )( cl_platform_id   platform,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETDEVICEIDS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceIDs )( cl_platform_id platform,
                                             cl_device_type deviceType,
@@ -58,9 +63,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceIDs )( cl_platform_id platform,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETDEVICEINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceInfo )( cl_device_id   device,
                                              cl_device_info paramName,
@@ -80,9 +87,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceInfo )( cl_device_id   device,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATECONTEXT )
 cl_context
 SCOREP_LIBWRAP_FUNC_NAME( clCreateContext )( const cl_context_properties* properties,
                                              cl_uint                      numDevices,
@@ -106,9 +115,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateContext )( const cl_context_properties* proper
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATECONTEXTFROMTYPE )
 cl_context
 SCOREP_LIBWRAP_FUNC_NAME( clCreateContextFromType )( const cl_context_properties* properties,
                                                      cl_device_type               deviceType,
@@ -131,9 +142,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateContextFromType )( const cl_context_properties
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINCONTEXT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainContext )( cl_context context )
 {
@@ -147,9 +160,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainContext )( cl_context context )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASECONTEXT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseContext )( cl_context context )
 {
@@ -163,9 +178,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseContext )( cl_context context )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETCONTEXTINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetContextInfo )( cl_context      context,
                                               cl_context_info paramName,
@@ -185,9 +202,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetContextInfo )( cl_context      context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINCOMMANDQUEUE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainCommandQueue )( cl_command_queue commandQueue )
 {
@@ -202,9 +221,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainCommandQueue )( cl_command_queue commandQueue 
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASECOMMANDQUEUE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseCommandQueue )( cl_command_queue commandQueue )
 {
@@ -219,9 +240,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseCommandQueue )( cl_command_queue commandQueue
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETCOMMANDQUEUEINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetCommandQueueInfo )( cl_command_queue      commandQueue,
                                                    cl_command_queue_info paramName,
@@ -241,9 +264,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetCommandQueueInfo )( cl_command_queue      command
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLSETCOMMANDQUEUEPROPERTY )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetCommandQueueProperty )( cl_command_queue             commandQueue,
                                                        cl_command_queue_properties  properties,
@@ -269,9 +294,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetCommandQueueProperty )( cl_command_queue         
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEBUFFER )
 cl_mem
 SCOREP_LIBWRAP_FUNC_NAME( clCreateBuffer )( cl_context   context,
                                             cl_mem_flags flags,
@@ -291,9 +318,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateBuffer )( cl_context   context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINMEMOBJECT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainMemObject )( cl_mem memObj )
 {
@@ -307,9 +336,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainMemObject )( cl_mem memObj )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASEMEMOBJECT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseMemObject )( cl_mem memObj )
 {
@@ -323,9 +354,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseMemObject )( cl_mem memObj )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETSUPPORTEDIMAGEFORMATS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetSupportedImageFormats )( cl_context         context,
                                                         cl_mem_flags       flags,
@@ -346,9 +379,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetSupportedImageFormats )( cl_context         conte
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETMEMOBJECTINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetMemObjectInfo )( cl_mem      memObj,
                                                 cl_mem_info paramName,
@@ -368,9 +403,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetMemObjectInfo )( cl_mem      memObj,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETIMAGEINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetImageInfo )( cl_mem        image,
                                             cl_image_info paramName,
@@ -390,9 +427,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetImageInfo )( cl_mem        image,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINSAMPLER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainSampler )( cl_sampler sampler )
 {
@@ -406,9 +445,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainSampler )( cl_sampler sampler )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASESAMPLER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseSampler )( cl_sampler sampler )
 {
@@ -422,9 +463,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseSampler )( cl_sampler sampler )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETSAMPLERINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetSamplerInfo )( cl_sampler      sampler,
                                               cl_sampler_info paramName,
@@ -444,9 +487,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetSamplerInfo )( cl_sampler      sampler,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEPROGRAMWITHSOURCE )
 cl_program
 SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithSource )( cl_context    context,
                                                        cl_uint       count,
@@ -466,9 +511,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithSource )( cl_context    context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEPROGRAMWITHBINARY )
 cl_program
 SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBinary )( cl_context            context,
                                                        cl_uint               numDevices,
@@ -490,9 +537,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBinary )( cl_context            con
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINPROGRAM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainProgram )( cl_program program )
 {
@@ -506,9 +555,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainProgram )( cl_program program )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASEPROGRAM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseProgram )( cl_program program )
 {
@@ -522,9 +573,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseProgram )( cl_program program )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLBUILDPROGRAM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clBuildProgram )( cl_program          program,
                                             cl_uint             numDevices,
@@ -546,9 +599,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clBuildProgram )( cl_program          program,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETPROGRAMINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetProgramInfo )( cl_program      program,
                                               cl_program_info paramName,
@@ -568,9 +623,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetProgramInfo )( cl_program      program,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETPROGRAMBUILDINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetProgramBuildInfo )( cl_program            program,
                                                    cl_device_id          device,
@@ -591,9 +648,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetProgramBuildInfo )( cl_program            program
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEKERNEL )
 cl_kernel
 SCOREP_LIBWRAP_FUNC_NAME( clCreateKernel )( cl_program  program,
                                             const char* kernelName,
@@ -610,9 +669,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateKernel )( cl_program  program,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEKERNELSINPROGRAM )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clCreateKernelsInProgram )( cl_program program,
                                                       cl_uint    numKernels,
@@ -631,9 +692,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateKernelsInProgram )( cl_program program,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINKERNEL )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainKernel )( cl_kernel kernel )
 {
@@ -647,9 +710,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainKernel )( cl_kernel kernel )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASEKERNEL )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseKernel )( cl_kernel kernel )
 {
@@ -663,9 +728,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseKernel )( cl_kernel kernel )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLSETKERNELARG )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArg )( cl_kernel   kernel,
                                             cl_uint     argIndex,
@@ -683,9 +750,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArg )( cl_kernel   kernel,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETKERNELINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetKernelInfo )( cl_kernel      kernel,
                                              cl_kernel_info paramName,
@@ -705,9 +774,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelInfo )( cl_kernel      kernel,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETKERNELWORKGROUPINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetKernelWorkGroupInfo )( cl_kernel                 kernel,
                                                       cl_device_id              device,
@@ -728,9 +799,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelWorkGroupInfo )( cl_kernel                 
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLWAITFOREVENTS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clWaitForEvents )( cl_uint         numEvents,
                                              const cl_event* eventList )
@@ -746,9 +819,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clWaitForEvents )( cl_uint         numEvents,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETEVENTINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetEventInfo )( cl_event      event,
                                             cl_event_info paramName,
@@ -768,9 +843,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventInfo )( cl_event      event,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRETAINEVENT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainEvent )( cl_event event )
 {
@@ -784,9 +861,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainEvent )( cl_event event )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLRELEASEEVENT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseEvent )( cl_event event )
 {
@@ -800,9 +879,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clReleaseEvent )( cl_event event )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLGETEVENTPROFILINGINFO )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clGetEventProfilingInfo )( cl_event          event,
                                                      cl_profiling_info paramName,
@@ -822,9 +903,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventProfilingInfo )( cl_event          event,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLFLUSH )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clFlush )( cl_command_queue commandQueue )
 {
@@ -838,9 +921,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clFlush )( cl_command_queue commandQueue )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLFINISH )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clFinish )( cl_command_queue commandQueue )
 {
@@ -866,9 +951,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clFinish )( cl_command_queue commandQueue )
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEREADBUFFER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBuffer )( cl_command_queue commandQueue,
                                                  cl_mem           buffer,
@@ -888,9 +975,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBuffer )( cl_command_queue commandQueue,
                                     eventWaitList, event )
                                   )
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEWRITEBUFFER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBuffer )( cl_command_queue commandQueue,
                                                   cl_mem           buffer,
@@ -910,9 +999,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBuffer )( cl_command_queue commandQueue,
                                     eventWaitList, event )
                                   )
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUECOPYBUFFER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBuffer )( cl_command_queue commandQueue,
                                                  cl_mem           srcBuffer,
@@ -937,9 +1028,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBuffer )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEREADIMAGE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadImage )( cl_command_queue commandQueue,
                                                 cl_mem           image,
@@ -966,9 +1059,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadImage )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEWRITEIMAGE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteImage )( cl_command_queue commandQueue,
                                                  cl_mem           image,
@@ -995,9 +1090,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteImage )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUECOPYIMAGE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImage )( cl_command_queue commandQueue,
                                                 cl_mem           srcImage,
@@ -1022,9 +1119,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImage )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUECOPYIMAGETOBUFFER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImageToBuffer )( cl_command_queue commandQueue,
                                                         cl_mem           srcImage,
@@ -1049,9 +1148,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImageToBuffer )( cl_command_queue command
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUECOPYBUFFERTOIMAGE )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferToImage )( cl_command_queue commandQueue,
                                                         cl_mem           srcBuffer,
@@ -1076,9 +1177,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferToImage )( cl_command_queue command
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEMAPBUFFER )
 void*
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapBuffer )( cl_command_queue commandQueue,
                                                 cl_mem           buffer,
@@ -1104,9 +1207,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapBuffer )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEMAPIMAGE )
 void*
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapImage )( cl_command_queue commandQueue,
                                                cl_mem           image,
@@ -1135,9 +1240,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapImage )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEUNMAPMEMOBJECT )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueUnmapMemObject )( cl_command_queue commandQueue,
                                                      cl_mem           memObj,
@@ -1158,9 +1265,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueUnmapMemObject )( cl_command_queue commandQue
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUENDRANGEKERNEL )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel )( cl_command_queue commandQueue,
                                                     cl_kernel        clKernel,
@@ -1209,9 +1318,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel )( cl_command_queue commandQueu
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUENATIVEKERNEL )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNativeKernel )( cl_command_queue commandQueue,
                                                    void( CL_CALLBACK * pfnNotify )( void* ),
@@ -1271,9 +1382,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateImage2D )( cl_context             context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATEIMAGE3D )
 cl_mem
 SCOREP_LIBWRAP_FUNC_NAME( clCreateImage3D )( cl_context             context,
                                              cl_mem_flags           flags,
@@ -1299,9 +1412,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateImage3D )( cl_context             context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEMARKER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMarker )( cl_command_queue commandQueue,
                                              cl_event*        event )
@@ -1316,9 +1431,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMarker )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEWAITFOREVENTS )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWaitForEvents )( cl_command_queue commandQueue,
                                                     cl_uint          numEvents,
@@ -1336,9 +1453,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWaitForEvents )( cl_command_queue commandQueu
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUEBARRIER )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueBarrier )( cl_command_queue commandQueue )
 {
@@ -1423,9 +1542,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateCommandQueue )( cl_context                  co
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLCREATESAMPLER )
 cl_sampler
 SCOREP_LIBWRAP_FUNC_NAME( clCreateSampler )( cl_context         context,
                                              cl_bool            normalizedCoords,
@@ -1445,9 +1566,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSampler )( cl_context         context,
 
     return ret;
 }
+#endif
 
 
 
+#if HAVE( OPENCL_1_0_SYMBOL_CLENQUEUETASK )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueTask )( cl_command_queue commandQueue,
                                            cl_kernel        kernel,
@@ -1467,3 +1590,4 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueTask )( cl_command_queue commandQueue,
 
     return ret;
 }
+#endif

@@ -15,6 +15,16 @@
 
 dnl ----------------------------------------------------------------------------
 
+AC_DEFUN([_SCOREP_OPENCL_ADD_SYMBOLS], [
+scorep_opencl_save_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS ${with_libOpenCL_ldflags}"
+scorep_opencl_save_LIBS=$LIBS
+LIBS="$LIBS ${with_libOpenCL_libs}"
+SCOREP_CHECK_SYMBOLS([OPENCL ]$1, [], $2, $3)
+LDFLAGS=$scorep_opencl_save_LDFLAGS
+LIBS=$scorep_opencl_save_LIBS
+])
+
 dnl Deprecated OpenCL APIs
 dnl
 dnl Marked as deprecated since OpenCL 1.0
@@ -35,8 +45,8 @@ dnl            clCreateSampler,
 dnl            clEnqueueTask
 
 AC_DEFUN([_SCOREP_OPENCL_1_0_ADD_SYMBOLS], [
-m4_foreach([func],
-           [clGetPlatformIDs,
+_SCOREP_OPENCL_ADD_SYMBOLS([1.0], $1,
+          [[clGetPlatformIDs,
             clGetPlatformInfo,
             clGetDeviceIDs,
             clGetDeviceInfo,
@@ -101,30 +111,28 @@ m4_foreach([func],
             clGetExtensionFunctionAddress,
             clCreateCommandQueue,
             clCreateSampler,
-            clEnqueueTask],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clEnqueueTask]])
 ])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_1_1_ADD_SYMBOLS], [
-m4_foreach([func],
-           [clCreateSubBuffer,
+_SCOREP_OPENCL_ADD_SYMBOLS([1.1], $1,
+          [[clCreateSubBuffer,
             clSetMemObjectDestructorCallback,
             clCreateUserEvent,
             clSetUserEventStatus,
             clSetEventCallback,
             clEnqueueReadBufferRect,
             clEnqueueWriteBufferRect,
-            clEnqueueCopyBufferRect],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clEnqueueCopyBufferRect]])
 ])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_1_2_ADD_SYMBOLS], [
-m4_foreach([func],
-           [clCreateSubDevices,
+_SCOREP_OPENCL_ADD_SYMBOLS([1.2], $1,
+          [[clCreateSubDevices,
             clRetainDevice,
             clReleaseDevice,
             clCreateImage,
@@ -138,15 +146,14 @@ m4_foreach([func],
             clEnqueueMigrateMemObjects,
             clEnqueueMarkerWithWaitList,
             clEnqueueBarrierWithWaitList,
-            clGetExtensionFunctionAddressForPlatform],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clGetExtensionFunctionAddressForPlatform]])
 ])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_0_ADD_SYMBOLS], [
-m4_foreach([func],
-           [clCreateCommandQueueWithProperties,
+_SCOREP_OPENCL_ADD_SYMBOLS([2.0], $1,
+          [[clCreateCommandQueueWithProperties,
             clCreatePipe,
             clGetPipeInfo,
             clSVMAlloc,
@@ -158,31 +165,28 @@ m4_foreach([func],
             clEnqueueSVMMemcpy,
             clEnqueueSVMMemFill,
             clEnqueueSVMMap,
-            clEnqueueSVMUnmap],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clEnqueueSVMUnmap]])
 ])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_1_ADD_SYMBOLS], [
-m4_foreach([func],
-           [clGetKernelSubGroupInfo,
+_SCOREP_OPENCL_ADD_SYMBOLS([2.1], $1,
+          [[clGetKernelSubGroupInfo,
             clCreateProgramWithIL,
             clGetHostTimer,
             clGetDeviceAndHostTimer,
             clEnqueueSVMMigrateMem,
             clCloneKernel,
-            clSetDefaultDeviceCommandQueue],
-           [AS_VAR_APPEND([$1], [" func"]);])
+            clSetDefaultDeviceCommandQueue]])
 ])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_SCOREP_OPENCL_2_2_ADD_SYMBOLS], [
-_SCOREP_IO_RECORDING_POSIX_CHECK_SYMBOLS([])
-SCOREP_CHECK_SYMBOLS([OPENCL 2.2], [], $1,
-           [clSetProgramSpecializationConstant,
-            clSetProgramReleaseCallback])
+_SCOREP_OPENCL_ADD_SYMBOLS([2.2], $1,
+          [[clSetProgramSpecializationConstant,
+            clSetProgramReleaseCallback]])
 ])
 
 dnl ----------------------------------------------------------------------------

@@ -98,14 +98,16 @@ public:
         return m_rcnt;
     }
     /** get MPI version this function call was introduced
-     * @return MPI major version
+     * @return MPI (major, minor) version as string, separated by @a separator
      */
-    int
-    get_version
-        () const
-    {
-        return m_version;
-    }
+    string
+    get_version( char separator = '.' ) const;
+
+    /** Compare against version
+     * @return true if it matches */
+    bool
+    version_equal( const string& s ) const;
+
     /** set string representing the send count calculation rule
      * @param rule string representing the send count calculation rule */
     void
@@ -139,8 +141,8 @@ private:
     string m_expr_block;
     /** initial declarations special to this function */
     string m_init;
-    /** major version of MPI where this function was introduced */
-    int m_version;
+    /** major.minor version of MPI where this function was introduced */
+    std::pair<int, int> m_version;
 };
 }   // namespace Wrapgen
 }   // namespace SCOREP

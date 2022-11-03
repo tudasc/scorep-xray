@@ -67,12 +67,12 @@
  * @{
  */
 
-#if HAVE(DECL_PMPI_ABORT)
+#if HAVE(MPI_1_0_SYMBOL_PMPI_ABORT)
 /**
  * Measurement wrapper for MPI_Abort
  * @note Manually adapted wrapper
  * @note C interface
- * @note Introduced with MPI 1.0
+ * @note Introduced with MPI-1.0
  * @ingroup ext
  */
 int MPI_Abort(MPI_Comm comm,
