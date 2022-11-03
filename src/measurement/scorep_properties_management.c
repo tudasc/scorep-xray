@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2022,
+ * Deutsches Zentrum fuer Luft- und Raumfahrt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -166,6 +169,29 @@ mpi_collective_end( struct SCOREP_Location*          location,
                     SCOREP_CollectiveType            collectiveType,
                     uint64_t                         bytesSent,
                     uint64_t                         bytesReceived )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_non_blocking_collective_request( SCOREP_Location*    location,
+                                     uint64_t            timestamp,
+                                     SCOREP_MpiRequestId requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_non_blocking_collective_complete( SCOREP_Location*                 location,
+                                      uint64_t                         timestamp,
+                                      SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                      SCOREP_MpiRank                   rootRank,
+                                      SCOREP_CollectiveType            collectiveType,
+                                      uint64_t                         bytesSent,
+                                      uint64_t                         bytesReceived,
+                                      SCOREP_MpiRequestId              requestId )
 {
     SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
 }
@@ -390,29 +416,31 @@ thread_end( struct SCOREP_Location*          location,
 
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                  MPI_SEND,                     mpi_send ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                  MPI_RECV,                     mpi_recv ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveBegin,       MPI_COLLECTIVE_BEGIN,         mpi_collective_begin ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,         MPI_COLLECTIVE_END,           mpi_collective_end ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecvRequest,          MPI_IRECV_REQUEST,            mpi_irecv_request ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestTested,         MPI_REQUEST_TESTED,           mpi_request_tested ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestCancelled,      MPI_REQUEST_CANCELLED,        mpi_request_cancelled ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                 MPI_ISEND,                    mpi_isend ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                 MPI_IRECV,                    mpi_irecv ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadAcquireLock,        THREAD_ACQUIRE_LOCK,          thread_acquire_lock ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadReleaseLock,        THREAD_RELEASE_LOCK,          thread_release_lock ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,       THREAD_FORK_JOIN_FORK,        thread_fork ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,       THREAD_FORK_JOIN_JOIN,        thread_join ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamBegin,  THREAD_FORK_JOIN_TEAM_BEGIN,  thread_team_begin ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamEnd,    THREAD_FORK_JOIN_TEAM_END,    thread_team_end ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskCreate, THREAD_FORK_JOIN_TASK_CREATE, thread_task_create ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch, THREAD_FORK_JOIN_TASK_SWITCH, thread_task_switch ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,  THREAD_FORK_JOIN_TASK_BEGIN,  thread_task_begin ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,    THREAD_FORK_JOIN_TASK_END,    thread_task_end ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitCreate,   THREAD_CREATE_WAIT_CREATE,    thread_create ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,     THREAD_CREATE_WAIT_WAIT,      thread_wait ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,    THREAD_CREATE_WAIT_BEGIN,     thread_begin ),
-    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,      THREAD_CREATE_WAIT_END,       thread_end )
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                          MPI_SEND,                             mpi_send ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                          MPI_RECV,                             mpi_recv ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveBegin,               MPI_COLLECTIVE_BEGIN,                 mpi_collective_begin ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,                 MPI_COLLECTIVE_END,                   mpi_collective_end ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiNonBlockingCollectiveRequest,  MPI_NON_BLOCKING_COLLECTIVE_REQUEST,  mpi_non_blocking_collective_request ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiNonBlockingCollectiveComplete, MPI_NON_BLOCKING_COLLECTIVE_COMPLETE, mpi_non_blocking_collective_complete ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecvRequest,                  MPI_IRECV_REQUEST,                    mpi_irecv_request ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestTested,                 MPI_REQUEST_TESTED,                   mpi_request_tested ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRequestCancelled,              MPI_REQUEST_CANCELLED,                mpi_request_cancelled ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                         MPI_ISEND,                            mpi_isend ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                         MPI_IRECV,                            mpi_irecv ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadAcquireLock,                THREAD_ACQUIRE_LOCK,                  thread_acquire_lock ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadReleaseLock,                THREAD_RELEASE_LOCK,                  thread_release_lock ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,               THREAD_FORK_JOIN_FORK,                thread_fork ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,               THREAD_FORK_JOIN_JOIN,                thread_join ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamBegin,          THREAD_FORK_JOIN_TEAM_BEGIN,          thread_team_begin ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTeamEnd,            THREAD_FORK_JOIN_TEAM_END,            thread_team_end ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskCreate,         THREAD_FORK_JOIN_TASK_CREATE,         thread_task_create ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch,         THREAD_FORK_JOIN_TASK_SWITCH,         thread_task_switch ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,          THREAD_FORK_JOIN_TASK_BEGIN,          thread_task_begin ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,            THREAD_FORK_JOIN_TASK_END,            thread_task_end ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitCreate,           THREAD_CREATE_WAIT_CREATE,            thread_create ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,             THREAD_CREATE_WAIT_WAIT,              thread_wait ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,            THREAD_CREATE_WAIT_BEGIN,             thread_begin ),
+    SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,              THREAD_CREATE_WAIT_END,               thread_end )
 };
 
 
