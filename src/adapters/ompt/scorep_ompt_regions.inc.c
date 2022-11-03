@@ -41,9 +41,9 @@ typedef enum ompt_region_type
     OMPT_TASKGROUP,
     OMPT_BARRIER,
     OMPT_MASKED,
-#if 0
     OMPT_CRITICAL,
     OMPT_CRITICAL_SBLOCK,
+#if 0
     OMPT_ORDERED,
     OMPT_ORDERED_SBLOCK,
     OMPT_SECTION,
@@ -81,6 +81,8 @@ typedef struct region_fallback_t
 #define REGION_OMP_TASKGROUP "!$omp taskgroup"
 #define REGION_OMP_BARRIER "!$omp barrier"
 #define REGION_OMP_MASKED "!$omp masked"
+#define REGION_OMP_CRITICAL "!$omp critical"
+#define REGION_OMP_CRITICAL_SBLOCK "!$omp critical sblock"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -101,10 +103,10 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_TASKGROUP,       sizeof( REGION_OMP_TASKGROUP ) - 1,       SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_BARRIER,         sizeof( REGION_OMP_BARRIER ) - 1,         SCOREP_REGION_BARRIER,          SCOREP_INVALID_REGION },
     { REGION_OMP_MASKED,          sizeof( REGION_OMP_MASKED ) - 1,          SCOREP_REGION_MASTER,           SCOREP_INVALID_REGION },
+    { REGION_OMP_CRITICAL,        sizeof( REGION_OMP_CRITICAL ) - 1,        SCOREP_REGION_CRITICAL,         SCOREP_INVALID_REGION },
+    { REGION_OMP_CRITICAL_SBLOCK, sizeof( REGION_OMP_CRITICAL_SBLOCK ) - 1, SCOREP_REGION_CRITICAL_SBLOCK,  SCOREP_INVALID_REGION },
 
 #if 0
-    { "!$omp critical",        SCOREP_REGION_CRITICAL,                SCOREP_INVALID_REGION },
-    { "!$omp critical sblock", SCOREP_REGION_CRITICAL_SBLOCK,         SCOREP_INVALID_REGION },
     { "!$omp ordered",         SCOREP_REGION_ORDERED,                 SCOREP_INVALID_REGION },
     { "!$omp ordered sblock",  SCOREP_REGION_ORDERED_SBLOCK,          SCOREP_INVALID_REGION },
     { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
@@ -130,6 +132,8 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_TASKGROUP
 #undef REGION_OMP_BARRIER
 #undef REGION_OMP_MASKED
+#undef REGION_OMP_CRITICAL
+#undef REGION_OMP_CRITICAL_SBLOCK
 
 #if 0
 typedef enum ompt_lock_region_type

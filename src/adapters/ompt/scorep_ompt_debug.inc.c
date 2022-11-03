@@ -346,3 +346,27 @@ work2string( ompt_work_t t )
     UTILS_BUG();
     return "";
 }
+
+static const char*
+mutex2string( ompt_mutex_t t )
+{
+    switch ( t )
+    {
+        case ompt_mutex_lock:
+            return "lock";
+        case ompt_mutex_test_lock:
+            return "test_lock";
+        case ompt_mutex_nest_lock:
+            return "nest_lock";
+        case ompt_mutex_test_nest_lock:
+            return "test_nest_lock";
+        case ompt_mutex_critical:
+            return "critical";
+        case ompt_mutex_atomic:
+            return "atomic";
+        case ompt_mutex_ordered:
+            return "ordered";
+    }
+    UTILS_BUG();
+    return "";
+}

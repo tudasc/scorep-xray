@@ -21,5 +21,6 @@
 #include "scorep_ompt_debug.inc.c"
 
 #include "scorep_ompt_regions.inc.c"
+#include "scorep_ompt_mutex.inc.c"
 #include "scorep_ompt_events_host.inc.c"
 #include "scorep_ompt_events_device.inc.c"

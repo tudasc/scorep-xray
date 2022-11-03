@@ -182,6 +182,9 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
     REGISTER_CALLBACK( host_, thread_end );
     REGISTER_CALLBACK( host_, work );
     REGISTER_CALLBACK( host_, masked );
+    REGISTER_CALLBACK( host_, mutex_acquire );
+    REGISTER_CALLBACK( host_, mutex_acquired );
+    REGISTER_CALLBACK( host_, mutex_released );
 }
 
 

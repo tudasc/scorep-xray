@@ -105,4 +105,21 @@ scorep_ompt_cb_host_masked( ompt_scope_endpoint_t endpoint,
                             ompt_data_t*          task_data,
                             const void*           codeptr_ra );
 
+void
+scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
+                                   unsigned int   hint,
+                                   unsigned int   impl,
+                                   ompt_wait_id_t wait_id,
+                                   const void*    codeptr_ra );
+
+void
+scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
+                                    ompt_wait_id_t wait_id,
+                                    const void*    codeptr_ra );
+
+void
+scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
+                                    ompt_wait_id_t wait_id,
+                                    const void*    codeptr_ra );
+
 #endif /* SCOREP_OMPT_CALLBACKS_HOST_H */

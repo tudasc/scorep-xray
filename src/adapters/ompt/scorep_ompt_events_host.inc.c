@@ -79,6 +79,12 @@ typedef struct task_t
     struct SCOREP_Task*  scorep_task; /* Score-P task object, mainly for explicit
                                          tasks, see also implicit-task-begin. */
 
+    /* If task is involved in mutex-like synchronization, pass data from acquire
+       to acquired callbacks (acquire will then create a mutex objects that is
+       passed to released). */
+    uint64_t    mutex_acquire_timestamp;
+    const void* mutex_acquire_codeptr_ra;
+
     /* for implicit tasks only */
     struct scorep_thread_private_data* tpd; /* Use the tpd stored at itask_begin
                                              * also for itask_end, as runtime
@@ -173,6 +179,10 @@ static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrR
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
 static inline uint64_t get_mask( uint32_t width, uint32_t shift );
+static inline task_t* get_current_task( void );
+static inline void construct_mutex_acquire( task_t* task, const void* codeptrRa );
+static inline void construct_mutex_acquired( task_t* task, ompt_region_type regionType, ompt_region_type regionTypeSblock, ompt_mutex_t kind, ompt_wait_id_t waitId );
+static inline void construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t waitId );
 /* *INDENT-ON* */
 
 
@@ -1990,4 +2000,214 @@ scorep_ompt_cb_host_masked( ompt_scope_endpoint_t endpoint,
                       parallel_data == NULL ? NULL : parallel_data->ptr, task_data->ptr,
                       codeptr_ra );
     SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+/*
+   typedef enum ompt_mutex_t {
+   ompt_mutex_lock = 1,
+   ompt_mutex_test_lock = 2,
+   ompt_mutex_nest_lock = 3,
+   ompt_mutex_test_nest_lock = 4,
+   ompt_mutex_critical = 5,
+   ompt_mutex_atomic = 6,
+   ompt_mutex_ordered = 7
+   } ompt_mutex_t;
+ */
+
+void
+scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
+                                   unsigned int   hint,
+                                   unsigned int   impl,
+                                   ompt_wait_id_t wait_id,
+                                   const void*    codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league mutex_acquire event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( kind )
+    {
+        case ompt_mutex_critical:
+            construct_mutex_acquire( task, codeptr_ra );
+            break;
+        default:
+            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline task_t*
+get_current_task( void )
+{
+    ompt_data_t* task_data_rt = NULL;
+    /* Runtime entry point returns 2 if a task region exists at the specified
+       ancestor level and the information is available. */
+    int ret = scorep_ompt_get_task_info( 0, NULL, &task_data_rt, NULL, NULL, NULL );
+    UTILS_BUG_ON( ret != 2, "ompt_get_task_info() returned %d", ret );
+    UTILS_BUG_ON( task_data_rt->ptr == NULL );
+    return task_data_rt->ptr;
+}
+
+
+static inline void
+construct_mutex_acquire( task_t* task, const void* codeptrRa )
+{
+    /* This data will be accessed in mutex_acquired. There will be no
+       event between acquire and acquired, so this is safe. There is
+       no guarantee that the return addresses in acquire, acquired,
+       and released are identical, so just use the one from acquire
+       to create the Score-P region handles. */
+    task->mutex_acquire_timestamp  = SCOREP_Timer_GetClockTicks();
+    task->mutex_acquire_codeptr_ra = codeptrRa;
+}
+
+
+void
+scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
+                                    ompt_wait_id_t wait_id,
+                                    const void*    codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league mutex_acquired event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( kind )
+    {
+        case ompt_mutex_critical:
+            construct_mutex_acquired( task, OMPT_CRITICAL, OMPT_CRITICAL_SBLOCK, kind, wait_id );
+            break;
+        default:
+            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline void
+construct_mutex_acquired( task_t*          task,
+                          ompt_region_type regionType,
+                          ompt_region_type regionTypeSblock,
+                          ompt_mutex_t     kind,
+                          ompt_wait_id_t   waitId )
+{
+    /* We are in the OpenMP synchronization, no one else will access the
+       mutext_obj_t handle. */
+    mutex_obj_t* mutex = mutex_get_and_insert( waitId, kind );
+
+    /* Getting the regions in acquired as compared to in acquire potentially
+       causes less contention. */
+    mutex->outer_region = get_region( task->mutex_acquire_codeptr_ra,
+                                      regionType );
+    mutex->sblock_region = get_region( task->mutex_acquire_codeptr_ra,
+                                       regionTypeSblock );
+
+    SCOREP_Location_EnterRegion( NULL, task->mutex_acquire_timestamp, mutex->outer_region );
+    /* We need to use outer_region and sblock_region in mutex_released. As this
+       task can take part in nested synchronizations between this acquire and
+       the corresponding release, we can't transfer the regions via the task
+       object. As the mutex handle is unique to this synchronization it is
+       the natural candidate to transfer the regions. But when we access the
+       regions in mutex_released, the mutex handle could already be re-acquired,
+       i.e., we need to postpone this new assignment here until the regions
+       have been used in mutex_released.
+       In addition, we need to preserve acquisition_order from the acquire till
+       the release event. The latter is written when the lock is already
+       released and potentially re-acquired.
+       Therefore, the explicit Lock/Unlock of in_release_operation. */
+    UTILS_MutexLock( &( mutex->in_release_operation ) );
+    mutex->acquisition_order++;
+    SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP,
+                              mutex->id,
+                              mutex->acquisition_order );
+    SCOREP_EnterRegion( mutex->sblock_region );
+
+    task->mutex_acquire_codeptr_ra = NULL;
+    task->mutex_acquire_timestamp  = 0;
+}
+
+
+void
+scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
+                                    ompt_wait_id_t wait_id,
+                                    const void*    codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league mutex_released event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( kind )
+    {
+        case ompt_mutex_critical:
+            construct_mutex_released( kind, wait_id );
+            break;
+        default:
+            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+static inline void
+construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t waitId )
+{
+    mutex_obj_t*        mutex        = mutex_get( waitId, kind );
+    SCOREP_RegionHandle outer_region = mutex->outer_region;
+    SCOREP_ExitRegion( mutex->sblock_region );
+    SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+    UTILS_MutexUnlock( &( mutex->in_release_operation ) );
+    mutex = NULL; /* Don't use mutex after unlock */
+    SCOREP_ExitRegion( outer_region );
 }
