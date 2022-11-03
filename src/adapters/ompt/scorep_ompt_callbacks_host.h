@@ -122,4 +122,16 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
                                     ompt_wait_id_t wait_id,
                                     const void*    codeptr_ra );
 
+void
+scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
+                               unsigned int   hint,
+                               unsigned int   impl,
+                               ompt_wait_id_t wait_id,
+                               const void*    codeptr_ra );
+
+void
+scorep_ompt_cb_host_lock_destroy( ompt_mutex_t   kind,
+                                  ompt_wait_id_t wait_id,
+                                  const void*    codeptr_ra );
+
 #endif /* SCOREP_OMPT_CALLBACKS_HOST_H */

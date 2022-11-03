@@ -139,35 +139,35 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_ORDERED
 #undef REGION_OMP_ORDERED_SBLOCK
 
-#if 0
+
+/* To match opari2's behavior, define lock regions once but use for all lock
+   events. With codeptr_ra available, we could provide a link to the source,
+   though. */
 typedef enum ompt_lock_region_type
 {
-    /* there are more API functions but we cannot distinguish them within
-     * an OMPT callback. We could consider library wrapping for the API
-     * functions. */
-
+    OMPT_LOCK_INIT,
+    OMPT_LOCK_INIT_WITH_HINT,
+    OMPT_LOCK_DESTROY,
+    OMPT_LOCK_SET,
+    OMPT_LOCK_UNSET,
+#if 0
     /* omp_test_lock and omp_test_nest_lock are missing. For them we get
      * acquire/acquired/released or just acquired if the lock was held
      * already. In the latter case I don't see a way to trigger the
      * exit(test_lock) that corresponds to the acquire's enter(test_lock). */
-    OMPT_LOCK_INIT,
-    OMPT_LOCK_DESTROY,
-    OMPT_LOCK_SET,
-    OMPT_LOCK_UNSET,
 
     OMPT_LOCK_INIT_NEST,
     OMPT_LOCK_DESTROY_NEST,
     OMPT_LOCK_SET_NEST,
     OMPT_LOCK_UNSET_NEST,
-
+#endif
     OMPT_LOCK_REGIONS,
 
     OMPT_LOCK_INVALID
 } ompt_lock_region_type;
 
 
-SCOREP_RegionHandle lock_regions[ OMPT_LOCK_REGIONS ];
-#endif
+static SCOREP_RegionHandle lock_regions[ OMPT_LOCK_REGIONS ];
 
 
 void
@@ -192,17 +192,20 @@ init_region_fallbacks( void )
                                               region_fallback[ i ].type );
         }
 
-#if 0
         char* lock_region_names[ OMPT_LOCK_REGIONS ] =
         {
+            /* Like opari2, i.e., no leading !$ */
             "omp_init_lock",
+            "omp_init_lock_with_hint",
             "omp_destroy_lock",
             "omp_set_lock",
             "omp_unset_lock",
+#if 0
             "omp_init_nest_lock",
             "omp_destroy_nest_lock",
             "omp_set_nest_lock",
             "omp_unset_nest_lock"
+#endif
         };
         for ( int i = 0; i < OMPT_LOCK_REGIONS; i++ )
         {
@@ -215,7 +218,6 @@ init_region_fallbacks( void )
                                               SCOREP_PARADIGM_OPENMP,
                                               SCOREP_REGION_WRAPPER );
         }
-#endif
     }
 }
 

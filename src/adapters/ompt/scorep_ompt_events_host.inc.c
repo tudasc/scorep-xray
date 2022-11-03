@@ -2042,6 +2042,9 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
 
     switch ( kind )
     {
+        case ompt_mutex_lock:
+            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_SET ] );
+            break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
             break;
@@ -2112,6 +2115,14 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
 
     switch ( kind )
     {
+        case ompt_mutex_lock:
+        {
+            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            UTILS_MutexLock( &( mutex->in_release_operation ) );
+            SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, ++( mutex->acquisition_order ) );
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET ] );
+        }
+        break;
         case ompt_mutex_critical:
             construct_mutex_acquired( task, OMPT_CRITICAL, OMPT_CRITICAL_SBLOCK, kind, wait_id );
             break;
@@ -2199,6 +2210,16 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
 
     switch ( kind )
     {
+        case ompt_mutex_lock:
+        {
+            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET ] );
+            SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+            UTILS_MutexUnlock( &( mutex->in_release_operation ) );
+            mutex = NULL; /* Don't use after unlock */
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET ] );
+        }
+        break;
         case ompt_mutex_critical:
             construct_mutex_released( kind, wait_id );
             break;
@@ -2228,4 +2249,99 @@ construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t waitId )
     UTILS_MutexUnlock( &( mutex->in_release_operation ) );
     mutex = NULL; /* Don't use mutex after unlock */
     SCOREP_ExitRegion( outer_region );
+}
+
+
+void
+scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
+                               unsigned int   hint,
+                               unsigned int   impl,
+                               ompt_wait_id_t wait_id,
+                               const void*    codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league lock_init event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    /* There is no duration available for lock-init. */
+    SCOREP_Location*    location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t            timestamp = SCOREP_Timer_GetClockTicks();
+    SCOREP_RegionHandle region    = SCOREP_INVALID_REGION;
+
+    switch ( kind )
+    {
+        case ompt_mutex_lock:
+            mutex_get_and_insert( wait_id, kind );
+            region = lock_regions[ OMPT_LOCK_INIT ];
+            if ( hint != 0 /* omp_sync_hint_none */ )
+            {
+                region = lock_regions[ OMPT_LOCK_INIT_WITH_HINT ];
+            }
+            SCOREP_Location_EnterRegion( location, timestamp, region );
+            SCOREP_Location_ExitRegion( location, timestamp, region );
+            break;
+        default:
+            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+void
+scorep_ompt_cb_host_lock_destroy( ompt_mutex_t   kind,
+                                  ompt_wait_id_t wait_id,
+                                  const void*    codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league mutex_acquired event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    /* There is no duration available for lock-destroy. */
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = SCOREP_Timer_GetClockTicks();
+
+    switch ( kind )
+    {
+        case ompt_mutex_lock:
+            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
+            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
+            break;
+        default:
+            UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
