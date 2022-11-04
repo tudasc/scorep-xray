@@ -48,23 +48,16 @@ func_addr_hash_allocate_chunk( size_t chunkSize )
     /* We might enter this function from an outlined OpenMP function
        in between fork and team-begin. Several threads compete to
        enter first. If a non-master thread is first, there is no valid
-       location object to be used in SCOREP_Memory_AlignedAllocForMisc
-       and we abort with a TPD == 0 error. Thus, use plain malloc here
-       and manually align to 64. */
-    #define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-    void* raw   = malloc( chunkSize + 64 );
-    void* chunk = ( void* )roundupto( raw, 64 );
-    #undef roundupto
-    /* To free the allocated memory, we would need to track the 'raw'
-       pointers. This would be possible, though as we need the chunks
-       until the end of the program, this additional effort doesn't
-       seem to be justified. */
+       location object. */
+    void* chunk = SCOREP_Memory_AlignedMalloc( SCOREP_CACHELINESIZE, chunkSize );
+    UTILS_BUG_ON( chunk == NULL );
     return chunk;
 }
 
 static void
 func_addr_hash_free_chunk( void* chunk )
 {
+    SCOREP_Memory_AlignedFree( chunk );
 }
 
 static func_addr_hash_value_t
