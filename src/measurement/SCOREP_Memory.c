@@ -358,6 +358,77 @@ SCOREP_Memory_AlignedAllocForMisc( size_t alignment, size_t size )
 }
 
 
+/* Support AlignedMalloc/Free alignment up to UINT16_MAX. To free()
+   aligned memory we need to access the address returned by
+   malloc(). Therefore, store the offset as uint16_t in front of the
+   aligned address. */
+typedef uint16_t alignment_offset_t;
+
+void*
+SCOREP_Memory_AlignedMalloc( size_t alignment,
+                             size_t size )
+{
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+    if ( alignment < SCOREP_ALLOCATOR_ALIGNMENT )
+    {
+        return NULL;
+    }
+    if ( alignment > UINT16_MAX )
+    {
+        return NULL;
+    }
+    /* alignment power of two */
+    if ( ( alignment & ( alignment - 1 ) ) != 0 )
+    {
+        return NULL;
+    }
+
+    void* aligned = NULL;
+
+    /* Allocate extra bytes for storing the offset value and for
+       the alignment. */
+    void* raw = malloc( size + sizeof( alignment_offset_t ) + alignment - 1 );
+    if ( raw )
+    {
+        #define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
+        aligned = ( void* )roundupto( ( ( intptr_t )raw + sizeof( alignment_offset_t ) ),
+                                      alignment );
+        #undef roundupto
+
+        /* Calculate the offset and store it in front of the
+           aligned pointer. */
+        *( ( alignment_offset_t* )aligned - 1 ) =
+            ( alignment_offset_t )( ( uintptr_t )aligned - ( uintptr_t )raw );
+    }
+    else if ( errno == ENOMEM )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    return aligned;
+}
+
+
+void
+SCOREP_Memory_AlignedFree( void* aligned )
+{
+    if ( aligned == NULL )
+    {
+        return;
+    }
+
+    /* Get the offset from the uint16_t stored in front of the aligned
+       pointer to calculate the address of the malloced/raw pointer
+       that can be passed to free(). */
+    alignment_offset_t offset = *( ( alignment_offset_t* )aligned - 1 );
+    void*              raw    = ( void* )( ( uint8_t* )aligned - offset );
+    free( raw );
+}
+
+
 static bool
 free_memory_type_for_location( SCOREP_Location* location,
                                void*            arg )

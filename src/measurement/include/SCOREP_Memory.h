@@ -222,6 +222,42 @@ SCOREP_Location_AlignedAllocForMisc( SCOREP_Location* locationData,
  * @}
  */
 
+/**
+ * Aligned malloc, not using Score-P memory pages. Use these
+ * functions in case there is no location object available (e.g., in
+ * between OpenMP's fork and parallel-begin).
+ * Don't pass returned addresses to free(), but to
+ * SCOREP_Memory_AlignedFree() only.
+ *
+ * @param alignment The alignment of the returned block of memory,
+ * i.e., the returned address is a multiple of alignment. alignment
+ * needs to be >= SCOREP_ALLOCATOR_ALIGNMENT, <= UINT16_MAX, and a
+ * power of two; otherwise, NULL is returned.
+ *
+ * @param size The size of the requested memory block in bytes. It might be
+ * useful to have a @a size that is an integral multiple of alignment, e.g.,
+ * if you align to cacheline-size and require exclusive access to the
+ * allocated cacheline(s). Return NULL if @a size == 0.
+ *
+ * @return The address of the first byte in the uninitialized memory
+ * block, aligned to @a alignement. If prerequisites are not
+ * fulfilled, NULL is returned. If the size request could no be
+ * handled, we abort.
+ */
+void*
+SCOREP_Memory_AlignedMalloc( size_t alignment,
+                             size_t size );
+
+
+/**
+ * Aligned free for addresses allocated by SCOREP_Memory_AlignedMalloc() only.
+ *
+ * @param aligned Address of a block of memory allocated by
+ * SCOREP_Memory_AlignedMalloc().
+ */
+void
+SCOREP_Memory_AlignedFree( void* aligned );
+
 
 /**
  * Release the entire allocated memory for miscellaneous stuff.
