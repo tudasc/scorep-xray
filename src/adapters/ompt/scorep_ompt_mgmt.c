@@ -187,6 +187,7 @@ register_event_callbacks_host( ompt_set_callback_t setCallback )
     REGISTER_CALLBACK( host_, mutex_released );
     REGISTER_CALLBACK( host_, lock_init );
     REGISTER_CALLBACK( host_, lock_destroy );
+    REGISTER_CALLBACK( host_, nest_lock );
 }
 
 

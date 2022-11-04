@@ -150,17 +150,18 @@ typedef enum ompt_lock_region_type
     OMPT_LOCK_DESTROY,
     OMPT_LOCK_SET,
     OMPT_LOCK_UNSET,
-#if 0
-    /* omp_test_lock and omp_test_nest_lock are missing. For them we get
-     * acquire/acquired/released or just acquired if the lock was held
-     * already. In the latter case I don't see a way to trigger the
-     * exit(test_lock) that corresponds to the acquire's enter(test_lock). */
-
     OMPT_LOCK_INIT_NEST,
+    OMPT_LOCK_INIT_NEST_WITH_HINT,
     OMPT_LOCK_DESTROY_NEST,
     OMPT_LOCK_SET_NEST,
     OMPT_LOCK_UNSET_NEST,
-#endif
+
+    /* omp_test_lock and omp_test_nest_lock are missing. For them, we get
+       acquire/acquired/released if we obtain the lock or just acquire if the
+       lock was already held. In the latter case, I don't see a way to trigger
+       the exit(test_[nest_]lock) that corresponds to the acquire's
+       enter(test_[nest_lock). */
+
     OMPT_LOCK_REGIONS,
 
     OMPT_LOCK_INVALID
@@ -200,12 +201,11 @@ init_region_fallbacks( void )
             "omp_destroy_lock",
             "omp_set_lock",
             "omp_unset_lock",
-#if 0
             "omp_init_nest_lock",
+            "omp_init_nest_lock_with_hint",
             "omp_destroy_nest_lock",
             "omp_set_nest_lock",
             "omp_unset_nest_lock"
-#endif
         };
         for ( int i = 0; i < OMPT_LOCK_REGIONS; i++ )
         {

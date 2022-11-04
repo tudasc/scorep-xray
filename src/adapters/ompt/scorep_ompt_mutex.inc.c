@@ -34,11 +34,18 @@ typedef struct mutex_table_key_t
 
 typedef struct mutex_obj_t
 {
-    uint32_t            id;
-    uint32_t            acquisition_order;
-    SCOREP_RegionHandle outer_region;
-    SCOREP_RegionHandle sblock_region;
-    UTILS_Mutex         in_release_operation;
+    uint32_t id;
+    uint32_t acquisition_order;
+    union
+    {
+        struct /* for critical and ordered only */
+        {
+            SCOREP_RegionHandle outer_region;
+            SCOREP_RegionHandle sblock_region;
+        };
+        uint32_t nest_level; /* for nest locks only */
+    } optional;
+    UTILS_Mutex in_release_operation;
 } mutex_obj_t;
 
 typedef mutex_obj_t* mutex_table_value_t;
@@ -115,10 +122,10 @@ mutex_table_value_ctor( mutex_table_key_t* key,
                                                                    sizeof( *value ) );
     value->id = UTILS_Atomic_FetchAdd_uint32( &mutex_obj_cnt, 1,
                                               UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
-    value->acquisition_order    = 0;
-    value->outer_region         = SCOREP_INVALID_REGION;
-    value->sblock_region        = SCOREP_INVALID_REGION;
-    value->in_release_operation = UTILS_MUTEX_INIT;
+    value->acquisition_order      = 0;
+    value->optional.outer_region  = SCOREP_INVALID_REGION;
+    value->optional.sblock_region = SCOREP_INVALID_REGION;
+    value->in_release_operation   = UTILS_MUTEX_INIT;
     return value;
 }
 

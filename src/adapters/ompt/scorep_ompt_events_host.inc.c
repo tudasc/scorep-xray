@@ -2045,6 +2045,12 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
         case ompt_mutex_lock:
             SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_SET ] );
             break;
+        case ompt_mutex_nest_lock:
+            /* nest-lock-acquire event. Followed by either nest-lock-acquired
+               in scorep_ompt_cb_host_mutex_acquired() or nest-lock-owned in
+               scorep_ompt_cb_host_nest_lock(). */
+            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+            break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
             break;
@@ -2123,6 +2129,22 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET ] );
         }
         break;
+        case ompt_mutex_nest_lock:
+        {
+            /* nest-lock-acquired event. Followed by nest-lock-acquire (i.e.
+               nesting) in scorep_ompt_cb_host_mutex_acquire() or
+               nest-lock-release in scorep_ompt_cb_host_nest_lock(). */
+            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            UTILS_MutexLock( &( mutex->in_release_operation ) );
+            if ( mutex->optional.nest_level == 0 )
+            {
+                mutex->acquisition_order++;
+            }
+            mutex->optional.nest_level++;
+            SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+        }
+        break;
         case ompt_mutex_critical:
             construct_mutex_acquired( task, OMPT_CRITICAL, OMPT_CRITICAL_SBLOCK, kind, wait_id );
             break;
@@ -2155,12 +2177,12 @@ construct_mutex_acquired( task_t*          task,
 
     /* Getting the regions in acquired as compared to in acquire potentially
        causes less contention. */
-    mutex->outer_region = get_region( task->mutex_acquire_codeptr_ra,
-                                      regionType );
-    mutex->sblock_region = get_region( task->mutex_acquire_codeptr_ra,
-                                       regionTypeSblock );
+    mutex->optional.outer_region = get_region( task->mutex_acquire_codeptr_ra,
+                                               regionType );
+    mutex->optional.sblock_region = get_region( task->mutex_acquire_codeptr_ra,
+                                                regionTypeSblock );
 
-    SCOREP_Location_EnterRegion( NULL, task->mutex_acquire_timestamp, mutex->outer_region );
+    SCOREP_Location_EnterRegion( NULL, task->mutex_acquire_timestamp, mutex->optional.outer_region );
     /* We need to use outer_region and sblock_region in mutex_released. As this
        task can take part in nested synchronizations between this acquire and
        the corresponding release, we can't transfer the regions via the task
@@ -2178,7 +2200,7 @@ construct_mutex_acquired( task_t*          task,
     SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP,
                               mutex->id,
                               mutex->acquisition_order );
-    SCOREP_EnterRegion( mutex->sblock_region );
+    SCOREP_EnterRegion( mutex->optional.sblock_region );
 
     task->mutex_acquire_codeptr_ra = NULL;
     task->mutex_acquire_timestamp  = 0;
@@ -2220,6 +2242,20 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET ] );
         }
         break;
+        case ompt_mutex_nest_lock:
+        {
+            /* nest-lock-release event. See also nest-lock-held in
+               scorep_ompt_cb_host_nest_lock(). */
+            mutex_obj_t* mutex = mutex_get( wait_id, kind );
+            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+            mutex->optional.nest_level--;
+            UTILS_BUG_ON( mutex->optional.nest_level != 0 );
+            UTILS_MutexUnlock( &( mutex->in_release_operation ) );
+            mutex = NULL; /* Don't use after unlock */
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+        }
+        break;
         case ompt_mutex_critical:
             construct_mutex_released( kind, wait_id );
             break;
@@ -2243,8 +2279,8 @@ static inline void
 construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t waitId )
 {
     mutex_obj_t*        mutex        = mutex_get( waitId, kind );
-    SCOREP_RegionHandle outer_region = mutex->outer_region;
-    SCOREP_ExitRegion( mutex->sblock_region );
+    SCOREP_RegionHandle outer_region = mutex->optional.outer_region;
+    SCOREP_ExitRegion( mutex->optional.sblock_region );
     SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
     UTILS_MutexUnlock( &( mutex->in_release_operation ) );
     mutex = NULL; /* Don't use mutex after unlock */
@@ -2294,6 +2330,16 @@ scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
             SCOREP_Location_EnterRegion( location, timestamp, region );
             SCOREP_Location_ExitRegion( location, timestamp, region );
             break;
+        case ompt_mutex_nest_lock:
+            mutex_get_and_insert( wait_id, kind );
+            region = lock_regions[ OMPT_LOCK_INIT_NEST ];
+            if ( hint != 0 /* omp_sync_hint_none */ )
+            {
+                region = lock_regions[ OMPT_LOCK_INIT_NEST_WITH_HINT ];
+            }
+            SCOREP_Location_EnterRegion( location, timestamp, region );
+            SCOREP_Location_ExitRegion( location, timestamp, region );
+            break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
     }
@@ -2337,11 +2383,69 @@ scorep_ompt_cb_host_lock_destroy( ompt_mutex_t   kind,
             SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
             SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
             break;
+        case ompt_mutex_nest_lock:
+            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY_NEST ] );
+            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY_NEST ] );
+            break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
     }
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | kind %s | wait_id %ld | codeptr_ra %p",
                       adapter_tid, mutex2string( kind ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+void
+scorep_ompt_cb_host_nest_lock( ompt_scope_endpoint_t endpoint,
+                               ompt_wait_id_t        wait_id,
+                               const void*           codeptr_ra )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | endpoint %s | wait_id %ld | codeptr_ra %p",
+                       adapter_tid, scope_endpoint2string( endpoint ), wait_id, codeptr_ra );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = get_current_task();
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league nest-lock event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | wait_id %ld | codeptr_ra %p",
+                          adapter_tid, scope_endpoint2string( endpoint ), wait_id, codeptr_ra );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    mutex_obj_t* mutex = mutex_get( wait_id, ompt_mutex_nest_lock );
+    switch ( endpoint )
+    {
+        case ompt_scope_begin:
+            /* nest-lock-owned event: See corresponding nest-lock-acquire in
+               scorep_ompt_cb_host_mutex_acquire() for SCOREP_EnterRegion(). */
+            mutex->optional.nest_level++;
+            SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+            break;
+        case ompt_scope_end:
+            /* nest-lock-held event. See nest-lock-release in scorep_ompt_cb_host_mutex_released()
+               for final release. */
+            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
+            mutex->optional.nest_level--;
+            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            break;
+#if HAVE( DECL_OMPT_SCOPE_BEGINEND )
+        case ompt_scope_beginend:
+            UTILS_BUG( "ompt_scope_beginend not allowed in nest_lock callback" );
+            break;
+#endif  /* DECL_OMPT_SCOPE_BEGINEND */
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | wait_id %ld | codeptr_ra %p",
+                      adapter_tid, scope_endpoint2string( endpoint ), wait_id, codeptr_ra );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
