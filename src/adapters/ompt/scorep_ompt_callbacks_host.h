@@ -145,4 +145,10 @@ scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
                               ompt_dispatch_t kind,
                               ompt_data_t     instance );
 
+/* Callback triggered by the flush event that occurs in a thread that encounters
+   the flush construct. No relation to trace buffers. */
+void
+scorep_ompt_cb_host_flush( ompt_data_t* thread_data,
+                           const void*  codeptr_ra );
+
 #endif /* SCOREP_OMPT_CALLBACKS_HOST_H */
