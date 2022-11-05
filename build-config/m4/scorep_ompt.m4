@@ -118,7 +118,10 @@ ompt_sync_region_t foo3 = ompt_sync_region_barrier_teams;
                                ompt_work_loop_static,
                                ompt_work_loop_dynamic,
                                ompt_work_loop_guided,
-                               ompt_work_loop_other], [], [], [[#include <omp-tools.h>]])],
+                               ompt_work_loop_other,
+                               ompt_dispatch_ws_loop_chunk,
+                               ompt_dispatch_taskloop_chunk,
+                               ompt_dispatch_distribute_chunk], [], [], [[#include <omp-tools.h>]])],
               [# failure
                AC_MSG_WARN([OMPT header lacks version 5.1 enum values])
                ompt_reason_header="lacks version 5.1 enum values"

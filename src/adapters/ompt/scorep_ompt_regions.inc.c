@@ -45,8 +45,8 @@ typedef enum ompt_region_type
     OMPT_CRITICAL_SBLOCK,
     OMPT_ORDERED,
     OMPT_ORDERED_SBLOCK,
-#if 0
     OMPT_SECTION,
+#if 0
     OMPT_TASKLOOP,
     OMPT_FLUSH,
 #endif
@@ -85,6 +85,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_CRITICAL_SBLOCK "!$omp critical sblock"
 #define REGION_OMP_ORDERED "!$omp ordered"
 #define REGION_OMP_ORDERED_SBLOCK "!$omp ordered sblock"
+#define REGION_OMP_SECTION "!$omp section"
 
 static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 {
@@ -109,9 +110,9 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
     { REGION_OMP_CRITICAL_SBLOCK, sizeof( REGION_OMP_CRITICAL_SBLOCK ) - 1, SCOREP_REGION_CRITICAL_SBLOCK,  SCOREP_INVALID_REGION },
     { REGION_OMP_ORDERED,         sizeof( REGION_OMP_ORDERED ) - 1,         SCOREP_REGION_ORDERED,          SCOREP_INVALID_REGION },
     { REGION_OMP_ORDERED_SBLOCK,  sizeof( REGION_OMP_ORDERED_SBLOCK ) - 1,  SCOREP_REGION_ORDERED_SBLOCK,   SCOREP_INVALID_REGION },
+    { REGION_OMP_SECTION,         sizeof( REGION_OMP_SECTION ) - 1,         SCOREP_REGION_SECTION,          SCOREP_INVALID_REGION },
 
 #if 0
-    { "!$omp section",         SCOREP_REGION_SECTION,                 SCOREP_INVALID_REGION },
     { "!$omp taskloop",        SCOREP_REGION_TASKLOOP,                SCOREP_INVALID_REGION },
     { "!$omp flush",           SCOREP_REGION_FLUSH,                   SCOREP_INVALID_REGION },
     /* TODO barrier does not really fit for taskgroup (not handled by opari2). Invent something new? */
@@ -138,7 +139,7 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 #undef REGION_OMP_CRITICAL_SBLOCK
 #undef REGION_OMP_ORDERED
 #undef REGION_OMP_ORDERED_SBLOCK
-
+#undef REGION_OMP_SECTION
 
 /* To match opari2's behavior, define lock regions once but use for all lock
    events. With codeptr_ra available, we could provide a link to the source,

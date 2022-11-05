@@ -139,4 +139,10 @@ scorep_ompt_cb_host_nest_lock( ompt_scope_endpoint_t endpoint,
                                ompt_wait_id_t        wait_id,
                                const void*           codeptr_ra );
 
+void
+scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
+                              ompt_data_t*    task_data,
+                              ompt_dispatch_t kind,
+                              ompt_data_t     instance );
+
 #endif /* SCOREP_OMPT_CALLBACKS_HOST_H */

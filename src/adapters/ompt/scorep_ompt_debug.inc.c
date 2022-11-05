@@ -370,3 +370,29 @@ mutex2string( ompt_mutex_t t )
     UTILS_BUG();
     return "";
 }
+
+static const char*
+dispatch2string( ompt_dispatch_t t )
+{
+    switch ( t )
+    {
+        case ompt_dispatch_iteration:
+            return "iteration";
+        case ompt_dispatch_section:
+            return "section";
+        #if HAVE( DECL_OMPT_DISPATCH_WS_LOOP_CHUNK )
+        case ompt_dispatch_ws_loop_chunk:
+            return "ws_loop_chunk";
+        #endif
+        #if HAVE( DECL_OMPT_DISPATCH_TASKLOOP_CHUNK )
+        case ompt_dispatch_taskloop_chunk:
+            return "taskloop_chunk";
+        #endif
+        #if HAVE( DECL_OMPT_DISPATCH_DISTRIBUTE_CHUNK )
+        case ompt_dispatch_distribute_chunk:
+            return "distribute_chunk";
+        #endif
+    }
+    UTILS_BUG();
+    return "";
+}

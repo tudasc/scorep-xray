@@ -76,8 +76,16 @@ typedef struct task_t
     uint8_t              workshare_regions_capacity;
     uint8_t              workshare_regions_current;
 
-    struct SCOREP_Task*  scorep_task; /* Score-P task object, mainly for explicit
-                                         tasks, see also implicit-task-begin. */
+    /* For dispatch events, we see the begin only. Here, we store data needed for
+       a corresponding end event. This data gets used at the next dispatch-begin
+       or the corresponding workshare-end. */
+    union
+    {
+        SCOREP_RegionHandle section;
+    } dispatch;
+
+    struct SCOREP_Task* scorep_task; /* Score-P task object, mainly for explicit
+                                        tasks, see also implicit-task-begin. */
 
     /* If task is involved in mutex-like synchronization, pass data from acquire
        to acquired callbacks (acquire will then create a mutex objects that is
@@ -1542,6 +1550,7 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                     break;
                 case ompt_work_sections:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SECTIONS ) );
+                    task->dispatch.section = SCOREP_INVALID_REGION;
                     break;
                 case ompt_work_single_executor:
                     SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
@@ -1565,6 +1574,12 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
                     SCOREP_ExitRegion( work_end( task ) );
                     break;
                 case ompt_work_sections:
+                    /* Exit last section, it was entered in dispatch cb. */
+                    if ( task->dispatch.section != SCOREP_INVALID_REGION )
+                    {
+                        SCOREP_ExitRegion( task->dispatch.section );
+                        task->dispatch.section = SCOREP_INVALID_REGION;
+                    }
                     SCOREP_ExitRegion( work_end( task ) );
                     break;
                 case ompt_work_single_executor:
@@ -2447,5 +2462,68 @@ scorep_ompt_cb_host_nest_lock( ompt_scope_endpoint_t endpoint,
 
     UTILS_DEBUG_EXIT( "atid %" PRIu32 " | endpoint %s | wait_id %ld | codeptr_ra %p",
                       adapter_tid, scope_endpoint2string( endpoint ), wait_id, codeptr_ra );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+
+/*
+   typedef enum ompt_dispatch_t {
+   ompt_dispatch_iteration = 1,
+   ompt_dispatch_section = 2,
+   ompt_dispatch_ws_loop_chunk = 3,
+   ompt_dispatch_taskloop_chunk = 4,
+   ompt_dispatch_distribute_chunk = 5
+   } ompt_dispatch_t;
+ */
+
+void
+scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
+                              ompt_data_t*    task_data,
+                              ompt_dispatch_t kind,
+                              ompt_data_t     instance )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY( "atid %" PRIu32 " | parallel_data->ptr %p | task_data->ptr %p | "
+                       "dispatch %s | instance.value %" PRIu64 " | instance.ptr %p",
+                       adapter_tid, parallel_data->ptr, task_data->ptr,
+                       dispatch2string( kind ), instance.value, instance.ptr );
+    SCOREP_OMPT_RETURN_ON_INVALID_EVENT();
+
+    task_t* task = task_data->ptr;
+
+    /* For now, prevent league events */
+    if ( task->belongs_to_league )
+    {
+        UTILS_WARN_ONCE( "OpenMP league dispatch event detected. "
+                         "Not handled yet. Score-P might crash." );
+        UTILS_DEBUG_EXIT( "atid %" PRIu32 " | parallel_data->ptr %p | task_data->ptr %p | "
+                          "dispatch %s | instance.value %" PRIu64 " | instance.ptr %p",
+                          adapter_tid, parallel_data->ptr, task_data->ptr,
+                          dispatch2string( kind ), instance.value, instance.ptr );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    switch ( kind )
+    {
+        case ompt_dispatch_section:
+            /* Exit previous section, if any. */
+            if ( task->dispatch.section != SCOREP_INVALID_REGION )
+            {
+                SCOREP_ExitRegion( task->dispatch.section );
+            }
+            /* Enter new section. To be exited when this cb is triggered again
+               or when the enclosing sections-end event is encountered. */
+            task->dispatch.section = get_region( instance.ptr, OMPT_SECTION );
+            SCOREP_EnterRegion( task->dispatch.section );
+            break;
+        default:
+            UTILS_WARNING( "dispatch kind %s not implemented yet.", dispatch2string( kind ) );
+    }
+
+    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | parallel_data->ptr %p | task_data->ptr %p | "
+                      "dispatch %s | instance.value %" PRIu64 " | instance.ptr %p",
+                      adapter_tid, parallel_data->ptr, task_data->ptr,
+                      dispatch2string( kind ), instance.value, instance.ptr );
     SCOREP_IN_MEASUREMENT_DECREMENT();
 }
