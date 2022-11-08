@@ -66,6 +66,7 @@ main( int argc, char** argv )
     SCOREP_Location* location2 =
         SCOREP_Location_CreateNonCPULocation( location1,
                                               SCOREP_LOCATION_TYPE_GPU,
+                                              SCOREP_PARADIGM_CUDA,
                                               "test_gpu",
                                               device_context );
 

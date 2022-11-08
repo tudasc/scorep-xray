@@ -29,7 +29,7 @@
 
 
 /* *INDENT-OFF* */
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args ) \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args ) \
     SCOREP_LIBWRAP_DEFINE_REAL_FUNC( ( return_type ), func, func_args );
 /* *INDENT-ON* */
 
@@ -42,7 +42,7 @@
 static void
 opencl_init_function_pointers( SCOREP_LibwrapHandle* handle )
 {
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args ) \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args ) \
     SCOREP_Libwrap_SharedPtrInit( handle, #func, \
                                   ( void** )( &SCOREP_LIBWRAP_FUNC_REAL_NAME( func ) ) );
 

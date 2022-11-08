@@ -90,6 +90,7 @@ process to be analyzed and the number of cores to be used.
  <dd>\if LATEX <br> \endif
   <ul>
    <li>@emph{CUDA}</li>
+   <li>@emph{HIP}</li>
    <li>@emph{OpenCL}</li>
    <li>@emph{OpenACC}</li>
   </ul>
@@ -263,6 +264,7 @@ instrumentation. These are currently:
  <li> OpenMP source code instrumentation using Opari2, </li>
  <li> Pthread and OpenCL instrumentation via GNU ld library wrapping, </li>
  <li> CUDA instrumentation via the NVIDIA CUDA Profiling Tools Interface (CUPTI), </li>
+ <li> HIP instrumentation via the AMD ROCm interface</li>
  <li> OpenACC instrumentation using the OpenACC Profiling Interface, </li>
  <li> I/O library interposition.</li>
 </ul>

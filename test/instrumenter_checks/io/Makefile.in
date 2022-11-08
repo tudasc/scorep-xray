@@ -20,12 +20,14 @@ CFLAGS   =
 CXX      = @CXX@
 CXXFLAGS =
 
-BINDIR   = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
-SRCDIR   = @abs_top_srcdir@/../test/instrumenter_checks/io
-INCDIR   = @abs_top_builddir@/../installcheck/instrumenter_checks
-TOOLS    = @BINDIR@/scorep @BINDIR@/scorep-config $(INCDIR)/check-instrumentation.sh
-PREPOPTS = --nomemory
-PREP     = "@BINDIR@/scorep" $(PREPOPTS)
+TOOLS_BINDIR               = @BINDIR@
+INSTRUMENTERCHECK_SRCDIR   = @abs_top_srcdir@/../test/instrumenter_checks
+SRCDIR                     = $(INSTRUMENTERCHECK_SRCDIR)/io
+INSTRUMENTERCHECK_BUILDDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
+BINDIR                     = $(INSTRUMENTERCHECK_BUILDDIR)/bin
+TOOLS                      = $(TOOLS_BINDIR)/scorep $(TOOLS_BINDIR)/scorep-config $(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh
+PREP                       = "$(TOOLS_BINDIR)/scorep" $(PREPOPTS)
+PREPOPTS                   = --nomemory
 
 scorep__tty_colors = \
 red=; grn=; blu=; mgn=; std=; \
@@ -73,32 +75,32 @@ all: $(TESTS)
 $(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CC)$(PREP) --io=posix $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=posix $(SCOREP_V_verbose)
 
 $(BINDIR)/%: $(SRCDIR)/%.cpp $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CXX)$(PREP) --io=posix $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=posix $(SCOREP_V_verbose)
 
 $(BINDIR)/%-linktime: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CC)$(PREP) --io=linktime:posix $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=linktime:posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=linktime:posix $(SCOREP_V_verbose)
 
 $(BINDIR)/%-linktime: $(SRCDIR)/%.cpp $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CXX)$(PREP) --io=linktime:posix $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=linktime:posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=linktime:posix $(SCOREP_V_verbose)
 
 $(BINDIR)/%-runtime: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CC)$(PREP) --io=runtime:posix $(SCOREP_V_verbose) $(CC) $(CFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=runtime:posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=runtime:posix $(SCOREP_V_verbose)
 
 $(BINDIR)/%-runtime: $(SRCDIR)/%.cpp $(TOOLS)
 	@mkdir -p $(BINDIR)
 	$(SCOREP_V_CXX)$(PREP) --io=runtime:posix $(SCOREP_V_verbose) $(CXX) $(CXXFLAGS) -o $@ $<
-	@$(INCDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=runtime:posix $(SCOREP_V_verbose)
+	@$(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh serial $@ $(PREPOPTS) --io=runtime:posix $(SCOREP_V_verbose)
 
 clean:
 	@rm -f $(TESTS)

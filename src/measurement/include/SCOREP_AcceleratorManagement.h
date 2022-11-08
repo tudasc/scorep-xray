@@ -31,4 +31,10 @@ SCOREP_LocationGroupHandle
 SCOREP_AcceleratorMgmt_CreateContext( SCOREP_SystemTreeNodeHandle deviceHandle,
                                       const char*                 name );
 
+/**
+ * @brief Parameter for the callsite hash to connect kerneal and kernal launch.
+ */
+SCOREP_ParameterHandle
+SCOREP_AcceleratorMgmt_GetCallsiteParameter( void );
+
 #endif /* SCOREP_ACCELERATOR_MANAGEMENT_H */

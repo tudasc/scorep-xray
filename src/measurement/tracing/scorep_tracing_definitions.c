@@ -718,13 +718,18 @@ scorep_write_region_definitions( void*                     writerHandle,
                 region_role = OTF2_REGION_ROLE_CODE;
                 break;
 
-            #define SCOREP_REGION_TYPE( NAME, name_str ) \
-    case SCOREP_REGION_ ## NAME:                     \
-        region_role = OTF2_REGION_ROLE_ ## NAME;     \
+#define OTF2_REGION_ROLE_KERNEL_LAUNCH OTF2_REGION_ROLE_WRAPPER
+#define OTF2_REGION_ROLE_KERNEL        OTF2_REGION_ROLE_FUNCTION
+#define SCOREP_REGION_TYPE( NAME, name_str )     \
+    case SCOREP_REGION_ ## NAME:                 \
+        region_role = OTF2_REGION_ROLE_ ## NAME; \
         break;
 
                 SCOREP_REGION_TYPES
-            #undef SCOREP_REGION_TYPE
+
+#undef SCOREP_REGION_TYPE
+#undef OTF2_REGION_ROLE_KERNEL_LAUNCH
+#undef OTF2_REGION_ROLE_KERNEL
 
             default:
                 region_role = OTF2_REGION_ROLE_UNKNOWN;

@@ -92,7 +92,8 @@ scorep_cuda_define_cuda_group( void )
                                                              Location,
                                                              location )
         {
-            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU ||
+                 definition->paradigm      != SCOREP_PARADIGM_CUDA )
             {
                 continue;
             }
@@ -109,7 +110,8 @@ scorep_cuda_define_cuda_group( void )
                                                                  Location,
                                                                  location )
             {
-                if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+                if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU ||
+                     definition->paradigm      != SCOREP_PARADIGM_CUDA )
                 {
                     continue;
                 }

@@ -124,5 +124,10 @@ Common options are:
                   of available library wrappers.
   --kokkos        Enables Kokkos instrumentation.
   --nokokkos      Disables Kokkos instrumentation.
+  --hip           Enables HIP instrumentation. Enabled by default, if the
+                  hipcc compiler is in use. In this case it also disables by
+                  default the compiler instrumentation and conflicts with the
+                  preprocessing.
+  --nohip         Disables HIP instrumentation.
 
 Report bugs to <support@score-p.org>

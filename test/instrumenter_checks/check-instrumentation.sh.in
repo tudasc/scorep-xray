@@ -95,6 +95,7 @@ unset OPARI2_USER
 @HAVE_MEMORY_SUPPORT_FALSE@unset MEMORY
 unset USER
 unset CUDA
+unset HIP
 unset POSIXIO
 unset VERBOSE
 case ${PARADIGM} in
@@ -105,6 +106,11 @@ case ${PARADIGM} in
     cuda)
         # CUDA instrumentation uses nvcc, which defaults to enable CUDA
         CUDA=yes
+        ;;
+
+    hip)
+        # HIP instrumentation uses hipcc, which defaults to enable HIP
+        HIP=yes
         ;;
 
     *_*)
@@ -143,6 +149,13 @@ while test $# -ne 0; do
             ;;
         --nocuda)
             unset CUDA
+            ;;
+
+        --hip)
+            HIP=yes
+            ;;
+        --nohip)
+            unset HIP
             ;;
 
         --mpp=*)
@@ -231,7 +244,7 @@ fi
 
 # --- Determine which kind of instrumentation is expected ---
 unset INST_EXPECTED
-if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}${MEMORY}${CUDA}${POSIXIO}"; then
+if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}${MEMORY}${CUDA}${HIP}${POSIXIO}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
 fi
 if test -n "${COMP}"; then
@@ -254,6 +267,9 @@ if test -n "${MEMORY}"; then
 fi
 if test -n "${CUDA}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }cuda"
+fi
+if test -n "${HIP}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }hip"
 fi
 if test -n "${POSIXIO}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }posixio"
@@ -368,6 +384,13 @@ STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_cuda_features`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_cuda_mgmt.`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }cuda"
+fi
+
+# HIP instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_Subsystem_HipAdapter`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_hip_mgmt.`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }hip"
 fi
 
 # I/O instrumentation?     (custom check)

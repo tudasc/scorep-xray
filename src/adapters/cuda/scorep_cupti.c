@@ -186,9 +186,7 @@ scorep_cupti_init( void )
 
         if ( scorep_cuda_record_callsites )
         {
-            /* The name "callsite id" is not free to choose as it used in other
-               parts of the measurement system. */
-            scorep_cupti_parameter_callsite_id = SCOREP_Definitions_NewParameter( "callsite id", SCOREP_PARAMETER_UINT64 );
+            scorep_cupti_parameter_callsite_id = SCOREP_AcceleratorMgmt_GetCallsiteParameter();
         }
 
         scorep_cupti_initialized = true;
@@ -279,6 +277,7 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         stream->scorep_location =
             SCOREP_Location_CreateNonCPULocation( context->host_location,
                                                   SCOREP_LOCATION_TYPE_GPU,
+                                                  SCOREP_PARADIGM_CUDA,
                                                   thread_name,
                                                   context->location_group );
 

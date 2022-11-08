@@ -59,4 +59,4 @@ $(OBJDIR)/VariableDef.o: $(SRCDIR)/VariableDef.f90
 # Generic rules and variables, don't move above OBJECTS and LIBS
 #------------------------------------------------------------------------------
 
-include $(INCDIR)/Makefile.common_rules
+include $(INSTRUMENTERCHECK_SRCDIR)/Makefile.common_rules

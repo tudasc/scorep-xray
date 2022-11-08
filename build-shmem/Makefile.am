@@ -134,7 +134,8 @@ endif HAVE_SHMEM_SUPPORT
 
 # These prerequisites are controlled by build-backend/Makefile
 foreign_instrumenter_check_prerequisites = \
-    ../installcheck/instrumenter_checks/Makefile.common_rules \
+    $(SRC_ROOT)test/instrumenter_checks/Makefile.common_rules_base \
+    $(SRC_ROOT)test/instrumenter_checks/Makefile.common_rules \
     ../installcheck/instrumenter_checks/Makefile.instrument_configurations \
     ../installcheck/instrumenter_checks/instrumenter-configurations.sh \
     ../installcheck/instrumenter_checks/check-instrumentation.sh

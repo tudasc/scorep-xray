@@ -70,7 +70,7 @@ paradigm_list="serial"
 @HAVE_CUDA_SUPPORT_TRUE@paradigm_list="${paradigm_list} cuda"
 
 # remove files from previous invocation. clean all possible.
-for paradigm in serial omp mpi mpi_omp shmem shmem_omp cuda; do
+for paradigm in serial omp mpi mpi_omp shmem shmem_omp cuda hip; do
     rm -f ${file_prefix}${paradigm}
 done
 # set defaults for supported paradigms
@@ -140,6 +140,11 @@ for comp_arg in $compilerargs; do
 @HAVE_CUDA_SUPPORT_TRUE@                    done
 @HAVE_CUDA_SUPPORT_TRUE@                fi
 
+                # hip -------------------------------#
+@HAVE_HIP_CHECK_SUPPORT_TRUE@                if [ $preprocess_user_arg = nopreprocess ]; then
+@HAVE_HIP_CHECK_SUPPORT_TRUE@                    echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg hip" >> ${file_prefix}hip
+@HAVE_HIP_CHECK_SUPPORT_TRUE@                fi
+
                 # ...  ------------------------------#
 
                 # --- output per paradigm ends --- #
@@ -179,3 +184,7 @@ fi
 @HAVE_CUDA_SUPPORT_TRUE@if test -f "${file_prefix}cuda"; then
 @HAVE_CUDA_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}cuda"
 @HAVE_CUDA_SUPPORT_TRUE@fi
+
+@HAVE_HIP_CHECK_SUPPORT_TRUE@if test -f "${file_prefix}hip"; then
+@HAVE_HIP_CHECK_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}hip"
+@HAVE_HIP_CHECK_SUPPORT_TRUE@fi

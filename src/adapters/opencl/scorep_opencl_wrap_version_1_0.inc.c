@@ -1283,7 +1283,7 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel )( cl_command_queue commandQueu
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueNDRangeKernel );
 
-    scorep_opencl_buffer_entry* kernel;
+    scorep_opencl_buffer_entry* kernel = NULL;
     if ( trigger
          && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
          && scorep_opencl_record_kernels )

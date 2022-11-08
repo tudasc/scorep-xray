@@ -182,6 +182,9 @@ endif HAVE_OPENMP_C_SUPPORT
 if HAVE_CUDA_SUPPORT
 PARADIGMS += cuda
 endif HAVE_CUDA_SUPPORT
+if HAVE_HIP_CHECK_SUPPORT
+PARADIGMS += hip
+endif HAVE_HIP_CHECK_SUPPORT
 
 INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files) \
@@ -203,6 +206,9 @@ instrumenter_configuration_files = ../installcheck/instrumenter_checks/configura
 if HAVE_CUDA_SUPPORT
 instrumenter_configuration_files += ../installcheck/instrumenter_checks/configurations_cuda
 endif HAVE_CUDA_SUPPORT
+if HAVE_HIP_CHECK_SUPPORT
+instrumenter_configuration_files += ../installcheck/instrumenter_checks/configurations_hip
+endif HAVE_HIP_CHECK_SUPPORT
 
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh

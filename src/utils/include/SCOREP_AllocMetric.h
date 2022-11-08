@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2016,
@@ -39,6 +39,12 @@ typedef struct SCOREP_AllocMetric SCOREP_AllocMetric;
 SCOREP_ErrorCode
 SCOREP_AllocMetric_New( const char*          name,
                         SCOREP_AllocMetric** allocMetric );
+
+
+SCOREP_ErrorCode
+SCOREP_AllocMetric_NewScoped( const char*                name,
+                              SCOREP_LocationGroupHandle scope,
+                              SCOREP_AllocMetric**       allocMetric );
 
 
 void

@@ -113,14 +113,17 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
 
     if ( 0 == rank )
     {
-        /*
-         * Don't define this in the unified manager, it disturbs greatly
-         * the string mapping
-         */
-        SCOREP_Definitions_NewGroup( type,
-                                     name,
-                                     total_number_of_locations,
-                                     all_locations );
+        if ( total_number_of_locations != 0 )
+        {
+            /*
+             * Don't define this in the unified manager, it disturbs greatly
+             * the string mapping
+             */
+            SCOREP_Definitions_NewGroup( type,
+                                         name,
+                                         total_number_of_locations,
+                                         all_locations );
+        }
         free( all_locations );
     }
 
@@ -226,104 +229,6 @@ scorep_unify_helper_create_interim_comm_mapping( scorep_definitions_manager_entr
         interim_comm_mapping[ definition->sequence_number ] = comm_mapping[ comm_definition->sequence_number ];
     }
     SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END();
-}
-
-void
-scorep_unify_helper_check_callsite_hashes( void )
-{
-    uint32_t* used_callsites           = NULL;
-    uint32_t  used_callsites_size      = 0;
-    uint32_t  used_callsites_capacity  = 0;
-    uint32_t  callsite_hash_collisions = 0;
-
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
-                                                         Callpath,
-                                                         callpath )
-    {
-        for ( uint32_t i = 0; i < definition->number_of_parameters; i++ )
-        {
-            if ( strcmp( SCOREP_ParameterHandle_GetName( definition->parameters[ i ].parameter_handle ), "callsite id" ) == 0 )
-            {
-                /* Data management happens on the launch side as it will always precede the execution side.
-                 * Check for duplicates only on the launch side where the value is created.
-                 * Callsite hashes should be unique across paradigms as they are bound to respective
-                 * launch commands and should be on different callpaths anyhow.
-                 */
-                UTILS_BUG_ON( SCOREP_ParameterHandle_GetType( definition->parameters[ i ].parameter_handle ) == SCOREP_PARAMETER_STRING,
-                              "Callsite parameter has to be an integer parameter!" );
-                int64_t parameter_int_value = definition->parameters[ i ].parameter_value.integer_value;
-                UTILS_BUG_ON( parameter_int_value  < 0 || parameter_int_value > UINT32_MAX,
-                              "Callsite parameter out of range for uint32_t!" );
-                if ( SCOREP_RegionHandle_GetParadigmType( definition->region_handle ) == SCOREP_PARADIGM_CUDA )
-                {
-                    /* Dealing with launch and execution side for the CUDA case. */
-                    if ( SCOREP_RegionHandle_GetType( definition->region_handle ) == SCOREP_REGION_WRAPPER )
-                    {
-                        bool no_duplicates = true;
-                        for ( uint32_t j = 0; j < used_callsites_size; j++ )
-                        {
-                            if ( used_callsites[ j ] == ( uint32_t )parameter_int_value )
-                            {
-                                /* Since every callpath from the definitions should have a distinct callsite (if any)
-                                 * the appearance of a duplicate indicates a hash collision in the callpath identification
-                                 * during runtime.
-                                 * This check provides a warning that some callsites might have been mistakenly unified
-                                 * and allows a correctness check. */
-                                UTILS_WARNING( "Debug information: Callsite hash collision detected"
-                                               " (reoccuring call site id hash: %, current callpath: %u) Please report to <support@score-p.org>.",
-                                               used_callsites[ j ], definition->sequence_number );
-                                no_duplicates = false;
-                                callsite_hash_collisions++;
-                                break;
-                            }
-                        }
-                        if ( no_duplicates )
-                        {
-                            if ( used_callsites_size == used_callsites_capacity )
-                            {
-                                /* Dynamic allocation in batches of 100 */
-                                used_callsites_capacity += 100;
-                                used_callsites           = realloc( used_callsites, sizeof( uint32_t ) * ( used_callsites_capacity ) );
-                                UTILS_ASSERT( used_callsites != NULL );
-                            }
-                            /* If the callsite is new, which should be the correct default, add the new id to the list. */
-                            used_callsites[ used_callsites_size ] = ( uint32_t )parameter_int_value;
-                            used_callsites_size++;
-                        }
-                    }
-                    else
-                    {
-                        /* Kernel execution - the only non "wrapper" carrier of the callsite parameter for CUDA. */
-                        bool no_match = true;
-                        for ( uint32_t j = 0; j < used_callsites_size; j++ )
-                        {
-                            if ( used_callsites[ j ] == ( uint32_t )parameter_int_value )
-                            {
-                                no_match = false;
-                                break;
-                            }
-                        }
-                        if ( no_match )
-                        {
-                            /* This should not be happening, as every callsite hash should have been registered. */
-                            UTILS_WARNING( "Call site hash %u could not be matched to any callsite! (current callpath:%u)",
-                                           ( uint32_t )parameter_int_value, definition->sequence_number );
-                        }
-                    }
-                }
-            }
-        }
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-
-    if ( callsite_hash_collisions > 0 )
-    {
-        UTILS_WARNING( "Unfortunately, Score-P was not able to generate unique call site identifiers;"
-                       " %u collisions were detected. Please report to <support@score-p.org>.",
-                       callsite_hash_collisions );
-    }
-
-    free( used_callsites );
 }
 
 /* fool linker, so that this unit is always linked into the library/binary. */

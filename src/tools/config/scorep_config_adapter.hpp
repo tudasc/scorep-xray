@@ -346,6 +346,30 @@ public:
     appendInitStructName( std::deque<std::string>& init_structs ) override;
 };
 
+
+/* **************************************************************************************
+ * class SCOREP_Config_HipAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the HIP adapter.
+ */
+class SCOREP_Config_HipAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_HipAdapter();
+    void
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc ) override;
+    void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps ) override;
+    void
+    appendInitStructName( std::deque<std::string>& init_structs ) override;
+};
+
 /* **************************************************************************************
  * class SCOREP_Config_OpenaccAdapter
  * *************************************************************************************/

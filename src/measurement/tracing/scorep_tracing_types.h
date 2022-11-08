@@ -133,6 +133,10 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         case_return( TOPOLOGY_USER_LOCATIONS, COMM_LOCATIONS );
         case_return( TOPOLOGY_USER_GROUP, COMM_GROUP );
 
+        // HIP
+        case_return( HIP_LOCATIONS,     COMM_LOCATIONS );
+        case_return( HIP_GROUP,         COMM_GROUP );
+
 #undef case_return
         default:
             UTILS_BUG( "Invalid group type: %u", scorepType );

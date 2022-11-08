@@ -590,7 +590,25 @@ various Score-P components.
     library) is important for your use case, please contact
     support@score-p.org for help.
 
+--------------------------------------------------------------------------------
 
+* HIP support
+
+  - Score-P is only able to use one compiler suite for one installation.
+    Because `hipcc` is Clang based, it also only accepts the Clang compiler
+    instrumentation. Thus Score-P must be build with a Clang-based compiler
+    suite.
+
+    If the compile step for device code errors out with:
+
+        lld: error: undefined symbol: __cyg_profile_func_enter
+        >>> referenced by <filename>:<linenumber>
+
+    then the heuristic to detect the usage of `hipcc` failed and must be
+    enabled explicity with `scorep --hip`.
+
+  - Device-to-device data transfers are only recorded on the API level, not
+    as a device activity.
 
 --------------------------------------------------------------------------------
 

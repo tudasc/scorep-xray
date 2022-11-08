@@ -952,6 +952,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
+                                                                    SCOREP_INVALID_PARADIGM_TYPE,
                                                                     "",
                                                                     SCOREP_GetProcessLocationGroup() );
                     }
@@ -1651,6 +1652,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                         current_location_metric_set->additional_locations[ loc_num ]
                             = SCOREP_Location_CreateNonCPULocation( location,
                                                                     SCOREP_LOCATION_TYPE_METRIC,
+                                                                    SCOREP_INVALID_PARADIGM_TYPE,
                                                                     "",
                                                                     SCOREP_GetProcessLocationGroup() );
                     }

@@ -122,21 +122,24 @@ bool
 SCOREP_Instrumenter_OpenCLAdapter::checkCommand( const std::string& current,
                                                  const std::string& next )
 {
-    if ( ( m_usage == detect ) &&
-         ( current == "-l" ) &&
-         ( is_opencl_library( next ) ) )
+    bool skip_next = false;
+
+    if ( current.substr( 0, 2 ) == "-l" )
     {
-        m_usage = enabled;
-        return true;
+        std::string lib = current.substr( 2 );
+        if ( lib.length() == 0 )
+        {
+            lib       = next;
+            skip_next = true;
+        }
+        if ( ( m_usage == detect )
+             && is_opencl_library( lib ) )
+        {
+            m_usage = enabled;
+        }
     }
-    else if ( ( m_usage == detect ) &&
-              ( current.substr( 0, 2 ) == "-l" ) &&
-              ( is_opencl_library( current.substr( 2 ) ) ) )
-    {
-        m_usage = enabled;
-        return false;
-    }
-    return false;
+
+    return skip_next;
 }
 
 bool

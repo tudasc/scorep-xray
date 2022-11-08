@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2021,
+dnl Copyright (c) 2009-2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -271,11 +271,13 @@ AFS_POSIX_REALPATH
 
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
+SCOREP_HIP
 SCOREP_OPENACC
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI
 SCOREP_MNTENT_CHECK
 SCOREP_LUSTREAPI_CHECK
+
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
@@ -399,6 +401,16 @@ AM_COND_IF([HAVE_CUDA_SUPPORT], [
     esac
 ])
 
+# add hipcc wrapper
+AM_COND_IF([HAVE_HIP_SUPPORT], [
+    case " ${scorep_list_of_wrappers} " in
+    (*" scorep-hipcc "*) : ignore duplicate ;;
+    (*)
+        AS_VAR_APPEND([scorep_list_of_wrappers], ["scorep-hipcc "])
+    ;;
+    esac
+])
+
 AC_CONFIG_FILES([scorep-wrapper:../src/tools/wrapper/scorep-wrapper.in],
                 [chmod +x scorep-wrapper])
 AC_SUBST([SCOREP_WRAPPER_NAMES], [${scorep_list_of_wrappers}])
@@ -408,8 +420,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [AFS_SET_SILENT_RULE_PREFIX([BE])])
 AFS_CONFIG_MAKEFILE
 
-AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../test/instrumenter_checks/Makefile.common_rules.in
-                 ../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in
+AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in
                  ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
                  ../installcheck/instrumenter_checks/omp/Makefile:../test/instrumenter_checks/omp/Makefile.in
                  ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
@@ -422,6 +433,8 @@ AM_COND_IF([HAVE_CUDA_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/cuda/Makefile:../test/instrumenter_checks/cuda/Makefile.in])])
 AM_COND_IF([HAVE_POSIX_IO_SUPPORT],
     [AC_CONFIG_FILES([../installcheck/instrumenter_checks/io/Makefile:../test/instrumenter_checks/io/Makefile.in])])
+AM_COND_IF([HAVE_HIP_CHECK_SUPPORT],
+    [AC_CONFIG_FILES([../installcheck/instrumenter_checks/hip/Makefile:../test/instrumenter_checks/hip/Makefile.in])])
 
 AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
                 [chmod +x ../test/adapters/opencl/run_opencl_test.sh])

@@ -311,7 +311,9 @@ cuda_api_get_region( CUpti_CallbackDomain domain,
         domain == CUPTI_CB_DOMAIN_RUNTIME_API
         ? cuda_runtime_file_handle
         : cuda_driver_file_handle,
-        0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
+        0, 0, SCOREP_PARADIGM_CUDA,
+        callbackId == CUPTI_DRIVER_TRACE_CBID_cuLaunchKernel
+        ? SCOREP_REGION_KERNEL_LAUNCH : SCOREP_REGION_WRAPPER );
 
     cuda_function_table[ idx ] = region_handle;
 

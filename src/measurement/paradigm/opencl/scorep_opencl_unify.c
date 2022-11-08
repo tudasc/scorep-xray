@@ -68,7 +68,8 @@ scorep_opencl_define_group( void )
                                                              Location,
                                                              location )
         {
-            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU ||
+                 definition->paradigm      != SCOREP_PARADIGM_OPENCL )
             {
                 continue;
             }
@@ -85,7 +86,8 @@ scorep_opencl_define_group( void )
                                                                  Location,
                                                                  location )
             {
-                if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+                if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU ||
+                     definition->paradigm      != SCOREP_PARADIGM_OPENCL )
                 {
                     continue;
                 }

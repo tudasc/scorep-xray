@@ -1508,8 +1508,8 @@ struct leaked_memory_memento
     leaked_memory_memento*       next;
 };
 
-
 static leaked_memory_memento* leaked_memory_memento_free_list;
+static UTILS_Mutex            leaked_memory_memento_free_list_mutex;
 
 static void
 track_alloc( struct SCOREP_Location* threadData,
@@ -1521,10 +1521,11 @@ track_alloc( struct SCOREP_Location* threadData,
              size_t                  bytesAllocatedProcess )
 {
     UTILS_ASSERT( substrateData );
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+
     SCOREP_Profile_TriggerInteger( threadData, bytes_allocated_metric, bytesAllocated );
     SCOREP_Profile_TriggerInteger( threadData, max_heap_memory_allocated_metric, bytesAllocatedProcess );
 
+    UTILS_MutexLock( &leaked_memory_memento_free_list_mutex );
     leaked_memory_memento* memento = leaked_memory_memento_free_list;
     if ( memento )
     {
@@ -1534,6 +1535,9 @@ track_alloc( struct SCOREP_Location* threadData,
     {
         memento = SCOREP_Location_AllocForProfile( threadData, sizeof( leaked_memory_memento ) );
     }
+    UTILS_MutexUnlock( &leaked_memory_memento_free_list_mutex );
+
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
     memento->node                                = scorep_profile_get_current_node( location );
     memento->location                            = location;
     memento->next                                = NULL;
@@ -1554,13 +1558,13 @@ track_realloc( struct SCOREP_Location* threadData,
                size_t                  bytesAllocatedProcess )
 {
     UTILS_ASSERT( oldSubstrateData );
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
 
     SCOREP_Profile_TriggerInteger( threadData, bytes_freed_metric, oldBytesAllocated );
     SCOREP_Profile_TriggerInteger( threadData, bytes_allocated_metric, newBytesAllocated );
     SCOREP_Profile_TriggerInteger( threadData, max_heap_memory_allocated_metric, bytesAllocatedProcess );
 
-    leaked_memory_memento* memento = oldSubstrateData[ scorep_profile_substrate_id ];
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+    leaked_memory_memento*       memento  = oldSubstrateData[ scorep_profile_substrate_id ];
     memento->node     = scorep_profile_get_current_node( location );
     memento->location = location;
     UTILS_BUG_ON( memento->next != NULL );
@@ -1582,7 +1586,7 @@ track_free( struct SCOREP_Location* threadData,
             size_t                  bytesAllocatedProcess )
 {
     UTILS_ASSERT( substrateData );
-    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( threadData );
+
     SCOREP_Profile_TriggerInteger( threadData, bytes_freed_metric, bytesFreed );
 
     leaked_memory_memento* free_me = substrateData[ scorep_profile_substrate_id ];
@@ -1591,8 +1595,12 @@ track_free( struct SCOREP_Location* threadData,
         UTILS_WARNING( "Address %p freed but provides no substrate data.", ( void* )addrFreed );
         return;
     }
-    free_me->next                                = leaked_memory_memento_free_list;
-    leaked_memory_memento_free_list              = free_me;
+
+    UTILS_MutexLock( &leaked_memory_memento_free_list_mutex );
+    free_me->next                   = leaked_memory_memento_free_list;
+    leaked_memory_memento_free_list = free_me;
+    UTILS_MutexUnlock( &leaked_memory_memento_free_list_mutex );
+
     substrateData[ scorep_profile_substrate_id ] = NULL;
 }
 
@@ -1601,7 +1609,7 @@ static void
 leaked_memory( uint64_t addrLeaked, size_t bytesLeaked, void* substrateData[] )
 {
     /* This function triggers a counter, which should not happen when recording is disabled.
-     * Therfore, return. */
+     * Therefore, return. */
     if ( !SCOREP_RecordingEnabled() )
     {
         return;

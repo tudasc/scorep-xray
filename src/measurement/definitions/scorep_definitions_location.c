@@ -73,6 +73,7 @@ define_location( SCOREP_DefinitionManager*  definition_manager,
                  uint64_t                   globalLocationId,
                  SCOREP_StringHandle        nameHandle,
                  SCOREP_LocationType        locationType,
+                 SCOREP_ParadigmType        paradigm,
                  SCOREP_LocationGroupHandle locationGroupParent,
                  uint64_t                   numberOfEvents,
                  size_t                     sizeOfPayload,
@@ -83,6 +84,7 @@ define_location( SCOREP_DefinitionManager*  definition_manager,
  */
 SCOREP_LocationHandle
 SCOREP_Definitions_NewLocation( SCOREP_LocationType        locationType,
+                                SCOREP_ParadigmType        paradigm,
                                 const char*                name,
                                 SCOREP_LocationGroupHandle locationGroupParent,
                                 size_t                     sizeOfPayload,
@@ -97,6 +99,7 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType        locationType,
             &scorep_local_definition_manager,
             name ? name : "" ),
         locationType,
+        paradigm,
         locationGroupParent,
         0,
         sizeOfPayload, payload );
@@ -133,6 +136,7 @@ scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
             String,
             handlesPageManager ),
         definition->location_type,
+        definition->paradigm,
         unified_location_group_parent,
         definition->number_of_events,
         0, NULL );
@@ -152,6 +156,7 @@ define_location( SCOREP_DefinitionManager*  definition_manager,
                  uint64_t                   globalLocationId,
                  SCOREP_StringHandle        nameHandle,
                  SCOREP_LocationType        locationType,
+                 SCOREP_ParadigmType        paradigm,
                  SCOREP_LocationGroupHandle locationGroupParent,
                  uint64_t                   numberOfEvents,
                  size_t                     sizeOfPayload,
@@ -177,6 +182,7 @@ define_location( SCOREP_DefinitionManager*  definition_manager,
     new_definition->global_location_id    = globalLocationId;
     new_definition->name_handle           = nameHandle;
     new_definition->location_type         = locationType;
+    new_definition->paradigm              = paradigm;
     new_definition->location_group_parent = locationGroupParent;
     new_definition->number_of_events      = numberOfEvents;
 

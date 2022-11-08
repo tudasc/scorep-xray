@@ -365,7 +365,9 @@ scorep_openacc_get_region_handle( int         lineNo,
             regionHandle = SCOREP_Definitions_NewRegion(
                 region_name, NULL,
                 acc_region_file_handle, 0, 0,
-                SCOREP_PARADIGM_OPENACC, SCOREP_REGION_FUNCTION );
+                SCOREP_PARADIGM_OPENACC,
+                accEvent == acc_ev_enqueue_launch_start
+                ? SCOREP_REGION_KERNEL_LAUNCH : SCOREP_REGION_WRAPPER );
 
             hash_add_acc_region( lineNo, accEvent, srcFile, regionHandle );
         }

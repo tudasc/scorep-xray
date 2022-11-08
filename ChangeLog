@@ -15,6 +15,8 @@ Major features:
   Support for IBM XL older than version 11 was removed.
   Support for PGI compilers that don't support the
   `__cyg_profile_func` instrumentation API was removed.
+- Support for recording AMD HIP activities. It requires an LLVM/Clang
+  based compiler.
 
 Features and improvements:
 
@@ -33,6 +35,8 @@ Features and improvements:
   via `--with-nocross-compiler-suite=nvhpc`.
 - Add proper support for Intel oneAPI compilers to build system
   via `--with-nocross-compiler-suite=oneapi`.
+- Add proper support for AMD ROCm compilers to build system via
+  `--with-nocross-compiler-suite=amdclang`.
 - Add events for communicator creation and destruction to Score-P
   corresponding to the new records in OTF2 3.0.
 - Add Fortran TYPE(C_PTR) overload wrappers to the MPI adapter for
@@ -47,8 +51,9 @@ Features and improvements:
   during measurement by providing a numeric parameter, useful for
   distinguishing kernel instances when the same kernel is launched from
   different callpaths.
-  This feature currently supports CUDA based kernels and is controlled via
-  the `kernel_callsite` option to `SCOREP_CUDA_ENABLE`.
+  This feature currently supports CUDA and HIP based kernels and is
+  controlled via the `kernel_callsite` option to `SCOREP_CUDA_ENABLE` or
+  'SCOREP_HIP_ENABLE' respectivly.
 - Detect BeeGFS and WEKA as distributed filesystems.
 - Score-P now generates ENTER and EXIT events for MPI procedures added in version
   4.0 of the MPI Standard.

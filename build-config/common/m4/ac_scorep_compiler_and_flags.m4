@@ -96,21 +96,18 @@ AS_IF([test "x${ac_scorep_compiler_suite_called}" != "x"],
     [AC_MSG_ERROR([cannot use [AC_SCOREP_WITH_COMPILER_SUITE] and [AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE] in one configure.ac.])],
     [ac_scorep_compiler_suite_called="yes"])
 
+m4_define([_accepted_compiler_suites], [gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc|amdclang])
+
 AC_ARG_WITH([nocross-compiler-suite],
-            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc)],
+            [AS_HELP_STRING([--with-nocross-compiler-suite=(]_accepted_compiler_suites[)],
                             [The compiler suite used to build this package in non cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
                    [ac_scorep_compilers_backend="compiler-nocross-gcc" # default
                     AS_CASE([$withval],
-                            ["gcc"],       [ac_scorep_compilers_backend="compiler-nocross-gcc"],
-                            ["ibm"],       [ac_scorep_compilers_backend="compiler-nocross-ibm"],
-                            ["intel"],     [ac_scorep_compilers_backend="compiler-nocross-intel"],
-                            ["oneapi"],    [ac_scorep_compilers_backend="compiler-nocross-oneapi"],
-                            ["nvhpc"],     [ac_scorep_compilers_backend="compiler-nocross-nvhpc"],
-                            ["pgi"],       [ac_scorep_compilers_backend="compiler-nocross-pgi"],
-                            ["clang"],     [ac_scorep_compilers_backend="compiler-nocross-clang"],
-                            ["aocc"],      [ac_scorep_compilers_backend="compiler-nocross-aocc"],
-                            ["no"],        [AC_MSG_ERROR([option --without-nocross-compiler-suite makes no sense.])],
+                            _accepted_compiler_suites,
+                                [ac_scorep_compilers_backend="compiler-nocross-$withval"],
+                            [no],
+                                [AC_MSG_ERROR([option --without-nocross-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-nocross-compiler-suite.])])],
                    [AC_MSG_WARN([option --with-nocross-compiler-suite ignored in cross-compiling mode. You may use --with-frontend-compiler-suite to customize the frontend compiler.])])])
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
@@ -119,22 +116,20 @@ AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
 
 
 AC_ARG_WITH([frontend-compiler-suite],
-            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|oneapi|nvhpc|pgi|clang|aocc)],
+            [AS_HELP_STRING([--with-frontend-compiler-suite=(]_accepted_compiler_suites[)],
                             [The compiler suite used to build the frontend parts of this package in cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
                    [ac_scorep_compilers_frontend="compiler-frontend-gcc"
                     AS_CASE([$withval],
-                            ["gcc"],       [ac_scorep_compilers_frontend="compiler-frontend-gcc"],
-                            ["ibm"],       [ac_scorep_compilers_frontend="compiler-frontend-ibm"],
-                            ["intel"],     [ac_scorep_compilers_frontend="compiler-frontend-intel"],
-                            ["oneapi"],    [ac_scorep_compilers_frontend="compiler-frontend-oneapi"],
-                            ["nvhpc"],     [ac_scorep_compilers_frontend="compiler-frontend-nvhpc"],
-                            ["pgi"],       [ac_scorep_compilers_frontend="compiler-frontend-pgi"],
-                            ["clang"],     [ac_scorep_compilers_frontend="compiler-frontend-clang"],
-                            ["aocc"],      [ac_scorep_compilers_frontend="compiler-frontend-aocc"],
-                            ["no"],        [AC_MSG_ERROR([option --without-frontend-compiler-suite makes no sense.])],
+                            _accepted_compiler_suites,
+                                [ac_scorep_compilers_frontend="compiler-frontend-$withval"],
+                            [no],
+                                [AC_MSG_ERROR([option --without-frontend-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-frontend-compiler-suite.])])],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])])
+
+m4_undefine([_accepted_compiler_suites])
+
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_frontend}"])

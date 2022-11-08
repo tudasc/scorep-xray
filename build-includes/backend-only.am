@@ -7,6 +7,7 @@ include ../include/scorep/Makefile.inc.am
 include ../src/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am
+include ../src/adapters/hip/Makefile.inc.am
 include ../src/adapters/io/posix/Makefile.inc.am
 include ../src/adapters/kokkos/Makefile.inc.am
 include ../src/adapters/memory/Makefile.inc.am

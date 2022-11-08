@@ -56,4 +56,4 @@ $(OBJDIR)/heat.o: $(SRCDIR)/heat.c
 #------------------------------------------------------------------------------
 
 SRP = SHMEM
-include $(INCDIR)/Makefile.common_rules
+include $(INSTRUMENTERCHECK_SRCDIR)/Makefile.common_rules

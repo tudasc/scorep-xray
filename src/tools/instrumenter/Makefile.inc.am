@@ -23,6 +23,8 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_compiler.hpp     \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cuda.cpp         \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cuda.hpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_hip.cpp          \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_hip.hpp          \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.cpp \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.hpp \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_io.cpp           \

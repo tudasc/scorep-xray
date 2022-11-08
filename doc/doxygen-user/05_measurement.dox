@@ -261,7 +261,8 @@ A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
 from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
-activities (see Section @secref{cuda_adapter}), and Kokkos activities (see
+activities (see Section @secref{cuda_adapter}), HIP device and host
+activities (see Section @secref{hip_adapter}), and Kokkos activities (see
 Section @secref{kokkos_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
 <tt>\--disable</tt> to restrict instrumentation of @openmp directives. This
@@ -851,7 +852,7 @@ There are ways around this problem:
   You can query <tt><SCOREP_COMPILER></tt> and the entire command using <tt>scorep-info config.summary | grep 'nvcc works'</tt>.
   E.g., if the <tt>.cu</tt> file does neither contain MPI nor SHMEM and @scorep uses an Intel compiler suite, the command could be <tt>nvcc -ccbin icpc -Xcompiler=-std=c++11</tt>.
   By exporting <tt>NVCC_PREPEND_FLAGS="-ccbin icpc -Xcompiler=-std=c++11"</tt>, this configuration will be used by subsequent <tt>nvcc</tt> invocations. </li>
-  <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>--nocompiler</tt>. </li>
+  <li> Disable the host-code instrumentation of <tt>.cu</tt> files by using the @scorep flag <tt>\--nocompiler</tt>. </li>
   <li> Use a @scorep installation that is based on the GNU compiler tool chain. </li>
 </ul>
 
@@ -920,6 +921,128 @@ The following resource naming APIs are supported:
   <dt><tt>nvtxNameCuContext{A,W}</tt></dt>
     <dd>Name of GPU location group</dd>
 </dl>
+
+@section hip_adapter HIP Performance Measurement
+@seclabel{hip_adapter}
+
+If @scorep has been built with HIP support it is capable of recording ROCm API function calls and GPU activities.
+The measurement is based on AMD's ROCm API.
+
+@scorep can wrap the AMD's <b><tt>hipcc</tt></b> compiler like any other compiler by either prefixing (<b><tt>scorep hipcc</tt></b>) or by replacing it with (<b><tt>scorep-hipcc</tt></b>) to instrument single-source HIP files.
+
+Setting the environment variable \confvar{SCOREP_HIP_ENABLE} to <b><tt>yes</tt></b> enables HIP measurement.
+Please refer to the description of this variable to enable a particular combination of HIP measurement features.
+
+Host API calls can be filtered by name at runtime using the @scorep filter file (see Section @secref{filtering}).
+Filtering does not apply to API functions which are enabled by settings in \confvar{SCOREP_HIP_ENABLE} other than <a><tt>api</tt><a>.
+For example, the API <tt>hipLaunchKernel</tt> can be filtered if <b><tt>api</tt></b> is the only setting in \confvar{SCOREP_HIP_ENABLE}.
+If <b><tt>kernels</tt></b> is set additionally, then it is not allowed to filter this call anymore.
+
+ROCm uses an extra buffer to store its activity records.
+The size of this buffer can be controlled via the environment variable \confvar{SCOREP_HIP_ACTIVITY_BUFFER_SIZE} (default: 4096).
+
+For each HIP stream a location is created with the name <b>HIP[D:S]</tt></b>.
+Where <tt>D</tt> denotes the HIP device and <tt>S</tt> a stream identifier.
+The former number is corresponds to the visible devices for the process.
+The HIP <tt>NULL</tt>-stream always gets the identifier <tt>0</tt>.
+Additionally created streams get a number starting with <tt>1</tt> in creation order.
+The location for the HIP <tt>NULL</tt>-stream also gets a property named <tt>hipNullStream</tt> with a value of <tt>1</tt>.
+The non-<tt>NULL</tt>-streams get properties for their flags and priority:
+
+<dl>
+  <dt><tt>hipStreamNonBlocking</tt></dt>
+  <dd><tt>1</tt> if the streams was created with this flag</dd>
+
+  <dt><tt>hipStreamPriority</tt></dt>
+  <dd>Priority for this stream</dd>
+</dl>
+
+All streams of a device are grouped into a location group named <b><tt>HIP Context D</tt></b> with the same value for <tt>D</tt> as the streams.
+This location group is attributed to a system tree node denoting the actual hardware device, which is named <b><tt>ROCm Device H</tt></b>.
+Here <tt>H</tt> denotes the hardware identifier of the device, which might be different to <tt>D</tt>, if the visible devices were restricted for the process and @scorep was built with support for AMD's SMI library.
+
+The following values from <tt>hipDeviceProp_t</tt> are added as properties to the system tree node for each device (member -> property name mapping):
+
+<dl>
+  <dt><tt>name</tt></dt>
+  <dd>Device name</dd>
+
+  <dt><tt>gcnArchName</tt></dt>
+  <dd>AMD GCN architecture name</dd>
+
+  <dt><tt>pciDomainID</tt></dt>
+  <dd>PCI Domain ID</dd>
+
+  <dt><tt>pciBusID</tt></dt>
+  <dd>PCI Bus ID</dd>
+
+  <dt><tt>pciDeviceID</tt></dt>
+  <dd>PCI Device ID</dd>
+
+  <dt><tt>totalGlobalMem</tt></dt>
+  <dd>Size of global memory region (in bytes)</dd>
+
+  <dt><tt>sharedMemPerBlock</tt></dt>
+  <dd>Size of shared memory region (in bytes)</dd>
+
+  <!-- Documentation looks wrong, see https://github.com/ROCm-Developer-Tools/HIP/issues/3035 -->
+  <dt><tt>totalConstMem</tt></dt>
+  <dd></dd>
+
+  <dt><tt>regsPerBlock</tt></dt>
+  <dd>Registers per block</dd>
+
+  <dt><tt>warpSize</tt></dt>
+  <dd>Warp size</dd>
+
+  <dt><tt>maxThreadsPerBlock</tt></dt>
+  <dd>Maximum work items per work group or workgroup max size</dd>
+
+  <dt><tt>maxThreadsDim</tt></dt>
+  <dd>Maximum number of threads in each dimension (XYZ) of a block</dd>
+
+  <dt><tt>maxGridSize</tt></dt>
+  <dd>Maximum grid dimensions (XYZ)</dd>
+
+  <dt><tt>clockRate</tt></dt>
+  <dd>Maximum clock frequency of the multi-processors (in khz)</dd>
+
+  <dt><tt>memoryClockRate</tt></dt>
+  <dd>Maximum global memory clock frequency (in khz)</dd>
+
+  <dt><tt>clockInstructionRate</tt></dt>
+  <dd>Timer clock frequency (in khz)</dd>
+
+  <dt><tt>memoryBusWidth</tt></dt>
+  <dd>Global memory bus width (in bits)</dd>
+
+  <dt><tt>isMultiGpuBoard</tt></dt>
+  <dd>Is multi-GPU board (1 if yes, 0 if not)</dd>
+
+  <dt><tt>canMapHostMemory</tt></dt>
+  <dd>Device can map host memory (1 if yes, 0 if not)</dd>
+
+  <dt><tt>concurrentKernels</tt></dt>
+  <dd>Device can possibly execute multiple kernels concurrently (1 if yes, 0 if not)</dd>
+
+  <dt><tt>multiProcessorCount</tt></dt>
+  <dd>Number of multi-processors (compute units)</dd>
+
+  <dt><tt>l2CacheSize</tt></dt>
+  <dd>L2 cache size</dd>
+
+  <dt><tt>maxThreadsPerMultiProcessor</tt></dt>
+  <dd>Maximum resident threads per multi-processor</dd>
+
+</dl>
+
+Additionally the device gets the device's UUID as a property named <i>UUID</i>.
+
+Recording code annotations via the ROCTX API must be instrumented with the @scorep flag <tt>\--hip</tt> and enabled by setting <b><tt>user</tt></b> in \confvar{SCOREP_HIP_ENABLE}.
+The Start/Stop Range events are not supported, because they allow to span different threads and do not need to be nested.
+The Mark events are modeled as a short sequence of Enter and Leave events.
+All regions are in the <tt>"ROCTX"</tt> group and are subject to the filtering rules (see Section @secref{filtering}).
+
 
 @section opencl_adapter OpenCL Performance Measurement
 @seclabel{opencl_adapter}

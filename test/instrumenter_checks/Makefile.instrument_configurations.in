@@ -39,10 +39,12 @@ all:
 # Common settings
 #------------------------------------------------------------------------------
 
-BINDIR          = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
-INCDIR          = @abs_top_builddir@/../installcheck/instrumenter_checks
-PARADIGM_SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/$(PARADIGM)/src
-PREPS_FILE      = @abs_top_builddir@/../installcheck/instrumenter_checks/configurations_$(PARADIGM)
+TOOLS_BINDIR               = @BINDIR@
+INSTRUMENTERCHECK_SRCDIR   = @abs_top_srcdir@/../test/instrumenter_checks
+PARADIGM_SRCDIR            = $(INSTRUMENTERCHECK_SRCDIR)/$(PARADIGM)/src
+INSTRUMENTERCHECK_BUILDDIR = @abs_top_builddir@/../installcheck/instrumenter_checks
+BINDIR                     = $(INSTRUMENTERCHECK_BUILDDIR)/bin
+PREPS_FILE                 = $(INSTRUMENTERCHECK_BUILDDIR)/configurations_$(PARADIGM)
 # we build these checks always without memory instrumentation
 SCOREP_ARGS     = --nomemory
 
@@ -93,7 +95,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         if test "x$$line" != "xdefault"; then \
                             options="$$options `echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`"; \
                         fi; \
-                        prep="@BINDIR@/scorep $$options"; \
+                        prep="$(TOOLS_BINDIR)/scorep $$options"; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); gsub(":", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
@@ -115,16 +117,19 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
+                            TOOLS_BINDIR="$(TOOLS_BINDIR)" \
                             CODE="$$code" \
                             LANGUAGE="$$language" \
                             SRCDIR="$(PARADIGM_SRCDIR)/$$code/$$language" \
-                            INCDIR="$(INCDIR)" \
+                            INSTRUMENTERCHECK_BUILDDIR="$(INSTRUMENTERCHECK_BUILDDIR)" \
+                            INSTRUMENTERCHECK_SRCDIR="$(INSTRUMENTERCHECK_SRCDIR)" \
                             PARADIGM="$(PARADIGM)" \
                             CC="$(CC)" \
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
                             NVCC="$(NVCC)" \
+                            HIPCC="$(HIPCC)" \
                             LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS) $$POMP_CFLAGS" \
                             CXXFLAGS="$(CXXFLAGS) $$POMP_CFLAGS" \
@@ -133,7 +138,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CUFLAGS="$(CUFLAGS)" \
                             $$code && \
                         set +x && \
-                        ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \
+                        $(INSTRUMENTERCHECK_BUILDDIR)/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || eval $$failcom; \
                     done < $(PREPS_FILE); \
                 fi; \
             done; \

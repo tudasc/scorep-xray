@@ -343,7 +343,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
     SCOREP_PARADIGM( OPENACC,            "openacc",            OPENACC ) \
     SCOREP_PARADIGM( IO,                 "io",                 NONE ) \
-    SCOREP_PARADIGM( KOKKOS,             "kokkos",             KOKKOS )
+    SCOREP_PARADIGM( KOKKOS,             "kokkos",             KOKKOS ) \
+    SCOREP_PARADIGM( HIP,                "hip",                HIP )
 
 
 typedef enum SCOREP_ParadigmType
@@ -429,6 +430,8 @@ typedef enum SCOREP_ParameterType
  * - SCOREP_REGION_REALLOCATE Represents a region where memory is reallocated
  * - SCOREP_REGION_FILE_IO Represents an I/O data operation region
  * - SCOREP_REGION_FILE_IO_METADATA Represents an I/O metadata operation region (e.g., seek)
+ * - SCOREP_REGION_KERNEL_LAUNCH Represents a function launching a kernel on an accelerator device (externally mapped to WRAPPER)
+ * - SCOREP_REGION_KERNEL Represents a kernel running on an accelerator (externally mapped to FUNCTION)
  */
 #define SCOREP_REGION_TYPES \
     SCOREP_REGION_TYPE( COLL_ONE2ALL, "one2all" ) \
@@ -464,7 +467,9 @@ typedef enum SCOREP_ParameterType
     SCOREP_REGION_TYPE( DEALLOCATE,   "deallocate" ) \
     SCOREP_REGION_TYPE( REALLOCATE,   "reallocate" ) \
     SCOREP_REGION_TYPE( FILE_IO,      "file io" ) \
-    SCOREP_REGION_TYPE( FILE_IO_METADATA,  "file io metadata" )
+    SCOREP_REGION_TYPE( FILE_IO_METADATA,  "file io metadata" ) \
+    SCOREP_REGION_TYPE( KERNEL_LAUNCH, "wrapper" ) \
+    SCOREP_REGION_TYPE( KERNEL,       "function" )
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \

@@ -24,7 +24,7 @@
 #include <scorep_opencl_regions.h>
 
 
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args ) \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args ) \
     SCOREP_RegionHandle scorep_opencl_region__ ##func;
 
 #include "scorep_opencl_function_list.inc"
@@ -36,14 +36,14 @@
 void
 scorep_opencl_register_regions( void )
 {
-#define SCOREP_OPENCL_PROCESS_FUNC( return_type, func, func_args )                                               \
+#define SCOREP_OPENCL_PROCESS_FUNC( TYPE, return_type, func, func_args )                                         \
     scorep_opencl_region__ ##func = SCOREP_Definitions_NewRegion( #func,                                         \
                                                                   NULL,                                          \
                                                                   SCOREP_Definitions_NewSourceFile( "OpenCL" ),  \
                                                                   SCOREP_INVALID_LINE_NO,                        \
                                                                   SCOREP_INVALID_LINE_NO,                        \
                                                                   SCOREP_PARADIGM_OPENCL,                        \
-                                                                  SCOREP_REGION_WRAPPER );
+                                                                  SCOREP_REGION_ ## TYPE );
 
 #include "scorep_opencl_function_list.inc"
 }

@@ -36,7 +36,8 @@ AS_CASE(${ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor},
     [ibm],                SCOREP_COMPILER_[]_AC_CC[]_IBM=1,
     [nvhpc|pgi|pgi/llvm], SCOREP_COMPILER_[]_AC_CC[]_PGI=1,
     [gnu],                SCOREP_COMPILER_[]_AC_CC[]_GNU=1,
-    [clang|flang],        SCOREP_COMPILER_[]_AC_CC[]_CLANG=1,
+    [clang|flang|flang/classic],
+                          SCOREP_COMPILER_[]_AC_CC[]_CLANG=1,
     [cray],               SCOREP_COMPILER_[]_AC_CC[]_CRAY=1,
     [fujitsu],            SCOREP_COMPILER_[]_AC_CC[]_FUJITSU=1)
 

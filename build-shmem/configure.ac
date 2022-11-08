@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2018, 2020,
+dnl Copyright (c) 2013-2018, 2020, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015-2016, 2018-2022,
@@ -177,6 +177,7 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
 
 AC_SCOREP_BUILD_MODE
 SCOREP_CUDA
+SCOREP_HIP
 SCOREP_OPENACC
 SCOREP_KOKKOS
 SCOREP_CRAY_PMI
