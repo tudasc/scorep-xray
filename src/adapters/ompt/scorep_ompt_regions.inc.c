@@ -171,8 +171,8 @@ typedef enum ompt_lock_region_type
 } ompt_lock_region_type;
 
 
-static SCOREP_RegionHandle lock_regions[ OMPT_LOCK_REGIONS ];
-
+static SCOREP_RegionHandle     lock_regions[ OMPT_LOCK_REGIONS ];
+static SCOREP_SourceFileHandle omp_file = SCOREP_INVALID_SOURCE_FILE;
 
 void
 init_region_fallbacks( void )
@@ -183,7 +183,7 @@ init_region_fallbacks( void )
     if ( !initialized )
     {
         initialized = true;
-        SCOREP_SourceFileHandle omp_file = SCOREP_Definitions_NewSourceFile( "OMP" );
+        omp_file    = SCOREP_Definitions_NewSourceFile( "OMP" );
         for ( int i = 0; i < OMPT_REGIONS; i++ )
         {
             region_fallback[ i ].handle =
@@ -320,7 +320,7 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
     uint16_t    so_token;
 
     bool        scl_found_unused;
-    const char* file_name            = NULL;
+    const char* path                 = NULL;
     const char* function_name_unused = NULL;
     unsigned    line_no              = SCOREP_INVALID_LINE_NO;
 
@@ -331,37 +331,57 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
                                  &so_base_addr_unused,
                                  &so_token,
                                  &scl_found_unused,
-                                 &file_name,
+                                 &path,
                                  &function_name_unused,
                                  &line_no );
 
-    SCOREP_SourceFileHandle omp_file = SCOREP_INVALID_SOURCE_FILE;
-    if ( file_name )
+    SCOREP_RegionHandle     region    = SCOREP_INVALID_REGION;
+    SCOREP_SourceFileHandle file      = omp_file;
+    const char*             file_name = NULL;
+    if ( path )
     {
-        omp_file = SCOREP_Definitions_NewSourceFile( file_name );
+        file      = SCOREP_Definitions_NewSourceFile( path );
+        file_name = strrchr( path, '/' );
     }
 
-    /* Create unique name '<type>@0x<addr>' to distinguish regions.
-       Additional distinguishable elements such as line number and filename are
-       only available if compiled with -g. */
-    size_t       type_strlen = region_fallback[ key->type ].name_strlen;
-    const size_t append      = 21;
-    char         unique_name[ type_strlen + append ];
-    memcpy( &unique_name[ 0 ], region_fallback[ key->type ].name, type_strlen );
-    snprintf( &unique_name[ type_strlen ], append, " @0x%016" PRIxPTR "", ( uintptr_t )key->codeptr_ra );
-    unique_name[ type_strlen + append - 1 ] = '\0';
+    size_t type_strlen = region_fallback[ key->type ].name_strlen;
+    if ( file_name )
+    {
+        file_name++;
+        /* Create unique name '<type> @<file>:<lineno>' to distinguish regions.
+           Filename and line number are only available if compiled with -g. */
+        size_t file_strlen    = strlen( file_name );
+        size_t line_no_strlen = 10;   /* UINT_MAX fits in 10 characters */
 
-    SCOREP_RegionHandle region =
-        SCOREP_Definitions_NewRegion( unique_name, /* Used in CubeGUI for matching between
-                                                      calltree tabs. Needs to have a
-                                                      'unique' feature like <addr> or
-                                                      <file>:<lineno>. */
-                                      unique_name,
-                                      omp_file,
-                                      SCOREP_INVALID_LINE_NO,
-                                      line_no,
-                                      SCOREP_PARADIGM_OPENMP,
-                                      region_fallback[ key->type ].type );
+        const size_t append = 2 + file_strlen + 1 + line_no_strlen + 1;
+        char         unique_name[ type_strlen + append ];
+        memcpy( &unique_name[ 0 ], region_fallback[ key->type ].name, type_strlen );
+        snprintf( &unique_name[ type_strlen ], append, " @%s:%u", file_name, line_no );
+
+        region = SCOREP_Definitions_NewRegion( unique_name,
+                                               unique_name,
+                                               file,
+                                               line_no,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_PARADIGM_OPENMP,
+                                               region_fallback[ key->type ].type );
+    }
+    else
+    {
+        /* Create unique name '<type> @0x<addr>' to distinguish regions. */
+        const size_t append = 13;
+        char         unique_name[ type_strlen + append ];
+        memcpy( &unique_name[ 0 ], region_fallback[ key->type ].name, type_strlen );
+        snprintf( &unique_name[ type_strlen ], append, " @0x%08" PRIxPTR "", ( uintptr_t )key->codeptr_ra );
+
+        region = SCOREP_Definitions_NewRegion( unique_name,
+                                               unique_name,
+                                               file,
+                                               line_no,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_PARADIGM_OPENMP,
+                                               region_fallback[ key->type ].type );
+    }
 
     codeptr_hash_value_t value = { .region = region, .so_token = so_token };
     return value;
