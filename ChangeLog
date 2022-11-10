@@ -18,6 +18,18 @@ Major features:
 - Support for recording AMD HIP activities. It requires an LLVM/Clang
   based compiler.
 - Add support for MPI intercommunicators.
+- Support OpenMP's tool interface OMPT for host events as a
+  replacement for OPARI2 instrumentation. The OMPT adapter is
+  considered experimental. Still, it is our default if supported by
+  the compiler. You may switch to OPARI2 using the `--thread=omp:opari2`
+  instrumentation option. Currently, recent Intel and AMD compilers
+  support the interface.
+  In contrast to OPARI2, the `test_lock` and `test_nest_lock` routines
+  cannot be handled by OMPT. The `atomic` construct isn't implemented.
+  The new adapter handles the `taskgroup` construct, though.
+  Source code locations usually point to the OpenMP construct. As an
+  exception, implicit barriers for parallel regions point to the
+  corresponding `parallel` construct.
 
 Features and improvements:
 
@@ -88,6 +100,11 @@ User tools and API improvements and changes:
   Size` attributes are now a comma separated list of values. Some
   values can also be constants like `DEFAULT` or `WIDE`.
 - Deprecate measurements without extended non-blocking communication events.
+- If OMPT (see above) is supported by the compiler, `--thread=omp` is
+  supplemented by the two variants `--thread=omp:ompt` and
+  `--thread=omp:opari2`; `--thread=omp` and `--thread=omp:ompt` are
+  used interchangeably is this case. Same is true for `--thread=omp`
+  and `--thread=omp:opari2` if OMPT is not supported.
 
 Compatibility:
 
