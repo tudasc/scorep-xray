@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2020-2021,
+ * Copyright (c) 2009-2013, 2020-2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -71,16 +71,16 @@ SCOREP_COMPILER_CYG_PROFILE_FUNC_ENTER( void* func,
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
-    func_addr_hash_value_t value = { SCOREP_INVALID_REGION, 0 };
-    func_addr_hash_get_and_insert( ( uintptr_t )func, NULL, &value );
-    if ( value.region != SCOREP_FILTERED_REGION )
+    func_addr_hash_value_t region = SCOREP_INVALID_REGION;
+    func_addr_hash_get_and_insert( ( uintptr_t )func, NULL, &region );
+    if ( region != SCOREP_FILTERED_REGION )
     {
         UTILS_DEBUG( "Enter %" PRIuPTR ": %s@%s:%d",
                      ( uintptr_t )func,
-                     SCOREP_RegionHandle_GetName( value.region ),
-                     SCOREP_RegionHandle_GetFileName( value.region ),
-                     SCOREP_RegionHandle_GetBeginLine( value.region ) );
-        SCOREP_EnterRegion( value.region );
+                     SCOREP_RegionHandle_GetName( region ),
+                     SCOREP_RegionHandle_GetFileName( region ),
+                     SCOREP_RegionHandle_GetBeginLine( region ) );
+        SCOREP_EnterRegion( region );
     }
     else
     {
@@ -115,17 +115,17 @@ SCOREP_COMPILER_CYG_PROFILE_FUNC_EXIT( void* func,
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
-    func_addr_hash_value_t value;
-    if ( func_addr_hash_get( ( uintptr_t )func, &value ) )
+    func_addr_hash_value_t region;
+    if ( func_addr_hash_get( ( uintptr_t )func, &region ) )
     {
-        if ( value.region != SCOREP_FILTERED_REGION )
+        if ( region != SCOREP_FILTERED_REGION )
         {
             UTILS_DEBUG( "Exit %" PRIuPTR ": %s@%s:%d",
                          ( uintptr_t )func,
-                         SCOREP_RegionHandle_GetName( value.region ),
-                         SCOREP_RegionHandle_GetFileName( value.region ),
-                         SCOREP_RegionHandle_GetBeginLine( value.region ) );
-            SCOREP_ExitRegion( value.region );
+                         SCOREP_RegionHandle_GetName( region ),
+                         SCOREP_RegionHandle_GetFileName( region ),
+                         SCOREP_RegionHandle_GetBeginLine( region ) );
+            SCOREP_ExitRegion( region );
         }
         else
         {

@@ -226,12 +226,13 @@
     { \
         SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) uint32_t size; \
         UTILS_Mutex                                     insert_lock; \
-        UTILS_Mutex                                     remove_lock; \
-        int16_t                                         pending; \
+        prefix ## _chunk_t*                             chunk; \
+        /* RWLock data on its own cache line improves performance. */ \
+        SCOREP_ALIGNAS( SCOREP_CACHELINESIZE ) int16_t  pending; \
         int16_t                                         departing; \
         int16_t                                         release_n_readers; \
         int16_t                                         release_writer; \
-        prefix ## _chunk_t*                             chunk; \
+        UTILS_Mutex                                     remove_lock; \
     };
 
 
