@@ -31,13 +31,8 @@
    pairs. The hash table starts empty and gets filled at
    enter-function events. */
 
-typedef uintptr_t                     func_addr_hash_key_t;
-typedef struct func_addr_hash_value_t func_addr_hash_value_t;
-struct func_addr_hash_value_t
-{
-    SCOREP_RegionHandle region;
-    uint16_t            so_token;
-};
+typedef uintptr_t           func_addr_hash_key_t;
+typedef SCOREP_RegionHandle func_addr_hash_value_t;
 
 #define FUNC_ADDR_HASH_EXPONENT 9
 
@@ -79,7 +74,7 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
     void*       so_handle_unused;
     const char* so_file_name_unused;
     uintptr_t   so_base_addr_unused;
-    uint16_t    so_token;
+    uint16_t    so_token_unused;
 
     bool        scl_found;
     const char* file_name     = NULL;
@@ -90,13 +85,13 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
                                  &so_handle_unused,
                                  &so_file_name_unused,
                                  &so_base_addr_unused,
-                                 &so_token,
+                                 &so_token_unused,
                                  &scl_found,
                                  &file_name,
                                  &function_name,
                                  &line_no );
 
-    func_addr_hash_value_t value = { .region = SCOREP_FILTERED_REGION, .so_token = so_token };
+    func_addr_hash_value_t region = SCOREP_FILTERED_REGION;
 
     if ( scl_found )
     {
@@ -134,33 +129,26 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
         if ( use_address )
         {
             SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
-            value.region = SCOREP_Definitions_NewRegion( function_name_demangled,
-                                                         function_name,
-                                                         file_handle,
-                                                         line_no,
-                                                         SCOREP_INVALID_LINE_NO,
-                                                         SCOREP_PARADIGM_COMPILER,
-                                                         SCOREP_REGION_FUNCTION );
+            region = SCOREP_Definitions_NewRegion( function_name_demangled,
+                                                   function_name,
+                                                   file_handle,
+                                                   line_no,
+                                                   SCOREP_INVALID_LINE_NO,
+                                                   SCOREP_PARADIGM_COMPILER,
+                                                   SCOREP_REGION_FUNCTION );
 #if HAVE( UTILS_DEBUG )
-            UTILS_DEBUG( "[table-insert] %ld used: %s(%s)@%s:%d",
-                         addr, function_name_demangled, function_name, file_name, line_no );
+            UTILS_DEBUG( "[table-insert] %" PRIuPTR " used: %s(%s)@%s:%d",
+                         *addr, function_name_demangled, function_name, file_name, line_no );
         }
         else
         {
-            UTILS_DEBUG( "[table-insert] %ld filtered: %s(%s)@%s:%d",
-                         addr, function_name_demangled, function_name, file_name, line_no );
+            UTILS_DEBUG( "[table-insert] %" PRIuPTR " filtered: %s(%s)@%s:%d",
+                         *addr, function_name_demangled, function_name, file_name, line_no );
 #endif      /* HAVE( SCOREP_DEBUG ) */
         }
         scorep_compiler_demangle_free( function_name, function_name_demangled );
     }
-    return value;
-}
-
-
-static void
-func_addr_hash_value_dtor( func_addr_hash_key_t   key,
-                           func_addr_hash_value_t value )
-{
+    return region;
 }
 
 
@@ -177,28 +165,9 @@ func_addr_hash_iterate_key_value_pair( func_addr_hash_key_t   key,
 {
 }
 
-SCOREP_HASH_TABLE_NON_MONOTONIC( func_addr_hash, 3, hashsize( FUNC_ADDR_HASH_EXPONENT ) );
+SCOREP_HASH_TABLE_MONOTONIC( func_addr_hash, 10, hashsize( FUNC_ADDR_HASH_EXPONENT ) );
 
 #undef FUNC_ADDR_HASH_EXPONENT
-
-
-static inline bool
-token_matches( func_addr_hash_key_t   key,
-               func_addr_hash_value_t value,
-               void*                  data )
-{
-    uint16_t dlclose_token = *( ( uint16_t* )data );
-    if ( value.so_token == dlclose_token )
-    {
-        UTILS_DEBUG( "Remove %" PRIuPTR ": %s@%s:%d",
-                     key,
-                     SCOREP_RegionHandle_GetName( value.region ),
-                     SCOREP_RegionHandle_GetFileName( value.region ),
-                     SCOREP_RegionHandle_GetBeginLine( value.region ) );
-        return true;
-    }
-    return false;
-}
 
 
 void
@@ -207,8 +176,11 @@ scorep_compiler_func_addr_hash_dlclose_cb( void*       soHandle,
                                            uintptr_t   soBaseAddr,
                                            uint16_t    soToken )
 {
-    UTILS_DEBUG( "Remove key-value pairs of dlclosed %s; token=%d", soFileName, soToken );
-    func_addr_hash_remove_if( token_matches, ( void* )&soToken );
+    UTILS_WARNING( "Shared object %s was dlclosed. It's addresses are not "
+                   "removed from the compiler address hash table. If another "
+                   "shared object is dlopened and addressees are reused, the "
+                   "compiler adapter might enter/exit regions referring to "
+                   "wrong source code locations", soFileName );
 }
 
 
