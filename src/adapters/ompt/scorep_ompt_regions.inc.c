@@ -230,14 +230,8 @@ typedef struct codeptr_key
     ompt_region_type type;
 } codeptr_key;
 
-typedef struct codeptr_value
-{
-    SCOREP_RegionHandle region;
-    uint16_t            so_token;
-} codeptr_value;
-
-typedef codeptr_key   codeptr_hash_key_t;
-typedef codeptr_value codeptr_hash_value_t;
+typedef codeptr_key         codeptr_hash_key_t;
+typedef SCOREP_RegionHandle codeptr_hash_value_t;
 
 
 /* *INDENT-OFF* */
@@ -261,22 +255,22 @@ get_region( const void*      codeptrRa,
     }
 
     codeptr_hash_key_t   key      = { .codeptr_ra = ( uintptr_t )codeptrRa, .type = regionType };
-    codeptr_hash_value_t value    = { .region = SCOREP_INVALID_REGION, .so_token = 0 };
-    bool                 inserted = codeptr_hash_get_and_insert( key, NULL, &value );
+    codeptr_hash_value_t region   = SCOREP_INVALID_REGION;
+    bool                 inserted = codeptr_hash_get_and_insert( key, NULL, &region );
 
     UTILS_DEBUG( "[%s] codeptrRa %p | region_id %u | region_name %s | "
                  "canonical_name %s | file_name %s | type %d | line_no %d | inserted %s ",
                  UTILS_FUNCTION_NAME,
                  codeptrRa,
-                 SCOREP_RegionHandle_GetId( value.region ),
-                 SCOREP_RegionHandle_GetName( value.region ),
-                 SCOREP_RegionHandle_GetCanonicalName( value.region ),
-                 SCOREP_RegionHandle_GetFileName( value.region ),
-                 SCOREP_RegionHandle_GetType( value.region ),
-                 SCOREP_RegionHandle_GetEndLine( value.region ),
+                 SCOREP_RegionHandle_GetId( region ),
+                 SCOREP_RegionHandle_GetName( region ),
+                 SCOREP_RegionHandle_GetCanonicalName( region ),
+                 SCOREP_RegionHandle_GetFileName( region ),
+                 SCOREP_RegionHandle_GetType( region ),
+                 SCOREP_RegionHandle_GetEndLine( region ),
                  inserted == true ? "yes" : "no" );
 
-    return value.region;
+    return region;
 }
 
 
@@ -317,7 +311,7 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
     void*       so_handle_unused;
     const char* so_file_name_unused;
     uintptr_t   so_base_addr_unused;
-    uint16_t    so_token;
+    uint16_t    so_token_unused;
 
     bool        scl_found_unused;
     const char* path                 = NULL;
@@ -329,7 +323,7 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
                                  &so_handle_unused,
                                  &so_file_name_unused,
                                  &so_base_addr_unused,
-                                 &so_token,
+                                 &so_token_unused,
                                  &scl_found_unused,
                                  &path,
                                  &function_name_unused,
@@ -383,14 +377,9 @@ codeptr_hash_value_ctor( codeptr_hash_key_t* key,
                                                region_fallback[ key->type ].type );
     }
 
-    codeptr_hash_value_t value = { .region = region, .so_token = so_token };
-    return value;
+    return region;
 }
 
-static inline void
-codeptr_hash_value_dtor( codeptr_hash_key_t key, codeptr_hash_value_t value )
-{
-}
 
 static inline uint32_t
 codeptr_hash_bucket_idx( codeptr_hash_key_t key )
@@ -401,26 +390,7 @@ codeptr_hash_bucket_idx( codeptr_hash_key_t key )
 }
 
 
-SCOREP_HASH_TABLE_NON_MONOTONIC( codeptr_hash, 2, hashsize( CODEPTR_HASH_EXPONENT ) );
-
-
-static inline bool
-token_matches( codeptr_hash_key_t   key,
-               codeptr_hash_value_t value,
-               void*                data )
-{
-    uint16_t dlclose_token = *( ( uint16_t* )data );
-    if ( value.so_token == dlclose_token )
-    {
-        UTILS_DEBUG( "Remove %" PRIuPTR ":%d %s@%s:%d",
-                     key.codeptr_ra, key.type,
-                     SCOREP_RegionHandle_GetName( value.region ),
-                     SCOREP_RegionHandle_GetFileName( value.region ),
-                     SCOREP_RegionHandle_GetEndLine( value.region ) );
-        return true;
-    }
-    return false;
-}
+SCOREP_HASH_TABLE_MONOTONIC( codeptr_hash, 6, hashsize( CODEPTR_HASH_EXPONENT ) );
 
 
 void
@@ -429,6 +399,9 @@ scorep_ompt_codeptr_hash_dlclose_cb( void*       soHandle,
                                      uintptr_t   soBaseAddr,
                                      uint16_t    soToken )
 {
-    UTILS_DEBUG( "Remove key-value pairs of dlclosed %s; token=%d", soFileName, soToken );
-    codeptr_hash_remove_if( token_matches, ( void* )&soToken );
+    UTILS_WARNING( "Shared object %s was dlclosed. It's addresses are not "
+                   "removed from the ompt address hash table. If another "
+                   "shared object is dlopened and addressees are reused, the "
+                   "ompt adapter might enter/exit regions referring to "
+                   "wrong source code locations", soFileName );
 }
