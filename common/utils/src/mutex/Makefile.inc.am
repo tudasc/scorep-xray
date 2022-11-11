@@ -20,6 +20,7 @@ noinst_LTLIBRARIES += libutils_mutex.la
 nodist_libutils_mutex_la_SOURCES = $(SRC_ROOT)common/utils/src/mutex/UTILS_Mutex.c
 libutils_mutex_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
+    -I$(PACKAGE_ERROR_CODES_INCDIR) \
     -I$(INC_DIR_COMMON_UTILS)
 endif ! HAVE_GCC_ATOMIC_BUILTINS
 
