@@ -482,13 +482,16 @@ create_references_list( SCOREP_Location* location,
 
         SCOREP_CUPTI_CALL( cuptiGetStreamId( context, stream, &strm_id ) );
         SCOREP_CUPTI_LOCK();
-        scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, strm_id );
+        scorep_strm = scorep_cupti_stream_get_by_id( scorep_ctx, strm_id );
         SCOREP_CUPTI_UNLOCK();
 
-        SCOREP_LocationHandle location_handle =
-            SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
+        if ( scorep_strm )
+        {
+            SCOREP_LocationHandle location_handle =
+                SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
 
-        SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
+            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
+        }
     }
 }
 
@@ -1720,40 +1723,7 @@ handle_cuda_malloc( CUcontext cudaContext,
 
     scorep_cupti_context* context = scorep_cupti_context_get_create( cudaContext );
 
-    /* lock the work on the context */
-    SCOREP_CUPTI_LOCK();
-
-    scorep_cupti_gpumem* gpu_memory = context->free_cuda_mallocs;
-    if ( gpu_memory )
-    {
-        context->free_cuda_mallocs = gpu_memory->next;
-    }
-    else
-    {
-        gpu_memory = SCOREP_Memory_AllocForMisc( sizeof( *gpu_memory ) );
-    }
-
-    /* set address and size of the allocated GPU memory */
-    gpu_memory->address = address;
-    gpu_memory->size    = size;
-
-    /* add malloc entry to list */
-    gpu_memory->next      = context->cuda_mallocs;
-    context->cuda_mallocs = gpu_memory;
-
-    /* increase the context global allocated memory counter */
-    context->gpu_memory_allocated += size;
-
-    /* check if first CUDA stream is available */
-    if ( context->streams == NULL )
-    {
-        scorep_cupticb_create_default_stream( context );
-
-        SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                              context->streams->scorep_last_timestamp, scorep_cupti_sampling_set_gpumemusage, 0 );
-    }
-
-    SCOREP_CUPTI_UNLOCK();
+    SCOREP_AllocMetric_HandleAlloc( context->alloc_metric, address, size );
 
     /* synchronize context before (implicit activity buffer flush)
        (assume that the given context is the current one) */
@@ -1762,30 +1732,6 @@ handle_cuda_malloc( CUcontext cudaContext,
            !scorep_cupti_activity_is_buffer_empty( context ) ) )
     {
         scorep_cupticb_synchronize_context();
-    }
-
-    /* write counter value */
-    {
-        uint64_t time = SCOREP_Timer_GetClockTicks();
-
-        if ( time < context->streams->scorep_last_timestamp )
-        {
-            UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaMalloc: time stamp < last written "
-                             "timestamp! (CUDA device: %d)",
-                             context->device->cuda_device );
-
-            time = context->streams->scorep_last_timestamp;
-        }
-        else
-        {
-            /* remember the last written time stamp on the default stream */
-            context->streams->scorep_last_timestamp = time;
-        }
-
-        SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                              time,
-                                              scorep_cupti_sampling_set_gpumemusage,
-                                              ( uint64_t )( context->gpu_memory_allocated ) );
     }
 }
 
@@ -1815,51 +1761,13 @@ handle_cuda_free( CUcontext cudaContext,
         scorep_cupticb_synchronize_context();
     }
 
-    SCOREP_CUPTI_LOCK();
-    scorep_cupti_gpumem** gpumem_it = &context->cuda_mallocs;
-    while ( *gpumem_it != NULL )
+    void* allocation = NULL;
+    SCOREP_AllocMetric_AcquireAlloc( context->alloc_metric, devicePtr, &allocation );
+    if ( allocation )
     {
-        scorep_cupti_gpumem* current_gpumem = *gpumem_it;
-        if ( devicePtr == current_gpumem->address )
-        {
-            uint64_t time = SCOREP_Timer_GetClockTicks();
-
-            if ( time < context->streams->scorep_last_timestamp )
-            {
-                UTILS_WARN_ONCE( "[CUPTI Callbacks] cudaFree: time stamp < last written "
-                                 "timestamp! (CUDA device: %d)",
-                                 context->device->cuda_device );
-
-                time = context->streams->scorep_last_timestamp;
-            }
-            else
-            {
-                /* remember the last written time stamp on the default stream */
-                context->streams->scorep_last_timestamp = time;
-            }
-
-            SCOREP_Location_TriggerCounterUint64( context->streams->scorep_location,
-                                                  time,
-                                                  scorep_cupti_sampling_set_gpumemusage,
-                                                  ( uint64_t )( context->gpu_memory_allocated ) );
-
-            /* decrease allocated counter value */
-            context->gpu_memory_allocated -= current_gpumem->size;
-
-            /* set pointer over current element to next one */
-            *gpumem_it = current_gpumem->next;
-
-            /* put to free list */
-            current_gpumem->next       = context->free_cuda_mallocs;
-            context->free_cuda_mallocs = current_gpumem;
-
-            SCOREP_CUPTI_UNLOCK();
-            return;
-        }
-        gpumem_it = &current_gpumem->next;
+        SCOREP_AllocMetric_HandleFree( context->alloc_metric, allocation, NULL );
+        return;
     }
-
-    SCOREP_CUPTI_UNLOCK();
 
     UTILS_WARNING( "[CUPTI Callbacks] Free CUDA memory, which has not been allocated!" );
 }
@@ -2273,64 +2181,6 @@ scorep_cupti_callbacks_init( void )
                         SCOREP_RMA_WINDOW_FLAG_NONE );
             }
 
-            /* get global counter group IDs */
-            if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
-            {
-                {
-                    SCOREP_MetricHandle metric_handle_bpg =
-                        SCOREP_Definitions_NewMetric( "blocks_per_grid",
-                                                      "blocks per grid",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_blocks_per_grid =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_bpg,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-
-                {
-                    SCOREP_MetricHandle metric_handle_tpb =
-                        SCOREP_Definitions_NewMetric( "threads_per_block",
-                                                      "threads per block",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_threads_per_block =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpb,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-
-                {
-                    SCOREP_MetricHandle metric_handle_tpk =
-                        SCOREP_Definitions_NewMetric( "threads_per_kernel",
-                                                      "threads per kernel",
-                                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                      SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                      SCOREP_METRIC_VALUE_UINT64,
-                                                      SCOREP_METRIC_BASE_DECIMAL,
-                                                      0,
-                                                      "#",
-                                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                      SCOREP_INVALID_METRIC );
-
-                    scorep_cupti_sampling_set_threads_per_kernel =
-                        SCOREP_Definitions_NewSamplingSet( 1, &metric_handle_tpk,
-                                                           SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-                }
-            }
-
             {
                 SCOREP_SourceFileHandle scorep_cuda_sync_file_handle =
                     SCOREP_Definitions_NewSourceFile( "CUDA_SYNC" );
@@ -2341,8 +2191,7 @@ scorep_cupti_callbacks_init( void )
 
 
             scorep_cupti_activity_init();
-        }     /* scorep_cuda_record_kernels || scorep_cuda_record_memcpy || scorep_cuda_record_gpumemusage */
-              /*}  scorep_gpu_get_config() != 0 */
+        }
 
         scorep_cupti_callbacks_initialized = true;
 

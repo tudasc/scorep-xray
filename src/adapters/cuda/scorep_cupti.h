@@ -48,6 +48,7 @@
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Demangle.h>
+#include <SCOREP_AllocMetric.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
@@ -118,17 +119,6 @@ typedef struct scorep_cupti_stream
 } scorep_cupti_stream;
 
 /*
- * data structure contains information about allocated CUDA memory
- */
-typedef struct scorep_cupti_gpumem
-{
-    uint64_t                    address;    /**< pointer value to allocated memory */
-    size_t                      size;       /**< number of bytes allocated */
-    uint32_t                    tid;        /**< thread id used with this malloc */
-    struct scorep_cupti_gpumem* next;
-} scorep_cupti_gpumem;
-
-/*
  * Score-P CUPTI activity synchronization structure
  */
 typedef struct
@@ -192,11 +182,9 @@ typedef struct scorep_cupti_context
     SCOREP_Location*             host_location;        /**< Score-P context host location */
     uint32_t                     location_id;          /**< internal location ID used for unification */
     scorep_cupti_stream*         streams;              /**< list of Score-P CUDA streams */
-    scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
-    scorep_cupti_gpumem*         free_cuda_mallocs;    /**< free-list of allocated GPU memory fields */
-    size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
     scorep_cupti_activity*       activity;
     SCOREP_LocationGroupHandle   location_group;
+    SCOREP_AllocMetric*          alloc_metric;
     struct scorep_cupti_context* next;
 } scorep_cupti_context;
 
@@ -223,18 +211,6 @@ extern SCOREP_SourceFileHandle scorep_cupti_kernel_file_handle;
 
 /* handle CUDA idle regions */
 extern SCOREP_RegionHandle scorep_cupti_idle_region_handle;
-
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_kernel;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_block;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_blocks_per_grid;
-
-/* CUPTI activity specific kernel counter IDs */
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_static_shared_mem;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_dynamic_shared_mem;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total;
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread;
-
-extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_gpumemusage;
 
 /*
  * Initialization of common variables for the Score-P CUPTI implementation.

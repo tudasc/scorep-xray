@@ -85,26 +85,6 @@ SCOREP_SourceFileHandle scorep_cupti_kernel_file_handle = SCOREP_INVALID_SOURCE_
 /* handle CUDA idle regions */
 SCOREP_RegionHandle scorep_cupti_idle_region_handle = SCOREP_INVALID_REGION;
 
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_gpumemusage =
-    SCOREP_INVALID_SAMPLING_SET;
-
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_kernel =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_block =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_blocks_per_grid =
-    SCOREP_INVALID_SAMPLING_SET;
-
-/* CUPTI activity specific kernel counter IDs */
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_static_shared_mem =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_dynamic_shared_mem =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total =
-    SCOREP_INVALID_SAMPLING_SET;
-SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread =
-    SCOREP_INVALID_SAMPLING_SET;
-
 static scorep_cupti_device*
 cupti_device_get( CUdevice cudaDevice );
 static scorep_cupti_device*
@@ -146,26 +126,6 @@ scorep_cupti_init( void )
             {
                 scorep_cuda_record_idle = SCOREP_CUDA_NO_IDLE;
             }
-        }
-
-        /* GPU memory usage */
-        if ( scorep_cuda_record_gpumemusage )
-        {
-            SCOREP_MetricHandle metric_handle =
-                SCOREP_Definitions_NewMetric( "gpu_mem_usage",
-                                              "GPU memory usage",
-                                              SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                              SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                              SCOREP_METRIC_VALUE_UINT64,
-                                              SCOREP_METRIC_BASE_DECIMAL,
-                                              0,
-                                              "Byte",
-                                              SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                              SCOREP_INVALID_METRIC );
-
-            scorep_cupti_sampling_set_gpumemusage =
-                SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
-                                                   SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
         }
 
         if ( scorep_cuda_record_references )
@@ -306,49 +266,6 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
             {
                 context->activity->gpu_idle = 1;
             }
-        }
-
-        /* set the counter value for cudaMalloc to 0 on first stream */
-        if ( scorep_cuda_record_gpumemusage )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp,
-                                                  scorep_cupti_sampling_set_gpumemusage, 0 );
-        }
-    }
-
-    if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
-    {
-        /* set count values to zero */
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_blocks_per_grid, 0 );
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_threads_per_block, 0 );
-        SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                              stream->scorep_last_timestamp, scorep_cupti_sampling_set_threads_per_kernel, 0 );
-
-        if ( scorep_cupti_sampling_set_static_shared_mem != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_static_shared_mem, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_dynamic_shared_mem != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_dynamic_shared_mem, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_local_mem_total != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_local_mem_total, 0 );
-        }
-
-        if ( scorep_cupti_sampling_set_registers_per_thread != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_Location_TriggerCounterUint64( stream->scorep_location,
-                                                  stream->scorep_last_timestamp, scorep_cupti_sampling_set_registers_per_thread, 0 );
         }
     }
 
@@ -540,31 +457,20 @@ scorep_cupti_context_create( CUcontext cudaContext )
 
     /* create new context */
     scorep_cupti_context* context = SCOREP_Memory_AllocForMisc( sizeof( *context ) );
+    memset( context, 0, sizeof( *context ) );
 
     SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &context->context_id ) );
 
     context->device = cupti_device_get_create( cuda_device );
 
-    context->gpu_memory_allocated = 0;
-    context->cuda_mallocs         = NULL;
-    context->free_cuda_mallocs    = NULL;
-    context->streams              = NULL;
-    context->next                 = NULL;
+    context->streams = NULL;
+    context->next    = NULL;
 
     context->host_location = SCOREP_Location_GetCurrentCPULocation();
     context->location_id   = SCOREP_CUPTI_NO_ID;
 
     /* set the CUDA context */
     context->cuda_context = cudaContext;
-
-    // create window on every CPU location, where communication might occur
-    if ( scorep_cuda_record_memcpy )
-    {
-        // ensure to not create the RMA window twice on the same host location
-        scorep_cuda_location_data* loc_data =
-            SCOREP_Location_GetSubsystemData( context->host_location,
-                                              scorep_cuda_subsystem_id );
-    }
 
     context->activity = NULL;
 
@@ -575,10 +481,20 @@ scorep_cupti_context_create( CUcontext cudaContext )
     SCOREP_RESUME_CUDRV_CALLBACKS();
 
     char context_name_buffer[ 64 ];
-    sprintf( context_name_buffer, "CUDA Context %u", context->context_id );
+    snprintf( context_name_buffer, sizeof( context_name_buffer ),
+              "CUDA Context %u", context->context_id );
     context->location_group = SCOREP_AcceleratorMgmt_CreateContext(
         context->device->system_tree_node,
         context_name_buffer );
+
+    if ( scorep_cuda_record_gpumemusage )
+    {
+        snprintf( context_name_buffer, sizeof( context_name_buffer ),
+                  "CUDA Context %u Memory", context->context_id );
+        SCOREP_AllocMetric_NewScoped( context_name_buffer,
+                                      context->location_group,
+                                      &context->alloc_metric );
+    }
 
     return context;
 }
@@ -751,41 +667,11 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
                                     scorep_cupti_idle_region_handle );
     }
 
-    /* cleanup stream list */
-    /* currently there are only RMA windows destroyed */
-    if ( scorep_cuda_record_memcpy )
-    {
-        while ( context->streams != NULL )
-        {
-            scorep_cupti_stream* stream = context->streams;
-
-            context->streams = context->streams->next;
-
-            stream = NULL;
-        }
-    }
     context->streams = NULL;
 
-    while ( context->cuda_mallocs != NULL )
+    if ( scorep_cuda_record_gpumemusage )
     {
-        scorep_cupti_gpumem* scorepMem =  context->cuda_mallocs;
-
-        if ( scorep_cuda_record_gpumemusage == SCOREP_CUDA_GPUMEMUSAGE_AND_MISSING_FREES )
-        {
-            UTILS_WARNING( "[CUPTI] Free of %d bytes GPU memory missing!", scorepMem->size );
-        }
-
-        context->cuda_mallocs = scorepMem->next;
-        scorepMem             = NULL;
-    }
-
-    // destroy the RMA window on the host
-    if ( scorep_cuda_record_memcpy )
-    {
-        // ensure to not destroy the RMA window twice on the same host location
-        scorep_cuda_location_data* loc_data =
-            SCOREP_Location_GetSubsystemData( SCOREP_Location_GetCurrentCPULocation(),
-                                              scorep_cuda_subsystem_id );
+        SCOREP_AllocMetric_ReportLeaked( context->alloc_metric );
     }
 
     if ( context->activity != NULL )

@@ -83,6 +83,16 @@ uint8_t scorep_cupti_activity_state                         = 0;
 /* global region IDs for wrapper internal recording */
 SCOREP_RegionHandle scorep_cupti_buffer_flush_region_handle = SCOREP_INVALID_REGION;
 
+static SCOREP_ParameterHandle parameter_threads_per_kernel;
+static SCOREP_ParameterHandle parameter_threads_per_block;
+static SCOREP_ParameterHandle parameter_blocks_per_grid;
+
+/* CUPTI activity specific kernel counter IDs */
+static SCOREP_ParameterHandle parameter_static_shared_mem;
+static SCOREP_ParameterHandle parameter_dynamic_shared_mem;
+static SCOREP_ParameterHandle parameter_local_mem_total;
+static SCOREP_ParameterHandle parameter_registers_per_thread;
+
 static void
 replace_context( uint32_t               newContextId,
                  scorep_cupti_context** context );
@@ -120,78 +130,36 @@ scorep_cupti_activity_init( void )
 
         if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
         {
-            /* define kernel counters */
-            {
-                SCOREP_MetricHandle metric_handle =
-                    SCOREP_Definitions_NewMetric( "static_shared_mem",
-                                                  "static shared memory",
-                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                  SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                  SCOREP_METRIC_VALUE_UINT64,
-                                                  SCOREP_METRIC_BASE_DECIMAL,
-                                                  0,
-                                                  "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                  SCOREP_INVALID_METRIC );
+            /* define kernel parameters */
 
-                scorep_cupti_sampling_set_static_shared_mem =
-                    SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
-                                                       SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-            }
+            parameter_blocks_per_grid =
+                SCOREP_Definitions_NewParameter( "blocks per grid",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-            {
-                SCOREP_MetricHandle metric_handle =
-                    SCOREP_Definitions_NewMetric( "dynamic_shared_mem",
-                                                  "dynamic shared memory",
-                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                  SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                  SCOREP_METRIC_VALUE_UINT64,
-                                                  SCOREP_METRIC_BASE_DECIMAL,
-                                                  0,
-                                                  "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                  SCOREP_INVALID_METRIC );
+            parameter_threads_per_block =
+                SCOREP_Definitions_NewParameter( "threads per block",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-                scorep_cupti_sampling_set_dynamic_shared_mem =
-                    SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
-                                                       SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-            }
+            parameter_threads_per_kernel =
+                SCOREP_Definitions_NewParameter( "threads per kernel",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-            {
-                SCOREP_MetricHandle metric_handle =
-                    SCOREP_Definitions_NewMetric( "local_mem_total",
-                                                  "total local memory",
-                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                  SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                  SCOREP_METRIC_VALUE_UINT64,
-                                                  SCOREP_METRIC_BASE_DECIMAL,
-                                                  0,
-                                                  "Byte",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                  SCOREP_INVALID_METRIC );
+            parameter_static_shared_mem =
+                SCOREP_Definitions_NewParameter( "static shared memory",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-                scorep_cupti_sampling_set_local_mem_total =
-                    SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
-                                                       SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-            }
+            parameter_dynamic_shared_mem =
+                SCOREP_Definitions_NewParameter( "dynamic shared memory",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-            {
-                SCOREP_MetricHandle metric_handle =
-                    SCOREP_Definitions_NewMetric( "registers_per_thread",
-                                                  "registers per thread",
-                                                  SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                                                  SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
-                                                  SCOREP_METRIC_VALUE_UINT64,
-                                                  SCOREP_METRIC_BASE_DECIMAL,
-                                                  0,
-                                                  "#",
-                                                  SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE,
-                                                  SCOREP_INVALID_METRIC );
+            parameter_local_mem_total =
+                SCOREP_Definitions_NewParameter( "total local memory",
+                                                 SCOREP_PARAMETER_UINT64 );
 
-                scorep_cupti_sampling_set_registers_per_thread =
-                    SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
-                                                       SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
-            }
+
+            parameter_registers_per_thread =
+                SCOREP_Definitions_NewParameter( "registers per thread",
+                                                 SCOREP_PARAMETER_UINT64 );
         }
 
         /* define region for GPU activity flush */
@@ -474,46 +442,28 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
             /* use counter to provide additional information for kernels */
             if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
             {
-                /* grid and block size counter (start) */
+                /* grid and block size parameters (start) */
                 {
                     uint32_t threadsPerBlock = kernel->blockX * kernel->blockY * kernel->blockZ;
                     uint32_t blocksPerGrid   = kernel->gridX * kernel->gridY * kernel->gridZ;
 
-                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                          scorep_cupti_sampling_set_blocks_per_grid, blocksPerGrid );
-                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                          scorep_cupti_sampling_set_threads_per_block, threadsPerBlock );
-                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                          scorep_cupti_sampling_set_threads_per_kernel, threadsPerBlock * blocksPerGrid );
+                    SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                            parameter_blocks_per_grid, blocksPerGrid );
+                    SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                            parameter_threads_per_block, threadsPerBlock );
+                    SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                            parameter_threads_per_kernel, threadsPerBlock * blocksPerGrid );
                 }
 
-                /* memory counter (start) */
-                SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_static_shared_mem, kernel->staticSharedMemory );
-                SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_dynamic_shared_mem, kernel->dynamicSharedMemory );
-                SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_local_mem_total, kernel->localMemoryTotal );
-                SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_registers_per_thread, kernel->registersPerThread );
-
-                /* memory counter (stop) */
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_static_shared_mem, 0 );
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_dynamic_shared_mem, 0 );
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_local_mem_total, 0 );
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_registers_per_thread, 0 );
-
-                /* grid and block size counter (stop) */
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_blocks_per_grid, 0 );
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_threads_per_block, 0 );
-                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                      scorep_cupti_sampling_set_threads_per_kernel, 0 );
+                /* memory parameters (start) */
+                SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                        parameter_static_shared_mem, kernel->staticSharedMemory );
+                SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                        parameter_dynamic_shared_mem, kernel->dynamicSharedMemory );
+                SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                        parameter_local_mem_total, kernel->localMemoryTotal );
+                SCOREP_Location_TriggerParameterUint64( stream_location, start,
+                                                        parameter_registers_per_thread, kernel->registersPerThread );
             }
 
             SCOREP_Location_ExitRegion( stream_location, stop, regionHandle );
