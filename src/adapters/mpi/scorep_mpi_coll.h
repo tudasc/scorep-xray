@@ -27,10 +27,6 @@
  * standard ones.
  */
 
-/*
- * TODO: Intercomms
- */
-
 
 #define COUNT_T int
 #define COUNT_FUN( name ) name

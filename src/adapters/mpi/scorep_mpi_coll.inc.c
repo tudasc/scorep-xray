@@ -29,46 +29,75 @@ COUNT_FUN( coll_bytes_all_to_one )( COUNT_T      sendcount,
                                     uint64_t*    sendbytes,
                                     uint64_t*    recvbytes )
 {
-    int me;
-    PMPI_Comm_rank( comm, &me );
-
-    if ( me == root )
+    if ( is_intracomm( comm ) )
     {
-        int num_ranks;
-        PMPI_Comm_size( comm, &num_ranks );
-
-        /*
-         * At the root, recvcount, recvtype are always significant.
-         * sendcount, sendtype are ignored if the in-place option is given
-         */
-        COUNT_T recvsize;
-        TYPE_SIZE_FUN( recvtype, &recvsize );
-        /*
-         * We rely on the equality of type signatures, i.e.:
-         * (recvcount * recvsize) = (sendcount * sendsize)
-         */
-        const uint64_t blockbytes = recvcount * recvsize;
-
-        if ( inplace )
+        int me;
+        PMPI_Comm_rank( comm, &me );
+        if ( me == root )
         {
-            *sendbytes = 0;
-            *recvbytes = ( num_ranks - 1 ) * blockbytes;
+            int num_ranks;
+            PMPI_Comm_size( comm, &num_ranks );
+
+            /*
+             * At the root, recvcount, recvtype are always significant.
+             * sendcount, sendtype are ignored if the in-place option is given
+             */
+            COUNT_T recvsize;
+            TYPE_SIZE_FUN( recvtype, &recvsize );
+            /*
+             * We rely on the equality of type signatures, i.e.:
+             * (recvcount * recvsize) = (sendcount * sendsize)
+             */
+            const uint64_t blockbytes = recvcount * recvsize;
+
+            if ( inplace )
+            {
+                *sendbytes = 0;
+                *recvbytes = ( num_ranks - 1 ) * blockbytes;
+            }
+            else
+            {
+                *sendbytes = blockbytes;
+                *recvbytes = num_ranks * blockbytes;
+            }
         }
         else
         {
-            *sendbytes = blockbytes;
-            *recvbytes = num_ranks * blockbytes;
+            /*
+             * At the other ranks, sendcount, sendsize are always significant
+             */
+            COUNT_T sendsize;
+            TYPE_SIZE_FUN( sendtype, &sendsize );
+            *sendbytes = sendcount * sendsize;
+            *recvbytes = 0;
         }
     }
-    else
+    else /* Intercomm */
     {
-        /*
-         * At the other ranks, sendcount, sendsize are always significant
-         */
-        COUNT_T sendsize;
-        TYPE_SIZE_FUN( sendtype, &sendsize );
-        *sendbytes = sendcount * sendsize;
-        *recvbytes = 0;
+        if ( root == MPI_ROOT )
+        {
+            int num_remote_ranks;
+            PMPI_Comm_remote_size( comm, &num_remote_ranks );
+
+            COUNT_T recvsize;
+            TYPE_SIZE_FUN( recvtype, &recvsize );
+
+            *sendbytes = 0;
+            *recvbytes = num_remote_ranks * recvcount * recvsize;
+        }
+        else if ( root != MPI_PROC_NULL )
+        {
+            COUNT_T sendsize;
+            TYPE_SIZE_FUN( sendtype, &sendsize );
+
+            *sendbytes = 1 * sendcount * sendsize;
+            *recvbytes = 0;
+        }
+        else
+        {
+            *sendbytes = 0;
+            *recvbytes = 0;
+        }
     }
 }
 
@@ -128,53 +157,87 @@ COUNT_FUN( scorep_mpi_coll_bytes_gatherv )( COUNT_T        sendcount,
                                             uint64_t*      sendbytes,
                                             uint64_t*      recvbytes )
 {
-    int me;
-    PMPI_Comm_rank( comm, &me );
-
-    COUNT_T sendsize;
-    TYPE_SIZE_FUN( sendtype, &sendsize );
-
-    if ( me == root )
+    if ( is_intracomm( comm ) )
     {
-        int num_ranks;
-        PMPI_Comm_size( comm, &num_ranks );
-        /*
-         * At the root, recvcounts, recvtype are always significant.
-         * sendcount, sendtype are ignored if the in-place option is given
-         */
-        COUNT_T recvsize;
-        TYPE_SIZE_FUN( recvtype, &recvsize );
+        int me;
+        PMPI_Comm_rank( comm, &me );
 
-        *recvbytes = 0;
-        for ( int rank = 0; rank < num_ranks; ++rank )
-        {
-            *recvbytes += recvcounts[ rank ] * recvsize;
-        }
+        COUNT_T sendsize;
+        TYPE_SIZE_FUN( sendtype, &sendsize );
 
-        if ( inplace )
+        if ( me == root )
         {
-            *sendbytes  = 0;
-            *recvbytes -= recvcounts[ me ] * recvsize;
+            int num_ranks;
+            PMPI_Comm_size( comm, &num_ranks );
+            /*
+             * At the root, recvcounts, recvtype are always significant.
+             * sendcount, sendtype are ignored if the in-place option is given
+             */
+            COUNT_T recvsize;
+            TYPE_SIZE_FUN( recvtype, &recvsize );
+
+            *recvbytes = 0;
+            for ( int rank = 0; rank < num_ranks; ++rank )
+            {
+                *recvbytes += recvcounts[ rank ] * recvsize;
+            }
+
+            if ( inplace )
+            {
+                *sendbytes  = 0;
+                *recvbytes -= recvcounts[ me ] * recvsize;
+            }
+            else
+            {
+                /*
+                 * We rely on the equality of type signatures, i.e.:
+                 * (recvcounts[me] * recvsize) = (sendcount * sendsize)
+                 */
+                *sendbytes = recvcounts[ me ] * recvsize;
+                /* recvbytes already computed above */
+            }
         }
         else
         {
             /*
-             * We rely on the equality of type signatures, i.e.:
-             * (recvcounts[me] * recvsize) = (sendcount * sendsize)
+             * At the other ranks, sendcount, sendsize are always significant
              */
-            *sendbytes = recvcounts[ me ] * recvsize;
-            /* recvbytes already computed above */
+            COUNT_T sendsize;
+            TYPE_SIZE_FUN( sendtype, &sendsize );
+            *sendbytes = sendcount * sendsize;
+            *recvbytes = 0;
         }
     }
-    else
+    else /* Intercomm */
     {
-        /*
-         * At the other ranks, sendcount, sendsize are always significant
-         */
-        COUNT_T sendsize;
-        TYPE_SIZE_FUN( sendtype, &sendsize );
-        *sendbytes = sendcount * sendsize;
-        *recvbytes = 0;
+        if ( root == MPI_ROOT )
+        {
+            int num_remote_ranks;
+            PMPI_Comm_remote_size( comm, &num_remote_ranks );
+
+            COUNT_T recvsize;
+            TYPE_SIZE_FUN( recvtype, &recvsize );
+
+            *sendbytes = 0;
+            *recvbytes = 0;
+            for ( int rank = 0; rank < num_remote_ranks; ++rank )
+            {
+                *recvbytes += recvcounts[ rank ] * recvsize;
+            }
+        }
+        else if ( root != MPI_PROC_NULL )
+        {
+            COUNT_T sendsize;
+            TYPE_SIZE_FUN( sendtype, &sendsize );
+
+            *sendbytes = 1 * sendcount * sendsize;
+            *recvbytes = 0;
+        }
+        else
+        {
+            *sendbytes = 0;
+            *recvbytes = 0;
+        }
     }
 }
 
@@ -291,27 +354,36 @@ COUNT_FUN( scorep_mpi_coll_bytes_alltoall )( COUNT_T      sendcount,
                                              uint64_t*    sendbytes,
                                              uint64_t*    recvbytes )
 {
-    int num_reciever_ranks;
-    PMPI_Comm_size( comm, &num_reciever_ranks );
-    if ( inplace )
+    int num_ranks;
+    if ( is_intracomm( comm ) )
     {
-        --num_reciever_ranks;
+        PMPI_Comm_size( comm, &num_ranks );
+    }
+    else /* Intercomm */
+    {
+        PMPI_Comm_remote_size( comm, &num_ranks );
     }
 
     /*
      * recvcounts, recvtype are always significant.
      * sendcount, sendtype are ignored if the in-place option is given
      */
-    COUNT_T recvtype_size;
-    TYPE_SIZE_FUN( recvtype, &recvtype_size );
-    /*
-     * We rely on the equality of type signatures, i.e.:
-     * (recvcount * recvsize) = (sendcount * sendsize)
-     */
-    const uint64_t block_size = recvcount * recvtype_size;
+    COUNT_T recvsize;
+    TYPE_SIZE_FUN( recvtype, &recvsize );
 
-    *sendbytes = num_reciever_ranks * block_size;
-    *recvbytes = *sendbytes;
+    if ( inplace )
+    {
+        *sendbytes = ( num_ranks - 1 ) * recvcount * recvsize;
+        *recvbytes = *sendbytes;
+    }
+    else /* either Intracomm without inplace or Intercomm */
+    {
+        COUNT_T sendsize;
+        TYPE_SIZE_FUN( sendtype, &sendsize );
+
+        *sendbytes = num_ranks * sendcount * sendsize;
+        *recvbytes = num_ranks * recvcount * recvsize;
+    }
 }
 
 void
@@ -325,7 +397,14 @@ COUNT_FUN( scorep_mpi_coll_bytes_alltoallv )( const COUNT_T* sendcounts,
                                               uint64_t*      recvbytes )
 {
     int num_ranks;
-    PMPI_Comm_size( comm, &num_ranks );
+    if ( is_intracomm( comm ) )
+    {
+        PMPI_Comm_size( comm, &num_ranks );
+    }
+    else /* Intercomm */
+    {
+        PMPI_Comm_remote_size( comm, &num_ranks );
+    }
 
     /*
      * recvcounts, recvtype are always significant.
@@ -354,7 +433,7 @@ COUNT_FUN( scorep_mpi_coll_bytes_alltoallv )( const COUNT_T* sendcounts,
          */
         *sendbytes = *recvbytes;
     }
-    else
+    else /* either Intracomm without inplace or Intercomm */
     {
         COUNT_T sendsize;
         TYPE_SIZE_FUN( sendtype, &sendsize );
@@ -378,7 +457,14 @@ COUNT_FUN( scorep_mpi_coll_bytes_alltoallw )( const COUNT_T*      sendcounts,
                                               uint64_t*           recvbytes )
 {
     int num_ranks;
-    PMPI_Comm_size( comm, &num_ranks );
+    if ( is_intracomm( comm ) )
+    {
+        PMPI_Comm_size( comm, &num_ranks );
+    }
+    else /* Intercomm */
+    {
+        PMPI_Comm_remote_size( comm, &num_ranks );
+    }
 
     *sendbytes = 0;
     *recvbytes = 0;
@@ -403,7 +489,7 @@ COUNT_FUN( scorep_mpi_coll_bytes_alltoallw )( const COUNT_T*      sendcounts,
          */
         *sendbytes = *recvbytes;
     }
-    else
+    else /* either Intracomm without inplace or Intercomm */
     {
         COUNT_T sendsize, recvsize;
         for ( int rank = 0; rank < num_ranks; ++rank )
@@ -447,7 +533,14 @@ COUNT_FUN( scorep_mpi_coll_bytes_allgatherv )( COUNT_T        sendcount,
                                                uint64_t*      recvbytes )
 {
     int num_ranks;
-    PMPI_Comm_size( comm, &num_ranks );
+    if ( is_intracomm( comm ) )
+    {
+        PMPI_Comm_size( comm, &num_ranks );
+    }
+    else /* Intercomm */
+    {
+        PMPI_Comm_remote_size( comm, &num_ranks );
+    }
 
     /*
      * recvcounts, recvtype are always significant.
@@ -476,7 +569,7 @@ COUNT_FUN( scorep_mpi_coll_bytes_allgatherv )( COUNT_T        sendcount,
          */
         *sendbytes = ( num_ranks - 1 ) * ( recvcounts[ me ] * recvsize );
     }
-    else
+    else /* either Intracomm without inplace or Intercomm */
     {
         COUNT_T sendsize;
         TYPE_SIZE_FUN( sendtype, &sendsize );
@@ -515,18 +608,22 @@ COUNT_FUN( scorep_mpi_coll_bytes_reduce_scatter_block )( COUNT_T      recvcount,
                                                          uint64_t*    sendbytes,
                                                          uint64_t*    recvbytes )
 {
-    /*
-     * The semantics of reduce_scatter_block are different from allreduce,
-     * but data exchange is symmetric between all processes.
-     */
-    COUNT_FUN( scorep_mpi_coll_bytes_alltoall )( recvcount,
-                                                 datatype,
-                                                 recvcount,
-                                                 datatype,
-                                                 inplace,
-                                                 comm,
-                                                 sendbytes,
-                                                 recvbytes );
+    int num_local_ranks;
+    PMPI_Comm_size( comm, &num_local_ranks );
+
+    COUNT_T typesize;
+    TYPE_SIZE_FUN( datatype, &typesize );
+
+    if ( inplace )
+    {
+        *sendbytes = ( num_local_ranks - 1 ) * recvcount * typesize;
+        *recvbytes = *sendbytes;
+    }
+    else /* either Intracomm without inplace or Intercomm */
+    {
+        *sendbytes = num_local_ranks * recvcount * typesize;
+        *recvbytes = *sendbytes;
+    }
 }
 
 void
@@ -537,32 +634,42 @@ COUNT_FUN( scorep_mpi_coll_bytes_reduce_scatter )( const COUNT_T* recvcounts,
                                                    uint64_t*      sendbytes,
                                                    uint64_t*      recvbytes )
 {
-    int num_ranks;
-    PMPI_Comm_size( comm, &num_ranks );
-
-    int me;
-    PMPI_Comm_rank( comm, &me );
+    int num_local_ranks;
+    PMPI_Comm_size( comm, &num_local_ranks );
 
     COUNT_T typesize;
     TYPE_SIZE_FUN( datatype, &typesize );
 
+    int me;
+    PMPI_Comm_rank( comm, &me );
+
     uint64_t sendcount = 0;
-    for ( int rank = 0; rank < num_ranks; ++rank )
+    for ( int rank = 0; rank < num_local_ranks; ++rank )
     {
         sendcount += recvcounts[ rank ];
     }
 
-    if ( inplace )
+    if ( is_intracomm( comm ) )
     {
-        sendcount -= recvcounts[ me ];
+        if ( inplace )
+        {
+            sendcount -= recvcounts[ me ];
+            *sendbytes = sendcount * typesize;
+            *recvbytes = ( num_local_ranks - 1 ) * recvcounts[ me ] * typesize;
+        }
+        else
+        {
+            *sendbytes = sendcount * typesize;
+            *recvbytes = num_local_ranks * recvcounts[ me ] * typesize;
+        }
+    }
+    else /* Intercomm */
+    {
+        int num_remote_ranks;
+        PMPI_Comm_remote_size( comm, &num_remote_ranks );
 
         *sendbytes = sendcount * typesize;
-        *recvbytes = ( num_ranks - 1 ) * ( recvcounts[ me ] * typesize );
-    }
-    else
-    {
-        *sendbytes = sendcount * typesize;
-        *recvbytes = num_ranks * ( recvcounts[ me ] * typesize );
+        *recvbytes = num_remote_ranks * recvcounts[ me ] * typesize;
     }
 }
 

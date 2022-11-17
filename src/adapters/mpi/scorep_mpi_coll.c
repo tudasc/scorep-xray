@@ -13,6 +13,16 @@
 
 #include "scorep_mpi_coll.h"
 
+#include <stdbool.h>
+
+static inline bool
+is_intracomm( MPI_Comm comm )
+{
+    int is_intercomm;
+    PMPI_Comm_test_inter( comm, &is_intercomm );
+    return !is_intercomm;
+}
+
 #define COUNT_T int
 #define COUNT_FUN( name ) name
 #define TYPE_SIZE_FUN PMPI_Type_size
