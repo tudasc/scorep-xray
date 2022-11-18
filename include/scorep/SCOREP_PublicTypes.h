@@ -268,6 +268,17 @@ typedef uint64_t SCOREP_MpiRequestId;
  */
 #define SCOREP_INVALID_ROOT_RANK -1
 
+/**
+ * Symbolic constant representing the MPI constant MPI_ROOT.
+ * @see SCOREP_MpiCollective()
+ */
+#define SCOREP_MPI_ROOT -2
+
+/**
+ * Symbolic constant representing the MPI constant MPI_PROC_NULL.
+ * @see SCOREP_MpiCollective()
+ */
+#define SCOREP_MPI_PROC_NULL -3
 
 /**
  * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to

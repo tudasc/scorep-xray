@@ -105,6 +105,7 @@ typedef struct scorep_mpi_comm_definition_payload
 {
     uint32_t comm_size;
     uint32_t local_rank;
+    uint32_t remote_comm_size;
     uint32_t global_root_rank;
     uint32_t root_id;
     uint32_t io_handle_counter;
@@ -241,5 +242,25 @@ scorep_mpi_comm_finalize( void );
 void
 scorep_mpi_unify_communicators( void );
 
+/**
+ * @internal
+ * Converts a MPI rank to SCOREP_MpiRank
+ *
+ * This function converts to SCOREP_MpiRank with specific regard to using
+ * internal SCOREP constants for MPI_ROOT and MPI_PROC_NULL.
+ */
+static inline SCOREP_MpiRank
+scorep_mpi_get_scorep_mpi_rank( int rank )
+{
+    if ( rank == MPI_ROOT )
+    {
+        return SCOREP_MPI_ROOT;
+    }
+    if ( rank == MPI_PROC_NULL )
+    {
+        return SCOREP_MPI_PROC_NULL;
+    }
+    return rank;
+}
 
 #endif /* SCOREP_MPI_COMMUNICATOR_MGMT_H */

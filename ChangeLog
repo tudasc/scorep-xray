@@ -17,6 +17,7 @@ Major features:
   `__cyg_profile_func` instrumentation API was removed.
 - Support for recording AMD HIP activities. It requires an LLVM/Clang
   based compiler.
+- Add support for MPI intercommunicators.
 
 Features and improvements:
 

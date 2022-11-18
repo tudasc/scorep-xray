@@ -275,11 +275,11 @@ SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
                                  SCOREP_InterimCommunicatorHandle parentCommHandle )
 {
-    SCOREP_CommunicatorId            id;         /* identifier unique to root */
-    SCOREP_MpiRank                   root;       /* global rank of rank 0 */
-    int                              local_rank; /* local rank in this communicator */
-    int                              size;       /* size of communicator */
-    SCOREP_InterimCommunicatorHandle handle;     /* Score-P handle for the communicator */
+    SCOREP_CommunicatorId            id;                /* identifier unique to root */
+    SCOREP_MpiRank                   root;              /* global rank of rank 0 */
+    int                              local_rank;        /* local rank in this communicator */
+    int                              size;              /* size of communicator */
+    SCOREP_InterimCommunicatorHandle handle;            /* Score-P handle for the communicator */
 
     /* Lock communicator definition */
     UTILS_MutexLock( &scorep_mpi_communicator_mutex );
@@ -299,7 +299,47 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
     PMPI_Comm_size( comm, &size );
 
     /* determine id and root for communicator definition */
-    scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
+    int is_inter_comm = 0;
+    /* size of the remote group in an inter comm, zero for intra comms.*/
+    int remote_size = 0;
+    PMPI_Comm_test_inter( comm, &is_inter_comm );
+    if ( is_inter_comm )
+    {
+        int       ranks_to_translate[ 1 ] = { 0 };
+        int       merged_rank, merged_size;
+        int       local_root_world_rank, remote_root_world_rank;
+        uint32_t  high;
+        MPI_Group local_group, remote_group, world_group;
+        MPI_Comm  merged_comm;
+
+        PMPI_Comm_group( MPI_COMM_WORLD, &world_group );
+
+        PMPI_Comm_group( comm, &local_group );
+        PMPI_Group_translate_ranks( local_group, 1, ranks_to_translate, world_group, &local_root_world_rank );
+
+        PMPI_Comm_remote_group( comm, &remote_group );
+        PMPI_Group_translate_ranks( remote_group, 1, ranks_to_translate, world_group, &remote_root_world_rank );
+        PMPI_Group_size( remote_group, &remote_size );
+
+        high = local_root_world_rank > remote_root_world_rank;
+
+        PMPI_Intercomm_merge( comm, high, &merged_comm );
+        PMPI_Comm_rank( merged_comm, &merged_rank );
+        PMPI_Comm_size( merged_comm, &merged_size );
+        scorep_mpi_comm_create_id( merged_comm, merged_size, merged_rank, &root, &id );
+        PMPI_Comm_free( &merged_comm );
+
+        /* Encode the high/low in the high bit of remote_size. This avoids having an
+           additional 32bit variable for a binary value and the impact on the size should
+           be limited, in particular since remote size will be always a real subset of a
+           32bit size for MPI_COMM_WORLD.
+         */
+        remote_size |= high << 31;
+    }
+    else
+    {
+        scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
+    }
 
     /* create definition in measurement system */
     scorep_mpi_comm_definition_payload* comm_payload;
@@ -309,6 +349,7 @@ scorep_mpi_comm_create_finalize( MPI_Comm                         comm,
                                                         ( void** )&comm_payload );
     comm_payload->comm_size         = size;
     comm_payload->local_rank        = local_rank;
+    comm_payload->remote_comm_size  = remote_size;
     comm_payload->global_root_rank  = root;
     comm_payload->root_id           = id;
     comm_payload->io_handle_counter = 0;
@@ -441,6 +482,7 @@ scorep_mpi_setup_world( void )
                                                    ( void** )&comm_payload );
     comm_payload->comm_size         = scorep_mpi_world.size;
     comm_payload->local_rank        = scorep_mpi_my_global_rank;
+    comm_payload->remote_comm_size  = 0;
     comm_payload->global_root_rank  = 0;
     comm_payload->root_id           = 0;
     comm_payload->io_handle_counter = 0;
@@ -541,6 +583,7 @@ scorep_mpi_comm_handle( MPI_Comm comm )
         }
     }
 }
+
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */

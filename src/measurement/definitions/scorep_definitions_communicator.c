@@ -327,7 +327,8 @@ equal_communicator( const SCOREP_CommunicatorDef* existingDefinition,
 
 static SCOREP_CommunicatorHandle
 define_communicator( SCOREP_DefinitionManager* definition_manager,
-                     SCOREP_GroupHandle        group_handle,
+                     SCOREP_GroupHandle        groupA,
+                     SCOREP_GroupHandle        groupB,
                      SCOREP_StringHandle       name_handle,
                      SCOREP_CommunicatorHandle parent_handle,
                      uint32_t                  unifyKey,
@@ -348,6 +349,34 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group,
     SCOREP_CommunicatorHandle new_handle = define_communicator(
         &scorep_local_definition_manager,
         group,
+        group, /* only used for inter comms the same on intra comms */
+        name,
+        parent,
+        unifyKey,
+        flags );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+SCOREP_CommunicatorHandle
+SCOREP_Definitions_NewInterCommunicator( SCOREP_GroupHandle        groupA,
+                                         SCOREP_GroupHandle        groupB,
+                                         SCOREP_StringHandle       name,
+                                         SCOREP_CommunicatorHandle parent,
+                                         uint32_t                  unifyKey,
+                                         SCOREP_CommunicatorFlag   flags )
+{
+    UTILS_DEBUG_ENTRY();
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_CommunicatorHandle new_handle = define_communicator(
+        &scorep_local_definition_manager,
+        groupA,
+        groupB,
         name,
         parent,
         unifyKey,
@@ -391,7 +420,11 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
     definition->unified = define_communicator(
         scorep_unified_definition_manager,
         SCOREP_HANDLE_GET_UNIFIED(
-            definition->group_handle,
+            definition->group_a_handle,
+            Group,
+            handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED(
+            definition->group_b_handle,
             Group,
             handlesPageManager ),
         unified_string_handle,
@@ -403,7 +436,8 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
 
 SCOREP_CommunicatorHandle
 define_communicator( SCOREP_DefinitionManager* definition_manager,
-                     SCOREP_GroupHandle        group,
+                     SCOREP_GroupHandle        groupA,
+                     SCOREP_GroupHandle        groupB,
                      SCOREP_StringHandle       name,
                      SCOREP_CommunicatorHandle parent,
                      uint32_t                  unifyKey,
@@ -415,8 +449,11 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
     SCOREP_DEFINITION_ALLOC( Communicator );
 
     // Init new_definition
-    new_definition->group_handle = group;
-    HASH_ADD_HANDLE( new_definition, group_handle, Group );
+    new_definition->group_a_handle = groupA;
+    HASH_ADD_HANDLE( new_definition, group_a_handle, Group );
+
+    new_definition->group_b_handle = groupB;
+    HASH_ADD_HANDLE( new_definition, group_b_handle, Group );
 
     /* No hashing, wont be used to find duplicates */
     new_definition->name_handle = name;
@@ -449,7 +486,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
                     definition_manager->page_manager,
                     hash_list_iterator );
             if ( existing_definition->hash_value == new_definition->hash_value
-                 && existing_definition->group_handle == new_definition->group_handle
+                 && existing_definition->group_a_handle == new_definition->group_a_handle
+                 && existing_definition->group_b_handle == new_definition->group_b_handle
                  && existing_definition->parent_handle == new_definition->parent_handle
                  && existing_definition->unify_key == new_definition->unify_key )
             {

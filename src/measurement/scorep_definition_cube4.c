@@ -1322,7 +1322,7 @@ write_cartesian_definitions( cube_t*                       myCube,
                 SCOREP_GroupType group_type = SCOREP_UNIFIED_HANDLE_DEREF(
                     SCOREP_UNIFIED_HANDLE_DEREF(
                         SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_handle, CartesianTopology )->communicator_handle,
-                        Communicator )->group_handle,
+                        Communicator )->group_a_handle,
                     Group )->group_type;
 
                 if ( group_type !=  SCOREP_GROUP_MPI_SELF )
@@ -1330,7 +1330,7 @@ write_cartesian_definitions( cube_t*                       myCube,
                     global_rank = SCOREP_UNIFIED_HANDLE_DEREF(
                         SCOREP_UNIFIED_HANDLE_DEREF(
                             SCOREP_UNIFIED_HANDLE_DEREF( definition->topology_handle, CartesianTopology )->communicator_handle,
-                            Communicator )->group_handle,
+                            Communicator )->group_a_handle,
                         Group )->members[ coord_rank ];
                 }
             }

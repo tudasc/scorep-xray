@@ -205,9 +205,6 @@ various Score-P components.
     object. Please call MPI_Finalize() before the end of main(). The
     issue will be resolved in a future version of Score-P.
 
-  - If an application uses MPI inter-communicators, Score-P
-    measurement will hang during the creation of the communicator.
-
   - The IBM Platform MPI (not mpixlc!) compiler wrapper (the formerly
     HP-MPI) does not append its libraries at the very end of the
     original link command. Thus, instrumenting applications with
