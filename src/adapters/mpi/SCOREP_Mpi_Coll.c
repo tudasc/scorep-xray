@@ -1408,9 +1408,17 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
             PMPI_Comm_test_inter( comm, &is_inter_comm );
             if ( !is_inter_comm )
             {
-                count    -= recvcounts[ me ];
-                sendbytes = ( uint64_t )count * sz;
-                recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
+                if ( sendbuf == MPI_IN_PLACE )
+                {
+                    count    -= recvcounts[ me ];
+                    sendbytes = ( uint64_t )count * sz;
+                    recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
+                }
+                else
+                {
+                    sendbytes = ( uint64_t )count * sz;
+                    recvbytes = ( uint64_t )N * recvcounts[ me ] * sz;
+                }
             }
             else
             {
@@ -3259,7 +3267,8 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
             {
                 if ( sendbuf == MPI_IN_PLACE )
                 {
-                    sendbytes = ( uint64_t )( count - 1 ) * sz;
+                    count    -= recvcounts[ me ];
+                    sendbytes = ( uint64_t )count * sz;
                     recvbytes = ( uint64_t )( N - 1 ) * recvcounts[ me ] * sz;
                 }
                 else
