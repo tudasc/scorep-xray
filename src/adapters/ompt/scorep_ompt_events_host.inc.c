@@ -183,13 +183,13 @@ static void implicit_task_end_impl( task_t* task, char* utilsDebugcaller );
 static void barrier_implicit_parallel_end( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_finalize_tool( ompt_data_t* taskData );
 static void barrier_implicit_parallel_end_impl( task_t* task, char* utilsDebugCaller );
-static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrRa, ompt_region_type regionType );
+static inline SCOREP_RegionHandle work_begin( task_t* task, const void* codeptrRa, tool_event_t regionType );
 static inline void enlarge_region_array( uint8_t* capacity, SCOREP_RegionHandle** regions );
 static inline SCOREP_RegionHandle work_end( task_t* task );
 static inline uint64_t get_mask( uint32_t width, uint32_t shift );
 static inline task_t* get_current_task( void );
 static inline void construct_mutex_acquire( task_t* task, const void* codeptrRa );
-static inline void construct_mutex_acquired( task_t* task, ompt_region_type regionType, ompt_region_type regionTypeSblock, ompt_mutex_t kind, ompt_wait_id_t waitId );
+static inline void construct_mutex_acquired( task_t* task, tool_event_t regionType, tool_event_t regionTypeSblock, ompt_mutex_t kind, ompt_wait_id_t waitId );
 static inline void construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t waitId );
 /* *INDENT-ON* */
 
@@ -439,7 +439,7 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     }
 
     parallel_region->parent     = tpd;
-    parallel_region->region     = get_region( codeptr_ra, OMPT_PARALLEL );
+    parallel_region->region     = get_region( codeptr_ra, TOOL_EVENT_PARALLEL );
     parallel_region->team_size  = requested_parallelism;
     parallel_region->codeptr_ra = ( uintptr_t )codeptr_ra;
 
@@ -483,7 +483,7 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     /* codeptr_ra is also used for the (contended) ibarrier begin later on.
        Thus, create and insert the barrier region handle uncontended into
        the hash table already here. */
-    get_region( codeptr_ra, OMPT_IMPLICIT_BARRIER );
+    get_region( codeptr_ra, TOOL_EVENT_IMPLICIT_BARRIER );
 
     SCOREP_ThreadForkJoin_Fork( SCOREP_PARADIGM_OPENMP, requested_parallelism );
 
@@ -1147,7 +1147,7 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                     }
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
                     task->barrier_handle = get_region( ibarrier_codeptr_ra,
-                                                       OMPT_IMPLICIT_BARRIER );
+                                                       TOOL_EVENT_IMPLICIT_BARRIER );
                     SCOREP_EnterRegion( task->barrier_handle );
 
                     #if HAVE( UTILS_DEBUG )
@@ -1169,25 +1169,25 @@ scorep_ompt_cb_host_sync_region( ompt_sync_region_t    kind,
                 case ompt_sync_region_barrier_explicit:
                 {
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, OMPT_BARRIER );
+                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_BARRIER );
                     SCOREP_EnterRegion( task->barrier_handle );
                     break;
                 }
                 case ompt_sync_region_taskwait:
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, OMPT_TASKWAIT );
+                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_TASKWAIT );
                     SCOREP_EnterRegion( task->barrier_handle );
                     break;
                 case ompt_sync_region_taskgroup:
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
-                    task->barrier_handle = get_region( codeptr_ra, OMPT_TASKGROUP );
+                    task->barrier_handle = get_region( codeptr_ra, TOOL_EVENT_TASKGROUP );
                     SCOREP_EnterRegion( task->barrier_handle );
                     break;
                 case ompt_sync_region_barrier_implicit_workshare:
                 {
                     UTILS_BUG_ON( task->barrier_handle != SCOREP_INVALID_REGION );
                     task->barrier_handle = get_region( codeptr_ra,
-                                                       OMPT_IMPLICIT_BARRIER );
+                                                       TOOL_EVENT_IMPLICIT_BARRIER );
                     SCOREP_EnterRegion( task->barrier_handle );
                     break;
                 }
@@ -1546,21 +1546,21 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
             switch ( work_type )
             {
                 case ompt_work_loop:
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_LOOP ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_LOOP ) );
                     break;
                 case ompt_work_sections:
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SECTIONS ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SECTIONS ) );
                     task->dispatch.section = SCOREP_INVALID_REGION;
                     break;
                 case ompt_work_single_executor:
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE_SBLOCK ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SINGLE ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SINGLE_SBLOCK ) );
                     break;
                 case ompt_work_single_other:
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_SINGLE ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_SINGLE ) );
                     break;
                 case ompt_work_workshare:
-                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_WORKSHARE ) );
+                    SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_WORKSHARE ) );
                     break;
                 default:
                     UTILS_WARNING( "ompt_work_t %s not implemented yet ",
@@ -1610,9 +1610,9 @@ scorep_ompt_cb_host_work( ompt_work_t           work_type,
 
 
 static inline SCOREP_RegionHandle
-work_begin( task_t*          task,
-            const void*      codeptrRa,
-            ompt_region_type regionType )
+work_begin( task_t*      task,
+            const void*  codeptrRa,
+            tool_event_t regionType )
 {
     if ( task->workshare_regions_current == task->workshare_regions_capacity )
     {
@@ -1760,11 +1760,11 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
     SCOREP_RegionHandle task_region;
     if ( flags & ompt_task_untied )
     {
-        task_region = get_region( codeptr_ra, OMPT_TASK_UNTIED );
+        task_region = get_region( codeptr_ra, TOOL_EVENT_TASK_UNTIED );
     }
     else
     {
-        task_region = get_region( codeptr_ra, OMPT_TASK );
+        task_region = get_region( codeptr_ra, TOOL_EVENT_TASK );
     }
     UTILS_BUG_ON( task_region == SCOREP_INVALID_REGION );
 
@@ -1795,7 +1795,7 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
        OMPT, we cannot intercept this point.
        The duration of 'task_create' here is pure scorep time, thus
        provide same timestamp to enter/exit(task_create). */
-    SCOREP_RegionHandle task_create = get_region( codeptr_ra, OMPT_TASK_CREATE );
+    SCOREP_RegionHandle task_create = get_region( codeptr_ra, TOOL_EVENT_TASK_CREATE );
     SCOREP_Location*    location    = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            timestamp   = SCOREP_Timer_GetClockTicks();
 
@@ -1997,7 +1997,7 @@ scorep_ompt_cb_host_masked( ompt_scope_endpoint_t endpoint,
     switch ( endpoint )
     {
         case ompt_scope_begin:
-            SCOREP_EnterRegion( work_begin( task, codeptr_ra, OMPT_MASKED ) );
+            SCOREP_EnterRegion( work_begin( task, codeptr_ra, TOOL_EVENT_MASKED ) );
             break;
         case ompt_scope_end:
             SCOREP_ExitRegion( work_end( task ) );
@@ -2058,13 +2058,13 @@ scorep_ompt_cb_host_mutex_acquire( ompt_mutex_t   kind,
     switch ( kind )
     {
         case ompt_mutex_lock:
-            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_SET ] );
+            SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
             break;
         case ompt_mutex_nest_lock:
             /* nest-lock-acquire event. Followed by either nest-lock-acquired
                in scorep_ompt_cb_host_mutex_acquired() or nest-lock-owned in
                scorep_ompt_cb_host_nest_lock(). */
-            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+            SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
             break;
         case ompt_mutex_critical:
             construct_mutex_acquire( task, codeptr_ra );
@@ -2141,7 +2141,7 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
             UTILS_MutexLock( &( mutex->in_release_operation ) );
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, ++( mutex->acquisition_order ) );
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET ] );
         }
         break;
         case ompt_mutex_nest_lock:
@@ -2157,17 +2157,17 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
             }
             mutex->optional.nest_level++;
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
         }
         break;
         case ompt_mutex_critical:
-            construct_mutex_acquired( task, OMPT_CRITICAL, OMPT_CRITICAL_SBLOCK, kind, wait_id );
+            construct_mutex_acquired( task, TOOL_EVENT_CRITICAL, TOOL_EVENT_CRITICAL_SBLOCK, kind, wait_id );
             break;
         case ompt_mutex_atomic:
             /* Intentionally ignore atomic events. */
             break;
         case ompt_mutex_ordered:
-            construct_mutex_acquired( task, OMPT_ORDERED, OMPT_ORDERED_SBLOCK, kind, wait_id );
+            construct_mutex_acquired( task, TOOL_EVENT_ORDERED, TOOL_EVENT_ORDERED_SBLOCK, kind, wait_id );
             break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
@@ -2180,11 +2180,11 @@ scorep_ompt_cb_host_mutex_acquired( ompt_mutex_t   kind,
 
 
 static inline void
-construct_mutex_acquired( task_t*          task,
-                          ompt_region_type regionType,
-                          ompt_region_type regionTypeSblock,
-                          ompt_mutex_t     kind,
-                          ompt_wait_id_t   waitId )
+construct_mutex_acquired( task_t*        task,
+                          tool_event_t   regionType,
+                          tool_event_t   regionTypeSblock,
+                          ompt_mutex_t   kind,
+                          ompt_wait_id_t waitId )
 {
     /* We are in the OpenMP synchronization, no one else will access the
        mutext_obj_t handle. */
@@ -2250,11 +2250,11 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
         case ompt_mutex_lock:
         {
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
-            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET ] );
+            SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET ] );
             SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
             UTILS_MutexUnlock( &( mutex->in_release_operation ) );
             mutex = NULL; /* Don't use after unlock */
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET ] );
         }
         break;
         case ompt_mutex_nest_lock:
@@ -2262,13 +2262,13 @@ scorep_ompt_cb_host_mutex_released( ompt_mutex_t   kind,
             /* nest-lock-release event. See also nest-lock-held in
                scorep_ompt_cb_host_nest_lock(). */
             mutex_obj_t* mutex = mutex_get( wait_id, kind );
-            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
             SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
             mutex->optional.nest_level--;
             UTILS_BUG_ON( mutex->optional.nest_level != 0 );
             UTILS_MutexUnlock( &( mutex->in_release_operation ) );
             mutex = NULL; /* Don't use after unlock */
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
         }
         break;
         case ompt_mutex_critical:
@@ -2337,20 +2337,20 @@ scorep_ompt_cb_host_lock_init( ompt_mutex_t   kind,
     {
         case ompt_mutex_lock:
             mutex_get_and_insert( wait_id, kind );
-            region = lock_regions[ OMPT_LOCK_INIT ];
+            region = lock_regions[ TOOL_LOCK_EVENT_INIT ];
             if ( hint != 0 /* omp_sync_hint_none */ )
             {
-                region = lock_regions[ OMPT_LOCK_INIT_WITH_HINT ];
+                region = lock_regions[ TOOL_LOCK_EVENT_INIT_WITH_HINT ];
             }
             SCOREP_Location_EnterRegion( location, timestamp, region );
             SCOREP_Location_ExitRegion( location, timestamp, region );
             break;
         case ompt_mutex_nest_lock:
             mutex_get_and_insert( wait_id, kind );
-            region = lock_regions[ OMPT_LOCK_INIT_NEST ];
+            region = lock_regions[ TOOL_LOCK_EVENT_INIT_NEST ];
             if ( hint != 0 /* omp_sync_hint_none */ )
             {
-                region = lock_regions[ OMPT_LOCK_INIT_NEST_WITH_HINT ];
+                region = lock_regions[ TOOL_LOCK_EVENT_INIT_NEST_WITH_HINT ];
             }
             SCOREP_Location_EnterRegion( location, timestamp, region );
             SCOREP_Location_ExitRegion( location, timestamp, region );
@@ -2395,12 +2395,12 @@ scorep_ompt_cb_host_lock_destroy( ompt_mutex_t   kind,
     switch ( kind )
     {
         case ompt_mutex_lock:
-            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
-            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY ] );
+            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ TOOL_LOCK_EVENT_DESTROY ] );
+            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ TOOL_LOCK_EVENT_DESTROY ] );
             break;
         case ompt_mutex_nest_lock:
-            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY_NEST ] );
-            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ OMPT_LOCK_DESTROY_NEST ] );
+            SCOREP_Location_EnterRegion( location, timestamp, lock_regions[ TOOL_LOCK_EVENT_DESTROY_NEST ] );
+            SCOREP_Location_ExitRegion( location, timestamp, lock_regions[ TOOL_LOCK_EVENT_DESTROY_NEST ] );
             break;
         default:
             UTILS_WARNING( "mutex kind %s not implemented yet.", mutex2string( kind ) );
@@ -2443,15 +2443,15 @@ scorep_ompt_cb_host_nest_lock( ompt_scope_endpoint_t endpoint,
                scorep_ompt_cb_host_mutex_acquire() for SCOREP_EnterRegion(). */
             mutex->optional.nest_level++;
             SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_SET_NEST ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_SET_NEST ] );
             break;
         case ompt_scope_end:
             /* nest-lock-held event. See nest-lock-release in scorep_ompt_cb_host_mutex_released()
                for final release. */
-            SCOREP_EnterRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_EnterRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
             SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_OPENMP, mutex->id, mutex->acquisition_order );
             mutex->optional.nest_level--;
-            SCOREP_ExitRegion( lock_regions[ OMPT_LOCK_UNSET_NEST ] );
+            SCOREP_ExitRegion( lock_regions[ TOOL_LOCK_EVENT_UNSET_NEST ] );
             break;
 #if HAVE( DECL_OMPT_SCOPE_BEGINEND )
         case ompt_scope_beginend:
@@ -2514,7 +2514,7 @@ scorep_ompt_cb_host_dispatch( ompt_data_t*    parallel_data,
             }
             /* Enter new section. To be exited when this cb is triggered again
                or when the enclosing sections-end event is encountered. */
-            task->dispatch.section = get_region( instance.ptr, OMPT_SECTION );
+            task->dispatch.section = get_region( instance.ptr, TOOL_EVENT_SECTION );
             SCOREP_EnterRegion( task->dispatch.section );
             break;
         default:
@@ -2533,7 +2533,7 @@ void
 scorep_ompt_cb_host_flush( ompt_data_t* thread_data,
                            const void*  codeptr_ra )
 {
-    SCOREP_RegionHandle region    = get_region( codeptr_ra, OMPT_FLUSH );
+    SCOREP_RegionHandle region    = get_region( codeptr_ra, TOOL_EVENT_FLUSH );
     SCOREP_Location*    location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            timestamp = SCOREP_Timer_GetClockTicks();
     /* No duration available for flush. Use identical timestamp. */

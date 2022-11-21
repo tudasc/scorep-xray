@@ -23,37 +23,37 @@
 #include <SCOREP_ThreadForkJoin_Event.h>
 #include <jenkins_hash.h>
 
-typedef enum ompt_region_type
+typedef enum tool_event_t
 {
-    OMPT_UNKNOWN = 0,
+    TOOL_EVENT_UNKNOWN = 0,
 
-    OMPT_PARALLEL,
-    OMPT_IMPLICIT_BARRIER,
-    OMPT_SINGLE,
-    OMPT_SINGLE_SBLOCK,
-    OMPT_TASK,
-    OMPT_TASK_UNTIED,
-    OMPT_TASK_CREATE,
-    OMPT_LOOP,
-    OMPT_SECTIONS,
-    OMPT_WORKSHARE,
-    OMPT_TASKWAIT,
-    OMPT_TASKGROUP,
-    OMPT_BARRIER,
-    OMPT_MASKED,
-    OMPT_CRITICAL,
-    OMPT_CRITICAL_SBLOCK,
-    OMPT_ORDERED,
-    OMPT_ORDERED_SBLOCK,
-    OMPT_SECTION,
-    OMPT_FLUSH,
+    TOOL_EVENT_PARALLEL,
+    TOOL_EVENT_IMPLICIT_BARRIER,
+    TOOL_EVENT_SINGLE,
+    TOOL_EVENT_SINGLE_SBLOCK,
+    TOOL_EVENT_TASK,
+    TOOL_EVENT_TASK_UNTIED,
+    TOOL_EVENT_TASK_CREATE,
+    TOOL_EVENT_LOOP,
+    TOOL_EVENT_SECTIONS,
+    TOOL_EVENT_WORKSHARE,
+    TOOL_EVENT_TASKWAIT,
+    TOOL_EVENT_TASKGROUP,
+    TOOL_EVENT_BARRIER,
+    TOOL_EVENT_MASKED,
+    TOOL_EVENT_CRITICAL,
+    TOOL_EVENT_CRITICAL_SBLOCK,
+    TOOL_EVENT_ORDERED,
+    TOOL_EVENT_ORDERED_SBLOCK,
+    TOOL_EVENT_SECTION,
+    TOOL_EVENT_FLUSH,
 #if 0
-    OMPT_TASKLOOP,
+    TOOL_EVENT_TASKLOOP,
 #endif
-    OMPT_REGIONS,
+    TOOL_EVENTS,
 
-    OMPT_INVALID
-} ompt_region_type;
+    TOOL_EVENT_INVALID
+} tool_event_t;
 
 
 typedef struct region_fallback_t
@@ -88,7 +88,7 @@ typedef struct region_fallback_t
 #define REGION_OMP_SECTION "!$omp section"
 #define REGION_OMP_FLUSH "!$omp flush"
 
-static region_fallback_t region_fallback[ OMPT_REGIONS ] =
+static region_fallback_t region_fallback[ TOOL_EVENTS ] =
 {
     /* uncrustify adds unnecessary whitespace at every invocation */
     /* *INDENT-OFF* */
@@ -146,18 +146,18 @@ static region_fallback_t region_fallback[ OMPT_REGIONS ] =
 /* To match opari2's behavior, define lock regions once but use for all lock
    events. With codeptr_ra available, we could provide a link to the source,
    though. */
-typedef enum ompt_lock_region_type
+typedef enum tool_lock_event_t
 {
-    OMPT_LOCK_INIT,
-    OMPT_LOCK_INIT_WITH_HINT,
-    OMPT_LOCK_DESTROY,
-    OMPT_LOCK_SET,
-    OMPT_LOCK_UNSET,
-    OMPT_LOCK_INIT_NEST,
-    OMPT_LOCK_INIT_NEST_WITH_HINT,
-    OMPT_LOCK_DESTROY_NEST,
-    OMPT_LOCK_SET_NEST,
-    OMPT_LOCK_UNSET_NEST,
+    TOOL_LOCK_EVENT_INIT,
+    TOOL_LOCK_EVENT_INIT_WITH_HINT,
+    TOOL_LOCK_EVENT_DESTROY,
+    TOOL_LOCK_EVENT_SET,
+    TOOL_LOCK_EVENT_UNSET,
+    TOOL_LOCK_EVENT_INIT_NEST,
+    TOOL_LOCK_EVENT_INIT_NEST_WITH_HINT,
+    TOOL_LOCK_EVENT_DESTROY_NEST,
+    TOOL_LOCK_EVENT_SET_NEST,
+    TOOL_LOCK_EVENT_UNSET_NEST,
 
     /* omp_test_lock and omp_test_nest_lock are missing. For them, we get
        acquire/acquired/released if we obtain the lock or just acquire if the
@@ -165,13 +165,13 @@ typedef enum ompt_lock_region_type
        the exit(test_[nest_]lock) that corresponds to the acquire's
        enter(test_[nest_lock). */
 
-    OMPT_LOCK_REGIONS,
+    TOOL_LOCK_EVENTS,
 
-    OMPT_LOCK_INVALID
-} ompt_lock_region_type;
+    TOOL_LOCK_EVENT_INVALID
+} tool_lock_event_t;
 
 
-static SCOREP_RegionHandle     lock_regions[ OMPT_LOCK_REGIONS ];
+static SCOREP_RegionHandle     lock_regions[ TOOL_LOCK_EVENTS ];
 static SCOREP_SourceFileHandle omp_file = SCOREP_INVALID_SOURCE_FILE;
 
 void
@@ -184,7 +184,7 @@ init_region_fallbacks( void )
     {
         initialized = true;
         omp_file    = SCOREP_Definitions_NewSourceFile( "OMP" );
-        for ( int i = 0; i < OMPT_REGIONS; i++ )
+        for ( int i = 0; i < TOOL_EVENTS; i++ )
         {
             region_fallback[ i ].handle =
                 SCOREP_Definitions_NewRegion( region_fallback[ i ].name,
@@ -196,7 +196,7 @@ init_region_fallbacks( void )
                                               region_fallback[ i ].type );
         }
 
-        char* lock_region_names[ OMPT_LOCK_REGIONS ] =
+        char* lock_region_names[ TOOL_LOCK_EVENTS ] =
         {
             /* Like opari2, i.e., no leading !$ */
             "omp_init_lock",
@@ -210,7 +210,7 @@ init_region_fallbacks( void )
             "omp_set_nest_lock",
             "omp_unset_nest_lock"
         };
-        for ( int i = 0; i < OMPT_LOCK_REGIONS; i++ )
+        for ( int i = 0; i < TOOL_LOCK_EVENTS; i++ )
         {
             lock_regions[ i ] =
                 SCOREP_Definitions_NewRegion( lock_region_names[ i ],
@@ -226,8 +226,8 @@ init_region_fallbacks( void )
 
 typedef struct codeptr_key
 {
-    uintptr_t        codeptr_ra;
-    ompt_region_type type;
+    uintptr_t    codeptr_ra;
+    tool_event_t type;
 } codeptr_key;
 
 typedef codeptr_key         codeptr_hash_key_t;
@@ -242,8 +242,8 @@ static inline bool codeptr_hash_get( codeptr_hash_key_t key, codeptr_hash_value_
 
 
 static inline SCOREP_RegionHandle
-get_region( const void*      codeptrRa,
-            ompt_region_type regionType )
+get_region( const void*  codeptrRa,
+            tool_event_t regionType )
 {
     if ( !codeptrRa )
     {
