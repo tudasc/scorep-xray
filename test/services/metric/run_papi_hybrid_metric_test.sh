@@ -32,6 +32,23 @@
 
 ## file       run_papi_hybrid_metric_test.sh
 
+@HAVE_GETPCAPS_TRUE@if test $UID -eq 0
+@HAVE_GETPCAPS_TRUE@then
+@HAVE_GETPCAPS_TRUE@    CAPS=$(getpcaps self | sed 's/self: = //')
+@HAVE_GETPCAPS_TRUE@    case ,$CAPS, in
+@HAVE_GETPCAPS_TRUE@        *",self: =,"*)
+@HAVE_GETPCAPS_TRUE@            : no caps at all, assume it works
+@HAVE_GETPCAPS_TRUE@        ;;
+@HAVE_GETPCAPS_TRUE@        *",cap_sys_ptrace,"*)
+@HAVE_GETPCAPS_TRUE@            : satisfied
+@HAVE_GETPCAPS_TRUE@        ;;
+@HAVE_GETPCAPS_TRUE@        *)
+@HAVE_GETPCAPS_TRUE@            echo "Missing capabilty. Skipping."
+@HAVE_GETPCAPS_TRUE@            exit 77
+@HAVE_GETPCAPS_TRUE@        ;;
+@HAVE_GETPCAPS_TRUE@    esac
+@HAVE_GETPCAPS_TRUE@fi
+
 ## At the moment there is no appropriate make target that allows executing
 ## shell scripts in MPI tests. Therefore run this script manually from
 ## inside your build-mpi directory. Furthermore some helpful make targets

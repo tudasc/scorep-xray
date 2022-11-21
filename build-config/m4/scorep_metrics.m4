@@ -39,6 +39,10 @@ AC_DEFUN([SCOREP_METRICS_CHECK], [
 
 AC_DEFUN_ONCE([_SCOREP_METRICS_CHECK_LIBPAPI], [
 
+# need getpcaps to test for SYS_PTRACE cap in containers
+AC_PATH_PROG([GETPCAPS], [getpcaps])
+AM_CONDITIONAL([HAVE_GETPCAPS], [test "x${GETPCAPS}" != "x"])
+
 dnl Don't check for PAPI on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for PAPI on frontend.])])
 
