@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014, 2016, 2020,
+ * Copyright (c) 2013-2014, 2016, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2022,
@@ -41,7 +41,8 @@
 typedef enum
 {
     SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE,
-    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP,
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMPT,
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_OPARI2,
     SCOREP_CONFIG_THREAD_SYSTEM_ID_PTHREAD
 } SCOREP_Config_ThreadSystemId;
 
@@ -234,17 +235,41 @@ public:
 
 
 /* **************************************************************************************
- * class SCOREP_Config_OmpThreadSystem
+ * class SCOREP_Config_OmptThreadSystem
+ * *************************************************************************************/
+
+/**
+ * This class represents the ompt-based implementation for OpenMP threads which
+ * maintains its own TPD variable.
+ */
+class SCOREP_Config_OmptThreadSystem : public SCOREP_Config_ThreadSystem
+{
+public:
+    SCOREP_Config_OmptThreadSystem();
+    void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps ) override;
+
+    void
+    addLdFlags( std::string& ldflags,
+                bool         nvcc ) override;
+
+    void
+    getInitStructName( std::deque<std::string>& init_structs ) override;
+};
+
+/* **************************************************************************************
+ * class SCOREP_Config_Opari2ThreadSystem
  * *************************************************************************************/
 
 /**
  * This class represents the POMP2-based implementation for OpenMP threads which
- * uses the copyin structure for the TPD variable.
+ * uses either ancestry or copyin for the TPD variable.
  */
-class SCOREP_Config_OmpThreadSystem : public SCOREP_Config_ThreadSystem
+class SCOREP_Config_Opari2ThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
-    SCOREP_Config_OmpThreadSystem();
+    SCOREP_Config_Opari2ThreadSystem();
     void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps ) override;

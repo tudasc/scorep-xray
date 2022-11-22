@@ -66,7 +66,7 @@ Jacobi( struct JacobiData* data )
            With Pragmas, the instrumenter would create initialization time
            initialization.
          */
-        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_USER_Region_handle pomp_user_region_handle = NULL;
         POMP2_Begin( &pomp_user_region_handle,
                      "82*regionType=userRegion*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
 #endif
@@ -171,7 +171,8 @@ ExchangeJacobiMpiData( struct JacobiData* data, double* uold )
                    &request[ iReqCnt ] );
         iReqCnt++;
     }
-#pragma omp parallel for private(j, i)
+#pragma omp parallel private(j, i)
+#pragma omp for
     for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
     {
         for ( i = 0; i < data->iCols; i++ )

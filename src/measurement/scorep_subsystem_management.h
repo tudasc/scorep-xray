@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2017,
+ * Copyright (c) 2009-2013, 2015, 2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -71,6 +71,9 @@ scorep_subsystems_finalize( void );
 void
 scorep_subsystems_initialize_location( struct SCOREP_Location* newLocation,
                                        struct SCOREP_Location* parentLocation );
+
+void
+scorep_subsystems_trigger_overdue_events( struct SCOREP_Location* location );
 
 void
 scorep_subsystems_activate_cpu_location( struct SCOREP_Location* locationData,

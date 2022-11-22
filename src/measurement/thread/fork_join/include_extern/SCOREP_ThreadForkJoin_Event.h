@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2016-2017,
+ * Copyright (c) 2013, 2016-2017, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -143,7 +143,23 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm,
                                int                 teamSize );
 
 
-
+/**
+ * Like SCOREP_ThreadForkJoin_TeamEnd(), but in addition, provide tpd and
+ * timestamp. This is necessary only if triggering this events is delayed,
+ * e.g., in OMPT. There, implicit_task_end events (team_end) might be
+ * triggered way after the parallel_end (join), except for the task/thread
+ * that resumes execution.
+ *
+ * @param tpd tpd where the TeamEnd happened.
+ *
+ * @param timestamp timestamp of the TeamEnd event
+ */
+void
+SCOREP_ThreadForkJoin_Tpd_TeamEnd( SCOREP_ParadigmType                paradigm,
+                                   struct scorep_thread_private_data* tpd,
+                                   uint64_t                           timestamp,
+                                   int                                threadId,
+                                   int                                teamSize );
 
 /**
  * Process a task create event in the measurement system.

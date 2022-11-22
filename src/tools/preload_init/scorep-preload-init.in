@@ -95,6 +95,9 @@ MPI_SUPPORT=false
 SHMEM_SUPPORT=false
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_SHMEM_PROFILING_INTERFACE_TRUE@SHMEM_SUPPORT=true
 
+OMPT_SUPPORT=false
+@HAVE_SCOREP_OMPT_SUPPORT_TRUE@OMPT_SUPPORT=true
+
 SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --nohip --thread=none"
 
 SCOREP_LIBWRAP_PATH="${SCOREP_LIBWRAP_PATH:+${SCOREP_LIBWRAP_PATH}:}@PREFIX@"
@@ -179,6 +182,20 @@ do
         ;;
         esac
         SCOREP_CONFIG="${SCOREP_CONFIG} --io=${io}"
+    ;;
+    (--thread=omp:ompt)
+        if ! $OMPT_SUPPORT
+        then
+            die "option not supported by Score-P: '%s'" "${1}"
+        fi
+        SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
+    ;;
+    (--thread=omp)
+        if ! $OMPT_SUPPORT
+        then
+            warn "option not suitable for uninstrumented applications: '%s'" "${1}"
+        fi
+        SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
     ;;
     (--compiler|--user|--pomp|--thread=*|--thread|--memory|--memory=*)
         warn "option not suitable for uninstrumented applications: '%s'" "${1}"

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017, 2019,
+ * Copyright (c) 2009-2011, 2017, 2019, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -292,6 +292,13 @@ SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
                                uint32_t*                           pageIds,
                                uint32_t*                           pageUsages,
                                void** const                        pageStarts );
+
+
+uint32_t
+SCOREP_Allocator_GetPageOffsetBitWidth( const SCOREP_Allocator_Allocator* allocator );
+
+uint32_t
+SCOREP_Allocator_GetNPagesBitWidth( const SCOREP_Allocator_Allocator* allocator );
 
 
 UTILS_END_C_DECLS

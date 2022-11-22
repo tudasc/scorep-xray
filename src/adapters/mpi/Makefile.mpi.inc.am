@@ -76,14 +76,14 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_fortran_conv.la      \
     $(LIB_DIR_SCOREP)libutils.la
 
-if PLATFORM_CRAY
+if SCOREP_COMPILER_FC_CRAY
 if SCOREP_COMPILER_CC_CLANG
 # cc/CC are Clang, ftn is Cray
 # FLIBS needed for static linking only, provides symbol 'mpi_' references
 # in SCOREP_Fmpi_Init.f
 libscorep_adapter_mpi_mgmt_la_LIBADD += $(FLIBS)
 endif SCOREP_COMPILER_CC_CLANG
-endif PLATFORM_CRAY
+endif SCOREP_COMPILER_FC_CRAY
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \

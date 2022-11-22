@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2020,
+ * Copyright (c) 2009-2014, 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -59,6 +59,7 @@ class SCOREP_Instrumenter_OpenACCAdapter;
 class SCOREP_Instrumenter_HipAdapter;
 class SCOREP_Instrumenter_MemoryAdapter;
 class SCOREP_Instrumenter_KokkosAdapter;
+class SCOREP_Instrumenter_OmptAdapter;
 
 class SCOREP_Instrumenter_Thread;
 class SCOREP_Instrumenter_Mpp;
@@ -254,6 +255,7 @@ private:
     SCOREP_Instrumenter_HipAdapter*        m_hip_adapter;
     SCOREP_Instrumenter_MemoryAdapter*     m_memory_adapter;
     SCOREP_Instrumenter_KokkosAdapter*     m_kokkos_adapter;
+    SCOREP_Instrumenter_OmptAdapter*       m_ompt_adapter;
 
     SCOREP_Instrumenter_Thread* m_thread;
     SCOREP_Instrumenter_Mpp*    m_mpp;

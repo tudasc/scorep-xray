@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2017, 2019-2020,
+ * Copyright (c) 2009-2011, 2017, 2019-2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -405,6 +405,12 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     /* round the total memory down to a multiple of pageSize */
     *totalMemory = n_pages * ( *pageSize );
 
+    uint32_t n_pages_bits = 1;
+    while ( n_pages >> ( n_pages_bits ) )
+    {
+        n_pages_bits++;
+    }
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_ALLOCATOR, "2: m=%u p=%u ps=%u np=%u",
                         *totalMemory, *pageSize,
                         page_shift, n_pages );
@@ -465,6 +471,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     SCOREP_Allocator_Allocator* allocator = ( void* )roundupto( raw, *pageSize );
     allocator->allocated_memory = raw;
     allocator->page_shift       = page_shift;
+    allocator->n_pages_bits     = n_pages_bits;
     allocator->n_pages_capacity = n_pages;
     if ( allocator != allocator->allocated_memory )
     {
@@ -917,4 +924,17 @@ SCOREP_Allocator_GetPageManagerStats( SCOREP_Allocator_PageManager*      pageMan
     }
 
     unlock_allocator( pageManager->allocator );
+}
+
+
+uint32_t
+SCOREP_Allocator_GetPageOffsetBitWidth( const SCOREP_Allocator_Allocator* allocator )
+{
+    return allocator->page_shift;
+}
+
+uint32_t
+SCOREP_Allocator_GetNPagesBitWidth( const SCOREP_Allocator_Allocator* allocator )
+{
+    return allocator->n_pages_bits;
 }

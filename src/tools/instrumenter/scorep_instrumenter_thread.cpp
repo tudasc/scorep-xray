@@ -61,25 +61,12 @@ SCOREP_Instrumenter_SingleThreaded::SCOREP_Instrumenter_SingleThreaded
  * class SCOREP_Instrumenter_Omp
  * ****************************************************************************/
 SCOREP_Instrumenter_Omp::SCOREP_Instrumenter_Omp(
-    SCOREP_Instrumenter_Selector* selector )
-    : SCOREP_Instrumenter_Paradigm( selector, "omp", "",
-#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
-                                    "OpenMP support using thread tracking via "
-                                    "ancestry functions\n"
-                                    "                  in OpenMP 3.0 and later."
-#elif SCOREP_BACKEND_HAVE_OMP_TPD
-                                    "OpenMP support using thread tracking via "
-                                    "OPARI2-instrumented\n"
-                                    "                  threadprivate variable."
-#endif
-                                    )
+    SCOREP_Instrumenter_Selector* selector,
+    const std::string&            variant,
+    const std::string&            description )
+    : SCOREP_Instrumenter_Paradigm( selector, "omp", variant, description )
 {
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     m_openmp_flags = { SCOREP_OPENMP_FLAGS_ALL };
-
-#if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY && !SCOREP_BACKEND_HAVE_OMP_TPD
-    unsupported();
-#endif
 }
 
 bool
@@ -135,8 +122,34 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
     return false;
 }
 
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_OmpOpari2
+ * ****************************************************************************/
+SCOREP_Instrumenter_OmpOpari2::SCOREP_Instrumenter_OmpOpari2
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Omp( selector,
+                             "opari2",
+#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
+                             "OpenMP support using thread tracking via "
+                             "ancestry functions\n"
+                             "                  in OpenMP 3.0 and later."
+#elif SCOREP_BACKEND_HAVE_OMP_TPD
+                             "OpenMP support using thread tracking via "
+                             "OPARI2-instrumented\n"
+                             "                  threadprivate variable."
+#endif
+                             )
+{
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+
+#if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY && !SCOREP_BACKEND_HAVE_OMP_TPD
+    unsupported();
+#endif
+}
+
 void
-SCOREP_Instrumenter_Omp::checkDependencies( void )
+SCOREP_Instrumenter_OmpOpari2::checkDependencies( void )
 {
     SCOREP_Instrumenter_Paradigm::checkDependencies();
 
@@ -155,6 +168,43 @@ SCOREP_Instrumenter_Omp::checkDependencies( void )
 }
 
 /* *****************************************************************************
+ * class SCOREP_Instrumenter_OmpOmpt
+ * ****************************************************************************/
+SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Omp( selector, "ompt", "OpenMP support using thread tracking via OMPT." )
+{
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OMPT );
+    // For Fortran, pdt inserts a specification statement into the executable
+    // section (omp parallel do), which is illegal. Subsequent opari2
+    // processing fixes this issue. With ompt instead of opari2 the error
+    // persists, thus, forbid the combination pdt + ompt (not only for Fortran,
+    // but also for C and C++ as there enough alternatives to pdt
+    // instrumentation)
+    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
+
+#if !HAVE( BACKEND_SCOREP_OMPT_SUPPORT )
+    unsupported();
+#endif // ! BACKEND_SCOREP_OMPT_SUPPORT
+}
+
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_OmptAdapter
+ * ****************************************************************************/
+SCOREP_Instrumenter_OmptAdapter::SCOREP_Instrumenter_OmptAdapter( void )
+    : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_OMPT, "ompt" )
+{
+}
+
+std::string
+SCOREP_Instrumenter_OmptAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
+                                                    const std::string& /* inputFile */ )
+{
+    return "";
+}
+
+/* *****************************************************************************
  * class SCOREP_Instrumenter_Pthread
  * ****************************************************************************/
 
@@ -169,6 +219,7 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OMPT );
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
 #if !SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
     unsupported();
@@ -220,7 +271,8 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
-    m_paradigm_list.push_back( new SCOREP_Instrumenter_Omp( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
     m_current_selection.push_back( m_paradigm_list.front() );
 }

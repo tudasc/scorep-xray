@@ -189,7 +189,8 @@ InitializeMatrix( struct JacobiData* data )
 {
     int i, j, xx, yy, xx2, yy2;
     /* Initialize initial condition and RHS */
-#pragma omp parallel for private(i, j, xx, yy, xx2, yy2)
+#pragma omp parallel private(i, j, xx, yy, xx2, yy2)
+#pragma omp for
     for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
     {
         for ( i = 0; i < data->iCols; i++ )
