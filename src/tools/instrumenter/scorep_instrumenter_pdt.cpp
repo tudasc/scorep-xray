@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2015, 2020,
+ * Copyright (c) 2013, 2015, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2016-2017, 2021,
@@ -155,4 +155,17 @@ void
 SCOREP_Instrumenter_PdtAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     m_pdt_config_file = cmdLine.getPathToSrc() + "share/SCOREP_Pdt_Instrumentation.conf";
+}
+
+bool
+SCOREP_Instrumenter_PdtAdapter::checkOption( const std::string& arg )
+{
+    const auto save_usage = m_usage;
+    const auto ret        = SCOREP_Instrumenter_Adapter::checkOption( arg );
+    if ( save_usage != m_usage && m_usage == enabled )
+    {
+        std::cerr << "[Score-P] WARNING: PDT instrumentation (--pdt) is deprecated. "
+            "Consider using compiler or user instrumentation instead. ret =" << ret << " arg = " << arg << std::endl;
+    }
+    return ret;
 }
