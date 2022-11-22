@@ -105,6 +105,9 @@ User tools and API improvements and changes:
   `--thread=omp:opari2`; `--thread=omp` and `--thread=omp:ompt` are
   used interchangeably is this case. Same is true for `--thread=omp`
   and `--thread=omp:opari2` if OMPT is not supported.
+- Deprecate instrumentation using the Program Database Toolkit, i.e.,
+  using the `--pdt` option. Please use compiler or user
+  instrumentation instead.
 
 Compatibility:
 

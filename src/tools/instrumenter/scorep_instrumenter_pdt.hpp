@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 2020,
+ * Copyright (c) 2013, 2020, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014, 2022,
@@ -53,6 +53,9 @@ public:
 
     void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine ) override;
+
+    bool
+    checkOption( const std::string& arg ) override;
 
 private:
     std::string m_pdt_bin_path;
