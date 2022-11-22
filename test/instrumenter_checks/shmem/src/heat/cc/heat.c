@@ -96,9 +96,9 @@ float convergence;
 float convergence_sqd, local_convergence_sqd;
 
 /* Function pointer to solver method of choice */
-void (*method) ();
+void (*method) (float **current_ptr, float **next_ptr);
 double
-gettime ()
+gettime (void)
 {
   struct timeval tv;
   gettimeofday (&tv, 0);

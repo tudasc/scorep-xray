@@ -96,9 +96,9 @@ float convergence;
 float convergence_sqd, local_convergence_sqd;
 
 /* Function pointer to solver method of choice */
-void (*method) ();
+void (*method) (float **current_ptr, float **next_ptr);
 double
-gettime ()
+gettime (void)
 {
   struct timeval tv;
   gettimeofday (&tv, 0);
@@ -307,7 +307,8 @@ main (int argc, char **argv)
         }
 
       /* copy U_Next to U_Curr */
-      #pragma omp parallel for private(j, i)
+      #pragma omp parallel private(j, i)
+      #pragma omp for
       for (j = my_start_row; j <= my_end_row; j++)
         {
           for (i = 0; i < (int) floor (WIDTH / H); i++)
@@ -356,7 +357,8 @@ get_convergence_sqd (float **current_ptr, float **next_ptr, int rank)
   my_num_rows = get_num_rows (rank);
 
   sum = 0.0;
-  #pragma omp parallel for private(j, i) reduction(+:sum)
+  #pragma omp parallel private(j, i)
+  #pragma omp for reduction(+:sum)
   for (j = my_start; j <= my_end; j++)
     {
       for (i = 0; i < (int) floor (WIDTH / H); i++)
@@ -439,7 +441,8 @@ jacobi (float **current_ptr, float **next_ptr)
     }
 
   /* Jacobi method using global addressing */
-  #pragma omp parallel for private(j, i)
+  #pragma omp parallel private(j, i)
+  #pragma omp for
   for (j = my_start; j <= my_end; j++)
     {
       for (i = 0; i < (int) floor (WIDTH / H); i++)
