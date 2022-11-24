@@ -11,20 +11,21 @@ various Score-P components.
 * Platform support
 
   - Score-P has been tested on the following platforms:
-    + HPE/Cray XC systems with all available PrgEnvs (see 'Shared
-      libraries on Cray systems' below). With some versions of
-      PrgEnv-cray scorep fails to instrument. This will be fixed with
-      Cray PE-21.05.
+    + HPE/Cray XC and EX systems with PrgEnvs cray, intel, nvidia, gnu
+      (see 'Shared libraries on Cray systems' below). With some
+      versions of PrgEnv-cray scorep fails to instrument. This got
+      fixed with Cray PE-21.05.
 
-    + various Linux (Intel, AMD, IBM, ARM) clusters with GNU,
-      Intel, NVIDIA, and IBM compilers. Note that some compilers
-      are based on Clang.
+    + various Linux (Intel, AMD, IBM, ARM) clusters with GNU, Intel,
+      NVIDIA, IBM, and AND compilers. Note that some compilers are
+      based on Clang. Note that Fujitsu compilers haven't been tested
+      recently.
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
 
   - The following platforms have not been tested recently:
     + Intel Xeon Phi (KNL), only native mode supported
-    + IBM Blue Gene/Q, only static libraries supported
+    + IBM Blue Gene
     + Cray XT, XE, XK
     However the supplied build system might still work on these
     systems.
@@ -46,12 +47,13 @@ various Score-P components.
     Fortran compiler wrappers (e.g., MPI or SHMEM) are used. Compilers
     and compiler wrappers must be compatible.
 
-     - Note: PGI changed its default C++ compiler from 'pgCC' (which
-       was entirely removed in 16.1) to 'pgc++'. For building Score-P
-       with '--with-nocross-compiler-suite=pgi', 'CXX=pgc++' is used.
-       If your MPI and SHMEM compiler wrappers still use the old
-       'pgCC', please add 'CXX=pgCC' to your configure line to force
-       Score-P to use 'pgCC' as well. This will prevent link failures.
+     - Note (dated): PGI changed its default C++ compiler from 'pgCC'
+       (which was entirely removed in 16.1) to 'pgc++'. For building
+       Score-P with '--with-nocross-compiler-suite=pgi', 'CXX=pgc++'
+       is used.  If your MPI and SHMEM compiler wrappers still use the
+       old 'pgCC', please add 'CXX=pgCC' to your configure line to
+       force Score-P to use 'pgCC' as well. This will prevent link
+       failures.
 
   - Shared libraries on Cray systems: building Score-P's shared libraries
     works as normal through the '--enable-shared' configure option. But
@@ -60,6 +62,11 @@ various Score-P components.
     via the environment, you need to pass the '-dynamic' flag
     (if available) to the Cray compiler wrapper when building your
     application to link to Score-P's shared libraries.
+
+    On some Cray systems, where Score-P uses externally installed
+    dependencies, these dependencies (i.e., the shared libraries
+    libotf2.so and libcube4w.so) fail to load. As a workaround, add
+    the corresponding pathes to LD_LIBRARY_PATH in your job script.
 
   - Experimental platforms:
 
@@ -121,11 +128,6 @@ various Score-P components.
     as flag to GCC on the command line. This issue does not apply if the
     GNU compiler plug-in based instrumentation is used.
 
-  - Because the compiler instrumentation interface of the XL compiler
-    series changed with xlc 11.1/xlf 13.1. You need a separate
-    installations for older versions than xlc 11.1/xlf 13.1 and newer
-    versions.
-
   - Measurement filtering can only be applied to functions
     instrumented by the IBM, GNU, Intel, NVHPC, or PGI compilers as
     well as functions instrumented by PDT, Kokkos, and user functions.
@@ -138,11 +140,6 @@ various Score-P components.
     older/newer version of the compiler or to work around this issue
     by using manual instrumentation or automatic source-code
     instrumentation based on PDToolkit.
-
-  - The GNU compiler instrumentation provides only functions pointers,
-    which we look up in the symbol table of the executable. Thus,
-    functions from shared libraries, will not appear (are
-    automatically filtered) in the measurement output.
 
   - The GCC plug-in is supported from GCC 4.9 onwards. Though due to
     constant changes in the plug-in API of the GNU compiler
@@ -249,7 +246,11 @@ various Score-P components.
 
 * OpenMP support
 
+  Applies to OPARI2 and OMPT instrumentation:
+
   - Device directives, introduced with OpenMP 4 and later, are not supported.
+
+  Applies to OPARI2 instrumentation only:
 
   - Function instrumentation using the Intel compiler version 11.1 for
     codes using OpenMP tasking is erroneous. You might try PDT
