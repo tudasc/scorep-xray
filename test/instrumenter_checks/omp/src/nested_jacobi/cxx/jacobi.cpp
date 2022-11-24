@@ -64,7 +64,8 @@ Jacobi( JacobiData& data )
 #pragma omp for
                 for ( int j = 1; j < data.iRows - 1; j++ )
                 {
-#pragma omp parallel for num_threads(data.inner_threads)
+#pragma omp parallel num_threads(data.inner_threads)
+#pragma omp for
                     for ( int i = 1; i < data.iCols - 1; i++ )
                     {
                         UOLD( j, i ) = U( j, i );
@@ -77,7 +78,8 @@ Jacobi( JacobiData& data )
 #pragma omp for reduction(+:residual)
                 for ( int j = data.iRowFirst + 1; j <= data.iRowLast - 1; j++ )
                 {
-#pragma omp parallel for reduction(+:residual) num_threads(data.inner_threads)
+#pragma omp parallel num_threads(data.inner_threads)
+#pragma omp for reduction(+:residual)
                     for ( int i = 1; i < data.iCols - 1; i++ )
                     {
                         fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )

@@ -1,0 +1,103 @@
+stages:
+- Build
+
+.common:
+  stage: Build
+  only:
+    - pushes
+  artifacts:
+    when: always
+    paths:
+    - log.${CI_COMMIT_SHORT_SHA}.${CI_JOB_NAME}.tar
+  variables:
+    LOG: log.${CI_COMMIT_SHORT_SHA}.${CI_JOB_NAME}
+    CLICOLOR_FORCE: 1
+    # Adapt when creating a release branch
+    SCOREP_BUILD_TAG: latest
+  before_script:
+    - LOGDIR="${PWD}/${LOG}/"
+    - mkdir "${LOG}"
+    - |
+      log() {
+        local log="${LOGDIR}" sep="";
+        for f; do case $f in (-*) break ;; (*) log+="$sep${f##*/}"; sep=_;; esac; done;
+        log+=".txt";
+        "$@" &> "$log" || {
+          ec=$?;
+          tail -n 42 "$log";
+          grep -i error -B 7 "$log";
+          printf "\e[31;1merror: command '$*' failed with $ec\e[0\n";
+          exit $ec;
+        }
+      }
+    - log env
+  after_script:
+    - mkdir "${LOG}/build/"
+    - if test -d _build; then
+        ( cd _build && tar cf - $(find -name 'config.log') ) |
+        ( cd "${LOG}/build/" && tar xf - );
+      fi
+    - tar cf "${LOG}.tar" "${LOG}/"
+
+.common-script: &common-script
+    - log ./bootstrap
+    - mkdir _build
+    - cd _build
+    - log ../configure
+        --prefix="$(readlink -f $PWD/../_prefix)"
+        --enable-shared
+        --enable-backend-test-runs
+        $configure_flags
+    - cat scorep.summary
+    - log make
+    - log make check
+    - log make install
+    - log make installcheck
+
+build-gcc:
+  image: scorep/devel-gcc:$SCOREP_BUILD_TAG
+  extends: .common
+  script:
+    - configure_flags="
+        --with-nocross-compiler-suite=gcc
+      "
+    - *common-script
+
+build-clang:
+  image: scorep/devel-clang:$SCOREP_BUILD_TAG
+  extends: .common
+  script:
+    - configure_flags="
+        --with-nocross-compiler-suite=clang
+      "
+    - *common-script
+
+build-nvhpc:
+  image: scorep/devel-nvhpc:$SCOREP_BUILD_TAG
+  extends: .common
+  script:
+    - configure_flags="
+        --with-nocross-compiler-suite=nvhpc
+      "
+    - *common-script
+
+build-oneapi:
+  image: scorep/devel-oneapi:$SCOREP_BUILD_TAG
+  extends: .common
+  script:
+    # do not download libbfd, it triggers https://gitlab.jsc.fz-juelich.de/perftools/scorep/-/issues/116
+    # because libunwinding is disabled by Intel MPI
+    - configure_flags="
+        --with-nocross-compiler-suite=oneapi
+        --with-libbfd=yes
+      "
+    - *common-script
+
+build-rocm:
+  image: scorep/devel-rocm:$SCOREP_BUILD_TAG
+  extends: .common
+  script:
+    - configure_flags="
+        --with-nocross-compiler-suite=amdclang
+      "
+    - *common-script

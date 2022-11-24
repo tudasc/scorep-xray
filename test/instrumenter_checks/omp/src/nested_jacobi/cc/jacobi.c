@@ -49,7 +49,7 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
+        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
         {
             residual = 0.0;
 
@@ -59,7 +59,8 @@ Jacobi( struct JacobiData* data )
 #pragma omp for private(j, i)
                 for ( j = 1; j < data->iRows - 1; j++ )
                 {
-#pragma omp parallel for private(i) num_threads(data->inner_threads)
+#pragma omp parallel private(i) num_threads(data->inner_threads)
+#pragma omp for
                     for ( i = 1; i < data->iCols - 1; i++ )
                     {
                         UOLD( j, i ) = U( j, i );
@@ -71,7 +72,8 @@ Jacobi( struct JacobiData* data )
 #pragma omp for private(j, i, fLRes) reduction(+:residual)
                 for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
                 {
-#pragma omp parallel for private(i, fLRes) reduction(+:residual) num_threads(data->inner_threads)
+#pragma omp parallel private(i, fLRes) num_threads(data->inner_threads)
+#pragma omp for reduction(+:residual)
                     for ( i = 1; i <= data->iCols - 2; i++ )
                     {
                         fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
