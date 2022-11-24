@@ -63,6 +63,11 @@ various Score-P components.
     (if available) to the Cray compiler wrapper when building your
     application to link to Score-P's shared libraries.
 
+    On some Cray systems, where Score-P uses externally installed
+    dependencies, these dependencies (i.e., the shared libraries
+    libotf2.so and libcube4w.so) fail to load. As a workaround, add
+    the corresponding pathes to LD_LIBRARY_PATH in your job script.
+
   - Experimental platforms:
 
     The following platforms are considered experimental and don't get
