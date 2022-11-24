@@ -170,7 +170,10 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
           . ./ompt
           rm -f ./ompt
           AS_UNSET([ompt_reason_]_AC_LANG_ABBREV)],
-         [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"],
+         [AS_IF([test "x${ac_retval}" = x2],
+              [ompt_reason_[]_AC_LANG_ABBREV="overdue events not dispatched"
+               ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV=no],
+              [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"])],
          [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
      cross_compiling="${cross_compiling_save}"],
     [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])
@@ -186,6 +189,7 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
 m4_define([_CHECK_OMPT_SUPPORT], [
 _AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
 _AC_LANG_PREFIX[]FLAGS="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $_AC_LANG_PREFIX[]FLAGS"
+AS_UNSET([ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
     [cp conftest.$ac_objext main.$ac_objext
      # use customized link command
@@ -208,7 +212,8 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
              [for extra_ldflags in "" "-mp=ompt"; do
                   LDFLAGS="$extra_ldflags $LDFLAGS_save"
                   _CHECK_TOOL_ACTIVATION
-                  AS_IF([test "x${have_ompt_[]_AC_LANG_ABBREV[]_support}" = xyes],
+                  AS_IF([test "x${have_ompt_[]_AC_LANG_ABBREV[]_support}" = xyes ||
+                         test "x${ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV}" = xno],
                       [break])
               done
               ompt_[]_AC_LANG_ABBREV[]_ldflags="${extra_ldflags}"
@@ -239,7 +244,27 @@ m4_define([_INPUT_OMPT_TOOL], [[
 #include <stdlib.h>
 #include <stdio.h>
 static int initialized;
+static int overdue_dispatched;
+static ompt_finalize_tool_t finalize_tool;
 FILE* ompt;
+
+void cb_thread_begin( ompt_thread_t thread_type,
+                      ompt_data_t*  thread_data )
+{
+    static uint64_t thread_cnt;
+    /* no need to lock increment, just a single worker thread, see main() below. */
+    thread_data->value = thread_cnt++;
+}
+
+void cb_thread_end( ompt_data_t* thread_data )
+{
+    if ( thread_data->value ==1 )
+    {
+        /* overdue event on worker thread got dispatched. */
+        overdue_dispatched = 1;
+    }
+}
+
 static int ompt_initialize( ompt_function_lookup_t lookup,
                             int initial_device_num,
                             ompt_data_t *tool_data )
@@ -247,8 +272,11 @@ static int ompt_initialize( ompt_function_lookup_t lookup,
     fprintf( ompt, "initial_device_num=\"%d\"\n", initial_device_num );
     fclose( ompt );
     ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    set_cb( ompt_callback_thread_begin, ( ompt_callback_t )&cb_thread_begin );
+    set_cb( ompt_callback_thread_end, ( ompt_callback_t )&cb_thread_end );
+    finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
     initialized = 1;
-    return 1; /* non-zero indicates success */
+    return 1; /* non-zero indicates success for OMPT runtime. */
 }
 
 static void ompt_finalize( ompt_data_t *tool_data )
@@ -256,7 +284,13 @@ static void ompt_finalize( ompt_data_t *tool_data )
 
     if ( initialized == 1 )
     {
-        _Exit( 0 ); /* Indicates that the tool got initialized and finalized. */
+        if ( overdue_dispatched == 1 )
+        {
+            _Exit( 0 ); /* Indicates that the tool got initialized and finalized
+                           as well as overdue event on worker got dispatched. */
+        }
+        _Exit( 2 ); /* Indicates that the tool got initialized and finalized
+                       but overdue event on worker wasn't dispatched. */
     }
 }
 
@@ -275,6 +309,11 @@ void foo( int tid )
 {
     /* called from main.o */
 }
+
+void shut_down_tool( int dummy )
+{
+    finalize_tool(); /* supposed to trigger overdue events */
+}
 ]])dnl _INPUT_OMPT_TOOL
 
 
@@ -287,6 +326,7 @@ m4_define([_INPUT_OPENMP_C], [[
 extern "C" {
 #endif
 void foo( int tid ); /* defined in tool.o, thus the parallel region can't be optimized out */
+void shut_down_tool( int dummy );
 #ifdef __cplusplus
 }
 #endif
@@ -295,6 +335,8 @@ int main()
 {
     #pragma omp parallel num_threads( 2 )
     foo( omp_get_thread_num() );
+
+    shut_down_tool(42);
     return 1; /* Indicates that the tool was not initialized and finalized. */
 }
 ]])dnl _INPUT_OPENMP_C
@@ -318,10 +360,16 @@ m4_define([_INPUT_OPENMP_FC], [[
       IMPLICIT NONE
       INTEGER(C_INT) :: tid
       END SUBROUTINE foo
+      SUBROUTINE shut_down_tool(dummy) BIND(C)
+      USE, INTRINSIC :: ISO_C_BINDING, ONLY: C_INT
+      IMPLICIT NONE
+      INTEGER(C_INT) :: dummy
+      END SUBROUTINE shut_down_tool
       END INTERFACE
 !\$OMP PARALLEL DEFAULT(NONE) NUM_THREADS(2)
       call foo(OMP_GET_THREAD_NUM())
 !\$OMP END PARALLEL
+      call shut_down_tool(42)
       CALL EXIT(1)
       END
 ]])dnl _INPUT_OPENMP_FC
