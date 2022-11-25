@@ -30,7 +30,6 @@ stages:
           exit $ec;
         }
       }
-    - log env
   after_script:
     - mkdir "${LOG}/build/"
     - if test -d _build; then
