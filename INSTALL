@@ -329,6 +329,12 @@ be used to build Score-P are as follows:
                cannot be satisfied but was requested.
   --enable-openacc
                Enable or disable support for OpenACC. (defaults to yes)
+  --enable-default=<comma-separated list>
+               Make experimental feature(s) the default (if established
+               alternative exists).
+               Valid value: ompt
+               List of valid values may change without deprecation
+               notice.
   --disable-gcc-plugin
                Disable support for the GCC plug-in
                instrumentation. Default is to determine support

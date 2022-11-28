@@ -271,8 +271,13 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread", false )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
+#if HAVE( BACKEND_SCOREP_DEFAULT_OMPT )
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
+#else
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOpari2( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpOmpt( this ) );
+#endif
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
     m_current_selection.push_back( m_paradigm_list.front() );
 }

@@ -25,7 +25,8 @@ AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_h
                AS_IF([test "x${scorep_have_openmp_cxx_support}" = xyes],
                    [AFS_SUMMARY([OMPT C++ support], [$have_ompt_cxx_support${ompt_reason_cxx:+, $ompt_reason_cxx}])])
                AS_IF([test "x${scorep_have_openmp_fc_support}" = xyes],
-                   [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])])])])
+                   [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])
+               AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])
 AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
 ])dnl SCOREP_OMPT_SUMMARY
 
@@ -42,6 +43,7 @@ AC_DEFUN_ONCE([SCOREP_OMPT], [
 AC_REQUIRE([SCOREP_OPENMP])
 AC_REQUIRE([SCOREP_ADDR2LINE])
 AC_REQUIRE([AFS_CHECK_THREAD_LOCAL_STORAGE])
+AC_REQUIRE([SCOREP_ENABLE_DEFAULT])
 
 have_ompt_header=no
 have_ompt_tool=no
@@ -76,7 +78,10 @@ dnl
 AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
     [Defined if OMPT is supported for at least one language])
-dnl TODO: DEFINES, CONDITIONALS, SUBST
+dnl
+AC_SCOREP_COND_HAVE([SCOREP_DEFAULT_OMPT],
+    [test "x$have_ompt_support" = xyes && test "x$scorep_enable_default_ompt" = xyes],
+    [Defined if OMPT is the default OpenMP instrumentation method.])
 ])dnl SCOREP_OMPT
 
 

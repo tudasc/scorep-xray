@@ -97,6 +97,8 @@ SHMEM_SUPPORT=false
 
 OMPT_SUPPORT=false
 @HAVE_SCOREP_OMPT_SUPPORT_TRUE@OMPT_SUPPORT=true
+@HAVE_SCOREP_DEFAULT_OMPT_TRUE@DEFAULT_OMPT_SUPPORT=true
+@HAVE_SCOREP_DEFAULT_OMPT_FALSE@DEFAULT_OMPT_SUPPORT=false
 
 SCOREP_CONFIG="${SCOREP_BINDIR}/scorep-config --nouser --nocompiler --noopenacc --noopencl --nocuda --nohip --thread=none"
 
@@ -191,7 +193,7 @@ do
         SCOREP_CONFIG="${SCOREP_CONFIG} ${1}"
     ;;
     (--thread=omp)
-        if ! $OMPT_SUPPORT
+        if ! $OMPT_SUPPORT || ! $DEFAULT_OMPT_SUPPORT
         then
             warn "option not suitable for uninstrumented applications: '%s'" "${1}"
         fi
