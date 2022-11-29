@@ -20,10 +20,12 @@ Major features:
 - Add support for MPI intercommunicators.
 - Support OpenMP's tool interface OMPT for host events as a
   replacement for OPARI2 instrumentation. The OMPT adapter is
-  considered experimental. Still, it is our default if supported by
-  the compiler. You may switch to OPARI2 using the `--thread=omp:opari2`
-  instrumentation option. Currently, recent Intel and AMD compilers
-  support the interface.
+  considered experimental. To use OMPT as default OpenMP
+  instrumentation, add `--enable-default=ompt` to your configure line.
+  You may switch between OPARI2 and OMPT instrumentation using the
+  `--thread=omp:opari2` and `--thread=omp:ompt` instrumentation
+  options. Currently, recent Intel, AMD, and Clang compilers support
+  the interface.
   In contrast to OPARI2, the `test_lock` and `test_nest_lock` routines
   cannot be handled by OMPT. The `atomic` construct isn't implemented.
   The new adapter handles the `taskgroup` construct, though.
