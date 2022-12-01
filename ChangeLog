@@ -43,7 +43,7 @@ Features and improvements:
 - Record detailed information about MPI non-blocking collective
   operations.
 - Score-P now supports only version 7 and up of the CUDA Toolkit.
-- Score-P now requires OTF2 3.0 and CubeLib/W 4.7.
+- Score-P now requires OTF2 3.0 and CubeLib/W 4.8.
 - The `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS` feature is now
   also disabled when recording accelerator applications.
 - Add proper support for NVIDIA HPC SDK compilers to build system
