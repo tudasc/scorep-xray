@@ -57,6 +57,7 @@ m4_define([SCOREP_COMPUTENODE_F77],[
         # called by AC_F*_WRAPPERS. On Cray calls to AC_F*_WRAPPERS produce
         # linker errors that can be fixed by removing "-ltcmalloc_minimal"
         # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
+        # Note that that the Fortran option -h tcmalloc was deprecated in CCE-15.
         AC_F77_LIBRARY_LDFLAGS
         AS_CASE([${ac_scorep_platform}],
             [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])

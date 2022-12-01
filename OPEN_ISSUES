@@ -677,7 +677,7 @@ various Score-P components.
 
   - When instrumenting memory API calls with the Cray CCE, Score-P uses
     the '-h system_alloc' flag and therefore not the default tcmalloc
-    library.
+    library (note that -h tcmalloc was deprecated in CCE-15).
 
   - Tracking memory allocations in Fortran programs may only work, if the
     compiler generate calls to malloc/free. This is only known for the
