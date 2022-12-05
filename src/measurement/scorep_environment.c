@@ -350,6 +350,12 @@ bool
 SCOREP_Env_UseSystemTreeSequence( void )
 {
     assert( env_variables_initialized );
+    if ( env_system_tree_sequence )
+    {
+        UTILS_WARN_ONCE( "The system tree sequence definitions feature, enabled "
+                         "via `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS`, "
+                         "is deprecated." );
+    }
     return env_system_tree_sequence;
 }
 
