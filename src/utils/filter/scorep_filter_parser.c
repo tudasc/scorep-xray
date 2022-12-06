@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2022,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -78,15 +78,15 @@
  *      SCOREP_FILTER_PARSE_REGIONS_INCLUDE to indicate that the rules should be
  *      applied to the mangled name.
  * <dt> SCOREP_FILTER_PARSE_BASE
- * <dd> Is used to extract the base state without the fortran option from the
+ * <dd> Is used to extract the base state without the mangled option from the
  *      state variable.
  * </dl>
  *
  * If you add further states for any reason make sure that
- * SCOREP_FILTER_PARSE_FORTRAN is a single bit that contains in no other
+ * SCOREP_FILTER_PARSE_MANGLED is a single bit that contains in no other
  * state else the bitwise combination will not work anymore.
  * Furthermore, SCOREP_FILTER_PARSE_BASE must have set all bits used in other
- * states except the bit set by SCOREP_FILTER_PARSE_FORTRAN.
+ * states except the bit set by SCOREP_FILTER_PARSE_MANGLED.
  */
 typedef int scorep_filter_parse_modes;
 
@@ -100,16 +100,17 @@ typedef int scorep_filter_parse_modes;
 #define SCOREP_FILTER_PARSE_BASE              7
 #define SCOREP_FILTER_PARSE_MANGLED           8
 
+
 /**
- * @def SCOREP_FILTER_MODE_IS_FORTRAN
- * Expands to a non-zero value if @mode has not the fortran mode set.
+ * @def SCOREP_FILTER_MODE_IS_MANGLED
+ * Expands to zero if mangled bit isn't set, non-zero otherwise.
  */
 #define SCOREP_FILTER_MODE_IS_MANGLED( mode ) \
     ( mode & SCOREP_FILTER_PARSE_MANGLED )
 
 /**
  * @def SCOREP_FILTER_MODE_BASE
- * Gives the mode without the fortran option set.
+ * Gives the mode excluding the mangled bit.
  */
 #define SCOREP_FILTER_MODE_BASE( mode ) \
     ( mode & SCOREP_FILTER_PARSE_BASE )
@@ -264,6 +265,22 @@ process_token( struct parse_state* state,
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
                              "Unexpected token 'MANGLED'" );
+                return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ DEMANGLED */
+    else if ( strcmp( token, "DEMANGLED" ) == 0 )
+    {
+        switch ( SCOREP_FILTER_MODE_BASE( state->mode ) )
+        {
+            case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
+                state->mode &= ~SCOREP_FILTER_PARSE_MANGLED;
+                break;
+            default:
+                UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                             "Unexpected token 'DEMANGLED'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
