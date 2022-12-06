@@ -110,6 +110,8 @@ User tools and API improvements and changes:
 - Deprecate instrumentation using the Program Database Toolkit, i.e.,
   using the `--pdt` option. Please use compiler or user
   instrumentation instead.
+  - The `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS` feature,
+  introduced in Score-P 4.0, is deprecated.
 
 Compatibility:
 
