@@ -196,7 +196,7 @@ static const struct utils_error_decl error_decls[] =
 {
     #define UTILS_ERROR_DECL( code, description ) \
     { \
-        UTILS_STRINGIFY_( code ), \
+        #code, \
         description, \
         PACKAGE_MANGLE_NAME( ERROR_ ## code ) \
     }
