@@ -391,6 +391,10 @@ the displayed name instead. The <tt>MANGLED</tt> keyword must appear inside of a
 include rule or exclude rule. All patterns of the rule that follow the
 <tt>MANGLED</tt> keyword, are applied to the mangled name, if the mangled
 name is available.
+As a counterpart to the <tt>MANGLED</tt> keyword there is also a <tt>DEMANGLED</tt>
+keyword, which switches the pattern matching back to demangled region names.
+Both switches are limited to the scope of their respective include and exclude rule, with
+each rule starting in the demangled mode.
 
 
 In the following example, foo and baz are applied to the mangled name,

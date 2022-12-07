@@ -112,6 +112,9 @@ User tools and API improvements and changes:
   instrumentation instead.
   - The `SCOREP_ENABLE_SYSTEM_TREE_SEQUENCE_DEFINITIONS` feature,
   introduced in Score-P 4.0, is deprecated.
+- Add a `DEMANGLED` keyword to the filter parser as a counterpart to
+  the existing `MANGLED` keyword to switch back and forth between
+  matching against mangled or demangled region names.
 
 Compatibility:
 
