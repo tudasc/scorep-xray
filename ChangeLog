@@ -156,6 +156,8 @@ Bugfixes:
   by the `xreqtest` group.
 - Fix a crash in the MPI adapter when no active requests are given to MPI_Waitany.
 - Fix the calculation of sent bytes in MPI_Reduce_scatter with MPI_IN_PLACE.
+- Fix a bug in the conversion of request handles in the Fortran wrapper of
+  MPI_Wait.
 
 ------------------- Released version 7.1 -----------------------------
 
