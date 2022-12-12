@@ -152,12 +152,12 @@ Bugfixes:
 - Non-blocking MPI I/O events now produce the correct `IoOperationTest`
   event instead of the erroneous `MpiRequestTested` event for an
   unsuccessful MPI_Test on the request.
-- Events for unsuccessful MPI_Test on a request are now consistently triggered
+- Events for unsuccessful `MPI_Test` on a request are now consistently triggered
   by the `xreqtest` group.
-- Fix a crash in the MPI adapter when no active requests are given to MPI_Waitany.
-- Fix the calculation of sent bytes in MPI_Reduce_scatter with MPI_IN_PLACE.
+- Fix a crash in the MPI adapter when no active requests are given to `MPI_Waitany`.
+- Fix the calculation of sent bytes in `MPI_Reduce_scatter` with `MPI_IN_PLACE`.
 - Fix a bug in the conversion of request handles in the Fortran wrapper of
-  MPI_Wait.
+  `MPI_Wait`.
 
 ------------------- Released version 7.1 -----------------------------
 
