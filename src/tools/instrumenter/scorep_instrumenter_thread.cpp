@@ -175,7 +175,6 @@ SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
     SCOREP_Instrumenter_Selector* selector
 ) : SCOREP_Instrumenter_Omp( selector, "ompt", "OpenMP support using thread tracking via OMPT." )
 {
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OMPT );
     // For Fortran, pdt inserts a specification statement into the executable
     // section (omp parallel do), which is illegal. Subsequent opari2
     // processing fixes this issue. With ompt instead of opari2 the error
@@ -184,25 +183,15 @@ SCOREP_Instrumenter_OmpOmpt::SCOREP_Instrumenter_OmpOmpt
     // instrumentation)
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 
+    // We conflict with OPARI2 OpenMP instrumentation, but not with OPARI2
+    // POMP user instrumentation. We can't express this via
+    // SCOREP_INSTRUMENTER_ADAPTER_OPARI.
+
 #if !HAVE( BACKEND_SCOREP_OMPT_SUPPORT )
     unsupported();
 #endif // ! BACKEND_SCOREP_OMPT_SUPPORT
 }
 
-/* *****************************************************************************
- * class SCOREP_Instrumenter_OmptAdapter
- * ****************************************************************************/
-SCOREP_Instrumenter_OmptAdapter::SCOREP_Instrumenter_OmptAdapter( void )
-    : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_OMPT, "ompt" )
-{
-}
-
-std::string
-SCOREP_Instrumenter_OmptAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */,
-                                                    const std::string& /* inputFile */ )
-{
-    return "";
-}
 
 /* *****************************************************************************
  * class SCOREP_Instrumenter_Pthread
@@ -219,7 +208,6 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OMPT );
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_LINKTIME_WRAPPING );
 #if !SCOREP_BACKEND_HAVE_PTHREAD_SUPPORT
     unsupported();

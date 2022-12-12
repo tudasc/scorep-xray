@@ -129,17 +129,20 @@ SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine
 void
 SCOREP_Instrumenter_OpariAdapter::printHelp( void )
 {
-    std::cout << "  --pomp          Enables pomp user instrumentation. By default, it also\n";
+    std::cout << "  --pomp          Enables OPARI2 pomp user instrumentation. By default, it also\n";
     std::cout << "                  enables preprocessing.\n";
-    std::cout << "  --nopomp        Disables pomp user instrumentation. (Default)\n";
-    std::cout << "  --openmp        Enables instrumentation of OpenMP directives. By default,\n";
-    std::cout << "                  it also enables preprocessing. (Default for compile units\n";
-    std::cout << "                  with enabled OpenMP support during the compilation)\n";
-    std::cout << "  --noopenmp      Disables instrumentation of OpenMP directives.\n";
+    std::cout << "  --nopomp        Disables OPARI2 pomp user instrumentation (Default).\n";
+    std::cout << "  --openmp        Enables OPARI2 instrumentation of OpenMP directives. By default,\n";
+    std::cout << "                  it also enables preprocessing (Default for compile units\n";
+    std::cout << "                  with enabled OpenMP support during the compilation).\n";
+#if HAVE( BACKEND_SCOREP_OMPT_SUPPORT )
+    std::cout << "                  Conflicts with --thread=omp:ompt.\n";
+#endif // BACKEND_SCOREP_OMPT_SUPPORT
+    std::cout << "  --noopenmp      Disables OPARI2 instrumentation of OpenMP directives.\n";
     std::cout << "                  Note: To ensure thread-safe execution of the measurement,\n";
     std::cout << "                  parallel regions still need to be tracked and will appear\n";
-    std::cout << "                  in the results. (Default for compile units without OpenMP\n";
-    std::cout << "                  enabled compilation)\n";
+    std::cout << "                  in the results (Default for compile units without OpenMP\n";
+    std::cout << "                  enabled compilation).\n";
     std::cout << "  --opari=<parameter-list>\n";
     std::cout << "                  Pass options to the source-to-source instrumenter OPARI2\n";
     std::cout << "                  to have finer control over the instrumentation process.\n";

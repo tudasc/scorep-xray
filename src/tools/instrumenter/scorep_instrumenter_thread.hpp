@@ -84,19 +84,6 @@ public:
 };
 
 /* *****************************************************************************
- * class SCOREP_Instrumenter_OmptAdapter
- * ****************************************************************************/
-class SCOREP_Instrumenter_OmptAdapter : public SCOREP_Instrumenter_Adapter
-{
-public:
-    SCOREP_Instrumenter_OmptAdapter( void );
-
-    std::string
-    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine,
-                       const std::string&           inputFile ) override;
-};
-
-/* *****************************************************************************
  * class SCOREP_Instrumenter_Pthread
  * ****************************************************************************/
 class SCOREP_Instrumenter_Pthread : public SCOREP_Instrumenter_Paradigm
