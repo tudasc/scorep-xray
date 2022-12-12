@@ -172,13 +172,23 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
          [# do not try to run MPI or SHMEM programs (no launcher)
           have_ompt_support=yes
           have_ompt_[]_AC_LANG_ABBREV[]_support=yes
+          # Source omp_version, runtime_version, and
+          # initial_device_num as reported from conftest run.
+          # Could be used in summary output.
           . ./ompt
           rm -f ./ompt
           AS_UNSET([ompt_reason_]_AC_LANG_ABBREV)],
-         [AS_IF([test "x${ac_retval}" = x2],
-              [ompt_reason_[]_AC_LANG_ABBREV="overdue events not dispatched"
-               ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV=no],
-              [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"])],
+         [tool_got_activated=yes
+          AS_CASE(["x${ac_retval}"],
+              [x1], [ompt_reason_[]_AC_LANG_ABBREV="tool not activated"
+                     tool_got_activated=no],
+              [x2], [ompt_reason_[]_AC_LANG_ABBREV="overdue events not dispatched"],
+              [x3], [ompt_reason_[]_AC_LANG_ABBREV="ompt_set_callback lookup failed"],
+              [x4], [ompt_reason_[]_AC_LANG_ABBREV="ompt_finalize_tool lookup failed"],
+              [x5], [ompt_reason_[]_AC_LANG_ABBREV="thread-begin cb registration failed"],
+              [x6], [ompt_reason_[]_AC_LANG_ABBREV="thread-end cb registration failed"],
+              [tool_got_activated=no])
+         ],
          [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
      cross_compiling="${cross_compiling_save}"],
     [ompt_reason_[]_AC_LANG_ABBREV="tool cannot be linked"])
@@ -194,7 +204,7 @@ AC_LINK_IFELSE([_INPUT_IGNORED],
 m4_define([_CHECK_OMPT_SUPPORT], [
 _AC_LANG_PREFIX[]FLAGS_save="$_AC_LANG_PREFIX[]FLAGS"
 _AC_LANG_PREFIX[]FLAGS="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $_AC_LANG_PREFIX[]FLAGS"
-AS_UNSET([ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV])
+AS_UNSET([tool_got_activated])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
     [cp conftest.$ac_objext main.$ac_objext
      # use customized link command
@@ -218,7 +228,7 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE(_INPUT_OPENMP_[]_AC_LANG_PREFIX)],
                   LDFLAGS="$extra_ldflags $LDFLAGS_save"
                   _CHECK_TOOL_ACTIVATION
                   AS_IF([test "x${have_ompt_[]_AC_LANG_ABBREV[]_support}" = xyes ||
-                         test "x${ompt_overdue_events_dispatched_[]_AC_LANG_ABBREV}" = xno],
+                         test "x${tool_got_activated}" = xyes],
                       [break])
               done
               ompt_[]_AC_LANG_ABBREV[]_ldflags="${extra_ldflags}"
@@ -276,10 +286,30 @@ static int ompt_initialize( ompt_function_lookup_t lookup,
 {
     fprintf( ompt, "initial_device_num=\"%d\"\n", initial_device_num );
     fclose( ompt );
+
     ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
-    set_cb( ompt_callback_thread_begin, ( ompt_callback_t )&cb_thread_begin );
-    set_cb( ompt_callback_thread_end, ( ompt_callback_t )&cb_thread_end );
+    if ( !set_cb )
+    {
+        _Exit( 3 ); /* Tool got initialized but lookup of runtime-entry-point ompt_set_callback failed. */
+    }
     finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    if ( !finalize_tool )
+    {
+        _Exit( 4 ); /* Tool got initialized but lookup of runtime-entry-point ompt_finalize_tool failed. */
+    }
+
+    ompt_set_result_t result;
+    result = set_cb( ompt_callback_thread_begin, ( ompt_callback_t )&cb_thread_begin );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but thread_begin cb couldn't be registered. */
+    }
+    result = set_cb( ompt_callback_thread_end, ( ompt_callback_t )&cb_thread_end );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 6 ); /* Tool got initialized but thread_end cb couldn't be registered. */
+    }
+
     initialized = 1;
     return 1; /* non-zero indicates success for OMPT runtime. */
 }
@@ -291,11 +321,9 @@ static void ompt_finalize( ompt_data_t *tool_data )
     {
         if ( overdue_dispatched == 1 )
         {
-            _Exit( 0 ); /* Indicates that the tool got initialized and finalized
-                           as well as overdue event on worker got dispatched. */
+            _Exit( 0 ); /* Tool got initialized and finalized as well as overdue event on worker got dispatched. */
         }
-        _Exit( 2 ); /* Indicates that the tool got initialized and finalized
-                       but overdue event on worker wasn't dispatched. */
+        _Exit( 2 ); /* Tool got initialized and finalized but overdue event on worker wasn't dispatched. */
     }
 }
 
@@ -317,7 +345,10 @@ void foo( int tid )
 
 void shut_down_tool( int dummy )
 {
-    finalize_tool(); /* supposed to trigger overdue events */
+    if ( initialized == 1 )
+    {
+        finalize_tool(); /* supposed to trigger overdue events */
+    }
 }
 ]])dnl _INPUT_OMPT_TOOL
 
