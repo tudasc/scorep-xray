@@ -671,7 +671,6 @@ FSUB( MPI_Wait )( MPI_Fint* request,
     MPI_Status* c_status_ptr = &c_status;
 
     lrequest = PMPI_Request_f2c( *request );
-    *request = PMPI_Request_c2f( lrequest );
 
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -679,6 +678,8 @@ FSUB( MPI_Wait )( MPI_Fint* request,
     }
 
     *ierr = MPI_Wait( &lrequest, c_status_ptr );
+
+    *request = PMPI_Request_c2f( lrequest );
 
     if ( *ierr == MPI_SUCCESS )
     {
