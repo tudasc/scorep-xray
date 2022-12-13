@@ -95,7 +95,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_hip_adapter        = new SCOREP_Instrumenter_HipAdapter();
     m_memory_adapter     = new SCOREP_Instrumenter_MemoryAdapter();
     m_kokkos_adapter     = new SCOREP_Instrumenter_KokkosAdapter();
-    m_ompt_adapter       = new SCOREP_Instrumenter_OmptAdapter();
     new SCOREP_Instrumenter_LinktimeWrappingAdapter();
     new SCOREP_Instrumenter_LibwrapAdapter();
 

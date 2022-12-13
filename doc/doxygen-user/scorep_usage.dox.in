@@ -30,18 +30,23 @@ Common options are:
                   when using shared Score-P libraries. This happens on
                   systems using --as-needed as linker default. It will
                   be handled transparently in future releases of Score-P.
-  --thread=<paradigm>
+  --thread=<paradigm>[:<variant>]
                   Possible paradigms and variants are:
               none
                   No thread support.
-              omp
-                  OpenMP support using thread tracking via ancestry
-                  functions in OpenMP 3.0 and later or via an
-                  OPARI2-instrumented threadprivate variable.
+              omp:opari2
+                  OpenMP support using thread tracking via ancestry functions
+                  in OpenMP 3.0 and later.
                   It requires and, thus, automatically enables OPARI2
                   instrumentation.
+              omp:ompt
+                  OpenMP support using thread tracking via OMPT.
+                  It conflicts and, thus, automatically disables pdt
+                  instrumentation.
               pthread
-                  Pthread support using thread tracking via library wrapping
+                  Pthread support using thread tracking via library wrapping.
+                  It requires and, thus, automatically enables linktime-wrapping
+                  instrumentation.
                   It conflicts and, thus, automatically disables OPARI2
                   instrumentation.
   --mpp=<paradigm>[:<variant>]
@@ -71,17 +76,18 @@ Common options are:
                   nvcc compiler is in use. In this case it also conflicts and
                   thus automatically disables preprocessing.
   --nocuda        Disables CUDA instrumentation.
-  --pomp          Enables pomp user instrumentation. By default, it also
+  --pomp          Enables OPARI2 pomp user instrumentation. By default, it also
                   enables preprocessing.
-  --nopomp        Disables pomp user instrumentation. (Default)
-  --openmp        Enables instrumentation of OpenMP directives. By default,
-                  it also enables preprocessing. (Default for compile units
-                  with enabled OpenMP support during the compilation)
-  --noopenmp      Disables instrumentation of OpenMP directives.
+  --nopomp        Disables OPARI2 pomp user instrumentation (Default).
+  --openmp        Enables OPARI2 instrumentation of OpenMP directives. By default,
+                  it also enables preprocessing (Default for compile units
+                  with enabled OpenMP support during the compilation).
+                  Conflicts with --thread=omp:ompt.
+  --noopenmp      Disables OPARI2 instrumentation of OpenMP directives.
                   Note: To ensure thread-safe execution of the measurement,
                   parallel regions still need to be tracked and will appear
-                  in the results. (Default for compile units without OpenMP
-                  enabled compilation)
+                  in the results (Default for compile units without OpenMP
+                  enabled compilation).
   --opari=<parameter-list>
                   Pass options to the source-to-source instrumenter OPARI2
                   to have finer control over the instrumentation process.
