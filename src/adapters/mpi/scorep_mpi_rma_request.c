@@ -31,7 +31,6 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Events.h>
-#include <SCOREP_Memory.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_Mutex.h>
