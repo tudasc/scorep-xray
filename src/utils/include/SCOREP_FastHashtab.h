@@ -332,30 +332,33 @@
 
 
 /* implementation detail, do not use directly */
+#define SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, assignTo ) \
+    UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+    if ( prefix ## _chunk_free_list != NULL ) \
+    { \
+        ( assignTo )               = prefix ## _chunk_free_list; \
+        prefix ## _chunk_free_list = prefix ## _chunk_free_list->next; \
+        UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+    } \
+    else \
+    { \
+        UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
+        ( assignTo ) = prefix ## _allocate_chunk( sizeof( prefix ## _chunk_t ) ); \
+    } \
+    ( assignTo )->next = NULL; \
+    chunk              = &( assignTo );
+
+
+/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_NEW_CHUNK_NON_MONOTONIC( prefix, nPairsPerChunk ) \
     if ( current_size == 0 ) \
     { \
-        bucket->chunk       = prefix ## _allocate_chunk( sizeof( prefix ## _chunk_t ) ); \
-        bucket->chunk->next = NULL; \
-        chunk               = &( bucket->chunk ); \
+        SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, bucket->chunk ) \
     } \
     else if ( j == ( nPairsPerChunk ) ) \
     { \
-        UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
-        if ( prefix ## _chunk_free_list != NULL ) \
-        { \
-            ( *chunk )->next           = prefix ## _chunk_free_list; \
-            prefix ## _chunk_free_list = prefix ## _chunk_free_list->next; \
-            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
-        } \
-        else \
-        { \
-            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
-            ( *chunk )->next = prefix ## _allocate_chunk( sizeof( prefix ## _chunk_t ) ); \
-        } \
-        ( *chunk )->next->next = NULL; \
-        chunk                  = &( ( *chunk )->next ); \
-        j                      = 0; \
+        SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, ( *chunk )->next ) \
+        j = 0; \
     }
 
 
