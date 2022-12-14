@@ -26,7 +26,7 @@
  * HIP features (to be enabled/disabled via environment variables)
  */
 #define SCOREP_HIP_FEATURE_API             ( 1 << 0 )
-#define SCOREP_HIP_FEATURE_KERNELS         ( 1 << 1 )
+#define SCOREP_HIP_FEATURE_KERNEL          ( 1 << 1 )
 #define SCOREP_HIP_FEATURE_KERNEL_CALLSITE ( 1 << 2 )
 #define SCOREP_HIP_FEATURE_MALLOC          ( 1 << 3 )
 #define SCOREP_HIP_FEATURE_MEMCPY          ( 1 << 4 )
@@ -34,7 +34,7 @@
 #define SCOREP_HIP_FEATURE_USER            ( 1 << 6 )
 #define SCOREP_HIP_FEATURES_DEFAULT \
     ( SCOREP_HIP_FEATURE_API | \
-      SCOREP_HIP_FEATURE_KERNELS | \
+      SCOREP_HIP_FEATURE_KERNEL | \
       SCOREP_HIP_FEATURE_KERNEL_CALLSITE | \
       SCOREP_HIP_FEATURE_MALLOC | \
       SCOREP_HIP_FEATURE_MEMCPY | \

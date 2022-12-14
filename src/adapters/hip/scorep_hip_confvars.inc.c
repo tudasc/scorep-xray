@@ -32,15 +32,15 @@ static const SCOREP_ConfigType_SetEntry hip_enable_groups[] =
         "All HIP API calls"
     },
     {
-        "kernels",
-        SCOREP_HIP_FEATURE_KERNELS,
+        "kernel",
+        SCOREP_HIP_FEATURE_KERNEL,
         "HIP kernels"
     },
     {
         "kernel_callsite",
         SCOREP_HIP_FEATURE_KERNEL_CALLSITE,
         "Track kernel callsites between launch and execution. Depends on "
-        "'kernels', therefore enables that too"
+        "'kernel', therefore enables that too"
     },
     {
         "malloc",
