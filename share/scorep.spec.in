@@ -107,6 +107,14 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                global(hip);
+                global(hip_stream);
+                global(hip_malloc);
+                global(hip_memcpy);
+                global(hip_sync);
+                global(hip_kernel_launches);
+                global(hip_kernel_executions);
+
                 global(fileio);
                 global(fileio_meta);
                 global(fileio_reading);
@@ -122,6 +130,7 @@
                 ${includesOpenCL}   = 0;
                 ${includesCUDA}     = 0;
                 ${includesIdleGPUs} = 0;
+                ${includesHIP}      = 0;
                 ${includesLIBWRAP}  = 0;
                 ${includesFILEIO}   = 0;
                 ${includesMEMORY}   = 0;
@@ -533,6 +542,48 @@
                         };
                     };
 
+                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "hip" )
+                    {
+                        ${includesHIP} = 1;
+                        ${hip}[${i}]   = 1;
+
+                        // HIP stream management
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^hip(Init|StreamCreate(With(Flags|Priority))?|ExtStreamCreateWithCUMask|StreamDestroy|SetDevice)/ )
+                        {
+                            ${hip_stream}[${i}] = 1;
+                        };
+
+                        // HIP kernel launches
+                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^hip(Module|ExtModule|HccModule)?LaunchKernel$/ )
+                        {
+                            ${hip_kernel_launches}[${i}] = 1;
+                        };
+
+                        // HIP memory allocations
+                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_MALLOC" )
+                        {
+                            ${hip_malloc}[${i}] = 1;
+                        };
+
+                        // HIP memory transfers
+                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_MEMCPY" )
+                        {
+                            ${hip_memcpy}[${i}] = 1;
+                        };
+
+                        // HIP synchronization
+                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_SYNC" )
+                        {
+                            ${hip_sync}[${i}] = 1;
+                        };
+
+                        // HIP kernels
+                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "HIP_KERNEL" )
+                        {
+                            ${hip_kernel_executions}[${i}] = 1;
+                        };
+                    };
+
                     if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
                     {
                         if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "TRACE BUFFER FLUSH" )
@@ -690,6 +741,17 @@
                     cube::metric::set::idle_gpus("value", "VOID");
                 };
 
+                if ( ${includesHIP} == 0 )
+                {
+                    cube::metric::set::hip_time("value", "VOID");
+                    cube::metric::set::hip_stream("value", "VOID");
+                    cube::metric::set::hip_malloc("value", "VOID");
+                    cube::metric::set::hip_memcpy("value", "VOID");
+                    cube::metric::set::hip_sync("value", "VOID");
+                    cube::metric::set::hip_kernel_launches("value", "VOID");
+                    cube::metric::set::hip_kernel_executions("value", "VOID");
+                };
+
                 if ( ${includesLIBWRAP} == 0 )
                 {
                     cube::metric::set::libwrap_time("value", "VOID");
@@ -724,7 +786,7 @@
                 <url>@mirror@scorep_metrics.html#comp</url>
                 <descr>Time spent on computation</descr>
                 <cubepl>
-                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::openacc_time() - metric::opencl_time() - metric::cuda_time()
+                    metric::execution() - metric::mpi() - metric::shmem_time() - metric::omp_time() - metric::pthread_time() - metric::openacc_time() - metric::opencl_time() - metric::cuda_time() - metric::hip_time()
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>File I/O</disp_name>
@@ -845,6 +907,24 @@
                     {
                         ${tmp} = 0;
                         if ( ${cuda_kernel_executions}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>HIP kernels</disp_name>
+                    <uniq_name>hip_kernel_executions</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_kernel_executions</url>
+                    <descr>Time spent executing HIP kernels</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_kernel_executions}[${calculation::callpath::id}] == 1 )
                         {
                             ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
                         };
@@ -2022,6 +2102,121 @@
                     </cubepl>
                 </metric>
             </metric>
+
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>HIP</disp_name>
+                <uniq_name>hip_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scorep_metrics.html#hip_time</url>
+                <descr>Time spent in the HIP API calls</descr>
+                <cubepl>
+                {
+                    ${tmp} = 0;
+                    if ( ${hip}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${tmp} = metric::time(e) - metric::hip_kernel_executions(e) - metric::omp_idle_threads(e);
+                    };
+                    return ${tmp};
+                }
+                </cubepl>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Stream management</disp_name>
+                    <uniq_name>hip_stream</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_stream</url>
+                    <descr>Time needed for HIP stream management.</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_stream}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Memory allocations</disp_name>
+                    <uniq_name>hip_malloc</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_malloc</url>
+                    <descr>Time spent on memory allocations.</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_malloc}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Memory transfers</disp_name>
+                    <uniq_name>hip_memcpy</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_memcpy</url>
+                    <descr>Time spent on memory transfers.</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_memcpy}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Synchronization</disp_name>
+                    <uniq_name>hip_sync</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_sync</url>
+                    <descr>Time spent on HIP synchronization</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_sync}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Kernel launches</disp_name>
+                    <uniq_name>hip_kernel_launches</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scorep_metrics.html#hip_kernel_launches</url>
+                    <descr>Time spent to launch HIP kernels.</descr>
+                    <cubepl>
+                    {
+                        ${tmp} = 0;
+                        if ( ${hip_kernel_launches}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${tmp};
+                    }
+                    </cubepl>
+                </metric>
+            </metric>
+
         </metric>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Overhead</disp_name>

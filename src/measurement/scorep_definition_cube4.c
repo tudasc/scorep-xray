@@ -775,7 +775,8 @@ write_region_definitions( cube_t*                       myCube,
         const char* canonical_region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->canonical_name_handle,
                                                                          String )->string_data;
         const char* paradigm = scorep_paradigm_type_to_string( definition->paradigm_type );
-        if ( definition->group_name_handle != SCOREP_INVALID_STRING )
+        if ( definition->group_name_handle != SCOREP_INVALID_STRING
+             && definition->group_name_handle != definition->file_name_handle )
         {
             const char* group_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->group_name_handle,
                                                                   String )->string_data;

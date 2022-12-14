@@ -115,13 +115,21 @@ inefficient usage of the available hardware resources (see
 <dd><a href="#time">Time</a></dd>
 <dt><b>Sub-metrics:</b></dt>
 <dd>
-    <a href="#comp">Computation Time</a><br/>
-    <a href="#mpi">MPI Time</a><br/>
-    <a href="#omp_time">OpenMP Time</a><br/>
-    <a href="#pthread_time">POSIX Threads Time</a><br/>
-    <a href="#openacc_time">OpenACC Time</a><br/>
-    <a href="#opencl_time">OpenCL Time</a><br/>
+    <a href="#comp">Computation Time</a>
+    <br/>
+    <a href="#mpi">MPI Time</a>
+    <br/>
+    <a href="#omp_time">OpenMP Time</a>
+    <br/>
+    <a href="#pthread_time">POSIX Threads Time</a>
+    <br/>
+    <a href="#openacc_time">OpenACC Time</a>
+    <br/>
+    <a href="#opencl_time">OpenCL Time</a>
+    <br/>
     <a href="#cuda_time">CUDA Time</a>
+    <br/>
+    <a href="#hip_time">HIP Time</a>
 </dd>
 </dl>
 
@@ -215,8 +223,11 @@ performance, and where necessary alternative algorithms employed.
 <dd><a href="#execution">Execution Time</a></dd>
 <dt><b>Sub-metrics:</b></dt>
 <dd>
-    <a href="#opencl_kernel_executions">OpenCL Kernel Time</a><br/>
+    <a href="#opencl_kernel_executions">OpenCL Kernel Time</a>
+    <br/>
     <a href="#cuda_kernel_executions">CUDA Kernel Time</a>
+    <br/>
+    <a href="#hip_kernel_executions">HIP Kernel Time</a>
 </dd>
 </dl>
 
@@ -1485,6 +1496,147 @@ Time spent to launch CUDA kernels, including "memset" operations.
 <dd>Seconds</dd>
 <dt><b>Parent metric:</b></dt>
 <dd><a href="#cuda_time">CUDA Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_kernel_executions"><h3>HIP Kernel Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent executing HIP kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#comp">Computation Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_time"><h3>HIP Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent in the HIP API calls.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#execution">Execution Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    <a href="#hip_stream">HIP Stream Management Time</a>
+    <br/>
+    <a href="#hip_malloc">HIP Memory Allocation Time</a>
+    <br/>
+    <a href="#hip_memcpy">HIP Memory Transfer Time</a>
+    <br/>
+    <a href="#hip_sync">HIP Synchronization Time</a>
+    <br/>
+    <a href="#hip_kernel_launches">HIP Kernel Launch Time</a>
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_stream"><h3>HIP Stream Management Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed for HIP stream management.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#hip_time">HIP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_malloc"><h3>HIP Memory Allocation Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed for HIP memory allocations.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#hip_time">HIP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_memcpy"><h3>HIP Memory Transfer Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time needed for HIP memory transfers.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#hip_time">HIP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_sync"><h3>HIP Synchronization Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent on HIP synchronization.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#hip_time">HIP Time</a></dd>
+<dt><b>Sub-metrics:</b></dt>
+<dd>
+    None
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="hip_kernel_launches"><h3>HIP Kernel Launch Time</h3></a>
+(only available after <a href="#remapping_info">remapping</a>)
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+Time spent to launch HIP kernels.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Parent metric:</b></dt>
+<dd><a href="#hip_time">HIP Time</a></dd>
 <dt><b>Sub-metrics:</b></dt>
 <dd>
     None

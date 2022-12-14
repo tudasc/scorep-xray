@@ -1830,7 +1830,7 @@ scorep_hip_callbacks_init( void )
     if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL_CALLSITE )
     {
         /* callsites need kernel tracking */
-        scorep_hip_features |= SCOREP_HIP_FEATURE_KERNELS;
+        scorep_hip_features |= SCOREP_HIP_FEATURE_KERNEL;
 
         callsite_id_parameter = SCOREP_AcceleratorMgmt_GetCallsiteParameter();
     }
@@ -1903,7 +1903,7 @@ scorep_hip_callbacks_enable( void )
     bool need_activity_tracing   = false;
 
     /* Kernel launches. */
-    if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNELS )
+    if ( scorep_hip_features & SCOREP_HIP_FEATURE_KERNEL )
     {
         need_stream_api_tracing = true;
         need_activity_tracing   = true;
