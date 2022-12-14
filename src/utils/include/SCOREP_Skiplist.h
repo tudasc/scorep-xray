@@ -65,6 +65,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <SCOREP_Memory.h>
+
 #if !defined( SCOREP_SKIPLIST_PREFIX )
 /**
  * @def SCOREP_SKIPLIST_PREFIX defines the function and variable prefixes used

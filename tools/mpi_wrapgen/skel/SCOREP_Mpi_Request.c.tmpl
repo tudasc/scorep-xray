@@ -65,7 +65,6 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Memory.h>
 
 #include <stddef.h>
 #include <mpi.h>

@@ -38,7 +38,6 @@
 #include <config.h>
 #include "scorep_mpi_communicator.h"
 #include "scorep_mpi_communicator_mgmt.h"
-#include <SCOREP_Memory.h>
 #include "SCOREP_Mpi.h"
 #include <SCOREP_Definitions.h>
 
