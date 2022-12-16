@@ -27,6 +27,7 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <inttypes.h>
 
 /* Splay tree based on: */
 /*

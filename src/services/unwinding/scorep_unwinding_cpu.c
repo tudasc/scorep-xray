@@ -28,6 +28,7 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <ctype.h>
 
