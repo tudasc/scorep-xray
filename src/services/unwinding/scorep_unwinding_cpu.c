@@ -35,6 +35,18 @@
 #include "scorep_unwinding_region.h"
 #include "scorep_unwinding_cct.h"
 
+#if !HAVE( DECL_UNW_STRERROR )
+
+static const char*
+unw_strerror( int errorCode )
+{
+    static char error_name[ 16 ];
+    snprintf( error_name, sizeof( error_name ), "%d", errorCode );
+    return error_name;
+}
+
+#endif
+
 SCOREP_Unwinding_CpuLocationData*
 scorep_unwinding_cpu_get_location_data( SCOREP_Location* location )
 {

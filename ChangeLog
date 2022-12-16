@@ -10,6 +10,7 @@ Bugfixes:
 - Score-P now gracefully handles undefined behavior exploited by the
   application when using the Pthread API instead of aborting the
   application.
+- Allow to build against LLVM's libunwind.
 
 ------------------- Released version 8.0 -----------------------------
 

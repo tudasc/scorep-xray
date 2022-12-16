@@ -125,8 +125,8 @@ AS_IF([test "x${scorep_return_address}" != x0], [
 
 AS_IF([test "x${scorep_unwinding_support}" = "xyes"],
       [save_CPPFLAGS=$CPPFLAGS
-       CPPFLAGS="$CPPFLAGS ${with_libunwind_cppflags}"
-       AC_CHECK_DECLS([unw_init_local2, unw_init_local_signal],
+       CPPFLAGS="$CPPFLAGS ${SCOREP_LIBUNWIND_CPPFLAGS}"
+       AC_CHECK_DECLS([unw_init_local2, unw_init_local_signal, unw_strerror],
                       [], [], [[#define UNW_LOCAL_ONLY
 #include <libunwind.h>
 ]])
@@ -184,6 +184,8 @@ have_libunwind="yes"
 scorep_libunwind_summary_reason=", from downloaded $libunwind_base_url/${libunwind_package}.tar.gz"
 dnl check will fail, used version provides unw_init_local2
 ac_cv_have_decl_unw_init_local2=yes
+dnl check will fail, used version provides unw_strerror
+ac_cv_have_decl_unw_strerror=yes
 dnl
 m4_changecom([])
 cat <<_SCOREPEOF > $[]_afs_lib_MAKEFILE
