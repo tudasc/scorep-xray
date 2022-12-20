@@ -785,7 +785,6 @@ MPI_Start( MPI_Request* request )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
 
     if ( event_gen_active )
@@ -811,18 +810,10 @@ MPI_Start( MPI_Request* request )
             scorep_req->flags |= SCOREP_MPI_REQUEST_FLAG_IS_ACTIVE;
             if ( ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_SEND ) && ( scorep_req->payload.p2p.dest != MPI_PROC_NULL ) )
             {
-                if ( xnb_active )
-                {
-                    SCOREP_MpiIsend( scorep_req->payload.p2p.dest, scorep_req->payload.p2p.comm_handle,
-                                     scorep_req->payload.p2p.tag, scorep_req->payload.p2p.bytes, scorep_req->id );
-                }
-                else
-                {
-                    SCOREP_MpiSend( scorep_req->payload.p2p.dest, scorep_req->payload.p2p.comm_handle,
-                                    scorep_req->payload.p2p.tag, scorep_req->payload.p2p.bytes );
-                }
+                SCOREP_MpiIsend( scorep_req->payload.p2p.dest, scorep_req->payload.p2p.comm_handle,
+                                 scorep_req->payload.p2p.tag, scorep_req->payload.p2p.bytes, scorep_req->id );
             }
-            else if ( ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && xnb_active )
+            else if ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV )
             {
                 SCOREP_MpiIrecvRequest( scorep_req->id );
             }
@@ -876,7 +867,6 @@ MPI_Startall( int          count,
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
     int       i;
 
@@ -908,7 +898,7 @@ MPI_Startall( int          count,
                     SCOREP_MpiIsend( scorep_req->payload.p2p.dest, scorep_req->payload.p2p.comm_handle,
                                      scorep_req->payload.p2p.tag, scorep_req->payload.p2p.bytes, scorep_req->id );
                 }
-                else if ( ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV ) && xnb_active )
+                else if ( scorep_req->request_type == SCOREP_MPI_REQUEST_TYPE_RECV )
                 {
                     SCOREP_MpiIrecvRequest( scorep_req->id );
                 }
@@ -1218,7 +1208,6 @@ MPI_Request_free( MPI_Request* request )
     SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
     const int event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_REQUEST );
-    const int xnb_active                 = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK );
     int       orig_req_null              = ( *request == MPI_REQUEST_NULL );
     int       return_val;
 
@@ -1240,7 +1229,7 @@ MPI_Request_free( MPI_Request* request )
 
     if ( scorep_req )
     {
-        if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active_for_group && xnb_active )
+        if ( scorep_req->flags & SCOREP_MPI_REQUEST_FLAG_CAN_CANCEL && event_gen_active_for_group )
         {
             MPI_Status* status = scorep_mpi_get_status_array( 1 );
             int         cancelled;
@@ -1345,9 +1334,8 @@ MPI_Cancel( MPI_Request* request )
 
     /* Mark request as cancelable and check for successful cancellation
      * on request completion or MPI_Request_free.
-     * If XNONBLOCK is enabled, there will be a 'cancelled' event
-     * instead of a normal completion event in the trace, which can be
-     * checked for by the trace analysis.
+     * There will be a 'cancelled' event instead of a normal completion event
+     * in the trace, which can be checked for by the trace analysis.
      */
     scorep_mpi_save_request_array( request, 1 );
 

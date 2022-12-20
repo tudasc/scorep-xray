@@ -184,7 +184,6 @@ enum scorep_mpi_groups {
                                    SCOREP_MPI_ENABLED_TOPO      |
                                    SCOREP_MPI_ENABLED_TYPE      |
                                    SCOREP_MPI_ENABLED_PERF      |
-                                   SCOREP_MPI_ENABLED_XNONBLOCK |
                                    SCOREP_MPI_ENABLED_XREQTEST,
     /* NOTE: DEFAULT should reflect the default set */
     SCOREP_MPI_ENABLED_DEFAULT   = SCOREP_MPI_ENABLED_CG    |
@@ -193,8 +192,7 @@ enum scorep_mpi_groups {
                                    SCOREP_MPI_ENABLED_IO    |
                                    SCOREP_MPI_ENABLED_P2P   |
                                    SCOREP_MPI_ENABLED_RMA   |
-                                   SCOREP_MPI_ENABLED_TOPO  |
-                                   SCOREP_MPI_ENABLED_XNONBLOCK
+                                   SCOREP_MPI_ENABLED_TOPO
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */

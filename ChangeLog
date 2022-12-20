@@ -1,5 +1,10 @@
 ------------------- Upcoming version 9.0 -----------------------------
 
+User tools and API improvements and changes:
+
+- The 'xnonblock' option of SCOREP_MPI_ENABLE_GROUPS is deprecated.
+  Measurements always record extended non-blocking events.
+
 ------------------- Released version 8.0 -----------------------------
 
 Major features:
