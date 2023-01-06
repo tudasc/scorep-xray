@@ -5,6 +5,12 @@ User tools and API improvements and changes:
 - The 'xnonblock' option of SCOREP_MPI_ENABLE_GROUPS is deprecated.
   Measurements always record extended non-blocking events.
 
+Bugfixes:
+
+- Score-P now gracefully handles undefined behavior exploited by the
+  application when using the Pthread API instead of aborting the
+  application.
+
 ------------------- Released version 8.0 -----------------------------
 
 Major features:
