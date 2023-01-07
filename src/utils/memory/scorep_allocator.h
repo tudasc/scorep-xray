@@ -87,23 +87,6 @@ struct SCOREP_Allocator_Allocator
 };
 
 
-struct SCOREP_Allocator_PageManager
-{
-    SCOREP_Allocator_Allocator* allocator;         // fetch new pages from this one
-    SCOREP_Allocator_Page*      pages_in_use_list;
-
-    /*
-     * The page holding the mapping,
-     * The mapping is at moved_page_id_mapping_page->memory_start_address
-     */
-    SCOREP_Allocator_Page* moved_page_id_mapping_page;
-
-    /* sentinel which allocation could be rolled back */
-    /* only movable allocations currently */
-    SCOREP_Allocator_MovableMemory last_allocation;
-};
-
-
 struct SCOREP_Allocator_ObjectManager
 {
     SCOREP_Allocator_Allocator* allocator;         // fetch new pages from this one

@@ -743,25 +743,23 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
 
 
 void*
-SCOREP_Allocator_GetAddressFromMovableMemory(
+SCOREP_Allocator_GetAddressFromMovedMemory(
     const SCOREP_Allocator_PageManager* pageManager,
     SCOREP_Allocator_MovableMemory      movableMemory )
 {
     assert( pageManager );
     assert( movableMemory >= page_size( pageManager->allocator ) );
     assert( movableMemory < total_memory( pageManager->allocator ) );
+    assert( pageManager->moved_page_id_mapping_page );
 
-    if ( pageManager->moved_page_id_mapping_page )
-    {
-        uint32_t* moved_page_id_mapping =
-            ( uint32_t* )pageManager->moved_page_id_mapping_page->memory_start_address;
-        uint32_t page_id     = movableMemory >> pageManager->allocator->page_shift;
-        uint32_t page_offset = movableMemory & page_mask( pageManager->allocator );
-        assert( moved_page_id_mapping[ page_id ] != 0 );
-        page_id       = moved_page_id_mapping[ page_id ];
-        movableMemory = ( page_id << pageManager->allocator->page_shift )
-                        | page_offset;
-    }
+    uint32_t* moved_page_id_mapping =
+        ( uint32_t* )pageManager->moved_page_id_mapping_page->memory_start_address;
+    uint32_t page_id     = movableMemory >> pageManager->allocator->page_shift;
+    uint32_t page_offset = movableMemory & page_mask( pageManager->allocator );
+    assert( moved_page_id_mapping[ page_id ] != 0 );
+    page_id       = moved_page_id_mapping[ page_id ];
+    movableMemory = ( page_id << pageManager->allocator->page_shift )
+                    | page_offset;
 
     return ( char* )pageManager->allocator + movableMemory;
 }

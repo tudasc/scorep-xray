@@ -77,9 +77,10 @@
 /* forward decl */
 struct SCOREP_DefinitionManager;
 typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
-struct SCOREP_Allocator_PageManager;
 
 #include <SCOREP_Types.h>
+#include <SCOREP_Memory.h>
+
 #include <UTILS_Error.h>
 
 #include <stdbool.h>
@@ -100,8 +101,8 @@ struct SCOREP_Allocator_PageManager;
  * @return A pointer to an object of type @a target_type.
  */
 #define SCOREP_MEMORY_DEREF_MOVABLE( movableMemory, movablePageManager, targetType ) \
-    ( ( targetType )SCOREP_Memory_GetAddressFromMovableMemory( movableMemory, \
-                                                               movablePageManager ) )
+    ( ( targetType )SCOREP_Allocator_GetAddressFromMovableMemory( movablePageManager, \
+                                                                  movableMemory ) )
 
 /**
  *  Dereferences a moveable memory pointer to the definition struct.

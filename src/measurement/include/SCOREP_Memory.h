@@ -333,16 +333,16 @@ void
 SCOREP_Memory_FreeDefinitionMem( void );
 
 
-void*
-SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory,
-                                           SCOREP_Allocator_PageManager*  movablePageManager );
-
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreateMovedPagedMemory( void );
 
 
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_GetLocalDefinitionPageManager( void );
+static inline SCOREP_Allocator_PageManager*
+SCOREP_Memory_GetLocalDefinitionPageManager( void )
+{
+    extern SCOREP_Allocator_PageManager* scorep_definitions_page_manager;
+    return scorep_definitions_page_manager;
+}
 
 
 /**
