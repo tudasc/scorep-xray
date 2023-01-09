@@ -43,10 +43,6 @@
 
 #include "scorep_allocator.h"
 
-/* requirement: roundupto( n * x, x ) == n * x */
-#define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-
-
 static inline uint32_t
 page_size( const SCOREP_Allocator_Allocator* allocator )
 {
@@ -161,7 +157,7 @@ grab_page_memory( SCOREP_Allocator_Page* page,
                   size_t                 alignment,
                   void**                 memoryOut )
 {
-    void*     memory = ( void* )roundupto( page->memory_current_address, alignment );
+    void*     memory = ( void* )SCOREP_ROUNDUPTO( page->memory_current_address, alignment );
     ptrdiff_t avail  = ( intptr_t )page->memory_end_address - ( intptr_t )memory;
     if ( avail < 0 || requestedSize > ( size_t )avail )
     {

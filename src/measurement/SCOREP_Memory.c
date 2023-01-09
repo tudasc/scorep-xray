@@ -393,10 +393,7 @@ SCOREP_Memory_AlignedMalloc( size_t alignment,
     void* raw = malloc( size + sizeof( alignment_offset_t ) + alignment - 1 );
     if ( raw )
     {
-        #define roundupto( x, to ) ( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )
-        aligned = ( void* )roundupto( ( ( intptr_t )raw + sizeof( alignment_offset_t ) ),
-                                      alignment );
-        #undef roundupto
+        aligned = ( void* )SCOREP_ROUNDUPTO( ( ( intptr_t )raw + sizeof( alignment_offset_t ) ), alignment );
 
         /* Calculate the offset and store it in front of the
            aligned pointer. */

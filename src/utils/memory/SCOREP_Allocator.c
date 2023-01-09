@@ -50,8 +50,6 @@
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
-#define roundup( x ) roundupto( x, SCOREP_ALLOCATOR_ALIGNMENT )
-
 #include "scorep_bitset.h"
 #include "scorep_page.h"
 
@@ -361,13 +359,6 @@ page_manager_alloc( SCOREP_Allocator_PageManager* pageManager,
 }
 
 
-size_t
-SCOREP_Allocator_RoundupToAlignment( size_t size )
-{
-    return roundup( size );
-}
-
-
 SCOREP_Allocator_Allocator*
 SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                                   uint32_t*                    pageSize,
@@ -416,7 +407,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
                         page_shift, n_pages );
 
     uint32_t maint_memory_needed = union_size() + bitset_size( n_pages );
-    maint_memory_needed = roundupto( maint_memory_needed, 64 ); // why 64?
+    maint_memory_needed = SCOREP_ROUNDUPTO( maint_memory_needed, 64 ); // why 64?
     if ( ( *totalMemory ) <= maint_memory_needed )
     {
         /* too few memory to hold maintenance stuff */
@@ -468,7 +459,7 @@ SCOREP_Allocator_CreateAllocator( uint32_t*                    totalMemory,
     {
         return 0;
     }
-    SCOREP_Allocator_Allocator* allocator = ( void* )roundupto( raw, *pageSize );
+    SCOREP_Allocator_Allocator* allocator = ( void* )SCOREP_ROUNDUPTO( raw, *pageSize );
     allocator->allocated_memory = raw;
     allocator->page_shift       = page_shift;
     allocator->n_pages_bits     = n_pages_bits;

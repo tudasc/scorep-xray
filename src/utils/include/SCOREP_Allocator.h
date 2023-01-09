@@ -96,8 +96,13 @@ typedef void ( * SCOREP_Allocator_Guard )( SCOREP_Allocator_GuardObject );
 
 UTILS_BEGIN_C_DECLS
 
-size_t
-SCOREP_Allocator_RoundupToAlignment( size_t size );
+static inline size_t
+SCOREP_Allocator_RoundupToAlignment( size_t size )
+{
+    return SCOREP_ROUNDUPTO( size, SCOREP_ALLOCATOR_ALIGNMENT );
+}
+
+
 
 /**
  * Create a memory allocator object that uses at maximum @a totalMemory

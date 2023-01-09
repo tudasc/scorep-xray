@@ -29,4 +29,9 @@ AC_DEFINE_UNQUOTED(
     [[SCOREP_ALLOCATOR_ALIGNMENT]],
     [$scorep_allocator_alignment],
     [First guess, use the maximum of sizeof(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
+
+AC_DEFINE_UNQUOTED(
+    [SCOREP_ROUNDUPTO( x, to )],
+    [( ( ( intptr_t )( x ) + ( ( intptr_t )( to ) - 1 ) ) & ~( ( intptr_t )( to ) - 1 ) )],
+    [Round x to the next multiple of to.])
 ])dnl
