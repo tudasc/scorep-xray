@@ -46,11 +46,19 @@ SCOREP_Definitions_NewCallingContext( uint64_t                        ip,
                                       SCOREP_SourceCodeLocationHandle scl,
                                       SCOREP_CallingContextHandle     parent );
 
-SCOREP_RegionHandle
-SCOREP_CallingContextHandle_GetRegion( SCOREP_CallingContextHandle handle );
+static inline SCOREP_RegionHandle
+SCOREP_CallingContextHandle_GetRegion( SCOREP_CallingContextHandle handle )
+{
+    SCOREP_CallingContextDef* calling_context = SCOREP_LOCAL_HANDLE_DEREF( handle, CallingContext );
+    return calling_context->region_handle;
+}
 
-SCOREP_CallingContextHandle
-SCOREP_CallingContextHandle_GetParent( SCOREP_CallingContextHandle handle );
+static inline SCOREP_CallingContextHandle
+SCOREP_CallingContextHandle_GetParent( SCOREP_CallingContextHandle handle )
+{
+    SCOREP_CallingContextDef* calling_context = SCOREP_LOCAL_HANDLE_DEREF( handle, CallingContext );
+    return calling_context->parent_handle;
+}
 
 void
 scorep_definitions_unify_calling_context( SCOREP_CallingContextDef*            definition,

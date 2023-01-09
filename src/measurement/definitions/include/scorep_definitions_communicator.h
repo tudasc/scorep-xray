@@ -159,15 +159,24 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
     ... );
 
 
-SCOREP_InterimCommunicatorHandle
-SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle commHandle );
+static inline SCOREP_InterimCommunicatorHandle
+SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle commHandle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( commHandle, InterimCommunicator )->parent_handle;
+}
 
 
 /**
  * Get access to the payload from a communicator definition.
  */
-void*
-SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle );
+static inline void*
+SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle )
+{
+    return ( char* )SCOREP_LOCAL_HANDLE_DEREF( handle, InterimCommunicator )
+           + SCOREP_Allocator_RoundupToAlignment( sizeof( SCOREP_InterimCommunicatorDef ) );
+}
+
+
 
 
 /**

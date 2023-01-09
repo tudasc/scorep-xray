@@ -299,19 +299,6 @@ equal_metric( const SCOREP_MetricDef* existingDefinition,
 
 
 /**
- * Returns the sequence number of the unified definitions for a local metric handle from
- * the mappings.
- * @param handle handle to local metric handle.
- */
-uint32_t
-SCOREP_MetricHandle_GetUnifiedId( SCOREP_MetricHandle handle )
-{
-    uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
-    return scorep_local_definition_manager.metric.mapping[ local_id ];
-}
-
-
-/**
  * Returns the unified handle from a local handle.
  */
 SCOREP_MetricHandle
@@ -319,17 +306,6 @@ SCOREP_MetricHandle_GetUnified( SCOREP_MetricHandle handle )
 {
     return SCOREP_HANDLE_GET_UNIFIED( handle, Metric,
                                       SCOREP_Memory_GetLocalDefinitionPageManager() );
-}
-
-
-/**
- * Returns the value type of a metric.
- * @param handle to local meric definition.
- */
-SCOREP_MetricValueType
-SCOREP_MetricHandle_GetValueType( SCOREP_MetricHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->value_type;
 }
 
 
@@ -350,13 +326,6 @@ SCOREP_MetricProfilingType
 SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->profiling_type;
-}
-
-
-SCOREP_MetricHandle
-SCOREP_MetricHandle_GetParent( SCOREP_MetricHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->parent_handle;
 }
 
 

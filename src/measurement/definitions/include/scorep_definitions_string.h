@@ -76,8 +76,13 @@ SCOREP_Definitions_NewStringGenerator( size_t                             string
                                        scorep_string_definition_generator generator,
                                        void*                              generatorArg );
 
-const char*
-SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
+static inline const char*
+SCOREP_StringHandle_Get( SCOREP_StringHandle handle )
+{
+    SCOREP_StringDef* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
+
+    return str->string_data;
+}
 
 const char*
 SCOREP_StringHandle_GetById( uint32_t id );

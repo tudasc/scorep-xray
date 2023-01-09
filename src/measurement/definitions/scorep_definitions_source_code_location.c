@@ -95,12 +95,6 @@ SCOREP_Definitions_NewSourceCodeLocation( const char*   file,
     return new_handle;
 }
 
-uint32_t
-SCOREP_SourceCodeLocationHandle_GetId( SCOREP_SourceCodeLocationHandle handle )
-{
-    return SCOREP_LOCAL_HANDLE_TO_ID( handle, SourceCodeLocation );
-}
-
 void
 scorep_definitions_unify_source_code_location( SCOREP_SourceCodeLocationDef* definition,
                                                SCOREP_Allocator_PageManager* handlesPageManager )

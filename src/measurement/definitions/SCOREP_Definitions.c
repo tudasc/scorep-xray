@@ -305,15 +305,3 @@ SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions( void )
 {
     return scorep_unified_definition_manager->callpath.counter;
 }
-
-
-uint32_t
-SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle )
-{
-    if ( handle == SCOREP_MOVABLE_NULL )
-    {
-        return UINT32_MAX;
-    }
-
-    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Any );
-}

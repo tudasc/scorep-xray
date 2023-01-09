@@ -70,12 +70,18 @@ SCOREP_Definitions_NewAttribute( const char*          name,
                                  const char*          description,
                                  SCOREP_AttributeType type );
 
-uint32_t
-SCOREP_AttributeHandle_GetId( SCOREP_AttributeHandle handle );
+static inline uint32_t
+SCOREP_AttributeHandle_GetId( SCOREP_AttributeHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Attribute );
+}
 
-
-SCOREP_AttributeType
-SCOREP_AttributeHandle_GetType( SCOREP_AttributeHandle handle );
+static inline SCOREP_AttributeType
+SCOREP_AttributeHandle_GetType( SCOREP_AttributeHandle handle )
+{
+    return SCOREP_HANDLE_DEREF( handle, Attribute,
+                                SCOREP_Memory_GetLocalDefinitionPageManager() )->type;
+}
 
 void
 scorep_definitions_unify_attribute( SCOREP_AttributeDef*                 definition,
