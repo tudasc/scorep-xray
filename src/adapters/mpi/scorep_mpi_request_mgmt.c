@@ -739,7 +739,7 @@ scorep_mpi_request_tested( scorep_mpi_request* req )
             SCOREP_IoOperationTest( io_handle, req->id );
         }
     }
-    else if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_XNONBLOCK ) )
+    else
     {
         SCOREP_MpiRequestTested( req->id );
     }
@@ -752,7 +752,6 @@ scorep_mpi_check_request( scorep_mpi_request* req,
     const int p2p_events_active  = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_P2P );
     const int io_events_active   = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_IO );
     const int coll_events_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL );
-    const int xnb_active         = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
 
     if ( !req ||
          ( req->flags & SCOREP_MPI_REQUEST_FLAG_IS_COMPLETED ) ||
@@ -769,7 +768,7 @@ scorep_mpi_check_request( scorep_mpi_request* req,
     }
     if ( cancelled )
     {
-        if ( ( xnb_active || req->request_type == SCOREP_MPI_REQUEST_TYPE_ICOLL ) && req->id != UINT64_MAX )
+        if ( req->id != UINT64_MAX )
         {
             SCOREP_MpiRequestCancelled( req->id );
         }
@@ -788,21 +787,13 @@ scorep_mpi_check_request( scorep_mpi_request* req,
                     PMPI_Type_size( req->payload.p2p.datatype, &sz );
                     PMPI_Get_count( status, req->payload.p2p.datatype, &count );
 
-                    if ( xnb_active )
-                    {
-                        SCOREP_MpiIrecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
-                                         status->MPI_TAG, ( uint64_t )count * sz, req->id );
-                    }
-                    else
-                    {
-                        SCOREP_MpiRecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
-                                        status->MPI_TAG, ( uint64_t )count * sz );
-                    }
+                    SCOREP_MpiIrecv( status->MPI_SOURCE, req->payload.p2p.comm_handle,
+                                     status->MPI_TAG, ( uint64_t )count * sz, req->id );
                 }
                 break;
 
             case SCOREP_MPI_REQUEST_TYPE_SEND:
-                if ( p2p_events_active && xnb_active )
+                if ( p2p_events_active )
                 {
                     SCOREP_MpiIsendComplete( req->id );
                 }

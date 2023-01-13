@@ -16,7 +16,6 @@ ${proto:c}
   SCOREP_IN_MEASUREMENT_INCREMENT();
   const int           event_gen_active           = SCOREP_MPI_IS_EVENT_GEN_ON;
   const int           event_gen_active_for_group = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
-  const int           xnb_active                 = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
   ${rtype}            return_val;
   SCOREP_MpiRequestId reqid;
 
@@ -33,12 +32,8 @@ ${proto:c}
       if (dest != MPI_PROC_NULL)
       {
         PMPI_Type_size(datatype, &sz);
-        if (xnb_active)
-           SCOREP_MpiIsend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                           tag, (uint64_t)count * sz, reqid);
-        else
-           SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
-                       tag, (uint64_t)count * sz);
+        SCOREP_MpiIsend(dest, SCOREP_MPI_COMM_HANDLE(comm),
+                        tag, (uint64_t)count * sz, reqid);
 
       }
     }
@@ -56,7 +51,7 @@ ${proto:c}
   {
     if (event_gen_active_for_group)
     {
-      if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+      if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
       {
          scorep_mpi_request_p2p_create(*request, SCOREP_MPI_REQUEST_TYPE_SEND, SCOREP_MPI_REQUEST_FLAG_NONE,
                              tag, dest, (uint64_t)count*sz, datatype, comm, reqid);

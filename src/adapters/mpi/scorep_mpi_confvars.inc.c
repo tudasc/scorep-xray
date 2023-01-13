@@ -133,7 +133,7 @@ static const SCOREP_ConfigType_SetEntry mpi_enable_groups[] = {
     {
         "xnonblock",
         SCOREP_MPI_ENABLED_XNONBLOCK,
-        "Extended non-blocking events"
+        "This flag is deprecated and has no effect. Extended non-blocking communication is always on."
     },
     {
         "xreqtest",
