@@ -4,7 +4,7 @@
  * Copyright (c) 2014, 2016, 2018,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2018,
+ * Copyright (c) 2014-2018, 2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -613,8 +613,12 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_unlock )( pthread_mutex_t* pthreadMutex 
     UTILS_DEBUG_ENTRY();
 
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    UTILS_BUG_ON( scorep_mutex == 0,
-                  "Undefined behavior: unlocking unlocked mutex %p", pthreadMutex );
+    if ( scorep_mutex == NULL )
+    {
+        UTILS_WARNING( "Unknown mutex object %p", pthreadMutex );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return SCOREP_LIBWRAP_FUNC_CALL( pthread_mutex_unlock, ( pthreadMutex ) );
+    }
     if ( scorep_mutex->nesting_level == 0 )
     {
         UTILS_WARNING( "Undefined behavior: unlocking unlocked mutex %p", pthreadMutex );
@@ -786,10 +790,19 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait )( pthread_cond_t*  cond,
     // do we want to see enter/exit for implicit pthread_mutex_unlock here?
 
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    UTILS_BUG_ON( scorep_mutex == 0,
-                  "Pthread mutex %p is required to be locked", pthreadMutex );
-    UTILS_BUG_ON( scorep_mutex->nesting_level == 0,
-                  "Pthread mutex %p is required to be locked", pthreadMutex );
+    if ( scorep_mutex == NULL || scorep_mutex->nesting_level == 0 )
+    {
+        if ( scorep_mutex == NULL )
+        {
+            UTILS_WARNING( "Unknown mutex object %p", pthreadMutex );
+        }
+        else
+        {
+            UTILS_WARNING( "Pthread mutex %p is required to be locked", pthreadMutex );
+        }
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return SCOREP_LIBWRAP_FUNC_CALL( pthread_cond_wait, ( cond, pthreadMutex ) );
+    }
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_WAIT ] );
 
@@ -856,10 +869,19 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait )( pthread_cond_t*        cond,
     // do we want to see enter/exit for implicit pthread_mutex_unlock here?
 
     scorep_pthread_mutex* scorep_mutex = scorep_pthread_mutex_hash_get( pthreadMutex );
-    UTILS_BUG_ON( scorep_mutex == 0,
-                  "Pthread mutex %p is required to be locked", pthreadMutex );
-    UTILS_BUG_ON( scorep_mutex->nesting_level == 0,
-                  "Pthread mutex %p is required to be locked", pthreadMutex );
+    if ( scorep_mutex == NULL || scorep_mutex->nesting_level == 0 )
+    {
+        if ( scorep_mutex == NULL )
+        {
+            UTILS_WARNING( "Unknown mutex object %p", pthreadMutex );
+        }
+        else
+        {
+            UTILS_WARNING( "Pthread mutex %p is required to be locked", pthreadMutex );
+        }
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return SCOREP_LIBWRAP_FUNC_CALL( pthread_cond_timedwait, ( cond, pthreadMutex, time ) );
+    }
 
     SCOREP_EnterWrappedRegion( scorep_pthread_regions[ SCOREP_PTHREAD_COND_TIMEDWAIT ] );
 
