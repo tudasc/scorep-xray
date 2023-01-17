@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
-## Copyright (c) 2019-2020, 2022,
+## Copyright (c) 2019-2020, 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -40,7 +40,7 @@ AC_LANG_POP([C])
 instruction_set=$(echo ${instruction_set} | cut -d: -f1)
 AC_MSG_RESULT([${instruction_set}])
 AS_IF([test "x${instruction_set}" = xunknown],
-    [AC_MSG_ERROR([cannot determine instruction set. Please report this to <AC_PACKAGE_BUGREPORT>.])])
+    [AC_MSG_WARN([cannot determine instruction set.])])
 AC_SUBST([CPU_INSTRUCTION_SET], [${instruction_set}])
 # AC_DEFINE_UNQUOTED([$var], ...) does not work with AC_CONFIG_HEADERS, thus define all possible instruction sets
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_PPC64], $(if test "x${instruction_set}" = xppc64; then echo 1; else echo 0; fi), [Instruction set ppc64])
@@ -65,7 +65,6 @@ AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction
 AC_DEFUN([AFS_GCC_ATOMIC_BUILTINS], [
 AC_REQUIRE([AFS_CPU_INSTRUCTION_SETS])
 AC_REQUIRE([AX_ASM_INLINE])
-AC_MSG_CHECKING([for gcc atomic builtins])
 AC_LANG_PUSH([C])
 AC_LINK_IFELSE(
     [AC_LANG_PROGRAM(
@@ -83,9 +82,12 @@ AC_LINK_IFELSE(
               [Define to 1 if casting is needed to use gcc atomic builtins.])
           gcc_atomic_builtins_result="yes, needs pointer-to-int casts"],
          [afs_have_gcc_atomic_builtins=0
-          gcc_atomic_builtins_result="no, using precompiled ${CPU_INSTRUCTION_SET} version"])])
+          AS_IF([test "x${CPU_INSTRUCTION_SET}" = xunknown],
+              [AC_MSG_ERROR([Cannot provide precompiled GCC atomic builtin wrappers when instruction set is unknown.])],
+              [gcc_atomic_builtins_result="no, using precompiled ${CPU_INSTRUCTION_SET} version"])])])
 AC_LANG_POP([C])
 
+AC_MSG_CHECKING([for gcc atomic builtins])
 AC_MSG_RESULT([$gcc_atomic_builtins_result])
 AFS_SUMMARY([GCC atomic builtins], [$gcc_atomic_builtins_result])
 
