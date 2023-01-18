@@ -90,9 +90,9 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
     {
 #if HAVE( PLATFORM_MAC )
         /* Skip these leading underscores on macOS */
-        if ( '_' == scl_function_name[ 0 ] )
+        if ( '_' == function_name[ 0 ] )
         {
-            scl_function_name++;
+            function_name++;
         }
 #endif  /*HAVE( PLATFORM_MAC )*/
 
