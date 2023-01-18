@@ -84,7 +84,7 @@ SCOREP_COMPILER_CYG_PROFILE_FUNC_ENTER( void* func,
     }
     else
     {
-        UTILS_DEBUG( "Enter %ld: filtered", ( uintptr_t )func );
+        UTILS_DEBUG( "Enter %" PRIuPTR ": filtered", ( uintptr_t )func );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -129,12 +129,12 @@ SCOREP_COMPILER_CYG_PROFILE_FUNC_EXIT( void* func,
         }
         else
         {
-            UTILS_DEBUG( "Exit %ld: filtered",  ( uintptr_t )func );
+            UTILS_DEBUG( "Exit %" PRIuPTR ": filtered",  ( uintptr_t )func );
         }
     }
     else
     {
-        UTILS_BUG( "Function %ld exited that hasn't been entered", ( uintptr_t )func );
+        UTILS_BUG( "Function %" PRIuPTR " exited that hasn't been entered", ( uintptr_t )func );
     }
 
     SCOREP_IN_MEASUREMENT_DECREMENT();
