@@ -86,7 +86,7 @@ func_addr_hash_value_ctor( func_addr_hash_key_t* addr,
 
     func_addr_hash_value_t region = SCOREP_FILTERED_REGION;
 
-    if ( scl_found )
+    if ( scl_found && function_name != NULL )
     {
 #if HAVE( PLATFORM_MAC )
         /* Skip these leading underscores on macOS */
