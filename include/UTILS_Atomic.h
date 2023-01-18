@@ -4,7 +4,7 @@
 /*
  * This file is part of the Score-P software ecosystem (http://www.score-p.org)
  *
- * Copyright (c) 2019-2020, 2022,
+ * Copyright (c) 2019-2020, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -45,9 +45,9 @@
 /* define UTILS_CPU_RELAX to be a 'PAUSE' instruction to improve the performance of spin-wait loops, if available. */
 #if defined( ASM_INLINE )
 #if HAVE( CPU_INSTRUCTION_SET_X86_64 )
-#define SCOREP_CPU_RELAX ASM_INLINE volatile ( "pause" )
+#define UTILS_CPU_RELAX ASM_INLINE volatile ( "pause" )
 #elif HAVE( CPU_INSTRUCTION_SET_AARCH64 )
-#define SCOREP_CPU_RELAX ASM_INLINE volatile ( "yield" )
+#define UTILS_CPU_RELAX ASM_INLINE volatile ( "yield" )
 #endif
 #endif /* defined( ASM_INLINE ) */
 
