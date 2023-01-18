@@ -11,6 +11,7 @@ Bugfixes:
   application when using the Pthread API instead of aborting the
   application.
 - Allow to build against LLVM's libunwind.
+- Fix segmentation fault when trying to parse certain function names.
 
 ------------------- Released version 8.0 -----------------------------
 
