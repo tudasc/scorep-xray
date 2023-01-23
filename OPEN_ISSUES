@@ -10,6 +10,9 @@ various Score-P components.
 
 * Platform support
 
+  - Score-P is intended to run on ppc64, x86_64, or aarch64
+    architectures.
+
   - Score-P has been tested on the following platforms:
     + HPE/Cray XC and EX systems with PrgEnvs cray, intel, nvidia, gnu
       (see 'Shared libraries on Cray systems' below). With some

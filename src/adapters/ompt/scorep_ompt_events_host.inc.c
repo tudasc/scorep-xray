@@ -266,7 +266,7 @@ release_parallel_region( parallel_t* parallelRegion )
     while ( UTILS_Atomic_LoadN_int32( &( parallelRegion->ref_count ),
                                       UTILS_ATOMIC_RELAXED ) < 0 )
     {
-        SCOREP_CPU_RELAX;
+        UTILS_CPU_RELAX;
     }
     if ( UTILS_Atomic_SubFetch_int32( &( parallelRegion->ref_count ), 1,
                                       UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ) == 0 )

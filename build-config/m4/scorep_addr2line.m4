@@ -47,6 +47,8 @@ AFS_SUMMARY_POP([addr2line support], [$scorep_have_addr2line])
 AC_DEFUN([SCOREP_ADDR2LINE], [
 AC_REQUIRE([_SCOREP_LIBBFD])dnl
 AC_REQUIRE([_SCOREP_ITERATE_SHARED_OBJECTS])dnl
+AS_IF([test "x${CPU_INSTRUCTION_SET}" = xunknown],
+    [AC_MSG_ERROR([Addr2line requires instruction set te be either ppc64, x86_64, or aarch64, but 'unknown' detected.])])
 # libbfd is already a hard requirement for configure to
 # succeed. dl_iterate_phdr is essential for addr2line support,
 # thus communicate via (allow override for testing):
