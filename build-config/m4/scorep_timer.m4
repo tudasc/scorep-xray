@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2016, 2018,
+## Copyright (c) 2009-2016, 2018, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -166,7 +166,11 @@ AC_MSG_RESULT([$have_timer])
 # ---------------------------
 # ...
 AC_DEFUN([_SCOREP_TIMER_CLOCK_GETTIME],
-[for tmp_clk_id in CLOCK_REALTIME CLOCK_MONOTONIC CLOCK_MONOTONIC_RAW; do
+[# See https://gitlab.jsc.fz-juelich.de/perftools/scorep/-/issues/126
+ # for arguments which of the three clock sources should be used
+ # preferably: prefer CLOCK_MONOTONIC if available.
+ # Last available clock wins.
+ for tmp_clk_id in CLOCK_REALTIME CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC; do
     AC_MSG_CHECKING([for clock_gettime (${tmp_clk_id}) timer])
     AC_LINK_IFELSE(
         [AC_LANG_PROGRAM(
