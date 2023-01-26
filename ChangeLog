@@ -14,6 +14,9 @@ Bugfixes:
 - Fix segmentation fault when trying to parse certain function names.
 - Fix segmentation fault when executing OpenMP target regions on the
   host.
+- Score-P records program arguments again. The feature was disabled due
+  to issues on some HPC systems. Please report if there are any issues
+  again.
 
 ------------------- Released version 8.0 -----------------------------
 

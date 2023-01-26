@@ -706,6 +706,21 @@ various Score-P components.
     used. In this case, renaming of the local header is the only
     workaround.
 
+  - Recording arguments of the executable was disabled due to unreliable values
+    on some old HPC platforms now decommissioned. If there are program aborts
+    inside Score-P, please do make check and installcheck and exercise the
+    constructor checks:
+
+    $ make
+    $ make -C build-backend check-build
+    $ make -C build-backend check-serial TESTS_SERIAL="test_constructor_check_c test_constructor_check_cxx test_constructor_f"
+    $ ./build-backend/test_constructor_check_c 1 2 3
+    $ ./build-backend/test_constructor_check_cxx 1 2 3
+    $ ./build-backend/test_constructor_check_f 1 2 3
+    $ make install
+    $ make -C build-backend constructor-checks
+    $ ./installcheck/constructor_checks/bin/run_constructor_checks.sh
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.

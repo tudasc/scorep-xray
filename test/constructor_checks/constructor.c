@@ -40,6 +40,8 @@ void
 test_constructor( SCOREP_COMPILER_CONSTRUCTOR_PROTO_ARGS )
 {
 #if HAVE( COMPILER_CONSTRUCTOR_ARGS )
+    printf( "Number of arguments passed: %d\n", argc );
+
     /* inverted expectations */
     if ( argc != 1 )
     {
