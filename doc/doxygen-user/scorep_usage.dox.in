@@ -76,9 +76,11 @@ Common options are:
                   nvcc compiler is in use. In this case it also conflicts and
                   thus automatically disables preprocessing.
   --nocuda        Disables CUDA instrumentation.
-  --pomp          Enables OPARI2 pomp user instrumentation. By default, it also
-                  enables preprocessing.
-  --nopomp        Disables OPARI2 pomp user instrumentation (Default).
+  --pomp          Deprecated, consider using manual region instrumentation (--user)
+                  instead. Enables OPARI2 pomp user instrumentation. By default, it
+                  also enables preprocessing.
+  --nopomp        Deprecated, consider using manual region instrumentation (--user)
+                  instead. Disables OPARI2 pomp user instrumentation (Default).
   --openmp        Enables OPARI2 instrumentation of OpenMP directives. By default,
                   it also enables preprocessing (Default for compile units
                   with enabled OpenMP support during the compilation).

@@ -6,7 +6,7 @@ Besides the automatic compiler-based instrumentation
 (Section @secref{compiler_instrumentation}), it
 provides manual instrumentation using the @scorep User API
 (Section @secref{manual_instrumentation}),
-semi-automatic instrumentation using @pomp2 directives
+semi-automatic instrumentation using @pomp2 directives (deprecated)
 (Section @secref{pomp_instrumentation}) and,
 if configured, automatic source-code instrumentation using the PDToolkit-based
 instrumenter (Section @secref{tau_instrumentation}).
@@ -265,7 +265,7 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> @secref{filtering} </td>
     </tr>
     <tr>
-      <td align="left" valign="middle"> @secref{pomp_instrumentation} </td>
+      <td align="left" valign="middle"> @secref{pomp_instrumentation} (deprecated) </td>
       <td align="center" valign="middle"> \--[no]pomp</td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
@@ -316,7 +316,7 @@ By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>\--compiler</tt>).
 The compiler instrumentation can be disabled with <tt>\--nocompiler</tt> when desired,
 such as when
-using PDToolkit, or POMP2 or @scorep user API manual source annotations, are
+using PDToolkit, or POMP2 (deprecated) or @scorep user API manual source annotations, are
 enabled with <tt>\--pdt</tt>, <tt>\--pomp</tt> and <tt>\--user</tt>, respectively.
 Compiler, PDToolkit, POMP2 and @scorep user API instrumentation can all be
 used simultaneously, or in arbitrary combinations, however, it is
@@ -741,8 +741,14 @@ on/off is done independently on each MPI process without synchronization.
   selective recording (see Section @secref{selective_recording}, which also
   switches recording on/off.
 
-@section pomp_instrumentation Semi-Automatic Instrumentation of @pomp2 User Regions
+@section pomp_instrumentation Semi-Automatic Instrumentation of @pomp2 User Regions (deprecated)
 @seclabel{pomp_instrumentation}
+
+@note
+  Since @scorep version 9.0, semi-automatic instrumentation of @pomp2
+  user regions is deprecated. Consider using manual region
+  instrumentation (--user) instead (see Section
+  @secref{manual_instrumentation}).
 
 @note
   Since @scorep version 1.4, OpenMP instrumentation using @opari2

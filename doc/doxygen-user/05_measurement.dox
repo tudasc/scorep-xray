@@ -260,7 +260,7 @@ functions, methods and subroutines.
 A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
-from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
+from @opari2 (see section @secref{pomp_instrumentation}, deprecated), CUDA device and host
 activities (see Section @secref{cuda_adapter}), HIP device and host
 activities (see Section @secref{hip_adapter}), and Kokkos activities (see
 Section @secref{kokkos_adapter}). See section @secref{mpi_groups}
