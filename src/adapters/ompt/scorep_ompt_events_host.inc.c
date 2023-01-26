@@ -200,7 +200,19 @@ static inline void construct_mutex_released( ompt_mutex_t kind, ompt_wait_id_t w
 static THREAD_LOCAL_STORAGE_SPECIFIER uint32_t adapter_tid;
 
 
-/* Used for smoother itask_begin error checking and debug output. */
+/* Spec: implicit parallel region:
+   An inactive parallel region that is not generated from a parallel construct.
+   Implicit parallel regions surround the whole OpenMP program, all target
+   regions, and all teams regions.
+
+   We need this as the initial task may take part in schedule events where we
+   need to access a (deferred) task's parallel_region. */
+static parallel_t implicit_parallel;
+
+
+/* Spec: initial task:
+   An implicit task associated with an implicit parallel region.
+   Used for smoother itask_begin error checking and debug output. */
 static task_t initial_task;
 
 
@@ -672,11 +684,13 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
                 if ( initial_task.tpd == NULL )
                 {
                     on_initial_task( flags );
-                    task_data->ptr = &initial_task;
-                    /* If there is a need for parallel_data of the implicit, program-wide
-                       parallel region, this is the place to set it. */
-                    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | initial_task: task_data->ptr %p | location %p",
-                                      adapter_tid, task_data->ptr, initial_task.scorep_location );
+                    task_data->ptr     = &initial_task;
+                    parallel_data->ptr = &implicit_parallel;
+                    UTILS_DEBUG_EXIT( "atid %" PRIu32 " | initial_task: task_data->ptr %p "
+                                      "| implicit_parallel: parallel_data->ptr %p "
+                                      "| location %p",
+                                      adapter_tid, task_data->ptr, parallel_data->ptr,
+                                      initial_task.scorep_location );
                     break;
                 }
 
@@ -891,10 +905,17 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
 static void
 on_initial_task( int flags )
 {
+    implicit_parallel.undeferred_task.is_undeferred   = true;
+    implicit_parallel.undeferred_task.parallel_region = &implicit_parallel;
+
     initial_task.type            = flags;
     initial_task.scorep_location = SCOREP_Location_GetCurrentCPULocation();
     initial_task.tpd             = tpd;
     UTILS_BUG_ON( initial_task.tpd == NULL );
+    /* The initial task has no SCOREP_ThreadForkJoin_TaskBegin and TaskEnd
+       events. Prevent TaskSwitch events by marking it 'undeferred'. */
+    initial_task.is_undeferred   = true;
+    initial_task.parallel_region = &implicit_parallel;
 }
 
 

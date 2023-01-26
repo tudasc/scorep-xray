@@ -12,6 +12,8 @@ Bugfixes:
   application.
 - Allow to build against LLVM's libunwind.
 - Fix segmentation fault when trying to parse certain function names.
+- Fix segmentation fault when executing OpenMP target regions on the
+  host.
 
 ------------------- Released version 8.0 -----------------------------
 
