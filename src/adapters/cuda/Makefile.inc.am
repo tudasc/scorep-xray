@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014, 2022,
+## Copyright (c) 2009-2014, 2022-2023,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -92,11 +92,7 @@ libscorep_adapter_cuda_event_la_CPPFLAGS = \
     -I$(INC_DIR_DEFINITIONS)              \
     @SCOREP_TIMER_CPPFLAGS@
 
-libscorep_adapter_cuda_event_la_LIBADD = \
-    @CUDA_LIBS@
-
 libscorep_adapter_cuda_event_la_LDFLAGS = \
-    @CUDA_LDFLAGS@                       \
     $(library_api_version_ldflags)
 
 endif
