@@ -96,14 +96,15 @@ Common options are:
                   Please refer to the OPARI2 user documentation for more
                   details.
   --pdt[=<parameter-list>]
-                  Enables pdt instrumentation.
+                  Deprecated, consider using compiler (--compiler) or manual region
+                  instrumentation (--user) instead. Enables pdt instrumentation.
                   You may add additional parameters that are passed to pdt.
-                  It requires and, thus, automatically enables user
-                  instrumentation.
+                  It requires and, thus, automatically enables user instrumentation.
                   It conflicts and, thus, automatically disables preprocess
                   instrumentation.
                   By default, it disables compiler instrumentation.
-  --nopdt         Disables pdt instrumentation.
+  --nopdt         Deprecated, consider using compiler (--compiler) or manual region
+                  instrumentation (--user) instead. Disables pdt instrumentation.
   --preprocess    Enables preprocess instrumentation.
                   It cannot be enabled, if not at least one of the following is
                   enabled: OPARI2 instrumentation.
