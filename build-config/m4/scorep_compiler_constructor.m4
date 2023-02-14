@@ -120,11 +120,7 @@ AS_IF([test "x${scorep_compiler_constructor_mode}" != x], [
     AC_LANG_PUSH([C])
     AC_LINK_IFELSE([
         AC_LANG_PROGRAM(
-[[/* argc and argv are unreliable. Pass (0, NULL) to prevent
- * crashes. See #1167. */
-choke me
-
-#if SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_ATTRIBUTE
+[[#if SCOREP_COMPILER_CONSTRUCTOR_MODE == SCOREP_COMPILER_CONSTRUCTOR_MODE_ATTRIBUTE
 void
 __attribute__( ( constructor ) )
 checkconstructor( int   argc,
