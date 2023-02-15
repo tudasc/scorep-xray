@@ -237,6 +237,8 @@
 
 
 /* implementation detail, do not use directly */
+/* Used in get and get_and_insert. Directly returns from get_and_insert, */
+/* thus return false, i.e., not inserted, if key is found. */
 #define SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) \
     uint32_t i                 = 0; \
     uint32_t j                 = 0; \
@@ -262,7 +264,11 @@
         old_size     = current_size; \
         current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     } \
-    while ( current_size > old_size );  \
+    while ( current_size > old_size );
+
+
+/* implementation detail, do not use directly */
+#define SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
     /* not found, search again while waiting for 'insert_lock' */ \
     while ( true ) \
     { \
@@ -291,11 +297,7 @@
                 old_size = current_size; \
             } \
         } \
-    }
-
-
-/* implementation detail, do not use directly */
-#define SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
+    } \
     /* 'insert_lock' acquired: search again, inserts might have taken place in between */ \
     current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     for (; i < current_size; ++i, ++j ) \
@@ -417,7 +419,6 @@
                          prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
-        UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
         return true; /* i.e. not found */ \
     }
 
