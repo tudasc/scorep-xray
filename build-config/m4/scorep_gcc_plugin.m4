@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2012-2016, 2022,
 dnl Technische Universitaet Dresden, Germany
 dnl
-dnl Copyright (c) 2021-2022,
+dnl Copyright (c) 2021-2023,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -34,13 +34,12 @@ AC_LANG_PUSH([C++])
 _GCC_PLUGIN_VENDOR
 AC_LANG_POP([C++])
 dnl
-AC_CHECK_PROG([have_fc_compiler], [${GCC_PLUGIN_TARGET_FC}], [yes], [no])
-AS_IF([test "x${have_fc_compiler}" = xyes],
+# Fortran is optional, FC and therefore GCC_PLUGIN_TARGET_FC might not be set.
+AS_IF([test "x${GCC_PLUGIN_TARGET_FC}" != x],
     [AC_LANG_PUSH([Fortran])
      AC_FC_PP_SRCEXT([F])
      _GCC_PLUGIN_VENDOR
      AC_LANG_POP([Fortran])])
-AS_UNSET([have_fc_compiler])
 dnl
 CPPFLAGS=$save_CPPFLAGS
 ])dnl SCOREP_GCC_PLUGIN_VENDORS
