@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019-2022,
+ * Copyright (c) 2019-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -64,6 +64,10 @@
    potentially the user-provided <prefix>_allocate_chunk(). The provided
    remove operations <prefix>_remove() and <prefix>_remove_if() call the
    user-provided <prefix>_value_dtor() if a key-value pair is to be removed.
+   The provided <prefix>_get_and_remove() will provide the value if
+   key is found, transferring the responsibility to call
+   <prefix>_value_dtor() or other means to manage allocated memory to
+   the caller.
 
    A template instantiation provides the functions
    <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks(). The former
@@ -180,6 +184,15 @@
    // <prefix>_value_dtor(). If key is found, return true.
    static inline bool
    <prefix>_remove( <prefix>_key_t key );
+
+   // <prefix>_get_and_remove() will remove the key-value pair (if
+   // any) corresponding to @a key from the table and provide @value
+   // to the caller. The caller is responsible for managing allocated
+   // memory as <prefix>_value_dtor() isn't called. If key is found,
+   // return true.
+   static inline bool
+   <prefix>_get_and_remove( <prefix>_key_t key,
+                            <prefix>_value_t* value );
 
    // A function of following type needs to be provided to
    // <prefix>_remove_if().
@@ -597,13 +610,15 @@
         } \
     } \
 \
+    /* implementation detail, do not use directly */ \
     static inline bool \
-    prefix ## _remove( prefix ## _key_t key ) \
+    prefix ## _get_and_remove_impl( prefix ## _key_t key, \
+                                    prefix ## _value_t* value ) \
     { \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
-        /* search and remove, if found, reduce bucket->size, call <prefix>_value_dtor if found */ \
+        /* search and remove, if found, reduce bucket->size */ \
         uint32_t i                         = 0; \
         uint32_t j                         = 0; \
         prefix ## _chunk_t* previous_chunk = NULL; \
@@ -625,8 +640,16 @@
             } \
             if ( prefix ## _equals( key, chunk->keys[ j ] ) ) \
             { \
-                /* release element */ \
-                prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                if ( value ) \
+                { \
+                    /* Provide element to the caller, tranferring memory-management responsibility. */ \
+                    *value = chunk->values[ j ]; \
+                } \
+                else \
+                { \
+                    /* Release element by calling _value_dtor() */ \
+                    prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                } \
                 free_key   = &( chunk->keys[ j ] ); \
                 free_value = &( chunk->values[ j ] ); \
                 found      = true; \
@@ -643,6 +666,20 @@
         SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
                                     &( bucket->release_n_readers ) ); \
         return true; \
+    } \
+\
+    static inline bool \
+    prefix ## _remove( prefix ## _key_t key ) \
+    { \
+        return prefix ## _get_and_remove_impl( key, ( prefix ## _value_t* ) 0 ); \
+    } \
+\
+    static inline bool \
+    prefix ## _get_and_remove( prefix ## _key_t key, \
+                               prefix ## _value_t* value ) \
+    { \
+        UTILS_ASSERT( value ); \
+        return prefix ## _get_and_remove_impl( key, value ); \
     } \
 \
     typedef bool ( *prefix ## _condition_t )( prefix ## _key_t, prefix ## _value_t, void* data ); \

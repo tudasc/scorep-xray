@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2015, 2018, 2021-2022,
+ * Copyright (c) 2015, 2018, 2021-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -211,11 +211,7 @@ SCOREP_Task_GetRegionStackHash( SCOREP_TaskHandle task );
     scorep_ ## callsitePrefix ## _callsite_hash_get_and_remove( keyType                key, \
                                                                 callsite_hash_value_t* value ) \
     { \
-        if ( callsite_hash_get( key, value ) ) \
-        { \
-            return callsite_hash_remove( key ); \
-        } \
-        return false; \
+        return callsite_hash_get_and_remove( key, value ); \
     } \
 \
     callsite_hash_value_t \

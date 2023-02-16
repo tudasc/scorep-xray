@@ -4,6 +4,9 @@
  * Copyright (c) 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -263,6 +266,31 @@ test_15( CuTest* tc )
     CuAssertIntEquals( tc, 1, count() );
 }
 
+static void
+test_16( CuTest* tc )
+{
+    table_key_t   key          = 2;
+    table_value_t insert_value = 0;
+    bool          inserted     = table_get_and_insert( key, &key, &insert_value );
+    CuAssertTrue( tc, inserted );
+    CuAssertIntEquals( tc, 2, count() );
+    CuAssertIntEquals( tc, 2, insert_value );
+
+    table_value_t get_value = 0;
+    bool          removed   = table_get_and_remove( key, &get_value );
+    CuAssertTrue( tc, removed );
+    CuAssertIntEquals( tc, 2, get_value );
+}
+
+static void
+test_17( CuTest* tc )
+{
+    table_value_t get_value = 0;
+    bool          removed   = table_get_and_remove( 3, &get_value );
+    CuAssertTrue( tc, !removed );
+    CuAssertIntEquals( tc, 0, get_value );
+}
+
 int
 main( int argc, char** argv )
 {
@@ -289,7 +317,8 @@ main( int argc, char** argv )
     SUITE_ADD_TEST_NAME( suite, test_13, "remove first bucket" );
     SUITE_ADD_TEST_NAME( suite, test_14, "insert first bucket again" );
     SUITE_ADD_TEST_NAME( suite, test_15, "remove all even" );
-
+    SUITE_ADD_TEST_NAME( suite, test_16, "get and remove existing key" );
+    SUITE_ADD_TEST_NAME( suite, test_17, "get and remove non-existing key" );
     CuSuiteRun( suite );
     CuSuiteSummary( suite, output );
 
