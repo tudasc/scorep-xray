@@ -34,8 +34,9 @@ AC_LANG_PUSH([C++])
 _GCC_PLUGIN_VENDOR
 AC_LANG_POP([C++])
 dnl
-# Fortran is optional, FC and therefore GCC_PLUGIN_TARGET_FC might not be set.
-AS_IF([test "x${GCC_PLUGIN_TARGET_FC}" != x],
+# Fortran is optional, FC and therefore GCC_PLUGIN_TARGET_FC might not
+# be set. If set, check if in PATH.
+AS_IF([test "x${GCC_PLUGIN_TARGET_FC}" != x && which "${GCC_PLUGIN_TARGET_FC}" > /dev/null 2>&1],
     [AC_LANG_PUSH([Fortran])
      AC_FC_PP_SRCEXT([F])
      _GCC_PLUGIN_VENDOR
