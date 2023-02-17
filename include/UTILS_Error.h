@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2016, 2021-2022,
+ * Copyright (c) 2009-2012, 2016, 2021-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -248,13 +248,13 @@ UTILS_Error_FromPosix( int posixErrorCode );
  *  @param messageFormatString A printf-like format string.
  */
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME( UTILS_Error_Abort )
-UTILS_DECLSPEC_NORETURN void
+UTILS_PREDECL_ATTR_NORETURN void
 UTILS_Error_Abort( const char* srcdir,
                    const char* fileName,
                    uint64_t    line,
                    const char* functionName,
                    const char* messageFormatString,
-                   ... ) UTILS_ATTRIBUTE_NORETURN;
+                   ... ) UTILS_POSTDECL_ATTR_NORETURN;
 
 
 
