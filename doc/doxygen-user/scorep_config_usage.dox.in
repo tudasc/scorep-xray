@@ -70,6 +70,8 @@ scorep-config <command> [<options>]
               Specifies whether user instrumentation is used.
               On default user instrumentation is disabled.
    --pomp|--nopomp
+              Deprecated, consider using manual region
+              instrumentation (--user) instead.
               Specifies whether pomp instrumentation is used.
               On default pomp instrumentation is disabled.
    --cuda|--nocuda

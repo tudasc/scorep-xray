@@ -252,7 +252,7 @@ in the experiment directory, along with the trace data.
 @seclabel{filtering}
 
 When automatic compiler instrumentation or automated source code instrumentation with
-PDT has been used to instrument user-level source-program routines, there
+PDT (deprecated) has been used to instrument user-level source-program routines, there
 are cases where measurement and associated analysis are degraded,
 e.g., by frequently-executed, small and/or generally uninteresting
 functions, methods and subroutines.
@@ -260,7 +260,7 @@ functions, methods and subroutines.
 A measurement filtering capability is therefore only supported for compiler
 instrumented regions, regions instrumented with the user API from @scorep (see
 section @secref{manual_instrumentation}), regions instrumented with the user API
-from @opari2 (see section @secref{pomp_instrumentation}), CUDA device and host
+from @opari2 (see section @secref{pomp_instrumentation}, deprecated), CUDA device and host
 activities (see Section @secref{cuda_adapter}), HIP device and host
 activities (see Section @secref{hip_adapter}), and Kokkos activities (see
 Section @secref{kokkos_adapter}). See section @secref{mpi_groups}

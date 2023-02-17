@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013, 2015, 2021-2022,
+ * Copyright (c) 2009-2013, 2015, 2021-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -68,6 +68,10 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
 #endif  /* SCOREP_BACKEND_COMPILER_MIC */
 }
 
+#define POMP2_USER_DEPRECATED "[Score-P] WARNING: Semi-automatic instrumentation of POMP2 " \
+    "user regions (--[no]pomp) is deprecated. Consider using manual " \
+    "region instrumentation (--user) instead."
+
 bool
 SCOREP_Instrumenter_OpariAdapter::checkOption( const std::string& arg )
 {
@@ -84,11 +88,13 @@ SCOREP_Instrumenter_OpariAdapter::checkOption( const std::string& arg )
     if ( arg == "--pomp" )
     {
         m_pomp = enabled;
+        std::cerr << POMP2_USER_DEPRECATED << std::endl;
         return true;
     }
     if ( arg == "--nopomp" )
     {
         m_pomp = disabled;
+        std::cerr << POMP2_USER_DEPRECATED << std::endl;
         return true;
     }
     if ( arg.substr( 0, 8 ) == "--opari=" )
@@ -129,9 +135,11 @@ SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine
 void
 SCOREP_Instrumenter_OpariAdapter::printHelp( void )
 {
-    std::cout << "  --pomp          Enables OPARI2 pomp user instrumentation. By default, it also\n";
-    std::cout << "                  enables preprocessing.\n";
-    std::cout << "  --nopomp        Disables OPARI2 pomp user instrumentation (Default).\n";
+    std::cout << "  --pomp          Deprecated, consider using manual region instrumentation (--user)\n";
+    std::cout << "                  instead.  Enables OPARI2 pomp user instrumentation. By default, it\n";
+    std::cout << "                  also enables preprocessing.\n";
+    std::cout << "  --nopomp        Deprecated, consider using manual region instrumentation (--user)\n";
+    std::cout << "                  instead. Disables OPARI2 pomp user instrumentation (Default).\n";
     std::cout << "  --openmp        Enables OPARI2 instrumentation of OpenMP directives. By default,\n";
     std::cout << "                  it also enables preprocessing (Default for compile units\n";
     std::cout << "                  with enabled OpenMP support during the compilation).\n";
