@@ -387,7 +387,17 @@
 #define SCOREP_HASH_TABLE_NEW_CHUNK_NON_MONOTONIC( prefix, nPairsPerChunk ) \
     if ( current_size == 0 ) \
     { \
-        SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, bucket->chunk ) \
+        if ( bucket->chunk != NULL ) /* bucket has been used and it's chunk been emptied */ \
+                                     /* before but wasn't returned to free list to */ \
+                                     /* reduce free_list locking */ \
+        { \
+            bucket->chunk->next = NULL; \
+            chunk              = &( bucket->chunk ); \
+        } \
+        else \
+        { \
+            SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, bucket->chunk ) \
+        } \
     } \
     else if ( j == ( nPairsPerChunk ) ) \
     { \
@@ -530,17 +540,18 @@
     { \
         if ( previous_chunk == NULL ) \
         { \
-            bucket->chunk = NULL; \
+            /* keep bucket->chunk although empty to reduce free_list locking on (frequent) reuse */  \
         } \
         else \
         { \
             previous_chunk->next = NULL; \
+            /* move chunk to free_list: lock chunk_free_list as */ \
+            /* it is per hash table, not per bucket */ \
+            UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+            chunk->next = prefix ## _chunk_free_list; \
+            prefix ## _chunk_free_list = chunk; \
+            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
         } \
-        /* lock chunk_free_list as it is per hash table, not per bucket */ \
-        UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
-        chunk->next = prefix ## _chunk_free_list; \
-        prefix ## _chunk_free_list = chunk; \
-        UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
     } \
     UTILS_Atomic_StoreN_uint32( &( bucket->size ), --current_size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
