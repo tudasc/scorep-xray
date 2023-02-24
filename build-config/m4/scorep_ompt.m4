@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2022,
+dnl Copyright (c) 2022-2023,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -26,10 +26,12 @@ AS_IF([test "x${scorep_have_addr2line}${afs_have_thread_local_storage}${scorep_h
                    [AFS_SUMMARY([OMPT C++ support], [$have_ompt_cxx_support${ompt_reason_cxx:+, $ompt_reason_cxx}])])
                AS_IF([test "x${scorep_have_openmp_fc_support}" = xyes],
                    [AFS_SUMMARY([OMPT Fortran support], [$have_ompt_fc_support${ompt_reason_fc:+, $ompt_reason_fc}])])
-               AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])
+               AS_IF([test "x${have_ompt_c_support}" = xyes],
+                   [AFS_SUMMARY([OMPT checks passed], [$have_ompt_checks_passed${ompt_reason_checks_passed:+, $ompt_reason_checks_passed}])])
+               AS_IF([test "x${have_ompt_support}" = xyes && test "x${have_ompt_checks_passed}" = xyes],
+                   [AFS_SUMMARY([OMPT is default], [$scorep_enable_default_ompt])])])])])
 AFS_SUMMARY_POP([OMPT support], [$have_ompt_support${ompt_reason:+, $ompt_reason}])
-])dnl SCOREP_OMPT_SUMMARY
-
+]) dnl SCOREP_OMPT_SUMMARY
 
 # SCOREP_OMPT()
 # -------------
@@ -48,6 +50,7 @@ AC_REQUIRE([SCOREP_ENABLE_DEFAULT])
 have_ompt_header=no
 have_ompt_tool=no
 have_ompt_support=no
+have_ompt_checks_passed=no
 have_ompt_c_support=no
 have_ompt_cxx_support=no
 have_ompt_fc_support=no
@@ -75,6 +78,10 @@ AS_IF([test "x${scorep_have_addr2line}" = xyes],
          [ompt_reason="thread local storage support missing"])],
     [ompt_reason="addr2line support missing"])
 dnl
+
+AS_IF([test "x$have_ompt_support" = xyes],
+      [_CHECK_OMPT_KNOWN_ISSUES])
+
 AC_SCOREP_COND_HAVE([SCOREP_OMPT_SUPPORT],
     [test "x$have_ompt_support" = xyes],
     [Defined if OMPT is supported for at least one language])
@@ -409,3 +416,160 @@ m4_define([_INPUT_OPENMP_FC], [[
       CALL EXIT(1)
       END
 ]])dnl _INPUT_OPENMP_FC
+
+# _TRY_RUN_OMPT_TEST
+# ------------------
+# Run a runtime test defined by _TRY_RUN_OMPT_TEST_INPUT
+# The test is compiled, linked and run with the flags
+# defined during the previous tests in SCOREP_OMPT.
+# Variables:
+# - _TRY_RUN_OMPT_TEST_INPUT: Define for source code
+# - _OMPT_TEST: Test name for the ran test
+# - have[]_OMPT_TEST[]: Result of executed test
+#   - yes: Exit code 0
+#   - no: Exit code non 0
+#
+m4_define([_TRY_RUN_OMPT_TEST], [
+cross_compiling_save="${cross_compiling}"
+AS_IF([test "x${afs_platform_cray}" = xyes],
+    [cross_compiling=no])
+AC_LANG_PUSH([C])
+CFLAGS_save="${CFLAGS}"
+LDFLAGS_save="${LDFLAGS}"
+CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+LDFLAGS="${ompt_c_ldflags} ${LDFLAGS}"
+AC_RUN_IFELSE([AC_LANG_SOURCE(_TRY_RUN_OMPT_TEST_INPUT)],
+    [have_[]_OMPT_TEST[]=yes],
+    [have_[]_OMPT_TEST[]="no (reason $?)"],
+    [AC_MSG_FAILURE([TODO: handle real cross-compile systems])])
+CFLAGS="${CFLAGS_save}"
+LDFLAGS="${LDFLAGS_save}"
+AC_LANG_POP([C])
+cross_compiling="${cross_compiling_save}"
+AC_MSG_CHECKING([whether the OMPT runtime passes the []_OMPT_TEST[] test])
+AC_MSG_RESULT([$have_[]_OMPT_TEST[]])
+]) dnl _TEST_OMPT_CALLBACK
+
+# -------------------------------
+# Section for specific problem checks
+# -------------------------------
+
+# _CHECK_OMPT_KNOWN_ISSUES
+# ------------------------
+# Run configure checks to make sure that known issues
+# aren't present in the runtime. Each test is compiled
+# and executed using _TRY_RUN_OMPT_TEST. If at least
+# one test fails, have_ompt_support is set no no.
+#
+m4_define([_CHECK_OMPT_KNOWN_ISSUES], [
+have_ompt_checks_passed=yes
+m4_foreach_w([_OMPT_TEST],
+    [missing_ws_loop_end],
+    [m4_define([_TRY_RUN_OMPT_TEST_INPUT], [_INPUT_OMPT_KNOWN_ISSUE_[]m4_toupper(_OMPT_TEST)[]])
+     _TRY_RUN_OMPT_TEST
+     AS_IF([test "x${have_[]_OMPT_TEST[]}" != xyes],
+        [have_ompt_support=no
+         have_ompt_checks_passed=no
+         issues_detected=${issues_detected:+$issues_detected, }_OMPT_TEST])
+     m4_undefine([_TRY_RUN_OMPT_TEST_INPUT])])
+AS_IF([test "x${have_ompt_checks_passed}" = xno],
+    [ompt_reason_checks_passed="${issues_detected} detected"])
+]) dnl _CHECK_OMPT_KNOWN_ISSUES
+
+# _INPUT_OMPT_KNOWN_ISSUE_MISSING_WS_LOOP_END
+# -------------------------------------------
+# Test code to check if ws-loop-end is called for
+# work callbacks.
+#
+m4_define([_INPUT_OMPT_KNOWN_ISSUE_MISSING_WS_LOOP_END], [[
+#include <omp-tools.h>
+#include <stdlib.h>
+
+static int                  ws_loop_end_reached = 0;
+static int                  initialized         = 0;
+static ompt_finalize_tool_t finalize_tool;
+
+void
+callback_ompt_work( ompt_work_t           work_type,
+                    ompt_scope_endpoint_t endpoint,
+                    ompt_data_t*          parallel_data,
+                    ompt_data_t*          task_data,
+                    uint64_t              count,
+                    const void*           codeptr_ra )
+{
+    if ( endpoint == ompt_scope_end )
+    {
+        ws_loop_end_reached = 1;
+    }
+}
+
+static int
+ompt_initialize( ompt_function_lookup_t lookup,
+                 int                    initial_device_num,
+                 ompt_data_t*           tool_data )
+{
+    ompt_set_callback_t set_cb = ( ompt_set_callback_t )lookup( "ompt_set_callback" );
+    if ( !set_cb )
+    {
+        _Exit( 3 ); /* Tool got initialized but lookup of runtime-entry-point ompt_set_callback failed. */
+    }
+    finalize_tool = ( ompt_finalize_tool_t )lookup( "ompt_finalize_tool" );
+    if ( !finalize_tool )
+    {
+        _Exit( 4 ); /* Tool got initialized but lookup of runtime-entry-point ompt_finalize_tool failed. */
+    }
+    ompt_set_result_t result;
+    result = set_cb( ompt_callback_work, ( ompt_callback_t )&callback_ompt_work );
+    if ( result != ompt_set_always )
+    {
+        _Exit( 5 ); /* Tool got initialized but work cb couldn't be registered. */
+    }
+
+    initialized = 1;
+    return 1; /* non-zero indicates success for OMPT runtime. */
+}
+
+static void
+ompt_finalize( ompt_data_t* tool_data )
+{
+    if ( initialized == 1 )
+    {
+        if ( ws_loop_end_reached == 1 )
+        {
+            _Exit( 0 ); /* Tool got initialized and finalized. */
+        }
+        _Exit( 2 );     /* Tool got initialized and finalized but ws_loop_end was not reached. */
+    }
+}
+
+ompt_start_tool_result_t*
+ompt_start_tool( unsigned int omp_version,                           /* == _OPENMP */
+                 const char*  runtime_version )
+{
+    static ompt_start_tool_result_t ompt_start_tool_result = { &ompt_initialize,
+                                                               &ompt_finalize,
+                                                               ompt_data_none };
+    return &ompt_start_tool_result;
+}
+
+int
+foo( int i )
+{
+    return i;
+}
+
+int
+main( void )
+{
+#pragma omp parallel
+    {
+#pragma omp for
+        for ( int i = 1; i < 5; i++ )
+        {
+            foo( i );
+        }
+    }
+    finalize_tool();
+    return 1;
+}
+]]) dnl _INPUT_OMPT_KNOWN_ISSUE_MISSING_WS_LOOP_END

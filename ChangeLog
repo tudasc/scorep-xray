@@ -22,6 +22,9 @@ Bugfixes:
 - Score-P records program arguments again. The feature was disabled due
   to issues on some HPC systems. Please report if there are any issues
   again.
+- Support for OpenMP's tool interface OMPT will be disabled if
+  configure detects shortcomings of the OpenMP runtime that cannot be
+  worked around. The reason will be reported in the configure summary.
 
 ------------------- Released version 8.0 -----------------------------
 
