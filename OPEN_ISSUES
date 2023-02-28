@@ -367,6 +367,34 @@ various Score-P components.
     or user instrumentation instead of PDT instrumentation for all
     languages.
 
+  Applies to OpenMP target offloading when using Score-P compiler
+  instrumentation:
+
+  - When using an LLVM based compiler in an application using OpenMP
+    target directives the scorep compile command may fail with a
+    linker error and the following error message:
+
+      Undefined reference to '__cyg_profile_func_enter'
+      Undefined reference to '__cyg_profile_func_exit'
+
+    The error is caused by the `-finstrument-functions-after-inlining`
+    flag. As a work around, you may try to add the following function
+    declarations to each of your compile units:
+
+      #pragma omp begin declare target device_type(nohost)
+      void __cyg_profile_func_enter(void *a, void *b)
+      __attribute__((no_instrument_function));
+      void __cyg_profile_func_exit(void *a, void *b)
+      __attribute__((no_instrument_function));
+      void __cyg_profile_func_enter(void *a, void *b) { }
+      void __cyg_profile_func_exit(void *a, void *b) { }
+      #pragma omp end declare target
+
+    On a compiler using LLVM 16.0 or newer, you may try to use these flags:
+
+      scorep --nocompiler [llvm-based compiler] [args] \
+      -Xarch_host -finstrument-functions-after-inlining
+
 --------------------------------------------------------------------------------
 
 * CUDA support
