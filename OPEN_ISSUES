@@ -638,8 +638,8 @@ various Score-P components.
 
     If the compile step for device code errors out with:
 
-        lld: error: undefined symbol: __cyg_profile_func_enter
-        >>> referenced by <filename>:<linenumber>
+      lld: error: undefined symbol: __cyg_profile_func_enter
+      >>> referenced by <filename>:<linenumber>
 
     then the heuristic to detect the usage of `hipcc` failed and must be
     enabled explicity with `scorep --hip`.
@@ -739,15 +739,15 @@ various Score-P components.
     inside Score-P, please do make check and installcheck and exercise the
     constructor checks:
 
-    $ make
-    $ make -C build-backend check-build
-    $ make -C build-backend check-serial TESTS_SERIAL="test_constructor_check_c test_constructor_check_cxx test_constructor_f"
-    $ ./build-backend/test_constructor_check_c 1 2 3
-    $ ./build-backend/test_constructor_check_cxx 1 2 3
-    $ ./build-backend/test_constructor_check_f 1 2 3
-    $ make install
-    $ make -C build-backend constructor-checks
-    $ ./installcheck/constructor_checks/bin/run_constructor_checks.sh
+      $ make
+      $ make -C build-backend check-build
+      $ make -C build-backend check-serial TESTS_SERIAL="test_constructor_check_c test_constructor_check_cxx test_constructor_f"
+      $ ./build-backend/test_constructor_check_c 1 2 3
+      $ ./build-backend/test_constructor_check_cxx 1 2 3
+      $ ./build-backend/test_constructor_check_f 1 2 3
+      $ make install
+      $ make -C build-backend constructor-checks
+      $ ./installcheck/constructor_checks/bin/run_constructor_checks.sh
 
 --------------------------------------------------------------------------------
 
