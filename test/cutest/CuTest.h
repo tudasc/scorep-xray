@@ -152,6 +152,7 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 #define _CuStringify( x ) __CuStringify( x )
 #define CuFail( tc, ms )                        CuFail_Line(  ( tc ), __FILE__, __LINE__, NULL, ( ms ) )
 #define CuAssert( tc, ms, cond )                CuAssert_Line( ( tc ), __FILE__, __LINE__, ms ": " _CuStringify( cond ), ( cond ) )
+#define CuAssertMsg( tc, ms, cond ) CuAssert_Line( ( tc ), __FILE__, __LINE__, ms, ( cond ) )
 #define CuAssertTrue( tc, cond )                CuAssert_Line( ( tc ), __FILE__, __LINE__, "assert failed", ( cond ) )
 
 #define CuAssertStrEquals( tc, ex, ac )           CuAssertStrEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
