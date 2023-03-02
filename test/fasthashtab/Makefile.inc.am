@@ -6,6 +6,9 @@
 ## Copyright (c) 2022,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2023,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -44,6 +47,24 @@ fasthashtab_monotonic_jenkins_test_CPPFLAGS = \
     -I$(INC_DIR_COMMON_CUTEST) \
     -DUSE_JENKINS
 
+check_PROGRAMS += fasthashtab_monotonic_header_definition_split_test
+fasthashtab_monotonic_header_definition_split_test_SOURCES = \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_monotonic_test.c \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_monotonic_table.h \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_monotonic_table.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
+fasthashtab_monotonic_header_definition_split_test_LDADD = \
+    $(LIB_ROOT)libutils.la
+fasthashtab_monotonic_header_definition_split_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_MEASUREMENT) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_COMMON_CUTEST) \
+    -DUSE_HEADER_AND_DEFINITION
+
 check_PROGRAMS += fasthashtab_non_monotonic_test
 fasthashtab_non_monotonic_test_SOURCES = \
     $(SRC_ROOT)test/fasthashtab/fasthashtab_non_monotonic_test.c \
@@ -75,8 +96,28 @@ fasthashtab_non_monotonic_jenkins_test_CPPFLAGS = \
     -I$(INC_DIR_COMMON_CUTEST) \
     -DUSE_JENKINS
 
+check_PROGRAMS += fasthashtab_non_monotonic_header_definition_split_test
+fasthashtab_non_monotonic_header_definition_split_test_SOURCES = \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_non_monotonic_test.c \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_non_monotonic_table.h \
+    $(SRC_ROOT)test/fasthashtab/fasthashtab_non_monotonic_table.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.c \
+    $(SRC_ROOT)common/utils/test/cutest/CuTest.h
+fasthashtab_non_monotonic_header_definition_split_test_LDADD = \
+    $(LIB_ROOT)libutils.la
+fasthashtab_non_monotonic_header_definition_split_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_MEASUREMENT) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_COMMON_CUTEST) \
+    -DUSE_HEADER_AND_DEFINITION
+
 TESTS_SERIAL += \
     fasthashtab_monotonic_test \
     fasthashtab_monotonic_jenkins_test \
+    fasthashtab_monotonic_header_definition_split_test \
     fasthashtab_non_monotonic_test \
-    fasthashtab_non_monotonic_jenkins_test
+    fasthashtab_non_monotonic_jenkins_test \
+    fasthashtab_non_monotonic_header_definition_split_test

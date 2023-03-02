@@ -4,6 +4,9 @@
  * Copyright (c) 2022,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2023,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -15,17 +18,19 @@
 
 #include <config.h>
 
-#include <SCOREP_FastHashtab.h>
 
-#include <jenkins_hash.h>
+#if defined ( USE_HEADER_AND_DEFINITION )
 
-#include <CuTest.h>
+#include "fasthashtab_monotonic_table.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#else /* ! USE_HEADER_AND_DEFINITION */
 
 /************************** table *********************************************/
+
+#include <SCOREP_FastHashtab.h>
+#include <jenkins_hash.h>
+#include <assert.h>
+#include <stdlib.h>
 
 typedef uint32_t table_key_t;
 typedef uint32_t table_value_t;
@@ -74,7 +79,13 @@ SCOREP_HASH_TABLE_MONOTONIC( table,
                              8,
                              hashsize( TABLE_HASH_EXPONENT ) );
 
+#endif /* ! USE_HEADER_AND_DEFINITION */
+
 /************************** tests *********************************************/
+
+#include <CuTest.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static void
 count_cb( table_key_t   key,

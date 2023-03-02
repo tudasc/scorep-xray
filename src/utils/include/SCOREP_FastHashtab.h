@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2019-2022,
+ * Copyright (c) 2019-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,7 +29,23 @@
    are thread-safe hash table templates that lock per bucket, if necessary.
    Locks for distinct buckets reside in different cachelines. A bucket
    uses chained chunks of nPairsPerChunk keys and values for conflict
-   resolution. An instantiation requires the user to provide:
+   resolution.
+
+   SCOREP_HASH_TABLE_MONOTONIC and SCOREP_HASH_TABLE_NON_MONOTONIC are
+   intended to be used in implementation files only. In case you need
+   to access the table from several implementation files, use the
+   SCOREP_HASH_TABLE[_NON]_MONOTONIC_HEADER and
+   SCOREP_HASH_TABLE[_NON]_MONOTONIC_DEFINITION variants instead,
+   where you put the _HEADER into a header file and the _DEFINITION
+   into an implementation file. The only difference between the two
+   variants is, that in the former case, hash-table variables are
+   declared static.
+
+   For the remainder of the documentation, we just talk about
+   SCOREP_HASH_TABLE[_NON]_MONOTONIC but also mean the _HEADER plus
+   _DEFINITION variants.
+
+   An instantiation requires the user to provide:
 
    @a prefix, a compilation-unit unique name that is used to prefix
    functions, variables and types.
@@ -64,6 +80,10 @@
    potentially the user-provided <prefix>_allocate_chunk(). The provided
    remove operations <prefix>_remove() and <prefix>_remove_if() call the
    user-provided <prefix>_value_dtor() if a key-value pair is to be removed.
+   The provided <prefix>_get_and_remove() will provide the value if
+   key is found, transferring the responsibility to call
+   <prefix>_value_dtor() or other means to manage allocated memory to
+   the caller.
 
    A template instantiation provides the functions
    <prefix>_iterate_key_value_pairs() and <prefix>_free_chunks(). The former
@@ -85,12 +105,16 @@
 
 
    SCOREP_HASH_TABLE_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
+   alternatively
+   SCOREP_HASH_TABLE_MONOTONIC_HEADER( prefix, nPairsPerChunk, hashTableSize )
+   SCOREP_HASH_TABLE_MONOTONIC_DEFINITION( prefix, nPairsPerChunk, hashTableSize )
    --------------------------------------------------------------------
 
    A hash table without remove operation.
 
-   An instantiation of SCOREP_HASH_TABLE_MONOTONIC provides following
-   functions:
+   An instantiation of SCOREP_HASH_TABLE_MONOTONIC provides the following
+   public API (in addition, there are *_impl() functions which are not to
+   be used directly):
 
    // <prefix>_get() will return true if @a key was found in the hash
    // table, which is checked using the function <prefix>_equals().
@@ -124,7 +148,7 @@
    // <prefix>_iterate_key_value_pairs() will iterate over the entire
    // table and call cb( key, value, cbData ) for each key-value pair.
    // This function is supposed to be used in a serial context only.
-   static void
+   static inline void
    <prefix>_iterate_key_value_pairs( void ( *cb )( <prefix>_key_t   key,
                                                    <prefix>_value_t value,
                                                    void*            cbData ),
@@ -134,7 +158,7 @@
    // calls <prefix>_free_chunk() for each chunk. Afterwards, the
    // table will be empty. This function is supposed to be used in a
    // serial context only.
-   static void
+   static inline void
    <prefix>_free_chunks( void );
 
    The functions mentioned in the documentation above need to be
@@ -146,10 +170,8 @@
    necessary, after deallocating values by calling
    <prefix>_free_chunks().
 
-   The table itself is declared static.
-
    Here the list of typedefs and functions that need to be
-   declared/defined before instantiating SCOREP_HASH_TABLE_MONOTONIC:
+   declared/defined before instantiating SCOREP_HASH_TABLE_MONOTONIC(_HEADER):
 
    typedef <existing_type> <prefix>_key_t;
    typedef <existing_type> <prefix>_value_t;
@@ -163,6 +185,9 @@
 
 
    SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
+   alternatively
+   SCOREP_HASH_TABLE_NON_MONOTONIC_HEADER( prefix, nPairsPerChunk, hashTableSize )
+   SCOREP_HASH_TABLE_NON_MONOTONIC_DEFINITION( prefix, nPairsPerChunk, hashTableSize )
    ------------------------------------------------------------------------
 
    Similar to SCOREP_HASH_TABLE_MONOTONIC, but in addition, provides
@@ -181,6 +206,15 @@
    static inline bool
    <prefix>_remove( <prefix>_key_t key );
 
+   // <prefix>_get_and_remove() will remove the key-value pair (if
+   // any) corresponding to @a key from the table and provide @value
+   // to the caller. The caller is responsible for managing allocated
+   // memory as <prefix>_value_dtor() isn't called. If key is found,
+   // return true.
+   static inline bool
+   <prefix>_get_and_remove( <prefix>_key_t key,
+                            <prefix>_value_t* value );
+
    // A function of following type needs to be provided to
    // <prefix>_remove_if().
    typedef bool ( *<prefix>_condition_t )( <prefix>_key_t,
@@ -196,17 +230,21 @@
    <prefix>_remove_if( <prefix>_condition_t condition, void* data );
 
    In addition to the functions and types required for
-   SCOREP_HASH_TABLE_MONOTONIC, the following needs to be provided
-   before instantiation:
+   SCOREP_HASH_TABLE_MONOTONIC, the following needs to be declared/defined
+   before instantiating SCOREP_HASH_TABLE_NON_MONOTONIC(_HEADER):
 
-   static void <prefix>_value_dtor( <prefix>_key_t key, <prefix>_value_t value );
+   void <prefix>_value_dtor( <prefix>_key_t key, <prefix>_value_t value );
 
  */
 
 /* *INDENT-OFF* */
 
 
-/* implementation detail, do not use directly */
+/*
+  Begin of implementation details. Don't use directly until 'End of
+  implementation details'.
+*/
+
 #define SCOREP_HASH_TABLE_MONOTONIC_BUCKET( prefix ) \
     typedef struct prefix ## _chunk_t prefix ##  _chunk_t; \
     typedef struct prefix ## _bucket_t prefix ## _bucket_t; \
@@ -218,7 +256,6 @@
     };
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix ) \
     typedef struct prefix ## _chunk_t prefix ##  _chunk_t; \
     typedef struct prefix ## _bucket_t prefix ## _bucket_t; \
@@ -236,7 +273,8 @@
     };
 
 
-/* implementation detail, do not use directly */
+/* Used in get and get_and_insert. Directly returns from get_and_insert, */
+/* thus return false, i.e., not inserted, if key is found. */
 #define SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) \
     uint32_t i                 = 0; \
     uint32_t j                 = 0; \
@@ -262,7 +300,10 @@
         old_size     = current_size; \
         current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     } \
-    while ( current_size > old_size );  \
+    while ( current_size > old_size );
+
+
+#define SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
     /* not found, search again while waiting for 'insert_lock' */ \
     while ( true ) \
     { \
@@ -291,11 +332,7 @@
                 old_size = current_size; \
             } \
         } \
-    }
-
-
-/* implementation detail, do not use directly */
-#define SCOREP_HASH_TABLE_INSERT_1( prefix, nPairsPerChunk ) \
+    } \
     /* 'insert_lock' acquired: search again, inserts might have taken place in between */ \
     current_size = UTILS_Atomic_LoadN_uint32( &( bucket->size ), UTILS_ATOMIC_SEQUENTIAL_CONSISTENT ); \
     for (; i < current_size; ++i, ++j ) \
@@ -314,7 +351,6 @@
     }
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_NEW_CHUNK_MONOTONIC( prefix, nPairsPerChunk ) \
     if ( current_size == 0 ) \
     { \
@@ -331,7 +367,6 @@
     }
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, assignTo ) \
     UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
     if ( prefix ## _chunk_free_list != NULL ) \
@@ -349,11 +384,20 @@
     chunk              = &( assignTo );
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_NEW_CHUNK_NON_MONOTONIC( prefix, nPairsPerChunk ) \
     if ( current_size == 0 ) \
     { \
-        SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, bucket->chunk ) \
+        if ( bucket->chunk != NULL ) /* bucket has been used and it's chunk been emptied */ \
+                                     /* before but wasn't returned to free list to */ \
+                                     /* reduce free_list locking */ \
+        { \
+            bucket->chunk->next = NULL; \
+            chunk              = &( bucket->chunk ); \
+        } \
+        else \
+        { \
+            SCOREP_HASH_TABLE_ASSIGN_NEW_CHUNK_NON_MONOTONIC( prefix, bucket->chunk ) \
+        } \
     } \
     else if ( j == ( nPairsPerChunk ) ) \
     { \
@@ -362,7 +406,6 @@
     }
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_INSERT_2( prefix ) \
     /* create new value_t and insert */ \
     ( *chunk )->keys[ j ]   = key; \
@@ -374,7 +417,6 @@
     return true;
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
 \
     struct prefix ## _chunk_t \
@@ -384,10 +426,8 @@
         prefix ## _chunk_t* next; \
     }; \
 \
-    static prefix ## _bucket_t prefix ## _hash_table[ ( hashTableSize ) ]; \
-\
     /* Do not call concurrently */ \
-    static void \
+    static inline void \
     prefix ## _iterate_key_value_pairs( void ( *cb )( prefix ## _key_t   key, \
                                                       prefix ## _value_t value, \
                                                       void*              cbData ), \
@@ -410,19 +450,17 @@
         } \
     } \
 \
-    /* implementation detail, do not use directly */ \
     static inline bool \
     prefix ## _get_impl( prefix ## _key_t     key, \
                          prefix ## _value_t*  value, \
                          prefix ## _bucket_t* bucket ) \
     { \
         SCOREP_HASH_TABLE_GET( prefix, nPairsPerChunk ) /* might return */ \
-        UTILS_MutexUnlock( &( bucket->insert_lock ) ); \
         return true; /* i.e. not found */ \
     }
 
-/* implementation detail, do not use directly */
-#define SCOREP_HASH_TABLE_FREE_CHUNKS( prefix, hashTableSize ) \
+
+#define SCOREP_HASH_TABLE_FREE_CHUNKS( prefix, hashTableSize )  \
     for ( uint32_t b = 0; b < ( hashTableSize ); ++b ) \
     { \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ b ] ); \
@@ -438,15 +476,7 @@
     }
 
 
-/*
-   SCOREP_HASH_TABLE_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
-   see documentation above
- */
-#define SCOREP_HASH_TABLE_MONOTONIC( prefix, nPairsPerChunk, hashTableSize ) \
-    SCOREP_HASH_TABLE_MONOTONIC_BUCKET( prefix ) \
-    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
-\
-    /* implementation detail, do not use directly */ \
+#define SCOREP_HASH_TABLE_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize ) \
     static inline bool \
     prefix ## _get_and_insert_impl( prefix ## _key_t     key, \
                                     void*                ctorData, \
@@ -483,14 +513,13 @@
     } \
 \
     /* Do not call concurrently */ \
-    static void \
+    static inline void \
     prefix ## _free_chunks( void ) \
     { \
         SCOREP_HASH_TABLE_FREE_CHUNKS( prefix, hashTableSize ) \
     }
 
 
-/* implementation detail, do not use directly */
 #define SCOREP_HASH_TABLE_MOVE_LAST_TO_REMOVED( prefix, nPairsPerChunk ) \
     /* move last key-value pair to removed key-value pair's slot, decrement size: */ \
     /*   go to first element of current chunk */ \
@@ -511,36 +540,23 @@
     { \
         if ( previous_chunk == NULL ) \
         { \
-            bucket->chunk = NULL; \
+            /* keep bucket->chunk although empty to reduce free_list locking on (frequent) reuse */  \
         } \
         else \
         { \
             previous_chunk->next = NULL; \
+            /* move chunk to free_list: lock chunk_free_list as */ \
+            /* it is per hash table, not per bucket */ \
+            UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
+            chunk->next = prefix ## _chunk_free_list; \
+            prefix ## _chunk_free_list = chunk; \
+            UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
         } \
-        /* lock chunk_free_list as it is per hash table, not per bucket */ \
-        UTILS_MutexLock( &( prefix ## _chunk_free_list_lock ) ); \
-        chunk->next = prefix ## _chunk_free_list; \
-        prefix ## _chunk_free_list = chunk; \
-        UTILS_MutexUnlock( &( prefix ## _chunk_free_list_lock ) ); \
     } \
     UTILS_Atomic_StoreN_uint32( &( bucket->size ), --current_size, UTILS_ATOMIC_SEQUENTIAL_CONSISTENT );
 
-/*
-   SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize )
-   see documentation above
- */
-#define SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize ) \
-    struct prefix ## _chunk_t; \
-    /* _chunk_free_list handling could be done with a lock-free stack implementation. */ \
-    /* This implementation needs to deal with the ABA problem and a potential counter */ \
-    /* overflow. As an implementation doesn't exist and there is no evidence that it */ \
-    /* performs better than a UTILS_Mutex in real world scenarios, use a mutex for now. */ \
-    static struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
-    static UTILS_Mutex                prefix ## _chunk_free_list_lock; \
-    SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix ) \
-    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
-\
-    /* implementation detail, do not use directly */ \
+
+#define SCOREP_HASH_TABLE_NON_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize ) \
     static inline bool \
     prefix ## _get_and_insert_impl( prefix ## _key_t     key, \
                                     void*                ctorData, \
@@ -582,27 +598,14 @@
         return inserted; \
     } \
 \
-    /* Do not call concurrently */ \
-    static void \
-    prefix ## _free_chunks( void ) \
-    { \
-        SCOREP_HASH_TABLE_FREE_CHUNKS( prefix, hashTableSize ) \
-        /* in addition, deallocate free_list elements */ \
-        while ( prefix ## _chunk_free_list ) \
-        { \
-            prefix ## _chunk_t* next = prefix ## _chunk_free_list->next; \
-            prefix ## _free_chunk( prefix ## _chunk_free_list ); \
-            prefix ## _chunk_free_list = next; \
-        } \
-    } \
-\
     static inline bool \
-    prefix ## _remove( prefix ## _key_t key ) \
+    prefix ## _get_and_remove_impl( prefix ## _key_t key, \
+                                    prefix ## _value_t* value ) \
     { \
         uint32_t bucket_idx = prefix ## _bucket_idx( key ); \
         UTILS_BUG_ON( bucket_idx >= hashTableSize, "Out-of-bounds bucket index %u", bucket_idx ); \
         prefix ## _bucket_t* bucket = &( prefix ## _hash_table[ bucket_idx ] ); \
-        /* search and remove, if found, reduce bucket->size, call <prefix>_value_dtor if found */ \
+        /* search and remove, if found, reduce bucket->size */ \
         uint32_t i                         = 0; \
         uint32_t j                         = 0; \
         prefix ## _chunk_t* previous_chunk = NULL; \
@@ -624,8 +627,16 @@
             } \
             if ( prefix ## _equals( key, chunk->keys[ j ] ) ) \
             { \
-                /* release element */ \
-                prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                if ( value ) \
+                { \
+                    /* Provide element to the caller, tranferring memory-management responsibility. */ \
+                    *value = chunk->values[ j ]; \
+                } \
+                else \
+                { \
+                    /* Release element by calling _value_dtor() */ \
+                    prefix ## _value_dtor( chunk->keys[ j ], chunk->values[ j ] ); \
+                } \
                 free_key   = &( chunk->keys[ j ] ); \
                 free_value = &( chunk->values[ j ] ); \
                 found      = true; \
@@ -642,6 +653,20 @@
         SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
                                     &( bucket->release_n_readers ) ); \
         return true; \
+    } \
+\
+    static inline bool \
+    prefix ## _remove( prefix ## _key_t key ) \
+    { \
+        return prefix ## _get_and_remove_impl( key, ( prefix ## _value_t* ) 0 ); \
+    } \
+\
+    static inline bool \
+    prefix ## _get_and_remove( prefix ## _key_t key, \
+                               prefix ## _value_t* value ) \
+    { \
+        UTILS_ASSERT( value ); \
+        return prefix ## _get_and_remove_impl( key, value ); \
     } \
 \
     typedef bool ( *prefix ## _condition_t )( prefix ## _key_t, prefix ## _value_t, void* data ); \
@@ -684,6 +709,87 @@
             SCOREP_RWLock_WriterUnlock( &( bucket->remove_lock ), &( bucket->pending ), \
                                         &( bucket->release_n_readers ) ); \
         } \
+    } \
+\
+    /* Do not call concurrently */ \
+    static inline void \
+    prefix ## _free_chunks( void ) \
+    { \
+        SCOREP_HASH_TABLE_FREE_CHUNKS( prefix, hashTableSize ) \
+        /* in addition, deallocate free_list elements */ \
+        while ( prefix ## _chunk_free_list ) \
+        { \
+            prefix ## _chunk_t* next = prefix ## _chunk_free_list->next; \
+            prefix ## _free_chunk( prefix ## _chunk_free_list ); \
+            prefix ## _chunk_free_list = next; \
+        } \
     }
+
+/* End of implementation details */
+
+
+/*
+   SCOREP_HASH_TABLE_MONOTONIC_(HEADER|DEFINITION)( prefix, nPairsPerChunk, hashTableSize )
+
+   Use either SCOREP_HASH_TABLE_MONOTONIC in implementation files only,
+   or the HEADER and DEFINITION variant if the table is to be accessed
+   by several implementation files.
+
+   See documentation above
+ */
+#define SCOREP_HASH_TABLE_MONOTONIC( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_MONOTONIC_BUCKET( prefix ) \
+    static prefix ## _bucket_t prefix ## _hash_table[ ( hashTableSize ) ];  \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize )
+
+#define SCOREP_HASH_TABLE_MONOTONIC_HEADER( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_MONOTONIC_BUCKET( prefix ) \
+    extern prefix ## _bucket_t prefix ## _hash_table[ ( hashTableSize ) ];  \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize )
+
+#define SCOREP_HASH_TABLE_MONOTONIC_DEFINITION( prefix, nPairsPerChunk, hashTableSize ) \
+    prefix ## _bucket_t prefix ## _hash_table[ ( hashTableSize ) ];
+
+
+/*
+   SCOREP_HASH_TABLE_NON_MONOTONIC_(HEADER|DEFINITION)( prefix, nPairsPerChunk, hashTableSize )
+
+   Use either SCOREP_HASH_TABLE_NON_MONOTONIC in implementation files only,
+   or the HEADER and DEFINITION variant if the table is to be accessed
+   by several implementation files.
+
+   See documentation above.
+ */
+
+#define SCOREP_HASH_TABLE_NON_MONOTONIC( prefix, nPairsPerChunk, hashTableSize ) \
+    struct prefix ## _chunk_t; \
+    SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix )    \
+    static struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
+    static UTILS_Mutex                prefix ## _chunk_free_list_lock; \
+    static prefix ## _bucket_t        prefix ## _hash_table[ ( hashTableSize ) ]; \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_NON_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize )
+
+
+#define SCOREP_HASH_TABLE_NON_MONOTONIC_HEADER( prefix, nPairsPerChunk, hashTableSize ) \
+    struct prefix ## _chunk_t; \
+    SCOREP_HASH_TABLE_NON_MONOTONIC_BUCKET( prefix )    \
+    extern struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
+    extern UTILS_Mutex                prefix ## _chunk_free_list_lock; \
+    extern prefix ## _bucket_t        prefix ## _hash_table[ ( hashTableSize ) ]; \
+    SCOREP_HASH_TABLE_COMMON( prefix, nPairsPerChunk, hashTableSize ) \
+    SCOREP_HASH_TABLE_NON_MONOTONIC_FUNCTIONS( prefix, nPairsPerChunk, hashTableSize )
+
+
+#define SCOREP_HASH_TABLE_NON_MONOTONIC_DEFINITION( prefix, nPairsPerChunk, hashTableSize ) \
+    /* _chunk_free_list handling could be done with a lock-free stack implementation. */ \
+    /* This implementation needs to deal with the ABA problem and a potential counter */ \
+    /* overflow. As an implementation doesn't exist and there is no evidence that it */ \
+    /* performs better than a UTILS_Mutex in real world scenarios, use a mutex for now. */ \
+    struct prefix ## _chunk_t* prefix ## _chunk_free_list; \
+    UTILS_Mutex                prefix ## _chunk_free_list_lock; \
+    prefix ## _bucket_t        prefix ## _hash_table[ ( hashTableSize ) ];
 
 /* *INDENT-ON*  */
