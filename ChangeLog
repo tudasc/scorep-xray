@@ -25,6 +25,10 @@ Bugfixes:
 - Support for OpenMP's tool interface OMPT will be disabled if
   configure detects shortcomings of the OpenMP runtime that cannot be
   worked around. The reason will be reported in the configure summary.
+- Fix the primary output of scorep-score by keeping it strictly human
+  readable. Additional escaping of special characters for filterable
+  region types is enabled for the `-m` option for regions without a
+  mangled name.
 
 ------------------- Released version 8.0 -----------------------------
 
