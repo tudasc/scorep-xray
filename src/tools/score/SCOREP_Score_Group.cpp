@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2021,
+ * Copyright (c) 2009-2014, 2019-2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -42,6 +42,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <regex>
 
 using namespace std;
 
@@ -210,12 +211,14 @@ std::string
 SCOREP_Score_Group::cleanName( const std::string& name )
 {
     std::string temp = name;
-    // make the name string fit our regex semantic, in particular for C++
-    std::replace( temp.begin(), temp.end(), ' ', '?' );
-    std::replace( temp.begin(), temp.end(), ']', '?' );
-    std::replace( temp.begin(), temp.end(), '[', '?' );
-    std::replace( temp.begin(), temp.end(), '*', '?' );
-    std::replace( temp.begin(), temp.end(), '!', '?' );
+    // Make the name string fit our regex semantic, in particular for C++
+    // Escape the Score-P filter parser item separator ' '
+    temp = std::regex_replace( temp, std::regex( " " ), "\\ " );
+    // Escape fnmatch regex special characters
+    temp = std::regex_replace( temp, std::regex( "\\]" ), "\\]" );
+    temp = std::regex_replace( temp, std::regex( "\\[" ), "\\[" );
+    temp = std::regex_replace( temp, std::regex( "\\*" ), "\\*" );
+    temp = std::regex_replace( temp, std::regex( "\\!" ), "\\!" );
     return temp;
 }
 
