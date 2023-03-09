@@ -193,7 +193,7 @@ SCOREP_Score_Group::print( double                   totalTime,
              << " " << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
              << " " << setw( widths.m_time_per_visit ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
              << left
-             << "  " << cleanName( getDisplayName() ) << endl;
+             << "  " << getDisplayName() << endl;
     }
 }
 
@@ -202,6 +202,10 @@ SCOREP_Score_Group::getDisplayName()
 {
     if ( m_use_mangled )
     {
+        if ( SCOREP_Score_getFilterState( m_type ) != SCOREP_SCORE_FILTER_NO )
+        {
+            return cleanName( m_mangled_name );
+        }
         return m_mangled_name;
     }
     return m_name;
