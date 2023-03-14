@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014, 2019-2021,
+ * Copyright (c) 2009-2014, 2019-2021, 2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -166,6 +166,13 @@ public:
            bool                     withHits );
 
     /**
+     * Returns the formated string for a single filter entry.
+     */
+    std::string
+    generateFilterEntry( double                   totalTime,
+                         SCOREP_Score_FieldWidths widths );
+
+    /**
      * Returns the region information if the entry fullfills the
      * total buffer size, time per visit, visits, absolute memory, and type
      * constraints.
@@ -181,6 +188,14 @@ public:
                         double                   minBufferAbsolute,
                         bool                     filterUSR,
                         bool                     filterCOM );
+
+    /**
+     * Returns the region information if the entry is filterable.
+     * Otherwise, it returns an empty string.
+     */
+    std::string
+    getMaxFilterCandidate( double                   totalTime,
+                           SCOREP_Score_FieldWidths widths );
 
     /**
      * Returns abbreviated region information if the entry is a filtered

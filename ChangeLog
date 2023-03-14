@@ -6,6 +6,10 @@ User tools and API improvements and changes:
   Measurements always record extended non-blocking events.
 - The `scorep` tool now also provides the Git revision via the
   `--revision` flag, similar to `scorep-config`.
+- Add a filter generation option to `scorep-score`, that generates a
+  maximal filter including all filterable regions. This serves as
+  starting point for a fully manual approach without the need to
+  copy and paste from the default output.
 
 Compatibility:
 
