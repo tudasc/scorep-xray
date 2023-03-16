@@ -56,7 +56,7 @@ scorep_mpi_io_init( void )
 {
     SCOREP_IoMgmt_RegisterParadigm( SCOREP_IO_PARADIGM_MPI,
                                     SCOREP_IO_PARADIGM_CLASS_PARALLEL,
-                                    "MPI-IO",
+                                    "MPI I/O",
                                     SCOREP_IO_PARADIGM_FLAG_NONE,
                                     sizeof( MPI_File ),
                                     SCOREP_INVALID_IO_PARADIGM_PROPERTY );
