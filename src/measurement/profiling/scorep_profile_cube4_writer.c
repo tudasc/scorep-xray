@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2015, 2017, 2019, 2022,
+ * Copyright (c) 2009-2015, 2017, 2019, 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -342,19 +342,30 @@ get_hits_tuple( scorep_profile_node* node, void* data )
     return value;
 }
 
+#define SKIPPED_STRICTLY_SYNC_METRIC -1
+
 /**
    Returns the values of metrics for @a node.
    This functions are given to scorep_profile_write_cube_metric.
    @param node  Pointer to a node which should return the metric value.
-   @param index Pointer to a uint8_t value that contains the index of the metric in the
-                dense metric vector.
-   @returns the number of visits of @a node.
+   @param index Pointer to a int value that contains the index of the
+   metric in the dense metric vector. Assume [0, UINT8_MAX] for valid
+   metrics, or SKIPPED_STRICTLY_SYNC_METRIC.
+   @returns the value of metric at index for @a node, and 0 for
+   skipped metrics.
  */
 static uint64_t
 get_metrics_value_from_array( scorep_profile_node* node, void* index )
 {
-    return node->dense_metrics[ *( uint8_t* )index ].sum;
+    int metric_idx = *( int* )index;
+    if ( metric_idx == SKIPPED_STRICTLY_SYNC_METRIC )
+    {
+        return 0;
+    }
+    UTILS_BUG_ON( metric_idx > UINT8_MAX, "Only 255 metrics per process supported." );
+    return node->dense_metrics[ metric_idx ].sum;
 }
+
 
 /**
    Returns the values of metrics for @a node as a TAU tuple.
@@ -1158,7 +1169,6 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
     scorep_cluster_write_cube4( &write_set );
 
     /* -------------------------------- dense metrics */
-
     /* Write implicit time and visits */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
 
@@ -1216,36 +1226,74 @@ scorep_profile_write_cube4( SCOREP_Profile_OutputFormat format )
 
     /* Write additional dense metrics (e.g. hardware counters) */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
-    for ( uint8_t i = 0; i  < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
-    {
-        cube_metric*        metric        = NULL; /* Only used on rank 0 */
-        SCOREP_MetricHandle metric_handle = SCOREP_Metric_GetStrictlySynchronousMetricHandle( i );
 
+    /* Create mapping between the unified full list and the respective
+       local list, with SKIPPED_STRICTLY_SYNC_METRIC as an indicator
+       for a skipped metric. */
+    int map_unified_to_local_strictly_sync[ write_set.num_unified_metrics ];
+    int n_matches = 0;
+    for ( uint32_t unified = 0; unified < write_set.num_unified_metrics; unified++ )
+    {
+        int   match = SKIPPED_STRICTLY_SYNC_METRIC;
+        char* metric_name;
+        for ( uint32_t local = 0; local < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); local++ )
+        {
+            SCOREP_MetricHandle local_handle = SCOREP_Metric_GetStrictlySynchronousMetricHandle( local );
+            if (  SCOREP_MetricHandle_GetUnifiedId( local_handle ) == unified )
+            {
+                match = local;
+                n_matches++;
+                break;
+            }
+        }
+        map_unified_to_local_strictly_sync[ unified ] = match;
+    }
+    /* Sanity check, every local metric should have found a match in the global list. */
+    if ( n_matches != SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics() )
+    {
+        UTILS_WARNING( "Metric mismatch on process %d, when writing dense metrics to profile!", write_set.my_rank );
+    }
+
+    for ( uint32_t unified = 0; unified  < write_set.num_unified_metrics; unified++ )
+    {
+        /* Translate to local index for use with the locally stored data. */
+        int local = map_unified_to_local_strictly_sync[ unified ];
+
+        int skipped  = local == SKIPPED_STRICTLY_SYNC_METRIC;
+        int skip_sum = 0;
+        SCOREP_Ipc_Allreduce( &skipped,
+                              &skip_sum,
+                              1,
+                              SCOREP_IPC_INT,
+                              SCOREP_IPC_SUM );
+        if ( skip_sum == write_set.ranks_number )
+        {
+            /* this is a metric skipped by all, i.e., not applicable */
+            continue;
+        }
+        cube_metric* metric = NULL;
         if ( write_set.my_rank == write_set.root_rank )
         {
             metric = scorep_get_cube4_metric( write_set.map,
-                                              SCOREP_MetricHandle_GetUnified( metric_handle ) );
+                                              write_set.unified_metric_map[ unified ] );
         }
 
         /* When writing sparse metrics, we skip the time metric handles.
-           Thus, invalidate these entries to avoid
-           writing them twice. */
+           Thus, invalidate these entries to avoid writing them twice. */
         if ( write_set.metric_map != NULL )
         {
-            uint32_t current_number =
-                SCOREP_MetricHandle_GetUnifiedId( metric_handle );
-            write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
+            write_set.metric_map[ unified ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
         if ( layout.dense_metric_type == SCOREP_CUBE_DATA_TUPLE )
         {
             write_cube_cube_type_tau_atomic( &write_set, comm, metric,
-                                             &get_metric_tuple_from_array, &i );
+                                             &get_metric_tuple_from_array, &local );
         }
         else
         {
             write_cube_uint64( &write_set, comm, metric,
-                               &get_metrics_value_from_array, &i );
+                               &get_metrics_value_from_array, &local );
         }
     }
 
