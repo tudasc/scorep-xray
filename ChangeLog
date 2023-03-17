@@ -29,6 +29,8 @@ Bugfixes:
   readable. Additional escaping of special characters for filterable
   region types is enabled for the `-m` option for regions without a
   mangled name.
+- Prevent deadlock in the Kokkos adapter when using in an inhomogeneous
+  multi-process GPU setup.
 
 ------------------- Released version 8.0 -----------------------------
 
