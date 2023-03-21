@@ -210,7 +210,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "",
         "Executable of the application",
         "File name, preferably with full path, of the application's executable. "
-        "This is a fallback if Score-P cannot determine the exetuable's name "
+        "This is a fallback if Score-P cannot determine the executable's name "
         "automatically. The name is required by some compiler adapters. They will "
         "complain if this environment variable is needed."
     },
