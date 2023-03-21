@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2020, 2022,
+ * Copyright (c) 2020, 2022-2023,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -146,20 +146,18 @@ scorep_kokkos_define_rma_win( void )
 static size_t
 create_comm_group( uint64_t** globalLocationIds )
 {
+    /* At least the current CPU location */
     size_t count = 1;
 
-    /* get the number of CUDA communication partners */
+    /* get the number of Kokkos communication partners */
     if ( kokkos_device_location != NULL )
     {
         count++;
     }
 
-    if ( count == 0 )
-    {
-        return count;
-    }
+    UTILS_BUG_ON( count == 0, "Non-zero count of locations expected." );
 
-    /* allocate the CUDA communication group array */
+    /* allocate the Kokkos communication group array */
     *globalLocationIds          = SCOREP_Memory_AllocForMisc( count * sizeof( uint64_t ) );
     ( *globalLocationIds )[ 0 ] = SCOREP_Location_GetGlobalId( SCOREP_Location_GetCurrentCPULocation() );
     if ( count > 1 )
@@ -233,11 +231,6 @@ kokkos_subsystem_init_location( SCOREP_Location* location,
 static SCOREP_ErrorCode
 kokkos_subsystem_pre_unify( void )
 {
-    if ( kokkos_device_location == NULL )
-    {
-        return SCOREP_SUCCESS;
-    }
-
     uint64_t* global_location_ids;
     size_t    global_location_number = create_comm_group( &global_location_ids );
 
@@ -273,11 +266,6 @@ kokkos_subsystem_pre_unify( void )
 static SCOREP_ErrorCode
 kokkos_subsystem_post_unify( void )
 {
-    if ( kokkos_device_location == NULL )
-    {
-        return SCOREP_SUCCESS;
-    }
-
     if ( 0 == SCOREP_Status_GetRank() )
     {
         /* Count the number of KOKKOS locations */
