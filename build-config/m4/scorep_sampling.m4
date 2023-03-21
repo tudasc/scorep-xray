@@ -227,6 +227,7 @@ all:
 	        --silent \\
 	        --enable-silent-rules \\
 	        --prefix=\$(PREFIX) \\
+	        --libdir=\$(PREFIX)/lib \\
 	        CC=\$(CC) \\
 	        --enable-shared \\
 	        --disable-static \\
@@ -238,7 +239,7 @@ all:
 	        --disable-tests \\
 	        --disable-per-thread-cache && \\
 	    make -s install
-	@rm -f \$(PREFIX)/lib/libunwind.la \$(PREFIX)/lib64/libunwind.la
+	@rm -f \$(PREFIX)/lib/libunwind.la
 clean:
 	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
 uninstall:

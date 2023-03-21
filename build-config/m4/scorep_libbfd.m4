@@ -114,6 +114,7 @@ all:
 	&& cd \$(PACKAGE)/_build \\
 	&& ../configure \\
 	    --prefix=\$(PREFIX) \\
+	    --libdir=\$(PREFIX)/lib \\
 	    CC=\$(CC) \\
 	    --enable-shared \\
 	    --disable-static \\
@@ -121,8 +122,7 @@ all:
 	    --silent \\
 	&& make -s all-bfd \\
 	&& make -s install-bfd \\
-	&& rm -f \$(PREFIX)/lib/libbfd.la \\
-	&& rm -f \$(PREFIX)/lib64/libbfd.la
+	&& rm -f \$(PREFIX)/lib/libbfd.la
 clean:
 	@rm -rf \$(PACKAGE).tar.gz \$(PACKAGE)
 uninstall:
