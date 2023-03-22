@@ -94,8 +94,8 @@ If there are several MPI compilers in $PATH the user should
 select one using the configure option:
 
   --with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam| \
-              mpibull2|mpich|mpich2|mpich3|openmpi|openmpi3|platform| \
-              scali|sgimpt|sgimptwrapper|spectrum|sun)
+              mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3| \
+              platform|scali|sgimpt|sgimptwrapper|spectrum|sun)
                The MPI compiler suite to build this package in non
                cross-compiling mode. Usually autodetected. Needs to be
                in $PATH.
