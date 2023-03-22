@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014, 2017, 2021,
+## Copyright (c) 2013-2014, 2017, 2021, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -141,6 +141,10 @@ AS_IF([test -n "${MPICC}"],
                        [NMPIS=`expr ${NMPIS} + 1`
                         FMPI=mpich3
                         AC_MSG_RESULT([MPICH3 ${MPICC}])],
+                       [test ${MPICHVER} -eq 4],
+                       [NMPIS=`expr ${NMPIS} + 1`
+                        FMPI=mpich4
+                        AC_MSG_RESULT([MPICH4 ${MPICC}])],
                        [NMPIS=`expr ${NMPIS} + 1`
                         FMPI=mpich
                         AC_MSG_RESULT([MPICH1 ${MPICC}])])
@@ -230,7 +234,7 @@ dnl echo MPI $MPI
 
 AS_IF([test "${NMPIS}" -eq 0],
     [AS_IF([test -n "${MPICC}"],
-         [AC_MSG_ERROR([mpicc found but cannot determine MPI library. Select MPI using --with-mpi=bullxmpi|hp|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali])],
+         [AC_MSG_ERROR([mpicc found but cannot determine MPI library. Select MPI using --with-mpi=bullxmpi|hp|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|platform|scali])],
          [AC_MSG_ERROR([cannot detect MPI library. Make sure mpicc, mpcc or mpiicc is in your PATH and rerun configure. Please specify --without-mpi if you intend to build AC_PACKAGE_NAME without MPI support.])])],
     [test "${NMPIS}" -gt 1],
     [AC_MSG_ERROR([found ${NMPIS} MPI installations. Select one using --with-mpi=${MPIS}])],

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014, 2017, 2020, 2022,
+## Copyright (c) 2009-2014, 2017, 2020, 2022-2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -142,7 +142,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
-    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
+    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|mpich4|openmpi|openmpi3|platform|scali|sgimpt|sgimptwrapper|spectrum|sun)],
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_mpi_user_disabled=yes
@@ -164,6 +164,7 @@ AC_ARG_WITH([mpi],
                    ["mpich"], [ac_scorep_compilers_mpi="compiler-mpi-mpich"],
                    ["mpich2"], [ac_scorep_compilers_mpi="compiler-mpi-mpich2"],
                    ["mpich3"], [ac_scorep_compilers_mpi="compiler-mpi-mpich3"],
+                   ["mpich4"], [ac_scorep_compilers_mpi="compiler-mpi-mpich4"],
                    ["openmpi"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi"],
                    ["openmpi3"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi3"],
                    ["platform"], [ac_scorep_compilers_mpi="compiler-mpi-platform"],
