@@ -31,6 +31,10 @@ Bugfixes:
   mangled name.
 - Prevent deadlock in the Kokkos adapter when using in an inhomogeneous
   multi-process GPU setup.
+- Downloaded external libraries (--with-libbfd|libunwind=download) are
+  now being installed into lib, even if the system preference is to
+  install under lib64 (e.g., for SUSE systems). This guarantees
+  picking up the donwloaded installation of these libraries.
 
 ------------------- Released version 8.0 -----------------------------
 
