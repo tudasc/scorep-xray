@@ -24,6 +24,7 @@ AC_MSG_CHECKING([for instruction set])
 instruction_sets="ppc64:   __ppc64__,__powerpc64__,__PPC64__
                   x86_64:  __x86_64,__x86_64__,__amd64,_M_X64
                   aarch64: __aarch64__,__ARM64__,_M_ARM64
+                  riscv: __riscv
                   unknown: UNKNOWN"
 AC_LANG_PUSH([C])
 for instruction_set_test in ${instruction_sets}; do
@@ -46,6 +47,7 @@ AC_SUBST([CPU_INSTRUCTION_SET], [${instruction_set}])
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_PPC64], $(if test "x${instruction_set}" = xppc64; then echo 1; else echo 0; fi), [Instruction set ppc64])
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_X86_64], $(if test "x${instruction_set}" = xx86_64; then echo 1; else echo 0; fi), [Instruction set x86_64])
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction_set}" = xaarch64; then echo 1; else echo 0; fi), [Instruction set aarch64])
+AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_RISCV], $(if test "x${instruction_set}" = xriscv; then echo 1; else echo 0; fi), [Instruction set riscv])
 ]) # AFS_CPU_INSTRUCTION_SETS
 
 
@@ -55,10 +57,12 @@ AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction
 # https://gcc.gnu.org/onlinedocs/gcc-8.2.0/gcc/_005f_005fatomic-Builtins.html#g_t_005f_005fatomic-Builtins
 # If gcc atomic builtins are available, define HAVE_GCC_ATOMIC_BUILTINS
 # to 1 and set the automake conditional HAVE_GCC_ATOMIC_BUILTINS. If
-# necessary, defines HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS. Determines
-# and substitutes the instruction set CC builds for, see CPU_INSTRUCTION_SET.
-# The substitution can be used for selecting precompiled instruction-set-dependent
-# SOURCES.
+# necessary, defines HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS. In addition
+# provides GCC_ATOMIC_BUILTINS_LIB which is needed on RISC-V. See
+# https://gitlab.jsc.fz-juelich.de/perftools/utils/common/-/issues/7
+# Determines and substitutes the instruction set CC builds for, see
+# CPU_INSTRUCTION_SET. The substitution can be used for selecting
+# precompiled instruction-set-dependent SOURCES.
 #
 # For additional documentation, see common/utils/src/atomic/UTILS_Atomic.inc.c.
 #
@@ -66,25 +70,34 @@ AC_DEFUN([AFS_GCC_ATOMIC_BUILTINS], [
 AC_REQUIRE([AFS_CPU_INSTRUCTION_SETS])
 AC_REQUIRE([AX_ASM_INLINE])
 AC_LANG_PUSH([C])
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM(
-    [[#include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
-    [[]])],
-    [afs_have_gcc_atomic_builtins=1
-     gcc_atomic_builtins_result=yes],
-    [AC_LINK_IFELSE(
-         [AC_LANG_PROGRAM(
-         [[#define HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS 1
-           #include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
-         [[]])],
-         [afs_have_gcc_atomic_builtins=1
-          AC_DEFINE([HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS], [1],
-              [Define to 1 if casting is needed to use gcc atomic builtins.])
-          gcc_atomic_builtins_result="yes, needs pointer-to-int casts"],
-         [afs_have_gcc_atomic_builtins=0
-          AS_IF([test "x${CPU_INSTRUCTION_SET}" = xunknown],
-              [AC_MSG_ERROR([Cannot provide precompiled GCC atomic builtin wrappers when instruction set is unknown.])],
-              [gcc_atomic_builtins_result="no, using precompiled ${CPU_INSTRUCTION_SET} version"])])])
+afs_have_gcc_atomic_builtins=0
+atomic_builtin_libs_save="${LIBS}"
+for extra_lib in "" "-latomic"; do
+    LIBS="${extra_lib} ${atomic_builtin_libs_save}"
+    AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM(
+        [[#include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
+        [[]])],
+        [afs_have_gcc_atomic_builtins=1
+         gcc_atomic_builtins_result=yes
+         break],
+        [AC_LINK_IFELSE(
+             [AC_LANG_PROGRAM(
+             [[#define HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS 1
+               #include "${srcdir}/../common/utils/src/atomic/UTILS_Atomic.inc.c"]],
+             [[]])],
+             [afs_have_gcc_atomic_builtins=1
+              AC_DEFINE([HAVE_GCC_ATOMIC_BUILTINS_NEEDS_CASTS], [1],
+                  [Define to 1 if casting is needed to use gcc atomic builtins.])
+              gcc_atomic_builtins_result="yes, needs pointer-to-int casts"
+              break])])
+done
+LIBS="${atomic_builtin_libs_save}"
+AS_IF([test "x${afs_have_gcc_atomic_builtins}" = x0],
+    [AS_IF([test "x${CPU_INSTRUCTION_SET}" = xunknown],
+         [AC_MSG_ERROR([Cannot provide precompiled GCC atomic builtin wrappers when instruction set is unknown.])],
+         [gcc_atomic_builtins_result="no, using precompiled ${CPU_INSTRUCTION_SET} version"])],
+    [AC_SUBST([GCC_ATOMIC_BUILTINS_LIB], [${extra_lib}])])
 AC_LANG_POP([C])
 
 AC_MSG_CHECKING([for gcc atomic builtins])
