@@ -35,6 +35,8 @@ Bugfixes:
   now being installed into lib, even if the system preference is to
   install under lib64 (e.g., for SUSE systems). This guarantees
   picking up the donwloaded installation of these libraries.
+- Add C wrappers for `MPI_Info_get_nkeys` and `MPI_Info_get_nthkey` to the
+  MPI adapter.
 
 ------------------- Released version 8.0 -----------------------------
 
