@@ -10,6 +10,8 @@ Compatibility:
 - The usage of POMP user instrumentation, aka `#pragma pomp ...`, is
   deprecated. Use the `SCOREP_USER_*` macros instead.
 
+------------------- Released version 8.1 -----------------------------
+
 Bugfixes:
 
 - Score-P now gracefully handles undefined behavior exploited by the
