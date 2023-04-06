@@ -20,7 +20,7 @@ various Score-P components.
       fixed with Cray PE-21.05.
 
     + various Linux (Intel, AMD, IBM, ARM) clusters with GNU, Intel,
-      NVIDIA, IBM, and AND compilers. Note that some compilers are
+      NVIDIA, IBM, and AMD compilers. Note that some compilers are
       based on Clang. Note that Fujitsu compilers haven't been tested
       recently.
     The provided configure options (see INSTALL) may provide a good
