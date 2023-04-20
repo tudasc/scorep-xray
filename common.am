@@ -127,3 +127,27 @@ DISTCLEANFILES += $(builddir)/config.summary
 # this propagates changes to build-config/common/config-common.h
 ../src/config-common.h: $(srcdir)/../build-config/common/config-common.h
 	@$(am__cd) .. && $(MAKE) $(AM_MAKEFLAGS) src/config-common.h
+
+# Add to INSTALL_EXEC_HOOK to move all libtool archive files "lib*.la" in
+# the installation to "lib*.la_". We need the la_ during uninstall, see
+# uninstall-moved-la-files below.
+install-exec-move-la-files:
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	    $(am__strip_dir) \
+	    if test -f "$(DESTDIR)$(libdir)/$$f"; then \
+	        mv "$(DESTDIR)$(libdir)/$$f" "$(DESTDIR)$(libdir)/.$$f"; \
+	    fi; \
+	done
+
+# Add to UNINSTALL_HOOK for a proper uninstall of lib_LTLIBARIES. See
+# install-exec-move-la-files above.
+uninstall-moved-la-files:
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	    $(am__strip_dir) \
+	    if test -f "$(DESTDIR)$(libdir)/.$$f"; then \
+	        mv "$(DESTDIR)$(libdir)/.$$f" "$(DESTDIR)$(libdir)/$$f"; \
+	    fi; \
+	done; \
+	$(MAKE) uninstall-libLTLIBRARIES
