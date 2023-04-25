@@ -128,7 +128,7 @@ SCOREP_Instrumenter_Mpi::checkWrapperOption( const std::string& current,
 void
 SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
-    if ( m_selector->isAlreadySelected( this ) )
+    if ( !m_selector->isDefaultSelected() || m_selector->isAlreadySelected( this ) )
     {
         return;
     }
@@ -228,7 +228,7 @@ SCOREP_Instrumenter_Shmem::checkCommand( const std::string& current,
 void
 SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
-    if ( m_selector->isAlreadySelected( this ) )
+    if ( !m_selector->isDefaultSelected() || m_selector->isAlreadySelected( this ) )
     {
         return;
     }
