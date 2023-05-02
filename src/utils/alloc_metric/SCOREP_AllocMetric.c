@@ -4,7 +4,7 @@
  * Copyright (c) 2016-2018, 2020-2022,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016, 2022,
+ * Copyright (c) 2016, 2022, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -399,6 +399,15 @@ SCOREP_AllocMetric_AcquireAlloc( SCOREP_AllocMetric* allocMetric,
     UTILS_MutexUnlock( &allocMetric->mutex );
 }
 
+bool
+SCOREP_AllocMetric_AddrExists( SCOREP_AllocMetric* allocMetric,
+                               uint64_t            addr )
+{
+    UTILS_MutexLock( &allocMetric->mutex );
+    void* allocation = find_memory_allocation( allocMetric, addr );
+    UTILS_MutexUnlock( &allocMetric->mutex );
+    return allocation;
+}
 
 void
 SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,

@@ -4,7 +4,7 @@
  * Copyright (c) 2016, 2022,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2016,
+ * Copyright (c) 2016, 2024,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -23,6 +23,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -67,6 +68,19 @@ SCOREP_AllocMetric_AcquireAlloc( SCOREP_AllocMetric* allocMetric,
                                  uint64_t            addr,
                                  void**              allocation );
 
+
+/**
+ * Checks if an allocation with the given pointer is tracked in this metric
+ *
+ * @param allocMetric Object handle
+ * @param addr        The address of the allocation
+ * @return true if allocation exists
+ */
+bool
+SCOREP_AllocMetric_AddrExists( SCOREP_AllocMetric* allocMetric,
+                               uint64_t            addr );
+
+
 /**
  *  Handles an allocation in this metric.
  *
@@ -78,6 +92,7 @@ void
 SCOREP_AllocMetric_HandleAlloc( SCOREP_AllocMetric* allocMetric,
                                 uint64_t            resultAddr,
                                 size_t              size );
+
 
 /**
  *  Handles an reallocation in this metric.
