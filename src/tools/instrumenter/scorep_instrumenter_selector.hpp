@@ -175,6 +175,15 @@ public:
     virtual bool
     isAlreadySelected( SCOREP_Instrumenter_Paradigm* paradigm );
 
+    /**
+     * Check whether the current selection is still the default paradigm.
+     *
+     * If not, either the user selected a paradigm or some heuristic triggered
+     * a selection.
+     */
+    virtual bool
+    isDefaultSelected();
+
     /* ----------------------------------------------------------------------- members */
 protected:
     /**

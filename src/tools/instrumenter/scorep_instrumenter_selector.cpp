@@ -248,6 +248,12 @@ SCOREP_Instrumenter_Selector::isAlreadySelected( SCOREP_Instrumenter_Paradigm* p
     return false;
 }
 
+bool
+SCOREP_Instrumenter_Selector::isDefaultSelected()
+{
+    return m_current_priority == default_selection;
+}
+
 /* -------------------------------------------------------------------- static methods */
 
 void
@@ -404,7 +410,7 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
 
     if (  m_current_priority < priority )
     {
-        if ( m_current_priority == default_selection )
+        if ( isDefaultSelected() )
         {
             /*
              * Clear the default selection if another
