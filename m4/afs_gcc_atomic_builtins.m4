@@ -48,6 +48,16 @@ AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_PPC64], $(if test "x${instruction_s
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_X86_64], $(if test "x${instruction_set}" = xx86_64; then echo 1; else echo 0; fi), [Instruction set x86_64])
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_AARCH64], $(if test "x${instruction_set}" = xaarch64; then echo 1; else echo 0; fi), [Instruction set aarch64])
 AC_DEFINE_UNQUOTED([HAVE_CPU_INSTRUCTION_SET_RISCV], $(if test "x${instruction_set}" = xriscv; then echo 1; else echo 0; fi), [Instruction set riscv])
+
+# Check if 'build' (where we build) is of the same architecture than
+# 'host' (for which we build). If they differ, we can't e.g., use ldd.
+# We don't want to rely on AC_CANONICAL_* as we usually don't provide
+# --build and --host.
+# uname -m provides 'x86_64', 'aarch64' on Fugaku's compute node,
+# 'ppc64le' on marconi100.
+afs_build_equals_host=no
+AS_CASE([$(uname -m)], [${instruction_set}*], [afs_build_equals_host=yes])
+AM_CONDITIONAL([AFS_BUILD_EQUALS_HOST],[test "x${afs_build_equals_host}" = xyes])
 ]) # AFS_CPU_INSTRUCTION_SETS
 
 
