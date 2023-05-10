@@ -245,6 +245,9 @@ various Score-P components.
     requests will increase this effect. However, in practice,
     it does not seem to have any impact on the measurement.
 
+  - The MPI sessions model is not supported and `MPI_Session_init`
+    aborts the measurement.
+
 --------------------------------------------------------------------------------
 
 * OpenMP support
