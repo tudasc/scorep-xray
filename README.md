@@ -55,7 +55,7 @@ requirements are needed (assuming `PREFIX/bin` is in `$PATH`):
    ```console
    $ wget https://perftools.pages.jsc.fz-juelich.de/utils/perftools-dev/perftools-dev-08.tar.gz
    $ tar xf perftools-dev-08.tar.gz
-   $ cd perftools-dev-05
+   $ cd perftools-dev-08
    $ ./install-perftools-dev.sh --continue-after-download --prefix=PREFIX
    ```
 
@@ -83,7 +83,7 @@ Docker images are provided to ease development for common frameworks.
 
 Images are available for the following base images:
 
- - Ubuntu 20.04: scorep/devel-gcc and scorep/devel-clang
+ - Ubuntu: scorep/devel-gcc and scorep/devel-clang
  - NVIDIA HPC SDK: scorep/devel-nvhpc
  - Intel oneAPI: scorep/devel-oneapi
  - AMD ROCm: scorep/devel-rocm
