@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -36,7 +36,10 @@ AC_DEFUN([AC_SCOREP_BACKEND_TEST_RUNS], [
 AC_ARG_ENABLE([backend-test-runs],
               [AS_HELP_STRING([--enable-backend-test-runs],
                               [Enable execution of tests during 'make check' [no] (does not affect building of tests, though). If disabled, the files 'check-file-*' and/or 'skipped_tests' listing the tests are generated in the corresponding build directory.])],
-              [ac_scorep_enable_backend_test_runs=$enableval],
+              [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+                     [AC_MSG_WARN([Ignoring option '--enable-backend-test-runs' when cross-compiling!])
+                      ac_scorep_enable_backend_test_runs="no"],
+                     [ac_scorep_enable_backend_test_runs=$enableval])],
               [ac_scorep_enable_backend_test_runs="no"])
 
 AM_CONDITIONAL([BACKEND_TEST_RUNS], [test "x$ac_scorep_enable_backend_test_runs" = "xyes"])
