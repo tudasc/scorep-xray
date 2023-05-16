@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software ecosystem (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2014, 2023,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014,
@@ -28,9 +28,11 @@
 ## TESTS variable, an appropriate test runner is automatically chosen.  It
 ## then executes the test using a default number of OpenMP threads and/or
 ## MPI processes (see the corresponding shell scripts for details and how
-## to overwrite the defaults).  Tests for compute nodes are only executed
-## if '--enable-backend-test-runs' was provided to configure.  Otherwise,
-## they are skipped and automake's test harness is notified accordingly.
+## to overwrite the defaults).  In cross-compile builds, all compute node
+## tests (i.e., MPI and non-MPI) will be skipped, and automake's test
+## harness is notified accordingly.  In non-cross-compile builds, only MPI
+## compute node tests will be skipped, unless '--enable-backend-test-runs'
+## was provided to configure.
 ##
 ## Requirements:
 ##     - Automake needs to be initialized with the 'parallel-tests' option.
@@ -51,12 +53,18 @@ LOGIN_LOG_COMPILER       = $(srcdir)/../build-config/common/test-runner-plain.sh
 COMPUTE_LOG_COMPILER     = $(srcdir)/../build-config/common/test-runner-plain.sh
 COMPUTE_MPI_LOG_COMPILER = $(srcdir)/../build-config/common/test-runner-mpi.sh
 
-if !BACKEND_TEST_RUNS
+if CROSS_BUILD
 
 AM_COMPUTE_LOG_FLAGS     = --skip
 AM_COMPUTE_MPI_LOG_FLAGS = --skip
 
+else !CROSS_BUILD
+if !BACKEND_TEST_RUNS
+
+AM_COMPUTE_MPI_LOG_FLAGS = --skip
+
 endif !BACKEND_TEST_RUNS
+endif !CROSS_BUILD
 
 CLEANFILES += \
     skipped_tests
