@@ -195,17 +195,17 @@ AS_UNSET([openmp_[]_AC_LANG_ABBREV[]_summary])
 
 dnl Try these flags:
 dnl   (on by default)      '' [scorep: for instrumentation we want an explicit flag, thus omit '']
-dnl   GCC >= 4.2           -fopenmp
-dnl   SunPRO C             -xopenmp
-dnl   Intel C              -qopenmp|-openmp
-dnl   SGI C, PGI C         -mp
-dnl   Tru64 Compaq C       -omp
-dnl   IBM XL C (AIX, Linux) -qsmp=omp|-qsmp=auto|-qsmp=noauto
-dnl   Cray CCE             -homp
-dnl   NEC SX               -Popenmp
+dnl   GCC >= 4.2             -fopenmp
+dnl   SunPRO C               -xopenmp
+dnl   Intel C                -openmp|-fopenmp|-qopenmp|-fiopenmp
+dnl   SGI C, PGI C           -mp
+dnl   Tru64 Compaq C         -omp
+dnl   IBM XL C (AIX, Linux)  -qsmp=omp|-qsmp=auto|-qsmp=noauto
+dnl   Cray CCE               -homp
+dnl   NEC SX                 -Popenmp
 dnl   Lahey Fortran (Linux)  --openmp
-dnl   Fujitsu              -Kopenmp
-for ac_option in -fopenmp -xopenmp -qopenmp -openmp -mp -omp -qsmp=omp -qsmp=auto -qsmp=noauto -homp \
+dnl   Fujitsu                -Kopenmp
+for ac_option in -fopenmp -xopenmp -fiopenmp -qopenmp -openmp -mp -omp -qsmp=omp -qsmp=auto -qsmp=noauto -homp \
                  -Popenmp --openmp -Kopenmp; do
 
     ac_save_[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
