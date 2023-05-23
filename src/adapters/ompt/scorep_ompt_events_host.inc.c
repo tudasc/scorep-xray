@@ -178,6 +178,7 @@ typedef struct parallel_t
 
 /* *INDENT-OFF* */
 static void on_first_parallel_begin( ompt_data_t* encounteringTaskData );
+static void init_parallel_obj( parallel_t* parallel, struct scorep_thread_private_data* parent, uint32_t requestedParallelism, const void* codeptrRa, uint32_t refCount );
 static void on_initial_task( int flags );
 static void implicit_task_end_impl( task_t* task, char* utilsDebugcaller );
 static void barrier_implicit_parallel_end( ompt_data_t* taskData );
@@ -433,9 +434,6 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     /* init a parallel_t object that will be passed around as
        parallel_data->ptr */
     parallel_t* parallel_region = get_parallel_region_from_pool();
-    parallel_region->ref_count = -1;
-
-    parallel_data->ptr = parallel_region;
 
     /* For now, prevent league events. */
     if ( ( flags & ompt_parallel_league )
@@ -447,49 +445,14 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
         UTILS_DEBUG_EXIT( "atid %" PRIu32 " | parallel_data->ptr %p | "
                           "encountering_task_data->ptr %p | belongs_to_league",
                           adapter_tid, parallel_data->ptr, encountering_task_data->ptr );
+        parallel_data->ptr = parallel_region;
         SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
-    parallel_region->parent     = tpd;
-    parallel_region->region     = get_region( codeptr_ra, TOOL_EVENT_PARALLEL );
-    parallel_region->team_size  = requested_parallelism;
-    parallel_region->codeptr_ra = ( uintptr_t )codeptr_ra;
-
-    /* Init a parallel_t object cont. for explicit tasking */
-
-    /* shift/mask for requested_parallelism and task_creation_number are per
-       parallel-region. requested_parallelism is out of [1,N], thus encode
-       thread_num values [0,N-1]. Use remaining bits for task_creation_number,
-       but no more than 32 bits. */
-    UTILS_BUG_ON( requested_parallelism == 0 );
-    uint8_t nbits_req_parallelism = 1;
-    while ( ( requested_parallelism - 1 ) >> nbits_req_parallelism )
-    {
-        nbits_req_parallelism++;
-    }
-    UTILS_BUG_ON( 64 - nbits_region - nbits_req_parallelism - 1 <= 0,
-                  "Not enough space to encode task-creation-numbers" );
-    parallel_region->shift_requested_parallelism = shift_region - nbits_req_parallelism;
-    parallel_region->mask_requested_parallelism  = get_mask( nbits_req_parallelism,
-                                                             parallel_region->shift_requested_parallelism );
-    uint8_t nbits_remaining       = 64 - nbits_region - nbits_req_parallelism - 1 /* new task bit */;
-    uint8_t nbits_task_gen_number = ( nbits_remaining > 32 ) ? 32 : nbits_remaining;
-    parallel_region->max_explicit_tasks           = ( ( uint64_t )1 << nbits_task_gen_number ) - 1;
-    parallel_region->shift_task_generation_number = parallel_region->shift_requested_parallelism - nbits_task_gen_number;
-    parallel_region->mask_task_generation_number  = get_mask( nbits_task_gen_number,
-                                                              parallel_region->shift_task_generation_number );
-
-    /* Reserve memory for task-generation-number per implicit-task */
-    size_t mem = sizeof( uint32_t ) * requested_parallelism;
-    parallel_region->task_generation_numbers = realloc( parallel_region->task_generation_numbers, mem );
-    memset( parallel_region->task_generation_numbers, 0, mem );
-
-    /* Init task_t object that gets passed around for undeferred tasks. */
-    parallel_region->undeferred_task.is_undeferred   = true;
-    parallel_region->undeferred_task.parallel_region = parallel_region;
-
+    init_parallel_obj( parallel_region, tpd, requested_parallelism, codeptr_ra, -1 );
     /* parallel_t object ready */
+    parallel_data->ptr = parallel_region;
 
     UTILS_BUG_ON( !( flags & ompt_parallel_team ) );
 
@@ -536,6 +499,58 @@ on_first_parallel_begin( ompt_data_t* encounteringTaskData )
                  UTILS_FUNCTION_NAME, adapter_tid,
                  SCOREP_Location_GetId( initial_task.scorep_location ),
                  stored_task, encounteringTaskData->ptr );
+}
+
+
+static void
+init_parallel_obj( parallel_t*                        parallel,
+                   struct scorep_thread_private_data* parent,
+                   uint32_t                           requestedParallelism,
+                   const void*                        codeptrRa,
+                   uint32_t                           refCount )
+{
+    UTILS_BUG_ON( parallel == NULL );
+    UTILS_BUG_ON( requestedParallelism == 0 );
+
+    parallel->parent     = parent;
+    parallel->team_size  = requestedParallelism;
+    parallel->codeptr_ra = ( uintptr_t )codeptrRa;
+    parallel->region     = get_region( codeptrRa, TOOL_EVENT_PARALLEL );
+    parallel->ref_count  = refCount;
+
+    /* The remainder is for explicit tasking only */
+
+    /* shift/mask for requested_parallelism and task_creation_number are per
+       parallel-region. requested_parallelism is out of [1,N], thus encode
+       thread_num values [0,N-1]. Use remaining bits for task_creation_number,
+       but no more than 32 bits. */
+
+    uint8_t nbits_req_parallelism = 1;
+    while ( ( parallel->team_size - 1 ) >> nbits_req_parallelism )
+    {
+        nbits_req_parallelism++;
+    }
+    UTILS_BUG_ON( 64 - nbits_region - nbits_req_parallelism - 1 <= 0,
+                  "Not enough space to encode task-creation-numbers" );
+    uint8_t nbits_remaining       = 64 - nbits_region - nbits_req_parallelism - 1 /* new task bit */;
+    uint8_t nbits_task_gen_number = ( nbits_remaining > 32 ) ? 32 : nbits_remaining;
+
+    parallel->shift_requested_parallelism = shift_region - nbits_req_parallelism;
+    parallel->mask_requested_parallelism  = get_mask( nbits_req_parallelism,
+                                                      parallel->shift_requested_parallelism );
+    parallel->max_explicit_tasks           = ( ( uint64_t )1 << nbits_task_gen_number ) - 1;
+    parallel->shift_task_generation_number = parallel->shift_requested_parallelism - nbits_task_gen_number;
+    parallel->mask_task_generation_number  = get_mask( nbits_task_gen_number,
+                                                       parallel->shift_task_generation_number );
+
+    /* Reserve memory for task-generation-number per implicit-task */
+    size_t mem = sizeof( uint32_t ) * parallel->team_size;
+    parallel->task_generation_numbers = realloc( parallel->task_generation_numbers, mem );
+    memset( parallel->task_generation_numbers, 0, mem );
+
+    /* Init task_t object that gets passed around for undeferred tasks. */
+    parallel->undeferred_task.is_undeferred   = true;
+    parallel->undeferred_task.parallel_region = parallel;
 }
 
 
@@ -906,8 +921,7 @@ scorep_ompt_cb_host_implicit_task( ompt_scope_endpoint_t endpoint,
 static void
 on_initial_task( int flags )
 {
-    implicit_parallel.undeferred_task.is_undeferred   = true;
-    implicit_parallel.undeferred_task.parallel_region = &implicit_parallel;
+    init_parallel_obj( &implicit_parallel, NULL, 1, NULL, 0 );
 
     initial_task.type            = flags;
     initial_task.scorep_location = SCOREP_Location_GetCurrentCPULocation();
@@ -1791,8 +1805,10 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
     UTILS_BUG_ON( task_region == SCOREP_INVALID_REGION );
 
     /* Collect and encode data into new_task */
-    /* TODO: deal with task creation outside a parallel region. In this situation
-       we don't have a parallel_t, thus the code below crashes. */
+
+    /* Note: creation of non-undeferred tasks from the implicit-parallel-region
+       has not been observed yet but should work as we maintain
+       'implicit_parallel'. */
 
     int thread_num;
     scorep_ompt_get_task_info( 0, NULL, NULL, NULL, NULL, &thread_num );
