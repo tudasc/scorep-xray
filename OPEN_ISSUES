@@ -395,6 +395,20 @@ various Score-P components.
       scorep --nocompiler [llvm-based compiler] [args] \
       -Xarch_host -finstrument-functions-after-inlining
 
+  Applies to OMPT instrumentation only:
+
+  - Until device directives are supported by Score-P, device events
+    are ignored, if possible.
+    Runtimes that don't support OMPT target callbacks have been
+    reported creating helper threads on target directives. These
+    helper threads lack thread-begin and implicit-task-begin but
+    dispatch parallel-begin. This is non-conforming. In addition,
+    non-conforming tasking behavior has been observed: explicit
+    non-undeferred tasks are created in the implicit parallel region
+    but scheduled inside a different parallel region, created by a
+    helper thread.
+    In these cases, Score-P can't ignore the device events, but aborts.
+
 --------------------------------------------------------------------------------
 
 * CUDA support

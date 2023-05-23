@@ -420,6 +420,18 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     UTILS_BUG_ON( parallel_data->ptr != NULL,
                   "Expected no ompt_data_t object for a new parallel region." );
 
+    /* Runtimes that don't support OMPT target callbacks have been reported
+       creating helper threads that lack thread-begin and implicit-task-begin
+       but dispatch parallel-begin. In addition, they show non-conforming
+       tasking behavior, see comment in scorep_ompt_cb_host_task_create(). */
+    UTILS_BUG_ON( encountering_task_data->ptr == NULL,
+                  "Expected thread (atid %" PRIu32 ") to provide a valid "
+                  "encountering task object. This might be an OpenMP runtime issue.",
+                  adapter_tid );
+    UTILS_BUG_ON( adapter_tid == 0,
+                  "Thread (atid = 0) lacks thread-begin event. This might be "
+                  "an OpenMP runtime issue." );
+
     /* First parallel region runs in serial context. No need for synchronization. */
     static bool first_parallel_encountered = false;
     if ( !first_parallel_encountered
@@ -1809,6 +1821,12 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
     /* Note: creation of non-undeferred tasks from the implicit-parallel-region
        has not been observed yet but should work as we maintain
        'implicit_parallel'. */
+    /* Note: With runtimes that don't support OMPT target callbacks, it has
+       been observed that the initial-task creates a non-undeferred task that
+       gets executed in a parallel region that the initial-task isn't part of.
+       This is non-conforming. See also
+       https://github.com/llvm/llvm-project/issues/62764 and comment in
+       scorep_ompt_cb_host_parallel_begin(). */
 
     int thread_num;
     scorep_ompt_get_task_info( 0, NULL, NULL, NULL, NULL, &thread_num );

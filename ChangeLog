@@ -14,6 +14,10 @@ Bugfixes:
 
 - The OpenMP detection now additionally checks for the `-fiopenmp` flag
   used by Intel oneAPI.
+- The OMPT adapter now aborts when it detects non-conforming OpenMP
+  behavior observed with runtimes that don't support OMPT target
+  callbacks (here, helper threads are created that lack thread-begin
+  and implicit-task-begin but dispatch parallel-begin).
 
 ------------------- Released version 8.1 -----------------------------
 
