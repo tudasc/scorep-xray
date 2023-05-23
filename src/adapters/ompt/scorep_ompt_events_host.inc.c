@@ -422,8 +422,9 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     /* First parallel region runs in serial context. No need for synchronization. */
     static bool first_parallel_encountered = false;
     if ( !first_parallel_encountered
-         /* For now, ignore league events. */
-         && !( flags & ompt_parallel_league ) && !( ( ( task_t* )encountering_task_data->ptr )->belongs_to_league ) )
+         /* For now, prevent league events. */
+         && !( ( flags & ompt_parallel_league )
+               || ( ( task_t* )encountering_task_data->ptr )->belongs_to_league ) )
     {
         first_parallel_encountered = true;
         on_first_parallel_begin( encountering_task_data );
@@ -437,8 +438,8 @@ scorep_ompt_cb_host_parallel_begin( ompt_data_t*        encountering_task_data,
     parallel_data->ptr = parallel_region;
 
     /* For now, prevent league events. */
-    if ( ( ( task_t* )encountering_task_data->ptr )->belongs_to_league ||
-         ( flags & ompt_parallel_league ) )
+    if ( ( flags & ompt_parallel_league )
+         || ( ( task_t* )encountering_task_data->ptr )->belongs_to_league )
     {
         parallel_region->belongs_to_league = true;
         UTILS_WARN_ONCE( "OpenMP league implicit-task-begin event detected. "
