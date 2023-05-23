@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2022,
+ * Copyright (c) 2022-2023,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -1798,7 +1798,7 @@ scorep_ompt_cb_host_task_create( ompt_data_t*        encountering_task_data,
     parallel_t* parallel = ( ( task_t* )encountering_task_data->ptr )->parallel_region;
     /* TODO: What todo on overflow? */
     UTILS_BUG_ON( parallel->max_explicit_tasks == parallel->task_generation_numbers[ thread_num ],
-                  "Cannot handle more than " PRIu32 " task creations.",
+                  "Cannot handle more than %" PRIu32 " task creations.",
                   parallel->max_explicit_tasks );
     uint32_t task_generation_number = ++( parallel->task_generation_numbers[ thread_num ] );
 
