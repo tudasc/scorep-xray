@@ -984,6 +984,19 @@ write_system_tree( cube_t*                   myCube,
     return system_tree;
 }
 
+
+/* Location groups can be processes or accelerator contexts. For any cases of process-only
+   interaction there is a need to differentiate and correctly index the processes.
+   Storing mappings prevents additional loops over all location groups or locations.
+ */
+
+/* Maps location group index to a process index. */
+static uint32_t* location_group_to_process_index_map;
+static uint32_t  process_count = 0;
+
+/* Maps a process to the index of its master thread/location. */
+static uint32_t* process_to_master_thread_location_index_map;
+
 /**
    Writes location group definitions to Cube.
    @param myCube  Pointer to Cube instance.
@@ -996,6 +1009,10 @@ write_location_group_definitions( cube_t*                   myCube,
     cube_location_group** location_groups = calloc( manager->location_group.counter,
                                                     sizeof( *location_groups ) );
     UTILS_ASSERT( location_groups );
+
+    location_group_to_process_index_map = calloc( manager->location_group.counter, sizeof( *location_group_to_process_index_map ) );
+    UTILS_ASSERT( location_group_to_process_index_map );
+
     scorep_cube_system_node* system_tree = write_system_tree( myCube, manager );
     UTILS_ASSERT( system_tree );
 
@@ -1019,6 +1036,11 @@ write_location_group_definitions( cube_t*                   myCube,
             const char* value = SCOREP_UNIFIED_HANDLE_DEREF( creating_location_group->name_handle,
                                                              String )->string_data;
             cube_location_group_def_attr( location_groups[ rank ], "Creating location group", value );
+        }
+
+        if ( definition->location_group_type == SCOREP_LOCATION_GROUP_TYPE_PROCESS )
+        {
+            location_group_to_process_index_map[ rank ] = process_count++;
         }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
@@ -1050,6 +1072,9 @@ write_all_location_definitions( cube_t*                   myCube,
     cube_location_group** location_groups =
         write_location_group_definitions( myCube, manager );
 
+    process_to_master_thread_location_index_map = calloc( process_count, sizeof( uint32_t ) );
+    UTILS_ASSERT( process_to_master_thread_location_index_map );
+
     /* Location mapping of global ids to cube definition */
     cube_location** locations = calloc( numberOfLocations,
                                         sizeof( cube_location* ) );
@@ -1073,10 +1098,24 @@ write_all_location_definitions( cube_t*                   myCube,
                                type,
                                location_groups[ parent_id ] );
         locations_per_group[ parent_id ]++;
+
+        /* Store the location index of a master thread in relation to its process to avoid additional loops
+           over all locations in the writing of the topology coordinates. */
+        if ( type  == CUBE_LOCATION_TYPE_CPU_THREAD )
+        {
+            /* Check if location is a master thread of a process via cube_location_get_rank, which
+             * provides the number of a thread relative to its location_group ( or process in this case ). */
+            if ( cube_location_get_rank( locations[ definition->sequence_number ] ) == 0 )
+            {
+                process_to_master_thread_location_index_map[ location_group_to_process_index_map[
+                                                                 cube_location_group_get_rank( location_groups[ parent_id ] ) ] ] = definition->sequence_number;
+            }
+        }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( locations_per_group );
     free( location_groups );
+    free( location_group_to_process_index_map );
     return locations;
 }
 
@@ -1256,25 +1295,6 @@ write_cartesian_definitions( cube_t*                       myCube,
     /* General information for the definition accesses. Since this is post unification
        we are in a serial part of Score-P. Therefore, no locking is required. */
 
-    /* Store the coord location id mapping to avoid the additional loop through the locations inside the coord loop */
-    uint32_t coord_loc_id_per_coord_rank[ manager->location_group.counter ];
-    memset( coord_loc_id_per_coord_rank, 0, manager->location_group.counter * sizeof( uint32_t ) );
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
-    {
-        /* Is a thread */
-        if ( cube_location_get_type( locationMap[ definition->sequence_number ] ) == CUBE_LOCATION_TYPE_CPU_THREAD )
-        {
-            /* Is a master thread of a process*/
-            if ( cube_location_get_rank( locationMap[ definition->sequence_number ] ) == 0 )
-            {
-                coord_loc_id_per_coord_rank[ cube_location_group_get_rank(
-                                                 cube_location_get_parent(
-                                                     locationMap[ definition->sequence_number ] ) ) ] = definition->sequence_number;
-            }
-        }
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-
     /*  Create the cartesian topologies */
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, CartesianTopology, cartesian_topology )
     {
@@ -1352,14 +1372,14 @@ write_cartesian_definitions( cube_t*                       myCube,
                 {
                     cube_def_coords( myCube,
                                      cube_handle,
-                                     locationMap[ coord_loc_id_per_coord_rank[ global_rank ]  ],
+                                     locationMap[ process_to_master_thread_location_index_map[ global_rank ]  ],
                                      temp_coords_of_current_rank );
                 }
                 else /* thread for platform, processxthreads */
                 {
                     cube_def_coords( myCube,
                                      cube_handle,
-                                     locationMap[ coord_loc_id_per_coord_rank[ coord_rank ] + coord_thread ],
+                                     locationMap[ process_to_master_thread_location_index_map[ coord_rank ] + coord_thread ],
                                      temp_coords_of_current_rank );
                 }
             }
@@ -1367,6 +1387,7 @@ write_cartesian_definitions( cube_t*                       myCube,
         SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+    free( process_to_master_thread_location_index_map );
 }
 
 /* ****************************************************************************
