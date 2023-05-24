@@ -988,19 +988,14 @@ write_system_tree( cube_t*                   myCube,
    Writes location group definitions to Cube.
    @param myCube  Pointer to Cube instance.
    @param manager Pointer to Score-P definition manager with unified definitions.
-   @param ranks   Number of MPI ranks. It must equal the number of array elements in
-                  @a threads.
-   @param offsets Array of the offsets of threads in each rank. The ith entry contains
-                  the sum of all threads of lower ranks. The number of elements must
-                  equal @a ranks.
  */
 static cube_location_group**
 write_location_group_definitions( cube_t*                   myCube,
                                   SCOREP_DefinitionManager* manager )
 {
-    cube_location_group** processes = calloc( manager->location_group.counter,
-                                              sizeof( *processes ) );
-    UTILS_ASSERT( processes );
+    cube_location_group** location_groups = calloc( manager->location_group.counter,
+                                                    sizeof( *location_groups ) );
+    UTILS_ASSERT( location_groups );
     scorep_cube_system_node* system_tree = write_system_tree( myCube, manager );
     UTILS_ASSERT( system_tree );
 
@@ -1015,7 +1010,7 @@ write_location_group_definitions( cube_t*                   myCube,
         cube_location_group_type type =
             convert_to_cube_location_group_type( definition->location_group_type );
 
-        processes[ rank ] = cube_def_location_group( myCube, name, rank, type, node );
+        location_groups[ rank ] = cube_def_location_group( myCube, name, rank, type, node );
 
         if ( definition->creating_location_group != SCOREP_INVALID_LOCATION_GROUP )
         {
@@ -1023,53 +1018,53 @@ write_location_group_definitions( cube_t*                   myCube,
                 SCOREP_UNIFIED_HANDLE_DEREF( definition->creating_location_group, LocationGroup );
             const char* value = SCOREP_UNIFIED_HANDLE_DEREF( creating_location_group->name_handle,
                                                              String )->string_data;
-            cube_location_group_def_attr( processes[ rank ], "Creating location group", value );
+            cube_location_group_def_attr( location_groups[ rank ], "Creating location group", value );
         }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( system_tree );
-    return processes;
+    return location_groups;
 }
 
 /**
    Writes all location definitions from the Score-P definitions to Cube.
-   @param myCube    Pointer to Cube instance.
-   @param manager   Pointer to Score-P definition manager with unified definitions.
-   @param numberOfThreads  Global number of locations.
+   @param myCube             Pointer to Cube instance.
+   @param manager            Pointer to Score-P definition manager with unified definitions.
+   @param numberOfLocations  Global number of locations.
    @retruns an array of cube_location pointers where the sequence number of the Score-P
             definitions is the index to the cube location.
  */
 static cube_location**
 write_all_location_definitions( cube_t*                   myCube,
                                 SCOREP_DefinitionManager* manager,
-                                uint64_t                  numberOfThreads )
+                                uint64_t                  numberOfLocations )
 {
-    UTILS_ASSERT( manager->location.counter == numberOfThreads );
+    UTILS_ASSERT( manager->location.counter == numberOfLocations );
 
     /* Counts the number of locations already registered for each rank */
     uint32_t* locations_per_group = calloc( manager->location_group.counter,
                                             sizeof( *locations_per_group ) );
     UTILS_ASSERT( locations_per_group );
 
-    /* Location group (processes) mapping of global ids to cube definitions */
+    /* Location group ( CPU processes + GPU contexts ) mapping of global ids to cube definitions */
     cube_location_group** location_groups =
         write_location_group_definitions( myCube, manager );
 
     /* Location mapping of global ids to cube definition */
-    cube_location** locations = calloc( numberOfThreads,
+    cube_location** locations = calloc( numberOfLocations,
                                         sizeof( cube_location* ) );
     UTILS_ASSERT( locations );
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
-        SCOREP_LocationGroupHandle parent_id =
+        uint32_t parent_id =
             SCOREP_HANDLE_TO_ID( definition->location_group_parent, LocationGroup, manager->page_manager );
         const char* name =
             SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle, String )->string_data;
         cube_location_type type =
             convert_to_cube_location_type( definition->location_type );
 
-        UTILS_ASSERT( definition->sequence_number < numberOfThreads );
+        UTILS_ASSERT( definition->sequence_number < numberOfLocations );
 
         locations[ definition->sequence_number ] =
             cube_def_location( myCube,
@@ -1086,7 +1081,7 @@ write_all_location_definitions( cube_t*                   myCube,
 }
 
 /**
-   Writes key location definitions for one processes to Cube.
+   Writes key location definitions for one process to Cube.
    @param myCube  Pointer to Cube instance.
    @param process Pointer to CUBE location group definition for
                   which it writes locations.
@@ -1103,7 +1098,7 @@ write_aggregated_locations_for_one_process( cube_t*              myCube,
 }
 
 /**
-   Writes one location definitions per process to Cube.
+   Writes one location definition per process to Cube.
    @param myCube    Pointer to Cube instance.
    @param manager   Pointer to Score-P definition manager with unified definitions.
  */
@@ -1124,7 +1119,7 @@ write_one_location_per_process( cube_t*                   myCube,
 }
 
 /**
-   Writes key location definitions for one processes to Cube.
+   Writes key location definitions for one process to Cube.
    @param myCube  Pointer to Cube instance.
    @param process Pointer to CUBE location group definition for
                   which it writes locations.
@@ -1261,17 +1256,20 @@ write_cartesian_definitions( cube_t*                       myCube,
     /* General information for the definition accesses. Since this is post unification
        we are in a serial part of Score-P. Therefore, no locking is required. */
 
-    /* store the coord location id mapping to avoid the additional loop through the locations inside the coord loop */
-    uint64_t coord_loc_id_per_coord_rank[ manager->location_group.counter ];
-    memset( coord_loc_id_per_coord_rank, 0, manager->location_group.counter * sizeof( uint64_t ) );
+    /* Store the coord location id mapping to avoid the additional loop through the locations inside the coord loop */
+    uint32_t coord_loc_id_per_coord_rank[ manager->location_group.counter ];
+    memset( coord_loc_id_per_coord_rank, 0, manager->location_group.counter * sizeof( uint32_t ) );
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
-        /* is a thread */
+        /* Is a thread */
         if ( cube_location_get_type( locationMap[ definition->sequence_number ] ) == CUBE_LOCATION_TYPE_CPU_THREAD )
         {
+            /* Is a master thread of a process*/
             if ( cube_location_get_rank( locationMap[ definition->sequence_number ] ) == 0 )
             {
-                coord_loc_id_per_coord_rank[ cube_location_group_get_rank( cube_location_get_parent( locationMap[ definition->sequence_number ] ) ) ] = definition->sequence_number;
+                coord_loc_id_per_coord_rank[ cube_location_group_get_rank(
+                                                 cube_location_get_parent(
+                                                     locationMap[ definition->sequence_number ] ) ) ] = definition->sequence_number;
             }
         }
     }
