@@ -44,6 +44,7 @@ libscorep_adapter_cuda_mgmt_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cuda_defines.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.c \
